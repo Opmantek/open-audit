@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report>
+	<details>
+		<report_name>SQL Server Databases</report_name>
+		<report_display_in_menu>y</report_display_in_menu>
+		<report_sql><![CDATA[SELECT DISTINCT(system.system_id), system.hostname, system.man_os_family, system.man_environment, sys_sw_database.db_version, sys_sw_database_details.details_instance, sys_sw_database_details.details_name, sys_sw_database_details.details_filename, sys_sw_database_details.details_current_size, date_format(sys_sw_database_details.details_creation_date,'%d/%m/%Y') as details_creation_date FROM system, oa_group_sys, sys_sw_database, sys_sw_database_details WHERE system.man_status = "production" AND system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group AND system.timestamp = sys_sw_database_details.timestamp AND system.system_id = sys_sw_database.system_id AND sys_sw_database.db_id = sys_sw_database_details.db_id ORDER BY system.hostname, sys_sw_database_details.details_name]]></report_sql>
+		<report_view_file>v_report</report_view_file>
+		<report_view_contents></report_view_contents>
+		<report_processing></report_processing>
+		<report_sort_column>0</report_sort_column>
+	</details>
+	<columns>
+		<column>
+			<column_order>0</column_order>
+			<column_name>System Name</column_name>
+			<column_variable>hostname</column_variable>
+			<column_type>link</column_type>
+			<column_link>/main/system_display/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>Server OS</column_name>
+			<column_variable>man_os_family</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>2</column_order>
+			<column_name>Server Environment</column_name>
+			<column_variable>man_environment</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>3</column_order>
+			<column_name>SQL Version</column_name>
+			<column_variable>db_version</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>4</column_order>
+			<column_name>DB Instance</column_name>
+			<column_variable>details_instance</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>5</column_order>
+			<column_name>DB Name</column_name>
+			<column_variable>details_name</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>6</column_order>
+			<column_name>Size</column_name>
+			<column_variable>details_current_size</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>right</column_align>
+		</column>
+		<column>
+			<column_order>7</column_order>
+			<column_name>File</column_name>
+			<column_variable>details_filename</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>8</column_order>
+			<column_name>Created</column_name>
+			<column_variable>details_creation_date</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+	</columns>
+</report>

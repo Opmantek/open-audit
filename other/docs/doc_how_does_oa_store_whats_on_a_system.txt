@@ -1,0 +1,34 @@
+How Does Open-AudIT store it's data ?
+
+Each system (computer, network device, printer, et al) has an entry in the "system" table.
+Each system (from the "system" table) has a "system_id" column.
+This value is unique - it's an auto incrementing id.
+A system is determined to be unique by a combination of UUID + full system name (including domain).
+For network devices, a unique identifer is still to be determined (probably use a MAC Address for network items).
+
+A system is audited and the result submitted to the server.
+The first table processed is the "system" table.
+The "system_id" is determined and passed (along with the other details) to each other section (table).
+Every table has two timestamp columns, "first_timestamp" and "timestamp".
+The "first_timestamp" value is populated whenever an insert occurs - hence this value reflects the first time an item was reported in the audit script.
+The "timestamp" value is inserted when an item is first seen, or updated when an item is seen in subsequent audit script(s).
+There is a "oa_audit_log" table that contains details of each time an audit is submitted (including timestamp).
+
+So, for an example - "hard_drive".
+The "system_id" is retrieved, along with the timestamp of the previous audit submission and the "status" column.
+For each entry in the hard_drive audit result, the database is queried.
+It checks for hard drive model, serial, index and size.
+These values vary according to the item being processed - see the relevent model PHP pages.
+If it gets a match on the above values, combined with the system_id, the current timestamp OR the previous timestamp, and a status of "production", then an existing entry exists for this piece of equipment.
+In the case of hard drives, it simply updates the timestamp to reflect the current audit timestamp.
+If it does not get a match, it does an insert of the relevant details.
+
+So, we can determine if something is currently installed - the timestamps match (on the system table and the relevant item table).
+We can determine when something was detected - the "first_timestamp".
+We can determine if something was installed after the initial audit - first timestamps will be different.
+We can determine if something is not currently installed, but previously was - the timestamp on the item is less than the timestamp on the system.
+We can determine the last time we detected an item - the timestamp on the item, when the timestamp is less than the current system timestamp.
+At any given point, we can determine what was on a system - by using the oa_audit_log table and selecting the relevant components based on timestamps.
+
+
+So, that's how we determine what's on or has been on a system.

@@ -1,0 +1,53 @@
+Printer Logic
+We attempt to record only actual hardware printers. 
+We try to filter out such things as "PDF Printers", "XPS Document Writers", etc, etc (these may be stored in the software table at a later stage).
+
+Network Printers
+If a printer has an IP address, it is a network printer.
+
+Local Printers
+If a printer does not have an IP address, it is a local printer.
+If we have a local printer, the PHP processing associates it in the system table with the system_id of the computer. This is stored in the 'linked_sys' colmun.
+
+The system_key
+All devices should have a unique "system_key" field  in the system table. For printers, this is calculated such:
+If the printer has an IP Address (and is therefore a network printer), this IP address (padded) is used.  This is the same as other network devices (think switches, routers, etc).
+If printer does not have an IP address, it uses the hostname (of the attached computer), concatenated with the DeviceID (taken from the attached computer). 
+The DeviceID has spaces replaced with underscores. The two fields are joined with an underscore.
+
+Printers are stored in the system table with the following attributes:
+system_id - auto assigned (incrementing).
+system_key - created as above.
+uuid - the printer device_id (assuming printer is submitted via an audited computer).
+hostname - the printer network hostname (if it has one)
+description - the printer description (assuming printer is submitted via an audited computer).
+type - set to Printer.
+icon - set to printer.
+linked_sys - if it's a local printer, the system_id of the attached computer is used.
+serial - the printer serial (assuming printer is submitted via an audited computer).
+model - the printer model (assuming printer is submitted via an audited computer).
+manufacturer - the printer manufacturer, edited in the audit script (assuming printer is submitted via an audited computer).
+printer_port_name - assuming printer is submitted via an audited computer.
+printer_shared - assuming printer is submitted via an audited computer.
+printer_shared_name - assuming printer is submitted via an audited computer.
+man_status - if it's a new printer, this is initially set to the normal (non "man_") value.
+man_environment - set to production by default.
+man_description - if it's a new printer, this is initially set to the normal (non "man_") value.
+man_type - if it's a new printer, this is initially set to the normal (non "man_") value.
+man_ip_address - if it's a new printer, this is initially set to the normal (non "man_") value.
+man_model - if it's a new printer, this is initially set to the normal (non "man_") value.
+man_manufacturer - if it's a new printer, this is initially set to the normal (non "man_") value.
+man_serial - if it's a new printer, this is initially set to the normal (non "man_") value.
+man_owner - not automatically populated. Can be set via web interface or bulk upload.
+man_org_id - not automatically populated. Can be set via web interface or bulk upload.
+man_location_id - not automatically populated. Can be set via web interface or bulk upload.
+man_location_level - not automatically populated. Can be set via web interface or bulk upload.
+man_location_suite - not automatically populated. Can be set via web interface or bulk upload.
+man_location_room - not automatically populated. Can be set via web interface or bulk upload.
+man_asset_number - not automatically populated. Can be set via web interface or bulk upload.
+man_switch_id - not automatically populated. Can be set via web interface or bulk upload.
+man_switch_port - not automatically populated. Can be set via web interface or bulk upload.
+man_ethernet_socket - not automatically populated. Can be set via web interface or bulk upload.
+man_wall_port - not automatically populated. Can be set via web interface or bulk upload.
+man_picture - not automatically populated. Can be set via web interface or bulk upload.
+

@@ -1,0 +1,76 @@
+﻿How to install on Windows.
+
+OAv2 installation using XAMPP.
+------------------------------
+1 - Download the Open-AudIT version with XAMPP included, 
+
+2 - Extract to C: drive, 
+
+3 - Run the c:\xampp\xampp-control.exe, 
+
+4 - Start Apache and MySQL then log on to http://YOURSERVERNAME/.
+
+Done :-)
+
+Don't forget to activate Groups & Reports and to change the password of the Admin & Test users.
+
+Scroll to the bottom for instructions on auditing Windows Systems.
+
+
+
+
+OAv2 installation using "source".
+---------------------------------
+Substitue the correct variable contents when items below are in CAPITALS.
+
+1 - Download the package and extract the "www" directory to c:\xampp\htdocs
+	zipfile\OAv2\www -> c:\xampp\htdocs
+
+2 - Extract the files in the "OAv2" directory into xampp
+	zipfile\OAv2 -> c:\xampp\OAv2
+
+3 - Check the file c:\xampp\htdocs\index.php for the $system_folder variable.
+	Ensure it is set as below.
+	$system_folder = "c:/xampp/OAv2/code_igniter/system";
+
+4 - Go to the \other folder (C:\xampp\OAv2\other) and edit the file audit_windows.vbs
+	Make sure the variable "url" points to YOURSERVER.
+
+5 - Copy the file c:\xampp\OAv2\other\OAv2_mysql.sql to c:\xampp\mysql\bin
+
+6 - Create the database in Mysql
+	cd into the c:\xampp\mysql\bin folder.
+	Run the following: mysql -u root -pYOURPASSWORD 
+	then run: create database OAv2;
+	then run: exit;
+
+7 - Back at the dos prompt, run
+	c:\xampp\mysql\bin\mysql -u root -pYOURPASSWORD OAv2 < OAv2_mysql.sql
+
+8 - Lastly, check the file c:\xampp\OAv2\code_igniter\system\application\config\database.php
+	Make sure the credentials are correct to access the database you just created.
+
+9 - Finally, point your browser at http://YOURSERVER/ and you should be asked to log in. 
+	Username: admin
+	Password: password
+
+If you can do that - then it is installed, congratulations.
+
+
+
+
+Auditing Windows Systems
+------------------------
+
+Next, get a dos prompt and go to c:\xampp\OAv2\other and run: cscript audit_windows.vbs .
+
+It should run and post the result to the database. Go back to your web browser and refresh. You should have a group or two created. Go into one of them and click the machine name. You should see the machine details.
+
+To audit your domain, edit the file: c:\xampp\OAv2\other\audit_domain.vbs
+Depending on your system's power, you may wish to ajust the "number_of_audits". I usually use 20. Make sure the "script_name" points to the correct place - 
+script_name = "c:\xampp\OAv2\other\audit_windows.vbs"
+Make sure the "local_domain" is correct. Try setting "operating_system" to "Windows" (I think people have had issue's leaving it blank). Run the script with: cscript audit_domain.vbs
+
+You should see your domain PCs start to get audited by seperate audit_windows scripts.
+
+Enjoy !!!

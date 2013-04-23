@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report>
+	<details>
+		<report_name>Local Administrators</report_name>
+		<report_display_in_menu>y</report_display_in_menu>
+		<report_sql><![CDATA[Select system.system_id, system.hostname, sys_sw_group.group_members From system Left Join sys_sw_group On sys_sw_group.timestamp = system.timestamp Left Join oa_group_sys On oa_group_sys.system_id = system.system_id And sys_sw_group.system_id = oa_group_sys.system_id Where oa_group_sys.group_id = @group And sys_sw_group.group_name = "Administrators" Group By sys_sw_group.group_id Order By sys_sw_group.system_id]]></report_sql>
+		<report_view_file>v_report</report_view_file>
+		<report_view_contents></report_view_contents>
+		<report_processing></report_processing>
+		<report_sort_column>0</report_sort_column>
+	</details>
+	<columns>
+		<column>
+			<column_order>0</column_order>
+			<column_name>System Name</column_name>
+			<column_variable>hostname</column_variable>
+			<column_type>link</column_type>
+			<column_link>/main/system_display/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>Local Administrators</column_name>
+			<column_variable>group_members</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+	</columns>
+</report>

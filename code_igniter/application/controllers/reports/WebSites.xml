@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report>
+	<details>
+		<report_name>Web Sites</report_name>
+		<report_display_in_menu>y</report_display_in_menu>
+		<report_sql><![CDATA[SELECT DISTINCT(system.system_id), system.hostname, system.man_os_family, system.man_environment, sys_sw_web_site.site_state, sys_sw_web_server.webserver_version, sys_sw_web_site.site_description, sys_sw_web_site.site_path, sys_sw_web_site.site_app_pool, sys_sw_web_site.site_logging, sys_sw_web_site.site_log_format, sys_sw_web_site.site_log_directory, sys_sw_web_site.site_log_rotation FROM system, oa_group_sys, sys_sw_web_server, sys_sw_web_site WHERE system.man_status = "production" AND system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group AND system.timestamp = sys_sw_web_site.timestamp AND system.system_id = sys_sw_web_server.system_id AND sys_sw_web_server.webserver_id = sys_sw_web_site.webserver_id ORDER BY system.hostname, sys_sw_web_site.site_description]]></report_sql>
+		<report_view_file>v_report</report_view_file>
+		<report_view_contents></report_view_contents>
+		<report_processing></report_processing>
+		<report_sort_column>0</report_sort_column>
+	</details>
+	<columns>
+		<column>
+			<column_order>0</column_order>
+			<column_name>System Name</column_name>
+			<column_variable>hostname</column_variable>
+			<column_type>link</column_type>
+			<column_link>/main/system_display/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>Environment</column_name>
+			<column_variable>man_environment</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>2</column_order>
+			<column_name>Version</column_name>
+			<column_variable>webserver_version</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>3</column_order>
+			<column_name>Site Name</column_name>
+			<column_variable>site_description</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>4</column_order>
+			<column_name>Status</column_name>
+			<column_variable>site_state</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>5</column_order>
+			<column_name>Site App Pool</column_name>
+			<column_variable>site_app_pool</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>6</column_order>
+			<column_name>Site Path</column_name>
+			<column_variable>site_path</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>7</column_order>
+			<column_name>Site Logging</column_name>
+			<column_variable>site_logging</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>8</column_order>
+			<column_name>Site Log Format</column_name>
+			<column_variable>site_log_format</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>9</column_order>
+			<column_name>Site Log Rotation</column_name>
+			<column_variable>site_log_rotation</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>10</column_order>
+			<column_name>Site Log Directory</column_name>
+			<column_variable>site_log_directory</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+	</columns>
+</report>

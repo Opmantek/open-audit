@@ -1,0 +1,31 @@
+Each user has an entry in the oa_user table.
+Each Group has an entry in the oa_group table.
+Each system has an entry in the system table.
+
+A group can be determined either statically or dynamically.
+A static group is simply a list of manually selected systems.
+A dynamic group uses a SQL query to determine the systems that belong to it.
+
+Each system has an entry in oa_group_system noting it's system_id and the group_id from the oa_group table.
+Thus, a system can belong to more than one group and one group can have more than one system.
+
+Each user has an entry in oa_group_user noting it's user_id and the group_id from oa_group.
+Also stored is the level of access that user has for that group.
+0 - no access
+3 - view only in "list" type screens
+5 - view basic individual system details
+7 - view "sensitive" details about a system
+10 - edit system details and custom data
+
+So, if a user wishes to view a group, it is first checked that his group_access_level is at least 1.
+The user_id is known (cookie). 
+The group_id is known (in the url).
+If it is, the group is listed as per the details from oa_group.
+If it is not (ie - the user has a group_access_level of 0 of null), the user is redirected to the "list all" type page.
+
+The same principle applies to individual systems.
+The user_id is known.
+The system_id is known.
+They are combined and the group_access_level is determined, hence access granted or denied.
+The highest group_access_level is used - not the lowest.
+Thus, if a system belongs to more than one group, but a user has differing levels of access to those groups, the highest level will be applied and used.

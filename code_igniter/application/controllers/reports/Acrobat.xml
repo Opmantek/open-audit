@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report>
+	<details>
+		<report_name>Acrobat</report_name>
+		<report_display_in_menu>y</report_display_in_menu>
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, sys_sw_software.software_name, sys_sw_software.software_version from system left join sys_sw_software on (system.system_id = sys_sw_software.system_id and system.timestamp = sys_sw_software.timestamp and (software_name like '%acrobat%' or software_name Like 'Adobe Reader%')) join oa_group_sys on (system.system_id = oa_group_sys.system_id and oa_group_sys.group_id = @group) order by hostname]]></report_sql>
+		<report_display_sql></report_display_sql>
+		<report_view_file>v_report</report_view_file>
+		<report_view_contents></report_view_contents>
+		<report_processing></report_processing>
+		<report_sort_column>0</report_sort_column>
+	</details>
+	<columns>
+		<column>
+			<column_order>0</column_order>
+			<column_name>System Name</column_name>
+			<column_variable>hostname</column_variable>
+			<column_table>system</column_table>
+			<column_type>link</column_type>
+			<column_link>/main/system_display/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>Software Name</column_name>
+			<column_variable>software_name</column_variable>
+			<column_table>sys_sw_software</column_table>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>2</column_order>
+			<column_name>Version</column_name>
+			<column_variable>software_version</column_variable>
+			<column_table>sys_sw_software</column_table>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_align>left</column_align>
+		</column>
+	</columns>
+</report>

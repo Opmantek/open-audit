@@ -1,0 +1,36 @@
+OAv2 Alpha 1 released
+
+OAv2 Alpha 2 released
+Altered audit_domain.vbs to hopefully fix an error that occurs when you leave the OS type field blank.
+Converted all short PHP tags into long PHP tags
+Replaced ereg function in v_lang.php
+Replaced ereg function in v_list_software.php
+Altered URL icon display in v_list_software.php to display a link to Google for all software without a URL
+Still need to replace ereg in:
+	controllers\include_ip.php
+	controllers\ip.php
+	helpers\network_helper.php
+
+
+Revised length on a few DB fields:
+	share name,
+	share description,
+	Share Path
+
+Revised query to check for existing processors. Now only checks Processor Description.
+
+OAv2 Alpha 3 released
+
+Changed the "Windows XP" group to display 'last logged on user' instead of the operating system name in list style pages.
+
+Added the ability to select multiple "alerts" from the list alert page and associate them with a "change".
+The Change can be recorded in the OAv2 Change table, an externally linked Change or a simple acknowledgment.
+TOTO - start the Change recording in OAv2.
+
+OAv2 Alpha 4 released
+
+OAv2 Alpha 5 released
+
+OAv2 Alpha 6 released
+IIS and SQL Server auditing
+
