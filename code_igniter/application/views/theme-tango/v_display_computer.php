@@ -1,3 +1,4 @@
+<!-- v_display_computer -->
 <script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -130,6 +131,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 	<li class="parent"><img alt="" src="<?php echo $image_path?>16_device.png" id="toggle_summary_all" /><a href="#">Summary</a>
 		<ul>
 		 	<?php if (count($windows) > 0) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li> <?php } ?>
+		 	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_devices.png" /><a href="#" id="toggle_summary_network">Network</a></li>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
@@ -169,7 +171,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		 	<?php if (count($odbc) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_database.png" /><a href="#" id="toggle_software_odbc">ODBC Drivers</a></li> <?php } ?> 
 		 	<?php if (count($assembly) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_assembly.png" /><a href="#" id="toggle_software_assembly">Assembly</a></li> <?php } ?> 
 		 	<?php if (count($service) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_system.png" /><a href="#" id="toggle_software_services">Services</a></li> <?php } ?> 
-		 	<?php if (count($software_key) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_authentication.png" /><a href="#" id="toggle_software_keys">Keys</a></li> <?php } ?> 
+		 	<?php if (isset($software_key) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_authentication.png" /><a href="#" id="toggle_software_keys">Keys</a></li> <?php } ?> 
 		</ul>
 	</li>
 	<?php } ?>
@@ -222,7 +224,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
 			<div style="float:right; width: 100px; text-align:center">
 				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
-			<?php if (($access_level > 7) and (extension_loaded('snmp'))) { ?>
+			<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
 				<input type="button" onclick="parent.location='<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>'" value='SNMP Probe' title='SNMP Probe' name='SNMP Probe' alt='SNMP Probe' width='24' />
 			<?php } ?>
 			<!--
@@ -350,7 +352,39 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 	</form>
 	</div> <!-- end of view_summary_windows -->
 	<?php } ?>
-	
+
+
+
+
+	<div id="view_summary_credentials" style="float: left; width: 100%;">
+	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
+	<br />
+	<form action="#" method="post" class="niceforms">
+		<fieldset id="summary_credentials_details" class="niceforms">
+			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Credentials')?></span></legend>
+			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
+			<span>NOTE - Read only at the moment. Can be set via Edit Multiple Systems from a Report page.</span>
+			<?php foreach($decoded_access_details as $key => $value) { 
+				echo "<p><label for='" . $key . "'>" . ucwords(str_replace("_", " ", $key)) . ": </label>";
+				echo "<span id='" . $key . "'>" . print_something($value) . "</span></p>";
+			} ?>
+		</fieldset>
+	</form>
+	<?php } ?>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<div id="view_summary_purchase" style="float: left; width: 100%;">
 	<br />
 	<form action="#" method="post" class="niceforms">
@@ -1479,7 +1513,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 	</div>
 
 	<div id="view_software_keys" style="float: left; width: 100%;">
-	<?php if (count($software_key) > 0) { ?>
+	<?php if (isset($software_key) and ($access_level >= 7)) { ?>
 		<br />
 		<br />
 		<form action="#" method="post" class="niceforms">
@@ -2212,6 +2246,7 @@ var toggle_summary_windows;
 $(document).ready(function(){
 	
 	$('#view_summary_windows').hide();
+	$('#view_summary_credentials').hide();
 	$('#view_summary_purchase').hide();
 	$('#view_summary_network').hide();
 	$('#view_summary_audits').hide();
@@ -2223,6 +2258,10 @@ $(document).ready(function(){
 
 	$('#toggle_summary_windows').click(function(){
 		$('#view_summary_windows').slideToggle("fast");
+	});
+
+	$('#toggle_summary_credentials').click(function(){
+		$('#view_summary_credentials').slideToggle("fast");
 	});
 
 	$('#toggle_summary_purchase').click(function(){
@@ -2263,6 +2302,7 @@ $(document).ready(function(){
 		if (summary_toggle == 0)
 		{
 			$('#view_summary_windows').show("fast");
+			$('#view_summary_credentials').show("fast");
 			$('#view_summary_purchase').show("fast");
 			$('#view_summary_network').show("fast");
 			$('#view_summary_audits').show("fast");
@@ -2276,6 +2316,7 @@ $(document).ready(function(){
 		else 
 		{
 			$('#view_summary_windows').hide("fast");
+			$('#view_summary_credentials').hide("fast");
 			$('#view_summary_purchase').hide("fast");
 			$('#view_summary_network').hide("fast");
 			$('#view_summary_audits').hide("fast");

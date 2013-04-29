@@ -673,4 +673,9 @@ $GLOBALS["lang"]["System Processors (All Devices)"]="System Processors (All Devi
 $GLOBALS["lang"]["oa_alert_log table rows"]="oa_alert_log table rows";
 $GLOBALS["lang"]["Summary - 192.168.88.2"]="Summary - 192.168.88.2";
 $GLOBALS["lang"]["Summary - 192.168.88.1"]="Summary - 192.168.88.1";
+$GLOBALS["lang"]["SNMP v2 Community"]="SNMP v2 Community";
+$GLOBALS["lang"]["Credentials"]="Credentials";
+$GLOBALS["lang"]["Summary - hp-printer"]="Summary - hp-printer";
+$GLOBALS["lang"]["Summary - 1"]="Summary - 1";
+$GLOBALS["lang"]["Bulk Import"]="Bulk Import";
 ?>

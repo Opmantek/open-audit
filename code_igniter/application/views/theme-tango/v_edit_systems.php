@@ -50,6 +50,8 @@ echo form_open('main/process_edit_systems') . "\n";
 	<label for="man_purchase_order_number"><?php echo __("Purchase Order Number"); ?>: </label><input type="text" name="man_purchase_order_number" style="width: 200px" /><br /><br />
 	<label for="man_purchase_vendor"><?php echo __("Purchase Vendor"); ?>: </label><input type="text" name="man_purchase_vendor" style="width: 200px" /><br /><br />
 	<label for="man_serial"><?php echo __("Serial"); ?>: </label><input type="text" name="man_serial" style="width: 200px" /><br /><br />
+	<label for="snmp_community"><?php echo __("SNMP Community"); ?>: </label><input type="text" name="snmp_community" style="width: 200px" /><br /><br />
+	<label for="snmp_community"><?php echo __("SNMP Version"); ?>: </label><select name="snmp_version" style="width: 200px" />(<option value="">&nbsp;</option><option value="1">1</option><option value="2c">2c</option></select><br /><br />
 	<label for="man_status"><?php echo __("Status"); ?>: </label><select name="man_status" style="width: 200px"><option value="">&nbsp;</option><option value="production"><?php echo __("Production"); ?></option><option value="maintenance"><?php echo __("Maintenance"); ?></option><option value="retired"><?php echo __("Retired"); ?></option><option value="deleted"><?php echo __("Deleted"); ?></option></select><br /><br />
 	<label for="man_switch_id"><?php echo __("Switch System ID"); ?>: </label><input type="text" name="man_switch_id" style="width: 200px" /><br /><br />
 	<label for="man_switch_port"><?php echo __("Switch Port"); ?>: </label><input type="text" name="man_switch_port" style="width: 200px" /><br /><br />

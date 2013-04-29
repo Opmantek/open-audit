@@ -90,6 +90,7 @@ class Main extends MY_Controller {
 			redirect('main/list_groups/');
 		}
 		$this->load->model("m_system");
+		$this->load->library('encrypt');
 		$group_id = $_POST['group_id'];
 		$data['items'] = array();
 		foreach ($_POST as $key => $value) {
@@ -107,13 +108,33 @@ class Main extends MY_Controller {
 				$item = NULL;
 			}
 		}
+		echo "<pre>\n";
+
+		# create the SNMP credentials
+		if (($_POST['snmp_community'] > '') and ($_POST['snmp_version'] > '')) {
+			foreach ($data['systems'] as $system) {
+				$encode['ip_address'] = ip_address_from_db($this->m_system->check_man_ip_address($system[1]));
+				# make sure the device in question actually has an ip address
+				if (($encode['ip_address'] > '') and ($encode['ip_address'] <> '0.0.0.0')) {
+					$encode['snmp_version'] = $_POST['snmp_version'];
+					$encode['snmp_community'] = $_POST['snmp_community'];
+					$encoded = json_encode($encode);
+					$encoded = $this->encrypt->encode($encoded);
+					$this->m_system->update_system_man($system[1], 'access_details', $encoded);
+				}
+			}
+		}
+
+
 		foreach ($_POST as $field_name => $field_data) {
+			# input all the manual fields 
 			if ( (mb_strpos($field_name, 'man_') !== false) && ($field_data != '') ){
 				foreach ($data['systems'] as $system) {
 					$this->m_system->update_system_man($system[1], $field_name, $field_data);
 				}
 			}
 		}
+
 		foreach ($data['systems'] as $system) {
 			$details->system_id = $system[1];
 			$details->type = 'computer';
@@ -511,12 +532,20 @@ class Main extends MY_Controller {
 		$this->data['windows'] = $this->m_windows->get_system_windows($this->data['id']);
 		$this->data['webserver'] = $this->m_webserver->get_system_webserver($this->data['id']);
 		$this->data['website_details'] = $this->m_webserver->get_system_websites($this->data['id']);
+
 		# NOTE - TODO - add in browser addons and odbc drivers
 		
-		# only show software install keys to users with 'view sensitive details' level of access
+		# only show to users with 'view sensitive details' level of access access level >= 7
 		if ( $this->data['access_level'] >= '7') {
 			$this->load->model("m_software_key");
 			$this->data['software_key'] = $this->m_software_key->get_system_key($this->data['id']);
+
+			if ($this->data['system'][0]->access_details) {
+				$this->load->library('encrypt');
+				$this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
+				$this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
+			}
+
 		}
 		
 		$this->data['heading'] = 'Summary - ' . $this->m_system->get_system_hostname($this->data['id']);

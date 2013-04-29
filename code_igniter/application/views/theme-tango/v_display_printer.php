@@ -1,3 +1,4 @@
+<!-- v_display_printer -->
 <script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -70,6 +71,7 @@ $link_downloads = '';
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
 			<div id="menu1" class="menuTree">
 				<ul>
+					<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_devices.png" /><a href="#" id="toggle_summary_network">Network</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
@@ -137,14 +139,12 @@ $link_downloads = '';
 				<?php endforeach; ?>
 				<?php echo display_custom_field('system_details', $additional_fields, $edit); ?>
 			</div>
-			<div style="float:right; width: 110px;">
+			<div style="float:right; width: 110px; text-align: center;">
 				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $key->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
+				<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
+				<input type="button" onclick="parent.location='<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>'" value='SNMP Probe' title='SNMP Probe' name='SNMP Probe' alt='SNMP Probe' width='24' />
+				<?php } ?>
 			</div>
-			<?php if (($access_level > 7) and (extension_loaded('snmp'))) { ?>
-			<div style="float:right; width: 110px; text-align:center">
-				<a href="<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>"><img src='<?php echo $image_path;?>16_edit.png' alt='SNMP Probe' title='SNMP Probe' width='24' /></a>
-			</div>
-			<?php } ?>
 			<div style="float: left;margin-right: 120px;">
 				<?php if ($os_name > ''){ ?><label for="man_os_name"><?php echo __('OS Name')?>: </label><span id="man_os_name"><?php echo print_something($os_name)?></span><?php } ?>
 				<?php if ($key->man_type == 'system') { ?><p><label for="man_serial"><?php echo __('Serial')?>: </label><span id='man_serial' <?php echo $edit?>><?php echo print_something($key->man_serial)?></span></p><?php } ?>
@@ -152,6 +152,23 @@ $link_downloads = '';
 		</fieldset>
 	</form>
 	</div> <!-- end of div Summary -->
+
+	<div id="view_summary_credentials" style="float: left; width: 100%;">
+	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
+	<br />
+	<form action="#" method="post" class="niceforms">
+		<fieldset id="summary_credentials_details" class="niceforms">
+			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Credentials')?></span></legend>
+			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
+			<span>NOTE - Read only at the moment. Can be set via Edit Multiple Systems from a Report page.</span>
+			<?php foreach($decoded_access_details as $key => $value) { 
+				echo "<p><label for='" . $key . "'>" . ucwords(str_replace("_", " ", $key)) . ": </label>";
+				echo "<span id='" . $key . "'>" . print_something($value) . "</span></p>";
+			} ?>
+		</fieldset>
+	</form>
+	<?php } ?>
+	</div>
 
 	<div id="view_summary_purchase" style="float: left; width: 100%;">
 	<br />
@@ -642,6 +659,7 @@ function receive_org() {
 
 $(document).ready(function(){
 	
+	$('#view_summary_credentials').hide();
 	$('#view_summary_purchase').hide();
 	$('#view_summary_network').hide();
 	$('#view_summary_location').hide();
@@ -649,6 +667,10 @@ $(document).ready(function(){
 	$('#view_summary_audits').hide();
 	$('#view_summary_audit_log').hide();
 	$('#view_summary_alerts').hide();
+
+	$('#toggle_summary_credentials').click(function(){
+		$('#view_summary_credentials').slideToggle("fast");
+	});
 
 	$('#toggle_summary_purchase').click(function(){
 		$('#view_summary_purchase').slideToggle("fast");
@@ -683,6 +705,7 @@ $(document).ready(function(){
 	$('#toggle_summary_all').click(function(){
 		if (summary_toggle == 0)
 		{
+			$('#view_summary_credentials').show("fast");
 			$('#view_summary_purchase').show("fast");
 			$('#view_summary_network').show("fast");
 			$('#view_summary_location').show("fast");
@@ -694,6 +717,7 @@ $(document).ready(function(){
 		}
 		else 
 		{
+			$('#view_summary_credentials').hide("fast");
 			$('#view_summary_purchase').hide("fast");
 			$('#view_summary_network').hide("fast");
 			$('#view_summary_location').hide("fast");

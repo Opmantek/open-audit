@@ -93,7 +93,7 @@ class Login extends CI_Controller {
 			}
 		}
 
-		if ((isset($this->data['ad_domain']) and isset($this->data['ad_server'])) and ($this->data['ad_domain'] > "" and $this->data['ad_server'] > "" and $password > '') and (extension_loaded('ldap'))) {
+		if ((isset($this->data['ad_domain']) and isset($this->data['ad_server'])) and ($this->data['ad_domain'] > "" and $this->data['ad_server'] > "" and $password > '' and $username > '') and (extension_loaded('ldap'))) {
 			# using Active Directory to validate logon details
 			$ad_ldap_connect = "ldap://" . $this->data['ad_server'];
 			$ad_user = $username . '@' . $this->data['ad_domain'];

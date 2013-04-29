@@ -1,3 +1,4 @@
+<!-- v_display_general -->
 <script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -60,6 +61,7 @@ if ($access_level > 7) {
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
 			<div id="menu1" class="menuTree">
 				<ul>
+					<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_word.png" /><a href="#" id="toggle_summary_custom">Custom</a></li>
@@ -92,7 +94,7 @@ if ($access_level > 7) {
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
 			<div style="float:right; width: 120px; text-align:center">
 				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
-			<?php if (($access_level > 7) and (extension_loaded('snmp'))) { ?>
+			<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
 				<input type="button" onclick="parent.location='<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>'" value='SNMP Probe' title='SNMP Probe' name='SNMP Probe' alt='SNMP Probe' width='24' />
 			<?php } ?>
 			</div>
@@ -140,29 +142,26 @@ if ($access_level > 7) {
 	</form>
 	</div> <!-- end of div Summary -->
 
-	<?php if ($type == 'printer') { ?>
-	<div id="view_summary_printer" style="float: left; width: 100%;">
+
+
+	<div id="view_summary_credentials" style="float: left; width: 100%;">
+	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
 	<br />
 	<form action="#" method="post" class="niceforms">
-		<fieldset id="summary_purchase_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Printer Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_printer.png' alt='' title='' width='48'/>
-			<?php foreach($system as $key): ?>
-			<p><label for="printer_color"><?php echo __('Color Capable')?>: </label><span id="printer_color"><?php echo print_something($key->printer_color)?></span></p>
-			<p><label for="printer_duplex"><?php echo __('Duplex Capable')?>: </label><span id="printer_duplex"><?php echo print_something($key->printer_duplex)?></span></p>
-			<?php if ($key->linked_sys){ ?>
-				<p><label for="linked_sys"><?php echo __('Linked To')?>: </label><span id="linked_sys"><?php echo print_something($key->linked_sys)?></span></p>
-				<p><label for="printer_shared"><?php echo __('Shared')?>: </label><span id="printer_shared"><?php echo print_something($key->printer_shared)?></span></p>
-				<p><label for="printer_shared_name"><?php echo __('Share Name')?>: </label><span id="printer_shared_name"><?php echo print_something($key->printer_shared_name)?></span></p>
-				<p><label for="printer_port_name"><?php echo __('Port Name')?>: </label><span id="printer_port_name"><?php echo print_something($key->printer_port_name)?></span></p>
-			<?php }
-			endforeach;
-			echo display_custom_field('view_summary_purchase', $additional_fields_data, $edit);
-			?>
+		<fieldset id="summary_credentials_details" class="niceforms">
+			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Credentials')?></span></legend>
+			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
+			<span>NOTE - Read only at the moment. Can be set via Edit Multiple Systems from a Report page.</span>
+			<?php foreach($decoded_access_details as $key => $value) { 
+				echo "<p><label for='" . $key . "'>" . ucwords(str_replace("_", " ", $key)) . ": </label>";
+				echo "<span id='" . $key . "'>" . print_something($value) . "</span></p>";
+			} ?>
 		</fieldset>
 	</form>
-	</div>
 	<?php } ?>
+	</div>
+
+
 
 
 
@@ -610,12 +609,17 @@ function receive_org() {
 
 $(document).ready(function(){
 	
+	$('#view_summary_credentials').hide();
 	$('#view_summary_purchase').hide();
 	$('#view_summary_location').hide();
 	$('#view_summary_custom').hide();
 	$('#view_summary_audits').hide();
 	$('#view_summary_audit_log').hide();
 	$('#view_summary_alerts').hide();
+
+	$('#toggle_summary_credentials').click(function(){
+		$('#view_summary_credentials').slideToggle("fast");
+	});
 
 	$('#toggle_summary_purchase').click(function(){
 		$('#view_summary_purchase').slideToggle("fast");
@@ -646,6 +650,7 @@ $(document).ready(function(){
 	$('#toggle_summary_all').click(function(){
 		if (summary_toggle == 0)
 		{
+			$('#view_summary_credentials').show("fast");
 			$('#view_summary_purchase').show("fast");
 			$('#view_summary_location').show("fast");
 			$('#view_summary_custom').show("fast");
@@ -656,6 +661,7 @@ $(document).ready(function(){
 		}
 		else 
 		{
+			$('#view_summary_credentials').hide("fast");
 			$('#view_summary_purchase').hide("fast");
 			$('#view_summary_location').hide("fast");
 			$('#view_summary_custom').hide("fast");

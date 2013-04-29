@@ -36,9 +36,9 @@ chmod 770 /usr/local/open-audit/other/winexe
 
 cp -r /usr/local/open-audit/www/* /var/www/
 
-chown -R root:www-data /var/www
+chown -R root:www-data /var/www #
 
-chmod -R 640 /var/www
+chmod -R 640 /var/www #
 
 rm /var/www/index.html
 
@@ -46,7 +46,8 @@ touch /var/log/open-audit.log
 
 chmod 777 /var/log/open-audit.log
 
-# todo - add in /etc/sudoers.d/open-audit_nmap
+# set the suid for /usr/bin/nmap
+chmod u+s /usr/bin/nmap
 
 mysql -u root -e "USE mysql; UPDATE user set Password = password('openauditrootuserpassword') WHERE User = 'root'; FLUSH PRIVILEGES;"
 

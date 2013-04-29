@@ -18,7 +18,7 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='token'>Access Token</option>
 			<option value='modem'>Cable Modem</option>
 			<option value='cell phone'>Cell Phone</option>
-			<option value='system'>Computer</option>
+			<option value='computer'>Computer</option>
 			<option value='firewall'>Firewall</option>
 			<option value='game console'>Game Console</option>
 			<option value='ip phone'>IP Phone</option>
@@ -268,7 +268,7 @@ function select_device()
 			status_text = status_text + "<br \/><p><label for='AddSystem'>&nbsp;<\/label><input type='submit' name='AddSystem' value='Add System' id='AddSystem' \/><\/p>";
 			break;
 
-		case "system":
+		case "computer":
 			icon = "device";
 			status_text = "<table><tr><td valign=\"top\">";
 			status_text = status_text + "<label for='hostname'>Hostname<\/label><input type='text' id='hostname' name='hostname' size='20' \/><span style='color: red;'>*<\/span><br \/>";
