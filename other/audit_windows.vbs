@@ -574,7 +574,8 @@ next
 set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
 for each objItem in colItems
-	system_hostname = LCase(objItem.Name)
+	'system_hostname = LCase(objItem.Name)
+	system_hostname = LCase(objItem.DNSHostName)
 	system_domain = LCase(objItem.Domain)
 	system_pc_num_processor = 0
 	on error resume next

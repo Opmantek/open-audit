@@ -213,7 +213,7 @@ class Admin extends MY_Controller {
 					$details->hostname = $j[0];
 					$details->man_ip_address = '0.0.0.0';
 					$details->domain = $ad_domain_name;
-					$details->type = 'system';
+					$details->type = 'computer';
 					$details->icon = 'windows';
 					$details->os_name = "";
 					$details->os_name = $info[$i]['operatingsystem'][0];
@@ -265,8 +265,11 @@ class Admin extends MY_Controller {
 					}
 					$details->system_id = $this->m_system->process_system_from_ad($details);
 					$this->m_oa_group->update_system_groups($details);
+					echo "<pre>\n";
+					print_r($details);
 				}
-				redirect('/');
+				#redirect('/');
+
 			} else {
 				# todo - redirect to homepage and create an alert to show on screen
 				echo "Could not connect to AD.";
