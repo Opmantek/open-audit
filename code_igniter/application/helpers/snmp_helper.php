@@ -63,6 +63,7 @@ if (!function_exists('get_snmp')) {
 		$details->man_model = '';
 		$details->serial = '';
 		$details->type = '';
+		$details->man_type = '';
 		$details->device_type = '';
 		$timeout = '3000000';
 		$retries = '2';
@@ -111,6 +112,7 @@ if (!function_exists('get_snmp')) {
 
 				// sysObjectID
 				$i = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $snmp_community, "1.3.6.1.2.1.1.1.0" ));
+
 				$details->oid = str_replace("OID: .", "", snmp2_get($details->man_ip_address, $snmp_community, "1.3.6.1.2.1.1.2.0" ));
 				if (strtolower($details->oid) == 'no such object available on this agent at this oid') { $details->oid = ''; }
 
@@ -126,7 +128,6 @@ if (!function_exists('get_snmp')) {
 					$details->os_group = $oid->os_group;
 					$details->man_os_group = $oid->os_group;
 				}
-
 
 				if ($details->oid == '1.3.6.1.4.1.6876.4.1') {
 					# grab some specific details for VMware ESX
@@ -314,7 +315,7 @@ if (!function_exists('get_snmp')) {
 
 				// subnet
 				if ($details->subnet == '' ) {
-					$details->subnet = str_replace("IpAddress: ", "", snmp2_get($details->man_ip_address, $snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
+					$details->subnet = @str_replace("IpAddress: ", "", snmp2_get($details->man_ip_address, $snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
 				}
 				if ($details->subnet == 'No Such Instance currently exists at this OID') { $details->subnet = ''; }
 				if ($details->subnet == 'No Such Object available on this agent at this OID') { $details->subnet = ''; }
@@ -324,9 +325,9 @@ if (!function_exists('get_snmp')) {
 				
 
 				// installed modules with serial numbers
-				$i = snmp2_walk($details->man_ip_address, $snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11");
+				$i = @snmp2_walk($details->man_ip_address, $snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11");
 				if (count($i) > 0) {
-					if ($i[0] == 'No more variables left in this MIB View (It is past the end of the MIB tree)') {unset($i); $i = array();}
+					if (($i[0] == 'No more variables left in this MIB View (It is past the end of the MIB tree)') or ($i[0] == '')){unset($i); $i = array();}
 					if (count($i) > 0) {
 						$count = 0;
 						for ($j=0; $j<count($i); $j++) {

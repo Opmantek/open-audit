@@ -56,7 +56,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "Windows NT") === FALSE) {
 	<?php echo form_close(); ?>
 	<?php if ($systems == '0' ) {
 			echo "<div style=\"width: 100%; text-align: center;\"><br />&nbsp;<br />No systems, groups or reports are in the database.<br />
-			Initial credentials are admin / password.<br />Please log in and change these ASAP.<br />Please also check the \"test user\".</div>\n";
+			Initial credentials are admin / password.<br />Please log in and change these ASAP.<br /></div>\n";
 		}
 	?>
 </div>

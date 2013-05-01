@@ -10,12 +10,14 @@
 				<p><label for='field_type'><?php echo __("Type")?>: </label>
 					<select id='field_type' name='field_type' tabindex='2' title='Field Type' >
 						<option value="varchar" <?php if ($key->field_type == 'varchar') { echo " selected";} ?> ><?php echo __("VarChar")?></option>
+						<!--
 						<option value="bool" <?php if ($key->field_type == 'bool') { echo " selected";} ?> ><?php echo __("Boolean")?></option>
 						<option value="int" <?php if ($key->field_type == 'int') { echo " selected";} ?> ><?php echo __("Integer")?></option>
 						<option value="memo" <?php if ($key->field_type == 'memo') { echo " selected";} ?> ><?php echo __("Memo")?></option>
-						<!-- <option value="list" <?php if ($key->field_type == 'list') { echo " selected";} ?> ><?php echo __("List")?></option> -->
+						<option value="list" <?php if ($key->field_type == 'list') { echo " selected";} ?> ><?php echo __("List")?></option>
 						<option value="datetime" <?php if ($key->field_type == 'datetime') { echo " selected";} ?> ><?php echo __("DateTime")?></option>
 						<option value="timestamp" <?php if ($key->field_type == 'timestamp') { echo " selected";} ?> ><?php echo __("Timestamp")?></option>
+					-->
 					</select></p>
 				<p><label for='field_placement'><?php echo __("Placement")?>: </label>
 					<select id='field_placement' name='field_placement' tabindex='3' title='Field Placement' >

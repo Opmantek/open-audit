@@ -36,7 +36,7 @@
 			<td align="center"><?php echo $edit_pic?></td>
 			<td align="center"><?php echo $export_pic?></td>
 			<td align="center"><?php echo $update_pic?></td>
-			<td align="center"><?php echo $delete_pic?></td>
+			<td align="center"><?php if ($key->group_id != '1') {echo $delete_pic; } ?> </td>
 		</tr>
 		<?php endforeach; ?>
 	</tbody>

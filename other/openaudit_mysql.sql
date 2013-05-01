@@ -378,9 +378,10 @@ CREATE TABLE `oa_location` (
   `location_country` varchar(100) NOT NULL default '',
   `location_phone` varchar(20) NOT NULL default '',
   `location_picture` varchar(100) NOT NULL default '',
-  `location_latitude` float(9,6) NOT NULL,
-  `location_longitude` float(9,6) NOT NULL,
+  `location_latitude` float(10,6) NOT NULL,
+  `location_longitude` float(10,6) NOT NULL,
   `location_comments` varchar(100) NOT NULL default '',
+  `location_icon` varchar(100) NOT NULL default '',
   `location_group_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`location_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -569,6 +570,7 @@ CREATE TABLE `oa_user` (
   `user_display_number` smallint(6) NOT NULL default '10',
   `user_theme` varchar(100) NOT NULL,
   `user_admin` varchar(1) NOT NULL,
+  `user_active` varchar(1) NOT NULL default 'y',
   `user_change` int(10) NOT NULL default '1',
   `user_sam` int(10) NOT NULL default '1',
   PRIMARY KEY  (`user_id`),
@@ -1886,7 +1888,7 @@ CREATE TABLE `system` (
 
 SET character_set_client = @saved_cs_client;
 
-INSERT INTO `oa_group` VALUES  (1,'All Devices','', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\'',1,'All','device','','devices');
+INSERT INTO `oa_group` VALUES  (1,'All Devices','', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\'',1,'Any items that have their status attribute set to production.','device','','devices');
 
 INSERT INTO `oa_group_column` VALUES (NULL, '1', '1', 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left');
 INSERT INTO `oa_group_column` VALUES (NULL, '1', '2', 'Description', 'man_description', 'text', '',  '', '', 'left');
@@ -1896,10 +1898,8 @@ INSERT INTO `oa_group_column` VALUES (NULL, '1', '5', 'OS / Device', 'man_os_nam
 INSERT INTO `oa_group_column` VALUES (NULL, '1', '6', 'Tags', 'tag',  'text', '',  '', '', 'left');
 
 INSERT INTO `oa_group_user` VALUES  (1,1,1,10);
-INSERT INTO `oa_group_user` VALUES  (2,2,1,5);
 
 INSERT INTO `oa_user` VALUES  (1, 'admin',   '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 'admin@openaudit', 'en', '10', 'tango', 'y', '10', '3');
-INSERT INTO `oa_user` VALUES  (NULL, 'test', '5f4dcc3b5aa765d61d8327deb882cf99', 'Test Reduced User', 'admin@openaudit', 'en', '10', 'tango', 'n', '1', '1');
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20130215', 'n', 'The internal numerical version.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.0', 'n', 'The version shown on the web pages.');

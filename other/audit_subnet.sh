@@ -17,7 +17,7 @@ url="http://localhost/index.php/system/add_nmap"
 
 
 local_hostname=`hostname 2>/dev/null`
-local_ip=`ifconfig | grep -v "127.0.0.1" | grep "inet addr:" | cut -d":" -f2 | cut -d" " -f1`
+local_ip=`/sbin/ifconfig | grep -v "127.0.0.1" | grep "inet addr:" | cut -d":" -f2 | cut -d" " -f1`
 xml_file="subnet_result"-`date +%Y%m%d%H%M%S`.xml
 process="audit_subnet.sh"
 whoami=`whoami`
@@ -46,10 +46,10 @@ for arg in "$@"; do
 	esac
 done
 
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 
-   exit 1
-fi
+#if [[ $EUID -ne 0 ]]; then
+#   echo "This script must be run as root" 
+#   exit 1
+#fi
 
 if [ $debugging -gt 0 ]; then
 	echo "Scanning Subnet: $subnet"
@@ -92,7 +92,7 @@ if [ "$hosts_in_subnet" != "" ]; then
 			# -n Do not resolve IP to DNS name
 			# -O attempt to determine operating system
 			# -PN treat host as online, skip discovery (we already know it is because of above)
-			nmap_scan=`nmap -vv -n -O --host-timeout 30 -PN $host 2>/dev/null`
+			nmap_scan=`nmap -vv -n -O --host-timeout 90 -PN $host 2>/dev/null`
 
 			# Not trying SNMP detection as it's not consistent across no snmp, snmp v1, snmp v2
 			#NMAP=`nmap -vv -n -O -PN -sU -p161-162 $host`

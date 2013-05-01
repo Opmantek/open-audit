@@ -42,6 +42,9 @@ class M_system extends MY_Model {
 		# search order is:
 		# mac_address, ip_address, serial, hostname
 		$details->system_id = '';
+
+		# todo - fix this by making sure (snmp in particular) calls with the proper variable name
+		if (!isset($details->mac_address) and (isset($details->mac))) {$details->mac_address = $details->mac;}
 		if (isset($details->mac_address)) {
 			# we have a MAC Address, check the sys_hw_network_card_ip table
 			$sql = "SELECT system.system_id FROM system 
@@ -55,10 +58,10 @@ class M_system extends MY_Model {
 			if (count($row) > 0 ) { $details->system_id = $row->system_id; }
 		}
 
-		if (($details->system_id == '') and (isset($details->ip_address))) {
+		if (($details->system_id == '') and (isset($details->man_ip_address))) {
 			# we have an ip address
-			$sql = "SELECT system.system_id FROM system WHERE man_ip_address = ?";
-			$data = array(ip_address_to_db($details->ip_address));
+			$sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
+			$data = array(ip_address_to_db($details->man_ip_address));
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { $details->system_id = $row->system_id; }
@@ -69,7 +72,7 @@ class M_system extends MY_Model {
 					WHERE (sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ?)
 					AND system.man_status = 'production' LIMIT 1";
 			$sql = $this->clean_sql($sql);
-			$data = array(ip_address_to_db($details->ip_address), "$details->ip_address");
+			$data = array(ip_address_to_db($details->man_ip_address), "$details->man_ip_address");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { $details->system_id = $row->system_id; }
@@ -78,7 +81,7 @@ class M_system extends MY_Model {
 
 		if (($details->system_id == '') and (isset($details->system_key))) {
 			# check for a serial number in the system table
-			$sql = "SELECT system.system_id FROM system WHERE system_key = ?";
+			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production'";
 			$data = array("$details->system_key");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
@@ -87,7 +90,7 @@ class M_system extends MY_Model {
 
 		if (($details->system_id == '') and (isset($details->serial)) and ($details->serial > '') ) {
 			# check for a serial number in the system table
-			$sql = "SELECT system.system_id FROM system WHERE serial = ?";
+			$sql = "SELECT system.system_id FROM system WHERE serial = ? AND system.man_status = 'production'";
 			$data = array("$details->serial");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
@@ -97,22 +100,27 @@ class M_system extends MY_Model {
 
 		if (($details->system_id == '') and (isset($details->serial)) and ($details->serial > '') ) {
 			# check for a serial number in the system table using man_serial
-			$sql = "SELECT system.system_id FROM system WHERE man_serial = ?";
+			$sql = "SELECT system.system_id FROM system WHERE man_serial = ? AND system.man_status = 'production'";
 			$data = array("$details->serial");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { $details->system_id = $row->system_id; }
 		}
 
-		if (($details->system_id == '') and (isset($details->hostname))) {
+		if (isset($details->hostname)){
+			$i = explode(".", $details->hostname);
+			$hostname = $i[0];
+		} else {
+			$hostname = '';
+		}
+		if (($details->system_id == '') and ($hostname > '')) {
 			# check for a hostname in the system table
-			$sql = "SELECT system.system_id FROM system WHERE hostname = ?";
+			$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
 			$data = array("$details->hostname");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { $details->system_id = $row->system_id; }
 		}
-
 		return $details->system_id;
 	}
 
@@ -167,6 +175,7 @@ class M_system extends MY_Model {
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);
 		#echo $this->db->last_query() . "\n";
+		$temp_system_id = $this->db->insert_id();
 
 		$details->system_id = $this->db->insert_id();
 		if (!isset($details->subnet)) { $details->subnet = ''; }
@@ -198,7 +207,7 @@ class M_system extends MY_Model {
 				$query = $this->db->query($sql, $data);
 			}
 		}
-
+		return $temp_system_id;
 	}
 
 	function update_snmp($details) {
@@ -226,6 +235,7 @@ class M_system extends MY_Model {
 		if (!isset($details->nmis_group)) {$details->nmis_group = '';}
 		if (!isset($details->nmis_name)) {$details->nmis_name = '';}
 		if (!isset($details->nmis_role)) {$details->nmis_role = '';}
+		if (!isset($details->access_details)) {$details->access_details = '';}
 
 
 		if ($details->snmp_version == '2c') {
@@ -885,6 +895,12 @@ class M_system extends MY_Model {
 		// 		$details->system_id = $row->system_id;
 		// 	}
 		// }
+
+		# shouldn't need the below, but the transition from beta 9.2 onwards changes 
+		# the TYPE attribute from system to computer.
+		# if we had old audit scripts running, they would submit using type='system'
+		if ($input->system_type == 'system') {$input->system_type = 'computer'; }
+
 		$details = new stdClass();
 		$details->timestamp = strval($input->system_timestamp);
 		$details->original_timestamp = '';

@@ -171,8 +171,8 @@ class Admin extends MY_Controller {
 		if (isset($_POST['ScanNmap'])) {
 			if ($_POST['subnet'] > '' ) {
 				$subnet = $_POST['subnet'];
-				$cmd = "sudo /usr/share/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
-				$cmd = "sudo /usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
+				#$cmd = "sudo /usr/share/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
+				$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
 				#$cmd = "sudo /media/psf/Home/dropbox/OAv2/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
 				exec($cmd);
 			}
@@ -1775,11 +1775,35 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "ALTER TABLE oa_location MODIFY location_latitude float(10,6)";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE oa_location MODIFY location_longtitude float(10,6)";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE oa_location ADD location_icon varchar(100) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE oa_user ADD user_active varchar(1) NOT NULL default 'y'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_user SET user_active = 'y'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis', 'y', 'y', 'Enable import / export to NMIS functions.')";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
 			$sql = "UPDATE oa_group_column set column_link = '/main/system_display/' WHERE group_id = '1' and column_name = 'Hostname'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE system set type = 'computer', man_type = 'computer' WHERE type = 'system' or man_type = 'system'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 

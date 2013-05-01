@@ -42,11 +42,28 @@ class M_oa_user extends MY_Model {
 		}
 	}
 
+/*
 	function delete_user($id) {
 		$sql = "DELETE FROM oa_group_user WHERE user_id = ? LIMIT 1";
 		$data = array($id);
 		$query = $this->db->query($sql, $data);
 		$sql = "DELETE FROM oa_user WHERE user_id = ? LIMIT 1";
+		$data = array($id);
+		$query = $this->db->query($sql, $data);
+	}
+*/
+
+	function deactivate_user($id) {
+		$sql = "DELETE FROM oa_group_user WHERE user_id = ? LIMIT 1";
+		$data = array($id);
+		$query = $this->db->query($sql, $data);
+		$sql = "UPDATE oa_user SET user_active = 'n' WHERE user_id = ? LIMIT 1";
+		$data = array($id);
+		$query = $this->db->query($sql, $data);
+	}
+
+	function activate_user($id) {
+		$sql = "UPDATE oa_user SET user_active = 'y' WHERE user_id = ? LIMIT 1";
 		$data = array($id);
 		$query = $this->db->query($sql, $data);
 	}
@@ -60,7 +77,7 @@ class M_oa_user extends MY_Model {
 	}
 	
 	function get_all_users() {
-		$sql = "SELECT user_id, user_name, user_full_name, user_email, user_admin FROM oa_user ORDER BY user_name";
+		$sql = "SELECT user_id, user_name, user_full_name, user_email, user_admin, user_active FROM oa_user ORDER BY user_name";
 		$query = $this->db->query($sql);
 		$result = $query->result();
 		return ($result);

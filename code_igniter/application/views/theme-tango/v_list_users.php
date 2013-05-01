@@ -11,7 +11,8 @@ if ($query)
 			<th><?php echo __('User Email')?></th>
 			<th align="center"><?php echo __('User Admin')?></th>
 			<th align="center" class="{sorter: false}"><?php echo __('Edit')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Delete')?></th>
+			<th align="center" class="{sorter: false}"><?php echo __('Deactivate')?></th>
+			<th align="center" class="{sorter: false}"><?php echo __('Activate')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -25,6 +26,14 @@ if ($query)
 				$admin_pic = "<img src='" . $image_path . "16_false.png' alt='' title='' width='16'/>";
 				$admin_pic = "";
 			}
+			if ($key->user_active == 'y') {
+				$deactivate_pic = "<a href=\"deactivate_user/" . $key->user_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
+				$activate_pic = "";
+			} else {
+				$deactivate_pic = "";
+				$activate_pic = "<a href=\"activate_user/" . $key->user_id . "\"><img src='" . $image_path . "16_true.png' alt='' title='' width='16'/></a>";
+			}
+
 		 ?>
 			<tr>
 				<td><?php echo $key->user_name?></td>
@@ -32,7 +41,8 @@ if ($query)
 				<td><?php echo $key->user_email?></td>
 				<td align="center"><?php echo $admin_pic?></td>
 				<td align="center"><?php echo $edit_pic?></td>
-				<td align="center"><?php echo $delete_pic?></td>
+				<td align="center"><?php echo $deactivate_pic?></td>
+				<td align="center"><?php echo $activate_pic?></td>
 			</tr>
 		<?php endforeach; ?>
 	</tbody>

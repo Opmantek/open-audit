@@ -9,12 +9,14 @@
 				<p><label for='field_type'><?php echo __("Type")?>: </label>
 					<select id='field_type' name='field_type' tabindex='2' title='Field Type' >
 						<option value="varchar"><?php echo __("VarChar")?></option>
+						<!--
 						<option value="bool"><?php echo __("Boolean")?></option>
 						<option value="int"><?php echo __("Integer")?></option>
 						<option value="memo"><?php echo __("Memo")?></option>
-						<!-- <option value="list"><?php echo __("List")?></option> -->
+						<option value="list"><?php echo __("List")?></option>
 						<option value="datetime"><?php echo __("DateTime")?></option>
 						<option value="timestamp"><?php echo __("Timestamp")?></option>
+					-->
 					</select></p>
 				<p><label for='field_placement'><?php echo __("Placement")?>: </label>
 					<select id='field_placement' name='field_placement' tabindex='3' title='Field Placement' >

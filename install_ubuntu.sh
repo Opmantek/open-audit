@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # apt-get install -y zip
-# wget http://192.168.61.105/open-audit.zip
+# wget http://website/open-audit.zip
 # unzip open-audit.zip
 # cd open-audit
 # sudo ./install_ubuntu.sh

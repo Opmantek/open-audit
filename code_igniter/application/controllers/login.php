@@ -104,11 +104,17 @@ class Login extends CI_Controller {
 			$bind = ldap_bind($ad, $ad_user, $ad_secret);
 			if ($bind){
 				$data = $this->m_userlogin->get_user_details($username);
-				$this->session->set_userdata($data);
-				if ($page != '1') {
-					redirect($page . '/' . $function . '/' . $id);
+				if ($data['user_active'] == 'y') {
+					$this->session->set_userdata($data);
+					if ($page != '1') {
+						redirect($page . '/' . $function . '/' . $id);
+					} else {
+						redirect('main/index');
+					}
 				} else {
-					redirect('main/index');
+					# the user does not have their 'user_active' flag set to 'y'.
+					# don't log them in, redirect the to the login page.
+					redirect('login/index');
 				}
 			} else {
 				# failed Active Dirctory validation

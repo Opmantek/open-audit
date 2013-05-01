@@ -51,20 +51,17 @@ class System extends CI_Controller {
 			echo "<head>
 			<title>Open-AudIT</title>
 			</head>\n
-			<body>\n";
+			<body>
+			<pre>\n";
 
 			foreach ($xml->children() as $device) {
+				echo "Device IP: " . $device->man_ip_address . "\n";	
 				$count++;
 				$device->hostname = '';
 				$device->hostname = gethostbyaddr($device->man_ip_address);
 				$device->system_id = '';
 				$device->system_id = $this->m_system->find_system($device);
 				
-				#if ($child->getName() == 'device') { 
-					# process the limited nmap information
-				#	$details = ($this->m_system->process_system_from_nmap($child));
-				#}
-
 				if (extension_loaded('snmp')) { 
 					# try to get more information using SNMP
 					$snmp_details = new stdClass;
@@ -91,7 +88,6 @@ class System extends CI_Controller {
 									@$decoded_access_details->snmp_v3_priv_key, 
 									@$decoded_access_details->snmp_v3_priv_proto );
 						}
-						$snmp_details->system_id = $this->uri->segment(3,0);
 					} else {
 						# just attempt the default SNMP retrieval - 
 						# community = public
@@ -99,39 +95,61 @@ class System extends CI_Controller {
 						$snmp_details = get_snmp($device->man_ip_address);
 					}
 
-					$snmp_details->system_id = $this->m_system->find_system($snmp_details);
-					if (($snmp_details->mac = '') and ($device->mac_address > '')) {
-						$snmp_details->mac = $device->mac_address;
+					if (($snmp_details->mac == '') and ($device->mac_address > '')) {
+						$snmp_details->mac = (string)$device->mac_address;
 					}
+
+					if (($snmp_details->man_type == '') and ($device->type > '')) {
+						$snmp_details->man_type = (string)$device->type;
+					}
+
+					if (($snmp_details->type == '') and ($device->type > '')) {
+						$snmp_details->type = (string)$device->type;
+					}
+
+					if (($snmp_details->device_type == '') and ($device->type > '')) {
+						$snmp_details->device_type = (string)$device->type;
+					}
+
+					if ($device->manufacturer == 'VMware') {
+						$snmp_details->manufacturer = 'VMware, Inc.';
+						$snmp_details->man_manufacturer = 'VMware, Inc.';
+						$snmp_details->model = 'VMware Virtual Platform';
+						$snmp_details->man_model = 'VMware Virtual Platform';
+					}
+
+					$snmp_details->system_id = $this->m_system->find_system($snmp_details);
 				}
 
-				if (isset($snmp_details->name)) {
+				if ((isset($snmp_details->name)) and ($snmp_details->name > '')){
 					# we received a result from SNMP, use this data to update or insert
+					echo "Using SNMP details.\n";
 					if ($snmp_details->system_id > '') {
 						# we have a system_id, so update it
 						$this->m_system->update_snmp($snmp_details);
 					} else {
 						# we have a new system
-						$snmp_details->system_id = $this->m_system->insert_snmp($snmp_details);
+						$i = $this->m_system->insert_snmp($snmp_details);
 					}
-					#echo "SNMP_DETAILS_NAME_DETECTED";
-					$system_id = $snmp_details->system_id;
+					$system_id = $i;
+					$snmp_details->system_id = $i;
 					$man_type = $snmp_details->man_type;
 					$this->m_oa_group->update_system_groups($snmp_details);
 				} else {
 					# just insert or update the limited nmap data
+					echo "Using Nmap details.\n";
 					if ($device->system_id > '') {
 						# we have a system_id, update
-						#$this->m_system->update_nmap($device);
+						# $this->m_system->update_nmap($device);
 						$this->m_system->process_system_from_nmap($device);
 					} else {
 						# this is a new system - insert
-						#$device->system_id = $this->m_system->insert_nmap($device);
+						# $device->system_id = $this->m_system->insert_nmap($device);
 						$i = $this->m_system->process_system_from_nmap($device);
 						$device->system_id = $i->system_id;
 						$device->man_type = $i->type;
+						$system_id = $i->system_id;
 					}
-					#echo "NMAP ONLY.";
 					$system_id = $device->system_id;
 					$man_type = $device->man_type;
 					$this->m_oa_group->update_system_groups($device);

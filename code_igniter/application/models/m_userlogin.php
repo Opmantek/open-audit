@@ -22,7 +22,8 @@ class M_userlogin extends CI_Model {
 		$sql = "SELECT 	user_id, user_name, user_email, user_full_name, user_lang, user_theme, user_admin, user_password, user_sam   
 				FROM 	oa_user 
 				WHERE 	oa_user.user_name = ? AND 
-						oa_user.user_password = md5(?) 
+						oa_user.user_password = md5(?) AND 
+						oa_user.user_active = 'y' 
 				LIMIT 1";
 		$data = array($username, $password);
 		$query = $this->db->query($sql, $data);
@@ -42,7 +43,7 @@ class M_userlogin extends CI_Model {
 			$row = $query->row();
 			# if both above are true
 			if (($installed_mcrypt == 'y') AND ($row->config_value >= '20120530')) {
-				#echo "Mcrypt Installed and password field length > 100<br />\n";
+				# Mcrypt Installed and password field length > 100
 				#create and insert the updated password
 				$salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); //get 256 random bits in hex
 				$hash = hash("sha256", $salt . $password); //prepend the salt, then hash
@@ -93,12 +94,20 @@ class M_userlogin extends CI_Model {
 	}
 	
 	function get_user_details($username) {
-		$sql = "SELECT user_id, user_name, user_email, user_full_name, user_lang, user_theme, user_admin, user_password, user_sam FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
+		$sql = "SELECT user_id, user_name, user_email, user_full_name, user_lang, user_theme, user_admin, user_password, user_sam, user_active FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
 		$data = array($username);
 		$query = $this->db->query($sql, $data);
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			$data = array('username' => $row->user_name, 'logged_in' => TRUE, 'user_id' => $row->user_id, 'user_full_name' => $row->user_full_name, 'user_lang' => $row->user_lang, 'user_theme' => $row->user_theme, 'user_admin' => $row->user_admin, 'user_debug' => 'n' );
+			$data = array('username' => $row->user_name, 
+				'logged_in' => TRUE, 
+				'user_id' => $row->user_id, 
+				'user_full_name' => $row->user_full_name, 
+				'user_lang' => $row->user_lang, 
+				'user_theme' => $row->user_theme, 
+				'user_admin' => $row->user_admin, 
+				'user_debug' => 'n', 
+				'user_active' => $row->user_active );
 		}
 		return $data;
 	}

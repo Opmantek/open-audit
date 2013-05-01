@@ -138,11 +138,13 @@ if ($access_level > 7) {
 				<?php if ($key->man_type == 'system') { ?><p><label for="man_serial"><?php echo __('Serial')?>: </label><span id='man_serial' <?php echo $edit?>><?php echo print_something($key->man_serial)?></span></p><?php } ?>
 			</div>
 			<?php echo display_custom_field('system_details', $additional_fields_data, $edit); ?>
+
+	
 		</fieldset>
 	</form>
 	</div> <!-- end of div Summary -->
 
-
+			
 
 	<div id="view_summary_credentials" style="float: left; width: 100%;">
 	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
@@ -689,14 +691,35 @@ function display_custom_field($field_placement, $additional_fields, $edit) {
 	{
 		if ($field->field_placement == $field_placement)
 		{
-			$data_value = "";
+			$data_id = "field_" . $field->field_type;
+			$data_id = $field->$data_id;
 			$data_value = "field_" . $field->field_type;
 			$data_value = $field->$data_value;
-			
-			echo "<div style=\"float: left; width: 90%; \">\n";
-			echo "<label for=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" >" . __($field->field_name) . ": </label>";
-			echo   "<span id=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" " . $edit . ">" . print_something($data_value) . "</span><br />&nbsp;\n";
-			echo "</div>\n";
+
+			switch ($field->field_type) {
+				case 'varchar':
+					$data = $field->field_varchar;
+					echo "<div style=\"float: left; width: 90%; \">\n";
+					echo "<label for=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" >" . __($field->field_name) . ": </label>";
+					echo   "<span id=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" " . $edit . ">" . print_something($data_value) . "</span><br />&nbsp;\n";
+					echo "</div>\n";
+					break;
+
+/*				case 'bool':
+					echo "<div style=\"float: left; width: 90%; \">\n";
+					echo "<label for=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" >" . __($field->field_name) . ": </label>";
+					if ($field->field_varchar == 'true') {$checked = 'checked';} else {$checked = '';}
+					if ($edit > '') {$disabled = '';} else {$disabled = 'disabled';}
+					echo "	<input type=\"checkbox\" id=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" $checked $disabled />";
+					echo "</div>\n";
+					break;*/
+
+				
+				default:
+					# code...
+					break;
+			}
+
 		}
 	}
 }

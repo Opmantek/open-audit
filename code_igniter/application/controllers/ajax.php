@@ -222,13 +222,14 @@ class Ajax extends MY_Controller {
 					##echo "<p><label for='org_picture'>" . __('Picture') . ": </label><span id='org_picture'>" . $key->org_picture . "</span></p>\n";
 				}
 			}
-			if (mb_substr_count($this->data['field_name'], 'man_status') > 0) {
+			#if (mb_substr_count($this->data['field_name'], 'man_status') > 0) {
+				$details = new stdClass();
 				$details->system_id = $this->data['system_id'];
 				$this->load->model('m_system');
 				$details->type = $this->m_system->get_system_type($this->data['system_id']);
 				$this->load->model("m_oa_group");
 				$this->m_oa_group->update_system_groups($details);
-			}
+			#}
 		}
 	}
 

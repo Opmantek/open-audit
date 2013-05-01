@@ -224,7 +224,7 @@ class Admin_org extends MY_Controller {
 		$group->group_name = $org_name . " owned items";
 		$group->group_padded_name = '';
 		$group->group_description = $org_name . " owned items";
-		$group->group_icon = 'contact-new';
+		$group->group_icon = 'contact';
 		$group->group_category = 'owner';
 		$group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '" . $this->data['id'] . "' AND system.man_status = 'production'";
 		$group->group_parent = '';

@@ -39,14 +39,11 @@ class Admin_cli extends CI_Controller {
 		$this->load->library('encrypt');
 		$this->load->model("m_system");
 		$this->load->model("m_oa_group");
-
-		# read in the Nodes.nmis file
-		#$file_handle = fopen('/usr/local/nmis8/conf/Nodes.nmis', "r");
-		#$string = fread($file_handle, filesize('/usr/local/nmis8/conf/Nodes.nmis'));
-		
-		$file_handle = fopen($nodes_file, "r");
-		$string = fread($file_handle, filesize($nodes_file));
-
+/*
+		# before the actual nodes, import the locations
+		$locations_file = str_replace("Nodes.nmis", "Locations.nmis", $nodes_file);
+		$file_handle = fopen($locations_file, "r");
+		$string = fread($file_handle, filesize($locations_file));
 		$string = str_replace(PHP_EOL, " ", $string);
 		$string = str_replace("\r\n", " ", $string);
 		$string = str_replace("\n", " ", $string);
@@ -57,7 +54,61 @@ class Admin_cli extends CI_Controller {
 		$string = str_replace("'undef'", "''", $string);
 		$string = str_replace("undef", "''", $string);
 		$string = str_replace("'", "\"", $string);
+		$conf = json_decode($string, TRUE);		
+		switch (json_last_error()) {
+		  case JSON_ERROR_NONE:
+		    # no errors
+		  break;
+		  case JSON_ERROR_DEPTH:
+			echo "Error importing Nmis.nodes file<br />\n";
+			echo 'JSON_ERROR_DEPTH - Maximum stack depth exceeded<br />';
+			exit();
+		  break;
+		  case JSON_ERROR_STATE_MISMATCH:
+			echo "Error importing Nmis.nodes file<br />\n";
+			echo 'JSON_ERROR_STATE_MISMATCH - Underflow or the modes mismatch<br />';
+			exit();
+		  break;
+		  case JSON_ERROR_CTRL_CHAR:
+			echo "Error importing Nmis.nodes file<br />\n";
+			echo 'JSON_ERROR_CTRL_CHAR - Unexpected control character found<br />';
+			exit();
+		  break;
+		  case JSON_ERROR_SYNTAX:
+			echo "Error importing Nmis.nodes file<br />\n";
+			echo 'JSON_ERROR_SYNTAX - Syntax error, malformed JSON<br />';
+			exit();
+		  break;
+		  case JSON_ERROR_UTF8:
+			echo "Error importing Nmis.nodes file<br />\n";
+			echo 'JSON_ERROR_UTF8 - Malformed UTF-8 characters, possibly incorrectly encoded<br />';
+			exit();
+		  break;
+		  default:
+			echo "Error importing Nmis.nodes file<br />\n";
+			echo 'Unknown error<br />';
+			exit();
+		  break;
+		}
 
+		foreach ($conf as $location) {
+			$this->load->model("m_oa_location");
+		}	
+*/
+
+		# read in the Nodes.nmis file		
+		$file_handle = fopen($nodes_file, "r");
+		$string = fread($file_handle, filesize($nodes_file));
+		$string = str_replace(PHP_EOL, " ", $string);
+		$string = str_replace("\r\n", " ", $string);
+		$string = str_replace("\n", " ", $string);
+		$string = str_replace(chr(13), " ", $string);
+		$string = str_replace("%hash = (", "{", $string);
+		$string = str_replace(");", "}", $string);
+		$string = str_replace("=>", ":", $string);
+		$string = str_replace("'undef'", "''", $string);
+		$string = str_replace("undef", "''", $string);
+		$string = str_replace("'", "\"", $string);
 		$conf = json_decode($string, TRUE);		
 		switch (json_last_error()) {
 		  case JSON_ERROR_NONE:

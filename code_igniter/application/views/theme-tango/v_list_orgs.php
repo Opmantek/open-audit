@@ -22,16 +22,14 @@ if (count($query) > 1)
 		if (count($query) > 1)
 		{
 			foreach($query as $key):
-				if ($key->org_id > 0 ) {
-					$edit_pic = "<a href=\"edit_org/" . $key->org_id . "\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>"; 
-					$delete_pic = "<a href=\"delete_org/" . $key->org_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
-			 	} else {
-			 		$edit_pic = "";
-			 		$delete_pic = "";
-			 	}
+
+				$edit_pic = "<a href=\"edit_org/" . $key->org_id . "\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>"; 
+				$delete_pic = "<a href=\"delete_org/" . $key->org_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
+
 				if ($key->org_name == '') {
 					$key->org_name = '(none)';
 				}
+
 				if ($key->org_group_id > '0') {
 					$show_pic = "<a href=\"../main/list_devices/" . $key->org_group_id . "\"><img src='" . $image_path . "16_device.png' alt='' title='' width='16'/></a>";
 					$deactivate_pic = "<a href=\"delete_group/" . $key->org_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
@@ -41,11 +39,8 @@ if (count($query) > 1)
 					$deactivate_pic = '';
 					$activate_pic = "<a href=\"activate_group/" . $key->org_id . "\"><img src='" . $image_path . "16_true.png' alt='' title='' width='16'/></a>";
 				}
-				if ($key->org_id == 0 ) {
-					$deactivate_pic = "";
-					$activate_pic = "";
-				}
 				
+				if ($key->org_id > '0') {
 				?>
 			<tr>
 				<td align="center"><?php echo $key->total?></td>
@@ -58,6 +53,7 @@ if (count($query) > 1)
 				<td align="center"><?php echo $edit_pic?></td>
 				<td align="center"><?php echo $delete_pic?></td>
 			</tr>
+			<?php } ?>
 			<?php endforeach; ?>
 		<?php } else { ?>
 		<tr>

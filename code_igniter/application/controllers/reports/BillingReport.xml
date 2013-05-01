@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Billing Report</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT oa_org.org_name, system.system_id, system.hostname, date_format(system.last_seen, '%Y-%m-%d') as last_seen, system.man_manufacturer, system.man_model, system.man_serial, system.man_class, sys_sw_windows.windows_user_name, oa_location.location_name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_org on system.man_org_id = oa_org.org_id WHERE oa_group_sys.group_id = @group ]]></report_sql>
+		<report_sql><![CDATA[SELECT oa_org.org_name, system.system_id, system.hostname, date_format(system.last_seen, '%Y-%m-%d') as last_seen, system.man_manufacturer, system.man_model, system.man_serial, system.man_type, system.man_class, sys_sw_windows.windows_user_name, oa_location.location_name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_org on system.man_org_id = oa_org.org_id WHERE oa_group_sys.group_id = @group ]]></report_sql>
 		<report_display_sql></report_display_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
@@ -33,8 +33,8 @@
 		</column>
 		<column>
 			<column_order>2</column_order>
-			<column_name>Manufacturer</column_name>
-			<column_variable>man_manufacturer</column_variable>
+			<column_name>Type</column_name>
+			<column_variable>man_type</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -43,26 +43,6 @@
 		</column>
 		<column>
 			<column_order>3</column_order>
-			<column_name>Model</column_name>
-			<column_variable>man_model</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align></column_align>
-		</column>
-		<column>
-			<column_order>4</column_order>
-			<column_name>Serial</column_name>
-			<column_variable>man_serial</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align></column_align>
-		</column>
-		<column>
-			<column_order>5</column_order>
 			<column_name>Class</column_name>
 			<column_variable>man_class</column_variable>
 			<column_type>text</column_type>
@@ -72,7 +52,37 @@
 			<column_align></column_align>
 		</column>
 		<column>
+			<column_order>4</column_order>
+			<column_name>Manufacturer</column_name>
+			<column_variable>man_manufacturer</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>5</column_order>
+			<column_name>Model</column_name>
+			<column_variable>man_model</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
 			<column_order>6</column_order>
+			<column_name>Serial</column_name>
+			<column_variable>man_serial</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>7</column_order>
 			<column_name>User</column_name>
 			<column_variable>windows_user_name</column_variable>
 			<column_type>text</column_type>
@@ -82,7 +92,7 @@
 			<column_align></column_align>
 		</column>
 		<column>
-			<column_order>7</column_order>
+			<column_order>8</column_order>
 			<column_name>Location</column_name>
 			<column_variable>location_name</column_variable>
 			<column_type>text</column_type>
@@ -92,7 +102,7 @@
 			<column_align></column_align>
 		</column>
 		<column>
-			<column_order>8</column_order>
+			<column_order>9</column_order>
 			<column_name>Tags</column_name>
 			<column_variable>tag</column_variable>
 			<column_type>text</column_type>

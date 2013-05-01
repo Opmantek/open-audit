@@ -25,9 +25,23 @@ class Admin_user extends MY_Controller {
 		redirect('/');
 	}
 
+/*
 	function delete_user() {
 		$this->load->model("m_oa_user");
 		$this->data['query'] = $this->m_oa_user->delete_user($this->data['id']);
+		redirect('admin_user/list_users');
+	}
+*/
+
+	function deactivate_user() {
+		$this->load->model("m_oa_user");
+		$this->data['query'] = $this->m_oa_user->deactivate_user($this->data['id']);
+		redirect('admin_user/list_users');
+	}
+
+	function activate_user() {
+		$this->load->model("m_oa_user");
+		$this->data['query'] = $this->m_oa_user->activate_user($this->data['id']);
 		redirect('admin_user/list_users');
 	}
 
