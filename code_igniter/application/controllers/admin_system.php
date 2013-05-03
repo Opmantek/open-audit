@@ -475,6 +475,7 @@ class Admin_system extends MY_Controller {
 					}
 				}
 			}
+			unlink($target_path);
 			if (isset($this->data['error']) and $this->data['error'] > '') {
 				# there were errors with processing.
 				$this->data['query'] = $error_details;;
