@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <group>
 	<details>
-		<group_name>UnAssigned Systems</group_name>
+		<group_name>UnAssigned Devices</group_name>
 		<group_padded_name></group_padded_name>
 		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.man_org_id = '0' OR system.man_org_id = '') AND system.man_status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
@@ -12,7 +12,7 @@
 	<columns>
 		<column>
 			<column_order>1</column_order>
-			<column_name>Hostname</column_name>
+			<column_name>Name</column_name>
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>

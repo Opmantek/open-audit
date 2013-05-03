@@ -12,7 +12,7 @@
 	<columns>
 		<column>
 			<column_order>1</column_order>
-			<column_name>Hostname</column_name>
+			<column_name>Name</column_name>
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>

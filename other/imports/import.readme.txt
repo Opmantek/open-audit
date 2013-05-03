@@ -1,0 +1,1 @@
+Please read the documentation in the web appliacation at Help -> Importing.

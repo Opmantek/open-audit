@@ -22,9 +22,10 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='firewall'>Firewall</option>
 			<option value='game console'>Game Console</option>
 			<option value='ip phone'>IP Phone</option>
-			<option value='local printer'>Local Printer</option>
+			<!-- <option value='local printer'>Local Printer</option> -->
 			<option value='3g modem'>Mobile Modem</option>
 			<option value='network printer'>Network Printer</option>
+			<option value='phone'>Phone</option>
 			<option value='router'>Router</option>
 			<option value='sat phone'>Satellite Phone</option>
 			<option value='smart phone'>Smart Phone</option>
@@ -97,6 +98,7 @@ function select_device()
 		case "3g modem":
 		case "cell phone":
 		case "sat phone":
+		case "phone":
 			if (device_type == "3g modem") { icon = "3g_modem"; }
 			if (device_type == "cell phone") { icon = "cell_phone"; }
 			if (device_type == "sat phone") { icon = "sat_phone"; }

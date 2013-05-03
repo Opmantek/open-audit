@@ -21,7 +21,7 @@ class M_oa_admin_database extends MY_Model {
 	}
 
 	function statistics() {
-		$sql = "select os_family, count(*) as count from system group by os_family";
+		$sql = "SELECT type, os_family, COUNT(*) as count FROM system WHERE man_status = 'production' GROUP BY type, os_family ";
 		$query = $this->db->query($sql);
 		$result = $query->result();
 		return ($result);

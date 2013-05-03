@@ -61,6 +61,7 @@ class M_printer extends MY_Model {
 		if ($input->printer_connection_status == 'OK') {
 			# only put printers that actually exist in the DB
 			$exist_type = '';
+
 			# check for a local printer
 			$sql = "SELECT system_id FROM system WHERE man_type = 'printer' AND linked_sys = ? AND (timestamp = ? OR timestamp = ?) AND system_key = ?";
 			$data = array("$details->system_id", "$details->original_timestamp", "$details->timestamp", "$input->system_key");
@@ -73,7 +74,7 @@ class M_printer extends MY_Model {
 			
 			if ($exist_type == '') {
 				# if the above is empty, check for an network printer
-				$sql = "SELECT system_id FROM system WHERE man_type = 'printer' AND man_ip_address = ? AND man_ip_address <> '000.000.000.000' ";
+				$sql = "SELECT system_id FROM system WHERE (man_type = 'printer' or type = 'network printer') AND man_ip_address = ? AND man_ip_address <> '000.000.000.000' ";
 				$data = array($this->ip_address_to_db("$input->man_ip_address"));
 				$query = $this->db->query($sql, $data);
 				if ($query->num_rows() > 0) { 
@@ -92,6 +93,8 @@ class M_printer extends MY_Model {
 			$snmp_description = "";
 			
 			if ($input->man_ip_address > '') {
+				$type = 'network printer';
+				$linked_sys = '';
 				# Network printer, should try SNMP
 				# Check if SNMP is enabled in PHP
 				if (extension_loaded('snmp')) { 
@@ -128,50 +131,46 @@ class M_printer extends MY_Model {
 							$snmp_manufacturer = str_replace("\"", "", str_replace("STRING: ", "", $hex[1]));
 						}
 					}
-					
+					if ($snmp_manufacturer > "") {
+						if (stripos($snmp_manufacturer, "Hewlett") !== FALSE) {
+							$snmp_manufacturer = "Hewlett Packard";
+						}
+						$snmp_manufacturer = ucfirst($snmp_manufacturer);
+						$input->manufacturer = $snmp_manufacturer;
+					}
+
 					$snmp_model = @snmp2_get($input->man_ip_address, "public", "1.3.6.1.2.1.25.3.2.1.3.1");
 					$snmp_model = str_replace("\"", "", str_replace("STRING: ", "", $snmp_model));
-					
+					if ($snmp_model > "") { $input->model = $snmp_model; }
+
 					$snmp_description = @snmp2_get($input->man_ip_address, "public", "1.3.6.1.2.1.1.1.0");
 					$snmp_description = str_replace("\"", "", str_replace("STRING: ", "", $snmp_description));
 				} else {
 					# SNMP extension not loaded
 				}
-			}
-			
-			if ($snmp_manufacturer > "") {
-				if (stripos($snmp_manufacturer, "Hewlett") !== FALSE) {
-					$snmp_manufacturer = "Hewlett Packard";
-				}
-				$snmp_manufacturer = ucfirst($snmp_manufacturer);
-				$input->manufacturer = $snmp_manufacturer;
-			}
-			
-			if ($snmp_model > "") {
-				$input->model = $snmp_model;
+			} else {
+				$type = 'printer';
+				$linked_sys = $details->system_id;
 			}
 
 			if ($exist_type > '') {
 				# update a printer
-				$sql = "UPDATE system SET timestamp = ?, serial = ?, man_serial = ? WHERE system_id = ?";
-				$data = array("$details->timestamp", "$input->serial", "$input->serial", "$system_id");
+				$sql = "UPDATE system SET timestamp = ?, serial = ?, type = ?, man_type = ? WHERE system_id = ?";
+				$data = array("$details->timestamp", "$input->serial", "$type", "$type", "$system_id");
 				$query = $this->db->query($sql, $data);
-			}
-			
-			if ($exist_type == '' AND $input->man_ip_address == '') {
-				# local printer submitted - use a linked sys
-				$linked_sys = $details->system_id;
-			}
-			
-			if ($exist_type == '' AND $input->man_ip_address > '') {
-				# network printer submitted - no linked sys
-				$linked_sys = '';
 			}
 			
 			if ($exist_type == '') {
 				# actually insert a new printer
-				$sql = "INSERT INTO system (system_key, uuid, hostname, description, type, icon, linked_sys, serial, man_serial, model, manufacturer, printer_port_name, printer_shared, printer_shared_name, printer_color, printer_duplex, man_status, man_environment, man_description, man_type, man_ip_address, man_model, man_manufacturer, man_icon, first_timestamp, timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-				$data = array( "$input->system_key", "$input->uuid", "$input->hostname", "$input->description", "printer", "printer", "$linked_sys", "$input->serial", "$input->serial", "$input->model", "$input->manufacturer", "$input->printer_port_name", "$input->printer_shared", "$input->printer_shared_name", "$input->printer_color", "$input->printer_duplex", "production", "production", "$input->description", "printer", $this->ip_address_to_db($input->man_ip_address), "$input->model", "$input->manufacturer", "printer", "$details->timestamp", "$details->timestamp");
+				$sql = "INSERT INTO system (system_key, uuid, hostname, description, type, icon, linked_sys, serial, 
+					man_serial, model, manufacturer, printer_port_name, printer_shared, printer_shared_name, 
+					printer_color, printer_duplex, man_status, man_environment, man_description, man_type, 
+					man_ip_address, man_model, man_manufacturer, man_icon, first_timestamp, timestamp ) 
+					VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+				$data = array( "$input->system_key", "$input->uuid", "$input->hostname", "$input->description", "$type", "printer", "$linked_sys", "$input->serial", 
+					"$input->serial", "$input->model", "$input->manufacturer", "$input->printer_port_name", "$input->printer_shared", "$input->printer_shared_name", 
+					"$input->printer_color", "$input->printer_duplex", "production", "production", "$input->description", "$type", 
+					$this->ip_address_to_db($input->man_ip_address), "$input->model", "$input->manufacturer", "printer", "$details->timestamp", "$details->timestamp");
 				$query = $this->db->query($sql, $data);
 			}
 		}

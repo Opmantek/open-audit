@@ -293,24 +293,6 @@ class System extends CI_Controller {
 			error_log($error_output);
 			exit;
 		}
-
-		// new code to account for a system detected by nmap that
-		// may not have a traditional system_key / system_uuid
-		// we will check to see if any reported MAC Addresses are already
-		// in the sys_hw_network_card table.
-		// If they are, grab the system id
-		// $mac_address_array = array();
-		// foreach ($xml->children() as $child) {
-		// 	if ($child->getName() == 'network_cards') {  
-		// 		foreach($xml->network_cards->network_card as $input) { 
-		// 			$mac_address_array .= $input->net_mac_address;
-		// 		}
-		// 	}
-		// }
-		// we now have an array of all MAC addresses in this PC
-		// we will send this to process_sys
-		
-
 		
 		foreach ($xml->children() as $child) {
 			if ($child->getName() == 'sys')				{ $details = ($this->m_system->process_sys($xml->sys)); $this->m_sys_man_audits->insert_audit($details);}
@@ -351,8 +333,6 @@ class System extends CI_Controller {
 		if ($details->original_timestamp == '') {
 			// We have a new PC, so generate an alert
 			$this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', $details->timestamp);
-			// And also take an educated guess as to whether this PC is being used as a server
-			$this->m_system->is_server($details);
 			// And also set it's IP Address in system.man_ip_address
 			$this->m_ip_address->set_initial_address($details);
 		}	

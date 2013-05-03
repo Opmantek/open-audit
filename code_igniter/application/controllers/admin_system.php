@@ -33,7 +33,8 @@ class Admin_system extends MY_Controller {
 			$result = array();
 			foreach ($this->data['fields'] as $field)
 			{
-				if ((mb_strpos($field, 'man_') !== false) and (mb_strpos($field, 'man_acting_server') === false) and (mb_strpos($field, 'man_type') === false)) {
+				if ((mb_strpos($field, 'man_') !== false) and 
+					(mb_strpos($field, 'man_type') === false)) {
 					$result[] = $field;
 				}
 			}
@@ -183,7 +184,9 @@ class Admin_system extends MY_Controller {
 			if (($details->man_manufacturer == '') or ($details->man_model == '') or ($details->man_serial == '')) {
 				$this->data['error_message'] = 'Please complete all required attributes.';
 			}
+			
 			if (isset($details->man_ip_address)) { $details->man_ip_address = $this->ip_address_to_db($details->man_ip_address); }
+			
 			if ($details->man_type == 'local printer') {
 				if ($details->hostname > '') {
 					if ($details->linked_sys = $this->m_system->get_system_id_from_hostname($details->hostname)) {
@@ -258,12 +261,13 @@ class Admin_system extends MY_Controller {
 	function add_systems() {
 		if ( !isset($_POST['submit_xml']) AND !isset($_POST['submit_file']) ) {
 			# nothing submitted - display the form
-			$this->data['heading'] = 'Add Systems';
+			$this->data['heading'] = 'Add Devices';
 			$this->data['include'] = 'v_add_systems'; 
 			$this->load->view('v_template', $this->data);
 		} 
 		if ( isset($_POST['submit_file']) ) {
-			# we have an uploaded file - store and process			
+			# we have an uploaded file - store and process	
+			$import_timestamp = date("Y-m-d H:i:s");
 			$target_path = BASEPATH . "../application/uploads/" . basename( $_FILES['upload_file']['name']);
 			if(move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path)) {
 				# echo "The file ".  basename( $_FILES['upload_file']['name']). " has been uploaded.<br />\n";
@@ -281,6 +285,9 @@ class Admin_system extends MY_Controller {
 			$this->load->model("m_oa_location");
 			$objWorksheet = $objPHPExcel->getActiveSheet();
 			$count = 0;
+			$error = '';
+			$this->data['error'] = '';
+			$error_details = array();
 			foreach ($objWorksheet->getRowIterator() as $row) {
 				$count++;
 				$cellIterator = $row->getCellIterator();
@@ -299,6 +306,7 @@ class Admin_system extends MY_Controller {
 						$details[$attributes[$cell_number]] = $cell->getValue();
 						$cell_number++;
 					}
+
 					if (isset($details['org_name'])) {
 						# we have an org name - need to find it's ID
 						if($org_id = $this->m_oa_org->select_org($details['org_name'])) {
@@ -318,204 +326,165 @@ class Admin_system extends MY_Controller {
 							# no match
 						}
 					}
-					unset($details['location_name']);
+					unset($details['location_name']);					
+
+					# default to a 'computer' type if none provided
+					if ( (!isset($details['type'])) OR ($details['type'] == '') ) { $details['type'] = 'computer'; }
 					
-					if (isset($details['man_ip_address'])) {
-						$details['man_ip_address'] = $this->ip_address_to_db($details['man_ip_address']);
+					# ensure we have something not null for all the below
+					if (!isset($details['description'])) { $details['description'] = ''; }
+					if (!isset($details['domain'])) { $details['domain'] = ''; }
+					if (!isset($details['form_factor'])) { $details['form_factor'] = ''; }
+					if (!isset($details['fqdn'])) { $details['fqdn'] = ''; }
+					if (!isset($details['icon']) or $details['icon'] == '') { $details['icon'] = str_replace(" ", "_", $details['type']); }
+					if (!isset($details['hostname'])) { $details['hostname'] = ''; }
+					if (!isset($details['last_seen'])) { $details['last_seen'] = $import_timestamp; }
+					if (!isset($details['manufacturer'])) { $details['manufacturer'] = ''; }
+					if (!isset($details['model'])) { $details['model'] = ''; }
+					if (!isset($details['os_family'])) { $details['os_family'] = ''; }
+					if (!isset($details['os_group'])) { $details['os_group'] = ''; }
+					if (!isset($details['os_name'])) { $details['os_name'] = ''; }
+					if (!isset($details['os_version'])) { $details['os_version'] = ''; }
+					if (!isset($details['man_status'])) { $details['man_status'] = 'production'; }
+					if (!isset($details['man_environment'])) { $details['man_environment'] = 'production'; }
+					if (!isset($details['serial'])) { $details['serial'] = ''; }
+					if (!isset($details['type']) or $details['type'] == '') { $details['type'] = 'unknown'; }
+					if (!isset($details['uuid'])) { $details['uuid'] = ''; }
+
+					# account for any "man_" items
+					if (!isset($details['man_description'])) { $details['man_description'] = $details['description']; }
+					if (!isset($details['man_form_factor'])) { $details['man_form_factor'] = $details['form_factor']; }
+					if (!isset($details['man_icon'])) { $details['man_icon'] = $details['icon']; }
+					if (!isset($details['man_manufacturer'])) { $details['man_manufacturer'] = $details['manufacturer']; }
+					if (!isset($details['man_ip_address'])) { $details['man_ip_address'] = ''; }
+					if (!isset($details['man_model'])) { $details['man_model'] = $details['model']; }
+					if (!isset($details['man_os_family'])) { $details['man_os_family'] = $details['os_family']; }
+					if (!isset($details['man_os_group'])) { $details['man_os_group'] = $details['os_group']; }
+					if (!isset($details['man_os_name'])) { $details['man_os_name'] = $details['os_name']; }
+					if (!isset($details['man_status'])) { $details['man_status'] = $details['status']; }
+					if (!isset($details['man_serial'])) { $details['man_serial'] = $details['serial']; }
+					if (!isset($details['man_type'])) { $details['man_type'] = $details['type']; }
+
+
+					$details['last_seen_by'] = "spreadsheet";
+
+
+					# setting the system_key - try the uuid + hostname
+					if (isset($details['uuid']) and $details['uuid'] != '' and 
+						isset($details['hostname']) and $details['hostname'] != '' and 
+						!isset($details['system_key'])) {
+						$details['system_key'] = $details['uuid'] . "-" . $details['hostname'];
+						$this->data['error'] = "uuid + hostname<br />\n";
+					}
+					# setting the system_key - try for a FQDN
+					if (isset($details['fqdn']) and $details['fqdn'] != '' and !isset($details['system_key'])) {
+						$details['system_key'] = $details['fqdn'];
+					}
+					# setting the system_key - try for a hostname and domain to make a FQDN
+					if (isset($details['hostname']) and $details['hostname'] != '' and 
+						isset($details['domain'])   and $details['domain'] != '' and 
+						!isset($details['system_key'])) {
+						$details['system_key'] = $details['hostname'] . "." . $details['domain'];
+					}
+					# setting the system_key - try for a serial
+					if (isset($details['serial']) and $details['serial'] != '' and !isset($details['system_key'])) {
+						$details['system_key'] = $details['serial'];
+					}
+					# setting the system_key - we don't have the required info to create a unique key
+					if (!isset($details['system_key']) or $details['system_key'] == '') {
+						$error .= "Error on row #" . $count . ". Insufficient details to create system key. Please supply (in order of preference) fqdn, hostname and domain, ip address or (unique) serial.<br />";
+						$error_details[] = $details;
 					}
 
-					if ( !isset($details['hostname']) OR $details['hostname'] == '' ) {
-						# we dont have a hostname, therefore substitute the IP Address
-						if ( isset($details['man_ip_address']) ) {
-							$details['hostname'] = $details['man_ip_address'];
-						} else {
-							$details['hostname'] = 'unknown';
-						}
+					# make sure we have a name (a hostname)
+					if ((!isset($details['hostname']) or $details['hostname'] == '') and isset($details['man_ip_address'])) {
+						$details['hostname'] = $details['man_ip_address'];
 					}
+					if ((!isset($details['hostname']) or $details['hostname'] == '') and isset($details['description'])) {
+						$details['hostname'] = $details['description'];
+					}
+					if ((!isset($details['hostname']) or $details['hostname'] == '') and isset($details['serial'])) {
+						$details['hostname'] = $details['serial'];
+					}
+					if (!isset($details['hostname']) or $details['hostname'] == '') {
+						$error .= "Error on row #" . $count . ". Insufficient details to create name. Please supply wither hostname or IP Address for a networked device, a description or a serial for a non-networks device.<br />";
+						$error_details[] = $details;
+					}
+
+					$details['hostname'] = preg_replace("/[^a-z0-9-.]+/i", "", $details['hostname']);
 					$details['hostname'] = mb_strtolower($details['hostname']);
+					if (isset($details['man_ip_address'])) { $details['man_ip_address'] = $this->ip_address_to_db($details['man_ip_address']); }
 
-					if ( (!isset($details['type'])) OR ($details['type'] == '') ) {
-						$details['type'] = 'system';
-					}
+					# try to determine if this device is already in the database
+					if (!isset($details['system_id']) or $details['system_id'] == '') {
+						$details['system_id'] = $this->m_system->find_system($details);
+					} 
 					
-					if (!isset($details['icon'])) {
-						$details['icon'] = '';
-					}
-
-					if (isset($details['uuid'])) {
-						#$details['system_key'] = $details['uuid'] . '-' . $details['hostname'];
-					} else {
-						$details['uuid'] = '';
-						#$details['system_key'] = $details['hostname'];
-					}
-
-					if (!isset($details['description'])) {
-						$details['description'] = '';
-					}
-
-					if (!isset($details['os_group'])) {
-						$details['os_group'] = '';
-					}
-
-					if (!isset($details['os_family'])) {
-						$details['os_family'] = '';
-					}
-
-					if (!isset($details['os_name'])) {
-						$details['os_name'] = '';
-					}
-
-					if (!isset($details['os_version'])) {
-						$details['os_version'] = '';
-					}
-
-					if (!isset($details['serial'])) {
-						$details['serial'] = '';
-					}
-
-					if (!isset($details['model'])) {
-						$details['model'] = '';
-					}
-
-					if (!isset($details['manufacturer'])) {
-						$details['manufacturer'] = '';
-					}
-
-					if (!isset($details['form_factor'])) {
-						$details['form_factor'] = '';
-					}
-
-					if (!isset($details['man_os_group'])) {
-						$details['man_os_group'] = $details['os_group'];
-					}
-
-					if (!isset($details['man_os_family'])) {
-						$details['man_os_family'] = $details['os_family'];
-					}
-
-					if (!isset($details['man_os_name'])) {
-						$details['man_os_name'] = $details['os_name'];
-					}
-
-					if (!isset($details['man_status'])) {
-						$details['man_status'] = 'production';
-					}
-
-					if (!isset($details['man_description'])) {
-						$details['man_description'] = $details['description'];
-					}
-
-					if (!isset($details['man_serial'])) {
-						$details['man_serial'] = $details['serial'];
-					}
-
-					if (!isset($details['man_model'])) {
-						$details['man_model'] = $details['model'];
-					}
-
-					if (!isset($details['man_manufacturer'])) {
-						$details['man_manufacturer'] = $details['manufacturer'];
-					}
-
-					if (!isset($details['man_form_factor'])) {
-						$details['man_form_factor'] = $details['form_factor'];
-					}
-
-					if (!isset($details['man_icon'])) {
-						$details['man_icon'] = $details['icon'];
-					}
-
-					if (!isset($details['system_id'])) {
-						$system_id = $this->m_system->get_system_id_from_hostname($details['hostname']);
-					} else {
-						$system_id = $details['system_id'];
-					}
-
 					
-					if ($system_id > '') {
-						# we need to update an existing system
-						unset($details['timestamp']);
-						$sql = "UPDATE system SET ";
-						foreach ($details as $detail=>$value) {
-							if ($value != '') {
-								$sql .= $detail . " = '" . mysql_real_escape_string($value) . "', "; 
+
+
+
+					if (!$error > '') {
+						if ($details['system_id'] > '') {
+							# we need to update an existing system
+							unset($details['timestamp']);
+							$sql = "UPDATE system SET ";
+							foreach ($details as $detail=>$value) {
+								if ($value != '') {
+									$sql .= $detail . " = '" . mysql_real_escape_string($value) . "', "; 
+								}
 							}
+							$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
+							$sql .= " WHERE system_id = '" . $details['system_id'] . "'";
+							$query = $this->db->query($sql);
+						} else {
+							# this is a new system (we don't have a hostname match)
+							$details['timestamp'] = date('Y-m-d H:i:s');
+							$details['first_timestamp'] = $details['timestamp'];
+							$sql = "INSERT INTO system ( ";
+							foreach ($details as $detail=>$value) {
+								if ($detail > '') {
+									$sql .= $detail . ", "; 
+								}
+							}
+							$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
+							$sql .= " ) VALUES ( ";
+							foreach ($details as $detail=>$value) {
+								if ($detail > '') {
+									$sql .= "'" . mysql_real_escape_string(str_replace('"', '', $value)) . "', "; 
+								}
+							}
+							$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
+							$sql .= ")";
+							$query = $this->db->query($sql);
+							$details['system_id'] = $this->db->insert_id();
 						}
-						$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-						$sql .= " WHERE system_id = '" . $system_id . "'";
-						# run the query !!!
-						#echo $sql . "<br /><br />\n";
-						$query = $this->db->query($sql);
-						$details['system_id'] = $system_id;
+						// convert the $details array to an object
+						if (!isset($details['timestamp'])){ $details['timestamp'] = date('Y-m-d H:i:s'); }
+						$details_object = (object) $details;
+						// Insert an entry in to the audit log
+						$this->load->model("m_sys_man_audits");
+						$this->m_sys_man_audits->insert_audit($details_object);
+						// Finally, update 'tags'
+						$this->load->model("m_oa_group");
+						$this->m_oa_group->update_system_groups($details_object);
+						unset($details);
 					} else {
-						# this is a new system (we don't have a hostname match)
-						$details['timestamp'] = date('Y-m-d H:i:s');
-						$details['first_timestamp'] = $details['timestamp'];
-						$sql = "INSERT INTO system ( ";
-						foreach ($details as $detail=>$value) {
-							$sql .= $detail . ", "; 
-						}
-						$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-						$sql .= " ) VALUES ( ";
-						foreach ($details as $detail=>$value) {
-							$sql .= "'" . mysql_real_escape_string(str_replace('"', '', $value)) . "', "; 
-						}
-						$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-						$sql .= ")";
-						# run the query !!!
-						#echo $sql . "<br /><br />\n";
-						$query = $this->db->query($sql);
-						$details['system_id'] = $this->db->insert_id();
+						$this->data['error'] .= $error;
+						$error = '';
 					}
-					// convert the $details array to an object
-					if (!isset($details['timestamp'])){ $details['timestamp'] = date('Y-m-d H:i:s'); }
-					$details_object = (object) $details;
-					// Insert an entry in to the audit log
-					$this->load->model("m_sys_man_audits");
-					$this->m_sys_man_audits->insert_audit($details_object);
-					// Finally, update 'tags'
-					$this->load->model("m_oa_group");
-					$this->m_oa_group->update_system_groups($details_object);
-					unset($details);
 				}
 			}
-			redirect('main/index');
-		}
-		if ( isset($_POST['submit_xml']) AND isset($_POST['form_systemXML']) AND $_POST['form_systemXML'] > '') {
-			# we have XML text - process
-			echo "XML processing<br />\n";
-			$this->load->helper('xml');
-			$this->load->model("m_oa_location");
-			$xml = new SimpleXMLElement(utf8_encode(str_replace('&', '&amp;', $_POST['form_systemXML'])));
-			foreach ($xml->children() as $child) {
-				if ($location_id = $this->m_oa_location->get_location_id($child->location_name)) {
-					# we need to update an existing location
-					$sql = "UPDATE oa_location SET ";
-					foreach ($child->children() as $detail) {
-						$sql .= $detail->getName() . " = '" . $detail . "', "; 
-					}
-					$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-					$sql .= " WHERE location_name = '" . $child->location_name . "'";
-				} else {
-					# this is a new location (we don't have a name match)
-					$sql = "INSERT INTO oa_location ( ";
-					foreach ($child->children() as $detail) {
-						$sql .= $detail->getName() . ", "; 
-					}
-					$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-					$sql .= " ) VALUES ( ";
-					foreach ($child->children() as $detail) {
-						$sql .= "'" . $detail . "', "; 
-					}
-					$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-					$sql .= ")";
-				}
-				if ($child->location_name != '') { 
-					# run the query !!!
-					$query = $this->db->query($sql);
-				} else { 
-					echo "no location name provided"; 
-				}
+			if (isset($this->data['error']) and $this->data['error'] > '') {
+				# there were errors with processing.
+				$this->data['query'] = $error_details;;
+				$this->data['heading'] = 'Error'; 
+				$this->data['include'] = 'v_error'; 
+				$this->data['export_report'] = 'y';
+				$this->data['group_id'] = '0';
+				$this->load->view('v_template', $this->data);
+			} else {
+				redirect('main/index');
 			}
 		}
 	}

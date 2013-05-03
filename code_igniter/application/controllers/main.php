@@ -109,7 +109,6 @@ class Main extends MY_Controller {
 			}
 		}
 		echo "<pre>\n";
-
 		# create the SNMP credentials
 		if (($_POST['snmp_community'] > '') and ($_POST['snmp_version'] > '')) {
 			foreach ($data['systems'] as $system) {
@@ -124,8 +123,6 @@ class Main extends MY_Controller {
 				}
 			}
 		}
-
-
 		foreach ($_POST as $field_name => $field_data) {
 			# input all the manual fields 
 			if ( (mb_strpos($field_name, 'man_') !== false) && ($field_data != '') ){
@@ -134,7 +131,6 @@ class Main extends MY_Controller {
 				}
 			}
 		}
-
 		foreach ($data['systems'] as $system) {
 			$details->system_id = $system[1];
 			$details->type = 'computer';
@@ -228,6 +224,7 @@ class Main extends MY_Controller {
 	}
 
 	function search() {
+		# todo - for completeness we should check if user is admin and if not, check is search is allowed in confg variable
 		if ($this->data['id'] == '') {
 			redirect('main/list_groups/');
 		}
@@ -296,34 +293,38 @@ class Main extends MY_Controller {
 		$this->load->view('v_template', $this->data);
 	}
 
-
-
-	function about() {
+	function help_about() {
 		$this->data['heading'] = 'About Open-AudIT v2.0'; 
-		$this->data['include'] = 'v_about'; 
+		$this->data['include'] = 'v_help_about'; 
 		$this->data['export_report'] = 'n';
 		$this->load->view('v_template', $this->data);
 	}
 
-	function statistics() {
+	function help_statistics() {
 		# need to check if being called from localhost.
 		$this->load->model("m_oa_admin_database");
 		$this->data['stats'] = $this->m_oa_admin_database->statistics();
 		$this->data['heading'] = 'Statistics'; 
-		$this->data['include'] = 'v_statistics'; 
+		$this->data['include'] = 'v_help_statistics'; 
 		$this->data['export_report'] = 'n';
 		$this->load->view('v_template', $this->data);
 	}
 
-	function faq() {
+	function help_faq() {
 		$this->data['heading'] = 'Frequently Asked Questions'; 
-		$this->data['include'] = 'v_faq'; 
+		$this->data['include'] = 'v_help_faq'; 
 		$this->load->view('v_template', $this->data);
 	}
 
-	function how_do_i() {
+	function help_how_do_i() {
 		$this->data['heading'] = 'How Do I?'; 
-		$this->data['include'] = 'v_how_do_i'; 
+		$this->data['include'] = 'v_help_how_do_i'; 
+		$this->load->view('v_template', $this->data);
+	}
+
+	function help_importing() {
+		$this->data['heading'] = 'Importing Devices'; 
+		$this->data['include'] = 'v_help_importing'; 
 		$this->load->view('v_template', $this->data);
 	}
 
@@ -446,6 +447,7 @@ class Main extends MY_Controller {
 			// not a valid system (system_id, hostname or system_key)
 			redirect('main');
 		}
+		$this->load->model("m_oa_general");
 		$this->load->model("m_additional_fields");
 		$this->load->model("m_alerts");
 		$this->load->model("m_attachment");
@@ -516,10 +518,12 @@ class Main extends MY_Controller {
 		$this->data['route'] = $this->m_route->get_system_route($this->data['id']);
 		$this->data['scsi_controller'] = $this->m_scsi_controller->get_system_scsi_controller($this->data['id']);
 		$this->data['service'] = $this->m_service->get_system_service($this->data['id']);
-		$this->data['share'] = $this->m_share->get_system_share($this->data['id']);
+		#$this->data['share'] = $this->m_share->get_system_share($this->data['id']);
+		$this->data['share'] = $this->m_oa_general->get_system_attribute('sys_sw_share', '*', $this->data['id']);
 		$this->data['software'] = $this->m_software->get_system_software($this->data['id'], 0);
 		$this->data['sound'] = $this->m_sound->get_system_sound($this->data['id']);
-		$this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
+		#$this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
+		$this->data['system'] = $this->m_oa_general->get_attribute('system', '*', $this->data['id']);
 		$this->data['system_group'] = $this->m_group->get_system_group($this->data['id']);
 		$this->data['system_id'] = $this->data['id'];
 		$this->data['system_location'] = $this->m_oa_location->get_system_location($this->data['id']);

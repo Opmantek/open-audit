@@ -25,6 +25,11 @@ class Admin extends MY_Controller {
 		redirect('/');
 	}
 
+	function test() {
+		$s = 'open-audit\' is a 1234 :: ok';
+		echo preg_replace("/[^a-z0-9-]+/i", "", $s);
+	}
+
 	function view_log(){
 		$lines = @intval($this->uri->segment(3,0));
 		if ($lines < 1) { $lines = 25; }
@@ -474,7 +479,6 @@ class Admin extends MY_Controller {
 				if (!isset($details['man_os_family'])){ $details['man_os_family'] = $details['os_family']; }
 				if (!isset($details['man_os_name'])){ $details['man_os_name'] = $details['os_name']; }
 				if (!isset($details['man_domain'])){ $details['man_domain'] = $details['domain']; }
-				if (!isset($details['man_acting_server'])){ $details['man_acting_server'] = 'no'; }
 				if (!isset($details['man_status'])){ $details['man_status'] = 'production'; }
 				if (!isset($details['man_environment'])){ $details['man_environment'] = 'production'; }
 				if (!isset($details['man_criticality'])){ $details['man_criticality'] = 'critical'; }
@@ -1790,11 +1794,19 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "ALTER TABLE oa_location ADD location_geotag varchar(200) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "ALTER TABLE oa_user ADD user_active varchar(1) NOT NULL default 'y'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
 			$sql = "UPDATE oa_user SET user_active = 'y'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system DROP man_acting_server";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 

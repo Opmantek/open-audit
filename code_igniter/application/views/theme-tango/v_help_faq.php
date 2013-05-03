@@ -16,8 +16,7 @@ $sortcolumn = 2;
 Each system (computer, network device, printer, et al) has an entry in the "system" table.<br />
 Each system (from the "system" table) has a "system_id" column.<br />
 This value is unique - it's an auto incrementing id.<br />
-A system is determined to be unique by a combination of UUID + full system name (including domain).<br />
-For network devices, a unique identifer is still to be determined (probably use a MAC Address for network items).<br />
+A system is determined to be unique by a the table below.<br />
 <br />
 A system is audited and the result submitted to the server.<br />
 The first table processed is the "system" table.<br />
@@ -31,7 +30,7 @@ So, for an example - "hard_drive".<br />
 The "system_id" is retrieved, along with the timestamp of the previous audit submission and the "status" column.<br />
 For each entry in the hard_drive audit result, the database is queried.<br />
 It checks for hard drive model, serial, index and size.<br />
-These values vary according to the item being processed - see the relevent model PHP pages.<br />
+These values vary according to the item being processed - see the relevent model PHP pages (in code_igniter/application/models/).<br />
 If it gets a match on the above values, combined with the system_id, the current timestamp OR the previous timestamp, and a status of "production", then an existing entry exists for this piece of equipment.<br />
 In the case of hard drives, it simply updates the timestamp to reflect the current audit timestamp.<br />
 If it does not get a match, it does an insert of the relevant details.<br />
@@ -43,8 +42,62 @@ We can determine if something is not currently installed, but previously was - t
 We can determine the last time we detected an item - the timestamp on the item, when the timestamp is less than the current system timestamp.<br />
 At any given point, we can determine what was on a system - by using the oa_audit_log table and selecting the relevant components based on timestamps.<br />
 <br />
-<br />
 So, that's how we determine what's on or has been on a system.<br />
+<br /><b><i>How do we create a system key?</i></b><br />
+The order of creating a key to define a device as unique is below. When importing you MUST have one of the following (in order of preference): fqdn (which is the hostname and domain columns seperately - PHP will combine them), the IP Address or the Serial Number.<br />
+If a computer is audited with an audit script, it will use a concatenation of the UUID and the hostname.<br />
+If a computer is audited via Active Directory, it will use the FQDN in preference but if that is not available it will use the IP Address.<br />
+Where possible, the first option will be chosen and where possible on subsequent audits, will be changed to the first option.<br />
+<table cellspacing="1" class="tablesorter" width="100%">
+	<tr>
+		<td></td><td><b>computer</b></td><td><b>network printer</b></td><td><b>local printer</b></td><td><b>network device</b></td><td><b>non-network device</b></td>
+	</tr>
+	<tr>
+		<td><b>audit script</b></td><td>uuid + hostname</td><td>fqdn, ip address</td><td>hostname + deviceID</td><td>-</td><td>-</td>
+	</tr>
+	<tr>
+		<td><b>active directory</b></td><td>fqdn, ip address</td><td>fqdn, ip address</td><td>-</td><td>-</td><td>-</td>
+	</tr>
+	<tr>
+		<td><b>nmap</b></td><td>fqdn, ip address</td><td>fqdn, ip address</td><td>-</td><td>fqdn, ip address</td><td>-</td>
+	</tr>
+	<tr>
+		<td><b>snmp</b></td><td>fqdn, ip address, serial</td><td>fqdn, ip address, serial</td><td>-</td><td>fqdn, ip address, serial</td><td>-</td>
+	</tr>
+	<tr>
+		<td><b>spreadsheet</b></td><td>fqdn, ip address, serial</td><td>fqdn, ip address, serial</td><td>-</td><td>fqdn, ip address, serial</td><td>serial</td>
+	</tr>
+	<tr>
+		<td><b>html form</b></td><td>fqdn, ip address, serial</td><td>fqdn, ip address, serial</td><td>-</td><td>fqdn, ip address, serial</td><td>serial</td>
+	</tr>
+</table>
+<b><i>How do we match a system key?</i></b><br />
+The order of preference to match one system against another is as follows:<br />
+Obviously if we have the system_id, we simply match on that first. <br />
+If we don't have the system_id, in the model m_system.php is a function called find_system. This will attempt to:<br />
+<ol>
+	<li>Create a system key using UUID &amp; hostname if possible and match</li>
+	<li>Create a system key using the fqdn if it exists and match</li>
+	<li>Create a system key using the hostname concatenated with the domain (to make a fqdn) and match</li>
+	<li>Create a system key using the ip address and match</li>
+	<li>Create a system key using serial number and match</li>
+	<li>Check if the MAC Address exists in the sys_hw_network_card_ip table and match</li>
+	<li>Check if the IP Address exists in the sys_hw_network_card_ip table and match</li>
+	<li>Check if the serial exists in the system table and match</li>
+	<li>Check if the serial exists in the man_serial field in the system table and match</li>
+	<li>Check if the hostname is in the system table and match</li>
+</ol>
+
+<b><i>What do we use for a name?</i></b><br />
+Where possible, the first option will be chosen and where possible on subsequent audits, will be changed to the first option.<br />
+<table cellspacing="1" class="tablesorter" width="100%">
+	<tr>
+		<td><b>computer</b></td><td><b>network printer</b></td><td><b>local printer</b></td><td><b>network device</b></td><td><b>non-network device</b></td>
+	</tr>
+	<tr>
+		<td>hostname, ip address</td><td>hostname, sysname, ip address</td><td>host + model</td><td>hostname, sysname, ip address</td><td>description, serial</td>
+	</tr>
+</table>
 </fieldset>
 <br />
 <br />
@@ -168,19 +221,21 @@ If a printer has an IP address, it is a network printer.<br />
 <br />
 Local Printers<br />
 If a printer does not have an IP address, it is a local printer.<br />
-If we have a local printer, the PHP processing associates it in the system table with the system_id of the computer. This is stored in the 'linked_sys' colmun.<br />
+If we have a local printer, the PHP processing associates it in the system table with the system_id of the computer. 
+This is stored in the 'linked_sys' colmun.<br />
 <br />
 The system_key<br />
 All devices should have a unique "system_key" field  in the system table. For printers, this is calculated such:<br />
-If the printer has an IP Address (and is therefore a network printer), this IP address (padded) is used.  This is the same as other network devices (think switches, routers, etc).<br />
-If printer does not have an IP address, it uses the hostname (of the attached computer), concatenated with the DeviceID (taken from the attached computer). <br />
+If the printer has an IP Address (and is therefore a network printer), an attempt to determine the FQDN is used, if this fails the IP address is used.
+This is the same as other network devices (think switches, routers, etc).<br />
+If printer does not have an IP address, it uses the hostname of the attached computer, concatenated with the DeviceID (taken from the attached computer). <br />
 The DeviceID has spaces replaced with underscores. The two fields are joined with an underscore.<br />
 <br />
 Printers are stored in the system table with the following attributes:<br />
 system_id - auto assigned (incrementing).<br />
-system_key - <br />
+system_key - as above.<br />
 uuid - the printer device_id (assuming printer is submitted via an audited computer).<br />
-hostname - the printer network hostname (if it has one)<br />
+hostname - the printer network hostname (if it has one).<br />
 description - the printer description (assuming printer is submitted via an audited computer).<br />
 type - set to Printer.<br />
 icon - set to printer.<br />

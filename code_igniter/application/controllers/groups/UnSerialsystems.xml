@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <group>
 	<details>
-		<group_name>UnSerial systems</group_name>
+		<group_name>UnSerial Devices</group_name>
 		<group_padded_name></group_padded_name>
 		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.serial = '' AND system.man_serial = '') AND system.man_status = 'production' ]]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>owner</group_category>
 		<group_icon>contact</group_icon>
-		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'computer' and their serial attribute set to ''.</group_description>
+		<group_description>Any items that have their status attribute set to 'production' and have their serial or man_serial attribute set to ''.</group_description>
 	</details>
 	<columns>
 		<column>
 			<column_order>1</column_order>
-			<column_name>Hostname</column_name>
+			<column_name>Name</column_name>
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>

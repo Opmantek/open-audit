@@ -14,7 +14,6 @@ echo form_open('main/process_edit_systems') . "\n";
 	<table width="100%">
 	<tr>
 	<td width="50%">
-	<label for="man_acting_server"><?php echo __("Acting Server"); ?>: </label><select name="man_acting_server" style="width: 200px"><option value="">&nbsp;</option><option value="yes"><?php echo __("Yes"); ?></option><option value="no"><?php echo __("No"); ?></option></select><br /><br />
 	<label for="man_asset_number"><?php echo __("Asset Number"); ?>: </label><input type="text" name="man_asset_number" style="width: 200px" /><br /><br />
 	<label for="man_class"><?php echo __("Class"); ?>: </label><input type="text" name="man_class" style="width: 200px" /><br /><br />
 	<label for="man_cluster_name"><?php echo __("Cluster Name"); ?>: </label><input type="text" name="man_cluster_name" style="width: 200px" /><br /><br />

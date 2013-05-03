@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <group>
 	<details>
-		<group_name>UnClassed systems</group_name>
+		<group_name>UnClassed Computers</group_name>
 		<group_padded_name></group_padded_name>
 		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_class = '' AND system.man_status = 'production' and man_type = 'computer']]></group_dynamic_select>
 		<group_parent>1</group_parent>
@@ -12,7 +12,7 @@
 	<columns>
 		<column>
 			<column_order>1</column_order>
-			<column_name>Hostname</column_name>
+			<column_name>Hostame</column_name>
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>

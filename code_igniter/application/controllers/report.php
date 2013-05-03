@@ -45,7 +45,7 @@ class Report extends MY_Controller {
 			if ( ( (strpos($segment, 'out') === 0) || (strpos($segment, 'only') === 0) ) && (strpos($segment, '___') ) ) {
 				$filter_array = explode("___", $segment);
 				$filter[$i]['variable'] = $filter_array[1];
-				$filter[$i]['value'] = html_entity_decode($filter_array[2]);
+				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
 				if ($filter_array[0] == 'only') {
 					$filter[$i]['condition'] = '=';
 				} else {
@@ -54,7 +54,7 @@ class Report extends MY_Controller {
 				$i++;
 			}
 		}
-		
+
 		$this->load->model("m_oa_report_column");
 		# make sure we specify a report
 		if ($this->data['report_id'] == "0") {

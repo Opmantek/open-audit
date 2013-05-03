@@ -78,6 +78,13 @@ if [ "$hosts_in_subnet" != "" ]; then
 
 		if [[ "$host" != *"$local_ip"* ]]; then
 
+			# todo - add in a ping to determine if the host is REALLY online.
+			# nmap has issues across subnets where network infrastructure may return a false positive
+			# even if there is nothing at the probed address
+
+			# maybe use a switch
+			# maybe use ping when target subnet is different to host subnet
+
 			if [ $debugging -gt 0 ]; then
 				echo "Scanning Host: $host"
 			fi

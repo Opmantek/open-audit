@@ -199,8 +199,7 @@ class M_ip_address extends MY_Model {
 					sys_hw_network_card_ip.timestamp 		= ? AND
 					system.system_id 						= ? AND
 					system.timestamp 						= ? AND
-					( system.man_acting_server 				= 'yes' OR
-					sys_hw_network_card.net_dhcp_enabled	= 'False' )";
+					sys_hw_network_card.net_dhcp_enabled	= 'False' ";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
