@@ -24,7 +24,7 @@
 	<div style="width:100px; float: right; text-align: center;">
 		<br />Version<br /><?php echo $config->display_version; ?>
 		<?php if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') == 'y')) {
-			echo '<br /><a href="' . base_url() . 'index.php/main/about" style="color: red;">upgrade</a>';
+			echo '<br /><a href="' . base_url() . 'index.php/main/help_about" style="color: red;">upgrade</a>';
 		} ?>
 	</div>
 </div>

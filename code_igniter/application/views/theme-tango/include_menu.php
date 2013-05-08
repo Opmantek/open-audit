@@ -171,7 +171,7 @@
 	?>
 
 	<?php
-	if (($user_admin == 'y') and ($config->nmis == 'y')){ ?>
+	if (($user_admin == 'y') and (isset($config->nmis) and $config->nmis == 'y')){ ?>
 	<!-- // Only display the below code if the logged in user is an Admin -->
 	<li><a href='#'><?php echo mb_strtoupper(__('NMIS'))?></a>
 		<ul>

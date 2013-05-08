@@ -12,7 +12,7 @@ apt-get dist-upgrade -q -y
 
 DEBIAN_FRONTEND=noninteractive apt-get install -q -y mysql-server
 
-apt-get install -q -y apache2 php5 php5-mysql php5-ldap php5-snmp nmap snmp
+apt-get install -q -y apache2 php5 php5-mysql php5-ldap php5-snmp php5-mcrypt nmap snmp
 
 echo "ServerName localhost" >> /etc/apache2/apache2.conf
 

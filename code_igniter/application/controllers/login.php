@@ -90,10 +90,19 @@ class Login extends CI_Controller {
 				if ($returned_result->config_name == 'ad_server') {
 					$this->data['ad_server'] = $returned_result->config_value;
 				}
+				if ($returned_result->config_name == 'internal_version') {
+					$this->data['db_version'] = $returned_result->config_value;
+				}
 			}
 		}
 
-		if ((isset($this->data['ad_domain']) and isset($this->data['ad_server'])) and ($this->data['ad_domain'] > "" and $this->data['ad_server'] > "" and $password > '' and $username > '') and (extension_loaded('ldap'))) {
+		if (isset($this->data['ad_domain']) and 
+			$this->data['ad_domain'] != "" and 
+			isset($this->data['ad_server']) and 
+			$this->data['ad_server'] != "" and 
+			$password != '' and 
+			$username != '' and 
+			extension_loaded('ldap')) {
 			# using Active Directory to validate logon details
 			$ad_ldap_connect = "ldap://" . $this->data['ad_server'];
 			$ad_user = $username . '@' . $this->data['ad_domain'];
@@ -121,6 +130,7 @@ class Login extends CI_Controller {
 				# fall through this function and attempt to validate using local credentials
 			}
 		}
+
 		# attempt use the internal database to validate user
 		if ($data = $this->m_userlogin->validate_user($username, $password)) {
 			if ($data != 'fail') {
