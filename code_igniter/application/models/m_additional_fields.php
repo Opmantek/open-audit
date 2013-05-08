@@ -21,14 +21,7 @@ class M_additional_fields extends MY_Model {
 	 * @return	array
 	 */
 	function get_additional_fields_names() {
-		$sql = "SELECT 
-				lower(field_name), 
-				field_name, 
-				field_id  
-			FROM 
-				sys_man_additional_fields 
-			ORDER BY 
-				field_name";
+		$sql = "SELECT lower(field_name), field_name, field_id FROM sys_man_additional_fields ORDER BY field_name";
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql);
 		$result = $query->result();
@@ -104,12 +97,7 @@ class M_additional_fields extends MY_Model {
 	 * @return	array
 	 */
 	function get_additional_field_id($field_name) {
-		$sql = "SELECT 
-					field_id  
-				FROM 
-					sys_man_additional_fields 
-				WHERE
-					field_name = ?";
+		$sql = "SELECT field_id FROM sys_man_additional_fields WHERE field_name = ?";
 		$sql = $this->clean_sql($sql);
 		$data=array("$field_name");
 		$query = $this->db->query($sql, $data);
@@ -124,11 +112,7 @@ class M_additional_fields extends MY_Model {
 	 * @return	array
 	 */
 	function get_all_additional_fields() {
-		$sql = "SELECT * 
-			FROM 
-				sys_man_additional_fields 
-			ORDER BY 
-				field_name";
+		$sql = "SELECT * FROM sys_man_additional_fields ORDER BY field_name";
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql);
 		$result = $query->result();
@@ -142,11 +126,7 @@ class M_additional_fields extends MY_Model {
 	 * @return	array
 	 */
 	function get_additional_field($field_id) {
-		$sql = "SELECT * 
-			FROM 
-				sys_man_additional_fields 
-			WHERE
-				field_id = ?";
+		$sql = "SELECT * FROM sys_man_additional_fields WHERE field_id = ?";
 		$sql = $this->clean_sql($sql);
 		$data = array("$field_id");
 		$query = $this->db->query($sql, $data);
@@ -179,7 +159,7 @@ class M_additional_fields extends MY_Model {
 				sys_man_additional_fields.field_id = sys_man_additional_fields_data.field_id AND
 				sys_man_additional_fields_data.system_id = ? ";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id);
+		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
@@ -198,7 +178,7 @@ class M_additional_fields extends MY_Model {
 		#$sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id WHERE sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL";
 		$sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON (sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id AND (sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL))";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id);
+		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);

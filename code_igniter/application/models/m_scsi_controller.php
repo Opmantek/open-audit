@@ -67,7 +67,7 @@ class M_scsi_controller extends MY_Model {
 			$row = $query->row();
 			// the scsi_controller exists - need to update its timestamp
 			$sql = "UPDATE sys_hw_scsi_controller SET timestamp = ? WHERE scsi_controller_id = ?";
-			$data = array($details->timestamp, $row->scsi_controller_id);
+			$data = array("$details->timestamp", "$row->scsi_controller_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the scsi_controller does not exist - insert it

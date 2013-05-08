@@ -1874,6 +1874,7 @@ CREATE TABLE `system` (
   `nmis_group` varchar(50) NOT NULL default '',
   `nmis_name` varchar(50) NOT NULL default '',
   `nmis_role` varchar(50) NOT NULL default '',
+  `system_key_type` varchar(4) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`system_id`),
@@ -1899,7 +1900,7 @@ INSERT INTO `oa_group_column` VALUES (NULL, '1', '6', 'Tags', 'tag',  'text', ''
 
 INSERT INTO `oa_group_user` VALUES  (1,1,1,10);
 
-INSERT INTO `oa_user` VALUES  (1, 'admin',   '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 'admin@openaudit', 'en', '10', 'tango', 'y', '10', '3');
+INSERT INTO `oa_user` VALUES  (1, 'admin',   '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 'admin@openaudit', 'en', '10', 'tango', 'y', 'y', '10', '3');
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20130215', 'n', 'The internal numerical version.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.0', 'n', 'The version shown on the web pages.');

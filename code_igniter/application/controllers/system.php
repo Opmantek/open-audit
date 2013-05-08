@@ -15,6 +15,9 @@ class System extends CI_Controller {
 		# No need for "user" to be logged in
 		# Have to be able to submit systems via the audit script
 		$this->data['title'] = 'Open-AudIT';
+
+		$this->load->library('session');
+		$loggedin = @$this->session->userdata('logged_in');
 	}
 
 	function index() {
@@ -22,7 +25,9 @@ class System extends CI_Controller {
 	}
 
 	function add_nmap() {
-		if (isset($_POST['form_nmap'])) {
+		if (!isset($_POST['form_nmap'])) {
+			$this->load->view('v_system_add_nmap', $this->data);
+		} else {
 			$this->load->helper('url');
 			$this->load->helper('xml');
 			$this->load->library('encrypt');
@@ -32,6 +37,7 @@ class System extends CI_Controller {
 			}
 			$this->load->model("m_system");
 			$this->load->model("m_oa_group");
+			$this->load->model("m_sys_man_audits");
 			$timestamp = date('Y-m-d H:i:s');
 			$xml_input = $_POST['form_nmap'];
 
@@ -45,124 +51,86 @@ class System extends CI_Controller {
 			}
 			$count = 0;
 
-			echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" 
-			\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
-			<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
-			echo "<head>
-			<title>Open-AudIT</title>
-			</head>\n
-			<body>
-			<pre>\n";
-
-			foreach ($xml->children() as $device) {
-				echo "Device IP: " . $device->man_ip_address . "\n";	
+			foreach ($xml->children() as $details) {
+				$details = (object) $details;
+				if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+					echo "Device IP: " . $details->man_ip_address . "\n";
+				}
 				$count++;
-				$device->hostname = '';
-				$device->hostname = gethostbyaddr($device->man_ip_address);
-				$device->system_id = '';
-				$device->system_id = $this->m_system->find_system($device);
+				$details->last_seen = $timestamp;
+				$details->last_user = '';
+				$details->timestamp = $timestamp;
 				
+				$details->hostname = '';
+				$details->hostname = gethostbyaddr($details->man_ip_address);
+				$details->hostname = strtolower($details->hostname);
+				$details->domain = '';
+				if(!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+					if (strpos($details->hostname, ".") !== FALSE) {
+						# we have a domain returned
+						$details->fqdn = strtolower($details->hostname);
+						$i = explode(".", $details->hostname);
+						$details->hostname = $i[0];
+						unset($i[0]);
+						$details->domain = implode(".", $i);
+					}
+				}
+
+				$details->system_key = '';
+				$details->system_key = $this->m_system->create_system_key($details);
+				$details->system_id = '';
+				$details->system_id = $this->m_system->find_system($details);
+
 				if (extension_loaded('snmp')) { 
 					# try to get more information using SNMP
-					$snmp_details = new stdClass;
-					if ($device->system_id > '') {
-						# get any access details
-						$encrypted_access_details = $this->m_system->get_access_details($device->system_id);
-						if ($encrypted_access_details == '') {
-							# just attempt the default SNMP retrieval - 
-							# community = public
-							# version = 2c
-							$snmp_details = get_snmp($device->man_ip_address);
-						} else {
-							$decoded_access_details = $this->encrypt->decode($encrypted_access_details);
-							$decoded_access_details = json_decode($decoded_access_details);
-							$snmp_details = get_snmp($decoded_access_details->ip_address, 
-									$decoded_access_details->snmp_version, 
-									@$decoded_access_details->snmp_community, 
-									@$decoded_access_details->snmp_port, 
-									@$decoded_access_details->snmp_v3_user, 
-									@$decoded_access_details->snmp_v3_auth_pass, 
-									@$decoded_access_details->snmp_v3_auth_key, 
-									@$decoded_access_details->snmp_v3_auth_proto, 
-									@$decoded_access_details->snmp_v3_priv_pass, 
-									@$decoded_access_details->snmp_v3_priv_key, 
-									@$decoded_access_details->snmp_v3_priv_proto );
-						}
-					} else {
-						# just attempt the default SNMP retrieval - 
-						# community = public
-						# version = 2c
-						$snmp_details = get_snmp($device->man_ip_address);
-					}
-
-					if (($snmp_details->mac == '') and ($device->mac_address > '')) {
-						$snmp_details->mac = (string)$device->mac_address;
-					}
-
-					if (($snmp_details->man_type == '') and ($device->type > '')) {
-						$snmp_details->man_type = (string)$device->type;
-					}
-
-					if (($snmp_details->type == '') and ($device->type > '')) {
-						$snmp_details->type = (string)$device->type;
-					}
-
-					if (($snmp_details->device_type == '') and ($device->type > '')) {
-						$snmp_details->device_type = (string)$device->type;
-					}
-
-					if ($device->manufacturer == 'VMware') {
-						$snmp_details->manufacturer = 'VMware, Inc.';
-						$snmp_details->man_manufacturer = 'VMware, Inc.';
-						$snmp_details->model = 'VMware Virtual Platform';
-						$snmp_details->man_model = 'VMware Virtual Platform';
-					}
-
-					$snmp_details->system_id = $this->m_system->find_system($snmp_details);
+					if (!isset($details->access_details)) { $details->access_details = $this->m_system->get_access_details($details->system_id); }
+					$decoded_access_details = $this->encrypt->decode($details->access_details);
+					$decoded_access_details = json_decode($decoded_access_details);
+					$details->snmp_community = @$decoded_access_details->snmp_community;
+					$details->snmp_version = @$decoded_access_details->snmp_version;
+					$details->snmp_port = @$decoded_access_details->snmp_port;
+					#$details->snmp_community = 'OMKread';
+					#$details->snmp_version = '2c';
+					get_snmp($details);
 				}
 
-				if ((isset($snmp_details->name)) and ($snmp_details->name > '')){
+				if ((isset($details->snmp_oid)) and ($details->snmp_oid > '')){
 					# we received a result from SNMP, use this data to update or insert
-					echo "Using SNMP details.\n";
-					if ($snmp_details->system_id > '') {
-						# we have a system_id, so update it
-						$this->m_system->update_snmp($snmp_details);
+					$details->last_seen_by = 'snmp';
+					if (isset($details->system_id) and $details->system_id != '') {
+						# we have a system_id and snmp details to update
+						$this->m_system->update_system($details);
 					} else {
 						# we have a new system
-						$i = $this->m_system->insert_snmp($snmp_details);
+						$details->system_id = $this->m_system->insert_system($details);
 					}
-					$system_id = $i;
-					$snmp_details->system_id = $i;
-					$man_type = $snmp_details->man_type;
-					$this->m_oa_group->update_system_groups($snmp_details);
 				} else {
-					# just insert or update the limited nmap data
-					echo "Using Nmap details.\n";
-					if ($device->system_id > '') {
-						# we have a system_id, update
-						# $this->m_system->update_nmap($device);
-						$this->m_system->process_system_from_nmap($device);
+					# we received a result from nmap only, use this data to update or insert
+					$details->last_seen_by = 'nmap';
+					if (isset($details->system_id) and $details->system_id != '') {
+						# we have a system id and nmap details to update
+						$this->m_system->update_system($details);
 					} else {
-						# this is a new system - insert
-						# $device->system_id = $this->m_system->insert_nmap($device);
-						$i = $this->m_system->process_system_from_nmap($device);
-						$device->system_id = $i->system_id;
-						$device->man_type = $i->type;
-						$system_id = $i->system_id;
+						# we have a new system
+						$details->system_id = $this->m_system->insert_system($details);
 					}
-					$system_id = $device->system_id;
-					$man_type = $device->man_type;
-					$this->m_oa_group->update_system_groups($device);
 				}
-
-				echo "SystemID: <a href='" . base_url() . "index.php/main/system_display/" . $system_id . "'>" . $system_id . "</a> which is a '" . $man_type . "' device type.<br />\n";
-				echo "<hr />\n";
+				$this->m_sys_man_audits->insert_audit($details);
+				$this->m_oa_group->update_system_groups($details);
 			}
-			echo $count . " systems processed.<br />";
-			echo "<a href='" . base_url() . "index.php/system/add_nmap'>Back to input page</a><br />\n";
-			echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
-		} else {
-			$this->load->view('v_system_add_nmap', $this->data);
+			if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+				echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" 
+				\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+				<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
+				echo "<head>
+				<title>Open-AudIT</title>
+				</head>\n
+				<body>
+				<pre>\n";
+				echo $count . " systems processed.<br />";
+				echo "<a href='" . base_url() . "index.php/system/add_nmap'>Back to input page</a><br />\n";
+				echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
+			}
 		}
 	}
 
@@ -295,7 +263,26 @@ class System extends CI_Controller {
 		}
 		
 		foreach ($xml->children() as $child) {
-			if ($child->getName() == 'sys')				{ $details = ($this->m_system->process_sys($xml->sys)); $this->m_sys_man_audits->insert_audit($details);}
+			if ($child->getName() == 'sys')	{		
+				 	$details = (object) $xml->sys;
+					$details->system_id = '';
+					$details->fqdn = $details->hostname . "." . $details->domain;
+					$details->system_key = $this->m_system->create_system_key($details);
+					$i = $this->m_system->find_system($details);
+					$details->system_id = $i;
+					$details->last_seen_by = 'audit';
+					$details->last_user = '';
+					if ($i == '') {
+						# insert a new system
+						$details->system_id = $this->m_system->insert_system($details);
+						echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
+					} else {
+						# update an existing system
+						$this->m_system->update_system($details);
+						echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
+					}
+					$this->m_sys_man_audits->insert_audit($details);
+			}
 			if ($child->getName() == 'audit_wmi_fail') 	{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_sys_man_audits->update_wmi_fails($xml->audit_wmi_fail, $details); }
 			if ($child->getName() == 'windows') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_windows->process_windows($xml->windows, $details); }
 			if ($child->getName() == 'bios') 			{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_bios->process_bios($xml->bios, $details); }

@@ -63,7 +63,7 @@ class M_route extends MY_Model {
 			$row = $query->row();
 			// the route exists - need to update its timestamp
 			$sql = "UPDATE sys_sw_route SET timestamp = ? WHERE route_id = ?";
-			$data = array($details->timestamp, $row->route_id);
+			$data = array("$details->timestamp", "$row->route_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the route does not exist - insert it

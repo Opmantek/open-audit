@@ -67,7 +67,7 @@ class M_software_key extends MY_Model {
 			$row = $query->row();
 			// the software key exists - need to update its timestamp
 			$sql = "UPDATE sys_sw_software_key SET timestamp = ? WHERE key_id = ?";
-			$data = array($details->timestamp, $row->key_id);
+			$data = array("$details->timestamp", "$row->key_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the software key does not exist - insert it

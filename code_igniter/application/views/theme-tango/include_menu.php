@@ -101,8 +101,8 @@
 			<li><a href='javascript:void(0)'><?php echo __('Devices')?></a>
 				<ul>
 					<li><a href='<?php echo base_url()?>index.php/admin_system/add_system'><?php echo __('Add a Device (manually)')?></a></li>
-					<li><a href='<?php echo base_url()?>index.php/system'><?php echo __('Add a Computer (using audit)')?></a></li>
-					<li><a href='<?php echo base_url()?>index.php/admin_system/add_systems'><?php echo __('Add Multiple Computers (using a spreadsheet)')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/system'><?php echo __('Add a Computer (using an audit result)')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin_system/add_systems'><?php echo __('Add Multiple Devices (using a spreadsheet)')?></a></li>
 				</ul>
 			</li>
 			

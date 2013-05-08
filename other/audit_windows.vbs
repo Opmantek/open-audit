@@ -12,7 +12,7 @@ start_time = Timer
 ' below are the default settings
 
 ' default to localhost
-strComputer = "."
+strcomputer = "."
 
 ' submit the audit to the OAv2 server
 submit_online = "n"
@@ -27,10 +27,10 @@ url = "http://localhost/index.php/system"
 use_proxy = "n"
 
 ' the username (if not using the user running the script)
-strUser = ""
+struser = ""
 
 ' the password (if not using the user running the script)
-strPass = ""
+strpass = ""
 
 ' optional - assign any PCs audited to this Org - take the OrgId from OAv2 interface
 org_id = ""
@@ -117,13 +117,13 @@ For Each strArg in objArgs
 				skip_mount_point = argvalue
 			
 			case "strcomputer"
-				strComputer = argvalue
+				strcomputer = argvalue
 			
 			case "struser"
-				strUser = argvalue
+				struser = argvalue
 			
 			case "strpass"
-				strPass = argvalue
+				strpass = argvalue
 			
 			case "submit_online"
 				submit_online = argValue
@@ -142,12 +142,12 @@ For Each strArg in objArgs
 				
 		end select
 	else
-		strComputer = strArg
+		strcomputer = strArg
 	end if
 next 
 
 ' start the script
-if debugging > "0" then wscript.echo "starting audit - " & strComputer end if 
+if debugging > "0" then wscript.echo "starting audit - " & strcomputer end if 
 
 ''''''''''''''''''''''''''''''''''''''''
 ' Don't change the settings below here '
@@ -206,12 +206,12 @@ next
 
 pc_alive = 0
 if ping_target = "y" then
-	if (strComputer = ".") then
+	if (strcomputer = ".") then
 		pc_alive = 1
 	else
 		if (cint(local_windows_build_number) > 2222 and not local_windows_build_number = "3000") then 
 			on error goto 0	
-			set ping = objWMIService.ExecQuery("SELECT * FROM Win32_PingStatus WHERE Timeout = 200 and Address = '" & strComputer & "'")
+			set ping = objWMIService.ExecQuery("SELECT * FROM Win32_PingStatus WHERE Timeout = 200 and Address = '" & strcomputer & "'")
 			for each item in ping
 				if (IsNull(item.StatusCode) or (item.Statuscode <> 0)) then
 					' it is not switched on
@@ -231,25 +231,25 @@ if debugging > "0" then
 		if debugging > "0" then wscript.echo "Not pinging target, attempting to audit." end if
 	else
 		if (pc_alive = 1) then 
-			if debugging > "0" then wscript.echo "PC " & strComputer & " responding to ping" end if
+			if debugging > "0" then wscript.echo "PC " & strcomputer & " responding to ping" end if
 		else
-			if debugging > "0" then wscript.echo "PC " & strComputer & " not responding to ping" end if
+			if debugging > "0" then wscript.echo "PC " & strcomputer & " not responding to ping" end if
 		end if 
 	end if
 end if
 
-if strUser <> "" then
+if struser <> "" then
 	' credentials passed, therefore assuming not a domain local PC.
 
 	Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
 	On Error Resume Next
-	Set wmiNameSpace = wmiLocator.ConnectServer(strComputer, "\root\default", strUser, strPass, "", "", wbemConnectFlagUseMaxWait)
+	Set wmiNameSpace = wmiLocator.ConnectServer(strcomputer, "\root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
 	wmiNameSpace.Security_.ImpersonationLevel = 3
 	error_returned = Err.Number
 	error_description = Err.Description
 	on error goto 0
 	if (error_returned <> 0) then 
-		if debugging > "0" then wscript.echo "Problem authenticating (1) to " &  strComputer end if
+		if debugging > "0" then wscript.echo "Problem authenticating (1) to " &  strcomputer end if
 		if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 		if debugging > "0" then wscript.echo "Error Description:" & error_description end if
 		wscript.quit
@@ -257,26 +257,26 @@ if strUser <> "" then
 
 	On Error Resume Next
 	Set oReg = wmiNameSpace.Get("StdRegProv")
-	Set objWMIService = wmiLocator.ConnectServer(strComputer, "\root\cimv2",strUser,strPass, "", "", wbemConnectFlagUseMaxWait)
+	Set objWMIService = wmiLocator.ConnectServer(strcomputer, "\root\cimv2",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
 	objWMIService.Security_.ImpersonationLevel = 3
 	error_returned = Err.Number
 	error_description = Err.Description
 	on error goto 0
 	if (error_returned <> 0) then 
-		if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strComputer end if
+		if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
 		if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 		if debugging > "0" then wscript.echo "Error Description:" & error_description end if
 		wscript.quit
 	end if
 	
 	On Error Resume Next
-	Set objWMIService2 = wmiLocator.ConnectServer(strComputer, "\root\WMI",strUser,strPass, "", "", wbemConnectFlagUseMaxWait)
+	Set objWMIService2 = wmiLocator.ConnectServer(strcomputer, "\root\WMI",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
 	objWMIService2.Security_.ImpersonationLevel = 3
 	error_returned = Err.Number
 	error_description = Err.Description
 	on error goto 0
 	if (error_returned <> 0) then 
-		if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strComputer end if
+		if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
 		if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 		if debugging > "0" then wscript.echo "Error Description:" & error_description end if
 		wscript.quit
@@ -286,16 +286,16 @@ else
 	if ((pc_alive = 1) or (ping_target = "n")) then
 		' no credentials passed, therefore auditing as the user running this script
 		On Error Resume Next
-		set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2") 
-		set objWMIService2 = GetObject("winmgmts:\\" & strComputer & "\root\WMI")
-		set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strComputer & "\root\default:StdRegProv")
+		set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2") 
+		set objWMIService2 = GetObject("winmgmts:\\" & strcomputer & "\root\WMI")
+		set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strcomputer & "\root\default:StdRegProv")
 		error_returned = Err.Number
 		error_description = Err.Description
 		if error_description = "" then error_description = "Access Denied. Check Firewall and user security permissions."
 		on error goto 0
 	end if
 	if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then 
-		if debugging > "1" then wscript.echo "Problem authenticating (4) to " &  strComputer end if
+		if debugging > "1" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
 		if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
 		if debugging > "1" then wscript.echo "Error Description:" & error_description end if
 
@@ -315,7 +315,7 @@ else
 			objConnection.Provider = "ADsDSOObject"
 			objConnection.Open "Active Directory Provider"
 			Set objCOmmand.ActiveConnection = objConnection
-			objCommand.CommandText = "Select Name, pwdLastSet, lastlogon, distinguishedName, operatingsystem from '" & ldap & "' Where objectClass='computer' and name = '" & strComputer & "'" 
+			objCommand.CommandText = "Select Name, pwdLastSet, lastlogon, distinguishedName, operatingsystem from '" & ldap & "' Where objectClass='computer' and name = '" & strcomputer & "'" 
 			objCommand.Properties("Page Size") = 10000
 			objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE
 			Set objRecordSet = objCommand.Execute
@@ -503,7 +503,7 @@ end if
 set wshNetwork = WScript.CreateObject("WScript.Network")
 local_hostname = wshNetwork.ComputerName
 
-if ((strComputer = ".") or (strComputer = "127.0.0.1") or (lcase(strComputer) = lcase(local_hostname))) then
+if ((strcomputer = ".") or (strcomputer = "127.0.0.1") or (lcase(strcomputer) = lcase(local_hostname))) then
 	audit_location = "local"
 else
 	audit_location = "remote"
@@ -678,26 +678,26 @@ next
 result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 result.WriteText "<system>" & vbcrlf
 result.WriteText "	<sys>" & vbcrlf
-result.WriteText "		<system_timestamp>" & escape_xml(system_timestamp) & "</system_timestamp>" & vbcrlf
-result.WriteText "		<system_uuid>" & escape_xml(system_uuid) & "</system_uuid>" & vbcrlf
-result.WriteText "		<system_hostname>" & escape_xml(system_hostname) & "</system_hostname>" & vbcrlf
-result.WriteText "		<system_domain>" & escape_xml(system_domain) & "</system_domain>" & vbcrlf
-result.WriteText "		<system_description>" & escape_xml(system_description) & "</system_description>" & vbcrlf
-result.WriteText "		<system_type>computer</system_type>" & vbcrlf
-result.WriteText "		<system_os_icon>" & system_os_icon & "</system_os_icon>" & vbcrlf
-result.WriteText "		<system_os_group>Windows</system_os_group>" & vbcrlf
-result.WriteText "		<system_os_family>" & escape_xml(system_os_family) & "</system_os_family>" & vbcrlf
-result.WriteText "		<system_os_name>" & escape_xml(system_os_name) & "</system_os_name>" & vbcrlf
-result.WriteText "		<system_os_version>" & escape_xml(system_os_version) & "</system_os_version>" & vbcrlf
-result.WriteText "		<system_serial>" & escape_xml(system_serial) & "</system_serial>" & vbcrlf
-result.WriteText "		<system_model>" & escape_xml(system_model) & "</system_model>" & vbcrlf
-result.WriteText "		<system_manufacturer>" & escape_xml(system_manufacturer) & "</system_manufacturer>" & vbcrlf
-result.WriteText "		<system_uptime>" & escape_xml(system_uptime) & "</system_uptime>" & vbcrlf
-result.WriteText "		<system_form_factor>" & escape_xml(system_form_factor) & "</system_form_factor>" & vbcrlf
-result.WriteText "		<system_pc_os_bit>" & escape_xml(address_width) & "</system_pc_os_bit>" & vbcrlf
-result.WriteText "		<system_pc_memory>" & escape_xml(system_pc_memory) & "</system_pc_memory>" & vbcrlf
-result.WriteText "		<system_pc_num_processor>" & escape_xml(system_pc_num_processor) & "</system_pc_num_processor>" & vbcrlf
-result.WriteText "		<system_pc_date_os_installation>" & escape_xml(system_pc_date_os_installation) & "</system_pc_date_os_installation>" & vbcrlf
+result.WriteText "		<timestamp>" & escape_xml(system_timestamp) & "</timestamp>" & vbcrlf
+result.WriteText "		<uuid>" & escape_xml(system_uuid) & "</uuid>" & vbcrlf
+result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
+result.WriteText "		<domain>" & escape_xml(system_domain) & "</domain>" & vbcrlf
+result.WriteText "		<description>" & escape_xml(system_description) & "</description>" & vbcrlf
+result.WriteText "		<type>computer</type>" & vbcrlf
+result.WriteText "		<icon>" & system_os_icon & "</icon>" & vbcrlf
+result.WriteText "		<os_group>Windows</os_group>" & vbcrlf
+result.WriteText "		<os_family>" & escape_xml(system_os_family) & "</os_family>" & vbcrlf
+result.WriteText "		<os_name>" & escape_xml(system_os_name) & "</os_name>" & vbcrlf
+result.WriteText "		<os_version>" & escape_xml(system_os_version) & "</os_version>" & vbcrlf
+result.WriteText "		<serial>" & escape_xml(system_serial) & "</serial>" & vbcrlf
+result.WriteText "		<model>" & escape_xml(system_model) & "</model>" & vbcrlf
+result.WriteText "		<manufacturer>" & escape_xml(system_manufacturer) & "</manufacturer>" & vbcrlf
+result.WriteText "		<uptime>" & escape_xml(system_uptime) & "</uptime>" & vbcrlf
+result.WriteText "		<form_factor>" & escape_xml(system_form_factor) & "</form_factor>" & vbcrlf
+result.WriteText "		<pc_os_bit>" & escape_xml(address_width) & "</pc_os_bit>" & vbcrlf
+result.WriteText "		<pc_memory>" & escape_xml(system_pc_memory) & "</pc_memory>" & vbcrlf
+result.WriteText "		<pc_num_processor>" & escape_xml(system_pc_num_processor) & "</pc_num_processor>" & vbcrlf
+result.WriteText "		<pc_date_os_installation>" & escape_xml(system_pc_date_os_installation) & "</pc_date_os_installation>" & vbcrlf
 result.WriteText "		<man_org_id>" & escape_xml(org_id) & "</man_org_id>" & vbcrlf
 result.WriteText "	</sys>" & vbcrlf
 
@@ -711,7 +711,7 @@ if windows_domain_role = "4" then windows_domain_role = "Backup Domain Controlle
 if windows_domain_role = "5" then windows_domain_role = "Primary Domain Controller" end if
 
 error = 0
-if windows_part_of_domain = "True" then
+if windows_part_of_domain = True then
 	' Get domain NetBIOS name from domain DNS name
 	domain_dn = "DC=" & Replace(system_domain,".",",DC=")
 	set oTranslate = CreateObject("NameTranslate")
@@ -720,7 +720,7 @@ if windows_part_of_domain = "True" then
 		hr = oTranslate.Init (3, "")
 	on error goto 0
 
-	if (isnull(hr) or hr = "") then
+	if (isnull(hr)) then
 	 ' skip everything here - domain cannot be contacted
 	else
 
@@ -791,7 +791,7 @@ else
 	windows_active_directory_ou = ""
 end if
 
-if ((windows_part_of_domain = "True") and (windows_user_work_1 > "")) then
+if ((windows_part_of_domain = True) and (windows_user_work_1 > "")) then
 
 	if (instr(windows_user_name, "@")) then
 		split_user = split(windows_user_name, "@")
@@ -802,35 +802,35 @@ if ((windows_part_of_domain = "True") and (windows_user_work_1 > "")) then
 		windows_user_domain = ""
 	end if
 
-	strUserDN = ""
+	struserDN = ""
 	if (windows_user_domain > "") then
 		on error resume next
 			Set objTrans = CreateObject("NameTranslate")
 			objTrans.Init ADS_NAME_INITTYPE_GC, ""
 			objTrans.Set ADS_NAME_TYPE_NT4, windows_user_domain & "\" & sam_account_name
-			strUserDN = objTrans.Get(ADS_NAME_TYPE_1779)
-			strUserDN = Replace(strUserDN, "/", "\/")
-			stemp = split(strUserDN, ",")
+			struserDN = objTrans.Get(ADS_NAME_TYPE_1779)
+			struserDN = Replace(struserDN, "/", "\/")
+			stemp = split(struserDN, ",")
 			stemp(0) = ""
 			ttemp = join(stemp, ",")
 			ttemp = mid(ttemp, 2)
-			strUserDN = ttemp
+			struserDN = ttemp
 			erase stemp
 			ttemp = NULL
 			' strip off any names before the initial OU 
 			'find the displacement of the initial OU=
-			pos=InStr(strUserDN,"OU=")
+			pos=InStr(struserDN,"OU=")
 			struserDN= " " & Right(struserDN,LEN(struserDN)-(pos-1))
 			struserDN = ltrim(struserDN)
 		on error goto 0
 	else
-		strUserDN = ""
+		struserDN = ""
 	end if
 		
-	if ((strUserDN > "") and (strUserDN <> " ")) then
-		windows_user_company = windows_user_get_attribute (strUserDN, windows_user_work_1, sam_account_name)
+	if ((struserDN > "") and (struserDN <> " ")) then
+		windows_user_company = windows_user_get_attribute (struserDN, windows_user_work_1, sam_account_name)
 		if (isnull(windows_user_company) or windows_user_company = "") then
-			windows_user_company = windows_user_get_attribute (strUserDN, windows_user_work_2, sam_account_name)
+			windows_user_company = windows_user_get_attribute (struserDN, windows_user_work_2, sam_account_name)
 		end if
 		if (isnull(windows_user_company) or windows_user_company = "") then
 			' do not alter the username as we got no information from AD
@@ -2509,7 +2509,7 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_Environment where Sy
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Environment)" : audit_wmi_fails = audit_wmi_fails & "Win32_Environment " : end if
 for each objItem in colItems
 	if (instr(lcase (escape_xml(objItem.VariableValue)), lcase (wshNetwork.userName)) or _
-	   (instr(lcase (escape_xml(objItem.VariableValue)), lcase (strUser))) ) then
+	   (instr(lcase (escape_xml(objItem.VariableValue)), lcase (struser))) ) then
 	' do not record user specific variables
 	else
 	item = item & "		<variable>" & vbcrlf
@@ -2643,7 +2643,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 	result.WriteText "	<groups>" & vbcrlf
 	if debugging > "0" then wscript.echo "local groups info" end if 
 
-	if strUser = "" then
+	if struser = "" then
 		dim group_domain
 		dim member_domain
 		For Each group In GetObject("WinNT://" & system_hostname)
@@ -2672,13 +2672,13 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 		Next 
 	end if
 
-	if strUser > "" then
+	if struser > "" then
 		set colItems = objWMIService.ExecQuery("Select * from Win32_Group where Domain = '" & system_hostname & "'",,32)
 		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Group)" : audit_wmi_fails = audit_wmi_fails & "Win32_Group " : end if
 		for Each objItem in colItems
 			users = ""
 			set objDSO = GetObject("WinNT:")
-			set colGroups = objDSO.OpenDSObject("WinNT://" & system_hostname & "", strUser, strPass, ADS_USE_ENCRYPTION OR ADS_SECURE_AUTHENTICATION)
+			set colGroups = objDSO.OpenDSObject("WinNT://" & system_hostname & "", struser, strpass, ADS_USE_ENCRYPTION OR ADS_SECURE_AUTHENTICATION)
 			colGroups.Filter = Array("group")
 			group_members = ""
 			for Each objGroup In colGroups
@@ -2710,7 +2710,7 @@ if (skip_software = "n") then
 	function disable()
 	if debugging > "0" then wscript.echo "BHO info" end if 
 	if NOT InStr(system_os_full_name, "95") and NOT InStr(system_os_full_name, "98") and NOT InStr(system_os_full_name, "Vista") and NOT InStr(system_os_full_name, "Windows 7") and NOT InStr(system_os_full_name, "2008") then
-		set objWMIService_IE = GetObject("winmgmts:\\" & strComputer & "\root\cimv2\Applications\MicrosoftIE")
+		set objWMIService_IE = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2\Applications\MicrosoftIE")
 		set colIESettings = objWMIService_IE.ExecQuery ("Select * from MicrosoftIE_Object",,32)
 		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIE_Object)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIE_Object " : end if
 		for each strIESetting in colIESettings
@@ -3334,11 +3334,11 @@ if address_width = "64" then
 	objCtx.Add "__RequiredArchitecture", TRUE
 	Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
-	if strUser <> "" then
+	if struser <> "" then
 		' Username & Password provided - assume not a domain local PC.
-		Set objServices = objLocator.ConnectServer(strComputer, "root\default", strUser, strPass, "", "", wbemConnectFlagUseMaxWait, objCtx)
+		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
 	else
-		Set objServices = objLocator.ConnectServer(strComputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
+		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
 	end if
 
 	Set o64reg = objServices.Get("StdRegProv") 
@@ -3927,13 +3927,13 @@ if ((iis_w3svc = "True") and (iis = "True") and (cint(windows_build_number) > 30
 	iis_wmi = "True"
 
 	on error resume next
-		if strUser > "" then
-			set objWMIService_IIS = wmiLocator.ConnectServer(strComputer, "root/MicrosoftIISv2", strUser, strPass, "", "", wbemConnectFlagUseMaxWait)
+		if struser > "" then
+			set objWMIService_IIS = wmiLocator.ConnectServer(strcomputer, "root/MicrosoftIISv2", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
 			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIISv2)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIISv2 " : end if
 			objWMIService_IIS.Security_.authenticationLevel = 6
 			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (objWMIService_IIS.Security_.authenticationLevel)" : audit_wmi_fails = audit_wmi_fails & "objWMIService_IIS.Security_.authenticationLevel " : end if
 		else
-			Set objWMIService_IIS = GetObject("winmgmts:{AuthenticationLevel=pktPrivacy}!\\" & strComputer & "\root\MicrosoftIISv2")
+			Set objWMIService_IIS = GetObject("winmgmts:{AuthenticationLevel=pktPrivacy}!\\" & strcomputer & "\root\MicrosoftIISv2")
 			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIISv2)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIISv2 " : end if
 		end if
 	on error goto 0
@@ -4244,11 +4244,11 @@ if address_width = "64" then
 	objCtx.Add "__RequiredArchitecture", TRUE
 	Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
-	if strUser <> "" then
+	if struser <> "" then
 		' Username & Password provided - assume not a domain local PC.
-		Set objServices = objLocator.ConnectServer(strComputer, "root\default", strUser, strPass, "", "", wbemConnectFlagUseMaxWait, objCtx)
+		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
 	else
-		Set objServices = objLocator.ConnectServer(strComputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
+		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
 	end if
 	Set o64reg = objServices.Get("StdRegProv") 
 	key_text = null
@@ -4637,11 +4637,11 @@ key_name = "Microsoft SQL Server 2005"
 key_release = ""
 subKey = "DigitalProductID77556"
 subKey = "DigitalProductID77591"
-key_text = GetSN(strComputer,HKEY_LOCAL_MACHINE,strKeyPath,subKey)
+key_text = GetSN(strcomputer,HKEY_LOCAL_MACHINE,strKeyPath,subKey)
 if (IsNull(key_text) or key_text = "") then
 	strKeyPath = "SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL10.MSSQLSERVER\Setup\"
 	subKey = "DigitalProductID"
-	key_text = GetSN(strComputer,HKEY_LOCAL_MACHINE,strKeyPath,subKey)
+	key_text = GetSN(strcomputer,HKEY_LOCAL_MACHINE,strKeyPath,subKey)
 	if (IsNull(key_text) or key_text = "") then
 		' nothing returned
 	else
@@ -4796,11 +4796,11 @@ end if
 
 'if objFSO.FileExists(sScriptPath & "sqlite3.Exe") then
 if objFSO.FileExists("sqlite3.Exe") then
-	if objFSO.FileExists ("\\" & strComputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-		dbfile = "\\" & strComputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db" 
+	if objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+		dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db" 
 		db_present = 1
-	elseif objFSO.FileExists ("\\" & strComputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-		dbfile = "\\" & strComputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db" 
+	elseif objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+		dbfile = "\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db" 
 		db_present = 1
 	end if
 

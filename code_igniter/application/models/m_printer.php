@@ -165,12 +165,21 @@ class M_printer extends MY_Model {
 				$sql = "INSERT INTO system (system_key, uuid, hostname, description, type, icon, linked_sys, serial, 
 					man_serial, model, manufacturer, printer_port_name, printer_shared, printer_shared_name, 
 					printer_color, printer_duplex, man_status, man_environment, man_description, man_type, 
-					man_ip_address, man_model, man_manufacturer, man_icon, first_timestamp, timestamp ) 
-					VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+					man_ip_address, man_model, man_manufacturer, man_icon, first_timestamp, timestamp, 
+					last_seen, last_seen_by ) 
+					VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 				$data = array( "$input->system_key", "$input->uuid", "$input->hostname", "$input->description", "$type", "printer", "$linked_sys", "$input->serial", 
 					"$input->serial", "$input->model", "$input->manufacturer", "$input->printer_port_name", "$input->printer_shared", "$input->printer_shared_name", 
 					"$input->printer_color", "$input->printer_duplex", "production", "production", "$input->description", "$type", 
-					$this->ip_address_to_db($input->man_ip_address), "$input->model", "$input->manufacturer", "printer", "$details->timestamp", "$details->timestamp");
+					$this->ip_address_to_db($input->man_ip_address), "$input->model", "$input->manufacturer", "printer", "$details->timestamp", "$details->timestamp", 
+					"$details->timestamp", "audit");
+				$query = $this->db->query($sql, $data);
+
+				$system_id = $this->db->insert_id();
+				$inserted_via = 'audit';
+				$inserted_user = '';
+				$sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp ) VALUES (?, ?, ?, ?, ?)";
+				$data = array("$system_id", "$inserted_user", "$inserted_via", "$details->timestamp", "$details->timestamp");
 				$query = $this->db->query($sql, $data);
 			}
 		}

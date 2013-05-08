@@ -6920,7 +6920,7 @@ if (!function_exists('get_oid'))
 		if ($oid == '1.3.6.1.4.1.8072.3.2.10') { $new->model = 'unknown'; $new->os_group = 'linux'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.11') { $new->model = 'unknown'; $new->os_group = 'bsdi'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.12') { $new->model = 'unknown'; $new->os_group = 'openbsd'; $new->type = 'computer'; }
-		if ($oid == '1.3.6.1.4.1.8072.3.2.13') { $new->model = 'unknown'; $new->os_group = 'windows'; $new->type = 'computer'; }
+		if ($oid == '1.3.6.1.4.1.8072.3.2.13') { $new->model = 'unknown'; $new->os_group = 'Windows'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.14') { $new->model = 'unknown'; $new->os_group = 'hpux11'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.15') { $new->model = 'unknown'; $new->os_group = 'aix'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.16') { $new->model = 'unknown'; $new->os_group = 'macosx'; $new->type = 'computer'; }
@@ -7240,7 +7240,7 @@ if (!function_exists('get_oid'))
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.308') { $new->manufacturer = 'Star Technologies'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.309') { $new->manufacturer = 'Micronics Computers Inc.'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.310') { $new->manufacturer = 'Basis, Inc.'; }
-		if (substr($oid, 0, 15) == '1.3.6.1.4.1.311') { $new->manufacturer = 'Microsoft'; }
+		if (substr($oid, 0, 15) == '1.3.6.1.4.1.311') { $new->manufacturer = 'Microsoft'; $new->model = 'unknown'; $new->os_group = 'Windows'; $new->type = 'computer'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.312') { $new->manufacturer = 'US West Advance Technologies'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.313') { $new->manufacturer = 'University College London'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.314') { $new->manufacturer = 'Eastman Kodak Company'; }

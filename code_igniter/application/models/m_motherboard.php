@@ -65,7 +65,7 @@ class M_motherboard extends MY_Model {
 			$row = $query->row();
 			// the motherboard exists - need to update its timestamp
 			$sql = "UPDATE sys_hw_motherboard SET timestamp = ? WHERE motherboard_id = ?";
-			$data = array($details->timestamp, $row->motherboard_id);
+			$data = array("$details->timestamp", "$row->motherboard_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the motherboard does not exist - insert it

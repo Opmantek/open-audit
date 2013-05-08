@@ -63,7 +63,7 @@ class M_variable extends MY_Model {
 			$row = $query->row();
 			// the variable exists - need to update its timestamp
 			$sql = "UPDATE sys_sw_variable SET timestamp = ? WHERE variable_id = ?";
-			$data = array($details->timestamp, $row->variable_id);
+			$data = array("$details->timestamp", "$row->variable_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the variable does not exist - insert it

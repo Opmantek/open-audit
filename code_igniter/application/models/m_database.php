@@ -14,19 +14,11 @@ class M_database extends MY_Model {
 	}
 
 	function get_system_db($system_id) {
-		$sql = "SELECT 	
-				sys_sw_database.*
-			FROM 	
-				sys_sw_database,
-				system
-			WHERE
-				sys_sw_database.system_id = system.system_id AND
-				sys_sw_database.timestamp = system.timestamp AND
-				system.system_id = ?
-			GROUP BY 
-				db_id";
+		$sql = "SELECT sys_sw_database.* FROM sys_sw_database, system
+			WHERE sys_sw_database.system_id = system.system_id AND sys_sw_database.timestamp = system.timestamp AND system.system_id = ?
+			GROUP BY db_id";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id);
+		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
@@ -60,15 +52,9 @@ class M_database extends MY_Model {
 		if (mb_strpos($input->db_version, "7.00.623") === 0)  { $version_string = "SQL Server 7 RTM"; }
 
 		// need to check for database changes
-		$sql = "SELECT sys_sw_database.db_id 
-				FROM sys_sw_database, system 
-				WHERE sys_sw_database.system_id = system.system_id AND 
-					system.system_id			= ? AND 
-					system.man_status 			= 'production' AND 
-					db_type 					= ? AND 
-					db_version					= ? AND 
-					( sys_sw_database.timestamp = ? OR 
-					sys_sw_database.timestamp 	= ? )";
+		$sql = "SELECT sys_sw_database.db_id FROM sys_sw_database, system WHERE sys_sw_database.system_id = system.system_id AND 
+					system.system_id = ? AND system.man_status = 'production' AND sys_sw_database.db_type = ? AND sys_sw_database.db_version = ? AND 
+					( sys_sw_database.timestamp = ? OR sys_sw_database.timestamp = ? )";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->system_id", 
 				"$input->db_type", 
@@ -84,14 +70,7 @@ class M_database extends MY_Model {
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the database entry does not exist - insert it
-			$sql = "INSERT INTO sys_sw_database (	system_id, 
-										db_type, 
-										db_version, 
-										db_version_string, 
-										db_edition, 
-										db_port, 
-										timestamp,
-										first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+			$sql = "INSERT INTO sys_sw_database (system_id, db_type, db_version, db_version_string, db_edition, db_port, timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->db_type", 
@@ -107,12 +86,7 @@ class M_database extends MY_Model {
 
 	function alert_database($details) {
 		// database entry no longer detected
-		$sql = "SELECT sys_sw_database.db_id
-				FROM 	sys_sw_database, system
-				WHERE 	sys_sw_database.system_id = system.system_id AND
-						sys_sw_database.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT sys_sw_database.db_id FROM sys_sw_database, system WHERE sys_sw_database.system_id = system.system_id AND sys_sw_database.timestamp = ? AND system.system_id = ? AND system.timestamp = ?";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
@@ -122,13 +96,9 @@ class M_database extends MY_Model {
 		}
 
 		// new database
-		$sql = "SELECT  sys_sw_database.db_id
-				FROM 	sys_sw_database, system
-				WHERE 	sys_sw_database.system_id = system.system_id AND
-						sys_sw_database.timestamp = sys_sw_database.first_timestamp AND
-						sys_sw_database.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT  sys_sw_database.db_id FROM sys_sw_database, system WHERE sys_sw_database.system_id = system.system_id AND
+						sys_sw_database.timestamp = sys_sw_database.first_timestamp AND sys_sw_database.timestamp = ? AND
+						system.system_id = ? AND system.timestamp = ?";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);

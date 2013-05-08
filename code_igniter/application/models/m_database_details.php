@@ -14,64 +14,32 @@ class M_database_details extends MY_Model {
 	}
 
 	function get_system_db_details($system_id) {
-		$sql = "SELECT 	
-				sys_sw_database_details.*
-			FROM 	
-				sys_sw_database_details, 
-				sys_sw_database,
-				system
-			WHERE
-				sys_sw_database_details.db_id = sys_sw_database.db_id AND 
-				sys_sw_database.system_id = system.system_id AND
-				sys_sw_database_details.timestamp = system.timestamp AND
-				system.system_id = ?
-			GROUP BY 
-				details_id";
+		$sql = "SELECT sys_sw_database_details.* FROM sys_sw_database_details, sys_sw_database, system WHERE
+				sys_sw_database_details.db_id = sys_sw_database.db_id AND sys_sw_database.system_id = system.system_id AND
+				sys_sw_database_details.timestamp = system.timestamp AND system.system_id = ? GROUP BY details_id";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id);
+		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
 	}
 
 	function get_database_graph($system_id, $database_id, $days = 30) {
-		$sql = "SELECT 
-					used, 
-					DATE(timestamp) AS timestamp 
-				FROM 
-					sys_hw_graphs_disk 
-				WHERE 
-					system_id = ? AND 
-					database_id = ? AND 
-					timestamp > adddate(current_date(), interval -" . $days . " day) 
-				GROUP BY 
-					DAY(timestamp) 
-				ORDER BY 
-					timestamp";
+		$sql = "SELECT used, DATE(timestamp) AS timestamp FROM sys_hw_graphs_disk WHERE 
+				system_id = ? AND database_id = ? AND timestamp > adddate(current_date(), interval -" . $days . " day) 
+				GROUP BY DAY(timestamp) ORDER BY timestamp";
 		$sql = $this->clean_sql($sql);
-		$data = array ($system_id, $database_id);
+		$data = array ("$system_id", "$database_id");
 		$query = $this->db->query($sql, $data);
 		return ($query->result());
 	}
 
 	function process_db_details($input, $details) {
 		// need to check for database changes
-		$sql = "SELECT 	
-					sys_sw_database_details.details_id 
-				FROM 	
-					sys_sw_database_details, 
-					sys_sw_database, 
-					system 
-				WHERE 
-					sys_sw_database_details.db_id 	= sys_sw_database.db_id AND 
-					sys_sw_database.system_id 	= system.system_id AND 
-					system.system_id		= ? AND 
-					system.man_status 		= 'production' AND 
-					details_name 			= ? AND 
-					details_internal_id		= ? AND 
-					details_instance 		= ? AND 
-					(sys_sw_database_details.timestamp = ? OR 
-					 sys_sw_database_details.timestamp = ? )";
+		$sql = "SELECT sys_sw_database_details.details_id FROM sys_sw_database_details, sys_sw_database, system 
+				WHERE sys_sw_database_details.db_id = sys_sw_database.db_id AND sys_sw_database.system_id = system.system_id AND 
+					system.system_id = ? AND system.man_status = 'production' AND details_name = ? AND details_internal_id = ? AND 
+					details_instance = ? AND (sys_sw_database_details.timestamp = ? OR sys_sw_database_details.timestamp = ? )";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->system_id", 
 				"$input->details_name", 
@@ -92,35 +60,18 @@ class M_database_details extends MY_Model {
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			// the database entry does not exist - insert it
-			$sql = "INSERT INTO sys_sw_database_details (	db_id, 
-										details_name, 
-										details_instance, 
-										details_internal_id, 
-										details_current_size,
-										details_compatibility_mode, 
-										details_creation_date, 
-										details_filename, 
-										timestamp,
-										first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+			$sql = "INSERT INTO sys_sw_database_details (db_id, details_name, details_instance, details_internal_id, details_current_size,
+					details_compatibility_mode, details_creation_date, details_filename, timestamp,first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$row->db_id", 
-					"$input->details_name", 
-					"$input->details_instance", 
-					"$input->details_internal_id", 
-					"$input->details_current_size", 
-					"$input->details_compatibility_mode", 
-					"$input->details_creation_date", 
-					"$input->details_filename", 
-					"$details->timestamp", 
-					"$details->timestamp");
+					"$input->details_name", "$input->details_instance", "$input->details_internal_id", 
+					"$input->details_current_size", "$input->details_compatibility_mode", "$input->details_creation_date", 
+					"$input->details_filename", "$details->timestamp", "$details->timestamp");
 			$query = $this->db->query($sql, $data);
 		}
 		// we need to insert a row into the "graphs" table
 		$sql = "INSERT INTO sys_hw_graphs_disk (system_id, database_id, graph_type, used) VALUES (?,?,?,?)";
-		$data = array(  "$details->system_id", 
-						 $this->db->insert_id(),
-						"database",
-						"$input->details_current_size");
+		$data = array(  "$details->system_id", $this->db->insert_id(), "database", "$input->details_current_size");
 		$query = $this->db->query($sql, $data);
 	}
 

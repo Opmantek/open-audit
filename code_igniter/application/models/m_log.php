@@ -64,7 +64,7 @@ class M_log extends MY_Model {
 			$row = $query->row();
 			// the log exists - need to update its timestamp
 			$sql = "UPDATE sys_sw_log SET timestamp = ? WHERE log_id = ?";
-			$data = array($details->timestamp, $row->log_id);
+			$data = array("$details->timestamp", "$row->log_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the log does not exist - insert it

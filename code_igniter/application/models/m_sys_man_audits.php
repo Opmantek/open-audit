@@ -40,9 +40,17 @@ class M_sys_man_audits extends MY_Model {
 	}
 
 	function insert_audit($details) {
-		// TODO - create and use an "audits" section in audit_windows.vbs
+		// TODO - create a variable for the username running the script_windows.vbs
+		if (isset($details->last_seen_by)) { $inserted_via = $details->last_seen_by; } else { $inserted_via = 'audit'; }
+		if (isset($details->last_seen_user)) { $inserted_user = $details->last_seen_user; }
+		if (!isset($last_seen_user) and isset($this->data['user_full_name'])) {
+			$inserted_user = $this->data['user_full_name'];
+		} else {
+			$inserted_user = '';
+		}
+
 		$sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp ) VALUES (?, ?, ?, ?, ?)";
-		$data = array("$details->system_id", "web page insert", "online", "$details->timestamp", date('Y-m-d G:i:s'));
+		$data = array("$details->system_id", "$inserted_user", "$inserted_via", "$details->timestamp", date('Y-m-d G:i:s'));
 		$query = $this->db->query($sql, $data);
 	}
 	

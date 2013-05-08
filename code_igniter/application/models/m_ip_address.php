@@ -15,17 +15,9 @@ class M_ip_address extends MY_Model {
 	}
 
 	function get_system_ip($system_id) {
-		$sql = "SELECT 
-				sys_hw_network_card_ip.*
-			FROM 	
-				sys_hw_network_card_ip,
-				system
-			WHERE
-				sys_hw_network_card_ip.system_id = system.system_id AND
-				sys_hw_network_card_ip.timestamp = system.timestamp AND
-				system.system_id = ? 
-			GROUP BY 
-				ip_id";
+		$sql = "SELECT sys_hw_network_card_ip.* FROM sys_hw_network_card_ip, system
+			WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
+			sys_hw_network_card_ip.timestamp = system.timestamp AND system.system_id = ? GROUP BY ip_id";
 		$sql = $this->clean_sql($sql);
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
@@ -34,51 +26,29 @@ class M_ip_address extends MY_Model {
 	}
 
 	function process_addresses($input, $details) {
-		$sql = "SELECT 	
-				sys_hw_network_card_ip.ip_id 
-			FROM 
-				sys_hw_network_card_ip, 
-				system 
-			WHERE 	
-				sys_hw_network_card_ip.system_id 	= system.system_id AND 
-				system.system_id			= ? AND 
-				system.man_status 			= 'production' AND 
-				sys_hw_network_card_ip.net_mac_address 	= ? AND 
-				(sys_hw_network_card_ip.ip_address_v4	= ? OR 
-				sys_hw_network_card_ip.ip_address_v6 	= ? ) AND 
-				sys_hw_network_card_ip.ip_subnet 	= ? AND 
-				( sys_hw_network_card_ip.timestamp 	= ? OR 
-				sys_hw_network_card_ip.timestamp	= ? )";
+		$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
+			WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
+				system.system_id = ? AND 
+				system.man_status = 'production' AND 
+				sys_hw_network_card_ip.net_mac_address = ? AND 
+				(sys_hw_network_card_ip.ip_address_v4 = ? OR 
+				sys_hw_network_card_ip.ip_address_v6 = ? ) AND 
+				sys_hw_network_card_ip.ip_subnet = ? AND 
+				( sys_hw_network_card_ip.timestamp = ? OR 
+				sys_hw_network_card_ip.timestamp = ? )";
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->net_mac_address", 
-				$this->ip_address_to_db($input->ip_address_v4), 
-				"$input->ip_address_v6", 
-				"$input->ip_subnet", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
+		$data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4), 
+				"$input->ip_address_v6", "$input->ip_subnet", "$details->original_timestamp", "$details->timestamp");
 		// note - removed the IPv6 address, below
-		$sql = "SELECT 	
-				sys_hw_network_card_ip.ip_id 
-			FROM 
-				sys_hw_network_card_ip, 
-				system 
-			WHERE 	
-				sys_hw_network_card_ip.system_id 	= system.system_id AND 
-				system.system_id			= ? AND 
-				system.man_status 			= 'production' AND 
-				sys_hw_network_card_ip.net_mac_address 	= ? AND 
-				sys_hw_network_card_ip.ip_address_v4	= ? AND 
-				sys_hw_network_card_ip.ip_subnet 	= ? AND 
-				( sys_hw_network_card_ip.timestamp 	= ? OR 
-				sys_hw_network_card_ip.timestamp	= ? )";
+		$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
+			WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
+			system.system_id = ? AND system.man_status = 'production' AND 
+			sys_hw_network_card_ip.net_mac_address = ? AND sys_hw_network_card_ip.ip_address_v4 = ? AND 
+			sys_hw_network_card_ip.ip_subnet = ? AND ( sys_hw_network_card_ip.timestamp = ? OR 
+			sys_hw_network_card_ip.timestamp = ? )";
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->net_mac_address", 
-				$this->ip_address_to_db($input->ip_address_v4), 
-				"$input->ip_subnet", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
+		$data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4), 
+				"$input->ip_subnet", "$details->original_timestamp", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
@@ -88,26 +58,15 @@ class M_ip_address extends MY_Model {
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the network_card_ip does not exist - insert it
-			$sql = "INSERT INTO 
-					sys_hw_network_card_ip (
-						net_mac_address, 
-						system_id, 
-						ip_address_v4,
-						ip_address_v6,
-						ip_address_version, 
-						ip_subnet, 
-						timestamp,
-						first_timestamp ) 
+			$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
+					system_id, ip_address_v4, ip_address_v6, ip_address_version, 
+					ip_subnet, timestamp, first_timestamp ) 
 					VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
 			$sql = $this->clean_sql($sql);
-			$data = array("$input->net_mac_address", 
-					"$details->system_id", 
+			$data = array("$input->net_mac_address", "$details->system_id", 
 					$this->ip_address_to_db($input->ip_address_v4), 
-					"$input->ip_address_v6", 
-					"$input->ip_address_version", 
-					"$input->ip_subnet", 
-					"$details->timestamp", 
-					"$details->timestamp");
+					"$input->ip_address_v6", "$input->ip_address_version", 
+					"$input->ip_subnet", "$details->timestamp", "$details->timestamp");
 			$query = $this->db->query($sql, $data);
 		}
 
@@ -135,11 +94,9 @@ class M_ip_address extends MY_Model {
 			if ($start_ip == "0.0.0.0"){
 				// do nothing - we don't have a valid IP
 			} else {
-				
 				$sql = "SELECT config_value FROM oa_config WHERE config_name = 'auto_create_network_groups' ";
 				$query = $this->db->query($sql);
 				$row = $query->row();
-				
 				if ($row->config_value <> 'n') {
 					$group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '" . $start_ip . "' AND sys_hw_network_card_ip.ip_address_v4 <= '" . $finish_ip . "' AND sys_hw_network_card_ip.ip_subnet = '" . $input->ip_subnet . "' AND sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp AND system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '" . $start_ip . "' AND system.man_ip_address <= '" . $finish_ip . "' AND system.man_status = 'production')";
 					$start=explode(' ',microtime()); 
@@ -150,15 +107,8 @@ class M_ip_address extends MY_Model {
 						// group exists - no need to do anything
 					} else {
 						// insert new group
-						$sql = "INSERT INTO oa_group 
-								(group_id, 
-								group_name, 
-								group_padded_name, 
-								group_dynamic_select, 
-								group_parent, 
-								group_description, 
-								group_category, 
-								group_icon) VALUES 
+						$sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, 
+								group_parent, group_description, group_category, group_icon) VALUES 
 								(NULL, ?, ?, ?, '1', ?, 'network', 'switch')";
 						$sql = $this->clean_sql($sql);
 						$group_name = "Network - " . $ipdetails->network . ' / ' . $ipdetails->network_slash;

@@ -18,7 +18,7 @@ class M_audit_log extends MY_Model {
 				(user_id, system_id, audit_log_event_type, audit_log_event_details, timestamp) 
 				VALUES (?, ?, ?, ?, ?)";
 		$sql = $this->clean_sql($sql);
-		$data = array($this->session->userdata['user_id'], $system_id, 'System Manual Data Changed', $field_name . ' - ' . $field_value, date('Y-m-d H:i:s'));
+		$data = array($this->session->userdata['user_id'], "$system_id", 'System Manual Data Changed', "$field_name" . ' - ' . "$field_value", date('Y-m-d H:i:s'));
 		$query = $this->db->query($sql, $data); 
 	}
 
@@ -39,7 +39,7 @@ class M_audit_log extends MY_Model {
 				oa_audit_log.timestamp DESC
 			LIMIT 500";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id);
+		$data = array("$system_id");
 		$query = $this->db->query($sql, $data); 
 		$result = $query->result();
 		return ($result);

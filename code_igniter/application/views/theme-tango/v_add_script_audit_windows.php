@@ -38,7 +38,7 @@ echo form_open('admin/add_script_audit_windows') . "\n";
 	<table width="80%" cellpadding = "0" cellspacing="0" style=".label {width:200px;}">
 		<tr>
 			<td width='50%'>
-				<p><label class='HelpPopupTrigger' rel='this is a test.' for='strcomputer' ><?php echo __("Computer")?>: </label><input type='text' id='strcomputer' name='strcomputer' tabindex='1' title=''  value='.'/></p>
+				<p><label for='strcomputer' ><?php echo __("Computer")?>: </label><input type='text' id='strcomputer' name='strcomputer' tabindex='1' title=''  value='.'/></p>
 				<p><label for='submit_online'><?php echo __("Submit Online")?>: </label><input type='checkbox' id='submit_online' name='submit_online' tabindex='2' title='' checked /></p>
 				<p><label for='create_file'><?php echo __("Create an XML file")?>: </label><input type='checkbox' id='create_file' name='create_file' tabindex='3' title='' /></p>
 				<p><label for='url'><?php echo __("Submit to URL")?>: </label><select name='url' id='url' tabindex='4' title=''>
@@ -68,7 +68,7 @@ echo form_open('admin/add_script_audit_windows') . "\n";
 					<option value='2'>2 - verbose</option>
 					<option value='3'>3 - very verbose</option>
 				</select></p>
-				<p><label for='ldap'><?php echo __("LDAP - do not normally set this")?>: </label><input type='text' id='strcomputer' name='strcomputer' tabindex='17' title='' value=''/></p>
+				<p><label for='ldap'><?php echo __("LDAP - do not normally set this")?>: </label><input type='text' id='ldap' name='ldap' tabindex='17' title='' value=''/></p>
 				<p><label for='ldap_seen_days'><?php echo __("LDAP - Seen by AD in the last XX days")?>: </label><input type='text' id='ldap_seen_days' name='ldap_seen_days' tabindex='18' title='' value='0'/></p>
 				<p><label for='ldap_seen_date'><?php echo __("LDAP - Seen by AD since XX date")?>: </label><input type='text' id='ldap_seen_date' name='ldap_seen_date' tabindex='19' title='' value='2012-06-30'/></p>
 				<p><label for='ping_target'><?php echo __("Ping the target before attempting to audit")?>: </label><input type='checkbox' id='ping_target' name='ping_target' tabindex='20' title='' /></p>

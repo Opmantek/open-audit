@@ -56,7 +56,7 @@ class M_print_queue extends MY_Model {
 			$row = $query->row();
 			// the print queue exists - need to update its timestamp
 			$sql = "UPDATE sys_sw_print_queue SET timestamp = ? WHERE queue_id = ?";
-			$data = array($details->timestamp, $row->queue_id);
+			$data = array("$details->timestamp", "$row->queue_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the print queue does not exist - insert it

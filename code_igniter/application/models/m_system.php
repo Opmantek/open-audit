@@ -37,170 +37,24 @@ class M_system extends MY_Model {
 		return ($result);
 	}
 
-	function find_system($details) {
-		# we are searching for a system_id.
-		# search order is:
-		# system_key, mac_address, man_ip_address, serial, man_serial, hostname
-		$system_id = '';
-		$details_new = (object) $details;
-
-		if (!isset($details_new->system_key) or $details_new->system_key == '') {
-			# we will try to build a key.
-			
-			# this is a computer from an audit script
-			if (isset($details_new->uuid) and isset($details_new->hostname)) { $details_new->system_key = $details_new->uuid . "-" . $details_new->hostname; }
-
-			# this is anything that has a FQDN
-			if (isset($details_new->fqdn) and $details_new->fqdn != '' and !isset($details_new->system_key)) {
-				$details_new->system_key = $details_new->fqdn;
-			}
-
-			# this is anything that has a hostname and domain (which makes a FQDN)
-			if ((isset($details_new->hostname) and $details_new->hostname != '') and 
-				(isset($details_new->domain) and $details_new->domain != '') and 
-				(!isset($details_new->system_key)) ){
-				$details_new->system_key = $details_new->hostname . "." . $details_new->domain;
-			}
-
-			# anything with an IP Address
-			if (isset($details_new->man_ip_address) and !isset($details_new->system_key)) {
-				$details_new->system_key = $details_new->man_ip_address;
-			}
-
-			# lastly, we might have only a serial number
-			if (isset($details_new->serial) and !isset($details_new->system_key)) {
-				$details_new->system_key = $details_new->serial;
-			}
-
-		}
-
-		#echo "<br /><br />SystemKey: " . $details_new->system_key . "<br />";
-		#echo "Serial: " . $details_new->serial . "<br />";
-		#echo "IP: " . $details_new->man_ip_address . "<br />";
-		#echo "Hostname: " . $details_new->hostname . "<br />";
-		#echo "Domain" . $details_new->domain . "<br />";
-
-		# check system_key
-		if (isset($details_new->system_key) and ($system_id == '')) {
-			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production'";
-			$data = array("$details_new->system_key");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0) { 
-				$system_id = $row->system_id; 
-				#echo "Hit on System Key.";
-			} 
-		}
-
-		# todo - fix this by making sure (snmp in particular) calls with the proper variable name
-		if (!isset($details_new->mac_address) and (isset($details_new->mac))) {$details_new->mac_address = $details_new->mac;}
-
-		# check MAC Address
-		if (isset($details_new->mac_address) and $details_new->mac_address > '' and ($system_id == '')) {
-			# check the sys_hw_network_card_ip table
-			$sql = "SELECT system.system_id FROM system 
-					LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
-					WHERE sys_hw_network_card_ip.net_mac_address = ? 
-					AND system.man_status = 'production' LIMIT 1";
-			$sql = $this->clean_sql($sql);
-			$data = array("$details_new->mac_address");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0 ) { 
-				$system_id = $row->system_id; 
-				#echo "Hit on MAC Address.";
-			}
-		}
-
-		# check IP Address in system, then sys_hw_network_card_ip tables
-		if (isset($details_new->man_ip_address) and 
-				$details_new->man_ip_address > '' and 
-				$details_new->man_ip_address != '0.0.0.0' and 
-				$details_new->man_ip_address != '000.000.000.000' 
-				and ($system_id == '')) {
-			$sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
-			$data = array(ip_address_to_db($details_new->man_ip_address));
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0) {  
-				$system_id = $row->system_id; 
-				#echo "Hit on IP1.";
-			}
-			if ($system_id == '') {
-				# we didn't get a hit from the system table - try the sys_hw_network_card_ip table
-				$sql = "SELECT system.system_id FROM system 
-						LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
-						WHERE (sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ?)
-						AND system.man_status = 'production' LIMIT 1";
-				$sql = $this->clean_sql($sql);
-				$data = array(ip_address_to_db($details_new->man_ip_address), "$details_new->man_ip_address");
-				$query = $this->db->query($sql, $data);
-				$row = $query->row();
-				if (count($row) > 0) { 
-					$system_id = $row->system_id; 
-					#echo "Hit on IP2.";
-				}
-			}
-		}
-
-		# check serial
-		if ((isset($details_new->serial) and ($details_new->serial > '') and ($system_id == ''))) {
-			$sql = "SELECT system.system_id FROM system WHERE serial = ? AND system.man_status = 'production'";
-			$data = array("$details_new->serial");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0) { 
-				$system_id = $row->system_id; 
-				#echo "Hit on serial.";
-			}
-		}
-
-		# check man_serial
-		if ((isset($details_new->man_serial) and ($details_new->man_serial > '') and ($system_id == ''))) {
-			$sql = "SELECT system.system_id FROM system WHERE man_serial = ? AND system.man_status = 'production'";
-			$data = array("$details_new->man_serial");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0) { 
-				$system_id = $row->system_id; 
-				#echo "Hit on man_serial.";
-			}
-		}
-
-		#check hostname
-		if (isset($details_new->hostname) and ($system_id == '') ) {
-			$i = explode(".", $details_new->hostname);
-			$hostname = $i[0];
-			$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
-			$data = array("$details_new->hostname");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0) { 
-				$system_id = $row->system_id; 
-				#echo "Hit on hostname.";
-			}
-		}
-		unset($details_new);
-		return $system_id;
-	}
-
-
-	function find_system1($details) {
-		# we are searching for a system_id.
-		# search order is:
-		# system_key, mac_address, man_ip_address, serial, man_serial, hostname
-		$system_id = '';
+	function create_system_key($details) {
 		$details = (object) $details;
-
 		if (!isset($details->system_key) or $details->system_key == '') {
 			# we will try to build a key.
-			
+			$details->system_key = '';
+
 			# this is a computer from an audit script
-			if (isset($details->uuid) and isset($details->hostname)) { $details->system_key = $details->uuid . "-" . $details->hostname; }
+			if (isset($details->uuid) and $details->uuid != '' and 
+				isset($details->hostname) and $details->hostname != '' and 
+				$details->system_key == '') { 
+					$details->system_key = $details->uuid . "-" . $details->hostname; 
+					$details->system_key_type = 'uuho';
+			}
 
 			# this is anything that has a FQDN
-			if (isset($details->fqdn) and $details->fqdn != '' and !isset($details->system_key)) {
+			if (isset($details->fqdn) and $details->fqdn != '' and $details->system_key == '') {
 				$details->system_key = $details->fqdn;
+				$details->system_key_type = 'fqdn';
 			}
 
 			# this is anything that has a hostname and domain (which makes a FQDN)
@@ -208,39 +62,82 @@ class M_system extends MY_Model {
 				(isset($details->domain) and $details->domain != '') and 
 				(!isset($details->system_key)) ){
 				$details->system_key = $details->hostname . "." . $details->domain;
+				$details->system_key_type = 'hodo';
 			}
 
 			# anything with an IP Address
-			if (isset($details->man_ip_address) and !isset($details->system_key)) {
+			if (isset($details->man_ip_address) and $details->man_ip_address != '' and $details->system_key == '') {
 				$details->system_key = $details->man_ip_address;
+				$details->system_key_type = 'ipad';
 			}
 
 			# lastly, we might have only a serial number
-			if (isset($details->serial) and !isset($details->system_key)) {
-				$details->system_key = $details->serial;
+			# if this is all we have, we also require a type.
+			# first check to make sure we have a type or man_type
+			if ((!isset($details->type) or $details->type == '') and 
+				isset($details->man_type) and $details->man_type != '') { $details->type = $details->man_type; }
+
+			# next check if we also have a serial and set the system_key if so
+			if (isset($details->serial) and $details->serial != '') {
+				if (isset($details->type) and $details->type != '') {
+					if ($details->system_key == '') {
+						$details->system_key = $details->type . "_" . $details->serial;
+						$details->system_key_type = 'tyse';
+					}
+				}
 			}
-
+			return $details->system_key;
 		}
+	}
 
-
+	function find_system($details) {
+		# we are searching for a system_id.
+		# search order is:
+		# system_key, mac_address, man_ip_address, serial, man_serial, hostname
+		$details = (object) $details;
+		$details->system_id = '';
 
 		# check system_key
-		if (isset($details->system_key) and ($system_id == '')) {
-			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production'";
+		if (isset($details->system_key) and ($details->system_id == '')) {
+			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
 			$data = array("$details->system_key");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { 
-				$system_id = $row->system_id; 
-				$details->error = "Hit on System Key.";
+				$details->system_id = $row->system_id; 
+				#echo "HIT on system_key. " . $details->system_id . "<br />";
 			} 
 		}
+
+		if (isset($details->fqdn) and $details->fqdn != '' and $details->system_id == '') {
+			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
+			$data = array("$details->fqdn");
+			$query = $this->db->query($sql, $data);
+			$row = $query->row();
+			if (count($row) > 0) { 
+				$details->system_id = $row->system_id; 
+				#echo "HIT on fqdn. " . $details->system_id . "<br />";
+			} 
+		}
+
+		if (isset($details->hostname) and $details->hostname != '' and isset($details->domain) and $details->domain != '' and $details->system_id == '') {
+			$details->fqdn = $details->hostname . "." . $details->domain;
+			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
+			$data = array("$details->fqdn");
+			$query = $this->db->query($sql, $data);
+			$row = $query->row();
+			if (count($row) > 0) { 
+				$details->system_id = $row->system_id; 
+				#echo "HIT on host + domain. " . $details->system_id . "<br />";
+			} 			
+		}
+
 
 		# todo - fix this by making sure (snmp in particular) calls with the proper variable name
 		if (!isset($details->mac_address) and (isset($details->mac))) {$details->mac_address = $details->mac;}
 
 		# check MAC Address
-		if (isset($details->mac_address) and $details->mac_address > '' and ($system_id == '')) {
+		if (isset($details->mac_address) and $details->mac_address > '' and ($details->system_id == '')) {
 			# check the sys_hw_network_card_ip table
 			$sql = "SELECT system.system_id FROM system 
 					LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
@@ -251,19 +148,38 @@ class M_system extends MY_Model {
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0 ) { 
-				$system_id = $row->system_id; 
-				$details->error = "Hit on MAC Address.";
+				$details->system_id = $row->system_id; 
+				#echo "Hit on MAC Address.";
 			}
 		}
 
 		# check IP Address in system, then sys_hw_network_card_ip tables
-		if (isset($details->man_ip_address) and $details->man_ip_address > '' and ($system_id == '')) {
-			$sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
+		if (isset($details->man_ip_address) and 
+				$details->man_ip_address > '' and 
+				$details->man_ip_address != '0.0.0.0' and 
+				$details->man_ip_address != '000.000.000.000' and 
+				$details->system_id == '') {
+
+			$sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
 			$data = array(ip_address_to_db($details->man_ip_address));
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
-			if (count($row) > 0) { $system_id = $row->system_id; }
-			if ($system_id == '') {
+			if (count($row) > 0) {  
+				$details->system_id = $row->system_id; 
+			}
+
+
+			if ($details->system_id == '') {
+				$sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
+				$data = array(ip_address_to_db($details->man_ip_address));
+				$query = $this->db->query($sql, $data);
+				$row = $query->row();
+				if (count($row) > 0) {  
+					$details->system_id = $row->system_id; 
+				}
+			}
+
+			if ($details->system_id == '') {
 				# we didn't get a hit from the system table - try the sys_hw_network_card_ip table
 				$sql = "SELECT system.system_id FROM system 
 						LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
@@ -274,38 +190,57 @@ class M_system extends MY_Model {
 				$query = $this->db->query($sql, $data);
 				$row = $query->row();
 				if (count($row) > 0) { 
-					$system_id = $row->system_id; 
-					$details->error = "Hit on IP.";
+					$details->system_id = $row->system_id; 
+					#echo "Hit on IP2.";
 				}
 			}
 		}
 
 		# check serial
-		if ((isset($details->serial) and ($details->serial > '') and ($system_id == ''))) {
-			$sql = "SELECT system.system_id FROM system WHERE serial = ? AND system.man_status = 'production'";
-			$data = array("$details->serial");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0) { 
-				$system_id = $row->system_id; 
-				$details->error = "Hit on serial.";
+		# in this case, we also need to know a TYPE
+		if ((isset($details->serial) and ($details->serial > '') and ($details->system_id == ''))) {
+			if ((!isset($details->type) or $details->type == '') and 
+				isset($details->man_type) and $details->man_type != '') { 
+				$details->type = $details->man_type; }
+			if ($details->type != '' or $details->man_type != '') {
+				$sql = "SELECT system.system_id FROM system WHERE system.system_key = ? AND system.man_status = 'production'";
+				$data = array("$details->type" . "_" . "$details->serial");
+				$query = $this->db->query($sql, $data);
+				$row = $query->row();
+				if (count($row) > 0) { 
+					$details->system_id = $row->system_id;
+				}
+
+				if ($details->system_key == '') {
+					$sql = "SELECT system.system_id FROM system WHERE system.serial = ? AND (system.man_type = ? OR system.type = ?) AND system.man_status = 'production'";
+					$data = array("$details->serial", "$details->man_type", "$details->type");
+					$query = $this->db->query($sql, $data);
+					$row = $query->row();
+					if (count($row) > 0) { 
+						$details->system_id = $row->system_id;
+					}
+				}
 			}
 		}
 
 		# check man_serial
-		if ((isset($details->man_serial) and ($details->man_serial > '') and ($system_id == ''))) {
-			$sql = "SELECT system.system_id FROM system WHERE man_serial = ? AND system.man_status = 'production'";
-			$data = array("$details->man_serial");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0) { 
-				$system_id = $row->system_id; 
-				$details->error = "Hit on man_serial.";
+		if ((isset($details->man_serial) and ($details->man_serial > '') and ($details->system_id == ''))) {
+			if (isset($details->man_type) and $details->man_type > '') {$man_type = $details->man_type; }
+			if (isset($details->type) and $details->type > '') {$type = $details->type; }
+			if ($type > '' or $man_type> '') {
+				$sql = "SELECT system.system_id FROM system WHERE system.man_serial = ? AND (system.man_type = ? OR system.type = ?) AND system.man_status = 'production'";
+				$data = array("$details->man_serial", "$details->man_type", "$details->type");
+				$query = $this->db->query($sql, $data);
+				$row = $query->row();
+				if (count($row) > 0) { 
+					$details->system_id = $row->system_id; 
+					#echo "Hit on man_serial.";
+				}
 			}
 		}
 
 		#check hostname
-		if (isset($details->hostname) and ($system_id == '') ) {
+		if (isset($details->hostname) and ($details->system_id == '') ) {
 			$i = explode(".", $details->hostname);
 			$hostname = $i[0];
 			$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
@@ -313,563 +248,13 @@ class M_system extends MY_Model {
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { 
-				$system_id = $row->system_id; 
-				$details->error = "Hit on hostname.";
+				$details->system_id = $row->system_id; 
+				#echo "Hit on hostname.";
 			}
 		}
+		#echo "Returning SystemID: " . $details->system_id . "<br />\n";
+		return $details->system_id;
 
-		return $system_id;
-	}
-
-	function insert_nmis($details) {
-		# we do NOT have a system_id
-		$timestamp = date('Y-m-d H:i:s');
-		print_r($details);
-		exit();
-	}
-
-	function insert_snmp($details) {
-		# we do NOT have a system_id
-		$timestamp = date('Y-m-d H:i:s');
-		if (!isset($details->ip_address)) {$details->ip_address = '';}
-		if (!isset($details->hostname)) {$details->hostname = '';}
-		if (!isset($details->description)) {$details->description = '';}
-		if (!isset($details->uptime)) {$details->uptime = '';}
-		if (!isset($details->contact)) {$details->contact = '';}
-		if (!isset($details->os_group)) {$details->os_group = '';}
-		if (!isset($details->os_family)) {$details->os_family = '';}
-		if (!isset($details->os_name)) {$details->os_name = '';}
-		if (!isset($details->manufacturer)) {$details->manufacturer = '';}
-		if (!isset($details->model)) {$details->model = '';}
-		if (!isset($details->serial)) {$details->serial = '';}
-		if (!isset($details->type)) {$details->type = '';}
-		if (!isset($details->oid)) {$details->oid = '';}
-		if (!isset($details->fqdn)) {$details->fqdn = '';}
-		if (!isset($details->printer_duplex)) {$details->printer_duplex = '';}
-		if (!isset($details->printer_color)) {$details->printer_color = '';}
-		if (!isset($details->access_details)) {$details->access_details = '';}
-		if (!isset($details->nmis_group)) {$details->nmis_group = '';}
-		if (!isset($details->nmis_name)) {$details->nmis_name = '';}
-		if (!isset($details->nmis_role)) {$details->nmis_role = '';}
-
-		$sql = "INSERT INTO system (man_ip_address, hostname, description, man_description, uptime, 
-			contact_name, os_group, man_os_group, os_family, man_os_family, os_name, man_os_name, 
-			manufacturer, man_manufacturer, model, man_model, serial, man_serial, type, man_type, 
-			icon, man_icon, access_details, last_seen_by, nmis_group, nmis_name, nmis_role, 
-			snmp_oid, fqdn, printer_duplex, printer_color, man_status, timestamp, first_timestamp) VALUES (
-			?, ?, ?, ?, ?, 
-			?, ?, ?, ?, ?, ?, ?, 
-			?, ?, ?, ?, ?, ?, ?, ?, 
-			?, ?, ?, ?, ?, ?, ?, 
-			?, ?, ?, ?, ?, ?, ?)";
-
-		$data = array(ip_address_to_db($details->ip_address), "$details->hostname", "$details->description", "$details->description", "$details->uptime",
-			"$details->contact", "$details->os_group", "$details->os_group", "$details->os_family", "$details->os_family", "$details->os_name", "$details->os_name",
-			"$details->manufacturer", "$details->manufacturer", "$details->model", "$details->model", "$details->serial", "$details->serial", "$details->type", "$details->type", 
-			"$details->type", "$details->type", "$details->access_details", "snmp", "$details->nmis_group", "$details->nmis_name", "$details->nmis_role", 
-			"$details->oid", "$details->fqdn", "$details->printer_duplex", "$details->printer_color", "production", "$timestamp", "$timestamp" );
-
-		$sql = $this->clean_sql($sql);
-		$query = $this->db->query($sql, $data);
-		#echo $this->db->last_query() . "\n";
-		$temp_system_id = $this->db->insert_id();
-
-		$details->system_id = $this->db->insert_id();
-		if (!isset($details->subnet)) { $details->subnet = ''; }
-
-		if ($details->mac > '') {
-			$sql = "SELECT sys_hw_network_card_ip.* 
-					FROM sys_hw_network_card_ip 
-					LEFT JOIN system ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) 
-					WHERE system.system_id = ? AND
-					sys_hw_network_card_ip.net_mac_address = ? AND 
-					sys_hw_network_card_ip.ip_address_version = '4' ";
-			$sql = $this->clean_sql($sql);
-			$data = array("$details->system_id", "$details->mac");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if ($query->num_rows() > 0) {
-				if ($row->ip_subnet == "") {
-					# update the subnet
-					$sql = "UPDATE sys_hw_network_card_ip SET ip_subnet = ? WHERE system_id = ? AND timestamp = ?";
-					$data = array("$details->subnet", "$details->system_id", "$row->timestamp");
-					$query = $this->db->query($sql, $data);
-				}
-			} else {
-				# insert a new record
-				$sql = "INSERT INTO sys_hw_network_card_ip (net_mac_address, system_id, ip_address_v4, ip_subnet, ip_address_version, timestamp, first_timestamp)
-						VALUES(?, ?, ?, ?, '4', ?, ?)";
-				$sql = $this->clean_sql($sql);
-				$data = array("$details->mac", "$details->system_id", "$details->man_ip_address", "$details->subnet", "$timestamp", "$timestamp");
-				$query = $this->db->query($sql, $data);
-			}
-		}
-		return $temp_system_id;
-	}
-
-	function update_snmp($details) {
-		# v1 does not return much, mainly network information
-		# 
-		# todo update/insert ROUTE information
-
-		# we need to make sure we get a different timestamp than the nmap input routine.
-		sleep(1);
-		$details->timestamp = date('Y-m-d H:i:s');
-
-		# the system exists
-		$sql = "SELECT * FROM system WHERE system_id = ?";
-		$data = array("$details->system_id");
-		$query = $this->db->query($sql, $data);
-		$row = $query->row();
-		$timestamp = $row->timestamp;
-		$details->man_type = $details->type;
-		$details->man_serial = $details->serial;
-		$details->man_description = $details->description;
-		$details->man_manufacturer = $details->manufacturer;
-		$details->man_model = $details->model;
-		$details->icon = $details->type;
-		$details->man_icon = $details->type;
-		if (!isset($details->nmis_group)) {$details->nmis_group = '';}
-		if (!isset($details->nmis_name)) {$details->nmis_name = '';}
-		if (!isset($details->nmis_role)) {$details->nmis_role = '';}
-		if (!isset($details->access_details)) {$details->access_details = '';}
-
-
-		if ($details->snmp_version == '2c') {
-
-			if (($row->type > '') and ($row->last_seen <> $row->first_timestamp) and ($row->type <> 'unknown')) {
-				$details->type = $row->type;
-			}
-
-			if (($row->man_type > '') and ($row->last_seen <> $row->first_timestamp) and ($row->man_type <> 'unknown')) {
-				$details->man_type = $row->man_type;
-			}
-
-			if ($row->icon > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->icon = $row->icon;
-			}
-
-			if ($row->man_icon > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->man_icon = $row->man_icon;
-			}
-
-			if ($row->os_group > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->os_group = $row->os_group;
-			}
-
-			if ($row->man_os_group > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->man_os_group = $row->man_os_group;
-			}
-
-			if ($row->os_family > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->os_family = $row->os_family;
-			}
-
-			if ($row->man_os_family > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->man_os_family = $row->man_os_family;
-			}
-
-			if ($row->os_name > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->os_name = $row->os_name;
-			}
-
-			if ($row->man_os_name > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->man_os_name = $row->man_os_name;
-			}
-
-			if ($row->description > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->description = $row->description;
-			}
-
-			if ($row->man_description > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->man_description = $row->man_description;
-			}
-
-			if ($row->serial > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->serial = $row->serial;
-			}
-
-			if ($row->man_serial > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->man_serial = $row->serial;
-			}
-
-			if ($row->manufacturer > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->manufacturer = $row->manufacturer;
-			}
-
-			if ($row->man_manufacturer > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->man_manufacturer = $row->man_manufacturer;
-			}
-
-			if ($row->model > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->model = $row->model;
-			}
-
-			if ($row->man_model > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->man_model = $row->man_model;
-			}
-
-			if ($row->man_ip_address > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->man_ip_address = $row->man_ip_address;
-			} 
-
-			if ($row->contact_name > '' and $row->last_seen <> $row->first_timestamp) {
-				$details->contact = $row->contact_name;
-			}
-
-			if ($row->access_details > '') {
-				$details->access_details = $row->access_details;
-			}
-
-			if ($row->nmis_group > '' and $details->nmis_group == '') {
-				$details->nmis_group = $row->nmis_group;
-			}
-
-			if ($row->nmis_name > '' and $details->nmis_name == '') {
-				$details->nmis_name = $row->nmis_name;
-			}
-
-			if ($row->nmis_role > '' and $details->nmis_role == '') {
-				$details->nmis_role = $row->nmis_role;
-			}
-
-			$sql = "UPDATE system SET 
-					man_status = 'production', 
-					last_seen_by = 'snmp', 
-					type = ?, 
-					man_type = ?, 
-					model = ?, 
-					man_model = ?, 
-					description = ?, 
-					man_description = ?, 
-					manufacturer = ?, 
-					man_manufacturer = ?, 
-					serial = ?, 
-					man_serial = ?, 
-					man_ip_address = ?, 
-					last_seen = ?, 
-					os_group = ?, 
-					man_os_group = ?, 
-					os_family = ?, 
-					man_os_family = ?,
-					os_name = ?, 
-					man_os_name = ?, 
-					icon = ?, 
-					man_icon = ?, 
-					contact_name = ?, 
-					uptime = ?, 
-					access_details = ?, 
-					nmis_group = ?, 
-					nmis_name = ?, 
-					nmis_role = ? 
-					WHERE system_id = ? ";
-			$sql = $this->clean_sql($sql);
-			$data = array("$details->type", "$details->man_type", "$details->model", "$details->man_model", 
-						"$details->description", "$details->man_description", "$details->manufacturer", "$details->man_manufacturer", 
-						"$details->serial", "$details->man_serial", ip_address_to_db($details->man_ip_address), "$details->timestamp", 
-						"$details->os_group", "$details->man_os_group", "$details->os_family", "$details->man_os_family", 
-						"$details->os_name", "$details->man_os_name", "$details->icon", "$details->man_icon", 
-						"$details->contact", "$details->uptime", "$details->access_details", "$details->nmis_group", 
-						"$details->nmis_name", "$details->nmis_role", "$details->system_id" );
-			$query = $this->db->query($sql, $data);
-		} 
-
-		# check that we have the subnet populated
-		# sometimes we only get an IP Address
-		# maybe we have nothing at all?
-		if ($details->mac > '') {
-			$sql = "SELECT sys_hw_network_card_ip.* 
-					FROM sys_hw_network_card_ip 
-					LEFT JOIN system ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) 
-					WHERE system.system_id = ? AND
-					sys_hw_network_card_ip.net_mac_address = ? AND 
-					sys_hw_network_card_ip.ip_address_version = '4' ";
-			$sql = $this->clean_sql($sql);
-			$data = array("$details->system_id", "$details->mac");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if ($query->num_rows() > 0) {
-				if ($row->ip_subnet == "") {
-					# update the subnet
-					$sql = "UPDATE sys_hw_network_card_ip SET ip_subnet = ? WHERE system_id = ? AND timestamp = ?";
-					$data = array("$details->subnet", "$details->system_id", "$row->timestamp");
-					$query = $this->db->query($sql, $data);
-				}
-			} else {
-				# insert a new record
-				$sql = "INSERT INTO sys_hw_network_card_ip (net_mac_address, system_id, ip_address_v4, ip_subnet, ip_address_version, timestamp, first_timestamp)
-						VALUES(?, ?, ?, ?, '4', ?, ?)";
-				$sql = $this->clean_sql($sql);
-				$data = array("$details->mac", "$details->system_id", "$details->man_ip_address", "$details->subnet", "$timestamp", "$timestamp");
-				$query = $this->db->query($sql, $data);
-			}
-		}
-	}
-
-	function process_system_from_nmap($details) {
-
-		$details->system_id = '';
-		$details->timestamp = date('Y-m-d H:i:s');
-		if ($details->hostname == '') {	$details->hostname = ip_address_from_db($details->man_ip_address); }
-		$details->man_ip_address = $this->ip_address_to_db($details->man_ip_address);
-		$result = @gethostbyaddr($details->hostname);
-		if (($result > '') and ($result != ip_address_from_db($details->man_ip_address))) {
-			$i = explode(".", $result);
-			$details->hostname = $i[0];
-		}
-		if ($details->mac_address > '') {
-			# we have a MAC Address, check the sys_hw_network_card_ip table
-			$sql = "SELECT system.system_id, system.system_key FROM system 
-					LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
-					WHERE (sys_hw_network_card_ip.net_mac_address = ? OR sys_hw_network_card_ip.ip_address_v4 = ?) 
-						AND (system.nmap_type = ? OR system.nmap_type = '' OR nmap_type = 'unknown') 
-						AND system.man_status = 'production' ";
-			$sql = $this->clean_sql($sql);
-			$data = array("$details->mac_address", $this->ip_address_to_db($details->man_ip_address), "$details->type" );
-			$query = $this->db->query($sql, $data);
-			$result = $query->result();
-			$match = 'n';
-			foreach ($result as $i) {
-				if (($i->system_key > '') and ($match == 'n')) {
-					$match = 'y';
-					$details->system_id = $i->system_id;
-				}
-			}
-			if (($details->system_id == '') and ($match == 'n')) {
-				foreach ($result as $i) {
-					$details->system_id = $i->system_id;
-				}
-			}
-
-			if ($details->system_id > '') {
-				# we should update the details
-				$sql = "SELECT * FROM system WHERE system_id = ?";
-				$data = array("$details->system_id");
-				$query = $this->db->query($sql, $data);
-				$row = $query->row();
-
-				if ($row->type > '') {
-					$details->type = $row->type;
-				} else {
-					$details->type = $details->type;
-				}
-
-				if ($row->man_type > '') {
-					$details->man_type = $row->man_type;
-				} else {
-					$details->man_type = $details->type;
-				}
-
-				if ($row->description > '') {
-					$details->description = $row->description;
-				}
-
-				if ($row->man_description > '') {
-					$details->man_description = $row->man_description;
-				} else {
-					$details->man_description = $details->description;
-				}
-
-				if ($row->os_name > '') {
-					$details->os_name = $row->os_name;
-				} 
-
-				if ($row->man_os_name > '') {
-					$details->man_os_name = $row->man_os_name;
-				} else {
-					$details->man_os_name = $details->os_name;
-				}
-
-				if ($row->manufacturer > '') {
-					$details->manufacturer = $row->manufacturer;
-				}
-
-				if ($row->man_manufacturer > '') {
-					$details->man_manufacturer = $row->man_manufacturer;
-				} else {
-					$details->man_manufacturer = $details->manufacturer;
-				}
-
-				if ($row->icon > '') {
-					$details->icon = $row->icon;
-				} else {
-					$details->icon = 'switch';
-				}
-
-				if ($row->man_icon > '') {
-					$details->man_icon = $row->man_icon;
-				} else {
-					$details->man_icon = 'switch';
-				}
-
-				if ($row->man_ip_address > '') {
-					$details->man_ip_address = $row->man_ip_address;
-				} 
-
-				$sql = "UPDATE system SET 
-						man_status = 'production', 
-						last_seen_by = 'nmap', 
-						type = ?, 
-						man_type = ?, 
-						nmap_type = ?, 
-						description = ?, 
-						man_description = ?, 
-						os_name = ?, 
-						man_os_name = ?, 
-						manufacturer = ?, 
-						man_manufacturer = ?, 
-						icon = ?, 
-						man_icon = ?, 
-						man_ip_address = ?, 
-						last_seen = ? 
-						WHERE system_id = ? ";
-				$sql = $this->clean_sql($sql);
-				$data = array("$details->type",    "$details->man_type",    "$details->nmap_type",      "$details->description",      "$details->man_description",
-							  "$details->os_name", "$details->man_os_name", "$details->manufacturer",   "$details->man_manufacturer", 
-							  "$details->icon",    "$details->man_icon",    ip_address_to_db($details->man_ip_address), "$details->timestamp",        "$details->system_id" );
-				$query = $this->db->query($sql, $data);
-			}
-		}
-
-		if ($details->system_id == '') {
-			# we have no MAC - best guess based on IP and type
-			$sql = "SELECT * FROM system WHERE man_ip_address = ? and (nmap_type = ? or nmap_type = '') and man_status = 'production'";
-			$data = array ("$details->man_ip_address", "$details->type");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if ($row) {
-				# in the db - update the details
-				$details->system_id = $row->system_id;
-
-				if ($row->type > '') {
-					$details->type = $row->type;
-				} else {
-					$details->type = $details->type;
-				}
-
-				if ($row->man_type > '') {
-					$details->man_type = $row->man_type;
-				} else {
-					$details->man_type = $details->type;
-				}
-
-				if ($row->description > '') {
-					$details->description = $row->description;
-				}
-
-				if ($row->man_description > '') {
-					$details->man_description = $row->man_description;
-				} else {
-					$details->man_description = $details->description;
-				}
-
-				if ($row->os_name > '') {
-					$details->os_name = $row->os_name;
-				} 
-
-				if ($row->man_os_name > '') {
-					$details->man_os_name = $row->man_os_name;
-				} else {
-					$details->man_os_name = $details->os_name;
-				}
-
-				if ($row->manufacturer > '') {
-					$details->manufacturer = $row->manufacturer;
-				}
-
-				if ($row->man_manufacturer > '') {
-					$details->man_manufacturer = $row->man_manufacturer;
-				} else {
-					$details->man_manufacturer = $details->manufacturer;
-				}
-
-				if ($row->icon > '') {
-					$details->icon = $row->icon;
-				} else {
-					$details->icon = 'switch';
-				}
-
-				if ($row->man_icon > '') {
-					$details->man_icon = $row->man_icon;
-				} else {
-					$details->man_icon = 'switch';
-				}
-
-				if ($row->man_ip_address > '') {
-					$details->man_ip_address = $row->man_ip_address;
-				} 
-
-				$sql = "UPDATE system SET 
-						man_status = 'production', 
-						last_seen_by = 'nmap', 
-						type = ?, 
-						man_type = ?, 
-						nmap_type = ?, 
-						description = ?, 
-						man_description = ?, 
-						os_name = ?, 
-						man_os_name = ?, 
-						manufacturer = ?, 
-						man_manufacturer = ?, 
-						icon = ?, 
-						man_icon = ?, 
-						man_ip_address = ?, 
-						last_seen = ? 
-						WHERE system_id = ? ";
-				$sql = $this->clean_sql($sql);
-				$data = array("$details->type",    "$details->man_type",    "$details->nmap_type",      "$details->description",      "$details->man_description",
-							  "$details->os_name", "$details->man_os_name", "$details->manufacturer",   "$details->man_manufacturer", 
-							  "$details->icon",    "$details->man_icon",    ip_address_to_db($details->man_ip_address), "$details->timestamp",        "$details->system_id" );
-				$query = $this->db->query($sql, $data);
-			}
-		}
-
-		if ($details->system_id == ''){
-			# we still haven't found something - insert a new device
-			$details->first_timestamp - $details->timestamp;
-
-			if (strpos(strtolower($details->os_name), "windows") !== FALSE) {
-				$details->type = 'computer';
-				$details->man_type = 'computer';
-				$details->os_group = 'Windows';
-				$details->man_os_group = 'Windows';
-				$details->icon = 'windows';
-			} else {
-				$details->man_type = $details->type;
-				$details->os_group = '';
-				$details->man_os_group = '';
-				$details->icon = 'switch';
-			}
-
-			$sql = "INSERT INTO system (man_status, man_environment, man_criticality, last_seen_by, 
-										icon, man_icon, hostname, description, 
-										man_description, nmap_type, type, man_type, 
-										os_name, man_os_name, manufacturer, man_manufacturer, 
-										man_ip_address, last_seen, timestamp, first_timestamp) VALUES (
-										'production', 'production', 'normal', 'nmap', 
-										?, ?, ?, ?, 
-										?, ?, ?, ?, 
-										?, ?, ?, ?, 
-										?, ?, ?, ?)";
-
-			$sql = $this->clean_sql($sql);
-
-			$data = array(	"$details->icon",           "$details->icon",      "$details->hostname", "$details->description", 
-							"$details->description",    "$details->type",      "$details->type",           "$details->man_type", 
-							"$details->os_name",        "$details->os_name",   "$details->manufacturer",   "$details->manufacturer", 
-							ip_address_to_db($details->man_ip_address), "$details->timestamp", "$details->timestamp",      "$details->timestamp");
-
-			$query = $this->db->query($sql, $data);
-			$details->system_id = $this->db->insert_id();
-
-			if ($details->mac_address > '') {
-				$sql = "INSERT INTO sys_hw_network_card_ip (net_mac_address, system_id, ip_address_v4, ip_address_version, timestamp, first_timestamp) VALUES ( 
-					?, ?, ?, '4', ?, ?)";
-				$data = array("$details->mac_address", "$details->system_id", "$details->man_ip_address","$details->timestamp", "$details->timestamp" );
-				$query = $this->db->query($sql, $data);
-			}
-		}
-		return($details);
 	}
 
 	function process_system_from_ad($details) {
@@ -1070,7 +455,8 @@ class M_system extends MY_Model {
 	}
 
 	function process_sys($input) {
-		$details = new stdClass();
+		$details = (object) $input;
+#		$details = new stdClass();
 		$details->system_id = '';
 		# shouldn't need the below, but the transition from beta 9.2 onwards changes 
 		# the TYPE attribute from system to computer.
@@ -1093,14 +479,14 @@ class M_system extends MY_Model {
 		}
 
 		if (!isset($input->fqdn)) {$input->fqdn = '';}
-		if ($input->fqdn == '') {unset($input->fqdn);}
-
+		#if ($input->fqdn == '') {unset($input->fqdn);}
 
 		if (isset($input->man_org_id)) {
 			$man_org_id = $input->man_org_id;
 		} else {
 			$man_org_id = '';
 		}
+
 		# check for an existing audited system
 		$details->system_id = $this->find_system($input);
 
@@ -1108,21 +494,21 @@ class M_system extends MY_Model {
 			// we update the existing entry
 			if ($man_org_id > '') {
 				# if we have been given org_id from the script, overwrite whatever is in the DB
-				$sql = " UPDATE system SET hostname = ?, domain = ?, description = ?, type = 'computer', icon = ?, man_icon = ?, os_group = ?, man_os_group = ?, os_family = ?, man_os_family = ?, os_name = ?, man_os_name = ?, os_version = ?, serial = ?, model = ?, manufacturer = ?, uptime = ?, form_factor = ?, pc_os_bit = ?, pc_memory = ?, pc_num_processor = ?, pc_date_os_installation = ?, man_org_id = ?, last_seen = ?, last_seen_by = 'audit', timestamp = ? WHERE system.system_id = ?";
-				$data = array("$input->system_hostname", "$input->system_domain", "$input->system_description", "$input->system_os_icon", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_group", "$input->system_os_family", "$input->system_os_family", "$input->system_os_name", "$input->system_os_name", "$input->system_os_version", "$input->system_serial", "$input->system_model", "$input->system_manufacturer", "$input->system_uptime", "$input->system_form_factor", "$input->system_pc_os_bit", "$input->system_pc_memory", "$input->system_pc_num_processor", "$input->system_pc_date_os_installation", "$man_org_id", "$input->system_timestamp", "$input->system_timestamp", "$details->system_id");
+				$sql = " UPDATE system SET fqdn = ?, hostname = ?, domain = ?, description = ?, type = 'computer', icon = ?, man_icon = ?, os_group = ?, man_os_group = ?, os_family = ?, man_os_family = ?, os_name = ?, man_os_name = ?, os_version = ?, serial = ?, model = ?, manufacturer = ?, uptime = ?, form_factor = ?, pc_os_bit = ?, pc_memory = ?, pc_num_processor = ?, pc_date_os_installation = ?, man_org_id = ?, last_seen = ?, last_seen_by = 'audit', timestamp = ? WHERE system.system_id = ?";
+				$data = array("$input->fqdn", "$input->system_hostname", "$input->system_domain", "$input->system_description", "$input->system_os_icon", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_group", "$input->system_os_family", "$input->system_os_family", "$input->system_os_name", "$input->system_os_name", "$input->system_os_version", "$input->system_serial", "$input->system_model", "$input->system_manufacturer", "$input->system_uptime", "$input->system_form_factor", "$input->system_pc_os_bit", "$input->system_pc_memory", "$input->system_pc_num_processor", "$input->system_pc_date_os_installation", "$man_org_id", "$input->system_timestamp", "$input->system_timestamp", "$details->system_id");
 			} else {
 				# we haven't been given org_id, but we can't just run an update because it will replace whatever
 				# is in the DB with an empty value. This value may have been set via the web interface.
-				$sql = " UPDATE system SET hostname = ?, domain = ?, description = ?, type = 'computer', icon = ?, man_icon = ?, os_group = ?, man_os_group = ?, os_family = ?, man_os_family = ?, os_name = ?, man_os_name = ?, os_version = ?, serial = ?, model = ?, manufacturer = ?, uptime = ?, form_factor = ?, pc_os_bit = ?, pc_memory = ?, pc_num_processor = ?, pc_date_os_installation = ?,                 last_seen = ?, last_seen_by = 'audit', timestamp = ? WHERE system.system_id = ?";
-				$data = array("$input->system_hostname", "$input->system_domain", "$input->system_description", "$input->system_os_icon", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_group", "$input->system_os_family", "$input->system_os_family", "$input->system_os_name", "$input->system_os_name", "$input->system_os_version", "$input->system_serial", "$input->system_model", "$input->system_manufacturer", "$input->system_uptime", "$input->system_form_factor", "$input->system_pc_os_bit", "$input->system_pc_memory", "$input->system_pc_num_processor", "$input->system_pc_date_os_installation",                 "$input->system_timestamp", "$input->system_timestamp", "$details->system_id");
+				$sql = " UPDATE system SET fqdn = ?, hostname = ?, domain = ?, description = ?, type = 'computer', icon = ?, man_icon = ?, os_group = ?, man_os_group = ?, os_family = ?, man_os_family = ?, os_name = ?, man_os_name = ?, os_version = ?, serial = ?, model = ?, manufacturer = ?, uptime = ?, form_factor = ?, pc_os_bit = ?, pc_memory = ?, pc_num_processor = ?, pc_date_os_installation = ?,                 last_seen = ?, last_seen_by = 'audit', timestamp = ? WHERE system.system_id = ?";
+				$data = array("$input->fqdn", "$input->system_hostname", "$input->system_domain", "$input->system_description", "$input->system_os_icon", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_group", "$input->system_os_family", "$input->system_os_family", "$input->system_os_name", "$input->system_os_name", "$input->system_os_version", "$input->system_serial", "$input->system_model", "$input->system_manufacturer", "$input->system_uptime", "$input->system_form_factor", "$input->system_pc_os_bit", "$input->system_pc_memory", "$input->system_pc_num_processor", "$input->system_pc_date_os_installation",                 "$input->system_timestamp", "$input->system_timestamp", "$details->system_id");
 			}
 			$sql = $this->clean_sql($sql);
 			$query = $this->db->query($sql, $data);
 			echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 		} else {
 			// we insert a new entry
-			$sql = "INSERT INTO system SET system_key = ?, uuid = ?, hostname = ?, domain = ?, description = ?, man_description = ?, type = ?, icon = ?, os_group = ?, os_family = ?, os_name = ?, os_version = ?, serial = ?, model = ?, manufacturer = ?, uptime = ?, form_factor = ?, man_form_factor = ?, pc_os_bit = ?, pc_memory = ?, man_status = 'production', man_manufacturer = ?, man_model = ?, man_serial = ?, man_icon = ?, man_os_group = ?, man_os_family = ?, man_os_name = ?, man_type = 'computer', pc_num_processor = ?, pc_date_os_installation = ?, man_org_id = ?, last_seen = ?, last_seen_by = 'audit', first_timestamp = ?, timestamp = ?";
-			$data = array($system_key, "$input->system_uuid", "$input->system_hostname", "$input->system_domain", "$input->system_description", "$input->system_description", "$input->system_type", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_family", "$input->system_os_name", "$input->system_os_version", "$input->system_serial", "$input->system_model", "$input->system_manufacturer", "$input->system_uptime", "$input->system_form_factor", "$input->system_form_factor", "$input->system_pc_os_bit", "$input->system_pc_memory", "$input->system_manufacturer", "$input->system_model", "$input->system_serial", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_family", "$input->system_os_name", "$input->system_pc_num_processor", "$input->system_pc_date_os_installation", "$man_org_id", "$input->system_timestamp", "$input->system_timestamp", "$input->system_timestamp");
+			$sql = "INSERT INTO system SET system_key = ?, fqdn = ?, uuid = ?, hostname = ?, domain = ?, description = ?, man_description = ?, type = ?, icon = ?, os_group = ?, os_family = ?, os_name = ?, os_version = ?, serial = ?, model = ?, manufacturer = ?, uptime = ?, form_factor = ?, man_form_factor = ?, pc_os_bit = ?, pc_memory = ?, man_status = 'production', man_manufacturer = ?, man_model = ?, man_serial = ?, man_icon = ?, man_os_group = ?, man_os_family = ?, man_os_name = ?, man_type = 'computer', pc_num_processor = ?, pc_date_os_installation = ?, man_org_id = ?, last_seen = ?, last_seen_by = 'audit', first_timestamp = ?, timestamp = ?";
+			$data = array($system_key, "$input->system_uuid", "$input->fqdn", "$input->system_hostname", "$input->system_domain", "$input->system_description", "$input->system_description", "$input->system_type", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_family", "$input->system_os_name", "$input->system_os_version", "$input->system_serial", "$input->system_model", "$input->system_manufacturer", "$input->system_uptime", "$input->system_form_factor", "$input->system_form_factor", "$input->system_pc_os_bit", "$input->system_pc_memory", "$input->system_manufacturer", "$input->system_model", "$input->system_serial", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_family", "$input->system_os_name", "$input->system_pc_num_processor", "$input->system_pc_date_os_installation", "$man_org_id", "$input->system_timestamp", "$input->system_timestamp", "$input->system_timestamp");
 			$sql = $this->clean_sql($sql);
 			$query = $this->db->query($sql, $data);
 			$details->system_id = $this->db->insert_id();
@@ -1168,31 +554,213 @@ class M_system extends MY_Model {
 		$query = $this->db->query($sql, $data);
 	}
 
-	function process_other_system($details) {
-		# check if MAN + MOD + SER already exist and system is in PROD state
-		$sql = "SELECT system.system_id FROM system WHERE system.man_manufacturer = ? AND system.man_model = ? AND system.man_serial = ? AND system.man_status = ? ORDER BY timestamp LIMIT 1";
-		$data = array($details->man_manufacturer, $details->man_model, $details->man_serial, $details->man_status);
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			$details->system_id = $row->system_id; 
-			echo "System already exists - exiting.<br />\n";
-			echo "Return to <a href='add_system'> Add System</a> page.<br />\n";
-			exit();
+	function insert_system($details) {
+		# this is a NEW system
+		# we insert whatever we have from the $details object
+		# we add additional data based on what we can glean from $details
+
+		# nasty hack because when a simplexmlobject is sent (ie, from audit_windows.vbs)
+		# the foreach iterators below don't work.
+		# if we cast it to an "object", it stays as a SimpleXMLObject and doesn't work
+		# because our XML is quite simple, we can cast it to an array and back to a 'normal'
+		# object and the foreach below works.
+		$details = (object) $details;
+		$details = (array) $details;
+		$details = (object) $details;
+		# this is an insert - we do NOT want a system_id
+		unset($details->system_id);
+
+		# ensure we have something not null for all the below
+		if (!isset($details->timestamp) or $details->timestamp == '') { $details->timestamp = date('Y-m-d H:i:s'); }
+		$details->first_timestamp = $details->timestamp;
+
+		if (!isset($details->description)) { $details->description = ''; }
+		if (!isset($details->domain)) { $details->domain = ''; }
+		if (!isset($details->form_factor)) { $details->form_factor = ''; }
+		if (!isset($details->fqdn)) { $details->fqdn = ''; }
+		if (!isset($details->hostname)) { $details->hostname = ''; }
+		if (!isset($details->last_seen)) { $details->last_seen = $details->timestamp; }
+		if (!isset($details->manufacturer)) { $details->manufacturer = ''; }
+		if (!isset($details->model)) { $details->model = ''; }
+		if (!isset($details->os_family)) { $details->os_family = ''; }
+		if (!isset($details->os_group)) { $details->os_group = ''; }
+		if (!isset($details->os_name)) { $details->os_name = ''; }
+		if (!isset($details->os_version)) { $details->os_version = ''; }
+		if (!isset($details->serial)) { $details->serial = ''; }
+		if (!isset($details->status)) { $details->status = 'production'; }
+		if (!isset($details->type) or $details->type == '') { $details->type = 'unknown'; }
+		if (!isset($details->uuid)) { $details->uuid = ''; }
+		if (!isset($details->icon) or $details->icon == '') { $details->icon = str_replace(" ", "_", $details->type); }
+		$details->icon = strtolower($details->icon);
+
+		# account for any "man_" items
+		if (!isset($details->man_description)) { $details->man_description = $details->description; }
+		if (!isset($details->man_domain)) { $details->man_domain = $details->domain; }
+		if (!isset($details->man_environment)) { $details->man_environment = 'production'; }
+		if (!isset($details->man_form_factor)) { $details->man_form_factor = $details->form_factor; }
+		if (!isset($details->man_icon)) { $details->man_icon = $details->icon; }
+		if (!isset($details->man_manufacturer)) { $details->man_manufacturer = $details->manufacturer; }
+		if (!isset($details->man_ip_address)) { $details->man_ip_address = ''; }
+		if (!isset($details->man_model)) { $details->man_model = $details->model; }
+		if (!isset($details->man_os_family)) { $details->man_os_family = $details->os_family; }
+		if (!isset($details->man_os_group)) { $details->man_os_group = $details->os_group; }
+		if (!isset($details->man_os_name)) { $details->man_os_name = $details->os_name; }
+		if (!isset($details->man_serial)) { $details->man_serial = $details->serial; }
+		if (!isset($details->man_status)) { $details->man_status = 'production'; }
+		if (!isset($details->man_serial)) { $details->man_serial = $details->serial; }
+		if (!isset($details->man_type)) { $details->man_type = $details->type; }
+
+		$details->man_ip_address = ip_address_to_db($details->man_ip_address);
+
+		if ($details->hostname != '' and $details->domain != '' and $details->fqdn == '') {
+			$details->fqdn = $details->hostname . "." . $details->domain;
 		}
-		$sql = "INSERT INTO system (";
-		foreach ($details as $key => $value) {
-			$sql .= $key . ",";
-		}
-		$sql = substr($sql, 0, -1);
-		$sql .= ") VALUES (";
-		foreach ($details as $key => $value) {
-			$sql .= "\"" . $value . "\",";
-		}
-		$sql = substr($sql, 0, -1);
-		$sql .= ")";
+
+		$sql = "SHOW COLUMNS FROM system";
 		$query = $this->db->query($sql);
-		return($this->db->insert_id());
+		$columns = $query->result();
+
+		$sql = "INSERT INTO system ( ";
+		foreach ($details as $key => $value) {
+			if ($key > '') {
+				# need to iterate through available columns and only insert where $key == valid column name
+				foreach ($columns as $column) {
+					if ($key == $column->Field) { $sql .= $key . ", "; }
+				}
+			}
+		}
+		$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
+		$sql .= " ) VALUES ( ";
+		foreach ($details as $key => $value) {
+			if ($key > '') {
+				foreach ($columns as $column) {
+					if ($key == $column->Field) { $sql .= "'" . mysql_real_escape_string(str_replace('"', '', $value)) . "', "; }
+				}
+			}
+		}
+		$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
+		$sql .= ")";
+
+		$query = $this->db->query($sql);
+		$details->system_id = $this->db->insert_id();
+
+		# insert the network card details of we have them
+		if ((isset($details->mac_address) and $details->mac_address != '') and 
+			(isset($details->man_ip_address) and $details->man_ip_address != '') and 
+			(isset($details->subnet) and $details->subnet != '') and 
+			(isset($details->system_id) and $details->system_id != '')) {
+			$sql = "INSERT INTO sys_hw_network_card_ip (net_mac_address, 
+				system_id, ip_address_v4, ip_subnet, ip_address_version, 
+				timestamp, first_timestamp) 
+				VALUES(?, ?, ?, ?, '4', ?, ?)";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->mac_address", 
+				"$details->system_id", 
+				"$details->man_ip_address", 
+				"$details->subnet", 
+				"$details->timestamp", 
+				"$details->timestamp");
+			$query = $this->db->query($sql, $data);
+		}
+		return $details->system_id;
+	}
+
+	function update_system($details) {
+		if (!isset($details->system_id) or $details->system_id == '') {
+			# this is an update - we need a system_id
+			return;
+		}
+
+		# nasty hack because when a simplexmlobject is sent (ie, from audit_windows.vbs)
+		# the foreach iterators below don't work.
+		# if we cast it to an "object", it stays as a SimpleXMLObject and doesn't work
+		# because our XML is quite simple, we can cast it to an array and back to a 'normal'
+		# object and the foreach below works.
+		$details = (object) $details;
+		$details = (array) $details;
+		$details = (object) $details;
+
+		# if we're updating and we don't have a real hostname, only the ip address
+		# stored in the hostname field, we shouldn't update it
+		if (strpos($details->hostname, ".")) {
+			$sql = "SELECT hostname FROM system WHERE system_id = ?";
+			$data = array("$details->system_id");
+			$query = $this->db->query($sql, $data);
+			$result = $query->row();
+			$db_hostname = $result->hostname;
+			if (!strpos($db_hostname, ".")) {
+				$details->hostname = $db_hostname;
+			}
+		}
+
+		# we have to try to get the 'best' system key
+		# the key in the db may be better than what we have
+		if (isset($details->system_key)) {
+			$sql = "SELECT system_key, system_key_type FROM system WHERE system_id = ?";
+			$data = array("$details->system_id");
+			$query = $this->db->query($sql, $data);
+			$result = $query->row();
+			$db_system_key = $result->system_key;
+			$db_system_key_type = $result->system_key_type;
+
+			if ($details->system_key_type == 'uuho') {
+				# we already have a system key based on UUID . "_" . hostname
+				#echo "1\n";
+			} else {
+				# we need to check the existing key
+				if ($db_system_key_type == 'uuho') {
+					# the system key in the database is based on UUID . "_" . hostname
+					$details->system_key = $db_system_key;
+					$details->system_key_type = 'uuho';
+					#echo "2\n";
+
+				} elseif ($db_system_key == 'fqdn') {
+					# the system key in the database is based on the fqdn
+					$details->system_key = $db_system_key;
+					$details->system_key_type = 'fqdn';
+					#echo "3\n";
+
+				} elseif ($db_system_key_type == 'hodo') {
+					# the system key in the database is based on the fqdn
+					$details->system_key = $db_system_key;
+					$details->system_key_type = 'hodo';
+					#echo "4\n";
+
+				} elseif ($db_system_key_type == 'ipad') {
+					# the system key in the database is based on the ip address
+					$details->system_key = $db_system_key;
+					$details->system_key_type = 'ipad';
+					#echo "5\n";
+
+				} elseif ($db_system_key_type = 'tyse') {
+					# the system key in the database is based on the type and serial
+					$details->system_key = $db_system_key;
+					$details->system_key_type = 'tyse';
+					#echo "6\n";
+				}
+			}
+		}
+
+		if (isset($details->man_ip_address)) {
+			$details->man_ip_address = ip_address_to_db($details->man_ip_address);
+		}
+		$sql = "SHOW COLUMNS FROM system";
+		$query = $this->db->query($sql);
+		$columns = $query->result();
+		$sql = "UPDATE system SET ";
+		foreach ($details as $key=>$value) {
+			if (($key != '') and ($value != '')) {
+				# need to iterate through available columns and only insert where $key == valid column name
+				foreach ($columns as $column) {
+					if ($key == $column->Field) { 
+						$sql .= $key . "= '" . str_replace("'", "\'", $value) . "', "; 
+					}
+				}
+			}
+		}
+		$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
+		$sql .= " WHERE system_id = '" . $details->system_id . "'";
+		$query = $this->db->query($sql);
 	}
 }
 ?>

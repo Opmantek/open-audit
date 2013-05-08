@@ -62,6 +62,10 @@ if [ $syslog == "y" ]; then
 fi
 
 #hosts_in_subnet=`nmap -sP -PS135,139,445 -n $subnet | grep "scan report for" | cut -d" " -f5`
+# -PE == icmp echo
+# -PP == timestamp
+# -sn == ping scan (no port scan)
+# -sP == 
 hosts_in_subnet=`nmap -sP -PE -PP -n $subnet | grep "scan report for" | cut -d" " -f5`
 
 result="<devices>\n"
@@ -199,9 +203,10 @@ if [[ "$submit_online" == "y" ]]; then
 		echo "$now $local_hostname $$ $process Submitting online." >> /var/log/open-audit.log
 	fi
 	result=`echo -e "$result"`
-	wget -q ${url} --post-data=form_nmap="$result"
-	file="$working_directory/add_nmap"
-	rm "$file"
+	#wget -q ${url} --post-data=form_nmap="$result"
+	wget -O - -q ${url} --post-data=form_nmap="$result"
+	#file="$working_directory/add_nmap"
+	#rm "$file"
 fi
 
 if [ $syslog == "y" ]; then

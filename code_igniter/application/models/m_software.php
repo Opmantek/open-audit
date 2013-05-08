@@ -103,7 +103,7 @@ class M_software extends MY_Model {
 					system.man_status		= 'production' AND 
 					sys_sw_software.timestamp 	= ? ";
 		$sql = $this->clean_sql($sql);
-		$data = array($details->system_id, "$details->original_timestamp");
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		foreach ($input->package as $software_xml) {

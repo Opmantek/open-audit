@@ -19,7 +19,7 @@ class M_oa_group extends MY_Model {
 
 	function get_group_access($group_id, $user_id = '0') {
 		$sql = "SELECT group_user_access_level FROM oa_group_user WHERE user_id = ? AND group_id = ? LIMIT 1";
-		$data = array($user_id, $group_id );
+		$data = array("$user_id", "$group_id");
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
 		return $row->group_user_access_level;
@@ -42,7 +42,7 @@ class M_oa_group extends MY_Model {
 	function get_group($id = '0') {
 		if ($id == '0') { return '0'; }
 		$sql = "SELECT * FROM oa_group WHERE group_id = ?";
-		$data = array( $id );
+		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
@@ -66,7 +66,7 @@ class M_oa_group extends MY_Model {
 	function get_group_dynamic_select($group_id) {
 		$group_id = intval($group_id);
 		$sql = "SELECT group_dynamic_select from oa_group WHERE group_id = ? LIMIT 1";
-		$data = array($group_id);
+		$data = array("$group_id");
 		$query = $this->db->query($sql, $data);
 		$row = $query->row(); 
 		$group_dynamic_select = $row->group_dynamic_select;
@@ -171,15 +171,15 @@ class M_oa_group extends MY_Model {
 			WHERE
 				group_id = ?";
 		$sql = $this->clean_sql($sql);
-		$data = array($details->group_name, 
-					$details->group_padded_name, 
-					$details->group_dynamic_select, 
-					$details->group_parent, 
-					$details->group_description, 
-					$details->group_category, 
-					$details->group_display_sql, 
-					$details->group_icon, 
-					$details->group_id);
+		$data = array("$details->group_name", 
+					"$details->group_padded_name", 
+					"$details->group_dynamic_select", 
+					"$details->group_parent", 
+					"$details->group_description", 
+					"$details->group_category", 
+					"$details->group_display_sql", 
+					"$details->group_icon", 
+					"$details->group_id");
 		$query = $this->db->query($sql, $data);
 		return;
 	}
@@ -197,14 +197,14 @@ class M_oa_group extends MY_Model {
 					group_display_sql ) 
 					VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ? )";
 		$sql = $this->clean_sql($sql);
-		$data = array($details->group_name, 
-					$details->group_padded_name, 
-					$details->group_description, 
-					$details->group_icon, 
-					$details->group_category, 
-					$details->group_dynamic_select, 
-					$details->group_parent, 
-					$details->group_display_sql );
+		$data = array("$details->group_name", 
+					"$details->group_padded_name", 
+					"$details->group_description", 
+					"$details->group_icon", 
+					"$details->group_category", 
+					"$details->group_dynamic_select", 
+					"$details->group_parent", 
+					"$details->group_display_sql");
 		$result = $this->db->query($sql, $data);
 		$return = $this->db->insert_id();
 		// We need to insert an entry into oa_group_user for any Admin level user
@@ -217,22 +217,21 @@ class M_oa_group extends MY_Model {
 	}
 
 	function get_tags() {
-		$sql = "
-			SELECT 	
-				oa_group.group_id, 
-				oa_group.group_name, 
-				oa_group.group_description, 
-				count(oa_group_sys.system_id) AS total 
-			FROM 	
-				oa_group 
-			LEFT JOIN 
-				oa_group_sys 
-			ON 	
-				oa_group.group_id = oa_group_sys.group_id 
-			WHERE 	
-				oa_group_sys.group_id < '999' 
-			GROUP BY 
-				oa_group.group_id";
+		$sql = "SELECT 	
+					oa_group.group_id, 
+					oa_group.group_name, 
+					oa_group.group_description, 
+					count(oa_group_sys.system_id) AS total 
+				FROM 	
+					oa_group 
+				LEFT JOIN 
+					oa_group_sys 
+				ON 	
+					oa_group.group_id = oa_group_sys.group_id 
+				WHERE 	
+					oa_group_sys.group_id < '999' 
+				GROUP BY 
+					oa_group.group_id";
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql);
 		$result = $query->result();
@@ -240,25 +239,24 @@ class M_oa_group extends MY_Model {
 	}
 
 	function get_all_groups() {
-		$sql = "
-			SELECT 	
-				oa_group.group_id, 
-				oa_group.group_name, 
-				oa_group.group_padded_name, 
-				oa_group.group_icon, 
-				oa_group.group_description, 
-				oa_group.group_category, 
-				count(oa_group_sys.system_id) AS total 
-			FROM 
-				oa_group 
-			LEFT JOIN 
-				oa_group_sys 
-			ON 
-				oa_group.group_id = oa_group_sys.group_id 
-			GROUP BY 
-				oa_group.group_id
-			ORDER BY
-				oa_group.group_id";
+		$sql = "SELECT 	
+					oa_group.group_id, 
+					oa_group.group_name, 
+					oa_group.group_padded_name, 
+					oa_group.group_icon, 
+					oa_group.group_description, 
+					oa_group.group_category, 
+					count(oa_group_sys.system_id) AS total 
+				FROM 
+					oa_group 
+				LEFT JOIN 
+					oa_group_sys 
+				ON 
+					oa_group.group_id = oa_group_sys.group_id 
+				GROUP BY 
+					oa_group.group_id
+				ORDER BY
+					oa_group.group_id";
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql);
 		$result = $query->result();
@@ -275,29 +273,29 @@ class M_oa_group extends MY_Model {
 
 	function get_user_groups($user_id = '0') {
 		$sql = "SELECT 	
-				oa_group.group_id, 
-				oa_group.group_name, 
-				oa_group.group_padded_name, 
-				oa_group.group_icon, 
-				oa_group.group_description, 
-				oa_group.group_category, 
-				count(oa_group_sys.system_id) AS total 
-			FROM 
-				oa_group, 
-				oa_group_user, 
-				oa_group_sys 
-			WHERE 
-				oa_group.group_id = oa_group_user.group_id AND
-				oa_group_user.user_id = ? AND
-				oa_group_user.group_user_access_level > 0 AND
-				oa_group.group_id = oa_group_sys.group_id
-			GROUP BY 
-				oa_group.group_id
-			ORDER BY 
-				oa_group.group_category, 
-				oa_group.group_padded_name";
+					oa_group.group_id, 
+					oa_group.group_name, 
+					oa_group.group_padded_name, 
+					oa_group.group_icon, 
+					oa_group.group_description, 
+					oa_group.group_category, 
+					count(oa_group_sys.system_id) AS total 
+				FROM 
+					oa_group, 
+					oa_group_user, 
+					oa_group_sys 
+				WHERE 
+					oa_group.group_id = oa_group_user.group_id AND
+					oa_group_user.user_id = ? AND
+					oa_group_user.group_user_access_level > 0 AND
+					oa_group.group_id = oa_group_sys.group_id
+				GROUP BY 
+					oa_group.group_id
+				ORDER BY 
+					oa_group.group_category, 
+					oa_group.group_padded_name";
 		$sql = $this->clean_sql($sql);
-		$data = array( $user_id );
+		$data = array("$user_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
@@ -306,41 +304,39 @@ class M_oa_group extends MY_Model {
 	function get_all_user_groups($id) {
 		// get ALL groups, even those with no entry in the oa_group_user table.
 		// assign a permission level to each group. Use '0' for those without entries in oa_group_user
-		$sql = "
-			SELECT 	
-				oa_group.group_id, 
-				oa_group.group_name, 
-				oa_group.group_description, 
-				count(oa_group_sys.system_id) AS total, 
-				'0' AS access_level
-			FROM 
-				oa_group 
-			LEFT JOIN 
-				oa_group_sys 
-			ON 	
-				oa_group.group_id = oa_group_sys.group_id 
-			GROUP BY 
-				oa_group.group_id
-			ORDER BY
-				oa_group.group_name";
+		$sql = "SELECT 	
+					oa_group.group_id, 
+					oa_group.group_name, 
+					oa_group.group_description, 
+					count(oa_group_sys.system_id) AS total, 
+					'0' AS access_level
+				FROM 
+					oa_group 
+				LEFT JOIN 
+					oa_group_sys 
+				ON 	
+					oa_group.group_id = oa_group_sys.group_id 
+				GROUP BY 
+					oa_group.group_id
+				ORDER BY
+					oa_group.group_name";
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql);
 		$group = $query->result();
 		// get user access levels
-		$sql = "
-			SELECT 	
-				oa_group.group_id, 
-				oa_group_user.group_user_access_level
-			FROM 
-				oa_group,
-				oa_group_user
-			WHERE 
-				user_id = ? AND
-				oa_group.group_id = oa_group_user.group_id
-			GROUP BY 
-				oa_group.group_id";
+		$sql = "SELECT 	
+					oa_group.group_id, 
+					oa_group_user.group_user_access_level
+				FROM 
+					oa_group,
+					oa_group_user
+				WHERE 
+					user_id = ? AND
+					oa_group.group_id = oa_group_user.group_id
+				GROUP BY 
+					oa_group.group_id";
 		$sql = $this->clean_sql($sql);
-		$data = array( $id );
+		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 		$user = $query->result();		
 		// combine the two data sets to get the user access level
@@ -357,19 +353,19 @@ class M_oa_group extends MY_Model {
 
 	function delete_group($id) {
 		$sql = "DELETE FROM oa_group_user WHERE group_id = ?";
-		$data = array( $id );
+		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 		
 		$sql = "DELETE FROM oa_group_sys WHERE group_id = ?";
-		$data = array( $id );
+		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 
 		$sql = "DELETE FROM oa_group_column WHERE group_id = ?";
-		$data = array( $id );
+		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 
 		$sql = "DELETE FROM oa_group WHERE group_id = ?";
-		$data = array( $id );
+		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 	}
 
@@ -403,7 +399,7 @@ class M_oa_group extends MY_Model {
 		$group_id = $this->db->insert_id();
 		// We need to insert an entry into oa_group_user for any Admin level user
 		$sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
-		$data = array( $group_id );
+		$data = array("$group_id");
 		$result = $this->db->query($sql, $data);
 		return($group_id);
 	}
@@ -411,17 +407,14 @@ class M_oa_group extends MY_Model {
 	function edit_user_groups($details) {
 		# remove the existing user->group permissions
 		$sql = "DELETE FROM oa_group_user WHERE user_id = ?";
-		$data = array( "$details->user_id" );
+		$data = array("$details->user_id");
 		$query = $this->db->query($sql, $data);		
 		# assign new user-> group permissions
-		foreach ($details as $detail => $key)
-		{
+		foreach ($details as $detail => $key) {
 			$pos = mb_strpos($detail, "group_id_");
-			if (( $pos !== FALSE ) AND ( $detail != "group_id_0" ))
-			{
+			if (( $pos !== FALSE ) AND ( $detail != "group_id_0" )) {
 				$group_id_split = explode("_", $detail);
-				$sql = "
-					INSERT INTO oa_group_user (group_user_id, user_id, group_id, group_user_access_level) VALUES (NULL, ?, ?, ?)";
+				$sql = "INSERT INTO oa_group_user (group_user_id, user_id, group_id, group_user_access_level) VALUES (NULL, ?, ?, ?)";
 				$data = array("$details->user_id", $group_id_split[2], "$key");
 				$query = $this->db->query($sql, $data);
 			}

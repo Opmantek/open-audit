@@ -19,20 +19,20 @@ class M_sound extends MY_Model {
 
 	function get_system_sound($system_id) {
 		$sql = "SELECT 
-				sound_id, 
-				sound_name, 
-				sound_manufacturer
-			FROM 
-				sys_hw_sound,
-				system
-			WHERE 
-				sys_hw_sound.system_id = system.system_id AND
-				sys_hw_sound.timestamp = system.timestamp AND
-				system.system_id = ?
-			GROUP BY 
-				sound_id";
+					sound_id, 
+					sound_name, 
+					sound_manufacturer
+				FROM 
+					sys_hw_sound,
+					system
+				WHERE 
+					sys_hw_sound.system_id = system.system_id AND
+					sys_hw_sound.timestamp = system.timestamp AND
+					system.system_id = ?
+				GROUP BY 
+					sound_id";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id);
+		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
@@ -60,7 +60,7 @@ class M_sound extends MY_Model {
 			$row = $query->row();
 			// the optical_drive exists - need to update its timestamp
 			$sql = "UPDATE sys_hw_sound SET timestamp = ? WHERE sound_id = ?";
-			$data = array($details->timestamp, $row->sound_id);
+			$data = array("$details->timestamp", "$row->sound_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the sound card does not exist - insert it

@@ -26,8 +26,22 @@ class Admin extends MY_Controller {
 	}
 
 	function test() {
-		$s = 'open-audit\' is a 1234 :: ok';
-		echo preg_replace("/[^a-z0-9-]+/i", "", $s);
+		$this->load->model('m_system');
+		$details = new stdClass();
+		$details->type = 'computer';
+		$details->class = 'laptop';
+		$details->man_ip_address = '0.0.0.0';
+		$this->m_system->insert_system($details);
+		exit();
+	}
+
+	function edit_config() {
+		$this->load->model("m_oa_config");
+		$this->data['query'] = $this->m_oa_config->get_config();
+		$this->data['heading'] = 'Edit Config';
+		$this->data['include'] = 'v_edit_config'; 
+		$this->data['sortcolumn'] = '0';
+		$this->load->view('v_template', $this->data);
 	}
 
 	function view_log(){
@@ -64,7 +78,8 @@ class Admin extends MY_Controller {
 			if ($beginning) break;
 		}
 		fclose ($handle);
-		$lines = array_reverse($text);
+		#$lines = array_reverse($text);
+		$lines = $text;
 		$this->data['query'] = $lines;
 		$this->data['heading'] = 'View Open-AudIT log';
 		$this->data['include'] = 'v_list_log'; 
@@ -121,17 +136,11 @@ class Admin extends MY_Controller {
 				if (filter_var($device->nmis_name, FILTER_VALIDATE_IP)) {
 					$device->nmis_name = ip_address_from_db($device->nmis_name);
 				}
-
 				$device->nmis_host = '';
-
 				if ($device->nmis_host == '' and $device->man_ip_address > '') { $device->nmis_host = ip_address_from_db($device->man_ip_address); }
-
 				if ($device->nmis_group == '') { $device->nmis_group = 'Open-AudIT'; }
-
 				if ($device->nmis_role == '') {$device->nmis_role = 'access'; }
-
 				$device->net = 'lan';
-
 				if ($device->access_details > '') {
 					$decoded = $this->encrypt->decode($device->access_details);
 					$decoded = json_decode($decoded);
@@ -147,17 +156,12 @@ class Admin extends MY_Controller {
 				} else {
 					$device->nmis_collect = 'true';
 				}
-
-
 				unset($device->man_ip_address);
 				unset($device->hostname);
 				unset($device->fqdn);
 				unset($device->access_details);
-
 				$csv .= $device->nmis_name . "," . $device->nmis_host . "," . $device->snmp_community . "," . $device->snmp_version . "," . $device->nmis_group . "," . $device->nmis_collect . "," . $device->nmis_role . "," . $device->net . "\n";
 			}
-			#echo $csv;
-
 			$filename = '/usr/local/nmis8/conf/Nodes.open-audit';
 			$handle = fopen($filename, "w");
 			fwrite($handle, $csv);
@@ -170,15 +174,12 @@ class Admin extends MY_Controller {
 		}
 	}
 
-
 	function scan_subnet_nmap() {
 		# get subnet
 		if (isset($_POST['ScanNmap'])) {
 			if ($_POST['subnet'] > '' ) {
 				$subnet = $_POST['subnet'];
-				#$cmd = "sudo /usr/share/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
 				$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
-				#$cmd = "sudo /media/psf/Home/dropbox/OAv2/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
 				exec($cmd);
 			}
 			redirect('/');		
@@ -191,11 +192,12 @@ class Admin extends MY_Controller {
 	}
 
 	function scan_ad() {
-		#todo - make sure we're on Linux
 		if (isset($_POST['ScanAD'])) {
 			$this->load->model("m_system");
 			$this->load->model("m_oa_group");
+			$this->load->model("m_sys_man_audits");
 			$details = new stdClass;
+			$timestamp = date('Y-m-d H:i:s');
 			$ad_ldap_server = $_POST['ad_ldap_server'];
 			$ad_ldap_connect = "ldap://" . $ad_ldap_server;
 			$ad_user = $_POST['ad_user'];
@@ -213,7 +215,10 @@ class Admin extends MY_Controller {
 				$sr = ldap_search($ad, $dn, $filter, $justthese);
 				$info = ldap_get_entries($ad, $sr);
 				for ($i = 0; $i < count($info)-1; $i++) {
+					$details = new stdClass();
+					$details->timestamp = $timestamp;
 					$details->dns_hostname = @strtolower($info[$i]['dnshostname'][0]);
+					$details->fqdn = $details->dns_hostname;
 					$j = explode(".", $details->dns_hostname);
 					$details->hostname = $j[0];
 					$details->man_ip_address = '0.0.0.0';
@@ -223,7 +228,7 @@ class Admin extends MY_Controller {
 					$details->os_name = "";
 					$details->os_name = $info[$i]['operatingsystem'][0];
 					if (strpos(strtolower($details->os_name), "windows") !== FALSE) {
-						$details->os_group = "windows";
+						$details->os_group = "Windows";
 					} else {
 						$details->os_group = "";
 					}
@@ -239,19 +244,18 @@ class Admin extends MY_Controller {
 					if (strpos($details->os_name, "Windows 7") !== FALSE) { $details->os_family = "Windows 7"; $details->os_name = str_replace('Windows 7', 'Microsoft Windows 7', $details->os_name); }
 					if (strpos($details->os_name, "Windows 8") !== FALSE) { $details->os_family = "Windows 8"; }
 					if (strpos($details->os_name, "2012") !== FALSE) { $details->os_family = "Windows 2012"; }
-
 					if (@$info[$i]['lastlogon'][0] > @$info[$i]['pwdLastSet'][0]) {
 						$details->last_seen = @$info[$i]['lastlogon'][0];
 					} else {
 						$details->last_seen = @$info[$i]['pwdLastSet'][0];
 					}
-
 					$j = $details->last_seen; 
 					$k = $j / (10000000); 
 					$l = ((1970-1601) * 365.242190) * 86400; 
 					$m = intval($k-$l); 
 					$details->last_seen = date("Y-m-d H:i:s", $m); 
 					$details->last_seen_by = 'active directory';
+					$details->last_user = $this->data['user_full_name'];
 					#$details->location = @$info[$i]['location'][0];
 					$details->windows_active_directory_ou = '';
 					$j = explode(",", @strtolower($info[$i]['distinguishedname'][0]));
@@ -268,16 +272,31 @@ class Admin extends MY_Controller {
 						$query = `nslookup -timeout=5 -retry=1 $full_name $ad_ldap_server `;
 						if(preg_match('/\nAddress: (.*)\n/', $query, $matches)) { $details->man_ip_address = trim($matches[1]); }
 					}
-					$details->system_id = $this->m_system->process_system_from_ad($details);
+					$details->system_key = $this->m_system->create_system_key($details);
+					$details->system_id = $this->m_system->find_system($details);
+					if (isset($details->system_id) and $details->system_id != '') {
+						# update an existing system
+						$this->m_system->update_system($details);
+					} else {
+						# insert a new system
+						$details->system_id = $this->m_system->insert_system($details);
+					}
+					#echo "<pre>\n";
+					#print_r($details);
+					$this->m_sys_man_audits->insert_audit($details);
 					$this->m_oa_group->update_system_groups($details);
-					echo "<pre>\n";
-					print_r($details);
 				}
-				#redirect('/');
-
+				redirect('/');
 			} else {
 				# todo - redirect to homepage and create an alert to show on screen
-				echo "Could not connect to AD.";
+				# there were errors with processing.
+				$this->data['error'] = "Could not connect to Active Directory.";
+				$this->data['query'] = $this->data['error'];
+				$this->data['heading'] = 'Error'; 
+				$this->data['include'] = 'v_error'; 
+				$this->data['export_report'] = 'y';
+				$this->data['group_id'] = '0';
+				$this->load->view('v_template', $this->data);
 			}
 		} else {
 			$this->data['heading'] = 'Scanning';
@@ -285,9 +304,6 @@ class Admin extends MY_Controller {
 			$this->data['sortcolumn'] = '1';
 			$this->load->view('v_template', $this->data);
 		}
-
-
-		
 	}
 
 
@@ -348,223 +364,42 @@ class Admin extends MY_Controller {
 		}
 	}
 
-	function edit_config() {
-		$this->load->model("m_oa_config");
-		$this->data['query'] = $this->m_oa_config->get_config();
-		$this->data['heading'] = 'Edit Config';
-		$this->data['include'] = 'v_edit_config'; 
-		$this->data['sortcolumn'] = '0';
-		$this->load->view('v_template', $this->data);
-	}
-
-	function ad_import() {
-		if (!isset($_POST['form_systemXML'])) {
-			$this->data['heading'] = 'Import Active Directory';
-			$this->data['include'] = 'v_add_active_directory';
-			$this->load->view('v_template', $this->data);
-		} else {
-			set_time_limit(6000);
-			$this->load->helper('xml');
-			$this->load->model("m_system");
-			$this->load->model("m_oa_group");
-			$timestamp = date('Y-m-d H:i:s');
-			$xml_input = iconv("UTF-8", "UTF-8//TRANSLIT", $this->input->post('form_systemXML'));
-			try {
-				$xml = new SimpleXMLElement($xml_input);
-			} catch (Exception $e) {
-				# not a valid XML string
-				$error_output = "Invalid XML input for Active Directory import.";
-				error_log($error_output);
-				exit;
-			}
-			$count = 0;
-			foreach ($xml->children() as $child) {
-				$count++;
-				if ($child->getName() == 'computer') { $details->system_id = ($this->m_system->process_system_from_ad($child));}
-				$details->type = 'system';
-				if ($details->system_id > '0') {
-					// this is a new system - update its GROUPS
-					echo "Updating Groups (new system)<br />\n";
-					$this->m_oa_group->update_system_groups($details);
-				}
-			}
-			echo "Count: " . $count . "<br />\n";
-			echo "<a href='" . base_url() . "index.php/admin/ad_import'>Back to input page</a><br />\n";
-		}
-	}
-
-	function bulk_update_from_file() {
-		error_reporting(E_ALL);
-
-		/** PHPExcel_IOFactory */
-		require_once BASEPATH . '../application/libraries/phpexcel/PHPExcel/IOFactory.php';
-
-		$filename = dirname(__FILE__) . '\\' . "cisco_farm.xls";
-		
-		if (!file_exists($filename)) {
-			exit("File cisco_farm.xls does not exist.\n");
-		}
-
-		if (!$objPHPExcel = PHPExcel_IOFactory::load($filename)) {
-			exit;
-		} else {}
-		
-		$attributes = array();
-		$details = array();
-		
-		$this->load->model("m_system");
-		$this->load->model("m_sys_man_audits");
-		$this->load->model("m_oa_group");
+	function list_devices_in_location() {
 		$this->load->model("m_oa_location");
-		$this->load->model("m_oa_org");
-		
-		$objWorksheet = $objPHPExcel->getActiveSheet();
-		$count = 0;
-		foreach ($objWorksheet->getRowIterator() as $row) {
-			$cellIterator = $row->getCellIterator();
-			$cellIterator->setIterateOnlyExistingCells(false); 
-			if ($count == 0) {
-				foreach ($cellIterator as $cell) {
-					$attributes[] = $cell->getValue();
-				}
-			} else {
-				# here we go - turn the row into an array (based on row1's names)
-				# once done, check to see if we have an ORG_NAME or LOCATION_NAME and retrieve the relevant ID's
-				# once that is done, update or insert the "system"
-				$cell_number = 0;
-				foreach ($cellIterator as $cell) {
-					$details[$attributes[$cell_number]] = $cell->getValue();
-					$cell_number++;
-				}
-				# OK, we now have the row in an array
-				
-				# get the org_id (if set)
-				if ( isset($details['org_name']) AND !isset($details['man_org_id']) ) {
-					if($org_id = $this->m_oa_org->select_org($details['org_name'])) {
-						# we have a matching org
-						$details['man_org_id'] = $org_id;
-					} else {
-						# no matching org name
-						$details['man_org_id'] = '';
-					}
-				} else {
-					$details['man_org_id'] = '';
-				}
-				
-				# get the location_id (if set)
-				if ( (isset($details['location_name'])) AND (!isset($details['man_location_id'])) ) {
-					if ($location_id = $this->m_oa_location->get_location_id($details['location_name'])) {
-						# we have a matching location
-						$details['man_location_id'] = $location_id;
-					} else {
-						$details['man_location_id'] = '';
-					}
-				} else {
-					$details['man_location_id'] = '';
-				}
-				
-				if ( !isset($details['hostname']) OR $details['hostname'] == '' ) {
-					# we dont have a hostname, therefore substitute the IP Address
-					if ( isset($details['man_ip_address']) ) {
-						$details['hostname'] = $details['man_ip_address'];
-					} else {
-						$details['hostname'] = 'unknown';
-					}
-				}
-				$details['hostname'] = mb_strtolower($details['hostname']);
-				
-				$details['timestamp'] = date('Y-m-d H:i:s');
-				
-				# account for manually set items
-				if (!isset($details['man_os_family'])){ $details['man_os_family'] = $details['os_family']; }
-				if (!isset($details['man_os_name'])){ $details['man_os_name'] = $details['os_name']; }
-				if (!isset($details['man_domain'])){ $details['man_domain'] = $details['domain']; }
-				if (!isset($details['man_status'])){ $details['man_status'] = 'production'; }
-				if (!isset($details['man_environment'])){ $details['man_environment'] = 'production'; }
-				if (!isset($details['man_criticality'])){ $details['man_criticality'] = 'critical'; }
-				if (!isset($details['man_description'])){ $details['man_description'] = $details['description']; }
-				if (!isset($details['man_type'])){ $details['man_type'] = $details['type']; }
-				if (!isset($details['man_ip_address'])){ $details['man_ip_address'] = $details['ip_address']; }
-				if (!isset($details['man_serial'])){ $details['man_serial'] = $details['serial']; }
-				if (!isset($details['man_model'])){ $details['man_model'] = $details['model']; }
-				if (!isset($details['man_manufacturer'])){ $details['man_manufacturer'] = $details['manufacturer']; }
-				if (!isset($details['man_icon'])){ $details['man_icon'] = $details['icon']; }
-				if (!isset($details['man_form_factor'])){ $details['man_form_factor'] = $details['form_factor']; }
-					
-				if (isset($details['uuid'])) {
-					$details['system_key'] = $details['uuid'] . '-' . $details['hostname'];
-				} else {
-					$details['uuid'] = '';
-					$details['system_key'] = $details['hostname'];
-				}
-				
-				# need to determine if this system already exists
-				# first check to see if we received a system_id
-				# if we didn't, then try to match on hostname
-				if (isset($details['system_id'])) {
-					# don't do anything - we already have a system_id
-				} else {
-					$details['system_id'] = $this->m_system->get_system_id_from_hostname($details['hostname']);
-				}
-				
-				# make the array into an object
-				
-				$object = new stdClass();
-				foreach ($details AS $name=>$value) {
-					$object->$name = $value;
-				}
-				
-				if ( ($object->uuid == '') AND ($object->hostname == '') ) {
-					# do not attempt to update or insert - not enough info to determine a unique system
-				} else {
-					# update or insert
-					if ($object->system_id > '') {
-						# run an update
-						$sql = "UPDATE system SET ";
-						foreach($object as $key => $value) {
-							if (($key != 'system_id') AND ($key != 'location_name') AND ($key != 'org_name')) {
-								$sql .= $key . " = '" . $value . "', ";
-							}
-						}
-						$sql = mb_substr($sql, 0, -2);
-						$sql .= " WHERE system_id = '" . $object->system_id . "'";
-						$query = $this->db->query($sql);						
-					} else {
-						# run an insert
-						$sql = "INSERT INTO system (";
-						foreach($object as $key => $value) {
-							if (($key != 'system_id') AND ($key != 'location_name') AND ($key != 'org_name')) {
-								$sql .= $key . ", ";
-							}
-						}
-						$sql = mb_substr($sql, 0, -2);
-						$sql .= ") VALUES (";
-						foreach($object as $key => $value) {
-							if (($key != 'system_id') AND ($key != 'location_name') AND ($key != 'org_name')) {
-								$sql .= "'" . $value . "', ";
-							}
-						}
-						$sql = mb_substr($sql, 0, -2);
-						$sql .= ")";
-						$query = $this->db->query($sql);
-						$object->system_id = $this->db->insert_id();
-					}
-				}
-				$this->m_sys_man_audits->insert_audit($object);
-				$this->m_oa_group->update_system_groups($object);
-				echo $sql . "<br />\n";
-				echo "<pre>\n";
-				print_r($object);
-				echo "</pre>\n";
-				$details = NULL;
-			}
-			$count ++;
+		$this->load->model("m_oa_group_column");
+		$this->data['query'] = $this->m_oa_location->list_devices_in_location($this->data['id'], $this->data['user_id']);
+		$this->data['column'] = $this->m_oa_group_column->get_group_column();
+		$location_name = $this->m_oa_location->get_location_name($this->data['id']);
+		$this->data['heading'] = 'Systems in Location - ' . $location_name; 
+		$this->data['include'] = 'v_report'; 
+		$this->data['export_report'] = 'y';
+		$this->data['group_id'] = '0';
+		if ($this->data['user_admin'] == 'y') {
+			$this->data['user_access_level'] = '10';
+		} else {
+			$this->data['user_access_level'] = '3';
 		}
-		echo "<pre>\n";
-		print_r($attributes);
-		echo "</pre>\n";
+		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
 	}
 
+	function list_devices_in_org() {
+		$this->load->model("m_oa_org");
+		$this->load->model("m_oa_group_column");
+		$this->data['user_access_level'] = '7';
+		$this->data['query'] = $this->m_oa_org->list_devices_in_org($this->data['id'], $this->data['user_id']);
+		$this->data['column'] = $this->m_oa_group_column->get_group_column();
+		$org_name = $this->m_oa_org->get_org_name($this->data['id']);
+		$this->data['heading'] = 'Systems in Org - ' . $org_name; 
+		$this->data['include'] = 'v_report'; 
+		$this->data['export_report'] = 'y';
+		$this->data['group_id'] = '0';
+		if ($this->data['user_admin'] == 'y') {
+			$this->data['user_access_level'] = '10';
+		} else {
+			$this->data['user_access_level'] = '3';
+		}
+		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+	}
 
 	function upgrade() {		
 		error_reporting(E_ALL);		
@@ -1807,6 +1642,10 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);
 
 			$sql = "ALTER TABLE system DROP man_acting_server";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD system_key_type varchar(4) NOT NULL default ''";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 

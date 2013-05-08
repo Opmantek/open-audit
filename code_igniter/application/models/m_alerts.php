@@ -56,7 +56,7 @@ class M_alerts extends MY_Model {
 					timestamp ) 
 			VALUES ( ?, ?, ?, ?, ? )";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id, $alert_table, $alert_foreign_row, $alert_details, $alert_timestamp);
+		$data = array("$system_id", "$alert_table", "$alert_foreign_row", "$alert_details", "$alert_timestamp");
 		$query = $this->db->query($sql, $data);
 	}
 
@@ -83,7 +83,7 @@ class M_alerts extends MY_Model {
 			alert_id = ? AND 
 			oa_alert_log.system_id = system.system_id";
 		$sql = $this->clean_sql($sql);
-		$data = array($alert_id);
+		$data = array("$alert_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
@@ -99,20 +99,11 @@ class M_alerts extends MY_Model {
 	function assign_change($details) {
 		foreach ($details['alerts'] as $key => $value)
 		{
-			$sql = "UPDATE 
-					oa_alert_log 
-				SET
-					change_type = ?, 
-					change_id = ?, 
-					external_change_id = ?, 
-					external_change_link = ?, 
-					alert_note = ?, 
-					user_id = ?, 
-					alert_ack_time = ?  
-				WHERE 
-					alert_id = ?";
+			$sql = "UPDATE oa_alert_log SET change_type = ?, change_id = ?, external_change_id = ?, 
+					external_change_link = ?, alert_note = ?, user_id = ?, alert_ack_time = ? 
+					WHERE alert_id = ?";
 			$sql = $this->clean_sql($sql);
-			$data = array($details['change_type'],$details['change_id'],$details['external_change_id'],$details['external_change_link'],$details['alert_note'], $details['user_id'], $details['alert_ack_time'],$value);
+			$data = array($details['change_type'], $details['change_id'], $details['external_change_id'], $details['external_change_link'], $details['alert_note'], $details['user_id'], $details['alert_ack_time'], "$value");
 			$query = $this->db->query($sql, $data);
 		}
 	}

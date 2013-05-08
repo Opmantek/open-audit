@@ -26,7 +26,7 @@ class M_oa_device extends MY_Model {
 	 */
 	function get_device($id) {
 		$sql = "SELECT * FROM oa_device WHERE device_id = ? LIMIT 1";
-		$data = array($id);
+		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
@@ -104,7 +104,7 @@ class M_oa_device extends MY_Model {
 	 */
 	function get_device_name($id) {
 		$sql = "SELECT device_name FROM oa_device WHERE device_id = ? LIMIT 1";
-		$data = array($id);
+		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
 		return ($row->device_name);
@@ -147,7 +147,7 @@ class M_oa_device extends MY_Model {
 	 */
 	function check_device_name($device_name, $device_id) {
 		$sql = "SELECT device_id FROM oa_device WHERE device_name = ? AND device_id <> ?";
-		$data = array($device_name, $device_id);
+		$data = array("$device_name", "$device_id");
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
 		if ($query->num_rows() > 0) {
@@ -165,17 +165,9 @@ class M_oa_device extends MY_Model {
 	 * @return	string
 	 */
 	function get_system_device($id) {
-		$sql = "SELECT 
-				oa_device.* 
-			FROM 
-				oa_device, 
-				system 
-			WHERE 
-				oa_device.device_id = system.man_device_id AND
-				system.system_id = ?
-			LIMIT 1";
+		$sql = "SELECT oa_device.* FROM oa_device, system WHERE oa_device.device_id = system.man_device_id AND system.system_id = ? LIMIT 1";
 		$sql = $this->clean_sql($sql);
-		$data = array($id);
+		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
@@ -189,9 +181,7 @@ class M_oa_device extends MY_Model {
 	 * @return	string
 	 */
 	function add_device($details) {
-		$sql = "
-			INSERT INTO 
-				oa_device 
+		$sql = "INSERT INTO oa_device 
 				(device_name, 
 				device_room, 
 				device_suite, 
@@ -289,8 +279,7 @@ class M_oa_device extends MY_Model {
 	function list_devices_in_device($device_id = 0, $user_id = 0) {
 		// we have not requested a specific group.
 		// display all items the current user has at least 'level 3' - view list rights on.
-		$sql = "
-			SELECT 
+		$sql = "SELECT 
 				system.system_id, 
 				system.hostname, 
 				system.man_description, 

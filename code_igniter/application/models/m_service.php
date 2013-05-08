@@ -94,13 +94,13 @@ function process_service($input, $details) {
 						}
                         $flag = 'update';
                         $sql = "UPDATE sys_sw_service SET timestamp = ?, service_started = ?, service_start_mode = ?, service_state = ? WHERE service_id = ?";
-                        $data = array($details->timestamp, "$service_xml->service_started", "$service_xml->service_start_mode", "$service_xml->service_state", $service_db->service_id);
+                        $data = array("$details->timestamp", "$service_xml->service_started", "$service_xml->service_start_mode", "$service_xml->service_state", "$service_db->service_id");
                         $query = $this->db->query($sql, $data);
 						// insert the changed service into oa_alert_log
 						if ($change_comment != "") {
 							$alert_details = "service changed - " . $service_xml->service_name . " - " . $change_comment;
 							$sql = "INSERT INTO oa_alert_log ( system_id, alert_table, alert_foreign_row, alert_details, user_id, alert_ack_time, alert_note, timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
-							$data = array("$details->system_id", "sys_sw_service", "$service_db->service_id", $alert_details, "1", $details->timestamp, "Auto acknowledged by system.", $details->timestamp);
+							$data = array("$details->system_id", "sys_sw_service", "$service_db->service_id", "$alert_details", "1", "$details->timestamp", "Auto acknowledged by system.", "$details->timestamp");
 							$query = $this->db->query($sql, $data);
 						}
 					}

@@ -30,7 +30,7 @@ class M_bios extends MY_Model {
 				system.system_id = ?
 			LIMIT 1";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id);
+		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		return ($result);
@@ -83,7 +83,7 @@ class M_bios extends MY_Model {
 					first_timestamp ) 
 				VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
-			$data = array(	"$details->system_id", 
+			$data = array("$details->system_id", 
 					"$input->bios_description", 
 					"$input->bios_manufacturer", 
 					"$input->bios_serial", 

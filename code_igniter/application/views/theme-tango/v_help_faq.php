@@ -62,13 +62,13 @@ Where possible, the first option will be chosen and where possible on subsequent
 		<td><b>nmap</b></td><td>fqdn, ip address</td><td>fqdn, ip address</td><td>-</td><td>fqdn, ip address</td><td>-</td>
 	</tr>
 	<tr>
-		<td><b>snmp</b></td><td>fqdn, ip address, serial</td><td>fqdn, ip address, serial</td><td>-</td><td>fqdn, ip address, serial</td><td>-</td>
+		<td><b>snmp</b></td><td>fqdn, ip address, type + serial</td><td>fqdn, ip address, type + serial</td><td>-</td><td>fqdn, ip address, type + serial</td><td>-</td>
 	</tr>
 	<tr>
-		<td><b>spreadsheet</b></td><td>fqdn, ip address, serial</td><td>fqdn, ip address, serial</td><td>-</td><td>fqdn, ip address, serial</td><td>serial</td>
+		<td><b>spreadsheet</b></td><td>fqdn, ip address, type + serial</td><td>fqdn, ip address, type + serial</td><td>-</td><td>fqdn, ip address, type + serial</td><td>type + serial</td>
 	</tr>
 	<tr>
-		<td><b>html form</b></td><td>fqdn, ip address, serial</td><td>fqdn, ip address, serial</td><td>-</td><td>fqdn, ip address, serial</td><td>serial</td>
+		<td><b>html form</b></td><td>fqdn, ip address, type + serial</td><td>fqdn, ip address, type + serial</td><td>-</td><td>fqdn, ip address, type + serial</td><td>type + serial</td>
 	</tr>
 </table>
 <b><i>How do we match a system key?</i></b><br />

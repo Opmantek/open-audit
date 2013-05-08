@@ -65,7 +65,7 @@ class M_memory extends MY_Model {
 			$row = $query->row();
 			// the memory exists - need to update its timestamp
 			$sql = "UPDATE sys_hw_memory SET timestamp = ? WHERE memory_id = ?";
-			$data = array($details->timestamp, $row->memory_id);
+			$data = array("$details->timestamp", "$row->memory_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the memory does not exist - insert it
