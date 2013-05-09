@@ -1,6 +1,7 @@
 <?php
 $sortcolumn = 2; 
 echo $comment;
+echo "<p>Refresh this page for updated logs.</p>\n";
 if (count($query) > 0) { ?>		
 <table cellspacing="1" class="tablesorter">
 	<tbody>

@@ -182,7 +182,7 @@ class Admin extends MY_Controller {
 				$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
 				exec($cmd);
 			}
-			redirect('/');		
+			redirect('/admin/view_log');		
 		} else {
 			$this->data['heading'] = 'NMap Scanning';
 			$this->data['include'] = 'v_scan_subnet_nmap'; 

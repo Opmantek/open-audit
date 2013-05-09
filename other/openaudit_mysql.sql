@@ -1900,7 +1900,7 @@ INSERT INTO `oa_group_column` VALUES (NULL, '1', '6', 'Tags', 'tag',  'text', ''
 
 INSERT INTO `oa_group_user` VALUES  (1,1,1,10);
 
-INSERT INTO `oa_user` VALUES  (1, 'admin',   '5f4dcc3b5aa765d61d8327deb882cf99', 'Administrator', 'admin@openaudit', 'en', '10', 'tango', 'y', 'y', '10', '3');
+INSERT INTO `oa_user` VALUES  (1, 'admin', '0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6', 'Administrator', 'admin@openaudit', 'en', '10', 'tango', 'y', 'y', '10', '3');
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20130512', 'n', 'The internal numerical version.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.0', 'n', 'The version shown on the web pages.');

@@ -610,6 +610,13 @@ class M_system extends MY_Model {
 		if (!isset($details->man_serial)) { $details->man_serial = $details->serial; }
 		if (!isset($details->man_type)) { $details->man_type = $details->type; }
 
+		if ((strripos($details->manufacturer, "vmware") !== false) or 
+			(strripos($details->manufacturer, "parallels") !== false) or 
+			(strripos($details->manufacturer, "virtual") !== false)) {
+			$details->form_factor = 'Virtual';
+			$details->man_form_factor = 'Virtual';
+		}
+
 		$details->man_ip_address = ip_address_to_db($details->man_ip_address);
 
 		if ($details->hostname != '' and $details->domain != '' and $details->fqdn == '') {
@@ -741,9 +748,49 @@ class M_system extends MY_Model {
 			}
 		}
 
+		# if submitting an nmap or snmp scan, do not update the type or man_type
+		if (isset($details->last_seen_by) and ($details->last_seen_by == 'nmap' or 
+			$details->last_seen_by == 'snmp')) {
+			unset ($details->type);
+			unset ($details->man_type);
+		}
+
+		# we check a few man_ items when we are submitting and audit script result
+		# if they are blank (previously submitted info is incomplete) we over write them
+		# we would not normally over write man_ items
+		if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
+			$sql = "SELECT * FROM system WHERE system_id = ? LIMIT 1";
+			$data = array("$details->system_id");
+			$query = $this->db->query($sql, $data);
+			$row = $query->row();
+			if ($row->man_manufacturer == '') {$details->man_manufacturer = $details->manufacturer;}
+			if ($row->man_model == '') {$details->man_model = $details->model;}
+			if ($row->man_serial == '') {$details->man_serial = $details->serial;}
+			if ($row->man_description == '') {$details->man_description = $details->description;}
+			if ($row->man_form_factor == '') {$details->man_form_factor = $details->form_factor;}
+			if ($row->man_os_group == '') {$details->man_os_group = $details->os_group;}
+			if ($row->man_os_family == '') {$details->man_os_family = $details->os_family;}
+			if ($row->man_os_name == '') {$details->man_os_name = $details->os_name;}
+			if ((strripos($details->manufacturer, "vmware") !== false) or 
+				(strripos($details->manufacturer, "parallels") !== false) or 
+				(strripos($details->manufacturer, "virtual") !== false)) {
+				$details->form_factor = 'Virtual';
+				$details->man_form_factor = 'Virtual';
+			}
+		}
+
+		# only update system.timestamp if we have an audit result - not for nmap, snmp, etc
+		if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
+			# leave it alone
+		} else {
+			unset ($details->timestamp);
+			unset ($details->first_timestamp);
+		}
+
 		if (isset($details->man_ip_address)) {
 			$details->man_ip_address = ip_address_to_db($details->man_ip_address);
 		}
+
 		$sql = "SHOW COLUMNS FROM system";
 		$query = $this->db->query($sql);
 		$columns = $query->result();

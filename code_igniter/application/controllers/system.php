@@ -267,6 +267,8 @@ class System extends CI_Controller {
 				 	$details = (object) $xml->sys;
 					$details->system_id = '';
 					$details->fqdn = $details->hostname . "." . $details->domain;
+					$details->type = 'computer';
+					$details->man_type = 'computer';
 					$details->system_key = $this->m_system->create_system_key($details);
 					$i = $this->m_system->find_system($details);
 					$details->system_id = $i;

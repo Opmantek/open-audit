@@ -189,7 +189,7 @@ for each objItem in colItems
 	local_windows_build_number = objItem.BuildNumber
 next
 set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration " _
-	& "WHERE IPEnabled = 'True' or (ServiceName<>'' AND ServiceName<>'AsyncMac' " _
+	& "WHERE IPEnabled = True or (ServiceName<>'' AND ServiceName<>'AsyncMac' " _
 	& "AND ServiceName<>'VMnetx' AND ServiceName<>'VMnetadapter' " _
 	& "AND ServiceName<>'Rasl2tp' AND ServiceName<>'msloop' " _
 	& "AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' " _
@@ -1605,7 +1605,7 @@ for each objItem In colDiskDrives
 	else 
 		for each objItem2 in DriveStatus
 			if (lcase(objItem2.InstanceName) = hard_drive_pnp_id) then
-				if (objItem2.PredictFailure <> "False" and objItem2.Active = "True") then
+				if (objItem2.PredictFailure <> False and objItem2.Active = True) then
 					hard_drive_status = objItem2.PredictFailure & " because of " & objItem2.Reason
 				else 
 					hard_drive_status = "OK"
@@ -1689,12 +1689,12 @@ for each objPartition In colPartitions
 	' below only checks when OS is XP or later (not 2000 or NT)
 	'if (windows_build_number > 2195) then
 	'	if isnull(objLogicalDisk.SupportsDiskQuotas) then
-	'		partition_quotas_supported = "false"
+	'		partition_quotas_supported = False
 	'	else 
-	'		partition_quotas_supported = "true"
+	'		partition_quotas_supported = True
 	'	end if
 	'else
-	'	partition_quotas_supported = "false"
+	'	partition_quotas_supported = False
 	'end if
 
 	if (partition_size > "") then
@@ -1768,10 +1768,10 @@ end if
 
 if debugging > "0" then wscript.echo "shares info" end if 
 ' test to see if the share permissions .exe exists
-file_exists = "false"
+file_exists = False
 if audit_location = "local" then
 	if objFSO.FileExists("C:\RMTSHARE.exe") then
-		file_exists = "true"
+		file_exists = True
 	else
 		' copy the file to the machine being audited
 	end if
@@ -1827,19 +1827,19 @@ for each objItem in colItems
 	result_share = result_share & "			<share_path>" & escape_xml(objItem.Path) & "</share_path>" & vbcrlf
 	result_share = result_share & "			<share_size>" & escape_xml(folder_size) & "</share_size>" & vbcrlf
 
-	if file_exists = "true" then
+	if file_exists = True then
 		strCommand = "c:\RMTSHARE.EXE \\" & system_hostname & "\""" & objItem.Name & """ "
 		set objExecObject = objShell.Exec(strCommand)
 		do While Not objExecObject.StdOut.AtEndOfStream
 			strResults = objExecObject.StdOut.ReadAll()
 		Loop
 		MyArray = Split(strResults, vbcrlf)
-		flag = false
+		flag = False
 		for each line in MyArray
 			if line = "The command completed successfully." then
-				flag = false
+				flag = False
 			end if
-			if flag = true then
+			if flag = True then
 				newArray = split(line, ":")
 				if (left(ltrim(newArray(0)),1) = "\") then
 					newArray(0) = mid(trim(newArray(0)), 2)
@@ -1847,7 +1847,7 @@ for each objItem in colItems
 				share_users = share_users & trim(newArray(0)) & "(" & trim(newArray(1)) & "), "
 			end if
 			if line = "Permissions:" then
-				flag = true
+				flag = True
 			end if
 		next
 		if share_users > "" then
@@ -1867,7 +1867,7 @@ end if
 if debugging > "0" then wscript.echo "network card info" end if 
 result.WriteText "	<network_cards>" & vbcrlf
 set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration " _
-	& "WHERE IPEnabled = 'True' or (ServiceName<>'' AND ServiceName<>'AsyncMac' " _
+	& "WHERE IPEnabled = True or (ServiceName<>'' AND ServiceName<>'AsyncMac' " _
 	& "AND ServiceName<>'VMnetx' AND ServiceName<>'VMnetadapter' " _
 	& "AND ServiceName<>'Rasl2tp' AND ServiceName<>'msloop' " _
 	& "AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' " _
@@ -1969,7 +1969,7 @@ if debugging > "0" then wscript.echo "network address info" end if
 item = ""
 dim ip_address_array(100)
 count = 0
-set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'True' ",,32)
+set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration WHERE IPEnabled = True ",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NetworkAdapterConfiguration)" : audit_wmi_fails = audit_wmi_fails & "Win32_NetworkadapterConfiguration " : end if
 for each objItem in colItems
 	net_mac_address = objItem.MACAddress
@@ -2012,7 +2012,7 @@ if skip_dns = "n" then
 	if debugging > "0" then wscript.echo "DNS info" end if 
 	item = ""
 	on error resume next
-	set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration WHERE IPEnabled = 'True' AND DHCPEnabled = 'False' ",,32)
+	set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration WHERE IPEnabled = True AND DHCPEnabled = False ",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NetworkAdapterConfiguration)" : audit_wmi_fails = audit_wmi_fails & "Win32_NetworkadapterConfiguration " : end if
 	for each objItem in colItems
 		net_mac_address = objItem.MACAddress
@@ -2131,18 +2131,18 @@ if (skip_printer = "n") then
 					aTmp = split(objItem.PortName, ".") 
 					' There must be 4 fields in a valid IP 
 					if UBound(aTmp) = 3 then 
-						valid = "true"
+						valid = True
 						for each field in aTmp 
 							if (isnumeric(field)) then
-								if (cint(field) > 255) then valid = "false" end if
+								if (cint(field) > 255) then valid = False end if
 							else
-								valid = "false"
+								valid = False
 							end if
 						next 
 					else 
-						valid = "false"
+						valid = False
 					end if
-					if valid = "true" then printer_ip_address = objItem.PortName end if
+					if valid = True then printer_ip_address = objItem.PortName end if
 					if debugging > "2" then wscript.echo "0 Resulting IP is " & printer_ip_address end if
 				end if
 				
@@ -2159,13 +2159,13 @@ if (skip_printer = "n") then
 							cTmp = split(aTmp(0), "_")
 							if ((isnumeric(cTmp(1))) and (cint(cTmp(1)) < 256) and (cint(cTmp(1) >= 0))) then first_octet = cTmp(1) end if
 						end if
-						if (not(isnumeric(first_octet))) then valid = "false" end if
+						if (not(isnumeric(first_octet))) then valid = False end if
 
 						second_octet = aTmp(1)
-						if (not(isnumeric(second_octet))) then valid = "false" end if
+						if (not(isnumeric(second_octet))) then valid = False end if
 						
 						third_octet = aTmp(2)
-						if (not(isnumeric(third_octet))) then valid = "false" end if
+						if (not(isnumeric(third_octet))) then valid = False end if
 						
 						last_octet = aTmp(3)
 						if (not(isnumeric(last_octet))) then
@@ -2174,19 +2174,19 @@ if (skip_printer = "n") then
 								if ((cint(bTmp(0)) < 256) and (cint(bTmp(0) >= 0))) then last_octet = bTmp(0) end if
 								for i = 0 to 2
 									if (isnumeric(aTmp(i))) then
-										if (cint(aTmp(i)) > 255) then vTmp = "false" end if
+										if (cint(aTmp(i)) > 255) then vTmp = False end if
 									else
-										vTmp = "false"
+										vTmp = False
 									end if
 								next
-								if vTmp <> "false" then
+								if vTmp <> False then
 									printer_ip_address = aTmp(0) & "." & aTmp(1) & "." & aTmp(2) & "." & bTmp(0)
 								end if
 							end if
 						end if
-						if (not(isnumeric(last_octet))) then valid = "false" end if
+						if (not(isnumeric(last_octet))) then valid = False end if
 						
-						if valid <> "false" then printer_ip_address = first_octet & "." & second_octet & "." & third_octet & "." & last_octet
+						if valid <> False then printer_ip_address = first_octet & "." & second_octet & "." & third_octet & "." & last_octet
 					end if 'ubound(aTmp)
 					if debugging > "1" then wscript.echo "1 Resulting IP is " & printer_ip_address end if
 				end if ' printer_ip_address > ""
@@ -2342,25 +2342,25 @@ if (skip_printer = "n") then
 				oReg.GetBinaryValue HKEY_LOCAL_MACHINE, printer_reg_driver, "printColor", print_color
 				oReg.GetBinaryValue HKEY_LOCAL_MACHINE, printer_reg_driver, "printDuplexSupported", print_duplex
 				
-				printer_color = "False"
+				printer_color = False
 				if (isnull(print_color)) then
 					' do nothing
 					if debugging > "2" then wscript.echo "Color null returned" end if
 				else
 					for i = lbound(print_color) to ubound(print_color)
 						if debugging > "2" then wscript.echo "Colour: " & print_color(i) end if
-						if (print_color(i) = "1") then printer_color = "True"
+						if (print_color(i) = "1") then printer_color = True
 					next
 				end if
 				
-				printer_duplex = "False"
+				printer_duplex = False
 				if (isnull(print_duplex)) then
 					' do nothing
 					if debugging > "2" then wscript.echo "Duplex null returned" end if
 				else
 					for i = lbound(print_duplex) to ubound(print_duplex)
 						if debugging > "2" then wscript.echo "Duplex: " & print_duplex(i) end if
-						if (print_duplex(i) = "1") then printer_duplex = "True"
+						if (print_duplex(i) = "1") then printer_duplex = True
 					next
 				end if
 				
@@ -2409,10 +2409,10 @@ if (skip_printer = "n") then
 				if (CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) then
 					printer_comment = objItem.Comment
 					if (objItem.ShareName > "") then
-						printer_shared = "True"
+						printer_shared = True
 						printer_share_name = objItem.ShareName & " on " & system_hostname
 					else
-						printer_shared = "False"
+						printer_shared = False
 						printer_share_name = ""
 					end if
 				end if
@@ -2505,7 +2505,7 @@ end if
 
 if debugging > "0" then wscript.echo "environment variables" end if 
 item = ""
-set colItems = objWMIService.ExecQuery("Select * from Win32_Environment where SystemVariable = 'True'",,32)
+set colItems = objWMIService.ExecQuery("Select * from Win32_Environment where SystemVariable = True",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Environment)" : audit_wmi_fails = audit_wmi_fails & "Win32_Environment " : end if
 for each objItem in colItems
 	if (instr(lcase (escape_xml(objItem.VariableValue)), lcase (wshNetwork.userName)) or _
@@ -2639,7 +2639,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 end if
 
 
-if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role <> "Primary Domain Controller") and (windows_part_of_domain = "True")) then
+if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role <> "Primary Domain Controller") and (windows_part_of_domain = True)) then
 	result.WriteText "	<groups>" & vbcrlf
 	if debugging > "0" then wscript.echo "local groups info" end if 
 
@@ -3331,7 +3331,7 @@ if address_width = "64" then
 	result.WriteText "		<!-- end of 64 #3 -->" & vbcrlf
 	Set objCtx = CreateObject("WbemScripting.SWbemNamedValueSet")
 	objCtx.Add "__ProviderArchitecture", 64
-	objCtx.Add "__RequiredArchitecture", TRUE
+	objCtx.Add "__RequiredArchitecture", True
 	Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
 	if struser <> "" then
@@ -3523,19 +3523,19 @@ for each objItem in colItems
 	select case service_name
 	
 		case "iisadmin"   
-			iis = "True"
+			iis = True
 			
 		case "w3svc"      
-			iis_w3svc = "True"
+			iis_w3svc = True
 			
 		case "msftpsvc"   
-			iis_ftpsvc = "True"
+			iis_ftpsvc = True
 			
 		case "smtpsvc"    
-			iis_smtpsvc = "True"
+			iis_smtpsvc = True
 			
 		case "nntpsvc"    
-			iis_nntpsvc = "True"
+			iis_nntpsvc = True
 		
 		case "mssqlserver" 
 			en_sql_server = "y"
@@ -3818,7 +3818,7 @@ end if
 item = ""
 
 
-if ((iis_w3svc = "True") and (iis = "True") and ((cint(windows_build_number) = 2195) or (cint(windows_build_number) = 2600)) ) then
+if ((iis_w3svc = True) and (iis = True) and ((cint(windows_build_number) = 2195) or (cint(windows_build_number) = 2600)) ) then
 	' IIS 5 or 5.1
 	if debugging > "1" then wscript.echo "IIS 5 Installed" end if 
 	result_webserver = result_webserver & "		<server>" & vbcrlf
@@ -3920,11 +3920,11 @@ if ((iis_w3svc = "True") and (iis = "True") and ((cint(windows_build_number) = 2
 end if
 
 
-if ((iis_w3svc = "True") and (iis = "True") and (cint(windows_build_number) > 3000)) then
+if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000)) then
 	' IIS 6 or greater
 	if debugging > "1" then wscript.echo "IIS 6 Installed" end if 
 
-	iis_wmi = "True"
+	iis_wmi = True
 
 	on error resume next
 		if struser > "" then
@@ -3938,10 +3938,10 @@ if ((iis_w3svc = "True") and (iis = "True") and (cint(windows_build_number) > 30
 		end if
 	on error goto 0
 	
-	if isnull(objWMIService_IIS) then iis_wmi = "False"
-	if isempty(objWMIService_IIS) then iis_wmi = "False"
+	if isnull(objWMIService_IIS) then iis_wmi = False
+	if isempty(objWMIService_IIS) then iis_wmi = False
 	
-	if iis_wmi = "True" then
+	if iis_wmi = True then
 		iis_version = ""
 		on error resume next
 			Set colItems = objWMIService_IIS.ExecQuery("SELECT * FROM IIsWebInfo",,32)
@@ -3954,11 +3954,11 @@ if ((iis_w3svc = "True") and (iis = "True") and (cint(windows_build_number) > 30
 			result_webserver = result_webserver & "			<webserver_version>" & escape_xml(iis_version) & "</webserver_version>" & vbcrlf
 			result_webserver = result_webserver & "			<webserver_state>running</webserver_state>" & vbcrlf
 			result_webserver = result_webserver & "		</server>" & vbcrlf
-			if iis_version > "." then iis_wmi = "True" else iis_wmi = "False"
+			if iis_version > "." then iis_wmi = True else iis_wmi = False
 		on error goto 0
 	end if
 
-	if iis_wmi = "True" then
+	if iis_wmi = True then
 		on error resume next
 			Set colItems = objWMIService_IIS.ExecQuery("SELECT * FROM IISWebServiceSetting",,32)
 			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (IIsWebServiceSetting)" : audit_wmi_fails = audit_wmi_fails & "IISWebServiceSetting " : end if
@@ -3992,7 +3992,7 @@ if ((iis_w3svc = "True") and (iis = "True") and (cint(windows_build_number) > 30
 		on error goto 0
 	end if
 
-	if iis_wmi = "True" then
+	if iis_wmi = True then
 		result_site = "		<websites>" & vbcrlf
 		Set colItems = objWMIService_IIS.ExecQuery("Select * from IIsWebServerSetting",,32)
 		For Each objItem in colItems
@@ -4068,7 +4068,7 @@ if ((iis_w3svc = "True") and (iis = "True") and (cint(windows_build_number) > 30
 			result_host_headers = ""
 			For i = 0 to Ubound(objItem.ServerBindings)
 				' Site URL part #1
-				if iis_site_ssl_en = "True" then
+				if iis_site_ssl_en = True then
 					site_url = "https://"
 				else
 					site_url = "http://"
@@ -4161,7 +4161,7 @@ if ((iis_w3svc = "True") and (iis = "True") and (cint(windows_build_number) > 30
 		result_site = result_site & "		</websites>"
 	end if
 
-	if iis_wmi = "True" then
+	if iis_wmi = True then
 		Set colItems = objWMIService_IIS.ExecQuery("SELECT * FROM IIsApplicationPoolSetting",,32)
 		if (isnull(colItems)) then
 			' do nothing
@@ -4188,7 +4188,7 @@ if ((iis_w3svc = "True") and (iis = "True") and (cint(windows_build_number) > 30
 	end if
 
 
-	if iis_wmi = "True" then
+	if iis_wmi = True then
 		result.WriteText "	<webserver>" & vbcrlf
 		result.WriteText result_webserver & vbcrlf
 		result.WriteText result_site & vbcrlf
@@ -4241,7 +4241,7 @@ if address_width = "64" then
 	Subhive = "SOFTWARE\Microsoft\Windows NT\CurrentVersion" 
 	Set objCtx = CreateObject("WbemScripting.SWbemNamedValueSet")
 	objCtx.Add "__ProviderArchitecture", 64
-	objCtx.Add "__RequiredArchitecture", TRUE
+	objCtx.Add "__RequiredArchitecture", True
 	Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
 	if struser <> "" then
