@@ -6804,8 +6804,11 @@ if (!function_exists('get_oid'))
 		if ($oid == '1.3.6.1.4.1.9.12.3.1.12.1') { $new->model = 'Cisco Midplane UMG 9820'; $new->type = 'cisco module'; }
 
 
-
-
+		if ($oid == '1.3.6.1.4.1.11.2.3.7.11.51') { $new->model = 'ProCurve J8698A Switch'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.11.2.3.7.11.64') { $new->model = 'ProCurve J9022A Switch 2810-48G'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.11.2.3.7.11.69') { $new->model = 'ProCurve J9049A Switch 2900-24G'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.11.2.3.9.1') { $new->model = 'HP Color LaserJet 2605dn'; $new->type = 'network printer'; }
+		if ($oid == '2.773820.811937840.808464432.808464432.808464432.808464432.808463408') { $new->model = 'Officejet Pro 8600 N911g'; $new->type = 'network printer'; }
 
 
 		if ($oid == '1.3.6.1.4.1.4526.1.1') { $new->model = 'FSM726S Managed Switch'; $new->type = 'switch'; }

@@ -80,7 +80,7 @@ if [ "$hosts_in_subnet" != "" ]; then
 	
 	for host in $hosts_in_subnet; do
 
-		if [[ "$host" != *"$local_ip"* ]]; then
+		#if [[ "$host" != *"$local_ip"* ]]; then
 
 			# todo - add in a ping to determine if the host is REALLY online.
 			# nmap has issues across subnets where network infrastructure may return a false positive
@@ -108,11 +108,11 @@ if [ "$hosts_in_subnet" != "" ]; then
 			# Not trying SNMP detection as it's not consistent across no snmp, snmp v1, snmp v2
 			#NMAP=`nmap -vv -n -O -PN -sU -p161-162 $host`
 			
-			set mac_address=""
-			set manufacturer=""
-			set type="unknown"
-			set description=""
-			set os_name=""
+			mac_address=""
+			manufacturer=""
+			type="unknown"
+			description=""
+			os_name=""
 			
 			for line in $nmap_scan; do
 
@@ -170,7 +170,7 @@ if [ "$hosts_in_subnet" != "" ]; then
 			result="$result		<os_name>$os_name</os_name>\n"
 			result="$result		<description>$description</description>\n"
 			result="$result	</device>\n"
-		fi
+		#fi
 	done
 fi
 

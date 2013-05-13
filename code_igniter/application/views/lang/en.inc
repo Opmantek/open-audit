@@ -742,4 +742,17 @@ $GLOBALS["lang"]["Summary - mark-home-router"]="Summary - mark-home-router";
 $GLOBALS["lang"]["Add System Definition"]="Add System Definition";
 $GLOBALS["lang"]["Standard Fields"]="Standard Fields";
 $GLOBALS["lang"]["Custom Fields"]="Custom Fields";
+$GLOBALS["lang"]["Network - 192.168.1.0 / 24"]="Network - 192.168.1.0 / 24";
+$GLOBALS["lang"]["Network - 192.168.61.0 / 24"]="Network - 192.168.61.0 / 24";
+$GLOBALS["lang"]["Summary - 192.168.61.138"]="Summary - 192.168.61.138";
+$GLOBALS["lang"]["Discovery"]="Discovery";
+$GLOBALS["lang"]["Summary - xubuntu"]="Summary - xubuntu";
+$GLOBALS["lang"]["Summary - 192.168.61.254"]="Summary - 192.168.61.254";
+$GLOBALS["lang"]["Summary - 192.168.61.109"]="Summary - 192.168.61.109";
+$GLOBALS["lang"]["Summary - laptopmac"]="Summary - laptopmac";
+$GLOBALS["lang"]["Summary - LaptopMac"]="Summary - LaptopMac";
+$GLOBALS["lang"]["Summary - server"]="Summary - server";
+$GLOBALS["lang"]["Software Licensing for Network - 192.168.61.0 / 24"]="Software Licensing for Network - 192.168.61.0 / 24";
+$GLOBALS["lang"]["Software Licensing for Access Tokens"]="Software Licensing for Access Tokens";
+$GLOBALS["lang"]["Summary - 192.168.88.8"]="Summary - 192.168.88.8";
 ?>

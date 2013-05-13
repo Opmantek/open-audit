@@ -577,7 +577,7 @@ class Main extends MY_Controller {
 		}
 		
 		foreach ($this->data['system'] as $system) {
-			$model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
+			$model_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_model)));
 			$file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $model_formatted . '.jpg';
 			if ($system->man_picture > '') {
 				$system->man_picture = $system->man_picture . '.jpg';

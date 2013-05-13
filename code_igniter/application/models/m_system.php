@@ -749,13 +749,12 @@ class M_system extends MY_Model {
 		}
 
 		# if submitting an nmap or snmp scan, do not update the type or man_type
-		if (isset($details->last_seen_by) and ($details->last_seen_by == 'nmap' or 
-			$details->last_seen_by == 'snmp')) {
+		if (isset($details->last_seen_by) and $details->last_seen_by == 'nmap') {
 			unset ($details->type);
 			unset ($details->man_type);
-		}
+		}	
 
-		# we check a few man_ items when we are submitting and audit script result
+		# we check a few man_ items when we are submitting an audit script result
 		# if they are blank (previously submitted info is incomplete) we over write them
 		# we would not normally over write man_ items
 		if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
@@ -778,6 +777,11 @@ class M_system extends MY_Model {
 				$details->man_form_factor = 'Virtual';
 			}
 		}
+
+		if (isset($details->last_seen_by) and $details->last_seen_by == 'snmp') {
+			$details->icon = $details->type;
+			$details->man_icon = $details->type;
+		}	
 
 		# only update system.timestamp if we have an audit result - not for nmap, snmp, etc
 		if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {

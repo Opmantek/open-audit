@@ -105,7 +105,14 @@
 					<li><a href='<?php echo base_url()?>index.php/admin_system/add_systems'><?php echo __('Add Multiple Devices (using a spreadsheet)')?></a></li>
 				</ul>
 			</li>
-			
+
+			<li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
+				<ul>
+					<li><a href='<?php echo base_url()?>index.php/admin/scan_subnet_nmap'><?php echo __('Discover a Subnet')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin/scan_ad'><?php echo __('Scan Active Directory')?></a></li>
+				</ul>
+			</li>
+
 			<li><a href='javascript:void(0)'><?php echo __('Groups')?></a>
 				<ul>
 					<li><a href='<?php echo base_url()?>index.php/admin_group/list_groups'><?php echo __('List Groups')?></a></li>
@@ -142,13 +149,6 @@
 					<li><a href='<?php echo base_url()?>index.php/admin_report/list_reports'><?php echo __('List Reports')?></a></li>
 					<li><a href='<?php echo base_url()?>index.php/admin_report/activate_report'><?php echo __('Activate Report')?></a></li>
 					<li><a href='<?php echo base_url()?>index.php/admin_report/import_report'><?php echo __('Import Report')?></a></li>
-				</ul>
-			</li>
-
-			<li><a href='javascript:void(0)'><?php echo __('Scanning')?></a>
-				<ul>
-					<li><a href='<?php echo base_url()?>index.php/admin/scan_subnet_nmap'><?php echo __('Discover a Subnet')?></a></li>
-					<li><a href='<?php echo base_url()?>index.php/admin/scan_ad'><?php echo __('Scan Active Directory')?></a></li>
 				</ul>
 			</li>
 

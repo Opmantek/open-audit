@@ -101,7 +101,7 @@ class M_oa_user extends MY_Model {
 		$encrypted_password = $salt . $hash;
 
 		$sql = "INSERT INTO oa_user (user_name, user_full_name, user_email, user_password, user_theme, 
-				user_lang, user_admin, user_sam) VALUES (?, ?, ?, md5(?), ?, ?, ?, ?)";
+				user_lang, user_admin, user_sam) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->user_name", "$details->user_full_name", "$details->user_email", 
 			"$encrypted_password", "$details->user_theme", "$details->user_lang", 

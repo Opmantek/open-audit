@@ -34,16 +34,10 @@ foreach($system as $key) {
 	$link_serial = $key->serial;
 	$link_model = $key->model;
 	$type = $key->man_type;
-
 	$picture = strtolower($key->man_picture);
 	if ($picture == '') {
 		$picture = strtolower($key->man_model);
 	}
-	
-}
-
-if ($picture == '') {
-	$picture = 'unknown';
 }
 
 foreach($system_location as $key) {

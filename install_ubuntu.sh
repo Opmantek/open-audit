@@ -1,10 +1,17 @@
 #!/bin/bash
 
+# On Ubuntu
 # apt-get install -y zip
 # wget http://website/open-audit.zip
 # unzip open-audit.zip
 # cd open-audit
 # sudo ./install_ubuntu.sh
+
+# On CentOS 6.2
+# yum install unzip mysql-server php php-cli php-ldap php-mbstring php-mysql php-snmp php-xml nmap snmp
+# wget http://website/open-audit.zip
+# unzip open-audit.zip
+# cd open-audit
 
 apt-get update
 
@@ -17,6 +24,8 @@ apt-get install -q -y apache2 php5 php5-mysql php5-ldap php5-snmp php5-mcrypt nm
 echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 /etc/init.d/apache2 restart
+# service apache2 restart   # Ubuntu
+# service httpd restart     # CentOS
 
 mkdir /usr/local/open-audit
 
