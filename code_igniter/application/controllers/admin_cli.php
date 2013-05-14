@@ -96,7 +96,10 @@ class Admin_cli extends CI_Controller {
 		}	
 */
 
-		# read in the Nodes.nmis file		
+		# read in the Nodes.nmis file
+		$log_stamp =  date('M j H:i:s') . " " . gethostname() . " " . getmypid() . " admin_cli/import_nmis - importing nodes from $nodes_file" . PHP_EOL;
+		file_put_contents("/var/log/open-audit.log", $log_stamp, FILE_APPEND | LOCK_EX);	
+		
 		$file_handle = fopen($nodes_file, "r");
 		$string = fread($file_handle, filesize($nodes_file));
 		$string = str_replace(PHP_EOL, " ", $string);
@@ -151,6 +154,8 @@ class Admin_cli extends CI_Controller {
 			$device->ip_address = '';
 			$device->hostname = '';
 			$device->fqdn = '';
+
+			if ($device->host != '127.0.0.1') {
 
 			if (filter_var($device->host, FILTER_VALIDATE_IP)) {
 				# we have an ip address as opposed to a name or fqdn
@@ -260,5 +265,6 @@ class Admin_cli extends CI_Controller {
 				}
 			}
 		}
+	}
 	}
 }

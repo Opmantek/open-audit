@@ -55,7 +55,8 @@ chown -R root:www-data /usr/local/open-audit
 # Set the appropriate permissions on the install directory.
 chmod -R 770 /usr/local/open-audit
 chmod -R 770 /usr/local/open-audit/code_igniter/application/views/lang/
-chmod 770 /usr/local/open-audit/install_ubuntu.sh
+chmod 770 /usr/local/open-audit/install_debian_ubuntu.sh
+chmod 770 /usr/local/open-audit/install_centos_redhat.sh
 chmod 770 /usr/local/open-audit/other/audit_subnet.sh
 chmod 770 /usr/local/open-audit/other/winexe
 

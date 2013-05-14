@@ -296,7 +296,7 @@ class Admin_org extends MY_Controller {
 			}
 			if ($error == '0') {
 				$this->m_oa_org->edit_org($details);
-				#redirect('admin_org/list_orgs');
+				redirect('admin_org/list_orgs');
 			}
 		}
 	}
