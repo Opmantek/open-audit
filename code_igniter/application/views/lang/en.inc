@@ -755,4 +755,6 @@ $GLOBALS["lang"]["Summary - server"]="Summary - server";
 $GLOBALS["lang"]["Software Licensing for Network - 192.168.61.0 / 24"]="Software Licensing for Network - 192.168.61.0 / 24";
 $GLOBALS["lang"]["Software Licensing for Access Tokens"]="Software Licensing for Access Tokens";
 $GLOBALS["lang"]["Summary - 192.168.88.8"]="Summary - 192.168.88.8";
+$GLOBALS["lang"]["Finance Department owned items"]="Finance Department owned items";
+$GLOBALS["lang"]["Software Licensing for Finance Department owned items"]="Software Licensing for Finance Department owned items";
 ?>
