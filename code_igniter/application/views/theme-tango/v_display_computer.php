@@ -1577,7 +1577,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					?>
 						<tr>
 							<td><?php echo clean_url($key_share->share_name)?></td>
-							<td style="text-align: right; padding: 0 10px 0 0;" ><?php echo $size?></td>
+							<td style="text-align: right;" ><?php echo $size?></td>
 							<td><?php echo clean_url($key_share->share_caption)?></td>
 							<td><?php echo clean_url($key_share->share_path)?></td>
 							<td><?php echo str_replace(", ", "<br />", clean_url($key_share->share_users))?></td>

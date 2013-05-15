@@ -129,13 +129,11 @@
 					<li><a href='<?php echo base_url()?>index.php/admin_location/add_locations'><?php echo __('Add Multiple Locations')?></a></li>
 				</ul>
 			</li>
-
 			<li><a href='javascript:void(0)'><?php echo __('Logs')?></a>
 				<ul>
 					<li><a href='<?php echo base_url()?>index.php/admin/view_log'><?php echo __('View Log')?></a></li>
 				</ul>
 			</li>
-
 			<li><a href='javascript:void(0)'><?php echo __('Organisations')?></a>
 				<ul>
 					<li><a href='<?php echo base_url()?>index.php/admin_org/list_orgs'><?php echo __('List Organisations')?></a></li>

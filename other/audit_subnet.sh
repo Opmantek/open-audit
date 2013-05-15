@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# Open Audit
+# Software and Hardware Inventory
+# (c) Mark Unwin 2012 
+# http://www.open-audit.org
+# Licensed under the AGPL v3
+# http://www.fsf.org/licensing/licenses/agpl-3.0.html 
+
 set -f              # turn off globbing
 IFS='
 '
-
-#www-data ALL=NOPASSWD: /usr/bin/nmap
-#www-data ALL=NOPASSWD: /usr/share/open-audit/other/audit_subnet.sh
 
 create_file="n"
 debugging=0

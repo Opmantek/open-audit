@@ -218,7 +218,7 @@ class Main extends MY_Controller {
 		$this->data['count'] = count($this->data['query']);
 		$this->data['group_id'] = $this->data['id'];
 		$this->data['include'] = 'v_report'; 
-		$this->data['sortcolumn'] = '0';
+		$this->data['sortcolumn'] = '2';
 		$this->data['export_report'] = 'y';
 		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
 	}

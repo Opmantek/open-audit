@@ -1891,12 +1891,13 @@ SET character_set_client = @saved_cs_client;
 
 INSERT INTO `oa_group` VALUES  (1,'All Devices','', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\'',1,'Any items that have their status attribute set to production.','device','','devices');
 
-INSERT INTO `oa_group_column` VALUES (NULL, '1', '1', 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left');
-INSERT INTO `oa_group_column` VALUES (NULL, '1', '2', 'Description', 'man_description', 'text', '',  '', '', 'left');
+INSERT INTO `oa_group_column` VALUES (NULL, '1', '1', 'Icon', 'man_icon', 'image', '',  'man_os_family', '', 'left');
+INSERT INTO `oa_group_column` VALUES (NULL, '1', '2', 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left');
 INSERT INTO `oa_group_column` VALUES (NULL, '1', '3', 'IP Address', 'man_ip_address', 'ip_address', '',  '', '', 'left');
-INSERT INTO `oa_group_column` VALUES (NULL, '1', '4', 'Type', 'man_icon', 'image', '',  'man_os_family', '', 'left');
-INSERT INTO `oa_group_column` VALUES (NULL, '1', '5', 'OS / Device', 'man_os_name', 'text', '',  '', '', 'left');
-INSERT INTO `oa_group_column` VALUES (NULL, '1', '6', 'Tags', 'tag',  'text', '',  '', '', 'left');
+INSERT INTO `oa_group_column` VALUES (NULL, '1', '4', 'Type', 'man_type', 'text', '',  '', '', 'left');
+INSERT INTO `oa_group_column` VALUES (NULL, '1', '5', 'Description', 'man_description', 'text', '',  '', '', 'left');
+INSERT INTO `oa_group_column` VALUES (NULL, '1', '6', 'OS / Device', 'man_os_name', 'text', '',  '', '', 'left');
+INSERT INTO `oa_group_column` VALUES (NULL, '1', '7', 'Tags', 'tag',  'text', '',  '', '', 'left');
 
 INSERT INTO `oa_group_user` VALUES  (1,1,1,10);
 

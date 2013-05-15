@@ -757,4 +757,7 @@ $GLOBALS["lang"]["Software Licensing for Access Tokens"]="Software Licensing for
 $GLOBALS["lang"]["Summary - 192.168.88.8"]="Summary - 192.168.88.8";
 $GLOBALS["lang"]["Finance Department owned items"]="Finance Department owned items";
 $GLOBALS["lang"]["Software Licensing for Finance Department owned items"]="Software Licensing for Finance Department owned items";
+$GLOBALS["lang"]["Workstations"]="Workstations";
+$GLOBALS["lang"]["Summary - xp1"]="Summary - xp1";
+$GLOBALS["lang"]["Ubuntu Systems"]="Ubuntu Systems";
 ?>

@@ -45,10 +45,16 @@ class Admin extends MY_Controller {
 	}
 
 	function view_log(){
+		
 		$lines = @intval($this->uri->segment(3,0));
 		if ($lines < 1) { $lines = 25; }
+
 		// full path to text file
-		$file = "/var/log/open-audit.log";
+		if (php_uname('s') == 'Linux') {
+			$file = "/var/log/open-audit.log";
+		} else {
+			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+		}
 		// number of lines to read from the end of file
 		#$lines = 25;
 		$fsize = round(filesize($file)/1024/1024,2);
@@ -175,15 +181,46 @@ class Admin extends MY_Controller {
 	}
 
 	function scan_subnet_nmap() {
-		# get subnet
-		if (isset($_POST['ScanNmap'])) {
-			if ($_POST['subnet'] > '' ) {
-				$subnet = $_POST['subnet'];
-				$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
-				exec($cmd);
-			}
-			redirect('/admin/view_log');		
+		if (php_uname('s') == "Windows NT") {
+			$operating_system = "Windows";
 		} else {
+			$operating_system = php_uname('s');
+		}
+
+		if (isset($_POST['ScanNmap'])) {
+			if ($operating_system == 'Linux') {
+				if ($_POST['subnet'] > '' ) {
+					$subnet = $_POST['subnet'];
+					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
+					exec($cmd);
+				}
+			}
+			if ($operating_system == 'Windows') {
+				if ($_POST['subnet'] > '' ) {
+					$subnet = $_POST['subnet'];
+				#    $cmd = "cscript c:\\xampplite\\open-audit\\other\\audit_subnet.vbs subnet=$subnet submit_online=y create_file=n debugging=0 ";
+					$cmd = "%comspec% /c start /b cscript //nologo c:\\xampplite\\open-audit\\other\\audit_subnet.vbs subnet=$subnet submit_online=y create_file=n debugging=0 &";
+				#	exec($cmd);
+					pclose(popen($cmd,"r"));
+					#echo $cmd;
+					#exit();
+				}
+			}
+			redirect('/admin/view_log');
+			#redirect('/main/list_devices/1');
+		} else {
+			if ($operating_system == 'Windows') {
+				$this->data['warning'] = "<span style='color: red;'>WARNING.</span>As you are running the server on a Windows operating system, 
+				the ability to scan a subnet from this form will work, however the web page will not return until the scan and 
+				upload has completed. This can take a substantial amount of time and even time out. This is not an issue on a Linux 
+				based system.<br /><br />It is much 
+				better to schedule the running of 'audit_subnet.vbs' via a scheduled task if you wish to execute 
+				it on a regular basis, or run it on the command line if it is a once off event.<br /><br />
+				To scan a subnet and send the data to the server, run the below on the command line: <br /><span style=\"font-family:'courier new'; font-size: 120%;\">cscript c:\\xampplite\open-audit\other\audit_subnet.vbs subnet=SUBNET 
+				submit_online=y create_file=n debugging=1</span><br />Where SUBNET is in the same format as above.";
+			} else {
+				$this->data['warning'] = '';
+			}
 			$this->data['heading'] = 'NMap Scanning';
 			$this->data['include'] = 'v_scan_subnet_nmap'; 
 			$this->data['sortcolumn'] = '1';
@@ -265,13 +302,10 @@ class Admin extends MY_Controller {
 					$details->windows_active_directory_ou = substr($details->windows_active_directory_ou, 1);
 					$details->icon = strtolower(str_replace(" ", "_", $details->os_family));
 					$full_name = $details->dns_hostname;
-					$query = `nslookup -timeout=5 -retry=1 $full_name `;
-					if(preg_match('/\nAddress: (.*)\n/', $query, $matches)) { $details->man_ip_address = trim($matches[1]); }
-					if ($details->man_ip_address == '0.0.0.0') {
-						# try using the domain controller to rsolve DNS
-						$query = `nslookup -timeout=5 -retry=1 $full_name $ad_ldap_server `;
-						if(preg_match('/\nAddress: (.*)\n/', $query, $matches)) { $details->man_ip_address = trim($matches[1]); }
-					}
+
+					$details->man_ip_address = gethostbyname($full_name);
+					if ($details->man_ip_address == $full_name) { $details->man_ip_address = ''; }
+
 					$details->system_key = $this->m_system->create_system_key($details);
 					$details->system_id = $this->m_system->find_system($details);
 					if (isset($details->system_id) and $details->system_id != '') {
