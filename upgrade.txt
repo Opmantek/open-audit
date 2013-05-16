@@ -1,0 +1,40 @@
+UPDGRADING
+
+
+BACKUP YOUR DATABASE
+Linux and Windows.
+mysqldump -u root -pPASSWORD DATABASE_NAME > BACKUP_FILE_NAME.sql
+
+
+BACKUP YOUR FILES
+Linux - copy your existing files to a backup directory. Comment out the line "mysql -u root -popenauditrootuserpassword openaudit < /usr/local/open-audit/other/openaudit_mysql.sql" in the install script.
+
+Windows XAMPP - We have changed to XAMPPLite for this release (v1.0). This is a required change because the later versions of XAMPP contain a broken SNMP implementation. If you have an XAMPP install in c:\xampp stop your apache and mysql services. If you have an install in c:\xampplite stop your apache and mysql services and rename the directory to c:\xampplite.bak. You should be able to follow the install instructions as provided in install_windows.txt with the exception of the database population. Do NOT execute the final command for database population - "mysql -u root -popenauditrootuserpassword openaudit < c:\xampplite\open-audit\other\openaudit_mysql.sql"
+
+
+INSTALL
+Linux.
+The install scripts assume a freshly installed system with no MySQL password. Adjust if necessary.
+Linux and Windows.
+Install as per the installation instruction file (Windows) or scripts (Linux) in the 'open-audit\other' directory.
+
+
+RESTORE DATABASE
+Linux and Windows.
+Run the following and populate a new database with your backup from earlier.
+mysql -u root -popenauditrootuserpassword openaudit < BACKUP_FILE_NAME.sql
+
+
+RESTORE FILES
+Linux and Windows.
+If you have any custom files, copy them to the new location from your backup.
+
+
+UPGRADE YOUR DATABASE
+Linux and Windows.
+Log on to the web interface as admin and go to Help -> About. Upgrade the database.
+
+
+USE NEW AUDIT SCRIPTS
+Windows.
+The audit scripts have changed their XML schema. Ensure you update your exiting scheduled tasks, group policy, login scripts, etc with the new scripts.
