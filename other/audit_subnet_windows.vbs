@@ -10,15 +10,15 @@
 number_of_audits = 25
 
 ' the name and path of the nmap_windows script
-nmap_windows = "c:\xampp\OAv2\other\nmap_windows.vbs"
+nmap_windows = "c:\xampplite\open-audit\other\nmap_windows.vbs"
 
 ' the name and path of the audit_windows script
-audit_windows = "c:\xampp\OAv2\other\audit_windows.vbs"
+audit_windows = "c:\xampplite\open-audit\other\audit_windows.vbs"
 
 ' 0 = no debug
 ' 1 = basic debug
 ' 2 = verbose debug
-debugging = "2"
+debugging = 2
 
 ' defaults - meant to be populated on the command line
 ' but can also be set here
@@ -90,10 +90,10 @@ next
 if use_nmap = "y" then
 	if instr(lcase(wshShell.ExpandEnvironmentStrings( "PATH=%PATH%" )), "\nmap") then
 		nmap_installed = "y"
-		if debugging > "0" then wscript.echo "Using NMap."
+		if debugging > 0 then wscript.echo "Using NMap."
 	else
 		nmap_installed = "n"
-		if debugging > "0" then wscript.echo "Not using NMap."
+		if debugging > 0 then wscript.echo "Not using NMap."
 	end if
 end if
 
@@ -139,7 +139,7 @@ first_ip = bin2str(ist)
 last_ip = bin2str(lst)
 host_count = Bin2Dec(binsub(lst,ist))
 
-if debugging > "0" then
+if debugging > 0 then
 	wscript.echo "Network: " & network
 	wscript.echo "Mask: " & mask
 	wscript.echo "Subnet: " & subnet
@@ -157,7 +157,7 @@ if nmap_installed = "y" then
 	' run a ping scan only - no port detection - to determine which hosts are up
 	' using nmap is faster than using Windows WMI ping.
 	command = nmap_exe & "nmap.exe -sn -n " & network & "/" & mask
-	if debugging > "1" then wscript.echo command end if
+	if debugging > 1 then wscript.echo command end if
 	set objExecObject = wshShell.Exec(command)
 	do while not objExecObject.StdOut.AtEndOfStream
 		nmap_result = objExecObject.StdOut.ReadAll()
@@ -166,7 +166,7 @@ if nmap_installed = "y" then
 	' count the number of hosts up so we can set the array size
 	for each line in nmap_result_array
 		if (instr(lcase(line), "nmap scan report for") = 1) then
-			if debugging > "2" then wscript.echo "HIT: " & line end if
+			if debugging > 2 then wscript.echo "HIT: " & line end if
 			count = count + 1
 		end if
 	next
@@ -181,7 +181,7 @@ if nmap_installed = "y" then
 			' add it to the array of devices to nmap scan
 			pc_array(count) = ip_split(4)
 			count = count + 1
-			if debugging > "2" then wscript.echo "HIT: " & ip_split(4) end if
+			if debugging > 2 then wscript.echo "HIT: " & ip_split(4) end if
 		end if
 	next
 else
@@ -195,9 +195,9 @@ else
 					for each item in ping
 						if (IsNull(item.StatusCode) or (item.Statuscode <> 0)) then
 							' it is not switched on
-							if debugging > "2" then wscript.echo "Miss: " & d end if
+							if debugging > 2 then wscript.echo "Miss: " & d end if
 						else
-							if debugging > "2" then wscript.echo "Hit: " & current_ip end if
+							if debugging > 2 then wscript.echo "Hit: " & current_ip end if
 							pc_array(count) = current_ip
 							count = count + 1
 						end if

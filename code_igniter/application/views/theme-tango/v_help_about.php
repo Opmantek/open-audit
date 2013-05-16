@@ -7,7 +7,7 @@ if (php_uname('s') == "Windows NT") {
 	if (isset($output[1])) {
 		$operating_system = $output[1];
 	} else {
-		$operating_system = "unknown (You must run XAMPP as an administrator on Windows to determine this)";
+		$operating_system = "unknown (You must run XAMPPLite as an administrator on Windows to determine this)";
 	}
 	
 } else {
@@ -42,10 +42,8 @@ if (($config->display_version != $this->config->item('web_display_version')) AND
 		Some other technologies the Open-AudIT v2.0 uses are:
 		<ul>
 			<li>jQuery javascript framework</li>
-			<!-- 
 			<li>MySQL - our default database</li>
 			<li>Apache - our default webserver</li>
-			-->
 			<li>xHTML W3C standards</li>
 		</ul>
 		Please visit the homepage at <a href="http://www.open-audit.org">http://www.open-audit.org</a>, and don't be shy to sign up to the forums.<br />

@@ -20,6 +20,8 @@ number_of_audits = 20
 audit_run_type = "remote"
 audit_run_type = "local"
 
+debugging = 3
+
 ' the below are needed for remote audits as PSexec takes them as command line arguements
 ' I don't think (could be wrong) that PSexec can use the local logged on users credentials
 ' If it can, someone please provide me with a "how to"
@@ -33,7 +35,7 @@ Dim script_timeout
 script_timeout = 600
 
 ' the name and path of the audit script to use
-script_name = "c:\xampp\OAv2\other\audit_windows.vbs"
+script_name = "c:\xampplite\open-audit\other\audit_windows.vbs"
 
 ' update with any submitted command line switches
 Set objArgs = WScript.Arguments
@@ -57,6 +59,9 @@ For Each strArg in objArgs
 
 			case "remote_password"
 				remote_password = varArray(1)
+
+			case "debugging"
+				debugging = varArray(1)
 
 		end select
 	end if
@@ -92,16 +97,16 @@ next
 if audit_run_type = "remote" then
 	for i = 0 to ubound(pc_array)
 		while num_running > number_of_audits
-			wscript.echo("processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")")
-			wscript.echo("therefore - sleeping for 4 seconds.")
+			if debugging > 0 then wscript.echo("processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")") end if
+			if debugging > 0 then wscript.echo("therefore - sleeping for 4 seconds.") end if
 			wscript.sleep 4000
 			num_running = HowMany
 		wend
 		if pc_array(i) <> "" then
-			wscript.echo(i & " of " & ubound(pc_array))
-			wscript.echo("processes running: " & num_running)
-			wscript.echo("next system: " & pc_array(i))
-			wscript.echo("--------------")
+			if debugging > 0 then wscript.echo(i & " of " & ubound(pc_array)) end if
+			if debugging > 0 then wscript.echo("processes running: " & num_running) end if
+			if debugging > 0 then wscript.echo("next system: " & pc_array(i)) end if
+			if debugging > 0 then wscript.echo("--------------") end if
 			
 			remote_location = "\\"& pc_array(i) & "\admin$\"
 			objFSO.CopyFile "c:\xampplite\OAv2\other\audit_windows.vbs", remote_location, True
@@ -112,7 +117,7 @@ if audit_run_type = "remote" then
 			' note - specify -d on the command below to run in non-interactive mode (locally)
 			' if you specify -d you will see command windows of the remote processes
 			cmd = "c:\xampplite\OAv2\other\bin\psexec.exe \\" & pc_array(i) & " -u " & remote_user & " -p " & remote_password & " -d cscript.exe " & remote_location & "audit_windows.vbs self_delete=y "
-			wscript.echo cmd
+			if debugging > 2 then wscript.echo cmd end if
 			Command.Run (cmd)
 			set Command = nothing
 		end if
@@ -122,16 +127,16 @@ end if
 if audit_run_type = "local" then
 	for i = 0 to ubound(pc_array)
 		while num_running > number_of_audits
-			wscript.echo("processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")")
-			wscript.echo("therefore - sleeping for 4 seconds.")
+			if debugging > 0 then wscript.echo("processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")") end if
+			if debugging > 0 then wscript.echo("therefore - sleeping for 4 seconds.") end if
 			wscript.sleep 4000
 			num_running = HowMany
 		wend
 		if pc_array(i) <> "" then
-			wscript.echo(i & " of " & ubound(pc_array))
-			wscript.echo("processes running: " & num_running)
-			wscript.echo("next system: " & pc_array(i))
-			wscript.echo("--------------")
+			if debugging > 0 then wscript.echo(i & " of " & ubound(pc_array)) end if
+			if debugging > 0 then wscript.echo("processes running: " & num_running) end if
+			if debugging > 0 then wscript.echo("next system: " & pc_array(i)) end if
+			if debugging > 0 then wscript.echo("--------------") end if
 			command1 = "cscript //nologo """ & script_name & """ " & pc_array(i)
 			set sh1=wscript.createobject("wscript.shell")
 			sh1.run command1, 6, false

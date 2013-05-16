@@ -124,7 +124,7 @@ end if
 
 for l = 0 to ubound(domain_array)
 	local_domain = domain_array(l)
-	if debugging > "0" then wscript.echo "Now Auditing: " & local_domain end if
+	if debugging > 0 then wscript.echo "Now Auditing: " & local_domain end if
 	' retrieve all computers objects from domain
 	set objconnection = createobject("adodb.connection")
 	set objcommand = createobject("adodb.command")
@@ -132,7 +132,7 @@ for l = 0 to ubound(domain_array)
 	objconnection.open "active directory provider"
 	set objcommand.activeconnection = objconnection
 	objcommand.commandtext = "select name, location, operatingSystem, lastLogon from '" & local_domain & "' where objectclass='computer'"
-	if debugging > "2" then wscript.echo objcommand.commandtext end if
+	if debugging > 2 then wscript.echo objcommand.commandtext end if
 	objcommand.properties("page size") = 1000
 	objcommand.properties("searchscope") = ads_scope_subtree
 	objcommand.properties("sort on") = "name"
@@ -140,7 +140,7 @@ for l = 0 to ubound(domain_array)
 	objrecordset.movefirst
 	totcomp = objrecordset.recordcount -1
 	redim pc_array(totcomp) ' set array to computer count
-	if debugging > "0" then wscript.echo "number of systems retrieved from ldap: " & totcomp end if
+	if debugging > 0 then wscript.echo "number of systems retrieved from ldap: " & totcomp end if
 	count = 0
 	do until objrecordset.eof
 		strcomputer = objrecordset.fields("name").value
@@ -152,8 +152,8 @@ for l = 0 to ubound(domain_array)
 		objrecordset.movenext
 	loop
 	num_running = HowMany
-	if debugging > "0" then wscript.echo "number of filtered systems: " & count end if
-	if debugging > "0" then wscript.echo "--------------" end if
+	if debugging > 0 then wscript.echo "number of filtered systems: " & count end if
+	if debugging > 0 then wscript.echo "--------------" end if
 	redim Preserve pc_array(count)
 
 
@@ -169,16 +169,16 @@ for l = 0 to ubound(domain_array)
 	if audit_run_type = "local" then
 		for i = 0 to ubound(pc_array)
 			while num_running > number_of_audits
-				if debugging > "0" then wscript.echo("processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")") end if
-				if debugging > "0" then wscript.echo("therefore - sleeping for 4 seconds.") end if
+				if debugging > 0 then wscript.echo("processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")") end if
+				if debugging > 0 then wscript.echo("therefore - sleeping for 4 seconds.") end if
 				wscript.sleep 4000
 				num_running = HowMany
 			wend
 			if pc_array(i) <> "" then
-				if debugging > "0" then wscript.echo(i & " of " & ubound(pc_array)) end if
-				if debugging > "0" then wscript.echo("processes running: " & num_running) end if
-				if debugging > "0" then wscript.echo("next system: " & pc_array(i)) end if
-				if debugging > "0" then wscript.echo("--------------") end if
+				if debugging > 0 then wscript.echo(i & " of " & ubound(pc_array)) end if
+				if debugging > 0 then wscript.echo("processes running: " & num_running) end if
+				if debugging > 0 then wscript.echo("next system: " & pc_array(i)) end if
+				if debugging > 0 then wscript.echo("--------------") end if
 				command1 = "cscript //nologo " & script_name & " " & pc_array(i) & " ldap=" & local_domain
 				set sh1=wscript.createobject("wscript.shell")
 				sh1.run command1, 6, false
@@ -192,17 +192,17 @@ for l = 0 to ubound(domain_array)
 	if audit_run_type = "remote" then
 		for i = 0 to ubound(pc_array)
 			while num_running > number_of_audits
-				if debugging > "0" then wscript.echo("processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ") sleeping for 4 seconds.") end if
+				if debugging > 0 then wscript.echo("processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ") sleeping for 4 seconds.") end if
 				wscript.sleep 4000
 				num_running = HowMany
 			wend
 			if pc_array(i) <> "" then
-				if debugging > "0" then wscript.echo(i & " of " & ubound(pc_array)) end if
-				if debugging > "0" then wscript.echo("processes running: " & num_running) end if
-				if debugging > "0" then wscript.echo("next system: " & pc_array(i)) end if
-				if debugging > "0" then wscript.echo("--------------") end if
+				if debugging > 0 then wscript.echo(i & " of " & ubound(pc_array)) end if
+				if debugging > 0 then wscript.echo("processes running: " & num_running) end if
+				if debugging > 0 then wscript.echo("next system: " & pc_array(i)) end if
+				if debugging > 0 then wscript.echo("--------------") end if
 				remote_location = "\\"& pc_array(i) & "\admin$\"
-				if debugging > "2" then wscript.echo "Copying to: " & remote_location end if
+				if debugging > 2 then wscript.echo "Copying to: " & remote_location end if
 				on error resume next
 				objFSO.CopyFile "c:\temp\audit_windows.vbs", remote_location, True
 				'objFSO.CopyFile "c:\xampplite\OAv2\other\bin\RMTSHARE.EXE", remote_location, True
@@ -211,16 +211,16 @@ for l = 0 to ubound(domain_array)
 				on error goto 0
 				if error_returned <> 0 then
 					' we did not copy successfully
-					if debugging > "0" then wscript.echo("Error copying file. Audit not attempted. " & error_returned & " - " & error_description)end if
+					if debugging > 0 then wscript.echo("Error copying file. Audit not attempted. " & error_returned & " - " & error_description)end if
 				else
 					' copy completed - now try to run the audit
-					if debugging > "2" then wscript.echo "Sleeping for two seconds." end if
+					if debugging > 2 then wscript.echo "Sleeping for two seconds." end if
 					wscript.sleep 2000
 					Set Command = WScript.CreateObject("WScript.Shell")
 					' note - specify -d on the command below to run in non-interactive mode (locally)
 					' if you specify -d you will see command windows of the remote processes
 					cmd = "c:\temp\psexec.exe \\" & pc_array(i) & " -u " & remote_user & " -p " & remote_password & " -d cscript.exe " & remote_location & "audit_windows.vbs self_delete=y "
-					if debugging > "2" then wscript.echo "Running command: " & cmd end if
+					if debugging > 2 then wscript.echo "Running command: " & cmd end if
 					on error resume next
 					Command.Run (cmd)
 					error_returned = Err.Number
@@ -228,9 +228,9 @@ for l = 0 to ubound(domain_array)
 					on error goto 0
 					if error_returned <> 0 then
 						' we did not successfully start the audit
-						if debugging > "0" then wscript.echo("Error running audit. " & error_returned & " - " & error_description)end if
+						if debugging > 0 then wscript.echo("Error running audit. " & error_returned & " - " & error_description)end if
 					else
-						if debugging > "0" then wscript.echo "Audit started successfully." end if
+						if debugging > 0 then wscript.echo "Audit started successfully." end if
 					end if
 					set Command = nothing
 				end if
@@ -280,7 +280,7 @@ Sub CheckForHungWMI()
             ' Get the position of audit.vbs in the command line, and add 10 to get to the start of the workstation name
             position = InStr(objProcess.CommandLine, "audit.vbs") + 10
             affectedComputer = Mid(objProcess.CommandLine,position)
-            if debugging > "0" then echo("" & Now & "," & affectedComputer & " - Hung Process Killed. ") end if
+            if debugging > 0 then echo("" & Now & "," & affectedComputer & " - Hung Process Killed. ") end if
             LogKilledAudit("Hung Process Killed for machine: " & affectedComputer)
                 objProcess.Terminate
             end if
@@ -302,7 +302,7 @@ Function LogKilledAudit(txt)
 		right("00"&datepart("s", today), 2)
    Set objFSO = CreateObject("Scripting.FileSystemObject")
    set fp = objFSO.OpenTextFile(logfilename, 8, true)
-   if (debugging > "0" and err <> 0) then wscript.echo(err.number & " " & err.description) end if
+   if (debugging > 0 and err <> 0) then wscript.echo(err.number & " " & err.description) end if
    txtarr=Split(txt, vbcrlf)
    txt=""
    for each txtline in txtarr
@@ -311,7 +311,7 @@ Function LogKilledAudit(txt)
 			txt = txt & todaystr & " - " & txtline & vbcrlf
 		end if
    next
-   if debugging > "0" then wscript.echo(left(txt, len(txt)-2)) end if
+   if debugging > 0 then wscript.echo(left(txt, len(txt)-2)) end if
    fp.write txt
    fp.close
    set fp = nothing

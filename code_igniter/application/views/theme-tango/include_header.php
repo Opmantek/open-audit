@@ -27,4 +27,10 @@
 			echo '<br /><a href="' . base_url() . 'index.php/main/help_about" style="color: red;">upgrade</a>';
 		} ?>
 	</div>
+	<?php #if (isset($this->config->item('nmis')) and $this->config->item('nmis') == 'y') { ?>
+	<?php if ($config->nmis == 'y') { ?>
+	<div style="width:100px; float: right; text-align: center;">
+		<br />NMIS<br /><a href="/cgi-nmis8/nmiscgi.pl" target="_blank"><img src="/theme-tango/tango-images/logo-nmis.png" /></a>
+	</div>
+	<?php } ?>
 </div>

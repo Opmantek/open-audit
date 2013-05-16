@@ -7,7 +7,7 @@ mysqldump -u root -pPASSWORD DATABASE_NAME > BACKUP_FILE_NAME.sql
 
 
 BACKUP YOUR FILES
-Linux - copy your existing files to a backup directory. Comment out the line "mysql -u root -popenauditrootuserpassword openaudit < /usr/local/open-audit/other/openaudit_mysql.sql" in the install script.
+Linux - copy your existing files to a backup directory. The old install directory was /usr/share/oav2/other the new install directory is /usr/local/open-audit. Comment out the line "mysql -u root -popenauditrootuserpassword openaudit < /usr/local/open-audit/other/openaudit_mysql.sql" in the install script.
 
 Windows XAMPP - We have changed to XAMPPLite for this release (v1.0). This is a required change because the later versions of XAMPP contain a broken SNMP implementation. If you have an XAMPP install in c:\xampp stop your apache and mysql services. If you have an install in c:\xampplite stop your apache and mysql services and rename the directory to c:\xampplite.bak. You should be able to follow the install instructions as provided in install_windows.txt with the exception of the database population. Do NOT execute the final command for database population - "mysql -u root -popenauditrootuserpassword openaudit < c:\xampplite\open-audit\other\openaudit_mysql.sql"
 

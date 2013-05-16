@@ -13,13 +13,13 @@ $sortcolumn = 2;
 <fieldset class="niceforms">
 <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('How do I audit a single Windows machine?')?></span></legend>
 You will need Local Admin rights to audit a single Windows machine.<br />
-To audit a Windows machine, you have to run audit_windows.vbs (found in OAv2/other/) against the target machine.<br />
-The default directory is usually (for Windows) c:\xampp\OAv2\other or (for Linux) /usr/share/oav2/other.<br />
+To audit a Windows machine, you have to run audit_windows.vbs (found in open-audit/other/) against the target machine.<br />
+The default directory is usually (for Windows) c:\xampplite\open-audit\other or (for Linux) /usr/local/open-audit/other.<br />
 You should <b>not</b> run the audit_windows.vbs by double clicking on it. If debugging is set to a number higher than zero, it will output many pop-up boxes which have to be manually closed.<br />
 As at beta 9.2, you should also copy the sqlite3.exe into the same folder as audit_windows.vbs if you move the script from the default directory. sqlite3.exe is used to retrieve serial numbers from installed Adobe products. If you have none of these, feel free to not bother copying sqlite3.exe - if it is not present in the directory, it will be skipped and not throw an error.<br /><br />
 You can run audit_windows.vbs physically on the actual machine (locally) or over the network (remotely).<br /><br />
 If you choose to run it locally - <ul>
-	<li>Copy the file to a location on the machine in question.</li>
+	<li>Copy audit_windows.vbs (and sqlite3.exe if you have Adobe products you want install keys for) to a location on the machine in question.</li>
 	<li>Make sure the following variables are set
 		<ul>
 			<li>submit_online = "y"</li>
@@ -32,8 +32,8 @@ If you choose to run it locally - <ul>
 </ul>
 Those basic settings will audit the local machine and submit the audit to the server automatically, without creating a text (XML) file. This should allow you to check that the basics are in place and working.<br /><br />
 <br />If you choose to audit it remotely -<ul>
-	<li>Change into the directory containing the scripts (default is OAv2/other).</li>
-	<li>Ensure the variable are set as per the above.</li>
+	<li>Change into the directory containing the scripts (default is c:\xampplite\open-audit\other).</li>
+	<li>Ensure the variables are set as per the above.</li>
 	<li>Ensure the remote Windows computer allows WMI/VBSctipt access through it's firewall. This can be done using Group Policy, a logon script (not supplied) or manually on the machine in question.</li>
 	<li>Run the script from the command prompt with "cscript audit_windows.vbs REMOTE_COMPUTER_NAME" (without quotes). You can also use a target computers IP Address.</li>
 </ul>
@@ -59,7 +59,7 @@ So, that's how to audit a single Windows machine.<br />
 <br />
 <fieldset class="niceforms">
 <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('How do I audit multiple Windows machines?')?></span></legend>
-To do :-)
+You have two options to audit multiple Windows machines. Audit Domain and Audit List. Both these scripts are in the c:\xampplite\open-audit\other directory. Ensure you open and edit these script before using them. They WILL NEED VARIABLES SET. The variables are quite self explanatory. If you need help just ask in the forums :-)
 </fieldset>
 </div>
 <br />
