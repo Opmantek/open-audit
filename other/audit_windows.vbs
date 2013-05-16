@@ -652,6 +652,7 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_SystemEnclosure",,32
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_SystemEnclosure)" : audit_wmi_fails = audit_wmi_fails & "Win32_SystemEnclosure " : end if
 for each objItem in colItems
    system_form_factor = form_factor(Join(objItem.ChassisTypes, ","))
+   bios_asset_tag = SMBIOSAssetTag
 next
 
 ' using "on error" because am getting some errors - breaking the script.
@@ -953,6 +954,7 @@ for each objItem in colItems
 	item = item & "		<bios_serial>" & escape_xml(objItem.SerialNumber) & "</bios_serial>" & vbcrlf
 	item = item & "		<bios_smversion>" & escape_xml(objItem.SMBIOSBIOSVersion) & "</bios_smversion>" & vbcrlf
 	item = item & "		<bios_version>" & escape_xml(objItem.Version) & "</bios_version>" & vbcrlf
+	item = item & "		<bios_asset_tag>" & escape_xml(bios_asset_tag) & "</bios_asset_tag>" & vbcrlf
 next
 if item > "" then
 	result.WriteText "	<bios>" & vbcrlf

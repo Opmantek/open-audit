@@ -1,0 +1,98 @@
+﻿How to install on Windows.
+
+OAv2 installation using XAMPP.
+------------------------------
+1 - Download the Open-AudIT version with XAMPP included, 
+
+2 - Extract to C: drive, 
+
+3 - Run the c:\xampplite\xampp-control.exe, 
+
+4 - Start Apache and MySQL then log on to http://YOURSERVERNAME/.
+
+Done :-)
+
+Don't forget to activate Groups & Reports and to change the password of the Admin & Test users.
+
+Scroll to the bottom for instructions on auditing Windows Systems.
+
+
+
+
+OAv2 installation using "source".
+---------------------------------
+Substitue the correct variable contents when items below are in CAPITALS.
+
+- Download nmap from http://nmap.org/dist/nmap-6.25-setup.exe and install. Ensure Nmap is in your path. This may require logging off and on again (or even a reboot). Check it is in your path by typing "path" (sans quotes) at a command prompt. You should see the Nmap installation directory in the path. For example, I can see C:\Program Files (x86)\Nmap in my path variable.
+
+- Download XAMPPLite from http://sourceforge.net/projects/xampp/files/XAMPP%20Windows/1.7.3/ and install to c:\xampplite. We MUST use 1.7.3 as later versions of XAMPP have broken SNMP support.
+
+- Edit the file c:\xampplite\php\php.ini. Ensure the following extensions are enabled (not commented out with a ;) - php_snmp.dll, php_ldap.dll, php_mcrypt.dll, php_mbstring.dll. Set the following variables: max_execution_time = 600, memory_limit = 512M, error_reporting = E_ALL
+
+- Run c:\xampplite\xampp-control.exe and start the apache and mysql processes. Ensure you can browse to http://YOUR_SERVER. If so, XAMPPLite is installed correctly.
+
+- Download the package and extract the "www" directory to c:\xampplite\htdocs
+	zipfile\open-audit\www -> c:\xampplite\htdocs
+	You should end up with the c:\xampplite\htdocs directory containing device_images, theme-tango, favicon.ico and index.php items.
+
+- Extract the files in the "open-audit" directory into xampplite
+	zipfile\open-audit -> c:\xampplite\open-audit
+	You should end up with the c:\xampplite\open-audit directory containing the code_igniter, other, www, readme.txt and agpl-3.0.txt items.
+
+- Check the file c:\xampplite\htdocs\index.php for the $system_path variable. Ensure it is set as below.
+	$system_path = "c:/xampplite/open-audit/code_igniter/system";
+	Ensure any other reference to $system_path is commented out by putting a hash # at the start of the line.
+
+- Check the file c:\xampplite\htdocs\index.php for the $application_folder variable. Ensure it is set as below.
+	$application_folder = "c:/xampplite/open-audit/code_igniter/application";
+	Ensure any other reference to $application_folder is commented out by putting a hash # at the start of the line.
+
+- Go to the c:\xampplite\open-audit\other folder and edit the file audit_windows.vbs
+	Make sure the variable "url" points to YOUR_SERVER name (if resolvable) or ip address.
+
+- Create the database in Mysql
+	cd into the c:\xampp\mysql\bin folder and run the following.
+	mysql -u root -e "USE mysql; UPDATE user set Password = password('openauditrootuserpassword') WHERE User = 'root'; FLUSH PRIVILEGES;"
+	then run.
+	mysql -u root -popenauditrootuserpassword -e "CREATE DATABASE openaudit;"
+	then run.
+	mysql -u root -popenauditrootuserpassword -e "CREATE USER openaudit@localhost IDENTIFIED BY 'openauditpassword';"
+	then run.
+	mysql -u root -popenauditrootuserpassword -e "GRANT ALL PRIVILEGES ON openaudit.* TO openaudit@localhost IDENTIFIED BY 'openauditpassword';"
+	then run.
+	mysql -u root -popenauditrootuserpassword -e "FLUSH PRIVILEGES;"
+	then run.
+	mysql -u root -popenauditrootuserpassword openaudit < c:\xampplite\open-audit\other\openaudit_mysql.sql
+
+- Lastly, check the file c:\xampp\open-audit\code_igniter\system\application\config\database.php
+	Make sure the credentials are correct to access the database you just created.
+
+- Finally, point your browser at http://YOURSERVER/ and you should be asked to log in. 
+	Username: admin
+	Password: password
+
+It is installed, congratulations.
+
+
+
+
+Auditing Windows Systems
+------------------------
+
+Open a command prompt and enter "cd c:\xampplite\open-audit\other" and then "cscript audit_windows.vbs ."
+
+It should run and post the result to the database. Go back to your web browser and refresh. You should have a group or two created. Go into one of them and click the machine name. You should see the machine details.
+
+To audit your domain, edit the file: c:\xampplite\open-audit\other\audit_domain.vbs
+
+Depending on your system's power, you may wish to ajust the "number_of_audits". I usually use 20. Make sure the "script_name" points to the correct place - 
+script_name = "c:\xampplite\open-audit\other\audit_windows.vbs"
+
+Put your domain in the domain_array variable as per the examples.
+
+Run the script with: cscript audit_domain.vbs
+
+You should see your domain PCs start to get audited by seperate audit_windows scripts.
+
+Enjoy !!!
+

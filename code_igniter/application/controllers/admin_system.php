@@ -80,7 +80,7 @@ class Admin_system extends MY_Controller {
 
 	function system_add_credentials() {
 		if (!isset($_POST['AddCredentials'])) {
-			$details = new stdClass;
+			$details = new stdClass();
 			$details->system_id = intval($this->uri->segment(3,0));
 			if ( (!is_int($details->system_id)) or ($details->system_id == 0)) { redirect('main/list_devices'); }
 			$this->load->model("m_system");	
@@ -119,7 +119,7 @@ class Admin_system extends MY_Controller {
 		$this->load->library('encrypt');
 		$this->load->helper('snmp');
 		$this->load->helper('snmp_oid');
-		$details = new stdClass;
+		$details = new stdClass();
 		$details->system_id = $this->uri->segment(3,0);
 		$encrypted_access_details = $this->m_system->get_access_details($details->system_id);
 		if ($encrypted_access_details == '') {
@@ -179,7 +179,7 @@ class Admin_system extends MY_Controller {
 				$details->man_type == 'satellite phone' or 
 				$details->man_type == 'smart phone' or 
 				$details->man_type == 'tablet' ) and 
-				!isset($details->serial)){
+				(!isset($details->man_serial) or $details->man_serial == '')){
 				$this->data['error'] = 'Serial number required.';
 			}
 
@@ -191,7 +191,9 @@ class Admin_system extends MY_Controller {
 				$details->man_type == 'network printer' or 
 				$details->man_type == 'router' or 
 				$details->man_type == 'switch' ) and 
-				(!isset($details->hostname) and !isset($details->man_ip_address) and !isset($details->serial))){
+				( (!isset($details->hostname) or $details->hostname =='' ) and 
+				  (!isset($details->man_ip_address) or $details->man_ip_address == '') and 
+				  (!isset($details->man_serial) or $details->man_serial == '' )) ) {
 				$this->data['error'] = 'Hostname, ip address or serial number required.';
 			}
 

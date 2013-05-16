@@ -233,7 +233,7 @@ class Admin extends MY_Controller {
 			$this->load->model("m_system");
 			$this->load->model("m_oa_group");
 			$this->load->model("m_sys_man_audits");
-			$details = new stdClass;
+			$details = new stdClass();
 			$timestamp = date('Y-m-d H:i:s');
 			$ad_ldap_server = $_POST['ad_ldap_server'];
 			$ad_ldap_connect = "ldap://" . $ad_ldap_server;

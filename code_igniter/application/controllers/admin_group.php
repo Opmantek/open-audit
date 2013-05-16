@@ -208,6 +208,7 @@ class Admin_group extends MY_Controller {
 
 	function process_edit_group() {
 		$this->load->model("m_oa_group");
+		$details = new stdclass();
 		foreach ($_POST as $key => $value) {
 			$details->$key = $value;
 		}

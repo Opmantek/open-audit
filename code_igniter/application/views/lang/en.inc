@@ -760,4 +760,11 @@ $GLOBALS["lang"]["Software Licensing for Finance Department owned items"]="Softw
 $GLOBALS["lang"]["Workstations"]="Workstations";
 $GLOBALS["lang"]["Summary - xp1"]="Summary - xp1";
 $GLOBALS["lang"]["Ubuntu Systems"]="Ubuntu Systems";
+$GLOBALS["lang"]["Summary - 192.168.1.42"]="Summary - 192.168.1.42";
+$GLOBALS["lang"]["Summary - 192.168.88.11"]="Summary - 192.168.88.11";
+$GLOBALS["lang"]["Summary - 1111111"]="Summary - 1111111";
+$GLOBALS["lang"]["Summary - 192.168.1.7"]="Summary - 192.168.1.7";
+$GLOBALS["lang"]["Summary - 192.168.1.10"]="Summary - 192.168.1.10";
+$GLOBALS["lang"]["Summary - 192.168.1.3"]="Summary - 192.168.1.3";
+$GLOBALS["lang"]["Summary - 192.168.1.37"]="Summary - 192.168.1.37";
 ?>
