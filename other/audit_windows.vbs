@@ -76,6 +76,8 @@ ldap_seen_date = "2012-06-30"
 ' attempt to ping a target computer before audit?
 ping_target = "n"
 
+details_to_lower = "y"
+
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
 ' NOTE - argurments are case sensitive
@@ -139,6 +141,9 @@ For Each strArg in objArgs
 			
 			case "windows_user_work_2"
 				windows_user_work_2 = argvalue	
+			
+			case "details_to_lower"
+				details_to_lower = argvalue	
 				
 		end select
 	else
@@ -363,6 +368,7 @@ else
 					end if
 					system_hostname = objRecordSet.Fields("Name").Value
 					strParams = "%comspec% /c NSlookup " & system_hostname
+					if details_to_lower = "y" then system_hostname = lcase(system_hostname) end if
 					Set objExecObj = objShell.exec(strParams)
 					Do While Not objExecObj.StdOut.AtEndOfStream
 						strText = objExecObj.StdOut.Readline()
@@ -389,7 +395,7 @@ else
 					icon = lcase(replace(family, " ", "_"))
 					if os_group = "windows" then
 						result.WriteText "	<computer>" & vbcrlf
-						result.WriteText "		<hostname>" & lcase(escape_xml(system_hostname)) & "</hostname>" & vbcrlf
+						result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
 						result.WriteText "		<man_ip_address>" & escape_xml(man_ip_address) & "</man_ip_address>" & vbcrlf
 						result.WriteText "		<domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
 						result.WriteText "		<type>computer</type>" & vbcrlf
@@ -547,6 +553,7 @@ for each objItem in colItems
 	system_os_name = objItem.Caption
 	system_os_icon = replace(lcase(system_os_family), " ", "_")
 	system_description = LCase(objItem.Description)
+	if details_to_lower = "y" then system_description = lcase(system_description) end if
 	OSInstall = objItem.InstallDate
 	OSInstall = Left(OSInstall, 8)
 	OSInstallYear = Left(OSInstall, 4)
@@ -574,9 +581,12 @@ next
 set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
 for each objItem in colItems
+	' this is no longer used because it is actually the NetBIOS name, not the hostname
 	'system_hostname = LCase(objItem.Name)
-	system_hostname = LCase(objItem.DNSHostName)
-	system_domain = LCase(objItem.Domain)
+	'This is not used becauase it is not available on Win2000 or WinXP
+	'system_hostname = LCase(objItem.DNSHostName)
+	system_domain = objItem.Domain
+	if details_to_lower = "y" then system_domain = lcase(system_domain) end if
 	system_pc_num_processor = 0
 	on error resume next
 		system_pc_num_processor = objItem.NumberOfLogicalProcessors
@@ -588,8 +598,15 @@ for each objItem in colItems
 	if (windows_build_number > 2195) then windows_part_of_domain = objItem.PartOfDomain end if
 next
 
-
-
+system_hostname = ""
+set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration",,32)
+error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NetworkAdapterConfiguration)" : audit_wmi_fails = audit_wmi_fails & "Win32_NetworkAdapterConfiguration " : end if
+for each objItem in colItems
+	if (system_hostname = "" or isnull(system_hostname)) then
+		system_hostname = objItem.DNSHostName
+	end if
+next
+if details_to_lower = "y" then system_hostname = lcase(system_hostname) end if
 
 
 if (cint(windows_build_number)) > 5000 then
@@ -600,18 +617,18 @@ if (cint(windows_build_number)) > 5000 then
 	end if
 	if (instr(windows_user_name, "\")) then
 		split_user = split(windows_user_name, "\")
-		windows_user_name = lcase(split_user(1)) 
+		windows_user_name = split_user(1)
 		if split_user(0) > "" then 
-			windows_user_domain = "@" & lcase(split_user(0)) 
+			windows_user_domain = "@" & split_user(0)
 		else
 			windows_user_domain = ""
 		end if
 	end if
 	if ((windows_user_domain = "@") or (windows_user_domain = ".") or (windows_user_domain = "@.")) then
 		' do not add the domain to the username - add the name of the PC (it's a local user)
-		windows_user_name = lcase(windows_user_name) & "@" & lcase(system_hostname)
+		windows_user_name = windows_user_name & "@" & system_hostname
 	else
-		windows_user_name = lcase(windows_user_name) & lcase(windows_user_domain)
+		windows_user_name = windows_user_name & windows_user_domain
 	end if
 else
 	' older style user name and domain
@@ -627,14 +644,18 @@ else
 	if (isnull(windows_user_domain)) then
 		windows_user_domain = ""
 	else
-		windows_user_domain = "@" & lcase(windows_user_domain)
+		windows_user_domain = "@" & windows_user_domain
 	end if
 	if ((windows_user_domain = "@") or (windows_user_domain = ".") or (windows_user_domain = "@.")) then
 		' do not add the domain to the username - add the name of the PC (it's a local user)
-		windows_user_name = lcase(windows_user_name) & "@" & lcase(system_hostname)
+		windows_user_name = windows_user_name & "@" & system_hostname
 	else
-		windows_user_name = lcase(windows_user_name) & lcase(windows_user_domain)
+		windows_user_name = windows_user_name & windows_user_domain
 	end if
+end if
+if details_to_lower = "y" then
+	windows_user_name = lcase(windows_user_name)
+	windows_user_domain = lcase(windows_user_domain)
 end if
 
 
@@ -724,64 +745,70 @@ if windows_part_of_domain = True then
 	if (isnull(hr)) then
 	 ' skip everything here - domain cannot be contacted
 	else
-
-		hr = oTranslate.set (1, domain_dn)
-		full_ad_domain = oTranslate.Get(1)
-		full_domain = oTranslate.Get(2)
-		domain_nb = oTranslate.Get(3)
-		domain_nb = Left(domain_nb,Len(domain_nb)-1)
-		set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain WHERE DomainName='" & domain_nb & "'",,32)
-		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTDomain)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTDomain " : end if
-		for each objItem in colItems
-			windows_client_site_name = objItem.ClientSiteName
-			windows_domain_controller_address = replace(objItem.DomainControllerAddress, "\\", "")
-			windows_domain_controller_name = replace(objItem.DomainControllerName, "\\", "")
-		next
-		set objconnection = createobject("adodb.connection")
-		set objcommand = createobject("adodb.command")
-		objconnection.provider = "adsdsoobject"
-		objconnection.open "active directory provider"
-		set objcommand.activeconnection = objconnection
-		objcommand.commandtext = "select distinguishedName, name from 'GC://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
-		objcommand.properties("page size") = 1000
-		objcommand.properties("searchscope") = ads_scope_subtree
-		objcommand.properties("sort on") = "name"
-		set objrecordset = objcommand.execute
+		hr = ""
 		on error resume next
-		objrecordset.movefirst
-		if err.number <> 0 then 
-			error = 1
-		end if
-		do until objrecordset.eof
-			windows_active_directory_ou = objrecordset.fields("distinguishedName").value
-			objrecordset.movenext
-		loop
+			hr = oTranslate.set (1, domain_dn)
 		on error goto 0
-		if error = 1 then
-			' we failed when using GC:// - try using LDAP://
-			error = 0
-				objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
+		if (isnull(hr) or hr = "") then
+			' skip everything as we could not contact the domain
+		else 
+			full_ad_domain = oTranslate.Get(1)
+			full_domain = oTranslate.Get(2)
+			domain_nb = oTranslate.Get(3)
+			domain_nb = Left(domain_nb,Len(domain_nb)-1)
+			set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain WHERE DomainName='" & domain_nb & "'",,32)
+			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTDomain)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTDomain " : end if
+			for each objItem in colItems
+				windows_client_site_name = objItem.ClientSiteName
+				windows_domain_controller_address = replace(objItem.DomainControllerAddress, "\\", "")
+				windows_domain_controller_name = replace(objItem.DomainControllerName, "\\", "")
+			next
+			set objconnection = createobject("adodb.connection")
+			set objcommand = createobject("adodb.command")
+			objconnection.provider = "adsdsoobject"
+			objconnection.open "active directory provider"
+			set objcommand.activeconnection = objconnection
+			objcommand.commandtext = "select distinguishedName, name from 'GC://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
+			objcommand.properties("page size") = 1000
+			objcommand.properties("searchscope") = ads_scope_subtree
+			objcommand.properties("sort on") = "name"
 			set objrecordset = objcommand.execute
 			on error resume next
 			objrecordset.movefirst
-			if err.number <> 0 then error = 1 end if
+			if err.number <> 0 then 
+				error = 1
+			end if
 			do until objrecordset.eof
 				windows_active_directory_ou = objrecordset.fields("distinguishedName").value
 				objrecordset.movenext
 			loop
 			on error goto 0
-		end if
-		
-		if error = 1 then
-			windows_active_directory_ou = full_ad_domain
-		else	
-			stemp = split(replace(windows_active_directory_ou, "\,","X!X"), ",")
-			stemp(0) = ""
-			ttemp = join(stemp, ",")
-			ttemp = mid(ttemp, 2)
-			windows_active_directory_ou = replace(ttemp, "X!X",",")
-			erase stemp
-			ttemp = NULL
+			if error = 1 then
+				' we failed when using GC:// - try using LDAP://
+				error = 0
+					objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
+				set objrecordset = objcommand.execute
+				on error resume next
+				objrecordset.movefirst
+				if err.number <> 0 then error = 1 end if
+				do until objrecordset.eof
+					windows_active_directory_ou = objrecordset.fields("distinguishedName").value
+					objrecordset.movenext
+				loop
+				on error goto 0
+			end if
+			
+			if error = 1 then
+				windows_active_directory_ou = full_ad_domain
+			else	
+				stemp = split(replace(windows_active_directory_ou, "\,","X!X"), ",")
+				stemp(0) = ""
+				ttemp = join(stemp, ",")
+				ttemp = mid(ttemp, 2)
+				windows_active_directory_ou = replace(ttemp, "X!X",",")
+				erase stemp
+				ttemp = NULL
+			end if
 		end if
 	end if
 else 
@@ -791,6 +818,7 @@ else
 	windows_domain_controller_name = ""
 	windows_active_directory_ou = ""
 end if
+if details_to_lower = "y" then windows_active_directory_ou = lcase(windows_active_directory_ou) end if
 
 if ((windows_part_of_domain = True) and (windows_user_work_1 > "")) then
 
@@ -921,7 +949,7 @@ next
 
 result.WriteText " 	<windows>" & vbcrlf
 result.WriteText "		<windows_build_number>" & escape_xml(windows_build_number) & "</windows_build_number>" & vbcrlf
-result.WriteText "		<windows_user_name>" & escape_xml(lcase(windows_user_name)) & "</windows_user_name>" & vbcrlf
+result.WriteText "		<windows_user_name>" & escape_xml(windows_user_name) & "</windows_user_name>" & vbcrlf
 result.WriteText "		<windows_client_site_name>" & escape_xml(windows_client_site_name) & "</windows_client_site_name>" & vbcrlf
 result.WriteText "		<windows_domain_short>" & escape_xml(domain_nb) & "</windows_domain_short>" & vbcrlf
 result.WriteText "		<windows_domain_controller_address>" & escape_xml(windows_domain_controller_address) & "</windows_domain_controller_address>" & vbcrlf
@@ -939,7 +967,7 @@ result.WriteText "		<windows_registered_user>" & escape_xml(windows_registered_u
 result.WriteText "		<windows_service_pack>" & escape_xml(windows_service_pack) & "</windows_service_pack>" & vbcrlf
 result.WriteText "		<windows_version>" & escape_xml(system_os_version) & "</windows_version>" & vbcrlf
 result.WriteText "		<windows_install_directory>" & escape_xml(windows_install_directory) & "</windows_install_directory>" & vbcrlf
-result.WriteText "		<windows_active_directory_ou>" & escape_xml(lcase(windows_active_directory_ou)) & "</windows_active_directory_ou>" & vbcrlf
+result.WriteText "		<windows_active_directory_ou>" & escape_xml(windows_active_directory_ou) & "</windows_active_directory_ou>" & vbcrlf
 result.WriteText " 	</windows>" & vbcrlf
 
 
@@ -1911,7 +1939,6 @@ for each objItem in colItems
 	net_wins_primary = objItem.WINSPrimaryServer
 	net_wins_lmhosts_enabled = objItem.WINSEnableLMHostsLookup
 	net_wins_secondary = objItem.WINSSecondaryServer
-	'set colItems2 = objWMIService.ExecQuery("Select * from Win32_NetworkAdapter WHERE index='" & net_index & "'",,32)
 	set colItems2 = objWMIService.ExecQuery("SELECT * FROM Win32_NetworkAdapter where index='" & net_index & "'", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NetworkAdapter)" : audit_wmi_fails = audit_wmi_fails & "Win32_NetworkAdapter " : end if
 	if (not isnull(colItems2)) then
@@ -1937,29 +1964,31 @@ for each objItem in colItems
 					net_connection_status = ""
 					net_speed = ""
 				end if
-				result.WriteText "		<network_card>" & vbcrlf
-				result.WriteText "			<net_mac_address>" & escape_xml(net_mac_address) & "</net_mac_address>" & vbcrlf
-				result.WriteText "			<net_manufacturer>" & escape_xml(net_manufacturer) & "</net_manufacturer>" & vbcrlf
-				result.WriteText "			<net_model>" & escape_xml(net_model) & "</net_model>" & vbcrlf
-				result.WriteText "			<net_description>" & escape_xml(net_description) & "</net_description>" & vbcrlf
-				result.WriteText "			<net_ip_enabled>" & escape_xml(net_ip_enabled) & "</net_ip_enabled>" & vbcrlf
-				result.WriteText "			<net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
-				result.WriteText "			<net_connection_id>" & escape_xml(net_connection_id) & "</net_connection_id>" & vbcrlf
-				result.WriteText "			<net_connection_status>" & escape_xml(net_connection_status) & "</net_connection_status>" & vbcrlf
-				result.WriteText "			<net_speed>" & escape_xml(net_speed) & "</net_speed>" & vbcrlf
-				result.WriteText "			<net_adapter_type>" & escape_xml(net_adapter_type) & "</net_adapter_type>" & vbcrlf
-				result.WriteText "			<net_dhcp_enabled>" & escape_xml(net_dhcp_enabled) & "</net_dhcp_enabled>" & vbcrlf
-				result.WriteText "			<net_dhcp_server>" & escape_xml(net_dhcp_server) & "</net_dhcp_server>" & vbcrlf
-				result.WriteText "			<net_dhcp_lease_obtained>" & escape_xml(net_dhcp_lease_obtained) & "</net_dhcp_lease_obtained>" & vbcrlf
-				result.WriteText "			<net_dhcp_lease_expires>" & escape_xml(net_dhcp_lease_expires) & "</net_dhcp_lease_expires>" & vbcrlf
-				result.WriteText "			<net_dns_host_name>" & escape_xml(net_dns_host_name) & "</net_dns_host_name>" & vbcrlf
-				result.WriteText "			<net_dns_domain>" & escape_xml(net_dns_domain) & "</net_dns_domain>" & vbcrlf
-				result.WriteText "			<net_dns_domain_reg_enabled>" & escape_xml(net_dns_domain_reg_enabled) & "</net_dns_domain_reg_enabled>" & vbcrlf
-				result.WriteText "			<net_dns_server>" & escape_xml(net_dns_server) & "</net_dns_server>" & vbcrlf
-				result.WriteText "			<net_wins_primary>" & escape_xml(net_wins_primary) & "</net_wins_primary>" & vbcrlf
-				result.WriteText "			<net_wins_secondary>" & escape_xml(net_wins_secondary) & "</net_wins_secondary>" & vbcrlf
-				result.WriteText "			<net_wins_lmhosts_enabled>" & escape_xml(net_wins_lmhosts_enabled) & "</net_wins_lmhosts_enabled>" & vbcrlf
-				result.WriteText "		</network_card>" & vbcrlf
+				if net_manufacturer <> "Microsoft TV/Video Connection" then
+					result.WriteText "		<network_card>" & vbcrlf
+					result.WriteText "			<net_mac_address>" & escape_xml(net_mac_address) & "</net_mac_address>" & vbcrlf
+					result.WriteText "			<net_manufacturer>" & escape_xml(net_manufacturer) & "</net_manufacturer>" & vbcrlf
+					result.WriteText "			<net_model>" & escape_xml(net_model) & "</net_model>" & vbcrlf
+					result.WriteText "			<net_description>" & escape_xml(net_description) & "</net_description>" & vbcrlf
+					result.WriteText "			<net_ip_enabled>" & escape_xml(net_ip_enabled) & "</net_ip_enabled>" & vbcrlf
+					result.WriteText "			<net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
+					result.WriteText "			<net_connection_id>" & escape_xml(net_connection_id) & "</net_connection_id>" & vbcrlf
+					result.WriteText "			<net_connection_status>" & escape_xml(net_connection_status) & "</net_connection_status>" & vbcrlf
+					result.WriteText "			<net_speed>" & escape_xml(net_speed) & "</net_speed>" & vbcrlf
+					result.WriteText "			<net_adapter_type>" & escape_xml(net_adapter_type) & "</net_adapter_type>" & vbcrlf
+					result.WriteText "			<net_dhcp_enabled>" & escape_xml(net_dhcp_enabled) & "</net_dhcp_enabled>" & vbcrlf
+					result.WriteText "			<net_dhcp_server>" & escape_xml(net_dhcp_server) & "</net_dhcp_server>" & vbcrlf
+					result.WriteText "			<net_dhcp_lease_obtained>" & escape_xml(net_dhcp_lease_obtained) & "</net_dhcp_lease_obtained>" & vbcrlf
+					result.WriteText "			<net_dhcp_lease_expires>" & escape_xml(net_dhcp_lease_expires) & "</net_dhcp_lease_expires>" & vbcrlf
+					result.WriteText "			<net_dns_host_name>" & escape_xml(net_dns_host_name) & "</net_dns_host_name>" & vbcrlf
+					result.WriteText "			<net_dns_domain>" & escape_xml(net_dns_domain) & "</net_dns_domain>" & vbcrlf
+					result.WriteText "			<net_dns_domain_reg_enabled>" & escape_xml(net_dns_domain_reg_enabled) & "</net_dns_domain_reg_enabled>" & vbcrlf
+					result.WriteText "			<net_dns_server>" & escape_xml(net_dns_server) & "</net_dns_server>" & vbcrlf
+					result.WriteText "			<net_wins_primary>" & escape_xml(net_wins_primary) & "</net_wins_primary>" & vbcrlf
+					result.WriteText "			<net_wins_secondary>" & escape_xml(net_wins_secondary) & "</net_wins_secondary>" & vbcrlf
+					result.WriteText "			<net_wins_lmhosts_enabled>" & escape_xml(net_wins_lmhosts_enabled) & "</net_wins_lmhosts_enabled>" & vbcrlf
+					result.WriteText "		</network_card>" & vbcrlf
+				end if
 			end if
 		next
 	end if
@@ -2027,9 +2056,14 @@ if skip_dns = "n" then
 				for each objitem2 in colitems2
 					full_name = split(objItem2.OwnerName, ".")
 					hostname = full_name(0)
+					dns_full_name = objItem2.OwnerName
+					if details_to_lower = "y" then 
+						hostname = lcase(hostname)
+						dns_full_name = lcase(dns_host_name)
+					end if
 					item = item & "		<dns_entry>" & vbcrlf
-					item = item & "			<dns_name>" & lcase(escape_xml(hostname)) & "</dns_name>" & vbcrlf
-					item = item & "			<dns_full_name>" & lcase(escape_xml(objItem2.OwnerName)) & "</dns_full_name>" & vbcrlf
+					item = item & "			<dns_name>" & escape_xml(hostname) & "</dns_name>" & vbcrlf
+					item = item & "			<dns_full_name>" & escape_xml(dns_full_name) & "</dns_full_name>" & vbcrlf
 					item = item & "			<dns_ip_address>" & escape_xml(objItem2.IPAddress) & "</dns_ip_address>" & vbcrlf
 					item = item & "		</dns_entry>" & vbcrlf
 				next
@@ -3069,7 +3103,8 @@ if (skip_software = "n") then
 					message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
 					if (not isNull(message_retrieved)) then
 						if (InStr(message_retrieved, package_name) = 1) then
-							package_installed_by = lcase(objItem.User)
+							package_installed_by = objItem.User
+							if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
 							package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
 							package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
 							exit for
@@ -3097,7 +3132,7 @@ if (skip_software = "n") then
 			result.WriteText "			<software_comment></software_comment>" & vbcrlf
 			result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
 			result.WriteText "			<software_status></software_status>" & vbcrlf
-			result.WriteText "			<software_installed_by>" & lcase(escape_xml(package_installed_by)) & "</software_installed_by>" & vbcrlf
+			result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
 			result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
 			result.WriteText "		</package>" & vbcrlf
 	   end if
@@ -3158,7 +3193,8 @@ if (skip_software = "n") then
 						message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
 						if (not isNull(message_retrieved)) then
 							if (InStr(message_retrieved, package_name) = 1) then
-								package_installed_by = lcase(objItem.User)
+								package_installed_by = objItem.User
+								if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
 								package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
 								package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
 								exit for
@@ -3184,7 +3220,7 @@ if (skip_software = "n") then
 				result.WriteText "			<software_comment></software_comment>" & vbcrlf
 				result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
 				result.WriteText "			<software_status></software_status>" & vbcrlf
-				result.WriteText "			<software_installed_by>" & lcase(escape_xml(package_installed_by)) & "</software_installed_by>" & vbcrlf
+				result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
 				result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
 				result.WriteText "		</package>" & vbcrlf
 			next
@@ -3285,7 +3321,8 @@ if (reg_node = "y") then
 					message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
 					if (not isNull(message_retrieved)) then
 						if (InStr(message_retrieved, package_name) = 1) then
-							package_installed_by = lcase(objItem.User)
+							package_installed_by = objItem.User
+							if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
 							package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
 							package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
 							exit for
@@ -3313,7 +3350,7 @@ if (reg_node = "y") then
 			result.WriteText "			<software_comment></software_comment>" & vbcrlf
 			result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
 			result.WriteText "			<software_status></software_status>" & vbcrlf
-			result.WriteText "			<software_installed_by>" & lcase(escape_xml(package_installed_by)) & "</software_installed_by>" & vbcrlf
+			result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
 			result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
 			result.WriteText "		</package>" & vbcrlf
 	   end if
@@ -3433,7 +3470,8 @@ if address_width = "64" then
 					message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
 					if (not isNull(message_retrieved)) then
 						if (InStr(message_retrieved, package_name) = 1) then
-							package_installed_by = lcase(objItem.User)
+							package_installed_by = objItem.User
+							if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
 							package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
 							package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
 							exit for
@@ -3461,7 +3499,7 @@ if address_width = "64" then
 			result.WriteText "			<software_comment></software_comment>" & vbcrlf
 			result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
 			result.WriteText "			<software_status></software_status>" & vbcrlf
-			result.WriteText "			<software_installed_by>" & lcase(escape_xml(package_installed_by)) & "</software_installed_by>" & vbcrlf
+			result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
 			result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
 			result.WriteText "		</package>" & vbcrlf
 		end if
@@ -3477,6 +3515,8 @@ end if
 	   if debugging > "0" then wscript.echo "Hotfix info" end if
 	   set colItems2 = objWMIService.ExecQuery("Select * from Win32_QuickFixEngineering",,32)
 	   for each objItem2 in colItems2
+	      package_installed_by = objItem2.InstalledBy
+		  if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
 		  result.WriteText "      <package>" & vbcrlf
 		  result.WriteText "         <software_name>" & escape_xml(objItem2.HotFixID) & "</software_name>" & vbcrlf
 		  result.WriteText "         <software_version></software_version>" & vbcrlf
@@ -3491,7 +3531,7 @@ end if
 		  result.WriteText "         <software_comment>update</software_comment>" & vbcrlf
 		  result.WriteText "         <software_code_base></software_code_base>" & vbcrlf
 		  result.WriteText "         <software_status></software_status>" & vbcrlf
-		  result.WriteText "         <software_installed_by>" & lcase(escape_xml(objItem2.InstalledBy)) & "</software_installed_by>" & vbcrlf
+		  result.WriteText "         <software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
 		  result.WriteText "         <software_installed_on>" & escape_xml(objItem2.InstalledOn) & "</software_installed_on>" & vbcrlf
 		  result.WriteText "      </package>" & vbcrlf
 	   next
@@ -3518,6 +3558,7 @@ for each objItem in colItems
 	result.WriteText "		</service>" & vbcrlf
 	
 	service_name = lcase(objItem.Name)
+	if details_to_lower = "y" then service_name = lcase(service_name) end if
 	
 	' to account for SQL server instances not named "sql server (mssqlserver)", named "sql server (something else)"
 	'if (instr(service_name, "mssql$" ) = 1) then service_name = "mssqlserver": wscript.echo "in" end if

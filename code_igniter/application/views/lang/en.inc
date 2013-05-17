@@ -767,4 +767,9 @@ $GLOBALS["lang"]["Summary - 192.168.1.7"]="Summary - 192.168.1.7";
 $GLOBALS["lang"]["Summary - 192.168.1.10"]="Summary - 192.168.1.10";
 $GLOBALS["lang"]["Summary - 192.168.1.3"]="Summary - 192.168.1.3";
 $GLOBALS["lang"]["Summary - 192.168.1.37"]="Summary - 192.168.1.37";
+$GLOBALS["lang"]["Summary - windows-xp"]="Summary - windows-xp";
+$GLOBALS["lang"]["Asset Tag"]="Asset Tag";
+$GLOBALS["lang"]["Summary - win726789112345678"]="Summary - win726789112345678";
+$GLOBALS["lang"]["Summary - windows-xp123456789"]="Summary - windows-xp123456789";
+$GLOBALS["lang"]["Summary - windows-xp12345"]="Summary - windows-xp12345";
 ?>

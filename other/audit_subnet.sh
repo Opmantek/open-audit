@@ -61,8 +61,8 @@ fi
 
 if [ $syslog == "y" ]; then
 	now=`date "+%b %e %T"`
-	echo "$now $local_hostname $$ $process Job Starting" >> /var/log/open-audit.log
-	echo "$now $local_hostname $$ $process Scanning Subnet: $subnet" >> /var/log/open-audit.log
+	echo "$now $local_hostname $$ $process Job Starting" >> /usr/local/open-audit/other/open-audit.log
+	echo "$now $local_hostname $$ $process Scanning Subnet: $subnet" >> /usr/local/open-audit/other/open-audit.log
 fi
 
 #hosts_in_subnet=`nmap -sP -PS135,139,445 -n $subnet | grep "scan report for" | cut -d" " -f5`
@@ -99,7 +99,7 @@ if [ "$hosts_in_subnet" != "" ]; then
 
 			if [ $syslog == "y" ]; then
 				now=`date "+%b %e %T"`
-				echo "$now $local_hostname $$ $process Scanning Host: $host" >> /var/log/open-audit.log
+				echo "$now $local_hostname $$ $process Scanning Host: $host" >> /usr/local/open-audit/other/open-audit.log
 			fi
 
 			# options
@@ -182,7 +182,7 @@ result="$result</devices>"
 
 if [ $syslog == "y" ]; then
 	now=`date "+%b %e %T"`
-	echo "$now $local_hostname $$ $process Scan completed." >> /var/log/open-audit.log
+	echo "$now $local_hostname $$ $process Scan completed." >> /usr/local/open-audit/other/open-audit.log
 fi
 
 
@@ -204,7 +204,7 @@ if [[ "$submit_online" == "y" ]]; then
 	fi
 	if [ $syslog == "y" ]; then
 		now=`date "+%b %e %T"`
-		echo "$now $local_hostname $$ $process Submitting online." >> /var/log/open-audit.log
+		echo "$now $local_hostname $$ $process Submitting online." >> /usr/local/open-audit/other/open-audit.log
 	fi
 	result=`echo -e "$result"`
 	#wget -q ${url} --post-data=form_nmap="$result"
@@ -215,5 +215,5 @@ fi
 
 if [ $syslog == "y" ]; then
 	now=`date "+%b %e %T"`
-	echo "$now $local_hostname $$ $process Job Complete." >> /var/log/open-audit.log
+	echo "$now $local_hostname $$ $process Job Complete." >> /usr/local/open-audit/other/open-audit.log
 fi

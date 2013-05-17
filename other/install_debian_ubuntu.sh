@@ -58,6 +58,7 @@ chmod -R 770 /usr/local/open-audit/code_igniter/application/views/lang/
 chmod 770 /usr/local/open-audit/install_debian_ubuntu.sh
 chmod 770 /usr/local/open-audit/install_centos_redhat.sh
 chmod 770 /usr/local/open-audit/other/audit_subnet.sh
+chmod 660 /usr/local/open-audit/other/open-audit.log
 chmod 770 /usr/local/open-audit/other/winexe
 
 # Set the required permissions.
@@ -69,10 +70,6 @@ chmod -R 755 /var/www
 # Remove the uneeded index.html file.
 # On Ubuntu and Debian
 rm /var/www/index.html
-
-# Create the Open-AudIT log file.
-touch /var/log/open-audit.log
-chmod 777 /var/log/open-audit.log
 
 # set the suid for /usr/bin/nmap.
 chmod u+s /usr/bin/nmap

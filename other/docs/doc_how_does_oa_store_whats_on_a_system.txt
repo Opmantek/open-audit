@@ -3,8 +3,8 @@ How Does Open-AudIT store it's data ?
 Each system (computer, network device, printer, et al) has an entry in the "system" table.
 Each system (from the "system" table) has a "system_id" column.
 This value is unique - it's an auto incrementing id.
-A system is determined to be unique by a combination of UUID + full system name (including domain).
-For network devices, a unique identifer is still to be determined (probably use a MAC Address for network items).
+A system is determined to be unique by a combination of UUID + hostname (including domain).
+
 
 A system is audited and the result submitted to the server.
 The first table processed is the "system" table.

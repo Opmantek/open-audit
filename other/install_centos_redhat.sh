@@ -71,6 +71,7 @@ chmod -R 770 /usr/local/open-audit/code_igniter/application/views/lang/
 chmod 770 /usr/local/open-audit/install_debian_ubuntu.sh
 chmod 770 /usr/local/open-audit/install_centos_redhat.sh
 chmod 770 /usr/local/open-audit/other/audit_subnet.sh
+chmod 660 /usr/local/open-audit/other/open-audit.log
 chmod 770 /usr/local/open-audit/other/winexe
 
 # Set the required permissions.
@@ -78,10 +79,6 @@ chmod 770 /usr/local/open-audit/other/winexe
 cp -r /usr/local/open-audit/www/* /var/www/html/
 chown -R root:apache /var/www/html
 chmod -R 755 /var/www/html 
-
-# Create the Open-AudIT log file.
-touch /var/log/open-audit.log
-chmod 777 /var/log/open-audit.log
 
 # set the suid for /usr/bin/nmap.
 chmod u+s /usr/bin/nmap

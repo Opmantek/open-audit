@@ -82,7 +82,7 @@ class M_bios extends MY_Model {
 					bios_asset_tag,
 					timestamp,
 					first_timestamp ) 
-				VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+				VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->bios_description", 

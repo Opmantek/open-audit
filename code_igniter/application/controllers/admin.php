@@ -46,17 +46,17 @@ class Admin extends MY_Controller {
 
 	function view_log(){
 		
+		// number of lines to read from the end of file
 		$lines = @intval($this->uri->segment(3,0));
 		if ($lines < 1) { $lines = 25; }
 
 		// full path to text file
 		if (php_uname('s') == 'Linux') {
-			$file = "/var/log/open-audit.log";
+			$file = "/usr/local/open-audit/other/open-audit.log";
 		} else {
 			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
 		}
-		// number of lines to read from the end of file
-		#$lines = 25;
+
 		$fsize = round(filesize($file)/1024/1024,2);
 		$this->data['comment'] = "<strong>" . $file . "</strong><br />";
 		$this->data['comment'] .= "File size is {$fsize} megabytes<br />";
@@ -1695,6 +1695,48 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "DELETE FROM oa_group WHERE group_id = '1'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DELETE FROM oa_group_column WHERE group_id = '1'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_group VALUES  ('1', 'All Devices', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\'',1,'Any items that have their status attribute set to production.', 'device', '', 'devices')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '1', 'Icon', 'man_icon', 'image', '',  'man_os_family', '', 'left')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);			
+
+			$sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '2', 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '3', 'IP Address', 'man_ip_address', 'ip_address', '',  '', '', 'left')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '4', 'Type', 'man_type', 'text', '',  '', '', 'left')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '5', 'Description', 'man_description', 'text', '',  '', '', 'left')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '6', 'OS / Device', 'man_os_name', 'text', '',  '', '', 'left')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '7', 'Tags', 'tag',  'text', '',  '', '', 'left')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$this->data['output'] .= "New 'All Devices' Group created. Ensure you have acces via Admin -> Users -> Edit User<br /><br />\n";
+
 			$sql = "UPDATE oa_config set config_value = '20130512', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
@@ -1715,8 +1757,8 @@ class Admin extends MY_Controller {
 				}
 			}
 		}
-		$this->data['output'] .= "New (now current) database version: " . $db_display_version . " (" . $db_internal_version . ")<br />\n";
-		$this->data['output'] .= "<br/><br />Don't forget to use the new audit scripts!<br/>\n";
+		$this->data['output'] = "New (now current) database version: " . $db_display_version . " (" . $db_internal_version . ")<br />\n
+		<br/><br />Don't forget to use the new audit scripts!<br/>\n" . $this->data['output'];
 		$this->data['include'] = 'v_upgrade'; 
 		$this->data['heading'] = 'Upgrade';
 		$this->load->view('v_template', $this->data);

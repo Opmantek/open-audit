@@ -72,8 +72,7 @@ if (mb_strpos($link_manufacturer,  "Dell") !== false)  {
 	// we have a Dell system
 	if ($link_serial != ""){
 		$link_warranty = "<a href='http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt1&amp;servicetag=" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>";
-		#$link_downloads = "<a href='http://support.dell.com/support/downloads/index.aspx?c=us&amp;l=en&amp;s=gen&amp;servicetag=" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
-		$link_downloads = "<a href='http://www.dell.com/support/drivers/us/en/4/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
+		$link_downloads = "<a href='http://www.dell.com/support/drivers/us/en/19/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
 		$link_express_code = base_convert($link_serial,36,10);
 		$link_express_code_formatted = mb_substr($link_express_code,0,3)."-".mb_substr($link_express_code,3,3)."-".mb_substr($link_express_code,6,3)."-".mb_substr($link_express_code,9,2);
 		$link_express_code = $link_express_code_formatted;
@@ -825,6 +824,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					<p><label for="bios_serial"><?php echo __('Serial')?>: </label><span id="bios_serial"><?php echo $key->bios_serial?></span></p>
 					<p><label for="bios_smversion"><?php echo __('SMVersion')?>: </label><span id="bios_smversion"><?php echo $key->bios_smversion?></span></p>
 					<p><label for="bios_version"><?php echo __('Version')?>: </label><span id="bios_version"><?php echo $key->bios_version?></span></p>
+					<p><label for="bios_asset_tag"><?php echo __('Asset Tag')?>: </label><span id="bios_asset_tag"><?php echo $key->bios_asset_tag?></span></p>
 				<?php endforeach; ?>
 				<?php echo display_custom_field('view_hardware_bios',  $additional_fields_data, $edit); ?>
 			</fieldset>
