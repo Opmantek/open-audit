@@ -15,10 +15,10 @@ start_time = Timer
 strcomputer = "."
 
 ' submit the audit to the OAv2 server
-submit_online = "n"
+submit_online = "y"
 
 ' create an XML text file of the result in the current directory
-create_file = "y"
+create_file = "n"
 
 ' the address of the OAv2 server "submit" page
 url = "http://localhost/index.php/system"
@@ -60,7 +60,7 @@ self_delete = "n"
 ' 1 = basic debug
 ' 2 = verbose debug
 ' 3 = very verbose debug
-debugging = "3"
+debugging = "1"
 
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
@@ -582,7 +582,8 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
 for each objItem in colItems
 	' this is no longer used because it is actually the NetBIOS name, not the hostname
-	'system_hostname = LCase(objItem.Name)
+	' we grab it to a temp variable to use below in a last resort situation
+	i = objItem.Name
 	'This is not used becauase it is not available on Win2000 or WinXP
 	'system_hostname = LCase(objItem.DNSHostName)
 	system_domain = objItem.Domain
@@ -606,6 +607,9 @@ for each objItem in colItems
 		system_hostname = objItem.DNSHostName
 	end if
 next
+if system_hostnme = "" then
+	system_hostname = i
+end if
 if details_to_lower = "y" then system_hostname = lcase(system_hostname) end if
 
 

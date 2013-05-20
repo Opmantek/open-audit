@@ -14,7 +14,7 @@
 ' 0 = no debug
 ' 1 = basic debug 
 ' 2 = verbose debug
-debugging = "3"
+debugging = "1"
 
 create_file = "n"
 submit_online = "y"

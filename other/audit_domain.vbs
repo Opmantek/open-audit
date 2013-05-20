@@ -13,7 +13,7 @@ number_of_audits = 25
 ' to copy the files to the remote pc and run the script remotely using PSexec
 
 ' NOTE - make sure if using the "remote" option that network comms are allowed 
-' to be initated at the remote PC, connecting to the OAv2 host
+' to be initated at the remote PC, connecting to the Open-AudIT host
 audit_run_type = "remote"
 audit_run_type = "local"
 

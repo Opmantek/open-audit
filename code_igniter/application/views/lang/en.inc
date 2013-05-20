@@ -772,4 +772,10 @@ $GLOBALS["lang"]["Asset Tag"]="Asset Tag";
 $GLOBALS["lang"]["Summary - win726789112345678"]="Summary - win726789112345678";
 $GLOBALS["lang"]["Summary - windows-xp123456789"]="Summary - windows-xp123456789";
 $GLOBALS["lang"]["Summary - windows-xp12345"]="Summary - windows-xp12345";
+$GLOBALS["lang"]["Network - 192.168.88.0 / 24"]="Network - 192.168.88.0 / 24";
+$GLOBALS["lang"]["View Location"]="View Location";
+$GLOBALS["lang"]["Phone"]="Phone";
+$GLOBALS["lang"]["Network - 10.211.55.0 / 24"]="Network - 10.211.55.0 / 24";
+$GLOBALS["lang"]["Items in Marks House"]="Items in Marks House";
+$GLOBALS["lang"]["Items in Opmantek"]="Items in Opmantek";
 ?>

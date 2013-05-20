@@ -30,7 +30,7 @@
 	<?php #if (isset($this->config->item('nmis')) and $this->config->item('nmis') == 'y') { ?>
 	<?php if ($config->nmis == 'y') { ?>
 	<div style="width:100px; float: right; text-align: center;">
-		<br />NMIS<br /><a href="/cgi-nmis8/nmiscgi.pl" target="_blank"><img src="/theme-tango/tango-images/logo-nmis.png" /></a>
+		<br />NMIS<br /><a href="/cgi-nmis8/nmiscgi.pl" target="_blank"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
 	</div>
 	<?php } ?>
 </div>
