@@ -207,3 +207,30 @@ May 10 13:15:21 xubuntu 1020 audit_subnet.sh Scanning Host: 192.168.61.138
 May 10 13:15:33 xubuntu 1020 audit_subnet.sh Scanning Host: 192.168.61.254
 May 10 13:15:35 xubuntu 1020 audit_subnet.sh Scan completed.
 May 10 13:15:35 xubuntu 1020 audit_subnet.sh Job Complete.
+May 20 15:24:53 xubuntu 5155 audit_subnet.sh Job Starting
+May 20 15:24:53 xubuntu 5155 audit_subnet.sh Scanning Subnet: 192.168.88.0/24
+May 20 15:24:59 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.1
+May 20 15:25:02 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.2
+May 20 15:25:15 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.8
+May 20 15:25:19 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.10
+May 20 15:26:19 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.11
+May 20 15:26:24 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.20
+May 20 15:26:28 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.42
+May 20 15:26:52 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.43
+May 20 15:27:46 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.48
+May 20 15:27:55 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.52
+May 20 15:28:16 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.56
+May 20 15:29:37 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.58
+May 20 15:29:41 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.60
+May 20 15:29:54 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.61
+May 20 15:30:22 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.62
+May 20 15:30:31 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.253
+May 20 15:30:36 xubuntu 5155 audit_subnet.sh Scanning Host: 192.168.88.254
+May 20 15:30:47 xubuntu 5155 audit_subnet.sh Scan completed.
+May 20 15:30:47 xubuntu 5155 audit_subnet.sh Submitting online.
+May 20 15:31:49 xubuntu 5155 audit_subnet.sh Job Complete.
+May 20 15:36:21 xubuntu 5458 audit_subnet.sh Job Starting
+May 20 15:36:21 xubuntu 5458 audit_subnet.sh Scanning Subnet: 199.102.164.124
+May 20 15:36:24 xubuntu 5458 audit_subnet.sh Scan completed.
+May 20 15:36:24 xubuntu 5458 audit_subnet.sh Submitting online.
+May 20 15:36:24 xubuntu 5458 audit_subnet.sh Job Complete.

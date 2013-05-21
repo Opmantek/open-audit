@@ -226,7 +226,7 @@ if nmap_installed = "y" then
 			wscript.echo("processes running: " & num_running)
 			wscript.echo("next system: " & pc_array(i))
 			wscript.echo("--------------")
-			command = "cscript //nologo " & nmap_windows & " ip_address=" & pc_array(i)
+			command = "cscript //nologo " & chr(34) & nmap_windows & chr(34) & " ip_address=" & pc_array(i)
 			set shell = wscript.createobject("wscript.shell")
 			shell.run command, 6, false
 			set shell = nothing
@@ -249,7 +249,7 @@ else
 			wscript.echo("processes running: " & num_running)
 			wscript.echo("next system: " & pc_array(i))
 			wscript.echo("--------------")
-			command = "cscript //nologo " & audit_windows & " " & pc_array(i) & " ldap=" & local_domain
+			command = "cscript //nologo " & chr(34) & audit_windows & chr(34) & " " & pc_array(i) & " ldap=" & local_domain
 			set shell = wscript.createobject("wscript.shell")
 			shell.run command, 6, false
 			set shell = nothing

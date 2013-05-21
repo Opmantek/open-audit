@@ -778,4 +778,14 @@ $GLOBALS["lang"]["Phone"]="Phone";
 $GLOBALS["lang"]["Network - 10.211.55.0 / 24"]="Network - 10.211.55.0 / 24";
 $GLOBALS["lang"]["Items in Marks House"]="Items in Marks House";
 $GLOBALS["lang"]["Items in Opmantek"]="Items in Opmantek";
+$GLOBALS["lang"]["Summary - 192.168.88.10"]="Summary - 192.168.88.10";
+$GLOBALS["lang"]["Summary - sif"]="Summary - sif";
+$GLOBALS["lang"]["Summary - community.opmantek.com"]="Summary - community.opmantek.com";
+$GLOBALS["lang"]["Summary - opmantek"]="Summary - opmantek";
+$GLOBALS["lang"]["Summary - midgard"]="Summary - midgard";
+$GLOBALS["lang"]["Summary - bones"]="Summary - bones";
+$GLOBALS["lang"]["System Details (Items in Marks House)"]="System Details (Items in Marks House)";
+$GLOBALS["lang"]["Billing Report (Items in Marks House)"]="Billing Report (Items in Marks House)";
+$GLOBALS["lang"]["Switches"]="Switches";
+$GLOBALS["lang"]["Billing Report (Items in Opmantek)"]="Billing Report (Items in Opmantek)";
 ?>

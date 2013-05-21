@@ -209,7 +209,7 @@ class Admin extends MY_Controller {
 			redirect('/admin/view_log');
 			#redirect('/main/list_devices/1');
 		} else {
-			if ($operating_system == 'Windows') {
+			#if ($operating_system == 'Windows') {
 				$this->data['warning'] = "<span style='color: red;'>WARNING.</span>As you are running the server on a Windows operating system, 
 				the ability to scan a subnet from this form will work, however the web page will not return until the scan and 
 				upload has completed. This can take a substantial amount of time and even time out. This is not an issue on a Linux 
@@ -218,9 +218,9 @@ class Admin extends MY_Controller {
 				it on a regular basis, or run it on the command line if it is a once off event.<br /><br />
 				To scan a subnet and send the data to the server, run the below on the command line: <br /><span style=\"font-family:'courier new'; font-size: 120%;\">cscript c:\\xampplite\open-audit\other\audit_subnet.vbs subnet=SUBNET 
 				submit_online=y create_file=n debugging=1</span><br />Where SUBNET is in the same format as above.";
-			} else {
+			#} else {
 				$this->data['warning'] = '';
-			}
+			#}
 			$this->data['heading'] = 'NMap Scanning';
 			$this->data['include'] = 'v_scan_subnet_nmap'; 
 			$this->data['sortcolumn'] = '1';
@@ -1613,8 +1613,10 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);
 		}
 
-		if (($db_internal_version < '20130215') AND ($this->db->platform() == 'mysql')) {
+		if (($db_internal_version < '20130512') AND ($this->db->platform() == 'mysql')) {
 			# upgrade for 1.0
+			$this->data['output'] .= "New 'All Devices' Group created. Ensure you have access via Admin -> Users -> Edit User<br /><br />\n";
+		
 			$sql = "ALTER TABLE system ADD nmap_type varchar(50) NOT NULL default ''";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
@@ -1683,7 +1685,7 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis', 'y', 'y', 'Enable import / export to NMIS functions.')";
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis', 'n', 'y', 'Enable import / export to NMIS functions.')";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
@@ -1691,9 +1693,15 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "UPDATE system set type = 'computer', man_type = 'computer' WHERE type = 'system' or man_type = 'system'";
+			$sql = "UPDATE system SET type = 'computer', man_type = 'computer' WHERE type = 'system' or man_type = 'system'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
+
+			# grab a copy of the users and their access levels to group_id 1
+			$sql = "SELECT user_id, group_user_access_level FROM oa_group_user WHERE group_id = '1'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			$user_array = $query->result();
 
 			$sql = "DELETE FROM oa_group WHERE group_id = '1'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
@@ -1735,8 +1743,15 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$this->data['output'] .= "New 'All Devices' Group created. Ensure you have acces via Admin -> Users -> Edit User<br /><br />\n";
-
+			# re-insert the users who originally had access to the group_id 1 which should be the All Devices group
+			foreach ($user_array as $user) {
+				$sql = "INSERT INTO oa_group_user (group_user_id, user_id, group_id, 
+					group_user_access_level) VALUES (NULL, ?, '1', ?)";
+				$data = array($user->user_id, $user->group_user_access_level);
+				$query = $this->db->query($sql, $data);
+				$this->data['output'] .= $this->db->last_query() . "<br /><br />\n";
+			}
+			
 			$sql = "UPDATE oa_config set config_value = '20130512', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
@@ -1744,7 +1759,8 @@ class Admin extends MY_Controller {
 			$sql = "UPDATE oa_config set config_value = '1.0', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
-		}
+
+			}
 
 		$config = $this->m_oa_config->get_config();
 		foreach ($config as $returned_result) {

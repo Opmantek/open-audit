@@ -18,7 +18,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
-
+SET foreign_key_checks = 0; 
 
 
 --
@@ -1909,11 +1909,13 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate. EG - open-audit.org');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('auto_create_network_groups', 'y', 'y', 'Have Open-AudIT automatically create Groups based on Subnet.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis', 'y', 'y', 'Enable import / export to NMIS functions.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis', 'n', 'y', 'Enable import / export to NMIS functions.');
 
 INSERT INTO oa_location (location_id, location_comments) VALUES ('', 'Default Location.');
 INSERT INTO oa_org (org_id, org_comments) VALUES ('', 'Default Organisation.');
 INSERT INTO oa_change (user_id, change_short_desc ) VALUES ('1', 'Default Change.');
+
+SET foreign_key_checks = 1; 
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

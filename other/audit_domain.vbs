@@ -179,7 +179,7 @@ for l = 0 to ubound(domain_array)
 				if debugging > 0 then wscript.echo("processes running: " & num_running) end if
 				if debugging > 0 then wscript.echo("next system: " & pc_array(i)) end if
 				if debugging > 0 then wscript.echo("--------------") end if
-				command1 = "cscript //nologo " & script_name & " " & pc_array(i) & " ldap=" & local_domain
+				command1 = "cscript //nologo " & chr(34) & script_name & chr(34) & " " & pc_array(i) & " ldap=" & local_domain
 				set sh1=wscript.createobject("wscript.shell")
 				sh1.run command1, 6, false
 				set sh1 = nothing
