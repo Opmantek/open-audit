@@ -19,36 +19,36 @@ if (($config->display_version != $this->config->item('web_display_version')) AND
 	$upgrade_message = "<span style='color: blue;'>You should <a style='color: red;' href='" . site_url() . "/admin/upgrade'>upgrade</a> your database.</span>";
 }
 if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') != 'y')) {
-	$upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT v2.0 administrator logon and upgrade the database.</span>";
+	$upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>";
 }
 ?>
 <form action="vars.php" method="post" class="niceforms">
 	<fieldset id="about" class="niceforms">
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('About')?></span></legend>
-		You are running version <?php echo $config->display_version; ?> of OAv2. <?php echo $upgrade_message; ?><br />
+		You are running version <?php echo $config->display_version; ?> of Open-AudIT. <?php echo $upgrade_message; ?><br />
 		<?php if ($this->session->userdata('user_admin') == 'y') { ?>
 		Your Host is: <?php echo php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br />
 		Your database platform is <?php echo $this->db->platform() . " (version " . $this->db->version() . ")"; ?>.<br />
 		Your web server is <?php echo getenv("SERVER_SOFTWARE"); ?> .
 		<?php } ?>
 		<br /><br />
-		Open-AudIT v2.0 is :
+		Open-AudIT is :
 		<ul>
 			<li>Licensed under with GNU AGPL.</li>
 			<li>Written in the PHP scripting language.</li>
 			<li>Using the CodeIgniter PHP Framework.</li>
 		</ul>
 		<br />
-		Some other technologies the Open-AudIT v2.0 uses are:
+		Some other technologies Open-AudIT uses are:
 		<ul>
 			<li>jQuery javascript framework</li>
 			<li>MySQL - our default database</li>
 			<li>Apache - our default webserver</li>
 			<li>xHTML W3C standards</li>
 		</ul>
-		Please visit the homepage at <a href="http://www.open-audit.org">http://www.open-audit.org</a>, and don't be shy to sign up to the forums.<br />
-		Consulting, implementation and other services are available.<br /><br />
-		We hope you find Open-AudIT v2.0 as useful as we do.<br />
+		Please visit the homepage at <a href="http://www.open-audit.org" style="color: blue;">http://www.open-audit.org</a>, and don't be shy to sign up to the forums.<br />
+		Consulting, implementation and other services are available through <a href="https://opmantek.com" style="color: blue;">Opmantek</a>.<br /><br />
+		We hope you find Open-AudIT as useful as we do.<br />
 	</fieldset>
 </form>
 <table>

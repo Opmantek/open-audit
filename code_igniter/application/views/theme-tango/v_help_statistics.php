@@ -4,7 +4,7 @@ $sortcolumn = 2;
 <form action="#" method="post" class="niceforms">
 	<fieldset id="stats" class="niceforms">
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Statistics')?></span></legend>
-		<?php echo __('Your Open-AudIT v2.0 database contains the following devices in a production state:')?>
+		<?php echo __('Your Open-AudIT database contains the following devices in a production state:')?>
 		<table class="tablesorter">
 			<thead>
 				<tr>
@@ -36,9 +36,6 @@ $sortcolumn = 2;
 		$stat_submit .= "</stat>%0A";
 		$stat_submit .= "</stats>%0A";
 
-		if ((md5(php_uname('n')) == "421aa90e079fa326b6494f812ad13e79") or (md5(php_uname('n')) == "8675c3c7051fb54d775ced5b13507f96")){
-			$stat_submit .= "%0A%0ANOTE - using localhost. Please use your server name when calling the URL.";
-		}
 		echo "Please consider submitting your statistics to help the project. Copy and paste the below into an email to <a href=\"mailto:open.audit@gmail.com?subject=Open-AudIT Stats&body=" . $stat_submit . "\" style=\"color:blue;\">open.audit@gmail.com</a>. It would be most appreciated and enable the project to have some gauge on its success.<br /><br />\n";
 		echo "FYI - the 'id' field is the MD5 of the hostname you are running Open-AudIT on. This is not able to be linked to you in any way and is simply to differentiate the submitted statistics.<br />\n";
 		if (md5(php_uname('n')) == "421aa90e079fa326b6494f812ad13e79") {
@@ -62,6 +59,6 @@ $sortcolumn = 2;
 		?>
 		Please visit the homepage at <a href="http://www.open-audit.org" style="color:blue;">http://www.open-audit.org</a>, and don't be shy to sign up to the forums.<br />
 		Consulting, implementation and other services are available from <a href="https://opmantek.com" style="color:blue;">Opmantek</a>.<br /><br />
-		We hope you find Open-AudIT v2.0 as useful as we do.<br />
+		We hope you find Open-AudIT as useful as we do.<br />
 	</fieldset>
 </form>

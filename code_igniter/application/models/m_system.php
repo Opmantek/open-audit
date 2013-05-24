@@ -110,7 +110,7 @@ class M_system extends MY_Model {
 		}
 
 		# check if the previous hostname had 13 characters and the submittied hostname has > 13
-		if ((strlen($details->hostname) > 15) and (isset($details->uuid))) {
+		if (isset($details->hostname) and (strlen($details->hostname) > 15) and (isset($details->uuid))) {
 			$temp_uuid = $details->uuid . "-" . substr($details->hostname, 0, 15);
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
 			$data = array("$temp_uuid");

@@ -101,7 +101,7 @@ class Admin extends MY_Controller {
 			$this->data['sortcolumn'] = '1';
 			$this->load->view('v_template', $this->data);
 		} else {
-			$cmd = "php /var/www/index.php admin_cli import_nmis " . $_POST['nodes_file'] . " >> /var/log/open-audit.log 2>&1 &";
+			$cmd = "php /var/www/index.php admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/open-audit.log 2>&1 &";
 			exec($cmd);
 			redirect('/admin/view_log');
 		}
@@ -172,7 +172,7 @@ class Admin extends MY_Controller {
 			$handle = fopen($filename, "w");
 			fwrite($handle, $csv);
 			fclose($handle);
-			$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /var/log/open-audit.log 2>&1 &";
+			$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /usr/local/open-audit/open-audit.log 2>&1 &";
 			#echo $cmd;
 			exec($cmd);
 			#unlink($filename);
@@ -1751,6 +1751,10 @@ class Admin extends MY_Controller {
 				$query = $this->db->query($sql, $data);
 				$this->data['output'] .= $this->db->last_query() . "<br /><br />\n";
 			}
+
+			$sql = "update oa_group_column set column_link = '/main/system_display/' where column_link = 'main/system_display/'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
 			
 			$sql = "UPDATE oa_config set config_value = '20130512', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";

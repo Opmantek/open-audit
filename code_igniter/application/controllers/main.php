@@ -294,7 +294,7 @@ class Main extends MY_Controller {
 	}
 
 	function help_about() {
-		$this->data['heading'] = 'About Open-AudIT v2.0'; 
+		$this->data['heading'] = 'About Open-AudIT'; 
 		$this->data['include'] = 'v_help_about'; 
 		$this->data['export_report'] = 'n';
 		$this->load->view('v_template', $this->data);

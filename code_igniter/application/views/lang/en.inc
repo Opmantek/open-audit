@@ -788,4 +788,5 @@ $GLOBALS["lang"]["System Details (Items in Marks House)"]="System Details (Items
 $GLOBALS["lang"]["Billing Report (Items in Marks House)"]="Billing Report (Items in Marks House)";
 $GLOBALS["lang"]["Switches"]="Switches";
 $GLOBALS["lang"]["Billing Report (Items in Opmantek)"]="Billing Report (Items in Opmantek)";
+$GLOBALS["lang"]["Your Open-AudIT database contains the following devices in a production state:"]="Your Open-AudIT database contains the following devices in a production state:";
 ?>
