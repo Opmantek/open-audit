@@ -789,4 +789,12 @@ $GLOBALS["lang"]["Billing Report (Items in Marks House)"]="Billing Report (Items
 $GLOBALS["lang"]["Switches"]="Switches";
 $GLOBALS["lang"]["Billing Report (Items in Opmantek)"]="Billing Report (Items in Opmantek)";
 $GLOBALS["lang"]["Your Open-AudIT database contains the following devices in a production state:"]="Your Open-AudIT database contains the following devices in a production state:";
+$GLOBALS["lang"]["System Details (All Switches)"]="System Details (All Switches)";
+$GLOBALS["lang"]["Billing Report 2013-03"]="Billing Report 2013-03";
+$GLOBALS["lang"]["Billing Report 2013-03 (All Devices)"]="Billing Report 2013-03 (All Devices)";
+$GLOBALS["lang"]["Billing Report 2013-05"]="Billing Report 2013-05";
+$GLOBALS["lang"]["Billing Report 2013-05 (All Devices)"]="Billing Report 2013-05 (All Devices)";
+$GLOBALS["lang"]["Billing Summary 2013-05"]="Billing Summary 2013-05";
+$GLOBALS["lang"]["Billing Summary 2013-05 (All Devices)"]="Billing Summary 2013-05 (All Devices)";
+$GLOBALS["lang"]["Mark owned items"]="Mark owned items";
 ?>

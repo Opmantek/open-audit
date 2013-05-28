@@ -225,6 +225,8 @@ class System extends CI_Controller {
 		$this->load->model("m_windows");
 		$this->load->model("m_webserver");
 
+		$this->load->model("m_oa_general");
+
 		#date_default_timezone_set("Australia/Queensland");
 		$timestamp = date('Y-m-d H:i:s');
 		
@@ -280,6 +282,7 @@ class System extends CI_Controller {
 						echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 					} else {
 						# update an existing system
+						$details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
 						$this->m_system->update_system($details);
 						echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 					}
