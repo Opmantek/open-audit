@@ -14,7 +14,7 @@
 	</thead>
 	<tbody>
 	<?php foreach($query as $key): 
-		if ($key->software_licenses > '0' ) {$key->software_licenses = ($key->software_licenses / $key->software_count); }
+		#if ($key->software_licenses > '0' ) {$key->software_licenses = ($key->software_licenses / $key->software_count); }
 		if (($key->software_licenses == '0' ) or (!isset($key->software_licenses))){
 			$key->software_licenses = '-';
 		} else {

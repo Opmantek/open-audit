@@ -18,30 +18,23 @@ class M_oa_licensing extends MY_Model {
 	}
 
 	function software_licensing_report($id) {
-		# TODO - fixme
-		# The below SQL produces an incorrect value for sum(oa_asset_line.line_amount) 
-		# it is a know value though - if you divide by the software_count, you get the correct number
-		# we do this in the view. Need to fix. 
-		$sql = "SELECT 
-					COUNT(DISTINCT system.system_id) AS software_count, 
-					sys_sw_software.software_name, 
-					sys_sw_software.software_version, 
-					sys_sw_software.software_publisher, 
-					sys_sw_software.software_url, 
-					sys_sw_software.software_email, 
-					sys_sw_software.software_id, 
-					sys_sw_software.software_comment, 
-					sum(oa_asset_select.group_amount) as software_licenses, 
-					oa_asset_select.select_id 
+		$sql = "SELECT COUNT(DISTINCT system.system_id) AS software_count, 
+				sys_sw_software.software_name, 
+				sys_sw_software.software_version, 
+				sys_sw_software.software_publisher, 
+				sys_sw_software.software_id, 
+				sys_sw_software.software_comment, 
+				round(sum(oa_asset_select.group_amount)/COUNT(DISTINCT system.system_id), 0) as software_licenses, 
+				oa_asset_select.select_id 
 				FROM 
-					sys_sw_software 
-					LEFT JOIN system ON (sys_sw_software.timestamp = system.timestamp AND sys_sw_software.system_id = system.system_id)
-					LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) 
-					LEFT JOIN oa_asset_select ON (sys_sw_software.software_name = oa_asset_select.select_name AND oa_asset_select.group_id = ? ) 
+				sys_sw_software 
+				LEFT JOIN system ON (sys_sw_software.timestamp = system.timestamp AND sys_sw_software.system_id = system.system_id)
+				LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) 
+				LEFT JOIN oa_asset_select ON (sys_sw_software.software_name = oa_asset_select.select_name AND oa_asset_select.group_id = ? ) 
 				WHERE 
-					oa_group_sys.group_id = ? 
+				oa_group_sys.group_id = ? 
 				GROUP BY 
-					sys_sw_software.software_name 
+				sys_sw_software.software_name 
 				ORDER BY sys_sw_software.software_name";
 		$sql = $this->clean_sql($sql);
 		$data = array($id, $id);
