@@ -75,7 +75,7 @@ class M_user extends MY_Model {
 					"$input->user_sid", 
 					"$input->user_domain", 
 					"$input->user_disabled", 
-					"$input->user_full_name", 
+					str_replace(",,,", "", "$input->user_full_name"), 
 					"$input->user_password_changeable", 
 					"$input->user_password_expires", 
 					"$input->user_password_required", 

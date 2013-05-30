@@ -814,4 +814,11 @@ $GLOBALS["lang"]["Installed - AntiVirus (Windows Computers)"]="Installed - AntiV
 $GLOBALS["lang"]["Installed - MS Office (Windows Computers)"]="Installed - MS Office (Windows Computers)";
 $GLOBALS["lang"]["Installed - Software (Windows Computers)"]="Installed - Software (Windows Computers)";
 $GLOBALS["lang"]["Software Licensing for Windows Computers"]="Software Licensing for Windows Computers";
+$GLOBALS["lang"]["Summary - whfw5c2s"]="Summary - whfw5c2s";
+$GLOBALS["lang"]["Summary - server-test-02"]="Summary - server-test-02";
+$GLOBALS["lang"]["Summary - server-test-05"]="Summary - server-test-05";
+$GLOBALS["lang"]["Summary - 192.168.1.229"]="Summary - 192.168.1.229";
+$GLOBALS["lang"]["Keith owned items"]="Keith owned items";
+$GLOBALS["lang"]["About Open-AudIT"]="About Open-AudIT";
+$GLOBALS["lang"]["Summary - desktop-test-02"]="Summary - desktop-test-02";
 ?>

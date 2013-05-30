@@ -173,6 +173,7 @@ Const ADS_SCOPE_SUBTREE 	= 2
 Const wbemConnectFlagUseMaxWait = 128
 Const wbemFlagReturnImmediately = &h10
 Const wbemFlagForwardOnly = &h20
+Const TristateTrue          = -1
 
 dim objTrans, objDomain
 dim dt : dt = Now()
@@ -467,7 +468,7 @@ else
 					if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
 					Err.clear
 					on error resume next
-					set objTS = objFSO.OpenTextFile(OutputFile, FOR_APPENDING, True)
+					set objTS = objFSO.OpenTextFile(OutputFile, FOR_APPENDING, True, TristateTrue)
 					error_returned = Err.Number
 					error_description = Err.Description
 					on error goto 0
@@ -6031,7 +6032,7 @@ if create_file = "y" then
 	if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
 	Err.clear
 	on error resume next
-	set objTS = objFSO.OpenTextFile(OutputFile, FOR_APPENDING, True)
+	set objTS = objFSO.OpenTextFile(OutputFile, FOR_APPENDING, True, TristateTrue)
 	error_returned = Err.Number
 	error_description = Err.Description
 	on error goto 0
