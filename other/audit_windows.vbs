@@ -553,7 +553,7 @@ for each objItem in colItems
 	system_os_family = os_family(objItem.Caption)
 	system_os_name = objItem.Caption
 	system_os_icon = replace(lcase(system_os_family), " ", "_")
-	system_description = LCase(objItem.Description)
+	system_description = objItem.Description
 	if details_to_lower = "y" then system_description = lcase(system_description) end if
 	OSInstall = objItem.InstallDate
 	OSInstall = Left(OSInstall, 8)
@@ -3562,7 +3562,7 @@ for each objItem in colItems
 	result.WriteText "			<service_state>" & escape_xml(objItem.State) & "</service_state>" & vbcrlf
 	result.WriteText "		</service>" & vbcrlf
 	
-	service_name = lcase(objItem.Name)
+	service_name = objItem.Name
 	if details_to_lower = "y" then service_name = lcase(service_name) end if
 	
 	' to account for SQL server instances not named "sql server (mssqlserver)", named "sql server (something else)"
