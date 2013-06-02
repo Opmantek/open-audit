@@ -22,7 +22,8 @@ class M_systems extends MY_Model {
 		$sql = '';
 		$result_set = array();
 		foreach ($result as $table) {
-			if ( (mb_strpos($table, 'sys') !== false) and (mb_strpos($table, 'sys') === 0) and (mb_strpos($table, 'sys_man_') === FALSE) and (mb_strpos($table, 'system') === FALSE) ){
+			#if ( (mb_strpos($table, 'sys') !== false) and (mb_strpos($table, 'sys') === 0) and (mb_strpos($table, 'sys_man_') === FALSE) and (mb_strpos($table, 'system') === FALSE) ){
+			if ( (mb_strpos($table, 'sys') !== false) and (mb_strpos($table, 'sys') === 0) and (mb_strpos($table, 'sys_man_') === FALSE) ){
 				// a table starting with 'sys' - search this table
 				$fields = $this->db->list_fields($table);
 				$select_string = '';
@@ -38,6 +39,7 @@ class M_systems extends MY_Model {
 				$search_string = mb_substr($search_string, 3 );
 				$select_string = mb_substr($select_string, 1 );
 				// now create the search statement
+				/*
 				$sql = "SELECT 
 					DISTINCT(system.system_id),
 					system.hostname, 
@@ -53,12 +55,26 @@ class M_systems extends MY_Model {
 					oa_group_sys.group_id = '" . $group_id . "' AND 
 					system.timestamp = $table.timestamp AND 
 					( $search_string ) ";
+				*/
+
+
+				$sql = "SELECT 
+					DISTINCT(a.system_id),
+					a.hostname, 
+					$select_string 
+				FROM 
+					system a, 
+					oa_group_sys, 
+					$table 
+				WHERE 
+					a.system_id = $table.system_id AND 
+					a.man_status = 'production' AND 
+					a.system_id = oa_group_sys.system_id AND 
+					oa_group_sys.group_id = '" . $group_id . "' AND 
+					a.timestamp = $table.timestamp AND 
+					( $search_string ) ";
+
 				$sql = $this->clean_sql($sql);
-#					system.type = 'computer' AND 
-				// TODO - note the line "system.type = 'system' AND " above
-				// without this we get erroneous rows returned. It's something to do with printers having software and returning a system_id - weird.
-				// BUT - we want to be able to search for rows on items that are not systems - ie, printers, routers, etc, etc.
-				// to be fixed.
 				$query = $this->db->query($sql);
 				$result = $query->result();
 				if (count($result > 0)) {
