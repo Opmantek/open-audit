@@ -50,11 +50,11 @@ class M_systems extends MY_Model {
 					system.system_id = $table.system_id AND 
 					system.man_status = 'production' AND 
 					system.system_id = oa_group_sys.system_id AND 
-					system.type = 'system' AND 
 					oa_group_sys.group_id = '" . $group_id . "' AND 
 					system.timestamp = $table.timestamp AND 
 					( $search_string ) ";
 				$sql = $this->clean_sql($sql);
+#					system.type = 'computer' AND 
 				// TODO - note the line "system.type = 'system' AND " above
 				// without this we get erroneous rows returned. It's something to do with printers having software and returning a system_id - weird.
 				// BUT - we want to be able to search for rows on items that are not systems - ie, printers, routers, etc, etc.

@@ -4114,34 +4114,36 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 
 			' Host Headers
 			result_host_headers = ""
-			For i = 0 to Ubound(objItem.ServerBindings)
-				' Site URL part #1
-				if iis_site_ssl_en = True then
-					site_url = "https://"
-				else
-					site_url = "http://"
-				end if
+			if count(objItem.ServerBindings) > 0 then 
+				For i = 0 to Ubound(objItem.ServerBindings)
+					' Site URL part #1
+					if iis_site_ssl_en = True then
+						site_url = "https://"
+					else
+						site_url = "http://"
+					end if
 
-				if (escape_xml(objItem.ServerBindings(i).Hostname) = "") then
-					site_url = site_url & system_hostname
-				else 
-					site_url = site_url & escape_xml(objItem.ServerBindings(i).Hostname)
-				end if
-				if (escape_xml(objItem.ServerBindings(i).Port) <> "80" and escape_xml(objItem.ServerBindings(i).Port) <> "443") then
-					site_url = site_url & ":" & escape_xml(objItem.ServerBindings(i).Port)
-				end if
+					if (escape_xml(objItem.ServerBindings(i).Hostname) = "") then
+						site_url = site_url & system_hostname
+					else 
+						site_url = site_url & escape_xml(objItem.ServerBindings(i).Hostname)
+					end if
+					if (escape_xml(objItem.ServerBindings(i).Port) <> "80" and escape_xml(objItem.ServerBindings(i).Port) <> "443") then
+						site_url = site_url & ":" & escape_xml(objItem.ServerBindings(i).Port)
+					end if
 
-				result_host_headers = result_host_headers & "					<site_host_header>" & vbcrlf
-				If objItem.ServerBindings(i).IP = "" Then
-					result_host_headers = result_host_headers & "						<header_address>default</header_address>" & vbcrlf
-				Else
-					result_host_headers = result_host_headers & "						<header_address>" & escape_xml(objItem.ServerBindings(i).IP) & "</header_address>" & vbcrlf
-				End If
-				result_host_headers = result_host_headers & "						<header_port>" & escape_xml(objItem.ServerBindings(i).Port) & "</header_port>" & vbcrlf
-				result_host_headers = result_host_headers & "						<header_hostname>" & escape_xml(objItem.ServerBindings(i).Hostname) & "</header_hostname>" & vbcrlf
-				result_host_headers = result_host_headers & "						<header_url>" & escape_xml(site_url) & "</header_url>" & vbcrlf
-				result_host_headers = result_host_headers & "					</site_host_header>" & vbcrlf
-			Next
+					result_host_headers = result_host_headers & "					<site_host_header>" & vbcrlf
+					If objItem.ServerBindings(i).IP = "" Then
+						result_host_headers = result_host_headers & "						<header_address>default</header_address>" & vbcrlf
+					Else
+						result_host_headers = result_host_headers & "						<header_address>" & escape_xml(objItem.ServerBindings(i).IP) & "</header_address>" & vbcrlf
+					End If
+					result_host_headers = result_host_headers & "						<header_port>" & escape_xml(objItem.ServerBindings(i).Port) & "</header_port>" & vbcrlf
+					result_host_headers = result_host_headers & "						<header_hostname>" & escape_xml(objItem.ServerBindings(i).Hostname) & "</header_hostname>" & vbcrlf
+					result_host_headers = result_host_headers & "						<header_url>" & escape_xml(site_url) & "</header_url>" & vbcrlf
+					result_host_headers = result_host_headers & "					</site_host_header>" & vbcrlf
+				Next
+			end if
 			' End of Host Headers
 
 

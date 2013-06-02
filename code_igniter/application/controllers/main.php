@@ -240,7 +240,8 @@ class Main extends MY_Controller {
 			redirect('main/search/' . $this->data['id'] . '/' . $_POST['search']);
 		}
 		$this->data['group_id'] = $this->uri->segment(3,0);
-		$this->data['search_term'] = $this->uri->segment(4,0);
+		$this->data['search_term'] = urldecode($this->uri->segment(4,0));
+		$this->data['search_term'] = html_entity_decode($this->data['search_term']);
 		$this->load->model("m_systems");
 		$result = $this->m_systems->search($this->data['search_term'], $this->data['group_id']);
 		$this->data['query'] = $result;
@@ -574,6 +575,7 @@ class Main extends MY_Controller {
 		
 		foreach ($this->data['system'] as $system) {
 			$model_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_model)));
+			$model_formatted = str_replace("/", "_", $model_formatted);
 			$file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $model_formatted . '.jpg';
 			if ($system->man_picture > '') {
 				$system->man_picture = $system->man_picture . '.jpg';
