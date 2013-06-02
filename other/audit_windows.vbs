@@ -754,7 +754,7 @@ if windows_part_of_domain = True then
 		on error resume next
 			hr = oTranslate.set (1, domain_dn)
 		on error goto 0
-		if (isnull(hr) or hr = "") then
+		if (isnull(hr)) then
 			' skip everything as we could not contact the domain
 		else 
 			full_ad_domain = oTranslate.Get(1)
