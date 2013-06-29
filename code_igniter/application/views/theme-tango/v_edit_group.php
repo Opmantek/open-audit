@@ -2,10 +2,11 @@
 <?php 
 echo form_open('admin_group/process_edit_group') . "\n";
 foreach($group as $group_data): 
+	$group_sql = $group_data->group_dynamic_select;
 	$group_sql = str_replace("\t", '', $group_data->group_dynamic_select);
 	$group_sql = str_replace('SELECT ', "SELECT \n\t", $group_sql);
 	$group_sql = str_replace('FROM ', "\nFROM \n\t", $group_sql);
-	$group_sql = str_replace(',', ",\n\t", $group_sql);
+	#$group_sql = str_replace(',', ",\n\t", $group_sql);
 	$group_sql = str_replace('WHERE ', "\nWHERE \n\t", $group_sql);
 	$group_sql = str_replace('AND ', "AND \n\t", $group_sql);
 	$group_sql = str_replace('OR ', "OR \n\t", $group_sql);
@@ -13,7 +14,7 @@ foreach($group as $group_data):
 	$group_display_sql = str_replace("\t", '', $group_data->group_display_sql);
 	$group_display_sql = str_replace('SELECT ', "SELECT \n\t", $group_display_sql);
 	$group_display_sql = str_replace('FROM ', "\nFROM \n\t", $group_display_sql);
-	$group_display_sql = str_replace(',', ",\n\t", $group_display_sql);
+	#$group_display_sql = str_replace(',', ",\n\t", $group_display_sql);
 	$group_display_sql = str_replace('WHERE ', "\nWHERE \n\t", $group_display_sql);
 	$group_display_sql = str_replace('AND ', "AND \n\t", $group_display_sql);
 	$group_display_sql = str_replace('OR ', "OR \n\t", $group_display_sql);

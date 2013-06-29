@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-$config['web_internal_version'] = '20130215';
-$config['web_display_version'] = '1.0';
+$config['web_internal_version'] = '20130620';
+$config['web_display_version'] = '1.0.3';
 # $config['debug'] = FALSE;
 /*
 |--------------------------------------------------------------------------
@@ -236,6 +236,17 @@ $config['cache_path'] = '';
 |
 */
 $config['encryption_key'] = "openaudit";
+
+/*
+|--------------------------------------------------------------------------
+| Open-AudIT Enterprise Key
+|--------------------------------------------------------------------------
+|
+| This is the shared credentials used by OAE for connecting.
+|
+*/
+$config['oae_username'] = "open-audit_enterprise";
+$config['oae_password'] = "openaudit1234567890";
 
 /*
 |--------------------------------------------------------------------------

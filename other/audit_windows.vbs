@@ -186,6 +186,7 @@ set result = CreateObject("ADODB.Stream")
 result.Type = 2
 result.Open
 result.Position = 0
+result.Charset = "UTF-8"
 
 ' some local items
 set objWMIService = GetObject("winmgmts:\\.\root\cimv2") 
@@ -468,29 +469,17 @@ else
 					if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
 					Err.clear
 					on error resume next
-					set objTS = objFSO.OpenTextFile(OutputFile, FOR_APPENDING, True, TristateTrue)
+					result.position = 0
+					result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists 
 					error_returned = Err.Number
 					error_description = Err.Description
 					on error goto 0
-					if (error_returned <> 0) then 
-						if debugging > "0" then wscript.echo "Problem Creating File to open." end if
+					if (error_returned <> 0) then
+						if debugging > "0" then wscript.echo "Problem writing to file." end if
 						if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 						if debugging > "0" then wscript.echo "Error Description:" & error_description end if
 					else
-						Err.Clear
-						on error resume next
-						result.position = 0
-						objTS.Write result.ReadText()
-						error_returned = Err.Number
-						error_description = Err.Description
-						on error goto 0
-						if (error_returned <> 0) then 
-							if debugging > "0" then wscript.echo "Problem writing to file." end if
-							if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-							if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-						else 
-							if debugging > "0" then wscript.echo "Output file created." end if
-						end if
+						if debugging > "0" then wscript.echo "Output file created." end if
 					end if
 				end if
 			else ' count > 0
@@ -552,6 +541,7 @@ for each objItem in colItems
 	windows_service_pack = objItem.ServicePackMajorVersion
 	system_os_family = os_family(objItem.Caption)
 	system_os_name = objItem.Caption
+	system_os_name = replace(system_os_name, "(R)", "")
 	system_os_icon = replace(lcase(system_os_family), " ", "_")
 	system_description = objItem.Description
 	if details_to_lower = "y" then system_description = lcase(system_description) end if
@@ -1020,6 +1010,15 @@ newpath = "HARDWARE\DESCRIPTION\System\CentralProcessor\0"
 newkey = "ProcessorNameString"
 oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
 processor_description = strValue
+processor_description = replace(processor_description, "(R)", "")
+processor_description = replace(processor_description, "(TM)", "")
+processor_description = replace(processor_description, "  ", " ")
+processor_description = replace(processor_description, "  ", " ")
+processor_description = replace(processor_description, "  ", " ")
+processor_description = replace(processor_description, "  ", " ")
+processor_description = replace(processor_description, "  ", " ")
+processor_description = replace(processor_description, "  ", " ")
+processor_description = replace(processor_description, "  ", " ")
 set colItems = objWMIService.ExecQuery("Select * from Win32_Processor",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Processor)" : audit_wmi_fails = audit_wmi_fails & "Win32_Processor " : end if
 for each objItem In colItems
@@ -1035,7 +1034,7 @@ for each objItem In colItems
 		case "2"      cpu_socket = "Unknown"
 		case "3"      cpu_socket = "Daughter Board"
 		case "4"      cpu_socket = "ZIF Socket"
-		case "5"      cpu_socket = "Replacement or Piggy Back"
+		case "5"      cpu_socket = "Replaceable Piggy Back"
 		case "6"      cpu_socket = "None"
 		case "7"      cpu_socket = "LIF Socket"
 		case "8"      cpu_socket = "Slot 1"
@@ -1049,7 +1048,33 @@ for each objItem In colItems
 		case "16"     cpu_socket = "Socket 754"
 		case "17"     cpu_socket = "Socket 940"
 		case "18"     cpu_socket = "Socket 939"
-		case "21"     cpu_socket = "Socket 775"
+		case "19"     cpu_socket = "Socket mPGA 604"
+		case "20"     cpu_socket = "Socket LGA 771"
+		case "21"     cpu_socket = "Socket LGA 775"
+		case "22"     cpu_socket = "Socket S1"
+		case "23"     cpu_socket = "Socket AM2"
+		case "24"     cpu_socket = "Socket F (1207)"
+		case "25"     cpu_socket = "Socket LGA 1366"
+		case "26"     cpu_socket = "Socket G34"
+		case "27"     cpu_socket = "Socket AM3"
+		case "28"     cpu_socket = "Socket C32"
+		case "29"     cpu_socket = "Socket LGA 1156"
+		case "30"     cpu_socket = "Socket LGA 1567"
+		case "31"     cpu_socket = "Socket PGA 988A"
+		case "32"     cpu_socket = "Socket BGA 1288"
+		case "33"     cpu_socket = "Socket rPGA 988B"
+		case "34"     cpu_socket = "Socket BGA 1023"
+		case "35"     cpu_socket = "Socket BGA 1224"
+		case "36"     cpu_socket = "Socket LGA 1155"
+		case "37"     cpu_socket = "Socket LGA 1356"
+		case "38"     cpu_socket = "Socket LGA 2011"
+		case "39"     cpu_socket = "Socket FS1"
+		case "40"     cpu_socket = "Socket FS2"
+		case "41"     cpu_socket = "Socket FM1"
+		case "42"     cpu_socket = "Socket FM2"
+		case "43"     cpu_socket = "Socket LGA 2011-3"
+		case "44"     cpu_socket = "Socket LGA 1356-3"
+		case "185"    cpu_socket = "Socket P (478)"
 		case Default  cpu_socket = "Unknown"
 	end select
 next
@@ -3588,22 +3613,22 @@ for each objItem in colItems
 		case "mssqlserver" 
 			en_sql_server = "y"
 			en_sql_server_state = objItem.State
-			wscript.echo service_name
+			if debugging > "1" then wscript.echo service_name end if
 
 		case "sql server (mssqlserver)" 
 			en_sql_server = "y"
 			en_sql_server_state = objItem.State
-			wscript.echo service_name
+			if debugging > "1" then wscript.echo service_name end if
 		
 		case "mssql$sqlexpress"
 			en_sql_express = "y"
 			en_sql_server_state = objItem.State
-			wscript.echo service_name
+			if debugging > "1" then wscript.echo service_name end if
 
 		case "sql server (sqlexpress)"
 			en_sql_express = "y"
 			en_sql_server_state = objItem.State
-			wscript.echo service_name
+			if debugging > "1" then wscript.echo service_name end if
 
 	end select
 	
@@ -4114,7 +4139,7 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 
 			' Host Headers
 			result_host_headers = ""
-			if count(objItem.ServerBindings) > 0 then 
+			if IsArray(objItem.ServerBindings) then
 				For i = 0 to Ubound(objItem.ServerBindings)
 					' Site URL part #1
 					if iis_site_ssl_en = True then
@@ -5935,7 +5960,50 @@ else
 	key_edition = ""
 end if
 
+''''''''''''''''''''''''''''''''
+' Snag It '
+''''''''''''''''''''''''''''''''
+strKeyPath = "SOFTWARE\Wow6432Node\TechSmith\SnagIt\11\"
+key_name = "Snagit 11"
+key_edition = ""
+key_release = ""
+subKey = "RegistrationKey"
+oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
+if IsNull(key_text) or key_text = "" then
+   ' do nothing
+else
+   key_text = AddDashes(key_text, 5)
+   result.WriteText " <key>" & vbcrlf
+   result.WriteText " <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
+   result.WriteText " <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
+   result.WriteText " <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
+   result.WriteText " <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
+   result.WriteText " </key>" & vbcrlf
+   key_text = ""
+   key_release = ""
+   key_edition = ""
+end if
 
+strKeyPath = "SOFTWARE\TechSmith\SnagIt\11\"
+key_name = "Snagit 11"
+key_edition = ""
+key_release = ""
+subKey = "RegistrationKey"
+oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
+if IsNull(key_text) or key_text = "" then
+   ' do nothing
+else
+   key_text = AddDashes(key_text, 5)
+   result.WriteText " <key>" & vbcrlf
+   result.WriteText " <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
+   result.WriteText " <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
+   result.WriteText " <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
+   result.WriteText " <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
+   result.WriteText " </key>" & vbcrlf
+   key_text = ""
+   key_release = ""
+   key_edition = ""
+end if
 
 result.WriteText "	</software_keys>" & vbcrlf
 
@@ -6034,29 +6102,17 @@ if create_file = "y" then
 	if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
 	Err.clear
 	on error resume next
-	set objTS = objFSO.OpenTextFile(OutputFile, FOR_APPENDING, True, TristateTrue)
+	result.position = 0
+	result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists 
 	error_returned = Err.Number
 	error_description = Err.Description
 	on error goto 0
-	if (error_returned <> 0) then 
-		if debugging > "0" then wscript.echo "Problem Creating File to open." end if
+	if (error_returned <> 0) then
+		if debugging > "0" then wscript.echo "Problem writing to file." end if
 		if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 		if debugging > "0" then wscript.echo "Error Description:" & error_description end if
 	else
-		Err.Clear
-		on error resume next
-		result.position = 0
-		objTS.Write result.ReadText()
-		error_returned = Err.Number
-		error_description = Err.Description
-		on error goto 0
-		if (error_returned <> 0) then 
-			if debugging > "0" then wscript.echo "Problem writing to file." end if
-			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-		else 
-			if debugging > "0" then wscript.echo "Output file created." end if
-		end if
+		if debugging > "0" then wscript.echo "Output file created." end if
 	end if
 end if
 
@@ -6148,7 +6204,7 @@ Function urlEncode(sString)
 End Function
 
 
-function escape_xml(data)
+function escape_xml(ByVal data)
 	if IsNull(data) then
 		escape_xml = ""
 	else
@@ -6983,6 +7039,20 @@ function CSVParser(CSVDataToProcess)
    'Finishing Up
     CSVParser = CSVArray
 end function
+
+Function AddDashes( strInput, intDashInterval)
+	if intDashInterval <= 0 then
+		AddDashes = strInput
+		Exit Function
+	end if
+	For i=1 to Len(strInput) step intDashInterval
+		if i <> 1 then
+			temp = temp & "-"
+		end if
+		temp = temp & Mid(strInput,i,intDashInterval)
+	Next
+	AddDashes = temp
+End Function
 
 function check_wbem_error(error)
 	if abs(error) = 2147217392 then check_wbem_error = "wbemErrInvalidClass - class does not exist on this system."

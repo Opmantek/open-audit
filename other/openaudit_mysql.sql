@@ -1002,6 +1002,7 @@ CREATE TABLE `sys_man_audits` (
   `system_audits_username` varchar(45) NOT NULL default '',
   `system_audits_type` varchar(45) NOT NULL default '',
   `system_audits_time` varchar(45) NOT NULL default '',
+  `system_audits_ip` varchar(30) NOT NULL default '',
   `audit_debug` text NOT NULL default '',
   `audit_wmi_fails` text NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
@@ -1903,8 +1904,8 @@ INSERT INTO `oa_group_user` VALUES  (1,1,1,10);
 
 INSERT INTO `oa_user` VALUES  (1, 'admin', '0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6', 'Administrator', 'admin@openaudit', 'en', '10', 'tango', 'y', 'y', '10', '3');
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20130512', 'n', 'The internal numerical version.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.0', 'n', 'The version shown on the web pages.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20130620', 'n', 'The internal numerical version.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.0.3', 'n', 'The version shown on the web pages.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('non_admin_search', 'y', 'y', 'Enable or disable search for non-Administrators');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate. EG - open-audit.org');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1');

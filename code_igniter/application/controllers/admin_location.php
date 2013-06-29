@@ -124,13 +124,16 @@ class Admin_location extends MY_Controller {
 		} 
 		if ( isset($_POST['submit_file']) ) {
 			$this->load->model("m_oa_location");
-			# we have an uploaded file - store and process			
+			# we have an uploaded file - store and process
 			$target_path = BASEPATH . "../application/uploads/" . basename( $_FILES['upload_file']['name']);
-			if(move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path)) {
-				# echo "The file ".  basename( $_FILES['upload_file']['name']). " has been uploaded.<br />\n";
-			} else {
-				echo "There was an error uploading the file, please try again!<br />\n";
-				exit();
+			try {
+				move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
+			}
+			catch (Exception $e) {
+				$this->data['query'] = $e;
+				$this->data['error'] = "There was an error uploading the file, please try again.";
+				$this->data['include'] = 'v_error'; 
+				$this->load->view('v_template', $this->data);
 			}
 			require_once BASEPATH . '../application/libraries/phpexcel/PHPExcel/IOFactory.php';
 			if (!$objPHPExcel = PHPExcel_IOFactory::load($target_path)) { exit; }

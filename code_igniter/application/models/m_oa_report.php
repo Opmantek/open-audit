@@ -123,7 +123,8 @@ class M_oa_report extends MY_Model {
 		}
 		$data = array($group_id);
 		$query = $this->db->query('SET @group = ?', $data);
-		$data = array($group_id, $first_attribute);
+		#$data = array($group_id, $first_attribute);
+		$data = array($first_attribute);
 		$query = $this->db->query($sql, $data);
 		return($query->result());
 	}

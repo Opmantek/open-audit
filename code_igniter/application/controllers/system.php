@@ -274,8 +274,10 @@ class System extends CI_Controller {
 					$details->system_key = $this->m_system->create_system_key($details);
 					$i = $this->m_system->find_system($details);
 					$details->system_id = $i;
+					$details->last_seen = $details->timestamp;
 					$details->last_seen_by = 'audit';
 					$details->last_user = '';
+					$details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 					if ($i == '') {
 						# insert a new system
 						$details->system_id = $this->m_system->insert_system($details);

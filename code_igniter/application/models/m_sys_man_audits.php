@@ -23,6 +23,7 @@ class M_sys_man_audits extends MY_Model {
 				system_audits_username, 
 				system_audits_type, 
 				system_audits_time, 
+				system_audits_ip, 
 				sys_man_audits.timestamp
 			FROM 
 				sys_man_audits,
@@ -49,8 +50,8 @@ class M_sys_man_audits extends MY_Model {
 			$inserted_user = '';
 		}
 
-		$sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp ) VALUES (?, ?, ?, ?, ?)";
-		$data = array("$details->system_id", "$inserted_user", "$inserted_via", "$details->timestamp", date('Y-m-d G:i:s'));
+		$sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp, system_audits_ip ) VALUES (?, ?, ?, ?, ?, ?)";
+		$data = array("$details->system_id", "$inserted_user", "$inserted_via", "$details->timestamp", date('Y-m-d G:i:s'), "$details->audits_ip");
 		$query = $this->db->query($sql, $data);
 	}
 	

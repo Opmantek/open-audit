@@ -80,9 +80,9 @@ class Admin_db extends MY_Controller {
 		set_time_limit(240);
 		$this->load->model("m_system");
 		$this->data['query'] = $this->m_system->delete_non_production_systems();
-		$this->data['count'] = count($this->data['query']);
+		$this->data['count'] = '1';
 		$this->data['heading'] = "Delete Non Production Systems";
-		$this->data['include'] = 'v_export_table'; 
+		$this->data['include'] = 'v_general'; 
 		$this->load->view('v_template', $this->data);
 		
 	}	

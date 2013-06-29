@@ -34,6 +34,7 @@ foreach($system as $key) {
 	$link_serial = $key->serial;
 	$link_model = $key->model;
 	$last_seen = $key->last_seen_by;
+	$icon = $key->man_icon;
 	$picture = strtolower($key->man_picture);
 	if ($picture == '') {
 		$picture = strtolower($key->man_model);
@@ -238,7 +239,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					<?php $os_install_date = $key->pc_date_os_installation; ?>
 					<div>
 						<div style="float:left; width:50%;">
-							<p><label for="hostname"><?php echo __('Hostname')?>: </label><span id="hostname"><b><?php echo print_something($key->hostname)?></b></span></p>
+							<p><label for="hostname"><?php echo __('Hostname')?>: </label><span id="hostname" <?php echo $edit?>><?php echo print_something($key->hostname)?></span></p>
 							<p><label for="man_ip_address"><?php echo __('IP Address')?>: </label><span id="man_ip_address" <?php echo $edit?>><?php echo print_something(ip_address_from_db($key->man_ip_address))?></span></p>
 
 							<p><label for="man_environment_select"><?php echo __('Environment')?>: </label>
@@ -256,10 +257,11 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 							<?php } ?>
 
 							<p><label for="man_description"><?php echo __('Description')?>: </label><span id="man_description" <?php echo $edit?>><?php echo print_something($key->man_description)?></span></p>
+							<p><label for="man_type"><?php echo __('Type')?>: </label><span id="man_type" <?php echo $edit?>><?php echo print_something($key->man_type)?></span></p>
 							<p><label for="man_class"><?php echo __('Class')?>: </label><span id="man_class" <?php echo $edit?>><?php echo print_something($key->man_class)?></span></p>
 							<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon" <?php echo $edit?>><?php echo print_something($key->man_icon)?></span></p>
-							<p><label for="man_os_group"><?php echo __('OS Group')?>: </label><span id="man_os_group"><?php echo print_something($key->man_os_group)?></span></p>
-							<p><label for="man_os_family"><?php echo __('OS Family')?>: </label><span id="man_os_family"><?php echo print_something($key->man_os_family)?></span></p>
+							<p><label for="man_os_group"><?php echo __('OS Group')?>: </label><span id="man_os_group" <?php echo $edit?>><?php echo print_something($key->man_os_group)?></span></p>
+							<p><label for="man_os_family"><?php echo __('OS Family')?>: </label><span id="man_os_family" <?php echo $edit?>><?php echo print_something($key->man_os_family)?></span></p>
 						</div>
 						<div style="float:right; width:50%;">
 							<p><label for="man_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="man_manufacturer" <?php echo $edit?>><?php echo print_something($key->man_manufacturer)?></span></p>
@@ -288,7 +290,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 			</div>
 
 			<div style="margin-right: 120px;">
-				<?php if ($os_name > ''){ ?><label for="man_os_name"><?php echo __('OS Name')?>: </label><span id="man_os_name"><?php echo print_something($os_name)?></span><?php } ?>
+				<label for="man_os_name"><?php echo __('OS Name')?>: </label><span id="man_os_name" <?php echo $edit?>><?php echo print_something($os_name)?></span>
 			</div>
 			
 			<?php echo display_custom_field('system_details', $additional_fields_data, $edit); ?>
@@ -304,7 +306,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		<fieldset id="summary_windows_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Windows Details')?></span></legend>
 			<div style="float:right; width: 100px;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_windows.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_<?php echo $icon; ?>.png' alt='' title='' width='48'/>
 			</div>
 			<?php foreach($windows as $key): ?>
 			<div>
@@ -597,6 +599,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 							<th><?php echo __('By')?>&nbsp;&nbsp;&nbsp;</th>
 							<th><?php echo __('Type')?></th>
 							<th><?php echo __('Submitted On')?></th>
+							<th><?php echo __('Submitted From')?></th>
 							<th><?php echo __('Audited On')?></th>
 						</tr>
 					</thead>
@@ -607,6 +610,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 							<td><?php echo print_something($key->system_audits_username)?></td>
 							<td><?php echo print_something($key->system_audits_type)?></td>
 							<td><?php echo print_something($key->timestamp)?></td>
+							<td><span style="display:none;"><?php echo print_something($key->system_audits_ip)?></span><?php echo print_something(ip_address_from_db($key->system_audits_ip))?></td>
 							<td><?php echo print_something($key->system_audits_time)?></td>
 						</tr>
 						<?php endforeach; ?>

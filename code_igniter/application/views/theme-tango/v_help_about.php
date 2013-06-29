@@ -62,5 +62,6 @@ if (($config->display_version != $this->config->item('web_display_version')) AND
 		<td style="vertical-align: middle;"><a href="http://www.apache.org/"><img src='<?php echo $image_path;?>logo-apache.jpg' width='120' alt=''></a></td>
 		-->
 		<td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $image_path;?>logo-w3c.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $image_path;?>logo-miclogo-88x31.gif' width='120' alt=''/></a></td>
 	</tr>
 </table>

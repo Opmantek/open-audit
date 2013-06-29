@@ -24,11 +24,13 @@ echo form_open('admin_location/edit_location') . "\n";
 				<p><label for='location_city'><?php echo __("City")?>: </label><input type='text' id='location_city' name='location_city' tabindex='7' title='City'  value="<?php echo $key->location_city; ?>"/></p>		
 			</td>
 			<td width="50%">
-				<p><label for='location_state'><?php echo __("State")?>: </label><input type='text' id='location_state' name='location_state' tabindex='8' title='State'  value="<?php echo $key->location_state; ?>"/></p>		
-				<p><label for='location_country'><?php echo __("Country")?>: </label><input type='text' id='location_country' name='location_country' tabindex='9' title='Country'  value="<?php echo $key->location_country; ?>"/></p>		
-				<!-- <p><label for='location_picture'><?php echo __("Picture")?>: </label><input type='text' id='location_picture' name='location_picture' tabindex='9' title='Picture'  value="<?php echo $key->location_picture; ?>"/></p> -->
-				<p><label for='location_latitude'><?php echo __("Latitude")?>: </label><input type='text' id='location_latitude' name='location_latitude' tabindex='10' title='Latitude'  value="<?php echo $key->location_latitude; ?>"/></p>		
-				<p><label for='location_longitude'><?php echo __("Longitude")?>: </label><input type='text' id='location_longitude' name='location_longitude' tabindex='11' title='Longitude'  value="<?php echo $key->location_longitude; ?>"/></p>	
+				<p><label for='location_postcode'><?php echo __("Postcode")?>: </label><input type='text' id='location_postcode' name='location_postcode' tabindex='8' title='Postcode'  value="<?php echo $key->location_postcode; ?>"/></p>	
+				<p><label for='location_state'><?php echo __("State")?>: </label><input type='text' id='location_state' name='location_state' tabindex='9' title='State'  value="<?php echo $key->location_state; ?>"/></p>		
+				<p><label for='location_country'><?php echo __("Country")?>: </label><input type='text' id='location_country' name='location_country' tabindex='10' title='Country'  value="<?php echo $key->location_country; ?>"/></p>		
+				<!-- <p><label for='location_picture'><?php echo __("Picture")?>: </label><input type='text' id='location_picture' name='location_picture' tabindex='11' title='Picture'  value="<?php echo $key->location_picture; ?>"/></p> -->
+				<p><label for='location_latitude'><?php echo __("Latitude")?>: </label><input type='text' id='location_latitude' name='location_latitude' tabindex='12' title='Latitude'  value="<?php echo $key->location_latitude; ?>"/></p>		
+				<p><label for='location_longitude'><?php echo __("Longitude")?>: </label><input type='text' id='location_longitude' name='location_longitude' tabindex='13' title='Longitude'  value="<?php echo $key->location_longitude; ?>"/></p>	
+				<p><label for='get_geocode'>&nbsp;</label><input type="button" name="click me" value="Get GeoCode" onclick="getgeocode();" /></p>
 				<p><label for='EditLocation'>&nbsp;</label><?php echo form_submit('EditLocation', 'Edit Location'); ?></p>
 			</td>
 		</tr>
@@ -40,3 +42,25 @@ echo form_open('admin_location/edit_location') . "\n";
 <?php echo form_close(); ?>
 </div>
 </div>
+
+		
+
+<script>
+	function getgeocode() {
+	var address = document.getElementById("location_address").value + ",%20" + document.getElementById("location_city").value + "%20" + document.getElementById("location_state").value + "%20" + document.getElementById("location_postcode").value + ",%20" + document.getElementById("location_country").value;
+	$.ajax({
+		type: "GET",
+		dataType: "json",
+		url: "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address="+address,
+		success: function(msg){
+			var lat = msg.results[0].geometry.location.lat;
+			var lng = msg.results[0].geometry.location.lng;
+			document.getElementById("location_latitude").value = lat;
+			document.getElementById("location_longitude").value = lng;
+		},
+		error: function (e) {
+			alert(e.message);
+		}
+	});
+}
+</script>

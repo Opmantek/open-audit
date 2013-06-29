@@ -17,6 +17,165 @@ class M_oa_location extends MY_Model {
 		parent::__construct();
 	}
 
+	function location_report_columns() {
+		$i = new stdclass();
+		$result = array();
+		$i->column_order = '0';
+		$i->column_name = 'Name';
+		$i->column_variable = 'name';
+		$i->column_type = "link";
+		$i->column_align = "left";
+		$i->column_secondary = "id";
+		$i->column_ternary = "";
+		$i->column_link = "/main/view_location/";
+		$result[0] = $i;
+		$i = new stdclass();
+		$i->column_order = '1';
+		$i->column_name = 'Address';
+		$i->column_variable = 'address';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[1] = $i;
+		$i = new stdclass();
+		$i->column_order = '2';
+		$i->column_name = 'GeoTag';
+		$i->column_variable = 'geotag';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[2] = $i;
+		$i = new stdclass();
+		$i->column_order = '3';
+		$i->column_name = 'Icon';
+		$i->column_variable = 'type';
+		$i->column_type = "image";
+		$i->column_align = "center";
+		$i->column_secondary = "type";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[3] = $i;
+		$i = new stdclass();
+		$i->column_order = '4';
+		$i->column_name = 'Type';
+		$i->column_variable = 'type';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[4] = $i;
+		$i = new stdclass();
+
+		$count = 4;
+		$sql = "SELECT DISTINCT(man_type) FROM system";
+		$query = $this->db->query($sql);
+		$types = $query->result();
+		foreach ($types as $type) {
+			$i = new stdclass();
+			$count++;
+		 	if ($type->man_type == '' ) { $type->man_type = 'unknown'; }
+			$i->column_order = $count;
+			$i->column_name = $type->man_type;
+			$i->column_variable = $type->man_type;
+			$i->column_type = "text";
+			$i->column_align = "left";
+			$i->column_secondary = "";
+			$i->column_ternary = "";
+			$i->column_link = "";
+			$result[] = $i;
+		}
+		return ($result);
+	}
+
+	function location_report() {
+		$sql = "SELECT DISTINCT(man_type) FROM system";
+		$query = $this->db->query($sql);
+		$types = $query->result();
+
+		$sql = "SELECT oa_location.location_id, oa_location.location_name, oa_location.location_icon, oa_location.location_type, 
+		oa_location.location_address, oa_location.location_city, oa_location.location_state, 
+		oa_location.location_postcode, oa_location.location_country, oa_location.location_geotag, 
+		system.man_type, count(system.system_id) as count, oa_location.location_latitude, oa_location.location_longitude 
+		FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id 
+		WHERE system.man_status = 'production' and 
+		system.man_location_id <> '0' and 
+		system.man_location_id <> '' and 
+		system.man_location_id IS NOT NULL 
+		GROUP BY system.man_location_id, system.man_type 
+		ORDER BY location_name";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		$table = array();
+		$current_location = "";
+		$count = -1;
+
+		foreach ($result as $row) {
+			if ($row->man_type == '') { $row->man_type = 'unknown'; }
+			if ($row->location_name != $current_location) {
+				$count ++;
+				$i = new stdclass();
+				$i->id = $row->location_id;
+				$i->name = $row->location_name;
+				$i->type = $row->location_type;
+				$type_icon = str_replace("index.php", "", $_SERVER['SCRIPT_FILENAME']) . 'theme-tango/tango-images/32_' . str_replace(" ", "_", strtolower($row->location_type)) . '.png';
+				if (is_null($row->location_icon) or $row->location_icon == '') {
+					if (file_exists($type_icon)) {
+						$row->location_icon = str_replace(" ", "_", strtolower($row->location_type));
+					} else {
+						$row->location_icon = 'office';
+					}
+				}
+				$i->address = $row->location_address . ", " . 
+											$row->location_city . ", " . 
+											$row->location_state . ", " . 
+											$row->location_postcode . ", " . 
+											$row->location_country;
+
+				if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
+					$i->geotag = '{"latitude":"' . $row->location_latitude . '","longitude":"' . $row->location_longitude . '"}';
+					$i->icon = base_url() . 'theme-tango/tango-images/32_' . $row->location_icon . '.png';
+					$i->infoDisplay = '"' . $row->man_type . '":"' . $row->count . '", ';
+				} else {
+					if (is_null($row->location_geotag) or $row->location_geotag == '') {
+						$i->geotag = "latitude: " . $row->location_latitude . ", longitude: " . $row->location_longitude;
+					} else {
+						$i->geotag = $row->location_geotag;
+					}
+					$i->icon = $row->location_icon;
+					$i->icon = '<img src="http://localhost/theme-tango/tango-images/32_' . $row->location_icon . '.png" />';
+					$j = $row->man_type;
+					$i->$j = $row->count;
+				}
+				$table[$count] = $i;
+			} else {
+				if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
+					$i = $table[$count]->infoDisplay . '"' . $row->man_type . '":"' . $row->count . '", ';
+				} else {
+					$j = $row->man_type;
+					$i->$j = $row->count;
+				}
+				$table[$count]->infoDisplay = $i;
+			}
+			$current_location = $row->location_name;
+		}
+		$count = 0;
+		if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
+			foreach ($table as $each) {
+				$i = $each->infoDisplay;
+				$i = substr($i, 0, -2);
+				$i = "{" . $i . "}";
+				$table[$count]->infoDisplay = $i;
+				$count++;
+			}
+		}
+		return ($table);
+	}
+
 	/**
 	 * Get the location details from the id
 	 *
@@ -193,27 +352,29 @@ class M_oa_location extends MY_Model {
 			INSERT INTO 
 				oa_location 
 				(location_name, 
+				location_type, 
 				location_room, 
 				location_suite, 
 				location_level, 
 				location_address, 
+				location_postcode, 
 				location_city, 
 				location_state,
 				location_country,
-				location_picture,
 				location_latitude,
 				location_longitude) 
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->location_name", 
+			"$details->location_type", 
 			"$details->location_room", 
 			"$details->location_suite", 
 			"$details->location_level", 
 			"$details->location_address", 
+			"$details->location_postcode", 
 			"$details->location_city", 
 			"$details->location_state", 
 			"$details->location_country", 
-			"$details->location_picture", 
 			"$details->location_latitude", 
 			"$details->location_longitude");
 		$query = $this->db->query($sql, $data);
@@ -254,9 +415,9 @@ class M_oa_location extends MY_Model {
 				location_level = ?, 
 				location_address = ?, 
 				location_city = ?, 
+				location_postcode = ?,
 				location_state = ?,
 				location_country = ?,
-				location_picture = ?,
 				location_latitude = ?,
 				location_longitude = ?
 			WHERE
@@ -269,9 +430,9 @@ class M_oa_location extends MY_Model {
 			"$details->location_level", 
 			"$details->location_address", 
 			"$details->location_city", 
+			"$details->location_postcode", 
 			"$details->location_state", 
 			"$details->location_country", 
-			"$details->location_picture", 
 			"$details->location_latitude", 
 			"$details->location_longitude", 
 			"$details->location_id");

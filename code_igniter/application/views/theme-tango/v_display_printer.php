@@ -333,6 +333,7 @@ $link_downloads = '';
 							<th><?php echo __('By')?>&nbsp;&nbsp;&nbsp;</th>
 							<th><?php echo __('Type')?></th>
 							<th><?php echo __('Submitted On')?></th>
+							<th><?php echo __('Submitted From')?></th>
 							<th><?php echo __('Audited On')?></th>
 						</tr>
 					</thead>
@@ -343,6 +344,7 @@ $link_downloads = '';
 							<td><?php echo print_something($key->system_audits_username)?></td>
 							<td><?php echo print_something($key->system_audits_type)?></td>
 							<td><?php echo print_something($key->timestamp)?></td>
+							<td><span style="display:none;"><?php echo print_something($key->system_audits_ip)?></span><?php echo print_something(ip_address_from_db($key->system_audits_ip))?></td>
 							<td><?php echo print_something($key->system_audits_time)?></td>
 						</tr>
 						<?php endforeach; ?>

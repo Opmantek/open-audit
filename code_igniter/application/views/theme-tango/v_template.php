@@ -21,40 +21,30 @@ if (!isset($sortcolumn)) { $sortcolumn = '0';}
 	<!-- <script type="text/javascript" src="<?php echo $file_path;?>jquery/js/nicejforms-interface.js" /> -->
 	<link rel="stylesheet" type="text/css" href="<?php echo $file_path;?>jquery/css/humanity/niceforms-default.css" />
 	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/jquery-ui-1.8.13.custom.min.js"></script>
-<!--
-	<link rel="stylesheet" type="text/css" href="<?php echo $file_path; ?>jqplot/jquery.jqplot.css" />
-	<link rel="stylesheet" type="text/css" href="<?php echo $file_path; ?>jqplot/examples/examples.css" />
--->
 
-<script type="text/javascript">
-$(document).ready(function(){
-	var dialogOpts = {
-	modal: true,
-	bgiframe: true,
-	autoOpen: false,
-	height: 500,
-	width: 500,
-	draggable: true,
-	resizeable: true
-};
-
-$("#example").dialog(dialogOpts);   //end dialog
-   
-$('#showdialog').click(
-	function() {
-		$("#example").load("/test_form.php", [], function(){
-			$("#example").dialog("open");
-			}
-		);
-		return false;
-	}
-);
-   
-}); 
-</script>
-
-
-
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var dialogOpts = {
+			modal: true,
+			bgiframe: true,
+			autoOpen: false,
+			height: 500,
+			width: 500,
+			draggable: true,
+			resizeable: true
+			};
+			$("#example").dialog(dialogOpts);
+			$('#showdialog').click(
+				function() {
+					$("#example").load("/test_form.php", [], function(){
+						$("#example").dialog("open");
+						}
+					);
+					return false;
+				}
+			);
+		}); 
+	</script>
 
 	<script type="text/javascript">
 	$(document).ready(function() {
@@ -62,10 +52,8 @@ $('#showdialog').click(
 			$("table").tablesorter({widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
 		});
 	});
-	
-
-	<?php # note - the below variable would normally be set in instantedit.js ?>
-	<?php # I set it here so I can use PHP to allow for site location changes ?>
+	// note - the below variable would normally be set in instantedit.js 
+	// I set it here so I can use PHP to allow for site location changes 
 	<?php if ($include != "v_edit_config") {
 		echo "\nvar urlBase = \"" . base_url() . "index.php/ajax/update_system_man\";\n";
 		echo "var baseUrl = \"" . base_url() . "\";\n";
@@ -76,38 +64,26 @@ $('#showdialog').click(
 	</script>
 
 	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/instantedit.js"></script>
-	<?php
-	if (strpos($include, 'v_display_') == 0)
-	{
-	?>
-
-	<?php
-	if (isset($system_id)) {
-		echo "	<script type=\"text/javascript\">\n";
-		echo "		setVarsForm(\"$system_id\");\n";
-		echo "	</script>\n";
-	}
-	?>
-
-	
+	<?php if (strpos($include, 'v_display_') == 0) {
+		if (isset($system_id)) {
+			echo "	<script type=\"text/javascript\">\n";
+			echo "		setVarsForm(\"$system_id\");\n";
+			echo "	</script>\n";
+		} ?>
 	<style type="text/css">
-	a
-	{
+	a {
 		outline: none;
 	}
-	div.menuTree
-	{
+	div.menuTree {
 		/* border: solid 1px black; */
 	}
-	div.menuTree UL
-	{
+	div.menuTree UL {
 		font-size: 100%;
 		padding: 0px;
 		margin: 0px;
 		display:none;
 	}
-	div.menuTree UL LI
-	{
+	div.menuTree UL LI {
 		list-style: none;
 		padding: 0px;
 		padding-left: 5px;
@@ -115,30 +91,24 @@ $('#showdialog').click(
 		white-space: nowrap;
 		line-height: 20px;
 	}
-	div.menuTree UL LI.parent A
-	{
+	div.menuTree UL LI.parent A {
 		text-decoration: none;
 		padding: 0px 2px;
 	}
-	div.menuTree UL LI.parent A:hover
-	{
+	div.menuTree UL LI.parent A:hover {
 		font-size: 100%;
 	}
-	div.menuTree UL LI.child A
-	{
+	div.menuTree UL LI.child A {
 		text-decoration: none;
 		padding: 0px 2px;
 	}
-	div.menuTree UL LI.child A:hover
-	{
+	div.menuTree UL LI.child A:hover {
 		font-size: 100%;
 	}
-	div.menuTree UL LI.parent
-	{
+	div.menuTree UL LI.parent {
 		background: url(<?php echo $file_path;?>images/collapsed_image.gif) left top no-repeat;
 	}
-	div.menuTree UL LI.expanded
-	{
+	div.menuTree UL LI.expanded {
 		background: url(<?php echo $file_path;?>images/expended_image.gif) left top no-repeat;
 	}
 	</style>

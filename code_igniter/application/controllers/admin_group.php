@@ -214,7 +214,8 @@ class Admin_group extends MY_Controller {
 		}
 		$sql = $details->group_dynamic_select;
 		$sql = str_replace("\t", '', $sql);
-		$sql = str_replace("\n", '', $sql);
+		$sql = str_replace(array("\r", "\r\n", "\n"), '', $sql);
+		#$sql = str_replace("\n", '', $sql);
 		$sql = str_replace('  ', ' ', $sql);				
 		$details->group_dynamic_select = stripslashes($sql);
 		$original_dynamic_select = $this->m_oa_group->get_group_dynamic_select($details->group_id);
@@ -230,6 +231,7 @@ class Admin_group extends MY_Controller {
 	function process_add_group() {
 		
 		$this->load->model("m_oa_group");
+		$details = new stdclass();
 		foreach ($_POST as $key => $value) {
 			$details->$key = $value;
 		}
@@ -267,7 +269,6 @@ class Admin_group extends MY_Controller {
 		
 		
 		if (is_numeric($return)) {
-			echo "inside<br />\n";
 			$details->group_id = $return;
 			# populate the group columns
 			$this->load->model("m_oa_group_column");

@@ -347,6 +347,32 @@ if (!function_exists('get_snmp')) {
 		}
 
 		if ($details->snmp_version == '1') {
+			$details->snmp_oid = '';
+			$details->snmp_oid = str_replace("OID: .", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
+			if (strtolower($details->snmp_oid) == 'no such object available on this agent at this oid') { $details->snmp_oid = ''; }
+			if ($details->snmp_oid > '') {
+				$oid = get_oid($details->snmp_oid);
+				$details->manufacturer = $oid->manufacturer;
+				$details->man_manufacturer = $oid->manufacturer;
+				$details->model = $oid->model;
+				$details->man_model = $oid->model;
+				$details->type = $oid->type;
+				$details->device_type = $oid->type;
+				$details->man_type = $oid->type; 
+				$details->os_group = $oid->os_group;
+				$details->man_os_group = $oid->os_group;
+			}
+			if ($details->oid == '1.3.6.1.4.1.714.1.2.6') {
+				# We have a Wyse thin client - some specifics.
+				$details->serial = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community,      "1.3.6.1.4.1.714.1.2.6.2.1.0" ));
+				$details->sysname = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community,     "1.3.6.1.2.1.1.5.0" ));
+				$details->description = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
+				$details->contact = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.4.0" ));
+				if ($details->contact > '') { $details->description = "Contact: " . $details->contact . ". " . $details->description; }
+				$details->location = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0" ));
+				if ($details->location > '') { $details->description = "Location: " . $details->location . ". " . $details->description; }
+			}
+
 			$interface_number = str_replace("INTEGER: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
 			$i = "1.3.6.1.2.1.2.2.1.6." . $interface_number;
 			$details->mac_address = snmpget($details->man_ip_address, $details->snmp_community, $i);

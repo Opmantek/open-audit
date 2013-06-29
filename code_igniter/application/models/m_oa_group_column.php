@@ -47,7 +47,9 @@ class M_oa_group_column extends MY_Model {
 
 	function insert_group_column($details) {
 		for ($i=1; $i<=8; $i++) {
-			// nasty hack - only accounts for 8 columns
+			# nasty hack - only accounts for 8 columns
+			# there are only 8 columns displayed on the web form
+			# todo - fix this.
 			$start=explode(' ',microtime());
 			$column_order = "column_order_" . $i;
 			if ($details->$column_order > '0') {

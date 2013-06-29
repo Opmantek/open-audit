@@ -273,4 +273,69 @@ class Admin_cli extends CI_Controller {
 			}
 		}
 	}
+
+
+	function generate_report() {
+		# we need the environment variable as defined in the script.
+		echo $this->uri->uri_string() . "\n";
+		$var = $this->uri->segment(3,0);
+
+		# make sure we specify a group
+		$this->data['group_id'] =  getenv($var . "_group_id");
+		if (!isset($this->data['group_id']) or is_null($this->data['group_id']) or $this->data['group_id'] == '') { exit(); }
+
+		if (isset($_POST['first_attribute'])) { 
+			$this->data['first_attribute'] = getenv($var . "_first_attribute"); 
+		} else { 
+			$this->data['first_attribute'] = ''; 
+		}
+
+		$this->data['column'] = array();
+
+		$report = getenv($var . "_report");
+		if (!isset($report) or is_null($report) or $report == '') { exit(); }
+		echo "\n\n$report\n\n";
+		$report = str_replace("<\![CDATA[SELECT", "<![CDATA[SELECT", $report);
+
+		$xml = new SimpleXMLElement(utf8_encode($report));
+		foreach ($xml->children() as $child) {
+			if ($child->getName() == 'details') {
+			}
+			if ($child->getName() == 'columns') {
+				foreach ($child->children() as $column) {
+					$i = new stdclass();
+					if (isset($column->column_order)) { $i->column_order = $column->column_order; } else { $i->column_order = ''; }
+					if (isset($column->column_name)) { $i->column_name = $column->column_name; } else { $i->column_name = ''; }
+					if (isset($column->column_variable)) { $i->column_variable = $column->column_variable; } else { $i->column_variable = ''; }
+					if (isset($column->column_type)) { $i->column_type = $column->column_type; } else { $i->column_type = ''; }
+					if (isset($column->column_link)) { $i->column_link = $column->column_link; } else { $i->column_link = ''; }
+					if (isset($column->column_secondary)) { $i->column_secondary = $column->column_secondary; } else { $i->column_secondary = ''; }
+					if (isset($column->column_ternary)) { $i->column_ternary = $column->column_ternary; } else { $i->column_ternary = ''; }
+					if (isset($column->column_align)) { $i->column_align = $column->column_align; } else { $i->column_align = ''; }
+					$this->data['column'] = $i;
+					unset ($i);
+				}
+			}
+		}
+
+		exit();
+		# this breaks below here. Message:  Undefined property: Admin_cli::$db
+		# Going to try using a POST from the command line with WGET and only make it work it request from 127.0.0.1
+		# Will put it in system.php controller so don't have to validate user
+		$data = array($this->data['group_id']);
+		$query = $this->db->query('SET @group = ?', $data);
+
+		$data = array($this->data['group_id'], $this->data['first_attribute']);
+		$query = $this->db->query($sql, $data);
+		$this->data['query'] = $query->result();
+
+		$this->data['count'] = count($this->data['query']);
+		$this->data['include'] = $this->m_oa_report->get_report_view($this->data['report_id']);
+		$this->data['sortcolumn'] = $this->m_oa_report->get_report_sort_column($this->data['report_id']);
+		$this->data['export_report'] = 'y';
+		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+	}
+
+
+
 }

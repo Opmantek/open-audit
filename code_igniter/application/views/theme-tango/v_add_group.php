@@ -124,7 +124,7 @@
 				<option value='timestamp'><?php echo __("Timestamp")?></option>
 				<option value='url'><?php echo __("URL")?></option>
 			</select></td>
-			<td><input type='text' id='column_link_1' name='column_link_1' value='main/system_display/' /></td>
+			<td><input type='text' id='column_link_1' name='column_link_1' value='/main/system_display/' /></td>
 			<td><input type='text' id='column_secondary_1' name='column_secondary_1' value='system_id' size='10' /></td>
 			<td><input type='text' id='column_ternary_1' name='column_ternary_1' value='' size='10' /></td>
 			<td><select id='column_align_1' name='column_align_1' title='Column Alignment' >

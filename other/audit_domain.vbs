@@ -204,7 +204,7 @@ for l = 0 to ubound(domain_array)
 				remote_location = "\\"& pc_array(i) & "\admin$\"
 				if debugging > 2 then wscript.echo "Copying to: " & remote_location end if
 				on error resume next
-				objFSO.CopyFile "c:\temp\audit_windows.vbs", remote_location, True
+				objFSO.CopyFile "audit_windows.vbs", remote_location, True
 				'objFSO.CopyFile "c:\xampplite\OAv2\other\bin\RMTSHARE.EXE", remote_location, True
 				error_returned = Err.Number
 				error_description = Err.Description
@@ -217,14 +217,24 @@ for l = 0 to ubound(domain_array)
 					if debugging > 2 then wscript.echo "Sleeping for two seconds." end if
 					wscript.sleep 2000
 					Set Command = WScript.CreateObject("WScript.Shell")
+					' psexec must be in PATH
 					' note - specify -d on the command below to run in non-interactive mode (locally)
 					' if you specify -d you will see command windows of the remote processes
-					cmd = "c:\temp\psexec.exe \\" & pc_array(i) & " -u " & remote_user & " -p " & remote_password & " -d cscript.exe " & remote_location & "audit_windows.vbs self_delete=y "
+					'cmd = "c:\temp\psexec.exe \\" & pc_array(i) & " -u " & remote_user & " -p " & remote_password & " -d cscript.exe " & remote_location & "audit_windows.vbs self_delete=y "
+					if remote_user <> "" and remote_password <> "" then
+						strRemoteAuth = " -u " & remote_user & " -p " & remote_password
+					else
+						strRemoteAuth = ""
+					end if
+					' Both of these work. The second requires the double cmd as only one doesn't expand %SYSTEMROOT%.
+					'cmd = "psexec.exe \\" & pc_array(i) & strRemoteAuth & " -s cmd /c ""for /f ""TOKENS=2 DELIMS=="" %i in ('set ^| find /i ""systemroot""') do cscript.exe %i\audit_windows.vbs self_delete=y ldap="  & local_domain & """"
+					cmd = "psexec.exe \\" & pc_array(i) & strRemoteAuth & " -s cmd /c ""cmd /c cscript.exe %SYSTEMROOT^%\audit_windows.vbs self_delete=y ldap=" & local_domain & """"
 					if debugging > 2 then wscript.echo "Running command: " & cmd end if
 					on error resume next
 					Command.Run (cmd)
 					error_returned = Err.Number
 					error_description = Err.Description
+					num_running = HowMany
 					on error goto 0
 					if error_returned <> 0 then
 						' we did not successfully start the audit
@@ -241,12 +251,12 @@ next
 
 Function HowMany()
   Dim Proc1,Proc2,Proc3
-  CheckForHungWMI()
+  ' CheckForHungWMI()
   Set Proc1 = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
   Set Proc2 = Proc1.ExecQuery("select * from win32_process" )
   HowMany=0
   For Each Proc3 in Proc2
-    If LCase(Proc3.Caption) = "cscript.exe" Then
+    If LCase(Proc3.Caption) = "cscript.exe" or LCase(Proc3.Caption) = "psexec.exe" Then
       HowMany=HowMany + 1
     End If
   Next

@@ -25,7 +25,8 @@ class Login extends CI_Controller {
 	    $data['password'] = array('id' => 'password', 'name' => 'password');
 		$data['hidden'] = array('page' => $this->uri->segment(3), 
 								'function' => $this->uri->segment(4), 
-								'id' => $this->uri->segment(5));
+								'id' => $this->uri->segment(5),
+								'first_attribute' => $this->uri->segment(6));
 	    $this->load->model("m_oa_admin_database");
 		$data['systems'] = $this->m_oa_admin_database->count_systems();
 	    $this->load->view('v_login', $data);
@@ -77,6 +78,7 @@ class Login extends CI_Controller {
 		$page = $this->input->post('page');
 		$function = $this->input->post('function');
 		$id = $this->input->post('id');
+		$first_attribute = $this->input->post('first_attribute');
 	    $this->load->model("m_userlogin");
 	    
 	    $this->load->model("m_oa_config");
@@ -116,7 +118,7 @@ class Login extends CI_Controller {
 				if ($data['user_active'] == 'y') {
 					$this->session->set_userdata($data);
 					if ($page != '1') {
-						redirect($page . '/' . $function . '/' . $id);
+						redirect($page . '/' . $function . '/' . $id . '/' . $first_attribute);
 					} else {
 						redirect('main/index');
 					}
@@ -136,7 +138,7 @@ class Login extends CI_Controller {
 			if ($data != 'fail') {
 				$this->session->set_userdata($data);
 				if ($page != '1') {
-					redirect($page . '/' . $function . '/' . $id);
+					redirect($page . '/' . $function . '/' . $id . '/' . $first_attribute);
 				} else {
 					redirect('main/index');
 				}

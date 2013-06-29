@@ -27,7 +27,8 @@ class MY_Controller extends CI_Controller {
 		}
 
 		# turn on/off debugging from GET string
-		if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE)) AND ($this->uri->segment($this->uri->total_rsegments()-1) == 'user_debug') ) {
+		if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE)) AND 
+			($this->uri->segment($this->uri->total_rsegments()-1) == 'user_debug') ) {
 			if ($this->session->userdata['user_admin'] == 'y') {
 				$array = array('user_debug' => $this->uri->segment($this->uri->total_rsegments()) );
 				$this->session->set_userdata($array);
@@ -72,7 +73,8 @@ class MY_Controller extends CI_Controller {
 		}
 
 		# if POST data has username and password, use that to validate and deliver page and do NOT set a cookie
-		if ( (!isset($loggedin) OR $this->session->userdata('logged_in') != TRUE) AND (isset($_POST['username']) AND isset($_POST['password'])) ){
+		if ( (!isset($loggedin) OR $this->session->userdata('logged_in') != TRUE) AND 
+			(isset($_POST['username']) AND isset($_POST['password'])) ){
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 			$this->load->model("m_userlogin");
@@ -86,7 +88,29 @@ class MY_Controller extends CI_Controller {
 				exit();
 			}
 		}
-
+/*
+		echo $loggedin . "\n";
+		echo $this->session->userdata('logged_in') . "\n";
+		echo $_POST['oae_username'] . "\n";
+		echo $_POST['oae_password'] . "\n";
+		echo $_POST['output'] . "\n";
+		echo $this->config->item('oae_username') . "\n";
+		echo $this->config->item('oae_password') . "\n";
+		echo $this->uri->segment(1, '') . "\n";
+		echo $this->uri->segment(2, '') . "\n";
+		exit();
+*/
+		# if request has come from localhost, do not require a username or password
+		if ( (!isset($loggedin) OR $this->session->userdata('logged_in') != TRUE) AND 
+			(isset($_POST['oae_username']) AND isset($_POST['oae_password'])) AND 
+			($_POST['oae_username'] == $this->config->item('oae_username')) AND 
+			($_POST['oae_password'] == $this->config->item('oae_password')) AND
+			($this->uri->segment(1, '') == 'report') and 
+			($this->uri->segment(2, '') == 'generate_report') ){
+			$data = new stdclass();
+			$data->logged_in = TRUE;
+			$this->session->set_userdata($data);
+		}
 		
 		$this->data['title'] = 'Open-AudIT';
 		$this->data['id'] = $this->uri->segment(3, 0);
@@ -94,8 +118,9 @@ class MY_Controller extends CI_Controller {
 		if ((!isset($loggedin)) OR ($this->session->userdata('logged_in') != TRUE)) {
 			$this->data['page'] = $this->uri->segment(1, '');
 			$this->data['function'] = $this->uri->segment(2, '');
+			$this->data['first_attribute'] = $this->uri->segment(4, '');
 			if ($this->data['page'] != '' AND $this->data['function'] != '') {
-				redirect('login/index/' . $this->data['page'] . '/' . $this->data['function'] . '/' . $this->data['id']);
+				redirect('login/index/' . $this->data['page'] . '/' . $this->data['function'] . '/' . $this->data['id'] . '/' . $this->data['first_attribute']);
 			} else {
 				redirect('login/index');
 			}
@@ -116,39 +141,46 @@ class MY_Controller extends CI_Controller {
 		set_time_limit(600);
 	}
 
-	function determine_output($output_type)
-	{
+	function determine_output($output_type) {
 		switch ($output_type) {
 			case "excel":
 			$this->excel_report($this->data['query']);
 			break;
 
 			case "csv":
-			# need to insert the CSV function here
 			$this->csv_report($this->data['query']);
 			break;
 
 			case "html":
-			$this->html_report($this->data['query']);
+			$this->html_report($this->data);
+			break;
+
+			case "html_formatted":
+			$this->html_formatted_report($this->data);
+			break;
+
+			case "table":
+			$this->table_report($this->data);
+			break;
+
+			case "table_formatted":
+			$this->table_formatted_report($this->data);
 			break;
 
 			case "pdf":
-			# need to insert the PDF function here
+			# todo - need to insert the PDF function here
 			$this->load->view('v_template', $this->data);
 			break;
 
 			case "xml":
-			# need to insert the XML function here
 			$this->xml_report($this->data['query']);
 			break;
 
 			case "json":
-			# need to insert the XML function here
 			$this->json_report($this->data['query']);
 			break;
 
 			case "rss":
-			# need to insert the XML function here
 			$this->rss_report($this->data['query']);
 			break;
 
@@ -158,19 +190,18 @@ class MY_Controller extends CI_Controller {
 		}
 	}
 
-	function csv_report($query)
-	{
+	function csv_report($query) {
 		$csv = "";
+		echo "<pre>\n";
 		foreach ($query AS $details) {
 			foreach ($details as $attribute=>$value) {
 				if ($attribute == "man_ip_address") {
 					$value = ip_address_from_db($value); 
 				}
 				$value = str_replace(",", "", $value);
-				$csv .= "\"" . $value . "\",";
+				$csv .= "\"" . trim($value) . "\",";
 			}
 			$csv = mb_substr($csv, 0, mb_strlen($csv) -1);
-			# todo - remove the last comma
 			$csv .= "\n";
 		}
 		echo $csv;
@@ -179,8 +210,7 @@ class MY_Controller extends CI_Controller {
 		header('Cache-Control: max-age=0');
 	}
 
-	function xml_report($query)
-	{
+	function xml_report($query) {
 		$this->load->helper('xml');
 		echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
 		echo "<items>\n";
@@ -201,65 +231,404 @@ class MY_Controller extends CI_Controller {
 		header('Cache-Control: max-age=0');
 	}
 
-	function json_report($query)
-	{
-		echo "{\"items\": {\n";
+	function json_report($query) {
+		echo "<pre>\n";
+		echo "{\"items\": [\n";
+		$items = '';
 		foreach ($query AS $details) {
-			echo "\t\"item\": {\n";
+			$items .= "\t{\n";
 			$output = "";
 			foreach ($details as $attribute=>$value) {
 				if ($attribute == "man_ip_address") {
 					$value = ip_address_from_db($value); 
 				}
-				$value = str_replace ('"', '\"', $value);
-				$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+				$pos = strpos($value, "{\"");
+				if ($pos !== false) {
+					$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
+				} else {
+					$value = str_replace ('"', '\"', $value);
+					$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+				}
 			}
-			echo substr($output, 0, -2) . "\n";
-			echo "\t}\n";
+			$items .= substr($output, 0, -2) . "\n\t},\n";
 		}
-		echo "}}";
+		$items = substr($items, 0, -2);
+		$items .= "\n";
+		echo $items;
+		echo "]}";
 		header('Content-Type: application/json');
 		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.json"');
 		header('Cache-Control: max-age=0');
 	}
 
-	function html_report($query)
-	{
+	function html_report($data) {
 		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n";
 		echo "<head>\n";
-		echo "<title>" . $this->data['heading'] . "</title>\n";
-		echo "<style type=\"text/css\">\n";
-		echo "  td { font-family: verdana; font-size:10px; color:#111; }\n";
-		echo "  th { font-family: verdana; font-size:10px; color:#111; font-weight:bold; }\n";
-		echo "</style>\n";
+		echo "<meta http-equiv=\"Content-type\" content=\"text/html;charset=UTF-8\" />\n";
+		echo "<title>" . $this->data['heading'] . "</title>\n";	
 		echo "</head>\n";
 		echo "<body>\n";
-		echo "<table>\n";
-		echo "\t<thead><tr>";
-		foreach ($query AS $details) {
-			foreach ($details as $attribute=>$value) {
-				echo "<th>" . $attribute . "</th>";
+		echo "<table id=\"report\">\n";
+		echo "\t<thead>\n";
+		echo "\t\t<tr>\n";
+		foreach($data['column'] as $column) {
+			if (($column->column_type > '') and ($column->column_name != 'Tags')) {
+				echo "\t\t\t<th>" . $column->column_name . "</th>\n";
 			}
-			break;
 		}
-		echo "</tr></thead>\n";
+		echo "\t\t</tr>\n";
+		echo "\t</thead>\n";
 		echo "\t<tbody>\n";
-		foreach ($query AS $details) {
-			echo "\t\t<tr>";
-				foreach ($details as $attribute=>$value) {
-					if ($attribute == "man_ip_address") {
-						$value = ip_address_from_db($value); 
+		$i = 0;
+		foreach($data['query'] as $row) {
+			$i++;
+			echo "\t\t<tr>\n";
+			foreach($data['column'] as $column) {
+				if (($column->column_type > '') and ($column->column_name != 'Tags')) {
+					$column_variable_name = $column->column_variable;
+					$column_variable_name_sec = $column->column_secondary;
+					$column_variable_name_ter = $column->column_ternary;
+					$column_link = $column->column_link;
+					$column_align = $column->column_align;
+					$column_type = $column->column_type;
+
+					if ($column_align == '') { $column_align = 'left'; }
+					if (!property_exists($row, 'system_id')) { $row->system_id = $i; }
+					if (!isset($row->system_id)) { $row->system_id = $i; }
+					if (($column_variable_name == 'hostname') and ($row->$column_variable_name == '')) {
+						$row->hostname = "-";
 					}
-					echo "<td>" . $value . "</td>";
+					if (isset($row->$column_variable_name)) {
+						if ($row->$column_variable_name == ''){ $row->$column_variable_name = ' '; }
+						echo "\t\t\t<td>" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</td>\n";
+					} else {
+						echo "\t\t\t<td></td>\n";
+					}
 				}
-			echo "</tr>\n";
+			}
+			echo "\n\t\t</tr>\n";
 		}
 		echo "\t</tbody>\n";
 		echo "</table>\n";
 		echo "</body>\n";
+		echo "</html>";
 		header('Content-Type: text/html');
 		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.html"');
 		header('Cache-Control: max-age=0');
+	}
+
+	function html_formatted_report($data) {
+		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">\n";
+		echo "<head>\n";
+		echo "<meta http-equiv=\"Content-type\" content=\"text/html;charset=UTF-8\" />\n";
+		echo "<title>" . $this->data['heading'] . "</title>\n";	
+		echo "</head>\n";
+		echo "<body>\n";
+		echo "<table id=\"report\">\n";
+		echo "\t<thead>\n";
+		echo "\t\t<tr>\n";
+		foreach($data['column'] as $column) {
+			if (($column->column_type > '') and ($column->column_name != 'Tags')) {
+				if ($column->column_align == 'right') {
+					$style = 'padding-right: 20px;';
+				} else {
+					$style = '';
+				}
+				echo "\t\t\t<th style=\"text-align: $column->column_align; $style\">" . $column->column_name . "</th>\n";
+			}
+		}
+		echo "\t\t</tr>\n";
+		echo "\t</thead>\n";
+		echo "\t<tbody>\n";
+		$i = 0;
+		foreach($data['query'] as $row) {
+			$i++;
+			echo "\t\t<tr>\n";
+			foreach($data['column'] as $column) {
+				if (($column->column_type > '') and ($column->column_name != 'Tags')) {
+					$column_variable_name = $column->column_variable;
+					$column_variable_name_sec = $column->column_secondary;
+					$column_variable_name_ter = $column->column_ternary;
+					$column_link = $column->column_link;
+					$column_align = $column->column_align;
+					$column_type = $column->column_type;
+					if ($column_align == '') { $column_align = 'left'; }
+					if (!property_exists($row, 'system_id')) { $row->system_id = $i; }
+					if (!isset($row->system_id)) { $row->system_id = $i; }
+					if (($column_variable_name == 'hostname') and ($row->$column_variable_name == '')) {
+						$row->hostname = "-";
+					}
+
+					switch($column_type) {	
+						case "":
+							break;
+
+						case "link":
+							$column_link = str_replace('$group_id', $this->data['group_id'], $column_link);
+							echo "\t\t\t<td style=\"text-align: $column_align;\"><a href=\"" . site_url()  . $column_link . $row->$column_variable_name_sec . "\">" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</a></td>\n";
+							break;
+
+						case "text":
+							switch($column_variable_name)
+							{
+							case "tag":
+								break;
+
+							default:
+								if (isset($row->$column_variable_name)) {
+									$output = $row->$column_variable_name;
+									if (is_numeric($output)) { 
+										if ((strpos($column_variable_name, "serial") === false) and 
+											(strpos($column_variable_name, "model") === false)) { $output = number_format($output); }
+										echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">" . mb_substr("0000000000" . $output, -10) . "</span>" . $output . "</td>\n";
+									} else {
+										if ($row->$column_variable_name == ''){ $row->$column_variable_name = ' '; }
+										echo "\t\t\t<td style=\"text-align: $column_align;\">" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</td>\n";
+									}
+								} else {
+									echo "\t\t\t<td></td>\n";
+								}
+								break;
+							}
+							break;
+
+						case "image":
+							if ($row->$column_variable_name == "") { $row->$column_variable_name = "unknown"; }
+							if ($column_align == '') {$column_align = 'center';}
+							if ($column->column_name == 'Icon') {
+								echo "\t\t\t<td style=\"text-align: $column_align;\"><img src=\"" . str_replace("index.php", "", site_url()) . "theme-tango/tango-images/16_" . str_replace(" ", "_", $row->$column_variable_name) . ".png\" style='border-width:0px;' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
+							}
+							if ($column->column_name == 'Picture') {
+								echo "\t\t\t<td style=\"text-align: $column_align;\"><img src=\"" . str_replace("index.php", "", site_url()) . "device_images/" . $row->$column_variable_name . ".jpg\" style='border-width:0px; height:100px' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
+							}
+							break;
+
+						case "ip_address":
+							echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">" . $row->man_ip_address . "&nbsp;</span>" . ip_address_from_db($row->man_ip_address) . "</td>\n";
+							break;
+
+						case "multi":
+							echo "\t\t\t<td style=\"text-align: $column_align;\">" . str_replace(",  ", ",<br />", $row->$column_variable_name) . "</td>\n";
+							break;
+							
+						case "timestamp":
+							echo "\t\t\t<td style=\"text-align: $column_align;\">" . $row->$column_variable_name . "</td>\n";
+							break;
+						
+						case "url":
+							$href = '';
+							if ($column_variable_name_ter > '') {
+								$image = base_url() . "theme-tango/tango-images/16_" . $column_variable_name_ter . ".png";
+							} else {
+								$image = base_url() . "theme-tango/tango-images/16_browser.png";
+							}
+							
+							if (isset($row->$column_variable_name)) { 
+								$href = str_replace("&", "&amp;", str_replace("&amp;", "&", $row->$column_variable_name));
+							}
+							if (($column_variable_name == '') && ($column_link > '')) {
+								$href = htmlentities($column_link, ENT_QUOTES, "UTF-8");
+							}
+							if ($column_variable_name_sec > '') {
+								$href .= htmlentities($row->$column_variable_name_sec, ENT_QUOTES, "UTF-8");
+							}
+							$href = str_replace(" ", "%20", $href);
+							if ($href > '') {
+								echo "\t\t\t<td style=\"text-align: $column_align;\"><a href=\"" . $href . "\"><img src=\"" . $image . "\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
+							} else {
+								echo "\t\t\t<td style=\"text-align: $column_align;\"></td>\n";
+							}
+							break;
+							
+						#default:
+						#	echo "\t\t\t<td align=\"$column_align\">" . $row->$column_variable_name . "</td>\n";
+						#	break;
+					}
+				}
+			}
+			echo "\n\t\t</tr>\n";
+		}
+		echo "\t</tbody>\n";
+		echo "</table>\n";
+		echo "</body>\n";
+		echo "</html>";
+		header('Content-Type: text/html');
+		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.html"');
+		header('Cache-Control: max-age=0');
+	}
+
+	function table_report($data) {
+		echo "<table id=\"report\">\n";
+		echo "\t<thead>\n";
+		echo "\t\t<tr>\n";
+		foreach($data['column'] as $column) {
+			if (($column->column_type > '') and ($column->column_name != 'Tags')) {
+				echo "\t\t\t<th>" . $column->column_name . "</th>\n";
+			}
+		}
+		echo "\t\t</tr>\n";
+		echo "\t</thead>\n";
+		echo "\t<tbody>\n";
+		$i = 0;
+		foreach($data['query'] as $row) {
+			$i++;
+			echo "\t\t<tr>\n";
+			foreach($data['column'] as $column) {
+				if (($column->column_type > '') and ($column->column_name != 'Tags')) {
+					$column_variable_name = $column->column_variable;
+					$column_variable_name_sec = $column->column_secondary;
+					$column_variable_name_ter = $column->column_ternary;
+					$column_link = $column->column_link;
+					$column_align = $column->column_align;
+					$column_type = $column->column_type;
+
+					if ($column_align == '') { $column_align = 'left'; }
+					if (!property_exists($row, 'system_id')) { $row->system_id = $i; }
+					if (!isset($row->system_id)) { $row->system_id = $i; }
+					if (($column_variable_name == 'hostname') and ($row->$column_variable_name == '')) {
+						$row->hostname = "-";
+					}
+					if (isset($row->$column_variable_name)) {
+						if ($row->$column_variable_name == ''){ $row->$column_variable_name = ' '; }
+						echo "\t\t\t<td>" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</td>\n";
+					} else {
+						echo "\t\t\t<td></td>\n";
+					}
+				}
+			}
+			echo "\n\t\t</tr>\n";
+		}
+		echo "\t</tbody>\n";
+		echo "</table>\n";
+	}
+
+	function table_formatted_report($data) {
+		echo "<table id=\"report\">\n";
+		echo "\t<thead>\n";
+		echo "\t\t<tr>\n";
+		foreach($data['column'] as $column) {
+			if (($column->column_type > '') and ($column->column_name != 'Tags')) {
+				if ($column->column_align == 'right') {
+					$style = 'padding-right: 20px;';
+				} else {
+					$style = '';
+				}
+				echo "\t\t\t<th style=\"text-align: $column->column_align; $style\">" . $column->column_name . "</th>\n";
+			}
+		}
+		echo "\t\t</tr>\n";
+		echo "\t</thead>\n";
+		echo "\t<tbody>\n";
+		$i = 0;
+		foreach($data['query'] as $row) {
+			$i++;
+			echo "\t\t<tr>\n";
+			foreach($data['column'] as $column) {
+				if (($column->column_type > '') and ($column->column_name != 'Tags')) {
+					$column_variable_name = $column->column_variable;
+					$column_variable_name_sec = $column->column_secondary;
+					$column_variable_name_ter = $column->column_ternary;
+					$column_link = $column->column_link;
+					$column_align = $column->column_align;
+					$column_type = $column->column_type;
+					if ($column_align == '') { $column_align = 'left'; }
+					if (!property_exists($row, 'system_id')) { $row->system_id = $i; }
+					if (!isset($row->system_id)) { $row->system_id = $i; }
+					if (($column_variable_name == 'hostname') and ($row->$column_variable_name == '')) {
+						$row->hostname = "-";
+					}
+
+					switch($column_type) {	
+						case "":
+							break;
+
+						case "link":
+							$column_link = str_replace('$group_id', $this->data['group_id'], $column_link);
+							echo "\t\t\t<td style=\"text-align: $column_align;\"><a href=\"" . site_url()  . $column_link . $row->$column_variable_name_sec . "\">" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</a></td>\n";
+							break;
+
+						case "text":
+							switch($column_variable_name)
+							{
+							case "tag":
+								break;
+
+							default:
+								if (isset($row->$column_variable_name)) {
+									$output = $row->$column_variable_name;
+									if (is_numeric($output)) { 
+										if ((strpos($column_variable_name, "serial") === false) and 
+											(strpos($column_variable_name, "model") === false)) { $output = number_format($output); }
+										echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">" . mb_substr("0000000000" . $output, -10) . "</span>" . $output . "</td>\n";
+									} else {
+										if ($row->$column_variable_name == ''){ $row->$column_variable_name = ' '; }
+										echo "\t\t\t<td style=\"text-align: $column_align;\">" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</td>\n";
+									}
+								} else {
+									echo "\t\t\t<td></td>\n";
+								}
+								break;
+							}
+							break;
+
+						case "image":
+							if ($row->$column_variable_name == "") { $row->$column_variable_name = "unknown"; }
+							if ($column_align == '') {$column_align = 'center';}
+							if ($column->column_name == 'Icon') {
+								echo "\t\t\t<td style=\"text-align: $column_align;\"><img src=\"" . str_replace("index.php", "", site_url()) . "theme-tango/tango-images/16_" . str_replace(" ", "_", $row->$column_variable_name) . ".png\" style='border-width:0px;' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
+							}
+							if ($column->column_name == 'Picture') {
+								echo "\t\t\t<td style=\"text-align: $column_align;\"><img src=\"" . str_replace("index.php", "", site_url()) . "device_images/" . $row->$column_variable_name . ".jpg\" style='border-width:0px; height:100px' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
+							}
+							break;
+
+						case "ip_address":
+							echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">" . $row->man_ip_address . "&nbsp;</span>" . ip_address_from_db($row->man_ip_address) . "</td>\n";
+							break;
+
+						case "multi":
+							echo "\t\t\t<td style=\"text-align: $column_align;\">" . str_replace(",  ", ",<br />", $row->$column_variable_name) . "</td>\n";
+							break;
+							
+						case "timestamp":
+							echo "\t\t\t<td style=\"text-align: $column_align;\">" . $row->$column_variable_name . "</td>\n";
+							break;
+						
+						case "url":
+							$href = '';
+							if ($column_variable_name_ter > '') {
+								$image = base_url() . "theme-tango/tango-images/16_" . $column_variable_name_ter . ".png";
+							} else {
+								$image = base_url() . "theme-tango/tango-images/16_browser.png";
+							}
+							
+							if (isset($row->$column_variable_name)) { 
+								$href = str_replace("&", "&amp;", str_replace("&amp;", "&", $row->$column_variable_name));
+							}
+							if (($column_variable_name == '') && ($column_link > '')) {
+								$href = htmlentities($column_link, ENT_QUOTES, "UTF-8");
+							}
+							if ($column_variable_name_sec > '') {
+								$href .= htmlentities($row->$column_variable_name_sec, ENT_QUOTES, "UTF-8");
+							}
+							$href = str_replace(" ", "%20", $href);
+							if ($href > '') {
+								echo "\t\t\t<td style=\"text-align: $column_align;\"><a href=\"" . $href . "\"><img src=\"" . $image . "\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
+							} else {
+								echo "\t\t\t<td style=\"text-align: $column_align;\"></td>\n";
+							}
+							break;
+							
+						#default:
+						#	echo "\t\t\t<td align=\"$column_align\">" . $row->$column_variable_name . "</td>\n";
+						#	break;
+					}
+				}
+			}
+			echo "\n\t\t</tr>\n";
+		}
+		echo "\t</tbody>\n";
+		echo "</table>\n";
 	}
 
 	function excel_report($query)
@@ -378,5 +747,4 @@ class MY_Controller extends CI_Controller {
 		#header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.rss"');
 		#header('Cache-Control: max-age=0');
 	}
-
 }

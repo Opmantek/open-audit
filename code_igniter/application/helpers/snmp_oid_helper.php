@@ -19,7 +19,8 @@ if (!function_exists('get_oid'))
 		$new->manufacturer = ''; 
 		$new->type = ''; 
 		$new->os_group = '';
-		#$new->description = '';	
+		#$new->description = '';
+
 
 		if ($oid == '1.3.6.1.4.1.9.1.1') { $new->model = 'Cisco Gateway Server'; $new->type = 'network device'; }
 		if ($oid == '1.3.6.1.4.1.9.1.2') { $new->model = 'Cisco Terminal Server'; $new->type = 'network device'; }
@@ -6810,6 +6811,7 @@ if (!function_exists('get_oid'))
 		if ($oid == '1.3.6.1.4.1.11.2.3.9.1') { $new->model = 'HP Color LaserJet 2605dn'; $new->type = 'network printer'; }
 		if ($oid == '2.773820.811937840.808464432.808464432.808464432.808464432.808463408') { $new->model = 'Officejet Pro 8600 N911g'; $new->type = 'network printer'; }
 
+		if ($oid == '1.3.6.1.4.1.714.1.2.6') { $new->model = 'Xenith 2'; $new->os_group = 'Wyse'; $new->type = 'thin client'; }
 
 		if ($oid == '1.3.6.1.4.1.4526.1.1') { $new->model = 'FSM726S Managed Switch'; $new->type = 'switch'; }
 		if ($oid == '1.3.6.1.4.1.4526.1.2') { $new->model = 'FSM750S Managed Switch'; $new->type = 'switch'; }
@@ -6928,9 +6930,6 @@ if (!function_exists('get_oid'))
 		if ($oid == '1.3.6.1.4.1.8072.3.2.15') { $new->model = 'unknown'; $new->os_group = 'aix'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.16') { $new->model = 'unknown'; $new->os_group = 'macosx'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.255') { $new->model = 'unknown'; $new->os_group = 'unknown'; $new->type = 'unknown'; }
-
-
-
 
 
 		if (substr($oid, 0, 13) == '1.3.6.1.4.1.1') { $new->manufacturer = 'NxNetworks'; }

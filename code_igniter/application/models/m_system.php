@@ -467,70 +467,6 @@ class M_system extends MY_Model {
 		return ($result);
 	}
 
-	function process_sys($input) {
-		$details = (object) $input;
-#		$details = new stdClass();
-		$details->system_id = '';
-		# shouldn't need the below, but the transition from beta 9.2 onwards changes 
-		# the TYPE attribute from system to computer.
-		# if we had old audit scripts running, they would submit using type='system'
-		if ($input->system_type == 'system') {$input->system_type = 'computer'; }
-
-		$details->timestamp = strval($input->system_timestamp);
-		$details->original_timestamp = '';
-		$details->type = $input->system_type;
-		$details->system_id = '';
-		$system_uuid = $input->system_uuid;
-		$system_hostname = $input->system_hostname;
-		$system_domain = $input->system_domain;
-		$system_key = $system_uuid . '-' . $system_hostname;
-
-		if ((isset($input->hostname) and $input->hostname != '') and 
-			(isset($input->domain) and $input->domain != '') and 
-			(!isset($input->fqdn) or $input->fqdn == '') ) {
-			$input->fqdn = $input->hostname . "." . $input->domain; 
-		}
-
-		if (!isset($input->fqdn)) {$input->fqdn = '';}
-		#if ($input->fqdn == '') {unset($input->fqdn);}
-
-		if (isset($input->man_org_id)) {
-			$man_org_id = $input->man_org_id;
-		} else {
-			$man_org_id = '';
-		}
-
-		# check for an existing audited system
-		$details->system_id = $this->find_system($input);
-
-		if ($details->system_id > '') {
-			// we update the existing entry
-			if ($man_org_id > '') {
-				# if we have been given org_id from the script, overwrite whatever is in the DB
-				$sql = " UPDATE system SET fqdn = ?, hostname = ?, domain = ?, description = ?, type = 'computer', icon = ?, man_icon = ?, os_group = ?, man_os_group = ?, os_family = ?, man_os_family = ?, os_name = ?, man_os_name = ?, os_version = ?, serial = ?, model = ?, manufacturer = ?, uptime = ?, form_factor = ?, pc_os_bit = ?, pc_memory = ?, pc_num_processor = ?, pc_date_os_installation = ?, man_org_id = ?, last_seen = ?, last_seen_by = 'audit', timestamp = ? WHERE system.system_id = ?";
-				$data = array("$input->fqdn", "$input->system_hostname", "$input->system_domain", "$input->system_description", "$input->system_os_icon", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_group", "$input->system_os_family", "$input->system_os_family", "$input->system_os_name", "$input->system_os_name", "$input->system_os_version", "$input->system_serial", "$input->system_model", "$input->system_manufacturer", "$input->system_uptime", "$input->system_form_factor", "$input->system_pc_os_bit", "$input->system_pc_memory", "$input->system_pc_num_processor", "$input->system_pc_date_os_installation", "$man_org_id", "$input->system_timestamp", "$input->system_timestamp", "$details->system_id");
-			} else {
-				# we haven't been given org_id, but we can't just run an update because it will replace whatever
-				# is in the DB with an empty value. This value may have been set via the web interface.
-				$sql = " UPDATE system SET fqdn = ?, hostname = ?, domain = ?, description = ?, type = 'computer', icon = ?, man_icon = ?, os_group = ?, man_os_group = ?, os_family = ?, man_os_family = ?, os_name = ?, man_os_name = ?, os_version = ?, serial = ?, model = ?, manufacturer = ?, uptime = ?, form_factor = ?, pc_os_bit = ?, pc_memory = ?, pc_num_processor = ?, pc_date_os_installation = ?,                 last_seen = ?, last_seen_by = 'audit', timestamp = ? WHERE system.system_id = ?";
-				$data = array("$input->fqdn", "$input->system_hostname", "$input->system_domain", "$input->system_description", "$input->system_os_icon", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_group", "$input->system_os_family", "$input->system_os_family", "$input->system_os_name", "$input->system_os_name", "$input->system_os_version", "$input->system_serial", "$input->system_model", "$input->system_manufacturer", "$input->system_uptime", "$input->system_form_factor", "$input->system_pc_os_bit", "$input->system_pc_memory", "$input->system_pc_num_processor", "$input->system_pc_date_os_installation",                 "$input->system_timestamp", "$input->system_timestamp", "$details->system_id");
-			}
-			$sql = $this->clean_sql($sql);
-			$query = $this->db->query($sql, $data);
-			echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
-		} else {
-			// we insert a new entry
-			$sql = "INSERT INTO system SET system_key = ?, fqdn = ?, uuid = ?, hostname = ?, domain = ?, description = ?, man_description = ?, type = ?, icon = ?, os_group = ?, os_family = ?, os_name = ?, os_version = ?, serial = ?, model = ?, manufacturer = ?, uptime = ?, form_factor = ?, man_form_factor = ?, pc_os_bit = ?, pc_memory = ?, man_status = 'production', man_manufacturer = ?, man_model = ?, man_serial = ?, man_icon = ?, man_os_group = ?, man_os_family = ?, man_os_name = ?, man_type = 'computer', pc_num_processor = ?, pc_date_os_installation = ?, man_org_id = ?, last_seen = ?, last_seen_by = 'audit', first_timestamp = ?, timestamp = ?";
-			$data = array($system_key, "$input->system_uuid", "$input->fqdn", "$input->system_hostname", "$input->system_domain", "$input->system_description", "$input->system_description", "$input->system_type", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_family", "$input->system_os_name", "$input->system_os_version", "$input->system_serial", "$input->system_model", "$input->system_manufacturer", "$input->system_uptime", "$input->system_form_factor", "$input->system_form_factor", "$input->system_pc_os_bit", "$input->system_pc_memory", "$input->system_manufacturer", "$input->system_model", "$input->system_serial", "$input->system_os_icon", "$input->system_os_group", "$input->system_os_family", "$input->system_os_name", "$input->system_pc_num_processor", "$input->system_pc_date_os_installation", "$man_org_id", "$input->system_timestamp", "$input->system_timestamp", "$input->system_timestamp");
-			$sql = $this->clean_sql($sql);
-			$query = $this->db->query($sql, $data);
-			$details->system_id = $this->db->insert_id();
-			echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
-		} 
-		return $details;
-	} // end of function
-
-
 	function get_columns() {
 		$sql = "SHOW COLUMNS FROM system";
 		$query = $this->db->query($sql);
@@ -558,7 +494,7 @@ class M_system extends MY_Model {
 	function delete_non_production_systems() {
 		$sql = "DELETE FROM system WHERE man_status = 'deleted'";
 		$query = $this->db->query($sql);
-		$result = $query->result();	
+		return($this->db->affected_rows() . " systems deleted.");
 	}
 
 	function delete_linked_system($system_id) {
@@ -603,8 +539,121 @@ class M_system extends MY_Model {
 		if (!isset($details->status)) { $details->status = 'production'; }
 		if (!isset($details->type) or $details->type == '') { $details->type = 'unknown'; }
 		if (!isset($details->uuid)) { $details->uuid = ''; }
-		if (!isset($details->icon) or $details->icon == '') { $details->icon = str_replace(" ", "_", $details->type); }
-		$details->icon = strtolower($details->icon);
+		if (!isset($details->icon)) { $details->icon = ''; }
+
+		if ($details->icon == '') { 
+			# we set computer icons by OS, everything else by type
+			if ($details->type == 'computer') {
+				if ($details->os_name != '') {
+					if ((strripos($details->os_name, "osx") !== false) or 
+						(strpos(strtolower($details->os_name), "ios") !== false)) {
+						$details->icon = 'apple';
+					}
+					if (strripos($details->os_name, "bsd") !== false) {
+						$details->icon = 'bsd';
+					}
+					if (strripos($details->os_name, "centos") !== false) {
+						$details->icon = 'centos';
+					}
+					if (strripos($details->os_name, "debian") !== false) {
+						$details->icon = 'debian';
+					}
+					if (strripos($details->os_name, "fedora") !== false) {
+						$details->icon = 'fedora';
+					}
+					if ((strripos($details->os_name, "mandriva") !== false) OR 
+						(strripos($details->os_name, "mandrake") !== false)) {
+						$details->icon = 'mandriva';
+					}
+					if (strripos($details->os_name, "mint") !== false) {
+						$details->icon = 'mint';
+					}
+					if (strripos($details->os_name, "novell") !== false)  {
+						$details->icon = 'novell';
+					}
+					if (strripos($details->os_name, "slackware") !== false) {
+						$details->icon = 'slackware';
+					}
+					if (strripos($details->os_name, "suse") !== false) {
+						$details->icon = 'suse';
+					}
+					if ((strripos($details->os_name, "red hat") !== false) OR 
+						(strripos($details->os_name, "redhat") !== false)) {
+						$details->icon = 'redhat';
+					}
+					if (strripos($details->os_name, "ubuntu") !== false) {
+						$details->icon = 'ubuntu';
+					}
+					if (strripos($details->os_name, "vmware") !== false) {
+						$details->icon = 'vmware';
+					}
+					if (strripos($details->os_name, "windows 2000") !== false) {
+						$details->icon = 'windows_2000';
+					}
+					if (strripos($details->os_name, "server 2003") !== false) {
+						$details->icon = 'windows_2003';
+					}
+					if (strripos($details->os_name, "server 2008") !== false) {
+						$details->icon = 'windows_2008';
+					}
+					if (strripos($details->os_name, "server 2012") !== false) {
+						$details->icon = 'windows_2012';
+					}
+					if (strripos($details->os_name, "windows 7") !== false) {
+						$details->icon = 'windows_7';
+					}
+					if (strripos($details->os_name, "windows 8") !== false) {
+						$details->icon = 'windows_8';
+					}
+					if (strripos($details->os_name, "windows nt") !== false) {
+						$details->icon = 'windows_nt';
+					}
+					if (strripos($details->os_name, "windows rt") !== false) {
+						$details->icon = 'windows_rt';
+					}
+					if (strripos($details->os_name, "vista") !== false) {
+						$details->icon = 'windows_vista';
+					}
+					if (strripos($details->os_name, "windows xp") !== false) {
+						$details->icon = 'windows_xp';
+					}
+					if ($details->icon == '' and strripos($details->os_name, "windows") !== false) {
+						$details->icon = 'windows';
+					}
+					if ($details->icon == '' and strripos($details->os_name, "microsoft") !== false) {
+						$details->icon = 'windows';
+					}
+				} else {
+					if ($details->icon == '' and strripos($details->os_group, "linux") !== false) {
+						$details->icon = 'linux';
+					}
+					if ($details->icon == '' and strripos($details->os_group, "apple") !== false) {
+						$details->icon = 'apple';
+					}
+					if ($details->icon == '' and strripos($details->manufacturer, "apple") !== false) {
+						$details->icon = 'apple';
+					}
+					if ($details->icon == '' and strripos($details->os_group, "linux") !== false) {
+						$details->icon = 'linux';
+					}
+					if ($details->icon == '' and strripos($details->manufacturer, "vmware") !== false) {
+						$details->icon = 'vmware';
+					}
+					if ($details->icon == '' and strripos($details->os_group, "windows") !== false) {
+						$details->icon = 'windows';
+					}
+				}
+				if ($details->icon == '') { $details->icon = 'computer'; }
+			} else {
+				if (strpos($details->type, "|") === false) {
+					$details->icon = str_replace(" ", "_", $details->type);
+				} else {
+					$details->icon = 'unknown';
+				}
+			}
+		}
+		if ($details->icon == '') { $details->icon = 'unknown'; }
+		$details->icon = str_replace(" ", "_", strtolower($details->icon));
 
 		# account for any "man_" items
 		if (!isset($details->man_description)) { $details->man_description = $details->description; }
