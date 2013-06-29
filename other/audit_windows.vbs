@@ -1012,6 +1012,8 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
 processor_description = strValue
 processor_description = replace(processor_description, "(R)", "")
 processor_description = replace(processor_description, "(TM)", "")
+processor_description = replace(processor_description, "(r)", "")
+processor_description = replace(processor_description, "(tm)", "")
 processor_description = replace(processor_description, "  ", " ")
 processor_description = replace(processor_description, "  ", " ")
 processor_description = replace(processor_description, "  ", " ")
