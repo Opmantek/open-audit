@@ -1039,4 +1039,6 @@ $GLOBALS["lang"]["Variable Name"]="Variable Name";
 $GLOBALS["lang"]["Value"]="Value";
 $GLOBALS["lang"]["Delete Non Production Systems"]="Delete Non Production Systems";
 $GLOBALS["lang"]["Search Result (sonter)"]="Search Result (sonter)";
+$GLOBALS["lang"]["Log Files (DSITIA asset List)"]="Log Files (DSITIA asset List)";
+$GLOBALS["lang"]["Log Files (Domain Controllers)"]="Log Files (Domain Controllers)";
 ?>

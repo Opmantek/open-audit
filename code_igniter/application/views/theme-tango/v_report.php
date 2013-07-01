@@ -90,12 +90,10 @@ foreach($query as $row) {
 				default:
 					if (isset($row->$column_variable_name)) {
 						$output = $row->$column_variable_name;
-						if (is_numeric($output)) { 
-							if ((strpos($column_variable_name, "serial") === false) and (strpos($column_variable_name, "model") === false)) { $output = number_format($output); }
-							echo "\t\t\t<td align=\"$column_align\"><span id=\"" . $column_variable_name . "-" . $i . "\" onMouseOver=\"show_modifier('" . $column_variable_name . "','" . $i . "');\"  >" . mb_substr("0000000000" . $output, -10) . "</span><span id=\"" . $row->$column_variable_name . "-" . $i . "\">&nbsp;&nbsp;&nbsp;</span></td>\n";
+						if (is_numeric($output) and (strpos($column_variable_name, "serial") === false) and (strpos($column_variable_name, "model") === false)) { 
+							echo "\t\t\t<td align=\"right\"><span style=\"display: none;\">" . mb_substr("0000000000" . $output, -10) . "</span><span id=\"" . $column_variable_name . "-" . $i . "\" onMouseOver=\"show_modifier('" . $column_variable_name . "','" . $i . "');\"  >" . $output . "</span><span id=\"" . $row->$column_variable_name . "-" . $i . "\">&nbsp;&nbsp;&nbsp;</span></td>\n";
 						} else {
 							if ($row->$column_variable_name == ''){ $row->$column_variable_name = ' '; }
-							#echo "\t\t\t<td style=\"text-align: $column_align;\">" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</td>\n";
 							echo "\t\t\t<td align=\"$column_align\"><span id=\"" . $column_variable_name . "-" . $i . "\" onMouseOver=\"show_modifier('" . $column_variable_name . "','" . $i . "');\"  >" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</span><span id=\"" . $row->$column_variable_name . "-" . $i . "\">&nbsp;&nbsp;&nbsp;</span></td>\n";
 						}
 					} else {
