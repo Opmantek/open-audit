@@ -109,7 +109,7 @@ foreach($query as $row) {
 				if ($row->$column_variable_name == "") { $row->$column_variable_name = "unknown"; }
 				if ($column_align == '') {$column_align = 'center';}
 				if ($column->column_name == 'Icon') {
-					echo "\t\t\t<td style=\"text-align: center;\"><img src=\"" . str_replace("index.php", "", site_url()) . "theme-tango/tango-images/16_" . str_replace(" ", "_", $row->$column_variable_name) . ".png\" style='border-width:0px;' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
+					echo "\t\t\t<td style=\"text-align: center;\"><img src=\"" . str_replace("index.php", "", site_url()) . "theme-tango/tango-images/16_" . strtolower(str_replace(" ", "_", $row->$column_variable_name)) . ".png\" style='border-width:0px;' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
 				}
 				if ($column->column_name == 'Picture') {
 					echo "\t\t\t<td style=\"text-align: center;\"><img src=\"" . str_replace("index.php", "", site_url()) . "device_images/" . $row->$column_variable_name . ".jpg\" style='border-width:0px; height:100px' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";

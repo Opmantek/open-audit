@@ -239,17 +239,6 @@ $config['encryption_key'] = "openaudit";
 
 /*
 |--------------------------------------------------------------------------
-| Open-AudIT Enterprise Key
-|--------------------------------------------------------------------------
-|
-| This is the shared credentials used by OAE for connecting.
-|
-*/
-$config['oae_username'] = "open-audit_enterprise";
-$config['oae_password'] = "openaudit1234567890";
-
-/*
-|--------------------------------------------------------------------------
 | Session Variables
 |--------------------------------------------------------------------------
 |

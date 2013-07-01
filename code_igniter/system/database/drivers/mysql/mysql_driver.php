@@ -298,7 +298,32 @@ class CI_DB_mysql_driver extends CI_DB {
 	 * @param	bool	whether or not the string will be used in a LIKE condition
 	 * @return	string
 	 */
-	function escape_str($str, $like = FALSE)
+ public function escape_str($str, $like = FALSE)
+ {
+  if (is_array($str))
+  {
+   foreach ($str as $key => $val)
+      {
+    $str[$key] = $this->escape_str($val, $like);
+      }
+
+      return $str;
+     }
+
+  $str = is_resource($this->conn_id) ? mysql_real_escape_string($str, $this->conn_id) : addslashes($str);
+
+  // escape LIKE condition wildcards
+  if ($like === TRUE)
+  {
+   return str_replace(array($this->_like_escape_chr, '%', '_'),
+      array($this->_like_escape_chr.$this->_like_escape_chr, $this->_like_escape_chr.'%', $this->_like_escape_chr.'_'),
+      $str);
+  }
+
+  return $str;
+ }
+ 
+	function escape_str_old($str, $like = FALSE)
 	{
 		if (is_array($str))
 		{
