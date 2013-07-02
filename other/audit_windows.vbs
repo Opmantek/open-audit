@@ -1267,7 +1267,12 @@ item = ""
 set colItems = objWMIService.ExecQuery("Select * from Win32_VideoController",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_VideoController)" : audit_wmi_fails = audit_wmi_fails & "Win32_VideoController " : end if
 for each objItem in colItems
-	if (Instr(objItem.Caption, "vnc") = 0 AND Instr(objItem.Caption, "Microsoft Basic Render Driver") = 0 AND Instr(objItem.Caption, "DameWare") = 0 AND Instr(objItem.Caption, "Innobec SideWindow") = 0 AND Instr(objItem.Caption, "Microsoft SMS Mirror Driver") = 0) then
+	if (Instr(objItem.Caption, "vnc") = 0 AND _ 
+	Instr(objItem.Caption, "Microsoft Basic Render Driver") = 0 AND _ 
+	Instr(objItem.Caption, "DameWare") = 0 AND _ 
+	Instr(objItem.Caption, "Innobec SideWindow") = 0 AND _ 
+	Instr(objItem.Caption, "ConfigMgr Remote Control Driver") = 0 AND _ 
+	Instr(objItem.Caption, "Microsoft SMS Mirror Driver") = 0) then
 	item = item & "		<video_card>" & vbcrlf
 	item = item & "			<video_description>" & escape_xml(objItem.Name) & "</video_description>" & vbcrlf
 	item = item & "			<video_manufacturer>" & escape_xml(objItem.AdapterCompatibility) & "</video_manufacturer>" & vbcrlf

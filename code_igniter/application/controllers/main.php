@@ -329,6 +329,12 @@ class Main extends MY_Controller {
 		$this->load->view('v_template', $this->data);
 	}
 
+	function help_oae() {
+		$this->data['heading'] = 'Open-AudIT Enterprise'; 
+		$this->data['include'] = 'v_help_oae'; 
+		$this->load->view('v_template', $this->data);
+	}
+
 	function add_attachment() {
 		$this->load->model("m_system");
 		$system_id = $this->m_system->get_system_id($this->data['id']);

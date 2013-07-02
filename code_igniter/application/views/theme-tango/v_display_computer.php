@@ -13,7 +13,7 @@ $(function() {
 </script>
 
 <?php 
-
+$images_directory = str_replace("index.php", "", $_SERVER["SCRIPT_FILENAME"]) . "theme-tango/tango-images/";
 $link_serial = '';
 $link_model = '';
 $link_manufacturer = '';
@@ -895,9 +895,12 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					} else {
 						$image = '48_network';
 					}
+					if (file_exists($images_directory . "48_" . str_replace(" ", "", strtolower($key->net_manufacturer)) . ".png")) {
+						$image = "48_" . strtolower($key->net_manufacturer);
+					}
 				?>
 				<div style="float:right; width: 100px; margin-left: -80%;">
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path . $image?>.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $image_path . $image; ?>.png' alt='' title='' width='48'/>
 				</div>						
 				<table cellspacing="1" class="tablesorter" width="100%">
 				<thead>
@@ -1157,7 +1160,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					if (mb_substr_count(mb_strtoupper("$key->video_manufacturer"), 'NVIDIA') > 0) {
 						$image = '48_nvidia';
 					}
-					if (mb_substr_count(mb_strtoupper("$key->video_manufacturer"), 'Intel') > 0) {
+					if (mb_substr_count(mb_strtoupper("$key->video_manufacturer"), 'INTEL') > 0) {
 						$image = '48_intel';
 					}
 				?>	
@@ -1180,9 +1183,12 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		<form action="#" method="post" class="niceforms">
 			<fieldset id="monitor_details">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Monitor Details')?></span></legend>
-				<?php if (count($monitor) < 2) { 
-				echo "<img style='float: right; margin; 10px; ' src='" . $image_path . "48_video.png' alt='' title='' width='48'/>\n";
-				} ?>
+				<?php
+				$image = '48_video';
+				if (count($monitor) < 2) { 
+				echo "<img style='float: right; margin; 10px; ' src='" . $image_path . $image . ".png' alt='' title='' width='48'/>\n";
+				} 
+				?>
 				<?php foreach($monitor as $key): ?>
 					<?php if (count($monitor) > 1) { ?>
 					<fieldset id="monitor_details_<?php echo $key->monitor_id; ?>">
@@ -1204,6 +1210,15 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					</td>
 					</tr>
 					</table>
+					<?php
+					// $image = '48_video';
+					// if (file_exists($images_directory . "48_" . strtolower(str_replace(" ", "_", $key->manufacturer)) . ".png")) {
+					// 	$image = "48_" . strtolower(str_replace(" ", "_", $key->manufacturer));
+					// }
+					?>
+<!-- 					<div style="float:right; width: 100px; margin-left: -80%;">
+						<img style='float: right; margin; 10px; ' src='<?php echo $image_path . $image; ?>.png' alt='' title='' width='48'/>
+					</div>	 -->
 					<?php if (count($monitor) > 1) { ?>
 					</fieldset>
 					<?php } ?>

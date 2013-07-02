@@ -25,6 +25,12 @@ class MY_Controller extends CI_Controller {
 			$config_name = $returned_result->config_name;
 			$this->data['config']->$config_name = $returned_result->config_value;
 		}
+		$this->load->model("m_oa_user");
+		if ($this->m_oa_user->select_user('open-audit_enterprise')) {
+			$this->data['config']->oae = 'y';
+		} else {
+			$this->data['config']->oae = 'n';
+		}
 
 		# turn on/off debugging from GET string
 		if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE)) AND 
@@ -192,7 +198,6 @@ class MY_Controller extends CI_Controller {
 
 	function csv_report($query) {
 		$csv = "";
-		echo "<pre>\n";
 		foreach ($query AS $details) {
 			foreach ($details as $attribute=>$value) {
 				if ($attribute == "man_ip_address") {
@@ -232,7 +237,6 @@ class MY_Controller extends CI_Controller {
 	}
 
 	function json_report($query) {
-		echo "<pre>\n";
 		echo "{\"items\": [\n";
 		$items = '';
 		foreach ($query AS $details) {

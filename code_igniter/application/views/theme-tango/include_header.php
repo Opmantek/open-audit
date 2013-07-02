@@ -33,4 +33,11 @@
 		<br />NMIS<br /><a href="/cgi-nmis8/nmiscgi.pl" target="_blank"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
 	</div>
 	<?php } ?>
+	<div style="width:100px; float: right; text-align: center;">
+	<?php if (isset($config->oae) and $config->oae == 'y') { ?>
+		<br />Open-AudIT Enterprise<br /><a href="http://localhost:3000/oae" target="_blank"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
+	<?php } else { ?>
+		<br />Open-AudIT Enterprise<br /><a href="/index.php/main/help_oae"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
+	<?php } ?>
+	</div>
 </div>
