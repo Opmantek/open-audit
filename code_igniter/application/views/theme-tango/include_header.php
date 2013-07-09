@@ -35,9 +35,9 @@
 	<?php } ?>
 	<div style="width:100px; float: right; text-align: center;">
 	<?php if (isset($config->oae) and $config->oae == 'y') { ?>
-		<br />Open-AudIT Enterprise<br /><a href="http://localhost:3000/oae" target="_blank"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
+		<br />Open-AudIT Enterprise<br /><a href="http://localhost:3000/oae" target="_blank"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
 	<?php } else { ?>
-		<br />Open-AudIT Enterprise<br /><a href="/index.php/main/help_oae"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
+		<br />Open-AudIT Enterprise<br /><a href="/index.php/main/help_oae"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
 	<?php } ?>
 	</div>
 </div>

@@ -1058,4 +1058,16 @@ $GLOBALS["lang"]["Alerts - Software (All Devices)"]="Alerts - Software (All Devi
 $GLOBALS["lang"]["Summary - w77044214h"]="Summary - w77044214h";
 $GLOBALS["lang"]["Summary - wqbbnsgh90202dk"]="Summary - wqbbnsgh90202dk";
 $GLOBALS["lang"]["Open-AudIT Enterprise"]="Open-AudIT Enterprise";
+$GLOBALS["lang"]["system table rows"]="system table rows";
+$GLOBALS["lang"]["Summary - 38"]="Summary - 38";
+$GLOBALS["lang"]["Summary - waub52001h3"]="Summary - waub52001h3";
+$GLOBALS["lang"]["Billing Report (Contract Services owned items)"]="Billing Report (Contract Services owned items)";
+$GLOBALS["lang"]["Summary - dpwqbelltst02"]="Summary - dpwqbelltst02";
+$GLOBALS["lang"]["UnClassed systems"]="UnClassed systems";
+$GLOBALS["lang"]["Unclassed Computers"]="Unclassed Computers";
+$GLOBALS["lang"]["Summary - wqbcyx6043143h"]="Summary - wqbcyx6043143h";
+$GLOBALS["lang"]["Technical Services owned items"]="Technical Services owned items";
+$GLOBALS["lang"]["Summary - w28044629h"]="Summary - w28044629h";
+$GLOBALS["lang"]["Summary - iedpw1"]="Summary - iedpw1";
+$GLOBALS["lang"]["Summary - w35c382s"]="Summary - w35c382s";
 ?>

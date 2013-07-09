@@ -25,12 +25,16 @@ class MY_Controller extends CI_Controller {
 			$config_name = $returned_result->config_name;
 			$this->data['config']->$config_name = $returned_result->config_value;
 		}
+
+		#todo - check this
 		$this->load->model("m_oa_user");
 		if ($this->m_oa_user->select_user('open-audit_enterprise')) {
 			$this->data['config']->oae = 'y';
 		} else {
 			$this->data['config']->oae = 'n';
 		}
+
+
 
 		# turn on/off debugging from GET string
 		if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE)) AND 
@@ -44,7 +48,6 @@ class MY_Controller extends CI_Controller {
 			$new_url = str_replace('/user_debug/n', '', $new_url);
 			redirect($new_url);
 		}
-
 		if ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE)) {
 			if (isset($this->session->userdata['user_debug'])) {
 				if ($this->session->userdata['user_debug'] == 'y') {
@@ -55,73 +58,70 @@ class MY_Controller extends CI_Controller {
 			}
 		}
 
-		# if GET query string has username and password, use that to validate and deliver page and do NOT set a cookie
-		if ( ((!isset($loggedin)) OR ($this->session->userdata('logged_in') != TRUE)) AND ((strpos(current_url(), 'username') !== FALSE) and (strpos(current_url(), 'password') !== FALSE)) ){
-			$split_url = explode("/", current_url());
-			for ($i=0; $i <= count($split_url)-1 ; $i++) {
-				if (strpos($split_url[$i], 'username') !== FALSE) {
-					$username = $split_url[$i+1];
-				}
-				if (strpos($split_url[$i], 'password') !== FALSE) {
-					$password = $split_url[$i+1];
+
+		# if GET or POST has username and password, use that to validate and deliver page and do NOT set a cookie
+		if ((!isset($loggedin)) OR ($this->session->userdata('logged_in') != TRUE)) {
+			if ((strpos(current_url(), 'username') !== FALSE) AND (strpos(current_url(), 'password') !== FALSE)) {
+				$split_url = explode("/", current_url());
+				for ($i=0; $i <= count($split_url)-1 ; $i++) {
+					if (strpos($split_url[$i], 'username') !== FALSE) {
+						$username = $split_url[$i+1];
+					}
+					if (strpos($split_url[$i], 'password') !== FALSE) {
+						$password = $split_url[$i+1];
+					}
 				}
 			}
-			$this->load->model("m_userlogin");
-			if ($data = $this->m_userlogin->validate_user($username, $password)) {
-				if ($data != 'fail') {  
-					$this->session->set_userdata($data);
+			if (isset($_POST['username']) AND isset($_POST['password'])) {
+				$username = $_POST['username'];
+				$password = $_POST['password'];
+			}
+			if (isset($username) and $username != "" and isset($password) and $password != "") {
+				$this->load->model("m_userlogin");
+				if ($data = $this->m_userlogin->validate_user($username, $password)) {
+					if ($data != 'fail') {
+						#$this->session->set_userdata($data);
+						$this->data['user_full_name'] = $data['user_full_name'];
+						$this->data['user_lang'] = $data['user_lang'];
+						$this->data['user_theme'] = $data['user_theme'];
+						$this->data['user_admin'] = $data['user_admin'];
+						$this->data['user_id'] = $data['user_id'];
+						$this->data['user_debug'] = 'n';
+						$loggedin = TRUE;
+						#print_r($this->data);
+						#exit(); # debugging only
+					} else {
+						# username and password are set but do not validate
+						exit();       
+					}
 				} else {
-					exit();       
+					# username and password are set but validate_user fails for some reason
+					exit();
 				}
-			} else {
-				exit();
 			}
 		}
 
-		# if POST data has username and password, use that to validate and deliver page and do NOT set a cookie
-		if ( (!isset($loggedin) OR $this->session->userdata('logged_in') != TRUE) AND 
-			(isset($_POST['username']) AND isset($_POST['password'])) ){
-			$username = $_POST['username'];
-			$password = $_POST['password'];
-			$this->load->model("m_userlogin");
-			if ($data = $this->m_userlogin->validate_user($username, $password)) {
-				if ($data != 'fail') {  
-					$this->session->set_userdata($data);
-				} else {
-					exit();      
-				}
-			} else {
-				exit();
-			}
-		}
-/*
-		echo $loggedin . "\n";
-		echo $this->session->userdata('logged_in') . "\n";
-		echo $_POST['oae_username'] . "\n";
-		echo $_POST['oae_password'] . "\n";
-		echo $_POST['output'] . "\n";
-		echo $this->config->item('oae_username') . "\n";
-		echo $this->config->item('oae_password') . "\n";
-		echo $this->uri->segment(1, '') . "\n";
-		echo $this->uri->segment(2, '') . "\n";
-		exit();
-*/
-		# if request has come from localhost, do not require a username or password
-		if ( (!isset($loggedin) OR $this->session->userdata('logged_in') != TRUE) AND 
-			(isset($_POST['oae_username']) AND isset($_POST['oae_password'])) AND 
-			($_POST['oae_username'] == $this->config->item('oae_username')) AND 
-			($_POST['oae_password'] == $this->config->item('oae_password')) AND
-			($this->uri->segment(1, '') == 'report') and 
-			($this->uri->segment(2, '') == 'generate_report') ){
-			$data = new stdclass();
-			$data->logged_in = TRUE;
-			$this->session->set_userdata($data);
-		}
-		
 		$this->data['title'] = 'Open-AudIT';
 		$this->data['id'] = $this->uri->segment(3, 0);
-		
-		if ((!isset($loggedin)) OR ($this->session->userdata('logged_in') != TRUE)) {
+
+		if (($loggedin == TRUE) OR ($loggedin == 1) or ($this->session->userdata('logged_in') == TRUE)) {
+			# logged in
+			if (!isset($this->data['user_full_name']) or $this->data['user_full_name'] == '') { $this->data['user_full_name'] = $this->session->userdata('user_full_name'); }
+			if (!isset($this->data['user_lang']) or $this->data['user_lang'] == '') { $this->data['user_lang'] = $this->session->userdata('user_lang'); }
+			if (!isset($this->data['user_theme']) or $this->data['user_theme'] == '') { $this->data['user_theme'] = $this->session->userdata('user_theme'); }
+			if (!isset($this->data['user_admin']) or $this->data['user_admin'] == '') { $this->data['user_admin'] = $this->session->userdata('user_admin'); }
+			if (!isset($this->data['user_id']) or $this->data['user_id'] == '') { $this->data['user_id'] = $this->session->userdata('user_id'); }
+			if (!isset($this->data['user_debug']) or $this->data['user_debug'] == '') { $this->data['user_debug'] = $this->session->userdata('user_debug'); }
+			$this->load->helper('url');
+			$this->load->helper('network');
+			$this->data['apppath'] = APPPATH;
+			$this->data['image_path'] = base_url() . 'theme-' . $this->data['user_theme'] . '/' . $this->data['user_theme'] . '-images/';
+			$this->load->model("m_oa_report");
+			$this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
+			set_time_limit(600);
+		} else {
+			# not logged in - redirect to login page.
+			# login page will present form, validate credentials and set session data
 			$this->data['page'] = $this->uri->segment(1, '');
 			$this->data['function'] = $this->uri->segment(2, '');
 			$this->data['first_attribute'] = $this->uri->segment(4, '');
@@ -130,21 +130,7 @@ class MY_Controller extends CI_Controller {
 			} else {
 				redirect('login/index');
 			}
-		} else {
-			$this->data['user_full_name'] = $this->session->userdata('user_full_name');
-			$this->data['user_lang'] = $this->session->userdata('user_lang');
-			$this->data['user_theme'] = $this->session->userdata('user_theme');
-			$this->data['user_admin'] = $this->session->userdata('user_admin');
-			$this->data['user_id'] = $this->session->userdata('user_id');
-			$this->data['user_debug'] = $this->session->userdata('user_debug');
 		}
-		$this->load->helper('url');
-		$this->load->helper('network');
-		$this->data['apppath'] = APPPATH;
-		$this->data['image_path'] = base_url() . 'theme-' . $this->data['user_theme'] . '/' . $this->data['user_theme'] . '-images/';
-		$this->load->model("m_oa_report");
-		$this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
-		set_time_limit(600);
 	}
 
 	function determine_output($output_type) {
@@ -643,45 +629,62 @@ class MY_Controller extends CI_Controller {
 		$objPHPExcel->getProperties()->setLastModifiedBy("Mark Unwin");
 		$objPHPExcel->getProperties()->setTitle($this->data['heading']);
 		$objPHPExcel->getProperties()->setSubject($this->data['heading']);
-		$objPHPExcel->getProperties()->setDescription($this->data['heading'] . " produced from OAv2");
+		$objPHPExcel->getProperties()->setDescription($this->data['heading'] . " produced from Open-AudIT");
 		$objPHPExcel->getProperties()->setKeywords("");
 		$objPHPExcel->getProperties()->setCategory("");
 		$objPHPExcel->setActiveSheetIndex(0);
-		$column_count = 65;
-		$column = chr($column_count);
-		$row = 1;
-		$count = 0;
 		# export the cell headers
-		foreach ($query AS $details) {
-			if ( ($column_count == 65) AND ($row == 1) ) {
+		$count = 1;
+		$row = 1;
+
+		if (!empty($query)) {
+	 		foreach ($query[0] as $attribute=>$value) {
+				if ($count <= 26) {
+					$cell = chr(64 + $count) . $row;
+				}
+				if (($count > 26) and ($count <= 52)) {
+					$cell = "A" . chr(38 + $count) . $row;
+				}
+				if (($count > 52) and ($count <= 78)) {
+					$cell = "B" . chr(12 + $count) . $row;
+				}
+				if (($count > 78) and ($count <= 104)) {
+					$cell = "C" . chr(-14 + $count) . $row;
+				}
+				if ($count > 104) {
+					$cell = "D" . chr(-40 + $count) . $row;
+				}
+				$objPHPExcel->getActiveSheet()->setCellValue($cell, $attribute);
+				$count++;
+			}
+			# export the table data
+			$count = 1;
+			$row = 2;
+			foreach ($query AS $details) {
 				foreach ($details as $attribute=>$value) {
-					$cell = $column . $row;
-					$objPHPExcel->getActiveSheet()->setCellValue($cell, $attribute);
+					if ($count <= 26) {
+						$cell = chr(64 + $count) . $row;
+					}
+					if (($count > 26) and ($count <= 52)) {
+						$cell = "A" . chr(38 + $count) . $row;
+					}
+					if (($count > 52) and ($count <= 78)) {
+						$cell = "B" . chr(12 + $count) . $row;
+					}
+					if (($count > 78) and ($count <= 104)) {
+						$cell = "C" . chr(-14 + $count) . $row;
+					}
+					if ($count > 104) {
+						$cell = "D" . chr(-40 + $count) . $row;
+					}
+					$objPHPExcel->getActiveSheet()->setCellValue($cell, $value);
 					$count++;
-					$column_count++;
-					$column = chr($column_count);
 				}
 				$row++;
-				$column_count = 65;
-				$column = chr($column_count);
-				break;
+				$count = 1;
 			}
-		}
-		# export the actual data
-		foreach ($query AS $details) {
-			foreach ($details as $attribute=>$value) {
-				$cell = $column . $row;
-				if ($attribute == "man_ip_address") {
-					$value = ip_address_from_db($value); 
-				}
-				$objPHPExcel->getActiveSheet()->setCellValue($cell, $value);
-				$count++;
-				$column_count++;
-				$column = chr($column_count);
-			}
-			$row++;
-			$column_count = 65;
-			$column = chr($column_count);
+		} else {
+			# we have nothing to output
 		}
 		// redirect output to client browser
 		header('Content-Type: application/vnd.ms-excel');
@@ -689,7 +692,6 @@ class MY_Controller extends CI_Controller {
 		header('Cache-Control: max-age=0');
 		$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 		$objWriter->save('php://output'); 
-		exit();
 	}
 
 	function rss_report($query)
@@ -710,6 +712,7 @@ class MY_Controller extends CI_Controller {
 			echo "\t\t<item>\n";
 			foreach ($details as $attribute=>$value) {
 				$value =  html_entity_decode($value);
+				$category = "";
 				
 				if ($attribute == "man_ip_address") {
 					$value = ip_address_from_db($value);
@@ -747,8 +750,8 @@ class MY_Controller extends CI_Controller {
 			echo "\t\t</item>\n";
 		}
 		echo "  </channel>\n</rss>\n";
-		#header('Content-Type: text/xml');
-		#header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.rss"');
-		#header('Cache-Control: max-age=0');
+		header('Content-Type: text/xml');
+		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.rss"');
+		header('Cache-Control: max-age=0');
 	}
 }

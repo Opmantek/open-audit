@@ -322,7 +322,7 @@ class Admin_system extends MY_Controller {
 			foreach ($objWorksheet->getRowIterator() as $row) {
 				$count++;
 				$cellIterator = $row->getCellIterator();
-				$cellIterator->setIterateOnlyExistingCells(false); 
+				$cellIterator->setIterateOnlyExistingCells(true); 
 				if ($count == 1) {
 					# grab the first row and use as column names
 					foreach ($cellIterator as $cell) {
@@ -330,21 +330,25 @@ class Admin_system extends MY_Controller {
 					}
 				} else {
 					# populate the array values
-					$cellIterator = $row->getCellIterator();
 					$cellIterator->setIterateOnlyExistingCells(false); 
+					unset($details);
+					$details = array();
+					$details = array_fill_keys($attributes, '');
 					$cell_number = 0;
 					foreach ($cellIterator as $cell) {
-						$details[$attributes[$cell_number]] = $cell->getValue();
-						$cell_number++;
+						if ($cell_number < count($attributes)) {
+							$details[$attributes[$cell_number]] = $cell->getValue();
+							$cell_number++;
+						}
 					}
-
+					
 					// convert the $details array to an object
 					$details = (object) $details;
-					
-					$details->timestamp = $timestamp;					
 					$details->last_seen_by = "spreadsheet";
 					$details->last_seen = $timestamp;
 					$details->last_user = $this->data['user_full_name'];
+					$details->timestamp = $timestamp;			
+					$error = '';		
 
 					if (isset($details->org_name)) {
 						# we have an org name - need to find it's ID
@@ -389,52 +393,45 @@ class Admin_system extends MY_Controller {
 						}
 					}
 
-					if (!isset($details->system_key) or $details->system_key == '') {
-						$details->system_key = $this->m_system->create_system_key($details);
-					}
+					
 
-					# setting the system_key - we don't have the required info to create a unique key
-					if (!isset($details->system_key) or $details->system_key == '') {
-						$error = "Error on row #" . $count . ". Insufficient details to create system key. Please supply (in order of preference) fqdn, hostname and domain, ip address, type and (unique) serial.<br />";
-						$this->data['error'] .= $error;
-					}
-
-					# make sure we have a name (a hostname)
-					if (!isset($details->hostname)) { $details->hostname = ''; }
-					if ($details->hostname == '' and isset($details->man_ip_address) and $details->man_ip_address != '') {
-						$details->hostname = $details->man_ip_address;
-					}
-					if ($details->hostname == '' and isset($details->description) and $details->description != '') {
-						$details->hostname = $details->description;
-					}
-					if ($details->hostname == '' and isset($details->serial) and $details->serial != '') {
-						$details->hostname = $details->serial;
-					}
-					if ($details->hostname == '') {
-						$error = "Error on row #" . $count . ". Insufficient details to create name. Please supply either hostname or IP Address for a networked device, a description or a type &amp; serial for a non-networked device.<br />";
-						$this->data['error'] .= $error;
-					}
-
-					$details->hostname = preg_replace("/[^a-z0-9-.]+/i", "", $details->hostname);
-					$details->hostname = mb_strtolower($details->hostname);
-
-					# try to determine if this device is already in the database
+					# first test to see if we have a system_id - 
+					# if so, just send the submitted details to the system_update function
 					if (!isset($details->system_id) or $details->system_id == '') {
-						$details->system_id = $this->m_system->find_system($details);
-					} 
 
+						if (!isset($details->system_key) or $details->system_key == '') {
+							$details->system_key = $this->m_system->create_system_key($details);
+						}
+						# setting the system_key - we don't have the required info to create a unique key
+						if (!isset($details->system_key) or $details->system_key == '') {
+							$error = "Error on row #" . $count . ". Insufficient details to create system key. Please supply (in order of preference) fqdn, hostname and domain, ip address, type and (unique) serial.<br />";
+							$this->data['error'] .= $error;
+						}
+						# make sure we have a hostname variable
+						if (!isset($details->hostname)) { $details->hostname = ''; }
+						$details->hostname = preg_replace("/[^a-z0-9-.]+/i", "", $details->hostname);
+						$details->hostname = mb_strtolower($details->hostname);
+
+						# try to determine if this device is already in the database
+						$details->system_id = $this->m_system->find_system($details);
+					}
+					
+
+					error_log($details->system_id);
 					if ($error != '') {
 						$error = '';
 					} else {
-						if ($details->system_id > '') {
+						if (isset($details->system_id) and $details->system_id > '') {
 							# we need to update an existing system
 							$this->m_system->update_system($details);
 						} else {
-							# this is a new system (we don't have a hostname match)
+							# this is a new system (we don't have a system_key match)
 							$details->first_timestamp = $details->timestamp;
 							$details->system_id = $this->m_system->insert_system($details);
 						}
 						// Insert an entry in to the audit log
+						$details->audits_ip = '';
+						$details->type = $this->m_system->get_system_type($details->system_id);
 						$this->m_sys_man_audits->insert_audit($details);
 						// Finally, update groups
 						$this->m_oa_group->update_system_groups($details);
@@ -442,6 +439,7 @@ class Admin_system extends MY_Controller {
 					}
 				}
 			}
+
 			unlink($target_path);
 			if ($this->data['error'] != '') {
 				# there were errors with processing.

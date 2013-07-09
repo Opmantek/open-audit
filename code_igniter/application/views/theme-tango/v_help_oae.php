@@ -4,7 +4,10 @@ $sortcolumn = 2;
 <form action="vars.php" method="post" class="niceforms">
 	<fieldset id="about" class="niceforms">
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Open-AudIT Enterprise')?></span></legend>
-		Open-AudIT Enterprise is now available. Features such as Scheduled Reports, Dashboards and Maps are included. For more information, please contact <a href="https://opmantek.com" style="color: green;">Opmantek</a> today.<br /><br />
+		Open-AudIT Enterprise is now available.<br />
+		Scheduled Reports, Interactive Dashboards and Maps and more.<br />
+		All purchases go to further Open-AudIT for all of us. Contact <a href="https://opmantek.com" style="color: green;">Opmantek</a>.<br />
+		<br /><br />
 		<table border="0">
 			<tr>
 				<td><img src="/theme-tango/tango-images/sample_devices_discovered.png" /><br /></td>

@@ -751,7 +751,7 @@ class M_system extends MY_Model {
 
 		# if we're updating and we don't have a real hostname, only the ip address
 		# stored in the hostname field, we shouldn't update it
-		if (strpos($details->hostname, ".")) {
+		if (isset($details->hostname) and strpos($details->hostname, ".")) {
 			$sql = "SELECT hostname FROM system WHERE system_id = ?";
 			$data = array("$details->system_id");
 			$query = $this->db->query($sql, $data);
@@ -761,6 +761,8 @@ class M_system extends MY_Model {
 				$details->hostname = $db_hostname;
 			}
 		}
+
+		if (!isset($details->system_key_type)) {$details->system_key_type = '';}
 
 		# we have to try to get the 'best' system key
 		# the key in the db may be better than what we have
@@ -810,7 +812,7 @@ class M_system extends MY_Model {
 			}
 		}
 
-		# if submitting an nmap or snmp scan, do not update the type or man_type
+		# if submitting an nmap scan, do not update the type or man_type
 		if (isset($details->last_seen_by) and $details->last_seen_by == 'nmap') {
 			unset ($details->type);
 			unset ($details->man_type);

@@ -127,6 +127,15 @@ if (!function_exists('get_snmp')) {
 					$details->man_os_group = $oid->os_group;
 				}
 
+				if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.255') {
+					# a generic OID - take some guesses...
+					$i = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
+					if (strpos($i, "Darwin Kernel Version 12") !== FALSE) {
+						# looks like an OSX device
+						$details->manufacturer = "Apple Inc";
+					}
+				}
+
 				if ($details->snmp_oid == '1.3.6.1.4.1.6876.4.1') {
 					# grab some specific details for VMware ESX
 					$model = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.1.0" ));

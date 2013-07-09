@@ -206,6 +206,9 @@ class Report extends MY_Controller {
 				$this->data['format'] != 'csv' and 
 				$this->data['format'] != 'json' and 
 				$this->data['format'] != 'html'	and 
+				$this->data['format'] != 'html_formatted' and 
+				$this->data['format'] != 'table' and 
+				$this->data['format'] != 'table_formatted' and 
 				$this->data['format'] != 'pdf' and 
 				$this->data['format'] != 'rss') {
 					$this->data['format'] = 'json';
