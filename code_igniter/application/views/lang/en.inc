@@ -1070,4 +1070,7 @@ $GLOBALS["lang"]["Technical Services owned items"]="Technical Services owned ite
 $GLOBALS["lang"]["Summary - w28044629h"]="Summary - w28044629h";
 $GLOBALS["lang"]["Summary - iedpw1"]="Summary - iedpw1";
 $GLOBALS["lang"]["Summary - w35c382s"]="Summary - w35c382s";
+$GLOBALS["lang"]["Summary - wqbbcdljrp1s"]="Summary - wqbbcdljrp1s";
+$GLOBALS["lang"]["Summary - wqbbccx7282s"]="Summary - wqbbccx7282s";
+$GLOBALS["lang"]["Summary - wqbbm654352s"]="Summary - wqbbm654352s";
 ?>

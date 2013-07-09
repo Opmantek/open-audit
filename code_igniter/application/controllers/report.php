@@ -195,6 +195,12 @@ class Report extends MY_Controller {
 			$this->data['first_attribute'] = ''; 
 		}
 
+		if (isset($_POST['second_attribute'])) { 
+			$this->data['second_attribute'] = $_POST['second_attribute']; 
+		} else { 
+			$this->data['second_attribute'] = ''; 
+		}
+
 		if (isset($_POST['format'])) { 
 			$this->data['format'] = $_POST['format']; 
 		} 
@@ -270,7 +276,7 @@ class Report extends MY_Controller {
 			}
 			$data = array($this->data['group_id']);
 			$query = $this->db->query('SET @group = ?', $data);
-			$data = array($this->data['first_attribute']);
+			$data = array($this->data['first_attribute'], $this->data['second_attribute']);
 			$query = $this->db->query($sql, $data);
 			$this->data['query'] = $query->result();
 		}
