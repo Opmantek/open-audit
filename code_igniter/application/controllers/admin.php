@@ -1773,6 +1773,18 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis_url', '', 'y', 'The web server address of Open-AudIT Enterprise.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_url', '', 'y', 'The web server address of Open-AudIT Enterprise.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('maps_url', '', 'y', 'The web server address of opMaps.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "UPDATE oa_config set config_value = '20130620', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);

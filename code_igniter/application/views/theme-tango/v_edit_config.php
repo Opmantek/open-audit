@@ -4,9 +4,8 @@
 	<fieldset id="config_details">
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Config')?></span></legend>
 		<div style="min-width: 50px; float: right;">
-		<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
 		</div>
-		<div style="width: 90%; float:left;">
+		<div style="width: 100%; float:left;">
 		<table cellspacing="1" class="tablesorter" width="100%">
 			<thead>
 				<tr>

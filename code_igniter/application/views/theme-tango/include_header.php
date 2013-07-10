@@ -27,17 +27,25 @@
 			echo '<br /><a href="' . base_url() . 'index.php/main/help_about" style="color: red;">upgrade</a>';
 		} ?>
 	</div>
-	<?php if (isset($config->nmis) and $config->nmis == 'y') { ?>
-	<?php #if ($config->nmis == 'y') { ?>
 	<div style="width:100px; float: right; text-align: center;">
-		<br />NMIS<br /><a href="/cgi-nmis8/nmiscgi.pl" target="_blank"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
-	</div>
-	<?php } ?>
-	<div style="width:100px; float: right; text-align: center;">
-	<?php if (isset($config->oae) and $config->oae == 'y') { ?>
-		<br />Open-AudIT Enterprise<br /><a href="http://localhost:3000/oae" target="_blank"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
+	<?php if (isset($config->nmis_url) and filter_var($config->nmis_url, FILTER_VALIDATE_URL)) { ?>
+		<br />NMIS<br /><a href="/cgi-nmis8/nmiscgi.pl" target="_blank"><img style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
 	<?php } else { ?>
-		<br />Open-AudIT Enterprise<br /><a href="/index.php/main/help_oae"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
+		<br />NMIS<br /><a href="https://opmantek.com" target="_blank"><img style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
+	<?php } ?>
+	</div>
+	<div style="width:100px; float: right; text-align: center;">
+	<?php if (isset($config->oae_url) and filter_var($config->oae_url, FILTER_VALIDATE_URL)) { ?>
+		<br />Dashboard<br /><a href="<?php echo $config->oae_url; ?>" target="_blank"><img style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
+	<?php } else { ?>
+		<br />Dashboard<br /><a href="/index.php/main/help_oae"><img style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
+	<?php } ?>
+	</div>
+	<div style="width:100px; float: right; text-align: center;">
+	<?php if (isset($config->maps_url) and filter_var($config->maps_url, FILTER_VALIDATE_URL)) { ?>
+		<br />opMaps<br /><a href="<?php echo $config->maps_url; ?>" target="_blank"><img style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
+	<?php } else { ?>
+		<br />opMaps<br /><a href="/index.php/main/help_opmaps"><img style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
 	<?php } ?>
 	</div>
 </div>

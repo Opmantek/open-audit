@@ -97,9 +97,17 @@ class Ajax extends MY_Controller {
 		}
 		# because we reused the sys_man_update javascript code, the following variables apply
 		# $this->data['system_id'] == the name of the config item
-		# $this->data['field_name'] == the value to be set
-		$config_name = $this->data['system_id'];
-		$config_value = $this->data['field_name'];
+		# $this->data['field_name'] == the value to be set	
+		echo "<pre>\n";
+		$url = str_replace("%3A", ":", current_url());
+		$url_array = explode('/', $url);
+		$config_name = $url_array[6];
+		$location = strpos($url, $config_name);
+		$config_value = substr($url, $location);
+		$location = strpos($config_value, "/");
+		$config_value = substr($config_value, $location);
+		$config_value = substr($config_value, 1);
+		$config_value = str_replace(":/", "://", $config_value);
 		$this->load->model("m_oa_config");
 		if ($config_value == '-') {$config_value = '';}
 		$this->m_oa_config->update_config($config_name, $config_value, $this->data['user_id'], date('Y-m-d H:i:s') );

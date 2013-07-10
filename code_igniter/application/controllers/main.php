@@ -335,6 +335,12 @@ class Main extends MY_Controller {
 		$this->load->view('v_template', $this->data);
 	}
 
+	function help_opmaps() {
+		$this->data['heading'] = 'opMaps'; 
+		$this->data['include'] = 'v_help_opmaps'; 
+		$this->load->view('v_template', $this->data);
+	}
+
 	function add_attachment() {
 		$this->load->model("m_system");
 		$system_id = $this->m_system->get_system_id($this->data['id']);

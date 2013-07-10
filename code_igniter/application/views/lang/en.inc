@@ -1073,4 +1073,14 @@ $GLOBALS["lang"]["Summary - w35c382s"]="Summary - w35c382s";
 $GLOBALS["lang"]["Summary - wqbbcdljrp1s"]="Summary - wqbbcdljrp1s";
 $GLOBALS["lang"]["Summary - wqbbccx7282s"]="Summary - wqbbccx7282s";
 $GLOBALS["lang"]["Summary - wqbbm654352s"]="Summary - wqbbm654352s";
+$GLOBALS["lang"]["Summary - w8d7512s"]="Summary - w8d7512s";
+$GLOBALS["lang"]["Summary - wqbbn8zgs62s"]="Summary - wqbbn8zgs62s";
+$GLOBALS["lang"]["Summary - w4tqlc2s"]="Summary - w4tqlc2s";
+$GLOBALS["lang"]["Summary - wbrgmc2s"]="Summary - wbrgmc2s";
+$GLOBALS["lang"]["Elevated Users (DSITIA asset List)"]="Elevated Users (DSITIA asset List)";
+$GLOBALS["lang"]["Local Administrators (DSITIA asset List)"]="Local Administrators (DSITIA asset List)";
+$GLOBALS["lang"]["oae_url"]="oae_url";
+$GLOBALS["lang"]["nmis_url"]="nmis_url";
+$GLOBALS["lang"]["maps_url"]="maps_url";
+$GLOBALS["lang"]["opMaps"]="opMaps";
 ?>
