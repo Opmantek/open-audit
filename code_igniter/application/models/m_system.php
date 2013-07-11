@@ -821,7 +821,7 @@ class M_system extends MY_Model {
 		# we check a few man_ items when we are submitting an audit script result
 		# if they are blank (previously submitted info is incomplete) we over write them
 		# we would not normally over write man_ items
-		if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
+		if (isset($details->last_seen_by) and ($details->last_seen_by == 'audit' or $details->last_seen_by == 'snmp')) {
 			$sql = "SELECT * FROM system WHERE system_id = ? LIMIT 1";
 			$data = array("$details->system_id");
 			$query = $this->db->query($sql, $data);

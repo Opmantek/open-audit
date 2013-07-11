@@ -95,10 +95,6 @@ class Ajax extends MY_Controller {
 				redirect('login/index');
 			}
 		}
-		# because we reused the sys_man_update javascript code, the following variables apply
-		# $this->data['system_id'] == the name of the config item
-		# $this->data['field_name'] == the value to be set	
-		echo "<pre>\n";
 		$url = str_replace("%3A", ":", current_url());
 		$url_array = explode('/', $url);
 		$config_name = $url_array[6];

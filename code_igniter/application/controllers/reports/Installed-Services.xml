@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Installed - Services</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT COUNT(DISTINCT system.system_id) AS service_count, sys_sw_service.service_name, sys_sw_service.service_display_name, sys_sw_service.service_id FROM sys_sw_service LEFT JOIN system ON (sys_sw_service.timestamp = system.timestamp AND sys_sw_service.system_id = system.system_id) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? GROUP BY sys_sw_service.service_name ORDER BY sys_sw_service.service_name ]]></report_sql>
+		<report_sql><![CDATA[SELECT COUNT(DISTINCT system.system_id) AS service_count, sys_sw_service.service_name, sys_sw_service.service_display_name, sys_sw_service.service_id FROM sys_sw_service LEFT JOIN system ON (sys_sw_service.timestamp = system.timestamp AND sys_sw_service.system_id = system.system_id) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group GROUP BY sys_sw_service.service_name ORDER BY sys_sw_service.service_name ]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>

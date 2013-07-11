@@ -216,6 +216,7 @@ if (!function_exists('get_snmp')) {
 					if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
 					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
 				}
+				$details->man_serial = $details->serial;
 
 				// mac address
 				if (!isset($details->mac_address) or $details->mac_address == '' ) {
