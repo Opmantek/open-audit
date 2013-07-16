@@ -534,6 +534,8 @@ class M_system extends MY_Model {
 		if (!isset($details->os_family)) { $details->os_family = ''; }
 		if (!isset($details->os_group)) { $details->os_group = ''; }
 		if (!isset($details->os_name)) { $details->os_name = ''; }
+		$details->os_name = str_ireplace("(r)", "", $details->os_name);
+		$details->os_name = str_ireplace("(tm)", "", $details->os_name);
 		if (!isset($details->os_version)) { $details->os_version = ''; }
 		if (!isset($details->serial)) { $details->serial = ''; }
 		if (!isset($details->status)) { $details->status = 'production'; }
@@ -667,6 +669,8 @@ class M_system extends MY_Model {
 		if (!isset($details->man_os_family)) { $details->man_os_family = $details->os_family; }
 		if (!isset($details->man_os_group)) { $details->man_os_group = $details->os_group; }
 		if (!isset($details->man_os_name)) { $details->man_os_name = $details->os_name; }
+		$details->man_os_name = str_ireplace("(r)", "", $details->man_os_name);
+		$details->man_os_name = str_ireplace("(tm)", "", $details->man_os_name);
 		if (!isset($details->man_serial)) { $details->man_serial = $details->serial; }
 		if (!isset($details->man_status)) { $details->man_status = 'production'; }
 		if (!isset($details->man_serial)) { $details->man_serial = $details->serial; }
@@ -818,6 +822,12 @@ class M_system extends MY_Model {
 			unset ($details->man_type);
 		}	
 
+		# for removing existing symbols
+		if (isset($details->os_name)) { 
+			$details->os_name = str_ireplace("(r)", "", $details->os_name);
+			$details->os_name = str_ireplace("(tm)", "", $details->os_name);
+		}
+
 		# we check a few man_ items when we are submitting an audit script result
 		# if they are blank (previously submitted info is incomplete) we over write them
 		# we would not normally over write man_ items
@@ -826,17 +836,18 @@ class M_system extends MY_Model {
 			$data = array("$details->system_id");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
-			if ($row->man_manufacturer == '') {$details->man_manufacturer = $details->manufacturer;}
-			if ($row->man_model == '') {$details->man_model = $details->model;}
-			if ($row->man_serial == '') {$details->man_serial = $details->serial;}
-			if ($row->man_description == '') {$details->man_description = $details->description;}
-			if ($row->man_form_factor == '') {$details->man_form_factor = $details->form_factor;}
-			if ($row->man_os_group == '') {$details->man_os_group = $details->os_group;}
-			if ($row->man_os_family == '') {$details->man_os_family = $details->os_family;}
-			if ($row->man_os_name == '') {$details->man_os_name = $details->os_name;}
-			if ((strripos($details->manufacturer, "vmware") !== false) or 
+			if ($row->man_manufacturer == '' and isset($details->manufacturer)) {$details->man_manufacturer = $details->manufacturer; }
+			if ($row->man_model == '' and isset($details->model)) {$details->man_model = $details->model;}
+			if ($row->man_serial == '' and isset($details->serial)) {$details->man_serial = $details->serial;}
+			if ($row->man_description == '' and isset( $details->description)) {$details->man_description = $details->description;}
+			if ($row->man_form_factor == '' and isset($details->form_factor)) {$details->man_form_factor = $details->form_factor;}
+			if ($row->man_os_group == '' and isset($details->os_group)) {$details->man_os_group = $details->os_group;}
+			if ($row->man_os_family == '' and isset($details->os_family)) {$details->man_os_family = $details->os_family;}
+			if ($row->man_os_name == '' and isset($details->os_name)) { $details->man_os_name = $details->os_name;}
+			if (isset($details->manufacturer) and (
+				(strripos($details->manufacturer, "vmware") !== false) or 
 				(strripos($details->manufacturer, "parallels") !== false) or 
-				(strripos($details->manufacturer, "virtual") !== false)) {
+				(strripos($details->manufacturer, "virtual") !== false))) {
 				$details->form_factor = 'Virtual';
 				$details->man_form_factor = 'Virtual';
 			}

@@ -205,7 +205,6 @@ for l = 0 to ubound(domain_array)
 				if debugging > 2 then wscript.echo "Copying to: " & remote_location end if
 				on error resume next
 				objFSO.CopyFile "audit_windows.vbs", remote_location, True
-				'objFSO.CopyFile "c:\xampplite\OAv2\other\bin\RMTSHARE.EXE", remote_location, True
 				error_returned = Err.Number
 				error_description = Err.Description
 				on error goto 0
@@ -220,15 +219,18 @@ for l = 0 to ubound(domain_array)
 					' psexec must be in PATH
 					' note - specify -d on the command below to run in non-interactive mode (locally)
 					' if you specify -d you will see command windows of the remote processes
-					'cmd = "c:\temp\psexec.exe \\" & pc_array(i) & " -u " & remote_user & " -p " & remote_password & " -d cscript.exe " & remote_location & "audit_windows.vbs self_delete=y "
+					'cmd = "psexec.exe \\" & pc_array(i) & " -u " & remote_user & " -p " & remote_password & " -d cscript.exe " & remote_location & "audit_windows.vbs self_delete=y "
 					if remote_user <> "" and remote_password <> "" then
 						strRemoteAuth = " -u " & remote_user & " -p " & remote_password
 					else
 						strRemoteAuth = ""
 					end if
 					' Both of these work. The second requires the double cmd as only one doesn't expand %SYSTEMROOT%.
+					
 					'cmd = "psexec.exe \\" & pc_array(i) & strRemoteAuth & " -s cmd /c ""for /f ""TOKENS=2 DELIMS=="" %i in ('set ^| find /i ""systemroot""') do cscript.exe %i\audit_windows.vbs self_delete=y ldap="  & local_domain & """"
+					
 					cmd = "psexec.exe \\" & pc_array(i) & strRemoteAuth & " -s cmd /c ""cmd /c cscript.exe %SYSTEMROOT^%\audit_windows.vbs self_delete=y ldap=" & local_domain & """"
+					
 					if debugging > 2 then wscript.echo "Running command: " & cmd end if
 					on error resume next
 					Command.Run (cmd)

@@ -42,7 +42,7 @@ class M_oa_location extends MY_Model {
 		$i = new stdclass();
 		$i->column_order = '2';
 		$i->column_name = 'GeoTag';
-		$i->column_variable = 'geotag';
+		$i->column_variable = 'geo';
 		$i->column_type = "text";
 		$i->column_align = "left";
 		$i->column_secondary = "";
@@ -99,7 +99,7 @@ class M_oa_location extends MY_Model {
 
 		$sql = "SELECT oa_location.location_id, oa_location.location_name, oa_location.location_icon, oa_location.location_type, 
 		oa_location.location_address, oa_location.location_city, oa_location.location_state, 
-		oa_location.location_postcode, oa_location.location_country, oa_location.location_geotag, 
+		oa_location.location_postcode, oa_location.location_country, oa_location.location_geo, 
 		system.man_type, count(system.system_id) as count, oa_location.location_latitude, oa_location.location_longitude 
 		FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id 
 		WHERE system.man_status = 'production' and 
@@ -130,22 +130,60 @@ class M_oa_location extends MY_Model {
 						$row->location_icon = 'office';
 					}
 				}
-				$i->address = $row->location_address . ", " . 
-											$row->location_city . ", " . 
-											$row->location_state . ", " . 
-											$row->location_postcode . ", " . 
-											$row->location_country;
+
+				$i->address = "";
+				if ($row->location_address > "") { $i->address = $row->location_address; }
+				if ($row->location_city > "") { 
+					if ($i->address > "") { 
+						$i->address .= ", ". $row->location_city; 
+					} else {
+						$i->address = $row->location_city; 
+					}
+				}
+				if ($row->location_postcode > "") { 
+					if ($i->address > "") { 
+						$i->address .= ", ". $row->location_postcode; 
+					} else {
+						$i->address = $row->location_postcode; 
+					}
+				}
+				if ($row->location_country > "") { 
+					if ($i->address > "") { 
+						$i->address .= ", ". $row->location_country; 
+					} else {
+						$i->address = $row->location_country; 
+					}
+				}
+
+				$i->geo = "";
+
+				if ($row->location_latitude != "" and $row->location_latitude != "0.000000" and 
+					$row->location_longitude != "" and $row->location_longitude != "0.000000" and 
+					$i->geo == "") {
+					if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
+						$i->geo = '{"latitude":"' . $row->location_latitude . '","longitude":"' . $row->location_longitude . '"}';
+					} else {
+						$i->geo = "latitude: " . $row->location_latitude . ", longitude: " . $row->location_longitude;
+					}
+				}
+
+				if ($row->location_geo > "" and $i->geo == "") {
+					if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
+						$i->geo = '{"geocode":"' . $row->location_geo . '"}';
+					} else {
+						$i->geo = $row->location_geo;
+					}
+				}
+
+				if ($i->geo == "") {
+					$i->geo = $i->address;
+					if ($this->uri->segment($this->uri->total_rsegments()) == 'json') { $i->geo = '{"geocode":"' . $i->geo . '"}'; }
+				}
 
 				if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-					$i->geotag = '{"latitude":"' . $row->location_latitude . '","longitude":"' . $row->location_longitude . '"}';
 					$i->icon = base_url() . 'theme-tango/tango-images/32_' . $row->location_icon . '.png';
 					$i->infoDisplay = '"' . $row->man_type . '":"' . $row->count . '", ';
 				} else {
-					if (is_null($row->location_geotag) or $row->location_geotag == '') {
-						$i->geotag = "latitude: " . $row->location_latitude . ", longitude: " . $row->location_longitude;
-					} else {
-						$i->geotag = $row->location_geotag;
-					}
 					$i->icon = $row->location_icon;
 					$i->icon = '<img src="http://localhost/theme-tango/tango-images/32_' . $row->location_icon . '.png" />';
 					$j = $row->man_type;
@@ -348,22 +386,22 @@ class M_oa_location extends MY_Model {
 	 * @return	string
 	 */
 	function add_location($details) {
-		$sql = "
-			INSERT INTO 
-				oa_location 
-				(location_name, 
-				location_type, 
-				location_room, 
-				location_suite, 
-				location_level, 
-				location_address, 
-				location_postcode, 
-				location_city, 
-				location_state,
-				location_country,
-				location_latitude,
-				location_longitude) 
-			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		# need to insert suburb, district, region, area, tags, picture
+		$sql = "INSERT INTO oa_location 
+					(location_name, 
+					location_type, 
+					location_room, 
+					location_suite, 
+					location_level, 
+					location_address, 
+					location_postcode, 
+					location_city, 
+					location_state,
+					location_country,
+					location_geo,
+					location_latitude,
+					location_longitude) 
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->location_name", 
 			"$details->location_type", 
@@ -375,6 +413,7 @@ class M_oa_location extends MY_Model {
 			"$details->location_city", 
 			"$details->location_state", 
 			"$details->location_country", 
+			"$details->location_geo", 
 			"$details->location_latitude", 
 			"$details->location_longitude");
 		$query = $this->db->query($sql, $data);
@@ -405,23 +444,23 @@ class M_oa_location extends MY_Model {
 	 * @return	TRUE
 	 */
 	function edit_location($details) {
-		$sql = "UPDATE 
-				oa_location
-			SET
-				location_name = ?, 
-				location_type = ?, 
-				location_room = ?, 
-				location_suite = ?, 
-				location_level = ?, 
-				location_address = ?, 
-				location_city = ?, 
-				location_postcode = ?,
-				location_state = ?,
-				location_country = ?,
-				location_latitude = ?,
-				location_longitude = ?
-			WHERE
-				location_id = ?";
+		# need to insert suburb, district, region, area, tags, picture
+		$sql = "UPDATE oa_location SET
+					location_name = ?, 
+					location_type = ?, 
+					location_room = ?, 
+					location_suite = ?, 
+					location_level = ?, 
+					location_address = ?, 
+					location_city = ?, 
+					location_postcode = ?,
+					location_state = ?,
+					location_country = ?,
+					location_geo = ?,
+					location_latitude = ?,
+					location_longitude = ?
+				WHERE
+					location_id = ?";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->location_name", 
 			"$details->location_type", 
@@ -433,6 +472,7 @@ class M_oa_location extends MY_Model {
 			"$details->location_postcode", 
 			"$details->location_state", 
 			"$details->location_country", 
+			"$details->location_geo", 
 			"$details->location_latitude", 
 			"$details->location_longitude", 
 			"$details->location_id");

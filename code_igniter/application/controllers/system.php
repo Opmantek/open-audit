@@ -164,7 +164,7 @@ class System extends CI_Controller {
 			foreach ($xml->children() as $child) {
 				$count++;
 				if ($child->getName() == 'computer') { $details->system_id = ($this->m_system->process_system_from_ad($child));}
-				$details->type = 'system';
+				$details->type = 'computer';
 				$this->m_oa_group->update_system_groups($details);
 			}
 			echo "<hr>\n";

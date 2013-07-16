@@ -302,9 +302,16 @@ else
 		on error goto 0
 	end if
 	if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then 
-		if debugging > "1" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
-		if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
-		if debugging > "1" then wscript.echo "Error Description:" & error_description end if
+
+		if (error_returned <> 0) then
+			if debugging > "1" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
+			if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
+			if debugging > "1" then wscript.echo "Error Description:" & error_description end if
+		end if
+
+		if ((pc_alive = 0) and (ping_target = "y")) then
+			if debugging > "1" then wscript.echo "Computer " &  strcomputer & " is not responding to ping." end if
+		end if
 
 		if ldap = "" then
 			set objWMIService = GetObject("winmgmts:\\.\root\cimv2") 
@@ -396,7 +403,10 @@ else
 					family = os_family(objRecordSet.Fields("operatingsystem").Value)
 					icon = lcase(replace(family, " ", "_"))
 					if os_group = "windows" then
-						result.WriteText "	<computer>" & vbcrlf
+						result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
+						result.WriteText "<system>" & vbcrlf
+						result.WriteText "	<sys>" & vbcrlf
+						result.WriteText "		<timestamp>" & escape_xml(system_timestamp) & "</timestamp>" & vbcrlf
 						result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
 						result.WriteText "		<man_ip_address>" & escape_xml(man_ip_address) & "</man_ip_address>" & vbcrlf
 						result.WriteText "		<domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
@@ -408,11 +418,11 @@ else
 						result.WriteText "		<windows_active_directory_ou>" & escape_xml(computer_ou) & "</windows_active_directory_ou>" & vbcrlf
 						result.WriteText "		<last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
 						result.WriteText "		<last_seen_by>active directory</last_seen_by>" & vbcrlf
-						result.WriteText "	</computer>" & vbcrlf
+						result.WriteText "	</sys>" & vbcrlf
 					 end if
 						objRecordSet.MoveNext
 				Loop
-				result.WriteText "</computers>" & vbcrlf
+				result.WriteText "</system>" & vbcrlf
 				if debugging > "1" then 
 					result.position = 0
 					result_text = result.readtext
@@ -438,7 +448,7 @@ else
 
 				if (submit_online = "y" and hit = 1) then
 					if debugging > "0" then wscript.echo "Submitting audit online" end if 
-					url = url & "/add_system_ad"
+					' url = url & "/add_system_ad" - now sending to the normal system input form.
 					Err.clear
 					XmlObj = "ServerXMLHTTP"
 					Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")

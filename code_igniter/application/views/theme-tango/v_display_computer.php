@@ -28,6 +28,9 @@ foreach($system as $key) {
 	$location_id = $key->man_location_id;
 	$location_rack = $key->man_location_rack;
 	$location_rack_position = $key->man_location_rack_position;
+	$location_level = $key->man_location_level;
+	$location_suite = $key->man_location_suite;
+	$location_room = $key->man_location_room;
 	$os_name = $key->man_os_name;
 	$serial = $key->serial;
 	$link_manufacturer = $key->manufacturer;
@@ -403,8 +406,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 				<p><label for="man_warranty_expires"><?php echo __('Warranty Expires')?>: </label><span id="man_warranty_expires" <?php echo $edit?>><?php echo print_something($key->man_warranty_expires)?></span>NOTE - format should be yyyy-mm-dd.</p>
 			<?php 
 			endforeach;
-			echo display_custom_field('view_summary_purchase',  $additional_fields_data, $edit);
-			?>
+			echo display_custom_field('view_summary_purchase',  $additional_fields_data, $edit); ?>
 		</fieldset>
 	</form>
 	</div>
@@ -437,41 +439,26 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Location / Owner Details')?></span></legend>
 			<div style="float:left; width:50%;">
 				<div id="location_container">
-					<?php
-					if (count($system_location) > 0) {
-						foreach($system_location as $key):
+					<?php if (count($system_location) > 0) {
+						foreach($system_location as $key) {
 							if ($access_level > 7) { 
 								echo "<p><label for='man_location_id_select'>" . __('Location Name') . ": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>" . print_something($key->location_name) . "</span></span></p>\n";
 							} else {
 								echo "<p><label for='location_name'>" . __('Location Name') . ": </label><span id='location_name'>" . print_something($key->location_name) . "</span></p>\n";
 							} 
-						$full_location = '';
-						if ($key->location_room > '')
-						{
-							$full_location = __('Room') . ' ' . $key->location_room . ', ';
-						}
-						if ($key->location_suite > '')
-						{
-							$full_location .= __('Suite') . ' ' . $key->location_suite . ', ';
-						}
-						if ($key->location_level > '')
-						{
-							$full_location .= __('Level') . ' ' . $key->location_level . ', ';
-						}
-						$full_location .= $key->location_address;
-		
-						?>
-						<p><label for="location_full_address"><?php echo __('Full Location')?>: </label><span id="location_full_address"><?php echo print_something($full_location)?></span></p>
-						<p><label for="location_address"><?php echo __('Building Address')?>: </label><span id="location_address"><?php echo print_something($key->location_address)?></span></p>
-						<p><label for="location_city"><?php echo __('City')?>: </label><span id="location_city"><?php echo print_something($key->location_city)?></span></p>
-						<p><label for="location_state"><?php echo __('State')?>: </label><span id="location_state"><?php echo print_something($key->location_state)?></span></p>
-						<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something($key->location_country)?></span></p>
-						<?php 
-						endforeach;
-					} else { ?>
-						<?php 
-						if ($access_level > 7) 
-						{ 
+							$full_location = '';
+							if ($key->location_room > '') { $full_location = __('Room') . ' ' . $key->location_room . ', '; }
+							if ($key->location_suite > '') { $full_location .= __('Suite') . ' ' . $key->location_suite . ', '; }
+							if ($key->location_level > '') { $full_location .= __('Level') . ' ' . $key->location_level . ', '; }
+							$full_location .= $key->location_address; ?>
+							<p><label for="location_full_address"><?php echo __('Full Location')?>: </label><span id="location_full_address"><?php echo print_something($full_location)?></span></p>
+							<p><label for="location_address"><?php echo __('Building Address')?>: </label><span id="location_address"><?php echo print_something($key->location_address)?></span></p>
+							<p><label for="location_city"><?php echo __('City')?>: </label><span id="location_city"><?php echo print_something($key->location_city)?></span></p>
+							<p><label for="location_state"><?php echo __('State')?>: </label><span id="location_state"><?php echo print_something($key->location_state)?></span></p>
+							<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something($key->location_country)?></span></p>
+						<?php } # end for each
+					} else { 
+						if ($access_level > 7) { 
 							echo "<p><label for='man_location_id_select'>" . __('Location Name') . ": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>" . print_something('') . "</span></span></p>\n";
 						} else {
 							echo "<p><label for='location_name'>" . __('Location Name') . ": </label><span id='location_name'>" . print_something('') . "</span></p>\n";
@@ -483,6 +470,9 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 						<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something('')?></span></p>
 						<p><label for="location_room"><?php echo __('Room')?>: </label><span id="location_room"><?php echo print_something('')?></span></p></span></p>
 					<?php } ?>
+					<p><label for="man_location_level"><?php echo __('Device specific Level')?>: </label><span id="man_location_level" <?php echo $edit?>><?php echo print_something($location_level)?></span></p> 
+					<p><label for="man_location_suite"><?php echo __('Device specific Suite')?>: </label><span id="man_location_suite" <?php echo $edit?>><?php echo print_something($location_suite)?></span></p> 
+					<p><label for="man_location_room"><?php echo __('Device specific Room')?>: </label><span id="man_location_room" <?php echo $edit?>><?php echo print_something($location_room)?></span></p> 
 					<p><label for="man_location_rack"><?php echo __('Rack')?>: </label><span id="man_location_rack" <?php echo $edit?>><?php echo print_something($location_rack)?></span></p> 
 					<p><label for="man_location_rack_position"><?php echo __('Rack Position')?>: </label><span id="man_location_rack_position" <?php echo $edit?>><?php echo print_something($location_rack_position)?></span></p> 
 				</div>

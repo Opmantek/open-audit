@@ -38,7 +38,7 @@ class M_oa_group_column extends MY_Model {
 		$result = $query->result();
 		if ($query->num_rows() == '0') {
 			// return the 'standard' rows
-			$sql = "SELECT * FROM oa_group_column WHERE group_id = '0' AND column_name <> 'Tags' ORDER BY column_order";
+			$sql = "SELECT * FROM oa_group_column WHERE group_id = '1' AND column_name <> 'Tags' ORDER BY column_order";
 			$query = $this->db->query($sql);
 			$result = $query->result();
 		}		

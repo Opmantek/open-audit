@@ -126,7 +126,8 @@ class M_systems extends MY_Model {
 					system.man_os_name, 
 					system.man_icon, 
 					system.man_manufacturer, 
-					system.man_model 
+					system.man_model,
+					system.type 
 				FROM 
 					system, 
 					oa_group_sys
