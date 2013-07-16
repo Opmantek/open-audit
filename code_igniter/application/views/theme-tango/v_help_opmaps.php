@@ -8,6 +8,6 @@ $sortcolumn = 2;
 		Scheduled Reports, Interactive Dashboards and Maps and more.<br />
 		All purchases go to further Open-AudIT for all of us. Contact <a href="https://opmantek.com" style="color: green;">Opmantek</a>.<br />
 		<br /><br />
-		<img src="/theme-tango/tango-images/sample_opmaps.png" /><br />
+		<img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_opmaps.png" /><br />
 	</fieldset>
 </form>

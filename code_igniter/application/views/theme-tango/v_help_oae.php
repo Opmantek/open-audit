@@ -10,12 +10,12 @@ $sortcolumn = 2;
 		<br /><br />
 		<table border="0">
 			<tr>
-				<td><img src="/theme-tango/tango-images/sample_devices_discovered.png" /><br /></td>
-				<td><img src="/theme-tango/tango-images/sample_software_discovered.png" /><br /></td>
+				<td><img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_devices_discovered.png" /><br /></td>
+				<td><img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_software_discovered.png" /><br /></td>
 			</tr>
 			<tr>
-				<td><img src="/theme-tango/tango-images/sample_device_types.png" /><br /></td>
-				<td><img src="/theme-tango/tango-images/sample_devices_not_seen.png" /><br /></td>
+				<td><img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_device_types.png" /><br /></td>
+				<td><img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_devices_not_seen.png" /><br /></td>
 			</tr>
 		</table>
 	</fieldset>
