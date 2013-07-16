@@ -101,7 +101,7 @@ class Admin extends MY_Controller {
 			$this->data['sortcolumn'] = '1';
 			$this->load->view('v_template', $this->data);
 		} else {
-			$cmd = "php /var/www/index.php admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/open-audit.log 2>&1 &";
+			$cmd = "php /var/www/index.php admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
 			exec($cmd);
 			redirect('/admin/view_log');
 		}
@@ -172,7 +172,7 @@ class Admin extends MY_Controller {
 			$handle = fopen($filename, "w");
 			fwrite($handle, $csv);
 			fclose($handle);
-			$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /usr/local/open-audit/open-audit.log 2>&1 &";
+			$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
 			#echo $cmd;
 			exec($cmd);
 			#unlink($filename);
@@ -191,7 +191,7 @@ class Admin extends MY_Controller {
 			if ($operating_system == 'Linux') {
 				if ($_POST['subnet'] > '' ) {
 					$subnet = $_POST['subnet'];
-					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /var/log/open-audit.log 2>&1 &";
+					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
 					exec($cmd);
 				}
 			}
