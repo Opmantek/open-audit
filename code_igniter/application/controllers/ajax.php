@@ -96,14 +96,18 @@ class Ajax extends MY_Controller {
 			}
 		}
 		$url = str_replace("%3A", ":", current_url());
+		$url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
 		$url_array = explode('/', $url);
-		$config_name = $url_array[6];
+		for ($i=0; $i<count($url_array); $i++) {
+			if ( $url_array[$i] == "update_config" ) { $config_name = $url_array[$i+1]; }
+		}
+		$config_name = str_replace("%5E%5E%5E", "/", $config_name);
 		$location = strpos($url, $config_name);
 		$config_value = substr($url, $location);
 		$location = strpos($config_value, "/");
 		$config_value = substr($config_value, $location);
 		$config_value = substr($config_value, 1);
-		$config_value = str_replace(":/", "://", $config_value);
+        $config_value = str_replace("%5E%5E%5E", "/", $config_value);
 		$this->load->model("m_oa_config");
 		if ($config_value == '-') {$config_value = '';}
 		$this->m_oa_config->update_config($config_name, $config_value, $this->data['user_id'], date('Y-m-d H:i:s') );
