@@ -38,8 +38,8 @@ $active_group = "default";
 $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
-$db['default']['username'] = "root";
-$db['default']['password'] = "openauditrootuserpassword";
+$db['default']['username'] = "openaudit";
+$db['default']['password'] = "openauditpassword";
 $db['default']['database'] = "openaudit";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
