@@ -13,7 +13,7 @@
 	<columns>
 		<column>
 			<column_order>0</column_order>
-			<column_name>Type</column_name>
+			<column_name>Icon</column_name>
 			<column_variable>man_icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>

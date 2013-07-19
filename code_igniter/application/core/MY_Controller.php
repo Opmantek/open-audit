@@ -302,9 +302,9 @@ class MY_Controller extends CI_Controller {
 		echo "</table>\n";
 		echo "</body>\n";
 		echo "</html>";
-		header('Content-Type: text/html');
-		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.html"');
-		header('Cache-Control: max-age=0');
+		#header('Content-Type: text/html');
+		#header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.html"');
+		#header('Cache-Control: max-age=0');
 	}
 
 	function html_formatted_report($data) {

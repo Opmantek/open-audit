@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <report>
 	<details>
-		<report_name>System Details</report_name>
+		<report_name>Device Details</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.os_name, system.man_class, system.man_owner, system.man_ip_address, system.man_model, date_format(system.first_timestamp, '%Y-%m-%d') as first_seen, date_format(system.last_seen, '%Y-%m-%d') as last_seen, system.last_seen_by, system.pc_date_os_installation as installed, system.man_manufacturer, system.man_serial, system.man_form_factor, sys_sw_windows.windows_client_site_name,  sys_sw_windows.windows_user_name, oa_location.location_name, sys_sw_windows.windows_active_directory_ou FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.hostname]]></report_sql>
+		<report_sql><![CDATA[SELECT system.man_icon, system.man_type, system.system_id, system.hostname, date(system.first_timestamp) as first_seen, date(system.last_seen) as last_seen, system.last_seen_by, system.man_model, system.man_manufacturer, system.man_serial, system.man_owner, oa_location.location_name, system.os_family, oa_org.org_name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.hostname]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -12,6 +12,26 @@
 	<columns>
 		<column>
 			<column_order>0</column_order>
+			<column_name>Icon</column_name>
+			<column_variable>man_icon</column_variable>
+			<column_type>image</column_type>
+			<column_link></column_link>
+			<column_secondary>man_type</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>center</column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>Type</column_name>
+			<column_variable>man_type</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>2</column_order>
 			<column_name>System Name</column_name>
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
@@ -21,7 +41,7 @@
 			<column_align></column_align>
 		</column>
 		<column>
-			<column_order>1</column_order>
+			<column_order>3</column_order>
 			<column_name>First Seen</column_name>
 			<column_variable>first_seen</column_variable>
 			<column_type>timestamp</column_type>
@@ -31,7 +51,7 @@
 			<column_align></column_align>
 		</column>
 		<column>
-			<column_order>2</column_order>
+			<column_order>4</column_order>
 			<column_name>Last Seen</column_name>
 			<column_variable>last_seen</column_variable>
 			<column_type>timestamp</column_type>
@@ -41,29 +61,9 @@
 			<column_align></column_align>
 		</column>
 		<column>
-			<column_order>3</column_order>
+			<column_order>5</column_order>
 			<column_name>Last Seen By</column_name>
 			<column_variable>last_seen_by</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align></column_align>
-		</column>
-		<column>
-			<column_order>4</column_order>
-			<column_name>OS Installed</column_name>
-			<column_variable>installed</column_variable>
-			<column_type>timestamp</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align></column_align>
-		</column>
-		<column>
-			<column_order>5</column_order>
-			<column_name>Form Factor</column_name>
-			<column_variable>man_form_factor</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -102,37 +102,7 @@
 		</column>
 		<column>
 			<column_order>9</column_order>
-			<column_name>Class</column_name>
-			<column_variable>man_class</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align></column_align>
-		</column>
-		<column>
-			<column_order>10</column_order>
-			<column_name>User</column_name>
-			<column_variable>windows_user_name</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align></column_align>
-		</column>
-		<column>
-			<column_order>11</column_order>
-			<column_name>Windows Site</column_name>
-			<column_variable>windows_client_site_name</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align></column_align>
-		</column>
-		<column>
-			<column_order>12</column_order>
-			<column_name>Owner</column_name>
+			<column_name>Assigned To</column_name>
 			<column_variable>man_owner</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
@@ -141,7 +111,17 @@
 			<column_align></column_align>
 		</column>
 		<column>
-			<column_order>13</column_order>
+			<column_order>10</column_order>
+			<column_name>Organisation</column_name>
+			<column_variable>org_name</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>11</column_order>
 			<column_name>Location</column_name>
 			<column_variable>location_name</column_variable>
 			<column_type>text</column_type>
@@ -151,7 +131,17 @@
 			<column_align></column_align>
 		</column>
 		<column>
-			<column_order>14</column_order>
+			<column_order>12</column_order>
+			<column_name>OS</column_name>
+			<column_variable>os_family</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>13</column_order>
 			<column_name>Tags</column_name>
 			<column_variable>tag</column_variable>
 			<column_type>text</column_type>
@@ -159,36 +149,6 @@
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>center</column_align>
-		</column>
-		<column>
-			<column_order>15</column_order>
-			<column_name>IP</column_name>
-			<column_variable>man_ip_address</column_variable>
-			<column_type>ip_address</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>center</column_align>
-		</column>
-		<column>
-			<column_order>16</column_order>
-			<column_name>OU</column_name>
-			<column_variable>windows_active_directory_ou</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>17</column_order>
-			<column_name>OS</column_name>
-			<column_variable>os_name</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
 		</column>
 	</columns>
 </report>

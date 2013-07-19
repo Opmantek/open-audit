@@ -39,7 +39,7 @@
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
-			<column_align>left</column_align>
+			<column_align>center</column_align>
 		</column>
 		<column>
 			<column_order>4</column_order>

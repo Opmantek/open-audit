@@ -24,9 +24,9 @@ foreach($group as $group_data):
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Group Details')?></span></legend>
 	<?php echo '<p>' . $this->session->flashdata('message') . '</p>'; ?>
 	<p><label for="group_id_display"><?php echo __("Group ID")?>: </label><input size='40' type='text' id='group_id_display' name='group_id_display' tabindex='1' title='Group ID' value='<?php echo $group_data->group_id?>' disabled /></p>
-	<p><label for='group_name'><?php echo __("Group Name")?>: </label><input size='40' type='text' id='group_name' name='group_name' tabindex='1' title='Group Name'  value='<?php echo $group_data->group_name?>'/></p>
-	<p><label for='group_padded_name'><?php echo __("Group Padded Name")?>: </label><input size='40' type='text' id='group_padded_name' name='group_padded_name' tabindex='1' title='Group Padded Name'  value='<?php echo $group_data->group_padded_name?>'/> NOTE - it's best to pad out names with IP Addresses for correct sorting - ie 192.168.020.034</p>
-	<p><label for='group_description'><?php echo __("Group Description")?>: </label><input size='40' type='text' id='group_description' name='group_description' tabindex='2' title='Group Description' value='<?php echo $group_data->group_description?>'/></p>
+	<p><label for='group_name'><?php echo __("Group Name")?>: </label><input size='40' type='text' id='group_name' name='group_name' tabindex='1' title='Group Name'  value='<?php echo str_replace("'", "&apos;", $group_data->group_name); ?>'/></p>
+	<p><label for='group_padded_name'><?php echo __("Group Padded Name")?>: </label><input size='40' type='text' id='group_padded_name' name='group_padded_name' tabindex='1' title='Group Padded Name'  value='<?php echo str_replace("'", "&apos;", $group_data->group_padded_name); ?>'/> NOTE - it's best to pad out names with IP Addresses for correct sorting - ie 192.168.020.034</p>
+	<p><label for='group_description'><?php echo __("Group Description")?>: </label><input size='40' type='text' id='group_description' name='group_description' tabindex='2' title='Group Description' value='<?php echo str_replace("'", "&apos;", $group_data->group_description); ?>'/></p>
 	<p>
 		<label for='group_icon'><?php echo __("Group Icon")?>: </label><input size='40' type='text' id='group_icon' name='group_icon' tabindex='2' title='Group Icon' value='<?php echo $group_data->group_icon?>'/>
 		<img src='<?php echo $image_path;?>16_<?php echo $group_data->group_icon; ?>.png' alt='' title='' width='16'/>

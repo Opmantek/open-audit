@@ -63,7 +63,7 @@
 		</column>
 		<column>
 			<column_order>5</column_order>
-			<column_name></column_name>
+			<column_name>Support Link</column_name>
 			<column_variable></column_variable>
 			<column_type>url</column_type>
 			<column_link>http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt</column_link>

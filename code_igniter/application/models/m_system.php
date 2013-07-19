@@ -673,7 +673,6 @@ class M_system extends MY_Model {
 		$details->man_os_name = str_ireplace("(tm)", "", $details->man_os_name);
 		if (!isset($details->man_serial)) { $details->man_serial = $details->serial; }
 		if (!isset($details->man_status)) { $details->man_status = 'production'; }
-		if (!isset($details->man_serial)) { $details->man_serial = $details->serial; }
 		if (!isset($details->man_type)) { $details->man_type = $details->type; }
 
 		if ((strripos($details->manufacturer, "vmware") !== false) or 
