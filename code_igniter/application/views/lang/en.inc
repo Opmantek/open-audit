@@ -1208,4 +1208,5 @@ $GLOBALS["lang"]["Device Details"]="Device Details";
 $GLOBALS["lang"]["Device Details (All Devices)"]="Device Details (All Devices)";
 $GLOBALS["lang"]["Call Center owned items"]="Call Center owned items";
 $GLOBALS["lang"]["Items in Canberra Office"]="Items in Canberra Office";
+$GLOBALS["lang"]["Summary - workstation-002"]="Summary - workstation-002";
 ?>

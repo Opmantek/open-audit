@@ -380,9 +380,14 @@ class Admin_test extends MY_Controller {
 			$details->man_serial = $details->serial;
 			$details->uuid = "";
 			$details->status = 'production';
-			$details->last_seen = "2013-06-20 10:00:00";
+			$day = rand(1,30);
+			if ($day < 10) {
+				$details->last_seen = "2013-06-0" . $day . " 10:00:00";
+			} else {
+				$details->last_seen = "2013-06-" . $day . " 10:00:00";
+			}
 			$details->last_seen_by = "manual";
-			$details->timestamp = "2013-06-20 10:00:00";
+			$details->timestamp = $details->last_seen;
 			$details->domain = "open-audit.local";
 			$details->os_group = "";
 			$details->os_family = "";
@@ -773,6 +778,14 @@ class Admin_test extends MY_Controller {
 		}
 
 		for ($i=1; $i<101; $i++) {
+				$day = rand(1,30);
+				if ($day < 10) {
+					$details->last_seen = "2013-06-0" . $day . " 10:00:00";
+				} else {
+					$details->last_seen = "2013-06-" . $day . " 10:00:00";
+				}
+				$details->last_seen_by = "manual";
+				$details->timestamp = $details->last_seen;
 				$details->os_group = '';
 				$details->os_family = "";
 				$details->os_name = "";
