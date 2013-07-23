@@ -572,6 +572,9 @@ class Main extends MY_Controller {
 			}
 
 		}
+
+		$this->data['include'] = "";
+		$formatted_type = str_replace(" ", "_", trim($this->data['system'][0]->man_type));
 		
 		if ($this->data['system'][0]->man_type == 'computer') {
 			if(file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_computer_" . $this->data['system'][0]->man_os_group . ".php")) {
@@ -579,8 +582,13 @@ class Main extends MY_Controller {
 			} else { 
 				$this->data['include'] = "v_display_computer";
 			}
+
 		} elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $this->data['system'][0]->man_type . ".php")) {
 			$this->data['include'] = "v_display_" . trim($this->data['system'][0]->man_type);
+
+		} elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $formatted_type . ".php")) {
+			$this->data['include'] = "v_display_" . str_replace(" ", "_", trim($this->data['system'][0]->man_type));
+
 		} else {
 			$this->data['include'] = "v_display_general";
 		}

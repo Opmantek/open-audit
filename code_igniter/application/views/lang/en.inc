@@ -1209,4 +1209,13 @@ $GLOBALS["lang"]["Device Details (All Devices)"]="Device Details (All Devices)";
 $GLOBALS["lang"]["Call Center owned items"]="Call Center owned items";
 $GLOBALS["lang"]["Items in Canberra Office"]="Items in Canberra Office";
 $GLOBALS["lang"]["Summary - workstation-002"]="Summary - workstation-002";
+$GLOBALS["lang"]["Summary - galaxy_nexus_122"]="Summary - galaxy_nexus_122";
+$GLOBALS["lang"]["Phone Details"]="Phone Details";
+$GLOBALS["lang"]["Phone Number"]="Phone Number";
+$GLOBALS["lang"]["Network Provider"]="Network Provider";
+$GLOBALS["lang"]["Plan"]="Plan";
+$GLOBALS["lang"]["Unlock PIN"]="Unlock PIN";
+$GLOBALS["lang"]["IMEI Serial"]="IMEI Serial";
+$GLOBALS["lang"]["SIM Serial"]="SIM Serial";
+$GLOBALS["lang"]["Summary - cisco_switch_662"]="Summary - cisco_switch_662";
 ?>
