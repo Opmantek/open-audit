@@ -20,7 +20,7 @@ date_default_timezone_set(date_default_timezone_get());
  * NOTE: If you change these, also change the error_reporting() code below
  *
  */
-	define('ENVIRONMENT', 'development');
+	define('ENVIRONMENT', 'production');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
@@ -60,7 +60,7 @@ if (defined('ENVIRONMENT'))
  */
 	
 	# windows
-	$system_path = 'c:/xampp/oav2/code_igniter/system';
+	$system_path = 'c:/xampplite/open-audit/code_igniter/system';
 	# linux
 	$system_path = '/usr/local/open-audit/code_igniter/system';
 
@@ -80,7 +80,7 @@ if (defined('ENVIRONMENT'))
  */
 	
 	# windows
-	$application_folder = 'c:/xampp/oav2/code_igniter/application';
+	$application_folder = 'c:/xampplite/open-audit/code_igniter/application';
 	# linux
 	$application_folder = '/usr/local/open-audit/code_igniter/application';
 

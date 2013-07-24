@@ -40,6 +40,12 @@ class M_processor extends MY_Model {
 
 	function process_processor($input, $details) {
 		// check for processor changes
+
+		# we need to do some cleaning here in case a description not formatted correctly gets through
+		$input->processor_description = str_ireplace("(r)", "", $input->processor_description);
+		$input->processor_description = str_ireplace("(tm)", "", $input->processor_description);
+		$input->processor_description = preg_replace('/\s\s+/', ' ', $input->processor_description);
+
 		$sql = "SELECT sys_hw_processor.processor_id 
 				FROM sys_hw_processor, system 
 				WHERE 

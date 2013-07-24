@@ -27,6 +27,9 @@ class Admin_test extends MY_Controller {
 
 	function data() {
 
+		# comment the bloew line out to enable this funtcion.
+		redirect('/');
+		
 		# populate the Open-AudIT database with dummy locations, devices and set up a few groups
 
 		$this->load->model("m_oa_location");
@@ -365,7 +368,7 @@ class Admin_test extends MY_Controller {
 
 
 
-		for ($i=1; $i<1000; $i++) {
+		for ($i=1; $i<1001; $i++) {
 
 			$details = new stdclass();
 

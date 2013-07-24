@@ -30,7 +30,7 @@ class M_user extends MY_Model {
 	}
 
 	function process_user($input, $details) {
-		// check for processor changes
+		// check for user changes
 		$sql = "SELECT sys_sw_user.user_id FROM sys_sw_user, system 
 			WHERE sys_sw_user.system_id = system.system_id AND system.system_id = ? AND 
 				system.man_status = 'production' AND  user_name = ? AND user_sid = ? AND 

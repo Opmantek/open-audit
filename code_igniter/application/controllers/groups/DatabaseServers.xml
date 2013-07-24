@@ -6,11 +6,21 @@
 		<group_dynamic_select><![CDATA[SELECT DISTINCT(system.system_id) FROM system RIGHT JOIN sys_sw_database ON (system.system_id = sys_sw_database.system_id AND system.timestamp = sys_sw_database.timestamp) AND system.man_os_name LIKE '%server%' AND system.man_status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>application</group_category>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_os_family, system.man_description, system.man_ip_address, system.man_type, system.man_os_name, system.man_icon, sys_sw_database.db_version_string, sys_sw_database.db_edition FROM system LEFT JOIN sys_sw_database ON (system.system_id = sys_sw_database.system_id AND system.timestamp = sys_sw_database.timestamp) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.man_icon, system.system_id, system.hostname, system.man_os_family, system.man_description, system.man_ip_address, system.man_type, system.man_os_name, system.man_icon, sys_sw_database.db_version_string, sys_sw_database.db_edition FROM system LEFT JOIN sys_sw_database ON (system.system_id = sys_sw_database.system_id AND system.timestamp = sys_sw_database.timestamp) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id]]></group_display_sql>
 		<group_icon>database</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their os_name attribute containing 'server' and have rows in the sys_sw_database table..</group_description>
 	</details>
 	<columns>
+		<column>
+			<column_order>0</column_order>
+			<column_name>Icon</column_name>
+			<column_variable>man_icon</column_variable>
+			<column_type>image</column_type>
+			<column_link></column_link>
+			<column_secondary>man_os_family</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
 		<column>
 			<column_order>1</column_order>
 			<column_name>Hostname</column_name>

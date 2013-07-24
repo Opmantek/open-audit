@@ -4886,7 +4886,6 @@ end if
 ' Thanks to JBS in the Open-AudIT.org forums.
 ' http://www.open-audit.org/phpBB3/viewtopic.php?f=20&t=5993
 
-'if objFSO.FileExists(sScriptPath & "sqlite3.Exe") then
 if objFSO.FileExists("sqlite3.Exe") then
 	if objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
 		dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db" 
@@ -4909,21 +4908,36 @@ if objFSO.FileExists("sqlite3.Exe") then
 			strtext = replace(strtext,vbLf,"")
 			strtext = trim(strtext)
 			ArryTxt = split(strtext,"|")
-			Product = ArryTxt(0)
+
+			if (IsArray(ArryTxt)) then
+				Product = ArryTxt(0) 
+				key_text = get_adobe(ArryTxt(1))
+			else
+				if (strtext > "") then
+					Product = strtext
+					key_text = get_adobe(strtext)
+				else
+					Product = ""
+					key_text = ""
+				end if
+			end if
+
 			' we dont necessarily get Adobe as part of the name so add it if it is not there
 			if (instr(1,Product,"ADOBE",1) = 0) then
 				Product = "Adobe_" & Product
 			end if
-			key_text = get_adobe(ArryTxt(1))
+			
 			key_name = replace(Product,"_"," ")
 			key_release = ""
 			key_edition = "Licensed"
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			if (key_name > "" and key_name <> "Adobe " and key_text > "") then
+				result.WriteText "		<key>" & vbcrlf
+				result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
+				result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
+				result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
+				result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
+				result.WriteText "		</key>" & vbcrlf
+			end if
 			key_text = ""
 			key_release = ""
 			key_edition = ""

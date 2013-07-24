@@ -1218,4 +1218,5 @@ $GLOBALS["lang"]["Unlock PIN"]="Unlock PIN";
 $GLOBALS["lang"]["IMEI Serial"]="IMEI Serial";
 $GLOBALS["lang"]["SIM Serial"]="SIM Serial";
 $GLOBALS["lang"]["Summary - cisco_switch_662"]="Summary - cisco_switch_662";
+$GLOBALS["lang"]["Summary - lin_10"]="Summary - lin_10";
 ?>
