@@ -57,6 +57,7 @@ chmod -R 770 /usr/local/open-audit
 chmod -R 770 /usr/local/open-audit/code_igniter/application/views/lang/
 chmod 770 /usr/local/open-audit/install_debian_ubuntu.sh
 chmod 770 /usr/local/open-audit/install_centos_redhat.sh
+chmod 770 /usr/local/open-audit/other/audit_linux.sh
 chmod 770 /usr/local/open-audit/other/audit_subnet.sh
 chmod 660 /usr/local/open-audit/other/open-audit.log
 chmod 770 /usr/local/open-audit/other/winexe
