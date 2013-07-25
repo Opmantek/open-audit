@@ -95,6 +95,7 @@
 					}
 					?>
 					<li><a href='<?php echo base_url()?>index.php/admin_db/export_table'><?php echo __('Export a Database Table')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin/reset_icons'><?php echo __('Reset Device Icons')?></a></li>
 				</ul>
 			</li>
 

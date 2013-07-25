@@ -19,12 +19,7 @@ class M_sys_man_audits extends MY_Model {
 
 	function get_system_audits($system_id) {
 		$sql = "SELECT 
-				system_audits_id, 
-				system_audits_username, 
-				system_audits_type, 
-				system_audits_time, 
-				system_audits_ip, 
-				sys_man_audits.timestamp
+				sys_man_audits.*
 			FROM 
 				sys_man_audits,
 				system

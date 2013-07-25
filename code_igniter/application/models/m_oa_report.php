@@ -114,17 +114,23 @@ class M_oa_report extends MY_Model {
 		return($report_sort_column);
 	}
 
-	function get_report($report_id, $group_id, $first_attribute = '') {
+	function get_report($report_id, $group_id, $first_attribute = '', $second_attribute = '') {
 		$sql = "SELECT report_sql FROM oa_report WHERE report_id = ? LIMIT 1";
 		$data = array($report_id);
 		$query = $this->db->query($sql, $data);
+		#echo "<pre>\n";
+		#print_r($query);
 		foreach ($query->result() as $key) {
 			$sql = $key->report_sql;
+			#echo $sql;
 		}
 		$data = array($group_id);
 		$query = $this->db->query('SET @group = ?', $data);
 		#$data = array($group_id, $first_attribute);
 		$data = array($first_attribute);
+		#echo "ReportID: " . $report_id . "\nGroupID: " . $group_id . "\nFA: " . $first_attribute . "\n";
+		#print_r($sql);
+		#exit();
 		$query = $this->db->query($sql, $data);
 		return($query->result());
 	}

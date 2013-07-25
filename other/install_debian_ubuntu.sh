@@ -17,7 +17,7 @@ IP_ADDRESS=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '(
 # Install the various prerequisite packages.
 # On Ubuntu and Debian
 DEBIAN_FRONTEND=noninteractive apt-get install -q -y mysql-server
-apt-get install -q -y apache2 openssh-server php5 php5-ldap php5-mbstring php5-mcrypt php5-mysql php5-snmp nmap snmp zip
+apt-get install -q -y apache2 openssh-server php5 php5-ldap php5-mcrypt php5-mysql php5-snmp nmap snmp zip
 
 # Edit the php config file
 # On Ubuntu and Debian

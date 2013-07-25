@@ -635,9 +635,6 @@ class M_system extends MY_Model {
 					if ($details->icon == '' and strripos($details->manufacturer, "apple") !== false) {
 						$details->icon = 'apple';
 					}
-					if ($details->icon == '' and strripos($details->os_group, "linux") !== false) {
-						$details->icon = 'linux';
-					}
 					if ($details->icon == '' and strripos($details->manufacturer, "vmware") !== false) {
 						$details->icon = 'vmware';
 					}
@@ -887,5 +884,132 @@ class M_system extends MY_Model {
 		$sql .= " WHERE system_id = '" . $details->system_id . "'";
 		$query = $this->db->query($sql);
 	}
+
+
+	function reset_icons() {
+		$sql = "SELECT system_id, man_type, type, os_name, man_os_name, os_family, man_os_family FROM system";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		$count = $query->num_rows();
+		foreach ($result as $details) { 
+			# we set computer icons by OS, everything else by type
+			if (($details->type == 'computer') or ($details->man_type == 'computer')) {
+				if ($details->os_name != '') {
+					if ((strripos($details->os_name, "osx") !== false) or 
+						(strpos(strtolower($details->os_name), "ios") !== false)) {
+						$details->icon = 'apple';
+					}
+					if (strripos($details->os_name, "bsd") !== false) {
+						$details->icon = 'bsd';
+					}
+					if (strripos($details->os_name, "centos") !== false) {
+						$details->icon = 'centos';
+					}
+					if (strripos($details->os_name, "debian") !== false) {
+						$details->icon = 'debian';
+					}
+					if (strripos($details->os_name, "fedora") !== false) {
+						$details->icon = 'fedora';
+					}
+					if ((strripos($details->os_name, "mandriva") !== false) OR 
+						(strripos($details->os_name, "mandrake") !== false)) {
+						$details->icon = 'mandriva';
+					}
+					if (strripos($details->os_name, "mint") !== false) {
+						$details->icon = 'mint';
+					}
+					if (strripos($details->os_name, "novell") !== false)  {
+						$details->icon = 'novell';
+					}
+					if (strripos($details->os_name, "slackware") !== false) {
+						$details->icon = 'slackware';
+					}
+					if (strripos($details->os_name, "suse") !== false) {
+						$details->icon = 'suse';
+					}
+					if ((strripos($details->os_name, "red hat") !== false) OR 
+						(strripos($details->os_name, "redhat") !== false)) {
+						$details->icon = 'redhat';
+					}
+					if (strripos($details->os_name, "ubuntu") !== false) {
+						$details->icon = 'ubuntu';
+					}
+					if (strripos($details->os_name, "vmware") !== false) {
+						$details->icon = 'vmware';
+					}
+					if (strripos($details->os_name, "windows 2000") !== false) {
+						$details->icon = 'windows_2000';
+					}
+					if (strripos($details->os_name, "server 2003") !== false) {
+						$details->icon = 'windows_2003';
+					}
+					if (strripos($details->os_name, "server 2008") !== false) {
+						$details->icon = 'windows_2008';
+					}
+					if (strripos($details->os_name, "server 2012") !== false) {
+						$details->icon = 'windows_2012';
+					}
+					if (strripos($details->os_name, "windows 7") !== false) {
+						$details->icon = 'windows_7';
+					}
+					if (strripos($details->os_name, "windows 8") !== false) {
+						$details->icon = 'windows_8';
+					}
+					if (strripos($details->os_name, "windows nt") !== false) {
+						$details->icon = 'windows_nt';
+					}
+					if (strripos($details->os_name, "windows rt") !== false) {
+						$details->icon = 'windows_rt';
+					}
+					if (strripos($details->os_name, "vista") !== false) {
+						$details->icon = 'windows_vista';
+					}
+					if (strripos($details->os_name, "windows xp") !== false) {
+						$details->icon = 'windows_xp';
+					}
+					if ($details->icon == '' and strripos($details->os_name, "windows") !== false) {
+						$details->icon = 'windows';
+					}
+					if ($details->icon == '' and strripos($details->os_name, "microsoft") !== false) {
+						$details->icon = 'windows';
+					}
+				} else {
+					if ($details->icon == '' and strripos($details->os_group, "linux") !== false) {
+						$details->icon = 'linux';
+					}
+					if ($details->icon == '' and strripos($details->os_group, "apple") !== false) {
+						$details->icon = 'apple';
+					}
+					if ($details->icon == '' and strripos($details->manufacturer, "apple") !== false) {
+						$details->icon = 'apple';
+					}
+					if ($details->icon == '' and strripos($details->manufacturer, "vmware") !== false) {
+						$details->icon = 'vmware';
+					}
+					if ($details->icon == '' and strripos($details->os_group, "windows") !== false) {
+						$details->icon = 'windows';
+					}
+				}
+				if ($details->icon == '') { $details->icon = 'computer'; }
+			} else {
+				if (strpos($details->type, "|") === false) {
+					$details->icon = str_replace(" ", "_", $details->type);
+				} else {
+					$details->icon = 'unknown';
+				}
+			}
+			if ($details->icon == '') { $details->icon = 'unknown'; }
+			$details->icon = str_replace(" ", "_", strtolower($details->icon));
+			$details->man_icon = $details->icon;
+			$sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
+			$data = array("$details->icon", "$details->man_icon", "$details->system_id");
+			$query = $this->db->query($sql, $data);
+		}
+		return ($count);
+	}
+
+
 }
+
+
 ?>

@@ -35,6 +35,12 @@ class Admin extends MY_Controller {
 		exit();
 	}
 
+	function reset_icons() {
+		$this->load->model("m_system");
+		$count = $this->m_system->reset_icons();
+		redirect("/");
+	}
+
 	function edit_config() {
 		$this->load->model("m_oa_config");
 		$this->data['query'] = $this->m_oa_config->get_config();

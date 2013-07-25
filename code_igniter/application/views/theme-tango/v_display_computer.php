@@ -600,7 +600,12 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 							<td><?php echo print_something($key->system_audits_username)?></td>
 							<td><?php echo print_something($key->system_audits_type)?></td>
 							<td><?php echo print_something($key->timestamp)?></td>
-							<td><span style="display:none;"><?php echo print_something($key->system_audits_ip)?></span><?php echo print_something(ip_address_from_db($key->system_audits_ip))?></td>
+							<?php 
+							if (isset($key->system_audits_ip)) {
+								echo "<td><span style=\"display:none;\">" . print_something($key->system_audits_ip) . "</span>" . print_something(ip_address_from_db($key->system_audits_ip)) . "</td>\n";
+							} else {
+								echo "<td></td>";
+							} ?>
 							<td><?php echo print_something($key->system_audits_time)?></td>
 						</tr>
 						<?php endforeach; ?>

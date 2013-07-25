@@ -27,7 +27,7 @@ class Admin_test extends MY_Controller {
 
 	function data() {
 
-		# comment the bloew line out to enable this funtcion.
+		# comment the below line out to enable this funtcion.
 		redirect('/');
 		
 		# populate the Open-AudIT database with dummy locations, devices and set up a few groups

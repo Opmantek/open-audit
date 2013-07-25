@@ -738,7 +738,7 @@ if windows_domain_role = "4" then windows_domain_role = "Backup Domain Controlle
 if windows_domain_role = "5" then windows_domain_role = "Primary Domain Controller" end if
 
 error = 0
-if windows_part_of_domain = True then
+if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
 	' Get domain NetBIOS name from domain DNS name
 	domain_dn = "DC=" & Replace(system_domain,".",",DC=")
 	set oTranslate = CreateObject("NameTranslate")
@@ -825,7 +825,7 @@ else
 end if
 if details_to_lower = "y" then windows_active_directory_ou = lcase(windows_active_directory_ou) end if
 
-if ((windows_part_of_domain = True) and (windows_user_work_1 > "")) then
+if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (windows_user_work_1 > "")) then
 
 	if (instr(windows_user_name, "@")) then
 		split_user = split(windows_user_name, "@")
@@ -2722,7 +2722,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 end if
 
 
-if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role <> "Primary Domain Controller") and (windows_part_of_domain = True)) then
+if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role <> "Primary Domain Controller") and (windows_part_of_domain = True Or windows_part_of_domain = "True")) then
 	result.WriteText "	<groups>" & vbcrlf
 	if debugging > "0" then wscript.echo "local groups info" end if 
 
