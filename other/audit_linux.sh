@@ -112,6 +112,11 @@ ping_target='y'
 	OA_DF=`which df 2>/dev/null`
 	OA_DMESG=`which dmesg 2>/dev/null`
 	OA_DMIDECODE=`which dmidecode 2>/dev/null`
+	if [ "$OA_DMIDECODE" = "" ] || [ "$OA_DMIDECODE" = " " ] || [ -z "$OA_DMIDECODE" ]; then
+		if [ -f "/usr/local/sbin/dmidecode" ]; then
+			OA_DMIDECODE="/usr/local/sbin/dmidecode"
+		fi
+	fi
 	OA_DPKG=`which dpkg 2>/dev/null`
 	OA_DPKGQUERY=`which dpkg-query 2>/dev/null`
 	OA_ECHO=`which echo 2>/dev/null`
@@ -472,7 +477,8 @@ system_type="computer"
 # System OS Icon - Not yet, after finding the System Family
 
 #Get the System OS Group
-system_os_group=`$OA_UNAME -o`
+#system_os_group=`$OA_UNAME -o`
+system_os_group="Linux"
 
 # Get System Family (Distro Name) and the OS Name
 system_os_family=""
@@ -802,6 +808,9 @@ if [ "$memory_slots" != "0" ]; then
 			memory_serial=$($OA_ECHO "$bank_info" |\
 					$OA_AWK '/Serial Number:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 					$OA_CUT -d" " -f1)
+			if  [ "$memory_serial" = "Not" ] || [ "$memory_serial" = "Not " ] || [ "$memory_serial" = "Not Specified" ]; then
+				memory_serial=""
+			fi
 			# Ignore empty slots
 			if [ "$memory_capacity" != "" ]; then
 				$OA_ECHO "		<slot>">> $xml_file
@@ -1041,33 +1050,44 @@ if [ "$net_cards" != "" ]; then
 				net_card_model="Virtual Interface"
 				net_card_manufacturer="Linux"
 			else
-				net_card_model=`$OA_LSPCI -vms $net_card_pci |\
-					$OA_GREP -v $net_card_pci |\
-					$OA_GREP ^Device |\
-					$OA_CUT -d: -f2 |\
-					$OA_CUT -c2-`
-				net_card_manufacturer=`$OA_LSPCI -vms $net_card_pci |\
-					$OA_GREP ^Vendor |\
-					$OA_CUT -d: -f2 |\
-					$OA_CUT -c2-`
+				echo "$OA_LSPCI -vms $net_card_pci"
+				if [ "$OA_LSPCI" != "" ]; then
+					net_card_model=`$OA_LSPCI -vms $net_card_pci |\
+						$OA_GREP -v $net_card_pci |\
+						$OA_GREP ^Device |\
+						$OA_CUT -d: -f2 |\
+						$OA_CUT -c2-`
+					net_card_manufacturer=`$OA_LSPCI -vms $net_card_pci |\
+						$OA_GREP ^Vendor |\
+						$OA_CUT -d: -f2 |\
+						$OA_CUT -c2-`
+				else
+					net_card_model=""
+					net_card_manufacturer=""
+				fi
 			fi
 			net_card_description="$net_card_model"
 
 	net_card_speed=""
 
 	if [ -z `$OA_ECHO $net_card_id | $OA_AWK '/^wl/{print $1}'` ]; then
-		net_card_speed=`$OA_ETHTOOL $net_card_id |\
-			$OA_GREP Speed |\
-			$OA_CUT -d: -f2 |\
-			$OA_SED 's/[^0-9]//g'`
-		net_card_type="Ethernet 802.3"
+		if [ "$OA_ETHTOOL" = "" ]; then
+			# we don't have ethtool installed
+			net_card_type="Ethernet 802.3"
+		else
+			net_card_speed=`$OA_ETHTOOL $net_card_id |\
+				$OA_GREP Speed |\
+				$OA_CUT -d: -f2 |\
+				$OA_SED 's/[^0-9]//g'`
+			net_card_type="Ethernet 802.3"
+		fi
 	else
 		# This is a wireless link
 		net_card_speed=`$OA_IWLIST $net_card_id bitrate |\
 			$OA_GREP Current  |\
 			$OA_CUT -d. -f1 |\
 			$OA_GREP -oE '[[:digit:]]*'`
-		net_card_type="Wireless Ethernet 802.11";
+		net_card_type="Wireless Ethernet 802.11"
 	fi
 
 	# if a speed was detected, it needs to be multiplied to show up in the web

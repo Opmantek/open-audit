@@ -189,7 +189,7 @@ class MY_Controller extends CI_Controller {
 				if ($attribute == "man_ip_address") {
 					$value = ip_address_from_db($value); 
 				}
-				$value = str_replace(",", "", $value);
+				#$value = str_replace(",", "", $value);
 				$csv .= "\"" . trim($value) . "\",";
 			}
 			$csv = mb_substr($csv, 0, mb_strlen($csv) -1);
