@@ -281,6 +281,7 @@ class System extends CI_Controller {
 					if ($i == '') {
 						# insert a new system
 						$details->system_id = $this->m_system->insert_system($details);
+						$details->original_timestamp = "";
 						echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 					} else {
 						# update an existing system
@@ -321,7 +322,7 @@ class System extends CI_Controller {
 			if ($child->getName() == 'network_cards') 	{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->network_cards->network_card as $input) 	 { $this->m_network_card->process_network_cards($input, $details); } }
 		} 
 		$this->m_sys_man_audits->update_audit($details, 'finished xml processing');
-		
+
 		// Now generate any needed alerts
 		$this->m_sys_man_audits->update_audit($details, 'generate initial audit alert'); 
 		if ($details->original_timestamp == '') {
@@ -346,10 +347,8 @@ class System extends CI_Controller {
 			$this->m_ip_address->set_initial_address($details);
 		}
 		
-		
-
 		$this->m_sys_man_audits->update_audit($details, 'now generate any needed alerts'); 
-		if (($details->original_timestamp != '') && ($details->exist_type != 'bulk')) {
+		if (($details->original_timestamp != '') && ($details->original_timestamp != $details->timestamp)) {
 			$this->m_sys_man_audits->update_audit($details, 'alerts'); 
 			// We have to go through all tables, checking for
 			// entries with current_timestamp = first_timestamp

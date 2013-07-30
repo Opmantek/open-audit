@@ -230,7 +230,7 @@ function trim()
 }
 
 function escape_xml()
-# Transform special characters to their xml versions.
+# If a special character exists in the string, escape the XML.
 #
 # usage :
 #
@@ -238,12 +238,10 @@ function escape_xml()
 #
 {
 	# escape characters 
-	result=`$OA_ECHO "$1" | $OA_SED "s/&/\&amp;/g"`
-	result=`$OA_ECHO "$result" | $OA_SED -e "s/</\&lt;/g"`
-	result=`$OA_ECHO "$result" | $OA_SED -e "s/>/\&gt;/g"`
-	result=`$OA_ECHO "$result" | $OA_SED -e 's/"/\&quot;/g'`
-	result=`$OA_ECHO "$result" | $OA_SED -e "s/'/\&apos;/g"`
-	result=`$OA_ECHO "$result" | $OA_SED -e "s/®//g"`
+	result=`$OA_ECHO "$1"`
+	if [[ "$result" == *"&"* ]] || [[ "$result" == *"<"* ]] || [[ "$result" == *">"* ]] || [[ "$result" == *"\""* ]] || [[ "$result" == *"'"* ]]; then
+		result="<![CDATA[$result]]>"
+	fi
 
 	# Trim leading/trailing spaces
 	result=`trim "$result"`
@@ -901,7 +899,7 @@ if [ "$optical_num_devices" != "0" ]; then
 		$OA_ECHO "		<optical_drive>">> $xml_file
 		$OA_ECHO "			<optical_drive_caption>"$(escape_xml "$optical_caption")"</optical_drive_caption>" >> $xml_file
 		$OA_ECHO "			<optical_drive_model>"$(escape_xml "$optical_caption $optical_drive_release")"</optical_drive_model>" >> $xml_file
-		$OA_ECHO "			<optical_drive_device_id>"$(escape_xml "$optical_device_ID")"</optical_drive_device_id>" >> $xml_file
+		$OA_ECHO "			<optical_drive_device_id>"$(escape_xml "$optical_device_ID")" </optical_drive_device_id>" >> $xml_file
 		$OA_ECHO "			<optical_drive_mount_point>"$(escape_xml "$optical_drive_mount_point")"</optical_drive_mount_point>" >> $xml_file
 		$OA_ECHO "		</optical_drive>" >> $xml_file
 	done
@@ -1050,7 +1048,6 @@ if [ "$net_cards" != "" ]; then
 				net_card_model="Virtual Interface"
 				net_card_manufacturer="Linux"
 			else
-				echo "$OA_LSPCI -vms $net_card_pci"
 				if [ "$OA_LSPCI" != "" ]; then
 					net_card_model=`$OA_LSPCI -vms $net_card_pci |\
 						$OA_GREP -v $net_card_pci |\
@@ -1190,7 +1187,7 @@ if [ "$net_cards" != "" ]; then
 				$OA_HEAD -n1`
 			if [ "$net_card_dns_domain" = "" ]; then
 				net_card_dns_domain=`$OA_AWK '/^search/{print $2}' /etc/resolv.conf |\
-					$OA_HEAD -n1`
+				$OA_HEAD -n1`
 			fi
 
 			net_card_wins_primary=""
@@ -1341,7 +1338,12 @@ case $system_os_family in
 			$OA_AWK ' { print $1 } ' |\
 			$OA_SORT |\
 			$OA_UNIQ` ; do\
-				$OA_ECHO -e "\t\t<service>\n\t\t\t<service_name>$s</service_name>\n\t\t</service>" ;\
+				if [ "$s" = "rc" ]; then
+					service_start_mode="Auto"
+				else
+					service_start_mode="Manual"
+				fi 
+				$OA_ECHO -e "\t\t<service>\n\t\t\t<service_name>$s</service_name>\n\t\t\t<service_start_mode>$service_start_mode</service_start_mode>\n\t\t</service>" ;\
 				done >>\
 			$xml_file
 			# sysv services
@@ -1400,7 +1402,7 @@ if [ "$submit_online" = "y" ]; then
 	$OA_WGET --delete-after --post-file="$xml_file" $url 2>/dev/null
 fi
 
-
+sed -i -e 's/form_systemXML=//g' $xml_file
 if [ "$create_file" != "y" ]; then
 	`$OA_RM -f $PWD/$xml_file`
 fi
