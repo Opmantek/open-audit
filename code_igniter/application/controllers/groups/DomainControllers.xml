@@ -25,7 +25,7 @@
 			<column_name>Hostname</column_name>
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
-			<column_link>main/system_display/</column_link>
+			<column_link>/main/system_display/</column_link>
 			<column_secondary>system_id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>

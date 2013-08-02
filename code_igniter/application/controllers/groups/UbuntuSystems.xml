@@ -3,7 +3,7 @@
 	<details>
 		<group_name>Ubuntu Systems</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_os_family = 'Ubuntu' AND system.man_status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_os_family LIKE '%ubuntu%' AND system.man_status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>os</group_category>
 		<group_display_sql></group_display_sql>
