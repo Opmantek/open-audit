@@ -6,7 +6,7 @@
  * @copyright Mark Unwin, 2011
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
- 
+
 class Login extends CI_Controller {
 
 	function __construct() {
@@ -17,19 +17,110 @@ class Login extends CI_Controller {
 	}
 
 	function index() {
-	    if ($this->session->userdata('logged_in') == TRUE) {
-	        redirect('/');
-	    }
-	    $data['title'] = 'Open-AudIT';
-	    $data['username'] = array('id' => 'username', 'name' => 'username');
-	    $data['password'] = array('id' => 'password', 'name' => 'password');
+		if ($this->session->userdata('logged_in') == TRUE) {
+			redirect('/');
+		}
+		$data['title'] = 'Open-AudIT';
+		$data['username'] = array('id' => 'username', 'name' => 'username');
+		$data['password'] = array('id' => 'password', 'name' => 'password');
+		$data['oae_message'] = "";
 		$data['hidden'] = array('page' => $this->uri->segment(3), 
 								'function' => $this->uri->segment(4), 
 								'id' => $this->uri->segment(5),
 								'first_attribute' => $this->uri->segment(6));
-	    $this->load->model("m_oa_admin_database");
+		$this->load->model("m_oa_admin_database");
 		$data['systems'] = $this->m_oa_admin_database->count_systems();
-	    $this->load->view('v_login', $data);
+		$data['logo'] = "logo.png";
+		$data['oae_message'] = "";
+
+
+		$this->load->model('m_oa_config');
+		$oae_url = $this->m_oa_config->get_config_item("oae_url");
+		if ($oae_url > "") {
+			# we need to attempt to get a URL even though it may only be a directory.
+			if (stripos($oae_url, "http") === FALSE) {
+				# we dont have http or https
+				# we assume then it's a directory on the current server
+				if (strpos($oae_url, '/') !== 0) {
+					$oae_url = base_url() . "/" . $oae_url;
+				} else {
+					$oae_url = base_url() . $oae_url;
+				}
+			}
+			# get the license status from the OAE API
+			# license status are: valid, invalid, expired, none
+			if ($license = file_get_contents($oae_url . "/oaelicense")) {
+				# remove the unneeded html tags
+				$license = str_replace("<pre>", "", $license);
+				$license = str_replace("</pre>", "", $license);
+			} else {
+				$license = "invalid";
+			}
+		}
+
+
+
+		if ($data['hidden']['page'] != "") {
+			# user is going to a page inside OAC, do not redirect
+
+			if (($oae_url > "") and ($license == "valid")) {
+				# OAE is installed and licensed
+				# set the logo and show the logon page
+				$data['logo'] = "logo-banner-oae.png";
+				$this->load->view('v_login', $data);
+			}
+			if (($oae_url > "") and ($license > "") and ($license != "valid")) {
+				# OAE is installed but not licensed
+				# set the logo and show the logon page
+				$data['logo'] = "logo-banner-oac-oae.png";
+				$data['oae_message'] = "Please try Open-AudIT Enterprise. For a license, contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today.";
+				$this->load->view('v_login', $data);
+			}
+			if ($oae_url == "") {
+				# OAE is not installed
+				# set the logo and show the logon page
+				$data['logo'] = "logo-banner-oac.png";
+				$this->load->view('v_login', $data);
+			}
+		} else {
+			# user going to the OAC logon page
+
+			if ($oae_url > "") {
+				# OAE is installed (as per $oae_url)
+				$data['logo'] = "logo-banner-oac-oae.png";
+				switch ($license) {
+
+					case 'valid':
+						# OAE is installed and licensed - redirect to the dashboard
+						redirect($oae_url);
+						break;
+
+					case 'invalid':
+						# OAE is installed and a license is present but the license has an issue
+						$data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a valid license.";
+						$this->load->view('v_login', $data);
+						break;
+
+					case 'expired':
+						# OAE is installed and a license is present, but the license has expired
+						$data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal.";
+						$this->load->view('v_login', $data);
+						break;
+
+					case 'none':
+						# OAE is installed but no license is present
+						$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
+						$this->load->view('v_login', $data);
+						break;
+
+					default:
+						# default
+						$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today.";
+						$this->load->view('v_login', $data);
+						break;
+				}
+			}
+		}
 	}
 
 	function audit_my_pc() {
@@ -73,15 +164,15 @@ class Login extends CI_Controller {
 	}
 
 	function process_login() {
-	    $username = $this->input->post('username');    
-	    $password  = $this->input->post('password');
+		$username = $this->input->post('username');    
+		$password  = $this->input->post('password');
 		$page = $this->input->post('page');
 		$function = $this->input->post('function');
 		$id = $this->input->post('id');
 		$first_attribute = $this->input->post('first_attribute');
-	    $this->load->model("m_userlogin");
-	    
-	    $this->load->model("m_oa_config");
+		$this->load->model("m_userlogin");
+
+		$this->load->model("m_oa_config");
 		$this->data['config'] = $this->m_oa_config->get_config();
 		
 		foreach ($this->data['config'] as $returned_result) {
@@ -155,7 +246,7 @@ class Login extends CI_Controller {
 	}
 
 	function logout() {
-	    $this->session->sess_destroy();
-	    redirect('login/index');
+		$this->session->sess_destroy();
+		redirect('login/index/main/list_groups');
 	}
 }

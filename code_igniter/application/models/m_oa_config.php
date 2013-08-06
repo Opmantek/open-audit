@@ -19,14 +19,22 @@ class M_oa_config extends MY_Model {
 		$result = $query->result();
 		return ($result);
 	}
-	
+
+	function get_config_item($config_name = "display_version") {
+		$sql = "SELECT config_value FROM oa_config WHERE config_name = ? ";
+		$data = array("$config_name");
+		$query = $this->db->query($sql, $data);
+		$row = $query->row();
+		return ($row->config_value);
+	}
+
 	function update_config($config_name, $config_value, $user_id, $timestamp) {
 		$config_name = urldecode($config_name);
 		$config_value = urldecode($config_value);
 		$sql = "UPDATE oa_config SET config_value = ?, config_edited_by = ?, config_edited_date = ? WHERE config_name = ?";
 		$data = array("$config_value", "$user_id", "$timestamp", "$config_name");
 		$query = $this->db->query($sql, $data); 
-		echo $config_value;
+		return($config_value);
 	}
 }
 ?>

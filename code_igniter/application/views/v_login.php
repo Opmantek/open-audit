@@ -21,6 +21,9 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "Windows NT") === FALSE) {
 	$show = "y";
 }
 
+if (!isset($logo)) {
+	$logo = "logo.png";
+}
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -45,7 +48,7 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "Windows NT") === FALSE) {
 	<?php $attributes = array ('name' => 'myform'); ?>
 	<?php echo form_open('login/process_login', $attributes, $hidden) . "\n"; ?>
 			<div align='left' style="height: 150px; width:60%; float: left; valign: center; text-align: center;">
-				<img src='<?php echo $image_path;?>logo.png' alt='logo' border='0' /><br />
+				<img src='<?php echo $image_path . $logo ;?>' alt='logo' border='0' /><br />
 				<?php if ((file_exists($filename)) and $show == 'y') { echo "<span align=\"center\"><br /><input type=\"button\" name=\"audit\" id=\"audit\" onClick=\"audit_my_pc()\" value=\"Audit My PC\" /></span><br />&nbsp;\n"; } ?>
 			</div>
 			<div align='right' style="height: 150px; width:40%; float: right; text-align: center;">
@@ -60,6 +63,13 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "Windows NT") === FALSE) {
 		}
 	?>
 </div>
+<?php if (isset($oae_message)){ 
+	echo "<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>\n";
+	echo "\t\t" . $oae_message . "<br />\n";
+	#echo "\t\t<img src='/theme-tango/tango-images/logo_oac-oae.png' />\n";
+	echo "</div>\n";
+}
+?>
 <script type="text/javascript">
 	function audit_my_pc() {
 		location.href = "audit_my_pc";

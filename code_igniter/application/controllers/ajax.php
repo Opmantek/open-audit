@@ -110,7 +110,7 @@ class Ajax extends MY_Controller {
         $config_value = str_replace("%5E%5E%5E", "/", $config_value);
 		$this->load->model("m_oa_config");
 		if ($config_value == '-') {$config_value = '';}
-		$this->m_oa_config->update_config($config_name, $config_value, $this->data['user_id'], date('Y-m-d H:i:s') );
+		echo $this->m_oa_config->update_config($config_name, $config_value, $this->data['user_id'], date('Y-m-d H:i:s') );
 	}
 
 	function update_system_man() {
