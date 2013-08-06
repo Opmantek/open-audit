@@ -585,7 +585,7 @@ for each objItem in colItems
 	' this is no longer used because it is actually the NetBIOS name, not the hostname
 	' we grab it to a temp variable to use below in a last resort situation
 	i = objItem.Name
-	'This is not used becauase it is not available on Win2000 or WinXP
+	'This is not used because it is not available on Win2000 or WinXP
 	'system_hostname = LCase(objItem.DNSHostName)
 	system_domain = objItem.Domain
 	if details_to_lower = "y" then system_domain = lcase(system_domain) end if
@@ -597,7 +597,8 @@ for each objItem in colItems
 	system_model = objItem.Model
 	windows_domain_role = objItem.DomainRole
 	' below only checks when OS is XP or later (not 2000 or NT)
-	if (windows_build_number > 2195) then windows_part_of_domain = objItem.PartOfDomain end if
+	windows_part_of_domain = FALSE
+	if (windows_build_number >= 2600) then windows_part_of_domain = objItem.PartOfDomain end if
 next
 
 system_hostname = ""
@@ -754,7 +755,7 @@ if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
 		on error resume next
 			hr = oTranslate.set (1, domain_dn)
 		on error goto 0
-		if (isnull(hr)) then
+		if (isnull(hr) or hr = "") then
 			' skip everything as we could not contact the domain
 		else 
 			full_ad_domain = oTranslate.Get(1)
