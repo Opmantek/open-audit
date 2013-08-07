@@ -32,6 +32,7 @@ class Login extends CI_Controller {
 		$data['systems'] = $this->m_oa_admin_database->count_systems();
 		$data['logo'] = "logo.png";
 		$data['oae_message'] = "";
+		$license = "";
 
 
 		$this->load->model('m_oa_config');
@@ -60,6 +61,7 @@ class Login extends CI_Controller {
 
 
 
+		echo "<!-- " . $license . " -->";
 		if ($data['hidden']['page'] != "") {
 			# user is going to a page inside OAC, do not redirect
 
@@ -84,7 +86,7 @@ class Login extends CI_Controller {
 			}
 		} else {
 			# user going to the OAC logon page
-			echo "<!-- " . $license . " -->";
+
 			if ($oae_url > "") {
 				# OAE is installed (as per $oae_url)
 				$data['logo'] = "logo-banner-oac-oae.png";
@@ -115,7 +117,6 @@ class Login extends CI_Controller {
 						$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today.";
 						break;
 				}
-				$data['oae_message'] = "<!-- " . $license . " -->" . $data['oae_message'];
 				$this->load->view('v_login', $data);
 			}
 		}
