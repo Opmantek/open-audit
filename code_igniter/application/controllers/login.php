@@ -87,7 +87,7 @@ class Login extends CI_Controller {
 		} else {
 			# user going to the OAC logon page
 
-			if ($oae_url > "") {
+			#if ($oae_url > "") {
 				# OAE is installed (as per $oae_url)
 				$data['logo'] = "logo-banner-oac-oae.png";
 				switch ($license) {
@@ -121,7 +121,7 @@ class Login extends CI_Controller {
 						$this->load->view('v_login', $data);
 						break;
 				}
-			}
+			#}
 		}
 	}
 
