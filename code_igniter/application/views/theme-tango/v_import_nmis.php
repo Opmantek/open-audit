@@ -15,7 +15,7 @@ echo form_fieldset_close();
 /*
 echo "<p>OR</p>\n";
 
-# todo - enable the uploading of an nmis.nodes file
+# TODO: enable the uploading of an nmis.nodes file
 
 echo form_fieldset('Select File') . "\n";
 echo form_upload('upload_file') . form_submit('import', 'Import File');

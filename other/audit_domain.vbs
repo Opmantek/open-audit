@@ -286,7 +286,7 @@ Sub CheckForHungWMI()
         ' Look for cscript.exe processes only
         if objProcess.Name = "cscript.exe" then
             ' Look for audit.vbs processes with the //Nologo cmd line option. 
-         ' NOTE: The //Nologo cmd line option should NOT be used to start the initial audit, or it will kill itself off after script_timeout seconds
+         ' ATTENTION: The //Nologo cmd line option should NOT be used to start the initial audit, or it will kill itself off after script_timeout seconds
             if InStr(objProcess.CommandLine, "//Nologo") and InStr(objProcess.CommandLine, "audit.vbs") then
             ' The command line looks something like this: "C:\WINDOWS\system32\cscript.exe" //Nologo audit.vbs COMPUTERNAME
             ' Get the position of audit.vbs in the command line, and add 10 to get to the start of the workstation name

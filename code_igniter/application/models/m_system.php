@@ -146,7 +146,7 @@ class M_system extends MY_Model {
 		}
 
 
-		# todo - fix this by making sure (snmp in particular) calls with the proper variable name
+		# TODO: fix this by making sure (snmp in particular) calls with the proper variable name
 		if (!isset($details->mac_address) and (isset($details->mac))) {$details->mac_address = $details->mac;}
 
 		# check MAC Address

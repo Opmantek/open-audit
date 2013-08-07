@@ -2642,7 +2642,7 @@ function display_custom_field($field_placement, $additional_fields, $edit) {
 			{
 				$width = '160';
 			}
-			# TODO - fix this string output hack with real html entities
+			# TODO: fix this string output hack with real html entities
 			echo "<div style=\"float: left; width: 90%; \">\n";
 			echo "<label for=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" >" . __($field->field_name) . ": </label>";
 			echo   "<span id=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" " . $edit . ">" . print_something($data_value) . "</span><br />&nbsp;\n";

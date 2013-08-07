@@ -328,7 +328,7 @@ class Admin extends MY_Controller {
 				}
 				redirect('/');
 			} else {
-				# todo - redirect to homepage and create an alert to show on screen
+				# TODO: redirect to homepage and create an alert to show on screen
 				# there were errors with processing.
 				$this->data['error'] = "Could not connect to Active Directory.";
 				$this->data['query'] = $this->data['error'];

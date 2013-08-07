@@ -283,7 +283,7 @@
 
 4.5.027 (2009-03-16)
 	- Method getPageDimensions() was added to get page dimensions.
-	- The signature of the following methos were changed: getPageWidth(), getPageHeight(), getBreakMargin().
+	- The signature of the following methods were changed getPageWidth(), getPageHeight(), getBreakMargin().
 	- _parsepng() method was fixed for PNG URL images (fread bug).
 
 4.5.026 (2009-03-11)
@@ -1047,7 +1047,7 @@
 	- DejaVu Fonts were added.
 	
 1.53.0.TC028 (2007-03-03)
-	- MultiCell function signature were changed: the $ln parameter were added. Check documentation for further information.
+	- MultiCell function signature were changed  the $ln parameter were added. Check documentation for further information.
 	- Greek language were added on example sentences.
 	- setPrintHeader() and setPrintFooter() functions were added to enable or disable page header and footer.
 

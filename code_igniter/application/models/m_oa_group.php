@@ -155,7 +155,7 @@ class M_oa_group extends MY_Model {
 	}
 
 	function update_group($details) {
-		// TODO - need some data validation in here
+		// TODO: need some data validation in here
 		$sql = "
 			UPDATE 
 				oa_group 
@@ -185,7 +185,7 @@ class M_oa_group extends MY_Model {
 	}
 
 	function insert_group($details) {
-		// TODO - need some data validation in here
+		// TODO: need some data validation in here
 		$sql = "INSERT INTO oa_group (group_id, 
 					group_name, 
 					group_padded_name, 
@@ -208,7 +208,7 @@ class M_oa_group extends MY_Model {
 		$result = $this->db->query($sql, $data);
 		$return = $this->db->insert_id();
 		// We need to insert an entry into oa_group_user for any Admin level user
-		// TODO - maybe we should insert '0' for all non-admin users ?
+		// TODO: maybe we should insert '0' for all non-admin users ?
 		$sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
 		$data = array( $this->db->insert_id() );
 		$result = $this->db->query($sql, $data);

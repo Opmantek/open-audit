@@ -26,7 +26,7 @@ class MY_Controller extends CI_Controller {
 			$this->data['config']->$config_name = $returned_result->config_value;
 		}
 
-		#todo - check this
+		#TODO: check this
 		$this->load->model("m_oa_user");
 		if ($this->m_oa_user->select_user('open-audit_enterprise')) {
 			$this->data['config']->oae = 'y';
@@ -160,7 +160,7 @@ class MY_Controller extends CI_Controller {
 			break;
 
 			case "pdf":
-			# todo - need to insert the PDF function here
+			# TODO: need to insert the PDF function here
 			$this->load->view('v_template', $this->data);
 			break;
 

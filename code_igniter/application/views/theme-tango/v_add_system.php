@@ -75,7 +75,7 @@ $os_name_form = "<label for='man_os_name_2'> <\/label><select id='man_os_name_2'
 
 
 ?>
-<!-- TODO - validate the various attributes that MUST be submitted, are - client side -->
+<!-- TODO: validate the various attributes that MUST be submitted, are - client side -->
 
 <script type="text/javascript">
 <?php if (isset($error_message)) {

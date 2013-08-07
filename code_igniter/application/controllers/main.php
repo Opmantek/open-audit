@@ -224,7 +224,7 @@ class Main extends MY_Controller {
 	}
 
 	function search() {
-		# todo - for completeness we should check if user is admin and if not, check is search is allowed in confg variable
+		# TODO: for completeness we should check if user is admin and if not, check is search is allowed in confg variable
 		if ($this->data['id'] == '') {
 			redirect('main/list_groups/');
 		}
@@ -558,7 +558,7 @@ class Main extends MY_Controller {
 		$this->data['webserver'] = $this->m_webserver->get_system_webserver($this->data['id']);
 		$this->data['website_details'] = $this->m_webserver->get_system_websites($this->data['id']);
 
-		# NOTE - TODO - add in browser addons and odbc drivers
+		# TODO: add in browser addons and odbc drivers
 		
 		# only show to users with 'view sensitive details' level of access access level >= 7
 		if ( $this->data['access_level'] >= '7') {

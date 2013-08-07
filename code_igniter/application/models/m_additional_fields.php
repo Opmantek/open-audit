@@ -174,7 +174,7 @@ class M_additional_fields extends MY_Model {
 	 * @return	array
 	 */
 	function get_additional_fields_data($system_id) {
-		# NOTE - TODO - remove the user_id stuff in this SQL
+		# NOTE - TODO: remove the user_id stuff in this SQL
 		#$sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id WHERE sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL";
 		$sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON (sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id AND (sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL))";
 		$sql = $this->clean_sql($sql);

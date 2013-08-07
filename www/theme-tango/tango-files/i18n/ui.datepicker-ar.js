@@ -1,7 +1,7 @@
 ﻿/* Arabic Translation for jQuery UI date picker plugin. */
 /* Khaled Al Horani -- koko.dw@gmail.com */
 /* خالد الحوراني -- koko.dw@gmail.com */
-/* NOTE: monthNames are the original months names and thez are the Arabic names, not the new months name فبراير - يناير and there isnät any Arabic roots for these months */
+/* NOTE monthNames are the original months names and thez are the Arabic names, not the new months name فبراير - يناير and there isnät any Arabic roots for these months */
 jQuery(function($){
 	$.datepicker.regional['ar'] = {
 		clearText: 'مسح', clearStatus: 'امسح التاريخ الحالي',

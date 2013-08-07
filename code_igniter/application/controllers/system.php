@@ -364,7 +364,7 @@ class System extends CI_Controller {
 			$this->m_motherboard->alert_motherboard($details);
 			$this->m_network_card->alert_network_card($details);
 			$this->m_optical_drive->alert_optical_drive($details);
-			$this->m_partition->alert_partition($details); #TODO - check if NOT a USB drive
+			$this->m_partition->alert_partition($details); #TODO: - check if NOT a USB drive
 			$this->m_processor->alert_processor($details);
 			if ($dhcp != TRUE) {
 				$this->m_route->alert_route($details);
@@ -377,7 +377,7 @@ class System extends CI_Controller {
 			$this->m_sound->alert_sound($details);
 			$this->m_variable->alert_variable($details);
 			$this->m_video->alert_video($details);
-			#$this->m_database_details->alert_db_details($details);  #TODO check if this is complete
+			#$this->m_database_details->alert_db_details($details);  #TODO: check if this is complete
 		}
 		
 		

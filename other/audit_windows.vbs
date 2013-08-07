@@ -1853,7 +1853,7 @@ if audit_location = "local" then
 	else
 		' copy the file to the machine being audited
 	end if
-	' TODO - get rmtshare.exe from OA server, if needed
+	' TODO: get rmtshare.exe from OA server, if needed
 end if
 
 ' NOTE - only selecting "Disk Drive" type shares.
@@ -3760,7 +3760,7 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 		Case default
 			db_login_type = "Unknown"
 			' note - if we hit this, we cannot log in to the DB Server, therefore, we don't enumerate databases
-			' this might occur if we connect to SQL 2000. TODO - check this.
+			' this might occur if we connect to SQL 2000. TODO: check this.
 	End Select
 
 	if debugging > "1" then wscript.echo "DB Login Type: " & db_login_type end if 

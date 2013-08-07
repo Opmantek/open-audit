@@ -1179,7 +1179,7 @@ if [ "$net_cards" != "" ]; then
 				net_card_dhcp_lease_obtained=`$OA_DATE -d ''$net_card_dhcp_lease_expire' -'$net_card_dhcp_lease_days' days' +%F`
 			fi
 		
-			#TODO Domain Registration & WINS Info (Samba)
+			# TODO: Domain Registration & WINS Info (Samba)
 			net_card_domain_reg=""
 			net_card_dns_server=`$OA_AWK '/^name/{print $2}' /etc/resolv.conf |\
 				$OA_HEAD -n1`

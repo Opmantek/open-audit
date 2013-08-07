@@ -8,7 +8,7 @@
  */
  
  
-// TODO - group members
+// TODO: group members
 class M_group extends MY_Model {
 
 	function __construct() {

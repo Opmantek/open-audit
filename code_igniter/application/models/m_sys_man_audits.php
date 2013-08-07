@@ -36,7 +36,7 @@ class M_sys_man_audits extends MY_Model {
 	}
 
 	function insert_audit($details) {
-		// TODO - create a variable for the username running the script_windows.vbs
+		// TODO: - create a variable for the username running the script_windows.vbs
 		if (isset($details->last_seen_by)) { $inserted_via = $details->last_seen_by; } else { $inserted_via = 'audit'; }
 		if (isset($details->last_seen_user)) { $inserted_user = $details->last_seen_user; }
 		if (!isset($last_seen_user) and isset($this->data['user_full_name'])) {
