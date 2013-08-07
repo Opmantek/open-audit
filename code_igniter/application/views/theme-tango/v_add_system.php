@@ -26,6 +26,7 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='mobile modem'>Mobile Modem</option>
 			<option value='network printer'>Network Printer</option>
 			<option value='phone'>Phone</option>
+			<option value='projector'>Projector</option>
 			<option value='router'>Router</option>
 			<option value='satellite phone'>Satellite Phone</option>
 			<option value='smart phone'>Smart Phone</option>
@@ -326,6 +327,7 @@ function select_device()
 			break;
 
 		case "local printer":
+		case "projector":
 			status_text = "<table><tr><td valign=\"top\">";
 			status_text = status_text + "<label for='hostname'>Hostname<\/label><input type='text' id='hostname' name='hostname' size='20' \/><span style='color: red;'>*<\/span> (of the attached PC)<br \/>";
 			status_text = status_text + "<label for='man_owner'>Assigned To<\/label><input type='text' id='man_owner' name='man_owner' size='20' \/><br \/>";
