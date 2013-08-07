@@ -100,24 +100,27 @@ class Login extends CI_Controller {
 					case 'invalid':
 						# OAE is installed and a license is present but the license has an issue
 						$data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a valid license.";
+						$this->load->view('v_login', $data);
 						break;
 
 					case 'expired':
 						# OAE is installed and a license is present, but the license has expired
 						$data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal.";
+						$this->load->view('v_login', $data);
 						break;
 
 					case 'none':
 						# OAE is installed but no license is present
 						$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
+						$this->load->view('v_login', $data);
 						break;
 
 					default:
 						# default
 						$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today.";
+						$this->load->view('v_login', $data);
 						break;
 				}
-				$this->load->view('v_login', $data);
 			}
 		}
 	}
