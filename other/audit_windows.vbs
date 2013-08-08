@@ -2551,40 +2551,44 @@ item = ""
 ' We rely on schtasks.exe so skipping if local system is older than WinXP
 ' Check Build Number: Win2k-->2195, Win98-->2222, WinME-->3000, 
 if ((CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) and audit_location = "local" ) then
-	if windows_build_number = "2600" then
-		intOffset = 0
-	else 
-		intOffset = 1
-	End if
-	strCommand = "%ComSpec% /c schtasks.exe /query /v /nh /fo csv"
-	strCommand = "schtasks.exe /query /v /nh /fo csv"
-	set objExecObject = objShell.Exec(strCommand)
-	do While Not objExecObject.StdOut.AtEndOfStream
-		strResults = objExecObject.StdOut.ReadAll()
-	Loop
-	MyArray = Split(strResults, vbcrlf)
-	for each line in MyArray
-		sTask = CSVParser(line)
-		if UCase(sTask(0)) = UCase(system_hostname) then
-			item = item & "		<task>" & vbcrlf
-			item = item & "			<task_name>" & sTask(1) & "</task_name>" & vbcrlf
-			item = item & "			<next_run>" & sTask(2) & "</next_run>" & vbcrlf
-			item = item & "			<status>" & sTask(3) & "</status>" & vbcrlf
-			item = item & "			<last_run>" & sTask(4+intOffset) & "</last_run>" & vbcrlf
-			item = item & "			<last_result>" & sTask(5+intOffset) & "</last_result>" & vbcrlf
-			item = item & "			<creator>" & sTask(6+intOffset) & "</creator>" & vbcrlf
-			item = item & "			<schedule>" & sTask(7+intOffset) & "</schedule>" & vbcrlf
-			item = item & "			<task_to_run>" & sTask(8+intOffset) & "</task_to_run>" & vbcrlf
-			item = item & "			<state>" & sTask(11+intOffset) & "</state>" & vbcrlf
-			item = item & "			<user>" & sTask(18+intOffset) & "</user>" & vbcrlf
-			item = item & "		</task>" & vbcrlf
-		end if
-	next
+   if windows_build_number = "2600" then
+      intOffset = 0
+   else 
+      intOffset = 1
+   End if
+   strCommand = "%ComSpec% /c schtasks.exe /query /v /nh /fo csv"
+   strCommand = "schtasks.exe /query /v /nh /fo csv"
+   On Error Resume Next
+   set objExecObject = objShell.Exec(strCommand)
+   On Error GoTo 0
+   If IsObject(objExecObject) then
+      do While Not objExecObject.StdOut.AtEndOfStream
+         strResults = objExecObject.StdOut.ReadAll()
+      Loop
+      MyArray = Split(strResults, vbcrlf)
+      for each line in MyArray
+         sTask = CSVParser(line)
+         if UCase(sTask(0)) = UCase(system_hostname) then
+            item = item & "      <task>" & vbcrlf
+            item = item & "         <task_name>" & sTask(1) & "</task_name>" & vbcrlf
+            item = item & "         <next_run>" & sTask(2) & "</next_run>" & vbcrlf
+            item = item & "         <status>" & sTask(3) & "</status>" & vbcrlf
+            item = item & "         <last_run>" & sTask(4+intOffset) & "</last_run>" & vbcrlf
+            item = item & "         <last_result>" & sTask(5+intOffset) & "</last_result>" & vbcrlf
+            item = item & "         <creator>" & sTask(6+intOffset) & "</creator>" & vbcrlf
+            item = item & "         <schedule>" & sTask(7+intOffset) & "</schedule>" & vbcrlf
+            item = item & "         <task_to_run>" & sTask(8+intOffset) & "</task_to_run>" & vbcrlf
+            item = item & "         <state>" & sTask(11+intOffset) & "</state>" & vbcrlf
+            item = item & "         <user>" & sTask(18+intOffset) & "</user>" & vbcrlf
+            item = item & "      </task>" & vbcrlf
+         end if
+      next
+   end if
 end if
 if item > "" then
-	result.WriteText "	<tasks>" & vbcrlf
-	result.WriteText item
-	result.WriteText "	</tasks>" & vbcrlf
+   result.WriteText "   <tasks>" & vbcrlf
+   result.WriteText item
+   result.WriteText "   </tasks>" & vbcrlf
 end if
 
 if debugging > "0" then wscript.echo "environment variables" end if 
