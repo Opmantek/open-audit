@@ -50,7 +50,8 @@ class Login extends CI_Controller {
 			}
 			# get the license status from the OAE API
 			# license status are: valid, invalid, expired, none
-			if ($license = file_get_contents($oae_url . "/oaelicense")) {
+			$license = @file_get_contents($oae_url . "/oaelicense");
+			if ($license !== FALSE) {
 				# remove the unneeded html tags
 				$license = str_replace("<pre>", "", $license);
 				$license = str_replace("</pre>", "", $license);
