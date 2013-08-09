@@ -386,7 +386,8 @@ class M_system extends MY_Model {
 	}
 
 	function get_system_popup($system_id) {
-		$sql = "SELECT 		system_id, man_status, man_manufacturer, man_form_factor, man_model, man_picture, man_serial, man_form_factor
+		$sql = "SELECT 		system_id, man_status, man_manufacturer, man_form_factor, 
+							man_model, man_picture, man_serial, man_form_factor
 				FROM 		system
 				WHERE 		system.system_id = ? 
 				ORDER BY 	system.timestamp
@@ -397,7 +398,24 @@ class M_system extends MY_Model {
 		$result = $query->result();
 		return ($result);
 	}
-	
+
+	function system_summary($system_id) {
+		$sql = "SELECT 		hostname as 'Hostname', man_ip_address as 'IP Address', man_environment as 'Environment', 
+							man_status as 'Status', man_description as 'Description', man_type as 'Type', 
+							man_class as 'Class', man_os_family as 'OS Family', man_os_name as 'OS Name', 
+							man_manufacturer as 'Manufacturer', man_model as 'Model', man_serial as 'Serial', 
+							location_name as 'Location Name', date(system.timestamp) as 'Last Audited'   
+				FROM 		system
+				LEFT JOIN   oa_location on system.man_location_id = oa_location.location_id 
+				WHERE 		system.system_id = ? ";
+		$sql = $this->clean_sql($sql);
+		$data = array($system_id);
+		$query = $this->db->query($sql, $data);
+		$result = $query->result();
+		$result[0]->{'IP Address'} = $this->ip_address_from_db($result[0]->{'IP Address'});
+		return ($result);
+	}
+
 	function get_system_groups($system_id, $user_id) {
 		$sql = "SELECT 
 				oa_group.group_id, 
