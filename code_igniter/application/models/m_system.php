@@ -400,11 +400,12 @@ class M_system extends MY_Model {
 	}
 
 	function system_summary($system_id) {
-		$sql = "SELECT 		hostname as 'Hostname', man_ip_address as 'IP Address', man_environment as 'Environment', 
-							man_status as 'Status', man_description as 'Description', man_type as 'Type', 
-							man_class as 'Class', man_os_family as 'OS Family', man_os_name as 'OS Name', 
-							man_manufacturer as 'Manufacturer', man_model as 'Model', man_serial as 'Serial', 
-							location_name as 'Location Name', date(system.timestamp) as 'Last Audited'   
+		$sql = "SELECT 		system.system_id, hostname, man_ip_address, man_environment, 
+							man_status, man_description, man_type, 
+							man_class, man_os_group, man_os_family, man_os_name, 
+							man_manufacturer, man_model, man_serial, 
+							man_form_factor, 
+							location_name, date(system.timestamp) as 'timestamp'   
 				FROM 		system
 				LEFT JOIN   oa_location on system.man_location_id = oa_location.location_id 
 				WHERE 		system.system_id = ? ";
@@ -412,7 +413,7 @@ class M_system extends MY_Model {
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
-		$result[0]->{'IP Address'} = $this->ip_address_from_db($result[0]->{'IP Address'});
+		$result[0]->{'IP Address'} = $this->ip_address_from_db($result[0]->{'man_ip_address'});
 		return ($result);
 	}
 
