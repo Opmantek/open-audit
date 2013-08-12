@@ -446,6 +446,28 @@ class Main extends MY_Controller {
 		readfile($attachment->att_filename);
 	}
 
+	function system_summary() {
+		# outputs a JSON formatted summary of an individual system
+		# designed to be called from Open-AudIT Enterprise
+		$this->load->model("m_system");
+		$this->data['id'] = $this->m_system->get_system_id($this->data['id']);
+		if ($this->data['id'] > '0') {
+			// we must check to see if the user has at least VIEW permission on the system
+			$this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->data['user_id']);
+			if ( $this->data['access_level'] < '1') {
+				// not even VIEW BASIC permission - redirect
+				redirect('main');
+			}
+		} else {
+			// not a valid system (system_id, hostname or system_key)
+			redirect('main');
+		}
+		$this->load->model("m_oa_location");
+		$this->load->model("m_oa_org");
+		$this->data['query'] = $this->m_system->system_summary($this->data['id']);
+		print_r(json_encode($this->data['query']));
+	}
+
 	function system_display() {
 		$this->load->model("m_system");
 		$this->data['id'] = $this->m_system->get_system_id($this->data['id']);
