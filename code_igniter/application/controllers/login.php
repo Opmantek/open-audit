@@ -56,75 +56,66 @@ class Login extends CI_Controller {
 				$license = str_replace("<pre>", "", $license);
 				$license = str_replace("</pre>", "", $license);
 			} else {
-				$license = "invalid";
+				$license = "none";
 			}
 		}
-
-
 
 		echo "<!-- " . $license . " -->";
-		if ($data['hidden']['page'] != "") {
-			# user is going to a page inside OAC, do not redirect
+		$data['logo'] = "logo-banner-oac-oae.png";
+		$data['oae_message'] = "";
 
-			if (($oae_url > "") and ($license == "valid")) {
-				# OAE is installed and licensed
-				# set the logo and show the logon page
-				$data['logo'] = "logo-banner-oae.png";
-				$this->load->view('v_login', $data);
-			}
-			if (($oae_url > "") and ($license > "") and ($license != "valid")) {
-				# OAE is installed but not licensed
-				# set the logo and show the logon page
-				$data['logo'] = "logo-banner-oac-oae.png";
-				$data['oae_message'] = "Please try Open-AudIT Enterprise. For a license, contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today.";
-				$this->load->view('v_login', $data);
-			}
-			if ($oae_url == "") {
-				# OAE is not installed
-				# set the logo and show the logon page
-				$data['logo'] = "logo-banner-oac.png";
-				$this->load->view('v_login', $data);
-			}
-		} else {
-			# user going to the OAC logon page
+		if ($oae_url == "") {
+			# OAE is not installed
+			# set the logo and show the logon page
+			$data['logo'] = "logo-banner-oac.png";
+			$data['oae_message'] = " ";
+			$this->load->view('v_login', $data);
+		}
 
-			#if ($oae_url > "") {
-				# OAE is installed (as per $oae_url)
-				$data['logo'] = "logo-banner-oac-oae.png";
-				switch ($license) {
+		if (($data['hidden']['page'] != "") and ($oae_url > "") and ($license == "valid")) {
+			# user going to an internal page and OAE is installed with a valid license
+			# set the logo and show the logon page
+			$data['logo'] = "logo-banner-oae.png";
+			$data['oae_message'] = " ";
+			$this->load->view('v_login', $data);
+		}
 
-					case 'valid':
-						# OAE is installed and licensed - redirect to the dashboard
-						redirect($oae_url);
-						break;
+		if (($data['hidden']['page'] == "") and ($oae_url > "") and ($license == "valid")) {
+			# user going to logon page and OAE is installed and licensed
+			# redirect
+			redirect($oae_url);
+		}
 
-					case 'invalid':
-						# OAE is installed and a license is present but the license has an issue
-						$data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a valid license.";
-						$this->load->view('v_login', $data);
-						break;
+		if ($license == "invalid") {
+			# OAE is installed but has an invalid license
+			# show the logon page
+			$data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a valid license.";
+			$this->load->view('v_login', $data);
+		}
 
-					case 'expired':
-						# OAE is installed and a license is present, but the license has expired
-						$data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal.";
-						$this->load->view('v_login', $data);
-						break;
+		if ($license == "expired") {
+			# OAE is installed but the license has expired
+			# show the logon page
+			$data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal.";
+			$this->load->view('v_login', $data);
+		}
 
-					case 'none':
-						# OAE is installed but no license is present
-						$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
-						$this->load->view('v_login', $data);
-						break;
+		if ($license == "none") {
+			# OAE is installed but not licensed
+			# show the logon page
+			$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
+			$this->load->view('v_login', $data);
+		}
 
-					default:
-						# default
-						$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today.";
-						$this->load->view('v_login', $data);
-						break;
-				}
-			#}
+		if (($oae_url > "") and ($data['oae_message'] == "")) {
+			# catch all default
+			# show the logon page
+			$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
+			$this->load->view('v_login', $data);
 		}
 	}
+
+	
 
 	function audit_my_pc() {
 		$filename = dirname(dirname(dirname(dirname(__FILE__)))) . "/other/audit_windows.vbs";
