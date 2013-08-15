@@ -54,13 +54,13 @@ echo form_open('admin/add_script_audit_windows') . "\n";
 						echo "<option value='" . $value->org_id . "'>" . $value->org_name . "&nbsp;</option>\n";
 					} ?>
 					</select>
-				<p><label for='windows_user_work_1'><?php echo __("Active Directory User Details #1")?>: </label><input type='text' id='windows_user_work_1' name='windows_user_work_1' tabindex='9' title=''  value="physicalDeliveryOfficeName"/></p>
-				<p><label for='windows_user_work_2'><?php echo __("Active Directory User Details #2")?>: </label><input type='text' id='windows_user_work_2' name='windows_user_work_2' tabindex='10' title=''  value="company"/></p>
+				<p><label for='windows_user_work_1'><?php echo __("Active Directory User Details")?> #1: </label><input type='text' id='windows_user_work_1' name='windows_user_work_1' tabindex='9' title=''  value="physicalDeliveryOfficeName"/></p>
+				<p><label for='windows_user_work_2'><?php echo __("Active Directory User Details")?> #2: </label><input type='text' id='windows_user_work_2' name='windows_user_work_2' tabindex='10' title=''  value="company"/></p>
 			</td><td width='50%'>
 				<p><label for='skip_mount_point'><?php echo __("Do not audit mount points")?>: </label><input type='checkbox' id='skip_mount_point' name='skip_mount_point' tabindex='11' title='' /></p>
 				<p><label for='skip_printer'><?php echo __("Do not audit attached printers")?>: </label><input type='checkbox' id='skip_printer' name='skip_printer' tabindex='12' title='' /></p>
 				<p><label for='skip_software'><?php echo __("Do not audit installed software")?>: </label><input type='checkbox' id='skip_software' name='skip_software' tabindex='13' title='' /></p>
-				<p><label for='skip_dns'><?php echo __("Do not audit DNS information")?>: </label><input type='checkbox' id='skip_dns' name='skip_dns' tabindex='14' title='' /></p>
+				<p><label for='skip_dns'><?php echo __("Do not audit DNS information")?>: </label><input type='checkbox' id='skip_dns' name='skip_dns' tabindex='14' title='' checked /></p>
 				<p><label for='self_delete'><?php echo __("Have the script delete itself after running")?>: </label><input type='checkbox' id='self_delete' name='self_delete' tabindex='15' title='' /></p>
 				<p><label for='debugging'><?php echo __("Debugging level")?>: </label><select id='debugging' name='debugging' tabindex='16' title=''>
 					<option value='0'>0 - silent</option>

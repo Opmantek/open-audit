@@ -8,7 +8,7 @@ $(document).ready(function() {
 
 		// One instance that's reused to show info for the current item
 		var container = $('<div id="SystemPopupContainer">'
-		+ '<table width="" border="0" cellspacing="0" cellpadding="0" style="text-align:center;" class="SystemPopupPopup">'
+		+ '<table border="0" cellspacing="0" cellpadding="0" style="text-align:center;" class="SystemPopupPopup">'
 		+ '<tr>'
 		+ '   <td class="corner topLeft"><\/td>'
 		+ '   <td class="top"><\/td>'
@@ -28,7 +28,7 @@ $(document).ready(function() {
 		+ '<\/div>');
 
 		var container2 = $('<div id="TagPopupContainer">'
-		+ '<table width="" border="0" cellspacing="0" cellpadding="0" align="center" class="SystemPopupPopup">'
+		+ '<table border="0" cellspacing="0" cellpadding="0" align="center" class="SystemPopupPopup">'
 		+ '<tr>'
 		+ '   <td class="corner topLeft"><\/td>'
 		+ '   <td class="top"><\/td>'
@@ -48,7 +48,7 @@ $(document).ready(function() {
 		+ '<\/div>');
 
 		var container3 = $('<div id="SearchPopupContainer">'
-		+ '<table width="" border="0" cellspacing="0" cellpadding="0" align="center" class="SystemPopupPopup">'
+		+ '<table border="0" cellspacing="0" cellpadding="0" align="center" class="SystemPopupPopup">'
 		+ '<tr>'
 		+ '   <td class="corner topLeft"><\/td>'
 		+ '   <td class="top"><\/td>'
@@ -68,7 +68,7 @@ $(document).ready(function() {
 		+ '<\/div>');
 
 		var container4 = $('<div id="ModifierPopupContainer">'
-		+ '<table width="" border="0" cellspacing="0" cellpadding="0" align="center" class="ModifierPopupPopup">'
+		+ '<table border="0" cellspacing="0" cellpadding="0" align="center" class="ModifierPopupPopup">'
 		+ '<tr>'
 		+ '   <td class="corner topLeft"><\/td>'
 		+ '   <td class="top"><\/td>'
@@ -88,7 +88,7 @@ $(document).ready(function() {
 		+ '<\/div>');
 
 		var container5 = $('<div id="ReportPopupContainer">'
-		+ '<table width="" border="0" cellspacing="0" cellpadding="0" align="center" class="ReportPopupPopup">'
+		+ '<table border="0" cellspacing="0" cellpadding="0" align="center" class="ReportPopupPopup">'
 		+ '<tr>'
 		+ '   <td class="corner topLeft"><\/td>'
 		+ '   <td class="top"><\/td>'
@@ -108,7 +108,7 @@ $(document).ready(function() {
 		+ '<\/div>');
 
 		var container6 = $('<div id="AssetPopupContainer">'
-		+ '<table width="" border="0" cellspacing="0" cellpadding="0" align="center" class="SystemPopupPopup">'
+		+ '<table border="0" cellspacing="0" cellpadding="0" align="center" class="SystemPopupPopup">'
 		+ '<tr>'
 		+ '   <td class="corner topLeft"><\/td>'
 		+ '   <td class="top"><\/td>'
@@ -328,7 +328,7 @@ $(document).ready(function() {
 	<?php
 		$menu_items = "";
 		foreach ($menu as $report){ 
-			$menu_items .= "<a href=\"" . base_url() . "index.php/report/show_report/" . $report->report_id . "/'+groupID+'\">" .  __($report->report_name) . "<\/a><br />";
+			$menu_items .= "<a href=\"" . base_url() . "index.php/report/show_report/" . $report->report_id . "/'+groupID+'\">" .  $report->report_name . "<\/a><br />";
 		} 
 	?>
 	$('.ReportPopupTrigger').live('mouseover', function() {	

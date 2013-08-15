@@ -207,6 +207,7 @@ if (!function_exists('get_snmp')) {
 
 				// serial
 				if (!isset($details->serial) or $details->serial == '') {
+					$details->serial == '';
 
 					# generic snmp
 					$details->serial = str_replace('"', '', str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1")));
@@ -225,6 +226,14 @@ if (!function_exists('get_snmp')) {
 					# Cisco 37xx stack
 					if ($details->serial == '') {
 						$details->serial = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.5.1.2.19.0")));
+						if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
+						if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
+						if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
+					}
+
+					# generic cable modem (works for my Netgear CG814WG)
+					if ($details->serial == '') {
+						$details->serial = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0")));
 						if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
 						if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
 						if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
