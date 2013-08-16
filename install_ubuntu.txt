@@ -1,0 +1,42 @@
+﻿How to install OAv2 on Ubuntu.
+
+Ubuntu prerequisites:
+
+1 - install Apache, PHP, MySQL, and misc pre-requisites (if not already installed and configured)
+	$ sudo apt-get install -y apache2 libapache2-mod-php5 php5-mysql mysql-server unzip
+	
+
+OAv2 installation:
+
+1 - Extract the archive to /usr/share/oav2
+	$ sudo unzip OAv2_beta_8.zip -d /usr/share/oav2
+
+2 - Move the contents of www folder to your root web folder (/var/www under Ubuntu).
+	$ sudo mv /usr/share/oav2/www/* /var/www/
+	$ sudo mv /usr/share/oav2/www/.htaccess /var/www/
+
+3 - Edit the file /var/www/index.php updating the $system_path variable like so:
+	$system_path = '/usr/share/oav2/code_igniter/system';
+	and also the $application_folder like so:
+	$application_folder = '/usr/share/oav2/code_igniter/application';
+
+4 - in the /usr/share/oav2/other folder, run the following command
+	mysql -u root -p
+	{enter password}
+	create database OAv2;
+	exit;
+	mysql -u root -p OAv2 < OAv2_mysql.sql
+	{enter password}
+
+5 - Set file permissions
+	$ sudo chown -R www-data /usr/share/oav2/
+
+6 - Alter the settings to connect to the database in /usr/share/oav2/code_igniter/application/config/database.php
+
+7 - Point your web browser to http://YOURSERVER/index.php
+
+8 - Logon with Username: Admin, Password: password
+
+9 - Change password by going to Admin -> List Users -> Edit User
+
+10 - Enable some Reports by going to Admin -> Reports -> Activate Report

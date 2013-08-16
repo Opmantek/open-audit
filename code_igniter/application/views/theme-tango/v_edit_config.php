@@ -19,13 +19,13 @@
 			<tbody>
 			<?php foreach ($query as $item) { ?>
 				<tr>
-					<td width='150px' align="right"><br /><label for='<?php echo __($item->config_name)?>'><?php echo __($item->config_name)?>: </label></td>
+					<td width='150px' align="right"><br /><label for='<?php $item->config_name ?>'><?php echo $item->config_name ?>: </label></td>
 					<td align='left' width='250px'><br />
 						<?php if ($item->config_editable == "y") {
 							if ($item->config_value == '') { $item->config_value = '-'; } ?>
-							<span id='<?php echo __($item->config_name)?>' name='<?php echo __($item->config_name)?>' class="editText" style="color:blue;"><?php echo $item->config_value; ?></span>
+							<span id='<?php echo $item->config_name ?>' name='<?php echo$item->config_name ?>' class="editText" style="color:blue;"><?php echo $item->config_value; ?></span>
 						<?php } else { ?>
-							<span id='<?php echo __($item->config_name)?>' name='<?php echo __($item->config_name)?>'><?php echo $item->config_value; ?></span>
+							<span id='<?php echo $item->config_name ?>' name='<?php echo$item->config_name ?>'><?php echo $item->config_value; ?></span>
 						<?php } ?>
 					</td>
 					<td><br /><?php echo $item->config_description; ?></td>

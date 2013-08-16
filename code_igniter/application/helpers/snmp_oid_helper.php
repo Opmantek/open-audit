@@ -6814,6 +6814,7 @@ if (!function_exists('get_oid'))
 		if ($oid == '1.3.6.1.4.1.714.1.2.6') { $new->model = 'Xenith 2'; $new->os_group = 'Wyse'; $new->type = 'thin client'; }
 
 		if ($oid == '1.3.6.1.4.1.4526.1.1') { $new->model = 'FSM726S Managed Switch'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.4526.1.1.1.1.0.1.3.9.26') { $new->model = 'CG814WG Cable Modem'; $new->type = 'cable modem'; }
 		if ($oid == '1.3.6.1.4.1.4526.1.2') { $new->model = 'FSM750S Managed Switch'; $new->type = 'switch'; }
 		if ($oid == '1.3.6.1.4.1.4526.1.3') { $new->model = 'GSM712 Managed Switch'; $new->type = 'switch'; }
 		if ($oid == '1.3.6.1.4.1.4526.1.4') { $new->model = 'FSM726 Managed Switch'; $new->type = 'switch'; }

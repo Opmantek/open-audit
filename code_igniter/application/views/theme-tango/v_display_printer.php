@@ -737,7 +737,7 @@ function print_something($string)
 	{
 		return '-';
 	} else {
-		return $string;
+		return htmlentities($string);
 	}
 }
 

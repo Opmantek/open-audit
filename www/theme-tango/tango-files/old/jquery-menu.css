@@ -1,0 +1,35 @@
+/* Basic code - don't modify */
+ 
+#nav { display: block; margin: 0; padding: 0; position: relative; }
+#nav li { display: block; list-style: none; margin: 0; padding: 0; float: left; position: relative; }
+#nav a { display: block; }
+#nav ul { display: none; position: absolute; left: 0; margin: 0; padding: 0; }
+* html #nav ul { line-height: 0; } /* IE6 "fix" */
+#nav ul a { zoom: 1; } /* IE6/7 fix */
+#nav ul li { float: none; }
+#nav ul ul { top: 0; }
+    
+/* Essentials - configure this */
+
+#nav ul { width: 140px; }
+#nav ul ul { left: 141px; }
+
+/* Everything else is theming */
+
+/* removed width: 950px;  from #nav */
+
+/*
+#nav { background-color: #f0e7d3; height: 24px; background-image: url(menu.png); }
+#nav *:hover { background-color: transparent; }
+*/
+
+#nav { background-color: #ffffff; height: 24px; background-image: url(menu.png); }
+#nav *:hover { background-color: #ffffff; }
+#nav a { color: black; font-size: 10pt; padding: 6px; line-height: 1; font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; }
+  #nav li.hover a { background-color: #f0e7d3; }
+  #nav ul { top: 25px; }
+    #nav ul li a { background-color: #f0e7d3; }
+      #nav ul li.hover > a { background-color: #f0e7d3; opacity: 1; filter: alpha(opacity=90); }
+   #nav ul a { border-bottom: 1px solid #cdb98c; border-right: 1px solid #cdb98c; opacity: 0.9; filter: alpha(opacity=90); }
+/* #nav ul a { border-bottom: none; } - I also needed this for IE6/7 */
+

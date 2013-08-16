@@ -3,8 +3,7 @@ include "v_lang.php";
 $file_path = base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/';
 if (!isset($sortcolumn)) { $sortcolumn = '0';}
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -49,7 +48,7 @@ if (!isset($sortcolumn)) { $sortcolumn = '0';}
 	<script type="text/javascript">
 	$(document).ready(function() {
 		$(function() {
-			$("table").tablesorter({widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
+			$("table").tablesorter({cancelSelection: false, widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
 		});
 	});
 	// note - the below variable would normally be set in instantedit.js 
@@ -710,7 +709,7 @@ if (!isset($sortcolumn)) { $sortcolumn = '0';}
 	<div id="content_container" style="float: left; width: 100%">
 	<?php 
 	if (isset($query) and $include != 'v_add_user'){
-		echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>" . __($heading) . "</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>" . count($query) . " results</h2></div>\n\t\t</div>\n";
+		echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>" . $heading . "</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>" . count($query) . " results</h2></div>\n\t\t</div>\n";
 	} else {
 		echo "<h2>" . __($heading) . "</h2>\n";
 	}

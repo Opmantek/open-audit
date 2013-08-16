@@ -185,6 +185,13 @@ class MY_Controller extends CI_Controller {
 	function csv_report($query) {
 		$csv = "";
 		foreach ($query AS $details) {
+			if ($csv == "") {
+				foreach ($details as $attribute=>$value) {
+					$csv .= "\"" . trim($attribute) . "\",";
+				}
+				$csv = mb_substr($csv, 0, mb_strlen($csv) -1);
+				$csv .= "\n";
+			}
 			foreach ($details as $attribute=>$value) {
 				if ($attribute == "man_ip_address") {
 					$value = ip_address_from_db($value); 
