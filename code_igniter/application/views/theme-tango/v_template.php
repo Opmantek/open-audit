@@ -48,7 +48,7 @@ if (!isset($sortcolumn)) { $sortcolumn = '0';}
 	<script type="text/javascript">
 	$(document).ready(function() {
 		$(function() {
-			$("table").tablesorter({widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
+			$("table").tablesorter({cancelSelection: false, widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
 		});
 	});
 	// note - the below variable would normally be set in instantedit.js 
