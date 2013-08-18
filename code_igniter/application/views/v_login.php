@@ -1,13 +1,13 @@
 <?php
 /**
- * OAv2
+ * Open-AudIT
  *
  * An open source network auditing application
  *
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin <mark.unwin@gmail.com>
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version v1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
  
@@ -38,7 +38,8 @@ if (!isset($logo)) {
 	#container { width: 950px; margin: 0 auto; padding: 10px 0;}
 	a { color: #101010; text-decoration: none }
 	a:hover { color: #729FCF; }
-	body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #dcd2bd; font-size:12px; color:#111;}
+	<!-- body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #dcd2bd; font-size:12px; color:#111;} -->
+	body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #fff; font-size:12px; color:#111;}
 	h2 { border-color:#DBD9C5; border-style:solid; border-width:0pt 0pt 1px; color:#555555; font-size:22px; font-weight:bold; padding:0px 0px 1px; }
 	img {border:0;}
 	</style>
@@ -65,7 +66,7 @@ if (!isset($logo)) {
 </div>
 <?php if (isset($oae_message)){ 
 	echo "<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>\n";
-	echo "\t\t" . $oae_message . "<br />\n";
+	echo "\t\t<span style='font-size: 12pt;'>" . $oae_message . "<br /></span>\n";
 	#echo "\t\t<img src='/theme-tango/tango-images/logo_oac-oae.png' />\n";
 	echo "</div>\n";
 }
