@@ -199,7 +199,7 @@
 	<?php if (isset($export_report)) { ?>
 		<?php if (isset($group_id)) { ?>
 			<?php if (($config->non_admin_search == 'y') or ($user_admin == 'y')) { ?>
-				<li style="float: right; position: relative; top:-2px; padding-right: 4px;">
+				<li style="float: right; position: relative; top:-4px; padding-right: 4px;">
 					<form name="search_form" action="<?php echo base_url()?>index.php/main/search/<?php echo $group_id; ?>/" method="post">
 						<table>
 							<tr>
