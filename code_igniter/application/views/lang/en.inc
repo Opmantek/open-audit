@@ -639,4 +639,7 @@ $GLOBALS["lang"]["Yes"]="Yes";
 $GLOBALS["lang"]["Your Open-AudIT database contains the following devices in a production state:"]="Your Open-AudIT database contains the following devices in a production state:";
 $GLOBALS["lang"]["Your Open-AudIT v2.0 database contains the following devices in a production state:"]="Your Open-AudIT v2.0 database contains the following devices in a production state:";
 $GLOBALS["lang"]["Your Open-AudIT v2.0 database contains:"]="Your Open-AudIT v2.0 database contains:";
+$GLOBALS["lang"]["HTML"]="HTML";
+$GLOBALS["lang"]["JSON"]="JSON";
+$GLOBALS["lang"]["XML"]="XML";
 ?>
