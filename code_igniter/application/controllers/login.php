@@ -63,7 +63,7 @@ class Login extends CI_Controller {
 		echo "<!-- " . $license . " -->";
 		$data['logo'] = "logo-banner-oac-oae.png";
 		$data['oae_message'] = "";
-
+		$license = "expired";
 		if ($oae_url == "") {
 			# OAE is not installed
 			# set the logo and show the logon page

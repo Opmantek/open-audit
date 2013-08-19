@@ -709,9 +709,9 @@ if (!isset($sortcolumn)) { $sortcolumn = '0';}
 	<div id="content_container" style="float: left; width: 100%">
 	<?php 
 	if (isset($query) and $include != 'v_add_user'){
-		echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>" . $heading . "</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>" . count($query) . " results</h2></div>\n\t\t</div>\n";
+		echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>" . $heading . "</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>" . count($query) . " " . __("results") . "</h2></div>\n\t\t</div>\n";
 	} else {
-		echo "<h2>" . __($heading) . "</h2>\n";
+		echo "<h2>" . $heading . "</h2>\n";
 	}
 	$this->load->view("theme-" . $user_theme . "/" . $include); 
 	?>
