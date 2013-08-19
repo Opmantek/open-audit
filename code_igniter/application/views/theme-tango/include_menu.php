@@ -18,10 +18,6 @@
 		$menu[] = $new_object;
 	}
 
-foreach ($menu as $report) {
-	echo $report->report_name;
-}
-
 	#a sort function for $menuso the items added above are in their correct alphabetical order
 	function cmp($a, $b)
 	{
