@@ -14,11 +14,11 @@
 #nav ul { width: 140px; }
 #nav ul ul { left: 141px; }
 
-#nav { background-color: #555; height: 24px; color: #fff;}
+#nav { background-color: #000; height: 24px; background-image: url(images/menu-background.png); }
 #nav *:hover { background-color: #ffffff; }
-#nav a { color: #fff; font-size: 10pt; padding: 6px; line-height: 1; font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; }
-  #nav li.hover a { background-color: #777; }
+#nav a { color: black; font-size: 10pt; padding: 6px; line-height: 1; font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; }
+  #nav li.hover a { background-color: #f0e7d3; }
   #nav ul { top: 25px; }
-    #nav ul li a { background-color: #777; }
-      #nav ul li.hover > a { background-color: #888; opacity: 1; filter: alpha(opacity=90); }
-   #nav ul a { border-bottom: 1px solid #555; border-right: 1px solid #555; opacity: 0.9; filter: alpha(opacity=90); }
+    #nav ul li a { background-color: #f0e7d3; }
+      #nav ul li.hover > a { background-color: #f0e7d3; opacity: 1; filter: alpha(opacity=90); }
+   #nav ul a { border-bottom: 1px solid #cdb98c; border-right: 1px solid #cdb98c; opacity: 0.9; filter: alpha(opacity=90); }
