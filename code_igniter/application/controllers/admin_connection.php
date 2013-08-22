@@ -162,9 +162,6 @@ class Admin_connection extends MY_Controller {
 			foreach ($_POST as $key => $value) {
 				$details->$key = $value;
 			}
-			#echo "<pre>";
-			#print_r($details);
-			#echo "</pre>";
 			$this->load->model("m_oa_connection");
 			if (is_null($this->m_oa_connection->get_connection_id($details->connection_name))) {
 				#connection does not exist - good
