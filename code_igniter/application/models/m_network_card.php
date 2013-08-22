@@ -52,12 +52,31 @@ class M_network_card extends MY_Model {
 				"$details->original_timestamp", 
 				"$details->timestamp");
 		$query = $this->db->query($sql, $data);
+		echo $this->db->last_query() . "<br />\n";
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
 			// the network_card exists - need to update its timestamp
-			$sql = "UPDATE sys_hw_network_card SET timestamp = ? WHERE net_id = ?";
-			$data = array("$details->timestamp", "$row->net_id");
+			$sql = "UPDATE sys_hw_network_card SET 
+					net_dhcp_enabled = ?, 
+					net_dhcp_server = ?, 
+					net_dhcp_lease_obtained = ?, 
+					net_dhcp_lease_expires = ?, 
+					net_dns_domain = ?, 
+					net_dns_domain_reg_enabled = ?, 
+					net_dns_server = ?, 
+					timestamp = ? 
+					WHERE net_id = ?";
+			$data = array("$input->net_dhcp_enabled", 
+					"$input->net_dhcp_server", 
+					"$input->net_dhcp_lease_obtained", 
+					"$input->net_dhcp_lease_expires", 
+					"$input->net_dns_domain", 
+					"$input->net_dns_domain_reg_enabled", 
+					"$input->net_dns_server", 
+					"$details->timestamp", 
+					"$row->net_id");
 			$query = $this->db->query($sql, $data);
+			echo $this->db->last_query() . "<br />\n";
 		} else {
 			// the network_card does not exist - insert it
 			$sql = "INSERT INTO sys_hw_network_card (	
@@ -80,11 +99,8 @@ class M_network_card extends MY_Model {
 					net_dns_domain,
 					net_dns_domain_reg_enabled,
 					net_dns_server,
-					net_wins_primary,
-					net_wins_secondary,
-					net_wins_lmhosts_enabled,
 					timestamp,
-					first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+					first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->net_mac_address", 
@@ -105,12 +121,10 @@ class M_network_card extends MY_Model {
 					"$input->net_dns_domain", 
 					"$input->net_dns_domain_reg_enabled", 
 					"$input->net_dns_server", 
-					"$input->net_wins_primary", 
-					"$input->net_wins_secondary", 
-					"$input->net_wins_lmhosts_enabled", 
 					"$details->timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
+			echo $this->db->last_query() . "<br />\n";
 		}
 	} // end of function
 
