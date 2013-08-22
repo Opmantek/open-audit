@@ -77,7 +77,28 @@ class M_oa_group extends MY_Model {
 		}
 	}
 
-	function update_system_groups($details) {	
+	function update_system_groups($details) {
+		if (!isset($details->type)) { $details->type = ''; }
+		if (!isset($details->man_type) or $details->man_type == '') { $details->man_type = $details->type; }
+		$sql = "DELETE FROM oa_group_sys WHERE system_id = ?";
+		$data = array("$details->system_id");
+		$query = $this->db->query($sql, $data);
+		$sql = "SELECT group_id, group_name, group_dynamic_select FROM oa_group";
+		$query = $this->db->query($sql);
+		foreach ($query->result() as $myrow) {
+			$sql_select = "SELECT man_type FROM system WHERE system_id = ? AND system_id in ( " . $myrow->group_dynamic_select . " )";
+			$data_select = array("$details->system_id", "$myrow->group_id");
+			$query_select = $this->db->query($sql_select, $data_select);
+			if ($query_select->num_rows() > 0){
+				// insert a row because the system matches the select criteria
+				$sql_insert = "INSERT INTO oa_group_sys (system_id, group_id, group_sys_type) VALUES (?, ?, ?)";
+				$data_insert = array("$details->system_id", "$myrow->group_id", "$details->man_type");
+				$query_insert = $this->db->query($sql_insert, $data_insert);
+			}
+		}
+	}
+
+	function update_system_groups_old($details) {	
 		//select all dynamic groups
 		$sql = "SELECT group_id, group_name, group_dynamic_select FROM oa_group";
 		$query = $this->db->query($sql);
