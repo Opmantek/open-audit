@@ -1,13 +1,13 @@
 <?php
 /**
- * OAv2
+ * Open-AudIT
  *
  * An open source network auditing application
  *
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin <mark.unwin@gmail.com>
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version v1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -80,7 +80,7 @@ class M_oa_report extends MY_Model {
 	}
 
 	function get_report_id($report_name) {
-		$sql = "SELECT report_id FROM oa_report WHERE report_name = ? LIMIT 1";
+		$sql = "SELECT report_id FROM oa_report WHERE LOWER(report_name) = LOWER(?) LIMIT 1";
 		$data = array("$report_name");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
