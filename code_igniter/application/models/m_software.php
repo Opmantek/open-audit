@@ -284,7 +284,6 @@ class M_software extends MY_Model {
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->original_timestamp", "$details->system_id");
 		$query = $this->db->query($sql, $data);
-		echo $this->db->last_query() . "<br />\n";
 		foreach ($query->result() as $myrow) { 
 			if ( $myrow->software_version == '' ) {
 				$version = '';
