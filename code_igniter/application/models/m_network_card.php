@@ -52,7 +52,6 @@ class M_network_card extends MY_Model {
 				"$details->original_timestamp", 
 				"$details->timestamp");
 		$query = $this->db->query($sql, $data);
-		echo $this->db->last_query() . "<br />\n";
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
 			// the network_card exists - need to update its timestamp
@@ -76,7 +75,6 @@ class M_network_card extends MY_Model {
 					"$details->timestamp", 
 					"$row->net_id");
 			$query = $this->db->query($sql, $data);
-			echo $this->db->last_query() . "<br />\n";
 		} else {
 			// the network_card does not exist - insert it
 			$sql = "INSERT INTO sys_hw_network_card (	
@@ -124,7 +122,6 @@ class M_network_card extends MY_Model {
 					"$details->timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
-			echo $this->db->last_query() . "<br />\n";
 		}
 	} // end of function
 
