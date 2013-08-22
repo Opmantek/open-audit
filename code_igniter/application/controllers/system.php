@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin
- * @version beta 8.1
- * @copyright Mark Unwin, 2011
+ * @version 1.0.4
+ * @copyright Opmantek, 2013
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
  
@@ -15,7 +15,6 @@ class System extends CI_Controller {
 		# No need for "user" to be logged in
 		# Have to be able to submit systems via the audit script
 		$this->data['title'] = 'Open-AudIT';
-
 		$this->load->library('session');
 		$loggedin = @$this->session->userdata('logged_in');
 	}
@@ -89,8 +88,6 @@ class System extends CI_Controller {
 					$details->snmp_community = @$decoded_access_details->snmp_community;
 					$details->snmp_version = @$decoded_access_details->snmp_version;
 					$details->snmp_port = @$decoded_access_details->snmp_port;
-					#$details->snmp_community = 'OMKread';
-					#$details->snmp_version = '2c';
 					get_snmp($details);
 				}
 
@@ -291,35 +288,35 @@ class System extends CI_Controller {
 					}
 					$this->m_sys_man_audits->insert_audit($details);
 			}
-			if ($child->getName() == 'audit_wmi_fail') 	{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_sys_man_audits->update_wmi_fails($xml->audit_wmi_fail, $details); }
-			if ($child->getName() == 'windows') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_windows->process_windows($xml->windows, $details); }
-			if ($child->getName() == 'bios') 			{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_bios->process_bios($xml->bios, $details); }
-			if ($child->getName() == 'processor') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_processor->process_processor($xml->processor, $details); } 
-			if ($child->getName() == 'motherboard') 	{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_motherboard->process_motherboard($xml->motherboard, $details); }
-			if ($child->getName() == 'database') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_database->process_database($xml->database, $details); }
-			if ($child->getName() == 'webserver') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_webserver->process_webserver($xml->webserver, $details); }
-			if ($child->getName() == 'services') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_service->process_service($xml->services, $details); }
-			if ($child->getName() == 'software') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_software->process_software($xml->software, $details); }
-			if ($child->getName() == 'dns') 			{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->dns->dns_entry as $input) 	{ $this->m_dns->process_dns($input, $details); } }
-			if ($child->getName() == 'database_details'){ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->database_details->details as $input)	{ $this->m_database_details->process_db_details($input, $details); } }
-			if ($child->getName() == 'groups') 			{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->groups->group as $input) 		{ $this->m_group->process_group($input, $details); } }
-			if ($child->getName() == 'hard_disks') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->hard_disks->hard_disk as $input) 	{ $this->m_hard_drive->process_hard_drive($input, $details); } }
-			if ($child->getName() == 'logs') 			{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->logs->log as $input) 			{ $this->m_log->process_log($input, $details); } }
-			if ($child->getName() == 'memory') 			{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->memory->slot as $input) 		{ $this->m_memory->process_memory($input, $details); } }
-			if ($child->getName() == 'monitors') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->monitors->monitor as $input) 		{ $this->m_monitor->process_monitor($input, $details); } }
-			if ($child->getName() == 'addresses') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->addresses->ip_address as $input) 	{ $this->m_ip_address->process_addresses($input, $details); } }
-			if ($child->getName() == 'partitions') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->partitions->partition as $input) 	{ $this->m_partition->process_partitions($input, $details); } }
-			if ($child->getName() == 'printers') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->printers->printer as $input) 		{ $this->m_printer->process_printer($input, $details); $this->m_print_queue->process_print_queue($input, $details);} }
-			if ($child->getName() == 'routes') 			{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->routes->route as $input) 		{ $this->m_route->process_route($input, $details); } }
-			if ($child->getName() == 'shares') 			{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->shares->share as $input) 		{ $this->m_share->process_shares($input, $details); } }
-			if ($child->getName() == 'software_keys')	{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->software_keys->key as $input) 		{ $this->m_software_key->process_software_key($input, $details); } }
-			if ($child->getName() == 'sound_cards') 	{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->sound_cards->sound_card as $input) 	{ $this->m_sound->process_sound_cards($input, $details); } }
-			if ($child->getName() == 'users') 			{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->users->user as $input) 			{ $this->m_user->process_user($input, $details); } }
-			if ($child->getName() == 'variables') 		{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->variables->variable as $input) 		{ $this->m_variable->process_variable($input, $details); } }
-			if ($child->getName() == 'video_cards') 	{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->video_cards->video_card as $input) 	{ $this->m_video->process_video_cards($input, $details); } }
+			if ($child->getName() == 'addresses') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->addresses->ip_address as $input) { $this->m_ip_address->process_addresses($input, $details); } }
+			if ($child->getName() == 'audit_wmi_fail') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_sys_man_audits->update_wmi_fails($xml->audit_wmi_fail, $details); }
+			if ($child->getName() == 'bios') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_bios->process_bios($xml->bios, $details); }
+			if ($child->getName() == 'database') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_database->process_database($xml->database, $details); }
+			if ($child->getName() == 'database_details'){ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->database_details->details as $input) { $this->m_database_details->process_db_details($input, $details); } }
+			if ($child->getName() == 'dns') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->dns->dns_entry as $input) { $this->m_dns->process_dns($input, $details); } }
+			if ($child->getName() == 'groups') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->groups->group as $input) { $this->m_group->process_group($input, $details); } }
+			if ($child->getName() == 'hard_disks') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->hard_disks->hard_disk as $input) { $this->m_hard_drive->process_hard_drive($input, $details); } }
+			if ($child->getName() == 'logs') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->logs->log as $input) { $this->m_log->process_log($input, $details); } }
+			if ($child->getName() == 'memory') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->memory->slot as $input) { $this->m_memory->process_memory($input, $details); } }
+			if ($child->getName() == 'monitors') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->monitors->monitor as $input) { $this->m_monitor->process_monitor($input, $details); } }
+			if ($child->getName() == 'motherboard') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_motherboard->process_motherboard($xml->motherboard, $details); }
+			if ($child->getName() == 'network_cards') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->network_cards->network_card as $input) { $this->m_network_card->process_network_cards($input, $details); } }
+			if ($child->getName() == 'optical_drives') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->optical_drives->optical_drive as $input) { $this->m_optical_drive->process_optical_drives($input, $details); } }
+			if ($child->getName() == 'partitions') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->partitions->partition as $input) { $this->m_partition->process_partitions($input, $details); } }
+			if ($child->getName() == 'printers') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->printers->printer as $input) { $this->m_printer->process_printer($input, $details); $this->m_print_queue->process_print_queue($input, $details);} }
+			if ($child->getName() == 'processor') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_processor->process_processor($xml->processor, $details); } 
+			if ($child->getName() == 'routes') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->routes->route as $input) { $this->m_route->process_route($input, $details); } }
 			if ($child->getName() == 'scsi_controllers'){ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->scsi_controllers->scsi_controller as $input) { $this->m_scsi_controller->process_scsi_controller($input, $details); } }
-			if ($child->getName() == 'optical_drives') 	{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->optical_drives->optical_drive as $input) { $this->m_optical_drive->process_optical_drives($input, $details); } }
-			if ($child->getName() == 'network_cards') 	{ $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->network_cards->network_card as $input) 	 { $this->m_network_card->process_network_cards($input, $details); } }
+			if ($child->getName() == 'services') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_service->process_service($xml->services, $details); }
+			if ($child->getName() == 'shares') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->shares->share as $input) { $this->m_share->process_shares($input, $details); } }
+			if ($child->getName() == 'software') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_software->process_software($xml->software, $details); }
+			if ($child->getName() == 'software_keys') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->software_keys->key as $input) { $this->m_software_key->process_software_key($input, $details); } }
+			if ($child->getName() == 'sound_cards') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->sound_cards->sound_card as $input) { $this->m_sound->process_sound_cards($input, $details); } }
+			if ($child->getName() == 'users') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->users->user as $input) { $this->m_user->process_user($input, $details); } }
+			if ($child->getName() == 'variables') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->variables->variable as $input) { $this->m_variable->process_variable($input, $details); } }
+			if ($child->getName() == 'video_cards') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->video_cards->video_card as $input) { $this->m_video->process_video_cards($input, $details); } }
+			if ($child->getName() == 'webserver') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_webserver->process_webserver($xml->webserver, $details); }
+			if ($child->getName() == 'windows') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_windows->process_windows($xml->windows, $details); }
 		} 
 		$this->m_sys_man_audits->update_audit($details, 'finished xml processing');
 
@@ -348,7 +345,7 @@ class System extends CI_Controller {
 		}
 		
 		$this->m_sys_man_audits->update_audit($details, 'now generate any needed alerts'); 
-		if (($details->original_timestamp != '') && ($details->original_timestamp != $details->timestamp)) {
+		if ($details->original_timestamp != '')  {
 			$this->m_sys_man_audits->update_audit($details, 'alerts'); 
 			// We have to go through all tables, checking for
 			// entries with current_timestamp = first_timestamp
@@ -379,7 +376,6 @@ class System extends CI_Controller {
 			$this->m_video->alert_video($details);
 			#$this->m_database_details->alert_db_details($details);  #TODO: check if this is complete
 		}
-		
 		
 		$this->load->model("m_oa_group");
 		// update any tags for new printers
