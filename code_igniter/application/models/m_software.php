@@ -1,13 +1,9 @@
 <?php
 /**
- * OAv2
- *
- * An open source network auditing application
- *
- * @package OAv2
- * @author Mark Unwin <mark.unwin@gmail.com>
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @package Open-AudIT
+ * @author Mark Unwin
+ * @version 1.0.4
+ * @copyright Opmantek, 2013
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -98,10 +94,10 @@ class M_software extends MY_Model {
 		// select all the current software from the DB
 		$sql = "SELECT sys_sw_software.* 
 				FROM sys_sw_software, system 
-				WHERE sys_sw_software.system_id 	= system.system_id AND 
-					system.system_id		= ? AND 
-					system.man_status		= 'production' AND 
-					sys_sw_software.timestamp 	= ? ";
+				WHERE sys_sw_software.system_id = system.system_id AND 
+					system.system_id = ? AND 
+					system.man_status = 'production' AND 
+					sys_sw_software.timestamp = ? ";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->system_id", "$details->original_timestamp");
 		$query = $this->db->query($sql, $data);
@@ -280,21 +276,15 @@ class M_software extends MY_Model {
 
 	function alert_software($details) {
 		// software no longer detected
-		$sql = "SELECT 
-					sys_sw_software.software_id, 
-					sys_sw_software.software_name, 
-					sys_sw_software.software_version
-				FROM 	
-					sys_sw_software, 
-					system
-				WHERE 	
-					sys_sw_software.system_id = system.system_id AND
-					sys_sw_software.timestamp = ? AND
-					system.system_id = ? AND
-					system.timestamp = ?";
+		$sql = "SELECT sys_sw_software.software_id, sys_sw_software.software_name, 
+		sys_sw_software.software_version FROM sys_sw_software LEFT JOIN system 
+		ON (sys_sw_software.system_id = system.system_id) WHERE 
+		sys_sw_software.timestamp = sys_sw_software.first_timestamp AND 
+		sys_sw_software.timestamp = ? AND system.system_id = ?";
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
+		$data = array("$details->original_timestamp", "$details->system_id");
 		$query = $this->db->query($sql, $data);
+		echo $this->db->last_query() . "<br />\n";
 		foreach ($query->result() as $myrow) { 
 			if ( $myrow->software_version == '' ) {
 				$version = '';
@@ -306,15 +296,13 @@ class M_software extends MY_Model {
 		}
 		
 		// new software
-		$sql = "SELECT sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_version
-				FROM 	sys_sw_software, system
-				WHERE 	sys_sw_software.system_id = system.system_id AND
-						sys_sw_software.timestamp = sys_sw_software.first_timestamp AND
-						sys_sw_software.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT sys_sw_software.software_id, sys_sw_software.software_name, 
+		sys_sw_software.software_version FROM sys_sw_software LEFT JOIN system 
+		ON (sys_sw_software.system_id = system.system_id) WHERE 
+		sys_sw_software.timestamp = sys_sw_software.first_timestamp AND 
+		sys_sw_software.timestamp = ? AND system.system_id = ?";
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
+		$data = array("$details->timestamp", "$details->system_id");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			if ((mb_strpos($myrow->software_name, 'Hotfix') !== false) OR (mb_strpos($myrow->software_name, 'Update') !== false) OR (mb_strpos($myrow->software_name, '(KB') !== false)){
