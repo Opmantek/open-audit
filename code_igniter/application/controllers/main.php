@@ -502,6 +502,7 @@ class Main extends MY_Controller {
 		$this->load->model("m_oa_location");
 		$this->load->model("m_oa_org");
 		$this->load->model("m_optical_drive");
+		$this->load->model("m_pagefile");
 		$this->load->model("m_partition");
 		$this->load->model("m_print_queue");
 		$this->load->model("m_printer");
@@ -551,6 +552,7 @@ class Main extends MY_Controller {
 		$this->data['optical'] = $this->m_optical_drive->get_system_optical($this->data['id']);
 		$this->data['orgs'] = $this->m_oa_org->get_all_orgs();
 		$this->data['partition'] = $this->m_partition->get_system_partition($this->data['id']);
+		$this->data['pagefile'] = $this->m_pagefile->get_system_pagefile($this->data['id']);
 		$this->data['print_queue'] = $this->m_print_queue->get_print_queue($this->data['id']);
 		$this->data['printer'] = $this->m_printer->get_system_printer($this->data['id']);
 		$this->data['processor'] = $this->m_processor->get_system_processor($this->data['id']);
