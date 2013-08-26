@@ -21,7 +21,8 @@ class M_pagefile extends MY_Model {
 		$sql = "SELECT 
 				pagefile_name, 
 				pagefile_initial_size, 
-				pagefile_max_size
+				pagefile_max_size, 
+				pagefile_size 
 			FROM 
 				sys_sw_pagefile,
 				system
@@ -40,33 +41,34 @@ class M_pagefile extends MY_Model {
 
 	function process_pagefile($input, $details) {
 		// need to check for pagefile changes
+		# check and set this value as it is new to the audit script
+		if (!isset($input->size)) { $input->size = ''; }
 		$sql = "SELECT 
 				sys_sw_pagefile.pagefile_id
 			FROM 
-				sys_sw_pagefile, 
-				system 
-			WHERE 	
-				sys_sw_pagefile.system_id 	= system.system_id AND 
-				system.system_id		= ? AND 
-				system.man_status 		= 'production' AND 
-				pagefile_name 		= ? AND 
-				pagefile_initial_size 	= ? AND 
-				pagefile_max_size	= ? AND
+				sys_sw_pagefile
+			LEFT JOIN 
+				system ON (sys_sw_pagefile.system_id = system.system_id ) 
+			WHERE 
+				system.system_id = ? AND 
+				pagefile_name = ? AND 
+				pagefile_initial_size = ? AND 
+				pagefile_max_size = ? AND 
 				( sys_sw_pagefile.timestamp = ? OR 
 				sys_sw_pagefile.timestamp 	= ? )";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->system_id", 
-				"$input->pagefile_name", 
-				"$input->pagefile_initial_size", 
-				"$input->pagefile_max_size", 
+				"$input->file_name", 
+				"$input->initial_size", 
+				"$input->max_size", 
 				"$details->original_timestamp", 
 				"$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
 			// the pagefile exists - need to update its timestamp
-			$sql = "UPDATE sys_sw_pagefile SET timestamp = ? WHERE pagefile_id = ?";
-			$data = array("$details->timestamp", "$row->pagefile_id");
+			$sql = "UPDATE sys_sw_pagefile SET timestamp = ?, filesize = ? WHERE pagefile_id = ?";
+			$data = array("$details->timestamp", "$input->size", "$row->pagefile_id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the pagefile does not exist - insert it
@@ -75,13 +77,15 @@ class M_pagefile extends MY_Model {
 					pagefile_name, 
 					pagefile_initial_size, 
 					pagefile_max_size, 
+					pagefile_size, 
 					timestamp,
-					first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ? )";
+					first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
-					"$input->pagefile_name", 
-					"$input->pagefile_initial_size", 
-					"$input->pagefile_max_size", 
+					"$input->file_name", 
+					"$input->initial_size", 
+					"$input->max_size", 
+					"$input->size", 
 					"$details->timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);

@@ -98,15 +98,26 @@ class Ajax extends MY_Controller {
 		$url = str_replace("%3A", ":", current_url());
 		$url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
 		$url_array = explode('/', $url);
-		for ($i=0; $i<count($url_array); $i++) {
-			if ( $url_array[$i] == "update_config" ) { $config_name = $url_array[$i+1]; }
+		echo $url . "<br />";
+		echo $_SERVER['QUERY_STRING'] . "<br />\n";
+		if (strpos($_SERVER['QUERY_STRING'], "name=") !== FALSE) {
+			# we have a GET style request from the Bootstrap theme.
+			$i = explode('&', $_SERVER['QUERY_STRING']);
+			# get the config name
+			$config_name = urldecode(str_replace('name=', '', $i[0]));
+			# get the new config value
+			$config_value = urldecode(str_replace('value=', '', $i[1]));
+		} else {
+			for ($i=0; $i<count($url_array); $i++) {
+				if ( $url_array[$i] == "update_config" ) { $config_name = $url_array[$i+1]; }
+			}
+			$config_name = str_replace("%5E%5E%5E", "/", $config_name);
+			$location = strpos($url, $config_name);
+			$config_value = substr($url, $location);
+			$location = strpos($config_value, "/");
+			$config_value = substr($config_value, $location);
+			$config_value = substr($config_value, 1);
 		}
-		$config_name = str_replace("%5E%5E%5E", "/", $config_name);
-		$location = strpos($url, $config_name);
-		$config_value = substr($url, $location);
-		$location = strpos($config_value, "/");
-		$config_value = substr($config_value, $location);
-		$config_value = substr($config_value, 1);
         $config_value = str_replace("%5E%5E%5E", "/", $config_value);
 		$this->load->model("m_oa_config");
 		if ($config_value == '-') {$config_value = '';}

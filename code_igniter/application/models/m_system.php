@@ -510,12 +510,36 @@ class M_system extends MY_Model {
 		return ($result);
 	}
 
-	function delete_non_production_systems() {
-		$sql = "DELETE FROM system WHERE man_status = 'deleted'";
+	function count_non_production_systems() {
+		$sql = "SELECT COUNT(*) AS count FROM system WHERE man_status <> 'production'";
 		$query = $this->db->query($sql);
-		return($this->db->affected_rows() . " systems deleted.");
+		$result = $query->result();
+		$row = $query->row();
+		return ($row->count);
 	}
 
+	function count_not_seen_days($days = 365) {
+		$sql = "SELECT COUNT(*) AS count FROM system WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+		$query = $this->db->query($sql); 
+		$row = $query->row();
+		return ($row->count);
+	}
+
+	function delete_systems_not_seen_days($days = 365) {
+		$sql = "DELETE FROM system WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+		$query = $this->db->query($sql); 
+		$count = $this->db->affected_rows();
+		return ($count);
+	}
+
+	function delete_non_production_systems() {
+		$sql = "DELETE FROM system WHERE man_status = 'deleted'";
+		$query = $this->db->query($sql); 
+		$count = $this->db->affected_rows();
+		return ($count);
+	}
+
+	#TODO what do we do with linked systems when the above is run from db_admin/maintenance?
 	function delete_linked_system($system_id) {
 		$sql = "DELETE FROM system WHERE linked_sys = ?";
 		$data = array("$system_id");
@@ -851,14 +875,14 @@ class M_system extends MY_Model {
 			$data = array("$details->system_id");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
-			if ($row->man_manufacturer == '' and isset($details->manufacturer)) {$details->man_manufacturer = $details->manufacturer; }
-			if ($row->man_model == '' and isset($details->model)) {$details->man_model = $details->model;}
-			if ($row->man_serial == '' and isset($details->serial)) {$details->man_serial = $details->serial;}
-			if ($row->man_description == '' and isset( $details->description)) {$details->man_description = $details->description;}
-			if ($row->man_form_factor == '' and isset($details->form_factor)) {$details->man_form_factor = $details->form_factor;}
-			if ($row->man_os_group == '' and isset($details->os_group)) {$details->man_os_group = $details->os_group;}
-			if ($row->man_os_family == '' and isset($details->os_family)) {$details->man_os_family = $details->os_family;}
-			if ($row->man_os_name == '' and isset($details->os_name)) { $details->man_os_name = $details->os_name;}
+			if ($row->man_manufacturer == '' and isset($details->manufacturer)) {$details->man_manufacturer = $details->manufacturer; } else {unset($details->man_manufacturer);}
+			if ($row->man_model == '' and isset($details->model)) {$details->man_model = $details->model;} else {unset($details->man_model);}
+			if ($row->man_serial == '' and isset($details->serial)) {$details->man_serial = $details->serial;} else {unset($details->man_serial);}
+			if ($row->man_description == '' and isset( $details->description)) {$details->man_description = $details->description;} else {unset($details->man_description);}
+			if ($row->man_form_factor == '' and isset($details->form_factor)) {$details->man_form_factor = $details->form_factor;} else {unset($details->man_form_factor);}
+			if ($row->man_os_group == '' and isset($details->os_group)) {$details->man_os_group = $details->os_group;} else {unset($details->man_os_group);}
+			if ($row->man_os_family == '' and isset($details->os_family)) {$details->man_os_family = $details->os_family;} else {unset($details->man_os_family);}
+			if ($row->man_os_name == '' and isset($details->os_name)) { $details->man_os_name = $details->os_name;} else {unset($details->man_os_name);}
 			if (isset($details->manufacturer) and (
 				(strripos($details->manufacturer, "vmware") !== false) or 
 				(strripos($details->manufacturer, "parallels") !== false) or 

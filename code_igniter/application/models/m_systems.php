@@ -1,13 +1,9 @@
 <?php
 /**
- * OAv2
- *
- * An open source network auditing application
- *
- * @package OAv2
- * @author Mark Unwin <mark.unwin@gmail.com>
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @package Open-AudIT
+ * @author Mark Unwin
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -39,25 +35,6 @@ class M_systems extends MY_Model {
 				$search_string = mb_substr($search_string, 3 );
 				$select_string = mb_substr($select_string, 1 );
 				// now create the search statement
-				/*
-				$sql = "SELECT 
-					DISTINCT(system.system_id),
-					system.hostname, 
-					$select_string 
-				FROM 
-					system, 
-					oa_group_sys, 
-					$table 
-				WHERE 
-					system.system_id = $table.system_id AND 
-					system.man_status = 'production' AND 
-					system.system_id = oa_group_sys.system_id AND 
-					oa_group_sys.group_id = '" . $group_id . "' AND 
-					system.timestamp = $table.timestamp AND 
-					( $search_string ) ";
-				*/
-
-
 				$sql = "SELECT 
 					DISTINCT(a.system_id),
 					a.hostname, 

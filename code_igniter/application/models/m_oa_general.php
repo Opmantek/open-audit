@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -47,6 +47,43 @@ class M_oa_general extends MY_Model {
 			$row = $query->row();
 			return ($row->$attribute);
 		}
+	}
+
+	function count_old_attributes($days = 7) {
+		$tables = $this->db->list_tables();
+		$string = '';
+		$return = array();
+		$object = new stdclass();
+		foreach ($tables as $table){
+			if (((strpos($table, 'sys_hw_') !== FALSE) OR (strpos($table, 'sys_sw_') !== FALSE)) AND (strpos($table, "sys_hw_warranty") === FALSE)) {
+				#$sql = "DELETE $table FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
+				#$query = $this->db->query($sql);
+				#$string .= $table . " - rows deleted = " . $this->db->affected_rows() . "<br />\n";
+				$object->table = '';
+				$object->count = '';
+				$sql = "SELECT COUNT(*) as count FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) 
+				WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
+				$query = $this->db->query($sql);
+				$row = $query->row();
+				$object->count = $row->count;
+				$object->table = $table;
+				$return[] = clone $object;
+			}
+		}
+		return($return);
+	}
+
+	function delete_non_current_attributes($days = 365) {
+		$tables = $this->db->list_tables();
+		$count = 0;
+		foreach ($tables as $table){
+			if (((strpos($table, 'sys_hw_') !== FALSE) OR (strpos($table, 'sys_sw_') !== FALSE)) AND (strpos($table, "sys_hw_warranty") === FALSE)) {
+				$sql = "DELETE $table FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
+				$query = $this->db->query($sql);
+				$count = $count + $this->db->affected_rows();
+			}
+		}
+		return($count);
 	}
 
 }

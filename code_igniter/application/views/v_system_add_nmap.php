@@ -1,18 +1,19 @@
 <?php
 /**
- * OAv2
+ * Open-AudIT
  *
  * An open source network auditing application
  *
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin <mark.unwin@gmail.com>
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version v1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-  "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en">
+
+?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>OAv2 Nmap Input</title>
 </head>

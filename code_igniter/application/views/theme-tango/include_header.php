@@ -1,6 +1,6 @@
 <div id="header" style='height: 70px; margin-left: auto; margin-right: auto; padding: 0px 0px 0px 0px; text-align: left;'>
 	<div style="width:260px; float: left; text-align: left;">
-		<a href="<?php echo base_url(); ?>">
+		<a href="<?php echo base_url(); ?>index.php/main/list_groups">
 			<img src='<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo.png' alt='logo' style='border-width:0px;' />
 		</a>
 	</div>

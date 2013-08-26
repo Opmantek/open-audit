@@ -33,9 +33,9 @@
 		echo "<li style=\"width:200px;\"><a href='" . base_url() . "index.php/main/list_devices/" . $group_id . "'>List Items</a></li>\n";
 		foreach ($menu as $report):
 			if ($report->report_id > '') {
-				echo "<li style=\"width:200px;\"><a href='" . base_url() . "index.php/report/show_report/" . $report->report_id . "/" . $group_id . "'>" .  __($report->report_name) . "</a></li>\n";
+				echo "<li style=\"width:200px;\"><a href='" . base_url() . "index.php/report/show_report/" . $report->report_id . "/" . $group_id . "'>" .  $report->report_name . "</a></li>\n";
 			} else {
-				echo "<li style=\"width:200px;\"><a href='" . base_url() . "index.php/report/" . strtolower(str_replace(" ", "_", $report->report_name)) . "/" . $group_id . "'>" .  __($report->report_name) . "</a></li>\n";
+				echo "<li style=\"width:200px;\"><a href='" . base_url() . "index.php/report/" . strtolower(str_replace(" ", "_", $report->report_name)) . "/" . $group_id . "'>" .  $report->report_name . "</a></li>\n";
 			}
 		endforeach;
 		echo "</ul>\n";
@@ -93,6 +93,7 @@
 					}
 					?>
 					<li><a href='<?php echo base_url()?>index.php/admin_db/export_table'><?php echo __('Export a Database Table')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin_db/maintenance'><?php echo __('Database Maintenance')?></a></li>
 					<li><a href='<?php echo base_url()?>index.php/admin/reset_icons'><?php echo __('Reset Device Icons')?></a></li>
 				</ul>
 			</li>

@@ -410,83 +410,6 @@ CREATE TABLE `oa_location_org` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Table structure for table `oa_net_nmap_ports`
---
-
-DROP TABLE IF EXISTS `oa_net_nmap_ports`;
-CREATE TABLE `oa_net_nmap_ports` (
-  `nmap_id` int(10) unsigned NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `port_number` int(10) unsigned NOT NULL default '0',
-  `port_protocol` varchar(10) NOT NULL default '',
-  `port_name` varchar(45) NOT NULL default '',
-  `port_version` varchar(100) NOT NULL default '',
-  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`nmap_id`),
-  KEY `system_id` (`system_id`),
-  KEY `id2` (`port_number`),
-  KEY `id3` (`port_protocol`),
-  CONSTRAINT `oa_net_nmap_ports_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `oa_net_scan_latest`
---
-
-DROP TABLE IF EXISTS `oa_net_scan_latest`;
-CREATE TABLE `oa_net_scan_latest` (
-  `scan_latest_id` int(10) NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `scan_latest_ip_address` varchar(30) NOT NULL,
-  `scan_latest_type` varchar(10) NOT NULL,
-  `scan_latest_detail` varchar(100) NOT NULL,
-  `scan_latest_frequency` tinyint(4) NOT NULL,
-  `scan_latest_date_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `scan_latest_result` varchar(20) NOT NULL,
-  `scan_latest_success` varchar(2) NOT NULL,
-  PRIMARY KEY  (`scan_latest_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `oa_net_scan_latest_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `oa_net_scan_log`
---
-
-DROP TABLE IF EXISTS `oa_net_scan_log`;
-CREATE TABLE `oa_net_scan_log` (
-  `scan_log_id` int(10) NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `scan_log_ip_address` varchar(30) NOT NULL,
-  `scan_log_type` varchar(10) NOT NULL,
-  `scan_log_detail` varchar(100) NOT NULL,
-  `scan_log_frequency` tinyint(4) NOT NULL,
-  `scan_log_date_time` datetime NOT NULL default '0000-00-00 00:00:00',
-  `scan_log_result` varchar(20) NOT NULL,
-  `scan_log_success` varchar(2) NOT NULL,
-  PRIMARY KEY  (`scan_log_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `oa_net_scan_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `oa_net_scan_type`
---
-
-DROP TABLE IF EXISTS `oa_net_scan_type`;
-CREATE TABLE `oa_net_scan_type` (
-  `scan_type_id` int(10) NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `scan_type_ip_address` varchar(30) NOT NULL,
-  `scan_type` varchar(10) NOT NULL,
-  `scan_type_detail` varchar(100) NOT NULL,
-  `scan_type_frequency` tinyint(4) NOT NULL,
-  PRIMARY KEY  (`scan_type_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `oa_net_scan_type_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
 -- Table structure for table `oa_org`
 --
 
@@ -597,24 +520,6 @@ CREATE TABLE  `oa_user_sessions` (
   PRIMARY KEY  (`session_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
-
---
--- Table structure for table `sys_hw_battery`
---
-
-DROP TABLE IF EXISTS `sys_hw_battery`;
-CREATE TABLE `sys_hw_battery` (
-  `bt_id` int(10) unsigned NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `bt_description` varchar(100) NOT NULL default '',
-  `bt_device_id` varchar(100) NOT NULL default '',
-  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`bt_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_battery_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 --
 -- Table structure for table `sys_hw_bios`
 --
@@ -712,26 +617,6 @@ CREATE TABLE `sys_hw_memory` (
   PRIMARY KEY  (`memory_id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_hw_memory_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `sys_hw_modem`
---
-
-DROP TABLE IF EXISTS `sys_hw_modem`;
-CREATE TABLE `sys_hw_modem` (
-  `modem_id` int(10) unsigned NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `modem_attached_to` varchar(100) NOT NULL default '',
-  `modem_country_selected` varchar(100) NOT NULL default '',
-  `modem_description` varchar(100) NOT NULL default '',
-  `modem_device_id` varchar(100) NOT NULL default '',
-  `modem_device_type` varchar(100) NOT NULL default '',
-  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`modem_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_modem_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1197,29 +1082,6 @@ CREATE TABLE `sys_sw_database_details` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Table structure for table `sys_sw_database_log`
---
-
-DROP TABLE IF EXISTS `sys_sw_database_log`;
-CREATE TABLE `sys_sw_database_log` (
-  `log_id` int(10) unsigned NOT NULL auto_increment,
-  `details_id` int(10) unsigned default NULL,
-  `system_id` int(10) unsigned default NULL,
-  `log_size` varchar(50) NOT NULL default '',
-  `log_last_accessed_date` varchar(50) NOT NULL default '',
-  `log_last_accessed_login_name` varchar(50) NOT NULL default '',
-  `log_last_accessed_hostname` varchar(50) NOT NULL default '',
-  `log_last_accessed_program` varchar(50) NOT NULL default '',
-  `log_last_accessed_domain` varchar(50) NOT NULL default '',
-  `log_last_accessed_username` varchar(50) NOT NULL default '',
-  `log_last_accessed_protocol` varchar(50) NOT NULL default '',
-  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`log_id`),
-  KEY `system_id` (`details_id`),
-  CONSTRAINT `sys_sw_db_details_id` FOREIGN KEY (`details_id`) REFERENCES `sys_sw_database_details` (`details_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
 -- Table structure for table `sys_sw_dns`
 --
 
@@ -1235,67 +1097,6 @@ CREATE TABLE `sys_sw_dns` (
   PRIMARY KEY  (`dns_id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_dns_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `sys_sw_firewall`
---
-
-DROP TABLE IF EXISTS `sys_sw_firewall`;
-CREATE TABLE `sys_sw_firewall` (
-  `firewall_id` int(10) unsigned NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `firewall_enabled_domain` varchar(45) NOT NULL default '',
-  `firewall_disablenotifications_domain` varchar(45) NOT NULL default '',
-  `firewall_donotallowexceptions_domain` varchar(45) NOT NULL default '',
-  `firewall_enabled_standard` varchar(45) NOT NULL default '',
-  `firewall_disablenotifications_standard` varchar(45) NOT NULL default '',
-  `firewall_donotallowexceptions_standard` varchar(45) NOT NULL default '',
-  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`firewall_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_firewall_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `sys_sw_firewall_auth_app`
---
-
-DROP TABLE IF EXISTS `sys_sw_firewall_auth_app`;
-CREATE TABLE `sys_sw_firewall_auth_app` (
-  `firewall_app_id` int(10) unsigned NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `firewall_app_name` varchar(100) NOT NULL default '',
-  `firewall_app_executable` varchar(200) NOT NULL default '',
-  `firewall_app_remote_address` varchar(45) NOT NULL default '',
-  `firewall_app_enabled` varchar(45) NOT NULL default '',
-  `firewall_app_profile` varchar(45) NOT NULL default '',
-  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`firewall_app_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_firewall_auth_app_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `sys_sw_firewall_ports`
---
-
-DROP TABLE IF EXISTS `sys_sw_firewall_ports`;
-CREATE TABLE `sys_sw_firewall_ports` (
-  `port_id` int(10) unsigned NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `port_number` int(10) unsigned NOT NULL default '0',
-  `port_protocol` varchar(45) NOT NULL default '',
-  `port_scope` varchar(45) NOT NULL default '',
-  `port_enabled` varchar(45) NOT NULL default '',
-  `port_profile` varchar(45) NOT NULL default '',
-  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`port_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_firewall_ports_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1369,6 +1170,7 @@ CREATE TABLE `sys_sw_pagefile` (
   `pagefile_name` varchar(100) NOT NULL default '',
   `pagefile_initial_size` varchar(10) NOT NULL default '',
   `pagefile_max_size` varchar(10) NOT NULL default '',
+  `pagefile_size` varchar(10) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`pagefile_id`),
@@ -1554,27 +1356,6 @@ CREATE TABLE `sys_sw_software_key` (
   PRIMARY KEY  (`key_id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_software_key_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Table structure for table `sys_sw_startup`
---
-
-DROP TABLE IF EXISTS `sys_sw_startup`;
-CREATE TABLE `sys_sw_startup` (
-  `startup_id` int(10) unsigned NOT NULL auto_increment,
-  `system_id` int(10) unsigned default NULL,
-  `startup_caption` varchar(200) NOT NULL default '',
-  `startup_name` varchar(100) NOT NULL default '',
-  `startup_command` varchar(200) NOT NULL default '',
-  `startup_description` varchar(200) NOT NULL default '',
-  `startup_location` varchar(200) NOT NULL default '',
-  `startup_user` varchar(100) NOT NULL default '',
-  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
-  PRIMARY KEY  (`startup_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_startup_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1905,12 +1686,14 @@ INSERT INTO `oa_group_column` VALUES (NULL, '1', '5', 'Description', 'man_descri
 INSERT INTO `oa_group_column` VALUES (NULL, '1', '6', 'OS / Device', 'man_os_name', 'text', '',  '', '', 'left');
 INSERT INTO `oa_group_column` VALUES (NULL, '1', '7', 'Tags', 'tag',  'text', '',  '', '', 'left');
 
-INSERT INTO `oa_group_user` VALUES  (1,1,1,10);
-
 INSERT INTO `oa_user` VALUES  (1, 'admin', '0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6', 'Administrator', 'admin@openaudit', 'en', '10', 'tango', 'y', 'y', '10', '3');
+INSERT INTO `oa_user` VALUES  (2, 'open-audit_enterprise', '43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e', 'Open-AudIT Enterprise', '', 'en', '10', 'tango', 'n', 'y', '1', '1');
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20130620', 'n', 'The internal numerical version.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.0.3', 'n', 'The version shown on the web pages.');
+INSERT INTO `oa_group_user` VALUES  (1,1,1,10);
+INSERT INTO `oa_group_user` VALUES  (2,2,1,3);
+
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20130810', 'n', 'The internal numerical version.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.0.4', 'n', 'The version shown on the web pages.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('non_admin_search', 'y', 'y', 'Enable or disable search for non-Administrators');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate. EG - open-audit.org');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1');
