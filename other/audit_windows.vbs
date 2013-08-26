@@ -2644,14 +2644,17 @@ item = ""
 set colItems = objWMIService.ExecQuery("Select * from Win32_PageFile",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_PageFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_PageFile " : end if
 for each objItem in colItems
-	item = item & "		<file_name>" & escape_xml(objItem.Name) & "</file_name>" & vbcrlf
-	item = item & "		<initial_size>" & escape_xml(objItem.InitialSize) & "</initial_size>" & vbcrlf
-	item = item & "		<max_size>" & escape_xml(objItem.MaximumSize) & "</max_size>" & vbcrlf
+	item = item & "		<pagefile>" & vbcrlf
+	item = item & "			<file_name>" & escape_xml(objItem.Name) & "</file_name>" & vbcrlf
+	item = item & "			<initial_size>" & escape_xml(objItem.InitialSize) & "</initial_size>" & vbcrlf
+	item = item & "			<size>" & escape_xml(objItem.FileSize) & "</size>" & vbcrlf
+	item = item & "			<max_size>" & escape_xml(objItem.MaximumSize) & "</max_size>" & vbcrlf
+	item = item & "		</pagefile>" & vbcrlf
 next
 if item > "" then
-	result.WriteText "	<pagefile>" & vbcrlf
+	result.WriteText "	<pagefiles>" & vbcrlf
 	result.WriteText item
-	result.WriteText "	</pagefile>" & vbcrlf
+	result.WriteText "	</pagefiles>" & vbcrlf
 end if
 
 

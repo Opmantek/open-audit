@@ -182,6 +182,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 	<li class="parent"><img alt="" src="<?php echo $image_path?>16_settings.png" id="toggle_settings_all"/><a href="#">Settings</a>
 		<ul>
 		 	<?php if (count($share) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_share.png" /><a href="#" id="toggle_settings_shares">Shares</a></li> <?php } ?> 
+		 	<?php if (count($pagefile) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_general.png" /><a href="#" id="toggle_settings_pagefile">Pagefiles</a></li> <?php } ?> 
 		 	<?php if (count($route) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_routes.png" /><a href="#" id="toggle_settings_routes">Routes</a></li> <?php } ?> 
 		 	<?php if (count($system_user) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_theme.png" /><a href="#" id="toggle_settings_users">Users</a></li> <?php } ?> 
 		 	<?php if (count($system_group) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_users.png" /><a href="#" id="toggle_settings_groups">Groups</a></li> <?php } ?> 
@@ -1561,7 +1562,37 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 
 
 
-
+	<div id="view_settings_pagefile" style="float: left; width: 100%;">
+	<?php if (isset($pagefile) and count($pagefile) > 0) { ?>
+		<br />
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="pagefile" class="niceforms">
+			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Pagefiles')?></span></legend>
+			<table cellspacing="1" class="tablesorter" style="width: 100%;">
+				<thead>
+					<tr>
+						<th align="left" ><?php echo __('File Name')?></th>
+						<th><?php echo __('Initial Size')?>&nbsp;&nbsp;&nbsp;</th>
+						<th><?php echo __('Max Size')?></th>
+						<th><?php echo __('Current Size')?></th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php foreach($pagefile as $key): ?>
+					<tr>
+						<td><?php echo $key->pagefile_name?></td>
+						<td><?php echo $key->pagefile_initial_size?></td>
+						<td><?php echo $key->pagefile_max_size?></td>
+						<td><?php echo $key->pagefile_size?></td>
+					</tr>
+				<?php endforeach; ?>
+				</tbody>
+			</table>
+		</fieldset>
+		</form>
+	<?php } ?>
+	</div>
 
 	<div id="view_settings_shares" style="float: left; width: 100%;">
 	<?php if (count($share) > 0) { ?>
@@ -1575,9 +1606,9 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 						<tr>
 							<th style='width:120px;'><?php echo __('Name')?></th>
 							<th style="text-align: right; padding: 0 20px 0 0; width:120px;"><?php echo __('Size')?></th>
-							<th style='width:120px;'><?php echo __('Caption')?></th>
+							<th><?php echo __('Caption')?></th>
 							<th><?php echo __('Path')?></th>
-							<th><?php echo __('Users')?></th>
+							<!-- <th><?php echo __('Users')?></th> -->
 						</tr>
 					</thead>
 					<tbody>
@@ -1594,7 +1625,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 							<td style="text-align: right;" ><?php echo $size?></td>
 							<td><?php echo clean_url($key_share->share_caption)?></td>
 							<td><?php echo clean_url($key_share->share_path)?></td>
-							<td><?php echo str_replace(", ", "<br />", clean_url($key_share->share_users))?></td>
+							<!-- <td><?php echo str_replace(", ", "<br />", clean_url($key_share->share_users))?></td> -->
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -2506,6 +2537,7 @@ $(document).ready(function(){
 		}
 	});
 
+	$('#view_settings_pagefile').hide();
 	$('#view_settings_shares').hide();
 	$('#view_settings_routes').hide();
 	$('#view_settings_users').hide();
@@ -2517,6 +2549,10 @@ $(document).ready(function(){
                
 	var settings_toggle = 0;
 	
+	$('#toggle_settings_pagefile').click(function(){
+		$('#view_settings_pagefile').slideToggle("fast");
+	});
+
 	$('#toggle_settings_shares').click(function(){
 		$('#view_settings_shares').slideToggle("fast");
 	});
@@ -2552,6 +2588,7 @@ $(document).ready(function(){
 	$('#toggle_settings_all').click(function(){
 		if (settings_toggle == 0)
 		{
+			$('#view_settings_pagefile').show("fast");
 			$('#view_settings_shares').show("fast");
 			$('#view_settings_routes').show("fast");
 			$('#view_settings_users').show("fast");
@@ -2564,6 +2601,7 @@ $(document).ready(function(){
 		}
 		else 
 		{
+			$('#view_settings_pagefile').hide("fast");
 			$('#view_settings_shares').hide("fast");
 			$('#view_settings_routes').hide("fast");
 			$('#view_settings_users').hide("fast");

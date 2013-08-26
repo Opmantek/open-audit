@@ -446,6 +446,7 @@ class Admin extends MY_Controller {
 
 		$web_internal_version = $this->config->item('web_internal_version');
 		$web_display_version = $this->config->item('web_display_version');
+		$this->data['message'] = '';
 		
 		$this->load->model("m_oa_config");
 		$config = $this->m_oa_config->get_config();
@@ -459,10 +460,10 @@ class Admin extends MY_Controller {
 				}
 			}
 		}
-		
-		$this->data['output'] =  "Current web version: "      . $web_display_version . " (" . $web_internal_version . ")<br />\n";
-		$this->data['output'] .= "Current database version: " . $db_display_version . " (" . $db_internal_version . ")<br /><br />\n";
-		$this->data['output'] .= "Database type: " . $this->db->platform() . "<br /><br />\n";
+		$this->data['output'] = "";
+		#$this->data['output'] =  "Current web version: "      . $web_display_version . " (" . $web_internal_version . ")<br />\n";
+		#$this->data['output'] .= "Current database version: " . $db_display_version . " (" . $db_internal_version . ")<br /><br />\n";
+		#$this->data['output'] .= "Database type: " . $this->db->platform() . "<br /><br />\n";
 
 		
 		if (($db_internal_version < '20111001') AND ($this->db->platform() == 'mysql')) {
@@ -1884,6 +1885,130 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);
 		}
 
+		if (($db_internal_version < '20130810') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.0.4 
+
+			#$sql = "ALTER TABLE sys_sw_pagefile ADD pagefile_size varchar(10) NOT NULL default ''";
+			#$this->data['output'] .= $sql . "<br /><br />\n";
+			#$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS oa_net_nmap_ports";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS oa_net_scan_latest";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS oa_net_scan_log";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS oa_net_scan_type";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_battery";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_firewire";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_floppy";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_keyboard";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_modem";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_mouse";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_onboard_device";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_scsi_device";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_tape_drive";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_hw_usb";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_antivirus";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_database_log";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_firewall";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_firewall_auth_app";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_firewall_ports";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_mapped";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_odbc";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_startup";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_system_security";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_system_security_bulletins";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_user (user_id, user_name, user_password, user_full_name, user_lang, user_theme, user_admin, user_change, user_sam, user_active) VALUES (NULL, 'open-audit_enterprise', '43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e', 'Open-AudIT Enterprise', 'en', 'tango', 'n', '0', '1', 'y')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$user_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO oa_group_user (user_id, group_id, group_user_access_level) VALUES ('" . $user_id . "', '1', '3')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20130810', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.0.4', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$this->data['message'] = "A new user 'open-audit_enterprise' has been created. This user has 'list view only' access to the All Devices group. Disable if you are not using Open-AudIT Enterprise.<br /><br />";
+		}
+
 
 
 		$config = $this->m_oa_config->get_config();
@@ -1897,8 +2022,8 @@ class Admin extends MY_Controller {
 				}
 			}
 		}
-		$this->data['output'] = "New (now current) database version: " . $db_display_version . " (" . $db_internal_version . ")<br />\n
-		<br/><br />Don't forget to use the new audit scripts!<br/>\n" . $this->data['output'];
+		$this->data['message'] .= "New (now current) database version: " . $db_display_version . " (" . $db_internal_version . ")<br />
+		Don't forget to use the new audit scripts!<br/>\n";
 		$this->data['include'] = 'v_upgrade'; 
 		$this->data['heading'] = 'Upgrade';
 		$this->load->view('v_template', $this->data);
