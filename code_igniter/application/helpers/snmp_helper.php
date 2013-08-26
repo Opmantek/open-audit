@@ -1,9 +1,9 @@
 <?php  
 /**
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -11,22 +11,39 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 if (!function_exists('get_snmp')) {
 
-	#function get_snmp($details) {
 	function get_snmp($details ) {
 		$CI =& get_instance();
+		
+		# setup the log file
+		if (php_uname('s') == 'Linux') {
+			$file = "/usr/local/open-audit/other/open-audit.log";
+		} else {
+			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+		}
+
+		$log_timestamp = date("M d H:i:s");
+		$log_hostname = php_uname('n');
+		$log_pid = getmypid();
+		$log_name = "snmp_helper.php";
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " Starting SNMP attempt on " . $details->man_ip_address . "\n";
+		$handle = fopen($file, "a");
+		fwrite($handle, $log_line);
+		fclose($handle);
+
 		if (!isset($details->system_id) or $details->system_id == '') {
 			$details->snmp_community = 'public';
 			$details->snmp_version = '2c';
 			$details->snmp_port = '161';
 		} else {
 			$encrypted_access_details = $CI->m_system->get_access_details($details->system_id);
-			if ($encrypted_access_details == '') { }
-			$decoded_access_details = $CI->encrypt->decode($encrypted_access_details);
-			$decoded_access_details = json_decode($decoded_access_details);
-			$details->snmp_community = @$decoded_access_details->snmp_community;
-			$details->snmp_version = @$decoded_access_details->snmp_version;
-			$details->snmp_port = @$decoded_access_details->snmp_port;
-			$details->man_ip_address = @$decoded_access_details->ip_address;
+			if ($encrypted_access_details > '') { 
+				$decoded_access_details = $CI->encrypt->decode($encrypted_access_details);
+				$decoded_access_details = json_decode($decoded_access_details);
+				$details->snmp_community = @$decoded_access_details->snmp_community;
+				$details->snmp_version = @$decoded_access_details->snmp_version;
+				$details->snmp_port = @$decoded_access_details->snmp_port;
+				$details->man_ip_address = @$decoded_access_details->ip_address;
+			}
 		}
 		if (!isset($details->snmp_community) or $details->snmp_community == '') { $details->snmp_community = 'public'; }
 		if (!isset($details->snmp_version) or $details->snmp_version == '') { $details->snmp_version = ''; }
@@ -88,6 +105,15 @@ if (!function_exists('get_snmp')) {
 				$details->snmp_version = '2c';
 			}
 		}
+
+		$log_timestamp = date("M d H:i:s");
+		$log_hostname = php_uname('n');
+		$log_pid = getmypid();
+		$log_name = "snmp_helper.php";
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " SNMP version " . $details->snmp_version . " connected on " . $details->man_ip_address . "\n";
+		$handle = fopen($file, "a");
+		fwrite($handle, $log_line);
+		fclose($handle);
 
 		if ($details->snmp_version == '2c') {
 
