@@ -510,12 +510,36 @@ class M_system extends MY_Model {
 		return ($result);
 	}
 
-	function delete_non_production_systems() {
-		$sql = "DELETE FROM system WHERE man_status = 'deleted'";
+	function count_non_production_systems() {
+		$sql = "SELECT COUNT(*) AS count FROM system WHERE man_status <> 'production'";
 		$query = $this->db->query($sql);
-		return($this->db->affected_rows() . " systems deleted.");
+		$result = $query->result();
+		$row = $query->row();
+		return ($row->count);
 	}
 
+	function count_not_seen_days($days = 365) {
+		$sql = "SELECT COUNT(*) AS count FROM system WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+		$query = $this->db->query($sql); 
+		$row = $query->row();
+		return ($row->count);
+	}
+
+	function delete_systems_not_seen_days($days = 365) {
+		$sql = "DELETE FROM system WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+		$query = $this->db->query($sql); 
+		$count = $this->db->affected_rows();
+		return ($count);
+	}
+
+	function delete_non_production_systems() {
+		$sql = "DELETE FROM system WHERE man_status = 'deleted'";
+		$query = $this->db->query($sql); 
+		$count = $this->db->affected_rows();
+		return ($count);
+	}
+
+	#TODO what do we do with linked systems when the above is run from db_admin/maintenance?
 	function delete_linked_system($system_id) {
 		$sql = "DELETE FROM system WHERE linked_sys = ?";
 		$data = array("$system_id");

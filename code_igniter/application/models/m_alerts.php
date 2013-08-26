@@ -14,6 +14,52 @@ class M_alerts extends MY_Model {
 	}
 
 	/**
+	 * Delete all alerts in the DB 
+	 *
+	 * @access	public
+	 * @return	int
+	 */
+	function delete_all_alerts() {
+		$sql = "DELETE FROM oa_alert_log";
+		$query = $this->db->query($sql); 
+		$count = $this->db->affected_rows();
+		return ($count);
+	}
+
+	function delete_alerts_days($days = 365) {
+		$sql = "DELETE FROM oa_alert_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+		$query = $this->db->query($sql); 
+		$count = $this->db->affected_rows();
+		return ($count);
+	}
+
+	/**
+	 * Count all alerts in the DB 
+	 *
+	 * @access	public
+	 * @return	int
+	 */
+	function count_alerts() {
+		$sql = "SELECT COUNT(*) AS count FROM oa_alert_log";
+		$query = $this->db->query($sql);
+		$row = $query->row();
+		return($row->count);
+	}
+
+	/**
+	 * All alerts in the DB older than XX days
+	 *
+	 * @access	public
+	 * @return	int
+	 */
+	function count_alerts_days($days = 7) {
+		$sql = "SELECT COUNT(*) AS count FROM oa_alert_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+		$query = $this->db->query($sql);
+		$row = $query->row();
+		return($row->count);
+	}
+
+	/**
 	 * Get the alert's for a given system 
 	 *
 	 * @access	public
