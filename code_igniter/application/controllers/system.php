@@ -303,9 +303,7 @@ class System extends CI_Controller {
 			if ($child->getName() == 'motherboard') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_motherboard->process_motherboard($xml->motherboard, $details); }
 			if ($child->getName() == 'network_cards') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->network_cards->network_card as $input) { $this->m_network_card->process_network_cards($input, $details); } }
 			if ($child->getName() == 'optical_drives') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->optical_drives->optical_drive as $input) { $this->m_optical_drive->process_optical_drives($input, $details); } }
-	
 			if ($child->getName() == 'pagefiles') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->pagefiles->pagefile as $input) { $this->m_pagefile->process_pagefile($input, $details); } }
-	
 			if ($child->getName() == 'partitions') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->partitions->partition as $input) { $this->m_partition->process_partitions($input, $details); } }
 			if ($child->getName() == 'printers') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->printers->printer as $input) { $this->m_printer->process_printer($input, $details); $this->m_print_queue->process_print_queue($input, $details);} }
 			if ($child->getName() == 'processor') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_processor->process_processor($xml->processor, $details); } 
