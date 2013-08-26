@@ -1888,9 +1888,9 @@ class Admin extends MY_Controller {
 		if (($db_internal_version < '20130810') AND ($this->db->platform() == 'mysql')) {
 			# upgrade for 1.0.4 
 
-			#$sql = "ALTER TABLE sys_sw_pagefile ADD pagefile_size varchar(10) NOT NULL default ''";
-			#$this->data['output'] .= $sql . "<br /><br />\n";
-			#$query = $this->db->query($sql);
+			$sql = "ALTER TABLE sys_sw_pagefile ADD pagefile_size varchar(10) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
 
 			$sql = "DROP TABLE IF EXISTS oa_net_nmap_ports";
 			$this->data['output'] .= $sql . "<br /><br />\n";
