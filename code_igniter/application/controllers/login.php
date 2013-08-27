@@ -69,7 +69,7 @@ class Login extends CI_Controller {
 			# set the logo and show the logon page
 			echo "<!-- OAE not installed -->\n";
 			$data['logo'] = "logo-banner-oac.png";
-			$data['oae_message'] = " ";
+			$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
 			$this->load->view('v_login', $data);
 		}
 
