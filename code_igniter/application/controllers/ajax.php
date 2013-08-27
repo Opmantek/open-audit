@@ -98,8 +98,8 @@ class Ajax extends MY_Controller {
 		$url = str_replace("%3A", ":", current_url());
 		$url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
 		$url_array = explode('/', $url);
-		echo $url . "<br />";
-		echo $_SERVER['QUERY_STRING'] . "<br />\n";
+		#echo $url . "<br />";
+		#echo $_SERVER['QUERY_STRING'] . "<br />\n";
 		if (strpos($_SERVER['QUERY_STRING'], "name=") !== FALSE) {
 			# we have a GET style request from the Bootstrap theme.
 			$i = explode('&', $_SERVER['QUERY_STRING']);
@@ -121,7 +121,8 @@ class Ajax extends MY_Controller {
         $config_value = str_replace("%5E%5E%5E", "/", $config_value);
 		$this->load->model("m_oa_config");
 		if ($config_value == '-') {$config_value = '';}
-		echo $this->m_oa_config->update_config($config_name, $config_value, $this->data['user_id'], date('Y-m-d H:i:s') );
+		$this->m_oa_config->update_config($config_name, $config_value, $this->data['user_id'], date('Y-m-d H:i:s') );
+		echo $config_value;
 	}
 
 	function update_system_man() {
