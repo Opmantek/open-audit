@@ -4,10 +4,10 @@
  *
  * An open source network auditing application
  *
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin <mark.unwin@gmail.com>
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version 1.0.4
+ * @copyright Opmantek, 2013
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -255,7 +255,7 @@ class M_system extends MY_Model {
 		if ((isset($details->man_serial) and ($details->man_serial > '') and ($details->system_id == ''))) {
 			if (isset($details->man_type) and $details->man_type > '') {$man_type = $details->man_type; }
 			if (isset($details->type) and $details->type > '') {$type = $details->type; }
-			if ($type > '' or $man_type> '') {
+			if ($type > '' or $man_type > '') {
 				$sql = "SELECT system.system_id FROM system WHERE system.man_serial = ? AND (system.man_type = ? OR system.type = ?) AND system.man_status = 'production'";
 				$data = array("$details->man_serial", "$details->man_type", "$details->type");
 				$query = $this->db->query($sql, $data);

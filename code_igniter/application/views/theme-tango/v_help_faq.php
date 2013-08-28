@@ -83,8 +83,8 @@ If we don't have the system_id, in the model m_system.php is a function called f
 	<li>Create a system key using serial number and match</li>
 	<li>Check if the MAC Address exists in the sys_hw_network_card_ip table and match</li>
 	<li>Check if the IP Address exists in the sys_hw_network_card_ip table and match</li>
-	<li>Check if the serial exists in the system table and match</li>
-	<li>Check if the serial exists in the man_serial field in the system table and match</li>
+	<li>Check if the serial and type exist in the system table and match</li>
+	<li>Check if the serial and type exists in the man_serial field in the system table and match</li>
 	<li>Check if the hostname is in the system table and match</li>
 </ol>
 
