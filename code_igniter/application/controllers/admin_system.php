@@ -132,6 +132,7 @@ class Admin_system extends MY_Controller {
 			$details->timestamp = date('Y-m-d G:i:s');
 			$details->last_seen = $details->timestamp;
 			$details->last_user = $this->data['user_full_name'];
+			$details->audits_ip = '127.0.0.1';
 			$this->m_system->update_system($details);
 			$this->m_sys_man_audits->insert_audit($details);
 		}

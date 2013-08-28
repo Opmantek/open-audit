@@ -662,4 +662,5 @@ $GLOBALS["lang"]["yes"]="yes";
 $GLOBALS["lang"]["Yes"]="Yes";
 $GLOBALS["lang"]["Your Open-AudIT database contains the following devices in a production state:"]="Your Open-AudIT database contains the following devices in a production state:";
 $GLOBALS["lang"]["Your Open-AudIT database contains:"]="Your Open-AudIT database contains:";
+$GLOBALS["lang"]["Testing"]="Testing";
 ?>

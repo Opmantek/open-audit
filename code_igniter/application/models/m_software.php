@@ -106,8 +106,11 @@ class M_software extends MY_Model {
 			$flag = 'insert';
 			// insert an 'update' tag where necessary
 			// note - CPSID_ is for Adobe updates
-			if (mb_stripos($software_xml->software_name, 'update') OR mb_stripos($software_xml->software_name, 'hotfix') OR mb_stripos($software_xml->software_name, 'CPSID_') OR mb_strpos($software_xml->software_name, 'KB')) {
-				$software_xml->software_comment = 'update';
+			if (mb_stripos($software_xml->software_name, 'update') OR 
+				mb_stripos($software_xml->software_name, 'hotfix') OR 
+				mb_stripos($software_xml->software_name, 'CPSID_') OR 
+				mb_strpos($software_xml->software_name, 'KB')) {
+					$software_xml->software_comment = 'update';
 			}
 			foreach ($result as $id => $software_db) {
 				// enumerate the array of retrieved packages, looking for a match

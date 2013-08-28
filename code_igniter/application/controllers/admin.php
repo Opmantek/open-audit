@@ -287,6 +287,9 @@ class Admin extends MY_Controller {
 					if (strpos($details->os_name, "Windows 7") !== FALSE) { $details->os_family = "Windows 7"; $details->os_name = str_replace('Windows 7', 'Microsoft Windows 7', $details->os_name); }
 					if (strpos($details->os_name, "Windows 8") !== FALSE) { $details->os_family = "Windows 8"; }
 					if (strpos($details->os_name, "2012") !== FALSE) { $details->os_family = "Windows 2012"; }
+					$details->man_os_family = $details->os_family;
+					$details->man_os_name = $details->os_name;
+
 					if (@$info[$i]['lastlogon'][0] > @$info[$i]['pwdLastSet'][0]) {
 						$details->last_seen = @$info[$i]['lastlogon'][0];
 					} else {
@@ -298,6 +301,7 @@ class Admin extends MY_Controller {
 					$m = intval($k-$l); 
 					$details->last_seen = date("Y-m-d H:i:s", $m); 
 					$details->last_seen_by = 'active directory';
+					$details->audits_ip = '127.0.0.1';
 					$details->last_user = $this->data['user_full_name'];
 					#$details->location = @$info[$i]['location'][0];
 					$details->windows_active_directory_ou = '';
@@ -307,10 +311,14 @@ class Admin extends MY_Controller {
 					}
 					$details->windows_active_directory_ou = substr($details->windows_active_directory_ou, 1);
 					$details->icon = strtolower(str_replace(" ", "_", $details->os_family));
+					$details->man_icon = $details->icon;
 					$full_name = $details->dns_hostname;
 
 					$details->man_ip_address = gethostbyname($full_name);
-					if ($details->man_ip_address == $full_name) { $details->man_ip_address = ''; }
+					if ($details->man_ip_address == $full_name) { unset($details->man_ip_address); }
+					if (isset($details->man_ip_address) and ($details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000')) {
+						unset($details->man_ip_address);
+					}
 
 					$details->system_key = $this->m_system->create_system_key($details);
 					$details->system_id = $this->m_system->find_system($details);
@@ -1887,6 +1895,7 @@ class Admin extends MY_Controller {
 
 		if (($db_internal_version < '20130810') AND ($this->db->platform() == 'mysql')) {
 			# upgrade for 1.0.4 
+			$this->load->model('m_oa_user');
 
 			$sql = "ALTER TABLE sys_sw_pagefile ADD pagefile_size varchar(10) NOT NULL default ''";
 			$this->data['output'] .= $sql . "<br /><br />\n";
@@ -1988,15 +1997,29 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "INSERT INTO oa_user (user_id, user_name, user_password, user_full_name, user_lang, user_theme, user_admin, user_change, user_sam, user_active) VALUES (NULL, 'open-audit_enterprise', '43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e', 'Open-AudIT Enterprise', 'en', 'tango', 'n', '0', '1', 'y')";
-			$this->data['output'] .= $sql . "<br /><br />\n";
-			$query = $this->db->query($sql);
+			# Add the Open-AudIT Enterprise user if not already present
+			if (!$this->m_oa_user->select_user("open-audit_enterprise")) {
+				$sql = "INSERT INTO oa_user (user_id, user_name, user_password, user_full_name, user_lang, user_theme, user_admin, user_change, user_sam, user_active) VALUES (NULL, 'open-audit_enterprise', '43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e', 'Open-AudIT Enterprise', 'en', 'tango', 'n', '0', '1', 'y')";
+				$this->data['output'] .= $sql . "<br /><br />\n";
+				$query = $this->db->query($sql);
+				$user_id = $this->db->insert_id();
+				$sql = "INSERT INTO oa_group_user (user_id, group_id, group_user_access_level) VALUES ('" . $user_id . "', '1', '3')";
+				$this->data['output'] .= $sql . "<br /><br />\n";
+				$query = $this->db->query($sql);
+				$this->data['message'] .= "A new user 'open-audit_enterprise' has been created. This user has 'list view only' access to the All Devices group. Please disable if you are not using Open-AudIT Enterprise.<br /><br />";
+			}
 
-			$user_id = $this->db->insert_id();
-
-			$sql = "INSERT INTO oa_group_user (user_id, group_id, group_user_access_level) VALUES ('" . $user_id . "', '1', '3')";
-			$this->data['output'] .= $sql . "<br /><br />\n";
-			$query = $this->db->query($sql);
+			# Add the NMIS user if not already present
+			if (!$this->m_oa_user->select_user("nmis")) {
+				$sql = "INSERT INTO oa_user (user_id, user_name, user_password, user_full_name, user_lang, user_theme, user_admin, user_change, user_sam, user_active) VALUES (NULL, 'nmis', '5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757', 'NMIS', 'en', 'tango', 'y', '0', '1', 'y')";
+				$this->data['output'] .= $sql . "<br /><br />\n";
+				$query = $this->db->query($sql);
+				$user_id = $this->db->insert_id();
+				$sql = "INSERT INTO oa_group_user (user_id, group_id, group_user_access_level) VALUES ('" . $user_id . "', '1', '3')";
+				$this->data['output'] .= $sql . "<br /><br />\n";
+				$query = $this->db->query($sql);
+				$this->data['message'] .= "A new user 'nmis' has been created. This user has admin access. Please disable if you are not using Open-AudIT Enterprise.<br /><br />";
+			}
 
 			$sql = "UPDATE oa_config set config_value = '20130810', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
@@ -2006,7 +2029,6 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$this->data['message'] = "A new user 'open-audit_enterprise' has been created. This user has 'list view only' access to the All Devices group. Disable if you are not using Open-AudIT Enterprise.<br /><br />";
 		}
 
 

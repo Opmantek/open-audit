@@ -58,6 +58,7 @@ class Admin_user extends MY_Controller {
 		$this->load->model("m_oa_user");
 		$this->load->model("m_oa_group");
 		$this->load->helper('url');
+		$this->data['url'] = current_url();
 		if (!isset($_POST['EditUser'])) {
 			# load the initial form
 			$this->data['user'] = $this->m_oa_user->get_user_details($this->data['id']);
@@ -65,7 +66,6 @@ class Admin_user extends MY_Controller {
 			$this->data['heading'] = 'Edit User';
 			$this->data['include'] = 'v_edit_user'; 
 			$this->data['sortcolumn'] = '1';
-			$this->data['url'] = current_url();
 			$this->load->view('v_template', $this->data);
 		} else {
 			# process the form

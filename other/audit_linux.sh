@@ -1300,7 +1300,7 @@ fi
 $OA_ECHO "	<software>" >> $xml_file
 
 case $system_os_family in
-		'Ubuntu' | 'Debian' )
+		'Ubuntu' | 'Debian' | 'LinuxMint' )
 			$OA_DPKGQUERY --show --showformat='\t\t<package>\n\t\t\t<software_name>${Package}</software_name>\n\t\t\t<software_version>${Version}</software_version>\n\t\t\t<software_url>${Homepage}</software_url>\n\t\t</package>\n' |\
 				$OA_SED -e 's/\&.*</</' |\
 				$OA_SED -e 's/url><.*><\/software/url><\/software/' >>\
