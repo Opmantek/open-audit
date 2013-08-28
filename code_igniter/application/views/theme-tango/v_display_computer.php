@@ -174,7 +174,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		 	<?php if (count($odbc) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_database.png" /><a href="#" id="toggle_software_odbc">ODBC Drivers</a></li> <?php } ?> 
 		 	<?php if (count($assembly) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_assembly.png" /><a href="#" id="toggle_software_assembly">Assembly</a></li> <?php } ?> 
 		 	<?php if (count($service) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_system.png" /><a href="#" id="toggle_software_services">Services</a></li> <?php } ?> 
-		 	<?php if (isset($software_key) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_authentication.png" /><a href="#" id="toggle_software_keys">Keys</a></li> <?php } ?> 
+		 	<?php if (isset($software_key) and count($software_key) > 0 and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_authentication.png" /><a href="#" id="toggle_software_keys">Keys</a></li> <?php } ?> 
 		</ul>
 	</li>
 	<?php } ?>
@@ -292,7 +292,6 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					</div>
 				<?php endforeach; ?>
 			</div>
-
 			<div style="margin-right: 120px;">
 				<label for="man_os_name"><?php echo __('OS Name')?>: </label><span id="man_os_name" <?php echo $edit?>><?php echo print_something($os_name)?></span>
 			</div>
@@ -1350,7 +1349,8 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 	</div>
 
 	<div id="view_software_updates" style="float: left; width: 100%;">
-	<?php if (($os == 'windows') && (count($updates) > 0)) { ?>
+	<?php if (count($updates) > 0) { ?>
+	<?php #if (($os == 'windows') && (count($updates) > 0)) { ?>
 		<br />
 		<br />
 		<form action="#" method="post" class="niceforms">
