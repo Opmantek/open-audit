@@ -64,6 +64,8 @@ class System extends CI_Controller {
 				$details->hostname = gethostbyaddr($details->man_ip_address);
 				$details->hostname = strtolower($details->hostname);
 				$details->domain = '';
+				$details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+				
 				if(!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
 					if (strpos($details->hostname, ".") !== FALSE) {
 						# we have a domain returned
@@ -75,11 +77,6 @@ class System extends CI_Controller {
 					}
 				}
 
-				$details->system_key = '';
-				$details->system_key = $this->m_system->create_system_key($details);
-				$details->system_id = '';
-				$details->system_id = $this->m_system->find_system($details);
-
 				if (extension_loaded('snmp')) { 
 					# try to get more information using SNMP
 					if (!isset($details->access_details)) { $details->access_details = $this->m_system->get_access_details($details->system_id); }
@@ -88,12 +85,18 @@ class System extends CI_Controller {
 					$details->snmp_community = @$decoded_access_details->snmp_community;
 					$details->snmp_version = @$decoded_access_details->snmp_version;
 					$details->snmp_port = @$decoded_access_details->snmp_port;
-					get_snmp($details);
+					$details = get_snmp($details);
 				}
+
+				$details->system_key = '';
+				$details->system_key = $this->m_system->create_system_key($details);
+				$details->system_id = '';
+				$details->system_id = $this->m_system->find_system($details);
 
 				if ((isset($details->snmp_oid)) and ($details->snmp_oid > '')){
 					# we received a result from SNMP, use this data to update or insert
 					$details->last_seen_by = 'snmp';
+					$details->audits_ip = '127.0.0.1';
 					if (isset($details->system_id) and $details->system_id != '') {
 						# we have a system_id and snmp details to update
 						$this->m_system->update_system($details);
@@ -127,6 +130,9 @@ class System extends CI_Controller {
 				echo $count . " systems processed.<br />";
 				echo "<a href='" . base_url() . "index.php/system/add_nmap'>Back to input page</a><br />\n";
 				echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
+				echo "<pre>\n";
+				print_r($details);
+				echo "</pre>\n";
 			}
 		}
 	}
@@ -145,6 +151,7 @@ class System extends CI_Controller {
 			$this->load->helper('xml');
 			$this->load->model("m_system");
 			$this->load->model("m_oa_group");
+			$this->load->model("m_sys_man_audits");
 			$timestamp = date('Y-m-d H:i:s');
 			$input = html_entity_decode($_POST['form_reportXML']);
 			$input = utf8_encode($input);
@@ -160,9 +167,13 @@ class System extends CI_Controller {
 			$count = 0;
 			foreach ($xml->children() as $child) {
 				$count++;
-				if ($child->getName() == 'computer') { $details->system_id = ($this->m_system->process_system_from_ad($child));}
-				$details->type = 'computer';
-				$this->m_oa_group->update_system_groups($details);
+				if ($child->getName() == 'computer') { 
+					$details->system_id = ($this->m_system->process_system_from_ad($child));
+					$details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+					$details->last_seen_by = "active directory";
+					$this->m_oa_group->update_system_groups($details);
+					$this->m_sys_man_audits->insert_audit($details);
+				}
 			}
 			echo "<hr>\n";
 			echo "Count: " . $count . "<br />\n";

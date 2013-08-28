@@ -109,7 +109,7 @@ class M_system extends MY_Model {
 			} 
 		}
 
-		# check if the previous hostname had 13 characters and the submittied hostname has > 13
+		# check if the previous hostname had 15 characters and the submittied hostname has > 15
 		if (isset($details->hostname) and (strlen($details->hostname) > 15) and (isset($details->uuid))) {
 			$temp_uuid = $details->uuid . "-" . substr($details->hostname, 0, 15);
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
@@ -122,6 +122,20 @@ class M_system extends MY_Model {
 			} 
 		}
 
+		# use the full hostname as provided
+		if (isset($details->hostname) and isset($details->uuid)) {
+			$temp_uuid = $details->uuid . "-" . $details->hostname;
+			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
+			$data = array("$temp_uuid");
+			$query = $this->db->query($sql, $data);
+			$row = $query->row();
+			if (count($row) > 0) { 
+				$details->system_id = $row->system_id; 
+				#echo "HIT on full hostname + uuid system_key. " . $details->system_id . "<br />";
+			} 
+		}
+
+		# check for a FQDN
 		if (isset($details->fqdn) and $details->fqdn != '' and $details->system_id == '') {
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
 			$data = array("$details->fqdn");
@@ -133,6 +147,7 @@ class M_system extends MY_Model {
 			} 
 		}
 
+		# check for a hostname + domain, making a FQDN
 		if (isset($details->hostname) and $details->hostname != '' and isset($details->domain) and $details->domain != '' and $details->system_id == '') {
 			$details->fqdn = $details->hostname . "." . $details->domain;
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
@@ -252,12 +267,12 @@ class M_system extends MY_Model {
 			}
 		}
 
-		#check hostname
+		# check hostname
 		if (isset($details->hostname) and ($details->system_id == '') ) {
 			$i = explode(".", $details->hostname);
 			$hostname = $i[0];
 			$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
-			$data = array("$details->hostname");
+			$data = array("$hostname");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { 
@@ -265,6 +280,42 @@ class M_system extends MY_Model {
 				#echo "Hit on hostname.";
 			}
 		}
+
+		# check short hostname in $details
+		if (isset($details->hostname) and ($details->system_id == '') ) {
+			if (isset($details->hostname_length) and $details->hostname_length == 'short') {
+				# we grabbed the hostname from SNMP.
+				# SNMP hostnames on Windows are truncated to 15 characters
+				$i = explode(".", $details->hostname);
+				$hostname = $i[0];
+				if (strlen($hostname) == 15) {
+					# We do have a 15 character hostname - check if this exists in the DB
+					$sql = "SELECT system.system_id FROM system WHERE hostname LIKE '" . $hostname . "%' AND system.man_status = 'production'";
+					$query = $this->db->query($sql);
+					$row = $query->row();
+					if (count($row) > 0) { 
+						$details->system_id = $row->system_id; 
+						#echo "Hit on short hostname.";
+					}
+				}
+			}
+		}
+
+		# check short hostname in database
+		if (isset($details->hostname) and strlen($details->hostname) > 15 and $details->system_id == '') {
+			$i = explode(".", $details->hostname);
+			$hostname = $i[0];
+			$hostname = substr($hostname, 0, 15);
+			$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
+			$data = array("$hostname");
+			$query = $this->db->query($sql, $data);
+			$row = $query->row();
+			if (count($row) > 0) { 
+				$details->system_id = $row->system_id; 
+				#echo "Hit on hostname.";
+			}
+		}
+
 		#echo "Returning SystemID: " . $details->system_id . "<br />\n";
 		return $details->system_id;
 
@@ -883,6 +934,7 @@ class M_system extends MY_Model {
 			if ($row->man_os_group == '' and isset($details->os_group)) {$details->man_os_group = $details->os_group;} else {unset($details->man_os_group);}
 			if ($row->man_os_family == '' and isset($details->os_family)) {$details->man_os_family = $details->os_family;} else {unset($details->man_os_family);}
 			if ($row->man_os_name == '' and isset($details->os_name)) { $details->man_os_name = $details->os_name;} else {unset($details->man_os_name);}
+			if (strlen($row->hostname) > 15 and isset($details->hostname) and strlen($details->hostname) == 15) { unset($details->hostname); }
 			if (isset($details->manufacturer) and (
 				(strripos($details->manufacturer, "vmware") !== false) or 
 				(strripos($details->manufacturer, "parallels") !== false) or 
@@ -890,11 +942,24 @@ class M_system extends MY_Model {
 				$details->form_factor = 'Virtual';
 				$details->man_form_factor = 'Virtual';
 			}
-		}
-
-		if (isset($details->last_seen_by) and $details->last_seen_by == 'snmp') {
-			$details->icon = $details->type;
-			$details->man_icon = $details->type;
+			if ($row->icon > '') {
+				if (isset($details->icon)) { 
+					unset($details->icon); 
+				}
+			} else {
+				if (!isset($details->icon) or $details->icon == '') {
+					$details->icon = $details->type;
+				}
+			}
+			if ($row->man_icon > '') {
+				if (isset($details->man_icon)) { 
+					unset($details->man_icon); 
+				}
+			} else {
+				if (!isset($details->man_icon) or $details->man_icon == '') {
+					$details->man_icon = $details->type;
+				}
+			}
 		}	
 
 		# only update system.timestamp if we have an audit result - not for nmap, snmp, etc
@@ -918,7 +983,7 @@ class M_system extends MY_Model {
 				# need to iterate through available columns and only insert where $key == valid column name
 				foreach ($columns as $column) {
 					if ($key == $column->Field) { 
-						$sql .= $key . "= '" . str_replace("'", "\'", $value) . "', "; 
+						$sql .= $key . " = '" . str_replace("'", "\'", $value) . "', "; 
 					}
 				}
 			}

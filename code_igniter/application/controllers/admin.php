@@ -287,6 +287,9 @@ class Admin extends MY_Controller {
 					if (strpos($details->os_name, "Windows 7") !== FALSE) { $details->os_family = "Windows 7"; $details->os_name = str_replace('Windows 7', 'Microsoft Windows 7', $details->os_name); }
 					if (strpos($details->os_name, "Windows 8") !== FALSE) { $details->os_family = "Windows 8"; }
 					if (strpos($details->os_name, "2012") !== FALSE) { $details->os_family = "Windows 2012"; }
+					$details->man_os_family = $details->os_family;
+					$details->man_os_name = $details->os_name;
+
 					if (@$info[$i]['lastlogon'][0] > @$info[$i]['pwdLastSet'][0]) {
 						$details->last_seen = @$info[$i]['lastlogon'][0];
 					} else {
@@ -298,6 +301,7 @@ class Admin extends MY_Controller {
 					$m = intval($k-$l); 
 					$details->last_seen = date("Y-m-d H:i:s", $m); 
 					$details->last_seen_by = 'active directory';
+					$details->audits_ip = '127.0.0.1';
 					$details->last_user = $this->data['user_full_name'];
 					#$details->location = @$info[$i]['location'][0];
 					$details->windows_active_directory_ou = '';
@@ -307,10 +311,14 @@ class Admin extends MY_Controller {
 					}
 					$details->windows_active_directory_ou = substr($details->windows_active_directory_ou, 1);
 					$details->icon = strtolower(str_replace(" ", "_", $details->os_family));
+					$details->man_icon = $details->icon;
 					$full_name = $details->dns_hostname;
 
 					$details->man_ip_address = gethostbyname($full_name);
-					if ($details->man_ip_address == $full_name) { $details->man_ip_address = ''; }
+					if ($details->man_ip_address == $full_name) { unset($details->man_ip_address); }
+					if (isset($details->man_ip_address) and ($details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000')) {
+						unset($details->man_ip_address);
+					}
 
 					$details->system_key = $this->m_system->create_system_key($details);
 					$details->system_id = $this->m_system->find_system($details);

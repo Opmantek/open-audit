@@ -18,6 +18,7 @@ submit_online="y"
 subnet=""
 syslog="y"
 url="http://localhost/index.php/system/add_nmap"
+background_wget="n"
 
 
 local_hostname=`hostname 2>/dev/null`
@@ -31,6 +32,8 @@ for arg in "$@"; do
 	parameter=$(echo "$arg" | cut -d= -f1)
 	parameter_value=$(echo "$arg" | cut -d= -f2)
 	case "$parameter" in
+		"background_wget" )
+			background_wget="$parameter_value" ;;
 		"create_file" )
 			create_file="$parameter_value" ;;
 		"debugging" )
@@ -99,7 +102,7 @@ if [ "$hosts_in_subnet" != "" ]; then
 
 			if [ $syslog == "y" ]; then
 				now=`date "+%b %e %T"`
-				echo "$now $local_hostname $$ $process Scanning Host: $host" >> /usr/local/open-audit/other/open-audit.log
+				echo "$now $local_hostname $$ $process $host being nmap scanned." >> /usr/local/open-audit/other/open-audit.log
 			fi
 
 			# options
@@ -175,6 +178,31 @@ if [ "$hosts_in_subnet" != "" ]; then
 			result="$result		<os_name>$os_name</os_name>\n"
 			result="$result		<description>$description</description>\n"
 			result="$result	</device>\n"
+
+			device="<devices>\n"
+			device="$device	<device>\n"
+			device="$device		<man_ip_address>$host</man_ip_address>\n"
+			device="$device		<mac_address>$mac_address</mac_address>\n"
+			device="$device		<manufacturer>$manufacturer</manufacturer>\n"
+			device="$device		<type>$type</type>\n"
+			device="$device		<os_name>$os_name</os_name>\n"
+			device="$device		<description>$description</description>\n"
+			device="$device	</device>\n"
+			device="$device</devices>\n"
+
+			if [[ "$submit_online" == "y" ]]; then
+				if [ $debugging -gt 0 ]; then
+					echo "Submitting online."
+				fi
+
+				device=`echo -e "$device"`
+				if [[ "$background_wget" == "n" ]]; then
+					wget -O - -q ${url} --post-data=form_nmap="$device"
+				fi
+				if [[ "$background_wget" == "y" ]]; then
+					wget -b -O - -q ${url} --post-data=form_nmap="$device" 1>/dev/null
+				fi
+			fi
 		#fi
 	done
 fi
@@ -186,7 +214,6 @@ if [ $syslog == "y" ]; then
 	echo "$now $local_hostname $$ $process Scan completed." >> /usr/local/open-audit/other/open-audit.log
 fi
 
-
 if [[ "$create_file" == "y" ]]; then
 	if [ $debugging -gt 0 ]; then
 		echo "Creating file."
@@ -197,21 +224,6 @@ fi
 
 if [[ "$echo_output" == "y" ]]; then
 	echo -e "$result"
-fi
-
-if [[ "$submit_online" == "y" ]]; then
-	if [ $debugging -gt 0 ]; then
-		echo "Submitting online."
-	fi
-	if [ $syslog == "y" ]; then
-		now=`date "+%b %e %T"`
-		echo "$now $local_hostname $$ $process Submitting online." >> /usr/local/open-audit/other/open-audit.log
-	fi
-	result=`echo -e "$result"`
-	#wget -q ${url} --post-data=form_nmap="$result"
-	wget -O - -q ${url} --post-data=form_nmap="$result"
-	#file="$working_directory/add_nmap"
-	#rm "$file"
 fi
 
 if [ $syslog == "y" ]; then
