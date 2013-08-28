@@ -2001,7 +2001,7 @@ for each objItem in colItems
 					net_connection_status = WMINetConnectorStatus(objItem2.NetConnectionStatus)
 					if (objItem2.NetConnectionStatus = "2" or objItem2.NetConnectionStatus = "9") then
 						' Found a connected NIC: detecting link speed
-						set colItems3 = objWMIService2.ExecQuery("Select * from MSNdis_LinkSpeed WHERE InstanceName = '" & net_description & "'",,32)
+						set colItems3 = objWMIService2.ExecQuery("Select * from MSNdis_LinkSpeed WHERE InstanceName = '" & escape_wmi(net_description) & "'",,32)
 						error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MSNdis_LinkSpeed)" : audit_wmi_fails = audit_wmi_fails & "MSNdis_LinkSpeed " : end if
 						for each objItem3 in colItems3
 							net_speed = objItem3.NdisLinkSpeed
@@ -6256,6 +6256,13 @@ function escape_xml(ByVal data)
 	end if
 end function
 
+function escape_wmi(ByVal data)
+	if IsNull(data) then
+		escape_wmi = ""
+	else
+		escape_wmi = replace(data, "'", "\'")
+	end if
+end function
 
 function form_factor(system_form_factor)
 	if system_form_factor = "1" then system_form_factor = "Other" end if
