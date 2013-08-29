@@ -41,7 +41,8 @@ class Report extends MY_Controller {
 	function show_report() {
 		$this->data['report_id'] = $this->uri->segment(3,0);
 		$this->data['group_id'] = $this->uri->segment(4,0);
-		$this->data['first_attribute'] = $this->uri->segment(5,0);
+		$this->data['first_attribute'] = urldecode($this->uri->segment(5,0));
+		if ($this->data['first_attribute'] == '-') { $this->data['first_attribute'] = ''; }
 		$segs = $this->uri->segment_array();
 
 		$i = 0;
