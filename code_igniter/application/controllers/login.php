@@ -29,6 +29,7 @@ class Login extends CI_Controller {
 								'id' => $this->uri->segment(5),
 								'first_attribute' => $this->uri->segment(6));
 		$this->load->model("m_oa_admin_database");
+		$this->load->model("m_oa_config");
 		$data['systems'] = $this->m_oa_admin_database->count_systems();
 		$data['logo'] = "logo.png";
 		$data['oae_message'] = "";
@@ -70,6 +71,7 @@ class Login extends CI_Controller {
 			echo "<!-- OAE not installed -->\n";
 			$data['logo'] = "logo-banner-oac.png";
 			$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
+			$this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s') );
 			$this->load->view('v_login', $data);
 		}
 
@@ -78,12 +80,14 @@ class Login extends CI_Controller {
 			# set the logo and show the logon page
 			$data['logo'] = "logo-banner-oae.png";
 			$data['oae_message'] = " ";
+			$this->m_oa_config->update_config('logo', 'oae', '', date('Y-m-d H:i:s') );
 			$this->load->view('v_login', $data);
 		}
 
 		if (($data['hidden']['page'] == "") and ($oae_url > "") and ($license == "valid")) {
 			# user going to logon page and OAE is installed and licensed
 			# redirect
+			$this->m_oa_config->update_config('logo', 'oae', '', date('Y-m-d H:i:s') );
 			redirect($oae_url);
 		}
 
@@ -91,6 +95,7 @@ class Login extends CI_Controller {
 			# OAE is installed but has an invalid license
 			# show the logon page
 			$data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a valid license.";
+			$this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s') );
 			$this->load->view('v_login', $data);
 		}
 
@@ -98,6 +103,7 @@ class Login extends CI_Controller {
 			# OAE is installed but the license has expired
 			# show the logon page
 			$data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal.";
+			$this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s') );
 			$this->load->view('v_login', $data);
 		}
 
@@ -105,6 +111,7 @@ class Login extends CI_Controller {
 			# OAE is installed but not licensed
 			# show the logon page
 			$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
+			$this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s') );
 			$this->load->view('v_login', $data);
 		}
 
@@ -112,6 +119,7 @@ class Login extends CI_Controller {
 			# catch all default
 			# show the logon page
 			$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
+			$this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s') );
 			$this->load->view('v_login', $data);
 		}
 	}

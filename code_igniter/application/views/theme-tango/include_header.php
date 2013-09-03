@@ -1,7 +1,8 @@
 <div id="header" style='height: 70px; margin-left: auto; margin-right: auto; padding: 0px 0px 0px 0px; text-align: left;'>
 	<div style="width:260px; float: left; text-align: left;">
 		<a href="<?php echo base_url(); ?>index.php/main/list_groups">
-			<img src='<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo.png' alt='logo' style='border-width:0px;' />
+			<?php if (isset($config->logo)) { ?><img src='<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-banner-<?php echo $config->logo; ?>.png' alt='logo' style='border-width:0px;' />
+			<?php } else { ?><img src='<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-banner-oac-oae.png' alt='logo' style='border-width:0px;' /><?php } ?>
 		</a>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
