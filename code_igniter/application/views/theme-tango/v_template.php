@@ -2,13 +2,14 @@
 include "v_lang.php";
 $file_path = base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/';
 if (!isset($sortcolumn)) { $sortcolumn = '0';}
+if (isset($config->logo) and $config->logo == 'oae') { $title = "Open-AudIT Enterprise"; } else { $title = "Open-AudIT"; }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<link rel="shortcut icon" href="<?php echo base_url();?>favicon.ico" type="image/x-icon" />
+	<link rel="shortcut icon" href="<?php echo base_url();?>favicon.png" type="image/x-icon" />
 	<title><?php echo $title?></title>
 	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/jquery-1.7.min.js"></script>
 	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/jquery.droppy.js"></script>
