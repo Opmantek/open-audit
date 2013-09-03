@@ -1,3 +1,4 @@
+<br />&nbsp;
 <?php
 echo form_open('change/process_edit_alert') . "\n"; 
 ?>

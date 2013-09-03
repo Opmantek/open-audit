@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin
- * @version beta 8
- * @copyright Mark Unwin, 2011
+ * @version 1.0.4
+ * @copyright Opmantek, 2013
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -41,7 +41,7 @@ class Change extends MY_Controller {
 	
 	function process_edit_alert() {
 		if (!(isset($_POST['submit']))) {
-			redirect('report/list_alerts/0');
+			redirect('/');
 		}		
 		if (isset($_POST['change_type'])) {
 			$details['change_type'] = $this->input->post('change_type');
@@ -88,7 +88,7 @@ class Change extends MY_Controller {
 		$details['alert_ack_time'] = date('Y-m-d H:i:s');
 		$this->load->model("m_alerts");
 		$result = $this->m_alerts->assign_change($details);
-		redirect('report/show_report/3/' . $this->data['group_id']);
+		redirect('/');
 	}
 
 	function add_change() {

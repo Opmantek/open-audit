@@ -1702,6 +1702,7 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis', 'n', 'y', 'Enable import / export to NMIS functions.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_url', 'http://localhost:3000/oae', 'y', 'The web server address of Open-AudIT Enterprise.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis_url', 'http://localhost/cgi-nmis8/nmiscgi.pl', 'y', 'The web server address of Open-AudIT Enterprise.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('logo', 'oac-oae', 'n', '');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('maps_url', '', 'y', 'The web server address of opMaps.');
 
 INSERT INTO oa_location (location_id, location_comments) VALUES ('', 'Default Location.');
