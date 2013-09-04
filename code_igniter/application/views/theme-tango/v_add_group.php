@@ -112,10 +112,33 @@
 		</thead>
 		<tbody>
 		<tr>
-			<td><input type='text' id='column_order_1' name='column_order_1' value='1' size='5' /></td>
-			<td><input type='text' id='column_name_1' name='column_name_1' value='Hostname' size='10' /></td>
-			<td><input type='text' id='column_variable_1' name='column_variable_1' value='hostname' size='10' /></td>
+			<td><input type='text' id='column_order_1' name='column_order_1' 		value='1' size='5' /></td>
+			<td><input type='text' id='column_name_1' name='column_name_1' 			value='Icon' size='10' /></td>
+			<td><input type='text' id='column_variable_1' name='column_variable_1' 	value='man_icon' size='10' /></td>
 			<td><select id='column_type_1' name='column_type_1' title='Column Type' >
+				<option value=''>&nbsp;</option>
+				<option value='link'><?php echo __("Link")?></option>
+				<option value='image' selected='selected'><?php echo __("Image")?></option>
+				<option value='ip_address'><?php echo __("IP Address")?></option>
+				<option value='text'><?php echo __("Text")?></option>
+				<option value='timestamp'><?php echo __("Timestamp")?></option>
+				<option value='url'><?php echo __("URL")?></option>
+			</select></td>
+			<td><input type='text' id='column_link_1' name='column_link_1' value='' /></td>
+			<td><input type='text' id='column_secondary_1' name='column_secondary_1' value='man_os_family' size='10' /></td>
+			<td><input type='text' id='column_ternary_1' name='column_ternary_1' value='' size='10' /></td>
+			<td><select id='column_align_1' name='column_align_1' title='Column Alignment' >
+				<option value='left'><?php echo __("Left")?></option>
+				<option value='right'><?php echo __("Right")?></option>
+				<option value='center' selected='selected'><?php echo __("Center")?></option>
+			</select></td>
+		</tr>
+		
+		<tr>
+			<td><input type='text' id='column_order_2' name='column_order_2' 		value='2' size='5' /></td>
+			<td><input type='text' id='column_name_2' name='column_name_2' 			value='Hostname' size='10' /></td>
+			<td><input type='text' id='column_variable_2' name='column_variable_2' 	value='hostname' size='10' /></td>
+			<td><select id='column_type_2' name='column_type_2' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link' selected='selected'><?php echo __("Link")?></option>
 				<option value='image'><?php echo __("Image")?></option>
@@ -124,31 +147,8 @@
 				<option value='timestamp'><?php echo __("Timestamp")?></option>
 				<option value='url'><?php echo __("URL")?></option>
 			</select></td>
-			<td><input type='text' id='column_link_1' name='column_link_1' value='/main/system_display/' /></td>
-			<td><input type='text' id='column_secondary_1' name='column_secondary_1' value='system_id' size='10' /></td>
-			<td><input type='text' id='column_ternary_1' name='column_ternary_1' value='' size='10' /></td>
-			<td><select id='column_align_1' name='column_align_1' title='Column Alignment' >
-				<option value='left' selected='selected'><?php echo __("Left")?></option>
-				<option value='right'><?php echo __("Right")?></option>
-				<option value='center'><?php echo __("Center")?></option>
-			</select></td>
-		</tr>
-		
-		<tr>
-			<td><input type='text' id='column_order_2' name='column_order_2' value='2' size='5' /></td>
-			<td><input type='text' id='column_name_2' name='column_name_2' value='Description' size='10' /></td>
-			<td><input type='text' id='column_variable_2' name='column_variable_2' value='man_description' size='10' /></td>
-			<td><select id='column_type_2' name='column_type_2' title='Column Type' >
-				<option value=''>&nbsp;</option>
-				<option value='link'><?php echo __("Link")?></option>
-				<option value='image'><?php echo __("Image")?></option>
-				<option value='ip_address'><?php echo __("IP Address")?></option>
-				<option value='text' selected='selected'><?php echo __("Text")?></option>
-				<option value='timestamp'><?php echo __("Timestamp")?></option>
-				<option value='url'><?php echo __("URL")?></option>
-			</select></td>
-			<td><input type='text' id='column_link_2' name='column_link_2' value='' /></td>
-			<td><input type='text' id='column_secondary_2' name='column_secondary_2' value='' size='10' /></td>
+			<td><input type='text' id='column_link_2' name='column_link_2' value='/main/system_display/' /></td>
+			<td><input type='text' id='column_secondary_2' name='column_secondary_2' value='system_id' size='10' /></td>
 			<td><input type='text' id='column_ternary_2' name='column_ternary_2' value='' size='10' /></td>
 			<td><select id='column_align_2' name='column_align_2' title='Column Alignment' >
 				<option value='left' selected='selected'><?php echo __("Left")?></option>
@@ -158,9 +158,9 @@
 		</tr>
 		
 		<tr>
-			<td><input type='text' id='column_order_3' name='column_order_3' value='3' size='5' /></td>
-			<td><input type='text' id='column_name_3' name='column_name_3' value='IP Address' size='10' /></td>
-			<td><input type='text' id='column_variable_3' name='column_variable_3' value='man_ip_address' size='10' /></td>
+			<td><input type='text' id='column_order_3' name='column_order_3' 		value='3' size='5' /></td>
+			<td><input type='text' id='column_name_3' name='column_name_3' 			value='IP Address' size='10' /></td>
+			<td><input type='text' id='column_variable_3' name='column_variable_3' 	value='man_ip_address' size='10' /></td>
 			<td><select id='column_type_3' name='column_type_3' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __("Link")?></option>
@@ -181,20 +181,20 @@
 		</tr>
 		
 		<tr>
-			<td><input type='text' id='column_order_4' name='column_order_4' value='4' size='5' /></td>
-			<td><input type='text' id='column_name_4' name='column_name_4' value='Type' size='10' /></td>
-			<td><input type='text' id='column_variable_4' name='column_variable_4' value='man_icon' size='10' /></td>
+			<td><input type='text' id='column_order_4' name='column_order_4' 		value='4' size='5' /></td>
+			<td><input type='text' id='column_name_4' name='column_name_4' 			value='Type' size='10' /></td>
+			<td><input type='text' id='column_variable_4' name='column_variable_4' 	value='man_type' size='10' /></td>
 			<td><select id='column_type_4' name='column_type_4' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __("Link")?></option>
-				<option value='image' selected='selected'><?php echo __("Image")?></option>
+				<option value='image'><?php echo __("Image")?></option>
 				<option value='ip_address'><?php echo __("IP Address")?></option>
-				<option value='text'><?php echo __("Text")?></option>
+				<option value='text' selected='selected'><?php echo __("Text")?></option>
 				<option value='timestamp'><?php echo __("Timestamp")?></option>
 				<option value='url'><?php echo __("URL")?></option>
 			</select></td>
 			<td><input type='text' id='column_link_4' name='column_link_4' value='' /></td>
-			<td><input type='text' id='column_secondary_4' name='column_secondary_4' value='man_os_family' size='10' /></td>
+			<td><input type='text' id='column_secondary_4' name='column_secondary_4' value='' size='10' /></td>
 			<td><input type='text' id='column_ternary_4' name='column_ternary_4' value='' size='10' /></td>
 			<td><select id='column_align_4' name='column_align_4' title='Column Alignment' >
 				<option value='left' selected='selected'><?php echo __("Left")?></option>
@@ -204,9 +204,9 @@
 		</tr>
 		
 		<tr>
-			<td><input type='text' id='column_order_5' name='column_order_5' value='5' size='5' /></td>
-			<td><input type='text' id='column_name_5' name='column_name_5' value='OS / Device' size='10' /></td>
-			<td><input type='text' id='column_variable_5' name='column_variable_5' value='man_os_name' size='10' /></td>
+			<td><input type='text' id='column_order_5' name='column_order_5'		value='5' size='5' /></td>
+			<td><input type='text' id='column_name_5' name='column_name_5' 			value='Description' size='10' /></td>
+			<td><input type='text' id='column_variable_5' name='column_variable_5' 	value='man_description' size='10' /></td>
 			<td><select id='column_type_5' name='column_type_5' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __("Link")?></option>
@@ -227,9 +227,9 @@
 		</tr>
 		
 		<tr>
-			<td><input type='text' id='column_order_6' name='column_order_6' value='6' size='5' /></td>
-			<td><input type='text' id='column_name_6' name='column_name_6' value='Tags' size='10' /></td>
-			<td><input type='text' id='column_variable_6' name='column_variable_6' value='tag' size='10' /></td>
+			<td><input type='text' id='column_order_6' name='column_order_6' 		value='6' size='5' /></td>
+			<td><input type='text' id='column_name_6' name='column_name_6' 			value='OS / Device' size='10' /></td>
+			<td><input type='text' id='column_variable_6' name='column_variable_6' 	value='man_os_name' size='10' /></td>
 			<td><select id='column_type_6' name='column_type_6' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __("Link")?></option>
@@ -243,57 +243,35 @@
 			<td><input type='text' id='column_secondary_6' name='column_secondary_6' value='' size='10' /></td>
 			<td><input type='text' id='column_ternary_6' name='column_ternary_6' value='' size='10' /></td>
 			<td><select id='column_align_6' name='column_align_6' title='Column Alignment' >
-				<option value='left'><?php echo __("Left")?></option>
+				<option value='left' selected='selected'><?php echo __("Left")?></option>
 				<option value='right'><?php echo __("Right")?></option>
-				<option value='center' selected='selected'><?php echo __("Center")?></option>
+				<option value='center'><?php echo __("Center")?></option>
 			</select></td>
 		</tr>
 		
 		<tr>
-			<td><input type='text' id='column_order_7' name='column_order_7' value='7' size='5' /></td>
-			<td><input type='text' id='column_name_7' name='column_name_7' value='' size='10' /></td>
-			<td><input type='text' id='column_variable_7' name='column_variable_7' value='system_id' size='10' /></td>
+			<td><input type='text' id='column_order_7' name='column_order_7' 		value='7' size='5' /></td>
+			<td><input type='text' id='column_name_7' name='column_name_7' 			value='Tags' size='10' /></td>
+			<td><input type='text' id='column_variable_7' name='column_variable_7' 	value='tag' size='10' /></td>
 			<td><select id='column_type_7' name='column_type_7' title='Column Type' >
-				<option value='' selected='selected'>&nbsp;</option>
+				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __("Link")?></option>
 				<option value='image'><?php echo __("Image")?></option>
 				<option value='ip_address'><?php echo __("IP Address")?></option>
-				<option value='text'><?php echo __("Text")?></option>
+				<option value='text' selected='selected'><?php echo __("Text")?></option>
 				<option value='timestamp'><?php echo __("Timestamp")?></option>
 				<option value='url'><?php echo __("URL")?></option>
 			</select></td>
 			<td><input type='text' id='column_link_7' name='column_link_7' value='' /></td>
 			<td><input type='text' id='column_secondary_7' name='column_secondary_7' value='' size='10' /></td>
 			<td><input type='text' id='column_ternary_7' name='column_ternary_7' value='' size='10' /></td>
-			<td><select id='column_align_7' name='column_align_7' title='Column Alignment' >
-				<option value='left' selected='selected'><?php echo __("Left")?></option>
+			<td><select id='column_align_6' name='column_align_7' title='Column Alignment' >
+				<option value='left'><?php echo __("Left")?></option>
 				<option value='right'><?php echo __("Right")?></option>
-				<option value='center'><?php echo __("Center")?></option>
+				<option value='center' selected='selected'><?php echo __("Center")?></option>
 			</select></td>
 		</tr>
 		
-		<tr>
-			<td><input type='text' id='column_order_8' name='column_order_8' value='8' size='5' /></td>
-			<td><input type='text' id='column_name_8' name='column_name_8' value='' size='10' /></td>
-			<td><input type='text' id='column_variable_8' name='column_variable_8' value='man_os_family' size='10' /></td>
-			<td><select id='column_type_8' name='column_type_8' title='Column Type' >
-				<option value='' selected='selected'>&nbsp;</option>
-				<option value='link'><?php echo __("Link")?></option>
-				<option value='image'><?php echo __("Image")?></option>
-				<option value='ip_address'><?php echo __("IP Address")?></option>
-				<option value='text'><?php echo __("Text")?></option>
-				<option value='timestamp'><?php echo __("Timestamp")?></option>
-				<option value='url'><?php echo __("URL")?></option>
-			</select></td>
-			<td><input type='text' id='column_link_8' name='column_link_8' value='' /></td>
-			<td><input type='text' id='column_secondary_8' name='column_secondary_8' value='' size='10' /></td>
-			<td><input type='text' id='column_ternary_8' name='column_ternary_8' value='' size='10' /></td>
-			<td><select id='column_align_8' name='column_align_8' title='Column Alignment' >
-				<option value='left' selected='selected'><?php echo __("Left")?></option>
-				<option value='right'><?php echo __("Right")?></option>
-				<option value='center'><?php echo __("Center")?></option>
-			</select></td>
-		</tr>
 		</tbody>
 	</table>
 </fieldset>
