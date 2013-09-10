@@ -43,7 +43,7 @@ class M_service extends MY_Model {
 
 function process_service($input, $details) {
 		// below are services that constantly change their start/stop/state type settings
-		$services_that_change = "AeLookupSvc AppMgmt BITS MSIServer NSClient ShellHWDetection swprv TrustedInstaller VSS WinHttpAutoProxySvc  ";
+		$services_that_change = "AeLookupSvc AppMgmt BITS FLEXnet Licensing Service LiveUpdate MMCSS MSIServer NSClient ShellHWDetection swprv TrustedInstaller VSS WinHttpAutoProxySvc ";
 		
         // select all the current services from the DB
         $sql = "SELECT
