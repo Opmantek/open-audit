@@ -74,7 +74,7 @@ if (!isset($logo)) {
 </div>
 <script type="text/javascript">
 	function audit_my_pc() {
-		location.href = "<?php base_url(); ?>index.php/login/audit_my_pc";
+		location.href = "<?php base_url(); ?>/index.php/login/audit_my_pc";
 	}
 </script>
 </body>
