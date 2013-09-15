@@ -20,6 +20,8 @@ number_of_audits = 20
 audit_run_type = "remote"
 audit_run_type = "local"
 
+
+
 ' the below are needed for remote audits as PSexec takes them as command line arguements
 ' I don't think (could be wrong) that PSexec can use the local logged on users credentials
 ' If it can, someone please provide me with a "how to"
