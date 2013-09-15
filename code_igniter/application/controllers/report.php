@@ -2,8 +2,8 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin
- * @version v1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @version 1.0.4
+ * @copyright Opmantek, 2013
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
  

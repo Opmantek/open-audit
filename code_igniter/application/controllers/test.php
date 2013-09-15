@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin
- * @version beta 8
- * @copyright Mark Unwin, 2011
+ * @version 1.0.4
+ * @copyright Opmantek, 2013
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 

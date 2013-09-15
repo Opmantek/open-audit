@@ -19,7 +19,7 @@ function __($word){
 
 	//Learning-Mode
 	//Only for Developers !!!!
-	$language_learning_mode=1;
+	$language_learning_mode=0;
 	
 	if($language_learning_mode==1)  
 	{

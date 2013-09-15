@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2f
+ * @package Open-AudIT
  * @author Mark Unwin
- * @version beta 8
- * @copyright Mark Unwin, 2011
+ * @version 1.0.4
+ * @copyright Opmantek, 2013
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -11,7 +11,7 @@ class Admin_cli extends CI_Controller {
 
 	function __construct() {
 		parent::__construct();
-		// must be called form the CLI to access this page
+		// must be called from the CLI to access this page
 		if (!$this->input->is_cli_request()) {
 			exit();
 		}

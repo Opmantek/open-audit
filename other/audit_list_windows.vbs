@@ -33,7 +33,7 @@ Dim script_timeout
 script_timeout = 600
 
 ' the name and path of the audit script to use
-script_name = "c:\xampp\OAv2\other\audit_windows.vbs"
+script_name = "c:\xampplite\open-audit\other\audit_windows.vbs"
 
 ' update with any submitted command line switches
 Set objArgs = WScript.Arguments
