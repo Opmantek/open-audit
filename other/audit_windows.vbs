@@ -3883,23 +3883,25 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 
 				Do Until objRS.Eof
 					' get the filesize
-					filename = replace(objRS.Fields("filename"), "\", "\\")
-					set colFiles = objWMIService.ExecQuery ("Select FileSize from CIM_Datafile Where name = '" & filename & "'")
-					for each objFile in colFiles
-						filesize = int(objFile.FileSize / 1024 / 1024)
-					next
-					database_name = CStr(objRS("Name"))
-					if debugging > "1" then wscript.echo "DB Name: " & database_name end if 
-					item = item &  "		<details>" & vbcrlf
-					item = item & "			<details_name>" & escape_xml(database_name) & "</details_name>" & vbcrlf
-					item = item & "			<details_internal_id>" & escape_xml(objRS("dbid")) & "</details_internal_id>" & vbcrlf
-					item = item & "			<details_instance>" & escape_xml(instance) & "</details_instance>" & vbcrlf
-					item = item & "			<details_compatibility_mode>" & CStr(objRS("CmptLevel")) & "</details_compatibility_mode>" & vbcrlf
-					item = item & "			<details_filename>" & escape_xml(objRS("FileName")) & "</details_filename>" & vbcrlf
-					item = item & "			<details_current_size>" & escape_xml(filesize) & "</details_current_size>" & vbcrlf
-					item = item & "			<details_creation_date>" & escape_xml(objRS("crdate")) & "</details_creation_date>" & vbcrlf
-					item = item & "		</details>" & vbcrlf
-					objRS.Movenext
+					if (not isnull(objRS.Fields("filename")) and objRS.Fields("filename") > "") then
+						filename = replace(objRS.Fields("filename"), "\", "\\")
+						set colFiles = objWMIService.ExecQuery ("Select FileSize from CIM_Datafile Where name = '" & filename & "'")
+						for each objFile in colFiles
+							filesize = int(objFile.FileSize / 1024 / 1024)
+						next
+						database_name = CStr(objRS("Name"))
+						if debugging > "1" then wscript.echo "DB Name: " & database_name end if 
+						item = item &  "		<details>" & vbcrlf
+						item = item & "			<details_name>" & escape_xml(database_name) & "</details_name>" & vbcrlf
+						item = item & "			<details_internal_id>" & escape_xml(objRS("dbid")) & "</details_internal_id>" & vbcrlf
+						item = item & "			<details_instance>" & escape_xml(instance) & "</details_instance>" & vbcrlf
+						item = item & "			<details_compatibility_mode>" & CStr(objRS("CmptLevel")) & "</details_compatibility_mode>" & vbcrlf
+						item = item & "			<details_filename>" & escape_xml(objRS("FileName")) & "</details_filename>" & vbcrlf
+						item = item & "			<details_current_size>" & escape_xml(filesize) & "</details_current_size>" & vbcrlf
+						item = item & "			<details_creation_date>" & escape_xml(objRS("crdate")) & "</details_creation_date>" & vbcrlf
+						item = item & "		</details>" & vbcrlf
+						objRS.Movenext
+					end if
 				Loop
 			end if
 			'On Error Goto 0 
