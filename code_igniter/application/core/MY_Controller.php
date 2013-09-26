@@ -169,11 +169,15 @@ class MY_Controller extends CI_Controller {
 			break;
 
 			case "json":
-			$this->json_report($this->data['query']);
+			$this->json_report($this->data);
 			break;
 
 			case "rss":
 			$this->rss_report($this->data['query']);
+			break;
+
+			case "graph":
+			$this->graph_report($this->data['query']);
 			break;
 
 			default:
@@ -229,8 +233,14 @@ class MY_Controller extends CI_Controller {
 		header('Cache-Control: max-age=0');
 	}
 
-	function json_report($query) {
-		echo "{\"items\": [\n";
+	function json_report($data) {
+		$query = $this->data['query'];
+		$i = "items";
+		if ($this->data['heading'] == "Software Discovered 30") {$i = "Daily Discovered Software"; }
+		if ($this->data['heading'] == "Devices Discovered 30") {$i = "Daily Discovered Devices"; }
+		if ($this->data['heading'] == "Devices Not Seen 30") {$i = "Devices Not Seen"; }
+		if ($this->data['heading'] == "Device Types") {$i = "data"; }
+		echo "{\"$i\": [\n";
 		$items = '';
 		foreach ($query AS $details) {
 			$items .= "\t{\n";
@@ -244,15 +254,19 @@ class MY_Controller extends CI_Controller {
 					$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
 				} else {
 					$value = str_replace ('"', '\"', $value);
-					$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+					if (is_numeric($value) ) {
+						$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
+					} else { 
+						$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+					}
+					#$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
 				}
 			}
 			$items .= substr($output, 0, -2) . "\n\t},\n";
 		}
 		$items = substr($items, 0, -2);
-		$items .= "\n";
+		$items .= "\n]}";
 		echo $items;
-		echo "]}";
 		header('Content-Type: application/json');
 		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.json"');
 		header('Cache-Control: max-age=0');
