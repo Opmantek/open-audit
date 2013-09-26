@@ -37,16 +37,7 @@ foreach($system as $key) {
 	$link_serial = $key->serial;
 	$link_model = $key->model;
 	$last_seen = $key->last_seen_by;
-	$icon = $key->man_icon;
-	$picture = strtolower($key->man_picture);
-	if ($picture == '') {
-		$picture = strtolower($key->man_model);
-	}
-	
-}
-
-if ($picture == '') {
-	$picture = 'unknown';
+	$icon = $key->man_icon;	
 }
 
 $location_name = '';
@@ -227,7 +218,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		<fieldset id="system_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
 			<div style="float:right; width: 100px; text-align:center">
-				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
+				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $system[0]->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
 			<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
 				<input type="button" onclick="parent.location='<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>'" value='SNMP Probe' title='SNMP Probe' name='SNMP Probe' alt='SNMP Probe' width='24' />
 			<?php } ?>

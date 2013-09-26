@@ -33,15 +33,6 @@ foreach($system as $key)
 	$link_manufacturer = $key->manufacturer;
 	$link_serial = $key->serial;
 	$link_model = $key->model;
-
-	$picture = strtolower($key->man_picture);
-	if ($picture == '') {
-		$picture = strtolower($key->man_model);
-	}
-}
-
-if ($picture == '') {
-	$picture = 'unknown';
 }
 
 $location_name = '';

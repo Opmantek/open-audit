@@ -288,20 +288,37 @@ class Ajax extends MY_Controller {
 			$result = $this->m_system->get_system_popup($this->data['system_id']);
 			foreach ($result as $system) {
 				$model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
-				$default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $model_formatted . '.jpg';
-				$custom_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/custom/' . $system->system_id . '.jpg';
-				if ($system->man_picture > '') {
+				$type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
+				$default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $system->man_picture . '.jpg';
+				$model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $model_formatted . '.jpg';
+				$type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $type_formatted . '.png';
+				$custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/custom/' . $system->system_id . '.jpg';
+
+				# check if the man_picture field from the database is populated and a matching image exists
+				if ( ($system->man_picture > '') AND (file_exists($default_file_exists)) ) {
 					$system->man_picture = $system->man_picture . '.jpg';
 				}
-				if ( ($system->man_picture == '') AND (file_exists($custom_file_exists))) {
+
+				# check if a custom images exists and overwrite
+				if (file_exists($custom_file_exists)) {
 					$system->man_picture = 'custom/' . $system->system_id . '.jpg';
 				}
-				if ( ($system->man_picture == '') AND (file_exists($default_file_exists)) AND (!file_exists($custom_file_exists))) {
+
+				# check if an image matching the model exists
+				if ( ($system->man_picture == '') AND (file_exists($model_file_exists)) ) {
 					$system->man_picture = '' . $model_formatted . '.jpg';
-				}		
-				if ( ($system->man_picture == '') AND (!(file_exists($default_file_exists)))  AND (!file_exists($custom_file_exists))) {
+				}
+
+				# check if an image matching the type exists
+				if ( ($system->man_picture == '') AND (file_exists($type_file_exists)) ) {
+					$system->man_picture = '' . $type_formatted . '.png';
+				}
+
+				# no matching images, assign the unknown image
+				if ($system->man_picture == '') {
 					$system->man_picture = 'unknown.png';
 				}
+
 				echo "<div class=\"SystemPopupResult\">\n";
 				echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
 				echo "<tr>\n";
