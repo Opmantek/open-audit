@@ -254,7 +254,7 @@ class Admin_test extends MY_Controller {
 		$this->m_oa_org->set_group_id($details->org_id, $group_id);
 		$this->m_oa_group->update_specific_group($group_id);
 
-		$details->org_name = "IT Derpartment"; 
+		$details->org_name = "IT Department"; 
 		$details->org_parent_id = "1";
 		$details->contact_id = "";
 		$details->org_picture = "";
@@ -272,7 +272,7 @@ class Admin_test extends MY_Controller {
 		$this->m_oa_org->set_group_id($details->org_id, $group_id);
 		$this->m_oa_group->update_specific_group($group_id);
 
-		$details->org_name = "Finance Derpartment"; 
+		$details->org_name = "Finance Department"; 
 		$details->org_parent_id = "1";
 		$details->contact_id = "";
 		$details->org_picture = "";
@@ -290,7 +290,7 @@ class Admin_test extends MY_Controller {
 		$this->m_oa_org->set_group_id($details->org_id, $group_id);
 		$this->m_oa_group->update_specific_group($group_id);
 
-		$details->org_name = "Marketing Derpartment"; 
+		$details->org_name = "Marketing Department"; 
 		$details->org_parent_id = "1";
 		$details->contact_id = "";
 		$details->org_picture = "";
@@ -374,21 +374,33 @@ class Admin_test extends MY_Controller {
 
 			$random = rand(1,100);
 
-			if ($i > 0 and $i <= 250) {$details->man_ip_address = '192.168.0.' . $i;}
-			if ($i > 250 and $i <= 500) {$details->man_ip_address = '192.168.1.' . $i;}
-			if ($i > 500 and $i <= 750) {$details->man_ip_address = '192.168.2.' . $i;}
-			if ($i > 750 and $i <= 1000) {$details->man_ip_address = '192.168.3.' . $i;}
+			if ($i > 0 and $i <= 250) {$ip = $i; $details->man_ip_address = '192.168.0.' . $ip;}
+			if ($i > 250 and $i <= 500) {$ip = $i - 250; $details->man_ip_address = '192.168.1.' . $ip;}
+			if ($i > 500 and $i <= 750) {$ip = $i - 500; $details->man_ip_address = '192.168.2.' . $ip;}
+			if ($i > 750 and $i <= 1000) {$ip = $i - 750; $details->man_ip_address = '192.168.3.' . $ip;}
 
 			$details->serial = substr("a1b2c3d4e50000" . $i, -14);
 			$details->man_serial = $details->serial;
 			$details->uuid = "";
 			$details->status = 'production';
-			$day = rand(1,30);
-			if ($day < 10) {
-				$details->last_seen = "2013-06-0" . $day . " 10:00:00";
+
+			# create a random timestamp for the last 30 days.
+			$k = rand(1,2);
+			$year = date('Y');
+			if ($k == 1) {
+				# use the date from last month
+				$day = rand(date('j'), 31);
+				$month = date('n') -1;
+				if ($month == 0) { $month = 12; $year = $year -1; }
 			} else {
-				$details->last_seen = "2013-06-" . $day . " 10:00:00";
+				# use this months date
+				$day = rand(1, date('j'));
+				$month = date('n');
 			}
+			if ($day < 10) { $day = '0' . $day; }
+			if ($month < 10) { $month = '0' . $month; }
+
+			$details->last_seen = $year . "-" . $month . "-" . $day . " 10:00:00";
 			$details->last_seen_by = "manual";
 			$details->timestamp = $details->last_seen;
 			$details->domain = "open-audit.local";
@@ -412,6 +424,7 @@ class Admin_test extends MY_Controller {
 				$details->man_location_id = rand(2,6);
 				$details->pc_date_os_installation = "2006-11-30";
 				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->last_seen_by = "audit";
 				$j = rand(1,2);
 				if ( $j == 1 ) {
 					$details->manufacturer = "Hewlett Packard"; 
@@ -439,6 +452,7 @@ class Admin_test extends MY_Controller {
 				$details->man_location_id = rand(2,6);
 				$details->pc_date_os_installation = "2011-11-30";
 				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->last_seen_by = "audit";
 				$j = rand(1,2);
 				if ( $j == 1 ) {
 					$details->manufacturer = "Dell"; 
@@ -466,6 +480,7 @@ class Admin_test extends MY_Controller {
 				$details->man_location_id = rand(2,6);
 				$details->pc_date_os_installation = "2002-11-30";
 				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->last_seen_by = "audit";
 				$j = rand(1,2);
 				if ( $j == 1 ) {
 					$details->manufacturer = "Dell"; 
@@ -494,6 +509,7 @@ class Admin_test extends MY_Controller {
 				$details->pc_date_os_installation = "2012-05-10";
 				$details->man_org_id = rand(2,6);
 				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->last_seen_by = "audit";
 				$j = rand(1,2);
 				if ( $j == 1 ) {
 					$details->manufacturer = "System 76"; 
@@ -523,6 +539,7 @@ class Admin_test extends MY_Controller {
 				$details->pc_date_os_installation = "2005-04-30";
 				$details->man_class = "server";
 				$details->man_org_id = '7';
+				$details->last_seen_by = "audit";
 				$j = rand(1,6);
 				if ($j == 1) {
 					$details->man_function = "FILE";
@@ -554,6 +571,7 @@ class Admin_test extends MY_Controller {
 				$details->pc_date_os_installation = "2009-10-05";
 				$details->man_class = "server"; 
 				$details->man_org_id = '7';
+				$details->last_seen_by = "audit";
 				$j = rand(1,6);
 				if ($j == 1) {
 					$details->man_function = "FILE";
@@ -586,6 +604,7 @@ class Admin_test extends MY_Controller {
 				$details->pc_date_os_installation = "2013-01-30";
 				$details->man_class = "server";
 				$details->man_org_id = '7';
+				$details->last_seen_by = "audit";
 				$j = rand(1,3);
 				if ($j == 1) {
 					$details->man_function = "SQL";
@@ -605,6 +624,7 @@ class Admin_test extends MY_Controller {
 				$details->hostname = "lin_" . $i;
 				$details->uuid = $details->man_serial;
 				$details->pc_date_os_installation = "2007-05-08";
+				$details->last_seen_by = "audit";
 				$j = rand(1,3);
 				if ($j == 1) {
 					$details->manufacturer = "System 76"; 
@@ -652,6 +672,7 @@ class Admin_test extends MY_Controller {
 				$details->form_factor = '';
 				$details->man_location_id = rand(1,7);
 				$details->man_org_id = '7';
+				$details->last_seen_by = "snmp";
 			}
 
 			if ($random > 78 and $random <= 81) {
@@ -666,6 +687,7 @@ class Admin_test extends MY_Controller {
 				$details->form_factor = '';
 				$details->man_location_id = rand(1,7);
 				$details->man_org_id = '7';
+				$details->last_seen_by = "snmp";
 			}
 		
 			if ($random > 81 and $random <= 85) {
@@ -680,6 +702,7 @@ class Admin_test extends MY_Controller {
 				$details->form_factor = '';
 				$details->man_location_id = rand(1,7);
 				$details->man_org_id = '7';
+				$details->last_seen_by = "snmp";
 			}
 
 			if ($random > 85 and $random <= 87) {
@@ -745,6 +768,7 @@ class Admin_test extends MY_Controller {
 				$details->form_factor = '';
 				$details->man_location_id = rand(1,6);
 				$details->man_org_id = "7";
+				$details->last_seen_by = "audit";
 
 				$j = rand(1,3);
 				if ($j == 1) {
@@ -762,6 +786,7 @@ class Admin_test extends MY_Controller {
 					$details->hostname = "";
 					$details->man_org_id = rand(2,6);
 					$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+					$details->last_seen_by = "manual";
 				} 
 			}
 
@@ -781,17 +806,34 @@ class Admin_test extends MY_Controller {
 		}
 
 		for ($i=1; $i<101; $i++) {
-				$day = rand(1,30);
-				if ($day < 10) {
-					$details->last_seen = "2013-06-0" . $day . " 10:00:00";
+				$details = NULL;
+				$details = new stdclass();
+				# create a random timestamp for the last 30 days.
+				$k = rand(1,2);
+				$year = date('Y');
+				if ($k == 1) {
+					# use the date from last month
+					$day = rand(date('j'), 31);
+					$month = date('n') -1;
+					if ($month == 0) { $month = 12; $year = $year -1; }
 				} else {
-					$details->last_seen = "2013-06-" . $day . " 10:00:00";
+					# use this months date
+					$day = rand(1, date('j'));
+					$month = date('n');
 				}
+				if ($day < 10) { $day = '0' . $day; }
+				if ($month < 10) { $month = '0' . $month; }
+
+				$details->last_seen = $year . "-" . $month . "-" . $day . " 10:00:00";
+				$details->man_ip_address = "";
 				$details->last_seen_by = "manual";
 				$details->timestamp = $details->last_seen;
-				$details->os_group = '';
+				$details->os_group = "";
 				$details->os_family = "";
 				$details->os_name = "";
+				$details->man_os_group = "";
+				$details->man_os_family = "";
+				$details->man_os_name = "";
 				$details->type = "token";
 				$details->man_type = "token";
 				$details->icon = "access_token";
@@ -805,11 +847,11 @@ class Admin_test extends MY_Controller {
 				$details->serial = substr("z6y5x4w3e5000" . $i, -14);
 				$details->man_serial = $details->serial;
 				$details->man_picture = strtolower($details->model);
-				$details->description = "Access Token for User " . $i;
+				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->description = "Access Token for User " . $details->man_owner;
 				$details->man_description = $details->description;
 				$details->man_class = ""; 
 				$details->form_factor = ""; 
-				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
 				$details->man_org_id = rand(2,5);
 				$j = $this->m_system->insert_system($details);
 		}
@@ -957,5 +999,92 @@ class Admin_test extends MY_Controller {
 		# update all groups
 		$this->m_oa_group->update_groups();
 
+
+		# insert some random software
+		$sql = "SELECT system_id, timestamp FROM system WHERE man_type = 'computer' LIMIT 100";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		foreach ($result as $system) {
+			for ($i=1; $i<11; $i++) {
+				$day = substr($system->timestamp, 8, 2);
+				$i = rand($day, 31);
+				$i = $day + 1;
+				if ($i < 10) { $i = "0" . $i; }
+				$timestamp = $system->timestamp;
+				$first_timestamp = str_replace("-" . $day . " ", "-" . $i . " ", $system->timestamp);
+				$system_id = $system->system_id;
+				$i = rand(1,10);
+				switch ($i) {
+					case '1':
+						$software_name = "LibreOffice";
+						$software_version = "2010";
+						$software_publisher = "The Document Foundation";
+						break;
+						
+					case '2':
+						$software_name = "Adobe Acrobat Pro";
+						$software_version = "X";
+						$software_publisher = "Adobe";
+						break;
+						
+					case '3':
+						$software_name = "Google Chrome";
+						$software_version = "22";
+						$software_publisher = "Google";
+						break;
+						
+					case '4':
+						$software_name = "Mozilla Firefox";
+						$software_version = "23";
+						$software_publisher = "Mozilla Corporation";
+						break;
+						
+					case '5':
+						$software_name = "Sublime Text 2";
+						$software_version = "2";
+						$software_publisher = "Sublime HQ";
+						break;
+						
+					case '6':
+						$software_name = "Steam";
+						$software_version = "";
+						$software_publisher = "Valve";
+						break;
+						
+					case '7':
+						$software_name = "Inkscape";
+						$software_version = "0.48";
+						$software_publisher = "www.inkscape.org";
+						break;
+						
+					case '8':
+						$software_name = "Thunderbird";
+						$software_version = "17.0.8";
+						$software_publisher = "Mozilla Corporation";
+						break;
+						
+					case '9':
+						$software_name = "VLC";
+						$software_version = "2.0.8";
+						$software_publisher = "VLC";
+						break;
+						
+					case '10':
+						$software_name = "Calibre";
+						$software_version = "0.9.18";
+						$software_publisher = "David Goyle";
+						break;
+					
+					default:
+						# code...
+						break;
+				}
+				$sql = "INSERT INTO sys_sw_software (software_id, system_id, software_name, software_version, software_publisher, timestamp, first_timestamp) VALUES (NULL, ?, ?, ?, ?, ?, ?)";
+				$data = array("$system_id", "$software_name", "$software_version", "$software_publisher", "$timestamp", "$first_timestamp");
+				$query = $this->db->query($sql, $data);
+			}
+		}
+
+		redirect('/');
 	}
 }
