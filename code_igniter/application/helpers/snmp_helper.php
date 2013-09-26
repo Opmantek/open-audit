@@ -209,6 +209,11 @@ if (!function_exists('get_snmp')) {
 				}
 			}
 
+			if (substr($details->snmp_oid, 0, 17) == '1.3.6.1.4.1.25461') { 
+				# grab some Palo Alto specifics 
+				$details->serial = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25461.2.1.2.1.3.0");
+			}
+
 			// manufacturer
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
 				$hex = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.8.2.1.14.1");

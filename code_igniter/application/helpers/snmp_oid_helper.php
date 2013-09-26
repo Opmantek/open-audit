@@ -6911,9 +6911,6 @@ if (!function_exists('get_oid'))
 		if ($oid == '1.3.6.1.4.1.4526.100.11.9') { $new->model = 'GSM7212P L2R Switch'; $new->type = 'switch'; }
 		if ($oid == '1.3.6.1.4.1.4526.100.11.10') { $new->model = 'GSM7224P L2R Switch'; $new->type = 'switch'; }
 
-
-
-
 		if ($oid == '1.3.6.1.4.1.8072.3.2.1') { $new->model = 'unknown'; $new->os_group = 'hpux9'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.2') { $new->model = 'unknown'; $new->os_group = 'sunos4'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.3') { $new->model = 'unknown'; $new->os_group = 'solaris'; $new->type = 'computer'; }
@@ -6931,6 +6928,18 @@ if (!function_exists('get_oid'))
 		if ($oid == '1.3.6.1.4.1.8072.3.2.15') { $new->model = 'unknown'; $new->os_group = 'aix'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.16') { $new->model = 'unknown'; $new->os_group = 'macosx'; $new->type = 'computer'; }
 		if ($oid == '1.3.6.1.4.1.8072.3.2.255') { $new->model = 'unknown'; $new->os_group = 'unknown'; $new->type = 'unknown'; }
+
+		if ($oid == '1.3.6.1.4.1.25461.2.3.1') { $new->model = 'PA-4050 firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.2') { $new->model = 'PA-4020 firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.3') { $new->model = 'PA-2050 firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.4') { $new->model = 'PA-2020 firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.5') { $new->model = 'PA-4060 firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.6') { $new->model = 'PA-500 firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.7') { $new->model = 'Panorama firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.8') { $new->model = 'PA-5060 firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.9') { $new->model = 'PA-5050 firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.11') { $new->model = 'PA-5020 firewall'; $new->type = 'firewall'; }
+		if ($oid == '1.3.6.1.4.1.25461.2.3.12') { $new->model = 'PA-200 firewall'; $new->type = 'firewall'; }
 
 
 		if (substr($oid, 0, 13) == '1.3.6.1.4.1.1') { $new->manufacturer = 'NxNetworks'; }
@@ -25414,9 +25423,10 @@ if (!function_exists('get_oid'))
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25178') { $new->manufacturer = 'TERENA OID'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25229') { $new->manufacturer = 'Swedish Alliance for Middleware'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25260') { $new->manufacturer = 'Frauerpower!'; }
-		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25374') { $new->manufacturer = 'Universit�t Hamburg, Regionales Rechenzentrum'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25374') { $new->manufacturer = 'University Hamburg, Regionales Rechenzentrum'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25376') { $new->manufacturer = 'Suretec Systems Ltd.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25404') { $new->manufacturer = 'citadel.org - the Citadel groupware project'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25461') { $new->manufacturer = 'Palo Alto Networks'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25511') { $new->manufacturer = 'SPALE NETWORKS'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25719') { $new->manufacturer = 'Polysys Ltd'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.26012') { $new->manufacturer = 'Holmboe Consulting'; }
