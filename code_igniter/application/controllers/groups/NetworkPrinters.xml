@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Network Printers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE ((system.type = 'printer' AND (system.man_ip_address != '000.000.000.000' AND system.man_ip_address != '')) or system.type = 'network printer' or system.man_type = 'network printer' ) AND system.man_status = 'production' ]]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (((system.type = 'printer' OR system.man_type = 'printer') AND (system.man_ip_address != '000.000.000.000' AND system.man_ip_address != '' and system.man_ip_address != '0.0.0.0')) or system.type = 'network printer' or system.man_type = 'network printer' ) AND system.man_status = 'production' ]]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
-		<group_display_sql><![CDATA[SELECT system.system_id, hostname, man_description, man_manufacturer, man_model, man_serial, man_ip_address, printer_color, printer_duplex FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 		<group_icon>printer</group_icon>
-		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'printer' and have their ip_address attribute set to > '000.000.000.000'.</group_description>
+		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'printer' and have a valid ip address.</group_description>
+		<group_display_sql><![CDATA[SELECT system.system_id, hostname, man_description, man_manufacturer, man_model, man_serial, man_ip_address, printer_color, printer_duplex FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
 		<column>

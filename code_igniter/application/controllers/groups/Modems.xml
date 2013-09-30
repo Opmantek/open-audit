@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Modems</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.type = 'modem' or system.man_type = '3g modem') AND system.man_status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.type LIKE '%modem' or system.man_type LIKE '%modem') AND system.man_status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
-		<group_icon>cisco</group_icon>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_type, system.man_manufacturer, system.man_serial, system.man_model, system.man_ip_address, system.man_asset_number FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? AND system.man_status = 'production' GROUP BY system.system_id ]]></group_display_sql>
+		<group_icon>modem</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'modem'.</group_description>
+		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_type, system.man_manufacturer, system.man_serial, system.man_model, system.man_ip_address, system.man_asset_number FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id ]]></group_display_sql>
 	</details>
 	<columns>
 		<column>

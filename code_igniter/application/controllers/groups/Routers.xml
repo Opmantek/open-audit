@@ -6,9 +6,9 @@
 		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.type = 'router' or system.man_type = 'router') AND system.man_status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
-		<group_display_sql></group_display_sql>
 		<group_icon>router</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'router'.</group_description>
+		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -63,7 +63,7 @@
 		</column>
 		<column>
 			<column_order>5</column_order>
-			<column_name>OS / Device</column_name>
+			<column_name>OS Name</column_name>
 			<column_variable>man_os_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
