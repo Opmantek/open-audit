@@ -95,7 +95,7 @@ class M_systems extends MY_Model {
 			// Use a standard SQL Select.
 			$sql = "SELECT 
 					system.system_id, 
-					system.hostname,
+					system.hostname, 
 					system.man_description, 
 					system.man_ip_address, 
 					system.man_type, 
@@ -103,7 +103,9 @@ class M_systems extends MY_Model {
 					system.man_os_name, 
 					system.man_icon, 
 					system.man_manufacturer, 
-					system.man_model,
+					system.man_model, 
+					system.man_serial, 
+					system.man_icon, 
 					system.type 
 				FROM 
 					system, 

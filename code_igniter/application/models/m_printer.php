@@ -40,17 +40,9 @@ class M_printer extends MY_Model {
 	}
 
 	function get_new_network_printer($details) {
-		$sql = "SELECT 	
-				system_id, 
-				type 
-			FROM 
-				system 
-			WHERE 
-				system.timestamp = ? AND 
-				system.type = 'printer' AND 
-				system.man_ip_address > '000.000.000.000' ";
+		$sql = "SELECT system_id, type FROM system WHERE system.timestamp = ? AND (system.type = 'printer' OR system.man_type = 'printer') AND system.man_ip_address > '000.000.000.000'";
 		$sql = $this->clean_sql($sql);
-		$sql = "SELECT system_id, type FROM system WHERE system.timestamp = ? AND system.type = 'printer' ";
+		$sql = "SELECT system_id, type FROM system WHERE system.timestamp = ? AND (system.type = 'printer' OR system.man_type = 'printer')";
 		$data = array("$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
