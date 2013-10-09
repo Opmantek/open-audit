@@ -19,6 +19,7 @@ class Admin_connection extends MY_Controller {
 				redirect('login/index');
 			}
 		}
+		$this->log_event();
 	}
 
 	function index() {

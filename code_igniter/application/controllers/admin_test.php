@@ -19,6 +19,7 @@ class Admin_test extends MY_Controller {
 				redirect('login/index');
 			}
 		}
+		$this->log_event();
 	}
 
 	function index() {
@@ -28,7 +29,12 @@ class Admin_test extends MY_Controller {
 	function data() {
 
 		# comment the below line out to enable this funtcion.
-		redirect('/');
+		#redirect('/');
+		if (isset($this->data['id']) and (intval($this->data['id']) == $this->data['id'])) {
+			$computers_to_add = $this->data['id'];
+		} else {
+			$computers_to_add = 1000;
+		}
 		
 		# populate the Open-AudIT database with dummy locations, devices and set up a few groups
 
@@ -368,7 +374,7 @@ class Admin_test extends MY_Controller {
 
 
 
-		for ($i=1; $i<1001; $i++) {
+		for ($i=1; $i<=$computers_to_add; $i++) {
 
 			$details = new stdclass();
 
@@ -1001,7 +1007,7 @@ class Admin_test extends MY_Controller {
 
 
 		# insert some random software
-		$sql = "SELECT system_id, timestamp FROM system WHERE man_type = 'computer' LIMIT 100";
+		$sql = "SELECT system_id, timestamp FROM system WHERE man_type = 'computer' ORDER BY RAND() DESC LIMIT 100";
 		$query = $this->db->query($sql);
 		$result = $query->result();
 		foreach ($result as $system) {
@@ -1087,4 +1093,626 @@ class Admin_test extends MY_Controller {
 
 		redirect('/');
 	}
+
+
+
+
+
+
+
+
+
+
+	function data_computers() {
+
+		# comment the below line out to enable this funtcion.
+		#redirect('/');
+		
+		# populate the Open-AudIT database with dummy locations, devices and set up a few groups
+
+		$this->load->model("m_oa_location");
+		$this->load->model("m_system");	
+		$this->load->model("m_oa_group");
+		$this->load->model("m_oa_group_column");
+		$this->load->model("m_oa_org");
+		$first_name = array("Fred", "Wilma", "Pebbles", "Barney", "Betty", "Benjamin", "Charles", "Frank", "Max", "Walter", "Sherman", "Margaret", "Francis", "Homer", "Bart", "Maggie", "Lisa", "Marge", "Greg", "Peter", "Bobby", "Marcia", "Jan", "Cindy", "Mark", "Ali", "Paige", "Toby");
+		$last_name = array("Flintstone", "Rubble", "Pierce", "Winchester", "Burns", "Klinger", "OReilly", "Potter", "Houlihan", "Mulcahey", "Simpson", "Brady", "Unwin");
+
+		for ($i=1; $i<1001; $i++) {
+
+			$details = new stdclass();
+
+			$random = rand(1,100);
+
+			if ($i > 0 and $i <= 250) {$ip = $i; $details->man_ip_address = '192.168.40.' . $ip;}
+			if ($i > 250 and $i <= 500) {$ip = $i - 250; $details->man_ip_address = '192.168.10.' . $ip;}
+			if ($i > 500 and $i <= 750) {$ip = $i - 500; $details->man_ip_address = '192.168.20.' . $ip;}
+			if ($i > 750 and $i <= 1000) {$ip = $i - 750; $details->man_ip_address = '192.168.30.' . $ip;}
+
+			# generate a random serial
+			$details->serial = "";
+			$characters = array_merge(range('A','Z'), range('a','z'), range('0','9'));
+			$max = count($characters) - 1;
+			for ($j = 0; $j <= 14; $j++) {
+				$rand = mt_rand(0, $max);
+				$details->serial .= $characters[$rand];
+			}
+			$hostname_extra = "";
+			for ($j = 0; $j <= 4; $j++) {
+				$rand = mt_rand(0, $max);
+				$hostname_extra .= $characters[$rand];
+			}
+
+			#$details->serial = substr("a1b2c3d4e50000" . $i, -14);
+			$details->man_serial = $details->serial;
+			$details->uuid = "";
+			$details->status = 'production';
+
+			# create a random timestamp for the last 30 days.
+			$k = rand(1,2);
+			$year = date('Y');
+			if ($k == 1) {
+				# use the date from last month
+				$day = rand(date('j'), 31);
+				$month = date('n') -1;
+				if ($month == 0) { $month = 12; $year = $year -1; }
+			} else {
+				# use this months date
+				$day = rand(1, date('j'));
+				$month = date('n');
+			}
+			if ($day < 10) { $day = '0' . $day; }
+			if ($month < 10) { $month = '0' . $month; }
+
+			$details->last_seen = $year . "-" . $month . "-" . $day . " 10:00:00";
+			$details->last_seen_by = "manual";
+			$details->timestamp = $details->last_seen;
+			$details->domain = "open-audit.local";
+			$details->os_group = "";
+			$details->os_family = "";
+			$details->os_name = "";
+			$details->type = "unknown";
+			$details->hostname = $i;
+			$details->manufacturer = "";
+			$details->model = "";
+
+
+			if ($random > 0 and $random <= 15) {
+				$details->os_group = 'Windows';
+				$details->os_family = "Windows XP";
+				$details->os_name = "Microsoft Windows XP Professional";
+				$details->type = "computer";
+				$details->icon = "windows_xp";
+				$details->hostname = "old_workstation_" . $i;
+				$details->uuid = $details->man_serial;
+				$details->man_location_id = rand(2,6);
+				$details->pc_date_os_installation = "2006-11-30";
+				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->last_seen_by = "audit";
+				$j = rand(1,2);
+				if ( $j == 1 ) {
+					$details->manufacturer = "Hewlett Packard"; 
+					$details->model = "HP Compaq 8000 Elite SFF PC"; 
+					$details->form_factor = 'desktop'; 
+					$details->man_class = "desktop";
+					$details->man_org_id = '2';
+				} else {
+					$details->manufacturer = "Toshiba"; 
+					$details->model = "Tecra A3"; 
+					$details->form_factor = 'laptop'; 
+					$details->man_class = "laptop"; 
+					$details->man_org_id = '3';
+				}
+			}
+			
+			if ($random > 15 and $random <= 25) {
+				$details->os_group = 'Windows';
+				$details->os_family = "Windows 7";
+				$details->os_name = "Microsoft Windows 7 Enterprise";
+				$details->type = "computer";
+				$details->icon = "windows_7";
+				$details->hostname = "workstation_" . $i;
+				$details->uuid = $details->man_serial;
+				$details->man_location_id = rand(2,6);
+				$details->pc_date_os_installation = "2011-11-30";
+				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->last_seen_by = "audit";
+				$j = rand(1,2);
+				if ( $j == 1 ) {
+					$details->manufacturer = "Dell"; 
+					$details->model = "Optiplex 990"; 
+					$details->form_factor = 'desktop'; 
+					$details->man_class = "desktop"; 
+					$details->man_org_id = '3';
+				} else {
+					$details->manufacturer = "Toshiba"; 
+					$details->model = "Tecra P11"; 
+					$details->form_factor = 'laptop'; 
+					$details->man_class = "laptop"; 
+					$details->man_org_id = '4';
+				}
+			}
+
+			if ($random > 25 and $random <= 30) {
+				$details->os_group = 'Windows';
+				$details->os_family = "Windows 8";
+				$details->os_name = "Microsoft Windows 8 Enterprise";
+				$details->type = "computer";
+				$details->icon = "windows_8";
+				$details->hostname = "new_workstation_" . $i;
+				$details->uuid = $details->man_serial;
+				$details->man_location_id = rand(2,6);
+				$details->pc_date_os_installation = "2002-11-30";
+				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->last_seen_by = "audit";
+				$j = rand(1,2);
+				if ( $j == 1 ) {
+					$details->manufacturer = "Dell"; 
+					$details->model = "Optiplex 990"; 
+					$details->form_factor = 'desktop'; 
+					$details->man_class = "desktop"; 
+					$details->man_org_id = '2';
+				} else {
+					$details->manufacturer = "Toshiba"; 
+					$details->model = "Tecra P11"; 
+					$details->form_factor = 'laptop'; 
+					$details->man_class = "laptop"; 
+					$details->man_org_id = '5';
+				}
+			}
+	
+			if ($random > 30 and $random <= 35) {
+				$details->os_group = 'Linux';
+				$details->os_family = "Ubuntu";
+				$details->os_name = "Ubuntu 12.04.2 LTS";
+				$details->type = "computer";
+				$details->icon = "ubuntu";
+				$details->hostname = "lin_" . $i;
+				$details->uuid = $details->man_serial;
+				$details->man_location_id = rand(1,6);
+				$details->pc_date_os_installation = "2012-05-10";
+				$details->man_org_id = rand(2,6);
+				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->last_seen_by = "audit";
+				$j = rand(1,2);
+				if ( $j == 1 ) {
+					$details->manufacturer = "System 76"; 
+					$details->model = "Gazelle Professional"; 
+					$details->man_class = "laptop"; 
+					$details->form_factor = 'laptop';
+				} else {
+					$details->manufacturer = "System 76"; 
+					$details->model = "Wild Dog Performance"; 
+					$details->man_class = "desktop"; 
+					$details->form_factor = 'tower'; 
+				}
+			}
+			
+			if ($random > 35 and $random <= 45) {
+				$details->os_group = 'Windows';
+				$details->os_family = "Windows 2003";
+				$details->os_name = "Microsoft Windows Server 2003, Standard Edition";
+				$details->type = "computer";
+				$details->icon = "windows_2003";
+				$details->hostname = "old_server_" . $i;
+				$details->uuid = $details->man_serial;
+				$details->manufacturer = "Dell"; 
+				$details->model = "Poweredge 2650"; 
+				$details->form_factor = 'rack'; 
+				$details->man_location_id = '7'; 
+				$details->pc_date_os_installation = "2005-04-30";
+				$details->man_class = "server";
+				$details->man_org_id = '7';
+				$details->last_seen_by = "audit";
+				$j = rand(1,6);
+				if ($j == 1) {
+					$details->man_function = "FILE";
+				} else if ($j == 2) {
+					$details->man_function = "SQL";
+				} else if ($j == 3) {
+					$details->man_function = "DC";
+				} else if ($j == 4) {
+					$details->man_function = "MAIL";
+				} else if ($j == 5) {
+					$details->man_function = "APP";
+				} else if ($j == 6) {
+					$details->man_function = "WEB";
+				}
+			}
+			
+			if ($random > 45 and $random <= 55) {
+				$details->os_group = 'Windows';
+				$details->os_family = "Windows 2008";
+				$details->os_name = "Microsoft Windows Server 2008 Standard";
+				$details->type = "computer";
+				$details->icon = "windows_2008";
+				$details->hostname = "server_" . $i;
+				$details->uuid = $details->man_serial;
+				$details->manufacturer = "Hewlett Packard"; 
+				$details->model = "Proliant ML530 G2"; 
+				$details->form_factor = 'rack'; 
+				$details->man_location_id = '7'; 
+				$details->pc_date_os_installation = "2009-10-05";
+				$details->man_class = "server"; 
+				$details->man_org_id = '7';
+				$details->last_seen_by = "audit";
+				$j = rand(1,6);
+				if ($j == 1) {
+					$details->man_function = "FILE";
+				} else if ($j == 2) {
+					$details->man_function = "SQL";
+				} else if ($j == 3) {
+					$details->man_function = "DC";
+				} else if ($j == 4) {
+					$details->man_function = "MAIL";
+				} else if ($j == 5) {
+					$details->man_function = "APP";
+				} else if ($j == 6) {
+					$details->man_function = "WEB";
+				}
+
+			}
+			
+			if ($random > 55 and $random <= 60) {
+				$details->os_group = 'Linux';
+				$details->os_family = "Debian";
+				$details->os_name = "Debian 6";
+				$details->type = "computer";
+				$details->icon = "debian";
+				$details->hostname = "lin_" . $i;
+				$details->uuid = $details->man_serial;
+				$details->manufacturer = "System 76"; 
+				$details->model = "Jackal Pro 2u"; 
+				$details->form_factor = 'rack'; 
+				$details->man_location_id = '7'; 
+				$details->pc_date_os_installation = "2013-01-30";
+				$details->man_class = "server";
+				$details->man_org_id = '7';
+				$details->last_seen_by = "audit";
+				$j = rand(1,3);
+				if ($j == 1) {
+					$details->man_function = "SQL";
+				} else if ($j == 2) {
+					$details->man_function = "MAIL";
+				} else if ($j == 3) {
+					$details->man_function = "WEB";
+				}
+			}
+			
+			if ($random > 60 and $random <= 70) {
+				$details->os_group = 'Linux';
+				$details->os_family = "RedHat";
+				$details->os_name = "RedHat 6.3";
+				$details->type = "computer";
+				$details->icon = "redhat";
+				$details->hostname = "lin_" . $i;
+				$details->uuid = $details->man_serial;
+				$details->pc_date_os_installation = "2007-05-08";
+				$details->last_seen_by = "audit";
+				$j = rand(1,3);
+				if ($j == 1) {
+					$details->manufacturer = "System 76"; 
+					$details->model = "Gazelle Professional"; 
+					$details->man_class = "laptop"; 
+					$details->form_factor = 'laptop'; 
+					$details->man_location_id = rand(1,6);
+					$details->man_org_id = "2";
+					$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				} else if ($j == 2) {
+					$details->manufacturer = "System 76"; 
+					$details->model = "Wild Dog Performance"; 
+					$details->man_class = "desktop"; 
+					$details->form_factor = 'tower'; 
+					$details->man_location_id = rand(1,6);
+					$details->man_org_id = "2";
+					$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				} else {
+					$details->manufacturer = "Hewlett Packard"; 
+					$details->model = "Proliant ML530 G2"; 
+					$details->form_factor = 'rack'; 
+					$details->man_class = "server"; 
+					$details->man_location_id = '7'; 
+					$details->man_org_id = '7';
+					$j = rand(1,3);
+					if ($j == 1) {
+						$details->man_function = "JBOSS";
+					} else if ($j == 2) {
+						$details->man_function = "SQL";
+					} else if ($j == 3) {
+						$details->man_function = "WEB";
+					}
+				}
+			}
+			
+			if ($random > 70 and $random <= 78) {
+				$details->os_group = 'Cisco';
+				$details->os_family = "Cisco IOS";
+				$details->os_name = "IOS 12.4";
+				$details->type = "switch";
+				$details->icon = "switch";
+				$details->hostname = "cisco_switch_" . $i;
+				$details->manufacturer = "Cisco";
+				$details->model = "Cisco Catalyst 2960 24tt";
+				$details->form_factor = '';
+				$details->man_location_id = rand(1,7);
+				$details->man_org_id = '7';
+				$details->last_seen_by = "snmp";
+			}
+
+			if ($random > 78 and $random <= 81) {
+				$details->os_group = '';
+				$details->os_family = "";
+				$details->os_name = "";
+				$details->type = "switch";
+				$details->icon = "switch";
+				$details->hostname = "netgear_switch_" . $i;
+				$details->manufacturer = "Netgear";
+				$details->model = "CG814WG";
+				$details->form_factor = '';
+				$details->man_location_id = rand(1,7);
+				$details->man_org_id = '7';
+				$details->last_seen_by = "snmp";
+			}
+		
+			if ($random > 81 and $random <= 85) {
+				$details->os_group = 'Cisco';
+				$details->os_family = "Cisco IOS";
+				$details->os_name = "IOS 12.2";
+				$details->type = "router";
+				$details->icon = "router";
+				$details->hostname = "cisco_router_" . $i;
+				$details->manufacturer = "Cisco";
+				$details->model = "Cisco 887 g";
+				$details->form_factor = '';
+				$details->man_location_id = rand(1,7);
+				$details->man_org_id = '7';
+				$details->last_seen_by = "snmp";
+			}
+
+			if ($random > 85 and $random <= 87) {
+				$details->os_group = '';
+				$details->os_family = "Nokia";
+				$details->os_name = "";
+				$details->type = "cell phone";
+				$details->icon = "cell_phone";
+				$details->hostname = "";
+				$details->manufacturer = "Nokia";
+				$details->model = "6610";
+				$details->form_factor = '';
+				$details->man_location_id = rand(1,6);
+				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->man_service_number = "01 2345 0" . $i;
+				$details->man_service_provider = "Telstra";
+				$details->man_ip_address = "";
+				$details->man_org_id = rand(2,6);
+			}
+		
+			if ($random > 87 and $random <= 90) {
+				$details->os_group = '';
+				$details->os_family = "Apple";
+				$details->os_name = "IOS 5";
+				$details->type = "smart phone";
+				$details->icon = "apple";
+				$details->hostname = "iphone_" . $i;
+				$details->manufacturer = "Apple";
+				$details->model = "iPhone 4";
+				$details->form_factor = '';
+				$details->man_location_id = rand(1,6);
+				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->man_service_number = "01 2345 0" . $i;
+				$details->man_service_provider = "Telstra";
+				$details->man_ip_address = "";
+				$details->man_org_id = rand(2,6);
+			}
+			
+			if ($random > 90 and $random <= 95) {
+				$details->os_group = '';
+				$details->os_family = "Android";
+				$details->os_name = "Jelly Bean";
+				$details->type = "smart phone";
+				$details->icon = "android";
+				$details->hostname = "galaxy_nexus_" . $i;
+				$details->manufacturer = "Samsung";
+				$details->model = "Galaxy Nexus";
+				$details->form_factor = '';
+				$details->man_location_id = rand(1,6);
+				$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+				$details->man_service_number = "01 2345 0" . $i;
+				$details->man_service_provider = "Telstra";
+				$details->man_ip_address = "";
+				$details->man_org_id = rand(2,6);
+			}
+			
+			if ($random > 95 and $random <= 100) {
+				$details->os_group = '';
+				$details->os_family = "";
+				$details->os_name = "";
+				$details->type = "printer";
+				$details->icon = "printer";
+				$details->form_factor = '';
+				$details->man_location_id = rand(1,6);
+				$details->man_org_id = "7";
+				$details->last_seen_by = "audit";
+
+				$j = rand(1,3);
+				if ($j == 1) {
+					$details->manufacturer = "Hewlett Packard";
+					$details->model = "HP Color Laserjet 4700";
+					$details->hostname = "hp_laserjet_" . $i;
+				} else if ($j == 2) {
+					$details->manufacturer = "Konica Minolta"; 
+					$details->model = "Konica Minolta C352 C300"; 
+					$details->hostname = "konika_" . $i;
+				} else if ($j == 3) {
+					$details->manufacturer = "Brother"; 
+					$details->model = "Brother MFC-465CN Printer"; 
+					$details->man_ip_address = "";
+					$details->hostname = "";
+					$details->man_org_id = rand(2,6);
+					$details->man_owner = $first_name[rand(0,count($first_name)-1)] . " " . $last_name[rand(0,count($last_name)-1)];
+					$details->last_seen_by = "manual";
+				} 
+			}
+			$windows_user = strtolower($details->man_owner);
+			$windows_user = str_replace(" ", ".", $windows_user) . "@open-audit.com";
+			$details->hostname .= "_" . $hostname_extra;
+			$details->man_os_group = $details->os_group;
+			$details->man_os_family = $details->os_family;
+			$details->man_os_name = $details->os_name;
+			$details->man_type = $details->type;
+			$details->fqdn = $details->hostname . ".open-audit.local";
+			$details->description = ucfirst($details->type) . " " . $details->os_group . " " . $i;
+			$details->man_description = $details->description;
+			$details->man_manufacturer = $details->manufacturer;
+			$details->man_model = $details->model;
+			$details->man_picture = strtolower($details->model);
+			$details->man_picture = str_replace(" ", "_", $details->man_picture);
+			$details->system_key = $this->m_system->create_system_key($details);
+			$j = $this->m_system->insert_system($details);
+		}
+		# update all groups
+		$this->m_oa_group->update_groups();
+		redirect('/');
+	}
+
+
+function data_software() {
+			# insert some random software
+		$sql = "SELECT system_id, timestamp FROM system WHERE man_type = 'computer' ORDER BY RAND() DESC LIMIT 100";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		foreach ($result as $system) {
+			for ($i=1; $i<11; $i++) {
+				$day = substr($system->timestamp, 8, 2);
+				$i = rand($day, 31);
+				$i = $day + 1;
+				if ($i < 10) { $i = "0" . $i; }
+				$timestamp = $system->timestamp;
+				$first_timestamp = str_replace("-" . $day . " ", "-" . $i . " ", $system->timestamp);
+				$system_id = $system->system_id;
+				$i = rand(1,18);
+				switch ($i) {
+					case '1':
+						$software_name = "LibreOffice";
+						$software_version = "2010";
+						$software_publisher = "The Document Foundation";
+						break;
+						
+					case '2':
+						$software_name = "Adobe Acrobat Pro";
+						$software_version = "X";
+						$software_publisher = "Adobe";
+						break;
+						
+					case '3':
+						$software_name = "Google Chrome";
+						$software_version = "22";
+						$software_publisher = "Google";
+						break;
+						
+					case '4':
+						$software_name = "Mozilla Firefox";
+						$software_version = "23";
+						$software_publisher = "Mozilla Corporation";
+						break;
+						
+					case '5':
+						$software_name = "Sublime Text 2";
+						$software_version = "2";
+						$software_publisher = "Sublime HQ";
+						break;
+						
+					case '6':
+						$software_name = "Steam";
+						$software_version = "";
+						$software_publisher = "Valve";
+						break;
+						
+					case '7':
+						$software_name = "Inkscape";
+						$software_version = "0.48";
+						$software_publisher = "www.inkscape.org";
+						break;
+						
+					case '8':
+						$software_name = "Thunderbird";
+						$software_version = "17.0.8";
+						$software_publisher = "Mozilla Corporation";
+						break;
+						
+					case '9':
+						$software_name = "VLC";
+						$software_version = "2.0.8";
+						$software_publisher = "VLC";
+						break;
+						
+					case '10':
+						$software_name = "Calibre";
+						$software_version = "0.9.18";
+						$software_publisher = "David Goyle";
+						break;
+						
+					case '11':
+						$software_name = "Microsoft Office Professional 2010";
+						$software_version = "2010";
+						$software_publisher = "Microsoft Corporation";
+						break;
+						
+					case '12':
+						$software_name = "WinZip";
+						$software_version = "";
+						$software_publisher = "WinZip Corporation";
+						break;
+						
+					case '13':
+						$software_name = "Visio Professional 2010";
+						$software_version = "2010";
+						$software_publisher = "Microsoft Corporation";
+						break;
+						
+					case '14':
+						$software_name = "Skype";
+						$software_version = "6.7";
+						$software_publisher = "Microsoft Corporation";
+						break;
+						
+					case '15':
+						$software_name = "Evernote";
+						$software_version = "";
+						$software_publisher = "Evernote Corporation";
+						break;
+						
+					case '16':
+						$software_name = "VMware Fusion";
+						$software_version = "5.0.3";
+						$software_publisher = "VMware";
+						break;
+						
+					case '17':
+						$software_name = "Balsamiq Mockups For Desktop";
+						$software_version = "2.2.2";
+						$software_publisher = "Balsamiq, SRL";
+						break;
+						
+					case '18':
+						$software_name = "Aptana Studio 3";
+						$software_version = "3.0.0";
+						$software_publisher = "Appcelerator, Inc.";
+						break;
+					
+					default:
+						# code...
+						break;
+				}
+				$sql = "INSERT INTO sys_sw_software (software_id, system_id, software_name, software_version, software_publisher, timestamp, first_timestamp) VALUES (NULL, ?, ?, ?, ?, ?, ?)";
+				$data = array("$system_id", "$software_name", "$software_version", "$software_publisher", "$timestamp", "$first_timestamp");
+				$query = $this->db->query($sql, $data);
+			}
+		}
+		# update all groups
+		$this->m_oa_group->update_groups();
+		redirect('/');
+	}
+
+
 }

@@ -19,6 +19,7 @@ class Admin_report extends MY_Controller {
 				redirect('login/index');
 			}
 		}
+		$this->log_event();
 	}
 
 

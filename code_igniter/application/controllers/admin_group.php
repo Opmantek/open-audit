@@ -19,14 +19,14 @@ class Admin_group extends MY_Controller {
 				redirect('login/index');
 			}
 		}
+		$this->log_event();
 	}
 
 	function index() {
 		redirect('/');
 	}
 
-	function activate_group()
-	{
+	function activate_group() {
 		if ($handle = opendir(BASEPATH.'../application/controllers/groups')) {
 			$i = 0;
 			$this->load->model("m_oa_group");
@@ -62,8 +62,7 @@ class Admin_group extends MY_Controller {
 		$this->load->view('v_template', $this->data);
 	}
 
-	function action_activate_group()
-	{
+	function action_activate_group() {
 		$file = BASEPATH.'../application/controllers/groups/' . $this->data['id'];
 		$this->load->model("m_oa_group");
 		$this->load->model("m_oa_group_column");

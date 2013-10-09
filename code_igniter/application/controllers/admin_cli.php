@@ -15,6 +15,7 @@ class Admin_cli extends CI_Controller {
 		if (!$this->input->is_cli_request()) {
 			exit();
 		}
+		$this->log_event();
 	}
 
 	function index() {

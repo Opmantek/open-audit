@@ -20,6 +20,7 @@ class Admin_db extends MY_Controller {
 			}
 		}
 		set_time_limit(240);
+		$this->log_event();
 	}
 	
 	function index() {
