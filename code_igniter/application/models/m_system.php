@@ -267,52 +267,59 @@ class M_system extends MY_Model {
 			}
 		}
 
-		# check hostname
-		if (isset($details->hostname) and ($details->system_id == '') ) {
-			$i = explode(".", $details->hostname);
-			$hostname = $i[0];
-			$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
-			$data = array("$hostname");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0) { 
-				$details->system_id = $row->system_id; 
-				#echo "Hit on hostname.";
-			}
-		}
+		$sql = "SELECT config_value FROM oa_config WHERE config_name = 'name_match'";
+		$query = $this->db->query($sql);
+		$row = $query->row();
+		$name_match = $row->config_value;
 
-		# check short hostname in $details
-		if (isset($details->hostname) and ($details->system_id == '') ) {
-			if (isset($details->hostname_length) and $details->hostname_length == 'short') {
-				# we grabbed the hostname from SNMP.
-				# SNMP hostnames on Windows are truncated to 15 characters
+		if (isset($name_match) and $name_match == "y") {
+			# check hostname
+			if (isset($details->hostname) and ($details->system_id == '') ) {
 				$i = explode(".", $details->hostname);
 				$hostname = $i[0];
-				if (strlen($hostname) == 15) {
-					# We do have a 15 character hostname - check if this exists in the DB
-					$sql = "SELECT system.system_id FROM system WHERE hostname LIKE '" . $hostname . "%' AND system.man_status = 'production'";
-					$query = $this->db->query($sql);
-					$row = $query->row();
-					if (count($row) > 0) { 
-						$details->system_id = $row->system_id; 
-						#echo "Hit on short hostname.";
+				$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
+				$data = array("$hostname");
+				$query = $this->db->query($sql, $data);
+				$row = $query->row();
+				if (count($row) > 0) { 
+					$details->system_id = $row->system_id; 
+					#echo "Hit on hostname.";
+				}
+			}
+
+			# check short hostname in $details
+			if (isset($details->hostname) and ($details->system_id == '') ) {
+				if (isset($details->hostname_length) and $details->hostname_length == 'short') {
+					# we grabbed the hostname from SNMP.
+					# SNMP hostnames on Windows are truncated to 15 characters
+					$i = explode(".", $details->hostname);
+					$hostname = $i[0];
+					if (strlen($hostname) == 15) {
+						# We do have a 15 character hostname - check if this exists in the DB
+						$sql = "SELECT system.system_id FROM system WHERE hostname LIKE '" . $hostname . "%' AND system.man_status = 'production'";
+						$query = $this->db->query($sql);
+						$row = $query->row();
+						if (count($row) > 0) { 
+							$details->system_id = $row->system_id; 
+							#echo "Hit on short hostname.";
+						}
 					}
 				}
 			}
-		}
 
-		# check short hostname in database
-		if (isset($details->hostname) and strlen($details->hostname) > 15 and $details->system_id == '') {
-			$i = explode(".", $details->hostname);
-			$hostname = $i[0];
-			$hostname = substr($hostname, 0, 15);
-			$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
-			$data = array("$hostname");
-			$query = $this->db->query($sql, $data);
-			$row = $query->row();
-			if (count($row) > 0) { 
-				$details->system_id = $row->system_id; 
-				#echo "Hit on hostname.";
+			# check short hostname in database
+			if (isset($details->hostname) and strlen($details->hostname) > 15 and $details->system_id == '') {
+				$i = explode(".", $details->hostname);
+				$hostname = $i[0];
+				$hostname = substr($hostname, 0, 15);
+				$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
+				$data = array("$hostname");
+				$query = $this->db->query($sql, $data);
+				$row = $query->row();
+				if (count($row) > 0) { 
+					$details->system_id = $row->system_id; 
+					#echo "Hit on hostname.";
+				}
 			}
 		}
 
@@ -926,15 +933,110 @@ class M_system extends MY_Model {
 			$data = array("$details->system_id");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
-			if ($row->man_manufacturer == '' and isset($details->manufacturer)) {$details->man_manufacturer = $details->manufacturer; } else {unset($details->man_manufacturer);}
-			if ($row->man_model == '' and isset($details->model)) {$details->man_model = $details->model;} else {unset($details->man_model);}
-			if ($row->man_serial == '' and isset($details->serial)) {$details->man_serial = $details->serial;} else {unset($details->man_serial);}
+
+
+			# if the database entry for man_manufacturer is empty but we have something from an audit, set it.
+			if ($row->man_manufacturer == '' and isset($details->manufacturer)) {
+				$details->man_manufacturer = $details->manufacturer; 
+			} else {
+				unset($details->man_manufacturer);
+			}
+
+			# account for a manufacturer attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
+			if (($row->man_manufacturer == $row->manufacturer) and isset($details->manufacturer) and ($details->manufacturer <> $row->manufacturer)) {
+				$details->man_manufacturer = $details->manufacturer;
+			}
+
+
+			# if the database entry for man_model is empty but we have something from an audit, set it.
+			if ($row->man_model == '' and isset($details->model)) {
+				$details->man_model = $details->model;
+			} else {
+				unset($details->man_model);
+			}
+
+			# account for a model attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
+			if (($row->man_model == $row->model) and isset($details->model) and ($details->model <> $row->model)) {
+				$details->man_model = $details->model;
+			}
+
+
+			# if the database entry for man_serial is empty but we have something from an audit, set it.
+			if ($row->man_serial == '' and isset($details->serial)) {
+				$details->man_serial = $details->serial;
+			} else {
+				unset($details->man_serial);
+			}
+
+			# account for a serial attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
+			if (($row->man_serial == $row->serial) and isset($details->serial) and ($details->serial <> $row->serial)) {
+				$details->man_serial = $details->serial;
+			}
+
+
+			# if the database entry for man_description is empty but we have something from an audit, set it.
 			if ($row->man_description == '' and isset( $details->description)) {$details->man_description = $details->description;} else {unset($details->man_description);}
-			if ($row->man_form_factor == '' and isset($details->form_factor)) {$details->man_form_factor = $details->form_factor;} else {unset($details->man_form_factor);}
-			if ($row->man_os_group == '' and isset($details->os_group)) {$details->man_os_group = $details->os_group;} else {unset($details->man_os_group);}
-			if ($row->man_os_family == '' and isset($details->os_family)) {$details->man_os_family = $details->os_family;} else {unset($details->man_os_family);}
-			if ($row->man_os_name == '' and isset($details->os_name)) { $details->man_os_name = $details->os_name;} else {unset($details->man_os_name);}
+
+			# account for a serial attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
+			if (($row->man_description == $row->description) and isset($details->description) and ($details->description <> $row->description)) {
+				$details->man_description = $details->description;
+			}
+
+
+			# if the database entry for man_form_factor is empty but we have something from an audit, set it.
+			if ($row->man_form_factor == '' and isset($details->form_factor)) {
+				$details->man_form_factor = $details->form_factor;
+			} else {
+				unset($details->man_form_factor);
+			}
+
+			# account for a form_factor attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
+			if (($row->man_form_factor == $row->form_factor) and isset($details->form_factor) and ($details->form_factor <> $row->form_factor)) {
+				$details->man_form_factor = $details->form_factor;
+			}
+
+
+			# if the database entry for man_os_group is empty but we have something from an audit, set it.
+			if ($row->man_os_group == '' and isset($details->os_group)) {
+				$details->man_os_group = $details->os_group;
+			} else {
+				unset($details->man_os_group);
+			}
+
+			# account for a os_group attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
+			if (($row->man_os_group == $row->os_group) and isset($details->os_group) and ($details->os_group <> $row->os_group)) {
+				$details->man_os_group = $details->os_group;
+			}
+
+
+			# if the database entry for man_os_family is empty but we have something from an audit, set it.
+			if ($row->man_os_family == '' and isset($details->os_family)) {
+				$details->man_os_family = $details->os_family;
+			} else {
+				unset($details->man_os_family);
+			}
+
+			# account for a os_family attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
+			if (($row->man_os_family == $row->os_family) and isset($details->os_family) and ($details->os_family <> $row->os_family)) {
+				$details->man_os_family = $details->os_family;
+			}
+
+
+			# if the database entry for man_os_name is empty but we have something from an audit, set it.
+			if ($row->man_os_name == '' and isset($details->os_name)) { 
+				$details->man_os_name = $details->os_name;
+			} else {
+				unset($details->man_os_name);
+			}
+
+			# account for a os_name attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
+			if (($row->man_os_name == $row->os_name) and isset($details->os_name) and ($details->os_name <> $row->os_name)) {
+				$details->man_os_name = $details->os_name;
+			}
+
+
 			if (strlen($row->hostname) > 15 and isset($details->hostname) and strlen($details->hostname) == 15) { unset($details->hostname); }
+
 			if (isset($details->manufacturer) and (
 				(strripos($details->manufacturer, "vmware") !== false) or 
 				(strripos($details->manufacturer, "parallels") !== false) or 
@@ -942,6 +1044,7 @@ class M_system extends MY_Model {
 				$details->form_factor = 'Virtual';
 				$details->man_form_factor = 'Virtual';
 			}
+
 			if ($row->icon > '') {
 				if (isset($details->icon)) { 
 					unset($details->icon); 
@@ -951,6 +1054,7 @@ class M_system extends MY_Model {
 					$details->icon = $details->type;
 				}
 			}
+			
 			if ($row->man_icon > '') {
 				if (isset($details->man_icon)) { 
 					unset($details->man_icon); 
