@@ -78,6 +78,7 @@ class Main extends MY_Controller {
 			redirect('main/list_groups/');
 		}
 		$this->load->model("m_oa_group");
+		$this->load->model("m_audit_log");
 		if (is_numeric($_POST['group_id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
 			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($_POST['group_id'], $this->data['user_id']);
@@ -120,6 +121,7 @@ class Main extends MY_Controller {
 					$encoded = json_encode($encode);
 					$encoded = $this->encrypt->encode($encoded);
 					$this->m_system->update_system_man($system[1], 'access_details', $encoded);
+					$this->m_audit_log->insert_audit_event('access details', 'Details changed (not displayed here for security reasons).', $system[1]);
 				}
 			}
 		}
@@ -128,6 +130,7 @@ class Main extends MY_Controller {
 			if ( (mb_strpos($field_name, 'man_') !== false) && ($field_data != '') ){
 				foreach ($data['systems'] as $system) {
 					$this->m_system->update_system_man($system[1], $field_name, $field_data);
+					$this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
 				}
 			}
 		}
