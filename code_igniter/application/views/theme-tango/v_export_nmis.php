@@ -2,6 +2,12 @@
 # check to see if user_access_level for this group is > 7
 $manual_edit = 'y';
 
+if (!file_exists("/usr/local/nmis8/admin/import_nodes.pl")) {
+	$warning = "<font color=\"red\">NOTE</font> - you do not have nmis installed on this system. A file will be provided that you can copy to the nmis server and run with the nmis8/admin/import_nodes.pl script.<br />";
+} else {
+	$warning = "";
+}
+
 
 if ($manual_edit == 'y') {
 	echo "<div style=\"float:left; width:100%;\">\n";
@@ -9,6 +15,7 @@ if ($manual_edit == 'y') {
 	echo form_open('admin/export_nmis', $attributes) . "\n"; 
 	echo "<input type=\"hidden\" name=\"group_id\" value=\"" . $group_id . "\" />\n";
 }
+echo $warning;
 echo "<table cellspacing=\"1\" class=\"tablesorter\">\n";
 echo "\t<thead>\n";
 echo "\t\t<tr>\n";

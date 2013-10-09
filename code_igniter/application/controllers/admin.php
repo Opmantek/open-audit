@@ -19,6 +19,7 @@ class Admin extends MY_Controller {
 				redirect('login/index');
 			}
 		}
+		$this->log_event();
 	}
 
 	function index() {
@@ -50,8 +51,7 @@ class Admin extends MY_Controller {
 		$this->load->view('v_template', $this->data);
 	}
 
-	function view_log(){
-		
+	function view_log(){		
 		// number of lines to read from the end of file
 		$lines = @intval($this->uri->segment(3,0));
 		if ($lines < 1) { $lines = 25; }
@@ -174,15 +174,20 @@ class Admin extends MY_Controller {
 				unset($device->access_details);
 				$csv .= $device->nmis_name . "," . $device->nmis_host . "," . $device->snmp_community . "," . $device->snmp_version . "," . $device->nmis_group . "," . $device->nmis_collect . "," . $device->nmis_role . "," . $device->net . "\n";
 			}
-			$filename = '/usr/local/nmis8/conf/Nodes.open-audit';
-			$handle = fopen($filename, "w");
-			fwrite($handle, $csv);
-			fclose($handle);
-			$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
-			#echo $cmd;
-			exec($cmd);
-			#unlink($filename);
-			redirect('/admin/view_log');
+			if (!file_exists("/usr/local/nmis8/admin/import_nodes.pl")) {
+				echo $csv;
+				header('Content-Type: text/csv');
+				header('Content-Disposition: attachment;filename="Nodes.open-audit"');
+				header('Cache-Control: max-age=0');
+			} else {
+				$filename = '/usr/local/nmis8/conf/Nodes.open-audit';
+				$handle = fopen($filename, "w");
+				fwrite($handle, $csv);
+				fclose($handle);
+				$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+				exec($cmd);
+				redirect('/admin/view_log');	
+			}
 		}
 	}
 
@@ -449,7 +454,7 @@ class Admin extends MY_Controller {
 		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
 	}
 
-	function upgrade() {		
+	function upgrade() {
 		error_reporting(E_ALL);		
 
 		$web_internal_version = $this->config->item('web_internal_version');
@@ -2021,7 +2026,43 @@ class Admin extends MY_Controller {
 				$this->data['message'] .= "A new user 'nmis' has been created. This user has admin access. Please disable if you are not using Open-AudIT Enterprise.<br /><br />";
 			}
 
-			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable) VALUES ('logo', 'oac-oae', 'n');";
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable) VALUES ('logo', 'oac-oae', 'n')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('name_match', 'n', 'y', 'Should we match a device based only on its hostname as a last resort.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE sys_sw_log CHANGE log_file_name log_file_name varchar(250) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "DROP TABLE IF EXISTS sys_sw_netstat";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "CREATE TABLE sys_sw_netstat (id int(10) unsigned NOT NULL auto_increment, system_id int(10) unsigned default NULL, protocol enum('tcp', 'udp', 'tcp6', 'udp6', '') NOT NULL default '', ip_address varchar(45) NOT NULL default '', port int(5) NOT NULL default '0', program  varchar(250) NOT NULL default '', timestamp datetime NOT NULL default '0000-00-00 00:00:00', first_timestamp datetime NOT NULL default '0000-00-00 00:00:00',  PRIMARY KEY  (`id`), KEY system_id (system_id), CONSTRAINT sys_sw_netstat_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			# we are removing man_vendor from the database
+			# there is a column called man_purchase_vendor which is used on several forms
+			# man_vendor data (if exists) will be copied to man_purchase_vendor (if not exists)
+			$sql = "SELECT system_id, man_vendor, man_purchase_vendor FROM system";
+			$query = $this->db->query($sql);
+			$system_array = $query->result();
+
+			foreach ($system_array as $system) {
+				if ($system->man_vendor > "" AND $system->man_purchase_vendor == "") {
+					$sql = "UPDATE system SET man_purchase_vendor = ? WHERE system_id = ?";
+					$data = array($system->man_vendor, $system->system_id);
+					$query = $this->db->query($sql, $data);
+					$this->data['output'] .= $this->db->last_query() . "<br /><br />\n";
+				}
+			}
+
+			$sql = "ALTER TABLE system DROP man_vendor";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
@@ -2034,7 +2075,6 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);
 
 		}
-
 
 
 		$config = $this->m_oa_config->get_config();
