@@ -54,10 +54,10 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Type</column_name>
-			<column_variable>man_icon</column_variable>
-			<column_type>image</column_type>
+			<column_variable>man_type</column_variable>
+			<column_type>text</column_type>
 			<column_link></column_link>
-			<column_secondary>man_os_family</column_secondary>
+			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
