@@ -38,7 +38,7 @@
 			<tr>
 				<td><?php echo __("Noncurrent Attributes older than") . " " . $days . " " . __("Days"); ?></td>
 				<td style="text-align: center;"><?php echo $count_non_current_attributes; ?></td>
-				<td style="text-align: center;"><a href="<?php echo base_url()?>index.php/admin_db/delete_non_current_attributes/<?php echo $days; ?>"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo base_url()?>index.php/admin_db/delete_all_non_current_attributes/<?php echo $days; ?>"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></a></td>
 			</tr>
 			<tr>
 				<td><?php echo __("Devices Not Seen For") . " " . $days . " " . __("Days"); ?></td>
@@ -63,7 +63,7 @@
 			<?php foreach ($non_current_attributes as $attribute) { ?><tr>
 				<td><?php echo $attribute->table; ?></td>
 				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
-				<td style="text-align: center;"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></td>
+				<td style="text-align: center;"><a href="<?php echo base_url(); ?>index.php/admin_db/delete_table_non_current_attributes/<?php echo $attribute->table; ?>/<?php echo $days; ?>"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></a></td>
 			</tr><?php } ?>
 		</tbody>
 	</table>
