@@ -128,6 +128,7 @@ $link_downloads = '';
 							<p><label for="man_location_name"><?php echo __('Location Name')?>: </label><span id="man_location_name"><?php echo print_something($location_name)?>&nbsp;</span></p>
 							<p><label for="link_warranty"><?php echo __('Warranty Link')?>: </label><span id="link_warranty"><?php echo print_something($link_warranty)?> </span></p>
 							<p><label for="link_downloads"><?php echo __('Downloads Link')?>: </label><span id="link_downloads"><?php echo print_something($link_downloads)?> </span></p>
+							<?php if ($key->linked_sys <> '') {?><p><label for="linked_sys"><?php echo __('Linked Computer')?>: </label><span id="linked_sys"><a href="<?php echo base_url(); ?>index.php/main/system_display/<?php echo $key->linked_sys ?>"><?php echo $key->linked_sys ?></a></span></p><?php } ?>
 						</div>
 					</div>
 				<?php endforeach; ?>
@@ -172,7 +173,7 @@ $link_downloads = '';
 			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_purchases.png' alt='' title='' width='48'/>
 			<?php foreach($system as $key): ?>
 				<p><label for="man_asset_number"><?php echo __('Asset Number')?>: </label><span id="man_asset_number" <?php echo $edit?>><?php echo print_something($key->man_asset_number)?></span></p>
-				<p><label for="man_vendor"><?php echo __('Vendor')?>: </label><span id="man_vendor" <?php echo $edit?>><?php echo print_something($key->man_vendor)?></span></p>
+				<p><label for="man_purchase_vendor"><?php echo __('Vendor')?>: </label><span id="man_purchase_vendor" <?php echo $edit?>><?php echo print_something($key->man_purchase_vendor)?></span></p>
 				<p><label for="man_purchase_order_number"><?php echo __('PO Number')?>: </label><span id="man_purchase_order_number" <?php echo $edit?>><?php echo print_something($key->man_purchase_order_number)?></span></p>
 				<p><label for="man_purchase_invoice"><?php echo __('Invoice Number')?>: </label><span id="man_purchase_invoice" <?php echo $edit?>><?php echo print_something($key->man_purchase_invoice)?></span></p>
 				<p><label for="man_purchase_date"><?php echo __('Purchase Date')?>: </label><span id="man_purchase_date" <?php echo $edit?>><?php echo print_something($key->man_purchase_date)?></span>NOTE - format should be yyyy-mm-dd.</p>

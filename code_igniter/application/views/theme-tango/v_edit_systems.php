@@ -56,7 +56,6 @@ echo form_open('main/process_edit_systems') . "\n";
 	<label for="man_switch_port"><?php echo __("Switch Port"); ?>: </label><input type="text" name="man_switch_port" style="width: 200px" /><br /><br />
 	<label for="man_terminal_number"><?php echo __("Terminal Number"); ?>: </label><input type="text" name="man_terminal_number" style="width: 200px" /><br /><br />
 	<label for="man_type"><?php echo __("Type"); ?>: </label><input type="text" name="man_type" style="width: 200px" /><br /><br />
-	<label for="man_vendor"><?php echo __("Vendor"); ?>: </label><input type="text" name="man_vendor" style="width: 200px" /><br /><br />
 	<label for="man_vm_group"><?php echo __("VM Group"); ?>: </label><input type="text" name="man_vm_group" style="width: 200px" /><br /><br />
 	<label for="man_vm_server_name"><?php echo __("VM Server Name"); ?>: </label><input type="text" name="man_vm_server_name" style="width: 200px" /><br /><br />
 	<label for="man_vm_system_id"><?php echo __("VM Server system ID"); ?>: </label><input type="text" name="man_vm_system_id" style="width: 200px" /><br /><br />
