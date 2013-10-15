@@ -1388,6 +1388,23 @@ $xml_file
 $OA_ECHO "	</routes>" >> $xml_file
 
 ########################################################
+# NETSTAT LISTENING PORTS                              #
+########################################################
+if [ "$debugging" -gt "0" ]; then
+	$OA_ECHO "Netstat Info"
+fi
+netstatdump=`netstat -lntup | grep -v "(only servers)" | grep -v "Foreign Address"`
+$OA_ECHO "	<netstat>" >> $xml_file
+$OA_ECHO "		<![CDATA[$netstatdump]]>" >> $xml_file
+$OA_ECHO "	</netstat>" >> $xml_file
+
+
+
+
+
+
+
+########################################################
 # CLOSE THE AUDIT FILE                                 #
 ########################################################
 

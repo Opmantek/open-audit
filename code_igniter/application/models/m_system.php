@@ -1,13 +1,9 @@
 <?php
 /**
- * OAv2
- *
- * An open source network auditing application
- *
  * @package Open-AudIT
  * @author Mark Unwin <mark.unwin@gmail.com>
  * @version 1.0.4
- * @copyright Opmantek, 2013
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -270,7 +266,10 @@ class M_system extends MY_Model {
 		$sql = "SELECT config_value FROM oa_config WHERE config_name = 'name_match'";
 		$query = $this->db->query($sql);
 		$row = $query->row();
-		$name_match = $row->config_value;
+		$name_match = @$row->config_value;
+		if (!isset($name_match) or is_null($name_match)) {
+			$name_match = 'n';
+		}
 
 		if (isset($name_match) and $name_match == "y") {
 			# check hostname
@@ -604,10 +603,16 @@ class M_system extends MY_Model {
 		$query = $this->db->query($sql, $data);
 	}
 
+	/**
+	 * Insert a NEW system
+	 * We insert whatever we have from the $details object and 
+	 * whatever additional data based on what we can derive
+	 *
+	 * @param	object $details 
+	 * @access	public
+	 * @return	int
+	 */
 	function insert_system($details) {
-		# this is a NEW system
-		# we insert whatever we have from the $details object
-		# we add additional data based on what we can glean from $details
 
 		# nasty hack because when a simplexmlobject is sent (ie, from audit_windows.vbs)
 		# the foreach iterators below don't work.
