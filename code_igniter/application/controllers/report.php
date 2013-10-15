@@ -1,9 +1,9 @@
 <?php
 /**
  * @package Open-AudIT
- * @author Mark Unwin
+ * @author Mark Unwin <mark.unwin@gmail.com>
  * @version 1.0.4
- * @copyright Opmantek, 2013
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
  
@@ -33,7 +33,19 @@ class Report extends MY_Controller {
 				$this->data['second_attribute'] . '/' . 
 				$this->data['third_attribute']);
 		} else {
-			$this->$method();
+			$classMethods = get_class_methods($this);
+			if (!$classMethods) { $classMethods = array(); }
+			if (in_array($method, $classMethods)) {
+				$this->$method();
+			} else {
+				$this->data['error'] = 'This Report does not exist.<br />You may need to activate the ' . ucwords(str_replace("_", " ", $method)) . ' Report. <br />As an Admin level user go to Admin -> Reports -> Activate Report, find the correct Report and click the Activate Icon.<br />If you are an Admin level user, you can try to activate the report by clicking <a style="color: blue;" href="../../../admin_report/action_activate_report/' . str_replace(" ", "", ucwords(str_replace("_", " ", $method))) . '.xml">here</a> (assuming it exists).';
+				$this->data['query'] = '';
+				$this->data['heading'] = 'Error'; 
+				$this->data['include'] = 'v_error'; 
+				$this->data['export_report'] = 'y';
+				$this->data['group_id'] = '0';
+				$this->load->view('v_template', $this->data);
+			}
 		}
 
 	}
@@ -44,6 +56,8 @@ class Report extends MY_Controller {
 		$this->data['first_attribute'] = urldecode($this->uri->segment(5,0));
 		if ($this->data['first_attribute'] == '-') { $this->data['first_attribute'] = ''; }
 		$segs = $this->uri->segment_array();
+		$this->load->model("m_oa_report_column");
+		$this->load->model("m_oa_report");
 
 		$i = 0;
 		$filter = array();
@@ -61,22 +75,59 @@ class Report extends MY_Controller {
 			}
 		}
 
-		$this->load->model("m_oa_report_column");
 		# make sure we specify a report
 		if ($this->data['report_id'] == "0") {
-			redirect('/');
+			# no report specified - show error page
+			$this->data['error'] = "You attempted to run a Report that does not exist or has not been activated. <br />As an Admin Level user you can go to Admin -> Reports -> Activate Report.";
+			$this->data['query'] = '';
+			$this->data['heading'] = 'Error'; 
+			$this->data['include'] = 'v_error'; 
+			$this->data['export_report'] = 'y';
+			$this->data['group_id'] = '0';
+			$this->load->view('v_template', $this->data);
+			return;
 		}
-		
+
+		# check if the report_id actually exists
+		$report_test = $this->m_oa_report->get_report_details($this->data['report_id']);
+
+		if (count($report_test) == 0) {
+			# no details returned - show error page
+			$this->data['error'] = "You attempted to run a Report that does not exist.";
+			$this->data['query'] = '';
+			$this->data['heading'] = 'Error'; 
+			$this->data['include'] = 'v_error'; 
+			$this->data['export_report'] = 'y';
+			$this->data['group_id'] = '0';
+			$this->load->view('v_template', $this->data);
+			return;
+		} 
+
 		# make sure we specify a group
 		$this->load->model("m_oa_group");
 		if ($this->data['group_id'] == "0") {
-			# no group specified - redirect
-			redirect('/');
+			# no group specified - show error page
+			$this->data['error'] = "You attempted to run a Report without providing a Group.";
+			$this->data['query'] = '';
+			$this->data['heading'] = 'Error'; 
+			$this->data['include'] = 'v_error'; 
+			$this->data['export_report'] = 'y';
+			$this->data['group_id'] = '0';
+			$this->load->view('v_template', $this->data);
+			return;
 		} else {
 			// we must check to see if the user has at least VIEW permission on the group
 			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($this->data['group_id'], $this->data['user_id']);
 			if ( $this->data['user_access_level'] < '3') {
-				redirect('/');
+				# insufficient permissions - show error page
+				$this->data['error'] = "You attempted to run a Report on a Group you don't have permission to view.";
+				$this->data['query'] = '';
+				$this->data['heading'] = 'Error'; 
+				$this->data['include'] = 'v_error'; 
+				$this->data['export_report'] = 'y';
+				$this->data['group_id'] = '0';
+				$this->load->view('v_template', $this->data);
+				return;
 			} else {
 				// we can view the group
 				// get report name
@@ -85,7 +136,9 @@ class Report extends MY_Controller {
 				$this->data['heading'] = $report_name . " (" . $group_name . ")";
 			}
 		}
+
 		$this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute']);
+
 		$this->data['column'] = $this->m_oa_report_column->get_report_column($this->data['report_id']);
 	
 		$remove = FALSE;
@@ -166,6 +219,80 @@ class Report extends MY_Controller {
 		$this->data['sortcolumn'] = '0';
 		$this->data['export_report'] = 'y';
 		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+	}
+
+	function system_changes() {
+		if ($this->uri->segment(3,0) == '') {
+			redirect('main/list_devices');
+		} else {
+			$system_id = $this->uri->segment(3,0);
+		}
+
+		if ($this->uri->segment(4,0) == '') {
+			redirect('main/list_devices');
+		} else {
+			$table = $this->uri->segment(4,0);
+		}
+		$selection = "$table.*";
+		if ($table == "sys_sw_software") { $selection = "$table.software_id, $table.software_name, $table.software_version"; }
+		if ($table == "sys_sw_netstat") { $selection = "$table.id, $table.protocol, $table.ip_address, $table.port, $table.program"; }
+
+		$sql = "SELECT $selection, $table.first_timestamp, $table.timestamp, IF($table.first_timestamp = system.first_timestamp, \"y\", \"n\") as original_install, IF($table.timestamp = system.timestamp, \"y\", \"n\") as current_install FROM $table LEFT JOIN system ON ($table.system_id = system.system_id) WHERE system.system_id = $system_id";
+
+		$query = $this->db->query($sql);
+		$this->data['query'] = $query->result();
+
+		$segs = $this->uri->segment_array();
+		$i = 0;
+		$filter = array();
+		foreach ($segs as $segment) {
+			if ( ( (strpos($segment, 'out') === 0) || (strpos($segment, 'only') === 0) ) && (strpos($segment, '___') ) ) {
+				$filter_array = explode("___", $segment);
+				$filter[$i]['variable'] = $filter_array[1];
+				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+				if ($filter_array[0] == 'only') {
+					$filter[$i]['condition'] = '=';
+				} else {
+					$filter[$i]['condition'] = '<>';
+				}
+				$i++;
+			}
+		}
+		$remove = FALSE;
+		$new_query = array();
+		if (count($filter) > 0 ) {
+			foreach ($this->data['query'] as $key) {
+				foreach ($filter as $enum_filter) {
+					if (property_exists($key, $enum_filter['variable'])) {
+						if ( ($key->$enum_filter['variable'] == $enum_filter['value']) && ($enum_filter['condition'] == '<>') ){
+							$remove = TRUE;
+						} 
+						if (($key->$enum_filter['variable'] != $enum_filter['value']) && ($enum_filter['condition'] == '=') ){
+							$remove = TRUE;
+						}
+					}
+				}
+				if ($remove == TRUE) {
+					# do not push this object to the new array
+				} else {
+					# we want to keep this element - no matches above.
+					# push this onto the new query array
+					$new_query[] = $key;
+				}
+				$remove = FALSE;
+			}
+			$this->data['query'] = $new_query;
+		}
+
+
+
+		$this->data['count'] = count($this->data['query']);
+		$this->data['include'] = 'v_report_system_changes'; 
+		$this->data['sortcolumn'] = '0';
+		$this->data['alert'] = 'n';
+		$this->data['export_report'] = 'y';
+		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+
 	}
 
 	function generate_report() {

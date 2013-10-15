@@ -73,7 +73,7 @@ class M_oa_general extends MY_Model {
 		return($return);
 	}
 
-	function delete_non_current_attributes($days = 365) {
+	function delete_all_non_current_attributes($days = 365) {
 		$tables = $this->db->list_tables();
 		$count = 0;
 		foreach ($tables as $table){
@@ -86,4 +86,12 @@ class M_oa_general extends MY_Model {
 		return($count);
 	}
 
+	function delete_table_non_current_attributes($table, $days = 365) {
+		if (((strpos($table, 'sys_hw_') !== FALSE) OR (strpos($table, 'sys_sw_') !== FALSE)) AND (strpos($table, "sys_hw_warranty") === FALSE)) {
+			$sql = "DELETE $table FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
+			$query = $this->db->query($sql);
+			$count = $this->db->affected_rows();
+		}
+		return($count);
+	}
 }

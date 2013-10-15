@@ -1,9 +1,9 @@
 <?php
 /**
  * @package Open-AudIT
- * @author Mark Unwin
+ * @author Mark Unwin <mark.unwin@gmail.com>
  * @version 1.0.4
- * @copyright Opmantek, 2013
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -256,9 +256,15 @@ class Admin_location extends MY_Controller {
 				$this->data['include'] = 'v_edit_location'; 
 				$this->load->view('v_template', $this->data);
 			}
-			
+
 			if ($error == '0'){
 				$this->m_oa_location->edit_location($details);
+				if ($_POST['location_group'] == 'on') {
+					redirect('admin_location/activate_group/' . $_POST['location_id']);
+				} else {
+					redirect('admin_location/list_locations');
+				}
+			} else {
 				redirect('admin_location/list_locations');
 			}
 		}

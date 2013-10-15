@@ -1,9 +1,9 @@
 <?php
 /**
  * @package Open-AudIT
- * @author Mark Unwin
+ * @author Mark Unwin <mark.unwin@gmail.com>
  * @version 1.0.4
- * @copyright Opmantek, 2013
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
  
@@ -17,7 +17,6 @@ class Main extends MY_Controller {
 		redirect('main/list_groups/');
 	}
 
-
 	function view_org() {
 		$this->load->model("m_oa_org");
 		$this->data['org'] = $this->m_oa_org->get_org_details($this->data['id']);
@@ -25,6 +24,12 @@ class Main extends MY_Controller {
 		$this->data['sortcolumn'] = '1';
 		$this->data['heading'] = 'View Organisation';
 		$this->load->view('v_template', $this->data);
+	}
+
+	function get_count() {
+		$this->load->model("m_systems");
+		$count = $this->m_systems->get_count();
+		echo $count;
 	}
 
 	function view_location() {
@@ -41,8 +46,7 @@ class Main extends MY_Controller {
 		if (is_numeric($_POST['group_id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
 			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($_POST['group_id'], $this->data['user_id']);
-			if ( $this->data['user_access_level'] < '10')
-			{
+			if ( $this->data['user_access_level'] < '10') {
 				// not enough permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -82,8 +86,7 @@ class Main extends MY_Controller {
 		if (is_numeric($_POST['group_id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
 			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($_POST['group_id'], $this->data['user_id']);
-			if ( $this->data['user_access_level'] < '10')
-			{
+			if ( $this->data['user_access_level'] < '10') {
 				// not enough permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -95,7 +98,7 @@ class Main extends MY_Controller {
 		$group_id = $_POST['group_id'];
 		$data['items'] = array();
 		foreach ($_POST as $key => $value) {
-			if ( (mb_strpos($key, 'man_') !== false) && ($value != '') ){
+			if ( (mb_strpos($key, 'man_') !== false) && ($value != '')) {
 				$item = array($key, $value);
 				array_push($data['items'], ($item));
 				$item = NULL;
@@ -103,7 +106,7 @@ class Main extends MY_Controller {
 		}
 		$data['systems'] = array();
 		foreach ($_POST as $key => $value) {
-			if ( (mb_strpos($key, 'system_') !== false) && ($value != '') ){
+			if ( (mb_strpos($key, 'system_') !== false) && ($value != '')) {
 				$item = array($key, $value);
 				array_push($data['systems'], ($item));
 				$item = NULL;
@@ -127,7 +130,7 @@ class Main extends MY_Controller {
 		}
 		foreach ($_POST as $field_name => $field_data) {
 			# input all the manual fields 
-			if ( (mb_strpos($field_name, 'man_') !== false) && ($field_data != '') ){
+			if ( (mb_strpos($field_name, 'man_') !== false) && ($field_data != '')) {
 				foreach ($data['systems'] as $system) {
 					$this->m_system->update_system_man($system[1], $field_name, $field_data);
 					$this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
@@ -157,8 +160,7 @@ class Main extends MY_Controller {
 		if (is_numeric($this->data['id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
 			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($this->data['id'], $this->data['user_id']);
-			if ( $this->data['user_access_level'] < '3')
-			{
+			if ( $this->data['user_access_level'] < '3') {
 				// not even VIEW permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -501,6 +503,7 @@ class Main extends MY_Controller {
 		$this->load->model("m_memory");
 		$this->load->model("m_monitor");
 		$this->load->model("m_motherboard");
+		$this->load->model("m_netstat");
 		$this->load->model("m_network_card");
 		$this->load->model("m_oa_location");
 		$this->load->model("m_oa_org");
@@ -550,6 +553,7 @@ class Main extends MY_Controller {
 		$this->data['memory'] = $this->m_memory->get_system_memory($this->data['id']);
 		$this->data['monitor'] = $this->m_monitor->get_system_monitor($this->data['id']);
 		$this->data['motherboard'] = $this->m_motherboard->get_system_motherboard($this->data['id']);
+		$this->data['netstat'] = $this->m_netstat->get_system_netstat($this->data['id']);
 		$this->data['network'] = $this->m_network_card->get_system_network($this->data['id']);
 		$this->data['odbc'] = $this->m_software->get_system_software($this->data['id'], 3);
 		$this->data['optical'] = $this->m_optical_drive->get_system_optical($this->data['id']);

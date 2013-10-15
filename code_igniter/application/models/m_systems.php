@@ -1,7 +1,7 @@
 <?php
 /**
  * @package Open-AudIT
- * @author Mark Unwin
+ * @author Mark Unwin <mark.unwin@gmail.com>
  * @version 1.0.4
  * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -146,6 +146,14 @@ class M_systems extends MY_Model {
 		$query = $this->db->query($sql);
 		$result = $query->result();
 		return ($result);
+	}
+
+	function get_count() {
+		$sql = "SELECT count(*) AS count FROM system WHERE man_status = 'production'";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		$count = $result[0]->count;
+		return($count);
 	}
 }
 ?>

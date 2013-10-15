@@ -1,9 +1,9 @@
 <?php
 /**
  * @package Open-AudIT
- * @author Mark Unwin
+ * @author Mark Unwin <mark.unwin@gmail.com>
  * @version 1.0.4
- * @copyright Opmantek, 2013
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -1578,6 +1578,7 @@ class Admin_test extends MY_Controller {
 
 function data_software() {
 			# insert some random software
+		$this->load->model("m_oa_group");
 		$sql = "SELECT system_id, timestamp FROM system WHERE man_type = 'computer' ORDER BY RAND() DESC LIMIT 100";
 		$query = $this->db->query($sql);
 		$result = $query->result();
