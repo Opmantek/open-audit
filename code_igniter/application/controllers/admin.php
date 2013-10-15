@@ -1906,6 +1906,10 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "ALTER TABLE system ADD man_location_rack_size int(10) unsigned NOT NULL default '0'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "DROP TABLE IF EXISTS oa_net_nmap_ports";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);

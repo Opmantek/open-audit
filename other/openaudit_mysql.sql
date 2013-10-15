@@ -1633,6 +1633,7 @@ CREATE TABLE `system` (
   `man_location_room` varchar(100) NOT NULL default '',
   `man_location_rack` varchar(100) NOT NULL default '',
   `man_location_rack_position` varchar(100) NOT NULL default '',
+  `man_location_rack_size` int(10) unsigned NOT NULL default '0'
   `man_serial` varchar(200) NOT NULL default '',
   `man_asset_number` varchar(50) NOT NULL default '',
   `man_model` varchar(50) NOT NULL default '',
