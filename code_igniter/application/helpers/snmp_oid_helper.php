@@ -6811,7 +6811,95 @@ if (!function_exists('get_oid'))
 		if ($oid == '1.3.6.1.4.1.11.2.3.9.1') { $new->model = 'HP Color LaserJet 2605dn'; $new->type = 'network printer'; }
 		if ($oid == '2.773820.811937840.808464432.808464432.808464432.808464432.808463408') { $new->model = 'Officejet Pro 8600 N911g'; $new->type = 'network printer'; }
 
+		if ($oid == '1.3.6.1.4.1.43.1.8.39') { $new->model = '3Com SuperStack 3 Switch 3824'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.43.1.8.40') { $new->model = '3Com SuperStack 3 Switch 3812'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.43.1.8.41') { $new->model = '3Com SuperStack 3 Switch 3226'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.43.1.8.42') { $new->model = '3Com SuperStack 3 Switch 3250'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.43.1.8.43') { $new->model = '3Com SuperStack 3 Switch 3870 24 port'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.43.1.8.44') { $new->model = '3Com SuperStack 3 Switch 3870 48 port'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.43.1.8.45') { $new->model = '3Com SuperStack 3 Switch 3848'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.43.1.8.51') { $new->model = '3Com SuperStack 3 Switch 3870x'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.43.1.8.52') { $new->model = '3Com SuperStack 3 Switch 9'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.43.1.8.53') { $new->model = '3Com SuperStack 3 Switch 9 FX'; $new->type = 'switch'; }
+
 		if ($oid == '1.3.6.1.4.1.714.1.2.6') { $new->model = 'Xenith 2'; $new->os_group = 'Wyse'; $new->type = 'thin client'; }
+
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.1') { $new->model = 'Juniper M40'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.2') { $new->model = 'Juniper M20'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.3') { $new->model = 'Juniper M160'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.4') { $new->model = 'Juniper M10'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.5') { $new->model = 'Juniper M5'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.6') { $new->model = 'Juniper T640'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.7') { $new->model = 'Juniper T320'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.8') { $new->model = 'Juniper M40e'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.9') { $new->model = 'Juniper M320'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.10') { $new->model = 'Juniper M7i'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.11') { $new->model = 'Juniper M10i'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.13') { $new->model = 'Juniper J2300'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.14') { $new->model = 'Juniper J4300'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.15') { $new->model = 'Juniper J6300'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.16') { $new->model = 'Juniper IRM'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.17') { $new->model = 'Juniper TX'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.18') { $new->model = 'Juniper M120'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.19') { $new->model = 'Juniper J4350'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.20') { $new->model = 'Juniper J6350'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.21') { $new->model = 'Juniper MX 960'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.22') { $new->model = 'Juniper J4320'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.23') { $new->model = 'Juniper J2320'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.24') { $new->model = 'Juniper J2350'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.25') { $new->model = 'Juniper MX 480'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.26') { $new->model = 'Juniper SRX 5800'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.27') { $new->model = 'Juniper T1600'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.28') { $new->model = 'Juniper SRX 5600'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.29') { $new->model = 'Juniper MX 240'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.30') { $new->model = 'Juniper EX 3200'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.31') { $new->model = 'Juniper EX 4200'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.32') { $new->model = 'Juniper EX 8208'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.33') { $new->model = 'Juniper EX 8216'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.34') { $new->model = 'Juniper SRX 3600'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.35') { $new->model = 'Juniper SRX 3400'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.36') { $new->model = 'Juniper SRX 210'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.37') { $new->model = 'Juniper TXP'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.38') { $new->model = 'Juniper JCS'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.39') { $new->model = 'Juniper SRX 240'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.40') { $new->model = 'Juniper SRX 650'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.41') { $new->model = 'Juniper SRX 100'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.42') { $new->model = 'Juniper LN 1000V'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.43') { $new->model = 'Juniper EX 2200'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.44') { $new->model = 'Juniper EX 4500'; $new->type = 'switch'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.45') { $new->model = 'Juniper FX Series'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.46') { $new->model = 'Juniper IBM 4274M02J02M'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.47') { $new->model = 'Juniper IBM 4274M06J06M'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.48') { $new->model = 'Juniper IBM 4274M11J11M'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.49') { $new->model = 'Juniper SRX 1400'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.50') { $new->model = 'Juniper IBM 4274S58J58S'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.51') { $new->model = 'Juniper IBM 4274S56J56S'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.52') { $new->model = 'Juniper IBM 4274S36J36S'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.53') { $new->model = 'Juniper IBM 4274S34J34S'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.54') { $new->model = 'Juniper IBM 427348EJ48E'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.55') { $new->model = 'Juniper IBM 4274E08J08E'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.56') { $new->model = 'Juniper IBM 4274E16J16E'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.57') { $new->model = 'Juniper MX80'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.58') { $new->model = 'Juniper SRX 220'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.59') { $new->model = 'Juniper EXXRE'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.60') { $new->model = 'Juniper QFX Interconnect'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.61') { $new->model = 'Juniper QFX Node'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.62') { $new->model = 'Juniper QFX JVRE'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.64') { $new->model = 'Juniper SRX 110'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.65') { $new->model = 'Juniper SRX 120'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.67') { $new->model = 'Juniper MAG 6611'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.68') { $new->model = 'Juniper MAG 6610'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.71') { $new->model = 'Juniper IBM 0719J45E'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.72') { $new->model = 'Juniper IBM J08F'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.73') { $new->model = 'Juniper IBM J52F'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.75') { $new->model = 'Juniper Dell JFX3500'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.77') { $new->model = 'Juniper DELL JSRX3600'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.78') { $new->model = 'Juniper DELL JSRX3400'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.79') { $new->model = 'Juniper DELL JSRX1400'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.80') { $new->model = 'Juniper DELL JSRX5800'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.81') { $new->model = 'Juniper DELL JSRX5600'; $new->type = 'gateway'; }
+		if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.82') { $new->model = 'Juniper QFX Switch'; $new->type = 'switch'; }
+
 
 		if ($oid == '1.3.6.1.4.1.4526.1.1') { $new->model = 'FSM726S Managed Switch'; $new->type = 'switch'; }
 		if ($oid == '1.3.6.1.4.1.4526.1.1.1.1.0.1.3.9.26') { $new->model = 'CG814WG Cable Modem'; $new->type = 'cable modem'; }
@@ -6827,6 +6915,7 @@ if (!function_exists('get_oid'))
 		if ($oid == '1.3.6.1.4.1.4526.2.1') { $new->model = 'FVX538 Router'; $new->type = 'router'; }
 		if ($oid == '1.3.6.1.4.1.4526.2.2') { $new->model = 'FVS338 Router'; $new->type = 'router'; }
 		if ($oid == '1.3.6.1.4.1.4526.2.3') { $new->model = 'FVG318 Router'; $new->type = 'router'; }
+		if ($oid == '1.3.6.1.4.1.4526.3.1') { $new->model = 'CGD24N Cable Modem'; $new->type = 'cable modem'; }
 		if ($oid == '1.3.6.1.4.1.4526.4.1') { $new->model = 'ME103 Wireless AP'; $new->type = 'wireless ap'; }
 		if ($oid == '1.3.6.1.4.1.4526.4.2') { $new->model = 'WG302 Wireless AP'; $new->type = 'wireless ap'; }
 		if ($oid == '1.3.6.1.4.1.4526.4.3') { $new->model = 'WG102 Wireless AP'; $new->type = 'wireless ap'; }
