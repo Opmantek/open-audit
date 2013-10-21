@@ -30,11 +30,7 @@ class Admin_test extends MY_Controller {
 
 		# comment the below line out to enable this funtcion.
 		#redirect('/');
-		if (isset($this->data['id']) and (intval($this->data['id']) == $this->data['id'])) {
-			$computers_to_add = $this->data['id'];
-		} else {
-			$computers_to_add = 1000;
-		}
+		$computers_to_add = 1000;
 		
 		# populate the Open-AudIT database with dummy locations, devices and set up a few groups
 
@@ -374,7 +370,7 @@ class Admin_test extends MY_Controller {
 
 
 
-		for ($i=1; $i<=$computers_to_add; $i++) {
+		for ($i=1; $i<=intval($computers_to_add); $i++) {
 
 			$details = new stdclass();
 
@@ -391,22 +387,26 @@ class Admin_test extends MY_Controller {
 			$details->status = 'production';
 
 			# create a random timestamp for the last 30 days.
-			$k = rand(1,2);
-			$year = date('Y');
-			if ($k == 1) {
-				# use the date from last month
-				$day = rand(date('j'), 31);
-				$month = date('n') -1;
-				if ($month == 0) { $month = 12; $year = $year -1; }
-			} else {
-				# use this months date
-				$day = rand(1, date('j'));
-				$month = date('n');
-			}
-			if ($day < 10) { $day = '0' . $day; }
-			if ($month < 10) { $month = '0' . $month; }
+			// $k = rand(1,2);
+			// $year = date('Y');
+			// if ($k == 1) {
+			// 	# use the date from last month
+			// 	$day = rand(date('j'), 31);
+			// 	$month = date('n') -1;
+			// 	if ($month == 0) { $month = 12; $year = $year -1; }
+			// } else {
+			// 	# use this months date
+			// 	$day = rand(1, date('j'));
+			// 	$month = date('n');
+			// }
+			// if ($day < 10) { $day = '0' . $day; }
+			// if ($month < 10) { $month = '0' . $month; }
 
-			$details->last_seen = $year . "-" . $month . "-" . $day . " 10:00:00";
+			# create a random timestamp for the last 50 days.
+			$random_days_to_subtract = rand(0, 50);
+			$details->last_seen = date("Y-m-d",strtotime("-" . $random_days_to_subtract . " days")) . " 10:00:00";
+
+#			$details->last_seen = $year . "-" . $month . "-" . $day . " 10:00:00";
 			$details->last_seen_by = "manual";
 			$details->timestamp = $details->last_seen;
 			$details->domain = "open-audit.local";
@@ -811,26 +811,12 @@ class Admin_test extends MY_Controller {
 			$j = $this->m_system->insert_system($details);
 		}
 
-		for ($i=1; $i<101; $i++) {
+		for ($i=1; $i<=0; $i++) {
 				$details = NULL;
 				$details = new stdclass();
-				# create a random timestamp for the last 30 days.
-				$k = rand(1,2);
-				$year = date('Y');
-				if ($k == 1) {
-					# use the date from last month
-					$day = rand(date('j'), 31);
-					$month = date('n') -1;
-					if ($month == 0) { $month = 12; $year = $year -1; }
-				} else {
-					# use this months date
-					$day = rand(1, date('j'));
-					$month = date('n');
-				}
-				if ($day < 10) { $day = '0' . $day; }
-				if ($month < 10) { $month = '0' . $month; }
 
-				$details->last_seen = $year . "-" . $month . "-" . $day . " 10:00:00";
+				$random_days_to_subtract = rand(0, 50);
+				$details->last_seen = date("Y-m-d",strtotime("-" . $random_days_to_subtract . " days")) . " 10:00:00";
 				$details->man_ip_address = "";
 				$details->last_seen_by = "manual";
 				$details->timestamp = $details->last_seen;
