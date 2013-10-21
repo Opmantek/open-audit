@@ -99,6 +99,9 @@ class M_netstat extends MY_Model {
 					$i->protocol = strtolower($attributes[0]);
 
 					$i->ip_address = str_replace(":" . $i->port, "", $attributes[3]);
+					if ((substr_count($i->ip_address, ":") > 1) and (strlen($i->protocol) == 3) ) {
+						$i->protocol = $i->protocol . "6";
+					}
 					$i->program = "";
 					$t_program = "";
 					for ($j=$offset; $j<=count($attributes)-1; $j++) {

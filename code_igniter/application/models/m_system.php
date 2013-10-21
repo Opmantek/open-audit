@@ -249,7 +249,8 @@ class M_system extends MY_Model {
 
 		# check man_serial
 		if ((isset($details->man_serial) and ($details->man_serial > '') and ($details->system_id == ''))) {
-			if (isset($details->man_type) and $details->man_type > '') {$man_type = $details->man_type; }
+			if (isset($details->man_type) and $details->man_type > '') {$man_type = $details->man_type; } 
+			if (!isset($man_type)) { $man_type = ''; }
 			if (isset($details->type) and $details->type > '') {$type = $details->type; }
 			if ($type > '' or $man_type > '') {
 				$sql = "SELECT system.system_id FROM system WHERE system.man_serial = ? AND (system.man_type = ? OR system.type = ?) AND system.man_status = 'production'";
@@ -444,7 +445,7 @@ class M_system extends MY_Model {
 
 	function get_system_popup($system_id) {
 		$sql = "SELECT 		system_id, man_status, man_manufacturer, man_form_factor, 
-							man_model, man_picture, man_serial, man_form_factor
+							man_model, man_picture, man_serial, man_form_factor, man_type 
 				FROM 		system
 				WHERE 		system.system_id = ? 
 				ORDER BY 	system.timestamp
