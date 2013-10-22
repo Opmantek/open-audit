@@ -55,8 +55,8 @@ echo "display_errors = On" >> /etc/php5/apache2/php.ini
 sed -i -e 's/upload_max_filesize/;upload_max_filesize/g' /etc/php5/apache2/php.ini
 echo "upload_max_filesize = 10M" >> /etc/php5/apache2/php.ini
 # Get a valid dat/time string from http://www.php.net/manual/en/timezones.php
-sed -i -e 's/date.timezone/;date.timezone/g' /etc/php.ini
-echo "date.timezone = Australia/Brisbane" >> /etc/php.ini
+sed -i -e 's/date.timezone/;date.timezone/g' /etc/php5/apache2/php.ini
+echo "date.timezone = Australia/Brisbane" >> /etc/php5/apache2/php.ini
 
 # On CentOS and RedHat
 sed -i -e 's/memory_limit/;memory_limit/g' /etc/php.ini

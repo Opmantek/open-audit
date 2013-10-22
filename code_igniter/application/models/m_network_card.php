@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
- * @author Mark Unwin
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @package Open-AudIT
+ * @author Mark Unwin <mark.unwin@gmail.com>
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -54,25 +54,51 @@ class M_network_card extends MY_Model {
 		$query = $this->db->query($sql, $data);
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
-			// the network_card exists - need to update its timestamp
+			// the network_card exists - update it
 			$sql = "UPDATE sys_hw_network_card SET 
-					net_dhcp_enabled = ?, 
-					net_dhcp_server = ?, 
-					net_dhcp_lease_obtained = ?, 
-					net_dhcp_lease_expires = ?, 
-					net_dns_domain = ?, 
-					net_dns_domain_reg_enabled = ?, 
-					net_dns_server = ?, 
-					timestamp = ? 
-					WHERE net_id = ?";
-			$data = array("$input->net_dhcp_enabled", 
-					"$input->net_dhcp_server", 
-					"$input->net_dhcp_lease_obtained", 
-					"$input->net_dhcp_lease_expires", 
-					"$input->net_dns_domain", 
-					"$input->net_dns_domain_reg_enabled", 
-					"$input->net_dns_server", 
-					"$details->timestamp", 
+					net_description = ?,
+					net_manufacturer = ?,
+					net_model = ?,
+					net_ip_enabled = ?,
+					net_index = ?,
+					net_connection_id = ?,
+					net_connection_status = ?,
+					net_speed = ?,
+					net_adapter_type = ?,
+					net_dhcp_enabled = ?,
+					net_dhcp_server = ?,
+					net_dhcp_lease_obtained = ?,
+					net_dhcp_lease_expires = ?,
+					net_dns_host_name = ?,
+					net_dns_domain = ?,
+					net_dns_domain_reg_enabled = ?,
+					net_dns_server = ?,
+					net_wins_primary = ?,
+					net_wins_secondary = ?,
+					net_wins_lmhosts_enabled = ?,
+					timestamp = ?
+				WHERE net_id = ?";
+			$data = array("$input->net_description",
+					"$input->net_manufacturer",
+					"$input->net_model",
+					"$input->net_ip_enabled",
+					"$input->net_index",
+					"$input->net_connection_id",
+					"$input->net_connection_status",
+					"$input->net_speed",
+					"$input->net_adapter_type",
+					"$input->net_dhcp_enabled",
+					"$input->net_dhcp_server",
+					"$input->net_dhcp_lease_obtained",
+					"$input->net_dhcp_lease_expires",
+					"$input->net_dns_host_name",
+					"$input->net_dns_domain",
+					"$input->net_dns_domain_reg_enabled",
+					"$input->net_dns_server",
+					"$input->net_wins_primary",
+					"$input->net_wins_secondary",
+					"$input->net_wins_lmhosts_enabled",
+					"$details->timestamp",
 					"$row->net_id");
 			$query = $this->db->query($sql, $data);
 		} else {

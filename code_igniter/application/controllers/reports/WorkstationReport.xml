@@ -94,7 +94,7 @@
 			<column_order>8</column_order>
 			<column_name>Last Seen</column_name>
 			<column_variable>last_seen</column_variable>
-			<column_type>text</column_type>
+			<column_type>timestamp</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>

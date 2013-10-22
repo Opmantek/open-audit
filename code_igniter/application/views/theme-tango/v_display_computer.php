@@ -37,16 +37,7 @@ foreach($system as $key) {
 	$link_serial = $key->serial;
 	$link_model = $key->model;
 	$last_seen = $key->last_seen_by;
-	$icon = $key->man_icon;
-	$picture = strtolower($key->man_picture);
-	if ($picture == '') {
-		$picture = strtolower($key->man_model);
-	}
-	
-}
-
-if ($picture == '') {
-	$picture = 'unknown';
+	$icon = $key->man_icon;	
 }
 
 $location_name = '';
@@ -178,7 +169,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		</ul>
 	</li>
 	<?php } ?>
-	<?php if ((count($share) > 0) or (count($route) > 0) or (count($system_user) > 0) or (count($system_group) > 0) or (count($dns) > 0) or (count($system_log) > 0) or (count($system_variable) > 0)) { ?>
+	<?php if ((count($share) > 0) or (count($route) > 0) or (count($system_user) > 0) or (count($system_group) > 0) or (count($dns) > 0) or (count($system_log) > 0) or (count($system_variable) > 0) or (count($netstat) > 0)) { ?>
 	<li class="parent"><img alt="" src="<?php echo $image_path?>16_settings.png" id="toggle_settings_all"/><a href="#">Settings</a>
 		<ul>
 		 	<?php if (count($share) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_share.png" /><a href="#" id="toggle_settings_shares">Shares</a></li> <?php } ?> 
@@ -187,6 +178,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		 	<?php if (count($system_user) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_theme.png" /><a href="#" id="toggle_settings_users">Users</a></li> <?php } ?> 
 		 	<?php if (count($system_group) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_users.png" /><a href="#" id="toggle_settings_groups">Groups</a></li> <?php } ?> 
 		 	<?php if (count($dns) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_font.png" /><a href="#" id="toggle_settings_dns">DNS</a></li> <?php } ?> 
+		 	<?php if (count($netstat) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_network.png" /><a href="#" id="toggle_settings_netstat">NetStat</a></li> <?php } ?> 
 		 	<?php if (count($print_queue) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_printer.png" /><a href="#" id="toggle_settings_print_queue">Print Queue</a></li> <?php } ?> 
 		 	<?php if (count($system_log) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_fill.png" /><a href="#" id="toggle_settings_logs">Logs</a></li> <?php } ?> 
 		 	<?php if (count($system_variable) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_font.png" /><a href="#" id="toggle_settings_variables">Variables</a></li> <?php } ?> 
@@ -227,7 +219,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		<fieldset id="system_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
 			<div style="float:right; width: 100px; text-align:center">
-				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
+				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $system[0]->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
 			<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
 				<input type="button" onclick="parent.location='<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>'" value='SNMP Probe' title='SNMP Probe' name='SNMP Probe' alt='SNMP Probe' width='24' />
 			<?php } ?>
@@ -397,7 +389,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_purchases.png' alt='' title='' width='48'/>
 			<?php foreach($system as $key): ?>
 				<p><label for="man_asset_number"><?php echo __('Asset Number')?>: </label><span id="man_asset_number" <?php echo $edit?>><?php echo print_something($key->man_asset_number)?></span></p>
-				<p><label for="man_vendor"><?php echo __('Vendor')?>: </label><span id="man_vendor" <?php echo $edit?>><?php echo print_something($key->man_vendor)?></span></p>
+				<p><label for="man_purchase_vendor"><?php echo __('Vendor')?>: </label><span id="man_purchase_vendor" <?php echo $edit?>><?php echo print_something($key->man_purchase_vendor)?></span></p>
 				<p><label for="man_purchase_order_number"><?php echo __('PO Number')?>: </label><span id="man_purchase_order_number" <?php echo $edit?>><?php echo print_something($key->man_purchase_order_number)?></span></p>
 				<p><label for="man_purchase_invoice"><?php echo __('Invoice Number')?>: </label><span id="man_purchase_invoice" <?php echo $edit?>><?php echo print_something($key->man_purchase_invoice)?></span></p>
 				<p><label for="man_purchase_date"><?php echo __('Purchase Date')?>: </label><span id="man_purchase_date" <?php echo $edit?>><?php echo print_something($key->man_purchase_date)?></span>NOTE - format should be yyyy-mm-dd.</p>
@@ -820,7 +812,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 				<?php foreach($bios as $key): ?>
 					<p><label for="bios_description"><?php echo __('Description')?>: </label><span id="bios_description"><?php echo $key->bios_description?></span></p>
 					<p><label for="bios_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="bios_manufacturer"><?php echo $key->bios_manufacturer?></span></p>
-					<p><label for="bios_serial"><?php echo __('Serial')?>: </label><span id="bios_serial"><?php echo $key->bios_serial?></span></p>
+					<p><label for="bios_serial"><?php echo __('Serial')?>: </label><span id="bios_serial"><?php echo $key->bios_serial?>&nbsp;</span></p>
 					<p><label for="bios_smversion"><?php echo __('SMVersion')?>: </label><span id="bios_smversion"><?php echo $key->bios_smversion?></span></p>
 					<p><label for="bios_version"><?php echo __('Version')?>: </label><span id="bios_version"><?php echo $key->bios_version?></span></p>
 					<p><label for="bios_asset_tag"><?php echo __('Asset Tag')?>: </label><span id="bios_asset_tag"><?php echo $key->bios_asset_tag?></span></p>
@@ -1528,7 +1520,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 	</div>
 
 	<div id="view_software_keys" style="float: left; width: 100%;">
-	<?php if (isset($software_key) and ($access_level >= 7)) { ?>
+	<?php if (isset($software_key) and (count($software_key) > 0) and ($access_level >= 7)) { ?>
 		<br />
 		<br />
 		<form action="#" method="post" class="niceforms">
@@ -1834,6 +1826,38 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 	<?php } ?>
 	</div>
 
+
+	<div id="view_settings_netstat" style="float: left; width: 100%;">
+	<?php if (count($netstat) > 0) { ?>
+		<br />
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="netstat">
+			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('NetStat')?></span></legend>
+				<table cellspacing="1" class="tablesorter" style='width:100%;'>
+					<thead>
+						<tr>
+							<th><?php echo __('Protocol')?></th>
+							<th><?php echo __('IP Address')?></th>
+							<th><?php echo __('Port')?></th>
+							<th><?php echo __('Program')?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach($netstat as $key): ?>
+					<tr>
+						<td><?php echo $key->protocol?></td>
+						<td><?php echo $key->ip_address?></td>
+						<td><?php echo $key->port?></td>
+						<td><?php echo $key->program?></td>
+					</tr>
+					<?php endforeach; ?>
+					</tbody>
+				</table>
+			</fieldset>
+		</form>
+	<?php } ?>
+	</div>
 
 
 	<div id="view_settings_logs" style="float: left; width: 100%;">
@@ -2544,6 +2568,7 @@ $(document).ready(function(){
 	$('#view_settings_groups').hide();
 	$('#view_settings_print_queue').hide();
 	$('#view_settings_dns').hide();
+	$('#view_settings_netstat').hide();
 	$('#view_settings_logs').hide();
 	$('#view_settings_variables').hide();
                
@@ -2577,6 +2602,10 @@ $(document).ready(function(){
 		$('#view_settings_dns').slideToggle("fast");
 	});
 
+	$('#toggle_settings_netstat').click(function(){
+		$('#view_settings_netstat').slideToggle("fast");
+	});
+
 	$('#toggle_settings_logs').click(function(){
 		$('#view_settings_logs').slideToggle("fast");
 	});
@@ -2595,6 +2624,7 @@ $(document).ready(function(){
 			$('#view_settings_groups').show("fast");
 			$('#view_settings_print_queue').show("fast");
 			$('#view_settings_dns').show("fast");
+			$('#view_settings_netstat').show("fast");
 			$('#view_settings_logs').show("fast");
 			$('#view_settings_variables').show("fast");
 			settings_toggle = 1;
@@ -2608,6 +2638,7 @@ $(document).ready(function(){
 			$('#view_settings_groups').hide("fast");
 			$('#view_settings_print_queue').hide("fast");
 			$('#view_settings_dns').hide("fast");
+			$('#view_settings_netstat').hide("fast");
 			$('#view_settings_logs').hide("fast");
 			$('#view_settings_variables').hide("fast");
 			settings_toggle = 0;

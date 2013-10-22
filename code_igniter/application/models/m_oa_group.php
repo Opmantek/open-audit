@@ -1,13 +1,9 @@
 <?php
 /**
- * OAv2
- *
- * An open source network auditing application
- *
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin <mark.unwin@gmail.com>
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -93,28 +89,6 @@ class M_oa_group extends MY_Model {
 				// insert a row because the system matches the select criteria
 				$sql_insert = "INSERT INTO oa_group_sys (system_id, group_id, group_sys_type) VALUES (?, ?, ?)";
 				$data_insert = array("$details->system_id", "$myrow->group_id", "$details->man_type");
-				$query_insert = $this->db->query($sql_insert, $data_insert);
-			}
-		}
-	}
-
-	function update_system_groups_old($details) {	
-		//select all dynamic groups
-		$sql = "SELECT group_id, group_name, group_dynamic_select FROM oa_group";
-		$query = $this->db->query($sql);
-		#$start_process_groups = explode(' ',microtime()); 
-		foreach ($query->result() as $myrow) {
-			# Remove the system from the group first, then add it back ONLY if it meets the criteria
-			$sql_delete = "DELETE FROM oa_group_sys WHERE system_id = ? AND group_id = ?";
-			$data_delete = array("$details->system_id", "$myrow->group_id");
-			$query_delete = $this->db->query($sql_delete, $data_delete);
-			$sql_select = "SELECT system.system_id, system.type FROM system WHERE system_id = ? AND system_id in ( " . $myrow->group_dynamic_select . " )";
-			$data_select = array("$details->system_id", "$myrow->group_id");
-			$query_select = $this->db->query($sql_select, $data_select);
-			if ($query_select->num_rows() > 0){
-				// insert a row because the system matches the select criteria
-				$sql_insert = "INSERT INTO oa_group_sys (system_id, group_id, group_sys_type) VALUES (?, ?, ?)";
-				$data_insert = array("$details->system_id", "$myrow->group_id", "$details->type");
 				$query_insert = $this->db->query($sql_insert, $data_insert);
 			}
 		}

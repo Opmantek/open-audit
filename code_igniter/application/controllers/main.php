@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
- * @author Mark Unwin
- * @version beta 8
- * @copyright Mark Unwin, 2011
+ * @package Open-AudIT
+ * @author Mark Unwin <mark.unwin@gmail.com>
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
  
@@ -17,7 +17,6 @@ class Main extends MY_Controller {
 		redirect('main/list_groups/');
 	}
 
-
 	function view_org() {
 		$this->load->model("m_oa_org");
 		$this->data['org'] = $this->m_oa_org->get_org_details($this->data['id']);
@@ -25,6 +24,12 @@ class Main extends MY_Controller {
 		$this->data['sortcolumn'] = '1';
 		$this->data['heading'] = 'View Organisation';
 		$this->load->view('v_template', $this->data);
+	}
+
+	function get_count() {
+		$this->load->model("m_systems");
+		$count = $this->m_systems->get_count();
+		echo $count;
 	}
 
 	function view_location() {
@@ -41,8 +46,7 @@ class Main extends MY_Controller {
 		if (is_numeric($_POST['group_id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
 			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($_POST['group_id'], $this->data['user_id']);
-			if ( $this->data['user_access_level'] < '10')
-			{
+			if ( $this->data['user_access_level'] < '10') {
 				// not enough permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -78,11 +82,11 @@ class Main extends MY_Controller {
 			redirect('main/list_groups/');
 		}
 		$this->load->model("m_oa_group");
+		$this->load->model("m_audit_log");
 		if (is_numeric($_POST['group_id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
 			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($_POST['group_id'], $this->data['user_id']);
-			if ( $this->data['user_access_level'] < '10')
-			{
+			if ( $this->data['user_access_level'] < '10') {
 				// not enough permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -94,7 +98,7 @@ class Main extends MY_Controller {
 		$group_id = $_POST['group_id'];
 		$data['items'] = array();
 		foreach ($_POST as $key => $value) {
-			if ( (mb_strpos($key, 'man_') !== false) && ($value != '') ){
+			if ( (mb_strpos($key, 'man_') !== false) && ($value != '')) {
 				$item = array($key, $value);
 				array_push($data['items'], ($item));
 				$item = NULL;
@@ -102,7 +106,7 @@ class Main extends MY_Controller {
 		}
 		$data['systems'] = array();
 		foreach ($_POST as $key => $value) {
-			if ( (mb_strpos($key, 'system_') !== false) && ($value != '') ){
+			if ( (mb_strpos($key, 'system_') !== false) && ($value != '')) {
 				$item = array($key, $value);
 				array_push($data['systems'], ($item));
 				$item = NULL;
@@ -120,14 +124,16 @@ class Main extends MY_Controller {
 					$encoded = json_encode($encode);
 					$encoded = $this->encrypt->encode($encoded);
 					$this->m_system->update_system_man($system[1], 'access_details', $encoded);
+					$this->m_audit_log->insert_audit_event('access details', 'Details changed (not displayed here for security reasons).', $system[1]);
 				}
 			}
 		}
 		foreach ($_POST as $field_name => $field_data) {
 			# input all the manual fields 
-			if ( (mb_strpos($field_name, 'man_') !== false) && ($field_data != '') ){
+			if ( (mb_strpos($field_name, 'man_') !== false) && ($field_data != '')) {
 				foreach ($data['systems'] as $system) {
 					$this->m_system->update_system_man($system[1], $field_name, $field_data);
+					$this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
 				}
 			}
 		}
@@ -154,8 +160,7 @@ class Main extends MY_Controller {
 		if (is_numeric($this->data['id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
 			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($this->data['id'], $this->data['user_id']);
-			if ( $this->data['user_access_level'] < '3')
-			{
+			if ( $this->data['user_access_level'] < '3') {
 				// not even VIEW permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -498,6 +503,7 @@ class Main extends MY_Controller {
 		$this->load->model("m_memory");
 		$this->load->model("m_monitor");
 		$this->load->model("m_motherboard");
+		$this->load->model("m_netstat");
 		$this->load->model("m_network_card");
 		$this->load->model("m_oa_location");
 		$this->load->model("m_oa_org");
@@ -547,6 +553,7 @@ class Main extends MY_Controller {
 		$this->data['memory'] = $this->m_memory->get_system_memory($this->data['id']);
 		$this->data['monitor'] = $this->m_monitor->get_system_monitor($this->data['id']);
 		$this->data['motherboard'] = $this->m_motherboard->get_system_motherboard($this->data['id']);
+		$this->data['netstat'] = $this->m_netstat->get_system_netstat($this->data['id']);
 		$this->data['network'] = $this->m_network_card->get_system_network($this->data['id']);
 		$this->data['odbc'] = $this->m_software->get_system_software($this->data['id'], 3);
 		$this->data['optical'] = $this->m_optical_drive->get_system_optical($this->data['id']);
@@ -618,22 +625,37 @@ class Main extends MY_Controller {
 		}
 		
 		foreach ($this->data['system'] as $system) {
-			$model_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_model)));
-			$model_formatted = str_replace("/", "_", $model_formatted);
-			$file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $model_formatted . '.jpg';
-			if ($system->man_picture > '') {
+			$model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
+			$type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
+			$default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $system->man_picture . '.jpg';
+			$model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $model_formatted . '.jpg';
+			$type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $type_formatted . '.png';
+			$custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/custom/' . $system->system_id . '.jpg';
+
+			# check if the man_picture field from the database is populated and a matching image exists
+			if ( ($system->man_picture > '') AND (file_exists($default_file_exists)) ) {
 				$system->man_picture = $system->man_picture . '.jpg';
 			}
-			if ( ($system->man_picture == '') AND (file_exists($file_exists)) ) {
+
+			# check if a custom images exists and overwrite
+			if (file_exists($custom_file_exists)) {
+				$system->man_picture = 'custom/' . $system->system_id . '.jpg';
+			}
+
+			# check if an image matching the model exists
+			if ( ($system->man_picture == '') AND (file_exists($model_file_exists)) ) {
 				$system->man_picture = '' . $model_formatted . '.jpg';
 			}
-			$type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
-			$file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $type_formatted . '.png';
 
-			if ( ($system->man_picture == '') AND (file_exists($file_exists)) ) {
+			# check if an image matching the type exists
+			if ( ($system->man_picture == '') AND (file_exists($type_file_exists)) ) {
 				$system->man_picture = '' . $type_formatted . '.png';
 			}
-			if ($system->man_picture == '') { $system->man_picture = 'unknown.png'; }
+
+			# no matching images, assign the unknown image
+			if ($system->man_picture == '') {
+				$system->man_picture = 'unknown.png';
+			}
 		}
 
 		$this->data['heading'] = 'Summary - ' . $this->m_system->get_system_hostname($this->data['id']);

@@ -8,6 +8,7 @@
 		<group_category>owner</group_category>
 		<group_icon>contact</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their location_id set to '0'. These devices have not been assigned a location.</group_description>
+		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_os_family, system.man_os_name, system.man_type, system.man_icon, system.man_manufacturer, sys_sw_windows.windows_user_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -53,10 +54,10 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Type</column_name>
-			<column_variable>man_icon</column_variable>
-			<column_type>image</column_type>
+			<column_variable>man_type</column_variable>
+			<column_type>text</column_type>
 			<column_link></column_link>
-			<column_secondary>man_os_family</column_secondary>
+			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>

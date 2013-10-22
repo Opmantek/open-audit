@@ -15,7 +15,56 @@ echo form_open('admin_location/add_location') . "\n";
 		<tr>
 			<td valign="top">
 				<p><label for='location_name'><?php echo __("Name")?>: </label><input type='text' id='location_name' name='location_name' tabindex='1' title='Location Name' /><?php echo $error_message; ?></p>
-				<p><label for='location_type' title="Server Room, Office, etc"><?php echo __("Type")?>: </label><input type='text' id='location_type' name='location_type' tabindex='2' title='Type' /></p>
+				<!-- <p><label for='location_type' title="Server Room, Office, etc"><?php echo __("Type")?>: </label><input type='text' id='location_type' name='location_type' tabindex='2' title='Type' /></p> -->
+				<p><label for='location_type' title="Server Room, Office, etc"><?php echo __("Type")?>: </label><select id='location_type' name='location_type' tabindex='2' title='Type' />
+					<option value=''></option>
+					<option value='Airforce'>Airforce</option>
+					<option value='Airport'>Airport</option>
+					<option value='Ambulance Station'>Ambulance Station</option>
+					<option value='Army'>Army</option>
+					<option value='Cloud'>Cloud</option>
+					<option value='Conference Center'>Conference Center</option>
+					<option value='Court House'>Court House</option>
+					<option value='Data Center'>Data Center</option>
+					<option value='Depot'>Depot</option>
+					<option value='District'>District</option>
+					<option value='Doctors Office'>Doctors Office</option>
+					<option value='Embassy'>Embassy</option>
+					<option value='Factory'>Factory</option>
+					<option value='Fire Station'>Fire Station</option>
+					<option value='Guard'>Guard</option>
+					<option value='High School'>High School</option>
+					<option value='Hospital'>Hospital</option>
+					<option value='Hotel'>Hotel</option>
+					<option value='House'>House</option>
+					<option value='Library'>Library</option>
+					<option value='Light House'>Light House</option>
+					<option value='Marina'>Marina</option>
+					<option value='Mobile Phone Tower'>Mobile Phone Tower</option>
+					<option value='Motel'>Motel</option>
+					<option value='Navy'>Navy></option>
+					<option value='Newsagent'>Newsagent</option>
+					<option value='Nursing Home'>Nursing Home</option>
+					<option value='Observatory'>Observatory</option>
+					<option value='Office'>Office</option>
+					<option value='Oil Rig'>Oil Rig</option>
+					<option value='Police'>Police</option>
+					<option value='Power Plant'>Power Plant</option>
+					<option value='Power Substation'>Power Substation</option>
+					<option value='Prison'>Prison</option>
+					<option value='Radio Station'>Radio Station</option>
+					<option value='Regional'>Regional</option>
+					<option value='Resort'>Resort</option>
+					<option value='School'>School</option>
+					<option value='Security'>Security</option>
+					<option value='Stadium'>Stadium</option>
+					<option value='Train Station'>Train Station</option>
+					<option value='Travel Agency'>Travel Agency</option>
+					<option value='TV Station'>TV Station</option>
+					<option value='University'>University</option>
+					<option value='Warehouse'>Warehouse</option>
+					<option value='Workshop'>Workshop</option>
+				</select></p>
 				<p><label for='location_room'><?php echo __("Room")?>: </label><input type='text' id='location_room' name='location_room' tabindex='3' title='Room' /></p>
 				<p><label for='location_suite'><?php echo __("Suite")?>: </label><input type='text' id='location_suite' name='location_suite' tabindex='4' title='Suite' /></p>
 				<p><label for='location_level'><?php echo __("Level")?>: </label><input type='text' id='location_level' name='location_level' tabindex='5' title='Level' /></p>

@@ -45,7 +45,7 @@ if (isset($error_message))
 						<option value="2"<?php if ($key->user_sam == '2') { echo " selected=\"selected\""; } ?>>Update Counts</option>
 						<option value="3"<?php if ($key->user_sam == '3') { echo " selected=\"selected\""; } ?>>Create Licenses</option>
 					</select></p>
-				<p><label for='EditUser'>&nbsp;</label><?php echo form_submit(array('id'=>'EditUser', 'name'=>'EditUser'), 'Edit User'); ?></p>
+				<p><label for='EditUser'>&nbsp;</label><?php echo form_submit(array('id'=>'EditUser', 'name'=>'EditUser'), 'Submit'); ?></p>
 			</td>
 		</tr>
 	</table>

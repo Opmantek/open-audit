@@ -1,9 +1,9 @@
 <?php
 /**
  * @package Open-AudIT
- * @author Mark Unwin
+ * @author Mark Unwin <mark.unwin@gmail.com>
  * @version 1.0.4
- * @copyright Opmantek, 2013
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
  
@@ -213,6 +213,7 @@ class System extends CI_Controller {
 		$this->load->model("m_memory");
 		$this->load->model("m_monitor");
 		$this->load->model("m_motherboard");
+		$this->load->model("m_netstat");
 		$this->load->model("m_network_card");
 		$this->load->model("m_optical_drive");
 		$this->load->model("m_pagefile");
@@ -312,6 +313,7 @@ class System extends CI_Controller {
 			if ($child->getName() == 'memory') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->memory->slot as $input) { $this->m_memory->process_memory($input, $details); } }
 			if ($child->getName() == 'monitors') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->monitors->monitor as $input) { $this->m_monitor->process_monitor($input, $details); } }
 			if ($child->getName() == 'motherboard') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_motherboard->process_motherboard($xml->motherboard, $details); }
+			if ($child->getName() == 'netstat') { $this->m_sys_man_audits->update_audit($details, $child->getName()); $this->m_netstat->process_netstat($xml->netstat, $details); }
 			if ($child->getName() == 'network_cards') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->network_cards->network_card as $input) { $this->m_network_card->process_network_cards($input, $details); } }
 			if ($child->getName() == 'optical_drives') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->optical_drives->optical_drive as $input) { $this->m_optical_drive->process_optical_drives($input, $details); } }
 			if ($child->getName() == 'pagefiles') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->pagefiles->pagefile as $input) { $this->m_pagefile->process_pagefile($input, $details); } }
@@ -372,6 +374,7 @@ class System extends CI_Controller {
 			$this->m_memory->alert_memory($details);
 			$this->m_monitor->alert_monitor($details);
 			$this->m_motherboard->alert_motherboard($details);
+			$this->m_netstat->alert_netstat($details);
 			$this->m_network_card->alert_network_card($details);
 			$this->m_optical_drive->alert_optical_drive($details);
 			$this->m_partition->alert_partition($details); #TODO: - check if NOT a USB drive

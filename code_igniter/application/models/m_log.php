@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
- * @author Mark Unwin
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @package Open-AudIT
+ * @author Mark Unwin <mark.unwin@gmail.com>
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -54,9 +54,9 @@ class M_log extends MY_Model {
 				( sys_sw_log.timestamp = ? OR sys_sw_log.timestamp = ? )";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->system_id", 
-				"$input->log_name", 
-				"$input->log_file_name", 
-				"$input->log_overwrite", 
+				trim($input->log_name), 
+				trim($input->log_file_name), 
+				trim($input->log_overwrite), 
 				"$details->original_timestamp", 
 				"$details->timestamp");
 		$query = $this->db->query($sql, $data);
@@ -79,11 +79,11 @@ class M_log extends MY_Model {
 					first_timestamp ) VALUES ( ?,?,?,?,?,?,?,? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
-					"$input->log_name", 
-					"$input->log_file_name", 
+					trim($input->log_name), 
+					trim($input->log_file_name), 
 					"$input->log_file_size", 
 					"$input->log_max_file_size", 
-					"$input->log_overwrite", 
+					trim($input->log_overwrite), 
 					"$details->timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);

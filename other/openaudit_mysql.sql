@@ -1127,7 +1127,7 @@ CREATE TABLE `sys_sw_log` (
   `log_id` int(10) unsigned NOT NULL auto_increment,
   `system_id` int(10) unsigned default NULL,
   `log_name` varchar(50) NOT NULL default '',
-  `log_file_name` varchar(100) NOT NULL default '',
+  `log_file_name` varchar(250) NOT NULL default '',
   `log_file_size` int(10) NOT NULL default '0',
   `log_max_file_size` int(10) NOT NULL default '0',
   `log_overwrite` varchar(30) NOT NULL default '',
@@ -1136,6 +1136,25 @@ CREATE TABLE `sys_sw_log` (
   PRIMARY KEY  (`log_id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `sys_sw_netstat`
+--
+
+DROP TABLE IF EXISTS `sys_sw_netstat`;
+CREATE TABLE `sys_sw_netstat` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `system_id` int(10) unsigned default NULL,
+  `protocol` enum('tcp', 'udp', 'tcp6', 'udp6', '') NOT NULL default '',
+  `ip_address` varchar(45) NOT NULL default '',
+  `port` int(5) NOT NULL default '0',
+  `program`  varchar(250) NOT NULL default '',
+  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_netstat_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -1614,13 +1633,13 @@ CREATE TABLE `system` (
   `man_location_room` varchar(100) NOT NULL default '',
   `man_location_rack` varchar(100) NOT NULL default '',
   `man_location_rack_position` varchar(100) NOT NULL default '',
+  `man_location_rack_size` int(10) unsigned NOT NULL default '0', 
   `man_serial` varchar(200) NOT NULL default '',
   `man_asset_number` varchar(50) NOT NULL default '',
   `man_model` varchar(50) NOT NULL default '',
   `man_manufacturer` varchar(50) NOT NULL default '',
   `man_form_factor` varchar(50) NOT NULL default '',
   `man_icon` varchar(50) NOT NULL default '',
-  `man_vendor` varchar(150) NOT NULL default '',
   `man_vm_server_name` varchar(150) NOT NULL default '',
   `man_vm_system_id` varchar(150) NOT NULL default '',
   `man_vm_group` varchar(150) NOT NULL default '',
@@ -1700,10 +1719,11 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('auto_create_network_groups', 'y', 'y', 'Have Open-AudIT automatically create Groups based on Subnet.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis', 'n', 'y', 'Enable import / export to NMIS functions.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_url', 'http://localhost:3000/oae', 'y', 'The web server address of Open-AudIT Enterprise.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_url', 'http://localhost/omk/oae', 'y', 'The web server address of Open-AudIT Enterprise.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis_url', 'http://localhost/cgi-nmis8/nmiscgi.pl', 'y', 'The web server address of Open-AudIT Enterprise.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('logo', 'oac-oae', 'n', '');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('maps_url', '', 'y', 'The web server address of opMaps.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('name_match', 'n', 'y', 'Should we match a device based only on its hostname as a last resort.');
 
 INSERT INTO oa_location (location_id, location_comments) VALUES ('', 'Default Location.');
 INSERT INTO oa_org (org_id, org_comments) VALUES ('', 'Default Organisation.');

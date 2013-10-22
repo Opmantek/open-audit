@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -133,6 +133,28 @@ class MY_Controller extends CI_Controller {
 		}
 	}
 
+	function log_event() {
+		# setup the log file
+		if (php_uname('s') == 'Linux') {
+			$file = "/usr/local/open-audit/other/open-audit.log";
+		} else {
+			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+		}
+		$log_timestamp = date("M d H:i:s");
+		$log_hostname = php_uname('n');
+		$log_pid = getmypid();
+		$router =& load_class('Router', 'core');
+		$controller = $router->fetch_class();
+		$router =& load_class('Router', 'core');
+		$function = $router->fetch_method();
+		$user = $this->session->userdata('user_full_name');
+		$log_details = "C:" . $controller . " F:" . $function . " U:" . $user . " at " . $_SERVER['REMOTE_ADDR'];
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . ".\n";
+		$handle = fopen($file, "a");
+		fwrite($handle, $log_line);
+		fclose($handle);
+	}
+
 	function determine_output($output_type) {
 		switch ($output_type) {
 			case "excel":
@@ -169,7 +191,7 @@ class MY_Controller extends CI_Controller {
 			break;
 
 			case "json":
-			$this->json_report($this->data['query']);
+			$this->json_report($this->data);
 			break;
 
 			case "rss":
@@ -229,8 +251,15 @@ class MY_Controller extends CI_Controller {
 		header('Cache-Control: max-age=0');
 	}
 
-	function json_report($query) {
-		echo "{\"items\": [\n";
+	function json_report($data) {
+		$query = $this->data['query'];
+		$i = "items";
+		if ($this->data['heading'] == "Software Discovered 30") {$i = "Daily Discovered Software"; }
+		if ($this->data['heading'] == "Devices Discovered 30") {$i = "Daily Discovered Devices"; }
+		if ($this->data['heading'] == "Devices Not Seen 30") {$i = "Devices Not Seen"; }
+		if ($this->data['heading'] == "Device Types") {$i = "data"; }
+		if ($this->data['heading'] == "Locations") {$i = "locations"; }
+		echo "{\"$i\": [\n";
 		$items = '';
 		foreach ($query AS $details) {
 			$items .= "\t{\n";
@@ -244,15 +273,19 @@ class MY_Controller extends CI_Controller {
 					$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
 				} else {
 					$value = str_replace ('"', '\"', $value);
-					$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+					if (is_numeric($value) ) {
+						$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
+					} else { 
+						$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+					}
+					#$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
 				}
 			}
 			$items .= substr($output, 0, -2) . "\n\t},\n";
 		}
 		$items = substr($items, 0, -2);
-		$items .= "\n";
+		$items .= "\n]}";
 		echo $items;
-		echo "]}";
 		header('Content-Type: application/json');
 		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.json"');
 		header('Cache-Control: max-age=0');

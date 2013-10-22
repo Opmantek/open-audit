@@ -109,9 +109,9 @@ if [ "$hosts_in_subnet" != "" ]; then
 			# -vv Very Verbose
 			# -n Do not resolve IP to DNS name
 			# -O attempt to determine operating system
+			# --host-timeout set to a smaller than default number
 			# -PN treat host as online, skip discovery (we already know it is because of above)
-			# nmap_scan=`nmap -vv -n -O --host-timeout 9000 -PN $host 2>/dev/null`
-			nmap_scan=`nmap -vv -n -O -PN $host 2>/dev/null`
+			nmap_scan=`nmap -vv -n -O --host-timeout 9000ms -PN $host 2>/dev/null`
 
 			# Not trying SNMP detection as it's not consistent across no snmp, snmp v1, snmp v2
 			#NMAP=`nmap -vv -n -O -PN -sU -p161-162 $host`

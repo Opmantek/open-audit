@@ -1,13 +1,9 @@
 <?php
 /**
- * OAv2
- *
- * An open source network auditing application
- *
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin <mark.unwin@gmail.com>
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -70,8 +66,18 @@ class M_oa_location extends MY_Model {
 		$i->column_link = "";
 		$result[4] = $i;
 		$i = new stdclass();
+		$i->column_order = '5';
+		$i->column_name = 'GroupId';
+		$i->column_variable = 'group';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[5] = $i;
+		$i = new stdclass();
 
-		$count = 4;
+		$count = 5;
 		$sql = "SELECT DISTINCT(man_type) FROM system";
 		$query = $this->db->query($sql);
 		$types = $query->result();
@@ -98,7 +104,7 @@ class M_oa_location extends MY_Model {
 		$types = $query->result();
 
 		$sql = "SELECT oa_location.location_id, oa_location.location_name, oa_location.location_icon, oa_location.location_type, 
-		oa_location.location_address, oa_location.location_city, oa_location.location_state, 
+		oa_location.location_address, oa_location.location_city, oa_location.location_state, oa_location.location_group_id, 
 		oa_location.location_postcode, oa_location.location_country, oa_location.location_geo, 
 		system.man_type, count(system.system_id) as count, oa_location.location_latitude, oa_location.location_longitude 
 		FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id 
@@ -122,6 +128,7 @@ class M_oa_location extends MY_Model {
 				$i->id = $row->location_id;
 				$i->name = $row->location_name;
 				$i->type = $row->location_type;
+				$i->group = $row->location_group_id;
 				$type_icon = str_replace("index.php", "", $_SERVER['SCRIPT_FILENAME']) . 'theme-tango/tango-images/32_' . str_replace(" ", "_", strtolower($row->location_type)) . '.png';
 				if (is_null($row->location_icon) or $row->location_icon == '') {
 					if (file_exists($type_icon)) {

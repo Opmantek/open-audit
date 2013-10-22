@@ -20,6 +20,8 @@ number_of_audits = 20
 audit_run_type = "remote"
 audit_run_type = "local"
 
+
+
 ' the below are needed for remote audits as PSexec takes them as command line arguements
 ' I don't think (could be wrong) that PSexec can use the local logged on users credentials
 ' If it can, someone please provide me with a "how to"
@@ -33,7 +35,7 @@ Dim script_timeout
 script_timeout = 600
 
 ' the name and path of the audit script to use
-script_name = "c:\xampp\OAv2\other\audit_windows.vbs"
+script_name = "c:\xampplite\open-audit\other\audit_windows.vbs"
 
 ' update with any submitted command line switches
 Set objArgs = WScript.Arguments

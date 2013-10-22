@@ -209,6 +209,11 @@ if (!function_exists('get_snmp')) {
 				}
 			}
 
+			if (substr($details->snmp_oid, 0, 17) == '1.3.6.1.4.1.25461') { 
+				# grab some Palo Alto specifics 
+				$details->serial = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25461.2.1.2.1.3.0");
+			}
+
 			// manufacturer
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
 				$hex = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.8.2.1.14.1");
@@ -244,7 +249,7 @@ if (!function_exists('get_snmp')) {
 
 				# Generic Cisco
 				if ($details->serial == '') {
-					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1")));
+					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1")));
 					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
 					if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
 					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
@@ -252,19 +257,29 @@ if (!function_exists('get_snmp')) {
 
 				# Cisco 37xx stack
 				if ($details->serial == '') {
-					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.5.1.2.19.0")));
+					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.5.1.2.19.0")));
 					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
 					if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
 					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
 				}
 
-				# generic cable modem (works for my Netgear CG814WG)
+				# generic cable modem (works for my Netgear CG814WG and CGD24N)
 				if ($details->serial == '') {
-					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0")));
+					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0")));
 					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
 					if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
 					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
 				}
+
+				# 3Com SuperStack Switches
+				if ($details->serial == '') {
+					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.43.47.1.1.3.1.10.1")));
+					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
+					if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
+					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
+				}
+
+
 
 				# remove  false
 				if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
@@ -275,8 +290,8 @@ if (!function_exists('get_snmp')) {
 
 			// mac address
 			if (!isset($details->mac_address) or $details->mac_address == '' ) {
-				$interface_number = @str_replace("INTEGER: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
-				$details->mac_address = @str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface_number));
+				$interface_number = @str_replace("INTEGER: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
+				$details->mac_address = @str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface_number));
 				$details->mac_address = @trim(str_replace("Hex-", "", $details->mac_address));
 				$details->mac_address = @str_replace(" ", ":", $details->mac_address);
 				# need to split and join because of the dropped 0's

@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
- * @author Mark Unwin
- * @version beta 8
- * @copyright Mark Unwin, 2011
+ * @package Open-AudIT
+ * @author Mark Unwin <mark.unwin@gmail.com>
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -19,6 +19,7 @@ class Admin_location extends MY_Controller {
 				redirect('login/index');
 			}
 		}
+		$this->log_event();
 	}
 
 	function index() {
@@ -255,9 +256,15 @@ class Admin_location extends MY_Controller {
 				$this->data['include'] = 'v_edit_location'; 
 				$this->load->view('v_template', $this->data);
 			}
-			
+
 			if ($error == '0'){
 				$this->m_oa_location->edit_location($details);
+				if ($_POST['location_group'] == 'on') {
+					redirect('admin_location/activate_group/' . $_POST['location_id']);
+				} else {
+					redirect('admin_location/list_locations');
+				}
+			} else {
 				redirect('admin_location/list_locations');
 			}
 		}

@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Non Network Printers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.man_type = 'printer' or system.type = 'printer') AND system.man_status = 'production' AND system.man_ip_address = '000.000.000.000' ]]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.man_type = 'printer' or system.type = 'printer') AND system.man_status = 'production' AND (system.man_ip_address = '000.000.000.000' OR system.man_ip_address = '0.0.0.0' OR system.man_ip_address = '')]]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
-		<group_display_sql><![CDATA[select b.hostname, a.linked_sys, a.system_id, a.man_manufacturer, a.man_model, a.man_serial, a.man_description, a.printer_port_name, a.printer_color, a.printer_duplex, windows_user_name FROM system b LEFT JOIN sys_sw_windows ON (b.system_id = sys_sw_windows.system_id AND b.timestamp = sys_sw_windows.timestamp), system a LEFT JOIN oa_group_sys ON a.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ? AND a.linked_sys = b.system_id Group BY a.system_id ORDER BY a.man_manufacturer, a.man_model]]></group_display_sql>
 		<group_icon>printer</group_icon>
-		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'printer' and have their ip_address attribute set to '000.000.000.000'.</group_description>
+		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'printer' and have no valid ip address.</group_description>
+		<group_display_sql><![CDATA[SELECT b.hostname, a.linked_sys, a.system_id, a.man_manufacturer, a.man_model, a.man_serial, a.man_description, a.printer_port_name, a.printer_color, a.printer_duplex, windows_user_name FROM system b LEFT JOIN sys_sw_windows ON (b.system_id = sys_sw_windows.system_id AND b.timestamp = sys_sw_windows.timestamp), system a LEFT JOIN oa_group_sys ON a.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ? AND a.linked_sys = b.system_id GROUP BY a.system_id ORDER BY a.man_manufacturer, a.man_model]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -83,7 +83,7 @@
 		</column>
 		<column>
 			<column_order>8</column_order>
-			<column_name>Hostname</column_name>
+			<column_name>Attached PC Hostname</column_name>
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>main/system_display/</column_link>

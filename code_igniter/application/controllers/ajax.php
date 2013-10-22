@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
- * @author Mark Unwin
- * @version beta 8
- * @copyright Mark Unwin, 2011
+ * @package Open-AudIT
+ * @author Mark Unwin <mark.unwin@gmail.com>
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -27,43 +27,37 @@ class Ajax extends MY_Controller {
 			$this->data['user_id'] = $this->session->userdata['user_id'];
 		}
 
-		if (!isset($this->data['user_lang']) or $this->data['user_lang']=="")
-		{
-			$user_lang="en";
+		if (!isset($this->data['user_lang']) or $this->data['user_lang']=="") {
+			$user_lang = "en";
 		} else {
 			$user_lang = $this->data['user_lang'];
 		}
+		
 		$language_file = APPPATH . "/views/lang/" . $user_lang . ".inc";
 		include($language_file);
 
 		function __($word){
-			$user_lang = 'en';;
+			$user_lang = 'en';
 			//Learning-Mode
 			//Only for Developers !!!!
-			$language_learning_mode=0;
+			$language_learning_mode = 0;
 			
-			if($language_learning_mode==1)  
-			{
+			if ( $language_learning_mode == 1 ) {
 				$language_file = APPPATH . "views/lang/" . $user_lang . ".inc";
 				include($language_file);
 			}
-			if(isset($GLOBALS["lang"][$word]))
-			{
+			if ( isset($GLOBALS["lang"][$word]) ) {
 				return $GLOBALS["lang"][$word];
 			} else {
 				//Learning-Mode
-				if($language_learning_mode==1 AND isset($word) AND $word!="")  
-				{
-					if(is_writable($language_file))
-					{
+				if ( $language_learning_mode == 1 AND isset($word) AND $word != "" ) {
+					if ( is_writable($language_file) ) {
 						//Deleting
-						$buffer="";
+						$buffer = "";
 						$handle = fopen($language_file, "r");
-						while (!feof($handle)) 
-						{
+						while ( !feof($handle) ) {
 							$line = fgets($handle, 4096);
-							if(!preg_match('/\?>/',$line))
-							{
+							if ( !preg_match('/\?>/',$line) ) {
 								$buffer .= $line;
 							}
 						}
@@ -145,16 +139,16 @@ class Ajax extends MY_Controller {
 				if ($query->num_rows() > 0) {
 					# we are updating an existing value
 					$row = $query->row();
-					$sql = "UPDATE sys_man_additional_fields_data SET field_" . $data[1] . " = '" . urldecode($this->data['field_data']) . "' WHERE field_details_id = '" . $row->field_details_id . "'";
+					$sql = "UPDATE sys_man_additional_fields_data SET field_" . $data[1] . " = '" . $this->oa_urldecode($this->data['field_data']) . "' WHERE field_details_id = '" . $row->field_details_id . "'";
 					$query = $this->db->query($sql);
-					$this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", urldecode($this->data['field_data']), $this->data['system_id']);
-					echo urldecode($this->data['field_data']);
+					$this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
+					echo $this->oa_urldecode($this->data['field_data']);
 				} else {
 					# we have to insert a new record for a custom data value for this system
-					$sql = "INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_" . $data[1] . ") VALUES ( NULL, '" . $this->data['system_id'] . "', '" . $data[3] . "', '" . urldecode($this->data['field_data']) . "')";
+					$sql = "INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_" . $data[1] . ") VALUES ( NULL, '" . $this->data['system_id'] . "', '" . $data[3] . "', '" . $this->oa_urldecode($this->data['field_data']) . "')";
 					$query = $this->db->query($sql);
-					$this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", urldecode($this->data['field_data']), $this->data['system_id']);
-					echo urldecode($this->data['field_data']);
+					$this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
+					echo $this->oa_urldecode($this->data['field_data']);
 				}
 			} else {
 				if (($this->data['system_id'] == '') || ($this->data['field_name'] == '')) {
@@ -166,8 +160,8 @@ class Ajax extends MY_Controller {
 						}	
 					}
 					if (($field_ok == 1) && ($access_level >= 7)) {
-						$this->m_system->update_system_man($this->data['system_id'], $this->data['field_name'], urldecode($this->data['field_data']));
-						$this->m_audit_log->insert_audit_event($this->data['field_name'], urldecode($this->data['field_data']), $this->data['system_id']);
+						$this->m_system->update_system_man($this->data['system_id'], $this->data['field_name'], $this->oa_urldecode($this->data['field_data']));
+						$this->m_audit_log->insert_audit_event($this->data['field_name'], $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
 
 						if (($this->data['field_name'] == 'man_status') or ($this->data['field_name'] == 'man_org_id')){
 							$details = new stdClass();
@@ -176,7 +170,7 @@ class Ajax extends MY_Controller {
 							$this->m_oa_group->update_system_groups($details);
 						}
 
-						if (($this->data['field_name'] == 'man_status') and (urldecode($this->data['field_data']) == 'deleted')) {
+						if (($this->data['field_name'] == 'man_status') and ($this->oa_urldecode($this->data['field_data']) == 'deleted')) {
 							# delete any "attached" devices (local printers for example)
 							$this->m_system->delete_linked_system($this->data['system_id']);
 						}
@@ -185,7 +179,7 @@ class Ajax extends MY_Controller {
 						if ((mb_substr_count($this->data['field_name'], 'man_location_id') > 0) || (mb_substr_count($this->data['field_name'], 'man_org_id') > 0)) {
 							# do nothing
 						} else {
-							echo urldecode($this->data['field_data']); 
+							echo $this->oa_urldecode($this->data['field_data']); 
 						}
 						
 					} else {
@@ -236,7 +230,8 @@ class Ajax extends MY_Controller {
 					$this->load->model("m_oa_org");
 					$key = $this->m_oa_org->get_org_details($this->data['field_data']);
 					echo "<p><label for='org_id_select'>" . __('Org Name') . ": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>" . $key->org_name . "</span></span></p>\n";
-					echo "<p><label for='org_contact'>" . __('Org Contact') . ": </label><span id='org_contact'>" . $key->contact_id . "</span></p>\n";
+					if ($key->contact_id == '') { $key->contact_id = '-'; }
+					echo "<p><label for='org_contact'>" . __('Org Contact') . ": </label><span id='org_contact'> " . $key->contact_id . "</span></p>\n";
 					echo "<p><label for='org_parent'>" . __('Parent Org') . ": </label><span id='org_parent'>" . $key->org_parent_name . "</span></p>\n";
 					echo "<p><label for='org_comments'>" . __('Comments') . ": </label><span id='org_comments'>" . $key->org_comments . "</span></p>\n";
 					##echo "<p><label for='org_picture'>" . __('Picture') . ": </label><span id='org_picture'>" . $key->org_picture . "</span></p>\n";
@@ -288,20 +283,37 @@ class Ajax extends MY_Controller {
 			$result = $this->m_system->get_system_popup($this->data['system_id']);
 			foreach ($result as $system) {
 				$model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
-				$default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $model_formatted . '.jpg';
-				$custom_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/custom/' . $system->system_id . '.jpg';
-				if ($system->man_picture > '') {
+				$type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
+				$default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $system->man_picture . '.jpg';
+				$model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $model_formatted . '.jpg';
+				$type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $type_formatted . '.png';
+				$custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/custom/' . $system->system_id . '.jpg';
+
+				# check if the man_picture field from the database is populated and a matching image exists
+				if ( ($system->man_picture > '') AND (file_exists($default_file_exists)) ) {
 					$system->man_picture = $system->man_picture . '.jpg';
 				}
-				if ( ($system->man_picture == '') AND (file_exists($custom_file_exists))) {
+
+				# check if a custom images exists and overwrite
+				if (file_exists($custom_file_exists)) {
 					$system->man_picture = 'custom/' . $system->system_id . '.jpg';
 				}
-				if ( ($system->man_picture == '') AND (file_exists($default_file_exists)) AND (!file_exists($custom_file_exists))) {
+
+				# check if an image matching the model exists
+				if ( ($system->man_picture == '') AND (file_exists($model_file_exists)) ) {
 					$system->man_picture = '' . $model_formatted . '.jpg';
-				}		
-				if ( ($system->man_picture == '') AND (!(file_exists($default_file_exists)))  AND (!file_exists($custom_file_exists))) {
+				}
+
+				# check if an image matching the type exists
+				if ( ($system->man_picture == '') AND (file_exists($type_file_exists)) ) {
+					$system->man_picture = '' . $type_formatted . '.png';
+				}
+
+				# no matching images, assign the unknown image
+				if ($system->man_picture == '') {
 					$system->man_picture = 'unknown.png';
 				}
+
 				echo "<div class=\"SystemPopupResult\">\n";
 				echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
 				echo "<tr>\n";
@@ -366,4 +378,12 @@ class Ajax extends MY_Controller {
 		$name = 'mytext.txt';
 		force_download($name, $data1); 
 	}
+
+
+	function oa_urldecode($str) {
+		$str = str_replace("%5E%5E%5E", "/", $str);
+		return urldecode($str);
+	}
+
 }
+

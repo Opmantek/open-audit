@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
- * @author Mark Unwin
- * @version beta 8
- * @copyright Mark Unwin, 2011
+ * @package Open-AudIT
+ * @author Mark Unwin <mark.unwin@gmail.com>
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -20,6 +20,7 @@ class Admin_db extends MY_Controller {
 			}
 		}
 		set_time_limit(240);
+		$this->log_event();
 	}
 	
 	function index() {
@@ -136,10 +137,19 @@ class Admin_db extends MY_Controller {
 		redirect("admin_db/maintenance/" . $days);
 	}
 
-	function delete_non_current_attributes() {
+	function delete_all_non_current_attributes() {
 		$days = $this->uri->segment(3, 365);
 		$this->load->model("m_oa_general");
-		$this->data['count'] = $this->m_oa_general->delete_non_current_attributes($days);
+		$this->data['count'] = $this->m_oa_general->delete_all_non_current_attributes($days);
+		$this->session->set_flashdata('message', $this->data['count'] . " attributes removed from the database");
+		redirect("admin_db/maintenance/" . $days);
+	}
+
+	function delete_table_non_current_attributes() {
+		$table = $this->uri->segment(3, "");
+		$days = $this->uri->segment(4, 365);
+		$this->load->model("m_oa_general");
+		$this->data['count'] = $this->m_oa_general->delete_table_non_current_attributes($table, $days);
 		$this->session->set_flashdata('message', $this->data['count'] . " attributes removed from the database");
 		redirect("admin_db/maintenance/" . $days);
 	}

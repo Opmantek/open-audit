@@ -53,7 +53,7 @@
 		</column>
 		<column>
 			<column_order>4</column_order>
-			<column_name>OS / Device</column_name>
+			<column_name>OS Name</column_name>
 			<column_variable>man_os_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
@@ -86,26 +86,6 @@
 			<column_name>Tags</column_name>
 			<column_variable>tag</column_variable>
 			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>8</column_order>
-			<column_name></column_name>
-			<column_variable>man_os_family</column_variable>
-			<column_type></column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>9</column_order>
-			<column_name></column_name>
-			<column_variable>system_id</column_variable>
-			<column_type></column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>

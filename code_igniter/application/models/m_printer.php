@@ -1,13 +1,9 @@
 <?php
 /**
- * OAv2
- *
- * An open source network auditing application
- *
- * @package OAv2
+ * @package Open-AudIT
  * @author Mark Unwin <mark.unwin@gmail.com>
- * @version beta 8
- * @copyright Copyright (c) 2011, Mark Unwin
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -40,17 +36,9 @@ class M_printer extends MY_Model {
 	}
 
 	function get_new_network_printer($details) {
-		$sql = "SELECT 	
-				system_id, 
-				type 
-			FROM 
-				system 
-			WHERE 
-				system.timestamp = ? AND 
-				system.type = 'printer' AND 
-				system.man_ip_address > '000.000.000.000' ";
+		$sql = "SELECT system_id, type FROM system WHERE system.timestamp = ? AND (system.type = 'printer' OR system.man_type = 'printer') AND system.man_ip_address > '000.000.000.000'";
 		$sql = $this->clean_sql($sql);
-		$sql = "SELECT system_id, type FROM system WHERE system.timestamp = ? AND system.type = 'printer' ";
+		$sql = "SELECT system_id, type FROM system WHERE system.timestamp = ? AND (system.type = 'printer' OR system.man_type = 'printer')";
 		$data = array("$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();

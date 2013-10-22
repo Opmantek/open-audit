@@ -1,9 +1,9 @@
 <?php
 /**
- * @package OAv2
- * @author Mark Unwin
- * @version beta 8
- * @copyright Mark Unwin, 2011
+ * @package Open-AudIT
+ * @author Mark Unwin <mark.unwin@gmail.com>
+ * @version 1.0.4
+ * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -49,9 +49,10 @@ class Login extends CI_Controller {
 					$oae_url = base_url() . $oae_url;
 				}
 			}
+			ini_set('default_socket_timeout', 3);  
 			# get the license status from the OAE API
 			# license status are: valid, invalid, expired, none
-			$license = @file_get_contents($oae_url . "/oaelicense");
+			$license = @file_get_contents($oae_url . "/license", FALSE, $timeout);
 			if ($license !== FALSE) {
 				# remove the unneeded html tags
 				$license = str_replace("<pre>", "", $license);
@@ -191,7 +192,6 @@ class Login extends CI_Controller {
 				}
 			}
 		}
-
 		if (isset($this->data['ad_domain']) and 
 			$this->data['ad_domain'] != "" and 
 			isset($this->data['ad_server']) and 
@@ -226,7 +226,6 @@ class Login extends CI_Controller {
 				# fall through this function and attempt to validate using local credentials
 			}
 		}
-
 		# attempt use the internal database to validate user
 		if ($data = $this->m_userlogin->validate_user($username, $password)) {
 			if ($data != 'fail') {
@@ -244,8 +243,77 @@ class Login extends CI_Controller {
 			$this->session->set_flashdata('message', '<div id="message">Incorrect credentials.</div>');
 			redirect('login/index');		
 		}
+	}
 
+	function process_login_get() {
+		# this uses the GET variables to log the user in and set a cookie.
+		# it does not redirect.
+		# it is designed to be used from the OAE logon page.
+		# the OAE login page will call this with the supplied user/pass and if 
+		# those attributes are useable in OAC, this page will set a cookie/session.
+		# OAE will then proceed to log the user into OAE, but will have an OAC cookie set so if the user clicks
+		# the OAC link from within OAE, they will not be asked to re-login.
+		$username = $this->uri->segment(3);    
+		$password  = $this->uri->segment(4);
+		$this->load->model("m_userlogin");
+
+		$this->load->model("m_oa_config");
+		$this->data['config'] = $this->m_oa_config->get_config();
 		
+		foreach ($this->data['config'] as $returned_result) {
+			if (isset($returned_result->config_name)) {
+				if ($returned_result->config_name == 'ad_domain') {
+					$this->data['ad_domain'] = $returned_result->config_value;
+				}
+				if ($returned_result->config_name == 'ad_server') {
+					$this->data['ad_server'] = $returned_result->config_value;
+				}
+				if ($returned_result->config_name == 'internal_version') {
+					$this->data['db_version'] = $returned_result->config_value;
+				}
+			}
+		}
+		if (isset($this->data['ad_domain']) and 
+			$this->data['ad_domain'] != "" and 
+			isset($this->data['ad_server']) and 
+			$this->data['ad_server'] != "" and 
+			$password != '' and 
+			$username != '' and 
+			extension_loaded('ldap')) {
+			# using Active Directory to validate logon details
+			$ad_ldap_connect = "ldap://" . $this->data['ad_server'];
+			$ad_user = $username . '@' . $this->data['ad_domain'];
+			$ad_secret = $password;
+			$ad = ldap_connect($ad_ldap_connect) or die("Couldn't connect to AD!");
+			ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
+			ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
+			$bind = ldap_bind($ad, $ad_user, $ad_secret);
+			if ($bind){
+				$data = $this->m_userlogin->get_user_details($username);
+				if ($data['user_active'] == 'y') {
+					$this->session->set_userdata($data);
+					echo "true";
+				} else {
+					# the user does not have their 'user_active' flag set to 'y'.
+					# don't log them in, redirect the to the login page.
+					echo "false";
+				}
+			} else {
+				# failed Active Dirctory validation
+				# fall through this function and attempt to validate using local credentials
+			}
+		}
+		# attempt use the internal database to validate user
+		if ($data = $this->m_userlogin->validate_user($username, $password)) {
+			if ($data != 'fail') {
+				$this->session->set_userdata($data);
+				echo "true";
+			} else {
+				echo "false";	
+			}
+		} else {
+			echo "false";		
+		}
 	}
 
 	function logout() {

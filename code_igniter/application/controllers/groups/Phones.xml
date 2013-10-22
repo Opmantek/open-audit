@@ -6,9 +6,9 @@
 		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_status = 'production' and (man_type = 'phone' or man_type = 'smart phone' or man_type = 'ip phone' or man_type = 'cell phone' or man_type = 'satellite phone ')]]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.man_description, system.man_manufacturer, system.man_model, system.man_serial, system.man_service_number, system.man_service_provider, system.man_owner, system.man_icon, system.man_os_family, system.man_type FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id]]></group_display_sql>
 		<group_icon>cell_phone</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'phone', 'smart phone' or 'ip phone'.</group_description>
+		<group_display_sql><![CDATA[SELECT system.system_id, system.man_description, system.man_manufacturer, system.man_model, system.man_serial, system.man_service_number, system.man_service_provider, system.man_owner, system.man_icon, system.man_os_family, system.man_type FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
