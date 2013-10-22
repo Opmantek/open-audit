@@ -52,7 +52,7 @@ class Login extends CI_Controller {
 			ini_set('default_socket_timeout', 3);  
 			# get the license status from the OAE API
 			# license status are: valid, invalid, expired, none
-			$license = @file_get_contents($oae_url . "/oaelicense", FALSE, $timeout);
+			$license = @file_get_contents($oae_url . "/license", FALSE, $timeout);
 			if ($license !== FALSE) {
 				# remove the unneeded html tags
 				$license = str_replace("<pre>", "", $license);
