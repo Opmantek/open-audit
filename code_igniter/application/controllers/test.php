@@ -25,6 +25,22 @@ class Test extends MY_Controller {
 		redirect('/');
 	}
 
+	function test_date() {
+		$date = date("Y-m-d");// current date
+		$days_to_subtract = rand(0, 50);
+		echo "<pre>\n";
+		echo "Current Date: " . $date . "\n";
+		echo "Days to subtract: " . $days_to_subtract . "\n";
+		echo "Date: " . date("Y-m-d",strtotime("-" . $days_to_subtract . " days")) . "\n";;
+		echo strtotime("now"), "\n";
+		echo strtotime("10 September 2000"), "\n";
+		echo strtotime("+1 day"), "\n";
+		echo strtotime("+1 week"), "\n";
+		echo strtotime("+1 week 2 days 4 hours 2 seconds"), "\n";
+		echo strtotime("next Thursday"), "\n";
+		echo strtotime("last Monday"), "\n";
+	}
+
 	function test_snmp() {
 		if (!isset($_POST['submit'])) {
 			# display the form

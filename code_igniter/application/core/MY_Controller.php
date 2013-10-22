@@ -577,6 +577,9 @@ class MY_Controller extends CI_Controller {
 							$url = site_url()  . $column_link . $row->$column_variable_name_sec;
 							if (strpos($column_link, "/oae/") !== FALSE) {
 								$url = $column_link . $row->$column_variable_name_sec . "/" . $data['first_attribute'];
+								if ($column->column_quaternary > "") {
+									$url .= "/" . $data['second_attribute'];
+								}
 							}
 							
 							echo "\t\t\t<td style=\"text-align: $column_align;\"><a href=\"" . $url . "\">" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</a></td>\n";
@@ -593,6 +596,7 @@ class MY_Controller extends CI_Controller {
 									$output = $row->$column_variable_name;
 									if (is_numeric($output)) { 
 										if ((strpos($column_variable_name, "serial") === false) and 
+											(strpos($column_variable_name, "version") === false) and
 											(strpos($column_variable_name, "model") === false)) { $output = number_format($output); }
 										echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">" . mb_substr("0000000000" . $output, -10) . "</span>" . $output . "</td>\n";
 									} else {
