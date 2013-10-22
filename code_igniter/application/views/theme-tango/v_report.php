@@ -76,7 +76,11 @@ foreach($query as $row) {
 						echo "\t\t\t<td align=\"$column_align\"><a class=\"SystemPopupTrigger\" rel=\"" . $row->$column_variable_name_sec . "\" href=\"" . site_url()  . $column_link . $row->$column_variable_name_sec . "\">" . $row->$column_variable_name . "</a></td>\n";
 					} else {
 						$column_link = str_replace('$group_id', $group_id, $column_link);
-						echo "\t\t\t<td align=\"$column_align\"><a href=\"" . site_url() . $column_link . $row->$column_variable_name_sec . "\">" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</a></td>\n";
+						$url = site_url() . $column_link . $row->$column_variable_name_sec;
+						if ($column->column_ternary > "") {
+							$url .= "/" . $row->$column_variable_name_ter;
+						}
+						echo "\t\t\t<td align=\"$column_align\"><a href=\"" . $url . "\">" . htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8") . "</a></td>\n";
 					}
 					break;
 
