@@ -33,7 +33,7 @@
 			<td align="center"><?php echo $key->group_category?></td>
 			<td><?php echo $key->group_description?></td>
 			<td align="center"><?php echo $key->group_category?></td>
-			<td align="center"><?php echo $edit_pic?></td>
+			<td align="center"><?php if ($key->group_id != '1') {echo $edit_pic; } ?> </td>
 			<td align="center"><?php echo $export_pic?></td>
 			<td align="center"><?php echo $update_pic?></td>
 			<td align="center"><?php if ($key->group_id != '1') {echo $delete_pic; } ?> </td>
