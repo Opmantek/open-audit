@@ -32,7 +32,7 @@ if (($config->display_version != $this->config->item('web_display_version')) AND
 		Your web server is <?php echo getenv("SERVER_SOFTWARE"); ?> .<br />
 		Your PHP version is <?php echo phpversion(); ?> and it's running in timezone <?php echo date_default_timezone_get(); ?>.<br />
 		<?php if (!phpversion('snmp')) { 
-			echo "You do <span style=\"color:red;\">NOT</span> have the PHP extension installed. This extension is highly recommended.";
+			echo "You do <span style=\"color:red;\">NOT</span> have the PHP SNMP extension installed. This extension is highly recommended.";
 		} ?>
 		<?php } ?>
 		<br /><br />
