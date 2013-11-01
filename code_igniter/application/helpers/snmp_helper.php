@@ -12,6 +12,7 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 if (!function_exists('get_snmp')) {
 
 	function get_snmp($details ) {
+		error_reporting(E_ALL);
 		$CI =& get_instance();
 		
 		# setup the log file
@@ -109,13 +110,22 @@ if (!function_exists('get_snmp')) {
 			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned.\n";
 		}
 
+		#echo "<pre>SNMP Version: " . $details->snmp_version . "<br />\n";
+
 		$handle = fopen($file, "a");
 		fwrite($handle, $log_line);
 		fclose($handle);
 
 		if ($test_v2 > '') {
+			$details->snmp_version = '2';
 
 			snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
+			$details->serial = "";
+			$details->model = "";
+			$details->man_model = "";
+			$details->type = "";
+			$details->device_type = "";
+			$details->man_type = ""; 		
 
 			// hostname
 			if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
@@ -124,169 +134,94 @@ if (!function_exists('get_snmp')) {
 				$details->hostname_length = 'short';
 			}
 
-			// printer duplex
-			$details->printer_duplex = '';
-			$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
-			if (count($i) > 0) {
-				$details->printer_duplex = 'False';
-				for ($k = 0; $k < count($i); $k++){
-					if (mb_strpos($i[$k], "Duplex") !== FALSE) {
-						$details->printer_duplex = 'True';
-					}
-				}
-			}
+
+			// description
+			$details->description = '';
+			$details->description = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
+			if (strtolower($details->description) == 'no such object available on this agent at this oid') {$details->description = '';}
+			if (substr($details->description, 0, 1) == "\"") { $details->description = substr($details->description, 1, strlen($details->description)); }
+			if (substr($details->description, -1, 1) == "\"") { $details->description = substr($details->description, 0, strlen($details->description)-1); }
+
 
 			// sysObjectID
-			#$i = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
 			$details->snmp_oid = str_replace("OID: .", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
 			if (strtolower($details->snmp_oid) == 'no such object available on this agent at this oid') { $details->snmp_oid = ''; }
-
+			if (substr($details->snmp_oid, 0, 1) == ".") { $details->snmp_oid = substr($details->snmp_oid, 1, strlen($details->snmp_oid)); }
 			if ($details->snmp_oid > '') {
-				$oid = get_oid($details->snmp_oid);
-				$details->manufacturer = $oid->manufacturer;
-				$details->man_manufacturer = $oid->manufacturer;
-				$details->model = $oid->model;
-				$details->man_model = $oid->model;
-				$details->type = $oid->type;
-				$details->device_type = $oid->type;
-				$details->man_type = $oid->type; 
-				$details->os_group = $oid->os_group;
-				$details->man_os_group = $oid->os_group;
+				$details->manufacturer = get_oid($details->snmp_oid);
+				$details->man_manufacturer = $details->manufacturer;
+				$explode = explode(".", $details->snmp_oid);
+				if (file_exists(BASEPATH . '../application/helpers/snmp_' . $explode[6] . '_helper.php')) {
+					$CI->load->helper('snmp_' . $explode[6]);
+					get_oid_details($details);
+					if (substr($details->serial, 0, 1) == "\"") { $details->serial = substr($details->serial, 1, strlen($details->serial)); }
+					if (substr($details->serial, -1, 1) == "\"") { $details->serial = substr($details->serial, 0, strlen($details->serial)-1); }	
+					if (isset($details->model) and $details->model > '') { $details->man_model = $details->model; } else { $details->man_model = ''; }
+					if (isset($details->type) and $details->type > '') { $details->device_type = $details->type; } else { $details->device_type = ''; }
+					if (isset($details->type) and $details->type > '') { $details->man_type = $details->type; } else { $details->man_type = ''; }
+					if (isset($details->serial) and $details->serial > '') { $details->man_serial = $details->serial; } else { $details->man_serial = ''; }	
+				} 
+
 			}
 
-			if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.255') {
-				# a generic OID - take some guesses...
-				$i = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
-				if (strpos($i, "Darwin Kernel Version 12") !== FALSE) {
-					# looks like an OSX device
-					$details->manufacturer = "Apple Inc";
-				}
-			}
-
-			if ($details->snmp_oid == '1.3.6.1.4.1.6876.4.1') {
-				# grab some specific details for VMware ESX
-				$model = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.1.0" ));
-				$version = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.2.0" ));
-				$details->model = $model . " (" . $version . ")";
-				$details->model =str_replace("\"", "", $details->model);
-				$details->man_model = $details->model;
-				$details->os_group = "VMware";
-				$details->man_os_group = "VMware";
-				$details->os_family = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.1.0" ));
-				$details->os_family =str_replace("\"", "", $details->os_family);
-				$details->man_os_family = $details->os_family;
-				$details->os_name = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
-				$details->os_name =str_replace("\"", "", $details->os_name);
-				$details->man_os_name = $details->os_name;
-				$details->type = 'computer';
-				$details->man_type = 'computer';
-				$details->device_type = 'computer';
-				$details->man_class = 'hypervisor';
-			}
-
-
-
-			if (substr($details->snmp_oid, 0, 13) == '1.3.6.1.4.1.9') {
-				# grab some Cisco specific details
-				$i = explode("$", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.5" ));
-				$details->os_version = trim($i[1]);
-				$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.7" );
-				if (strpos($i, "IOS") !== FALSE) { 
-					$details->os_group = 'Cisco';
-					$details->man_os_group = 'Cisco'; 
-					$details->os_family = 'Cisco IOS'; 
-					$details->man_os_family = 'Cisco IOS'; 
-					$details->os_name = "Cisco IOS version " . $details->os_version;
-					$details->man_os_name = "Cisco IOS version " . $details->os_version;
-				}
-				if (strpos($i, "Catalyst Operating") !== FALSE) { 
-					$details->os_group = 'Cisco';
-					$details->man_os_group = 'Cisco'; 
-					$details->os_family = 'Cisco Catalyst OS';
-					$details->man_os_family = 'Cisco Catalyst OS'; 
-					$detail->os_name = "Cisco Catalyst OS version " . $details->os_version;
-					$detail->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
-				}
-			}
-
-			if (substr($details->snmp_oid, 0, 17) == '1.3.6.1.4.1.25461') { 
-				# grab some Palo Alto specifics 
-				$details->serial = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25461.2.1.2.1.3.0");
-			}
-
-			// manufacturer
+			// guess at manufacturer using entity mib
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
-				$hex = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.8.2.1.14.1");
-				if (count($hex) > 0) {
-					if (isset($hex[1])) {
-						if (mb_strpos($hex[1], "Hex-STRING: ") !== FALSE) {
-							$hex[1] = str_replace("Hex-STRING: ", "", $hex[1]);
-							for ($i=0; $i<strlen($hex[1]); $i++) {
-								$details->manufacturer .= chr(hexdec(substr($hex[1],$i,2)));
-							}
-						} else {
-							$details->manufacturer = str_replace("STRING: ", "", $hex[1]);
-							$details->manufacturer = str_replace('"', '', $details->manufacturer);
-						}
+				$details->manufacturer = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1")));
+				if ($details->manufacturer == 'No Such Instance currently exists at this OID') { $details->manufacturer = ''; }
+				if ($details->manufacturer == 'No Such Object available on this agent at this OID') { $details->manufacturer = ''; }
+			}
+			if ($details->manufacturer > '') { $details->man_manufacturer = $details->manufacturer; } else { $details->man_manufacturer = ''; }
+
+
+			// guess at model using entity mib
+			if (!isset($details->model) or $details->model == '') {
+				$details->model = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13")));
+				if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
+				if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
+				if ($details->model == 'No Such Instance currently exists at this OID') { $details->model = ''; }
+				if ($details->model == 'No Such Object available on this agent at this OID') { $details->model = ''; }
+			}	
+			if ($details->model > '') { $details->man_model = $details->model; } else { $details->man_model = ''; }
+
+			// guess at model using host resources mib
+			if (!isset($details->model) or $details->model == '' ) {
+				$details->model = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.3.1"));
+				if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
+				if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
+				if (($details->model == '') or (strtolower($details->model) == 'no such object available on this agent at this oid')) {
+					if (strpos(strtolower($details->manufacturer), 'cisco') !== FALSE) {
+						$details->model = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1")));
+						if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
+						if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
 					}
 				}
-				if (($details->manufacturer == '') or ($details->manufacturer == 'No Such Object available on this agent at this OID')) {                  
-					$details->manufacturer = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1")));
-				}
 			}
-			if ($details->manufacturer == 'No Such Instance currently exists at this OID') { $details->manufacturer = ''; }
-			if ($details->manufacturer == 'No Such Object available on this agent at this OID') { $details->manufacturer = ''; }
+			if (strtolower($details->model) == 'no such object available on this agent at this oid') { $details->model = ''; }
+			if ($details->man_model == "" and $details->model > "") { $details->man_model = $details->model; }
 
-			// serial
+
+			// serial 
 			if (!isset($details->serial) or $details->serial == '') {
-				$details->serial == '';
+				$details->serial = '';
+				# the entity mib serial
+				$details->serial = str_replace('"', '', str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11")));
+				if (strtolower($details->serial) == 'no such instance currently exists at this oid') { $details->serial = ''; }
+				if (strtolower($details->serial) == 'no such object available on this agent at this oid') { $details->serial = ''; }
 
 				# generic snmp
 				$details->serial = str_replace('"', '', str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1")));
-				if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-				if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-				if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
+				if (strtolower($details->serial) == 'no such instance currently exists at this oid') { $details->serial = ''; }
+				if (strtolower($details->serial) == 'no such object available on this agent at this oid') { $details->serial = ''; }
 
-				# Generic Cisco
-				if ($details->serial == '') {
-					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1")));
-					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-					if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-				}
-
-				# Cisco 37xx stack
-				if ($details->serial == '') {
-					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.5.1.2.19.0")));
-					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-					if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-				}
-
-				# generic cable modem (works for my Netgear CG814WG and CGD24N)
+				# below is another generic attempt - works for my NetGear Cable Modem
 				if ($details->serial == '') {
 					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0")));
-					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-					if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
 				}
-
-				# 3Com SuperStack Switches
-				if ($details->serial == '') {
-					$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.43.47.1.1.3.1.10.1")));
-					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-					if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-					if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-				}
-
-
-
-				# remove  false
-				if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-				if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-				if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
+				if (strtolower($details->serial) == 'no such instance currently exists at this oid') { $details->serial = ''; }
+				if (strtolower($details->serial) == 'no such object available on this agent at this oid') { $details->serial = ''; }
 			}
-			$details->man_serial = $details->serial;
+			if ($details->serial > '') { $details->man_serial = $details->serial; } else { $details->man_serial = ''; }
+
 
 			// mac address
 			if (!isset($details->mac_address) or $details->mac_address == '' ) {
@@ -304,50 +239,113 @@ if (!function_exists('get_snmp')) {
 				if ($details->mac_address == '00') { $details->mac_address = ''; }
 			}
 
+				
 			// type
-			if (!isset($details->type) or $details->type == '') {
-				$h = str_replace("OID: HOST-RESOURCES-TYPES::hrDevice", "", 
-								 str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.2.1")));
-				if ((strtolower($h) == 'no such object available on this agent at this oid') or ($h == '')) {
+			if (!isset($details->type) or $details->type == '' or $details->type == 'unknown' or $details->type == 'network printer') {
+				$h = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.2.1");
+				$h = str_replace("OID: .", "", $h);
 
-					# If the device is a Switch, the OID 1.3.6.1.2.1.17.1.2.0 and OID 1.3.6.1.2.1.4.1.0 should have a value of 2
-					$i = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.17.1.2.0"));
-					$j = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.1.0"));
-					if (($i == '2') and ($j == '2')) {
-						$details->type = 'switch';
+				if ($h == '1.3.6.1.2.1.25.3.1.5') {
+					# we have a printer
+					$details->type = 'network printer';
+					$details->man_type = 'network printer';
+					$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
+					if (count($i) > 0) {
+						$details->printer_duplex = 'False';
+						for ($k = 0; $k < count($i); $k++){
+							if (mb_strpos($i[$k], "Duplex") !== FALSE) {
+								$details->printer_duplex = 'True';
+							}
+						}
+					}
+					if (!isset($details->manufacturer) or $details->manufacturer == '') {
+						$hex = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.8.2.1.14.1");
+						if (count($hex) > 0) {
+							if (isset($hex[1])) {
+								if (mb_strpos($hex[1], "Hex-STRING: ") !== FALSE) {
+									$hex[1] = str_replace("Hex-STRING: ", "", $hex[1]);
+									for ($i=0; $i<strlen($hex[1]); $i++) {
+										$details->manufacturer .= chr(hexdec(substr($hex[1],$i,2)));
+									}
+								} else {
+									$details->manufacturer = str_replace("STRING: ", "", $hex[1]);
+									$details->manufacturer = str_replace('"', '', $details->manufacturer);
+								}
+							}
+						}
+					}
+					$details->printer_color = 'False';
+					$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.11.1.1.6.1.2");
+					if (strpos(strtolower($i), "cartridge") !== FALSE) {
+						# it's likely this is a colour printer
+						$details->printer_color = 'True';
 					}
 
-					# If the device is a Router, the OID 1.3.6.1.2.1.4.1.0 should have a value of 1
+				} else {
+
+					# If the device is a Switch, the OID 1.3.6.1.2.1.17.1.2.0 and OID 1.3.6.1.2.1.4.1.0 should have a value of 2
+					$i = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.17.1.2.0"));
+					$j = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.1.0"));
+					if (($i == intval($i)) and ($j == '2')) {
+						$details->type = 'switch';
+						$details->man_type = 'switch';
+					}
+
+					# If the device is a Router, the OID 1.3.6.1.2.1.4.1.0 should have a value of 1 (already read above)
 					if (!isset($details->type) or $details->type == '') {
-						$i = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.1.0"));
 						if ($i == '1') {
-							$device->type = 'router';
+							$details->type = 'router';
+							$details->man_type = 'router';
 						}
 					}
 
 					# If the device is a Printer, the OID 1.3.6.1.2.1.43.5.1.1.1.1 should have a value
-					if (!isset($details->type) or $details->type == '') {
-						$i = str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.1.1"));
-						if ($i == '1') {
-							$device->type = 'printer';
+					#if (!isset($details->type) or $details->type == '') {
+						$i = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.1.1"));
+						if (strpos(strtolower($i), "counter32") !== FALSE) {
+							$details->type = 'network printer';
+							$details->man_type = 'network printer';
+							// printer duplex
+							$details->printer_duplex = '';
+							$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
+							if (count($i) > 0) {
+								$details->printer_duplex = 'False';
+								for ($k = 0; $k < count($i); $k++){
+									if (mb_strpos($i[$k], "Duplex") !== FALSE) {
+										$details->printer_duplex = 'True';
+									}
+								}
+							}
+							if (!isset($details->manufacturer) or $details->manufacturer == '') {
+								$hex = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.8.2.1.14.1");
+								if (count($hex) > 0) {
+									if (isset($hex[1])) {
+										if (mb_strpos($hex[1], "Hex-STRING: ") !== FALSE) {
+											$hex[1] = str_replace("Hex-STRING: ", "", $hex[1]);
+											for ($i=0; $i<strlen($hex[1]); $i++) {
+												$details->manufacturer .= chr(hexdec(substr($hex[1],$i,2)));
+											}
+										} else {
+											$details->manufacturer = str_replace("STRING: ", "", $hex[1]);
+											$details->manufacturer = str_replace('"', '', $details->manufacturer);
+										}
+									}
+								}
+							}
+							$details->printer_color = 'False';
+							$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.11.1.1.6.1.2");
+							if (strpos(strtolower($i), "cartridge") !== FALSE) {
+								# it's likely this is a colour printer
+								$details->printer_color = 'True';
+							}
 						}
-					}
+					#}
 				}
 			}
 			if (isset($details->type) and $details->type != '' and (!isset($details->man_type) or $details->man_type == '')) {
 				$details->man_type = $details->type;
 			} 
 
-			// model
-			if (!isset($details->model) or $details->model == '' ) {
-				$details->model = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.3.1"));
-				if (($details->model == '') or ($details->model == 'No Such Object available on this agent at this OID')) {
-					if (strpos(strtolower($details->manufacturer), 'cisco') !== FALSE) {
-						$details->model = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1")));
-					}
-				}
-			}
-			if (strtolower($details->model) == 'no such object available on this agent at this oid') { $details->model = ''; }
 
 			// name
 			if (!isset($details->sysname) or $details->sysname == '' ) {
@@ -355,12 +353,6 @@ if (!function_exists('get_snmp')) {
 			}
 			if (strtolower($details->sysname) == 'no such object available on this agent at this oid') { $details->sysname = ''; }
 
-			// description
-			if (!isset($details->description) or $details->description == '' ) {
-				$details->description = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0")));
-				$details->description = str_replace("\r\n", " ", $details->description);
-			}
-			if (strtolower($details->description) == 'no such object available on this agent at this oid') {$details->description = '';}
 
 			// uptime
 			if (!isset($details->uptime) or $details->uptime == '' ) {
@@ -373,6 +365,7 @@ if (!function_exists('get_snmp')) {
 				}
 			}
 
+
 			// location
 			if (!isset($details->location) or $details->location == '' ) {
 				$details->location = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0")));
@@ -381,7 +374,8 @@ if (!function_exists('get_snmp')) {
 			if ($details->location == 'not set') {$details->location = '';}
 			if ($details->location == 'No Such Object available on this agent at this OID') {$details->location = '';}
 			if ($details->location > '') { $details->description = "Location: " . $details->location . ". " . $details->description; }
-			
+
+
 			// contact
 			if (!isset($details->contact) or $details->contact == '' ) {
 				$details->contact = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.4.0")));
@@ -389,6 +383,7 @@ if (!function_exists('get_snmp')) {
 			if ($details->contact == 'Root  (configure /etc/snmp/snmpd.conf)' ) {$details->contact = ''; }
 			if ($details->contact == 'not set' ) {$details->contact = ''; }
 			if ($details->contact > '') { $details->description = "Contact: " . $details->contact . ". " . $details->description; }
+
 
 			// subnet
 			if (!isset($details->subnet) or $details->subnet == '' ) {
@@ -426,48 +421,113 @@ if (!function_exists('get_snmp')) {
 		}
 
 		if ($test_v1 > '' and $test_v2 == '') {
+			$details->snmp_version = '1';
 			$details->snmp_oid = '';
 			$details->snmp_oid = str_replace("OID: .", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
+			$details->snmp_oid = str_replace("OID: iso", "1", $details->snmp_oid);
 			if (strtolower($details->snmp_oid) == 'no such object available on this agent at this oid') { $details->snmp_oid = ''; }
 			if ($details->snmp_oid > '') {
-				$oid = get_oid($details->snmp_oid);
-				$details->manufacturer = $oid->manufacturer;
-				$details->man_manufacturer = $oid->manufacturer;
-				$details->model = $oid->model;
-				$details->man_model = $oid->model;
-				$details->type = $oid->type;
-				$details->device_type = $oid->type;
-				$details->man_type = $oid->type; 
-				$details->os_group = $oid->os_group;
-				$details->man_os_group = $oid->os_group;
-			}
-			if ($details->oid == '1.3.6.1.4.1.714.1.2.6') {
-				# We have a Wyse thin client - some specifics.
-				$details->serial = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community,      "1.3.6.1.4.1.714.1.2.6.2.1.0" ));
-				$details->sysname = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community,     "1.3.6.1.2.1.1.5.0" ));
-				$details->description = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
-				$details->contact = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.4.0" ));
-				if ($details->contact > '') { $details->description = "Contact: " . $details->contact . ". " . $details->description; }
-				$details->location = str_replace("String: .", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0" ));
-				if ($details->location > '') { $details->description = "Location: " . $details->location . ". " . $details->description; }
+				$details->manufacturer = get_oid($details->snmp_oid);
+				$details->man_manufacturer = $details->manufacturer;
+				$explode = explode(".", $details->snmp_oid);
+				$CI->load->helper('snmp_' . $explode[6]);
+				get_oid_details($details);
+				if (!isset($details->serial) or $details->serial == '') {
+					if (substr($details->serial, 0, 1) == "\"") { $details->serial = substr($details->serial, 1, strlen($details->serial)); }
+					if (substr($details->serial, -1, 1) == "\"") { $details->serial = substr($details->serial, 0, strlen($details->serial)-1); }
+				}
+				if (isset($details->model) and $details->model > '') { $details->man_model = $details->model; } else { $details->man_model = ''; }
+				if (isset($details->type) and $details->type > '') { $details->device_type = $details->type; } else { $details->device_type = ''; }
+				if (isset($details->type) and $details->type > '') { $details->man_type = $details->type; } else { $details->man_type = ''; }
+				if (isset($details->serial) and $details->serial > '') { $details->man_serial = $details->serial; } else { $details->man_serial = ''; }
 			}
 
+			$h = @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.2.1");
+			if (strpos($h, "1.3.6.1.2.1.25.3.1") !== FALSE) {
+				# we have a printer
+				$details->type = "network printer";
+				$details->man_type = "network printer";
+				$details->printer_duplex = '';
+				$details->printer_color = '';
+				$i = @snmpwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
+				if (count($i) > 0) {
+					$details->printer_duplex = 'False';
+					for ($k = 0; $k < count($i); $k++){
+						if (mb_strpos($i[$k], "Duplex") !== FALSE) {
+							$details->printer_duplex = 'True';
+						}
+					}
+				}
+
+
+				$details->printer_color = 'False';
+				$i = @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.11.1.1.6.1.2");
+				if (strpos(strtolower($i), "cartridge") !== FALSE) {
+					# it's likely this is a colour printer
+					$details->printer_color = 'True';
+				}
+
+
+				if (!isset($details->manufacturer) or $details->manufacturer == '') {
+					$hex = @snmpwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.8.2.1.14.1");
+					if (count($hex) > 0) {
+						if (isset($hex[1])) {
+							if (mb_strpos($hex[1], "Hex-STRING: ") !== FALSE) {
+								$manufacturer = str_replace(" ", "", $manufacturer);
+								$manufacturer = str_replace("\n", "", $manufacturer);
+								if (function_exists('hex2bin')) {
+									$details->manufacturer = hex2bin($manufacturer);
+								} else {
+									$details->manufacturer = pack("H*", $manufacturer);
+								}
+								$details->manufacturer = mb_convert_encoding($details->manufacturer, "UTF-8", "ASCII");
+							} else {
+								$details->manufacturer = str_replace("STRING: ", "", $hex[1]);
+								$details->manufacturer = str_replace('"', '', $details->manufacturer);
+							}
+						}
+					}
+				}
+				if (!isset($details->serial) or $details->serial == "") {
+					$details->serial = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1" ));
+					if (substr($details->serial, 0, 1) == "\"") { $details->serial = substr($details->serial, 1, strlen($details->serial)); }
+					if (substr($details->serial, -1, 1) == "\"") { $details->serial = substr($details->serial, 0, strlen($details->serial)-1); }	
+				}
+				if ($details->model == "") {
+					$details->model = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.16.1" ));
+					if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
+					if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
+				}
+			}
+
+			if (mb_detect_encoding($details->serial) == 'UTF-8') {
+				$details->serial = mb_convert_encoding($details->serial, 'UTF-8', 'ASCII');
+			}
+			$details->man_serial = $details->serial;
+			
+			if (mb_detect_encoding($details->model) == 'UTF-8') {
+				$details->model = mb_convert_encoding($details->model, "UTF-8", "ASCII");
+			}
+			$details->man_model = $details->model;
+
+			# todo: below breaks on occasion when the external ip is not in snmp. We should really ask the device for any IPs it has and go from there.
 			$interface_number = str_replace("INTEGER: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
 			$i = "1.3.6.1.2.1.2.2.1.6." . $interface_number;
-			$details->mac_address = snmpget($details->man_ip_address, $details->snmp_community, $i);
+			$details->mac_address = @snmpget($details->man_ip_address, $details->snmp_community, $i);
 			$details->mac_address = trim(str_replace("Hex-STRING: ", "", $details->mac_address));
 			$details->mac_address = str_replace(" ", ":", $details->mac_address);
-			$details->subnet = str_replace("IpAddress: ", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
-			$details->hostname = trim(str_replace("\"", "", str_replace("STRING: ", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"))));
+
+			$details->subnet = str_replace("IpAddress: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
+
+			$details->hostname = trim(str_replace("\"", "", str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"))));
+
 			$details->hostname_length = 'short';
-			$details->next_hop = str_replace("IpAddress: ", "", snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
+
+			$details->next_hop = str_replace("IpAddress: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 		}
 
+		unset($details->snmp_version);
 		$details->hostname = strtolower($details->hostname);
-		// update the system
-		#if ($details->snmp_version > '') {
-			#$CI2->m_system->process_snmp($details);
-			return $details;
-		#}
+		return $details;
 	}
 }
