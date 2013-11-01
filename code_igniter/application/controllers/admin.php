@@ -2066,6 +2066,14 @@ class Admin extends MY_Controller {
 				}
 			}
 
+			$sql = "ALTER TABLE system CHANGE description description varchar(250) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system CHANGE man_description man_description varchar(250) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "ALTER TABLE system DROP man_vendor";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
