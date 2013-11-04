@@ -17,7 +17,12 @@ submit_online="n"
 create_file="y"
 org_id=""
 terminal_print="n"
+debugging="3"
 
+
+if [ "$debugging" -gt "0" ]; then
+	echo "System Info"
+fi
 system_timestamp=`date +'%F %T'`
 system_uuid=`system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g'`
 system_hostname=`networksetup -getcomputername`
@@ -39,9 +44,6 @@ system_pc_date_os_installation=`date -r $(stat -f "%B" /private/var/db/.AppleSet
 if [[ "$system_model" == *"MacBook"* ]]; then
 	system_form_factor="laptop"
 fi
-
-
-
 
 
 xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
@@ -73,8 +75,73 @@ echo  "	</sys>" >> $xml_file
 
 
 
+if [ "$debugging" -gt "0" ]; then
+	echo "Network Cards Info"
+fi
+ip_info=""
+echo "	<network_cards>" >> $xml_file
+for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | cut -d":" -f2); do
+	line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
+	net_mac_address=`ifconfig $line 2>/dev/null | grep "ether" | awk '{print $2}'`
+	i=`system_profiler SPNetworkDataType | grep "BSD Device Name: $line" -B 4 | grep ":" | grep -v "      " | cut -d":" -f1`
+	i=`echo "${i}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
+	j=`system_profiler SPNetworkDataType | grep "BSD Device Name: $line" -B 3 | grep ":" | grep "Type" | cut -d":" -f2`
+	j=`echo "${j}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
+	net_manufacturer="Apple"
+	net_model="$i"
+	net_description="$i $j"
+	net_ip_enabled=`system_profiler SPNetworkDataType | grep "BSD Device Name: $line" -A 1 | grep ":" | grep "Has IP Assigned" | cut -d":" -f2 | cut -d" " -f2`
+	net_connection_id="$line"
+	net_speed=""
+	net_adapter_type="$j"
+	if [[ "$net_mac_address" > "" ]]; then
+		echo "		<network_card>" >> $xml_file
+		echo "			<net_mac_address>$net_mac_address</net_mac_address>" >> $xml_file
+		echo "			<net_manufacturer>$net_manufacturer</net_manufacturer>" >> $xml_file
+		echo "			<net_model>$net_model</net_model>" >> $xml_file
+		echo "			<net_description>$net_description</net_description>" >> $xml_file
+		echo "			<net_ip_enabled>$net_ip_enabled</net_ip_enabled>" >> $xml_file
+		echo "			<net_connection_id>$net_connection_id</net_connection_id>" >> $xml_file
+		echo "			<net_connection_status></net_connection_status>" >> $xml_file
+		echo "			<net_speed></net_speed>" >> $xml_file
+		echo "			<net_adapter_type>$net_adapter_type</net_adapter_type>" >> $xml_file
+		echo "			<net_dhcp_enabled></net_dhcp_enabled>" >> $xml_file
+		echo "			<net_dhcp_server></net_dhcp_server>" >> $xml_file
+		echo "			<net_dhcp_lease_obtained></net_dhcp_lease_obtained>" >> $xml_file
+		echo "			<net_dhcp_lease_expires></net_dhcp_lease_expires>" >> $xml_file
+		echo "			<net_dns_host_name></net_dns_host_name>" >> $xml_file
+		echo "			<net_dns_domain></net_dns_domain>" >> $xml_file
+		echo "			<net_dns_domain_reg_enabled></net_dns_domain_reg_enabled>" >> $xml_file
+		echo "			<net_dns_server></net_dns_server>" >> $xml_file
+		echo "			<net_wins_primary></net_wins_primary>" >> $xml_file
+		echo "			<net_wins_secondary></net_wins_secondary>" >> $xml_file
+		echo "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>" >> $xml_file
+		echo "		</network_card>" >> $xml_file
+	fi
+done
+echo "	</network_cards>" >> $xml_file
+echo "	<addresses>" >> $xml_file
+for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | cut -d":" -f2); do
+	line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
+	net_mac_address=`ifconfig $line 2>/dev/null | grep "ether" | awk '{print $2}'`
+	if [[ "$net_mac_address" > "" ]]; then
+		ip_address_v4=`ipconfig getifaddr $line`
+		ip_subnet=`ipconfig getpacket $line | grep "subnet_mask" | cut -d" " -f3`
+		echo "		<ip_address>" >> $xml_file
+		echo "			<net_mac_address>$net_mac_address</net_mac_address>" >> $xml_file
+		echo "			<ip_address_v4>$ip_address_v4</ip_address_v4>" >> $xml_file
+		echo "			<ip_address_v6></ip_address_v6>" >> $xml_file
+		echo "			<ip_subnet>$ip_subnet</ip_subnet>" >> $xml_file
+		echo "			<ip_address_version>4</ip_address_version>" >> $xml_file
+		echo "		</ip_address>" >> $xml_file
+	fi
+done
+echo "	</addresses>" >> $xml_file
 
 
+if [ "$debugging" -gt "0" ]; then
+	echo "Processor Info"
+fi
 processor_cores=`sysctl hw.ncpu | awk '{print $2}'`
 processor_socket=""
 processor_description=`sysctl -n machdep.cpu.brand_string`
@@ -95,9 +162,10 @@ echo  "	</processor>" >> $xml_file
 
 
 
-
+if [ "$debugging" -gt "0" ]; then
+	echo "Memory Info"
+fi
 echo "	<memory>" >> $xml_file
-
 for line in $(system_profiler SPMemoryDataType | grep "BANK" -A 8); do
 
 	if [[ "$line" == *"BANK"* ]]; then
@@ -136,6 +204,10 @@ done
 #unset IFS
 echo "	</memory>" >> $xml_file
 
+
+if [ "$debugging" -gt "0" ]; then
+	echo "Software Info"
+fi
 echo "	<software>" >> $xml_file
 software_name=""
 software_version=""

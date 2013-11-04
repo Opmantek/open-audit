@@ -29,9 +29,9 @@ if (count($query) > 0)
 			 ?>
 			<tr>
 				<td><?php echo $key->name?></td>
-				<td><a href="../admin_org/edit_org/<?php echo $key->org_id?>"><?php echo $key->org_name?></a></td>
-				<td><a href="../admin_location/edit_location/<?php echo $key->location_id_a?>"><?php echo $key->location_a?></a></td>
-				<td><a href="../admin_location/edit_location/<?php echo $key->location_id_a?>"><?php echo $key->location_b?></a></td>
+				<td><a href="../main/view_org/<?php echo $key->org_id?>"><?php echo $key->org_name?></a></td>
+				<td><a href="../main/view_location/<?php echo $key->location_id_a?>"><?php echo $key->location_a?></a></td>
+				<td><a href="../main/view_location/<?php echo $key->location_id_a?>"><?php echo $key->location_b?></a></td>
 				<td><?php echo $key->provider?></td>
 				<td><?php echo $key->service_type?></td>
 				<td align="right"><?php echo $key->speed?></td>

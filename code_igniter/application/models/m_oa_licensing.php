@@ -30,7 +30,7 @@ class M_oa_licensing extends MY_Model {
 				WHERE 
 				oa_group_sys.group_id = ? 
 				GROUP BY 
-				sys_sw_software.software_name 
+				sys_sw_software.software_name, sys_sw_software.software_version 
 				ORDER BY sys_sw_software.software_name";
 		$sql = $this->clean_sql($sql);
 		$data = array($id, $id);

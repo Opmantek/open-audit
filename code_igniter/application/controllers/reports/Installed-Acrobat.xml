@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <report>
 	<details>
-		<report_name>Acrobat</report_name>
+		<report_name>Installed - Acrobat</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
 		<report_sql><![CDATA[SELECT system.system_id, system.hostname, sys_sw_software.software_name, sys_sw_software.software_version from system left join sys_sw_software on (system.system_id = sys_sw_software.system_id and system.timestamp = sys_sw_software.timestamp and (software_name like '%acrobat%' or software_name Like 'Adobe Reader%')) join oa_group_sys on (system.system_id = oa_group_sys.system_id and oa_group_sys.group_id = @group) order by hostname]]></report_sql>
 		<report_display_sql></report_display_sql>

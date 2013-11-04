@@ -329,9 +329,16 @@ class Report extends MY_Controller {
 			$this->data['second_attribute'] = ''; 
 		}
 
+		if (isset($_POST['third_attribute'])) { 
+			$this->data['third_attribute'] = $_POST['third_attribute']; 
+		} else { 
+			$this->data['third_attribute'] = ''; 
+		}
+
 		if (isset($_POST['format'])) { 
 			$this->data['format'] = $_POST['format']; 
-		} 
+		}
+
 		if (!isset($this->data['format']) or $this->data['format'] == '') {
 			$this->load->helper('url');
 			$this->data['format'] = $this->uri->segment($this->uri->total_rsegments());
@@ -390,13 +397,23 @@ class Report extends MY_Controller {
 					foreach ($child->children() as $column) {
 						$i = new stdclass();
 						if (isset($column->column_order)) { $i->column_order = "$column->column_order"; } else { $i->column_order = ''; }
+
 						if (isset($column->column_name)) { $i->column_name = "$column->column_name"; } else { $i->column_name = ''; }
+
 						if (isset($column->column_variable)) { $i->column_variable = "$column->column_variable"; } else { $i->column_variable = ''; }
+
 						if (isset($column->column_type)) { $i->column_type = "$column->column_type"; } else { $i->column_type = ''; }
+
 						if (isset($column->column_link)) { $i->column_link = "$column->column_link"; } else { $i->column_link = ''; }
+
 						if (isset($column->column_secondary)) { $i->column_secondary = "$column->column_secondary"; } else { $i->column_secondary = ''; }
+
 						if (isset($column->column_ternary)) { $i->column_ternary = "$column->column_ternary"; } else { $i->column_ternary = ''; }
+
+						if (isset($column->column_quaternary)) { $i->column_quaternary = "$column->column_quaternary"; } else { $i->column_quaternary = ''; }
+
 						if (isset($column->column_align)) { $i->column_align = "$column->column_align"; } else { $i->column_align = ''; }
+
 						array_push($this->data['column'], $i);
 						unset ($i);
 					}
@@ -404,13 +421,12 @@ class Report extends MY_Controller {
 			}
 			$data = array($this->data['group_id']);
 			$query = $this->db->query('SET @group = ?', $data);
-			$data = array($this->data['first_attribute'], $this->data['second_attribute']);
+			$data = array($this->data['first_attribute'], $this->data['second_attribute'], $this->data['third_attribute']);
 			$query = $this->db->query($sql, $data);
 			$this->data['query'] = $query->result();
 		}
 
 		$this->data['count'] = count($this->data['query']);
-		#$this->data['heading'] = "report_in_json";
 		$this->data['export_report'] = 'y';
 		$this->determine_output($this->data['format']);
 	}

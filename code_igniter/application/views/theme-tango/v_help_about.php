@@ -29,7 +29,11 @@ if (($config->display_version != $this->config->item('web_display_version')) AND
 		<?php if ($this->session->userdata('user_admin') == 'y') { ?>
 		Your Host is: <?php echo php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br />
 		Your database platform is <?php echo $this->db->platform() . " (version " . $this->db->version() . ")"; ?>.<br />
-		Your web server is <?php echo getenv("SERVER_SOFTWARE"); ?> .
+		Your web server is <?php echo getenv("SERVER_SOFTWARE"); ?> .<br />
+		Your PHP version is <?php echo phpversion(); ?> and it's running in timezone <?php echo date_default_timezone_get(); ?>.<br />
+		<?php if (!phpversion('snmp')) { 
+			echo "You do <span style=\"color:red;\">NOT</span> have the PHP SNMP extension installed. This extension is highly recommended.";
+		} ?>
 		<?php } ?>
 		<br /><br />
 		Open-AudIT is :

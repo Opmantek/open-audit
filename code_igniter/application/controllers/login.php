@@ -95,7 +95,7 @@ class Login extends CI_Controller {
 		if ($license == "invalid") {
 			# OAE is installed but has an invalid license
 			# show the logon page
-			$data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a valid license.";
+			$data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;' style='color: blue;'>Opmantek</a> for a valid license or click <a href='" . $oae_url . "' style='color: blue;'>here</a> to enter your license details.";
 			$this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s') );
 			$this->load->view('v_login', $data);
 		}
@@ -103,7 +103,7 @@ class Login extends CI_Controller {
 		if ($license == "expired") {
 			# OAE is installed but the license has expired
 			# show the logon page
-			$data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal.";
+			$data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal or click <a href='" . $oae_url . "' style='color: blue;'>here</a> to enter your license details.";
 			$this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s') );
 			$this->load->view('v_login', $data);
 		}
@@ -111,7 +111,7 @@ class Login extends CI_Controller {
 		if ($license == "none") {
 			# OAE is installed but not licensed
 			# show the logon page
-			$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
+			$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today or click <a href='" . $oae_url . "' style='color: blue;'>here</a> to enter your license details.";
 			$this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s') );
 			$this->load->view('v_login', $data);
 		}
