@@ -150,9 +150,14 @@ class MY_Controller extends CI_Controller {
 		$user = $this->session->userdata('user_full_name');
 		$log_details = "C:" . $controller . " F:" . $function . " U:" . $user . " at " . $_SERVER['REMOTE_ADDR'];
 		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . ".\n";
-		$handle = fopen($file, "a");
-		fwrite($handle, $log_line);
-		fclose($handle);
+		if ($controller == "admin" and $function == "view_log") {
+			# don't bother logging this
+		} else {
+			# log the page view
+			$handle = fopen($file, "a");
+			fwrite($handle, $log_line);
+			fclose($handle);
+		}
 	}
 
 	function determine_output($output_type) {
@@ -668,6 +673,9 @@ class MY_Controller extends CI_Controller {
 		}
 		echo "\t</tbody>\n";
 		echo "</table>\n";
+		header('Content-Type: text/html');
+		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.html"');
+		header('Cache-Control: max-age=0');
 	}
 
 	function excel_report($query)
