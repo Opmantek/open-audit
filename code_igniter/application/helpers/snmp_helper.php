@@ -190,7 +190,7 @@ if (!function_exists('get_snmp')) {
 				if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
 				if (($details->model == '') or (strtolower($details->model) == 'no such object available on this agent at this oid')) {
 					if (strpos(strtolower($details->manufacturer), 'cisco') !== FALSE) {
-						$details->model = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1")));
+						$details->model = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1")));
 						if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
 						if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
 					}
