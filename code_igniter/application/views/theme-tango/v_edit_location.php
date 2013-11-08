@@ -56,6 +56,7 @@ echo form_open('admin_location/edit_location') . "\n";
 					<option <?php if ($key->location_type == "Radio Station") { echo "selected "; } ?>value='Radio Station'>Radio Station</option>
 					<option <?php if ($key->location_type == "Regional") { echo "selected "; } ?>value='Regional'>Regional</option>
 					<option <?php if ($key->location_type == "Resort") { echo "selected "; } ?>value='Resort'>Resort</option>
+					<option <?php if ($key->location_type == "Retail") { echo "selected "; } ?>value='Retail'>Retail</option>
 					<option <?php if ($key->location_type == "School") { echo "selected "; } ?>value='School'>School</option>
 					<option <?php if ($key->location_type == "Security") { echo "selected "; } ?>value='Security'>Security</option>
 					<option <?php if ($key->location_type == "Stadium") { echo "selected "; } ?>value='Stadium'>Stadium</option>
