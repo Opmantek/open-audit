@@ -1122,6 +1122,9 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1247') { $details->model = 'Cisco AIR AP1262'; $details->type = 'wireless access point'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1248') { $details->model = 'Cisco AIR AP1261'; $details->type = 'wireless access point'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1249') { $details->model = 'Cisco 892 F'; $details->type = 'router'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1250') { $details->model = 'Cisco ME 3600X-24FS-M'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1251') { $details->model = 'Cisco ME 3600X-24TS-M'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1252') { $details->model = 'Cisco ME 3800X Series Carrier Ethernet Switch Router'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1253') { $details->model = 'Cisco CGR 2010'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1254') { $details->model = 'Cisco Pwr CGR20xxCGS25xxPoeAC'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1255') { $details->model = 'Cisco Pwr CGR20xxCGS25xxPoeDC'; $details->type = 'unknown'; }
@@ -1140,6 +1143,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1268') { $details->model = 'Cisco 1906 CK9'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1269') { $details->model = 'Cisco AIR AP1042'; $details->type = 'wireless access point'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1270') { $details->model = 'Cisco AIR AP1041'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1274') { $details->model = 'Cisco 887VA Integrated Services Router'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1275') { $details->model = 'Cisco ASA Sm1sc'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1276') { $details->model = 'Cisco ASA Sm1sy'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1277') { $details->model = 'Cisco ASA Sm1'; $details->type = 'firewall'; }
