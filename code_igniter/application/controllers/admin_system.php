@@ -116,6 +116,7 @@ class Admin_system extends MY_Controller {
 		// check to make sure we have SNMP capability
 		if (!extension_loaded('snmp')) { redirect('main/list_devices'); }
 		$this->load->model("m_system");	
+		$this->load->model("m_oa_general");	
 		$this->load->model("m_sys_man_audits");
 		$this->load->library('encrypt');
 		$this->load->helper('snmp');
@@ -123,6 +124,7 @@ class Admin_system extends MY_Controller {
 		$details = new stdClass();
 		$details->system_id = $this->uri->segment(3,0);
 		$encrypted_access_details = $this->m_system->get_access_details($details->system_id);
+		$details->man_ip_address = $this->m_oa_general->get_attribute('system', 'man_ip_address', $details->system_id);
 		if ($encrypted_access_details == '') {
 			# redirect to a form to input the details
 			redirect('admin_system/system_add_credentials/' . $details->system_id);

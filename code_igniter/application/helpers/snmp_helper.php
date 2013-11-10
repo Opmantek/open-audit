@@ -23,7 +23,8 @@ if (!function_exists('get_snmp')) {
 		}
 
 		if (!isset($details->system_id) or $details->system_id == '') {
-			$details->snmp_community = 'public';
+			#$details->snmp_community = 'public';
+			$details->snmp_community = $CI->data['config']->snmp_default_community;
 			$details->snmp_version = '2c';
 			$details->snmp_port = '161';
 		} else {
@@ -37,9 +38,13 @@ if (!function_exists('get_snmp')) {
 				$details->man_ip_address = @$decoded_access_details->ip_address;
 			}
 		}
-		if (!isset($details->snmp_community) or $details->snmp_community == '') { $details->snmp_community = 'public'; }
+		if (!isset($details->snmp_community) or $details->snmp_community == '') { 
+			#$details->snmp_community = 'public'; 
+			$details->snmp_community = $CI->data['config']->snmp_default_community;
+		}
 		if (!isset($details->snmp_version) or $details->snmp_version == '') { $details->snmp_version = '2c'; }
 		if (!isset($details->snmp_port) or $details->snmp_port == '') { $details->snmp_port = '161'; }
+
 
 		# we may only have been given a system_id
 		# but if the access_details were completed, that may be enough
@@ -47,6 +52,7 @@ if (!function_exists('get_snmp')) {
 		if (!isset($details->man_ip_address) and !isset($details->hostname)) {
 			return;
 		}
+
 
 		$module = new stdclass;
 
@@ -86,8 +92,8 @@ if (!function_exists('get_snmp')) {
 
 		# test for SNMP version
 		# to do - test for v3
-		$test_v1 = "";
-		$test_v2 = "";
+		$test_v1 = '';
+		$test_v2 = '';
 
 		$log_timestamp = date("M d H:i:s");
 		$log_hostname = php_uname('n');
@@ -109,8 +115,6 @@ if (!function_exists('get_snmp')) {
 		} else {
 			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned.\n";
 		}
-
-		#echo "<pre>SNMP Version: " . $details->snmp_version . "<br />\n";
 
 		$handle = fopen($file, "a");
 		fwrite($handle, $log_line);
@@ -400,30 +404,7 @@ if (!function_exists('get_snmp')) {
 			if (substr($details->serial, -1, 1) == "\"") { $details->serial = substr($details->serial, 0, strlen($details->serial)-1); }
 			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
 			if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-			
-			/*
-			// installed modules with serial numbers
-			$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11");
-			if (count($i) > 0) {
-				if (($i[0] == 'No more variables left in this MIB View (It is past the end of the MIB tree)') or ($i[0] == '')){unset($i); $i = array();}
-				if (count($i) > 0) {
-					$count = 0;
-					for ($j=0; $j<count($i); $j++) {
-						if ((mb_strpos($i[$j], $details->serial) === FALSE) and ($i[$j] != "") and ($i[$j] != "\"\"")){
-							$k = $j + 1;
-							$k = "1.3.6.1.2.1.47.1.1.1.1.3." . $k;
-							$oid = snmp2_get($details->man_ip_address, $details->snmp_community, $k);
-							$oid = str_replace("OID: .", "", $oid);
-							$module->$count = get_oid($oid);
-							$module->$count->serial = str_replace("STRING: ", "", $i[$j]);
-							$module->$count->serial = str_replace('"', '', $module->$count->serial);
-							$count++;
-						}
-					}
-					$details->modules = $module;
-				}
-			}
-			*/
+		
 		}
 
 		if ($test_v1 > '' and $test_v2 == '') {
