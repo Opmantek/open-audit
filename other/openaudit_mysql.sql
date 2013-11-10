@@ -183,7 +183,7 @@ CREATE TABLE `oa_change_log` (
 DROP TABLE IF EXISTS `oa_config`;
 CREATE TABLE `oa_config` (
   `config_name` varchar(45) NOT NULL default '',
-  `config_value` varchar(45) NOT NULL default '',
+  `config_value` varchar(250) NOT NULL default '',
   `config_editable` varchar(1) NOT NULL default 'n',
   `config_edited_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `config_edited_by` int(10) unsigned NOT NULL default '0',

@@ -2078,6 +2078,10 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "ALTER TABLE oa_config CHANGE config_value config_value varchar(250) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "UPDATE oa_config set config_value = '20130810', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
