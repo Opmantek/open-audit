@@ -6861,3 +6861,29 @@ if (!function_exists('get_oid_details')) {
 		}
 	}
 }
+
+
+
+			/*
+			// installed modules with serial numbers
+			$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11");
+			if (count($i) > 0) {
+				if (($i[0] == 'No more variables left in this MIB View (It is past the end of the MIB tree)') or ($i[0] == '')){unset($i); $i = array();}
+				if (count($i) > 0) {
+					$count = 0;
+					for ($j=0; $j<count($i); $j++) {
+						if ((mb_strpos($i[$j], $details->serial) === FALSE) and ($i[$j] != "") and ($i[$j] != "\"\"")){
+							$k = $j + 1;
+							$k = "1.3.6.1.2.1.47.1.1.1.1.3." . $k;
+							$oid = snmp2_get($details->man_ip_address, $details->snmp_community, $k);
+							$oid = str_replace("OID: .", "", $oid);
+							$module->$count = get_oid($oid);
+							$module->$count->serial = str_replace("STRING: ", "", $i[$j]);
+							$module->$count->serial = str_replace('"', '', $module->$count->serial);
+							$count++;
+						}
+					}
+					$details->modules = $module;
+				}
+			}
+			*/
