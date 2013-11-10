@@ -144,7 +144,7 @@ if (!function_exists('get_snmp')) {
 
 
 			// sysObjectID
-			$details->snmp_oid = str_replace("OID: .", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
+			$details->snmp_oid = str_replace("OID: .", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
 			if (strtolower($details->snmp_oid) == 'no such object available on this agent at this oid') { $details->snmp_oid = ''; }
 			if (substr($details->snmp_oid, 0, 1) == ".") { $details->snmp_oid = substr($details->snmp_oid, 1, strlen($details->snmp_oid)); }
 			if ($details->snmp_oid > '') {
@@ -166,7 +166,7 @@ if (!function_exists('get_snmp')) {
 
 			// guess at manufacturer using entity mib
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
-				$details->manufacturer = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1")));
+				$details->manufacturer = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1")));
 				if ($details->manufacturer == 'No Such Instance currently exists at this OID') { $details->manufacturer = ''; }
 				if ($details->manufacturer == 'No Such Object available on this agent at this OID') { $details->manufacturer = ''; }
 			}
@@ -176,8 +176,6 @@ if (!function_exists('get_snmp')) {
 			// guess at model using entity mib
 			if (!isset($details->model) or $details->model == '') {
 				$details->model = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13")));
-				if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
-				if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
 				if ($details->model == 'No Such Instance currently exists at this OID') { $details->model = ''; }
 				if ($details->model == 'No Such Object available on this agent at this OID') { $details->model = ''; }
 			}	
@@ -393,7 +391,15 @@ if (!function_exists('get_snmp')) {
 			if ($details->subnet == 'No Such Object available on this agent at this OID') { $details->subnet = ''; }
 
 			
-
+			# some formatting
+			if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
+			if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
+			if ($details->model == 'No Such Instance currently exists at this OID') { $details->model = ''; }
+			if ($details->model == 'No Such Object available on this agent at this OID') { $details->model = ''; }
+			if (substr($details->serial, 0, 1) == "\"") { $details->serial = substr($details->serial, 1, strlen($details->serial)); }
+			if (substr($details->serial, -1, 1) == "\"") { $details->serial = substr($details->serial, 0, strlen($details->serial)-1); }
+			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
+			if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
 			
 			/*
 			// installed modules with serial numbers

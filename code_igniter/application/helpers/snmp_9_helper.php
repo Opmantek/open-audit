@@ -359,8 +359,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.374') { $details->model = 'Cisco URM 2FE'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.375') { $details->model = 'Cisco URM 2FE2V'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.376') { $details->model = 'Cisco 7401 VXR'; $details->type = 'router'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.379') { $details->model = 'Cisco CAP 340'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.380') { $details->model = 'Cisco CAP 350'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.379') { $details->model = 'Cisco CAP 340'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.380') { $details->model = 'Cisco CAP 350'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.381') { $details->model = 'Cisco DPA 7610'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.382') { $details->model = 'Cisco 828'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.384') { $details->model = 'Cisco 806'; $details->type = 'router'; }
@@ -427,7 +427,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.456') { $details->model = 'Cisco 7750 MRP300'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.457') { $details->model = 'Cisco RPMPR'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.458') { $details->model = 'Cisco 14MGX8830Pxm1E'; $details->type = 'router'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.459') { $details->model = 'Cisco Wlse'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.459') { $details->model = 'Cisco Wlse'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.460') { $details->model = 'Cisco ONS 15530'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.461') { $details->model = 'Cisco ONS 15530 NEBS'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.462') { $details->model = 'Cisco ONS 15530 ETSI'; $details->type = 'network device'; }
@@ -439,7 +439,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.470') { $details->model = 'Cisco 2650 XM'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.471') { $details->model = 'Cisco 2651 XM'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.472') { $details->model = 'Cisco Catalyst 2950 24GDC'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.474') { $details->model = 'Cisco AIR AP1200'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.474') { $details->model = 'Cisco AIR AP1200'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.475') { $details->model = 'Cisco SN 5428'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.476') { $details->model = 'Cisco 7301'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.477') { $details->model = 'Cisco 12816'; $details->type = 'router'; }
@@ -471,7 +471,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.503') { $details->model = 'Cisco Catalyst 4503'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.504') { $details->model = 'Cisco Ce 7305'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.505') { $details->model = 'Cisco Ce 510'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.507') { $details->model = 'Cisco AIR AP1100'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.507') { $details->model = 'Cisco AIR AP1100'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.508') { $details->model = 'Cisco Catalyst 2955 S12'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.509') { $details->model = 'Cisco 7609'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.511') { $details->model = 'Cisco Catalyst 3750 24'; $details->type = 'switch'; }
@@ -486,13 +486,13 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.521') { $details->model = 'Cisco DSC 9216 K9'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.522') { $details->model = 'Cisco Catalyst 6500 Firewall Sm'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.524') { $details->model = 'Cisco CSM'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.525') { $details->model = 'Cisco AIR AP1210'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.525') { $details->model = 'Cisco AIR AP1210'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.527') { $details->model = 'Cisco Catalyst 2970 24'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.528') { $details->model = 'Cisco 7613'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.530') { $details->model = 'Cisco Catalyst 3750 Ge12Sfp'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.531') { $details->model = 'Cisco CR 4430'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.532') { $details->model = 'Cisco CR 4450'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.533') { $details->model = 'Cisco AIR BR1410'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.533') { $details->model = 'Cisco AIR BR1410'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.534') { $details->model = 'Cisco 6509 neba'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.535') { $details->model = 'Cisco Catalyst 3750 48PS'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.536') { $details->model = 'Cisco Catalyst 3750 24PS'; $details->type = 'switch'; }
@@ -510,7 +510,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.549') { $details->model = 'Cisco 2432 Iad24Fxs'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.550') { $details->model = 'Cisco 1701'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.551') { $details->model = 'Cisco Catalyst 2950 St24LRE997'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.552') { $details->model = 'Cisco AIR Ap350IOS'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.552') { $details->model = 'Cisco AIR Ap350IOS'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.553') { $details->model = 'Cisco 3220'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.554') { $details->model = 'Cisco Catalyst 6500 SslSm'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.555') { $details->model = 'Cisco SIMSE'; $details->type = 'network device'; }
@@ -523,7 +523,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.562') { $details->model = 'Cisco Nm Nam'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.563') { $details->model = 'Cisco Catalyst 3560 24PS'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.564') { $details->model = 'Cisco Catalyst 3560 48PS'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.565') { $details->model = 'Cisco AIR BR1300'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.565') { $details->model = 'Cisco AIR BR1300'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.566') { $details->model = 'Cisco 851'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.567') { $details->model = 'Cisco 857'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.568') { $details->model = 'Cisco 876'; $details->type = 'router'; }
@@ -568,7 +568,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.615') { $details->model = 'Cisco Catalyst 3560 G24TS'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.616') { $details->model = 'Cisco Catalyst 3560 G48PS'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.617') { $details->model = 'Cisco Catalyst 3560 G48TS'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.618') { $details->model = 'Cisco AIR AP1130'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.618') { $details->model = 'Cisco AIR AP1130'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.619') { $details->model = 'Cisco 2801'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.620') { $details->model = 'Cisco 1841'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.621') { $details->model = 'Cisco WsSvc MWAM1'; $details->type = 'switch'; }
@@ -577,8 +577,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.624') { $details->model = 'Cisco Catalyst 3750 G24TS1U'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.625') { $details->model = 'Cisco 3710 98HP001'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.626') { $details->model = 'Cisco Catalyst 4948'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.630') { $details->model = 'Cisco WLSE 1130'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.631') { $details->model = 'Cisco WLSE 1030'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.630') { $details->model = 'Cisco WLSE 1130'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.631') { $details->model = 'Cisco WLSE 1030'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.632') { $details->model = 'Cisco HSE 1140'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.633') { $details->model = 'Cisco Catalyst 3560 24TS'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.634') { $details->model = 'Cisco Catalyst 3560 48TS'; $details->type = 'switch'; }
@@ -627,7 +627,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.682') { $details->model = 'Cisco SCE Dispatcher'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.683') { $details->model = 'Cisco SCE 1000'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.684') { $details->model = 'Cisco SCE 2000'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.685') { $details->model = 'Cisco AIR AP1240'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.685') { $details->model = 'Cisco AIR AP1240'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.686') { $details->model = 'Cisco DSC 9120 CLK9'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.687') { $details->model = 'Cisco Fe 611K9'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.688') { $details->model = 'Cisco Catalyst 3750 Ge12SfpDc'; $details->type = 'switch'; }
@@ -643,10 +643,10 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.706') { $details->model = 'Cisco Catalyst 6k Msfc2a'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.707') { $details->model = 'Cisco EDI'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.708') { $details->model = 'Cisco Ce 611K9'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.709') { $details->model = 'Cisco WLSE s20'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.709') { $details->model = 'Cisco WLSE s20'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.710') { $details->model = 'Cisco MPX'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.711') { $details->model = 'Cisco NMC UEEC'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.712') { $details->model = 'Cisco WLSE 1132'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.712') { $details->model = 'Cisco WLSE 1132'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.713') { $details->model = 'Cisco ME 6340 ACA'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.714') { $details->model = 'Cisco ME 6340 DCA'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.715') { $details->model = 'Cisco ME 6340 DCB'; $details->type = 'switch'; }
@@ -682,13 +682,13 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.748') { $details->model = 'Cisco Ws 3020Hpq'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.749') { $details->model = 'Cisco Ws 3030Del'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.750') { $details->model = 'Cisco SpaOc48posSfp'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.752') { $details->model = 'Cisco WLSE 1133'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.752') { $details->model = 'Cisco WLSE 1133'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.753') { $details->model = 'Cisco ASA 5550'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.754') { $details->model = 'Cisco NMA ONK9'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.755') { $details->model = 'Cisco NMA ONWS'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.756') { $details->model = 'Cisco NMA ONAPS'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.757') { $details->model = 'Cisco Wae612K9'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.758') { $details->model = 'Cisco AIR AP1250'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.758') { $details->model = 'Cisco AIR AP1250'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.759') { $details->model = 'Cisco Ce 512K9'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.760') { $details->model = 'Cisco Fe 512K9'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.761') { $details->model = 'Cisco Ce 612K9'; $details->type = 'network device'; }
@@ -757,7 +757,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.825') { $details->model = 'Cisco Me 3400 g2csA'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.826') { $details->model = 'Cisco Nme Nam'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.827') { $details->model = 'Cisco Ubr7225Vxr'; $details->type = 'router'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.828') { $details->model = 'Cisco AIR Wlc2106K9'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.828') { $details->model = 'Cisco AIR Wlc2106K9'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.830') { $details->model = 'Cisco IPS 4270'; $details->type = 'network ids'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.831') { $details->model = 'Cisco IPS 4270Virtual'; $details->type = 'network ids'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.832') { $details->model = 'Cisco 6509 ve'; $details->type = 'switch'; }
@@ -909,8 +909,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.985') { $details->model = 'Cisco Oe 574'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.986') { $details->model = 'Cisco Oe 474'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.987') { $details->model = 'Cisco Oe 274'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.988') { $details->model = 'Cisco Ap 801agn'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.989') { $details->model = 'Cisco Ap 801gn'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.988') { $details->model = 'Cisco Ap 801agn'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.989') { $details->model = 'Cisco Ap 801gn'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.990') { $details->model = 'Cisco 1861 WSrstCue4FK9'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.991') { $details->model = 'Cisco 1861 WSrstCue2BK9'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.992') { $details->model = 'Cisco 1861 WSrst4FK9'; $details->type = 'router'; }
@@ -950,12 +950,12 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1027') { $details->model = 'Cisco Catalyst 3750 v248ps'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1028') { $details->model = 'Cisco Hwic CableD2'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1029') { $details->model = 'Cisco Hwic CableEJ2'; $details->type = 'router'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1030') { $details->model = 'Cisco Br1430'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1031') { $details->model = 'Cisco AIR BR1430'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1030') { $details->model = 'Cisco Br1430'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1031') { $details->model = 'Cisco AIR BR1430'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1032') { $details->model = 'Cisco Nam App2204'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1033') { $details->model = 'Cisco Nam App2220'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1034') { $details->model = 'Cisco AIR AP1141'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1035') { $details->model = 'Cisco AIR AP1142'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1034') { $details->model = 'Cisco AIR AP1141'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1035') { $details->model = 'Cisco AIR AP1142'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1036') { $details->model = 'Cisco ASR 14K4S'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1037') { $details->model = 'Cisco ASR 14K8S'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1038') { $details->model = 'Cisco 18xxx'; $details->type = 'router'; }
@@ -1029,14 +1029,14 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1115') { $details->model = 'Cisco CDS cde 110'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1116') { $details->model = 'Cisco ASR 1002F'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1117') { $details->model = 'Cisco SecureAccessControlSystem'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1124') { $details->model = 'Cisco AIR AP3501'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1125') { $details->model = 'Cisco AIR AP3502'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1124') { $details->model = 'Cisco AIR AP3501'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1125') { $details->model = 'Cisco AIR AP3502'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1126') { $details->model = 'Cisco CDS cde 400'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1130') { $details->model = 'Cisco Sps 2004B'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1131') { $details->model = 'Cisco Sps 204B'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1135') { $details->model = 'Cisco Ap 541nAK9'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1136') { $details->model = 'Cisco Ap 541nEK9'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1137') { $details->model = 'Cisco Ap 541nNK9'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1135') { $details->model = 'Cisco Ap 541nAK9'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1136') { $details->model = 'Cisco Ap 541nEK9'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1137') { $details->model = 'Cisco Ap 541nNK9'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1138') { $details->model = 'Cisco 887 GVdsl2'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1139') { $details->model = 'Cisco 887 SrstVdsl2'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1144') { $details->model = 'Cisco 3925 SPE200'; $details->type = 'router'; }
@@ -1119,8 +1119,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1242') { $details->model = 'Cisco 3845 CK9'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1245') { $details->model = 'Cisco CGS 2520 24TC'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1246') { $details->model = 'Cisco CGS 2520 16S8PC'; $details->type = 'router'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1247') { $details->model = 'Cisco AIR AP1262'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1248') { $details->model = 'Cisco AIR AP1261'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1247') { $details->model = 'Cisco AIR AP1262'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1248') { $details->model = 'Cisco AIR AP1261'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1249') { $details->model = 'Cisco 892 F'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1250') { $details->model = 'Cisco ME 3600X-24FS-M'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1251') { $details->model = 'Cisco ME 3600X-24TS-M'; $details->type = 'switch'; }
@@ -1141,14 +1141,14 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1266') { $details->model = 'Cisco Catalyst 2960 s48tsL'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1267') { $details->model = 'Cisco Catalyst 2960 s24tsL'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1268') { $details->model = 'Cisco 1906 CK9'; $details->type = 'router'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1269') { $details->model = 'Cisco AIR AP1042'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1270') { $details->model = 'Cisco AIR AP1041'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1269') { $details->model = 'Cisco AIR AP1042'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1270') { $details->model = 'Cisco AIR AP1041'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1274') { $details->model = 'Cisco 887VA Integrated Services Router'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1275') { $details->model = 'Cisco ASA Sm1sc'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1276') { $details->model = 'Cisco ASA Sm1sy'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1277') { $details->model = 'Cisco ASA Sm1'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1278') { $details->model = 'Cisco Catalyst 2960 cPD8TT'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1279') { $details->model = 'Cisco AIR Ct2504K9'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1279') { $details->model = 'Cisco AIR Ct2504K9'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1280') { $details->model = 'Cisco ISM AXP'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1281') { $details->model = 'Cisco SMAXP'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1282') { $details->model = 'Cisco Axp SmSre900'; $details->type = 'network device'; }
@@ -1161,7 +1161,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1291') { $details->model = 'Cisco ACE 20K9'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1292') { $details->model = 'Cisco 2360 48tdS'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1294') { $details->model = 'Cisco CDS cde 250'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1296') { $details->model = 'Cisco ANM Virtual App'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1296') { $details->model = 'Cisco ANM Virtual App'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1297') { $details->model = 'Cisco ECDS 3100'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1298') { $details->model = 'Cisco ECDS 1100'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1300') { $details->model = 'Cisco Catalyst 3750 v224fsS'; $details->type = 'switch'; }
@@ -1217,8 +1217,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1359') { $details->model = 'Cisco 866 VAEK9'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1360') { $details->model = 'Cisco 867 VAE'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1361') { $details->model = 'Cisco 866 VAE'; $details->type = 'router'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1362') { $details->model = 'Cisco Ap 802gn'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1363') { $details->model = 'Cisco Ap 802agn'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1362') { $details->model = 'Cisco Ap 802gn'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1363') { $details->model = 'Cisco Ap 802agn'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1364') { $details->model = 'Cisco Catalyst 2960 C8tcS'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1365') { $details->model = 'Cisco Catalyst 2960 C8tcL'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1366') { $details->model = 'Cisco Catalyst 2960 C8pcL'; $details->type = 'switch'; }
@@ -1374,9 +1374,9 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1647') { $details->model = 'Cisco Ibiza'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1648') { $details->model = 'Cisco Skyros'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1658') { $details->model = 'Cisco CRS 8SB'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1659') { $details->model = 'Cisco AIR AP2602'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1660') { $details->model = 'Cisco AIR AP1602'; $details->type = 'wireless access point'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1661') { $details->model = 'Cisco AIR AP3602'; $details->type = 'wireless access point'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1659') { $details->model = 'Cisco AIR AP2602'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1660') { $details->model = 'Cisco AIR AP1602'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1661') { $details->model = 'Cisco AIR AP3602'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1674') { $details->model = 'Cisco HSE 300K9'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1682') { $details->model = 'Cisco Ucs C220'; $details->type = 'voip gateway'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1683') { $details->model = 'Cisco Ucs C240'; $details->type = 'voip gateway'; }
