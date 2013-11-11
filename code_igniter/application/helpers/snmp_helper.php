@@ -14,6 +14,16 @@ if (!function_exists('get_snmp')) {
 	function get_snmp($details ) {
 		error_reporting(E_ALL);
 		$CI =& get_instance();
+
+		if (!isset($CI->data['config']->snmp_default_community)) {
+			$CI->load->model("m_oa_config");
+			$snmp_default_community = $CI->m_oa_config->get_config_item('snmp_default_community');
+		} else {
+			$snmp_default_community = $CI->data['config']->snmp_default_community;
+		}
+		if ($snmp_default_community == '') {
+			$snmp_default_community = 'public';
+		}
 		
 		# setup the log file
 		if (php_uname('s') == 'Linux') {
@@ -23,8 +33,7 @@ if (!function_exists('get_snmp')) {
 		}
 
 		if (!isset($details->system_id) or $details->system_id == '') {
-			#$details->snmp_community = 'public';
-			$details->snmp_community = $CI->data['config']->snmp_default_community;
+			$details->snmp_community = $snmp_default_community;
 			$details->snmp_version = '2c';
 			$details->snmp_port = '161';
 		} else {
@@ -39,8 +48,7 @@ if (!function_exists('get_snmp')) {
 			}
 		}
 		if (!isset($details->snmp_community) or $details->snmp_community == '') { 
-			#$details->snmp_community = 'public'; 
-			$details->snmp_community = $CI->data['config']->snmp_default_community;
+			$details->snmp_community = $snmp_default_community;
 		}
 		if (!isset($details->snmp_version) or $details->snmp_version == '') { $details->snmp_version = '2c'; }
 		if (!isset($details->snmp_port) or $details->snmp_port == '') { $details->snmp_port = '161'; }
@@ -110,10 +118,10 @@ if (!function_exists('get_snmp')) {
 			$details->snmp_version = '2c';
 		}
 
-		if ($test_v1  == '' and $test_v2 == '') {
+		if ($test_v1 == '' and $test_v2 == '') {
 			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " not SNMP scanned.\n";
 		} else {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned.\n";
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan started.\n";
 		}
 
 		$handle = fopen($file, "a");
@@ -513,6 +521,16 @@ if (!function_exists('get_snmp')) {
 			$details->next_hop = str_replace("IpAddress: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 		}
 
+		if ($details->snmp_version == '2') { $details->snmp_version = '2c'; }
+		$log_timestamp = date("M d H:i:s");
+		if (isset($details->snmp_oid) and $details->snmp_oid > "") {
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan completed.\n";
+		} else {
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan failed (no OID returned).\n";
+		}
+		$handle = fopen($file, "a");
+		fwrite($handle, $log_line);
+		fclose($handle);
 		unset($details->snmp_version);
 		$details->hostname = strtolower($details->hostname);
 		return $details;

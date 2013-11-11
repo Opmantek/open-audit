@@ -215,18 +215,7 @@ class Admin extends MY_Controller {
 			}
 			redirect('/admin/view_log');
 		} else {
-			if ($operating_system == 'Windows') {
-				$this->data['warning'] = "<span style='color: red;'>WARNING.</span>As you are running the server on a Windows operating system, 
-				the ability to scan a subnet from this form will work, however the web page will not return until the scan and 
-				upload has completed. This can take a substantial amount of time and even time out. This is not an issue on a Linux 
-				based system.<br /><br />It is much 
-				better to schedule the running of 'audit_subnet.vbs' via a scheduled task if you wish to execute 
-				it on a regular basis, or run it on the command line if it is a once off event.<br /><br />
-				To scan a subnet and send the data to the server, run the below on the command line: <br /><span style=\"font-family:'courier new'; font-size: 120%;\">cscript c:\\xampplite\open-audit\other\audit_subnet.vbs subnet=SUBNET 
-				submit_online=y create_file=n debugging=1</span><br />Where SUBNET is in the same format as above.";
-			} else {
-				$this->data['warning'] = '';
-			}
+			$this->data['warning'] = '';
 			$this->data['heading'] = 'NMap Scanning';
 			$this->data['include'] = 'v_scan_subnet_nmap'; 
 			$this->data['sortcolumn'] = '1';
