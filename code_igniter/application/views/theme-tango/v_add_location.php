@@ -55,6 +55,7 @@ echo form_open('admin_location/add_location') . "\n";
 					<option value='Radio Station'>Radio Station</option>
 					<option value='Regional'>Regional</option>
 					<option value='Resort'>Resort</option>
+					<option value='Retail'>Retail</option>
 					<option value='School'>School</option>
 					<option value='Security'>Security</option>
 					<option value='Stadium'>Stadium</option>

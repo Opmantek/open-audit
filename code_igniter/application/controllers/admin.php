@@ -209,29 +209,13 @@ class Admin extends MY_Controller {
 			if ($operating_system == 'Windows') {
 				if ($_POST['subnet'] > '' ) {
 					$subnet = $_POST['subnet'];
-				#    $cmd = "cscript c:\\xampplite\\open-audit\\other\\audit_subnet.vbs subnet=$subnet submit_online=y create_file=n debugging=0 ";
 					$cmd = "%comspec% /c start /b cscript //nologo c:\\xampplite\\open-audit\\other\\audit_subnet.vbs subnet=$subnet submit_online=y create_file=n debugging=0 &";
-				#	exec($cmd);
 					pclose(popen($cmd,"r"));
-					#echo $cmd;
-					#exit();
 				}
 			}
 			redirect('/admin/view_log');
-			#redirect('/main/list_devices/1');
 		} else {
-			#if ($operating_system == 'Windows') {
-				$this->data['warning'] = "<span style='color: red;'>WARNING.</span>As you are running the server on a Windows operating system, 
-				the ability to scan a subnet from this form will work, however the web page will not return until the scan and 
-				upload has completed. This can take a substantial amount of time and even time out. This is not an issue on a Linux 
-				based system.<br /><br />It is much 
-				better to schedule the running of 'audit_subnet.vbs' via a scheduled task if you wish to execute 
-				it on a regular basis, or run it on the command line if it is a once off event.<br /><br />
-				To scan a subnet and send the data to the server, run the below on the command line: <br /><span style=\"font-family:'courier new'; font-size: 120%;\">cscript c:\\xampplite\open-audit\other\audit_subnet.vbs subnet=SUBNET 
-				submit_online=y create_file=n debugging=1</span><br />Where SUBNET is in the same format as above.";
-			#} else {
-				$this->data['warning'] = '';
-			#}
+			$this->data['warning'] = '';
 			$this->data['heading'] = 'NMap Scanning';
 			$this->data['include'] = 'v_scan_subnet_nmap'; 
 			$this->data['sortcolumn'] = '1';
@@ -2078,6 +2062,14 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "ALTER TABLE oa_config CHANGE config_value config_value varchar(250) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('snmp_default_community', 'public', 'y', 'The default community string Open-AudIT will use when connecting to a new device.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
 			$sql = "UPDATE oa_config set config_value = '20130810', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);

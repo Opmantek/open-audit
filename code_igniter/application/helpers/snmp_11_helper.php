@@ -6,13 +6,14 @@
  * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+# Vendor Hewlett Packard
 
 if (!function_exists('get_oid_details')) {
 
 	function get_oid_details($details){
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.2.3') { $details->model = 'hp800'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.2.6') { $details->model = 'hpItanium'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.1') { $details->model = 'hpAdvSwitch2000'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.2.3') { $details->model = 'HP800'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.2.6') { $details->model = 'Itanium'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.1') { $details->model = 'AdvSwitch 2000'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.10') { $details->model = 'ProCurve Switch 2400M'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.100') { $details->model = 'ProCurve Switch 6600ml-24G (J9263A)'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.101') { $details->model = 'ProCurve Switch 6600ml-24G-4XG'; $details->type = 'switch'; }
@@ -52,13 +53,13 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.30') { $details->model = 'ProCurve Switch 6108'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.31') { $details->model = 'ProCurve Switch 2824'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.32') { $details->model = 'ProCurve Switch 2848'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.33.1.1.1') { $details->model = 'hpSwitchBLpClassC-GbE2'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.33.3.1.1') { $details->model = 'hpSwitchProliant-cgesm'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.33.4.1.1') { $details->model = 'hpSwitchGbE2C'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.33.1.1.1') { $details->model = 'Switch BLpClassC-GbE2'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.33.3.1.1') { $details->model = 'Switch Proliant-cgesm'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.33.4.1.1') { $details->model = 'Switch GbE2C'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.34') { $details->model = 'ProCurve Switch 2626'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.35') { $details->model = 'ProCurve Switch 2650-PWR'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.36') { $details->model = 'ProCurve Switch 2626-PWR'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.4') { $details->model = 'hpProCurve200'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.4') { $details->model = 'ProCurve Switch 200'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.42') { $details->model = 'ProCurve Switch 3400cl-24G'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.43') { $details->model = 'ProCurve Switch 3400cl-48G'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.44') { $details->model = 'ProCurve Switch 2650 (J4899B)'; $details->type = 'switch'; }
@@ -116,13 +117,13 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.96') { $details->model = 'ProCurve Switch 2520G-8-PoE'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.97') { $details->model = 'ProCurve Switch 2520G-24-PoE (J9299A)'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.11.98') { $details->model = 'ProCurve Switch 6600ml-24XG (J9265A)'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.3.9') { $details->model = 'hpDTC22'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.5.1') { $details->model = 'hpetherTwist12'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.5.20') { $details->model = 'hp10BaseTHub12M'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.3.9') { $details->model = 'DTC22'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.5.1') { $details->model = 'EtherTwist 12'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.5.20') { $details->model = '10BaseT Hub12M'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.5.21') { $details->model = '10Base-T Hub-24M'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.5.23') { $details->model = 'hp10T100THub24M'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.8.1') { $details->model = 'hpRepeaterAgent'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.8.2.5') { $details->model = 'AdvanceStack 10 BT Switching Hub'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.5.23') { $details->model = '10T100THub24M'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.8.1') { $details->model = 'RepeaterAgent'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.8.2.5') { $details->model = 'AdvanceStack 10BT Switching Hub'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.9.1') { $details->model = 'HP Color LaserJet 2605dn'; $details->type = 'network printer'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.6.4.1.1') { $details->model = 'ProCurve Wireless AcessPoint 420'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.6.4.1.2') { $details->model = 'ProCurve Wireless AcessPoint 530'; $details->type = 'switch'; }
@@ -130,23 +131,17 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.7.1.1') { $details->model = 'ProCurve Secure Router 7001dl (J8751A)'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.7.1.2') { $details->model = 'ProCurve Secure Router 7102dl'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.7.1.3') { $details->model = 'ProCurve Secure Router 7103dl'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.5.7.1.2') { $details->model = 'hpBladeSystemOA'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.5.7.5.1') { $details->model = 'hpVirtualConnectFlex10'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.5.7.1.2') { $details->model = 'BladeSystem OA'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.5.7.5.1') { $details->model = 'VirtualConnect Flex10'; $details->type = 'switch'; }
 
+
+
+		if ($details->snmp_version == '2') {
+			# serial
+			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, ".1.3.6.1.4.1.11.2.36.1.1.2.9.0"));
+		}
 
 		if ($details->snmp_version == '1') {
-
-			# serial is a hex encoded string in HP Laserjets using snmp v1
-			$serial = str_replace("Hex-STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.3.0"));
-			$serial = str_replace(" ", "", $serial);
-			$serial = str_replace("\n", "", $serial);
-			if (function_exists('hex2bin')) {
-				$details->serial = hex2bin($serial);
-			} else {
-				$details->serial = pack("H*", $serial);
-			}
-			$details->serial = mb_convert_encoding($details->serial, "UTF-8", "ASCII");
-
 			# model is a hex encoded string in HP Laserjets using snmp v1
 			if (!isset($details->model) or $details->model = '') {
 				$model = str_replace("Hex-STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.2.0"));
@@ -157,12 +152,26 @@ if (!function_exists('get_oid_details')) {
 				} else {
 					$details->model = pack("H*", $model);
 				}
-				$details->model = mb_convert_encoding($details->model, "UTF-8", "ASCII");
-				#echo mb_detect_encoding($details->model) . "\n";
+				$temp_model = mb_convert_encoding($details->model, "UTF-8", "ASCII");
 			}
+			
+			# serial is a hex encoded string in HP Laserjets using snmp v1
+			$serial = str_replace("Hex-STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.3.0"));
+			$serial = str_replace(" ", "", $serial);
+			$serial = str_replace("\n", "", $serial);
+			if (function_exists('hex2bin')) {
+				$details->serial = hex2bin($serial);
+			} else {
+				$details->serial = pack("H*", $serial);
+			}
+			$details->serial = mb_convert_encoding($details->serial, "UTF-8", "ASCII");
 		}
 
 		if ((strpos(strtolower($details->model), "laserjet") !== FALSE) and (!isset($details->type) or $details->type == '' or $details->type == 'unknown') ) { $details->type = "network printer"; }
+
+		if (isset($temp_model) and $temp_model > '') {
+			$details->model = $temp_model;
+		}
 
 	}
 }

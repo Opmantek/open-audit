@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
+# Vendor Lexmark
 if (!function_exists('get_oid_details')) {
 
 	function get_oid_details($details){

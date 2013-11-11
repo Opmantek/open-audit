@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
+# Vendor Juniper
 if (!function_exists('get_oid_details')) {
 
 	function get_oid_details($details){
@@ -86,6 +86,9 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.2636.1.1.1.2.81') { $details->model = 'Juniper DELL JSRX5600'; $details->type = 'gateway'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.2636.1.1.1.2.82') { $details->model = 'Juniper QFX Switch'; $details->type = 'switch'; }
 
-		$details->serial = str_replace("STRING: ", "",@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.2636.3.1.3.0" ));
+		if ($details->snmp_version == '2') {
+			# serial
+			$details->serial = str_replace("STRING: ", "",@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.2636.3.1.3.0" ));
+		}
 	}
 }

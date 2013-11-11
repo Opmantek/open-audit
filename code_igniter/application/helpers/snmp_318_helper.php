@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
+# Vendor APC
 if (!function_exists('get_oid_details')) {
 
 	function get_oid_details($details){
@@ -96,32 +96,32 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.318.1.3.8.4') { $details->model = 'mem'; $details->type = 'ups'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.318.1.3.9') { $details->model = 'redundantSwitch'; $details->type = 'ups'; }
 
-		# serial
+
 		if ($details->snmp_version == '2') {
+			# model
+			$temp_model = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.1.1.0"));
+			
+			#serial
 			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.2.3.0"));
-		} else {
-			$details->serial = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.2.3.0"));
-		}
-		if (!isset($details->serial) or $details->serial == '' or $details->serial == 'No Such Object available on this agent at this OID') {
-			if ($details->snmp_version == '2') {
-				$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.4.1.5"));
-			} else {
-				$details->serial = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.4.1.5"));
+			if (!isset($details->serial) or $details->serial == '' or $details->serial == 'No Such Object available on this agent at this OID') {
+				$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.4.1.5.0"));
 			}
 		}
 
-		# model
-		if ($details->snmp_version == '2') {
-			$i = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.1.1.0"));
-		} else {
-			$i = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.1.1.0"));
-		}
-		if ($i > '') {
-			$details->model = $i;
-			if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
-			if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
+
+		if ($details->snmp_version == '1') {
+			# model
+			$temp_model = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.1.1.0"));
+			
+			# serial
+			$details->serial = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.2.3.0"));
+			if (!isset($details->serial) or $details->serial == '' or $details->serial == 'No Such Object available on this agent at this OID') {
+				$details->serial = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.4.1.5.0"));
+			}
 		}
 
-
+		if (isset($temp_model) and $temp_model > '') {
+			$details->model = $temp_model;
+		}
 	}
 }

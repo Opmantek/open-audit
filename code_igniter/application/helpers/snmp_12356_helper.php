@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
+# Vendor Fortinet
 if (!function_exists('get_oid_details')) {
 
 	function get_oid_details($details){
@@ -60,6 +60,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.12356.3002') { $details->model = 'Fortinet 310B'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.12356.603') { $details->model = 'Fortinet 60'; $details->type = 'firewall'; }
 
-		$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12356.1.2.0" ));
+		if ($details->snmp_version == '2') {
+			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12356.1.2.0" ));
+		}
 	}
 }

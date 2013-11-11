@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
+# Vendor Netgear
 if (!function_exists('get_oid_details')) {
 
 	function get_oid_details($details){
@@ -25,13 +25,13 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.2.2') { $details->model = 'FVS338 Router'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.2.3') { $details->model = 'FVG318 Router'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.3.1') { $details->model = 'CGD24N Cable Modem'; $details->type = 'cable modem'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.1') { $details->model = 'ME103 Wireless AP'; $details->type = 'wireless ap'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.2') { $details->model = 'WG302 Wireless AP'; $details->type = 'wireless ap'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.3') { $details->model = 'WG102 Wireless AP'; $details->type = 'wireless ap'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.4') { $details->model = 'WAG302 Wireless AP'; $details->type = 'wireless ap'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.5') { $details->model = 'WAG102 Wireless AP'; $details->type = 'wireless ap'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.6') { $details->model = 'WG302v2 Wireless AP'; $details->type = 'wireless ap'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.7') { $details->model = 'WAG302v2 Wireless AP'; $details->type = 'wireless ap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.1') { $details->model = 'ME103 wap'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.2') { $details->model = 'WG302 wap'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.3') { $details->model = 'WG102 wap'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.4') { $details->model = 'WAG302 wap'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.5') { $details->model = 'WAG102 wap'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.6') { $details->model = 'WG302v2 wap'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.4.7') { $details->model = 'WAG302v2 wap'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.6.1') { $details->model = 'WLS538 WLAN Switch'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.1.1') { $details->model = 'FSM7328S Stack Switch'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.1.2') { $details->model = 'FSM7352S Stack Switch'; $details->type = 'switch'; }
@@ -84,9 +84,9 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.6.4') { $details->model = 'FVS124G Firewall'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.6.5') { $details->model = 'FVS318v3 Firewall'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.6.6') { $details->model = 'DGFV338 Firewall'; $details->type = 'firewall'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.7.1') { $details->model = 'WPN802 Access Point'; $details->type = 'wireless ap'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.7.2') { $details->model = 'WG312 Access Point'; $details->type = 'wireless ap'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.7.3') { $details->model = 'WAG312 Access Point'; $details->type = 'wireless ap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.7.1') { $details->model = 'WPN802 Access Point'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.7.2') { $details->model = 'WG312 Access Point'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.7.3') { $details->model = 'WAG312 Access Point'; $details->type = 'wap'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.9.1') { $details->model = 'GCM9000 Chassis Switch'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.10.1') { $details->model = 'FS728TS Stack Smart Switch'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.10.2') { $details->model = 'FS752TS Stack Smart Switch'; $details->type = 'switch'; }
@@ -108,5 +108,16 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.11.8') { $details->model = 'GSM5212P L2R Switch'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.11.9') { $details->model = 'GSM7212P L2R Switch'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.11.10') { $details->model = 'GSM7224P L2R Switch'; $details->type = 'switch'; }
+
+		if ($details->snmp_version == '2') {
+			# serial 
+			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4526.10.1.1.1.4.0" ));
+			if ($details->serial == '' or $details->serial == 'No Such Object available on this agent at this OID') { 
+				# special case for Netgear cable modems
+				$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0" ));
+			}
+		}
+
+
 	}
 }

@@ -183,7 +183,7 @@ CREATE TABLE `oa_change_log` (
 DROP TABLE IF EXISTS `oa_config`;
 CREATE TABLE `oa_config` (
   `config_name` varchar(45) NOT NULL default '',
-  `config_value` varchar(45) NOT NULL default '',
+  `config_value` varchar(250) NOT NULL default '',
   `config_editable` varchar(1) NOT NULL default 'n',
   `config_edited_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `config_edited_by` int(10) unsigned NOT NULL default '0',
@@ -1724,6 +1724,7 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('logo', 'oac-oae', 'n', '');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('maps_url', '', 'y', 'The web server address of opMaps.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('name_match', 'n', 'y', 'Should we match a device based only on its hostname as a last resort.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('snmp_default_community', 'public', 'y', 'The default community string Open-AudIT will use when connecting to a new device.');
 
 INSERT INTO oa_location (location_id, location_comments) VALUES ('', 'Default Location.');
 INSERT INTO oa_org (org_id, org_comments) VALUES ('', 'Default Organisation.');

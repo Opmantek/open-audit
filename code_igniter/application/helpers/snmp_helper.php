@@ -14,6 +14,16 @@ if (!function_exists('get_snmp')) {
 	function get_snmp($details ) {
 		error_reporting(E_ALL);
 		$CI =& get_instance();
+
+		if (!isset($CI->data['config']->snmp_default_community)) {
+			$CI->load->model("m_oa_config");
+			$snmp_default_community = $CI->m_oa_config->get_config_item('snmp_default_community');
+		} else {
+			$snmp_default_community = $CI->data['config']->snmp_default_community;
+		}
+		if ($snmp_default_community == '') {
+			$snmp_default_community = 'public';
+		}
 		
 		# setup the log file
 		if (php_uname('s') == 'Linux') {
@@ -23,7 +33,7 @@ if (!function_exists('get_snmp')) {
 		}
 
 		if (!isset($details->system_id) or $details->system_id == '') {
-			$details->snmp_community = 'public';
+			$details->snmp_community = $snmp_default_community;
 			$details->snmp_version = '2c';
 			$details->snmp_port = '161';
 		} else {
@@ -37,9 +47,12 @@ if (!function_exists('get_snmp')) {
 				$details->man_ip_address = @$decoded_access_details->ip_address;
 			}
 		}
-		if (!isset($details->snmp_community) or $details->snmp_community == '') { $details->snmp_community = 'public'; }
+		if (!isset($details->snmp_community) or $details->snmp_community == '') { 
+			$details->snmp_community = $snmp_default_community;
+		}
 		if (!isset($details->snmp_version) or $details->snmp_version == '') { $details->snmp_version = '2c'; }
 		if (!isset($details->snmp_port) or $details->snmp_port == '') { $details->snmp_port = '161'; }
+
 
 		# we may only have been given a system_id
 		# but if the access_details were completed, that may be enough
@@ -47,6 +60,7 @@ if (!function_exists('get_snmp')) {
 		if (!isset($details->man_ip_address) and !isset($details->hostname)) {
 			return;
 		}
+
 
 		$module = new stdclass;
 
@@ -86,8 +100,8 @@ if (!function_exists('get_snmp')) {
 
 		# test for SNMP version
 		# to do - test for v3
-		$test_v1 = "";
-		$test_v2 = "";
+		$test_v1 = '';
+		$test_v2 = '';
 
 		$log_timestamp = date("M d H:i:s");
 		$log_hostname = php_uname('n');
@@ -104,13 +118,11 @@ if (!function_exists('get_snmp')) {
 			$details->snmp_version = '2c';
 		}
 
-		if ($test_v1  == '' and $test_v2 == '') {
+		if ($test_v1 == '' and $test_v2 == '') {
 			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " not SNMP scanned.\n";
 		} else {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned.\n";
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan started.\n";
 		}
-
-		#echo "<pre>SNMP Version: " . $details->snmp_version . "<br />\n";
 
 		$handle = fopen($file, "a");
 		fwrite($handle, $log_line);
@@ -144,7 +156,7 @@ if (!function_exists('get_snmp')) {
 
 
 			// sysObjectID
-			$details->snmp_oid = str_replace("OID: .", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
+			$details->snmp_oid = str_replace("OID: .", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
 			if (strtolower($details->snmp_oid) == 'no such object available on this agent at this oid') { $details->snmp_oid = ''; }
 			if (substr($details->snmp_oid, 0, 1) == ".") { $details->snmp_oid = substr($details->snmp_oid, 1, strlen($details->snmp_oid)); }
 			if ($details->snmp_oid > '') {
@@ -166,7 +178,7 @@ if (!function_exists('get_snmp')) {
 
 			// guess at manufacturer using entity mib
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
-				$details->manufacturer = str_replace("\"", "", str_replace("STRING: ", "", snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1")));
+				$details->manufacturer = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1")));
 				if ($details->manufacturer == 'No Such Instance currently exists at this OID') { $details->manufacturer = ''; }
 				if ($details->manufacturer == 'No Such Object available on this agent at this OID') { $details->manufacturer = ''; }
 			}
@@ -176,8 +188,6 @@ if (!function_exists('get_snmp')) {
 			// guess at model using entity mib
 			if (!isset($details->model) or $details->model == '') {
 				$details->model = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13")));
-				if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
-				if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
 				if ($details->model == 'No Such Instance currently exists at this OID') { $details->model = ''; }
 				if ($details->model == 'No Such Object available on this agent at this OID') { $details->model = ''; }
 			}	
@@ -393,31 +403,16 @@ if (!function_exists('get_snmp')) {
 			if ($details->subnet == 'No Such Object available on this agent at this OID') { $details->subnet = ''; }
 
 			
-
-			
-			/*
-			// installed modules with serial numbers
-			$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11");
-			if (count($i) > 0) {
-				if (($i[0] == 'No more variables left in this MIB View (It is past the end of the MIB tree)') or ($i[0] == '')){unset($i); $i = array();}
-				if (count($i) > 0) {
-					$count = 0;
-					for ($j=0; $j<count($i); $j++) {
-						if ((mb_strpos($i[$j], $details->serial) === FALSE) and ($i[$j] != "") and ($i[$j] != "\"\"")){
-							$k = $j + 1;
-							$k = "1.3.6.1.2.1.47.1.1.1.1.3." . $k;
-							$oid = snmp2_get($details->man_ip_address, $details->snmp_community, $k);
-							$oid = str_replace("OID: .", "", $oid);
-							$module->$count = get_oid($oid);
-							$module->$count->serial = str_replace("STRING: ", "", $i[$j]);
-							$module->$count->serial = str_replace('"', '', $module->$count->serial);
-							$count++;
-						}
-					}
-					$details->modules = $module;
-				}
-			}
-			*/
+			# some formatting
+			if (substr($details->model, 0, 1) == "\"") { $details->model = substr($details->model, 1, strlen($details->model)); }
+			if (substr($details->model, -1, 1) == "\"") { $details->model = substr($details->model, 0, strlen($details->model)-1); }
+			if ($details->model == 'No Such Instance currently exists at this OID') { $details->model = ''; }
+			if ($details->model == 'No Such Object available on this agent at this OID') { $details->model = ''; }
+			if (substr($details->serial, 0, 1) == "\"") { $details->serial = substr($details->serial, 1, strlen($details->serial)); }
+			if (substr($details->serial, -1, 1) == "\"") { $details->serial = substr($details->serial, 0, strlen($details->serial)-1); }
+			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
+			if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
+		
 		}
 
 		if ($test_v1 > '' and $test_v2 == '') {
@@ -526,6 +521,16 @@ if (!function_exists('get_snmp')) {
 			$details->next_hop = str_replace("IpAddress: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 		}
 
+		if ($details->snmp_version == '2') { $details->snmp_version = '2c'; }
+		$log_timestamp = date("M d H:i:s");
+		if (isset($details->snmp_oid) and $details->snmp_oid > "") {
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan completed.\n";
+		} else {
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan failed (no OID returned).\n";
+		}
+		$handle = fopen($file, "a");
+		fwrite($handle, $log_line);
+		fclose($handle);
 		unset($details->snmp_version);
 		$details->hostname = strtolower($details->hostname);
 		return $details;

@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
+# Vendor Brocade / Foundry
 if (!function_exists('get_oid_details')) {
 	
 	function get_oid_details($details){
@@ -850,9 +850,9 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.4.1') { $details->model = ' Edge Iron'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.5') { $details->model = ' Edge Iron Type2'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.5.1') { $details->model = ' Edge Iron Type 2Mib'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.6') { $details->model = 'wireless Ap'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.7') { $details->model = 'wireless Probe'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.8') { $details->model = 'access Iron'; $details->type = 'unknown'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.6') { $details->model = 'Wireless AP'; $details->type = 'wap'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.7') { $details->model = 'Wireless Probe'; $details->type = 'unknown'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.8') { $details->model = 'Access Iron'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.9') { $details->model = 'ServerIron SA'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.1991.2.1.1') { $details->model = 'dcrs7504'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.1991.2.1.1.1') { $details->model = 'dcrs7504 Switch'; $details->type = 'switch'; }
@@ -868,7 +868,9 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.1991.3.3') { $details->model = 'bfd'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.1991.3.4') { $details->model = 'vplsRoot'; $details->type = 'unknown'; }
 
-		$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1991.1.1.1.1.2.0" ));
-
+		if ($details->snmp_version == '2') {
+			# serial
+			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1991.1.1.1.1.2.0" ));
+		}
 	}
 }

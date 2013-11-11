@@ -17055,7 +17055,7 @@ if (!function_exists('get_oid'))
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.17160') { $new->manufacturer = 'Lund University Hospital'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.17161') { $new->manufacturer = 'Covisint LLC'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.17162') { $new->manufacturer = 'Airversal Technology Inc'; }
-		if (substr($oid, 0, 17) == '1.3.6.1.4.1.17163') { $new->manufacturer = 'NBT Technology, Inc.'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.17163') { $new->manufacturer = 'Riverbed Technology, Inc.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.17164') { $new->manufacturer = 'Callcast, Inc.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.17165') { $new->manufacturer = 'Advantest R&D Center, Inc.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.17166') { $new->manufacturer = 'Louisiana State University and A&M College'; }
