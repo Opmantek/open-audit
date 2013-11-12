@@ -29,7 +29,7 @@ class Admin_test extends MY_Controller {
 	function data() {
 
 		# comment the below line out to enable this funtcion.
-		#redirect('/');
+		redirect('/');
 		$computers_to_add = 1000;
 		
 		# populate the Open-AudIT database with dummy locations, devices and set up a few groups
