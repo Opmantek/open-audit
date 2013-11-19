@@ -73,6 +73,7 @@ $link_downloads = '';
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
+		 			<?php if ($config->nmis == 'y') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
 				</ul> 
 			</div>
 		</fieldset> 
@@ -120,6 +121,7 @@ $link_downloads = '';
 							<p><label for="timestamp"><?php echo __('Most Recent Audit')?>: </label><span id="timestamp"><?php echo print_something($key->timestamp)?></span></p>
 							<p><label for="printer_color"><?php echo __('Colour Capable')?>: </label><span id="printer_color"><?php echo print_something($key->printer_color)?></span></p>
 							<p><label for="printer_duplex"><?php echo __('Duplex Capable')?>: </label><span id="printer_duplex"><?php echo print_something($key->printer_duplex)?></span></p>
+							<?php if ($key->snmp_oid) { echo "<p><label for=\"snmp_oid\">" . __('SNMP OID') . ": </label><span id=\"snmp_oid\">$key->snmp_oid</span></p>"; } ?>
 						</div>
 						<div style="float:right; width:50%;">
 							<p><label for="man_serial"><?php echo __('Serial')?>: </label><span id='man_serial' <?php echo $edit?>><?php echo print_something($key->man_serial)?></span></p>
@@ -435,6 +437,27 @@ $link_downloads = '';
 		</form>
 	<?php } ?> 
 	</div>
+
+
+	<div id="view_summary_nmis" style="float: left; width: 100%;">
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="summary_nmis">
+				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('NMIS Details')?></span></legend>
+				<div style="min-width: 50px; float: right;">
+				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network.png' alt='' title='' width='48'/>
+				</div>
+				<div style="width: 90%; float:left;">
+					<?php #foreach($system as $key): ?>
+					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>
+					<p><label for="nmis_name"><?php echo __('NMIS Name')?>: </label><span id="nmis_name" <?php echo $edit?>><?php echo print_something($system[0]->nmis_name)?></span></p>
+					<p><label for="nmis_role"><?php echo __('NMIS Role')?>: </label><span id="nmis_role" <?php echo $edit?>><?php echo print_something($system[0]->nmis_role)?></span></p>
+					<?php #endforeach; ?>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
 <!-- end of content_column -->
 
 
@@ -657,6 +680,7 @@ $(document).ready(function(){
 	$('#view_summary_audits').hide();
 	$('#view_summary_audit_log').hide();
 	$('#view_summary_alerts').hide();
+	$('#view_summary_nmis').hide();
 
 	$('#toggle_summary_credentials').click(function(){
 		$('#view_summary_credentials').slideToggle("fast");
@@ -690,6 +714,10 @@ $(document).ready(function(){
 		$('#view_summary_alerts').slideToggle("fast");
 	});
 
+	$('#toggle_summary_nmis').click(function(){
+		$('#view_summary_nmis').slideToggle("fast");
+	});
+
 	var summary_toggle = 0;
 
 	$('#toggle_summary_all').click(function(){
@@ -703,6 +731,7 @@ $(document).ready(function(){
 			$('#view_summary_audits').show("fast");
 			$('#view_summary_audit_log').show("fast");
 			$('#view_summary_alerts').show("fast");
+			$('#view_summary_nmis').show("fast");
 			summary_toggle = 1;
 		}
 		else 
@@ -715,6 +744,7 @@ $(document).ready(function(){
 			$('#view_summary_audits').hide("fast");
 			$('#view_summary_audit_log').hide("fast");
 			$('#view_summary_alerts').hide("fast");
+			$('#view_summary_nmis').hide("fast");
 			summary_toggle = 0;
 		}
 	});

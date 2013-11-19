@@ -134,6 +134,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
+		 	<?php if ($config->nmis == 'y') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
 		</ul>
 	</li>
 	<?php if ((count($processor) > 0) or (count($memory) > 0) or (count($bios) > 0) or (count($motherboard) > 0) or (count($network) > 0) or 
@@ -702,6 +703,24 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 	</div>
 
 
+	<div id="view_summary_nmis" style="float: left; width: 100%;">
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="summary_nmis">
+				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('NMIS Details')?></span></legend>
+				<div style="min-width: 50px; float: right;">
+				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network.png' alt='' title='' width='48'/>
+				</div>
+				<div style="width: 90%; float:left;">
+					<?php #foreach($system as $key): ?>
+					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>
+					<p><label for="nmis_name"><?php echo __('NMIS Name')?>: </label><span id="nmis_name" <?php echo $edit?>><?php echo print_something($system[0]->nmis_name)?></span></p>
+					<p><label for="nmis_role"><?php echo __('NMIS Role')?>: </label><span id="nmis_role" <?php echo $edit?>><?php echo print_something($system[0]->nmis_role)?></span></p>
+					<?php #endforeach; ?>
+				</div>
+			</fieldset>
+		</form>
+	</div>
 
 
 
@@ -717,7 +736,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Processor Details')?></span></legend>
 				<?php foreach($processor as $key):
 					$image = $image_path . '48_component_cpu.png';
-					if (mb_stripos($key->processor_description, 'pentium(r) 4'))
+					if (mb_stripos($key->processor_description, 'pentium 4'))
 					{
 						$image = $image_path . '48_intel_p4.png';
 					}
@@ -725,7 +744,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					{
 						$image = $image_path . '48_intel_xeon.png';
 					}
-					if (mb_stripos($key->processor_description, 'Core(TM)2 Duo'))
+					if (mb_stripos($key->processor_description, 'Duo'))
 					{
 						$image = $image_path . '48_intel_core_duo.png';
 					}
@@ -733,7 +752,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					{
 						$image = $image_path . '48_intel_p3.png';
 					}
-					if (mb_stripos($key->processor_description, 'Intel(R) Pentium(R) D'))
+					if (mb_stripos($key->processor_description, 'Intel Pentium D'))
 					{
 						$image = $image_path . '48_intel_pd.png';
 					}
@@ -2324,6 +2343,7 @@ $(document).ready(function(){
 	$('#view_summary_location').hide();
 	$('#view_summary_custom').hide();
 	$('#view_summary_attachment').hide();
+	$('#view_summary_nmis').hide();
 
 	$('#toggle_summary_windows').click(function(){
 		$('#view_summary_windows').slideToggle("fast");
@@ -2365,6 +2385,10 @@ $(document).ready(function(){
 		$('#view_summary_attachment').slideToggle("fast");
 	});
 
+	$('#toggle_summary_nmis').click(function(){
+		$('#view_summary_nmis').slideToggle("fast");
+	});
+
 	var summary_toggle = 0;
 
 	$('#toggle_summary_all').click(function(){
@@ -2380,6 +2404,7 @@ $(document).ready(function(){
 			$('#view_summary_location').show("fast");
 			$('#view_summary_custom').show("fast");
 			$('#view_summary_attachment').show("fast");
+			$('#view_summary_nmis').show("fast");
 			summary_toggle = 1;
 		}
 		else 
@@ -2394,6 +2419,7 @@ $(document).ready(function(){
 			$('#view_summary_location').hide("fast");
 			$('#view_summary_custom').hide("fast");
 			$('#view_summary_attachment').hide("fast");
+			$('#view_summary_nmis').hide("fast");
 			summary_toggle = 0;
 		}
 	});
