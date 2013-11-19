@@ -448,11 +448,9 @@ $link_downloads = '';
 				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network.png' alt='' title='' width='48'/>
 				</div>
 				<div style="width: 90%; float:left;">
-					<?php #foreach($system as $key): ?>
 					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>
 					<p><label for="nmis_name"><?php echo __('NMIS Name')?>: </label><span id="nmis_name" <?php echo $edit?>><?php echo print_something($system[0]->nmis_name)?></span></p>
-					<p><label for="nmis_role"><?php echo __('NMIS Role')?>: </label><span id="nmis_role" <?php echo $edit?>><?php echo print_something($system[0]->nmis_role)?></span></p>
-					<?php #endforeach; ?>
+					<p><label for="nmis_role_select"><?php echo __('NMIS Role')?>: </label><span id="nmis_role_select" style="color:blue;"><span onclick="display_nmis_role();"><?php echo print_something($system[0]->nmis_role)?></span></span></p>
 				</div>
 			</fieldset>
 		</form>
@@ -578,7 +576,29 @@ function receive_criticality() {
 }
 
 
+function display_nmis_role() {
+	status_text="<select id='nmis_role' onchange='send_nmis_role();'><option value=' '>Choose an NMIS role</option><option value='access'>Access</option><option value='core'>Core</option><option value='distriubtion'>Distriubtion</option></select>";
+	document.getElementById("nmis_role_select").innerHTML = status_text;
+}
 
+function send_nmis_role()
+{
+	table_text=document.getElementById("nmis_role").value;
+	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_role/'+table_text);
+	http.onreadystatechange = receive_nmis_role;
+	http.send(null);
+}
+
+function receive_nmis_role() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      update="<span onclick='display_nmis_role();'>"+http.responseText+"<\/span>";
+      document.getElementById("nmis_role_select").innerHTML = update;
+    }
+  }
+}
 
 
 

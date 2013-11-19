@@ -715,7 +715,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					<?php #foreach($system as $key): ?>
 					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>
 					<p><label for="nmis_name"><?php echo __('NMIS Name')?>: </label><span id="nmis_name" <?php echo $edit?>><?php echo print_something($system[0]->nmis_name)?></span></p>
-					<p><label for="nmis_role"><?php echo __('NMIS Role')?>: </label><span id="nmis_role" <?php echo $edit?>><?php echo print_something($system[0]->nmis_role)?></span></p>
+					<p><label for="nmis_role_select"><?php echo __('NMIS Role')?>: </label><span id="nmis_role_select" style="color:blue;"><span onclick="display_nmis_role();"><?php echo print_something($system[0]->nmis_role)?></span></span></p>
 					<?php #endforeach; ?>
 				</div>
 			</fieldset>
@@ -2234,19 +2234,38 @@ function receive_criticality() {
 
 
 
+function display_nmis_role() {
+	status_text="<select id='nmis_role' onchange='send_nmis_role();'><option value=' '>Choose an NMIS role</option><option value='access'>Access</option><option value='core'>Core</option><option value='distriubtion'>Distriubtion</option></select>";
+	document.getElementById("nmis_role_select").innerHTML = status_text;
+}
 
-
-
-function display_location()
+function send_nmis_role()
 {
+	table_text=document.getElementById("nmis_role").value;
+	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_role/'+table_text);
+	http.onreadystatechange = receive_nmis_role;
+	http.send(null);
+}
+
+function receive_nmis_role() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      update="<span onclick='display_nmis_role();'>"+http.responseText+"<\/span>";
+      document.getElementById("nmis_role_select").innerHTML = update;
+    }
+  }
+}
+
+
+function display_location() {
 	<?php
 	$location_form = "<option value=' '>Choose a Location<\/option>";
-	foreach ($locations as $location)
-	{
+	foreach ($locations as $location) {
 		$location_form .= "<option value='" . $location->location_id . "'>" . $location->location_name . "<\/option>";
 	}
-	if ($location_id <> "")
-	{
+	if ($location_id <> "") {
 		$location_form = "<select id='man_location_id' onchange='send_location();'>" . $location_form . "<\/select>";
 	} else {
 		$location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>Choose a location<\/option>" . $location_form . "<\/select>";
@@ -2257,8 +2276,7 @@ function display_location()
 	document.getElementById("man_location_id_select").innerHTML = status_text;
 }
 
-function send_location()
-{
+function send_location() {
 	table_text=document.getElementById("man_location_id").value;
 	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_location_id/'+table_text);
 	http.onreadystatechange = receive_location;
@@ -2295,12 +2313,10 @@ function display_org()
 {
 	<?php
 	$org_form = "<option value=' '>Choose an Org<\/option>";
-	foreach ($orgs as $org)
-	{
+	foreach ($orgs as $org) {
 		$org_form .= "<option value='" . $org->org_id . "'>" . $org->org_name . "<\/option>";
 	}
-	if ($org_id <> "")
-	{
+	if ($org_id <> "") {
 		$org_form = "<select id='man_org_id' onchange='send_org();'>" . $org_form . "<\/select>";
 	} else {
 		$org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>Choose an Org<\/option>" . $org_form . "<\/select>";

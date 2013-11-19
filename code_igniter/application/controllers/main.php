@@ -130,7 +130,7 @@ class Main extends MY_Controller {
 		}
 		foreach ($_POST as $field_name => $field_data) {
 			# input all the manual fields 
-			if ( (mb_strpos($field_name, 'man_') !== false) && ($field_data != '')) {
+			if (((mb_strpos($field_name, 'man_') !== false) or (mb_strpos($field_name, 'nmis_') !== false)) && ($field_data != '')) {
 				foreach ($data['systems'] as $system) {
 					$this->m_system->update_system_man($system[1], $field_name, $field_data);
 					$this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
