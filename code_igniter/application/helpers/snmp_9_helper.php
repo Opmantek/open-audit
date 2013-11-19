@@ -6797,67 +6797,94 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.12') { $details->model = 'Cisco Midplane'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.12.1') { $details->model = 'Cisco Midplane UMG 9820'; $details->type = 'cisco module'; }
 
-		# grab some Cisco specific details
-		$details->os_version = '';
-		$i = explode("$", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.5" ));
-		$details->os_version = trim($i[1]);
-		$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.7" );
-		if (strpos($i, "IOS") !== FALSE) { 
-			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
-			$details->os_family = 'Cisco IOS'; 
-			$details->man_os_family = 'Cisco IOS'; 
-			$details->os_name = "Cisco IOS version " . $details->os_version;
-			$details->man_os_name = "Cisco IOS version " . $details->os_version;
-		}
-		if (strpos($i, "Catalyst Operating") !== FALSE) { 
-			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
-			$details->os_family = 'Cisco Catalyst OS';
-			$details->man_os_family = 'Cisco Catalyst OS'; 
-			$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
-			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
-		}
-		if (!isset($details->os_group) or $details->os_group == '') {
-			if (strpos($details->description, 'NX-OS')) {
+		if ($details->snmp_version == '2' ) {
+			# grab some Cisco specific details
+			$details->os_version = '';
+			$i = explode("$", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.5" ));
+			$details->os_version = trim($i[1]);
+			$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.7" );
+			if (strpos($i, "IOS") !== FALSE) { 
 				$details->os_group = 'Cisco';
 				$details->man_os_group = 'Cisco'; 
-				$details->os_family = 'Cisco Nexus OS';
-				$details->man_os_family = 'Cisco Nexus OS'; 
-				$details->os_name = "Cisco Nexus OS version " . $details->os_version;
-				$details->man_os_name = "Cisco Nexus OS version " . $details->os_version;
+				$details->os_family = 'Cisco IOS'; 
+				$details->man_os_family = 'Cisco IOS'; 
+				$details->os_name = "Cisco IOS version " . $details->os_version;
+				$details->man_os_name = "Cisco IOS version " . $details->os_version;
 			}
-		}
+			if (strpos($details->description, "Cisco IOS Software") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco IOS'; 
+				$details->man_os_family = 'Cisco IOS'; 
+				$details->os_name = "Cisco IOS version " . $details->os_version;
+				$details->man_os_name = "Cisco IOS version " . $details->os_version;
+			}
+			if (strpos($details->description, "Cisco Internetwork Operating System Software") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco IOS'; 
+				$details->man_os_family = 'Cisco IOS'; 
+				$details->os_name = "Cisco IOS version " . $details->os_version;
+				$details->man_os_name = "Cisco IOS version " . $details->os_version;
+			}
+			if (strpos($i, "Catalyst Operating") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco Catalyst OS';
+				$details->man_os_family = 'Cisco Catalyst OS'; 
+				$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
+				$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
+			}
+			if (strpos($details->description, "Cisco Systems WS-C") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco Catalyst OS';
+				$details->man_os_family = 'Cisco Catalyst OS'; 
+				$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
+				$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
+			}
+			if (strpos($details->description, "Cisco Systems, Inc. WS-C") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco Catalyst OS';
+				$details->man_os_family = 'Cisco Catalyst OS'; 
+				$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
+				$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
+			}
+			if (!isset($details->os_group) or $details->os_group == '') {
+				if (strpos($details->description, 'NX-OS')) {
+					$details->os_group = 'Cisco';
+					$details->man_os_group = 'Cisco'; 
+					$details->os_family = 'Cisco Nexus OS';
+					$details->man_os_family = 'Cisco Nexus OS'; 
+					$details->os_name = "Cisco Nexus OS version " . $details->os_version;
+					$details->man_os_name = "Cisco Nexus OS version " . $details->os_version;
+				}
+			}
 
-		# Generic Cisco serial
-		if ($details->serial == '') {
-			$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1")));
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-		}
+			# Cisco specific model OID
+			if ($details->model == '') {
+				$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1"));
+			}
 
-		# Cisco 37xx stack serial
-		if ($details->serial == '') {
-			$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.5.1.2.19.0")));
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-		}
+			# Generic Cisco serial
+			if ($details->serial == '') {
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1"));
+			}
 
-		if ($details->serial == '') {
-			$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11");
-			$details->serial = str_replace("STRING: ", "", $i[0]);
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-			// if (count($i) > 0) {
-			// 	for ($k = 0; $k < count($i); $k++){
-			// 		if (mb_strpos($i[$k], "Duplex") !== FALSE) {
-			// 			$details->printer_duplex = 'True';
-			// 		}
-			// 	}
-			// }
+			# Generic Cisco serial
+			if ($details->serial == '') {
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1.0"));
+			}
+
+			# Cisco 37xx stack serial
+			if ($details->serial == '') {
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.5.1.2.19.0"));
+			}
+
+			if ($details->serial == '') {
+				$i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.0"));
+			}
 		}
 	}
 }

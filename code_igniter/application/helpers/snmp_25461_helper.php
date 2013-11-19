@@ -23,7 +23,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.12') { $details->model = 'PA-200 firewall'; $details->type = 'firewall'; }
 
 		if ($details->snmp_verion == '2') {
-			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25461.2.1.2.1.3.0" ));
+			$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25461.2.1.2.1.3.0" ));
 		}
 	}
 }

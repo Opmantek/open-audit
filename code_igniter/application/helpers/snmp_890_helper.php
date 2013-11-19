@@ -198,5 +198,12 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.890.1.8.1') { $details->model = 'serviceGWCommon'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.890.1.8.2') { $details->model = 'vsg1000'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.890.1.8.3') { $details->model = 'vsg1200'; $details->type = 'unknown'; }
+
+		if ($details->snmp_version == '2') {
+			if ($details->type = '' or $details->type == 'unknown') {
+				$details->type == 'unknown';
+				$details->type = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.890.1.2.11.1.1.1.0" ));
+			}
+		}
 	}
 }

@@ -111,10 +111,10 @@ if (!function_exists('get_oid_details')) {
 
 		if ($details->snmp_version == '2') {
 			# serial 
-			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4526.10.1.1.1.4.0" ));
-			if ($details->serial == '' or $details->serial == 'No Such Object available on this agent at this OID') { 
+			$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4526.10.1.1.1.4.0" ));
+			if ($details->serial == '') { 
 				# special case for Netgear cable modems
-				$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0" ));
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0" ));
 			}
 		}
 

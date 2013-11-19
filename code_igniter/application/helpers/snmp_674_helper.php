@@ -15,19 +15,19 @@ if (!function_exists('get_oid_details')) {
 		
 		if ($details->snmp_version == '2') {
 			# model
-			$temp_model = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.2.0" ));
+			$temp_model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.2.0" ));
 		
 			# serial
-			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.11.0" ));
+			$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.11.0" ));
 		}
 		
 		
 		if ($details->snmp_version == '1') {
 			# model
-			$temp_model = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.2.0" ));
+			$temp_model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.2.0" ));
 		
 			# serial
-			$details->serial = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.11.0" ));
+			$details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.11.0" ));
 		}
 		
 		if (isset($temp_model) and $temp_model > '') {

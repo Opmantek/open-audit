@@ -61,7 +61,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.12356.603') { $details->model = 'Fortinet 60'; $details->type = 'firewall'; }
 
 		if ($details->snmp_version == '2') {
-			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12356.1.2.0" ));
+			$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12356.1.2.0" ));
 		}
 	}
 }

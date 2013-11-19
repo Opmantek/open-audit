@@ -99,24 +99,24 @@ if (!function_exists('get_oid_details')) {
 
 		if ($details->snmp_version == '2') {
 			# model
-			$temp_model = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.1.1.0"));
+			$temp_model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.1.1.0"));
 			
 			#serial
-			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.2.3.0"));
-			if (!isset($details->serial) or $details->serial == '' or $details->serial == 'No Such Object available on this agent at this OID') {
-				$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.4.1.5.0"));
+			$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.2.3.0"));
+			if (!isset($details->serial) or $details->serial == '') {
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.4.1.5.0"));
 			}
 		}
 
 
 		if ($details->snmp_version == '1') {
 			# model
-			$temp_model = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.1.1.0"));
+			$temp_model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.1.1.0"));
 			
 			# serial
-			$details->serial = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.2.3.0"));
-			if (!isset($details->serial) or $details->serial == '' or $details->serial == 'No Such Object available on this agent at this OID') {
-				$details->serial = str_replace("STRING: ", "", @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.4.1.5.0"));
+			$details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.1.1.2.3.0"));
+			if (!isset($details->serial) or $details->serial == '') {
+				$details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.318.1.1.4.1.5.0"));
 			}
 		}
 
