@@ -669,4 +669,12 @@ $GLOBALS["lang"]["yes"]="yes";
 $GLOBALS["lang"]["Yes"]="Yes";
 $GLOBALS["lang"]["Your Open-AudIT database contains the following devices in a production state:"]="Your Open-AudIT database contains the following devices in a production state:";
 $GLOBALS["lang"]["Your Open-AudIT database contains:"]="Your Open-AudIT database contains:";
+$GLOBALS["lang"]["NMIS Group"]="NMIS Group";
+$GLOBALS["lang"]["NMIS Name"]="NMIS Name";
+$GLOBALS["lang"]["NMIS Role"]="NMIS Role";
+$GLOBALS["lang"]["Access"]="Access";
+$GLOBALS["lang"]["Core"]="Core";
+$GLOBALS["lang"]["Distriubtion"]="Distriubtion";
+$GLOBALS["lang"]["SNMP OID"]="SNMP OID";
+$GLOBALS["lang"]["NMIS Details"]="NMIS Details";
 ?>
