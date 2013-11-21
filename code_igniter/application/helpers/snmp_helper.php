@@ -159,7 +159,7 @@ if (!function_exists('get_snmp')) {
 				$details->man_manufacturer = $details->manufacturer;
 				$explode = explode(".", $details->snmp_oid);
 				if (!isset($explode[6])) {
-					# for some reason we got an OID, but not enough to specif a manufacturer
+					# for some reason we got an OID, but not enough to specify a manufacturer
 					$explode[6] = '';
 					if (strpos($details->description, "ZyXEL") !== FALSE ) {
 						# we have a Zyxel device
@@ -342,6 +342,10 @@ if (!function_exists('get_snmp')) {
 				$details->sysname = strtolower(snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0")));
 			}
 
+			// hostname
+			#if (!isset($details->hostname) or $details->hostname == '') {
+				$details->hostname = gethostbyaddr($details->man_ip_address);
+			#}
 
 			// uptime
 			if (!isset($details->uptime) or $details->uptime == '' ) {
@@ -468,9 +472,12 @@ if (!function_exists('get_snmp')) {
 
 			$details->subnet = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
 
-			$details->hostname = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
-
-			$details->hostname_length = 'short';
+			// hostname
+			#if (!isset($details->hostname) or $details->hostname == '') {
+				$details->hostname = gethostbyaddr($details->man_ip_address);
+			#}
+			#$details->hostname = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
+			#$details->hostname_length = 'short';
 
 			$details->next_hop = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 		}
