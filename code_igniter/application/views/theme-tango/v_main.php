@@ -1,6 +1,41 @@
 <?php
 if ($query) { 
-?>
+if ($config->distinct_groups == 'y') {
+	$old_category = '';
+	foreach($query as $key) {
+		if ($key->group_category != $old_category) {
+			if ($old_category != '') { echo "</tbody>\n</table>\n"; }
+			echo "<h3>" . ucfirst($key->group_category) . "</h3>\n"; 
+			echo "<table cellspacing=\"1\" class=\"tablesorter\">\n";
+			echo "	<thead>\n";
+			echo "		<tr>\n";
+			echo "			<th align=\"center\" style=\"width:120px;\">" .  __('Icon') . "</th>\n";
+			echo "			<th align=\"center\" style=\"width:120px;\">" .  __('Systems') . "</th>\n";
+			echo "			<th style=\"width:300px;\">" .  __('Name') . "</th>\n";
+			echo "			<th>" .  __('Description') . "</th>\n";
+			if (($config->non_admin_search == 'y') or ($user_admin == 'y')) { echo "			<th align=\"center\" style=\"width:120px;\">" . __('Search') . "</th>\n"; }
+			echo "			<th align=\"center\" style=\"width:120px;\">" . __('Reports') . "</th>\n";
+			echo "		</tr>\n";
+			echo "	</thead>\n";
+			echo "	<tbody>\n";
+		} 
+		$old_category = $key->group_category;
+		echo "		<tr>\n";
+		echo "			<td align=\"center\"><img src=\"" . $image_path . "16_" . $key->group_icon . ".png\" alt=\"" . $key->group_category . "\" title=\"" . $key->group_category . "\" style=\"border-width:0px;\" /></td>\n";
+		echo "			<td align=\"center\">" . $key->total . "</td>\n";
+		if ($key->group_padded_name > "") {
+			echo "			<td><span style=\"display: none;\">" . $key->group_padded_name . "</span><a href=\"" . base_url() . "index.php/main/list_devices/" . $key->group_id . "\">" . $key->group_name . "</a></td>\n";
+		} else {
+			echo "			<td><a href=\"" . base_url() . "index.php/main/list_devices/" . $key->group_id . "\">" . $key->group_name . "</a></td>\n";
+		}
+		echo "			<td>" . $key->group_description . "</td>\n";
+		if (($config->non_admin_search == 'y') or ($user_admin == 'y')) {
+			echo "			<td align=\"center\"><a class=\"SearchPopupTrigger\" rel=\"" . $key->group_id . "\" href=\"#\" ><img src=\"" . $image_path . "16_find.png\" style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
+		}
+		echo "			<td align=\"center\"><a class=\"ReportPopupTrigger\" rel=\"" . $key->group_id . "\" href=\"#\" ><img src=\"" . $image_path . "16_csv.png\"  style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
+		echo "		</tr>\n";
+	}
+} else { ?>
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
@@ -83,6 +118,7 @@ if ($query) {
 		
 	</tbody>
 </table>
+<?php } // end of distinct groups ?>
 <?php
 } else {
 	echo "<br />" . __('<h2>Welcome to Open-AudIT.</h2><br />Make sure you add both Groups and Reports by going to: <br />Admin -> Groups -> Activate Group &nbsp;&nbsp;&nbsp;and also to <br />Admin -> Reports -> Activate Report.');
