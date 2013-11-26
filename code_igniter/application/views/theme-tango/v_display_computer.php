@@ -66,8 +66,8 @@ $link_express_code = '';
 if (mb_strpos($link_manufacturer,  "Dell") !== false)  {
 	// we have a Dell system
 	if ($link_serial != ""){
-		$link_warranty = "<a href='http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt1&amp;servicetag=" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>";
-		$link_downloads = "<a href='http://www.dell.com/support/drivers/us/en/19/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
+	$link_warranty = "<a href='http://www.dell.com/support/my-support/us/en/04/product-support/servicetag/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>";
+	$link_downloads = "<a href='http://www.dell.com/support/drivers/us/en/04/ServiceTag/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
 		$link_express_code = base_convert($link_serial,36,10);
 		$link_express_code_formatted = mb_substr($link_express_code,0,3)."-".mb_substr($link_express_code,3,3)."-".mb_substr($link_express_code,6,3)."-".mb_substr($link_express_code,9,2);
 		$link_express_code = $link_express_code_formatted;
