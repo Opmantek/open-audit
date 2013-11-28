@@ -5,4 +5,5 @@
 *.sublime-workspace
 .DS_Store
 other/open-audit.log
+code_igniter/application/controllers/admin_test_private.php
 
