@@ -124,7 +124,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.5.23') { $details->model = '10T100THub24M'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.8.1') { $details->model = 'RepeaterAgent'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.7.8.2.5') { $details->model = 'AdvanceStack 10BT Switching Hub'; $details->type = 'switch'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.9.1') { $details->model = 'HP Color LaserJet 2605dn'; $details->type = 'network printer'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.9.1') { $details->model = ''; $details->type = 'network printer'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.9.2') { $details->model = ''; $details->type = 'network printer'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.6.4.1.1') { $details->model = 'ProCurve Wireless AcessPoint 420'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.6.4.1.2') { $details->model = 'ProCurve Wireless AcessPoint 530'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.6.4.1.3') { $details->model = 'ProCurve Wireless Access Point 10ag (J9141A)'; $details->type = 'switch'; }
