@@ -1850,6 +1850,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1169') { $details->model = 'Cisco Chassis NamApp2320'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.117') { $details->model = 'Cisco Chassis Cat 2924CXL'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1173') { $details->model = 'Cisco Chassis ECDS50IVB'; $details->type = 'cisco module'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1175') { $details->model = 'Cisco Nexus 5596T'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1178') { $details->model = 'Cisco Chassis ASR9001'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.118') { $details->model = 'Cisco Chassis Ubr924'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1188') { $details->model = 'Cisco Chassis 819GM'; $details->type = 'cisco module'; }
@@ -6802,7 +6803,7 @@ if (!function_exists('get_oid_details')) {
 			# grab some Cisco specific details
 			$details->os_version = '';
 			$i = explode("$", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.5" ));
-			$details->os_version = trim($i[1]);
+			if (isset($i[1]) and $i[1] > '') { $details->os_version = trim($i[1]); }
 			$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.7" );
 			if (strpos($i, "IOS") !== FALSE) { 
 				$details->os_group = 'Cisco';
@@ -6884,7 +6885,8 @@ if (!function_exists('get_oid_details')) {
 			}
 
 			if ($details->serial == '') {
-				$i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.0"));
+				$i_array = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11");
+				$details->serial = snmp_clean($i_array[0]);
 			}
 		}
 	}

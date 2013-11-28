@@ -11,6 +11,7 @@ if (!function_exists('get_oid_details')) {
 
 	function get_oid_details($details){
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.1.1') { $details->model = 'FSM726S Managed Switch'; $details->type = 'switch'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.1.1.1.1.0.1.3.9.12') { $details->model = 'CG814CCR Cable Modem'; $details->type = 'cable modem'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.1.1.1.1.0.1.3.9.26') { $details->model = 'CG814WG Cable Modem'; $details->type = 'cable modem'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.1.2') { $details->model = 'FSM750S Managed Switch'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.1.3') { $details->model = 'GSM712 Managed Switch'; $details->type = 'switch'; }
@@ -22,6 +23,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.1.9') { $details->model = 'FSM7326P Managed Switch'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.1.10') { $details->model = 'FSM726v2 Managed Switch'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.2.1') { $details->model = 'FVX538 Router'; $details->type = 'router'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.4526.2.1.6') { $details->model = 'CGD24G Cable Modem'; $details->type = 'cable modem'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.2.2') { $details->model = 'FVS338 Router'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.2.3') { $details->model = 'FVG318 Router'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.4526.3.1') { $details->model = 'CGD24N Cable Modem'; $details->type = 'cable modem'; }

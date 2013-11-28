@@ -118,15 +118,18 @@ if (!function_exists('get_snmp')) {
 			$details->snmp_version = '2c';
 		}
 
+		$log_line = '';
 		if ($test_v1 == '' and $test_v2 == '') {
 			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " not SNMP scanned.\n";
 		} else {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan started.\n";
+			#$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan started.\n";
 		}
 
-		$handle = fopen($file, "a");
-		fwrite($handle, $log_line);
-		fclose($handle);
+		if ($log_line > '') {
+			$handle = fopen($file, "a");
+			fwrite($handle, $log_line);
+			fclose($handle);
+		}
 
 		if ($test_v2 > '') {
 			$details->snmp_version = '2';
@@ -361,7 +364,7 @@ if (!function_exists('get_snmp')) {
 
 			// location
 			if (!isset($details->location) or $details->location == '' ) {
-				$details->location = snmp_clean(snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0"));
+				$details->location = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0"));
 			}
 			if ($details->location > '') { $details->description = "Location: " . $details->location . ". " . $details->description; }
 
@@ -375,7 +378,7 @@ if (!function_exists('get_snmp')) {
 
 			// subnet
 			if (!isset($details->subnet) or $details->subnet == '' ) {
-				$details->subnet = snmp_clean(snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
+				$details->subnet = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
 			}
 		}
 
@@ -449,7 +452,7 @@ if (!function_exists('get_snmp')) {
 				if (!isset($details->serial) or $details->serial == "") {
 					$details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1" ));
 				}
-				if ($details->model == "") {
+				if (!isset($details->model) or $details->model == "") {
 					$details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.16.1" ));
 				}
 			}
@@ -482,16 +485,21 @@ if (!function_exists('get_snmp')) {
 			$details->next_hop = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 		}
 
+		$log_line = '';
 		if ($details->snmp_version == '2') { $details->snmp_version = '2c'; }
-		$log_timestamp = date("M d H:i:s");
-		if (isset($details->snmp_oid) and $details->snmp_oid > "") {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan completed.\n";
-		} else {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan failed (no OID returned).\n";
+
+		if ($test_v1 > '' or $test_v2 > '') {
+			$log_timestamp = date("M d H:i:s");
+			if (isset($details->snmp_oid) and $details->snmp_oid > "") {
+				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned.\n";
+			} else {
+				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan failed (no OID returned).\n";
+			}
+			$handle = fopen($file, "a");
+			fwrite($handle, $log_line);
+			fclose($handle);
 		}
-		$handle = fopen($file, "a");
-		fwrite($handle, $log_line);
-		fclose($handle);
+
 		unset($details->snmp_version);
 		$details->hostname = strtolower($details->hostname);
 		return $details;
