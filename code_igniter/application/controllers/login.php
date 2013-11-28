@@ -18,7 +18,7 @@ class Login extends CI_Controller {
 
 	function index() {
 		if ($this->session->userdata('logged_in') == TRUE) {
-			redirect('/');
+			redirect(base_url());
 		}
 		$data['title'] = 'Open-AudIT';
 		$data['username'] = array('id' => 'username', 'name' => 'username');
@@ -38,21 +38,39 @@ class Login extends CI_Controller {
 
 		$this->load->model('m_oa_config');
 		$oae_url = $this->m_oa_config->get_config_item("oae_url");
+		#echo "<!-- 1 " . $oae_url . " -->\n";
+
 		if ($oae_url > "") {
-			# we need to attempt to get a URL even though it may only be a directory.
-			if (stripos($oae_url, "http") === FALSE) {
-				# we dont have http or https
-				# we assume then it's a directory on the current server
-				if (strpos($oae_url, '/') !== 0) {
-					$oae_url = base_url() . "/" . $oae_url;
+			#echo "<!-- " . $oae_url . " -->\n";
+			# remove leading and add trailing slash on the url, just so we are consistent
+			if (substr($oae_url, -1) != '/') { $oae_url = $oae_url . '/'; }
+			#if (substr($oae_url, 0, 1) == '/') { $oae_url = substr($oae_url, 1); }
+
+			# if we already have http... in the oae_url variable, no need to do anything.
+			if (strpos(strtolower($oae_url), "http") === FALSE) {
+				# if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
+
+				# need to create a link to OAE on port 8042 to check the license
+				# we cannot detect and use the browser http[s] as it may being used in the client browser, 
+				#     but stripped by a https offload or proxy
+				$oae_license_url = "http://localhost:8042" . $oae_url . "license";
+
+				# we create a link for the browser using the same address + the path & file in oae_url
+				if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+					$oae_url = "https://" . $_SERVER['HTTP_HOST'] . $oae_url;
 				} else {
-					$oae_url = base_url() . $oae_url;
+					$oae_url = "http://" . $_SERVER['HTTP_HOST'] . $oae_url;
 				}
+			} else {
+				# we already have a URL like http://something, leave it alone
+				$oae_license_url = $oae_url . "license";
 			}
+
+
 			ini_set('default_socket_timeout', 3);  
 			# get the license status from the OAE API
 			# license status are: valid, invalid, expired, none
-			$license = @file_get_contents($oae_url . "/license", FALSE, $timeout);
+			$license = @file_get_contents($oae_license_url, FALSE, $timeout);
 			if ($license !== FALSE) {
 				# remove the unneeded html tags
 				$license = str_replace("<pre>", "", $license);
@@ -60,16 +78,19 @@ class Login extends CI_Controller {
 			} else {
 				$license = "none";
 			}
+
 		}
 
-		echo "<!-- " . $license . " -->\n";
+		#echo "<!-- " . $license . " -->\n";
+		#echo "<!-- " . $oae_url . " -->\n";
+		#echo "<!-- " . $oae_license_url . " -->\n";
 		$data['logo'] = "logo-banner-oac-oae.png";
 		$data['oae_message'] = "";
 
 		if ($oae_url == "") {
 			# OAE is not installed
 			# set the logo and show the logon page
-			echo "<!-- OAE not installed -->\n";
+			#echo "<!-- OAE not installed -->\n";
 			$data['logo'] = "logo-banner-oac.png";
 			$data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
 			$this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s') );
