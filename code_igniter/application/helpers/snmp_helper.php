@@ -138,9 +138,9 @@ if (!function_exists('get_snmp')) {
 			$details->serial = "";
 			$details->model = "";
 			$details->man_model = "";
-			$details->type = "";
-			$details->device_type = "";
-			$details->man_type = ""; 		
+			$details->type = "unknown";
+			$details->device_type = "unknown";
+			$details->man_type = "unknown"; 		
 
 			// hostname
 			if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
