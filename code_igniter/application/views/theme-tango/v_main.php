@@ -5,7 +5,11 @@ if ($config->distinct_groups == 'y') {
 	foreach($query as $key) {
 		if ($key->group_category != $old_category) {
 			if ($old_category != '') { echo "</tbody>\n</table>\n"; }
-			echo "<h3>" . ucfirst($key->group_category) . "</h3>\n"; 
+			if ($key->group_category == 'os') {
+				echo "<h3>OS</h3>\n"; 
+			} else {
+				echo "<h3>" . ucfirst($key->group_category) . "</h3>\n"; 
+			}
 			echo "<table cellspacing=\"1\" class=\"tablesorter\">\n";
 			echo "	<thead>\n";
 			echo "		<tr>\n";
