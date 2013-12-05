@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-$config['web_internal_version'] = '20130810';
-$config['web_display_version'] = '1.0.4';
+$config['web_internal_version'] = '20131130';
+$config['web_display_version'] = '1.0.5';
 # $config['debug'] = FALSE;
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +31,7 @@ else
     $config['base_url'] = 'http://localhost/';
 }
 
-$config['base_url'] = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
+#$config['base_url'] = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 
 /*
 |--------------------------------------------------------------------------

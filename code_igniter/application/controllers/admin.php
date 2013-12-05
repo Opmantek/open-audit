@@ -2115,7 +2115,7 @@ class Admin extends MY_Controller {
 
 		}
 
-		if (($db_internal_version < '20130810') AND ($this->db->platform() == 'mysql')) {
+		if (($db_internal_version < '20131130') AND ($this->db->platform() == 'mysql')) {
 			# upgrade for 1.0.5
 			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('distinct_groups', 'y', 'y', 'Display Groups on the homepage, separated into the type of each Group.')";
 			$this->data['output'] .= $sql . "<br /><br />\n";
