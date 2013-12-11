@@ -63,7 +63,7 @@ class M_pagefile extends MY_Model {
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
 			// the pagefile exists - need to update its timestamp
-			$sql = "UPDATE sys_sw_pagefile SET timestamp = ?, filesize = ? WHERE pagefile_id = ?";
+			$sql = "UPDATE sys_sw_pagefile SET timestamp = ?, pagefile_size = ? WHERE pagefile_id = ?";
 			$data = array("$details->timestamp", "$input->size", "$row->pagefile_id");
 			$query = $this->db->query($sql, $data);
 		} else {
