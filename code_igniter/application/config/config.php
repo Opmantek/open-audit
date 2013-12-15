@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-$config['web_internal_version'] = '20130810';
-$config['web_display_version'] = '1.0.4';
+$config['web_internal_version'] = '201311211';
+$config['web_display_version'] = '1.0.6';
 # $config['debug'] = FALSE;
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +30,8 @@ else
 {
     $config['base_url'] = 'http://localhost/';
 }
+
+#$config['base_url'] = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 
 /*
 |--------------------------------------------------------------------------
@@ -270,11 +272,13 @@ $config['sess_time_to_update'] 	= 300;
 |
 */
 
-$base_url_parts             = parse_url($config['base_url']);
+#$base_url_parts             = parse_url($config['base_url']);
 $config['cookie_prefix']	= "";
-$config['cookie_domain']	= $base_url_parts['host'];
-$config['cookie_path']		= $base_url_parts['path'];
-unset($base_url_parts); 
+#$config['cookie_domain']	= $base_url_parts['host'];
+#$config['cookie_path']		= $base_url_parts['path'];
+$config['cookie_domain']	= '';
+$config['cookie_path']		= '';
+#unset($base_url_parts); 
 
 
 /*

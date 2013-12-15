@@ -121,10 +121,41 @@ class Admin extends MY_Controller {
 			$this->data['export_report'] = 'y';
 			$this->data['sortcolumn'] = '1';
 			$this->load->model("m_systems");
-			$this->load->model("m_oa_group_column");
-			$this->data['column'] = $this->m_oa_group_column->get_group_column($this->data['id']);
+			$data = array($this->data['id']);
+			$query = $this->db->query('SET @group = ?', $data);
+			$sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, access_details FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id"; 
+			$query = $this->db->query($sql);
+			$this->data['query'] = $query->result();
+			$this->load->library('encrypt');
+			for ($i=0; $i<count($this->data['query']); $i++) {
+
+				if ($this->data['query'][$i]->access_details > '') {
+					$j = $this->encrypt->decode($this->data['query'][$i]->access_details);
+					$j = json_decode($j);
+				}
+
+				# nmis name
+				if ($this->data['query'][$i]->nmis_name == '' and $this->data['query'][$i]->hostname > '') {$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname; }
+				if (($this->data['query'][$i]->nmis_name == '' or $this->data['query'][$i]->nmis_name == $this->data['query'][$i]->hostname) and $this->data['query'][$i]->fqdn > '') { $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn; }
+				if ($this->data['query'][$i]->nmis_name == '') { $this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host); }
+
+				# nmis host
+				$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+
+				# nmis group
+				if ($this->data['query'][$i]->nmis_group == '') { $this->data['query'][$i]->nmis_group = "<span style=\"color: blue;\">Open-AudIT</span>"; }
+
+				# nmis role
+				if ($this->data['query'][$i]->nmis_role == '') { $this->data['query'][$i]->nmis_role = "<span style=\"color: blue;\">core</span>"; }
+
+				# snmp community
+				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
+				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">" . $this->data['config']->snmp_default_community . "</span>"; }
+
+				$j=null;
+			}
 			$this->data['group_id'] = $this->data['id'];
-			$this->data['query'] = $this->m_systems->get_group_systems($this->data['id']);
 			$this->load->view('v_template', $this->data);
 		} else {
 			$device_array = array();
@@ -137,42 +168,46 @@ class Admin extends MY_Controller {
 			$this->load->model("m_system");
 			$this->load->model("m_oa_group");
 			$this->load->library('encrypt');
-			$csv = "name,host,community,version,group,collect,role,net\n";
+			$csv = "name,host,group,role,community\n";
 			$query = array();
+			$i = 0; # I set $i = 0 so I could copy/paste the code from above :-)
 			foreach ($device_array as $key => $value) {
-				$i = $this->m_system->export_nmis($value);
-				$query[] = $i[0];
-			}
-			foreach ($query as $device) {
-				if ($device->nmis_name == '' and $device->hostname > '') {$device->nmis_name = $device->hostname; }
-				if (filter_var($device->nmis_name, FILTER_VALIDATE_IP)) {
-					$device->nmis_name = ip_address_from_db($device->nmis_name);
+				$sql = "SELECT system.nmis_name, system.man_ip_address as nmis_host, system.nmis_group, system.nmis_role, system.hostname, system.fqdn, '' as nmis_community, '' as nmis_version, 'true' as nmis_collect, '' as nmis_net, access_details FROM system WHERE system_id = ?"; 
+				$data = array($value);
+				$query = $this->db->query($sql, $data);
+				$this->data['query'] = $query->result();
+
+				if ($this->data['query'][$i]->access_details > '') {
+					$j = $this->encrypt->decode($this->data['query'][$i]->access_details);
+					$j = json_decode($j);
 				}
-				$device->nmis_host = '';
-				if ($device->nmis_host == '' and $device->man_ip_address > '') { $device->nmis_host = ip_address_from_db($device->man_ip_address); }
-				if ($device->nmis_group == '') { $device->nmis_group = 'Open-AudIT'; }
-				if ($device->nmis_role == '') {$device->nmis_role = 'access'; }
-				$device->net = 'lan';
-				if ($device->access_details > '') {
-					$decoded = $this->encrypt->decode($device->access_details);
-					$decoded = json_decode($decoded);
-					$device->snmp_community = @$decoded->snmp_community;
-					$device->snmp_version = @$decoded->snmp_version;
-					$device->decoded = $decoded;
-				}
-				$device->snmp_version = @$device->snmp_version;
-				if ($device->snmp_version == '2c'){ $device->snmp_version = 'snmpv2c';}
-				$device->snmp_community = @$device->snmp_community;
-				if ($device->snmp_community == '') {
-					$device->nmis_collect = 'false';
-				} else {
-					$device->nmis_collect = 'true';
-				}
-				unset($device->man_ip_address);
-				unset($device->hostname);
-				unset($device->fqdn);
-				unset($device->access_details);
-				$csv .= $device->nmis_name . "," . $device->nmis_host . "," . $device->snmp_community . "," . $device->snmp_version . "," . $device->nmis_group . "," . $device->nmis_collect . "," . $device->nmis_role . "," . $device->net . "\n";
+
+				# nmis name
+				if ($this->data['query'][$i]->nmis_name == '' and $this->data['query'][$i]->hostname > '') {$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname; }
+				if (($this->data['query'][$i]->nmis_name == '' or $this->data['query'][$i]->nmis_name == $this->data['query'][$i]->hostname) and $this->data['query'][$i]->fqdn > '') { $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn; }
+				if ($this->data['query'][$i]->nmis_name == '') { $this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host); }
+
+				# nmis host
+				$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+
+				# nmis group
+				if ($this->data['query'][$i]->nmis_group == '') { $this->data['query'][$i]->nmis_group = "Open-AudIT"; }
+
+				# nmis role
+				if ($this->data['query'][$i]->nmis_role == '') { $this->data['query'][$i]->nmis_role = "core"; }
+
+				# snmp community
+				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
+				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = $this->data['config']->snmp_default_community; }
+
+				$j=null;
+
+				$csv .= $this->data['query'][$i]->nmis_name . "," . 
+						$this->data['query'][$i]->nmis_host . "," . 
+						$this->data['query'][$i]->nmis_group . "," . 
+						$this->data['query'][$i]->nmis_role . "," . 
+						$this->data['query'][$i]->nmis_community . "\n";
 			}
 			if (!file_exists("/usr/local/nmis8/admin/import_nodes.pl")) {
 				echo $csv;
@@ -2080,6 +2115,31 @@ class Admin extends MY_Controller {
 
 		}
 
+		if (($db_internal_version < '20131130') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.0.5
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('distinct_groups', 'y', 'y', 'Display Groups on the homepage, separated into the type of each Group.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '20131130', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.0.5', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+		}
+
+		if (($db_internal_version < '20131211') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.0.6			
+			$sql = "UPDATE oa_config set config_value = '20131211', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.0.6', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+		}
 
 		$config = $this->m_oa_config->get_config();
 		foreach ($config as $returned_result) {

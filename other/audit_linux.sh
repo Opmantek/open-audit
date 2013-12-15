@@ -1411,8 +1411,12 @@ $OA_ECHO "	</netstat>" >> $xml_file
 $OA_ECHO "</system>" >> $xml_file
 
 ########################################################
-# SUMBIT RESULTS                                       #
+# SUBMIT RESULTS                                       #
 ########################################################
+
+if [ $debugging -gt 0 ]; then
+	$OA_ECHO 'Audit Generated in ' $(timer $start_time) ' seconds.' 
+fi
 
 if [ "$submit_online" = "y" ]; then
 	$OA_ECHO "Submitting results to server"
@@ -1426,6 +1430,6 @@ fi
 
 
 if [ $debugging -gt 0 ]; then
-	$OA_ECHO 'Audit Generated in ' $(timer $start_time) ' seconds.' 
+	$OA_ECHO 'Audit Completed in ' $(timer $start_time) ' seconds.' 
 fi
 

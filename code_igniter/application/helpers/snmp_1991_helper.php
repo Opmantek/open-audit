@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2013, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-# Vendor Brocade / Foundry
+# Vendor Brocade Foundry
 if (!function_exists('get_oid_details')) {
 	
 	function get_oid_details($details){
@@ -870,7 +870,7 @@ if (!function_exists('get_oid_details')) {
 
 		if ($details->snmp_version == '2') {
 			# serial
-			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1991.1.1.1.1.2.0" ));
+			$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1991.1.1.1.1.2.0" ));
 		}
 	}
 }

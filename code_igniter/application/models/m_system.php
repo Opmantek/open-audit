@@ -24,15 +24,6 @@ class M_system extends MY_Model {
 		if (count($row) > 0) {return($row->access_details);} else {return;}
 	}
 
-	function export_nmis($group_id) {
-		$sql = "SELECT nmis_name, hostname, fqdn, man_ip_address, nmis_group, nmis_role, access_details 
-				FROM system WHERE system_id = ? LIMIT 1";
-		$data = array($group_id);
-		$query = $this->db->query($sql, $data);
-		$result = $query->result();
-		return ($result);
-	}
-
 	function create_system_key($details) {
 		$details = (object) $details;
 		if (!isset($details->system_key) or $details->system_key == '') {

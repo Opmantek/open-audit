@@ -23,7 +23,7 @@ if (!function_exists('get_oid_details')) {
 
 		if ($details->snmp_version == '2') {
 			# serial
-			$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.43.47.1.1.3.1.10.1" ));
+			$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.43.47.1.1.3.1.10.1" ));
 		}
 	}
 }

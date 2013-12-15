@@ -7,10 +7,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-if (!function_exists('get_oid'))
-{
+if (!function_exists('get_oid')) {
 
-	function get_oid($oid){
+	function get_oid($oid) {
 
 		if (substr($oid, 0, 1) == ".") { $oid = substr($oid, 1, strlen($oid)); }
 		$new = new stdClass();

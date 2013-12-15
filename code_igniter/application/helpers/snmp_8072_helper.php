@@ -28,7 +28,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.16') { $details->model = 'unknown'; $details->os_group = 'macosx'; $details->type = 'computer'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.255') { $details->model = 'unknown'; $details->os_group = 'unknown'; $details->type = 'unknown'; }
 
-		if (strpos($details->description, "Darwin Kernel Version 12") !== FALSE) { $details->manufacturer = "Apple Inc"; }
+		if (isset($details->description) and strpos($details->description, "Darwin Kernel Version 12") !== FALSE) { $details->manufacturer = "Apple Inc"; }
 
 	}
 }

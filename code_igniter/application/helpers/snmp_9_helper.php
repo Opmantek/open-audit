@@ -931,9 +931,9 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1008') { $details->model = 'Cisco Me 3400 eg12csM'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1009') { $details->model = 'Cisco Me 3400 e24tsM'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1010') { $details->model = 'Cisco IPS SSC5 Virtual'; $details->type = 'network ids'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1011') { $details->model = 'Cisco SR 520FE'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1012') { $details->model = 'Cisco SR 520ADSL'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1013') { $details->model = 'Cisco SR 520ADSLi'; $details->type = 'unknown'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1011') { $details->model = 'Cisco SR 520FE'; $details->type = 'router'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1012') { $details->model = 'Cisco SR 520ADSL'; $details->type = 'router'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1013') { $details->model = 'Cisco SR 520ADSLi'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1014') { $details->model = 'Cisco MWR 2941DC'; $details->type = 'wireless router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1015') { $details->model = 'Cisco Catalyst 3560 12PCS'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1016') { $details->model = 'Cisco Catalyst 2960 48PSTL'; $details->type = 'switch'; }
@@ -990,7 +990,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1067') { $details->model = 'Cisco Catalyst 2975 GS48PSL'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1068') { $details->model = 'Cisco Catalyst C2975 Stack'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1069') { $details->model = 'Cisco 5500 Wlc'; $details->type = 'router'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1070') { $details->model = 'Cisco SR 520T1'; $details->type = 'unknown'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1070') { $details->model = 'Cisco SR 520T1'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1071') { $details->model = 'Cisco Pwr C3900Poe'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1072') { $details->model = 'Cisco Pwr C3900AC'; $details->type = 'unknown'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1073') { $details->model = 'Cisco Pwr C2921C2951Poe'; $details->type = 'unknown'; }
@@ -1049,12 +1049,12 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1151') { $details->model = 'Cisco Nme AXP'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1152') { $details->model = 'Cisco AIM AXP'; $details->type = 'vpn terminator'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1153') { $details->model = 'Cisco AIM 2AXP'; $details->type = 'vpn terminator'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1154') { $details->model = 'Cisco SRP 521'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1155') { $details->model = 'Cisco SRP 526'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1156') { $details->model = 'Cisco SRP 527'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1157') { $details->model = 'Cisco SRP 541'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1158') { $details->model = 'Cisco SRP 546'; $details->type = 'unknown'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1159') { $details->model = 'Cisco SRP 547'; $details->type = 'unknown'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1154') { $details->model = 'Cisco SRP 521'; $details->type = 'router'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1155') { $details->model = 'Cisco SRP 526'; $details->type = 'router'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1156') { $details->model = 'Cisco SRP 527'; $details->type = 'router'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1157') { $details->model = 'Cisco SRP 541'; $details->type = 'router'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1158') { $details->model = 'Cisco SRP 546'; $details->type = 'router'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1159') { $details->model = 'Cisco SRP 547'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1160') { $details->model = 'Cisco VS510FXO'; $details->type = 'voip gateway'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1161') { $details->model = 'Cisco Nm Wae 900'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1162') { $details->model = 'Cisco Nm Wae 700'; $details->type = 'network device'; }
@@ -1178,7 +1178,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1311') { $details->model = 'Cisco ASA 5585 SSP20K7 sy'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1312') { $details->model = 'Cisco ASA 5585 SSP40K7 sy'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1313') { $details->model = 'Cisco ASA 5585 SSP60K7 sy'; $details->type = 'firewall'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1314') { $details->model = 'Cisco Sre SmNam'; $details->type = 'unknown'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1314') { $details->model = 'Cisco Sre SmNam'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1319') { $details->model = 'Cisco IE3010 16S8PC'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1320') { $details->model = 'Cisco IE3010 24TC'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1323') { $details->model = 'Cisco ASA 5585 SSP IPS 10K7'; $details->type = 'firewall'; }
@@ -1850,6 +1850,7 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1169') { $details->model = 'Cisco Chassis NamApp2320'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.117') { $details->model = 'Cisco Chassis Cat 2924CXL'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1173') { $details->model = 'Cisco Chassis ECDS50IVB'; $details->type = 'cisco module'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1175') { $details->model = 'Cisco Nexus 5596T'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1178') { $details->model = 'Cisco Chassis ASR9001'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.118') { $details->model = 'Cisco Chassis Ubr924'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1188') { $details->model = 'Cisco Chassis 819GM'; $details->type = 'cisco module'; }
@@ -1876,7 +1877,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1225') { $details->model = 'Cisco Chassis ASR9922Dc'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1226') { $details->model = 'Cisco Chassis ASR9922Ac'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.123') { $details->model = 'Cisco Chassis 7120T3'; $details->type = 'cisco module'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1239') { $details->model = 'Cisco Chassis N3kC3064TQ10GT'; $details->type = 'cisco module'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1238') { $details->model = 'Cisco Chassis Nexus 3548'; $details->type = 'cisco module'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1239') { $details->model = 'Cisco Chassis Nexus 3064 TQ10GT'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.124') { $details->model = 'Cisco Chassis 7120E3'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1241') { $details->model = 'Cisco Chassis ASR9912AC'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1242') { $details->model = 'Cisco Chassis ASR9912DC'; $details->type = 'cisco module'; }
@@ -6797,67 +6799,95 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.12') { $details->model = 'Cisco Midplane'; $details->type = 'cisco module'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.12.1') { $details->model = 'Cisco Midplane UMG 9820'; $details->type = 'cisco module'; }
 
-		# grab some Cisco specific details
-		$details->os_version = '';
-		$i = explode("$", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.5" ));
-		$details->os_version = trim($i[1]);
-		$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.7" );
-		if (strpos($i, "IOS") !== FALSE) { 
-			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
-			$details->os_family = 'Cisco IOS'; 
-			$details->man_os_family = 'Cisco IOS'; 
-			$details->os_name = "Cisco IOS version " . $details->os_version;
-			$details->man_os_name = "Cisco IOS version " . $details->os_version;
-		}
-		if (strpos($i, "Catalyst Operating") !== FALSE) { 
-			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
-			$details->os_family = 'Cisco Catalyst OS';
-			$details->man_os_family = 'Cisco Catalyst OS'; 
-			$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
-			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
-		}
-		if (!isset($details->os_group) or $details->os_group == '') {
-			if (strpos($details->description, 'NX-OS')) {
+		if ($details->snmp_version == '2' ) {
+			# grab some Cisco specific details
+			$details->os_version = '';
+			$i = explode("$", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.5" ));
+			if (isset($i[1]) and $i[1] > '') { $details->os_version = trim($i[1]); }
+			$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.7" );
+			if (strpos($i, "IOS") !== FALSE) { 
 				$details->os_group = 'Cisco';
 				$details->man_os_group = 'Cisco'; 
-				$details->os_family = 'Cisco Nexus OS';
-				$details->man_os_family = 'Cisco Nexus OS'; 
-				$details->os_name = "Cisco Nexus OS version " . $details->os_version;
-				$details->man_os_name = "Cisco Nexus OS version " . $details->os_version;
+				$details->os_family = 'Cisco IOS'; 
+				$details->man_os_family = 'Cisco IOS'; 
+				$details->os_name = "Cisco IOS version " . $details->os_version;
+				$details->man_os_name = "Cisco IOS version " . $details->os_version;
 			}
-		}
+			if (strpos($details->description, "Cisco IOS Software") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco IOS'; 
+				$details->man_os_family = 'Cisco IOS'; 
+				$details->os_name = "Cisco IOS version " . $details->os_version;
+				$details->man_os_name = "Cisco IOS version " . $details->os_version;
+			}
+			if (strpos($details->description, "Cisco Internetwork Operating System Software") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco IOS'; 
+				$details->man_os_family = 'Cisco IOS'; 
+				$details->os_name = "Cisco IOS version " . $details->os_version;
+				$details->man_os_name = "Cisco IOS version " . $details->os_version;
+			}
+			if (strpos($i, "Catalyst Operating") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco Catalyst OS';
+				$details->man_os_family = 'Cisco Catalyst OS'; 
+				$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
+				$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
+			}
+			if (strpos($details->description, "Cisco Systems WS-C") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco Catalyst OS';
+				$details->man_os_family = 'Cisco Catalyst OS'; 
+				$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
+				$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
+			}
+			if (strpos($details->description, "Cisco Systems, Inc. WS-C") !== FALSE) { 
+				$details->os_group = 'Cisco';
+				$details->man_os_group = 'Cisco'; 
+				$details->os_family = 'Cisco Catalyst OS';
+				$details->man_os_family = 'Cisco Catalyst OS'; 
+				$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
+				$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
+			}
+			if (!isset($details->os_group) or $details->os_group == '') {
+				if (strpos($details->description, 'NX-OS')) {
+					$details->os_group = 'Cisco';
+					$details->man_os_group = 'Cisco'; 
+					$details->os_family = 'Cisco Nexus OS';
+					$details->man_os_family = 'Cisco Nexus OS'; 
+					$details->os_name = "Cisco Nexus OS version " . $details->os_version;
+					$details->man_os_name = "Cisco Nexus OS version " . $details->os_version;
+				}
+			}
 
-		# Generic Cisco serial
-		if ($details->serial == '') {
-			$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1")));
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-		}
+			# Cisco specific model OID
+			if ($details->model == '') {
+				$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1"));
+			}
 
-		# Cisco 37xx stack serial
-		if ($details->serial == '') {
-			$details->serial = str_replace("\"", "", str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.5.1.2.19.0")));
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-		}
+			# Generic Cisco serial
+			if ($details->serial == '') {
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1"));
+			}
 
-		if ($details->serial == '') {
-			$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11");
-			$details->serial = str_replace("STRING: ", "", $i[0]);
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Object available on this agent at this OID') { $details->serial = ''; }
-			if ($details->serial == 'No Such Instance currently exists at this OID') { $details->serial = ''; }
-			// if (count($i) > 0) {
-			// 	for ($k = 0; $k < count($i); $k++){
-			// 		if (mb_strpos($i[$k], "Duplex") !== FALSE) {
-			// 			$details->printer_duplex = 'True';
-			// 		}
-			// 	}
-			// }
+			# Generic Cisco serial
+			if ($details->serial == '') {
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1.0"));
+			}
+
+			# Cisco 37xx stack serial
+			if ($details->serial == '') {
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.5.1.2.19.0"));
+			}
+
+			if ($details->serial == '') {
+				$i_array = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11");
+				$details->serial = snmp_clean($i_array[0]);
+			}
 		}
 	}
 }

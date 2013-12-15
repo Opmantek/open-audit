@@ -28,24 +28,23 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.9') { $details->model = 'fbX2500'; $details->type = 'firewall'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.5.12') { $details->model = 'Watchguard Firewall'; $details->type = 'firewall'; }
 		
-
-		$details->type = 'firewall';
-		$details->model = "Watchguard Firewall";
+		if (!isset($details->type) or $details->type == '') {
+			$details->type = 'firewall';
+			$details->model = "Watchguard Firewall";
+		}
 		
 		if ($details->snmp_version == '2') {
 			# model
-			// $details->model = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.17163.1.1.1.1.0" ));
+			// $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.17163.1.1.1.1.0" ));
 			// if (!isset($details->model) or $details->model == '') {
-			// 	$details->model = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.17163.1.51.1.1.0" ));
+			// 	$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.17163.1.51.1.1.0" ));
 			// }
 
 			# serial
-			// $details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.17163.1.1.1.2.0" ));
+			// $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.17163.1.1.1.2.0" ));
 			// if (!isset($details->serial) or $details->serial == '') {
-			// 	$details->serial = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.17163.1.51.1.2.0" ));
+			// 	$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.17163.1.51.1.2.0" ));
 			// }
 		}
 	}
 }
-
-# http://www.circitor.fr/Mibs/Html/STEELHEAD-MIB.php

@@ -66,8 +66,8 @@ $link_express_code = '';
 if (mb_strpos($link_manufacturer,  "Dell") !== false)  {
 	// we have a Dell system
 	if ($link_serial != ""){
-		$link_warranty = "<a href='http://support.dell.com/support/topics/global.aspx/support/my_systems_info/en/details?c=us&amp;cs=usbsdt1&amp;servicetag=" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>";
-		$link_downloads = "<a href='http://www.dell.com/support/drivers/us/en/19/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
+	$link_warranty = "<a href='http://www.dell.com/support/my-support/us/en/04/product-support/servicetag/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>";
+	$link_downloads = "<a href='http://www.dell.com/support/drivers/us/en/04/ServiceTag/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
 		$link_express_code = base_convert($link_serial,36,10);
 		$link_express_code_formatted = mb_substr($link_express_code,0,3)."-".mb_substr($link_express_code,3,3)."-".mb_substr($link_express_code,6,3)."-".mb_substr($link_express_code,9,2);
 		$link_express_code = $link_express_code_formatted;
@@ -134,6 +134,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
+		 	<?php if ($config->nmis == 'y') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
 		</ul>
 	</li>
 	<?php if ((count($processor) > 0) or (count($memory) > 0) or (count($bios) > 0) or (count($motherboard) > 0) or (count($network) > 0) or 
@@ -702,6 +703,24 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 	</div>
 
 
+	<div id="view_summary_nmis" style="float: left; width: 100%;">
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="summary_nmis">
+				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('NMIS Details')?></span></legend>
+				<div style="min-width: 50px; float: right;">
+				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network.png' alt='' title='' width='48'/>
+				</div>
+				<div style="width: 90%; float:left;">
+					<?php #foreach($system as $key): ?>
+					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>
+					<p><label for="nmis_name"><?php echo __('NMIS Name')?>: </label><span id="nmis_name" <?php echo $edit?>><?php echo print_something($system[0]->nmis_name)?></span></p>
+					<p><label for="nmis_role_select"><?php echo __('NMIS Role')?>: </label><span id="nmis_role_select" style="color:blue;"><span onclick="display_nmis_role();"><?php echo print_something($system[0]->nmis_role)?></span></span></p>
+					<?php #endforeach; ?>
+				</div>
+			</fieldset>
+		</form>
+	</div>
 
 
 
@@ -717,7 +736,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Processor Details')?></span></legend>
 				<?php foreach($processor as $key):
 					$image = $image_path . '48_component_cpu.png';
-					if (mb_stripos($key->processor_description, 'pentium(r) 4'))
+					if (mb_stripos($key->processor_description, 'pentium 4'))
 					{
 						$image = $image_path . '48_intel_p4.png';
 					}
@@ -725,7 +744,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					{
 						$image = $image_path . '48_intel_xeon.png';
 					}
-					if (mb_stripos($key->processor_description, 'Core(TM)2 Duo'))
+					if (mb_stripos($key->processor_description, 'Duo'))
 					{
 						$image = $image_path . '48_intel_core_duo.png';
 					}
@@ -733,7 +752,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 					{
 						$image = $image_path . '48_intel_p3.png';
 					}
-					if (mb_stripos($key->processor_description, 'Intel(R) Pentium(R) D'))
+					if (mb_stripos($key->processor_description, 'Intel Pentium D'))
 					{
 						$image = $image_path . '48_intel_pd.png';
 					}
@@ -2215,19 +2234,38 @@ function receive_criticality() {
 
 
 
+function display_nmis_role() {
+	status_text="<select id='nmis_role' onchange='send_nmis_role();'><option value=' '>Choose an NMIS role</option><option value='access'>Access</option><option value='core'>Core</option><option value='distriubtion'>Distriubtion</option></select>";
+	document.getElementById("nmis_role_select").innerHTML = status_text;
+}
 
-
-
-function display_location()
+function send_nmis_role()
 {
+	table_text=document.getElementById("nmis_role").value;
+	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_role/'+table_text);
+	http.onreadystatechange = receive_nmis_role;
+	http.send(null);
+}
+
+function receive_nmis_role() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      update="<span onclick='display_nmis_role();'>"+http.responseText+"<\/span>";
+      document.getElementById("nmis_role_select").innerHTML = update;
+    }
+  }
+}
+
+
+function display_location() {
 	<?php
 	$location_form = "<option value=' '>Choose a Location<\/option>";
-	foreach ($locations as $location)
-	{
+	foreach ($locations as $location) {
 		$location_form .= "<option value='" . $location->location_id . "'>" . $location->location_name . "<\/option>";
 	}
-	if ($location_id <> "")
-	{
+	if ($location_id <> "") {
 		$location_form = "<select id='man_location_id' onchange='send_location();'>" . $location_form . "<\/select>";
 	} else {
 		$location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>Choose a location<\/option>" . $location_form . "<\/select>";
@@ -2238,8 +2276,7 @@ function display_location()
 	document.getElementById("man_location_id_select").innerHTML = status_text;
 }
 
-function send_location()
-{
+function send_location() {
 	table_text=document.getElementById("man_location_id").value;
 	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_location_id/'+table_text);
 	http.onreadystatechange = receive_location;
@@ -2276,12 +2313,10 @@ function display_org()
 {
 	<?php
 	$org_form = "<option value=' '>Choose an Org<\/option>";
-	foreach ($orgs as $org)
-	{
+	foreach ($orgs as $org) {
 		$org_form .= "<option value='" . $org->org_id . "'>" . $org->org_name . "<\/option>";
 	}
-	if ($org_id <> "")
-	{
+	if ($org_id <> "") {
 		$org_form = "<select id='man_org_id' onchange='send_org();'>" . $org_form . "<\/select>";
 	} else {
 		$org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>Choose an Org<\/option>" . $org_form . "<\/select>";
@@ -2324,6 +2359,7 @@ $(document).ready(function(){
 	$('#view_summary_location').hide();
 	$('#view_summary_custom').hide();
 	$('#view_summary_attachment').hide();
+	$('#view_summary_nmis').hide();
 
 	$('#toggle_summary_windows').click(function(){
 		$('#view_summary_windows').slideToggle("fast");
@@ -2365,6 +2401,10 @@ $(document).ready(function(){
 		$('#view_summary_attachment').slideToggle("fast");
 	});
 
+	$('#toggle_summary_nmis').click(function(){
+		$('#view_summary_nmis').slideToggle("fast");
+	});
+
 	var summary_toggle = 0;
 
 	$('#toggle_summary_all').click(function(){
@@ -2380,6 +2420,7 @@ $(document).ready(function(){
 			$('#view_summary_location').show("fast");
 			$('#view_summary_custom').show("fast");
 			$('#view_summary_attachment').show("fast");
+			$('#view_summary_nmis').show("fast");
 			summary_toggle = 1;
 		}
 		else 
@@ -2394,6 +2435,7 @@ $(document).ready(function(){
 			$('#view_summary_location').hide("fast");
 			$('#view_summary_custom').hide("fast");
 			$('#view_summary_attachment').hide("fast");
+			$('#view_summary_nmis').hide("fast");
 			summary_toggle = 0;
 		}
 	});

@@ -61,6 +61,7 @@ if ($access_level > 7) {
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
+		 			<?php if ($config->nmis == 'y') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
 				</ul> 
 			</div>
 		</fieldset> 
@@ -95,7 +96,8 @@ if ($access_level > 7) {
 				<?php foreach($system as $key): ?>
 					<div>
 						<div style="float:left; width:50%;">
-							<?php if ($key->hostname) { echo "<p><label for=\"hostname\">" . __('Hostname') . ": </label><span id=\"hostname\">$key->hostname</span></p>"; } ?>
+							<?php if ($key->hostname == '') {$key->hostname = '-'; } 
+							echo "<p><label for=\"hostname\">" . __('Hostname') . ": </label><span id=\"hostname\">$key->hostname</span></p>"; ?>
 							<?php if ($key->man_ip_address) { echo "<p><label for=\"man_ip_address\">" . __('IP Address') . ": </label><span id=\"man_ip_address\" $edit>" . ip_address_from_db($key->man_ip_address) . "</span></p>"; } ?>
 							<p><label for="man_environment_select"><?php echo __('Environment')?>: </label>
 							<?php if ($access_level > 7) { ?>
@@ -114,6 +116,7 @@ if ($access_level > 7) {
 							<?php if ($key->man_os_group) { echo "<p><label for=\"man_os_group\">" . __('OS Group') . ": </label><span id=\"man_os_group\">$key->man_os_group</span></p>"; } ?>
 							<?php if ($key->man_os_family) { echo "<p><label for=\"man_os_family\">" . __('OS Family') . ": </label><span id=\"man_os_family\">$key->man_os_family</span></p>"; } ?>
 							<?php if ($key->man_os_name) { echo "<p><label for=\"man_os_name\">" . __('OS Name') . ": </label><span id=\"man_os_name\">$key->man_os_name</span></p>"; } ?>
+							<?php if ($key->snmp_oid) { echo "<p><label for=\"snmp_oid\">" . __('SNMP OID') . ": </label><span id=\"snmp_oid\">$key->snmp_oid</span></p>"; } ?>
 						</div>
 						<div style="float:right; width:50%;">
 							<p><label for="man_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="man_manufacturer" <?php echo $edit?>><?php echo print_something($key->man_manufacturer)?></span></p>
@@ -412,6 +415,26 @@ if ($access_level > 7) {
 		</form>
 	<?php } ?> 
 	</div>
+
+
+	<div id="view_summary_nmis" style="float: left; width: 100%;">
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="summary_nmis">
+				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('NMIS Details')?></span></legend>
+				<div style="min-width: 50px; float: right;">
+				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network.png' alt='' title='' width='48'/>
+				</div>
+				<div style="width: 90%; float:left;">
+					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>
+					<p><label for="nmis_name"><?php echo __('NMIS Name')?>: </label><span id="nmis_name" <?php echo $edit?>><?php echo print_something($system[0]->nmis_name)?></span></p>
+					<p><label for="nmis_role_select"><?php echo __('NMIS Role')?>: </label><span id="nmis_role_select" style="color:blue;"><span onclick="display_nmis_role();"><?php echo print_something($system[0]->nmis_role)?></span></span></p>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
+
 <!-- end of content_column -->
 
 
@@ -516,7 +539,29 @@ function receive_criticality() {
 }
 
 
+function display_nmis_role() {
+	status_text="<select id='nmis_role' onchange='send_nmis_role();'><option value=' '>Choose an NMIS role</option><option value='access'>Access</option><option value='core'>Core</option><option value='distriubtion'>Distriubtion</option></select>";
+	document.getElementById("nmis_role_select").innerHTML = status_text;
+}
 
+function send_nmis_role()
+{
+	table_text=document.getElementById("nmis_role").value;
+	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_role/'+table_text);
+	http.onreadystatechange = receive_nmis_role;
+	http.send(null);
+}
+
+function receive_nmis_role() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      update="<span onclick='display_nmis_role();'>"+http.responseText+"<\/span>";
+      document.getElementById("nmis_role_select").innerHTML = update;
+    }
+  }
+}
 
 
 
@@ -610,6 +655,7 @@ $(document).ready(function(){
 	$('#view_summary_audits').hide();
 	$('#view_summary_audit_log').hide();
 	$('#view_summary_alerts').hide();
+	$('#view_summary_nmis').hide();
 
 	$('#toggle_summary_credentials').click(function(){
 		$('#view_summary_credentials').slideToggle("fast");
@@ -639,6 +685,10 @@ $(document).ready(function(){
 		$('#view_summary_alerts').slideToggle("fast");
 	});
 
+	$('#toggle_summary_nmis').click(function(){
+		$('#view_summary_nmis').slideToggle("fast");
+	});
+
 	var summary_toggle = 0;
 
 	$('#toggle_summary_all').click(function(){
@@ -651,6 +701,7 @@ $(document).ready(function(){
 			$('#view_summary_audits').show("fast");
 			$('#view_summary_audit_log').show("fast");
 			$('#view_summary_alerts').show("fast");
+			$('#view_summary_nmis').show("fast");
 			summary_toggle = 1;
 		}
 		else 
@@ -662,6 +713,7 @@ $(document).ready(function(){
 			$('#view_summary_audits').hide("fast");
 			$('#view_summary_audit_log').hide("fast");
 			$('#view_summary_alerts').hide("fast");
+			$('#view_summary_nmis').hide("fast");
 			summary_toggle = 0;
 		}
 	});

@@ -29,7 +29,7 @@ class Admin_test extends MY_Controller {
 	function data() {
 
 		# comment the below line out to enable this funtcion.
-		#redirect('/');
+		redirect('/');
 		$computers_to_add = 1000;
 		
 		# populate the Open-AudIT database with dummy locations, devices and set up a few groups
@@ -1089,12 +1089,12 @@ class Admin_test extends MY_Controller {
 
 
 
-	function data_computers() {
+	function data_devices() {
+		# populate the Open-AudIT database with dummy devices
 
 		# comment the below line out to enable this funtcion.
-		#redirect('/');
+		redirect('/');
 		
-		# populate the Open-AudIT database with dummy locations, devices and set up a few groups
 
 		$this->load->model("m_oa_location");
 		$this->load->model("m_system");	
@@ -1563,7 +1563,11 @@ class Admin_test extends MY_Controller {
 
 
 function data_software() {
-			# insert some random software
+		# populate the Open-AudIT database with dummy software
+
+		# comment the below line out to enable this funtcion.
+		redirect('/');
+		
 		$this->load->model("m_oa_group");
 		$sql = "SELECT system_id, timestamp FROM system WHERE man_type = 'computer' ORDER BY RAND() DESC LIMIT 100";
 		$query = $this->db->query($sql);
@@ -1700,6 +1704,5 @@ function data_software() {
 		$this->m_oa_group->update_groups();
 		redirect('/');
 	}
-
 
 }

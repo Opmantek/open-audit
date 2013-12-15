@@ -4,9 +4,8 @@
 			<th align="center" class="{sorter: false}">Icon</th>
 			<th align="center" style="width:100px;"><?php echo __('Systems')?></th>
 			<th><?php echo __('Name')?></th>
-			<th><?php echo __('Type')?></th>
-			<th><?php echo __('Description')?></th>
 			<th><?php echo __('Category')?></th>
+			<th><?php echo __('Description')?></th>
 			<th align="center" class="{sorter: false}"><?php echo __('Edit')?></th>
 			<th align="center" class="{sorter: false}"><?php echo __('Export')?></th>
 			<th align="center" class="{sorter: false}"><?php echo __('Update')?></th>
@@ -32,7 +31,6 @@
 			<?php } ?>
 			<td align="center"><?php echo $key->group_category?></td>
 			<td><?php echo $key->group_description?></td>
-			<td align="center"><?php echo $key->group_category?></td>
 			<td align="center"><?php if ($key->group_id != '1') {echo $edit_pic; } ?> </td>
 			<td align="center"><?php echo $export_pic?></td>
 			<td align="center"><?php echo $update_pic?></td>
