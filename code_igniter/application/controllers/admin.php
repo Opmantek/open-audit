@@ -27,12 +27,7 @@ class Admin extends MY_Controller {
 	}
 
 	function test() {
-		$this->load->model('m_system');
-		$details = new stdClass();
-		$details->type = 'computer';
-		$details->class = 'laptop';
-		$details->man_ip_address = '0.0.0.0';
-		$this->m_system->insert_system($details);
+		echo $_SERVER['SCRIPT_FILENAME'];
 		exit();
 	}
 
@@ -107,8 +102,7 @@ class Admin extends MY_Controller {
 			$this->data['sortcolumn'] = '1';
 			$this->load->view('v_template', $this->data);
 		} else {
-			$cmd = "php /var/www/index.php admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
-			exec($cmd);
+			$cmd = "php " . $_SERVER['SCRIPT_FILENAME'] . " admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
 			redirect('/admin/view_log');
 		}
 	}
