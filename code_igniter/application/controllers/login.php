@@ -50,10 +50,15 @@ class Login extends CI_Controller {
 			if (strpos(strtolower($oae_url), "http") === FALSE) {
 				# if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
 
+				# Make sure we have a leading /
+				if (substr($oae_url, 0) != "/") {
+					$oae_url = "/" . $oae_url;
+				}
+
 				# need to create a link to OAE on port 8042 to check the license
 				# we cannot detect and use the browser http[s] as it may being used in the client browser, 
 				#     but stripped by a https offload or proxy
-				$oae_license_url = "http://localhost:8042" . $oae_url . "license";
+				$oae_license_url = "http://localhost" . $oae_url . "license";
 
 				# we create a link for the browser using the same address + the path & file in oae_url
 				if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
@@ -62,7 +67,7 @@ class Login extends CI_Controller {
 					$oae_url = "http://" . $_SERVER['HTTP_HOST'] . $oae_url;
 				}
 			} else {
-				# we already have a URL like http://something, leave it alone
+				# we already have a URL like http://something/omk/oae/ - leave it alone
 				$oae_license_url = $oae_url . "license";
 			}
 
@@ -70,7 +75,7 @@ class Login extends CI_Controller {
 			ini_set('default_socket_timeout', 3);  
 			# get the license status from the OAE API
 			# license status are: valid, invalid, expired, none
-			$license = @file_get_contents($oae_license_url, FALSE, $timeout);
+			$license = @file_get_contents($oae_license_url, FALSE);
 			if ($license !== FALSE) {
 				# remove the unneeded html tags
 				$license = str_replace("<pre>", "", $license);
