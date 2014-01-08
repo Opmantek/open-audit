@@ -78,7 +78,7 @@ class Report extends MY_Controller {
 		# make sure we specify a report
 		if ($this->data['report_id'] == "0") {
 			# no report specified - show error page
-			$this->data['error'] = "You attempted to run a Report that does not exist or has not been activated. <br />As an Admin Level user you can go to Admin -> Reports -> Activate Report.";
+			$this->data['error'] = "You attempted to run a Report that does not exist or has not been activated. <br />As an Admin Level user you can activate reports at Admin -> Reports -> Activate Report.";
 			$this->data['query'] = '';
 			$this->data['heading'] = 'Error'; 
 			$this->data['include'] = 'v_error'; 
@@ -93,7 +93,7 @@ class Report extends MY_Controller {
 
 		if (count($report_test) == 0) {
 			# no details returned - show error page
-			$this->data['error'] = "You attempted to run a Report that does not exist.";
+			$this->data['error'] = "You attempted to run a Report that does not exist or has not been activated. <br />As an Admin Level user you can activate reports at Admin -> Reports -> Activate Report.";
 			$this->data['query'] = '';
 			$this->data['heading'] = 'Error'; 
 			$this->data['include'] = 'v_error'; 
