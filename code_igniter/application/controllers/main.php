@@ -257,6 +257,22 @@ class Main extends MY_Controller {
 		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
 	}
 
+	function search_device() {
+		# search for a mcth on PRODUCTION devices only.
+		# search for name, ip
+		$this->data['search'] = urldecode($this->uri->segment(3,0));
+		$this->data['search'] = html_entity_decode($this->data['search']);
+		$this->load->model("m_system");
+		$this->data['query'] = $this->m_system->search_device($this->data['search']);
+		$this->data['heading'] = 'Search Result (' . $this->data['search'] . ")";
+		$this->data['column'] = $this->m_system->search_device_columns();
+		$this->data['count'] = count($this->data['query']);
+		$this->data['include'] = 'v_dump'; 
+		$this->data['sortcolumn'] = '0';
+		$this->data['export_report'] = 'y';
+		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+	}
+
 	function disk_graph() {
 		$this->load->model("m_partition");
 		$this->load->model("m_system");

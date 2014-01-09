@@ -434,6 +434,94 @@ class M_system extends MY_Model {
 		return ($row->hostname);
 	}
 
+	function search_device($search) {
+		$search_ip = $search;
+		# remove a trailing "." if present because the ip padding will insert "000" and not match any ip
+		if (substr($search_ip, -1) == ".") {
+			$search_ip = substr($search_ip, 0, -1);
+		}
+		$myip = explode(".",$search_ip);
+		foreach ($myip as $index => $data) {
+			$myip[$index] = mb_substr("000" . $myip[$index], -3);
+		}
+		$search_ip = implode(".", $myip);
+		$sql = "SELECT 
+				system.system_id, 
+				system.hostname, 
+				system.man_ip_address, 
+				system.man_type, 
+				system.man_icon 
+			FROM 
+				system LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
+			WHERE 
+				( system.man_ip_address LIKE '%" . $search_ip . "%' OR
+				system.hostname LIKE '%" . $search . "%' OR 
+				sys_hw_network_card_ip.ip_address_v4 LIKE '%" . $search_ip . "%' OR 
+				sys_hw_network_card_ip.ip_address_v6 LIKE '%" . $search . "%' ) AND 
+				system.man_status = 'production' 
+			GROUP BY 
+				system.system_id 
+			ORDER BY 
+				system.hostname";
+		$sql = $this->clean_sql($sql);
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		for ($i=0; $i<count($result); $i++) {
+			$result[$i]->man_ip_address = $this->ip_address_from_db($result[$i]->man_ip_address);
+		}
+		#echo "<pre>\n";
+		#print_r($result);
+		#echo "</pre>\n";
+		#exit();
+		return ($result);
+	}
+
+	function search_device_columns() {
+		$i = new stdclass();
+		$result = array();
+		$i->column_order = '3';
+		$i->column_name = 'Icon';
+		$i->column_variable = 'man_icon';
+		$i->column_type = "image";
+		$i->column_align = "center";
+		$i->column_secondary = "man_type";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[0] = $i;
+		$i = new stdclass();
+		$i->column_order = '1';
+		$i->column_name = 'Type';
+		$i->column_variable = 'man_type';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[1] = $i;
+		$i = new stdclass();
+		$i->column_order = '0';
+		$i->column_name = 'Name';
+		$i->column_variable = 'hostname';
+		$i->column_type = "link";
+		$i->column_align = "left";
+		$i->column_secondary = "system_id";
+		$i->column_ternary = "";
+		$i->column_link = $this->data['config']->oae_url . "/system_summary/";
+		$result[2] = $i;
+		$i = new stdclass();
+		$i->column_order = '1';
+		$i->column_name = 'IP Address';
+		$i->column_variable = 'man_ip_address';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[3] = $i;
+		$i = new stdclass();
+		return ($result);
+	}
+
 	function get_system_popup($system_id) {
 		$sql = "SELECT 		system_id, man_status, man_manufacturer, man_form_factor, 
 							man_model, man_picture, man_serial, man_form_factor, man_type 
