@@ -2952,6 +2952,7 @@ if (skip_software = "n") then
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dx_version
 	dx_name = ""
 	if system_os_version > "6" then dx_version = system_os_version end if
+	if (isnull(dx_version)) then dx_version = "" end if
 	dx_version = replace(dx_version, "6.0.", "6.00.")
 	dx_version = replace(dx_version, "6.1.", "6.01.")
 	dx_version = replace(dx_version, "6.2.", "6.02.")
