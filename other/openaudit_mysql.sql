@@ -1710,8 +1710,8 @@ INSERT INTO `oa_user` VALUES  (3, 'nmis', '5a7f9a638ea430196d765ef8d3875eafd64ee
 INSERT INTO `oa_group_user` VALUES  (1,1,1,10);
 INSERT INTO `oa_group_user` VALUES  (2,2,1,3);
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20131219', 'n', 'The internal numerical version.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.1', 'n', 'The version shown on the web pages.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20140126', 'n', 'The internal numerical version.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.1.1', 'n', 'The version shown on the web pages.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('non_admin_search', 'y', 'y', 'Enable or disable search for non-Administrators');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate. EG - open-audit.org');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1');
