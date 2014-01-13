@@ -189,10 +189,11 @@ class M_oa_location extends MY_Model {
 
 				if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
 					$i->icon = base_url() . 'theme-tango/tango-images/32_' . $row->location_icon . '.png';
+					$i->icon = str_replace("http://127.0.0.1", "", $i->icon);
 					$i->infoDisplay = '"' . $row->man_type . '":"' . $row->count . '", ';
 				} else {
-					$i->icon = $row->location_icon;
-					$i->icon = '<img src="http://localhost/theme-tango/tango-images/32_' . $row->location_icon . '.png" />';
+					$i->icon = base_url() . 'theme-tango/tango-images/32_' . $row->location_icon . '.png';
+					$i->icon = str_replace("http://127.0.0.1", "", $i->icon);
 					$j = $row->man_type;
 					$i->$j = $row->count;
 				}
