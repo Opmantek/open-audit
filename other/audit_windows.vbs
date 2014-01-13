@@ -2808,29 +2808,29 @@ if (skip_software = "n") then
 	result.WriteText "	<software>" & vbcrlf
 	' commenting out the below routine for now
 	function disable()
-	if debugging > "0" then wscript.echo "BHO info" end if 
-	if NOT InStr(system_os_full_name, "95") and NOT InStr(system_os_full_name, "98") and NOT InStr(system_os_full_name, "Vista") and NOT InStr(system_os_full_name, "Windows 7") and NOT InStr(system_os_full_name, "2008") then
-		set objWMIService_IE = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2\Applications\MicrosoftIE")
-		set colIESettings = objWMIService_IE.ExecQuery ("Select * from MicrosoftIE_Object",,32)
-		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIE_Object)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIE_Object " : end if
-		for each strIESetting in colIESettings
-			result.WriteText "		<package>" & vbcrlf
-			result.WriteText "			<software_name>" & escape_xml(strIESetting.ProgramFile) & "</software_name>" & vbcrlf
-			result.WriteText "			<software_version></software_version>" & vbcrlf
-			result.WriteText "			<software_location></software_location>" & vbcrlf
-			result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-			result.WriteText "			<software_install_date></software_install_date>" & vbcrlf
-			result.WriteText "			<software_publisher></software_publisher>" & vbcrlf
-			result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
-			result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-			result.WriteText "			<software_url>" & escape_xml(strIESetting.CodeBase) & "</software_url>" & vbcrlf
-			result.WriteText "			<software_email></software_email>" & vbcrlf
-			result.WriteText "			<software_comment>browser addon</software_comment>" & vbcrlf
-			result.WriteText "			<software_code_base>" & escape_xml(strIESetting.CodeBase) & "</software_code_base>" & vbcrlf
-			result.WriteText "			<software_status>" & escape_xml(strIESetting.Status) & "</software_status>" & vbcrlf
-			result.WriteText "		</package>" & vbcrlf
-		next
-	end if
+		if debugging > "0" then wscript.echo "BHO info" end if 
+		if NOT InStr(system_os_full_name, "95") and NOT InStr(system_os_full_name, "98") and NOT InStr(system_os_full_name, "Vista") and NOT InStr(system_os_full_name, "Windows 7") and NOT InStr(system_os_full_name, "2008") then
+			set objWMIService_IE = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2\Applications\MicrosoftIE")
+			set colIESettings = objWMIService_IE.ExecQuery ("Select * from MicrosoftIE_Object",,32)
+			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIE_Object)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIE_Object " : end if
+			for each strIESetting in colIESettings
+				result.WriteText "		<package>" & vbcrlf
+				result.WriteText "			<software_name>" & escape_xml(strIESetting.ProgramFile) & "</software_name>" & vbcrlf
+				result.WriteText "			<software_version></software_version>" & vbcrlf
+				result.WriteText "			<software_location></software_location>" & vbcrlf
+				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+				result.WriteText "			<software_install_date></software_install_date>" & vbcrlf
+				result.WriteText "			<software_publisher></software_publisher>" & vbcrlf
+				result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
+				result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+				result.WriteText "			<software_url>" & escape_xml(strIESetting.CodeBase) & "</software_url>" & vbcrlf
+				result.WriteText "			<software_email></software_email>" & vbcrlf
+				result.WriteText "			<software_comment>browser addon</software_comment>" & vbcrlf
+				result.WriteText "			<software_code_base>" & escape_xml(strIESetting.CodeBase) & "</software_code_base>" & vbcrlf
+				result.WriteText "			<software_status>" & escape_xml(strIESetting.Status) & "</software_status>" & vbcrlf
+				result.WriteText "		</package>" & vbcrlf
+			next
+		end if
 	end function
 
 
@@ -2862,30 +2862,31 @@ if (skip_software = "n") then
 	if debugging > "0" then wscript.echo "ODBC Driver info" end if 
 	strKeyPath = "SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers"
 	oReg.EnumValues HKEY_LOCAL_MACHINE, strKeyPath, arrValueNames, arrValueTypes
-	 
-	for i = 0 to UBound(arrValueNames)
-		strValueName = arrValueNames(i)
-		oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,strValue
-		if strValue = "Installed" then
-			oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
-			oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
-			result.WriteText "		<package>" & vbcrlf
-			result.WriteText "			<software_name>" & escape_xml(strValueName) & "</software_name>" & vbcrlf
-			result.WriteText "			<software_version>" & escape_xml(driver_version) & "</software_version>" & vbcrlf
-			result.WriteText "			<software_location>" & escape_xml(file_name) & "</software_location>" & vbcrlf
-			result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-			result.WriteText "			<software_install_date></software_install_date>" & vbcrlf
-			result.WriteText "			<software_publisher></software_publisher>" & vbcrlf
-			result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
-			result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-			result.WriteText "			<software_url></software_url>" & vbcrlf
-			result.WriteText "			<software_email></software_email>" & vbcrlf
-			result.WriteText "			<software_comment>odbc driver</software_comment>" & vbcrlf
-			result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-			result.WriteText "			<software_status></software_status>" & vbcrlf
-			result.WriteText "		</package>" & vbcrlf
-		end if
-	next
+	if (not isnull(arrValueNames)) then
+		for i = 0 to UBound(arrValueNames)
+			strValueName = arrValueNames(i)
+			oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,strValue
+			if strValue = "Installed" then
+				oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
+				oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
+				result.WriteText "		<package>" & vbcrlf
+				result.WriteText "			<software_name>" & escape_xml(strValueName) & "</software_name>" & vbcrlf
+				result.WriteText "			<software_version>" & escape_xml(driver_version) & "</software_version>" & vbcrlf
+				result.WriteText "			<software_location>" & escape_xml(file_name) & "</software_location>" & vbcrlf
+				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+				result.WriteText "			<software_install_date></software_install_date>" & vbcrlf
+				result.WriteText "			<software_publisher></software_publisher>" & vbcrlf
+				result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
+				result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+				result.WriteText "			<software_url></software_url>" & vbcrlf
+				result.WriteText "			<software_email></software_email>" & vbcrlf
+				result.WriteText "			<software_comment>odbc driver</software_comment>" & vbcrlf
+				result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+				result.WriteText "			<software_status></software_status>" & vbcrlf
+				result.WriteText "		</package>" & vbcrlf
+			end if
+		next
+	end if
 
 
 	if debugging > "0" then wscript.echo "ODBC Driver info 64bit" end if 
