@@ -99,9 +99,9 @@ class M_ip_address extends MY_Model {
 				$row = $query->row();
 				if ($row->config_value <> 'n') {
 					$group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '" . $start_ip . "' AND sys_hw_network_card_ip.ip_address_v4 <= '" . $finish_ip . "' AND sys_hw_network_card_ip.ip_subnet = '" . $input->ip_subnet . "' AND sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp AND system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '" . $start_ip . "' AND system.man_ip_address <= '" . $finish_ip . "' AND system.man_status = 'production')";
-					$start=explode(' ',microtime()); 
+					$start = explode(' ',microtime()); 
 					$sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
-					$data=array($group_dynamic_select);
+					$data = array($group_dynamic_select);
 					$query = $this->db->query($sql, $data);
 					if ($query->num_rows() > 0) {
 						// group exists - no need to do anything
