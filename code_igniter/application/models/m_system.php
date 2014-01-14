@@ -858,6 +858,9 @@ class M_system extends MY_Model {
 		if (!isset($details->man_status)) { $details->man_status = 'production'; }
 		if (!isset($details->man_type)) { $details->man_type = $details->type; }
 
+		# we now set a default location - 0 the location_id 
+		if (!isset($details->man_location_id)) { $details->man_location_id = '0'; }
+
 		if ((strripos($details->manufacturer, "vmware") !== false) or 
 			(strripos($details->manufacturer, "parallels") !== false) or 
 			(strripos($details->manufacturer, "virtual") !== false)) {

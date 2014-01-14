@@ -1,6 +1,6 @@
 <?php
 $sortcolumn = 2; 
-if (count($query) > 1)
+if (count($query) > 0)
 {
 ?>		
 <table cellspacing="1" class="tablesorter">
@@ -20,7 +20,7 @@ if (count($query) > 1)
 	</thead>
 	<tbody>
 		<?php 
-		if (count($query) > 1)
+		if (count($query) > 0)
 		{
 			foreach($query as $key):
 				
@@ -41,7 +41,10 @@ if (count($query) > 1)
 					$activate_pic = "<a href=\"activate_group/" . $key->location_id . "\"><img src='" . $image_path . "16_true.png' alt='' title='' width='16'/></a>";
 				}
 
-				if ($key->location_id > 0 ) {
+				if ($key->location_id == '0') {
+					$delete_pic = '';
+				}
+
 			 ?>
 			<tr>
 				<td align="center"><?php echo $key->total?></td>
@@ -55,7 +58,6 @@ if (count($query) > 1)
 				<td align="center"><?php echo $edit_pic?></td>
 				<td align="center"><?php echo $delete_pic?></td>
 			</tr>
-			<?php } ?>
 			<?php endforeach; ?>
 		<?php } else { ?>
 		<tr>

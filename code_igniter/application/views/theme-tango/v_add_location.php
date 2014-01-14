@@ -42,7 +42,7 @@ echo form_open('admin_location/add_location') . "\n";
 					<option value='Marina'>Marina</option>
 					<option value='Mobile Phone Tower'>Mobile Phone Tower</option>
 					<option value='Motel'>Motel</option>
-					<option value='Navy'>Navy></option>
+					<option value='Navy'>Navy</option>
 					<option value='Newsagent'>Newsagent</option>
 					<option value='Nursing Home'>Nursing Home</option>
 					<option value='Observatory'>Observatory</option>
