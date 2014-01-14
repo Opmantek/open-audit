@@ -35,8 +35,8 @@
 			<?php } ?>
 			</tbody>
 		</table>
+	<br /><span style="color: red;">NOTE</span>- To remove the value for a config item, insert a - (a dash or minus) into the field. Removing the value and not inputting anything will not actually remove the value.<br />
 	</fieldset>
 </div>
-
 </div>
 </div>
