@@ -1707,8 +1707,7 @@ INSERT INTO `oa_user` VALUES  (1, 'admin', '0ab0a153e5bbcd80c50a02da8c97f3c87686
 INSERT INTO `oa_user` VALUES  (2, 'open-audit_enterprise', '43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e', 'Open-AudIT Enterprise', '', 'en', '10', 'tango', 'n', 'y', '1', '1');
 INSERT INTO `oa_user` VALUES  (3, 'nmis', '5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757', 'NMIS', '', 'en', '10', 'tango', 'y', 'y', '10', '3');
 
-INSERT INTO `oa_group_user` VALUES  (1,1,1,10);
-INSERT INTO `oa_group_user` VALUES  (2,2,1,3);
+INSERT INTO `oa_group_user` VALUES (1,2,1,3),(2,1,1,10),(3,1,2,10),(4,1,8,10),(5,1,6,10),(6,1,3,10),(7,1,4,10),(8,1,7,10),(9,1,5,10),(10,3,1,10),(11,3,2,10),(12,3,8,10),(13,3,6,10),(14,3,3,10),(15,3,4,10),(16,3,7,10),(17,3,5,10);
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20140126', 'n', 'The internal numerical version.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.1.1', 'n', 'The version shown on the web pages.');
