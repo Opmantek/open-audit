@@ -228,16 +228,65 @@ class Admin extends MY_Controller {
 		}
 
 		if (isset($_POST['ScanNmap'])) {
+			# test if we have a subnet or only an IP
+			if (isset($_POST['subnet'])) {
+				$subnet = $_POST['subnet'];
+			} else {
+				$subnet = "";
+			}
+
+			if (strpos($subnet, "/")) {
+				# we have a subnet - if it's not a /32, then test for a group
+				$subnet_split = explode("/", $subnet);
+				if ($subnet_split[1] <> "32") {
+					# we have a real subnet
+					$subnet_details = network_details($subnet);
+					$sql = "SELECT config_value FROM oa_config WHERE config_name = 'auto_create_network_groups' ";
+					$query = $this->db->query($sql);
+					$row = $query->row();
+					if ($row->config_value <> 'n') {
+						echo "Yes, create network groups.\n";
+						# we do want to auto create network groups
+						$group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '" . ip_address_to_db($subnet_details->host_min) . "' AND sys_hw_network_card_ip.ip_address_v4 <= '" . ip_address_to_db($subnet_details->host_max) . "' AND sys_hw_network_card_ip.ip_subnet = '" . $subnet_details->netmask . "' AND sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp AND system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '" . ip_address_to_db($subnet_details->host_min) . "' AND system.man_ip_address <= '" . ip_address_to_db($subnet_details->host_max) . "' AND system.man_status = 'production')";
+						$start = explode(' ',microtime()); 
+						$sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
+						$data = array($group_dynamic_select);
+						$query = $this->db->query($sql, $data);
+						if ($query->num_rows() > 0) {
+							// group exists - no need to do anything
+						} else {
+							// insert new group
+							$sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (NULL, ?, ?, ?, '1', ?, 'network', 'switch')";
+							#$sql = $this->clean_sql($sql);
+							$group_name = "Network - " . $subnet_details->network . ' / ' . $subnet_details->network_slash;
+							$group_padded_name = "Network - " . ip_address_to_db($subnet_details->network);
+							$data = array("$group_name", "$group_padded_name", "$group_dynamic_select", $subnet_details->network);
+							$query = $this->db->query($sql, $data);
+							$insert_id = $this->db->insert_id();
+							// We need to insert an entry into oa_group_user for any Admin level user
+							$sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+							$data = array( $insert_id );
+							$result = $this->db->query($sql, $data);
+							# now we update this specific group
+							# this accounts for if another system has a IP that would fall in this group, but was submitted
+							# without a subnet and no matching network group was previously created.
+							# update the group with all systems that match
+							$this->load->model('m_oa_group');
+							$this->m_oa_group->update_specific_group($insert_id); 
+						}
+					}
+
+				}
+			}
+
 			if ($operating_system == 'Linux') {
-				if ($_POST['subnet'] > '' ) {
-					$subnet = $_POST['subnet'];
+				if ($subnet > '' ) {
 					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
 					exec($cmd);
 				}
 			}
 			if ($operating_system == 'Windows') {
-				if ($_POST['subnet'] > '' ) {
-					$subnet = $_POST['subnet'];
+				if ($subnet > '' ) {
 					$cmd = "%comspec% /c start /b cscript //nologo c:\\xampplite\\open-audit\\other\\audit_subnet.vbs subnet=$subnet submit_online=y create_file=n debugging=0 &";
 					pclose(popen($cmd,"r"));
 				}
@@ -2147,7 +2196,31 @@ class Admin extends MY_Controller {
 		}
 
 		if (($db_internal_version < '20140126') AND ($this->db->platform() == 'mysql')) {
-			# upgrade for 1.1.1		
+			# upgrade for 1.1.1	
+
+			# update the details of the default group
+			$sql = "UPDATE oa_location set location_name = 'Default Location', location_type = 'Office', location_city = 'Gold Coast', location_state = 'Queensland', location_country = 'Australia', location_latitude = '-28.017260', location_longitude = '153.425705', location_icon = 'office' WHERE location_id = '0'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			# insert the accompanying group
+			$sql = "INSERT INTO oa_group (group_id, group_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (NULL, 'Items in Default Location', 'SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = \'0\' AND system.man_status = \'production\'', '1', 'Items in Default Location', 'location', 'location')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			$group_id = $this->db->insert_id();
+
+			# give Admin level users access to the group
+			$sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+			$data = array( $group_id );
+			$this->data['output'] .= $this->db->last_query() . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			# and update the location with the inserted group_id
+			$sql = "UPDATE oa_location SET location_group_id = ? WHERE location_id = '0'";
+			$data = array( $group_id );
+			$this->data['output'] .= $this->db->last_query() . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "UPDATE oa_config set config_value = '20140126', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
