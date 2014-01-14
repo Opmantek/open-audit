@@ -2221,6 +2221,14 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $this->db->last_query() . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "UPDATE oa_config set config_value = '/omk/oae' WHERE config_name = 'oae_url'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '/omk/oae/map' WHERE config_name = 'maps_url'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "UPDATE oa_config set config_value = '20140126', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);

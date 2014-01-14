@@ -47,9 +47,9 @@
 	<div style="width:100px; float: right; text-align: center;">
 	<?php #if (isset($config->maps_url) and filter_var($config->maps_url, FILTER_VALIDATE_URL)) { ?>
 	<?php if (isset($config->maps_url) and $config->maps_url > "") { ?>
-		<br />opMaps<br /><a href="<?php echo $config->maps_url; ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
+		<br />Map<br /><a href="<?php echo $config->maps_url; ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
 	<?php } else { ?>
-		<br />opMaps<br /><a href="<?php echo base_url(); ?>index.php/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
+		<br />Map<br /><a href="<?php echo base_url(); ?>index.php/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
 	<?php } ?>
 	</div>
 </div>

@@ -357,7 +357,7 @@ class Main extends MY_Controller {
 	}
 
 	function help_opmaps() {
-		$this->data['heading'] = 'opMaps'; 
+		$this->data['heading'] = 'Maps'; 
 		$this->data['include'] = 'v_help_opmaps'; 
 		$this->load->view('v_template', $this->data);
 	}

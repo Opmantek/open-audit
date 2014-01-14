@@ -8,15 +8,7 @@ $sortcolumn = 2;
 		Scheduled Reports, Interactive Dashboards and Maps and more.<br />
 		All purchases go to further Open-AudIT for all of us. Contact <a href="https://opmantek.com" style="color: green;">Opmantek</a>.<br />
 		<br /><br />
-		<table border="0">
-			<tr>
-				<td><img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_devices_discovered.png" /><br /></td>
-				<td><img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_software_discovered.png" /><br /></td>
-			</tr>
-			<tr>
-				<td><img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_device_types.png" /><br /></td>
-				<td><img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_devices_not_seen.png" /><br /></td>
-			</tr>
-		</table>
+		<img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_dashboard.png" /><br /><br />
+		<img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_report.png" /><br />
 	</fieldset>
 </form>
