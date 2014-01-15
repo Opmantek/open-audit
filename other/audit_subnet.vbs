@@ -121,7 +121,21 @@ if debugging > "0" then wscript.echo "My PID: " & current_pid
 if debugging > "0" then wscript.echo "Scanning Subnet: " & subnet
 
 command = "C:\Program Files (x86)\Nmap\nmap.exe -sP -PE -PP -n " & subnet
-set objExecObject = objShell.Exec(command)
+on error resume next
+	set objExecObject = objShell.Exec(command)
+	error_returned = Err.Number
+	error_description = Err.Description
+on error goto 0
+if (error_returned <> 0) then 
+	if debugging > "0" then wscript.echo "No Nmap found." end if
+	if syslog = "y" then
+		timestamp = get_timestamp()
+		log_entry = timestamp & " " & system_hostname & " " & current_pid & " No Nmap found, aborting" & vbcrlf
+		objTS.Write log_entry
+	end if
+	Err.Clear
+	WScript.Quit 1
+end if
 
 Do Until objExecObject.Status = 0
  WScript.Sleep 100
@@ -291,5 +305,8 @@ if syslog = "y" then
 end if
 
 function get_timestamp()
-	get_timestamp = Year(Now()) & "-" & Right("0" & Month(Now()),2) & "-" & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
+	' removed the below and using month short name, no year, as per other logging
+	' get_timestamp = Year(Now()) & "-" & Right("0" & Month(Now()),2) & "-" & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
+
+	get_timestamp = monthname(month(now()), True) & "-" & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
 end function
