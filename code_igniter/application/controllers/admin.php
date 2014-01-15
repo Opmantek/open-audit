@@ -2233,6 +2233,16 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "SELECT config_value FROM oa_config WHERE config_name = 'nmis_url'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			$row = $query->row();
+			if ($row->config_value == 'http://localhost/cgi-nmis8/nmiscgi.pl') {
+				$sql = "UPDATE oa_config set config_value = '' WHERE config_name = 'nmis_url'";
+				$this->data['output'] .= $sql . "<br /><br />\n";
+				$query = $this->db->query($sql);
+			}
+
 			$sql = "UPDATE oa_config set config_value = '20140126', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
@@ -2240,6 +2250,8 @@ class Admin extends MY_Controller {
 			$sql = "UPDATE oa_config set config_value = '1.1.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
+
+			$this->data['output'] .= "<br /><span style=\"color:red;\">NOTE</span> Please click <a href=\"../admin_group/list_groups\" style=\"color: blue;\">this link</a> (or go to Admin -> List Groups) and update (icon on the right) the new Group for 'Items in Default Location'.<br />";
 		}
 
 		$config = $this->m_oa_config->get_config();
