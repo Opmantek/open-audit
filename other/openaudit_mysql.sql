@@ -1717,7 +1717,7 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('auto_create_network_groups', 'y', 'y', 'Have Open-AudIT automatically create Groups based on Subnet.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis', 'n', 'y', 'Enable import / export to NMIS functions.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_url', '/omk/oae', 'y', 'The web server address of Open-AudIT Enterprise.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis_url', '', 'y', 'The web server address of Open-AudIT Enterprise.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis_url', '', 'y', 'The web server address of NMIS.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('logo', 'oac-oae', 'n', '');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('maps_url', '/omk/oae/map', 'y', 'The web server address of opMaps.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('name_match', 'n', 'y', 'Should we match a device based only on its hostname as a last resort.');

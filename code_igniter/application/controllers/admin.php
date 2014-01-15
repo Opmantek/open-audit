@@ -2212,20 +2212,24 @@ class Admin extends MY_Controller {
 			# give Admin level users access to the group
 			$sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
 			$data = array( $group_id );
+			$query = $this->db->query($sql, $data);
 			$this->data['output'] .= $this->db->last_query() . "<br /><br />\n";
-			$query = $this->db->query($sql);
 
 			# and update the location with the inserted group_id
 			$sql = "UPDATE oa_location SET location_group_id = ? WHERE location_id = '0'";
 			$data = array( $group_id );
+			$query = $this->db->query($sql, $data);
 			$this->data['output'] .= $this->db->last_query() . "<br /><br />\n";
-			$query = $this->db->query($sql);
 
 			$sql = "UPDATE oa_config set config_value = '/omk/oae' WHERE config_name = 'oae_url'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
 			$sql = "UPDATE oa_config set config_value = '/omk/oae/map' WHERE config_name = 'maps_url'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_description = 'The web server address of NMIS.' WHERE config_name = 'nmis_url'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
