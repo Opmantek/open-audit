@@ -1,0 +1,9 @@
+Jan 15 09:57:52 mark 9823 C:admin_user F:list_users U:Administrator at 127.0.0.1.
+Jan 15 09:58:15 mark 8490 C:admin F:scan_subnet_nmap U:Administrator at 127.0.0.1.
+Jan 15 09:58:20 mark 1985 C:admin F:scan_subnet_nmap U:Administrator at 127.0.0.1.
+Jan 15 09:58:20 mark 9835 audit_subnet.sh Job Starting
+Jan 15 09:58:20 mark 9835 audit_subnet.sh Scanning Subnet: 192.168.0.1/32
+Jan 15 09:58:20 mark 9835 audit_subnet.sh 192.168.0.1 being nmap scanned.
+Jan 15 09:58:33 mark 9022 snmp_helper.php 192.168.0.1 SNMP v2c scanned.
+Jan 15 09:58:33 mark 9835 audit_subnet.sh Scan completed.
+Jan 15 09:58:33 mark 9835 audit_subnet.sh Job Complete.
