@@ -36,7 +36,7 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>OAv2 Nmap Input</title>
+<title>Open-AudIT Nmap Input</title>
 </head>
 <body>
 <?php $attributes = array('accept-charset'=>'UTF-8'); ?>
