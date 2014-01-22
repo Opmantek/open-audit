@@ -1285,59 +1285,63 @@ on error goto 0
 
 if debugging > "0" then wscript.echo "modem info" end if 
 item = ""
-set colItems = objWMIService.ExecQuery("Select * from Win32_POTSModem where status='OK' ",,32)
-error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_POTSModem)" : audit_wmi_fails = audit_wmi_fails & "Win32_POTSModem " : end if
-for each objItem in colItems
-	item = item & "		<modem>" & vbcrlf
-	item = item & "			<port>" & escape_xml(objItem.AttachedTo) & "</port>" & vbcrlf
-	item = item & "			<model>" & escape_xml(objItem.Model) & "</model>" & vbcrlf
-	item = item & "			<country>" & escape_xml(objItem.CountrySelected) & "</country>" & vbcrlf
-	item = item & "			<device_id>" & escape_xml(objItem.DeviceID) & "</device_id>" & vbcrlf
-	item = item & "			<type>" & escape_xml(objItem.DeviceType) & "</type>" & vbcrlf
-	item = item & "			<manufacturer>" & escape_xml(objItem.ProviderName) & "</manufacturer>" & vbcrlf
-	item = item & "		</modem>" & vbcrlf
-next
-if item > "" then
-	result.WriteText "	<modems>" & vbcrlf
-	result.WriteText item
-	result.WriteText "	</modems>" & vbcrlf
-end if
+on error resume next
+	set colItems = objWMIService.ExecQuery("Select * from Win32_POTSModem where status='OK' ",,32)
+	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_POTSModem)" : audit_wmi_fails = audit_wmi_fails & "Win32_POTSModem " : end if
+	for each objItem in colItems
+		item = item & "		<modem>" & vbcrlf
+		item = item & "			<port>" & escape_xml(objItem.AttachedTo) & "</port>" & vbcrlf
+		item = item & "			<model>" & escape_xml(objItem.Model) & "</model>" & vbcrlf
+		item = item & "			<country>" & escape_xml(objItem.CountrySelected) & "</country>" & vbcrlf
+		item = item & "			<device_id>" & escape_xml(objItem.DeviceID) & "</device_id>" & vbcrlf
+		item = item & "			<type>" & escape_xml(objItem.DeviceType) & "</type>" & vbcrlf
+		item = item & "			<manufacturer>" & escape_xml(objItem.ProviderName) & "</manufacturer>" & vbcrlf
+		item = item & "		</modem>" & vbcrlf
+	next
+	if item > "" then
+		result.WriteText "	<modems>" & vbcrlf
+		result.WriteText item
+		result.WriteText "	</modems>" & vbcrlf
+	end if
+on error goto 0
 
 
 
 if debugging > "0" then wscript.echo "video info" end if 
 item = ""
-set colItems = objWMIService.ExecQuery("Select * from Win32_VideoController",,32)
-error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_VideoController)" : audit_wmi_fails = audit_wmi_fails & "Win32_VideoController " : end if
-for each objItem in colItems
-	if (Instr(objItem.Caption, "vnc") = 0 AND _ 
-	Instr(objItem.Caption, "Microsoft Basic Render Driver") = 0 AND _ 
-	Instr(objItem.Caption, "DameWare") = 0 AND _ 
-	Instr(objItem.Caption, "Innobec SideWindow") = 0 AND _ 
-	Instr(objItem.Caption, "ConfigMgr Remote Control Driver") = 0 AND _ 
-	Instr(objItem.Caption, "Microsoft SMS Mirror Driver") = 0) then
-	item = item & "		<video_card>" & vbcrlf
-	item = item & "			<video_description>" & escape_xml(objItem.Name) & "</video_description>" & vbcrlf
-	item = item & "			<video_manufacturer>" & escape_xml(objItem.AdapterCompatibility) & "</video_manufacturer>" & vbcrlf
-	item = item & "			<video_memory>" & escape_xml(int(objItem.AdapterRAM /1024 /1024)) & "</video_memory>" & vbcrlf
-'	device_id = objItem.PNPDeviceID
-'	query = "Select * from Win32_PnPSignedDriver where DeviceID = '" & device_id & "'"
-'	wscript.echo query
-'	set colItems2 = objWMIService.ExecQuery(query,,32)
-'	for each objItem2 in colItems2
-'		driver_date = CDate(Mid(objItem2.DriverDate, 5, 2) & "/" & Mid(objItem2.DriverDate, 7, 2) & "/" & Left(objItem2.DriverDate, 4) & " " & Mid (objItem2.DriverDate, 9, 2) & ":" & Mid(objItem2.DriverDate, 11, 2) & ":" & Mid(objItem2.DriverDate,13, 2))
-'		driver_version = objItem2.DriverVersion
-'		item = item & "			<video_driver_date>" & escape_xml(driver_date) & "</video_driver_date>" & vbcrlf
-'		item = item & "			<video_driver_version>" & escape_xml(driver_version) & "</video_driver_version>" & vbcrlf
-'	next
-	item = item & "		</video_card>" & vbcrlf
+on error resume next
+	set colItems = objWMIService.ExecQuery("Select * from Win32_VideoController",,32)
+	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_VideoController)" : audit_wmi_fails = audit_wmi_fails & "Win32_VideoController " : end if
+	for each objItem in colItems
+		if (Instr(objItem.Caption, "vnc") = 0 AND _ 
+		Instr(objItem.Caption, "Microsoft Basic Render Driver") = 0 AND _ 
+		Instr(objItem.Caption, "DameWare") = 0 AND _ 
+		Instr(objItem.Caption, "Innobec SideWindow") = 0 AND _ 
+		Instr(objItem.Caption, "ConfigMgr Remote Control Driver") = 0 AND _ 
+		Instr(objItem.Caption, "Microsoft SMS Mirror Driver") = 0) then
+		item = item & "		<video_card>" & vbcrlf
+		item = item & "			<video_description>" & escape_xml(objItem.Name) & "</video_description>" & vbcrlf
+		item = item & "			<video_manufacturer>" & escape_xml(objItem.AdapterCompatibility) & "</video_manufacturer>" & vbcrlf
+		item = item & "			<video_memory>" & escape_xml(int(objItem.AdapterRAM /1024 /1024)) & "</video_memory>" & vbcrlf
+	'	device_id = objItem.PNPDeviceID
+	'	query = "Select * from Win32_PnPSignedDriver where DeviceID = '" & device_id & "'"
+	'	wscript.echo query
+	'	set colItems2 = objWMIService.ExecQuery(query,,32)
+	'	for each objItem2 in colItems2
+	'		driver_date = CDate(Mid(objItem2.DriverDate, 5, 2) & "/" & Mid(objItem2.DriverDate, 7, 2) & "/" & Left(objItem2.DriverDate, 4) & " " & Mid (objItem2.DriverDate, 9, 2) & ":" & Mid(objItem2.DriverDate, 11, 2) & ":" & Mid(objItem2.DriverDate,13, 2))
+	'		driver_version = objItem2.DriverVersion
+	'		item = item & "			<video_driver_date>" & escape_xml(driver_date) & "</video_driver_date>" & vbcrlf
+	'		item = item & "			<video_driver_version>" & escape_xml(driver_version) & "</video_driver_version>" & vbcrlf
+	'	next
+		item = item & "		</video_card>" & vbcrlf
+		end if
+	next
+	if item > "" then
+		result.WriteText "	<video_cards>" & vbcrlf
+		result.WriteText item
+		result.WriteText "	</video_cards>" & vbcrlf
 	end if
-next
-if item > "" then
-	result.WriteText "	<video_cards>" & vbcrlf
-	result.WriteText item
-	result.WriteText "	</video_cards>" & vbcrlf
-end if
+on error goto 0
 
 
 if debugging > "0" then wscript.echo "monitor info" end if 
