@@ -1211,8 +1211,8 @@ if [ "$net_cards" != "" ]; then
 			$OA_ECHO "		<network_card>" >> $xml_file
 			$OA_ECHO "			<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>" >> $xml_file
 			$OA_ECHO "			<net_manufacturer>"$(escape_xml "$net_card_manufacturer")"</net_manufacturer>" >> $xml_file
-			$OA_ECHO "			<net_model>"$(escape_xml "$net_card_description")"</net_model>" >> $xml_file
-			$OA_ECHO "			<net_description>"$(escape_xml "$net_card_model")"</net_description>" >> $xml_file
+			$OA_ECHO "			<net_model>"$(escape_xml "$net_card_model")"</net_model>" >> $xml_file
+			$OA_ECHO "			<net_description>"$(escape_xml "$net_card_description")"</net_description>" >> $xml_file
 			$OA_ECHO "			<net_ip_enabled>"$(escape_xml "$net_card_enabled")"</net_ip_enabled>" >> $xml_file
 			$OA_ECHO "			<net_connection_id>"$(escape_xml "$net_card_id")"</net_connection_id>" >> $xml_file
 			$OA_ECHO "			<net_connection_status>"$(escape_xml "$net_card_status")"</net_connection_status>" >> $xml_file
