@@ -76,9 +76,11 @@ class MY_Model extends CI_Model {
 	}
 
 	function clean_sql($sql) {
-		$sql = str_replace("\t", " ", $sql);
-		$sql = str_replace("\n", " ", $sql);
-		$sql = preg_replace('!\s+!', ' ', $sql);
+		#$sql = str_replace("\t", " ", $sql);
+		#$sql = str_replace("\n", " ", $sql);
+		#$sql = preg_replace('!\s+!', ' ', $sql);
+		$sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
+		$sql = preg_replace('!\s+!', ' ', $sql);	
 		return $sql;
 	}
 	
