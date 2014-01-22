@@ -104,7 +104,6 @@ class System extends CI_Controller {
 				}
 
 				if (!isset($details->type) or $details->type == '') { $details->type = 'unknown'; }
-				if (!isset($details->man_type) or $details->man_type == '') { $details->man_type = 'unknown'; }
 
 				if (extension_loaded('snmp')) { 
 					# try to get more information using SNMP
