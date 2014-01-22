@@ -99,9 +99,15 @@ class M_partition extends MY_Model {
 				WHERE sys_hw_partition.system_id 	= system.system_id AND 
 					system.system_id				= ? AND 
 					system.man_status 				= 'production' AND 
+					((system.man_os_family 			<> 'IBM AIX' AND
+					sys_hw_partition.hard_drive_index 				= ? AND 
+					sys_hw_partition.partition_mount_point 			= ? AND 
+					sys_hw_partition.partition_size 				= ? ) OR 
+					(system.man_os_family 			= 'IBM AIX' AND
 					sys_hw_partition.hard_drive_index 				= ? AND 
 					sys_hw_partition.partition_mount_point 			= ? AND 
 					sys_hw_partition.partition_size 				= ? AND 
+					sys_hw_partition.partition_name 				= ? )) AND 
 					( sys_hw_partition.timestamp 			= ? OR 
 					sys_hw_partition.timestamp 			= ? )";
 		$sql = $this->clean_sql($sql);
@@ -109,18 +115,22 @@ class M_partition extends MY_Model {
 				"$input->hard_drive_index", 
 				"$input->partition_mount_point", 
 				"$input->partition_size", 
+				"$input->hard_drive_index", 
+				"$input->partition_mount_point", 
+				"$input->partition_size", 
+				"$input->partition_name", 
 				"$details->original_timestamp", 
 				"$details->timestamp");
 		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
+		if ($query->num_rows() > 0) { 
 			$row = $query->row();
-			// the optical_drive exists - need to update its timestamp, free and used space
+			// the partition exists - need to update its timestamp, free and used space
 			$sql = "UPDATE sys_hw_partition SET partition_free_space = ?, partition_used_space = ?, timestamp = ? WHERE partition_id = ?";
 			$data = array("$input->partition_free_space", "$input->partition_used_space", "$details->timestamp", "$row->partition_id");
 			$partition_id = $row->partition_id;
 			$query = $this->db->query($sql, $data);
 		} else {
-			// the optical_drive does not exist - insert it
+			// the partition does not exist - insert it
 			$sql = "INSERT INTO sys_hw_partition (	system_id, 
 										hard_drive_index,
 										partition_mount_type,

@@ -831,6 +831,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 							<th><?php echo __('Type')?></th>
 							<th><?php echo __('Form Factor')?></th>
 							<th><?php echo __('Detail')?></th>
+							<th><?php echo __('Serial')?></th>
 							<th><?php echo __('Capacity')?></th>
 							<th><?php echo __('Speed')?></th>
 						</tr>
@@ -842,6 +843,7 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 								<td><?php echo $key->memory_type?></td>
 								<td><?php echo $key->memory_form_factor?></td>
 								<td><?php echo $key->memory_detail?></td>
+								<td><?php echo $key->memory_serial?></td>
 								<td><?php echo number_format($key->memory_capacity)?> MiB&nbsp;</td>
 								<td><?php echo number_format($key->memory_speed)?> MHz&nbsp;</td>
 							</tr>
@@ -1375,9 +1377,14 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 						{
 							$software_link = "<a href=\"mailto://" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_email.png\" alt=\"\" /></a>";
 						}
+						if (isset($key->software_description)) {
+							$software_name = $key->software_name . " (" . trim($key->software_description) . ")";
+						} else {
+							$software_name = $key->software_name;
+						}
 						?>
 						<tr>
-							<td><?php echo $key->software_name?></td>
+							<td><?php echo $software_name?></td>
 							<td align="center"><?php echo $software_link?></td>
 							<td align="center"><?php echo $key->software_version?></td>
 							<td align="center"><?php echo str_replace("<", "&lt;", $key->software_publisher); ?></td>

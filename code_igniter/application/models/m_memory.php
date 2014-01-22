@@ -46,6 +46,7 @@ class M_memory extends MY_Model {
 				memory_form_factor,
 				memory_detail,
 				memory_capacity,
+				memory_serial,
 				memory_speed
 			FROM 
 				sys_hw_memory,
@@ -77,12 +78,14 @@ class M_memory extends MY_Model {
 				memory_bank 			= ? AND 
 				memory_capacity 		= ? AND
 				memory_speed 			= ? AND
+				memory_serial 			= ? AND
 				( sys_hw_memory.timestamp = ? OR sys_hw_memory.timestamp = ? )";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->system_id", 
 				"$input->bank", 
 				"$input->capacity", 
 				"$input->speed", 
+				"$input->serial", 
 				"$details->original_timestamp", 
 				"$details->timestamp");
 		$query = $this->db->query($sql, $data);
@@ -103,8 +106,9 @@ class M_memory extends MY_Model {
 					memory_capacity,
 					memory_speed, 
 					memory_tag, 
+					memory_serial, 
 					timestamp,
-					first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,?,? )";
+					first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,?,?,? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->bank", 
@@ -114,6 +118,7 @@ class M_memory extends MY_Model {
 					"$input->capacity", 
 					"$input->speed", 
 					"$input->tag", 
+					"$input->serial", 
 					"$details->timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);

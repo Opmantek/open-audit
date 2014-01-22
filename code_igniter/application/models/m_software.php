@@ -88,6 +88,7 @@ class M_software extends MY_Model {
 			}
 		$sql = "SELECT 	
 				DISTINCT(software_name), 
+				software_description, 
 				software_uninstall, 
 				software_id, 
 				software_version, 
@@ -128,6 +129,14 @@ class M_software extends MY_Model {
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		foreach ($input->package as $software_xml) {
+			// this is a newly introduced field as at v 1.2
+			// test and set to minimise errors from using old audit scripts
+			if (!isset($software_xml->software_description)) { 
+				$software_xml->software_description = ''; 
+			} else {
+				$software_xml->software_description = trim($software_xml->software_description); 
+			}
+
 			$flag = 'insert';
 			// insert an 'update' tag where necessary
 			// note - CPSID_ is for Adobe updates
@@ -137,11 +146,13 @@ class M_software extends MY_Model {
 				mb_strpos($software_xml->software_name, 'KB')) {
 					$software_xml->software_comment = 'update';
 			}
+
 			foreach ($result as $id => $software_db) {
 				// enumerate the array of retrieved packages, looking for a match
 				if (!isset($software_db->timestamp)){$software_db->timestamp = '';}
-				if 	((strval($software_db->software_name) == strval($software_xml->software_name)) AND (strval($software_db->software_version) == strval($software_xml->software_version)) AND
-					((strval($software_db->timestamp) == strval($details->timestamp)) OR (strval($software_db->timestamp) == strval($details->original_timestamp)))) {
+
+				if 	((strval($software_db->software_name) == strval($software_xml->software_name)) AND (strval($software_db->software_version) == strval($software_xml->software_version)) AND ((strval($software_db->timestamp) == strval($details->timestamp)) OR (strval($software_db->timestamp) == strval($details->original_timestamp)))) {
+
 					$software_db = & $result[$id];
 					// we have a match.
 					$flag = 'update';
@@ -153,6 +164,10 @@ class M_software extends MY_Model {
 					
 					if (($software_db->software_location == '') AND ($software_xml->software_location != '')) {
 							$software_db->software_location = "$software_xml->software_location";
+					} 
+					
+					if (($software_db->software_description == '') AND ($software_xml->software_description != '')) {
+							$software_db->software_description = "$software_xml->software_description";
 					} 
 					
 					if (($software_db->software_uninstall == '') AND ($software_xml->software_uninstall != '')) {
@@ -198,6 +213,7 @@ class M_software extends MY_Model {
 					// update the database
 					$sql = "UPDATE sys_sw_software SET 
 							software_version = ? , 
+							software_description = ? , 
 							software_location = ? , 
 							software_uninstall = ? , 
 							software_install_date = ? , 
@@ -213,6 +229,7 @@ class M_software extends MY_Model {
 						WHERE software_id = ?";
 					$sql = $this->clean_sql($sql);
 					$data = array(	"$software_db->software_version", 
+							"$software_db->software_description", 
 							"$software_db->software_location", 
 							"$software_db->software_uninstall", 
 							"$software_db->software_install_date", 
@@ -236,9 +253,10 @@ class M_software extends MY_Model {
 			if ($flag == 'insert') {
 				// we did not get any matches to the array
 				// insert a new row
-				$sql = "INSERT INTO sys_sw_software (	system_id, 
+				$sql = "INSERT INTO sys_sw_software ( system_id, 
 						software_name, 
 						software_version, 
+						software_description, 
 						software_location, 
 						software_uninstall, 
 						software_install_date, 
@@ -253,12 +271,14 @@ class M_software extends MY_Model {
 						software_installed_by, 
 						software_installed_on, 
 						timestamp,
-						first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+						first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+
 				$sql = $this->clean_sql($sql);
-				$sql = $this->clean_sql($sql);
+
 				$data = array("$details->system_id", 
 						"$software_xml->software_name", 
 						"$software_xml->software_version", 
+						"$software_xml->software_description", 
 						"$software_xml->software_location", 
 						"$software_xml->software_uninstall", 
 						"$software_xml->software_install_date", 
@@ -274,11 +294,14 @@ class M_software extends MY_Model {
 						"$software_xml->software_installed_on", 
 						"$details->timestamp", 
 						"$details->timestamp");
+
 				$query = $this->db->query($sql, $data);
+
 				$software_db_new = new stdClass();
 				$software_db_new->software_id = $this->db->insert_id();
 				$software_db_new->software_name = "$software_xml->software_name";
 				$software_db_new->software_version = "$software_xml->software_version";
+				$software_db_new->software_description = "$software_xml->software_description";
 				$software_db_new->software_location = "$software_xml->software_location";
 				$software_db_new->software_uninstall = "$software_xml->software_uninstall";
 				$software_db_new->software_install_date = "$software_xml->software_install_date";
@@ -294,6 +317,7 @@ class M_software extends MY_Model {
 				$software_db_new->software_installed_on = "$software_xml->software_installed_on";
 				$software_db_new->software_timestamp = "$details->timestamp";
 				$software_db_new->software_first_timestamp = "$details->timestamp";
+
 				$result[] = $software_db_new;
 				unset($software_db_new);
 			}

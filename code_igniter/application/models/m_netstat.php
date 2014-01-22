@@ -105,7 +105,7 @@ class M_netstat extends MY_Model {
 					if (isset($i->protocol)) { $input_array[] = $i; }
 				}
 			}
-		}
+		} 
 		if (strtolower($details->os_group) == "linux") {
 			$lines = explode("\n", $input[0]);
 			$input = NULL;
@@ -139,6 +139,39 @@ class M_netstat extends MY_Model {
 				}
 			}
 		}
+		if (strtolower($details->os_family) == "ibm aix") {
+			$lines = explode("\n", $input[0]);
+			$input = NULL;
+			$input_array = array();
+			foreach ($lines as $line) {
+				if ($line > '') {
+					$i = new stdClass();
+					$attributes = explode(" ", $line);
+
+					#protocol - tcp, tcp4, udp or udp4
+					$i->protocol = $attributes[0];
+
+					# ip address and port
+					$port_split = explode(".", $attributes[1]);
+					$i->port = $port_split[count($port_split)-1];
+					if (count($port_split) == 5) {
+						$i->ip_address = $port_split[0] . "." . $port_split[1] . "." . $port_split[2] . "." . $port_split[3];
+					} else {
+						$i->ip_address = "0.0.0.0";
+					}
+
+					# program (name of the program or unknown)
+					$i->program = "";
+					$t_program = "";
+					for ($j=2; $j<=count($attributes)-1; $j++) {
+						$t_program .= $attributes[$j] . " ";
+					}
+					$i->program = trim($t_program);
+					if ($i->port == intval($i->port) and $i->port != "\t\t") { $input_array[] = $i; }
+				}
+			}
+		}
+
 
 		foreach ($input_array as $input) {
 			// need to check for netstat changes
