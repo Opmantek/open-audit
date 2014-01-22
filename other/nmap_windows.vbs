@@ -38,7 +38,7 @@ Dim audit_windows, colItems, command, count, current_pid, debugging, ip_address,
 number_of_audits = 25
 
 ' the name and path of the audit script to use
-audit_windows = "c:\xampp\OAv2\other\audit_windows.vbs"
+audit_windows = "c:\xampplite\open-audit\other\audit_windows.vbs"
 
 ' if set, create an output file of all retrieved systems scanned
 output_file = ""
@@ -48,7 +48,7 @@ run_audit_windows = "n"
 
 ' only set the below if your PATH variable (in Windows) does not include this
 nmap_exe = "C:\program files(x86)\Nmap\"
-nmap_exe = ""
+'nmap_exe = ""
 
 ' 0 = no debug
 ' 1 = basic debug
