@@ -631,6 +631,7 @@ CREATE TABLE `sys_hw_memory` (
   `memory_capacity` int(10) NOT NULL,
   `memory_speed` int(10) NOT NULL,
   `memory_tag` varchar(100) NOT NULL default '',
+  `memory_serial` varchar(100) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`memory_id`),
@@ -1165,7 +1166,7 @@ DROP TABLE IF EXISTS `sys_sw_netstat`;
 CREATE TABLE `sys_sw_netstat` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `system_id` int(10) unsigned default NULL,
-  `protocol` enum('tcp', 'udp', 'tcp6', 'udp6', '') NOT NULL default '',
+  `protocol` enum('tcp', 'udp', 'tcp6', 'udp6', 'tcp4', 'udp4', '') NOT NULL default '',
   `ip_address` varchar(45) NOT NULL default '',
   `port` int(5) NOT NULL default '0',
   `program`  varchar(250) NOT NULL default '',
@@ -1349,6 +1350,7 @@ CREATE TABLE `sys_sw_software` (
   `system_id` int(10) unsigned default NULL,
   `software_name` varchar(255) NOT NULL default '',
   `software_version` varchar(255) NOT NULL default '',
+  `software_description` text NOT NULL default '',
   `software_location` varchar(255) NOT NULL default '',
   `software_uninstall` mediumtext NOT NULL,
   `software_install_date` varchar(100) NOT NULL default '',
@@ -1728,8 +1730,8 @@ INSERT INTO `oa_user` VALUES  (3, 'nmis', '5a7f9a638ea430196d765ef8d3875eafd64ee
 
 INSERT INTO `oa_group_user` VALUES (1,2,1,3),(2,1,1,10),(3,1,2,10),(4,1,8,10),(5,1,6,10),(6,1,3,10),(7,1,4,10),(8,1,7,10),(9,1,5,10),(10,3,1,10),(11,3,2,10),(12,3,8,10),(13,3,6,10),(14,3,3,10),(15,3,4,10),(16,3,7,10),(17,3,5,10),(18,1,9,10),(19,3,9,10);
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20140126', 'n', 'The internal numerical version.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.1.1', 'n', 'The version shown on the web pages.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20140204', 'n', 'The internal numerical version.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.2', 'n', 'The version shown on the web pages.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('non_admin_search', 'y', 'y', 'Enable or disable search for non-Administrators');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate. EG - open-audit.org');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1');

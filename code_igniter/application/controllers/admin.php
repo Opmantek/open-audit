@@ -2283,10 +2283,32 @@ class Admin extends MY_Controller {
 			if ($row->systems > "0") {
 				$this->data['output'] .= "<br /><span style=\"color:red;\">NOTE</span> Please click <a href=\"../admin_group/list_groups\" style=\"color: blue;\">this link</a> (or go to Admin -> List Groups) and update (icon on the right) the new Group for 'Items in Default Location'.<br />";
 			}
-
-
-
 		}
+
+		if (($db_internal_version < '20140204') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.2
+
+			$sql = "ALTER TABLE sys_hw_memory ADD memory_serial varchar(100) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE sys_sw_netstat CHANGE protocol protocol enum('tcp', 'udp', 'tcp6', 'udp6', 'tcp4', 'udp4', '') NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE sys_sw_software ADD software_description text NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20140204', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+		}
+
 
 		$config = $this->m_oa_config->get_config();
 		foreach ($config as $returned_result) {
@@ -2299,6 +2321,7 @@ class Admin extends MY_Controller {
 				}
 			}
 		}
+		
 		$this->data['message'] .= "New (now current) database version: " . $db_display_version . " (" . $db_internal_version . ")<br />
 		Don't forget to use the new audit scripts!<br/>\n";
 		$this->data['include'] = 'v_upgrade'; 
