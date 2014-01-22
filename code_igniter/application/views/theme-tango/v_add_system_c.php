@@ -43,9 +43,9 @@ echo form_open('admin_system/system_add_credentials') . "\n";
 	<p><label for='snmp_version'><?php echo __("SNMP Version"); ?>: </label>
 		<input type='text' id='snmp_version' name='snmp_version' tabindex='1' title='SNMP Version' value="2c"/></p>
 	<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: </label>
-		<input type='text' id='snmp_community' name='snmp_community' tabindex='1' title='SNMP Community' value=""/></p>
+		<input type='text' id='snmp_community' name='snmp_community' tabindex='1' title='SNMP Community' value="<?php echo $config->snmp_default_community; ?>"/></p>
 	<p><label for='snmp_scan'><?php echo "Scan SNMP upon Submit?"; ?></label>
-		<input type='checkbox' id='snmp_scan' name='snmp_scan' tabindex='4' title='Scan SNMP' /></p>
+		<input type='checkbox' id='snmp_scan' name='snmp_scan' tabindex='4' title='Scan SNMP' checked /></p>
 	<hr />
 	<!--
 	<p><label for='snmp_v3_auth'><?php echo __("SNMP v2 Auth"); ?></label>
