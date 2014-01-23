@@ -61,7 +61,6 @@ class Login extends CI_Controller {
 		$data['oae_message'] = "";
 		$license = "";
 
-
 		$this->load->model('m_oa_config');
 		$oae_url = $this->m_oa_config->get_config_item("oae_url");
 		#echo "<!-- 1 " . $oae_url . " -->\n";
@@ -69,7 +68,7 @@ class Login extends CI_Controller {
 		if ($oae_url > "") {
 			#echo "<!-- " . $oae_url . " -->\n";
 			# remove leading and add trailing slash on the url, just so we are consistent
-			if (substr($oae_url, -1) != '/') { $oae_url = $oae_url . '/'; }
+			if (substr($oae_url, -1, 1) != '/') { $oae_url = $oae_url . '/'; }
 			#if (substr($oae_url, 0, 1) == '/') { $oae_url = substr($oae_url, 1); }
 
 			# if we already have http... in the oae_url variable, no need to do anything.
@@ -77,14 +76,14 @@ class Login extends CI_Controller {
 				# if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
 
 				# Make sure we have a leading /
-				if (substr($oae_url, 0) != "/") {
+				if (substr($oae_url, 0, 1) != "/") {
 					$oae_url = "/" . $oae_url;
 				}
 
 				# need to create a link to OAE on port 8042 to check the license
 				# we cannot detect and use the browser http[s] as it may being used in the client browser, 
 				#     but stripped by a https offload or proxy
-				$oae_license_url = "http://localhost" . $oae_url . "license";
+				$oae_license_url = "http://localhost:8042" . $oae_url . "license";
 
 				# we create a link for the browser using the same address + the path & file in oae_url
 				if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {

@@ -307,13 +307,15 @@ class Admin extends MY_Controller {
 
 			if ($operating_system == 'Linux') {
 				if ($subnet > '' ) {
-					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
 					exec($cmd);
 				}
 			}
 			if ($operating_system == 'Windows') {
 				if ($subnet > '' ) {
-					$cmd = "%comspec% /c start /b cscript //nologo c:\\xampplite\\open-audit\\other\\audit_subnet.vbs subnet=$subnet submit_online=y create_file=n debugging=0 &";
+					#$cmd = "%comspec% /c start /b cscript //nologo c:\\xampplite\\open-audit\\other\\audit_subnet.vbs subnet=$subnet submit_online=y create_file=n debugging=0 &";
+					$cmd = "%comspec% /c start /b cscript //nologo c:\\xampplite\\open-audit\\other\\audit_subnet.vbs subnet=$subnet url=" . base_url() . "index.php/system/add_nmap submit_online=y create_file=n debugging=0 &";
 					pclose(popen($cmd,"r"));
 				}
 			}

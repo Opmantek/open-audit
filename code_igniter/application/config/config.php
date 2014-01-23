@@ -23,7 +23,7 @@ if(isset($_SERVER['HTTP_HOST']))
 {
     $config['base_url'] = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
     $config['base_url'] .= '://'. $_SERVER['HTTP_HOST'];
-    $config['base_url'] .= isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80' ? ( ':'.$_SERVER['SERVER_PORT'] ) : '';
+    #$config['base_url'] .= isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80' ? ( ':'.$_SERVER['SERVER_PORT'] ) : '';
     $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 }
 else
@@ -31,7 +31,6 @@ else
     $config['base_url'] = 'http://localhost/';
 }
 
-#$config['base_url'] = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 
 /*
 |--------------------------------------------------------------------------
