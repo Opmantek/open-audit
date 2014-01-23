@@ -104,7 +104,7 @@ class M_oa_group extends MY_Model {
 		$sql = "DELETE FROM oa_group_sys WHERE system_id = ?";
 		$data = array("$details->system_id");
 		$query = $this->db->query($sql, $data);
-		$sql = "SELECT group_id, group_name, group_dynamic_select FROM oa_group";
+		$sql = "SELECT group_id, group_name, group_dynamic_select FROM oa_group WHERE group_dynamic_select > ''";
 		$query = $this->db->query($sql);
 		foreach ($query->result() as $myrow) {
 			$sql_select = "SELECT man_type FROM system WHERE system_id = ? AND system_id in ( " . $myrow->group_dynamic_select . " )";
