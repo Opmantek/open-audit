@@ -689,6 +689,11 @@ class Main extends MY_Controller {
 				$system->man_picture = '' . $model_formatted . '.jpg';
 			}
 
+			# test for a generic ibm aix device
+			if (($system->man_picture == '') and (strtolower($system->man_os_family) == "ibm aix")) {
+				$system->man_picture = "ibm_aix.jpg";
+			}
+
 			# check if an image matching the type exists
 			if ( ($system->man_picture == '') AND (file_exists($type_file_exists)) ) {
 				$system->man_picture = '' . $type_formatted . '.png';
