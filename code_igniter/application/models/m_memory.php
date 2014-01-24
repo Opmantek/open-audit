@@ -40,14 +40,7 @@ class M_memory extends MY_Model {
 
 	function get_system_memory($system_id) {
 		$sql = "SELECT 
-				memory_id, 
-				memory_bank, 
-				memory_type, 
-				memory_form_factor,
-				memory_detail,
-				memory_capacity,
-				memory_serial,
-				memory_speed
+				sys_hw_memory.* 
 			FROM 
 				sys_hw_memory,
 				system

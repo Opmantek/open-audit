@@ -88,17 +88,7 @@ class M_software extends MY_Model {
 			}
 		$sql = "SELECT 	
 				DISTINCT(software_name), 
-				software_description, 
-				software_uninstall, 
-				software_id, 
-				software_version, 
-				software_publisher, 
-				software_url, 
-				software_email, 
-				software_location, 
-				software_installed_on, 
-				software_installed_by, 
-				sys_sw_software.first_timestamp 
+				sys_sw_software.* 
 			FROM 	
 				sys_sw_software,
 				system
