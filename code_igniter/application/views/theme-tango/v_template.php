@@ -36,6 +36,19 @@ include "v_lang.php";
 $file_path = base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/';
 if (!isset($sortcolumn)) { $sortcolumn = '0';}
 if (isset($config->logo) and $config->logo == 'oae') { $title = "Open-AudIT Enterprise"; } else { $title = "Open-AudIT"; }
+
+		$router =& load_class('Router', 'core');
+		$controller = $router->fetch_class();
+		$router =& load_class('Router', 'core');
+		$function = $router->fetch_method();
+
+if ($function == "list_devices") {
+	$title .= " - List Devices (" . $heading . ")";
+} elseif ($function == 'show_report') {
+	$title .= " - Report " . $heading;
+} else {
+	$title .= " - " . ucwords(str_replace("_", " ", $function));
+}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
