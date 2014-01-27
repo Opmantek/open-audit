@@ -161,7 +161,7 @@ fi
 processor_cores=`sysctl hw.ncpu | awk '{print $2}'`
 processor_socket=""
 processor_description=`sysctl -n machdep.cpu.brand_string`
-processor_speed=`sudo system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1`
+processor_speed=`system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1`
 processor_speed=`echo "scale = 0; $processor_speed * 1000" | bc`
 processor_manufacturer="GenuineIntel"
 processor_power_management_supported=""
