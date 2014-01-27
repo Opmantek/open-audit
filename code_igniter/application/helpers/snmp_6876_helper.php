@@ -51,7 +51,6 @@ if (!function_exists('get_oid_details')) {
 		$details->os_name =str_replace("\"", "", $details->os_name);
 		$details->man_os_name = $details->os_name;
 		$details->type = 'computer';
-		$details->man_type = 'computer';
 		$details->device_type = 'computer';
 		$details->man_class = 'hypervisor';
 	}
