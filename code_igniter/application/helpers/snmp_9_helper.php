@@ -759,8 +759,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.799') { $details->model = 'Cisco Catalyst 2960 G8TC'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.800') { $details->model = 'Cisco TSPri'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.801') { $details->model = 'Cisco TSSec'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.802') { $details->model = 'Cisco UW IpPhone 7921G'; $details->type = 'voip phone'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.803') { $details->model = 'Cisco UW IpPhone 7920'; $details->type = 'voip phone'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.802') { $details->model = 'Cisco UW IpPhone 7921G'; $details->type = 'ip phone'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.803') { $details->model = 'Cisco UW IpPhone 7920'; $details->type = 'ip phone'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.804') { $details->model = 'Cisco 3200 WirelessMic'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.805') { $details->model = 'Cisco ISR Wireless'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.806') { $details->model = 'Cisco IPS Virtual'; $details->type = 'network ids'; }
