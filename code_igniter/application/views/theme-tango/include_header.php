@@ -71,7 +71,6 @@
 	<?php } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-	<?php #if (isset($config->oae_url) and filter_var($config->oae_url, FILTER_VALIDATE_URL)) { ?>
 	<?php if (isset($config->oae_url) and $config->oae_url > "") { ?>
 		<br />Dashboard<br /><a href="<?php echo $config->oae_url; ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
 	<?php } else { ?>
@@ -79,7 +78,6 @@
 	<?php } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-	<?php #if (isset($config->maps_url) and filter_var($config->maps_url, FILTER_VALIDATE_URL)) { ?>
 	<?php if (isset($config->maps_url) and $config->maps_url > "") { ?>
 		<br />Map<br /><a href="<?php echo $config->maps_url; ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
 	<?php } else { ?>

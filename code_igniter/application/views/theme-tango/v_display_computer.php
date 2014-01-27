@@ -73,6 +73,7 @@ foreach($system as $key) {
 	$link_model = $key->model;
 	$last_seen = $key->last_seen_by;
 	$icon = $key->man_icon;	
+	$type = $key->man_type;
 }
 
 $location_name = '';
@@ -289,7 +290,13 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 							<?php } ?>
 
 							<p><label for="man_description"><?php echo __('Description')?>: </label><span id="man_description" <?php echo $edit?>><?php echo print_something($key->man_description)?></span></p>
-							<p><label for="man_type"><?php echo __('Type')?>: </label><span id="man_type" <?php echo $edit?>><?php echo print_something($key->man_type)?></span></p>
+							<p><label for="man_type_select"><?php echo __('Type')?>: </label>
+							<?php if ($access_level > 7) { ?>
+								<span id="man_type_select" style="color:blue;"><span onclick="display_type();"><?php echo print_something($key->man_type)?></span></span></p>
+							<?php } else { ?>
+								<span id="man_type_select"><?php echo print_something($key->man_type)?></span></p>
+							<?php } ?>
+							<!-- <p><label for="man_type"><?php echo __('Type')?>: </label><span id="man_type" <?php echo $edit?>><?php echo print_something($key->man_type)?></span></p> -->
 							<p><label for="man_class"><?php echo __('Class')?>: </label><span id="man_class" <?php echo $edit?>><?php echo print_something($key->man_class)?></span></p>
 							<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon" <?php echo $edit?>><?php echo print_something($key->man_icon)?></span></p>
 							<p><label for="man_os_group"><?php echo __('OS Group')?>: </label><span id="man_os_group" <?php echo $edit?>><?php echo print_something($key->man_os_group)?></span></p>
@@ -2161,231 +2168,9 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 
 
 
+<?php include "include_display_javascript.php"; ?>
 
 <script type="text/javascript">
-$(document).ready( function() { $.NiceJForms.build(); } );
-
-function createRequestObject() {
-	var req;
-	if(window.XMLHttpRequest){
-		// Firefox, Safari, Opera...
-		req = new XMLHttpRequest();
-	} else if(window.ActiveXObject) {
-		// Internet Explorer 5+
-		req = new ActiveXObject("Microsoft.XMLHTTP");
-	} else {
-		// There is an error creating the object,
-		// just as an old browser is being used.
-		alert('Problem creating the XMLHttpRequest object');
-	}
-	return req;
-}
-
-var http = createRequestObject();
-
-
-
-
-
-
-function display_environment()
-{
-	status_text="<select id='man_environment' onchange='send_environment();'><option value=' '>Choose an Environment<\/option><option value='production'>Production<\/option><option value='pre-prod'>PreProduction<\/option><option value='test'>Testing<\/option><option value='uat'>User Acceptance Testing<\/option><option value='eval'>Evaluation<\/option><option value='dev'>Development<\/option><option value='dr'>Disaster Recovery<\/option><\/select>";
-	document.getElementById("man_environment_select").innerHTML = status_text;
-}
-
-function send_environment()
-{
-	table_text=document.getElementById("man_environment").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_environment/'+table_text);
-	http.onreadystatechange = receive_environment;
-	http.send(null);
-}
-
-function receive_environment() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_environment();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_environment_select").innerHTML = update;
-    }
-  }
-}
-
-
-
-
-
-
-function display_status()
-{
-	status_text="<select id='man_status' onchange='send_status();'><option value=' '>Choose a status<\/option><option value='production'>Production<\/option><option value='retired'>Retired<\/option><option value='maintenance'>Maintenance<\/option><option value='deleted'>Deleted<\/option><\/select>";
-	document.getElementById("man_status_select").innerHTML = status_text;
-}
-
-function send_status()
-{
-	table_text=document.getElementById("man_status").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_status/'+table_text);
-	http.onreadystatechange = receive_status;
-	http.send(null);
-}
-
-function receive_status() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_status();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_status_select").innerHTML = update;
-    }
-  }
-}
-
-
-
-
-
-
-
-function display_criticality()
-{
-	status_text="<select id='man_criticality' onchange='send_criticality();'><option value=' '>Choose a criticality<\/option><option value='critical'>Critical<\/option><option value='normal'>Normal<\/option><option value='low'>Low<\/option><\/select>";
-	document.getElementById("man_criticality_select").innerHTML = status_text;
-}
-
-function send_criticality()
-{
-	table_text=document.getElementById("man_criticality").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_criticality/'+table_text);
-	http.onreadystatechange = receive_criticality;
-	http.send(null);
-}
-
-function receive_criticality() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_criticality();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_criticality_select").innerHTML = update;
-    }
-  }
-}
-
-
-
-function display_nmis_role() {
-	status_text="<select id='nmis_role' onchange='send_nmis_role();'><option value=' '>Choose an NMIS role</option><option value='access'>Access</option><option value='core'>Core</option><option value='distriubtion'>Distriubtion</option></select>";
-	document.getElementById("nmis_role_select").innerHTML = status_text;
-}
-
-function send_nmis_role()
-{
-	table_text=document.getElementById("nmis_role").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_role/'+table_text);
-	http.onreadystatechange = receive_nmis_role;
-	http.send(null);
-}
-
-function receive_nmis_role() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_nmis_role();'>"+http.responseText+"<\/span>";
-      document.getElementById("nmis_role_select").innerHTML = update;
-    }
-  }
-}
-
-
-function display_location() {
-	<?php
-	$location_form = "<option value=' '>Choose a Location<\/option>";
-	foreach ($locations as $location) {
-		$location_form .= "<option value='" . $location->location_id . "'>" . $location->location_name . "<\/option>";
-	}
-	if ($location_id <> "") {
-		$location_form = "<select id='man_location_id' onchange='send_location();'>" . $location_form . "<\/select>";
-	} else {
-		$location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>Choose a location<\/option>" . $location_form . "<\/select>";
-	}
-		
-	?>
-	status_text="<?php echo $location_form;?>";
-	document.getElementById("man_location_id_select").innerHTML = status_text;
-}
-
-function send_location() {
-	table_text=document.getElementById("man_location_id").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_location_id/'+table_text);
-	http.onreadystatechange = receive_location;
-	http.send(null);
-}
-
-function receive_location() {
-	if(http.readyState == 4 && http.status == 200){
-		// Text returned FROM the PHP script
-		if(http.responseText) {
-			// UPDATE ajaxTest content
-			//update="<span onclick='display_location();'>"+http.responseText+"<\/span>";
-			//document.getElementById("location_container").innerHTML = update;
-			document.getElementById("location_container").innerHTML = http.responseText;
-			update=http.responseText+"<p><label for='man_location_rack'><?php echo __('Rack')?>: <\/label><span id='man_location_rack' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack)?><\/span><\/p><p><label for='man_location_rack_position'><?php echo __('Rack Position')?>: <\/label><span id='man_location_rack_position' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack_position)?><\/p>";
-			document.getElementById("location_container").innerHTML = update;
-		}
-	}
-}
-
-
-
-function upload_attachment()
-{
-	status_text=document.getElementById("attachment_listing").innerHTML;
-	status_text=status_text+"<input type='hidden' id='system_id' name='system_id' value='"+formVars+"' /><input type='file' name='attachment' id='attachment' size='20' /><br />Attachment Title: <input type='text' name='title' id='title' size='20' /><br /><input type='submit' name='submit' id='submit' value='Submit' />";
-	document.getElementById("attachment_listing").innerHTML = status_text;
-}
-
-
-
-
-function display_org()
-{
-	<?php
-	$org_form = "<option value=' '>Choose an Org<\/option>";
-	foreach ($orgs as $org) {
-		$org_form .= "<option value='" . $org->org_id . "'>" . $org->org_name . "<\/option>";
-	}
-	if ($org_id <> "") {
-		$org_form = "<select id='man_org_id' onchange='send_org();'>" . $org_form . "<\/select>";
-	} else {
-		$org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>Choose an Org<\/option>" . $org_form . "<\/select>";
-	}
-		
-	?>
-	status_text="<?php echo $org_form;?>";
-	document.getElementById("man_org_id_select").innerHTML = status_text;
-}
-
-function send_org()
-{
-	table_text=document.getElementById("man_org_id").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_org_id/'+table_text);
-	http.onreadystatechange = receive_org;
-	http.send(null);
-}
-
-function receive_org() {
-	if(http.readyState == 4 && http.status == 200){
-		// Text returned FROM the PHP script
-		if(http.responseText) {
-			// UPDATE ajaxTest content
-			document.getElementById("org_container").innerHTML = http.responseText;
-		}
-	}
-}
 
 var toggle_summary_windows;
 

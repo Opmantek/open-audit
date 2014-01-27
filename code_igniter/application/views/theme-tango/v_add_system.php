@@ -48,23 +48,51 @@ echo form_open('admin_system/add_system') . "\n";
 	<p><label for='man_type'><?php echo __("Type")?>: </label>
 		<select id='man_type' name='man_type' tabindex='1' style='width: 135px' onchange='select_device();'>
 			<option value=''>&nbsp;</option>
+			<option value='access point'>Access Point</option>
+			<option value='access server'>Access Server</option>
 			<option value='access token'>Access Token</option>
+			<option value='adsl modem'>ADSL Modem</option>
+			<option value='alarm'>Alarm</option>
+			<option value='bdsl modem'>BDSL Modem</option>
+			<option value='building management'>Building Management</option>
 			<option value='cable modem'>Cable Modem</option>
 			<option value='cell phone'>Cell Phone</option>
+			<option value='cisco module'>Cisco Module</option>
 			<option value='computer'>Computer</option>
+			<option value='dsl modem'>DSL Modem</option>
 			<option value='firewall'>Firewall</option>
 			<option value='game console'>Game Console</option>
+			<option value='gateway'>Gateway</option>
 			<option value='ip phone'>IP Phone</option>
-			<!-- <option value='local printer'>Local Printer</option> -->
+			<option value='kvm'>KVM (Keyboard, Video, Mouse switch)</option>
+			<option value='load balancer'>Load Balancer</option>
 			<option value='mobile modem'>Mobile Modem</option>
+			<option value='nas'>NAS (Network Attached Storage)</option>
+			<option value='network device'>Network Device</option>
+			<option value='network ids'>Network IDS (Intrusion Detection)</option>
 			<option value='network printer'>Network Printer</option>
+			<option value='network scanner'>Network Scanner</option>
 			<option value='phone'>Phone</option>
+			<option value='printer'>Printer</option>
 			<option value='projector'>Projector</option>
+			<option value='remote access controller'>Remote Access Controller (ILO / RSA)</option>
 			<option value='router'>Router</option>
+			<option value='san'>SAN (Storage Area Network)</option>
 			<option value='satellite phone'>Satellite Phone</option>
+			<option value='scanner'>Scanner</option>
+			<option value='security camera'>Security Camera</option>
 			<option value='smart phone'>Smart Phone</option>
 			<option value='switch'>Switch</option>
 			<option value='tablet'>Tablet</option>
+			<option value='ups'>UPS (Uninteruptable Power Supply)</option>
+			<option value='voip_adapter'>VoIP Adapter</option>
+			<option value='voip gateway'>VoIP Gateway</option>
+			<option value='voip phone'>VoIP Phone</option>
+			<option value='vpn_terminator'>VPN Terminator</option>
+			<option value='wan accelerator'>WAN Accelerator</option>
+			<option value='wap'>WAP (Wireless Access Point)</option>
+			<option value='webcam'>Web Camera</option>
+			<option value='wireless router'>Wireless Router</option>
 		</select>
 	</p>
 	<p><label for='notes1'> </label><span id='notes1' style='color: blue;'>*</span> You must have at least one of the blue attributes.<br />
@@ -128,7 +156,7 @@ function select_device()
 {
 	status_text = "";
 	device_type = document.getElementById("man_type").value;
-	icon = device_type.replace(" ", "_");
+	icon = device_type.replace(/ /g, "_");
 	document.getElementById("details").innerHTML = status_text;
 	switch (device_type)
 	{
@@ -334,6 +362,7 @@ function select_device()
 			break;
 
 		case "network printer":
+		case "network scanner":
 			status_text = "<table><tr><td valign=\"top\">";
 			status_text = status_text + "<label for='hostname'>Hostname<\/label><input type='text' id='hostname' name='hostname' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
 			status_text = status_text + "<label for='man_owner'>Assigned To<\/label><input type='text' id='man_owner' name='man_owner' size='20' \/><br \/>";
@@ -359,8 +388,9 @@ function select_device()
 			status_text = status_text + "<br \/><p><label for='AddSystem'>&nbsp;<\/label><input type='submit' name='AddSystem' value='Add System' id='AddSystem' \/><\/p>";
 			break;
 
-		case "local printer":
+		case "printer":
 		case "projector":
+		case "scanner":
 			status_text = "<table><tr><td valign=\"top\">";
 			status_text = status_text + "<label for='hostname'>Hostname<\/label><input type='text' id='hostname' name='hostname' size='20' \/><span style='color: red;'>*<\/span> (of the attached PC)<br \/>";
 			status_text = status_text + "<label for='man_owner'>Assigned To<\/label><input type='text' id='man_owner' name='man_owner' size='20' \/><br \/>";
@@ -371,37 +401,6 @@ function select_device()
 			status_text = status_text + "<label for='man_manufacturer'>Manufacturer<\/label><input type='text' id='man_manufacturer' name='man_manufacturer' size='20' \/><br \/>";
 			status_text = status_text + "<label for='man_model'>Model<\/label><input type='text' id='man_model' name='man_model' size='20' \/><\/span><br \/>";
 			status_text = status_text + "<label for='man_serial'>Serial<\/label><input type='text' id='man_serial' name='man_serial' size='20' \/><span style='color: red;'>*<\/span><br \/>";
-			status_text = status_text + "<label for='man_asset_number'>Asset Number<\/label><input type='text' id='man_asset_number' name='man_asset_number' size='20' \/><br \/>";
-			status_text = status_text + "<\/td><td valign=\"top\">";
-			status_text = status_text + "<label for='man_status'>Status<\/label><select id='man_status' name='man_status' style='width: 135px' ><option selected value='production'>Production<\/option><option value='retired'>Retired<\/option><option value='maintenance'>Maintenance<\/option><option value='deleted'>Deleted<\/option><option value='unallocated'>Unallocated<\/option><option value='lost'>Lost<\/option><\/select><br \/><label for='man_environment'>Environment<\/label><select id='man_environment' ><option selected value='production'>Production<\/option><option value='pre-prod'>PreProduction<\/option><option value='test'>Testing<\/option><option value='uat'>User Acceptance Testing<\/option><option value='eval'>Evaluation<\/option><option value='dev'>Development<\/option><option value='dr'>Disaster Recovery<\/option><\/select><br \/>";
-			status_text = status_text + "<label for='man_purchase_order_number'>PO Number<\/label><input type='text' id='man_purchase_order_number' name='man_purchase_order_number' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_purchase_cost_center'>Cost Center<\/label><input type='text' id='man_purchase_cost_center' name='man_purchase_cost_center' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_purchase_vendor'>Vendor<\/label><input type='text' id='man_purchase_vendor' name='man_purchase_vendor' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_purchase_date'>Purchase Date<\/label><input type='text' id='man_purchase_date' name='man_purchase_date' size='20' title='YYYY-MM-DD' \/><br \/>";
-			status_text = status_text + "<label for='man_purchase_amount'>Purchase Amount<\/label><input type='text' id='man_purchase_amount' name='man_purchase_amount' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_warranty_duration'>Warranty Duration<\/label><input type='text' id='man_warranty_duration' name='man_warranty_duration' size='20' title='in months' \/><br \/>";
-			status_text = status_text + "<label for='man_warranty_expires'>Warranty Expiration Date<\/label><input type='text' id='man_warranty_expires' name='man_warranty_expires' size='20' title='YYYY-MM-DD' \/><br \/>";
-			status_text = status_text + "<\/td><\/tr><\/table>";
-			status_text = status_text + "<br \/><p><label for='AddSystem'>&nbsp;<\/label><input type='submit' name='AddSystem' value='Add System' id='AddSystem' \/><\/p>";
-			break;
-
-		case "firewall":
-		case "cable modem":
-		case "router":
-		case "switch":
-			status_text = "<table><tr><td valign=\"top\">";
-			status_text = status_text + "<label for='hostname'>Hostname<\/label><input type='text' id='hostname' name='hostname' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
-			status_text = status_text + "<label for='man_ip_address'>IP Address<\/label><input type='text' id='man_ip_address' name='man_ip_address' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
-			status_text = status_text + "<label for='man_os_group'>OS Group<\/label><input type='text' id='man_os_group' name='man_os_group' size='20' title='ios, etc' \/><br \/>";
-			status_text = status_text + "<label for='man_os_family'>OS Family<\/label><input type='text' id='man_os_family' name='man_os_family' size='20' title='Cisco IOS 14, etc' \/><br \/>";
-			status_text = status_text + "<label for='man_os_name'>OS Name<\/label><input type='text' id='man_os_name' name='man_os_name' size='20' title='Cisco IOS 14 v123, etc' \/><br \/>";;
-			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
-			status_text = status_text + "<?php echo $location_form;?>";
-			status_text = status_text + "<?php echo $org_form;?>";
-			status_text = status_text + "<label for='man_manufacturer'>Manufacturer<\/label><input type='text' id='man_manufacturer' name='man_manufacturer' size='20' onChange='update_icon_from_manufacturer()' \/><br \/>";
-			status_text = status_text + "<label for='man_model'>Model<\/label><input type='text' id='man_model' name='man_model' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_serial'>Serial<\/label><input type='text' id='man_serial' name='man_serial' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
 			status_text = status_text + "<label for='man_asset_number'>Asset Number<\/label><input type='text' id='man_asset_number' name='man_asset_number' size='20' \/><br \/>";
 			status_text = status_text + "<\/td><td valign=\"top\">";
 			status_text = status_text + "<label for='man_status'>Status<\/label><select id='man_status' name='man_status' style='width: 135px' ><option selected value='production'>Production<\/option><option value='retired'>Retired<\/option><option value='maintenance'>Maintenance<\/option><option value='deleted'>Deleted<\/option><option value='unallocated'>Unallocated<\/option><option value='lost'>Lost<\/option><\/select><br \/><label for='man_environment'>Environment<\/label><select id='man_environment' ><option selected value='production'>Production<\/option><option value='pre-prod'>PreProduction<\/option><option value='test'>Testing<\/option><option value='uat'>User Acceptance Testing<\/option><option value='eval'>Evaluation<\/option><option value='dev'>Development<\/option><option value='dr'>Disaster Recovery<\/option><\/select><br \/>";
@@ -443,8 +442,33 @@ function select_device()
 			break;
 
 		default:
-			document.getElementById("details").innerHTML = "";
+			status_text = "<table><tr><td valign=\"top\">";
+			status_text = status_text + "<label for='hostname'>Hostname<\/label><input type='text' id='hostname' name='hostname' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
+			status_text = status_text + "<label for='man_ip_address'>IP Address<\/label><input type='text' id='man_ip_address' name='man_ip_address' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
+			status_text = status_text + "<label for='man_os_group'>OS Group<\/label><input type='text' id='man_os_group' name='man_os_group' size='20' title='ios, etc' \/><br \/>";
+			status_text = status_text + "<label for='man_os_family'>OS Family<\/label><input type='text' id='man_os_family' name='man_os_family' size='20' title='Cisco IOS 14, etc' \/><br \/>";
+			status_text = status_text + "<label for='man_os_name'>OS Name<\/label><input type='text' id='man_os_name' name='man_os_name' size='20' title='Cisco IOS 14 v123, etc' \/><br \/>";;
+			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<?php echo $location_form;?>";
+			status_text = status_text + "<?php echo $org_form;?>";
+			status_text = status_text + "<label for='man_manufacturer'>Manufacturer<\/label><input type='text' id='man_manufacturer' name='man_manufacturer' size='20' onChange='update_icon_from_manufacturer()' \/><br \/>";
+			status_text = status_text + "<label for='man_model'>Model<\/label><input type='text' id='man_model' name='man_model' size='20' \/><br \/>";
+			status_text = status_text + "<label for='man_serial'>Serial<\/label><input type='text' id='man_serial' name='man_serial' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
+			status_text = status_text + "<label for='man_asset_number'>Asset Number<\/label><input type='text' id='man_asset_number' name='man_asset_number' size='20' \/><br \/>";
+			status_text = status_text + "<\/td><td valign=\"top\">";
+			status_text = status_text + "<label for='man_status'>Status<\/label><select id='man_status' name='man_status' style='width: 135px' ><option selected value='production'>Production<\/option><option value='retired'>Retired<\/option><option value='maintenance'>Maintenance<\/option><option value='deleted'>Deleted<\/option><option value='unallocated'>Unallocated<\/option><option value='lost'>Lost<\/option><\/select><br \/><label for='man_environment'>Environment<\/label><select id='man_environment' ><option selected value='production'>Production<\/option><option value='pre-prod'>PreProduction<\/option><option value='test'>Testing<\/option><option value='uat'>User Acceptance Testing<\/option><option value='eval'>Evaluation<\/option><option value='dev'>Development<\/option><option value='dr'>Disaster Recovery<\/option><\/select><br \/>";
+			status_text = status_text + "<label for='man_purchase_order_number'>PO Number<\/label><input type='text' id='man_purchase_order_number' name='man_purchase_order_number' size='20' \/><br \/>";
+			status_text = status_text + "<label for='man_purchase_cost_center'>Cost Center<\/label><input type='text' id='man_purchase_cost_center' name='man_purchase_cost_center' size='20' \/><br \/>";
+			status_text = status_text + "<label for='man_purchase_vendor'>Vendor<\/label><input type='text' id='man_purchase_vendor' name='man_purchase_vendor' size='20' \/><br \/>";
+			status_text = status_text + "<label for='man_purchase_date'>Purchase Date<\/label><input type='text' id='man_purchase_date' name='man_purchase_date' size='20' title='YYYY-MM-DD' \/><br \/>";
+			status_text = status_text + "<label for='man_purchase_amount'>Purchase Amount<\/label><input type='text' id='man_purchase_amount' name='man_purchase_amount' size='20' \/><br \/>";
+			status_text = status_text + "<label for='man_warranty_duration'>Warranty Duration<\/label><input type='text' id='man_warranty_duration' name='man_warranty_duration' size='20' title='in months' \/><br \/>";
+			status_text = status_text + "<label for='man_warranty_expires'>Warranty Expiration Date<\/label><input type='text' id='man_warranty_expires' name='man_warranty_expires' size='20' title='YYYY-MM-DD' \/><br \/>";
+			status_text = status_text + "<\/td><\/tr><\/table>";
+			status_text = status_text + "<br \/><p><label for='AddSystem'>&nbsp;<\/label><input type='submit' name='AddSystem' value='Add System' id='AddSystem' \/><\/p>";
 			break;
+
 	}
 	document.getElementById("details").innerHTML = status_text;
 	document.getElementById("icon_image").src = "<?php echo $image_path;?>16_"+icon+".png";

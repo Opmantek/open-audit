@@ -150,7 +150,13 @@ if ($access_level > 7) {
 								<span id="man_status_select"><?php echo print_something($key->man_status)?></span></p>
 							<?php } ?>
 							<p><label for="man_description"><?php echo __('Description')?>: </label><span id="man_description" <?php echo $edit?>><?php echo print_something($key->man_description)?></span></p>
-							<p><label for="man_type"><?php echo __('Type')?>: </label><span id="man_type" <?php echo $edit?>><?php echo print_something($key->man_type)?></span></p>
+							<p><label for="man_type_select"><?php echo __('Type')?>: </label>
+							<?php if ($access_level > 7) { ?>
+								<span id="man_type_select" style="color:blue;"><span onclick="display_type();"><?php echo print_something($key->man_type)?></span></span></p>
+							<?php } else { ?>
+								<span id="man_type_select"><?php echo print_something($key->man_type)?></span></p>
+							<?php } ?>
+							<!-- <p><label for="man_type"><?php echo __('Type')?>: </label><span id="man_type" <?php echo $edit?>><?php echo print_something($key->man_type)?></span></p> -->
 							<?php if ($key->man_os_group) { echo "<p><label for=\"man_os_group\">" . __('OS Group') . ": </label><span id=\"man_os_group\">$key->man_os_group</span></p>"; } ?>
 							<?php if ($key->man_os_family) { echo "<p><label for=\"man_os_family\">" . __('OS Family') . ": </label><span id=\"man_os_family\">$key->man_os_family</span></p>"; } ?>
 							<?php if ($key->man_os_name) { echo "<p><label for=\"man_os_name\">" . __('OS Name') . ": </label><span id=\"man_os_name\">$key->man_os_name</span></p>"; } ?>
@@ -485,189 +491,9 @@ if ($access_level > 7) {
 
 
 
+<?php include "include_display_javascript.php"; ?>
 
 <script type="text/javascript">
-$(document).ready( function() { $.NiceJForms.build(); } );
-
-function createRequestObject() {
-	var req;
-	if(window.XMLHttpRequest){
-		// Firefox, Safari, Opera...
-		req = new XMLHttpRequest();
-	} else if(window.ActiveXObject) {
-		// Internet Explorer 5+
-		req = new ActiveXObject("Microsoft.XMLHTTP");
-	} else {
-		// There is an error creating the object,
-		// just as an old browser is being used.
-		alert('Problem creating the XMLHttpRequest object');
-	}
-	return req;
-}
-
-var http = createRequestObject();
-
-function display_environment() {
-	status_text="<select id='man_environment' onchange='send_environment();'><option value=' '>Choose an Environment<\/option><option value='production'>Production<\/option><option value='pre-prod'>PreProduction<\/option><option value='test'>Testing<\/option><option value='uat'>User Acceptance Testing<\/option><option value='eval'>Evaluation<\/option><option value='dev'>Development<\/option><option value='dr'>Disaster Recovery<\/option><\/select>";
-	document.getElementById("man_environment_select").innerHTML = status_text;
-}
-
-function send_environment() {
-	table_text=document.getElementById("man_environment").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_environment/'+table_text);
-	http.onreadystatechange = receive_environment;
-	http.send(null);
-}
-
-function receive_environment() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_environment();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_environment_select").innerHTML = update;
-    }
-  }
-}
-
-function display_status() {
-	status_text="<select id='man_status' onchange='send_status();'><option value=' '>Choose a status<\/option><option value='production'>Production<\/option><option value='retired'>Retired<\/option><option value='maintenance'>Maintenance<\/option><option value='deleted'>Deleted<\/option><\/select>";
-	document.getElementById("man_status_select").innerHTML = status_text;
-}
-
-function send_status() {
-	table_text=document.getElementById("man_status").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_status/'+table_text);
-	http.onreadystatechange = receive_status;
-	http.send(null);
-}
-
-function receive_status() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_status();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_status_select").innerHTML = update;
-    }
-  }
-}
-
-
-
-
-
-
-
-function display_service_type() {
-	status_text = "<select id='man_service_type' onchange='send_service_type();'><option value=''>&nbsp;<\/option><option value='voice'>Voice only<\/option><option value='data'>Data only<\/option><option value='voice and data'>Voice and Data<\/option><\/select><br \/>";	
-	//status_text="<select id='man_criticality' onchange='send_criticality();'><option value=' '>Choose a criticality<\/option><option value='critical'>Critical<\/option><option value='normal'>Normal<\/option><option value='low'>Low<\/option><\/select>";
-	document.getElementById("man_service_type_select").innerHTML = status_text;
-}
-
-function send_service_type() {
-	table_text=document.getElementById("man_service_type").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_service_type/'+table_text);
-	http.onreadystatechange = receive_service_type;
-	http.send(null);
-}
-
-function receive_service_type() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_service_type();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_service_type_select").innerHTML = update;
-    }
-  }
-}
-
-
-
-
-
-
-function display_location() {
-	<?php
-	$location_form = "<option value=' '>Choose a Location<\/option>";
-	foreach ($locations as $location)
-	{
-		$location_form .= "<option value='" . $location->location_id . "'>" . $location->location_name . "<\/option>";
-	}
-	if ($location_id <> "")
-	{
-		$location_form = "<select id='man_location_id' onchange='send_location();'>" . $location_form . "<\/select>";
-	} else {
-		$location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>Choose a location<\/option>" . $location_form . "<\/select>";
-	}
-		
-	?>
-	status_text="<?php echo $location_form;?>";
-	document.getElementById("man_location_id_select").innerHTML = status_text;
-}
-
-function send_location() {
-	table_text=document.getElementById("man_location_id").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_location_id/'+table_text);
-	http.onreadystatechange = receive_location;
-	http.send(null);
-}
-
-function receive_location() {
-	if(http.readyState == 4 && http.status == 200){
-		// Text returned FROM the PHP script
-		if(http.responseText) {
-			// UPDATE ajaxTest content
-			//update="<span onclick='display_location();'>"+http.responseText+"<\/span>";
-			//document.getElementById("location_container").innerHTML = update;
-			document.getElementById("location_container").innerHTML = http.responseText;
-			update=http.responseText+"<p><label for='man_location_rack'><?php echo __('Rack')?>: <\/label><span id='man_location_rack' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack)?><\/span><\/p><p><label for='man_location_rack_position'><?php echo __('Rack Position')?>: <\/label><span id='man_location_rack_position' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack_position)?><\/p>";
-			document.getElementById("location_container").innerHTML = update;
-		}
-	}
-}
-
-
-
-
-
-
-
-
-function display_org() {
-	<?php
-	$org_form = "<option value=' '>Choose an Org<\/option>";
-	foreach ($orgs as $org) {
-		$org_form .= "<option value='" . $org->org_id . "'>" . $org->org_name . "<\/option>";
-	}
-	if ($org_id <> "") {
-		$org_form = "<select id='man_org_id' onchange='send_org();'>" . $org_form . "<\/select>";
-	} else {
-		$org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>Choose an Org<\/option>" . $org_form . "<\/select>";
-	}
-	?>
-	status_text="<?php echo $org_form;?>";
-	document.getElementById("man_org_id_select").innerHTML = status_text;
-}
-
-function send_org() {
-	table_text=document.getElementById("man_org_id").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_org_id/'+table_text);
-	http.onreadystatechange = receive_org;
-	http.send(null);
-}
-
-function receive_org() {
-	if(http.readyState == 4 && http.status == 200){
-		// Text returned FROM the PHP script
-		if(http.responseText) {
-			// UPDATE ajaxTest content
-			document.getElementById("org_container").innerHTML = http.responseText;
-		}
-	}
-}
-
 
 $(document).ready(function(){
 	
