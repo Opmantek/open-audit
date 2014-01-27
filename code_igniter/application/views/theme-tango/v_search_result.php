@@ -58,6 +58,8 @@ if ($query)
 			$key->field = str_replace("sys_sw_", "", $key->field);
 			$key->field = str_replace("_", " ", $key->field);
 			$key->field = ucwords($key->field);
+
+			if ($key->hostname == "") { $key->hostname = "-"; }
 		?>
 			
 		<tr>
