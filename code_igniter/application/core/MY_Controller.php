@@ -290,33 +290,40 @@ class MY_Controller extends CI_Controller {
 		if ($this->data['heading'] == "Devices Not Seen 30") {$i = "Devices Not Seen"; }
 		if ($this->data['heading'] == "Device Types") {$i = "data"; }
 		if ($this->data['heading'] == "Locations") {$i = "locations"; }
-		echo "{\"$i\": [\n";
-		$items = '';
-		foreach ($query AS $details) {
-			$items .= "\t{\n";
-			$output = "";
-			foreach ($details as $attribute=>$value) {
-				if ($attribute == "man_ip_address") {
-					$value = ip_address_from_db($value); 
-				}
-				$pos = strpos($value, "{\"");
-				if ($pos !== false) {
-					$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
-				} else {
-					$value = str_replace ('"', '\"', $value);
-					if (is_numeric($value) ) {
-						$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
-					} else { 
-						$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+		if (count($query) > 0) {
+			echo "{\"$i\": [\n";
+			$items = '';
+			foreach ($query AS $details) {
+				$items .= "\t{\n";
+				$output = "";
+				foreach ($details as $attribute=>$value) {
+					if ($attribute == "man_ip_address") {
+						$value = ip_address_from_db($value); 
 					}
-					#$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+					$pos = strpos($value, "{\"");
+					if ($pos !== false) {
+						$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
+					} else {
+						$value = str_replace ('"', '\"', $value);
+						if (is_numeric($value) ) {
+							$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
+						} else { 
+							$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+						}
+					}
 				}
+				$items .= substr($output, 0, -2) . "\n\t},\n";
 			}
-			$items .= substr($output, 0, -2) . "\n\t},\n";
+			$items = substr($items, 0, -2);
+			$items .= "\n]}";
+			echo $items;
+		} else {
+			if ($this->data['heading'] == "Device Types") {
+				echo "{\"$i\": [{\"y\": 100, \"count\": 0, \"name\": \"No Devices\"}]}";
+			} else {
+				echo "{\"$i\": [{\"x\": \"" . time() . "\", \"y\": 0}]}";
+			}
 		}
-		$items = substr($items, 0, -2);
-		$items .= "\n]}";
-		echo $items;
 		header('Content-Type: application/json');
 		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.json"');
 		header('Cache-Control: max-age=0');
