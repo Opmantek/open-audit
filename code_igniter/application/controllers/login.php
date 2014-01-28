@@ -194,7 +194,7 @@ class Login extends CI_Controller {
 			$variable['org_id'] = '';
 			$variable['windows_user_work_1'] = 'physicalDeliveryOfficeName';
 			$variable['windows_user_work_2'] = 'company';
-			$variable['debugging'] = '0';
+			$variable['debugging'] = '1';
 			$variable['ping_target'] = 'n';
 
 			foreach ($variable as $name => $value) {
