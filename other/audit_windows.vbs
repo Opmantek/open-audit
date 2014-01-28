@@ -29,6 +29,8 @@
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
+forceCScriptExecution
+
 start_time = Timer
 
 ' NOTE - Scheduled Tasks and Share Sizes can only be retrieved when running locally.
@@ -7192,6 +7194,18 @@ function ou(dn)
 	next
 	ou = mid(ou, 1, len(ou)-1)
 end function
+
+Sub forceCScriptExecution
+	Dim Arg, Str
+	if not lcase( Right( wscript.FullName, 12 ) ) = "\cscript.exe" then
+		for each arg in WScript.Arguments
+			If InStr( Arg, " " ) Then Arg = """" & Arg & """"
+				Str = Str & " " & Arg
+		Next
+		CreateObject("WScript.Shell").Run "cscript //nologo """ & WScript.ScriptFullName & """ " & Str
+		WScript.Quit
+	End If
+End Sub
 
 ' windows build numbers
 ' 528 - Win NT 3.1
