@@ -462,95 +462,113 @@ class M_oa_location extends MY_Model {
 		$current_location = "";
 		$count = -1;
 
-		foreach ($result as $row) {
-			if ($row->man_type == '') { $row->man_type = 'unknown'; }
-			if ($row->location_name != $current_location) {
-				$count ++;
-				$i = new stdclass();
-				$i->id = $row->location_id;
-				$i->name = $row->location_name;
-				$i->type = $row->location_type;
-				$i->group = $row->location_group_id;
-				$type_icon = str_replace("index.php", "", $_SERVER['SCRIPT_FILENAME']) . 'theme-tango/tango-images/32_' . str_replace(" ", "_", strtolower($row->location_type)) . '.png';
-				if (is_null($row->location_icon) or $row->location_icon == '') {
-					if (file_exists($type_icon)) {
-						$row->location_icon = str_replace(" ", "_", strtolower($row->location_type));
-					} else {
-						$row->location_icon = 'office';
+		if (count($result) > 0) {
+			foreach ($result as $row) {
+				if ($row->man_type == '') { $row->man_type = 'unknown'; }
+				if ($row->location_name != $current_location) {
+					$count ++;
+					$i = new stdclass();
+					$i->id = $row->location_id;
+					$i->name = $row->location_name;
+					$i->type = $row->location_type;
+					$i->group = $row->location_group_id;
+					$type_icon = str_replace("index.php", "", $_SERVER['SCRIPT_FILENAME']) . 'theme-tango/tango-images/32_' . str_replace(" ", "_", strtolower($row->location_type)) . '.png';
+					if (is_null($row->location_icon) or $row->location_icon == '') {
+						if (file_exists($type_icon)) {
+							$row->location_icon = str_replace(" ", "_", strtolower($row->location_type));
+						} else {
+							$row->location_icon = 'office';
+						}
 					}
-				}
 
-				$i->address = "";
-				if ($row->location_address > "") { $i->address = $row->location_address; }
-				if ($row->location_city > "") { 
-					if ($i->address > "") { 
-						$i->address .= ", ". $row->location_city; 
-					} else {
-						$i->address = $row->location_city; 
+					$i->address = "";
+					if ($row->location_address > "") { $i->address = $row->location_address; }
+					if ($row->location_city > "") { 
+						if ($i->address > "") { 
+							$i->address .= ", ". $row->location_city; 
+						} else {
+							$i->address = $row->location_city; 
+						}
 					}
-				}
-				if ($row->location_postcode > "") { 
-					if ($i->address > "") { 
-						$i->address .= ", ". $row->location_postcode; 
-					} else {
-						$i->address = $row->location_postcode; 
+					if ($row->location_postcode > "") { 
+						if ($i->address > "") { 
+							$i->address .= ", ". $row->location_postcode; 
+						} else {
+							$i->address = $row->location_postcode; 
+						}
 					}
-				}
-				if ($row->location_country > "") { 
-					if ($i->address > "") { 
-						$i->address .= ", ". $row->location_country; 
-					} else {
-						$i->address = $row->location_country; 
+					if ($row->location_country > "") { 
+						if ($i->address > "") { 
+							$i->address .= ", ". $row->location_country; 
+						} else {
+							$i->address = $row->location_country; 
+						}
 					}
-				}
 
-				$i->geo = "";
+					$i->geo = "";
 
-				if ($row->location_latitude != "" and $row->location_latitude != "0.000000" and 
-					$row->location_longitude != "" and $row->location_longitude != "0.000000" and 
-					$i->geo == "") {
+					if ($row->location_latitude != "" and $row->location_latitude != "0.000000" and 
+						$row->location_longitude != "" and $row->location_longitude != "0.000000" and 
+						$i->geo == "") {
+						if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
+							$i->geo = '{"latitude":"' . $row->location_latitude . '","longitude":"' . $row->location_longitude . '"}';
+						} else {
+							$i->geo = "latitude: " . $row->location_latitude . ", longitude: " . $row->location_longitude;
+						}
+					}
+
+					if ($row->location_geo > "" and $i->geo == "") {
+						if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
+							$i->geo = '{"geocode":"' . $row->location_geo . '"}';
+						} else {
+							$i->geo = $row->location_geo;
+						}
+					}
+
+					if ($i->geo == "") {
+						$i->geo = $i->address;
+						if ($this->uri->segment($this->uri->total_rsegments()) == 'json') { $i->geo = '{"geocode":"' . $i->geo . '"}'; }
+					}
+
 					if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-						$i->geo = '{"latitude":"' . $row->location_latitude . '","longitude":"' . $row->location_longitude . '"}';
+						$i->icon = base_url() . 'theme-tango/tango-images/32_' . $row->location_icon . '.png';
+						$i->icon = str_replace("http://127.0.0.1", "", $i->icon);
+						$i->infoDisplay = '"' . $row->man_type . '":"' . $row->count . '", ';
 					} else {
-						$i->geo = "latitude: " . $row->location_latitude . ", longitude: " . $row->location_longitude;
+						$i->icon = base_url() . 'theme-tango/tango-images/32_' . $row->location_icon . '.png';
+						$i->icon = str_replace("http://127.0.0.1", "", $i->icon);
+						$j = $row->man_type;
+						$i->$j = $row->count;
 					}
-				}
-
-				if ($row->location_geo > "" and $i->geo == "") {
+					$table[$count] = $i;
+				} else {
 					if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-						$i->geo = '{"geocode":"' . $row->location_geo . '"}';
+						$i = $table[$count]->infoDisplay . '"' . $row->man_type . '":"' . $row->count . '", ';
 					} else {
-						$i->geo = $row->location_geo;
+						$j = $row->man_type;
+						$i->$j = $row->count;
 					}
+					$table[$count]->infoDisplay = $i;
 				}
-
-				if ($i->geo == "") {
-					$i->geo = $i->address;
-					if ($this->uri->segment($this->uri->total_rsegments()) == 'json') { $i->geo = '{"geocode":"' . $i->geo . '"}'; }
-				}
-
-				if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-					$i->icon = base_url() . 'theme-tango/tango-images/32_' . $row->location_icon . '.png';
-					$i->icon = str_replace("http://127.0.0.1", "", $i->icon);
-					$i->infoDisplay = '"' . $row->man_type . '":"' . $row->count . '", ';
-				} else {
-					$i->icon = base_url() . 'theme-tango/tango-images/32_' . $row->location_icon . '.png';
-					$i->icon = str_replace("http://127.0.0.1", "", $i->icon);
-					$j = $row->man_type;
-					$i->$j = $row->count;
-				}
-				$table[$count] = $i;
-			} else {
-				if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-					$i = $table[$count]->infoDisplay . '"' . $row->man_type . '":"' . $row->count . '", ';
-				} else {
-					$j = $row->man_type;
-					$i->$j = $row->count;
-				}
-				$table[$count]->infoDisplay = $i;
+				$current_location = $row->location_name;
 			}
-			$current_location = $row->location_name;
+		} else {
+			# no devices in database - send empty dataset
+			$i = new stdclass();
+			$i->id = "1";
+			$i->name = "Default Location";
+			$i->type = "Office";
+			$i->group = "";
+			$i->address = "Gold Coast, Australia";
+			$i->icon = base_url() . 'theme-tango/tango-images/32_office.png';
+			$i->icon = str_replace("http://127.0.0.1", "", $i->icon);
+			$i->geo = '{"latitude":"-28.017260","longitude":"153.425705"}';
+			$table[0] = $i;
+			$table[0]->infoDisplay = '"Devices": "none"  ';
 		}
+
+
+
 		$count = 0;
 		if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
 			foreach ($table as $each) {
