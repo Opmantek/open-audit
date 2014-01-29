@@ -36,23 +36,25 @@
 if (!function_exists('get_oid_details')) {
 	
 	function get_oid_details($details){
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.1') { $details->model = 'unknown'; $details->os_group = 'hpux9'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.2') { $details->model = 'unknown'; $details->os_group = 'sunos4'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.3') { $details->model = 'unknown'; $details->os_group = 'solaris'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.4') { $details->model = 'unknown'; $details->os_group = 'osf'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.5') { $details->model = 'unknown'; $details->os_group = 'ultrix'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.6') { $details->model = 'unknown'; $details->os_group = 'hpux10'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.7') { $details->model = 'unknown'; $details->os_group = 'netbsd'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.8') { $details->model = 'unknown'; $details->os_group = 'freebsd'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.9') { $details->model = 'unknown'; $details->os_group = 'irix'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.10') { $details->model = 'unknown'; $details->os_group = 'linux'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.11') { $details->model = 'unknown'; $details->os_group = 'bsdi'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.12') { $details->model = 'unknown'; $details->os_group = 'openbsd'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.13') { $details->model = 'unknown'; $details->os_group = 'Windows'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.14') { $details->model = 'unknown'; $details->os_group = 'hpux11'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.15') { $details->model = 'unknown'; $details->os_group = 'aix'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.16') { $details->model = 'unknown'; $details->os_group = 'macosx'; $details->type = 'computer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.255') { $details->model = 'unknown'; $details->os_group = 'unknown'; $details->type = 'unknown'; }
+		$details->type = 'computer';
+		$details->model = 'unknown';
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.1') { $details->os_group = 'unix'; $details->os_family = 'HP UX 9';  }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.2') { $details->os_group = 'sunos'; $details->os_family = 'Sun OS4'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.3') { $details->os_group = 'solaris'; $details->os_family = 'Sun Solaris'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.4') { $details->os_group = 'unix'; $details->os_group = 'DEC OSF/1'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.5') { $details->os_group = 'unix'; $details->os_group = 'DEC Ultrix'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.6') { $details->os_group = 'unix'; $details->os_family = 'HP UX 10'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.7') { $details->os_group = 'bsd'; $details->os_family = 'Net BSD'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.8') { $details->os_group = 'bsd'; $details->os_family = 'Free BSD'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.9') { $details->os_group = 'irix'; $details->os_family = 'SGI Irix'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.10') { $details->os_group = 'linux'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.11') { $details->os_group = 'bsd'; $details->os_family = 'BSDi'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.12') { $details->os_group = 'bsd'; $details->os_family = 'Open BSD'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.13') { $details->os_group = 'Windows'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.14') { $details->os_group = 'unix'; $details->os_family = 'HP UX 11'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.15') { $details->os_group = 'unix'; $details->os_family = 'IBM AIX'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.16') { $details->os_group = 'Apple'; $details->os_family = 'Apple OSX'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.255') { $details->os_group = 'unknown'; $details->type = 'unknown'; }
 
 		if (isset($details->description) and strpos($details->description, "Darwin Kernel Version 12") !== FALSE) { $details->manufacturer = "Apple Inc"; }
 
