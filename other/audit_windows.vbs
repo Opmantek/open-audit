@@ -785,13 +785,11 @@ if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
 	if (isnull(hr)) then
 	 ' skip everything here - domain cannot be contacted
 	else
-		hr = ""
 		on error resume next
-			hr = oTranslate.set (1, domain_dn)
+			oTranslate.set 1, domain_dn
+			error_returned = Err.Number
 		on error goto 0
-		if (isnull(hr) or hr = "") then
-			' skip everything as we could not contact the domain
-		else 
+		if (error_returned = 0) then 
 			full_ad_domain = oTranslate.Get(1)
 			full_domain = oTranslate.Get(2)
 			domain_nb = oTranslate.Get(3)
