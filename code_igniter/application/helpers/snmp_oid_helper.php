@@ -18514,6 +18514,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.24266') { $new->manufacturer = 'InfoScope Ltd.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.24466') { $new->manufacturer = 'move.L consulting'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.24604') { $new->manufacturer = 'CosmosKey'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.24681') { $new->manufacturer = 'QNAP Systems, Inc.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.24726') { $new->manufacturer = 'USHER'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25039') { $new->manufacturer = 'Infinity3 GmbH'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25054') { $new->manufacturer = 'Carillon Information Security'; }
