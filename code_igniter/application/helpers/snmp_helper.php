@@ -171,7 +171,6 @@ if (!function_exists('get_snmp')) {
 				$details->hostname_length = 'short';
 			}
 
-
 			// description
 			$details->description = '';
 			$details->description = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
@@ -350,9 +349,6 @@ if (!function_exists('get_snmp')) {
 				$details->sysname = strtolower(snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0")));
 			}
 
-			// hostname
-			$details->hostname = gethostbyaddr($details->man_ip_address);
-
 			// uptime
 			if (!isset($details->uptime) or $details->uptime == '' ) {
 				$i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.3.0"));
@@ -472,6 +468,16 @@ if (!function_exists('get_snmp')) {
 
 			// hostname
 			$details->hostname = gethostbyaddr($details->man_ip_address);
+			if (strpos($details->hostname, ".") !== FALSE) {
+				# fqdn - explode it
+				if (!isset($details->fqdn) or $details->fqdn == '') { $details->fqdn = $details->hostname; }
+				$i = explode(".", $details->hostname);
+				$details->hostname = $i[0];
+				if (!isset($details->domain) or $details->domain == '') {
+					unset($i[0]);
+					$details->domain = implode(".", $i);
+				}
+			} 
 
 			$details->next_hop = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 		}
