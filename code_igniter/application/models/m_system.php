@@ -1168,13 +1168,17 @@ class M_system extends MY_Model {
 				}
 			}
 			
-			if ($row->man_icon > '') {
+			if ($row->man_icon > '' and $row->man_icon != 'unknown') {
 				if (isset($details->man_icon)) { 
 					unset($details->man_icon); 
 				}
 			} else {
 				if (!isset($details->man_icon) or $details->man_icon == '') {
-					$details->man_icon = $details->type;
+					if (isset($details->icon) and $details->icon > "") {
+						$details->man_icon = $details->icon;
+					} else {
+						$details->man_icon = $details->type;
+					}
 				}
 			}
 		}	
