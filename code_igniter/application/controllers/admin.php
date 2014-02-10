@@ -72,7 +72,21 @@ class Admin extends MY_Controller {
 		$this->load->view('v_template', $this->data);
 	}
 
-	function view_log(){		
+	function purge_log() {
+		// full path to text file
+		if (php_uname('s') == 'Linux') {
+			$file = "/usr/local/open-audit/other/open-audit.log";
+		} else {
+			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+		}
+		$handle = fopen($file, "w");
+		fwrite($handle, "");
+		fclose($handle);
+		redirect("admin/view_log");
+
+	}
+
+	function view_log() {		
 		// number of lines to read from the end of file
 		$lines = @intval($this->uri->segment(3,0));
 		if ($lines < 1) { $lines = 25; }
@@ -171,7 +185,7 @@ class Admin extends MY_Controller {
 
 				# snmp community
 				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
-				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">" . $this->data['config']->snmp_default_community . "</span>"; }
+				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">" . $this->data['config']->default_snmp_community . "</span>"; }
 
 				$j=null;
 			}
@@ -219,7 +233,7 @@ class Admin extends MY_Controller {
 
 				# snmp community
 				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
-				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = $this->data['config']->snmp_default_community; }
+				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = $this->data['config']->default_snmp_community; }
 
 				$j=null;
 
@@ -302,6 +316,14 @@ class Admin extends MY_Controller {
 						}
 					}
 
+				}
+			}
+
+			if ($operating_system == 'Darwin') {
+				if ($subnet > '' ) {
+					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+					exec($cmd);
 				}
 			}
 
@@ -2302,11 +2324,50 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "UPDATE oa_config set config_value = '20140204', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_windows_username', '', 'y', 'The default username used by Open-AudIT to audit Windows PCs.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_windows_password', '', 'y', 'The default password used by Open-AudIT to audit Windows PCs.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_windows_domain', '', 'y', 'The default active directory domain used by Open-AudIT to audit Windows PCs.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ssh_username', '', 'y', 'The default username used by Open-AudIT to audit devices via SSH.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ssh_password', '', 'y', 'The default password used by Open-AudIT to audit devices via SSH.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$local_ip = "";
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_network_address', '" . $local_ip . "', 'y', 'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config SET config_value = 'y' WHERE config_name = 'name_match'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			$this->data['output'] .= "<br /><span style=\"color:red;\">NOTE</span> The configuration item name_match has been set to \"y\". This is for the new disscovery features. If you do not wish to match devices based on their hostname, please go to Admin -> Config and change it to \"n\".\n";
+
+			$sql = "UPDATE oa_config SET config_name = 'default_snmp_community' WHERE config_name = 'snmp_default_community'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "CREATE TABLE `oa_temp` ( `temp_id` int(10) unsigned NOT NULL auto_increment, `temp_name` text NOT NULL, `temp_value` text NOT NULL, `temp_timestamp` datetime NOT NULL default '0000-00-00 00:00:00', PRIMARY KEY  (`temp_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+
+			$sql = "UPDATE oa_config SET config_value = '20140204', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 			
-			$sql = "UPDATE oa_config set config_value = '1.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$sql = "UPDATE oa_config SET config_value = '1.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 		}

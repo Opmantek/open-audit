@@ -105,5 +105,19 @@ class M_oa_admin_database extends MY_Model {
 		force_download($name, $data);
 		unlink($file);
 	}
+
+	function count_all_rows($table = 'oa_temp') {
+		$sql = "SELECT COUNT(*) AS count FROM $table";
+		$query = $this->db->query($sql);
+		$row = $query->row();
+		return ($row->count);
+	}
+
+	function delete_all_rows($table = 'oa_temp') {
+		$sql = "DELETE FROM $table";
+		$query = $this->db->query($sql);
+		return($this->db->affected_rows());
+	}
+
 }
 ?>

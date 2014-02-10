@@ -80,6 +80,11 @@
 				<td style="text-align: center;"><?php echo $count_not_seen_days; ?></td>
 				<td style="text-align: center;"><a href="<?php echo base_url()?>index.php/admin_db/delete_systems_not_seen_days/<?php echo $days; ?>"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></a></td>
 			</tr>
+			<tr>
+				<td><?php echo __("Rows in Temp Table"); ?></td>
+				<td style="text-align: center;"><?php echo $count_temp; ?></td>
+				<td style="text-align: center;"><a href="<?php echo base_url()?>index.php/admin_db/delete_all_temp/<?php echo $days; ?>"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></a></td>
+			</tr>
 		</tbody>
 	</table>
 </fieldset>

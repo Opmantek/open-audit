@@ -142,7 +142,8 @@
 
 			<li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
 				<ul>
-					<li><a href='<?php echo base_url()?>index.php/admin/scan_subnet_nmap'><?php echo __('Discover a Subnet')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet'><?php echo __('Discover a Subnet')?></a></li>
+					<!-- <li><a href='<?php echo base_url()?>index.php/discovery/process_subnet'><?php echo __('Post Subnet Scan Result')?></a></li> -->
 					<li><a href='<?php echo base_url()?>index.php/admin/scan_ad'><?php echo __('Scan Active Directory')?></a></li>
 				</ul>
 			</li>
@@ -166,6 +167,7 @@
 			<li><a href='javascript:void(0)'><?php echo __('Logs')?></a>
 				<ul>
 					<li><a href='<?php echo base_url()?>index.php/admin/view_log'><?php echo __('View Log')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin/purge_log'><?php echo __('Purge Log')?></a></li>
 				</ul>
 			</li>
 			<li><a href='javascript:void(0)'><?php echo __('Organisations')?></a>

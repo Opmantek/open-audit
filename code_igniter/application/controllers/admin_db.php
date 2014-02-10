@@ -107,6 +107,7 @@ class Admin_db extends MY_Controller {
 		$this->load->model("m_system");
 		$this->load->model("m_alerts");
 		$this->load->model("m_oa_general");
+		$this->load->model("m_oa_admin_database");
 		$this->data['query'] = '';
 
 		# non production systems
@@ -125,12 +126,22 @@ class Admin_db extends MY_Controller {
 		foreach ($this->data['non_current_attributes'] as $attribute) { $count = $count + $attribute->count; }
 		$this->data['count_non_current_attributes'] = $count;
 
+		$this->data['count_temp'] = $this->m_oa_admin_database->count_all_rows('oa_temp');
+
 		$this->data['heading'] = "Database Maintenance";
 		$this->data['include'] = 'v_db_maintenance'; 
 		$this->load->view('v_template', $this->data);
 	}
 
-	function delete_alerts_days () {
+	function delete_all_temp() {
+		$days = $this->uri->segment(3, 365);
+		$this->load->model("m_oa_admin_database");
+		$this->data['count'] = $this->m_oa_admin_database->delete_all_rows('oa_temp');
+		$this->session->set_flashdata('message', $this->data['count'] . " temp rows removed from the database");
+		redirect("admin_db/maintenance/" . $days);
+	}
+
+	function delete_alerts_days() {
 		$days = $this->uri->segment(3, 365);
 		$this->load->model("m_alerts");
 		$this->data['count'] = $this->m_alerts->delete_alerts_days($days);

@@ -540,6 +540,19 @@ CREATE TABLE  `oa_user_sessions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
+-- Table structure for table `oa_temp`
+--
+
+DROP TABLE IF EXISTS `oa_temp`;
+CREATE TABLE `oa_temp` (
+  `temp_id` int(10) unsigned NOT NULL auto_increment,
+  `temp_name` text NOT NULL,
+  `temp_value` text NOT NULL,
+  `temp_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`temp_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `sys_hw_bios`
 --
 
@@ -1723,7 +1736,7 @@ INSERT INTO `oa_group` (`group_id`, `group_name`, `group_padded_name`, `group_dy
 (4, 'Switches', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_type = \'switch\' AND system.man_status = \'production\'', 1, 'Any items that have their status attribute set to \'production\' and have their type attribute set to \'switch\'.', 'device', 'SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id', 'switch'),
 (5, 'Windows Computers', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_os_group = \'Windows\' AND system.man_status = \'production\'', 1, 'Any items that have their status attribute set to \'production\' and have their os_name attribute containing \'windows\'.', 'os', 'SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, sys_sw_windows.windows_user_name, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE oa_group_sys.group_id = ?', 'windows'),
 (6, 'GNU/Linux Systems', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_os_group LIKE LOWER(\'linux\') AND system.man_status = \'production\'', 1, 'Any items that have their status attribute set to \'production\' and have their os_group attribute set to \'linux\'.', 'os', 'SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id', 'linux'),
-(7, 'Virtual Systems', '', 'SELECT distinct(system.system_id) FROM system WHERE (system.manufacturer LIKE \'VMware%\' or system.manufacturer LIKE \'Parallels%\') AND system.man_status = \'production\'', 1, 'Any items that have their status attribute set to \'production\' and have their manufacturer attribute contain \'VMware\' or \'Parallels\'.', 'device', 'SELECT system.man_icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id', 'vmware'),
+(7, 'Virtual Systems', '', 'SELECT distinct(system.system_id) FROM system WHERE (system.man_manufacturer LIKE \'VMware%\' or system.man_manufacturer LIKE \'Parallels%\') AND system.man_status = \'production\'', 1, 'Any items that have their status attribute set to \'production\' and have their manufacturer attribute contain \'VMware\' or \'Parallels\'.', 'device', 'SELECT system.man_icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, system.man_os_family, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id', 'vmware'),
 (8, 'Computers', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and system.man_type = \'computer\'', 1, 'Any items that have their status attribute set to \'production\' and have their type attribute set to \'computer\'.', 'device', 'SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_description, system.man_os_name FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id', 'computer'),
 (9, 'Items in Default Location', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = \'0\' AND system.man_status = \'production\'', 1, 'Items in Default Location', 'location', '', 'location'),
 (10, 'Non Production Devices', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status != \'production\'', 1, 'Any items that have their status attribute not set to \'production\'.', 'device', 'SELECT system.man_icon, system.man_os_family, system.man_type, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, system.man_description, system.man_owner FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id', 'devices');
@@ -1752,8 +1765,17 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('logo', 'oac-oae', 'n', '');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('maps_url', '/omk/oae/map', 'y', 'The web server address of opMaps.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('name_match', 'y', 'y', 'Should we match a device based only on its hostname as a last resort.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('snmp_default_community', 'public', 'y', 'The default community string Open-AudIT will use when connecting to a new device.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_snmp_community', 'public', 'y', 'The default community string Open-AudIT will use when connecting to a new device.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('distinct_groups', 'y', 'y', 'Display Groups on the homepage, separated into the type of each Group.');
+
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_windows_username', '', 'y', 'The default username used by Open-AudIT to audit Windows PCs.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_windows_password', '', 'y', 'The default password used by Open-AudIT to audit Windows PCs.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_windows_domain', '', 'y', 'The default active directory domain used by Open-AudIT to audit Windows PCs.');
+
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ssh_username', '', 'y', 'The default username used by Open-AudIT to audit devices via SSH.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ssh_password', '', 'y', 'The default password used by Open-AudIT to audit devices via SSH.');
+
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_network_address', '', 'y', 'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
 
 INSERT INTO oa_location (location_id, location_name, location_type, location_city, location_state, location_country, location_latitude, location_longitude, location_comments, location_icon, location_group_id) VALUES ('0', 'Default Location', 'Office', 'Gold Coast', 'Queensland', 'Australia', '-28.017260', '153.425705', 'Default location', 'office', '9');
 
