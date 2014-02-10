@@ -214,11 +214,18 @@ if [ "$hosts_in_subnet" != "" ]; then
 				fi
 
 				device=`echo -e "$device"`
-				if [[ "$background_wget" == "n" ]]; then
-					wget -O - -q ${url} --post-data=form_nmap="$device"
+
+				if [[ `uname` == "Linux" ]]; then
+					if [[ "$background_wget" == "n" ]]; then
+						wget -O - -q ${url} --post-data=form_nmap="$device"
+					fi
+					if [[ "$background_wget" == "y" ]]; then
+						wget -b -O - -q ${url} --post-data=form_nmap="$device" 1>/dev/null
+					fi
 				fi
-				if [[ "$background_wget" == "y" ]]; then
-					wget -b -O - -q ${url} --post-data=form_nmap="$device" 1>/dev/null
+
+				if [[ `uname` == "Darwin" ]]; then
+					curl --data "form_nmap=$device" "$url"
 				fi
 			fi
 		#fi
