@@ -28,9 +28,9 @@
 O=$IFS
 IFS=$'\n'
 
-url="http://192.168.61.111/index.php/system/add_system"
-submit_online="n"
-create_file="y"
+url="http://localhost/index.php/system/add_system"
+submit_online="y"
+create_file="n"
 org_id=""
 terminal_print="n"
 debugging="3"
