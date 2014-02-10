@@ -60,34 +60,10 @@ class M_variable extends MY_Model {
 	}
 
 	function process_variable($input, $details) {
-		// need to check for variable changes
-		$sql = "SELECT 
-				sys_sw_variable.variable_id
-			FROM 
-				sys_sw_variable, 
-				system 
-			WHERE 
-				sys_sw_variable.system_id 	= system.system_id AND 
-				system.system_id		= ? AND
-				system.man_status 		= 'production' AND
-				sys_sw_variable.variable_name 	= ? AND 
-				sys_sw_variable.variable_value	= ? AND
-				( sys_sw_variable.timestamp = ? OR sys_sw_variable.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->variable_name", 
-				"$input->variable_value", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the variable exists - need to update its timestamp
-			$sql = "UPDATE sys_sw_variable SET timestamp = ? WHERE variable_id = ?";
-			$data = array("$details->timestamp", "$row->variable_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the variable does not exist - insert it
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_sw_variable
 				( 	system_id, 
 					variable_name, 
@@ -99,8 +75,51 @@ class M_variable extends MY_Model {
 					"$input->variable_name", 
 					"$input->variable_value", 
 					"$details->timestamp", 
+					"$details->first_timestamp");
+			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for variable changes
+			$sql = "SELECT 
+					sys_sw_variable.variable_id
+				FROM 
+					sys_sw_variable, 
+					system 
+				WHERE 
+					sys_sw_variable.system_id 	= system.system_id AND 
+					system.system_id		= ? AND
+					system.man_status 		= 'production' AND
+					sys_sw_variable.variable_name 	= ? AND 
+					sys_sw_variable.variable_value	= ? AND
+					( sys_sw_variable.timestamp = ? OR sys_sw_variable.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					"$input->variable_name", 
+					"$input->variable_value", 
+					"$details->original_timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the variable exists - need to update its timestamp
+				$sql = "UPDATE sys_sw_variable SET timestamp = ? WHERE variable_id = ?";
+				$data = array("$details->timestamp", "$row->variable_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the variable does not exist - insert it
+				$sql = "INSERT INTO sys_sw_variable
+					( 	system_id, 
+						variable_name, 
+						variable_value, 
+						timestamp,
+						first_timestamp ) VALUES ( ?,?,?,?,? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->variable_name", 
+						"$input->variable_value", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 

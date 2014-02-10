@@ -76,25 +76,11 @@ class M_database extends MY_Model {
 		if (mb_strpos($input->db_version, "7.00.699") === 0)  { $version_string = "SQL Server 7 Service Pack 1"; }
 		if (mb_strpos($input->db_version, "7.00.623") === 0)  { $version_string = "SQL Server 7 RTM"; }
 
-		// need to check for database changes
-		$sql = "SELECT sys_sw_database.db_id FROM sys_sw_database, system WHERE sys_sw_database.system_id = system.system_id AND 
-					system.system_id = ? AND system.man_status = 'production' AND sys_sw_database.db_type = ? AND sys_sw_database.db_version = ? AND 
-					( sys_sw_database.timestamp = ? OR sys_sw_database.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->db_type", 
-				"$input->db_version", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the database entry exists - need to update its timestamp
-			$sql = "UPDATE sys_sw_database SET timestamp = ? , db_edition = ?, db_version_string = ? WHERE db_id = ?";
-			$data = array("$details->timestamp", "$input->db_edition", "$version_string", "$row->db_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the database entry does not exist - insert it
+
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_sw_database (system_id, db_type, db_version, db_version_string, db_edition, db_port, timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
@@ -104,8 +90,40 @@ class M_database extends MY_Model {
 					"$input->db_edition", 
 					"$input->db_port", 
 					"$details->timestamp", 
+					"$details->first_timestamp");
+			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for database changes
+			$sql = "SELECT sys_sw_database.db_id FROM sys_sw_database, system WHERE sys_sw_database.system_id = system.system_id AND 
+						system.system_id = ? AND system.man_status = 'production' AND sys_sw_database.db_type = ? AND sys_sw_database.db_version = ? AND 
+						( sys_sw_database.timestamp = ? OR sys_sw_database.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					"$input->db_type", 
+					"$input->db_version", 
+					"$details->original_timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the database entry exists - need to update its timestamp
+				$sql = "UPDATE sys_sw_database SET timestamp = ? , db_edition = ?, db_version_string = ? WHERE db_id = ?";
+				$data = array("$details->timestamp", "$input->db_edition", "$version_string", "$row->db_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the database entry does not exist - insert it
+				$sql = "INSERT INTO sys_sw_database (system_id, db_type, db_version, db_version_string, db_edition, db_port, timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->db_type", 
+						"$input->db_version", 
+						"$version_string", 
+						"$input->db_edition", 
+						"$input->db_port", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 

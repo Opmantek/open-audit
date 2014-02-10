@@ -301,7 +301,21 @@ class System extends CI_Controller {
 			error_log($error_output);
 			exit;
 		}
-		
+
+		if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
+			$file = "/usr/local/open-audit/other/open-audit.log";
+		} else {
+			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+		}
+		$log_timestamp = date("M d H:i:s");
+		$log_hostname = php_uname('n');
+		$log_pid = getmypid();
+		$i = (string) $xml->sys[0]->hostname;
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . "\n";
+		$handle = fopen($file, "a");
+		fwrite($handle, $log_line);
+		fclose($handle);
+
 		foreach ($xml->children() as $child) {
 			if ($child->getName() == 'sys')	{		
 				 	$details = (object) $xml->sys;
@@ -316,6 +330,7 @@ class System extends CI_Controller {
 					$details->last_seen_by = 'audit';
 					$details->last_user = '';
 					$details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+					$details->last_audit_date = "";
 					if ($i == '') {
 						# insert a new system
 						$details->system_id = $this->m_system->insert_system($details);
@@ -323,10 +338,12 @@ class System extends CI_Controller {
 						echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 					} else {
 						# update an existing system
+						$details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
 						$details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
 						$this->m_system->update_system($details);
 						echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 					}
+					$details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
 					$this->m_sys_man_audits->insert_audit($details);
 			}
 			if ($child->getName() == 'addresses') { $this->m_sys_man_audits->update_audit($details, $child->getName()); foreach($xml->addresses->ip_address as $input) { $this->m_ip_address->process_addresses($input, $details); } }
@@ -437,5 +454,37 @@ class System extends CI_Controller {
 		$this->benchmark->mark('code_end');
 		echo "<br />Time: " . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds.';
 		echo "</body>\n</html>";
+
+
+		if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
+			$file = "/usr/local/open-audit/other/open-audit.log";
+		} else {
+			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+		}
+		$log_timestamp = date("M d H:i:s");
+		$log_hostname = php_uname('n');
+		$log_pid = getmypid();
+		$i = (string) $xml->sys[0]->hostname;
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing completed for " . $i . "\n";
+		$handle = fopen($file, "a");
+		fwrite($handle, $log_line);
+		fclose($handle);
 	}
+
+	function log_event($log_details) {
+		# setup the log file
+		if (php_uname('s') == 'Linux') {
+			$file = "/usr/local/open-audit/other/open-audit.log";
+		} else {
+			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+		}
+		$log_timestamp = date("M d H:i:s");
+		$log_hostname = php_uname('n');
+		$log_pid = getmypid();
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . ".\n";
+		$handle = fopen($file, "a");
+		fwrite($handle, $log_line);
+		fclose($handle);
+	}
+
 }

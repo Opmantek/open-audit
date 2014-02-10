@@ -62,36 +62,10 @@ class M_scsi_controller extends MY_Model {
 	}
 
 	function process_scsi_controller($input, $details) {
-		// need to check for sound card changes
-		$sql = "SELECT 
-				sys_hw_scsi_controller.scsi_controller_id
-			FROM 
-				sys_hw_scsi_controller, 
-				system 
-			WHERE 
-				sys_hw_scsi_controller.system_id 	= system.system_id AND 
-				system.system_id			= ? AND
-				system.man_status 			= 'production' AND
-				scsi_controller_manufacturer 		= ? AND 
-				scsi_controller_name 			= ? AND
-				scsi_controller_device_id		= ? AND
-				( sys_hw_scsi_controller.timestamp = ? OR sys_hw_scsi_controller.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->manufacturer", 
-				"$input->name", 
-				"$input->device_id", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the scsi_controller exists - need to update its timestamp
-			$sql = "UPDATE sys_hw_scsi_controller SET timestamp = ? WHERE scsi_controller_id = ?";
-			$data = array("$details->timestamp", "$row->scsi_controller_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the scsi_controller does not exist - insert it
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_hw_scsi_controller 
 				( 	system_id, 
 					scsi_controller_name, 
@@ -107,8 +81,53 @@ class M_scsi_controller extends MY_Model {
 					"$input->device_id", 
 					"$input->type", 
 					"$details->timestamp", 
+					"$details->first_timestamp");
+			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for sound card changes
+			$sql = "SELECT sys_hw_scsi_controller.scsi_controller_id
+				FROM sys_hw_scsi_controller, system 
+				WHERE sys_hw_scsi_controller.system_id 	= system.system_id AND 
+					system.system_id			= ? AND
+					system.man_status 			= 'production' AND
+					scsi_controller_manufacturer 		= ? AND 
+					scsi_controller_name 			= ? AND
+					scsi_controller_device_id		= ? AND
+					( sys_hw_scsi_controller.timestamp = ? OR sys_hw_scsi_controller.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					"$input->manufacturer", 
+					"$input->name", 
+					"$input->device_id", 
+					"$details->original_timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the scsi_controller exists - need to update its timestamp
+				$sql = "UPDATE sys_hw_scsi_controller SET timestamp = ? WHERE scsi_controller_id = ?";
+				$data = array("$details->timestamp", "$row->scsi_controller_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the scsi_controller does not exist - insert it
+				$sql = "INSERT INTO sys_hw_scsi_controller 
+					( 	system_id, 
+						scsi_controller_name, 
+						scsi_controller_manufacturer, 
+						scsi_controller_device_id, 
+						scsi_controller_type, 
+						timestamp,
+						first_timestamp ) VALUES ( ?,?,?,?,?,?,? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->name", 
+						"$input->manufacturer", 
+						"$input->device_id", 
+						"$input->type", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 

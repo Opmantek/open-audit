@@ -64,39 +64,12 @@ class M_share extends MY_Model {
 	}
 
 	function process_shares($input, $details) {
-		// need to check for shared directory changes
-		$sql = "SELECT sys_sw_share.share_id
-				FROM sys_sw_share, system 
-				WHERE 	sys_sw_share.system_id 	= system.system_id AND 
-						system.system_id		= ? AND 
-						system.man_status 	= 'production' AND 
-						share_name			= ? AND 
-						share_path			= ? AND 
-						( sys_sw_share.timestamp = ? OR 
-						sys_sw_share.timestamp 	= ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->share_name", 
-				"$input->share_path", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the share exists - need to update its timestamp
-			$sql = "UPDATE sys_sw_share SET share_size = ?, share_users = ?, timestamp = ? WHERE share_id = ?";
-			$data = array("$input->share_size", "$input->share_users", "$details->timestamp", "$row->share_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the share does not exist - insert it
-			$sql = "INSERT INTO sys_sw_share (	system_id, 
-										share_caption, 
-										share_name, 
-										share_path, 
-										share_size, 
-										share_users, 
-										timestamp,
-										first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
+			$sql = "INSERT INTO sys_sw_share (	system_id, share_caption, share_name, share_path, 
+					share_size, share_users, timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->share_caption", 
@@ -105,8 +78,47 @@ class M_share extends MY_Model {
 					"$input->share_size", 
 					"$input->share_users", 
 					"$details->timestamp", 
+					"$details->first_timestamp");
+			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for shared directory changes
+			$sql = "SELECT sys_sw_share.share_id
+					FROM sys_sw_share, system 
+					WHERE 	sys_sw_share.system_id 	= system.system_id AND 
+							system.system_id		= ? AND 
+							system.man_status 	= 'production' AND 
+							share_name			= ? AND 
+							share_path			= ? AND 
+							( sys_sw_share.timestamp = ? OR 
+							sys_sw_share.timestamp 	= ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					"$input->share_name", 
+					"$input->share_path", 
+					"$details->original_timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the share exists - need to update its timestamp
+				$sql = "UPDATE sys_sw_share SET share_size = ?, share_users = ?, timestamp = ? WHERE share_id = ?";
+				$data = array("$input->share_size", "$input->share_users", "$details->timestamp", "$row->share_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the share does not exist - insert it
+				$sql = "INSERT INTO sys_sw_share (	system_id, share_caption, share_name, share_path, 
+						share_size, share_users, timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->share_caption", 
+						"$input->share_name", 
+						"$input->share_path", 
+						"$input->share_size", 
+						"$input->share_users", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 

@@ -174,34 +174,10 @@ class M_netstat extends MY_Model {
 
 
 		foreach ($input_array as $input) {
-			// need to check for netstat changes
-			$sql = "SELECT sys_sw_netstat.id FROM sys_sw_netstat, system 
-					WHERE 
-						sys_sw_netstat.system_id 	= system.system_id AND 
-						system.system_id			= ? AND
-						system.man_status 			= 'production' AND
-						sys_sw_netstat.protocol 	= ? AND 
-						sys_sw_netstat.ip_address 	= ? AND
-						sys_sw_netstat.port 		= ? AND
-						sys_sw_netstat.program 		= ? AND
-						( sys_sw_netstat.timestamp = ? OR sys_sw_netstat.timestamp = ? )";
-			$sql = $this->clean_sql($sql);
-			$data = array("$details->system_id", 
-					"$input->protocol", 
-					"$input->ip_address", 
-					"$input->port", 
-					"$input->program", 
-					"$details->original_timestamp", 
-					"$details->timestamp");
-			$query = $this->db->query($sql, $data);
-			if ($query->num_rows() > 0) {
-				$row = $query->row();
-				// the netstat exists - need to update its timestamp
-				$sql = "UPDATE sys_sw_netstat SET timestamp = ? WHERE id = ?";
-				$data = array("$details->timestamp", "$row->id");
-				$query = $this->db->query($sql, $data);
-			} else {
-				// the netstat does not exist - insert it
+			if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+				# we have only seen this system once, and not via an audit script
+				# insert the software and set the first_timestamp == system.first_timestamp
+				# otherwise we cause alerts
 				$sql = "INSERT INTO sys_sw_netstat
 					( 	system_id, 
 						protocol, 
@@ -217,8 +193,55 @@ class M_netstat extends MY_Model {
 						"$input->port", 
 						"$input->program", 
 						"$details->timestamp", 
+						"$details->first_timestamp");
+				$query = $this->db->query($sql, $data);
+				} else {
+				// need to check for netstat changes
+				$sql = "SELECT sys_sw_netstat.id FROM sys_sw_netstat, system 
+						WHERE 
+							sys_sw_netstat.system_id 	= system.system_id AND 
+							system.system_id			= ? AND
+							system.man_status 			= 'production' AND
+							sys_sw_netstat.protocol 	= ? AND 
+							sys_sw_netstat.ip_address 	= ? AND
+							sys_sw_netstat.port 		= ? AND
+							sys_sw_netstat.program 		= ? AND
+							( sys_sw_netstat.timestamp = ? OR sys_sw_netstat.timestamp = ? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->protocol", 
+						"$input->ip_address", 
+						"$input->port", 
+						"$input->program", 
+						"$details->original_timestamp", 
 						"$details->timestamp");
 				$query = $this->db->query($sql, $data);
+				if ($query->num_rows() > 0) {
+					$row = $query->row();
+					// the netstat exists - need to update its timestamp
+					$sql = "UPDATE sys_sw_netstat SET timestamp = ? WHERE id = ?";
+					$data = array("$details->timestamp", "$row->id");
+					$query = $this->db->query($sql, $data);
+				} else {
+					// the netstat does not exist - insert it
+					$sql = "INSERT INTO sys_sw_netstat
+						( 	system_id, 
+							protocol, 
+							ip_address, 
+							port, 
+							program, 
+							timestamp,
+							first_timestamp ) VALUES ( ?,?,?,?,?,?,? )";
+					$sql = $this->clean_sql($sql);
+					$data = array("$details->system_id", 
+							"$input->protocol", 
+							"$input->ip_address", 
+							"$input->port", 
+							"$input->program", 
+							"$details->timestamp", 
+							"$details->timestamp");
+					$query = $this->db->query($sql, $data);
+				}
 			}
 		}
 	}

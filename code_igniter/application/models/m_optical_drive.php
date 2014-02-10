@@ -61,38 +61,14 @@ class M_optical_drive extends MY_Model {
 	}
 
 	function process_optical_drives($input, $details) {
-		// need to check for optical_drive changes
-		$sql = "SELECT sys_hw_optical_drive.optical_drive_id
-				FROM sys_hw_optical_drive, system 
-				WHERE 	sys_hw_optical_drive.system_id 	= system.system_id AND 
-						system.system_id				= ? AND 
-						system.man_status 				= 'production' AND 
-						optical_drive_model 			= ? AND 
-						optical_drive_mount_point 		= ? AND 
-						( sys_hw_optical_drive.timestamp = ? OR 
-						sys_hw_optical_drive.timestamp 	= ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->optical_drive_model", 
-				"$input->optical_drive_mount_point", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the optical_drive exists - need to update its timestamp
-			$sql = "UPDATE sys_hw_optical_drive SET timestamp = ? WHERE optical_drive_id = ?";
-			$data = array("$details->timestamp", "$row->optical_drive_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the optical_drive does not exist - insert it
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_hw_optical_drive (	system_id, 
-										optical_drive_caption, 
-										optical_drive_model, 
-										optical_drive_device_id, 
-										optical_drive_mount_point,
-										timestamp,
-										first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+					optical_drive_caption, optical_drive_model, 
+					optical_drive_device_id, optical_drive_mount_point, 
+					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->optical_drive_caption", 
@@ -100,8 +76,48 @@ class M_optical_drive extends MY_Model {
 					"$input->optical_drive_device_id", 
 					"$input->optical_drive_mount_point", 
 					"$details->timestamp", 
+					"$details->first_timestamp");
+			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for optical_drive changes
+			$sql = "SELECT sys_hw_optical_drive.optical_drive_id
+					FROM sys_hw_optical_drive, system 
+					WHERE 	sys_hw_optical_drive.system_id 	= system.system_id AND 
+							system.system_id				= ? AND 
+							system.man_status 				= 'production' AND 
+							optical_drive_model 			= ? AND 
+							optical_drive_mount_point 		= ? AND 
+							( sys_hw_optical_drive.timestamp = ? OR 
+							sys_hw_optical_drive.timestamp 	= ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					"$input->optical_drive_model", 
+					"$input->optical_drive_mount_point", 
+					"$details->original_timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the optical_drive exists - need to update its timestamp
+				$sql = "UPDATE sys_hw_optical_drive SET timestamp = ? WHERE optical_drive_id = ?";
+				$data = array("$details->timestamp", "$row->optical_drive_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the optical_drive does not exist - insert it
+				$sql = "INSERT INTO sys_hw_optical_drive (	system_id, 
+						optical_drive_caption, optical_drive_model, 
+						optical_drive_device_id, optical_drive_mount_point,
+						timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->optical_drive_caption", 
+						"$input->optical_drive_model", 
+						"$input->optical_drive_device_id", 
+						"$input->optical_drive_mount_point", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 

@@ -107,142 +107,11 @@ class M_software extends MY_Model {
 	}
 
 	function process_software($input, $details) {
-		// select all the current software from the DB
-		$sql = "SELECT sys_sw_software.* 
-				FROM sys_sw_software, system 
-				WHERE sys_sw_software.system_id = system.system_id AND 
-					system.system_id = ? AND 
-					system.man_status = 'production' AND 
-					sys_sw_software.timestamp = ? ";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", "$details->original_timestamp");
-		$query = $this->db->query($sql, $data);
-		$result = $query->result();
-		foreach ($input->package as $software_xml) {
-			// this is a newly introduced field as at v 1.2
-			// test and set to minimise errors from using old audit scripts
-			if (!isset($software_xml->software_description)) { 
-				$software_xml->software_description = ''; 
-			} else {
-				$software_xml->software_description = trim($software_xml->software_description); 
-			}
-
-			$flag = 'insert';
-			// insert an 'update' tag where necessary
-			// note - CPSID_ is for Adobe updates
-			if (mb_stripos($software_xml->software_name, 'update') OR 
-				mb_stripos($software_xml->software_name, 'hotfix') OR 
-				mb_stripos($software_xml->software_name, 'CPSID_') OR 
-				mb_strpos($software_xml->software_name, 'KB')) {
-					$software_xml->software_comment = 'update';
-			}
-
-			foreach ($result as $id => $software_db) {
-				// enumerate the array of retrieved packages, looking for a match
-				if (!isset($software_db->timestamp)){$software_db->timestamp = '';}
-
-				if 	((strval($software_db->software_name) == strval($software_xml->software_name)) AND (strval($software_db->software_version) == strval($software_xml->software_version)) AND ((strval($software_db->timestamp) == strval($details->timestamp)) OR (strval($software_db->timestamp) == strval($details->original_timestamp)))) {
-
-					$software_db = & $result[$id];
-					// we have a match.
-					$flag = 'update';
-					
-					// update the fields if they are empty
-					if (($software_db->software_version == '') AND ($software_xml->software_version != '')) {
-							$software_db->software_version = "$software_xml->software_version";
-					} 
-					
-					if (($software_db->software_location == '') AND ($software_xml->software_location != '')) {
-							$software_db->software_location = "$software_xml->software_location";
-					} 
-					
-					if (($software_db->software_description == '') AND ($software_xml->software_description != '')) {
-							$software_db->software_description = "$software_xml->software_description";
-					} 
-					
-					if (($software_db->software_uninstall == '') AND ($software_xml->software_uninstall != '')) {
-							$software_db->software_uninstall = "$software_xml->software_uninstall";
-					} 
-					
-					if (($software_db->software_install_date == '') AND ($software_xml->software_install_date != '')) {
-							$software_db->software_install_date = "$software_xml->software_install_date";
-					} 
-					
-					if (($software_db->software_publisher == '') AND ($software_xml->software_publisher != '')) {
-							$software_db->software_publisher = "$software_xml->software_publisher";
-					} 
-					
-					if (($software_db->software_install_source == '') AND ($software_xml->software_install_source != '')) {
-							$software_db->software_install_source = "$software_xml->software_install_source";
-					} 
-					
-					if (($software_db->software_system_component == '') AND ($software_xml->software_system_component != '')) {
-							$software_db->software_system_component = "$software_xml->software_system_component";
-					} 
-					
-					if (($software_db->software_url == '') AND ($software_xml->software_url != '')) {
-							$software_db->software_url = "$software_xml->software_url";
-					} 
-					
-					if (($software_db->software_email == '') AND ($software_xml->software_email != '')) {
-							$software_db->software_email = "$software_xml->software_email";
-					} 
-					
-					if (($software_db->software_comment == '') AND ($software_xml->software_comment != '')) {
-							$software_db->software_comment = "$software_xml->software_comment";
-					} 
-
-					if (($software_db->software_installed_by == '') AND ($software_xml->software_installed_by != '')) {
-							$software_db->software_installed_by = "$software_xml->software_installed_by";
-					} 
-
-					if (($software_db->software_installed_on == '') AND ($software_xml->software_installed_on != '')) {
-							$software_db->software_installed_on = "$software_xml->software_installed_on";
-					} 
-					$software_db->timestamp = $details->timestamp;
-					// update the database
-					$sql = "UPDATE sys_sw_software SET 
-							software_version = ? , 
-							software_description = ? , 
-							software_location = ? , 
-							software_uninstall = ? , 
-							software_install_date = ? , 
-							software_publisher = ? , 
-							software_install_source = ? , 
-							software_system_component = ? , 
-							software_url = ? , 
-							software_email = ? , 
-							software_comment = ? , 
-							software_installed_by = ? , 
-							software_installed_on = ? , 
-							timestamp = ? 
-						WHERE software_id = ?";
-					$sql = $this->clean_sql($sql);
-					$data = array(	"$software_db->software_version", 
-							"$software_db->software_description", 
-							"$software_db->software_location", 
-							"$software_db->software_uninstall", 
-							"$software_db->software_install_date", 
-							"$software_db->software_publisher", 
-							"$software_db->software_install_source", 
-							"$software_db->software_system_component", 
-							"$software_db->software_url", 
-							"$software_db->software_email", 
-							"$software_db->software_comment", 
-							"$software_db->software_installed_by", 
-							"$software_db->software_installed_on", 
-							"$software_db->timestamp", 
-							"$software_db->software_id");
-					$sql = $this->clean_sql($sql);
-					$query = $this->db->query($sql, $data);
-					unset($software_db);
-					// stop the loop
-					break;
-				} 
-			}
-			if ($flag == 'insert') {
-				// we did not get any matches to the array
-				// insert a new row
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
+			foreach ($input->package as $software_xml) {
 				$sql = "INSERT INTO sys_sw_software ( system_id, 
 						software_name, 
 						software_version, 
@@ -283,33 +152,216 @@ class M_software extends MY_Model {
 						"$software_xml->software_installed_by", 
 						"$software_xml->software_installed_on", 
 						"$details->timestamp", 
-						"$details->timestamp");
+						"$details->first_timestamp");
 
 				$query = $this->db->query($sql, $data);
+			}
+		} else {
 
-				$software_db_new = new stdClass();
-				$software_db_new->software_id = $this->db->insert_id();
-				$software_db_new->software_name = "$software_xml->software_name";
-				$software_db_new->software_version = "$software_xml->software_version";
-				$software_db_new->software_description = "$software_xml->software_description";
-				$software_db_new->software_location = "$software_xml->software_location";
-				$software_db_new->software_uninstall = "$software_xml->software_uninstall";
-				$software_db_new->software_install_date = "$software_xml->software_install_date";
-				$software_db_new->software_publisher = "$software_xml->software_publisher";
-				$software_db_new->software_install_source = "$software_xml->software_install_source";
-				$software_db_new->software_system_component = "$software_xml->software_system_component";
-				$software_db_new->software_url = "$software_xml->software_url";
-				$software_db_new->software_email = "$software_xml->software_email";
-				$software_db_new->software_comment = "$software_xml->software_comment";
-				$software_db_new->software_code_base = "$software_xml->software_code_base";
-				$software_db_new->software_status = "$software_xml->software_status";
-				$software_db_new->software_installed_by = "$software_xml->software_installed_by";
-				$software_db_new->software_installed_on = "$software_xml->software_installed_on";
-				$software_db_new->software_timestamp = "$details->timestamp";
-				$software_db_new->software_first_timestamp = "$details->timestamp";
+			// select all the current software from the DB
+			$sql = "SELECT sys_sw_software.* 
+					FROM sys_sw_software, system 
+					WHERE sys_sw_software.system_id = system.system_id AND 
+						system.system_id = ? AND 
+						system.man_status = 'production' AND 
+						sys_sw_software.timestamp = ? ";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", "$details->original_timestamp");
+			$query = $this->db->query($sql, $data);
+			$result = $query->result();
+			foreach ($input->package as $software_xml) {
+				// this is a newly introduced field as at v 1.2
+				// test and set to minimise errors from using old audit scripts
+				if (!isset($software_xml->software_description)) { 
+					$software_xml->software_description = ''; 
+				} else {
+					$software_xml->software_description = trim($software_xml->software_description); 
+				}
 
-				$result[] = $software_db_new;
-				unset($software_db_new);
+				$flag = 'insert';
+				// insert an 'update' tag where necessary
+				// note - CPSID_ is for Adobe updates
+				if (mb_stripos($software_xml->software_name, 'update') OR 
+					mb_stripos($software_xml->software_name, 'hotfix') OR 
+					mb_stripos($software_xml->software_name, 'CPSID_') OR 
+					mb_strpos($software_xml->software_name, 'KB')) {
+						$software_xml->software_comment = 'update';
+				}
+
+				foreach ($result as $id => $software_db) {
+					// enumerate the array of retrieved packages, looking for a match
+					if (!isset($software_db->timestamp)){$software_db->timestamp = '';}
+
+					if 	((strval($software_db->software_name) == strval($software_xml->software_name)) AND (strval($software_db->software_version) == strval($software_xml->software_version)) AND ((strval($software_db->timestamp) == strval($details->timestamp)) OR (strval($software_db->timestamp) == strval($details->original_timestamp)))) {
+
+						$software_db = & $result[$id];
+						// we have a match.
+						$flag = 'update';
+						
+						// update the fields if they are empty
+						if (($software_db->software_version == '') AND ($software_xml->software_version != '')) {
+								$software_db->software_version = "$software_xml->software_version";
+						} 
+						
+						if (($software_db->software_location == '') AND ($software_xml->software_location != '')) {
+								$software_db->software_location = "$software_xml->software_location";
+						} 
+						
+						if (($software_db->software_description == '') AND ($software_xml->software_description != '')) {
+								$software_db->software_description = "$software_xml->software_description";
+						} 
+						
+						if (($software_db->software_uninstall == '') AND ($software_xml->software_uninstall != '')) {
+								$software_db->software_uninstall = "$software_xml->software_uninstall";
+						} 
+						
+						if (($software_db->software_install_date == '') AND ($software_xml->software_install_date != '')) {
+								$software_db->software_install_date = "$software_xml->software_install_date";
+						} 
+						
+						if (($software_db->software_publisher == '') AND ($software_xml->software_publisher != '')) {
+								$software_db->software_publisher = "$software_xml->software_publisher";
+						} 
+						
+						if (($software_db->software_install_source == '') AND ($software_xml->software_install_source != '')) {
+								$software_db->software_install_source = "$software_xml->software_install_source";
+						} 
+						
+						if (($software_db->software_system_component == '') AND ($software_xml->software_system_component != '')) {
+								$software_db->software_system_component = "$software_xml->software_system_component";
+						} 
+						
+						if (($software_db->software_url == '') AND ($software_xml->software_url != '')) {
+								$software_db->software_url = "$software_xml->software_url";
+						} 
+						
+						if (($software_db->software_email == '') AND ($software_xml->software_email != '')) {
+								$software_db->software_email = "$software_xml->software_email";
+						} 
+						
+						if (($software_db->software_comment == '') AND ($software_xml->software_comment != '')) {
+								$software_db->software_comment = "$software_xml->software_comment";
+						} 
+
+						if (($software_db->software_installed_by == '') AND ($software_xml->software_installed_by != '')) {
+								$software_db->software_installed_by = "$software_xml->software_installed_by";
+						} 
+
+						if (($software_db->software_installed_on == '') AND ($software_xml->software_installed_on != '')) {
+								$software_db->software_installed_on = "$software_xml->software_installed_on";
+						} 
+						$software_db->timestamp = $details->timestamp;
+						// update the database
+						$sql = "UPDATE sys_sw_software SET 
+								software_version = ? , 
+								software_description = ? , 
+								software_location = ? , 
+								software_uninstall = ? , 
+								software_install_date = ? , 
+								software_publisher = ? , 
+								software_install_source = ? , 
+								software_system_component = ? , 
+								software_url = ? , 
+								software_email = ? , 
+								software_comment = ? , 
+								software_installed_by = ? , 
+								software_installed_on = ? , 
+								timestamp = ? 
+							WHERE software_id = ?";
+						$sql = $this->clean_sql($sql);
+						$data = array(	"$software_db->software_version", 
+								"$software_db->software_description", 
+								"$software_db->software_location", 
+								"$software_db->software_uninstall", 
+								"$software_db->software_install_date", 
+								"$software_db->software_publisher", 
+								"$software_db->software_install_source", 
+								"$software_db->software_system_component", 
+								"$software_db->software_url", 
+								"$software_db->software_email", 
+								"$software_db->software_comment", 
+								"$software_db->software_installed_by", 
+								"$software_db->software_installed_on", 
+								"$software_db->timestamp", 
+								"$software_db->software_id");
+						$sql = $this->clean_sql($sql);
+						$query = $this->db->query($sql, $data);
+						unset($software_db);
+						// stop the loop
+						break;
+					} 
+				}
+				if ($flag == 'insert') {
+					// we did not get any matches to the array
+					// insert a new row
+					$sql = "INSERT INTO sys_sw_software ( system_id, 
+							software_name, 
+							software_version, 
+							software_description, 
+							software_location, 
+							software_uninstall, 
+							software_install_date, 
+							software_publisher, 
+							software_install_source, 
+							software_system_component, 
+							software_url,
+							software_email,
+							software_comment, 
+							software_code_base, 
+							software_status, 
+							software_installed_by, 
+							software_installed_on, 
+							timestamp,
+							first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+
+					$sql = $this->clean_sql($sql);
+
+					$data = array("$details->system_id", 
+							"$software_xml->software_name", 
+							"$software_xml->software_version", 
+							"$software_xml->software_description", 
+							"$software_xml->software_location", 
+							"$software_xml->software_uninstall", 
+							"$software_xml->software_install_date", 
+							"$software_xml->software_publisher", 
+							"$software_xml->software_install_source", 
+							"$software_xml->software_system_component", 
+							"$software_xml->software_url", 
+							"$software_xml->software_email", 
+							"$software_xml->software_comment", 
+							"$software_xml->software_code_base", 
+							"$software_xml->software_status", 
+							"$software_xml->software_installed_by", 
+							"$software_xml->software_installed_on", 
+							"$details->timestamp", 
+							"$details->timestamp");
+
+					$query = $this->db->query($sql, $data);
+
+					$software_db_new = new stdClass();
+					$software_db_new->software_id = $this->db->insert_id();
+					$software_db_new->software_name = "$software_xml->software_name";
+					$software_db_new->software_version = "$software_xml->software_version";
+					$software_db_new->software_description = "$software_xml->software_description";
+					$software_db_new->software_location = "$software_xml->software_location";
+					$software_db_new->software_uninstall = "$software_xml->software_uninstall";
+					$software_db_new->software_install_date = "$software_xml->software_install_date";
+					$software_db_new->software_publisher = "$software_xml->software_publisher";
+					$software_db_new->software_install_source = "$software_xml->software_install_source";
+					$software_db_new->software_system_component = "$software_xml->software_system_component";
+					$software_db_new->software_url = "$software_xml->software_url";
+					$software_db_new->software_email = "$software_xml->software_email";
+					$software_db_new->software_comment = "$software_xml->software_comment";
+					$software_db_new->software_code_base = "$software_xml->software_code_base";
+					$software_db_new->software_status = "$software_xml->software_status";
+					$software_db_new->software_installed_by = "$software_xml->software_installed_by";
+					$software_db_new->software_installed_on = "$software_xml->software_installed_on";
+					$software_db_new->software_timestamp = "$details->timestamp";
+					$software_db_new->software_first_timestamp = "$details->timestamp";
+
+					$result[] = $software_db_new;
+					unset($software_db_new);
+				}
 			}
 		}
 	}

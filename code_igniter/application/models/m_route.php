@@ -64,39 +64,12 @@ class M_route extends MY_Model {
 	}
 
 	function process_route($input, $details) {
-		// need to check for route changes
-		$sql = "SELECT 
-				sys_sw_route.route_id
-			FROM 
-				sys_sw_route, 
-				system 
-			WHERE 
-				sys_sw_route.system_id 		= system.system_id AND 
-				system.system_id		= ? AND
-				system.man_status 		= 'production' AND
-				sys_sw_route.destination 	= ? AND 
-				sys_sw_route.next_hop 		= ? AND
-				( sys_sw_route.timestamp = ? OR sys_sw_route.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", $this->ip_address_to_db($input->destination), $this->ip_address_to_db($input->next_hop), "$details->original_timestamp", "$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the route exists - need to update its timestamp
-			$sql = "UPDATE sys_sw_route SET timestamp = ? WHERE route_id = ?";
-			$data = array("$details->timestamp", "$row->route_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the route does not exist - insert it
-			$sql = "INSERT INTO sys_sw_route
-				( 	system_id, 
-					destination, 
-					mask, 
-					metric, 
-					next_hop, 
-					protocol,
-					type,
-					timestamp,
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
+			$sql = "INSERT INTO sys_sw_route ( system_id, destination, mask, metric, 
+					next_hop, protocol, type, timestamp,
 					first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
@@ -107,8 +80,48 @@ class M_route extends MY_Model {
 					"$input->protocol", 
 					"$input->type", 
 					"$details->timestamp", 
-					"$details->timestamp");
+					"$details->first_timestamp");
 			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for route changes
+			$sql = "SELECT 
+					sys_sw_route.route_id
+				FROM 
+					sys_sw_route, 
+					system 
+				WHERE 
+					sys_sw_route.system_id 		= system.system_id AND 
+					system.system_id		= ? AND
+					system.man_status 		= 'production' AND
+					sys_sw_route.destination 	= ? AND 
+					sys_sw_route.next_hop 		= ? AND
+					( sys_sw_route.timestamp = ? OR sys_sw_route.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", $this->ip_address_to_db($input->destination), $this->ip_address_to_db($input->next_hop), "$details->original_timestamp", "$details->timestamp");
+			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the route exists - need to update its timestamp
+				$sql = "UPDATE sys_sw_route SET timestamp = ? WHERE route_id = ?";
+				$data = array("$details->timestamp", "$row->route_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the route does not exist - insert it
+				$sql = "INSERT INTO sys_sw_route ( system_id, destination, mask, metric, 
+					next_hop, protocol, type, timestamp,
+					first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						$this->ip_address_to_db($input->destination), 
+						"$input->mask", 
+						"$input->metric", 
+						$this->ip_address_to_db($input->next_hop), 
+						"$input->protocol", 
+						"$input->type", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 

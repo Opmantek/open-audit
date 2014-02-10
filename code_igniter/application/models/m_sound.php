@@ -60,45 +60,57 @@ class M_sound extends MY_Model {
 	}
 
 	function process_sound_cards($input, $details) {
-		// need to check for sound card changes
-		$sql = "SELECT sys_hw_sound.sound_id
-				FROM sys_hw_sound, system 
-				WHERE sys_hw_sound.system_id = system.system_id AND 
-					system.system_id = ? AND
-					system.man_status = 'production' AND
-					sound_manufacturer = ? AND 
-					sound_name = ? AND
-					( sys_hw_sound.timestamp = ? OR 
-					sys_hw_sound.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->sound_manufacturer", 
-				"$input->sound_name", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the optical_drive exists - need to update its timestamp
-			$sql = "UPDATE sys_hw_sound SET timestamp = ? WHERE sound_id = ?";
-			$data = array("$details->timestamp", "$row->sound_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the sound card does not exist - insert it
-			$sql = "INSERT INTO sys_hw_sound (	system_id, 
-										sound_manufacturer, 
-										sound_device_id, 
-										sound_name, 
-										timestamp,
-										first_timestamp ) VALUES ( ?,?,?,?,?,? )";
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
+			$sql = "INSERT INTO sys_hw_sound ( system_id, sound_manufacturer, sound_device_id, 
+					sound_name, timestamp, first_timestamp ) VALUES ( ?,?,?,?,?,? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->sound_manufacturer", 
 					"$input->sound_device_id", 
 					"$input->sound_name", 
 					"$details->timestamp", 
+					"$details->first_timestamp");
+			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for sound card changes
+			$sql = "SELECT sys_hw_sound.sound_id
+					FROM sys_hw_sound, system 
+					WHERE sys_hw_sound.system_id = system.system_id AND 
+						system.system_id = ? AND
+						system.man_status = 'production' AND
+						sound_manufacturer = ? AND 
+						sound_name = ? AND
+						( sys_hw_sound.timestamp = ? OR 
+						sys_hw_sound.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					"$input->sound_manufacturer", 
+					"$input->sound_name", 
+					"$details->original_timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the optical_drive exists - need to update its timestamp
+				$sql = "UPDATE sys_hw_sound SET timestamp = ? WHERE sound_id = ?";
+				$data = array("$details->timestamp", "$row->sound_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the sound card does not exist - insert it
+				$sql = "INSERT INTO sys_hw_sound ( system_id, sound_manufacturer, sound_device_id, 
+						sound_name, timestamp, first_timestamp ) VALUES ( ?,?,?,?,?,? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->sound_manufacturer", 
+						"$input->sound_device_id", 
+						"$input->sound_name", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 

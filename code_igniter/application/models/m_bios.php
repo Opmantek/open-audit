@@ -62,41 +62,10 @@ class M_bios extends MY_Model {
 	}
 
 	function process_bios($input, $details) {
-		// check for processor changes
-		$sql = "SELECT 
-				sys_hw_bios.bios_id 
-			FROM 
-				sys_hw_bios, 
-				system 
-			WHERE 
-				sys_hw_bios.system_id = system.system_id AND 
-				system.system_id = ? AND 
-				system.man_status = 'production' AND  
-				bios_description = ? AND 
-				bios_manufacturer = ? AND 
-				bios_serial = ? AND 
-				bios_smversion = ? AND 
-				bios_version = ? AND 
-				( sys_hw_bios.timestamp = ? OR sys_hw_bios.timestamp = ? ) 
-			LIMIT 1";
-		$sql = $this->clean_sql($sql);
-		$data = array(	"$details->system_id", 
-				"$input->bios_description", 
-				"$input->bios_manufacturer", 
-				"$input->bios_serial", 
-				"$input->bios_smversion", 
-				"$input->bios_version", 
-				"$details->original_timestamp", 
-				"$details->timestamp"	);
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the processor exists - need to update it
-			$sql = "UPDATE sys_hw_bios SET bios_asset_tag = ?, timestamp = ? WHERE bios_id = ? ";
-			$data = array("$details->bios_asset_tag", "$details->timestamp", "$row->bios_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the bios does not exist - insert it
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_hw_bios 
 				( 	system_id, 
 					bios_description, 
@@ -117,8 +86,67 @@ class M_bios extends MY_Model {
 					"$input->bios_version", 
 					"$input->bios_asset_tag", 
 					"$details->timestamp", 
+					"$details->first_timestamp"	);
+			$query = $this->db->query($sql, $data);
+		} else {
+			// check for processor changes
+			$sql = "SELECT 
+					sys_hw_bios.bios_id 
+				FROM 
+					sys_hw_bios, 
+					system 
+				WHERE 
+					sys_hw_bios.system_id = system.system_id AND 
+					system.system_id = ? AND 
+					system.man_status = 'production' AND  
+					bios_description = ? AND 
+					bios_manufacturer = ? AND 
+					bios_serial = ? AND 
+					bios_smversion = ? AND 
+					bios_version = ? AND 
+					( sys_hw_bios.timestamp = ? OR sys_hw_bios.timestamp = ? ) 
+				LIMIT 1";
+			$sql = $this->clean_sql($sql);
+			$data = array(	"$details->system_id", 
+					"$input->bios_description", 
+					"$input->bios_manufacturer", 
+					"$input->bios_serial", 
+					"$input->bios_smversion", 
+					"$input->bios_version", 
+					"$details->original_timestamp", 
 					"$details->timestamp"	);
 			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the processor exists - need to update it
+				$sql = "UPDATE sys_hw_bios SET bios_asset_tag = ?, timestamp = ? WHERE bios_id = ? ";
+				$data = array("$details->bios_asset_tag", "$details->timestamp", "$row->bios_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the bios does not exist - insert it
+				$sql = "INSERT INTO sys_hw_bios 
+					( 	system_id, 
+						bios_description, 
+						bios_manufacturer, 
+						bios_serial,  
+						bios_smversion, 
+						bios_version,
+						bios_asset_tag,
+						timestamp,
+						first_timestamp ) 
+					VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->bios_description", 
+						"$input->bios_manufacturer", 
+						"$input->bios_serial", 
+						"$input->bios_smversion", 
+						"$input->bios_version", 
+						"$input->bios_asset_tag", 
+						"$details->timestamp", 
+						"$details->timestamp"	);
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	} // end of function
 

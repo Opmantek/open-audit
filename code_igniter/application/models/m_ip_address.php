@@ -51,38 +51,10 @@ class M_ip_address extends MY_Model {
 	}
 
 	function process_addresses($input, $details) {
-		$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
-			WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
-				system.system_id = ? AND 
-				system.man_status = 'production' AND 
-				sys_hw_network_card_ip.net_mac_address = ? AND 
-				(sys_hw_network_card_ip.ip_address_v4 = ? OR 
-				sys_hw_network_card_ip.ip_address_v6 = ? ) AND 
-				sys_hw_network_card_ip.ip_subnet = ? AND 
-				( sys_hw_network_card_ip.timestamp = ? OR 
-				sys_hw_network_card_ip.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4), 
-				"$input->ip_address_v6", "$input->ip_subnet", "$details->original_timestamp", "$details->timestamp");
-		// note - removed the IPv6 address, below
-		$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
-			WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
-			system.system_id = ? AND system.man_status = 'production' AND 
-			sys_hw_network_card_ip.net_mac_address = ? AND sys_hw_network_card_ip.ip_address_v4 = ? AND 
-			sys_hw_network_card_ip.ip_subnet = ? AND ( sys_hw_network_card_ip.timestamp = ? OR 
-			sys_hw_network_card_ip.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4), 
-				"$input->ip_subnet", "$details->original_timestamp", "$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the network_card_ip exists - need to update its timestamp
-			$sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE ip_id = ?";
-			$data = array("$details->timestamp", "$row->ip_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the network_card_ip does not exist - insert it
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
 					system_id, ip_address_v4, ip_address_v6, ip_address_version, 
 					ip_subnet, timestamp, first_timestamp ) 
@@ -91,8 +63,52 @@ class M_ip_address extends MY_Model {
 			$data = array("$input->net_mac_address", "$details->system_id", 
 					$this->ip_address_to_db($input->ip_address_v4), 
 					"$input->ip_address_v6", "$input->ip_address_version", 
-					"$input->ip_subnet", "$details->timestamp", "$details->timestamp");
+					"$input->ip_subnet", "$details->timestamp", "$details->first_timestamp");
 			$query = $this->db->query($sql, $data);
+		} else {
+			$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
+				WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
+					system.system_id = ? AND 
+					system.man_status = 'production' AND 
+					sys_hw_network_card_ip.net_mac_address = ? AND 
+					(sys_hw_network_card_ip.ip_address_v4 = ? OR 
+					sys_hw_network_card_ip.ip_address_v6 = ? ) AND 
+					sys_hw_network_card_ip.ip_subnet = ? AND 
+					( sys_hw_network_card_ip.timestamp = ? OR 
+					sys_hw_network_card_ip.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4), 
+					"$input->ip_address_v6", "$input->ip_subnet", "$details->original_timestamp", "$details->timestamp");
+			// note - removed the IPv6 address, below
+			$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
+				WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
+				system.system_id = ? AND system.man_status = 'production' AND 
+				sys_hw_network_card_ip.net_mac_address = ? AND sys_hw_network_card_ip.ip_address_v4 = ? AND 
+				sys_hw_network_card_ip.ip_subnet = ? AND ( sys_hw_network_card_ip.timestamp = ? OR 
+				sys_hw_network_card_ip.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4), 
+					"$input->ip_subnet", "$details->original_timestamp", "$details->timestamp");
+			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the network_card_ip exists - need to update its timestamp
+				$sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE ip_id = ?";
+				$data = array("$details->timestamp", "$row->ip_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the network_card_ip does not exist - insert it
+				$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
+						system_id, ip_address_v4, ip_address_v6, ip_address_version, 
+						ip_subnet, timestamp, first_timestamp ) 
+						VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+				$sql = $this->clean_sql($sql);
+				$data = array("$input->net_mac_address", "$details->system_id", 
+						$this->ip_address_to_db($input->ip_address_v4), 
+						"$input->ip_address_v6", "$input->ip_address_version", 
+						"$input->ip_subnet", "$details->timestamp", "$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 
 		if ($input->ip_address_v4 != ''){

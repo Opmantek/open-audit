@@ -58,52 +58,15 @@ class M_print_queue extends MY_Model {
 	}
 
 	function process_print_queue($input, $details) {
-		// need to check for print queue changes
-		$sql = "SELECT 
-				sys_sw_print_queue.queue_id
-			FROM 
-				sys_sw_print_queue, 
-				system 
-			WHERE 
-				sys_sw_print_queue.queue_system_key = ? AND 
-				sys_sw_print_queue.system_id = system.system_id AND 
-				system.system_id			= ? AND
-				system.man_status 			= 'production' AND
-				( sys_sw_print_queue.timestamp 	= ? OR sys_sw_print_queue.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$input->system_key", "$details->system_id", "$details->original_timestamp", "$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the print queue exists - need to update its timestamp
-			$sql = "UPDATE sys_sw_print_queue SET timestamp = ? WHERE queue_id = ?";
-			$data = array("$details->timestamp", "$row->queue_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the print queue does not exist - insert it
-			if ($input->man_ip_address == '') {
-				$printer_ip = '';
-			} else {
-				$printer_ip = $this->ip_address_to_db($input->man_ip_address);
-			}
-			$sql = "INSERT INTO sys_sw_print_queue
-					( system_id, 
-					queue_system_key, 
-					queue_name, 
-					queue_port_name, 
-					queue_ip_address, 
-					queue_description, 
-					queue_model, 
-					queue_manufacturer, 
-					queue_shared, 
-					queue_shared_name, 
-					queue_location, 
-					queue_color, 
-					queue_duplex, 
-					queue_type, 
-					queue_connection_status, 
-					timestamp,
-					first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
+			$sql = "INSERT INTO sys_sw_print_queue ( system_id, queue_system_key, queue_name, 
+					queue_port_name, queue_ip_address, queue_description, queue_model, 
+					queue_manufacturer, queue_shared, queue_shared_name, queue_location, 
+					queue_color, queue_duplex, queue_type, queue_connection_status, 
+					timestamp, first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->system_key", 
@@ -121,8 +84,62 @@ class M_print_queue extends MY_Model {
 					"$input->printer_type", 
 					"$input->printer_connection_status", 
 					"$details->timestamp", 
-					"$details->timestamp");
+					"$details->first_timestamp");
 			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for print queue changes
+			$sql = "SELECT 
+					sys_sw_print_queue.queue_id
+				FROM 
+					sys_sw_print_queue, 
+					system 
+				WHERE 
+					sys_sw_print_queue.queue_system_key = ? AND 
+					sys_sw_print_queue.system_id = system.system_id AND 
+					system.system_id			= ? AND
+					system.man_status 			= 'production' AND
+					( sys_sw_print_queue.timestamp 	= ? OR sys_sw_print_queue.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$input->system_key", "$details->system_id", "$details->original_timestamp", "$details->timestamp");
+			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the print queue exists - need to update its timestamp
+				$sql = "UPDATE sys_sw_print_queue SET timestamp = ? WHERE queue_id = ?";
+				$data = array("$details->timestamp", "$row->queue_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the print queue does not exist - insert it
+				if ($input->man_ip_address == '') {
+					$printer_ip = '';
+				} else {
+					$printer_ip = $this->ip_address_to_db($input->man_ip_address);
+				}
+				$sql = "INSERT INTO sys_sw_print_queue ( system_id, queue_system_key, queue_name, 
+						queue_port_name, queue_ip_address, queue_description, queue_model, 
+						queue_manufacturer, queue_shared, queue_shared_name, queue_location, 
+						queue_color, queue_duplex, queue_type, queue_connection_status, 
+						timestamp, first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->system_key", 
+						"$input->printer_name", 
+						"$input->printer_port_name", 
+						"$printer_ip", 
+						"$input->description", 
+						"$input->model", 
+						"$input->manufacturer", 
+						"$input->printer_shared", 
+						"$input->printer_shared_name", 
+						"$input->printer_location", 
+						"$input->printer_color", 
+						"$input->printer_duplex", 
+						"$input->printer_type", 
+						"$input->printer_connection_status", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 

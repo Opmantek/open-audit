@@ -64,36 +64,11 @@ class M_motherboard extends MY_Model {
 	}
 
 	function process_motherboard($input, $details) {
-		// need to check for motherboard changes
-		$sql = "SELECT 
-				sys_hw_motherboard.motherboard_id
-			FROM 
-				sys_hw_motherboard, 
-				system 
-			WHERE 
-				sys_hw_motherboard.system_id 	= system.system_id AND 
-				system.system_id				= ? AND
-				system.man_status 				= 'production' AND
-				sys_hw_motherboard.manufacturer 		= ? AND 
-				sys_hw_motherboard.model 				= ? AND
-				sys_hw_motherboard.serial 				= ? AND
-				( sys_hw_motherboard.timestamp = ? OR sys_hw_motherboard.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->manufacturer", 
-				"$input->model", 
-				"$input->serial", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the motherboard exists - need to update its timestamp
-			$sql = "UPDATE sys_hw_motherboard SET timestamp = ? WHERE motherboard_id = ?";
-			$data = array("$details->timestamp", "$row->motherboard_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the motherboard does not exist - insert it
+
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_hw_motherboard
 				( 	system_id, 
 					manufacturer, 
@@ -113,8 +88,50 @@ class M_motherboard extends MY_Model {
 					"$input->processor_type", 
 					"$input->memory_slots", 
 					"$details->timestamp", 
+					"$details->first_timestamp");
+			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for motherboard changes
+			$sql = "SELECT sys_hw_motherboard.motherboard_id FROM sys_hw_motherboard, system WHERE 
+					sys_hw_motherboard.system_id = system.system_id AND 
+					system.system_id = ? AND
+					system.man_status = 'production' AND
+					sys_hw_motherboard.manufacturer = ? AND 
+					sys_hw_motherboard.model = ? AND
+					sys_hw_motherboard.serial = ? AND
+					( sys_hw_motherboard.timestamp = ? OR sys_hw_motherboard.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					"$input->manufacturer", 
+					"$input->model", 
+					"$input->serial", 
+					"$details->original_timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the motherboard exists - need to update its timestamp
+				$sql = "UPDATE sys_hw_motherboard SET timestamp = ? WHERE motherboard_id = ?";
+				$data = array("$details->timestamp", "$row->motherboard_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the motherboard does not exist - insert it
+				$sql = "INSERT INTO sys_hw_motherboard
+					( 	system_id, manufacturer, model, serial, processor_slots,
+						processor_type, memory_slots, timestamp,
+						first_timestamp ) VALUES ( ?,?,?,?,?,?,?,?,? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->manufacturer", 
+						"$input->model", 
+						"$input->serial", 
+						"$input->processor_slots", 
+						"$input->processor_type", 
+						"$input->memory_slots", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 

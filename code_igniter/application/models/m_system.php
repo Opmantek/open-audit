@@ -441,19 +441,29 @@ class M_system extends MY_Model {
 	}
 
 	function get_system_hostname($system_id) {
+		// $sql = "SELECT 
+		// 		system.hostname 
+		// 	FROM 
+		// 		system 
+		// 	WHERE 
+		// 		(system.system_id = ? OR
+		// 		system.system_key = ? OR
+		// 		system.hostname = ? )
+		// 	ORDER BY 
+		// 		system.timestamp
+		// 	LIMIT 1";
 		$sql = "SELECT 
 				system.hostname 
 			FROM 
 				system 
 			WHERE 
-				(system.system_id = ? OR
-				system.system_key = ? OR
-				system.hostname = ? )
+				system.system_id = ? 
 			ORDER BY 
 				system.timestamp
 			LIMIT 1";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id, $system_id, $system_id);
+		//$data = array($system_id, $system_id, $system_id);
+		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
 		return ($row->hostname);
@@ -927,6 +937,10 @@ class M_system extends MY_Model {
 		$query = $this->db->query($sql);
 		$details->system_id = $this->db->insert_id();
 
+
+		# update the device icon
+		$this->m_system->reset_icons($details->system_id);
+
 		# insert the network card details of we have them
 		if ((isset($details->mac_address) and $details->mac_address != '') and 
 			(isset($details->man_ip_address) and $details->man_ip_address != '') and 
@@ -1212,11 +1226,18 @@ class M_system extends MY_Model {
 		$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
 		$sql .= " WHERE system_id = '" . $details->system_id . "'";
 		$query = $this->db->query($sql);
+
+		# finally, update the device icon
+		$this->m_system->reset_icons($details->system_id);
 	}
 
 
-	function reset_icons() {
-		$sql = "SELECT system_id, man_type, type, os_name, man_os_name, os_family, man_os_family FROM system";
+	function reset_icons($system_id = '') {
+		if ($system_id != '') {
+			$sql = "SELECT system_id, man_type, type, os_name, man_os_name, os_family, man_os_family, icon, man_icon FROM system WHERE system_id = " . $system_id;
+		} else {
+			$sql = "SELECT system_id, man_type, type, os_name, man_os_name, os_family, man_os_family, icon, man_icon FROM system";
+		}
 		$query = $this->db->query($sql);
 		$result = $query->result();
 		$count = $query->num_rows();
@@ -1329,7 +1350,12 @@ class M_system extends MY_Model {
 			}
 			if ($details->icon == '') { $details->icon = 'unknown'; }
 			$details->icon = str_replace(" ", "_", strtolower($details->icon));
-			$details->man_icon = $details->icon;
+			if ($details->man_icon == "computer" or 
+				$details->man_icon = "unknown" or 
+				$details->man_icon = "general purpose" or 
+				$details->man_icon = "" ) {
+				$details->man_icon = $details->icon;
+			}
 			$sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
 			$data = array("$details->icon", "$details->man_icon", "$details->system_id");
 			$query = $this->db->query($sql, $data);

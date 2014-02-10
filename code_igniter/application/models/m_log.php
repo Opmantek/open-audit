@@ -63,36 +63,10 @@ class M_log extends MY_Model {
 	}
 
 	function process_log($input, $details) {
-		// need to check for log changes
-		$sql = "SELECT 
-				sys_sw_log.log_id
-			FROM 
-				sys_sw_log, 
-				system 
-			WHERE 
-				sys_sw_log.system_id 		= system.system_id AND 
-				system.system_id		= ? AND
-				system.man_status 		= 'production' AND
-				sys_sw_log.log_name 		= ? AND 
-				sys_sw_log.log_file_name	= ? AND
-				sys_sw_log.log_overwrite	= ? AND
-				( sys_sw_log.timestamp = ? OR sys_sw_log.timestamp = ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				trim($input->log_name), 
-				trim($input->log_file_name), 
-				trim($input->log_overwrite), 
-				"$details->original_timestamp", 
-				"$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the log exists - need to update its timestamp
-			$sql = "UPDATE sys_sw_log SET timestamp = ? WHERE log_id = ?";
-			$data = array("$details->timestamp", "$row->log_id");
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the log does not exist - insert it
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_sw_log
 					( system_id, 
 					log_name, 
@@ -110,8 +84,59 @@ class M_log extends MY_Model {
 					"$input->log_max_file_size", 
 					trim($input->log_overwrite), 
 					"$details->timestamp", 
+					"$details->first_timestamp");
+			$query = $this->db->query($sql, $data);
+		} else {
+			// need to check for log changes
+			$sql = "SELECT 
+					sys_sw_log.log_id
+				FROM 
+					sys_sw_log, 
+					system 
+				WHERE 
+					sys_sw_log.system_id 		= system.system_id AND 
+					system.system_id		= ? AND
+					system.man_status 		= 'production' AND
+					sys_sw_log.log_name 		= ? AND 
+					sys_sw_log.log_file_name	= ? AND
+					sys_sw_log.log_overwrite	= ? AND
+					( sys_sw_log.timestamp = ? OR sys_sw_log.timestamp = ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					trim($input->log_name), 
+					trim($input->log_file_name), 
+					trim($input->log_overwrite), 
+					"$details->original_timestamp", 
 					"$details->timestamp");
 			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) {
+				$row = $query->row();
+				// the log exists - need to update its timestamp
+				$sql = "UPDATE sys_sw_log SET timestamp = ? WHERE log_id = ?";
+				$data = array("$details->timestamp", "$row->log_id");
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the log does not exist - insert it
+				$sql = "INSERT INTO sys_sw_log
+						( system_id, 
+						log_name, 
+						log_file_name, 
+						log_file_size, 
+						log_max_file_size, 
+						log_overwrite,
+						timestamp,
+						first_timestamp ) VALUES ( ?,?,?,?,?,?,?,? )";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						trim($input->log_name), 
+						trim($input->log_file_name), 
+						"$input->log_file_size", 
+						"$input->log_max_file_size", 
+						trim($input->log_overwrite), 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 
