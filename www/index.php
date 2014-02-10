@@ -35,7 +35,7 @@
 
 $query_count = 0;
 ob_start();
-date_default_timezone_set(date_default_timezone_get());
+date_default_timezone_set(ini_get('date.timezone'));
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
