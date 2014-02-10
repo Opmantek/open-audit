@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Virtual Systems</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.manufacturer LIKE 'VMware%' or system.manufacturer LIKE 'Parallels%') AND system.man_status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.man_manufacturer LIKE 'VMware%' or system.man_manufacturer LIKE 'Parallels%') AND system.man_status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>vmware</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their manufacturer attribute contain 'VMware' or 'Parallels'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.man_icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.man_icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, man_os_family, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
