@@ -50,7 +50,7 @@ submit_online="y"
 subnet=""
 subnet_timestamp=""
 syslog="y"
-url="http://localhost/index.php/discovery/process_subnet"
+url="http://localhost/open-audit/index.php/discovery/process_subnet"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 

@@ -35,7 +35,7 @@ echo_output="n"
 submit_online="y"
 subnet=""
 syslog="y"
-url="http://localhost/index.php/system/add_nmap"
+url="http://localhost/open-audit/index.php/system/add_nmap"
 background_wget="n"
 
 

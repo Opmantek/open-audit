@@ -44,7 +44,7 @@ create_file = "n"
 submit_online = "y"
 subnet = ""
 syslog = "y"
-url = "http://localhost/index.php/system/add_nmap"
+url = "http://localhost/open-audit/index.php/system/add_nmap"
 echo_output = "n"
 
 ' only set the below if your PATH variable (in Windows) does not include this

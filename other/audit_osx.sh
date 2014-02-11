@@ -28,7 +28,7 @@
 O=$IFS
 IFS=$'\n'
 
-url="http://localhost/index.php/system/add_system"
+url="http://localhost/open-audit/index.php/system/add_system"
 submit_online="y"
 create_file="n"
 org_id=""

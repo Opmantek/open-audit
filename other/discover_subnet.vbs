@@ -50,7 +50,7 @@ dim submit_online : submit_online = "n"
 dim subnet : subnet = ""
 dim subnet_timestamp : subnet_timestamp = ""
 dim syslog : syslog = "y"
-dim url : url = "http://localhost/index.php/system/process_subnet"
+dim url : url = "http://localhost/open-audit/index.php/system/process_subnet"
 
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
