@@ -48,5 +48,12 @@
 			</td>
 		</tr>
 	</table>
+	<p>NOTE - <span style="font-weight:bold; color: red;">You probably don't want to do this.</span>This utility will ask Active Directory for a list of Windows computers in the domain. It will then inset what little information Active Directory can provide into the Open-AudIT database.<br /><br />
+
+	It's likely you really want to <span style="font-weight: bold;">audit</span>all the computers in Active Directory. To do that, run Menu -> Admin -> Discovery -> Discover Active Directory (or click <a href="../discovery/discover_active_directory" style="color: blue;">here</a>).<br /><br />
+	
+	The attributes retrieved from Active Directory are: Hostname, Operating System, Last Logged On (date) - as you can see, not much.<br /><br />
+
+	It will retrieve <span style="font-weight: bold;">all</span>computers in the domain regardless of status.
 </fieldset>
 </form>

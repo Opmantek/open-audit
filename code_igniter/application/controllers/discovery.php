@@ -49,19 +49,201 @@ class Discovery extends CI_Controller {
 		$this->load->view('v_system_add', $this->data);
 	}
 
+
+
+
+
+
+	function discover_active_directory() {
+		$this->load->helper('url');		
+		# only Admin users can access this function
+		# NOTE - because we're not using the My_Controller, we have to do a bit of manual setup
+		if ($this->session->userdata('user_admin') != 'y') {
+			if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
+				redirect($_SERVER['HTTP_REFERER']);
+			} else {
+				redirect('login/index');
+			}
+		} else {
+			$this->data['user_admin'] = 'y';
+			$this->load->model("m_oa_config");
+			$conf = $this->m_oa_config->get_config();
+			$this->data['config'] = new stdclass();
+			foreach ($conf as $returned_result) {
+				$config_name = $returned_result->config_name;
+				$this->data['config']->$config_name = $returned_result->config_value;
+			}
+			$this->data['user_full_name'] = $this->session->userdata('user_full_name');
+			$this->data['user_theme'] = 'tango';
+		}
+		$timestamp = date('Y-m-d H:i:s');
+
+		if (!isset($_POST['submit'])) {
+			# show the form to accept scan details
+			$this->data['type'] = $this->uri->segment(3);
+			$this->data['warning'] = '';
+			$this->data['include'] = "v_discover_active_directory";
+			$this->data['sortcolumn'] = '1';
+			$this->data['heading'] = 'Active Directory Discovery';
+			$this->load->view('v_template', $this->data);
+		} else {
+			if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+				echo "<pre>\n";
+			}
+			# run the audit_domain script
+			if ((isset($_POST['server']) and $_POST['server'] > '') and
+			(isset($_POST['user']) and $_POST['user'] > '') and
+			(isset($_POST['password']) and $_POST['password'] > '') and
+			(isset($_POST['domain']) and $_POST['domain'] > '')) {
+				$error = "";
+				$log = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD submitted for " . $_POST['domain']; $this->log_event($log, 'n');
+				$i = explode('/', base_url());
+				$url = str_replace($i[2], $_POST['network_address'], base_url()) . "index.php/system";
+			} else {
+				$error = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD incomplete credentials."; $this->log_event($log, 'n'); 
+				$url = "";
+			}
+
+			
+			
+
+			if ((php_uname('s') == 'Windows NT') and ($error == '')) {
+				# Windows host - start the script locally
+				$filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "\\open-audit\\other";
+				$script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $details->windows_domain . "\\" . $details->windows_username . " strpass=" . $details->windows_password . " url=" . $url . "index.php/system/add_system debugging=0";
+				$log_details = "C:discovery F:process_subnet Windows audit for $details->man_ip_address (System ID $details->system_id)"; $this->log_event($log_details);
+				$command_string = "%comspec% /c start /b cscript //nologo " . $script_string . " &";
+				if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { 
+					echo "DEBUG command: " . $command_string . "\n"; 
+					exec($command_string, $output, $return_var);
+					if ($return_var != '0') { 
+						$error = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on " . $_POST['server'] . " has failed"; 
+						$this->log_event($error); 
+					}	else {
+						$log = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on " . $_POST['server'] . " has succeeded"; 
+						$this->log_event($log);
+					}
+					print_r($output);
+					echo "\n\n" . $return_var;
+					$output = NULL;
+					$return_var = NULL;
+				} else {
+					pclose(popen($command_string,"r"));
+				}
+				$command_string = NULL;
+			}
+
+
+
+
+
+
+			if ((php_uname('s') == 'Linux' or php_uname('s') == "Darwin") and ($error == '')) {
+				# linux or OSX host - copy the script to the DC and start it
+				$filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/open-audit/other";
+
+				# copy the domain audit script
+				if ($error == '') {
+					$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\"";
+
+					exec($command_string, $output, $return_var);
+
+					if ($return_var != '0') { 
+						$error = "C:discovery F:process_subnet SMBClient copy of audit_domain.vbs to " . $_POST['server'] . " has failed"; 
+						$this->log_event($error); 
+					} else {
+						$log = "C:discovery F:process_subnet SMBClient copy of audit_domain.vbs to " . $_POST['server'] . " has succeeded"; 
+						$this->log_event($log);
+					}
+
+					if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+						echo "DEBUG - command: " . $command_string . "\n";
+						print_r($output);
+						echo "\nDEBUG - Command Return Value: " . $return_var . "\n\n";
+					}
+
+					$command_string = NULL;
+					$output = NULL;
+					$return_var = NULL;
+				}
+
+
+				# copy the windows audit script
+				if ($error == '') {
+					$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
+
+					exec($command_string, $output, $return_var);
+
+					if ($return_var != '0') { 
+						$error = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to " . $_POST['server'] . " has failed"; 
+						$this->log_event($error); 
+					} else {
+						$log = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to " . $_POST['server'] . " has succeeded"; 
+						$this->log_event($log);
+					}
+
+					if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+						echo "DEBUG - command: " . $command_string . "\n";
+						print_r($output);
+						echo "\nDEBUG - Command Return Value: " . $return_var . "\n\n";
+					}
+
+					$command_string = NULL;
+					$output = NULL;
+					$return_var = NULL;
+				}
+
+
+				# start the domain audit
+				if ($error == "") {
+					$command_string = "screen -D -m $filepath/winexe -U " . $_POST['domain'] . "/" . $_POST['user'] . "%" . $_POST['password'] . " --uninstall //" . $_POST['server'] . " \"cscript c:\windows\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=c:\windows\audit_windows.vbs url=" . $url . " debugging=0 struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " \" ";
+					exec($command_string, $output, $return_var);
+					if ($return_var != '0') { 
+						$error = "C:discovery F:process_subnet Attempt to run audit_domain.vbs on " . $_POST['server'] . " has failed"; 
+						$this->log_event($error);
+					} else {
+						$log = "C:discovery F:process_subnet Attempt to run audit_domain.vbs on " . $_POST['server'] . " has succeeded"; 
+						$this->log_event($log);
+					}
+					if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+						echo "DEBUG - command: " . $command_string . "\n";
+						print_r($output);
+						echo "\nDEBUG - Command Return Value: " . $return_var . "\n\n";
+					}
+					$command_string = NULL;
+					$output = NULL;
+					$return_var = NULL;
+				}
+
+			} // end of Linux domain audit
+		} // end of submit / not submit
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	function discover_subnet() {
-		# display the form for attributes to pass to the discover subnet script
-		$this->load->helper('url');
-
-
-		// if ($this->session->userdata('user_full_name')) {
-		// 	$user = $this->session->userdata('user_full_name');
-		// } else {
-		// 	$user = "unknown (user not logged in)";
-		// }
-		// $log_details = "C:discovery F:discover_subnet U:" . $user . " at " . $_SERVER['REMOTE_ADDR'];
-		// $this->log_event($log_details);
-		
+		$this->load->helper('url');		
 
 		# only Admin users can access this function
 		# NOTE - because we're not using the My_Controller, we have to do a bit of manual setup
@@ -87,10 +269,11 @@ class Discovery extends CI_Controller {
 
 		if (!isset($_POST['submit'])) {
 			# show the form to accept scan details
+			$this->data['type'] = $this->uri->segment(3);
 			$this->data['warning'] = '';
 			$this->data['include'] = "v_discover_subnet";
 			$this->data['sortcolumn'] = '1';
-			$this->data['heading'] = 'Discover a Subnet';
+			$this->data['heading'] = 'Discovery';
 			$this->load->view('v_template', $this->data);
 		} else {
 			# process the scan details and call the discovery script
@@ -221,13 +404,9 @@ class Discovery extends CI_Controller {
 
 			if (isset($_POST['network_address']) and $_POST['network_address'] > '') {
 				$i = explode('/', base_url());
-				#$j = explode(":", $i[2]);
-				#$url = str_replace($j[0], $_POST['network_address'], base_url());
 				$url = str_replace($i[2], $_POST['network_address'], base_url());
 			} elseif (isset($this->data['config']->default_network_address) and $this->data['config']->default_network_address > '')  {
 				$i = explode('/', base_url());
-				#$j = explode(":", $i[2]);
-				#$url = str_replace($j[0], $this->data['config']->default_network_address, base_url());
 				$url = str_replace($i[2], $this->data['config']->default_network_address, base_url());
 			} else {
 				$url = base_url();
@@ -568,6 +747,11 @@ class Discovery extends CI_Controller {
 					}
 
 
+
+
+
+
+
 					# Windows WMI audit - audit_windows.vbs
 					if ($details->wmi_status == "true" and $details->windows_username > '' and $details->windows_domain > '' and $details->windows_password > '') {
 						$log_details = "C:discovery F:process_subnet Attempt Windows audit for $details->man_ip_address"; $this->log_event($log_details);
@@ -592,46 +776,31 @@ class Discovery extends CI_Controller {
 							$output = NULL;
 							$return_var = NULL;
 							if ($error == "") {
-								if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-									$command_string = "screen -D -m $filepath/winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=1 \" ";
-									exec($command_string, $output, $return_var);
-									if ($return_var != '0') { 
-										$error = "C:discovery F:process_subnet Attempting to run audit_windows.vbs on $details->man_ip_address has failed"; 
-										$this->log_event($error);
-									} else {
-										$log = "C:discovery F:process_subnet Attempt to run audit_windows.vbs on $details->man_ip_address has succeeded"; 
-										$this->log_event($log);
-									}
-									if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-										echo "DEBUG - command: " . $command_string . "\n";
-										print_r($output);
-										echo "\nDEBUG - Command Return Value: " . $return_var . "\n\n";
-									}
-									$command_string = NULL;
-									$output = NULL;
-									$return_var = NULL;
+								$command_string = "screen -D -m $filepath/winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=1 \" ";
+								exec($command_string, $output, $return_var);
+								if ($return_var != '0') { 
+									$error = "C:discovery F:process_subnet Attempting to run audit_windows.vbs on $details->man_ip_address has failed"; 
+									$this->log_event($error);
 								} else {
-									#$command_string = "nohup $filepath/winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=0 \"   > /dev/null 2>&1 &";
-									$command_string = "screen -D -m $filepath/winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=1 \" ";
-									exec($command_string, $output, $return_var);
-									if ($return_var != '0') { 
-										$error = "C:discovery F:process_subnet Attempt to run audit_windows.vbs on $details->man_ip_address has failed"; 
-										$this->log_event($error); 
-									} else {
-										$log = "C:discovery F:process_subnet Attempt to run audit_windows.vbs on $details->man_ip_address has succeeded"; 
-										$this->log_event($log);
-									}
-									$command_string = NULL;
-									$output = NULL;
-									$return_var = NULL;
+									$log = "C:discovery F:process_subnet Attempt to run audit_windows.vbs on $details->man_ip_address has succeeded"; 
+									$this->log_event($log);
 								}
+								if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+									echo "DEBUG - command: " . $command_string . "\n";
+									print_r($output);
+									echo "\nDEBUG - Command Return Value: " . $return_var . "\n\n";
+								}
+								$command_string = NULL;
+								$output = NULL;
+								$return_var = NULL;
 							}
 						}
 
 						if (php_uname('s') == 'Windows NT') {
-							$script_string = "audit_windows.vbs strcomputer=" . $details->man_ip_address . " submit_online=y create_file=n struser=" . $details->windows_domain . "\\" . $details->windows_username . " strpass=" . $details->windows_password . " url=" . $url . "index.php/system/add_system debugging=0";
+							$script_string = "$filepath\\audit_windows.vbs strcomputer=" . $details->man_ip_address . " submit_online=y create_file=n struser=" . $details->windows_domain . "\\" . $details->windows_username . " strpass=" . $details->windows_password . " url=" . $url . "index.php/system/add_system debugging=0";
 							$log_details = "C:discovery F:process_subnet Windows audit for $details->man_ip_address (System ID $details->system_id)"; $this->log_event($log_details);
-							$command_string = "%comspec% /c start /b cscript //nologo c:\\xampplite\\open-audit\\other\\" . $script_string . " &";
+							#$command_string = "%comspec% /c start /b cscript //nologo c:\\xampplite\\open-audit\\other\\" . $script_string . " &";
+							$command_string = "%comspec% /c start /b cscript //nologo " . $script_string . " &";
 							if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { 
 								echo "DEBUG command: " . $command_string . "\n"; 
 								exec($command_string, $output, $return_var);

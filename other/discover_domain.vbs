@@ -107,6 +107,15 @@ For Each strArg in objArgs
 			case "remote_user"
 				remote_user = varArray(1)
 
+			case "struser"
+				struser = varArray(1)
+
+			case "strpass"
+				strpass = varArray(1)
+
+			case "url"
+				url = varArray(1)
+
 		end select
 	end if
 Next 
@@ -229,10 +238,13 @@ for l = 0 to ubound(domain_array)
 				if debugging > 0 then wscript.echo("processes running: " & num_running) end if
 				if debugging > 0 then wscript.echo("next system: " & pc_array(i)) end if
 				if debugging > 0 then wscript.echo("--------------") end if
-				command1 = "cscript //nologo " & chr(34) & script_name & chr(34) & " " & pc_array(i) & " ldap=" & local_domain
+				command1 = "cscript //nologo " & chr(34) & script_name & chr(34) & " strcomputer=" & pc_array(i) & " submit_online=y debugging=" & debugging & " url=" & url & " ldap=" & local_domain & " struser=" & struser & " strpass=" & strpass
 				set sh1=wscript.createobject("wscript.shell")
 				sh1.run command1, 6, false
 				set sh1 = nothing
+				'set objScriptExec = objShell.Exec(command1)
+				'strStdOut = objScriptExec.StdOut.ReadAll
+				'WScript.Echo strStdOut
 				num_running = HowMany
 			end if
 		next
