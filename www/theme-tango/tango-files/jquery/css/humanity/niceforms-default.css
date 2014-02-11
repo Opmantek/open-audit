@@ -18,6 +18,7 @@ input, textarea {
 form label {
 	line-height:12px;
 	padding-left:2px;
+	padding-top: 1px;
 	cursor:pointer;	
 	display:block;
 	float:left;
