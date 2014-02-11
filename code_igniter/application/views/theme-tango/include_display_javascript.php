@@ -19,6 +19,20 @@ function createRequestObject() {
 
 var http = createRequestObject();
 
+function display_credentials() {
+	status_text="<p><label for='ip_address'>IP Address: <\/label><input type='text' id='ip_address' name='ip_address' value='<?php if (isset($decoded_access_details->ip_address) and $decoded_access_details->ip_address > '') { echo $decoded_access_details->ip_address; } elseif (isset($system[0]->man_ip_address) and $system[0]->man_ip_address != '' and $system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0') { echo ip_address_from_db($system[0]->man_ip_address); } ?>' \/><\/p> \
+	<p><label for='ip_address'>SNMP Version: <\/label><input type='text' id='snmp_version' name='snmp_version' value='<?php if (isset($decoded_access_details->snmp_version) and $decoded_access_details->snmp_version > '') { echo $decoded_access_details->snmp_version; } else { echo '2c'; } ?>' \/><\/p> \
+	<p><label for='ip_address'>SNMP Community: <\/label><input type='text' id='snmp_community' name='snmp_community' value='<?php if (isset($decoded_access_details->snmp_community) and $decoded_access_details->snmp_community > '') { echo $decoded_access_details->snmp_community; } else { echo $config->default_snmp_community; } ?>' \/><\/p> \
+	<p><label for='ssh_username'>SSH Username: <\/label><input type='text' id='ssh_username' name='ssh_username' value='<?php echo $decoded_access_details->ssh_username; ?>' \/><\/p> \
+	<p><label for='ssh_password'>SSH Password: <\/label><input type='text' id='ssh_password' name='ssh_password' value='<?php echo $decoded_access_details->ssh_password; ?>'\ /><\/p> \
+	<p><label for='windows_username'>Windows Username: <\/label><input type='text' id='windows_username' name='windows_username' value='<?php echo $decoded_access_details->windows_username; ?>' \/><\/p> \
+	<p><label for='windows_password'>Windows Password: <\/label><input type='text' id='windows_password' name='windows_password' value='<?php echo $decoded_access_details->windows_password; ?>' \/><\/p> \
+	<p><label for='windows_domain'>Windows Domain: <\/label><input type='text' id='windows_domain' name='windows_domain' value='<?php if (isset($decoded_access_details->windows_domain) and $decoded_access_details->windows_domain > '') { echo $decoded_access_details->windows_domain; } elseif (isset($windows[0]->windows_domain_short)) { echo $windows[0]->windows_domain_short; } ?>' \/><\/p> \
+	<p><label for='submit'>Update Credentials: <\/label><input type='submit' id='submit' name='submit' value='Submit' \/><\/p> \
+	<input type='hidden' id='system_id' name='system_id' value='<?php echo $system[0]->system_id; ?>' \/>";
+	document.getElementById("credentials").innerHTML = status_text;
+}
+
 function display_environment() {
 	status_text="<select id='man_environment' onchange='send_environment();'><option value=' '>Choose an Environment<\/option><option value='production'>Production<\/option><option value='pre-prod'>PreProduction<\/option><option value='test'>Testing<\/option><option value='uat'>User Acceptance Testing<\/option><option value='eval'>Evaluation<\/option><option value='dev'>Development<\/option><option value='dr'>Disaster Recovery<\/option><\/select>";
 	document.getElementById("man_environment_select").innerHTML = status_text;
