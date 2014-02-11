@@ -72,7 +72,7 @@ $sortcolumn = 2;
 		echo "Please consider submitting your statistics to help the project. Copy and paste the below into an email to <a href=\"mailto:open.audit@gmail.com?subject=Open-AudIT Stats&body=" . $stat_submit . "\" style=\"color:blue;\">open.audit@gmail.com</a>. It would be most appreciated and enable the project to have some gauge on its success.<br /><br />\n";
 		echo "FYI - the 'id' field is the MD5 of the hostname you are running Open-AudIT on. This is not able to be linked to you in any way and is simply to differentiate the submitted statistics.<br />\n";
 		if (md5(php_uname('n')) == "421aa90e079fa326b6494f812ad13e79") {
-			echo "<br /><span style=\"color:red;\">Please use the actual name of your server and not localhost when submitting statistics.<br />Using http://localhost/index.php does not allow for differentiation of your statistics from other installations. This is required to obtain an accurate count of total systems using Open-AudIT (worldwide). Please call this page (and submit your stats) using the actual hostname of the server running Open-AudIT.</span><br /><br />\n";
+			echo "<br /><span style=\"color:red;\">Please use the actual name of your server and not localhost when submitting statistics.<br />Using http://localhost/open-audit/index.php does not allow for differentiation of your statistics from other installations. This is required to obtain an accurate count of total systems using Open-AudIT (worldwide). Please call this page (and submit your stats) using the actual hostname of the server running Open-AudIT.</span><br /><br />\n";
 		}
 		echo "<pre>\n";
 		echo "&lt;stats>\n";

@@ -222,11 +222,8 @@
 	<li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Help'))?></a>
 		<ul>
 			<li><a href='<?php echo base_url()?>index.php/main/help_about'><?php echo __('About')?></a></li>
-			<!-- <li><a href='<?php echo base_url()?>index.php/main/help_faq'><?php echo __('FAQ')?></a></li> -->
 			<li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
 			<li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
-			<!-- <li><a href='<?php echo base_url()?>index.php/main/help_how_do_i'><?php echo __('How Do I?')?></a></li> -->
-			<!-- <li><a href='<?php echo base_url()?>index.php/main/help_importing'><?php echo __('Importing')?></a></li> -->
 			<li><a href='<?php echo base_url()?>index.php/main/help_statistics'><?php echo __('Statistics')?></a></li>
 			<!-- 
 			<li><a href='javascript:void(0)'><?php echo __('Support')?></a></li>

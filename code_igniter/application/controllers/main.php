@@ -364,18 +364,6 @@ class Main extends MY_Controller {
 		$this->load->view('v_template', $this->data);
 	}
 
-	function help_how_do_i() {
-		$this->data['heading'] = 'How Do I?'; 
-		$this->data['include'] = 'v_help_how_do_i'; 
-		$this->load->view('v_template', $this->data);
-	}
-
-	function help_importing() {
-		$this->data['heading'] = 'Importing Devices'; 
-		$this->data['include'] = 'v_help_importing'; 
-		$this->load->view('v_template', $this->data);
-	}
-
 	function help_oae() {
 		$this->data['heading'] = 'Open-AudIT Enterprise'; 
 		$this->data['include'] = 'v_help_oae'; 
