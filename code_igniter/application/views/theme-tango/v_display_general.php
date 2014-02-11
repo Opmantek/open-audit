@@ -124,7 +124,7 @@ if ($access_level > 7) {
 			<div style="float:right; width: 120px; text-align:center">
 				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $system[0]->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
 			<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
-				<input type="button" onclick="parent.location='<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>'" value='SNMP Probe' title='SNMP Probe' name='SNMP Probe' alt='SNMP Probe' width='24' />
+				<input type="button" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');" value='SNMP Scan' title='SNMP Scan' name='SNMP Scan' alt='SNMP Scan' width='24' />
 			<?php } ?>
 			</div>
 			<div style="margin-right: 120px;">
@@ -186,15 +186,29 @@ if ($access_level > 7) {
 	<div id="view_summary_credentials" style="float: left; width: 100%;">
 	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
 	<br />
-	<form action="#" method="post" class="niceforms">
+	<form action="../../admin_system/system_add_credentials" method="post" class="niceforms">
 		<fieldset id="summary_credentials_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Credentials')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
-			<span>NOTE - Read only at the moment. Can be set via Edit Multiple Systems from a Report page.</span>
-			<?php foreach($decoded_access_details as $key => $value) { 
-				echo "<p><label for='" . $key . "'>" . ucwords(str_replace("_", " ", $key)) . ": </label>";
-				echo "<span id='" . $key . "'>" . print_something($value) . "</span></p>";
-			} ?>
+			<div style="float:right; width: 120px; text-align:center">
+				<img style='margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
+				<?php if ($access_level > 7) { ?>
+					<br /><input type="button" onclick="display_credentials();" value='Edit' title='Edit' name='credentials_edit' alt='Edit' width='24' />
+				<?php } ?>
+			</div>
+			<div id="credentials">
+				<p><label for='credentials_ip_address'>IP Address: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
+
+				<p><label for='credentials_ip_address'>SNMP Version: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
+				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($decoded_access_details->snmp_community); ?></span></p>
+
+				<p><label for='credentials_ssh_username'>SSH Username: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
+				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($decoded_access_details->ssh_password); ?></span></p>
+
+				<p><label for='credentials_windows_username'>Windows Username: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
+				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($decoded_access_details->windows_password); ?></span></p>
+				<p><label for='credentials_windows_domain'>Windows Domain: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
+			</div>
+
 		</fieldset>
 	</form>
 	<?php } ?>

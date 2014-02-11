@@ -642,10 +642,31 @@ class Main extends MY_Controller {
 				$this->load->library('encrypt');
 				$this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
 				$this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
+				#echo "<pre>\n";
+				if (!isset($this->data['decoded_access_details']->ip_address)) { $this->data['decoded_access_details']->ip_address = ''; }
+				if (!isset($this->data['decoded_access_details']->snmp_version)) { $this->data['decoded_access_details']->snmp_version = ''; }
+				if (!isset($this->data['decoded_access_details']->snmp_community)) { $this->data['decoded_access_details']->snmp_community = ''; }
+				if (!isset($this->data['decoded_access_details']->ssh_username)) { $this->data['decoded_access_details']->ssh_username = ''; }
+				if (!isset($this->data['decoded_access_details']->ssh_password)) { $this->data['decoded_access_details']->ssh_password = ''; }
+				if (!isset($this->data['decoded_access_details']->windows_username)) { $this->data['decoded_access_details']->windows_username = ''; }
+				if (!isset($this->data['decoded_access_details']->windows_password)) { $this->data['decoded_access_details']->windows_password = ''; }
+				if (!isset($this->data['decoded_access_details']->windows_domain)) { $this->data['decoded_access_details']->windows_domain = ''; }
+				#var_dump($this->data['decoded_access_details']);
+				#exit();
+			} else {
+				$this->data['decoded_access_details'] = new stdClass();
+				$this->data['decoded_access_details']->ip_address = "";
+				$this->data['decoded_access_details']->snmp_version = "";
+				$this->data['decoded_access_details']->snmp_community = "";
+				$this->data['decoded_access_details']->ssh_username = "";
+				$this->data['decoded_access_details']->ssh_password = "";
+				$this->data['decoded_access_details']->windows_username = "";
+				$this->data['decoded_access_details']->windows_password = "";
+				$this->data['decoded_access_details']->windows_domain = "";
 			}
 
 		}
-
+#exit();
 		$this->data['include'] = "";
 		$formatted_type = str_replace(" ", "_", trim($this->data['system'][0]->man_type));
 		
