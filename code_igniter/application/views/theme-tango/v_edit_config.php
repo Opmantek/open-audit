@@ -41,6 +41,7 @@
 		<div style="min-width: 50px; float: right;">
 		</div>
 		<div style="width: 100%; float:left;">
+		<br /><span style="color: red;">NOTE</span>- To remove the value for a config item, insert a - (a dash or minus) into the field. Removing the value and not inputting anything will not actually remove the value.<br />
 		<table cellspacing="1" class="tablesorter" width="100%">
 			<thead>
 				<tr>
