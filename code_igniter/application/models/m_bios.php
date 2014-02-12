@@ -120,7 +120,7 @@ class M_bios extends MY_Model {
 				$row = $query->row();
 				// the processor exists - need to update it
 				$sql = "UPDATE sys_hw_bios SET bios_asset_tag = ?, timestamp = ? WHERE bios_id = ? ";
-				$data = array("$details->bios_asset_tag", "$details->timestamp", "$row->bios_id");
+				$data = array("$input->bios_asset_tag", "$details->timestamp", "$row->bios_id");
 				$query = $this->db->query($sql, $data);
 			} else {
 				// the bios does not exist - insert it
