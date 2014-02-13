@@ -397,7 +397,7 @@ fi
 # test pinging the server hosting the URL
 if [ "$submit_online" = "y" ]; then
 	server=`echo "$url" | cut -d"/" -f3 | cut -d: -f1`
-	test=`ping 192.168.0.122 -n -c 3 | grep "100% packet loss"`
+	test=`ping $server -n -c 3 | grep "100% packet loss"`
 	if [ "$test" != "" ]; then
 		if [ $debugging > 0 ]; then
 			echo "Server $server is not responding to a ping. Cannot submit audit result. Exiting."
