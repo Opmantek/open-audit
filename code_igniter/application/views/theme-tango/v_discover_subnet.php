@@ -81,24 +81,26 @@ switch ($type) {
 			<td width='100%'>
 				<p><label for='subnet'><?php echo __($scan_title); ?>: </label> <input type='text' id='subnet' name='subnet' tabindex='1' title='Subnet'  /></p>
 
-				<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='1' title='Local Network Address' value='<?php echo $config->default_network_address; ?>' /></p>
+				<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $config->default_network_address; ?>' /></p>
 
 				<?php if ($type == "" or $type == "snmp") { ?>
-				<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: </label> <input type='text' id='snmp_community' name='snmp_community' tabindex='1' title='SNMP Community' value='<?php echo $config->default_snmp_community; ?>' /></p>
+				<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: </label> <input type='text' id='snmp_community' name='snmp_community' tabindex='3' title='SNMP Community' value='<?php echo $config->default_snmp_community; ?>' /></p>
 				<?php } ?>
 
 				<?php if ($type == "" or $type == "linux") { ?>
-				<p><label for='ssh_username'><?php echo __("SSH User"); ?>: </label> <input type='text' id='ssh_username' name='ssh_username' tabindex='1' title='SSH User' value='<?php echo $config->default_ssh_username; ?>' /></p>
-				<p><label for='ssh_password'><?php echo __("SSH Password"); ?>: </label> <input type='text' id='ssh_password' name='ssh_password' tabindex='1' title='SSH Password' value='<?php echo $config->default_ssh_password; ?>' /></p>
+				<p><label for='ssh_username'><?php echo __("SSH User"); ?>: </label> <input type='text' id='ssh_username' name='ssh_username' tabindex='4' title='SSH User' value='<?php echo $config->default_ssh_username; ?>' /></p>
+				<p><label for='ssh_password'><?php echo __("SSH Password"); ?>: </label> <input type='text' id='ssh_password' name='ssh_password' tabindex='5' title='SSH Password' value='<?php echo $config->default_ssh_password; ?>' /></p>
 				<?php } ?>
 
 				<?php if ($type == "" or $type == "windows") { ?>
-				<p><label for='windows_username'><?php echo __("Windows User"); ?>: </label> <input type='text' id='windows_username' name='windows_username' tabindex='1' title='Windows User' value='<?php echo $config->default_windows_username; ?>' /></p>
-				<p><label for='windows_password'><?php echo __("Windows Password"); ?>: </label> <input type='text' id='windows_password' name='windows_password' tabindex='1' title='Windows Password' value='<?php echo $config->default_windows_password; ?>' /></p>
-				<p><label for='windows_domain'><?php echo __("Windows Domain"); ?>: </label> <input type='text' id='windows_domain' name='windows_domain' tabindex='1' title='Windows Domain' value='<?php echo $config->default_windows_domain; ?>' /></p>
+				<p><label for='windows_username'><?php echo __("Windows User"); ?>: </label> <input type='text' id='windows_username' name='windows_username' tabindex='6' title='Windows User' value='<?php echo $config->default_windows_username; ?>' /></p>
+				<p><label for='windows_password'><?php echo __("Windows Password"); ?>: </label> <input type='text' id='windows_password' name='windows_password' tabindex='7' title='Windows Password' value='<?php echo $config->default_windows_password; ?>' /></p>
+				<p><label for='windows_domain'><?php echo __("Windows Domain"); ?>: </label> <input type='text' id='windows_domain' name='windows_domain' tabindex='8' title='Windows Domain' value='<?php echo $config->default_windows_domain; ?>' /></p>
 				<?php } ?>
 
-				<p><label for='submit'>&nbsp;</label><input type='submit' name='submit' id='submit' value='<?php echo __($submit_text); ?>' /></p>
+				<p><label for='debug'><?php echo __("Debug"); ?>: </label> <input type='checkbox' id='debug' name='debug' tabindex='9' title='Debug' />Do not set this in normal use.</p>
+
+				<p><label for='submit'>&nbsp;</label><input type='submit' name='submit' id='submit' tabindex='10' value='<?php echo __($submit_text); ?>' /></p>
 				<?php if ($warning > '') { echo "<p><br /><br />$warning</p>\n"; } ?>
 			</td>
 		</tr>

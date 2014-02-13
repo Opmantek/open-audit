@@ -87,7 +87,7 @@ class Discovery extends CI_Controller {
 			$this->data['heading'] = 'Active Directory Discovery';
 			$this->load->view('v_template', $this->data);
 		} else {
-			if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+			if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 				echo "<pre>\n";
 			}
 			# run the audit_domain script
@@ -96,11 +96,11 @@ class Discovery extends CI_Controller {
 			(isset($_POST['password']) and $_POST['password'] > '') and
 			(isset($_POST['domain']) and $_POST['domain'] > '')) {
 				$error = "";
-				$log = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD submitted for " . $_POST['domain']; $this->log_event($log, 'n');
+				$log = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD submitted for " . $_POST['domain']; $this->log_event($log);
 				$i = explode('/', base_url());
 				$url = str_replace($i[2], $_POST['network_address'], base_url()) . "index.php/system";
 			} else {
-				$error = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD incomplete credentials."; $this->log_event($log, 'n'); 
+				$error = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD incomplete credentials."; $this->log_event($log); 
 				$url = "";
 			}
 
@@ -113,9 +113,12 @@ class Discovery extends CI_Controller {
 				$script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $details->windows_domain . "\\" . $details->windows_username . " strpass=" . $details->windows_password . " url=" . $url . "index.php/system/add_system debugging=0";
 				$log_details = "C:discovery F:process_subnet Windows audit for $details->man_ip_address (System ID $details->system_id)"; $this->log_event($log_details);
 				$command_string = "%comspec% /c start /b cscript //nologo " . $script_string . " &";
-				if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { 
-					echo "DEBUG command: " . $command_string . "\n"; 
+
+				if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+					echo "\nCommand: $command_string\n\n";
 					exec($command_string, $output, $return_var);
+					echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
+					print_r($output);
 					if ($return_var != '0') { 
 						$error = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on " . $_POST['server'] . " has failed"; 
 						$this->log_event($error); 
@@ -123,8 +126,6 @@ class Discovery extends CI_Controller {
 						$log = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on " . $_POST['server'] . " has succeeded"; 
 						$this->log_event($log);
 					}
-					print_r($output);
-					echo "\n\n" . $return_var;
 					$output = NULL;
 					$return_var = NULL;
 				} else {
@@ -145,9 +146,12 @@ class Discovery extends CI_Controller {
 				# copy the domain audit script
 				if ($error == '') {
 					$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\"";
-
 					exec($command_string, $output, $return_var);
-
+					if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+						echo "\nCommand: $command_string\n\n";
+						echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
+						print_r($output);
+					}
 					if ($return_var != '0') { 
 						$error = "C:discovery F:process_subnet SMBClient copy of audit_domain.vbs to " . $_POST['server'] . " has failed"; 
 						$this->log_event($error); 
@@ -155,13 +159,6 @@ class Discovery extends CI_Controller {
 						$log = "C:discovery F:process_subnet SMBClient copy of audit_domain.vbs to " . $_POST['server'] . " has succeeded"; 
 						$this->log_event($log);
 					}
-
-					if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-						echo "DEBUG - command: " . $command_string . "\n";
-						print_r($output);
-						echo "\nDEBUG - Command Return Value: " . $return_var . "\n\n";
-					}
-
 					$command_string = NULL;
 					$output = NULL;
 					$return_var = NULL;
@@ -171,9 +168,12 @@ class Discovery extends CI_Controller {
 				# copy the windows audit script
 				if ($error == '') {
 					$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
-
 					exec($command_string, $output, $return_var);
-
+					if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+						echo "\nCommand: $command_string\n\n";
+						echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
+						print_r($output);
+					}
 					if ($return_var != '0') { 
 						$error = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to " . $_POST['server'] . " has failed"; 
 						$this->log_event($error); 
@@ -181,13 +181,6 @@ class Discovery extends CI_Controller {
 						$log = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to " . $_POST['server'] . " has succeeded"; 
 						$this->log_event($log);
 					}
-
-					if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-						echo "DEBUG - command: " . $command_string . "\n";
-						print_r($output);
-						echo "\nDEBUG - Command Return Value: " . $return_var . "\n\n";
-					}
-
 					$command_string = NULL;
 					$output = NULL;
 					$return_var = NULL;
@@ -198,6 +191,11 @@ class Discovery extends CI_Controller {
 				if ($error == "") {
 					$command_string = "screen -D -m $filepath/winexe -U " . $_POST['domain'] . "/" . $_POST['user'] . "%" . $_POST['password'] . " --uninstall //" . $_POST['server'] . " \"cscript c:\windows\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=c:\windows\audit_windows.vbs url=" . $url . " debugging=0 struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " \" ";
 					exec($command_string, $output, $return_var);
+					if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+						echo "\nCommand: $command_string\n\n";
+						echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
+						print_r($output);
+					}
 					if ($return_var != '0') { 
 						$error = "C:discovery F:process_subnet Attempt to run audit_domain.vbs on " . $_POST['server'] . " has failed"; 
 						$this->log_event($error);
@@ -205,17 +203,17 @@ class Discovery extends CI_Controller {
 						$log = "C:discovery F:process_subnet Attempt to run audit_domain.vbs on " . $_POST['server'] . " has succeeded"; 
 						$this->log_event($log);
 					}
-					if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-						echo "DEBUG - command: " . $command_string . "\n";
-						print_r($output);
-						echo "\nDEBUG - Command Return Value: " . $return_var . "\n\n";
-					}
 					$command_string = NULL;
 					$output = NULL;
 					$return_var = NULL;
 				}
 
 			} // end of Linux domain audit
+			if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+				# do not redirect
+			} else {
+				redirect('admin/view_log');
+			}
 		} // end of submit / not submit
 	}
 
@@ -278,57 +276,64 @@ class Discovery extends CI_Controller {
 		} else {
 			# process the scan details and call the discovery script
 
+			$return_var = "";
+			$output = "";
+
+			if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+				echo "<pre>\n";
+			}
+
 			# create a network group if provided a subnet that includes a slash in the string AND 
 			# auto create network is set in the config to 'y'
-			if (isset($_POST['subnet'])) {
+			if (isset($_POST['subnet']) and $_POST['subnet'] > "") {
 				$subnet = $_POST['subnet'];
 			} else {
 				$subnet = "";
 			}
 
-			$log = "C:discovery F:discover_subnet U:" . $this->data['user_full_name'] . " Discovery submitted for $subnet"; $this->log_event($log, 'n'); 
+			$log = "C:discovery F:discover_subnet U:" . $this->data['user_full_name'] . " Discovery submitted for $subnet"; $this->log_event($log); 
 
 			# we encode the supplied credentials and pass them to the script
 			# the script will simply pass them back (still encoded) with each device result
 			$this->load->library('encrypt');
 
-			if ($_POST['snmp_community'] > "") {
+			if (isset($_POST['snmp_community']) and $_POST['snmp_community'] > "") {
 				$encode['snmp_community'] = $_POST['snmp_community'];
 			} else {
 				$encode['snmp_community'] = '';
 			}
 
-			if ($_POST['ssh_username'] > "") {
+			if (isset($_POST['ssh_username']) and $_POST['ssh_username'] > "") {
 				$encode['ssh_username'] = $_POST['ssh_username'];
 			} else {
 				$encode['ssh_username'] = '';
 			}
 
-			if ($_POST['ssh_password'] > "") {
+			if (isset($_POST['ssh_password']) and $_POST['ssh_password'] > "") {
 				$encode['ssh_password'] = $_POST['ssh_password'];
 			} else {
 				$encode['ssh_password'] = '';
 			}
 
-			if ($_POST['windows_username'] > "") {
+			if (isset($_POST['windows_username']) and $_POST['windows_username'] > "") {
 				$encode['windows_username'] = $_POST['windows_username'];
 			} else {
 				$encode['windows_username'] = '';
 			}
 
-			if ($_POST['windows_password'] > "") {
+			if (isset($_POST['windows_password']) and $_POST['windows_password'] > "") {
 				$encode['windows_password'] = $_POST['windows_password'];
 			} else {
 				$encode['windows_password'] = '';
 			}
 
-			if ($_POST['windows_domain'] > "") {
+			if (isset($_POST['windows_domain']) and $_POST['windows_domain'] > "") {
 				$encode['windows_domain'] = $_POST['windows_domain'];
 			} else {
 				$encode['windows_domain'] = '';
 			}
 
-			if ($_POST['network_address'] > "") {
+			if (isset($_POST['network_address']) and $_POST['network_address'] > "") {
 				$encode['network_address'] = $_POST['network_address'];
 			} else {
 				$encode['network_address'] = '';
@@ -374,6 +379,7 @@ class Discovery extends CI_Controller {
 							// group exists - no need to do anything
 						} else {
 							// group does not exist - insert 
+							$log = "C:discovery F:discover_subnet U:" . $this->data['user_full_name'] . " Creating Group for $subnet"; $this->log_event($log, 'y'); 
 							$sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (NULL, ?, ?, ?, '1', ?, 'network', 'switch')";
 							$group_name = "Network - " . $subnet_details->network . ' / ' . $subnet_details->network_slash;
 							$group_padded_name = "Network - " . ip_address_to_db($subnet_details->network);
@@ -415,14 +421,36 @@ class Discovery extends CI_Controller {
 
 			if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
 				if ($subnet > '' ) {
-					$command_string = "nohup $filepath/discover_subnet.sh subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
 
-					@exec($command_string, $output, $return_var);
-					
+					if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+						$command_string = "$filepath/discover_subnet.sh subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+						echo "\nCommand: $command_string\n\n";
+						@exec($command_string, $output, $return_var);
+						echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
+						array_splice($output, 0, 1);
+						array_splice($output, 19);
+						$script_result = '';
+						foreach ($output as $line) {
+							$script_result .= $line;
+						}
+						$script_result = preg_replace('/\s+/', ' ',$script_result);
+						$script_result = str_replace("> <", "><", $script_result);
+						$formatted_script_result = str_replace("><", ">\n<", $script_result);
+						$formatted_script_result = str_replace(">\n</", "></", $formatted_script_result);
+						$formatted_script_result = str_replace("\n", "\n\t\t", $formatted_script_result);
+						$formatted_script_result = str_replace("\t\t<device>", "\t<device>", $formatted_script_result);
+						$formatted_script_result = str_replace("</device>", "\n\t</device>", $formatted_script_result);
+						$formatted_script_result = str_replace("</devices>", "\n</devices>", $formatted_script_result);
+						echo htmlentities($formatted_script_result) . "\n";
+						$_POST['form_details'] = $script_result;
+						$this->process_subnet();
+					} else {
+						$command_string = "nohup $filepath/discover_subnet.sh subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
+						@exec($command_string, $output, $return_var);
+					}
 					if ($return_var != '0') { 
 						$error = "Discovery subnet starting script discover_subnet.sh ($subnet) has failed"; $this->log_event($error); 
 					}
-
 					$command_string = NULL;
 					$output = NULL;
 					$return_var = NULL;
@@ -430,15 +458,40 @@ class Discovery extends CI_Controller {
 			}
 			if (php_uname('s') == 'Windows NT') {
 				if ($subnet > '' ) {
-					$command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
-					pclose(popen($command_string,"r"));
-					#echo $command_string . "<br />\n";
-					#exec($command_string, $output, $return_var);
-					#print_r($return_var);
-					#print_r($output);
+					if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+						$command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+						echo "\nCommand: $command_string\n\n";
+						@exec($command_string, $output, $return_var);
+						echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
+						array_splice($output, 0, 1);
+						array_splice($output, 19);
+						$script_result = '';
+						foreach ($output as $line) {
+							$script_result .= $line;
+						}
+						$script_result = preg_replace('/\s+/', ' ',$script_result);
+						$script_result = str_replace("> <", "><", $script_result);
+						$formatted_script_result = str_replace("><", ">\n<", $script_result);
+						$formatted_script_result = str_replace(">\n</", "></", $formatted_script_result);
+						$formatted_script_result = str_replace("\n", "\n\t\t", $formatted_script_result);
+						$formatted_script_result = str_replace("\t\t<device>", "\t<device>", $formatted_script_result);
+						$formatted_script_result = str_replace("</device>", "\n\t</device>", $formatted_script_result);
+						$formatted_script_result = str_replace("</devices>", "\n</devices>", $formatted_script_result);
+						echo htmlentities($formatted_script_result) . "\n";
+						$_POST['form_details'] = $script_result;
+						$this->process_subnet();
+					} else {
+						$command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+						pclose(popen($command_string,"r"));
+					}
 				}
 			}
-			redirect('admin/view_log');
+			if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+				# do nothing so we echo out the logs
+			} else {
+				redirect('admin/view_log');
+			}
+
 		}
 	}
 
@@ -515,7 +568,6 @@ class Discovery extends CI_Controller {
 				} else {
 
 					if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-						echo "DEBUG ------------------\n";
 						$details->show_output = TRUE;
 					}
 					$log_details = "C:discovery F:process_subnet Start processing $details->man_ip_address"; $this->log_event($log_details);
@@ -649,19 +701,14 @@ class Discovery extends CI_Controller {
 
 
 					$details->windows_password = '';
-					#$log_details = "C:discovery F:process_subnet 0Win Pass: $details->windows_password ($details->man_ip_address)"; $this->log_event($log_details);
-					#$log_details = "C:discovery F:process_subnet 5Win Pass: $supplied->windows_password ($details->man_ip_address)"; $this->log_event($log_details);
 					if ($details->windows_password == '' and isset($specific->windows_password) and $specific->windows_password > '') { 
 						$details->windows_password = $specific->windows_password; 
-						#$log_details = "C:discovery F:process_subnet 1Win Pass: $details->windows_password ($details->man_ip_address)"; $this->log_event($log_details);
 					}
 					if ($details->windows_password == '' and isset($supplied->windows_password) and $supplied->windows_password > '') { 
 						$details->windows_password = $supplied->windows_password; 
-						#$log_details = "C:discovery F:process_subnet 2Win Pass: $details->windows_password ($details->man_ip_address)"; $this->log_event($log_details);
 					}
 					if ($details->windows_password == '' and isset($default->default_windows_password) and $default->default_windows_password > '') { 
 						$details->windows_password = $default->default_windows_password; 
-						#$log_details = "C:discovery F:process_subnet 3Win Pass: $details->windows_password ($details->man_ip_address)"; $this->log_event($log_details);
 					}
 
 					$details->windows_domain = '';
@@ -682,15 +729,15 @@ class Discovery extends CI_Controller {
 						echo "DEBUG - SSH Status: " . $details->ssh_status . "\n";
 					}
 
+					# need to escape the dollar sign when processing using bash (substitution will occur otherwise).
+					if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
+						$details->ssh_password = str_replace('$', '\$', $details->ssh_password);
+						$details->windows_password = str_replace('$', '\$', $details->windows_password);
+					}
+
 					$log_details = "C:discovery F:process_subnet WMI Status: $details->wmi_status ($details->man_ip_address)"; $this->log_event($log_details);
-					#$log_details = "C:discovery F:process_subnet Win User: $details->windows_username ($details->man_ip_address)"; $this->log_event($log_details);
-					#$log_details = "C:discovery F:process_subnet Win Pass: $details->windows_password ($details->man_ip_address)"; $this->log_event($log_details);
-					#$log_details = "C:discovery F:process_subnet Win Dom: $details->windows_domain ($details->man_ip_address)"; $this->log_event($log_details);
 					$log_details = "C:discovery F:process_subnet SNMP Status: $details->snmp_status ($details->man_ip_address)"; $this->log_event($log_details);
-					#$log_details = "C:discovery F:process_subnet SNMP Pass: $details->snmp_community ($details->man_ip_address)"; $this->log_event($log_details);
 					$log_details = "C:discovery F:process_subnet SSH Status: $details->ssh_status ($details->man_ip_address)"; $this->log_event($log_details);
-					#$log_details = "C:discovery F:process_subnet SSH User: $details->ssh_username ($details->man_ip_address)"; $this->log_event($log_details);
-					#$log_details = "C:discovery F:process_subnet SSH Pass: $details->ssh_password ($details->man_ip_address)"; $this->log_event($log_details);
 
 					if (extension_loaded('snmp') and $details->snmp_status == "true") { 
 						# try to get more information using SNMP
@@ -871,8 +918,6 @@ class Discovery extends CI_Controller {
 									if ($return_var != '0') { $error = "SSH copy of audit_linux.sh to $details->man_ip_address has failed"; $this->log_event($error); }
 									if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 										echo "DEBUG command: " . $command_string . "\n";
-										print_r($output);
-										echo "\nReturn Value: " . $return_var . "\n\n";
 									}
 									$command_string = NULL;
 									$output = NULL;
@@ -885,8 +930,6 @@ class Discovery extends CI_Controller {
 										if ($return_var != '0') { $error = "SSH chmod command for linux audit script on $details->man_ip_address failed"; $this->log_event($error); }
 										if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 											echo "DEBUG command: " . $command_string . "\n";
-											print_r($output);
-											echo "\nReturn Value: " . $return_var . "\n\n";
 										}
 										$command_string = NULL;
 										$output = NULL;
@@ -894,7 +937,7 @@ class Discovery extends CI_Controller {
 									}
 
 									# Attempt to determine if SUDO is present on target system
-									if ($error == "" ) {
+									if ($error == "" and strtolower($details->ssh_username) != 'root') {
 										$command_string = "sshpass -p \"" . $details->ssh_password . "\" ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . $details->ssh_username . "@" . $details->man_ip_address . " which sudo";
 										exec($command_string, $output, $return_var);
 										if ($return_var != '0') { $error = "SSH which sudo command for linux audit script on $details->man_ip_address failed"; $this->log_event($error); }
@@ -905,12 +948,12 @@ class Discovery extends CI_Controller {
 										}
 										if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 											echo "DEBUG command: " . $command_string . "\n";
-											print_r($output);
-											echo "\nReturn Value: " . $return_var . "\n\n";
 										}
 										$command_string = NULL;
 										$output = NULL;
 										$return_var = NULL;
+									} else {
+										$sudo = "";
 									}
 
 									# Attempt to run the audit script
@@ -920,13 +963,10 @@ class Discovery extends CI_Controller {
 										} else {
 											$command_string = "sshpass -p \"" . $details->ssh_password . "\" ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . $details->ssh_username . "@" . $details->man_ip_address . " \"/tmp/audit_linux.sh submit_online=y create_file=n url=" . $url . "index.php/system/add_system debugging=1 \"";
 										}
-										exec($command_string, $output, $return_var);
+										echo "DEBUG command: " . $command_string . "\n";
+										#exit();
+										@exec($command_string, $output, $return_var);
 										if ($return_var != '0') { $error = "SSH audit command for linux audit script on $details->man_ip_address failed"; $this->log_event($error); }
-										if (isset($output[0]) and $output[0] > "") {
-											$sudo = $output[0];
-										} else {
-											$sudo = "";
-										}
 										if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 											echo "DEBUG command: " . $command_string . "\n";
 											print_r($output);
@@ -1034,11 +1074,6 @@ class Discovery extends CI_Controller {
 										}
 										exec($command_string, $output, $return_var);
 										if ($return_var != '0') { $error = "SSH audit command for linux audit script on $details->man_ip_address failed"; $this->log_event($error); }
-										if (isset($output[0]) and $output[0] > "") {
-											$sudo = $output[0];
-										} else {
-											$sudo = "";
-										}
 										if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 											echo "DEBUG command: " . $command_string . "\n";
 											print_r($output);
@@ -1060,7 +1095,6 @@ class Discovery extends CI_Controller {
 					} # close ssh_status
 					if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 						echo "Finish processing " . $details->man_ip_address . "\n";
-						echo "------------------\n\n";
 					}
 					$log = "C:discovery F:process_subnet Completed processing $details->man_ip_address"; $this->log_event($log);
 				} # close the device / complete switch
