@@ -49,7 +49,7 @@ if (php_uname('s') == "Windows NT") {
 
 $upgrade_message = "";
 if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') == 'y')) {
-	$upgrade_message = "<span style='color: blue;'>You should <a style='color: red;' href='" . site_url() . "/admin/upgrade'>upgrade</a> your database.</span>";
+	$upgrade_message = "<span style='font-size:20px;'>Please <a style='color: red;' href='" . site_url() . "/admin/upgrade'>click here</a> to upgrade your database.</span>";
 }
 if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') != 'y')) {
 	$upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>";
@@ -58,7 +58,7 @@ if (($config->display_version != $this->config->item('web_display_version')) AND
 <form action="vars.php" method="post" class="niceforms">
 	<fieldset id="about" class="niceforms">
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('About')?></span></legend>
-		You are running version <?php echo $config->display_version; ?> of Open-AudIT. <?php echo $upgrade_message; ?><br />
+		You are running version <?php echo $config->display_version; ?> of Open-AudIT.<br />
 		<?php if ($this->session->userdata('user_admin') == 'y') { ?>
 		Your Host is: <?php echo php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br />
 		Your database platform is <?php echo $this->db->platform() . " (version " . $this->db->version() . ")"; ?>.<br />
@@ -71,6 +71,7 @@ if (($config->display_version != $this->config->item('web_display_version')) AND
 			echo "<i>You do not have the PHP MBString extension installed. This extension is required.</i><br />";
 		} ?>
 		<?php } ?>
+		<?php echo $upgrade_message; ?>
 		<br /><br />
 		Open-AudIT is :
 		<ul>

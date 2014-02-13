@@ -32,6 +32,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
+#if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') == 'y')) {
+if ($config->display_version != $this->config->item('web_display_version')) {
+    $include = "v_help_about";
+    $heading = "You must upgrade";
+}
+
 if ( !isset($user_theme) or $user_theme == '' ) { $user_theme = 'tango'; }
 include "theme-" . $user_theme . "/v_template.php";
 ?>
