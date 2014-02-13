@@ -114,7 +114,6 @@ if (!function_exists('get_snmp')) {
 			$supplied->windows_domain = '';
 		}
 
-
 		// if (!isset($details->snmp_community) or $details->snmp_community == '') { 
 		// 	$details->snmp_community = $default_snmp_community;
 		// 	if ($details->show_output == TRUE) { echo "<br />Using <span style='color: blue;'>default</span> SNMP community. You can set the device credentials on the System Summary page. On the left menu, click 'Summary' then 'Credentials'.<br /><br />"; }
@@ -126,7 +125,9 @@ if (!function_exists('get_snmp')) {
 
 
 		# we need at least an ip address or hostname
-		if ((!isset($details->man_ip_address) or $details->man_ip_address == '') and !isset($details->hostname)) {
+		if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or 
+			$details->man_ip_address == '000.000.000.000' or $details->man_ip_address == '0.0.0.0') and 
+			(!isset($details->hostname) or $details->hostname == '')) {
 			unset($details->man_ip_address);
 			if ($details->show_output == TRUE) { echo "SNMP - No ip address or hostname provided - exiting.<br />"; }
 			return;
@@ -134,15 +135,12 @@ if (!function_exists('get_snmp')) {
 
 		$module = new stdclass;
 
-		if ((!isset($details->hostname) or $details->hostname == '') and
-			(isset($details->man_ip_address) and $details->man_ip_address != '' and 
-			 $details->man_ip_address != '000.000.000.000' and $details->man_ip_address != '0.0.0.0')) {
+		if (!isset($details->hostname) or $details->hostname == '') {
 			$details->hostname = gethostbyaddr(ip_address_from_db($details->man_ip_address));
 		}
 
-		if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or 
-			$details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000') and
-			(isset($details->hostname) and $details->hostname != '')) {
+		if (!isset($details->man_ip_address) or $details->man_ip_address == '' or 
+			$details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000') {
 			$details->man_ip_address = gethostbyname($details->hostname);
 		}
 
@@ -192,14 +190,6 @@ if (!function_exists('get_snmp')) {
 				$details->snmp_community = '';
 			}
 		}
-
-		// echo "<pre>\n";
-		// echo "Specific:\n";
-		// print_r($specific);
-		// echo "Supplied:\n";
-		// print_r($supplied);
-		// echo "Default:\n";
-		// print_r($default);
 
 		# test the device specific credentials
 		if ($details->snmp_community == '' and isset($specific->snmp_community) and $specific->snmp_community > '') {
@@ -286,9 +276,11 @@ if (!function_exists('get_snmp')) {
 			// hostname
 			if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
 				// we have an ip address, not a hostname - attempt to get a hostname
-				$details->hostname = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout, $retries));
+				$i = explode(".", snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout, $retries)));
+				$details->hostname = $i[0];
 				$details->hostname_length = 'short';
 			}
+
 
 			// description
 			$details->description = '';
@@ -606,20 +598,6 @@ if (!function_exists('get_snmp')) {
 			$details->mac_address = str_replace(" ", ":", $details->mac_address);
 
 			$details->subnet = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
-
-			// hostname
-			$details->hostname = gethostbyaddr($details->man_ip_address);
-			if (strpos($details->hostname, ".") !== FALSE) {
-				# fqdn - explode it
-				if (!isset($details->fqdn) or $details->fqdn == '') { $details->fqdn = $details->hostname; }
-				$i = explode(".", $details->hostname);
-				$details->hostname = $i[0];
-				if (!isset($details->domain) or $details->domain == '') {
-					unset($i[0]);
-					$details->domain = implode(".", $i);
-				}
-			} 
-
 			$details->next_hop = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 		}
 
