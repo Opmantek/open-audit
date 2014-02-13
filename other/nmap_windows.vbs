@@ -1,9 +1,33 @@
-' Open Audit
-' Software and Hardware Inventory
-' (c) Mark Unwin 2012 
-' http://www.open-audit.org
-' Licensed under the AGPL v3
-' http://www.fsf.org/licensing/licenses/agpl-3.0.html 
+'  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+'
+'  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+'
+'  This file is part of Open-AudIT.
+'
+'  Open-AudIT is free software: you can redistribute it and/or modify
+'  it under the terms of the GNU Affero General Public License as published 
+'  by the Free Software Foundation, either version 3 of the License, or
+'  (at your option) any later version.
+'
+'  Open-AudIT is distributed in the hope that it will be useful,
+'  but WITHOUT ANY WARRANTY; without even the implied warranty of
+'  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'  GNU Affero General Public License for more details.
+'
+'  You should have received a copy of the GNU Affero General Public License
+'  along with Open-AudIT (most likely in a file named LICENSE).
+'  If not, see <http://www.gnu.org/licenses/>
+'
+'  For further information on Open-AudIT or for a license other than AGPL please see
+'  www.opmantek.com or email contact@opmantek.com
+'
+' *****************************************************************************
+
+' @package Open-AudIT
+' @author Mark Unwin <marku@opmantek.com>
+' @version 1.2
+' @copyright Copyright (c) 2014, Opmantek
+' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 
 Option Explicit
@@ -14,7 +38,7 @@ Dim audit_windows, colItems, command, count, current_pid, debugging, ip_address,
 number_of_audits = 25
 
 ' the name and path of the audit script to use
-audit_windows = "c:\xampp\OAv2\other\audit_windows.vbs"
+audit_windows = "c:\xampplite\open-audit\other\audit_windows.vbs"
 
 ' if set, create an output file of all retrieved systems scanned
 output_file = ""
@@ -24,7 +48,7 @@ run_audit_windows = "n"
 
 ' only set the below if your PATH variable (in Windows) does not include this
 nmap_exe = "C:\program files(x86)\Nmap\"
-nmap_exe = ""
+'nmap_exe = ""
 
 ' 0 = no debug
 ' 1 = basic debug

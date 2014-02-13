@@ -1,3 +1,38 @@
+<?php 
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
+/**
+ * @package Open-AudIT
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
+ * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+ */
+
+?>
 <!-- v_display_printer -->
 <script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
@@ -98,13 +133,25 @@ $link_downloads = '';
 	<form action="#" method="post" class="niceforms">
 		<fieldset id="system_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
+			<div style="float:right; width: 120px; text-align:center">
+				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $system[0]->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
+			<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
+				<input type="button" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');" value='SNMP Scan' title='SNMP Scan' name='SNMP Scan' alt='SNMP Scan' width='24' />
+			<?php } ?>
+		</div>
 			<div style="float: left; width:75%; margin-right: 120px;">
 				<?php foreach($system as $key): ?>
 					<div>
 						<div style="float:left; width:50%;">
 							<p><label for="hostname"><?php echo __('Hostname')?>: </label><span id="hostname"><b><?php echo print_something($key->hostname)?></b></span></p>
 							<p><label for="man_ip_address"><?php echo __('IP Address')?>: </label><span id="man_ip_address" <?php echo $edit?>><?php echo print_something(ip_address_from_db($key->man_ip_address))?></span></p>
-							<p><label for="man_type"><?php echo __('Type')?>: </label><span id="man_type" <?php echo $edit?>><?php echo print_something($key->man_type)?></span></p>
+							<p><label for="man_type_select"><?php echo __('Type')?>: </label>
+							<?php if ($access_level > 7) { ?>
+								<span id="man_type_select" style="color:blue;"><span onclick="display_type();"><?php echo print_something($key->man_type)?></span></span></p>
+							<?php } else { ?>
+								<span id="man_type_select"><?php echo print_something($key->man_type)?></span></p>
+							<?php } ?>
+							<!-- <p><label for="man_type"><?php echo __('Type')?>: </label><span id="man_type" <?php echo $edit?>><?php echo print_something($key->man_type)?></span></p> -->
 							<p><label for="man_environment_select"><?php echo __('Environment')?>: </label>
 							<?php if ($access_level > 7) { ?>
 								<span id="man_environment_select" style="color:blue;"><span onclick="display_environment();"><?php echo print_something($key->man_environment)?></span></span></p>
@@ -136,12 +183,6 @@ $link_downloads = '';
 				<?php endforeach; ?>
 				<?php echo display_custom_field('system_details', $additional_fields, $edit); ?>
 			</div>
-			<div style="float:right; width: 110px; text-align: center;">
-				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $key->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
-				<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
-				<input type="button" onclick="parent.location='<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>'" value='SNMP Probe' title='SNMP Probe' name='SNMP Probe' alt='SNMP Probe' width='24' />
-				<?php } ?>
-			</div>
 			<div style="float: left;margin-right: 120px;">
 				<?php if ($os_name > ''){ ?><label for="man_os_name"><?php echo __('OS Name')?>: </label><span id="man_os_name"><?php echo print_something($os_name)?></span><?php } ?>
 				<?php if ($key->man_type == 'system') { ?><p><label for="man_serial"><?php echo __('Serial')?>: </label><span id='man_serial' <?php echo $edit?>><?php echo print_something($key->man_serial)?></span></p><?php } ?>
@@ -153,15 +194,29 @@ $link_downloads = '';
 	<div id="view_summary_credentials" style="float: left; width: 100%;">
 	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
 	<br />
-	<form action="#" method="post" class="niceforms">
+	<form action="../../admin_system/system_add_credentials" method="post" class="niceforms">
 		<fieldset id="summary_credentials_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Credentials')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
-			<span>NOTE - Read only at the moment. Can be set via Edit Multiple Systems from a Report page.</span>
-			<?php foreach($decoded_access_details as $key => $value) { 
-				echo "<p><label for='" . $key . "'>" . ucwords(str_replace("_", " ", $key)) . ": </label>";
-				echo "<span id='" . $key . "'>" . print_something($value) . "</span></p>";
-			} ?>
+			<div style="float:right; width: 120px; text-align:center">
+				<img style='margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
+				<?php if ($access_level > 7) { ?>
+					<br /><input type="button" onclick="display_credentials();" value='Edit' title='Edit' name='credentials_edit' alt='Edit' width='24' />
+				<?php } ?>
+			</div>
+			<div id="credentials">
+				<p><label for='credentials_ip_address'>IP Address: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
+
+				<p><label for='credentials_ip_address'>SNMP Version: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
+				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($decoded_access_details->snmp_community); ?></span></p>
+
+				<p><label for='credentials_ssh_username'>SSH Username: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
+				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($decoded_access_details->ssh_password); ?></span></p>
+
+				<p><label for='credentials_windows_username'>Windows Username: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
+				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($decoded_access_details->windows_password); ?></span></p>
+				<p><label for='credentials_windows_domain'>Windows Domain: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
+			</div>
+
 		</fieldset>
 	</form>
 	<?php } ?>
@@ -462,233 +517,9 @@ $link_downloads = '';
 
 
 
+<?php include "include_display_javascript.php"; ?>
 
 <script type="text/javascript">
-$(document).ready( function() { $.NiceJForms.build(); } );
-
-function createRequestObject() {
-	var req;
-	if(window.XMLHttpRequest){
-		// Firefox, Safari, Opera...
-		req = new XMLHttpRequest();
-	} else if(window.ActiveXObject) {
-		// Internet Explorer 5+
-		req = new ActiveXObject("Microsoft.XMLHTTP");
-	} else {
-		// There is an error creating the object,
-		// just as an old browser is being used.
-		alert('Problem creating the XMLHttpRequest object');
-	}
-	return req;
-}
-
-var http = createRequestObject();
-
-
-
-
-
-
-function display_environment()
-{
-	status_text="<select id='man_environment' onchange='send_environment();'><option value=' '>Choose an Environment<\/option><option value='production'>Production<\/option><option value='pre-prod'>PreProduction<\/option><option value='test'>Testing<\/option><option value='uat'>User Acceptance Testing<\/option><option value='eval'>Evaluation<\/option><option value='dev'>Development<\/option><option value='dr'>Disaster Recovery<\/option><\/select>";
-	document.getElementById("man_environment_select").innerHTML = status_text;
-}
-
-function send_environment()
-{
-	table_text=document.getElementById("man_environment").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_environment/'+table_text);
-	http.onreadystatechange = receive_environment;
-	http.send(null);
-}
-
-function receive_environment() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_environment();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_environment_select").innerHTML = update;
-    }
-  }
-}
-
-
-
-
-
-
-function display_status()
-{
-	status_text="<select id='man_status' onchange='send_status();'><option value=' '>Choose a status<\/option><option value='production'>Production<\/option><option value='retired'>Retired<\/option><option value='maintenance'>Maintenance<\/option><option value='deleted'>Deleted<\/option><\/select>";
-	document.getElementById("man_status_select").innerHTML = status_text;
-}
-
-function send_status()
-{
-	table_text=document.getElementById("man_status").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_status/'+table_text);
-	http.onreadystatechange = receive_status;
-	http.send(null);
-}
-
-function receive_status() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_status();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_status_select").innerHTML = update;
-    }
-  }
-}
-
-
-
-
-
-
-
-function display_criticality()
-{
-	status_text="<select id='man_criticality' onchange='send_criticality();'><option value=' '>Choose a criticality<\/option><option value='critical'>Critical<\/option><option value='normal'>Normal<\/option><option value='low'>Low<\/option><\/select>";
-	document.getElementById("man_criticality_select").innerHTML = status_text;
-}
-
-function send_criticality()
-{
-	table_text=document.getElementById("man_criticality").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_criticality/'+table_text);
-	http.onreadystatechange = receive_criticality;
-	http.send(null);
-}
-
-function receive_criticality() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_criticality();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_criticality_select").innerHTML = update;
-    }
-  }
-}
-
-
-function display_nmis_role() {
-	status_text="<select id='nmis_role' onchange='send_nmis_role();'><option value=' '>Choose an NMIS role</option><option value='access'>Access</option><option value='core'>Core</option><option value='distriubtion'>Distriubtion</option></select>";
-	document.getElementById("nmis_role_select").innerHTML = status_text;
-}
-
-function send_nmis_role()
-{
-	table_text=document.getElementById("nmis_role").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_role/'+table_text);
-	http.onreadystatechange = receive_nmis_role;
-	http.send(null);
-}
-
-function receive_nmis_role() {
-  if(http.readyState == 4 && http.status == 200){
-    // Text returned FROM the PHP script
-    if(http.responseText) {
-      // UPDATE ajaxTest content
-      update="<span onclick='display_nmis_role();'>"+http.responseText+"<\/span>";
-      document.getElementById("nmis_role_select").innerHTML = update;
-    }
-  }
-}
-
-
-
-function display_location()
-{
-	<?php
-	$location_form = "<option value=' '>Choose a Location<\/option>";
-	foreach ($locations as $location)
-	{
-		$location_form .= "<option value='" . $location->location_id . "'>" . $location->location_name . "<\/option>";
-	}
-	if ($location_id <> "")
-	{
-		$location_form = "<select id='man_location_id' onchange='send_location();'>" . $location_form . "<\/select>";
-	} else {
-		$location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>Choose a location<\/option>" . $location_form . "<\/select>";
-	}
-		
-	?>
-	status_text="<?php echo $location_form;?>";
-	document.getElementById("man_location_id_select").innerHTML = status_text;
-}
-
-function send_location()
-{
-	table_text=document.getElementById("man_location_id").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_location_id/'+table_text);
-	http.onreadystatechange = receive_location;
-	http.send(null);
-}
-
-function receive_location() {
-	if(http.readyState == 4 && http.status == 200){
-		// Text returned FROM the PHP script
-		if(http.responseText) {
-			// UPDATE ajaxTest content
-			//update="<span onclick='display_location();'>"+http.responseText+"<\/span>";
-			//document.getElementById("location_container").innerHTML = update;
-			document.getElementById("location_container").innerHTML = http.responseText;
-			update=http.responseText+"<p><label for='man_location_rack'><?php echo __('Rack')?>: <\/label><span id='man_location_rack' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack)?><\/span><\/p><p><label for='man_location_rack_position'><?php echo __('Rack Position')?>: <\/label><span id='man_location_rack_position' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack_position)?><\/p>";
-			document.getElementById("location_container").innerHTML = update;
-		}
-	}
-}
-
-
-
-
-
-
-
-
-function display_org()
-{
-	<?php
-	$org_form = "<option value=' '>Choose an Org<\/option>";
-	foreach ($orgs as $org)
-	{
-		$org_form .= "<option value='" . $org->org_id . "'>" . $org->org_name . "<\/option>";
-	}
-	if ($org_id <> "")
-	{
-		$org_form = "<select id='man_org_id' onchange='send_org();'>" . $org_form . "<\/select>";
-	} else {
-		$org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>Choose an Org<\/option>" . $org_form . "<\/select>";
-	}
-		
-	?>
-	status_text="<?php echo $org_form;?>";
-	document.getElementById("man_org_id_select").innerHTML = status_text;
-}
-
-function send_org()
-{
-	table_text=document.getElementById("man_org_id").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_org_id/'+table_text);
-	http.onreadystatechange = receive_org;
-	http.send(null);
-}
-
-function receive_org() {
-	if(http.readyState == 4 && http.status == 200){
-		// Text returned FROM the PHP script
-		if(http.responseText) {
-			// UPDATE ajaxTest content
-			document.getElementById("org_container").innerHTML = http.responseText;
-		}
-	}
-}
-
 
 $(document).ready(function(){
 	

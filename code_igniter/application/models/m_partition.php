@@ -1,9 +1,34 @@
-<?php
+<?php 
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
  * @package Open-AudIT
- * @author Mark Unwin <mark.unwin@gmail.com>
- * @version 1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -68,53 +93,16 @@ class M_partition extends MY_Model {
 	}
 
 	function process_partitions($input, $details) {
-		// need to check for partition changes
-		$sql = "SELECT sys_hw_partition.partition_id
-				FROM sys_hw_partition, system 
-				WHERE sys_hw_partition.system_id 	= system.system_id AND 
-					system.system_id				= ? AND 
-					system.man_status 				= 'production' AND 
-					sys_hw_partition.hard_drive_index 				= ? AND 
-					sys_hw_partition.partition_mount_point 			= ? AND 
-					sys_hw_partition.partition_size 				= ? AND 
-					( sys_hw_partition.timestamp 			= ? OR 
-					sys_hw_partition.timestamp 			= ? )";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-				"$input->hard_drive_index", 
-				"$input->partition_mount_point", 
-				"$input->partition_size", 
-				"$details->original_timestamp", 
-				"$details->timestamp");
-		$query = $this->db->query($sql, $data);
-		if ($query->num_rows() > 0) {
-			$row = $query->row();
-			// the optical_drive exists - need to update its timestamp, free and used space
-			$sql = "UPDATE sys_hw_partition SET partition_free_space = ?, partition_used_space = ?, timestamp = ? WHERE partition_id = ?";
-			$data = array("$input->partition_free_space", "$input->partition_used_space", "$details->timestamp", "$row->partition_id");
-			$partition_id = $row->partition_id;
-			$query = $this->db->query($sql, $data);
-		} else {
-			// the optical_drive does not exist - insert it
-			$sql = "INSERT INTO sys_hw_partition (	system_id, 
-										hard_drive_index,
-										partition_mount_type,
-										partition_mount_point, 
-										partition_name, 
-										partition_size, 
-										partition_free_space,
-										partition_used_space,
-										partition_format,
-										partition_caption,
-										partition_device_id,
-										partition_disk_index,
-										partition_bootable,
-										partition_type,
-										partition_quotas_supported,
-										partition_quotas_enabled,
-										partition_serial,
-										timestamp,
-										first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+			# we have only seen this system once, and not via an audit script
+			# insert the software and set the first_timestamp == system.first_timestamp
+			# otherwise we cause alerts
+			$sql = "INSERT INTO sys_hw_partition ( system_id, hard_drive_index, partition_mount_type,
+					partition_mount_point, partition_name, partition_size, partition_free_space,
+					partition_used_space, partition_format, partition_caption, partition_device_id,
+					partition_disk_index, partition_bootable, partition_type, partition_quotas_supported,
+					partition_quotas_enabled, partition_serial, timestamp,
+					first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->hard_drive_index", 
@@ -134,9 +122,77 @@ class M_partition extends MY_Model {
 					"$input->partition_quotas_enabled", 
 					"$input->partition_serial", 
 					"$details->timestamp", 
-					"$details->timestamp");
+					"$details->first_timestamp");
 			$query = $this->db->query($sql, $data);
 			$partition_id = $this->db->insert_id();
+		} else {
+			// need to check for partition changes
+			$sql = "SELECT sys_hw_partition.partition_id
+					FROM sys_hw_partition, system 
+					WHERE sys_hw_partition.system_id 	= system.system_id AND 
+						system.system_id				= ? AND 
+						system.man_status 				= 'production' AND 
+						((system.man_os_family 			<> 'IBM AIX' AND
+						sys_hw_partition.hard_drive_index 				= ? AND 
+						sys_hw_partition.partition_mount_point 			= ? AND 
+						sys_hw_partition.partition_size 				= ? ) OR 
+						(system.man_os_family 			= 'IBM AIX' AND
+						sys_hw_partition.hard_drive_index 				= ? AND 
+						sys_hw_partition.partition_mount_point 			= ? AND 
+						sys_hw_partition.partition_size 				= ? AND 
+						sys_hw_partition.partition_name 				= ? )) AND 
+						( sys_hw_partition.timestamp 			= ? OR 
+						sys_hw_partition.timestamp 			= ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					"$input->hard_drive_index", 
+					"$input->partition_mount_point", 
+					"$input->partition_size", 
+					"$input->hard_drive_index", 
+					"$input->partition_mount_point", 
+					"$input->partition_size", 
+					"$input->partition_name", 
+					"$details->original_timestamp", 
+					"$details->timestamp");
+			$query = $this->db->query($sql, $data);
+			if ($query->num_rows() > 0) { 
+				$row = $query->row();
+				// the partition exists - need to update its timestamp, free and used space
+				$sql = "UPDATE sys_hw_partition SET partition_free_space = ?, partition_used_space = ?, timestamp = ? WHERE partition_id = ?";
+				$data = array("$input->partition_free_space", "$input->partition_used_space", "$details->timestamp", "$row->partition_id");
+				$partition_id = $row->partition_id;
+				$query = $this->db->query($sql, $data);
+			} else {
+				// the partition does not exist - insert it
+				$sql = "INSERT INTO sys_hw_partition ( system_id, hard_drive_index, partition_mount_type,
+						partition_mount_point, partition_name, partition_size, partition_free_space,
+						partition_used_space, partition_format, partition_caption, partition_device_id,
+						partition_disk_index, partition_bootable, partition_type, partition_quotas_supported,
+						partition_quotas_enabled, partition_serial, timestamp,
+						first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->system_id", 
+						"$input->hard_drive_index", 
+						"$input->partition_mount_type", 
+						"$input->partition_mount_point", 
+						"$input->partition_name", 
+						"$input->partition_size", 
+						"$input->partition_free_space", 
+						"$input->partition_used_space", 
+						"$input->partition_format", 
+						"$input->partition_caption", 
+						"$input->partition_device_id", 
+						"$input->partition_disk_index", 
+						"$input->partition_bootable", 
+						"$input->partition_type", 
+						"$input->partition_quotas_supported", 
+						"$input->partition_quotas_enabled", 
+						"$input->partition_serial", 
+						"$details->timestamp", 
+						"$details->timestamp");
+				$query = $this->db->query($sql, $data);
+				$partition_id = $this->db->insert_id();
+			}
 		}
 		// we need to insert a row into the "graphs" table
 		if ($input->partition_size != 0) {

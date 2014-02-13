@@ -1,23 +1,52 @@
 #!/bin/bash
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''
-#' Open Audit                                          '
-#' Software and Hardware Inventory                     '
-#' (c) Opmantek, 2013                                  '
-#' http://www.open-audit.org                           '
-#' Licensed under the AGPL v3                          '
-#' http://www.fsf.org/licensing/licenses/agpl-3.0.html '
-#  Release: 2013-08-10 v1.0.4                          '
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
+# @package Open-AudIT
+# @author Mark Unwin <marku@opmantek.com>
+# @version 1.2
+# @copyright Copyright (c) 2014, Opmantek
+# @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 O=$IFS
 IFS=$'\n'
 
-url="http://192.168.61.111/index.php/system/add_system"
+url="http://localhost/open-audit/index.php/system/add_system"
 submit_online="n"
 create_file="y"
 org_id=""
 terminal_print="n"
 debugging="3"
+
+# import the command line arguements
+for arg in "$@"; do
+	parameter=${arg%%=*}
+	value=${arg##*=} 
+	eval "$parameter"=\""$value\""
+done
 
 
 if [ "$debugging" -gt "0" ]; then
@@ -26,8 +55,8 @@ fi
 system_timestamp=`date +'%F %T'`
 system_uuid=`system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g'`
 system_hostname=`networksetup -getcomputername`
-system_domain=""
-system_description=""
+system_domain=`more /etc/resolv.conf | grep domain | cut -d" " -f2`
+#system_description=""
 system_os_version=`sw_vers | grep "ProductVersion:" | cut -f2`
 system_os_name="OSX $system_os_version"
 system_serial=`system_profiler SPHardwareDataType | grep "Serial Number (system):" | cut -d":" -f2 | sed 's/^ *//g'`
@@ -45,7 +74,6 @@ if [[ "$system_model" == *"MacBook"* ]]; then
 	system_form_factor="laptop"
 fi
 
-
 xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 echo  "form_systemXML=<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
@@ -53,7 +81,7 @@ echo  "	<sys>" >> $xml_file
 echo  "		<timestamp>$system_timestamp</timestamp>" >> $xml_file
 echo  "		<uuid>$system_uuid</uuid>" >> $xml_file
 echo  "		<hostname>$system_hostname</hostname>" >> $xml_file
-echo  "		<domain></domain>" >> $xml_file
+echo  "		<domain>$system_domain</domain>" >> $xml_file
 echo  "		<description></description>" >> $xml_file
 echo  "		<type>computer</type>" >> $xml_file
 echo  "		<os_icon>apple</os_icon>" >> $xml_file
@@ -145,8 +173,8 @@ fi
 processor_cores=`sysctl hw.ncpu | awk '{print $2}'`
 processor_socket=""
 processor_description=`sysctl -n machdep.cpu.brand_string`
-processor_speed=`sudo system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1`
-processor_speed=`echo "scale = 0; $processor_speed * 1000" | bc`
+processor_speed=`system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
+processor_speed=`echo "scale = 0; $processor_speed*1000" | bc`
 processor_manufacturer="GenuineIntel"
 processor_power_management_supported=""
 

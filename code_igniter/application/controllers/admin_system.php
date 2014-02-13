@@ -1,9 +1,35 @@
 <?php
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
  * @package Open-AudIT
- * @author Mark Unwin <mark.unwin@gmail.com>
- * @version 1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -79,65 +105,136 @@ class Admin_system extends MY_Controller {
 		}
 	}
 
+	function system_add_new_credentials() {
+		$details = new stdClass();
+		$details->system_id = intval($this->uri->segment(3,0));
+		if ( (!is_int($details->system_id)) or ($details->system_id == 0)) { redirect('main/list_devices'); }
+		$this->load->model("m_system");	
+		$this->data['system_id'] = $details->system_id;
+		$this->data['ip_address'] = ip_address_from_db($this->m_system->check_man_ip_address($details->system_id));
+		$this->data['heading'] = 'Add Device Credentials';
+		$this->data['include'] = 'v_add_system_credentials'; 
+		$this->load->view('v_template', $this->data);
+	}
+
 	function system_add_credentials() {
-		if (!isset($_POST['AddCredentials'])) {
-			$details = new stdClass();
-			$details->system_id = intval($this->uri->segment(3,0));
-			if ( (!is_int($details->system_id)) or ($details->system_id == 0)) { redirect('main/list_devices'); }
-			$this->load->model("m_system");	
-			$this->data['system_id'] = $details->system_id;
-			$this->data['ip_address'] = ip_address_from_db($this->m_system->check_man_ip_address($details->system_id));
-			$this->data['heading'] = 'Add Device SNMP Credentials';
-			$this->data['include'] = 'v_add_system_c'; 
-			$this->load->view('v_template', $this->data);
+		$system_id = $_POST['system_id'];
+		$this->load->model("m_system");	
+		$this->load->library('encrypt');
+
+		if ($_POST['ip_address'] > "") {
+			$encode['ip_address'] = $_POST['ip_address'];
 		} else {
-			$system_id = $_POST['system_id'];
-			$this->load->model("m_system");	
-			$this->load->library('encrypt');
-			if (($_POST['snmp_community'] > '') and ($_POST['snmp_version'] > '') and ($_POST['ip_address'] > '')) {
-				$encode['ip_address'] = $_POST['ip_address'];
-				$encode['snmp_version'] = $_POST['snmp_version'];
-				$encode['snmp_community'] = $_POST['snmp_community'];
-				$encoded = json_encode($encode);
-				$encoded = $this->encrypt->encode($encoded);
-				$this->m_system->update_system_man($system_id, 'access_details', $encoded);
-				if ($_POST['snmp_scan'] == TRUE) { 
-					redirect('admin_system/system_snmp/' . $system_id); 
-				} else {
-					redirect('main/system_display/' . $system_id);
-				}
-			} else { 
-				redirect('admin_system/system_add_credentials/' . $system_id);
-			}
+			$encode['ip_address'] = '';
+		}
+
+		if ($_POST['snmp_version'] > "") {
+			$encode['snmp_version'] = $_POST['snmp_version'];
+		} else {
+			$encode['snmp_version'] = '';
+		}
+
+		if ($_POST['snmp_community'] > "") {
+			$encode['snmp_community'] = $_POST['snmp_community'];
+		} else {
+			$encode['snmp_community'] = '';
+		}
+
+		if ($_POST['ssh_username'] > "") {
+			$encode['ssh_username'] = $_POST['ssh_username'];
+		} else {
+			$encode['ssh_username'] = '';
+		}
+
+		if ($_POST['ssh_password'] > "") {
+			$encode['ssh_password'] = $_POST['ssh_password'];
+		} else {
+			$encode['ssh_password'] = '';
+		}
+
+		if ($_POST['windows_username'] > "") {
+			$encode['windows_username'] = $_POST['windows_username'];
+		} else {
+			$encode['windows_username'] = '';
+		}
+
+		if ($_POST['windows_password'] > "") {
+			$encode['windows_password'] = $_POST['windows_password'];
+		} else {
+			$encode['windows_password'] = '';
+		}
+
+		if ($_POST['windows_domain'] > "") {
+			$encode['windows_domain'] = $_POST['windows_domain'];
+		} else {
+			$encode['windows_domain'] = '';
+		}
+
+		$encoded = json_encode($encode);
+		$encoded = $this->encrypt->encode($encoded);
+		$this->m_system->update_system_man($system_id, 'access_details', $encoded);
+
+		if ($_POST['snmp_scan'] == TRUE) { 
+			redirect('admin_system/system_snmp/' . $system_id); 
+		} else {
+			redirect('main/system_display/' . $system_id);
 		}
 	}
 
 	function system_snmp() {
 		// check to make sure we have SNMP capability
+		# TODO - provide a message saying SNMP extension not loaded
 		if (!extension_loaded('snmp')) { redirect('main/list_devices'); }
 		$this->load->model("m_system");	
 		$this->load->model("m_sys_man_audits");
+		$this->load->model("m_oa_general");
 		$this->load->library('encrypt');
 		$this->load->helper('snmp');
 		$this->load->helper('snmp_oid');
 		$details = new stdClass();
 		$details->system_id = $this->uri->segment(3,0);
 		$encrypted_access_details = $this->m_system->get_access_details($details->system_id);
-		if ($encrypted_access_details == '') {
-			# redirect to a form to input the details
-			redirect('admin_system/system_add_credentials/' . $details->system_id);
-		} else {
-			# audit the device via snmp
-			get_snmp($details);
-			$details->last_seen_by = 'snmp';
-			$details->timestamp = date('Y-m-d G:i:s');
-			$details->last_seen = $details->timestamp;
-			$details->last_user = $this->data['user_full_name'];
-			$details->audits_ip = '127.0.0.1';
+		$details->hostname = $this->m_oa_general->get_attribute("system", "hostname", $details->system_id);
+		$details->man_ip_address = ip_address_from_db($this->m_oa_general->get_attribute("system", "man_ip_address", $details->system_id));
+		$details->show_output = TRUE;
+
+		# set up the pop up page
+		echo "<html>
+		<head>
+		<script type=\"text/javascript\">
+		window.onunload = refreshParent;
+		function refreshParent() {
+			window.opener.location.reload();
+		}
+		function CloseMe() { 
+			window.opener.location.reload(); 
+			window.close(); 
+		}
+		</script>
+		</head>
+		<body>
+		<h3 style='text-align: center'>Open-AudIT SNMP Scan</h3>
+		<p style='font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif; font-size: 12px;'>";
+
+		# audit the device via snmp
+		get_snmp($details);
+		$details->last_seen_by = 'snmp';
+		$details->timestamp = date('Y-m-d G:i:s');
+		$details->last_seen = $details->timestamp;
+		$details->last_user = $this->data['user_full_name'];
+		$details->audits_ip = '127.0.0.1';
+		unset($details->man_type);
+		unset($details->show_output);
+		unset($details->man_ip_address);
+		echo "<pre>\n";
+		#print_r($details);
+		if (isset($details->snmp_oid) and $details->snmp_oid > '') {
 			$this->m_system->update_system($details);
 			$this->m_sys_man_audits->insert_audit($details);
+		} else {
+			echo "Audit NOT submitted.";
 		}
-		redirect('main/system_display/' . $details->system_id);
+		echo "<div align=\"center\"><input type=\"button\" value=\"Close\" onclick=\"CloseMe();\"/></div></p>\n</body>\n</html>";
 	}
 
 	function add_system() {

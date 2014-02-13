@@ -1,3 +1,37 @@
+<?php 
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
+/**
+ * @package Open-AudIT
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
+ * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+ */
+?>
 <div id="menu" style="float: left; width: 100%; ">
 <ul id="nav">
 	<li><a href='<?php echo base_url()?>index.php/main'><?php echo mb_strtoupper(__('Home'))?></a></li>
@@ -108,8 +142,12 @@
 
 			<li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
 				<ul>
-					<li><a href='<?php echo base_url()?>index.php/admin/scan_subnet_nmap'><?php echo __('Discover a Subnet')?></a></li>
-					<li><a href='<?php echo base_url()?>index.php/admin/scan_ad'><?php echo __('Scan Active Directory')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet'><?php echo __('Discover a Subnet')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/windows'><?php echo __('Discover a Windows computer')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/linux'><?php echo __('Discover a Linux computer')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/snmp'><?php echo __('Discover a device using SNMP')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/discovery/discover_active_directory'><?php echo __('Discover Active Directory')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin/scan_ad'><?php echo __('Import Active Directory')?></a></li>
 				</ul>
 			</li>
 
@@ -132,6 +170,7 @@
 			<li><a href='javascript:void(0)'><?php echo __('Logs')?></a>
 				<ul>
 					<li><a href='<?php echo base_url()?>index.php/admin/view_log'><?php echo __('View Log')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin/purge_log'><?php echo __('Purge Log')?></a></li>
 				</ul>
 			</li>
 			<li><a href='javascript:void(0)'><?php echo __('Organisations')?></a>
@@ -186,9 +225,8 @@
 	<li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Help'))?></a>
 		<ul>
 			<li><a href='<?php echo base_url()?>index.php/main/help_about'><?php echo __('About')?></a></li>
-			<li><a href='<?php echo base_url()?>index.php/main/help_faq'><?php echo __('FAQ')?></a></li>
-			<li><a href='<?php echo base_url()?>index.php/main/help_how_do_i'><?php echo __('How Do I?')?></a></li>
-			<li><a href='<?php echo base_url()?>index.php/main/help_importing'><?php echo __('Importing')?></a></li>
+			<li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
+			<li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
 			<li><a href='<?php echo base_url()?>index.php/main/help_statistics'><?php echo __('Statistics')?></a></li>
 			<!-- 
 			<li><a href='javascript:void(0)'><?php echo __('Support')?></a></li>

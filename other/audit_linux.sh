@@ -1,13 +1,29 @@
 #!/bin/bash
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''
-#' Open Audit                                          '
-#' Software and Hardware Inventory                     '
-#' (c) Open-Audit.org 2003-2009                        '
-#' http://www.open-audit.org                           '
-#' Licensed under the AGPL v3                          '
-#' http://www.fsf.org/licensing/licenses/agpl-3.0.html '
-#  Release: 2013-06-20 v1.0.3                          '
-#'''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
 
 ########################################################
 # CREDITS                                              #
@@ -43,7 +59,7 @@ check_commands="n"
 create_file="n"
 
 # the address of the OAv2 server "submit" page
-url="http://localhost/index.php/system/add_system"
+url="http://localhost/open-audit/index.php/system/add_system"
 
 # submit via a proxy (using the settings of the user running the script)
 use_proxy="n"
@@ -376,6 +392,18 @@ if [ "$check_commands" = "y" ]; then
 	$OA_ECHO "whoami               : $OA_WHOAMI"
 
 	exit
+fi
+
+# test pinging the server hosting the URL
+if [ "$submit_online" = "y" ]; then
+	server=`echo "$url" | cut -d"/" -f3 | cut -d: -f1`
+	test=`ping 192.168.0.122 -n -c 3 | grep "100% packet loss"`
+	if [ "$test" != "" ]; then
+		if [ $debugging > 0 ]; then
+			echo "Server $server is not responding to a ping. Cannot submit audit result. Exiting."
+		fi
+		exit
+	fi
 fi
 
 ########################################################
@@ -1195,8 +1223,8 @@ if [ "$net_cards" != "" ]; then
 			$OA_ECHO "		<network_card>" >> $xml_file
 			$OA_ECHO "			<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>" >> $xml_file
 			$OA_ECHO "			<net_manufacturer>"$(escape_xml "$net_card_manufacturer")"</net_manufacturer>" >> $xml_file
-			$OA_ECHO "			<net_model>"$(escape_xml "$net_card_description")"</net_model>" >> $xml_file
-			$OA_ECHO "			<net_description>"$(escape_xml "$net_card_model")"</net_description>" >> $xml_file
+			$OA_ECHO "			<net_model>"$(escape_xml "$net_card_model")"</net_model>" >> $xml_file
+			$OA_ECHO "			<net_description>"$(escape_xml "$net_card_description")"</net_description>" >> $xml_file
 			$OA_ECHO "			<net_ip_enabled>"$(escape_xml "$net_card_enabled")"</net_ip_enabled>" >> $xml_file
 			$OA_ECHO "			<net_connection_id>"$(escape_xml "$net_card_id")"</net_connection_id>" >> $xml_file
 			$OA_ECHO "			<net_connection_status>"$(escape_xml "$net_card_status")"</net_connection_status>" >> $xml_file
@@ -1419,7 +1447,10 @@ if [ $debugging -gt 0 ]; then
 fi
 
 if [ "$submit_online" = "y" ]; then
-	$OA_ECHO "Submitting results to server"
+	if [ $debugging -gt 1 ]; then
+		$OA_ECHO "Submitting results to server"
+		$OA_EHHO "URL: $url"
+	fi
 	$OA_WGET --delete-after --post-file="$xml_file" $url 2>/dev/null
 fi
 

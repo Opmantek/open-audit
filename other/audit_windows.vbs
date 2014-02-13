@@ -1,11 +1,36 @@
-'''''''''''''''''''''''''''''''''''
-' Open Audit                      '
-' Software and Hardware Inventory '
-' (c) Open-Audit.org 2003-2012    '
-' http://www.open-audit.org       '
-' Licensed under the AGPL v3      '
-' http://www.fsf.org/licensing/licenses/agpl-3.0.html '
-'''''''''''''''''''''''''''''''''''
+'  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+'
+'  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+'
+'  This file is part of Open-AudIT.
+'
+'  Open-AudIT is free software: you can redistribute it and/or modify
+'  it under the terms of the GNU Affero General Public License as published 
+'  by the Free Software Foundation, either version 3 of the License, or
+'  (at your option) any later version.
+'
+'  Open-AudIT is distributed in the hope that it will be useful,
+'  but WITHOUT ANY WARRANTY; without even the implied warranty of
+'  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'  GNU Affero General Public License for more details.
+'
+'  You should have received a copy of the GNU Affero General Public License
+'  along with Open-AudIT (most likely in a file named LICENSE).
+'  If not, see <http://www.gnu.org/licenses/>
+'
+'  For further information on Open-AudIT or for a license other than AGPL please see
+'  www.opmantek.com or email contact@opmantek.com
+'
+' *****************************************************************************
+
+' @package Open-AudIT
+' @author Mark Unwin <marku@opmantek.com>
+' @version 1.2
+' @copyright Copyright (c) 2014, Opmantek
+' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+
+forceCScriptExecution
+
 start_time = Timer
 
 ' NOTE - Scheduled Tasks and Share Sizes can only be retrieved when running locally.
@@ -21,7 +46,7 @@ submit_online = "y"
 create_file = "n"
 
 ' the address of the OAv2 server "submit" page
-url = "http://localhost/index.php/system"
+url = "http://localhost/open-audit/index.php/system"
 
 ' submit via a proxy (using the settings of the user running the script)
 use_proxy = "n"
@@ -188,6 +213,8 @@ dim objTrans, objDomain
 dim dt : dt = Now()
 set objFSO = CreateObject("Scripting.FileSystemObject")
 set objShell = CreateObject("WScript.Shell")
+set wshNetwork = WScript.CreateObject("WScript.Network")
+dim local_hostname : local_hostname = wshNetwork.ComputerName
 
 audit_wmi_fails = ""
 
@@ -212,13 +239,29 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfig
 	& "AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' " _
 	& "AND ServiceName<>'NdisIP' AND Description<>'PPP Adapter.') " _
 	& "AND MACAddress is not NULL" ,,32)
-error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " local (Win32_NetworkAdapterConfiguration)" end if
+error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " local (Win32_NetworkAdapterConfiguration) 1" end if
 local_dns_server = "" 
 for each objItem in colItems
 	if (not isnull(objItem.DNSServerSearchOrder)) then 
 		local_dns_server = objItem.DNSServerSearchOrder(0)
 	end if
 next
+
+' enumerate all the ip addresses so we can determine if we are running against localhost
+local_net = ""
+set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration WHERE IPEnabled = True ",,32)
+error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " local (Win32_NetworkAdapterConfiguration) 2" end if
+for each objItem in colItems
+	net_mac_address = objItem.MACAddress
+	if net_mac_address > "" then
+		for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
+			local_net = local_net & " " & objItem.IPAddress(i) & " "
+		next
+	end if
+next
+local_net = local_net & " " & local_hostname & " "
+
+
 
 pc_alive = 0
 if ping_target = "y" then
@@ -254,8 +297,8 @@ if debugging > "0" then
 	end if
 end if
 
-if struser <> "" then
-	' credentials passed, therefore assuming not a domain local PC.
+if ((struser <> "") and (instr(local_net, strComputer) = 0)) then
+	' credentials passed and not localhost, therefore assuming not a domain local PC.
 
 	Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
 	On Error Resume Next
@@ -515,8 +558,8 @@ else
 	end if
 end if
 
-set wshNetwork = WScript.CreateObject("WScript.Network")
-local_hostname = wshNetwork.ComputerName
+
+
 
 if ((strcomputer = ".") or (strcomputer = "127.0.0.1") or (lcase(strcomputer) = lcase(local_hostname))) then
 	audit_location = "local"
@@ -688,7 +731,7 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_SystemEnclosure",,32
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_SystemEnclosure)" : audit_wmi_fails = audit_wmi_fails & "Win32_SystemEnclosure " : end if
 for each objItem in colItems
    system_form_factor = form_factor(Join(objItem.ChassisTypes, ","))
-   bios_asset_tag = SMBIOSAssetTag
+   bios_asset_tag = objItem.SMBIOSAssetTag
 next
 
 ' using "on error" because am getting some errors - breaking the script.
@@ -748,74 +791,64 @@ if windows_domain_role = "4" then windows_domain_role = "Backup Domain Controlle
 if windows_domain_role = "5" then windows_domain_role = "Primary Domain Controller" end if
 
 error = 0
-if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
+	if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
 	' Get domain NetBIOS name from domain DNS name
 	domain_dn = "DC=" & Replace(system_domain,".",",DC=")
 	set oTranslate = CreateObject("NameTranslate")
-
 	on error resume next
-		hr = oTranslate.Init (3, "")
+		oTranslate.Init 3, ""
+		oTranslate.set 1, domain_dn
+		full_ad_domain = oTranslate.Get(1)
 	on error goto 0
-
-	if (isnull(hr)) then
-	 ' skip everything here - domain cannot be contacted
-	else
-		hr = ""
+	if not isempty(full_ad_domain) then
+		full_domain = oTranslate.Get(2)
+		domain_nb = oTranslate.Get(3)
+		domain_nb = Left(domain_nb,Len(domain_nb)-1)
+		set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain WHERE DomainName='" & domain_nb & "'",,32)
+		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTDomain)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTDomain " : end if
+		for each objItem in colItems
+			windows_client_site_name = objItem.ClientSiteName
+			windows_domain_controller_address = replace(objItem.DomainControllerAddress, "\\", "")
+			windows_domain_controller_name = replace(objItem.DomainControllerName, "\\", "")
+		next
+		set objconnection = createobject("adodb.connection")
+		set objcommand = createobject("adodb.command")
+		objconnection.provider = "adsdsoobject"
+		objconnection.open "active directory provider"
+		set objcommand.activeconnection = objconnection
+		objcommand.commandtext = "select distinguishedName, name from 'GC://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
+		objcommand.properties("page size") = 1000
+		objcommand.properties("searchscope") = ads_scope_subtree
+		objcommand.properties("sort on") = "name"
+		set objrecordset = objcommand.execute
 		on error resume next
-			hr = oTranslate.set (1, domain_dn)
-		on error goto 0
-		if (isnull(hr) or hr = "") then
-			' skip everything as we could not contact the domain
-		else 
-			full_ad_domain = oTranslate.Get(1)
-			full_domain = oTranslate.Get(2)
-			domain_nb = oTranslate.Get(3)
-			domain_nb = Left(domain_nb,Len(domain_nb)-1)
-			set colItems = objWMIService.ExecQuery("Select * from Win32_NTDomain WHERE DomainName='" & domain_nb & "'",,32)
-			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTDomain)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTDomain " : end if
-			for each objItem in colItems
-				windows_client_site_name = objItem.ClientSiteName
-				windows_domain_controller_address = replace(objItem.DomainControllerAddress, "\\", "")
-				windows_domain_controller_name = replace(objItem.DomainControllerName, "\\", "")
-			next
-			set objconnection = createobject("adodb.connection")
-			set objcommand = createobject("adodb.command")
-			objconnection.provider = "adsdsoobject"
-			objconnection.open "active directory provider"
-			set objcommand.activeconnection = objconnection
-			objcommand.commandtext = "select distinguishedName, name from 'GC://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
-			objcommand.properties("page size") = 1000
-			objcommand.properties("searchscope") = ads_scope_subtree
-			objcommand.properties("sort on") = "name"
-			set objrecordset = objcommand.execute
-			on error resume next
 			objrecordset.movefirst
-			if err.number <> 0 then 
-				error = 1
-			end if
-			do until objrecordset.eof
-				windows_active_directory_ou = objrecordset.fields("distinguishedName").value
-				objrecordset.movenext
-			loop
-			on error goto 0
+		if err.number <> 0 then
+			error = 1
+		end if
+		do until objrecordset.eof
+			windows_active_directory_ou = objrecordset.fields("distinguishedName").value
+			objrecordset.movenext
+		loop
+		on error goto 0
 			if error = 1 then
-				' we failed when using GC:// - try using LDAP://
+			' we failed when using GC:// - try using LDAP://
 				error = 0
-					objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
+				objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
 				set objrecordset = objcommand.execute
 				on error resume next
-				objrecordset.movefirst
-				if err.number <> 0 then error = 1 end if
-				do until objrecordset.eof
-					windows_active_directory_ou = objrecordset.fields("distinguishedName").value
-					objrecordset.movenext
-				loop
+					objrecordset.movefirst
+					if err.number <> 0 then error = 1 end if
+					do until objrecordset.eof
+						windows_active_directory_ou = objrecordset.fields("distinguishedName").value
+						objrecordset.movenext
+					loop
 				on error goto 0
 			end if
-			
+
 			if error = 1 then
 				windows_active_directory_ou = full_ad_domain
-			else	
+			else
 				stemp = split(replace(windows_active_directory_ou, "\,","X!X"), ",")
 				stemp(0) = ""
 				ttemp = join(stemp, ",")
@@ -825,14 +858,13 @@ if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
 				ttemp = NULL
 			end if
 		end if
+	else
+		domain_nb = "workgroup"
+		windows_client_site_name = ""
+		windows_domain_controller_address = ""
+		windows_domain_controller_name = ""
+		windows_active_directory_ou = ""
 	end if
-else 
-	domain_nb = "workgroup"
-	windows_client_site_name = ""
-	windows_domain_controller_address = ""
-	windows_domain_controller_name = ""
-	windows_active_directory_ou = ""
-end if
 if details_to_lower = "y" then windows_active_directory_ou = lcase(windows_active_directory_ou) end if
 
 if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (windows_user_work_1 > "")) then
@@ -1262,59 +1294,63 @@ on error goto 0
 
 if debugging > "0" then wscript.echo "modem info" end if 
 item = ""
-set colItems = objWMIService.ExecQuery("Select * from Win32_POTSModem where status='OK' ",,32)
-error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_POTSModem)" : audit_wmi_fails = audit_wmi_fails & "Win32_POTSModem " : end if
-for each objItem in colItems
-	item = item & "		<modem>" & vbcrlf
-	item = item & "			<port>" & escape_xml(objItem.AttachedTo) & "</port>" & vbcrlf
-	item = item & "			<model>" & escape_xml(objItem.Model) & "</model>" & vbcrlf
-	item = item & "			<country>" & escape_xml(objItem.CountrySelected) & "</country>" & vbcrlf
-	item = item & "			<device_id>" & escape_xml(objItem.DeviceID) & "</device_id>" & vbcrlf
-	item = item & "			<type>" & escape_xml(objItem.DeviceType) & "</type>" & vbcrlf
-	item = item & "			<manufacturer>" & escape_xml(objItem.ProviderName) & "</manufacturer>" & vbcrlf
-	item = item & "		</modem>" & vbcrlf
-next
-if item > "" then
-	result.WriteText "	<modems>" & vbcrlf
-	result.WriteText item
-	result.WriteText "	</modems>" & vbcrlf
-end if
+on error resume next
+	set colItems = objWMIService.ExecQuery("Select * from Win32_POTSModem where status='OK' ",,32)
+	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_POTSModem)" : audit_wmi_fails = audit_wmi_fails & "Win32_POTSModem " : end if
+	for each objItem in colItems
+		item = item & "		<modem>" & vbcrlf
+		item = item & "			<port>" & escape_xml(objItem.AttachedTo) & "</port>" & vbcrlf
+		item = item & "			<model>" & escape_xml(objItem.Model) & "</model>" & vbcrlf
+		item = item & "			<country>" & escape_xml(objItem.CountrySelected) & "</country>" & vbcrlf
+		item = item & "			<device_id>" & escape_xml(objItem.DeviceID) & "</device_id>" & vbcrlf
+		item = item & "			<type>" & escape_xml(objItem.DeviceType) & "</type>" & vbcrlf
+		item = item & "			<manufacturer>" & escape_xml(objItem.ProviderName) & "</manufacturer>" & vbcrlf
+		item = item & "		</modem>" & vbcrlf
+	next
+	if item > "" then
+		result.WriteText "	<modems>" & vbcrlf
+		result.WriteText item
+		result.WriteText "	</modems>" & vbcrlf
+	end if
+on error goto 0
 
 
 
 if debugging > "0" then wscript.echo "video info" end if 
 item = ""
-set colItems = objWMIService.ExecQuery("Select * from Win32_VideoController",,32)
-error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_VideoController)" : audit_wmi_fails = audit_wmi_fails & "Win32_VideoController " : end if
-for each objItem in colItems
-	if (Instr(objItem.Caption, "vnc") = 0 AND _ 
-	Instr(objItem.Caption, "Microsoft Basic Render Driver") = 0 AND _ 
-	Instr(objItem.Caption, "DameWare") = 0 AND _ 
-	Instr(objItem.Caption, "Innobec SideWindow") = 0 AND _ 
-	Instr(objItem.Caption, "ConfigMgr Remote Control Driver") = 0 AND _ 
-	Instr(objItem.Caption, "Microsoft SMS Mirror Driver") = 0) then
-	item = item & "		<video_card>" & vbcrlf
-	item = item & "			<video_description>" & escape_xml(objItem.Name) & "</video_description>" & vbcrlf
-	item = item & "			<video_manufacturer>" & escape_xml(objItem.AdapterCompatibility) & "</video_manufacturer>" & vbcrlf
-	item = item & "			<video_memory>" & escape_xml(int(objItem.AdapterRAM /1024 /1024)) & "</video_memory>" & vbcrlf
-'	device_id = objItem.PNPDeviceID
-'	query = "Select * from Win32_PnPSignedDriver where DeviceID = '" & device_id & "'"
-'	wscript.echo query
-'	set colItems2 = objWMIService.ExecQuery(query,,32)
-'	for each objItem2 in colItems2
-'		driver_date = CDate(Mid(objItem2.DriverDate, 5, 2) & "/" & Mid(objItem2.DriverDate, 7, 2) & "/" & Left(objItem2.DriverDate, 4) & " " & Mid (objItem2.DriverDate, 9, 2) & ":" & Mid(objItem2.DriverDate, 11, 2) & ":" & Mid(objItem2.DriverDate,13, 2))
-'		driver_version = objItem2.DriverVersion
-'		item = item & "			<video_driver_date>" & escape_xml(driver_date) & "</video_driver_date>" & vbcrlf
-'		item = item & "			<video_driver_version>" & escape_xml(driver_version) & "</video_driver_version>" & vbcrlf
-'	next
-	item = item & "		</video_card>" & vbcrlf
+on error resume next
+	set colItems = objWMIService.ExecQuery("Select * from Win32_VideoController",,32)
+	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_VideoController)" : audit_wmi_fails = audit_wmi_fails & "Win32_VideoController " : end if
+	for each objItem in colItems
+		if (Instr(objItem.Caption, "vnc") = 0 AND _ 
+		Instr(objItem.Caption, "Microsoft Basic Render Driver") = 0 AND _ 
+		Instr(objItem.Caption, "DameWare") = 0 AND _ 
+		Instr(objItem.Caption, "Innobec SideWindow") = 0 AND _ 
+		Instr(objItem.Caption, "ConfigMgr Remote Control Driver") = 0 AND _ 
+		Instr(objItem.Caption, "Microsoft SMS Mirror Driver") = 0) then
+		item = item & "		<video_card>" & vbcrlf
+		item = item & "			<video_description>" & escape_xml(objItem.Name) & "</video_description>" & vbcrlf
+		item = item & "			<video_manufacturer>" & escape_xml(objItem.AdapterCompatibility) & "</video_manufacturer>" & vbcrlf
+		item = item & "			<video_memory>" & escape_xml(int(objItem.AdapterRAM /1024 /1024)) & "</video_memory>" & vbcrlf
+	'	device_id = objItem.PNPDeviceID
+	'	query = "Select * from Win32_PnPSignedDriver where DeviceID = '" & device_id & "'"
+	'	wscript.echo query
+	'	set colItems2 = objWMIService.ExecQuery(query,,32)
+	'	for each objItem2 in colItems2
+	'		driver_date = CDate(Mid(objItem2.DriverDate, 5, 2) & "/" & Mid(objItem2.DriverDate, 7, 2) & "/" & Left(objItem2.DriverDate, 4) & " " & Mid (objItem2.DriverDate, 9, 2) & ":" & Mid(objItem2.DriverDate, 11, 2) & ":" & Mid(objItem2.DriverDate,13, 2))
+	'		driver_version = objItem2.DriverVersion
+	'		item = item & "			<video_driver_date>" & escape_xml(driver_date) & "</video_driver_date>" & vbcrlf
+	'		item = item & "			<video_driver_version>" & escape_xml(driver_version) & "</video_driver_version>" & vbcrlf
+	'	next
+		item = item & "		</video_card>" & vbcrlf
+		end if
+	next
+	if item > "" then
+		result.WriteText "	<video_cards>" & vbcrlf
+		result.WriteText item
+		result.WriteText "	</video_cards>" & vbcrlf
 	end if
-next
-if item > "" then
-	result.WriteText "	<video_cards>" & vbcrlf
-	result.WriteText item
-	result.WriteText "	</video_cards>" & vbcrlf
-end if
+on error goto 0
 
 
 if debugging > "0" then wscript.echo "monitor info" end if 
@@ -2808,84 +2844,87 @@ if (skip_software = "n") then
 	result.WriteText "	<software>" & vbcrlf
 	' commenting out the below routine for now
 	function disable()
-	if debugging > "0" then wscript.echo "BHO info" end if 
-	if NOT InStr(system_os_full_name, "95") and NOT InStr(system_os_full_name, "98") and NOT InStr(system_os_full_name, "Vista") and NOT InStr(system_os_full_name, "Windows 7") and NOT InStr(system_os_full_name, "2008") then
-		set objWMIService_IE = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2\Applications\MicrosoftIE")
-		set colIESettings = objWMIService_IE.ExecQuery ("Select * from MicrosoftIE_Object",,32)
-		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIE_Object)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIE_Object " : end if
-		for each strIESetting in colIESettings
-			result.WriteText "		<package>" & vbcrlf
-			result.WriteText "			<software_name>" & escape_xml(strIESetting.ProgramFile) & "</software_name>" & vbcrlf
-			result.WriteText "			<software_version></software_version>" & vbcrlf
-			result.WriteText "			<software_location></software_location>" & vbcrlf
-			result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-			result.WriteText "			<software_install_date></software_install_date>" & vbcrlf
-			result.WriteText "			<software_publisher></software_publisher>" & vbcrlf
-			result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
-			result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-			result.WriteText "			<software_url>" & escape_xml(strIESetting.CodeBase) & "</software_url>" & vbcrlf
-			result.WriteText "			<software_email></software_email>" & vbcrlf
-			result.WriteText "			<software_comment>browser addon</software_comment>" & vbcrlf
-			result.WriteText "			<software_code_base>" & escape_xml(strIESetting.CodeBase) & "</software_code_base>" & vbcrlf
-			result.WriteText "			<software_status>" & escape_xml(strIESetting.Status) & "</software_status>" & vbcrlf
-			result.WriteText "		</package>" & vbcrlf
-		next
-	end if
+		if debugging > "0" then wscript.echo "BHO info" end if 
+		if NOT InStr(system_os_full_name, "95") and NOT InStr(system_os_full_name, "98") and NOT InStr(system_os_full_name, "Vista") and NOT InStr(system_os_full_name, "Windows 7") and NOT InStr(system_os_full_name, "2008") then
+			set objWMIService_IE = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2\Applications\MicrosoftIE")
+			set colIESettings = objWMIService_IE.ExecQuery ("Select * from MicrosoftIE_Object",,32)
+			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIE_Object)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIE_Object " : end if
+			for each strIESetting in colIESettings
+				result.WriteText "		<package>" & vbcrlf
+				result.WriteText "			<software_name>" & escape_xml(strIESetting.ProgramFile) & "</software_name>" & vbcrlf
+				result.WriteText "			<software_version></software_version>" & vbcrlf
+				result.WriteText "			<software_location></software_location>" & vbcrlf
+				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+				result.WriteText "			<software_install_date></software_install_date>" & vbcrlf
+				result.WriteText "			<software_publisher></software_publisher>" & vbcrlf
+				result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
+				result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+				result.WriteText "			<software_url>" & escape_xml(strIESetting.CodeBase) & "</software_url>" & vbcrlf
+				result.WriteText "			<software_email></software_email>" & vbcrlf
+				result.WriteText "			<software_comment>browser addon</software_comment>" & vbcrlf
+				result.WriteText "			<software_code_base>" & escape_xml(strIESetting.CodeBase) & "</software_code_base>" & vbcrlf
+				result.WriteText "			<software_status>" & escape_xml(strIESetting.Status) & "</software_status>" & vbcrlf
+				result.WriteText "		</package>" & vbcrlf
+			next
+		end if
 	end function
 
 
 	if debugging > "0" then wscript.echo "Codec info" end if 
 	set colItems = objWMIService.ExecQuery("Select * FROM Win32_CodecFile", , 48)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_CodecFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_CodecFile " : end if
-	for each objItem In colItems
-	  if objItem.Manufacturer <> "Microsoft Corporation" then
-		result.WriteText "		<package>" & vbcrlf
-		result.WriteText "			<software_name>" & escape_xml(objItem.Group) & " - " & objItem.Filename & "</software_name>" & vbcrlf
-		result.WriteText "			<software_version>" & escape_xml(objItem.Version) & "</software_version>" & vbcrlf
-		result.WriteText "			<software_location>" & escape_xml(objItem.Caption) & "</software_location>" & vbcrlf
-		result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-		result.WriteText "			<software_install_date>" & escape_xml(objItem.InstallDate) & "</software_install_date>" & vbcrlf
-		result.WriteText "			<software_publisher>" & escape_xml(objItem.Manufacturer) & "</software_publisher>" & vbcrlf
-		result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
-		result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-		result.WriteText "			<software_url></software_url>" & vbcrlf
-		result.WriteText "			<software_email></software_email>" & vbcrlf
-		result.WriteText "			<software_comment>codec</software_comment>" & vbcrlf
-		result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-		result.WriteText "			<software_status></software_status>" & vbcrlf
-		result.WriteText "		</package>" & vbcrlf
-	  end if
-	next
+	if (not isnull(colItems)) then
+		for each objItem In colItems
+			if objItem.Manufacturer <> "Microsoft Corporation" then
+				result.WriteText "		<package>" & vbcrlf
+				result.WriteText "			<software_name>" & escape_xml(objItem.Group) & " - " & objItem.Filename & "</software_name>" & vbcrlf
+				result.WriteText "			<software_version>" & escape_xml(objItem.Version) & "</software_version>" & vbcrlf
+				result.WriteText "			<software_location>" & escape_xml(objItem.Caption) & "</software_location>" & vbcrlf
+				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+				result.WriteText "			<software_install_date>" & escape_xml(objItem.InstallDate) & "</software_install_date>" & vbcrlf
+				result.WriteText "			<software_publisher>" & escape_xml(objItem.Manufacturer) & "</software_publisher>" & vbcrlf
+				result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
+				result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+				result.WriteText "			<software_url></software_url>" & vbcrlf
+				result.WriteText "			<software_email></software_email>" & vbcrlf
+				result.WriteText "			<software_comment>codec</software_comment>" & vbcrlf
+				result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+				result.WriteText "			<software_status></software_status>" & vbcrlf
+				result.WriteText "		</package>" & vbcrlf
+			end if
+		next
+	end if
 
 
 
 	if debugging > "0" then wscript.echo "ODBC Driver info" end if 
 	strKeyPath = "SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers"
 	oReg.EnumValues HKEY_LOCAL_MACHINE, strKeyPath, arrValueNames, arrValueTypes
-	 
-	for i = 0 to UBound(arrValueNames)
-		strValueName = arrValueNames(i)
-		oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,strValue
-		if strValue = "Installed" then
-			oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
-			oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
-			result.WriteText "		<package>" & vbcrlf
-			result.WriteText "			<software_name>" & escape_xml(strValueName) & "</software_name>" & vbcrlf
-			result.WriteText "			<software_version>" & escape_xml(driver_version) & "</software_version>" & vbcrlf
-			result.WriteText "			<software_location>" & escape_xml(file_name) & "</software_location>" & vbcrlf
-			result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-			result.WriteText "			<software_install_date></software_install_date>" & vbcrlf
-			result.WriteText "			<software_publisher></software_publisher>" & vbcrlf
-			result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
-			result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-			result.WriteText "			<software_url></software_url>" & vbcrlf
-			result.WriteText "			<software_email></software_email>" & vbcrlf
-			result.WriteText "			<software_comment>odbc driver</software_comment>" & vbcrlf
-			result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-			result.WriteText "			<software_status></software_status>" & vbcrlf
-			result.WriteText "		</package>" & vbcrlf
-		end if
-	next
+	if (not isnull(arrValueNames)) then
+		for i = 0 to UBound(arrValueNames)
+			strValueName = arrValueNames(i)
+			oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,strValue
+			if strValue = "Installed" then
+				oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
+				oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
+				result.WriteText "		<package>" & vbcrlf
+				result.WriteText "			<software_name>" & escape_xml(strValueName) & "</software_name>" & vbcrlf
+				result.WriteText "			<software_version>" & escape_xml(driver_version) & "</software_version>" & vbcrlf
+				result.WriteText "			<software_location>" & escape_xml(file_name) & "</software_location>" & vbcrlf
+				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+				result.WriteText "			<software_install_date></software_install_date>" & vbcrlf
+				result.WriteText "			<software_publisher></software_publisher>" & vbcrlf
+				result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
+				result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+				result.WriteText "			<software_url></software_url>" & vbcrlf
+				result.WriteText "			<software_email></software_email>" & vbcrlf
+				result.WriteText "			<software_comment>odbc driver</software_comment>" & vbcrlf
+				result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+				result.WriteText "			<software_status></software_status>" & vbcrlf
+				result.WriteText "		</package>" & vbcrlf
+			end if
+		next
+	end if
 
 
 	if debugging > "0" then wscript.echo "ODBC Driver info 64bit" end if 
@@ -2923,26 +2962,28 @@ if (skip_software = "n") then
 	strKeyPath = "SOFTWARE\Microsoft\DataAccess"
 	strValueName = "Version"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dac_version
-	if SystemBuildNumber <> "6000" then
-	  display_name = "MDAC"
-	else
-	  display_name = "Windows DAC"
+	if (not isnull(dac_version)) then
+		if SystemBuildNumber <> "6000" then
+		  display_name = "MDAC"
+		else
+		  display_name = "Windows DAC"
+		end if
+		result.WriteText "		<package>" & vbcrlf
+		result.WriteText "			<software_name>" & escape_xml(display_name) & "</software_name>" & vbcrlf
+		result.WriteText "			<software_version>" & escape_xml(dac_version) & "</software_version>" & vbcrlf
+		result.WriteText "			<software_location></software_location>" & vbcrlf
+		result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+		result.WriteText "			<software_install_date>" & escape_xml(system_pc_date_os_installation) & "</software_install_date>" & vbcrlf
+		result.WriteText "			<software_publisher>Microsoft Corporation</software_publisher>" & vbcrlf
+		result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
+		result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+		result.WriteText "			<software_url>http://msdn2.microsoft.com/en-us/data/default.aspx</software_url>" & vbcrlf
+		result.WriteText "			<software_email></software_email>" & vbcrlf
+		result.WriteText "			<software_comment></software_comment>" & vbcrlf
+		result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+		result.WriteText "			<software_status></software_status>" & vbcrlf
+		result.WriteText "		</package>" & vbcrlf
 	end if
-	result.WriteText "		<package>" & vbcrlf
-	result.WriteText "			<software_name>" & escape_xml(display_name) & "</software_name>" & vbcrlf
-	result.WriteText "			<software_version>" & escape_xml(dac_version) & "</software_version>" & vbcrlf
-	result.WriteText "			<software_location></software_location>" & vbcrlf
-	result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-	result.WriteText "			<software_install_date>" & escape_xml(system_pc_date_os_installation) & "</software_install_date>" & vbcrlf
-	result.WriteText "			<software_publisher>Microsoft Corporation</software_publisher>" & vbcrlf
-	result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
-	result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-	result.WriteText "			<software_url>http://msdn2.microsoft.com/en-us/data/default.aspx</software_url>" & vbcrlf
-	result.WriteText "			<software_email></software_email>" & vbcrlf
-	result.WriteText "			<software_comment></software_comment>" & vbcrlf
-	result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-	result.WriteText "			<software_status></software_status>" & vbcrlf
-	result.WriteText "		</package>" & vbcrlf
 
 
 
@@ -2950,6 +2991,7 @@ if (skip_software = "n") then
 	strKeyPath = "SOFTWARE\Microsoft\DirectX"
 	strValueName = "Version"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dx_version
+	if (isnull(dx_version)) then dx_version = "" end if
 	dx_name = ""
 	if system_os_version > "6" then dx_version = system_os_version end if
 	dx_version = replace(dx_version, "6.0.", "6.00.")
@@ -2996,43 +3038,46 @@ if (skip_software = "n") then
 	strKeyPath = "SOFTWARE\Microsoft\MediaPlayer\PlayerUpgrade"
 	strValueName = "PlayerVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,wmp_version
-	result.WriteText "		<package>" & vbcrlf
-	result.WriteText "			<software_name>Windows Media Player</software_name>" & vbcrlf
-	result.WriteText "			<software_version>" & escape_xml(wmp_version) & "</software_version>" & vbcrlf
-	result.WriteText "			<software_location></software_location>" & vbcrlf
-	result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-	result.WriteText "			<software_install_date>" & escape_xml(system_pc_date_os_installation) & "</software_install_date>" & vbcrlf
-	result.WriteText "			<software_publisher>Microsoft Corporation</software_publisher>" & vbcrlf
-	result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
-	result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-	result.WriteText "			<software_url>http://www.microsoft.com/windows/windowsmedia/default.aspx</software_url>" & vbcrlf
-	result.WriteText "			<software_email></software_email>" & vbcrlf
-	result.WriteText "			<software_comment></software_comment>" & vbcrlf
-	result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-	result.WriteText "			<software_status></software_status>" & vbcrlf
-	result.WriteText "		</package>" & vbcrlf
-
+	if (not isnull(wmp_version)) then
+		result.WriteText "		<package>" & vbcrlf
+		result.WriteText "			<software_name>Windows Media Player</software_name>" & vbcrlf
+		result.WriteText "			<software_version>" & escape_xml(wmp_version) & "</software_version>" & vbcrlf
+		result.WriteText "			<software_location></software_location>" & vbcrlf
+		result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+		result.WriteText "			<software_install_date>" & escape_xml(system_pc_date_os_installation) & "</software_install_date>" & vbcrlf
+		result.WriteText "			<software_publisher>Microsoft Corporation</software_publisher>" & vbcrlf
+		result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
+		result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+		result.WriteText "			<software_url>http://www.microsoft.com/windows/windowsmedia/default.aspx</software_url>" & vbcrlf
+		result.WriteText "			<software_email></software_email>" & vbcrlf
+		result.WriteText "			<software_comment></software_comment>" & vbcrlf
+		result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+		result.WriteText "			<software_status></software_status>" & vbcrlf
+		result.WriteText "		</package>" & vbcrlf
+	end if
 
 
 	if debugging > "0" then wscript.echo "Internet Explorer info" end if 
 	strKeyPath = "SOFTWARE\Microsoft\Internet Explorer"
 	strValueName = "Version"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ie_version
-	result.WriteText "		<package>" & vbcrlf
-	result.WriteText "			<software_name>Internet Explorer</software_name>" & vbcrlf
-	result.WriteText "			<software_version>" & escape_xml(ie_version) & "</software_version>" & vbcrlf
-	result.WriteText "			<software_location></software_location>" & vbcrlf
-	result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-	result.WriteText "			<software_install_date>" & escape_xml(system_pc_date_os_installation) & "</software_install_date>" & vbcrlf
-	result.WriteText "			<software_publisher>Microsoft Corporation</software_publisher>" & vbcrlf
-	result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
-	result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-	result.WriteText "			<software_url>http://www.microsoft.com/windows/ie/community/default.mspx</software_url>" & vbcrlf
-	result.WriteText "			<software_email></software_email>" & vbcrlf
-	result.WriteText "			<software_comment></software_comment>" & vbcrlf
-	result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-	result.WriteText "			<software_status></software_status>" & vbcrlf
-	result.WriteText "		</package>" & vbcrlf
+	if (not isnull(ie_version)) then
+		result.WriteText "		<package>" & vbcrlf
+		result.WriteText "			<software_name>Internet Explorer</software_name>" & vbcrlf
+		result.WriteText "			<software_version>" & escape_xml(ie_version) & "</software_version>" & vbcrlf
+		result.WriteText "			<software_location></software_location>" & vbcrlf
+		result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+		result.WriteText "			<software_install_date>" & escape_xml(system_pc_date_os_installation) & "</software_install_date>" & vbcrlf
+		result.WriteText "			<software_publisher>Microsoft Corporation</software_publisher>" & vbcrlf
+		result.WriteText "			<software_install_source></software_install_source>" & vbcrlf
+		result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+		result.WriteText "			<software_url>http://www.microsoft.com/windows/ie/community/default.mspx</software_url>" & vbcrlf
+		result.WriteText "			<software_email></software_email>" & vbcrlf
+		result.WriteText "			<software_comment></software_comment>" & vbcrlf
+		result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+		result.WriteText "			<software_status></software_status>" & vbcrlf
+		result.WriteText "		</package>" & vbcrlf
+	end if
 
 
 	if debugging > "0" then wscript.echo "Outlook Express info" end if 
@@ -3094,113 +3139,115 @@ if (skip_software = "n") then
 
 	strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 	oReg.EnumKey HKEY_LOCAL_MACHINE,strKeyPath,arrSubKeys
-	for each subkey In arrSubKeys
-		newpath = strKeyPath & "\" & subkey
-		newkey = "DisplayName"
-		on error resume next
-		strValue = ""
-		oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-		on error goto 0
-		if strValue <> "" then
-			version = ""
-			uninstall_string = ""
-			install_date = ""
-			publisher = ""
-			install_source = ""
-			install_location = ""
-			system_component = ""
-			package_name = strValue
-			
-			newkey = "DisplayVersion"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_version = strValue
-			if (isnull(package_version)) then package_version = "" end if
-
-			newkey = "UninstallString"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_uninstall = strValue
-			if (isnull(package_uninstall)) then package_uninstall = "" end if
-
-			newkey = "InstallDate"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_install_date = strValue
-			if (isnull(package_install_date)) then package_install_date = "" end if
-
-			newkey = "Publisher"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_publisher = strValue
-			if (isnull(package_publisher)) then package_publisher = "" end if
-
-			newkey = "InstallSource"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_install_source = strValue
-			if (isnull(package_install_source)) then package_install_source = "" end if
-
-			newkey = "InstallLocation"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_location = strValue
-			if (isnull(package_location)) then package_location = "" end if
-
-			newkey = "SystemComponent"
-			oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_system_component = strValue
-			if (isnull(package_system_component)) then package_system_component = "" end if
-
-			newkey = "URLInfoAbout"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_url = strValue
-			if (isnull(package_url)) then package_url = "" end if
-
-			newkey = "Comments"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_comments = strValue
-			if (isnull(package_comments)) then package_comments = " " end if
-
-			package_installed_by = ""
-			package_installed_on = ""
-
+	if (not Isnull(arrSubKeys)) then
+		for each subkey In arrSubKeys
+			newpath = strKeyPath & "\" & subkey
+			newkey = "DisplayName"
 			on error resume next
-			for each objItem in colItems
-				if objItem.Message <> "" then
-					colonPos = InStr(objItem.Message,":")
-					dashPos = InStr(objItem.Message,"--")
-					message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-					if (not isNull(message_retrieved)) then
-						if (InStr(message_retrieved, package_name) = 1) then
-							package_installed_by = objItem.User
-							if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-							package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-							package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-							exit for
-						else
-							package_installed_by = ""
-							package_installed_on = ""
+			strValue = ""
+			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+			on error goto 0
+			if strValue <> "" then
+				version = ""
+				uninstall_string = ""
+				install_date = ""
+				publisher = ""
+				install_source = ""
+				install_location = ""
+				system_component = ""
+				package_name = strValue
+				
+				newkey = "DisplayVersion"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_version = strValue
+				if (isnull(package_version)) then package_version = "" end if
+
+				newkey = "UninstallString"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_uninstall = strValue
+				if (isnull(package_uninstall)) then package_uninstall = "" end if
+
+				newkey = "InstallDate"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_install_date = strValue
+				if (isnull(package_install_date)) then package_install_date = "" end if
+
+				newkey = "Publisher"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_publisher = strValue
+				if (isnull(package_publisher)) then package_publisher = "" end if
+
+				newkey = "InstallSource"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_install_source = strValue
+				if (isnull(package_install_source)) then package_install_source = "" end if
+
+				newkey = "InstallLocation"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_location = strValue
+				if (isnull(package_location)) then package_location = "" end if
+
+				newkey = "SystemComponent"
+				oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_system_component = strValue
+				if (isnull(package_system_component)) then package_system_component = "" end if
+
+				newkey = "URLInfoAbout"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_url = strValue
+				if (isnull(package_url)) then package_url = "" end if
+
+				newkey = "Comments"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_comments = strValue
+				if (isnull(package_comments)) then package_comments = " " end if
+
+				package_installed_by = ""
+				package_installed_on = ""
+
+				on error resume next
+				for each objItem in colItems
+					if objItem.Message <> "" then
+						colonPos = InStr(objItem.Message,":")
+						dashPos = InStr(objItem.Message,"--")
+						message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+						if (not isNull(message_retrieved)) then
+							if (InStr(message_retrieved, package_name) = 1) then
+								package_installed_by = objItem.User
+								if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+								package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+								package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+								exit for
+							else
+								package_installed_by = ""
+								package_installed_on = ""
+							end if
 						end if
 					end if
-				end if
-			next
-			on error goto 0
-			
-			result.WriteText "		<package>" & vbcrlf
-			result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
-			result.WriteText "			<software_version>" & escape_xml(package_version) & "</software_version>" & vbcrlf
-			result.WriteText "			<software_location>" & escape_xml(package_location) & "</software_location>" & vbcrlf
-			result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-			result.WriteText "			<software_install_date>" & escape_xml(package_install_date) & "</software_install_date>" & vbcrlf
-			result.WriteText "			<software_publisher>" & escape_xml(package_publisher) & "</software_publisher>" & vbcrlf
-			result.WriteText "			<software_install_source>" & escape_xml(package_install_source) & "</software_install_source>" & vbcrlf
-			result.WriteText "			<software_system_component>" & escape_xml(package_system_component) & "</software_system_component>" & vbcrlf
-			result.WriteText "			<software_url>" & escape_xml(package_url) & "</software_url>" & vbcrlf
-			result.WriteText "			<software_email></software_email>" & vbcrlf
-		'	result.WriteText "			<software_comment>" & escape_xml(package_comments) & "</software_comment>" & vbcrlf
-			result.WriteText "			<software_comment></software_comment>" & vbcrlf
-			result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-			result.WriteText "			<software_status></software_status>" & vbcrlf
-			result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
-			result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
-			result.WriteText "		</package>" & vbcrlf
-	   end if
-	next
+				next
+				on error goto 0
+				
+				result.WriteText "		<package>" & vbcrlf
+				result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
+				result.WriteText "			<software_version>" & escape_xml(package_version) & "</software_version>" & vbcrlf
+				result.WriteText "			<software_location>" & escape_xml(package_location) & "</software_location>" & vbcrlf
+				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+				result.WriteText "			<software_install_date>" & escape_xml(package_install_date) & "</software_install_date>" & vbcrlf
+				result.WriteText "			<software_publisher>" & escape_xml(package_publisher) & "</software_publisher>" & vbcrlf
+				result.WriteText "			<software_install_source>" & escape_xml(package_install_source) & "</software_install_source>" & vbcrlf
+				result.WriteText "			<software_system_component>" & escape_xml(package_system_component) & "</software_system_component>" & vbcrlf
+				result.WriteText "			<software_url>" & escape_xml(package_url) & "</software_url>" & vbcrlf
+				result.WriteText "			<software_email></software_email>" & vbcrlf
+			'	result.WriteText "			<software_comment>" & escape_xml(package_comments) & "</software_comment>" & vbcrlf
+				result.WriteText "			<software_comment></software_comment>" & vbcrlf
+				result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+				result.WriteText "			<software_status></software_status>" & vbcrlf
+				result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
+				result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
+				result.WriteText "		</package>" & vbcrlf
+			end if
+		next
+	end if
 	result.WriteText "		<!-- end of normal -->" & vbcrlf
 
 
@@ -3315,110 +3362,111 @@ if (reg_node = "y") then
 	Set colItems = objWMIService.ExecQuery("Select Message, User, TimeGenerated FROM Win32_NTLogEvent where logfile = 'Application' and eventcode = '11707'",,0)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTLogEvent)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTLogEvent " : end if
 	On Error Goto 0 
-	for each subkey In arrSubKeys
-		newpath = strKeyPath & "\" & subkey
-		newkey = "DisplayName"
-		oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-		if strValue <> "" then
-			version = ""
-			uninstall_string = ""
-			install_date = ""
-			publisher = ""
-			install_source = ""
-			install_location = ""
-			system_component = ""
-			package_name = strValue
-			
-			newkey = "DisplayVersion"
+	if (not isnull(arrSubKeys)) then
+		for each subkey In arrSubKeys
+			newpath = strKeyPath & "\" & subkey
+			newkey = "DisplayName"
 			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_version = strValue
-			if (isnull(package_version)) then package_version = "" end if
+			if strValue <> "" then
+				version = ""
+				uninstall_string = ""
+				install_date = ""
+				publisher = ""
+				install_source = ""
+				install_location = ""
+				system_component = ""
+				package_name = strValue
+				
+				newkey = "DisplayVersion"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_version = strValue
+				if (isnull(package_version)) then package_version = "" end if
 
-			newkey = "UninstallString"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_uninstall = strValue
-			if (isnull(package_uninstall)) then package_uninstall = "" end if
+				newkey = "UninstallString"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_uninstall = strValue
+				if (isnull(package_uninstall)) then package_uninstall = "" end if
 
-			newkey = "InstallDate"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_install_date = strValue
-			if (isnull(package_install_date)) then package_install_date = "" end if
+				newkey = "InstallDate"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_install_date = strValue
+				if (isnull(package_install_date)) then package_install_date = "" end if
 
-			newkey = "Publisher"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_publisher = strValue
-			if (isnull(package_publisher)) then package_publisher = "" end if
+				newkey = "Publisher"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_publisher = strValue
+				if (isnull(package_publisher)) then package_publisher = "" end if
 
-			newkey = "InstallSource"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_install_source = strValue
-			if (isnull(package_install_source)) then package_install_source = "" end if
+				newkey = "InstallSource"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_install_source = strValue
+				if (isnull(package_install_source)) then package_install_source = "" end if
 
-			newkey = "InstallLocation"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_location = strValue
-			if (isnull(package_location)) then package_location = "" end if
+				newkey = "InstallLocation"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_location = strValue
+				if (isnull(package_location)) then package_location = "" end if
 
-			newkey = "SystemComponent"
-			oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_system_component = strValue
-			if (isnull(package_system_component)) then package_system_component = "" end if
+				newkey = "SystemComponent"
+				oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_system_component = strValue
+				if (isnull(package_system_component)) then package_system_component = "" end if
 
-			newkey = "URLInfoAbout"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_url = strValue
-			if (isnull(package_url)) then package_url = "" end if
+				newkey = "URLInfoAbout"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_url = strValue
+				if (isnull(package_url)) then package_url = "" end if
 
-			newkey = "Comments"
-			oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-			package_comments = strValue
-			if (isnull(package_comments)) then package_comments = " " end if
+				newkey = "Comments"
+				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+				package_comments = strValue
+				if (isnull(package_comments)) then package_comments = " " end if
 
-			package_installed_by = ""
-			package_installed_on = ""
+				package_installed_by = ""
+				package_installed_on = ""
 
-			on error resume next
-			for each objItem in colItems
-				if objItem.Message <> "" then
-					colonPos = InStr(objItem.Message,":")
-					dashPos = InStr(objItem.Message,"--")
-					message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-					if (not isNull(message_retrieved)) then
-						if (InStr(message_retrieved, package_name) = 1) then
-							package_installed_by = objItem.User
-							if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-							package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-							package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-							exit for
-						else
-							package_installed_by = ""
-							package_installed_on = ""
+				on error resume next
+				for each objItem in colItems
+					if objItem.Message <> "" then
+						colonPos = InStr(objItem.Message,":")
+						dashPos = InStr(objItem.Message,"--")
+						message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+						if (not isNull(message_retrieved)) then
+							if (InStr(message_retrieved, package_name) = 1) then
+								package_installed_by = objItem.User
+								if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+								package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+								package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+								exit for
+							else
+								package_installed_by = ""
+								package_installed_on = ""
+							end if
 						end if
 					end if
-				end if
-			next
-			On Error Goto 0 
-			
-			result.WriteText "		<package>" & vbcrlf
-			result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
-			result.WriteText "			<software_version>" & escape_xml(package_version) & "</software_version>" & vbcrlf
-			result.WriteText "			<software_location>" & escape_xml(package_location) & "</software_location>" & vbcrlf
-			result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-			result.WriteText "			<software_install_date>" & escape_xml(package_install_date) & "</software_install_date>" & vbcrlf
-			result.WriteText "			<software_publisher>" & escape_xml(package_publisher) & "</software_publisher>" & vbcrlf
-			result.WriteText "			<software_install_source>" & escape_xml(package_install_source) & "</software_install_source>" & vbcrlf
-			result.WriteText "			<software_system_component>" & escape_xml(package_system_component) & "</software_system_component>" & vbcrlf
-			result.WriteText "			<software_url>" & escape_xml(package_url) & "</software_url>" & vbcrlf
-			result.WriteText "			<software_email></software_email>" & vbcrlf
-		'	result.WriteText "			<software_comment>" & escape_xml(package_comments) & "</software_comment>" & vbcrlf
-			result.WriteText "			<software_comment></software_comment>" & vbcrlf
-			result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-			result.WriteText "			<software_status></software_status>" & vbcrlf
-			result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
-			result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
-			result.WriteText "		</package>" & vbcrlf
-	   end if
-	next
+				next
+				On Error Goto 0 
+				
+				result.WriteText "		<package>" & vbcrlf
+				result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
+				result.WriteText "			<software_version>" & escape_xml(package_version) & "</software_version>" & vbcrlf
+				result.WriteText "			<software_location>" & escape_xml(package_location) & "</software_location>" & vbcrlf
+				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+				result.WriteText "			<software_install_date>" & escape_xml(package_install_date) & "</software_install_date>" & vbcrlf
+				result.WriteText "			<software_publisher>" & escape_xml(package_publisher) & "</software_publisher>" & vbcrlf
+				result.WriteText "			<software_install_source>" & escape_xml(package_install_source) & "</software_install_source>" & vbcrlf
+				result.WriteText "			<software_system_component>" & escape_xml(package_system_component) & "</software_system_component>" & vbcrlf
+				result.WriteText "			<software_url>" & escape_xml(package_url) & "</software_url>" & vbcrlf
+				result.WriteText "			<software_email></software_email>" & vbcrlf
+				result.WriteText "			<software_comment></software_comment>" & vbcrlf
+				result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+				result.WriteText "			<software_status></software_status>" & vbcrlf
+				result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
+				result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
+				result.WriteText "		</package>" & vbcrlf
+			end if
+		next
+	end if
 end if
 result.WriteText "		<!-- end of 64 #2 -->" & vbcrlf
 
@@ -3437,7 +3485,7 @@ if address_width = "64" then
 	objCtx.Add "__RequiredArchitecture", True
 	Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
-	if struser <> "" then
+	if ((struser <> "") and (instr(local_net, strComputer) = 0)) then
 		' Username & Password provided - assume not a domain local PC.
 		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
 	else
@@ -3452,122 +3500,123 @@ if address_width = "64" then
 	Inparams.Ssubkeyname = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" 
 	set Outparams = o64reg.ExecMethod_("EnumKey", Inparams,,objCtx)
 
-	for each reg_name in Outparams.Snames
-		'wscript.echo "Key Name: " & reg_name
+	if (not isnull(Outparams.Snames)) then
+		for each reg_name in Outparams.Snames
+			'wscript.echo "Key Name: " & reg_name
 
-		package_name = ""
-		package_version = ""
-		package_uninstall = ""
-		package_install_date = ""
-		package_install_source = ""
-		package_location = ""
-		package_system_component = ""
-		package_url = ""
-		package_comments = ""
+			package_name = ""
+			package_version = ""
+			package_uninstall = ""
+			package_install_date = ""
+			package_install_source = ""
+			package_location = ""
+			package_system_component = ""
+			package_url = ""
+			package_comments = ""
 
-		Set Inparams2 = o64reg.Methods_("GetStringValue").Inparameters
-		Inparams2.Hdefkey = HKEY_LOCAL_MACHINE
-		Inparams2.Ssubkeyname = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" & "\" & reg_name
-		Inparams2.Svaluename = "DisplayName"
-		set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-		package_name = Outparams2.SValue
-		if (isnull(package_name) or package_name = "") then
-			' do nothing
-		else
-			' grab the version, etc
-			'wscript.echo "Name: " & package_name
-
-			Inparams2.Svaluename = "DisplayVersion"
+			Set Inparams2 = o64reg.Methods_("GetStringValue").Inparameters
+			Inparams2.Hdefkey = HKEY_LOCAL_MACHINE
+			Inparams2.Ssubkeyname = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" & "\" & reg_name
+			Inparams2.Svaluename = "DisplayName"
 			set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-			package_version = Outparams2.SValue
-			if (isnull(package_version)) then package_version = "" end if
-			'wscript.echo "Package Version: " & package_version
+			package_name = Outparams2.SValue
+			if (isnull(package_name) or package_name = "") then
+				' do nothing
+			else
+				' grab the version, etc
+				'wscript.echo "Name: " & package_name
 
-			Inparams2.Svaluename = "UninstallString"
-			set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-			package_uninstall = Outparams2.SValue
-			if (isnull(package_uninstall)) then package_uninstall = "" end if
+				Inparams2.Svaluename = "DisplayVersion"
+				set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
+				package_version = Outparams2.SValue
+				if (isnull(package_version)) then package_version = "" end if
+				'wscript.echo "Package Version: " & package_version
 
-			Inparams2.Svaluename = "InstallDate"
-			set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-			package_install_date = Outparams2.SValue
-			if (isnull(package_install_date)) then package_install_date = "" end if
+				Inparams2.Svaluename = "UninstallString"
+				set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
+				package_uninstall = Outparams2.SValue
+				if (isnull(package_uninstall)) then package_uninstall = "" end if
 
-			Inparams2.Svaluename = "Publisher"
-			set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-			package_publisher = Outparams2.SValue
-			if (isnull(package_publisher)) then package_publisher = "" end if
+				Inparams2.Svaluename = "InstallDate"
+				set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
+				package_install_date = Outparams2.SValue
+				if (isnull(package_install_date)) then package_install_date = "" end if
 
-			Inparams2.Svaluename = "InstallSource"
-			set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-			package_install_source = Outparams2.SValue
-			if (isnull(package_install_source)) then package_install_source = "" end if
+				Inparams2.Svaluename = "Publisher"
+				set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
+				package_publisher = Outparams2.SValue
+				if (isnull(package_publisher)) then package_publisher = "" end if
 
-			Inparams2.Svaluename = "InstallLocation"
-			set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-			package_location = Outparams2.SValue
-			if (isnull(package_location)) then package_location = "" end if
+				Inparams2.Svaluename = "InstallSource"
+				set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
+				package_install_source = Outparams2.SValue
+				if (isnull(package_install_source)) then package_install_source = "" end if
 
-			Inparams2.Svaluename = "SystemComponent"
-			set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-			package_system_component = Outparams2.SValue
-			if (isnull(package_system_component)) then package_system_component = "" end if
+				Inparams2.Svaluename = "InstallLocation"
+				set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
+				package_location = Outparams2.SValue
+				if (isnull(package_location)) then package_location = "" end if
 
-			Inparams2.Svaluename = "URLInfoAbout"
-			set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-			package_url = Outparams2.SValue
-			if (isnull(package_url)) then package_url = "" end if
+				Inparams2.Svaluename = "SystemComponent"
+				set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
+				package_system_component = Outparams2.SValue
+				if (isnull(package_system_component)) then package_system_component = "" end if
 
-			Inparams2.Svaluename = "Comments"
-			set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
-			package_comments = Outparams2.SValue
-			if (isnull(package_comments)) then package_comments = "" end if
+				Inparams2.Svaluename = "URLInfoAbout"
+				set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
+				package_url = Outparams2.SValue
+				if (isnull(package_url)) then package_url = "" end if
 
-			package_installed_by = ""
-			package_installed_on = ""
+				Inparams2.Svaluename = "Comments"
+				set Outparams2 = o64reg.ExecMethod_("GetStringValue", Inparams2,,objCtx)
+				package_comments = Outparams2.SValue
+				if (isnull(package_comments)) then package_comments = "" end if
 
-			on error resume next
-			for each objItem in colItems
-				if objItem.Message <> "" then
-					colonPos = InStr(objItem.Message,":")
-					dashPos = InStr(objItem.Message,"--")
-					message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-					if (not isNull(message_retrieved)) then
-						if (InStr(message_retrieved, package_name) = 1) then
-							package_installed_by = objItem.User
-							if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-							package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-							package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-							exit for
-						else
-							package_installed_by = ""
-							package_installed_on = ""
+				package_installed_by = ""
+				package_installed_on = ""
+
+				on error resume next
+				for each objItem in colItems
+					if objItem.Message <> "" then
+						colonPos = InStr(objItem.Message,":")
+						dashPos = InStr(objItem.Message,"--")
+						message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+						if (not isNull(message_retrieved)) then
+							if (InStr(message_retrieved, package_name) = 1) then
+								package_installed_by = objItem.User
+								if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+								package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+								package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+								exit for
+							else
+								package_installed_by = ""
+								package_installed_on = ""
+							end if
 						end if
 					end if
-				end if
-			next
-			on error goto 0
+				next
+				on error goto 0
 
-			result.WriteText "		<package>" & vbcrlf
-			result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
-			result.WriteText "			<software_version>" & escape_xml(package_version) & "</software_version>" & vbcrlf
-			result.WriteText "			<software_location>" & escape_xml(package_location) & "</software_location>" & vbcrlf
-			result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-			result.WriteText "			<software_install_date>" & escape_xml(package_install_date) & "</software_install_date>" & vbcrlf
-			result.WriteText "			<software_publisher>" & escape_xml(package_publisher) & "</software_publisher>" & vbcrlf
-			result.WriteText "			<software_install_source>" & escape_xml(package_install_source) & "</software_install_source>" & vbcrlf
-			result.WriteText "			<software_system_component>" & escape_xml(package_system_component) & "</software_system_component>" & vbcrlf
-			result.WriteText "			<software_url>" & escape_xml(package_url) & "</software_url>" & vbcrlf
-			result.WriteText "			<software_email></software_email>" & vbcrlf
-		'	result.WriteText "			<software_comment>" & escape_xml(package_comments) & "</software_comment>" & vbcrlf
-			result.WriteText "			<software_comment></software_comment>" & vbcrlf
-			result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-			result.WriteText "			<software_status></software_status>" & vbcrlf
-			result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
-			result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
-			result.WriteText "		</package>" & vbcrlf
-		end if
-   next
+				result.WriteText "		<package>" & vbcrlf
+				result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
+				result.WriteText "			<software_version>" & escape_xml(package_version) & "</software_version>" & vbcrlf
+				result.WriteText "			<software_location>" & escape_xml(package_location) & "</software_location>" & vbcrlf
+				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+				result.WriteText "			<software_install_date>" & escape_xml(package_install_date) & "</software_install_date>" & vbcrlf
+				result.WriteText "			<software_publisher>" & escape_xml(package_publisher) & "</software_publisher>" & vbcrlf
+				result.WriteText "			<software_install_source>" & escape_xml(package_install_source) & "</software_install_source>" & vbcrlf
+				result.WriteText "			<software_system_component>" & escape_xml(package_system_component) & "</software_system_component>" & vbcrlf
+				result.WriteText "			<software_url>" & escape_xml(package_url) & "</software_url>" & vbcrlf
+				result.WriteText "			<software_email></software_email>" & vbcrlf
+				result.WriteText "			<software_comment></software_comment>" & vbcrlf
+				result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+				result.WriteText "			<software_status></software_status>" & vbcrlf
+				result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
+				result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
+				result.WriteText "		</package>" & vbcrlf
+			end if
+		next
+	end if
 end if
 
 
@@ -3576,29 +3625,31 @@ end if
 
 	' hotfixes
 	if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
-	   if debugging > "0" then wscript.echo "Hotfix info" end if
-	   set colItems2 = objWMIService.ExecQuery("Select * from Win32_QuickFixEngineering",,32)
-	   for each objItem2 in colItems2
-	      package_installed_by = objItem2.InstalledBy
-		  if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-		  result.WriteText "      <package>" & vbcrlf
-		  result.WriteText "         <software_name>" & escape_xml(objItem2.HotFixID) & "</software_name>" & vbcrlf
-		  result.WriteText "         <software_version></software_version>" & vbcrlf
-		  result.WriteText "         <software_location></software_location>" & vbcrlf
-		  result.WriteText "         <software_uninstall></software_uninstall>" & vbcrlf
-		  result.WriteText "         <software_install_date>" & escape_xml(objItem2.InstalledOn) & "</software_install_date>" & vbcrlf
-		  result.WriteText "         <software_publisher>Microsoft</software_publisher>" & vbcrlf
-		  result.WriteText "         <software_install_source></software_install_source>" & vbcrlf
-		  result.WriteText "         <software_system_component></software_system_component>" & vbcrlf
-		  result.WriteText "         <software_url>" & escape_xml(objItem2.Caption) & "</software_url>" & vbcrlf
-		  result.WriteText "         <software_email></software_email>" & vbcrlf
-		  result.WriteText "         <software_comment>update</software_comment>" & vbcrlf
-		  result.WriteText "         <software_code_base></software_code_base>" & vbcrlf
-		  result.WriteText "         <software_status></software_status>" & vbcrlf
-		  result.WriteText "         <software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
-		  result.WriteText "         <software_installed_on>" & escape_xml(objItem2.InstalledOn) & "</software_installed_on>" & vbcrlf
-		  result.WriteText "      </package>" & vbcrlf
-	   next
+		if debugging > "0" then wscript.echo "Hotfix info" end if
+		set colItems2 = objWMIService.ExecQuery("Select * from Win32_QuickFixEngineering",,32)
+		if (not isnull(colItems2)) then
+			for each objItem2 in colItems2
+				package_installed_by = objItem2.InstalledBy
+				if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+				result.WriteText "      <package>" & vbcrlf
+				result.WriteText "         <software_name>" & escape_xml(objItem2.HotFixID) & "</software_name>" & vbcrlf
+				result.WriteText "         <software_version></software_version>" & vbcrlf
+				result.WriteText "         <software_location></software_location>" & vbcrlf
+				result.WriteText "         <software_uninstall></software_uninstall>" & vbcrlf
+				result.WriteText "         <software_install_date>" & escape_xml(objItem2.InstalledOn) & "</software_install_date>" & vbcrlf
+				result.WriteText "         <software_publisher>Microsoft</software_publisher>" & vbcrlf
+				result.WriteText "         <software_install_source></software_install_source>" & vbcrlf
+				result.WriteText "         <software_system_component></software_system_component>" & vbcrlf
+				result.WriteText "         <software_url>" & escape_xml(objItem2.Caption) & "</software_url>" & vbcrlf
+				result.WriteText "         <software_email></software_email>" & vbcrlf
+				result.WriteText "         <software_comment>update</software_comment>" & vbcrlf
+				result.WriteText "         <software_code_base></software_code_base>" & vbcrlf
+				result.WriteText "         <software_status></software_status>" & vbcrlf
+				result.WriteText "         <software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
+				result.WriteText "         <software_installed_on>" & escape_xml(objItem2.InstalledOn) & "</software_installed_on>" & vbcrlf
+				result.WriteText "      </package>" & vbcrlf
+			next
+		end if
 	end if
 	result.WriteText "	</software>" & vbcrlf
 end if
@@ -4355,7 +4406,7 @@ if address_width = "64" then
 	objCtx.Add "__RequiredArchitecture", True
 	Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
-	if struser <> "" then
+	if ((struser <> "") and (instr(local_net, strComputer) = 0)) then
 		' Username & Password provided - assume not a domain local PC.
 		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
 	else
@@ -7163,6 +7214,18 @@ function ou(dn)
 	next
 	ou = mid(ou, 1, len(ou)-1)
 end function
+
+Sub forceCScriptExecution
+	Dim Arg, Str
+	if not lcase( Right( wscript.FullName, 12 ) ) = "\cscript.exe" then
+		for each arg in WScript.Arguments
+			If InStr( Arg, " " ) Then Arg = """" & Arg & """"
+				Str = Str & " " & Arg
+		Next
+		CreateObject("WScript.Shell").Run "cscript //nologo """ & WScript.ScriptFullName & """ " & Str
+		WScript.Quit
+	End If
+End Sub
 
 ' windows build numbers
 ' 528 - Win NT 3.1

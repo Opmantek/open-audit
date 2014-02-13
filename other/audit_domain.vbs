@@ -1,10 +1,35 @@
-' Open Audit
-' Software and Hardware Inventory
-' (c) Mark Unwin 2012 
-' http://www.open-audit.org
-' Licensed under the AGPL v3
-' http://www.fsf.org/licensing/licenses/agpl-3.0.html 
+'  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+'
+'  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+'
+'  This file is part of Open-AudIT.
+'
+'  Open-AudIT is free software: you can redistribute it and/or modify
+'  it under the terms of the GNU Affero General Public License as published 
+'  by the Free Software Foundation, either version 3 of the License, or
+'  (at your option) any later version.
+'
+'  Open-AudIT is distributed in the hope that it will be useful,
+'  but WITHOUT ANY WARRANTY; without even the implied warranty of
+'  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'  GNU Affero General Public License for more details.
+'
+'  You should have received a copy of the GNU Affero General Public License
+'  along with Open-AudIT (most likely in a file named LICENSE).
+'  If not, see <http://www.gnu.org/licenses/>
+'
+'  For further information on Open-AudIT or for a license other than AGPL please see
+'  www.opmantek.com or email contact@opmantek.com
+'
+' *****************************************************************************
 
+' @package Open-AudIT
+' @author Mark Unwin <marku@opmantek.com>
+' @version 1.2
+' @copyright Copyright (c) 2014, Opmantek
+' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+
+forceCScriptExecution
 
 ' the number of audits to run concurrently
 number_of_audits = 25
@@ -30,7 +55,7 @@ script_name = "c:\xampplite\open-audit\other\audit_windows.vbs"
 ' set the below to your active directory domain
 ' you can add multiple domains in the array below.
 'domain_array = array("LDAP://your.domain.here", "LDAP://domain.number.2", "LDAP://another.domain.org")
-domain_array = array("LDAP://your.domain.here")
+domain_array = array("")
 
 debugging = 3
 
@@ -58,29 +83,29 @@ For Each strArg in objArgs
 		varArray = split(strArg, "=")
 		select case varArray(0)
 
-			case "operating_system"
-				operating_system = varArray(1)
+			case "audit_run_type"
+				audit_run_type = varArray(1)
+
+			case "debugging"
+				debugging = varArray(1)
 
 			case "local_domain"
 				local_domain = varArray(1)
 
-			case "script_name"
-				script_name = varArray(1)
-
 			case "number_of_audits"
 				number_of_audits = varArray(1)
 
-			case "audit_run_type"
-				audit_run_type = varArray(1)
+			case "operating_system"
+				operating_system = varArray(1)
 
-			case "remote_user"
-				remote_user = varArray(1)
+			case "script_name"
+				script_name = varArray(1)
 
 			case "remote_password"
 				remote_password = varArray(1)
 
-			case "debugging"
-				debugging = varArray(1)
+			case "remote_user"
+				remote_user = varArray(1)
 
 		end select
 	end if
@@ -110,6 +135,30 @@ for each objitem in colitems
 	end if
 next
 
+if (domain_array(0) = "") and (local_domain = "") then
+	set colItems = objWMIService.ExecQuery("Select * from Win32_OperatingSystem",,32)
+	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " local (Win32_OperatingSystem)" end if
+	for each objItem in colItems
+		windows_build_number = objItem.BuildNumber
+	next
+	set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
+	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (	Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
+	for each objItem in colItems
+		local_domain = "LDAP://" & objItem.Domain
+		windows_part_of_domain = False
+		if (windows_build_number >= 2600) then windows_part_of_domain = objItem.PartOfDomain end if
+		if (windows_part_of_domain <> True) then
+			wscript.echo "No domain provided and not part of a domain, exiting."
+			wscript.quit
+		end if
+	next
+end if
+
+if (domain_array(0) = "") and (local_domain = "") then
+	wscript.echo "No domain provided and not part of a domain, exiting."
+	wscript.quit
+end if
+
 
 if (domain_array(0) = "") and (local_domain > "") then
 	domain_array(0) = local_domain
@@ -138,7 +187,7 @@ for l = 0 to ubound(domain_array)
 	objcommand.properties("sort on") = "name"
 	set objrecordset = objcommand.execute
 	objrecordset.movefirst
-	totcomp = objrecordset.recordcount -1
+	totcomp = objrecordset.recordcount
 	redim pc_array(totcomp) ' set array to computer count
 	if debugging > 0 then wscript.echo "number of systems retrieved from ldap: " & totcomp end if
 	count = 0
@@ -175,7 +224,8 @@ for l = 0 to ubound(domain_array)
 				num_running = HowMany
 			wend
 			if pc_array(i) <> "" then
-				if debugging > 0 then wscript.echo(i & " of " & ubound(pc_array)) end if
+				j = i + 1
+				if debugging > 0 then wscript.echo(j & " of " & ubound(pc_array)) end if
 				if debugging > 0 then wscript.echo("processes running: " & num_running) end if
 				if debugging > 0 then wscript.echo("next system: " & pc_array(i)) end if
 				if debugging > 0 then wscript.echo("--------------") end if
@@ -329,3 +379,15 @@ Function LogKilledAudit(txt)
    set fp = nothing
    LogKilledAudit = true
 End Function 
+
+Sub forceCScriptExecution
+	Dim Arg, Str
+	if not lcase( Right( wscript.FullName, 12 ) ) = "\cscript.exe" then
+		for each arg in WScript.Arguments
+			If InStr( Arg, " " ) Then Arg = """" & Arg & """"
+				Str = Str & " " & Arg
+		Next
+		CreateObject("WScript.Shell").Run "cscript //nologo """ & WScript.ScriptFullName & """ " & Str
+		WScript.Quit
+	End If
+End Sub

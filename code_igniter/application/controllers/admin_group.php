@@ -1,9 +1,35 @@
 <?php
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
  * @package Open-AudIT
- * @author Mark Unwin <mark.unwin@gmail.com>
- * @version 1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -121,6 +147,9 @@ class Admin_group extends MY_Controller {
 				}
 				if ((($attribute == 'group_dynamic_select') OR ($attribute == 'group_display_sql')) AND ($value > '')){
 					if ($value > '') {
+						$value = str_replace("\t", " ", $value);
+						$value = str_replace("\n", " ", $value);
+						$value = preg_replace('!\s+!', ' ', $value);
 						echo "\t\t<" . $attribute . "><![CDATA[" . $value . "]]></" . $attribute . ">\n";
 					} else {
 						echo "\t\t<" . $attribute . ">" . $value . "</" . $attribute . ">\n";
@@ -212,12 +241,16 @@ class Admin_group extends MY_Controller {
 			$details->$key = $value;
 		}
 		$sql = $details->group_dynamic_select;
-		$sql = str_replace("\t", '', $sql);
-		$sql = str_replace(array("\r", "\r\n", "\n"), '', $sql);
-		#$sql = str_replace("\n", '', $sql);
-		$sql = str_replace('  ', ' ', $sql);				
+		$sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
+		$sql = preg_replace('!\s+!', ' ', $sql);			
 		$details->group_dynamic_select = stripslashes($sql);
 		$original_dynamic_select = $this->m_oa_group->get_group_dynamic_select($details->group_id);
+
+		$sql = $details->group_display_sql;
+		$sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
+		$sql = preg_replace('!\s+!', ' ', $sql);			
+		$details->group_display_sql = stripslashes($sql);
+		
 		# update the group details
 		$this->m_oa_group->update_group($details);
 		if ($original_dynamic_select != $details->group_dynamic_select) {
@@ -234,61 +267,66 @@ class Admin_group extends MY_Controller {
 		foreach ($_POST as $key => $value) {
 			$details->$key = $value;
 		}
-		$details->group_dynamic_select = '';
-		if (($details->dynamic_other_eq != 'equals') AND ($details->dynamic_other_eq != 'like')) {
-			echo "Must select conditional.";
-		}
-		if ($details->dynamic_other_eq == 'equals') {
-			$condition = "=";
-			$like_wildcard = '';
-		}
-		if ($details->dynamic_other_eq == 'like') {
-			$condition = "LIKE";
-			$like_wildcard = '%';
-		}
-		if ($details->dynamic_other_table == 'system') {
-			$system_table = '';
+
+		# test to see if any valid data submitted.
+		if (($details->dynamic_other_table == '' or $details->dynamic_other_field == '' or ($details->dynamic_other_text == '' AND $details->dynamic_field_value == '')) AND ($details->group_dynamic_select == '')) {
+			# we need some manual SQL or at least a table to select from
+			# redirect to error page.
+			$this->data['error'] = "You must supply a manual SQL statement or select at least one database table, column and value when creating a Group.";
+			#$this->data['query'] = $this->data['error'];
+			$this->data['heading'] = 'Error'; 
+			$this->data['include'] = 'v_error'; 
+			$this->load->view('v_template', $this->data);
 		} else {
-			$system_table = ', system';
-		}
-		$selection = '';
-		if ($details->dynamic_other_text != '')  {
-			$selection = $details->dynamic_other_text;
-		}
-		if ( ($details->dynamic_other_text == '') && ($details->dynamic_field_value != '') ) {
-			$selection = $details->dynamic_field_value;
-		}
-		$details->group_dynamic_select = "SELECT distinct(system.system_id) FROM " . $details->dynamic_other_table . $system_table . " WHERE " . $details->dynamic_other_table . ".system_id = system.system_id AND " . $details->dynamic_other_field . " " . $condition . " '" . $like_wildcard . $selection . $like_wildcard ."' AND system.man_status = 'production' AND " . $details->dynamic_other_table . ".timestamp = system.timestamp";
-		
-		# to do - decide on parent groups
-		$details->group_parent = 1;
-		
-		# create the group
-		$return = $this->m_oa_group->insert_group($details);
-		
-		
-		if (is_numeric($return)) {
-			$details->group_id = $return;
-			# populate the group columns
-			$this->load->model("m_oa_group_column");
-			$this->m_oa_group_column->insert_group_column($details);
-			# update group members
-			$this->m_oa_group->update_specific_group($return);
-			$return = "Group inserted/updated successfully.";
-		} else {
-			$return = "Error with update/insert.";
-		}
-		
-		quit;
-		
-		if (!is_numeric($return)) {
-			# And now show the "list groups" page
-			redirect('admin_group/list_groups');
-		} else {
-			# we have an error
-			echo $return;
-			quit;
+			if ($details->group_dynamic_select == '') {
+				# we have no manual SQL, attempt to create it from the form fields.
+				if (($details->dynamic_other_eq != 'equals') AND ($details->dynamic_other_eq != 'like')) {
+					echo "Must select conditional.";
+				}
+				if ($details->dynamic_other_eq == 'equals') {
+					$condition = "=";
+					$like_wildcard = '';
+				}
+				if ($details->dynamic_other_eq == 'like') {
+					$condition = "LIKE";
+					$like_wildcard = '%';
+				}
+				if ($details->dynamic_other_table == 'system') {
+					$system_table = '';
+				} else {
+					$system_table = ', system';
+				}
+				$selection = '';
+				if ($details->dynamic_other_text != '')  {
+					$selection = $details->dynamic_other_text;
+				}
+				if ( ($details->dynamic_other_text == '') && ($details->dynamic_field_value != '') ) {
+					$selection = $details->dynamic_field_value;
+				}
+				$details->group_dynamic_select = "SELECT distinct(system.system_id) FROM " . $details->dynamic_other_table . $system_table . " WHERE " . $details->dynamic_other_table . ".system_id = system.system_id AND " . $details->dynamic_other_field . " " . $condition . " '" . $like_wildcard . $selection . $like_wildcard ."' AND system.man_status = 'production' AND " . $details->dynamic_other_table . ".timestamp = system.timestamp";
+			}
+
+			# to do - decide on parent groups
+			$details->group_parent = 1;
+			
+			# create the group
+			$return = $this->m_oa_group->insert_group($details);
+
+			if (is_numeric($return)) {
+				$details->group_id = $return;
+				# populate the group columns
+				$this->load->model("m_oa_group_column");
+				$this->m_oa_group_column->insert_group_column($details);
+				# update group members
+				$this->m_oa_group->update_specific_group($return);
+				redirect('admin_group/list_groups');
+			} else {
+				$this->data['error'] = "Error inserting Group.";
+				$this->data['query'] = $this->data['error'];
+				$this->data['heading'] = 'Error'; 
+				$this->data['include'] = 'v_error'; 
+				$this->load->view('v_template', $this->data);
+			}
 		}
 	}
-
 }

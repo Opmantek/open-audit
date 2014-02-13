@@ -1,11 +1,39 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
  * @package Open-AudIT
- * @author Mark Unwin
- * @version 1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+
+# Vendor Cisco
 
 if (!function_exists('get_oid_details')) {
 
@@ -731,8 +759,8 @@ if (!function_exists('get_oid_details')) {
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.799') { $details->model = 'Cisco Catalyst 2960 G8TC'; $details->type = 'switch'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.800') { $details->model = 'Cisco TSPri'; $details->type = 'network device'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.801') { $details->model = 'Cisco TSSec'; $details->type = 'network device'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.802') { $details->model = 'Cisco UW IpPhone 7921G'; $details->type = 'voip phone'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.803') { $details->model = 'Cisco UW IpPhone 7920'; $details->type = 'voip phone'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.802') { $details->model = 'Cisco UW IpPhone 7921G'; $details->type = 'ip phone'; }
+		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.803') { $details->model = 'Cisco UW IpPhone 7920'; $details->type = 'ip phone'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.804') { $details->model = 'Cisco 3200 WirelessMic'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.805') { $details->model = 'Cisco ISR Wireless'; $details->type = 'router'; }
 		if ($details->snmp_oid == '1.3.6.1.4.1.9.1.806') { $details->model = 'Cisco IPS Virtual'; $details->type = 'network ids'; }

@@ -1,11 +1,35 @@
 #!/bin/bash
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
 
-# Open Audit
-# Software and Hardware Inventory
-# (c) Mark Unwin 2012 
-# http://www.open-audit.org
-# Licensed under the AGPL v3
-# http://www.fsf.org/licensing/licenses/agpl-3.0.html 
+# @package Open-AudIT
+# @author Mark Unwin <marku@opmantek.com>
+# @version 1.2
+# @copyright Copyright (c) 2014, Opmantek
+# @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 set -f              # turn off globbing
 IFS='
@@ -17,7 +41,7 @@ echo_output="n"
 submit_online="y"
 subnet=""
 syslog="y"
-url="http://localhost/index.php/system/add_nmap"
+url="http://localhost/open-audit/index.php/system/add_nmap"
 background_wget="n"
 
 
@@ -196,11 +220,18 @@ if [ "$hosts_in_subnet" != "" ]; then
 				fi
 
 				device=`echo -e "$device"`
-				if [[ "$background_wget" == "n" ]]; then
-					wget -O - -q ${url} --post-data=form_nmap="$device"
+
+				if [[ `uname` == "Linux" ]]; then
+					if [[ "$background_wget" == "n" ]]; then
+						wget -O - -q ${url} --post-data=form_nmap="$device"
+					fi
+					if [[ "$background_wget" == "y" ]]; then
+						wget -b -O - -q ${url} --post-data=form_nmap="$device" 1>/dev/null
+					fi
 				fi
-				if [[ "$background_wget" == "y" ]]; then
-					wget -b -O - -q ${url} --post-data=form_nmap="$device" 1>/dev/null
+
+				if [[ `uname` == "Darwin" ]]; then
+					curl --data "form_nmap=$device" "$url"
 				fi
 			fi
 		#fi

@@ -1,4 +1,37 @@
-<?php
+<?php 
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
+/**
+ * @package Open-AudIT
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
+ * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+ */
+
 if ($query) { 
 if ($config->distinct_groups == 'y') {
 	$old_category = '';
@@ -125,7 +158,7 @@ if ($config->distinct_groups == 'y') {
 <?php } // end of distinct groups ?>
 <?php
 } else {
-	echo "<br />" . __('<h2>Welcome to Open-AudIT.</h2><br />Make sure you add both Groups and Reports by going to: <br />Admin -> Groups -> Activate Group &nbsp;&nbsp;&nbsp;and also to <br />Admin -> Reports -> Activate Report.');
+	echo "<br />" . __('<h2>Welcome to Open-AudIT.</h2><br />Please ensure you set the appropriate configuration items at Menu -> Admin -> Config. You should set all the "default_*" items, to take advantage of Discovery. Once that has been done, why not try running Discovery (Menu -> Admin -> Discovery) on your environment?<br /><br />Don\'t forget you can activate extra Groups via the Menu -> Admin -> Groups -> Activate Group item. This will automatically Group items and allow you to set User Access on a per Group Basis.<br /><br />Extra Reports are available at Menu -> Admin -> Reports -> Activate Report. Take a look - you might find exactly the Report you need.');
 }
 ?>
 <script type="text/javascript">

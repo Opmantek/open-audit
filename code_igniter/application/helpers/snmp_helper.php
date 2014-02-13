@@ -1,11 +1,38 @@
-<?php  
+<?php 
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
  * @package Open-AudIT
- * @author Mark Unwin
- * @version 1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+
 
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
@@ -15,64 +42,105 @@ if (!function_exists('get_snmp')) {
 		error_reporting(E_ALL);
 		$CI =& get_instance();
 
-		if (!isset($CI->data['config']->snmp_default_community)) {
-			$CI->load->model("m_oa_config");
-			$snmp_default_community = $CI->m_oa_config->get_config_item('snmp_default_community');
-		} else {
-			$snmp_default_community = $CI->data['config']->snmp_default_community;
+		if (!isset($details->show_output)) {
+			$details->show_output = FALSE;
 		}
-		if ($snmp_default_community == '') {
-			$snmp_default_community = 'public';
+
+		if ($details->show_output == TRUE) { echo "SNMP - scanning attempt on $details->man_ip_address.<br />"; }
+
+		if (!isset($CI->data['config']->default_snmp_community)) {
+			$CI->load->model("m_oa_config");
+			$default_snmp_community = $CI->m_oa_config->get_config_item('default_snmp_community');
+		} else {
+			$default_snmp_community = $CI->data['config']->default_snmp_community;
+		}
+		if ($default_snmp_community == '') {
+			$default_snmp_community = 'public';
 		}
 		
 		# setup the log file
-		if (php_uname('s') == 'Linux') {
+		if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
 			$file = "/usr/local/open-audit/other/open-audit.log";
 		} else {
 			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
 		}
 
-		if (!isset($details->system_id) or $details->system_id == '') {
-			$details->snmp_community = $snmp_default_community;
-			$details->snmp_version = '2c';
-			$details->snmp_port = '161';
+		// if (!isset($details->system_id) or $details->system_id == '') {
+		// 	$details->snmp_community = $default_snmp_community;
+		// 	$details->snmp_version = '2c';
+		// 	$details->snmp_port = '161';
+		// } else {
+		// 	$encrypted_access_details = $CI->m_system->get_access_details($details->system_id);
+		// 	if ($encrypted_access_details > '') { 
+		// 		$decoded_access_details = $CI->encrypt->decode($encrypted_access_details);
+		// 		$decoded_access_details = json_decode($decoded_access_details);
+		// 		$details->snmp_community = @$decoded_access_details->snmp_community;
+		// 		$details->snmp_version = @$decoded_access_details->snmp_version;
+		// 		$details->snmp_port = @$decoded_access_details->snmp_port;
+		// 		$details->man_ip_address = @$decoded_access_details->ip_address;
+		// 	}
+		// }
+
+		# device specific credentials
+		$device_specific_credentials = $CI->m_system->get_access_details($details->system_id);
+		$device_specific_credentials = $CI->encrypt->decode($device_specific_credentials);
+		$specific = json_decode($device_specific_credentials);
+
+		# default Open-AudIT credentials
+		$default = $CI->m_oa_config->get_credentials();
+
+		# decrypt any supplied credentials
+		$supplied = new stdClass();
+		if (isset($details->credentials) and $details->credentials > '') {
+			$supplied_credentials = $details->credentials;
+			$supplied_credentials = $CI->encrypt->decode($supplied_credentials);
+			$supplied_credentials = json_decode($supplied_credentials);
+			$supplied->snmp_community = @$supplied_credentials->snmp_community;
+			$supplied->snmp_version = @$supplied_credentials->snmp_version;
+			$supplied->snmp_port = @$supplied_credentials->snmp_port;
+			$supplied->ssh_username = @$supplied_credentials->ssh_username;
+			$supplied->ssh_password = @$supplied_credentials->ssh_password;
+			$supplied->windows_username = @$supplied_credentials->windows_username;
+			$supplied->windows_password = @$supplied_credentials->windows_password;
+			$supplied->windows_domain = @$supplied_credentials->windows_domain;
 		} else {
-			$encrypted_access_details = $CI->m_system->get_access_details($details->system_id);
-			if ($encrypted_access_details > '') { 
-				$decoded_access_details = $CI->encrypt->decode($encrypted_access_details);
-				$decoded_access_details = json_decode($decoded_access_details);
-				$details->snmp_community = @$decoded_access_details->snmp_community;
-				$details->snmp_version = @$decoded_access_details->snmp_version;
-				$details->snmp_port = @$decoded_access_details->snmp_port;
-				$details->man_ip_address = @$decoded_access_details->ip_address;
-			}
+			$supplied->snmp_community = '';
+			$supplied->snmp_version = '';
+			$supplied->snmp_port = '';
+			$supplied->ssh_username = '';
+			$supplied->ssh_password = '';
+			$supplied->windows_username = '';
+			$supplied->windows_password = '';
+			$supplied->windows_domain = '';
 		}
-		if (!isset($details->snmp_community) or $details->snmp_community == '') { 
-			$details->snmp_community = $snmp_default_community;
-		}
+
+		// if (!isset($details->snmp_community) or $details->snmp_community == '') { 
+		// 	$details->snmp_community = $default_snmp_community;
+		// 	if ($details->show_output == TRUE) { echo "<br />Using <span style='color: blue;'>default</span> SNMP community. You can set the device credentials on the System Summary page. On the left menu, click 'Summary' then 'Credentials'.<br /><br />"; }
+		// } else {
+		// 	if ($details->show_output == TRUE) { echo "Using device specific SNMP credentials.<br />"; }
+		// }
 		if (!isset($details->snmp_version) or $details->snmp_version == '') { $details->snmp_version = '2c'; }
 		if (!isset($details->snmp_port) or $details->snmp_port == '') { $details->snmp_port = '161'; }
 
 
-		# we may only have been given a system_id
-		# but if the access_details were completed, that may be enough
-		# if they weren't, we would at least need a hostname ot ip address
-		if (!isset($details->man_ip_address) and !isset($details->hostname)) {
+		# we need at least an ip address or hostname
+		if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or 
+			$details->man_ip_address == '000.000.000.000' or $details->man_ip_address == '0.0.0.0') and 
+			(!isset($details->hostname) or $details->hostname == '')) {
+			unset($details->man_ip_address);
+			if ($details->show_output == TRUE) { echo "SNMP - No ip address or hostname provided - exiting.<br />"; }
 			return;
 		}
 
-
 		$module = new stdclass;
 
-		if ((!isset($details->hostname) or $details->hostname == '') and
-			(isset($details->man_ip_address) and $details->man_ip_address != '' and 
-			 $details->man_ip_address != '000.000.000.000' and $details->man_ip_address != '0.0.0.0')) {
+		if (!isset($details->hostname) or $details->hostname == '') {
 			$details->hostname = gethostbyaddr(ip_address_from_db($details->man_ip_address));
 		}
 
-		if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or 
-			$details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000') and
-			(isset($details->hostname) and $details->hostname != '')) {
+		if (!isset($details->man_ip_address) or $details->man_ip_address == '' or 
+			$details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000') {
 			$details->man_ip_address = gethostbyname($details->hostname);
 		}
 
@@ -93,10 +161,13 @@ if (!function_exists('get_snmp')) {
 				# it's just a name
 			}
 		}
-		$timeout = '300000';
+		$timeout = '3000000';
 		$retries = '2';
 
-		if (!extension_loaded('snmp')) { return($details); }
+		if (!extension_loaded('snmp')) { 
+			if ($details->show_output == TRUE) { echo "SNMP - PHP SNMP extension not loaded - exiting.<br />"; }
+			return($details); 
+		}
 
 		# test for SNMP version
 		# to do - test for v3
@@ -106,23 +177,84 @@ if (!function_exists('get_snmp')) {
 		$log_timestamp = date("M d H:i:s");
 		$log_hostname = php_uname('n');
 		$log_pid = getmypid();
-		$log_name = "snmp_helper.php";
+		$log_name = "H:snmp_helper F:get_snmp";
 
-		if ($test_v1 = @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
-			# v1 is contactable
-			$details->snmp_version = '1';
+		if (!isset($details->snmp_community) or $details->snmp_community == '') { 
+			$details->snmp_community = ''; 
+		} else {
+			if ($test_v2 = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+				# v2 is contactable
+				$details->snmp_version = '2c';
+				if ($details->show_output == TRUE) { echo "SNMP - v2 connected to $details->man_ip_address using supplied credentials.<br />"; }
+			} else {
+				$details->snmp_community = '';
+			}
 		}
 
-		if ($test_v2 = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
-			# v2 is contactable
-			$details->snmp_version = '2c';
+		# test the device specific credentials
+		if ($details->snmp_community == '' and isset($specific->snmp_community) and $specific->snmp_community > '') {
+			if ($test_v2 = @snmp2_get($details->man_ip_address, $specific->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+				# v2 is contactable
+				$details->snmp_version = '2c';
+				$details->snmp_community = $specific->snmp_community;
+				if ($details->show_output == TRUE) { echo "SNMP - v2 connected to $details->man_ip_address using device specific credentials.<br />"; }
+			}
+		}
+		
+		# test the supplied credentials
+		if ($details->snmp_community == '' and isset($supplied->snmp_community) and $supplied->snmp_community > '') {
+			if ($test_v2 = @snmp2_get($details->man_ip_address, $supplied->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+				# v2 is contactable
+				$details->snmp_version = '2c';
+				$details->snmp_community = $supplied->snmp_community;
+				if ($details->show_output == TRUE) { echo "SNMP - v2 connected to $details->man_ip_address using supplied credentials.<br />"; }
+			}
+		}
+
+		# test the open-audit default credentials
+		if ($details->snmp_community == '' and isset($default->default_snmp_community) and $default->default_snmp_community > '') {
+			if ($test_v2 = @snmp2_get($details->man_ip_address, $default->default_snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+				# v2 is contactable
+				$details->snmp_version = '2c';
+				$details->snmp_community = $default->default_snmp_community;
+				if ($details->show_output == TRUE) { echo "SNMP - v2 connected to $details->man_ip_address using default credentials.<br />"; }
+			}
+		}
+
+		# test the device specific credentials
+		if ($details->snmp_community == '' and isset($specific->snmp_community) and $specific->snmp_community > '') {
+			if ($test_v1 = @snmpget($details->man_ip_address, $specific->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+				# v1 is contactable
+				$details->snmp_version = '1';
+				$details->snmp_community = $specific->snmp_community;
+				if ($details->show_output == TRUE) { echo "SNMP - v1 connected to $details->man_ip_address using device specific credentials.<br />"; }
+			}
+		}
+
+		# test the supplied credentials
+		if ($details->snmp_community == '' and isset($supplied->snmp_community) and $supplied->snmp_community > '') {
+			if ($test_v1 = @snmpget($details->man_ip_address, $supplied->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+				# v1 is contactable
+				$details->snmp_version = '1';
+				$details->snmp_community = $supplied->snmp_community;
+				if ($details->show_output == TRUE) { echo "SNMP - v1 connected to $details->man_ip_address using supplied credentials.<br />"; }
+			}
+		}
+
+		# test the open-audit default credentials
+		if ($details->snmp_community == '' and isset($default->default_snmp_community) and $default->default_snmp_community > '') {
+			if ($test_v1 = @snmpget($details->man_ip_address, $default->default_snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+				# v1 is contactable
+				$details->snmp_version = '1';
+				$details->snmp_community = $default->default_snmp_community;
+				if ($details->show_output == TRUE) { echo "SNMP - v1 connected to $details->man_ip_address using default credentials.<br />"; }
+			}
 		}
 
 		$log_line = '';
 		if ($test_v1 == '' and $test_v2 == '') {
 			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " not SNMP scanned.\n";
-		} else {
-			#$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan started.\n";
+			if ($details->show_output == TRUE) { echo "SNMP - Unable to connect using SNMP (bad credentials or device not responding) - exiting.<br />"; }
 		}
 
 		if ($log_line > '') {
@@ -134,18 +266,18 @@ if (!function_exists('get_snmp')) {
 		if ($test_v2 > '') {
 			$details->snmp_version = '2';
 
+			if ($details->show_output == TRUE) { echo "SNMP - scanning using SNMP v2.<br />"; }
+
 			snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
 			$details->serial = "";
 			$details->model = "";
-			$details->man_model = "";
-			$details->type = "unknown";
-			$details->device_type = "unknown";
-			$details->man_type = "unknown"; 		
+			$details->type = "unknown";		
 
 			// hostname
 			if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
 				// we have an ip address, not a hostname - attempt to get a hostname
-				$details->hostname = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout, $retries));
+				$i = explode(".", snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout, $retries)));
+				$details->hostname = $i[0];
 				$details->hostname_length = 'short';
 			}
 
@@ -157,9 +289,10 @@ if (!function_exists('get_snmp')) {
 
 			// sysObjectID
 			$details->snmp_oid = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
+			if ($details->show_output == TRUE) { echo "SNMP - SysObjectId: $details->snmp_oid.<br />"; }
 			if ($details->snmp_oid > '') {
 				$details->manufacturer = get_oid($details->snmp_oid);
-				$details->man_manufacturer = $details->manufacturer;
+				if ($details->show_output == TRUE and $details->manufacturer > "") { echo "SNMP - Manufacturer: $details->manufacturer.<br />"; }
 				$explode = explode(".", $details->snmp_oid);
 				if (!isset($explode[6])) {
 					# for some reason we got an OID, but not enough to specify a manufacturer
@@ -170,53 +303,56 @@ if (!function_exists('get_snmp')) {
 					}
 				} 
 				if (file_exists(BASEPATH . '../application/helpers/snmp_' . $explode[6] . '_helper.php')) {
+					if ($details->show_output == TRUE) { echo "SNMP - Loading Model Helper for " . $explode[6] . ".<br />"; }
 					$CI->load->helper('snmp_' . $explode[6]);
 					get_oid_details($details);
-					if (isset($details->model) and $details->model > '') { $details->man_model = $details->model; } else { $details->man_model = ''; }
-					if (isset($details->type) and $details->type > '') { $details->device_type = $details->type; } else { $details->device_type = ''; }
-					if (isset($details->type) and $details->type > '') { $details->man_type = $details->type; } else { $details->man_type = ''; }
-					if (isset($details->serial) and $details->serial > '') { $details->man_serial = $details->serial; } else { $details->man_serial = ''; }	
 				} 
-
 			}
-
+			if ($details->show_output == TRUE) { echo "SNMP - Model: $details->model.<br />"; }
+			if ($details->show_output == TRUE and $details->type != 'unknown') { echo "SNMP - Type: $details->type.<br />"; }
 
 			// guess at manufacturer using entity mib
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
 				$details->manufacturer = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1"));
 			}
-			if ($details->manufacturer > '') { $details->man_manufacturer = $details->manufacturer; } else { $details->man_manufacturer = ''; }
 			
 
 			// guess at model using entity mib
 			if (!isset($details->model) or $details->model == '') {
 				$details->model =snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13"));
-			}	
-			if ($details->model > '') { $details->man_model = $details->model; } else { $details->man_model = ''; }
+				if ($details->show_output == TRUE) { echo "SNMP - Manufacturer: $details->manufacturer.<br />"; }
+			}
 
 
 			// guess at model using host resources mib
 			if (!isset($details->model) or $details->model == '' ) {
 				$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.3.1"));
+				if ($details->show_output == TRUE) { echo "SNMP - Manufacturer: $details->manufacturer.<br />"; }
 			}
-			if ($details->man_model == "" and $details->model > "") { $details->man_model = $details->model; }
 
 
 			// serial 
 			if (!isset($details->serial) or $details->serial == '') {
-				$details->serial = '';
 				# the entity mib serial
-				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11"));
+				if ($details->serial == '') {
+					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11"));
+					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP - Serial: $details->serial.<br />"; }
+				}
 
 				# generic snmp
-				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1"));
+				if ($details->serial == '') {
+					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1"));
+					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP - Serial: $details->serial.<br />"; }
+				}
 
 				# below is another generic attempt - works for my NetGear Cable Modem
 				if ($details->serial == '') {
 					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0"));
+					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP - Serial: $details->serial.<br />"; }
 				}
 			}
-			if ($details->serial > '') { $details->man_serial = $details->serial; } else { $details->man_serial = ''; }
+
+			if ($details->show_output == TRUE and $details->serial == "") { echo "SNMP - Serial: <span style='color: blue;'>not retrieved</span>.<br />"; }
 
 
 			// mac address
@@ -241,7 +377,6 @@ if (!function_exists('get_snmp')) {
 				if ($h == '1.3.6.1.2.1.25.3.1.5') {
 					# we have a printer
 					$details->type = 'network printer';
-					$details->man_type = 'network printer';
 					$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
 					if (count($i) > 0) {
 						$details->printer_duplex = 'False';
@@ -281,14 +416,12 @@ if (!function_exists('get_snmp')) {
 					$j = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.1.0"));
 					if (($i == intval($i)) and ($j == '2')) {
 						$details->type = 'switch';
-						$details->man_type = 'switch';
 					}
 
 					# If the device is a Router, the OID 1.3.6.1.2.1.4.1.0 should have a value of 1 (already read above)
 					if (!isset($details->type) or $details->type == '') {
 						if ($i == '1') {
 							$details->type = 'router';
-							$details->man_type = 'router';
 						}
 					}
 
@@ -297,7 +430,6 @@ if (!function_exists('get_snmp')) {
 					$i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.1.1"));
 					if (strpos(strtolower($i), "counter32") !== FALSE) {
 						$details->type = 'network printer';
-						$details->man_type = 'network printer';
 						// printer duplex
 						$details->printer_duplex = '';
 						$i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
@@ -334,10 +466,13 @@ if (!function_exists('get_snmp')) {
 					}
 					#}
 				}
+				if ($details->show_output == TRUE and ($details->type == 'unknown' or $details->type == '')) { 
+					echo "SNMP - Type: <span style='color: blue;'>unknown</span>.<br />";
+				} else {
+					echo "SNMP - Type: $details->type.<br />"; 
+				}
 			}
-			if (isset($details->type) and $details->type != '' and (!isset($details->man_type) or $details->man_type == '')) {
-				$details->man_type = $details->type;
-			} 
+			
 
 
 			// name
@@ -345,10 +480,6 @@ if (!function_exists('get_snmp')) {
 				$details->sysname = strtolower(snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0")));
 			}
 
-			// hostname
-			#if (!isset($details->hostname) or $details->hostname == '') {
-				$details->hostname = gethostbyaddr($details->man_ip_address);
-			#}
 
 			// uptime
 			if (!isset($details->uptime) or $details->uptime == '' ) {
@@ -386,28 +517,23 @@ if (!function_exists('get_snmp')) {
 
 		# snmp v1
 		if ($test_v1 > '' and $test_v2 == '') {
+			if ($details->show_output == TRUE) { echo "SNMP scanning using SNMP v1.<br />"; }
 			$details->snmp_version = '1';
 			$details->snmp_oid = '';
 			$details->snmp_oid = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
 			if ($details->snmp_oid > '') {
 				$details->manufacturer = get_oid($details->snmp_oid);
-				$details->man_manufacturer = $details->manufacturer;
 				$explode = explode(".", $details->snmp_oid);
 				if (file_exists(BASEPATH . '../application/helpers/snmp_' . $explode[6] . '_helper.php')) {
 					$CI->load->helper('snmp_' . $explode[6]);
 					get_oid_details($details);
 				}
-				if (isset($details->model) and $details->model > '') { $details->man_model = $details->model; } else { $details->man_model = ''; }
-				if (isset($details->type) and $details->type > '') { $details->device_type = $details->type; } else { $details->device_type = ''; }
-				if (isset($details->type) and $details->type > '') { $details->man_type = $details->type; } else { $details->man_type = ''; }
-				if (isset($details->serial) and $details->serial > '') { $details->man_serial = $details->serial; } else { $details->man_serial = ''; }
 			}
 
 			$h = @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.2.1");
 			if (strpos($h, "1.3.6.1.2.1.25.3.1") !== FALSE) {
 				# we have a printer
 				$details->type = "network printer";
-				$details->man_type = "network printer";
 				$details->printer_duplex = '';
 				$details->printer_color = '';
 				$i = @snmpwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
@@ -460,12 +586,10 @@ if (!function_exists('get_snmp')) {
 			if (mb_detect_encoding($details->serial) == 'UTF-8') {
 				$details->serial = mb_convert_encoding($details->serial, 'UTF-8', 'ASCII');
 			}
-			$details->man_serial = $details->serial;
 			
 			if (mb_detect_encoding($details->model) == 'UTF-8') {
 				$details->model = mb_convert_encoding($details->model, "UTF-8", "ASCII");
 			}
-			$details->man_model = $details->model;
 
 			# todo: below breaks on occasion when the external ip is not in snmp. We should really ask the device for any IPs it has and go from there.
 			$interface_number = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
@@ -474,14 +598,6 @@ if (!function_exists('get_snmp')) {
 			$details->mac_address = str_replace(" ", ":", $details->mac_address);
 
 			$details->subnet = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
-
-			// hostname
-			#if (!isset($details->hostname) or $details->hostname == '') {
-				$details->hostname = gethostbyaddr($details->man_ip_address);
-			#}
-			#$details->hostname = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
-			#$details->hostname_length = 'short';
-
 			$details->next_hop = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 		}
 
@@ -501,6 +617,7 @@ if (!function_exists('get_snmp')) {
 		}
 
 		unset($details->snmp_version);
+		if ($details->show_output == FALSE) { unset($details->show_output); }
 		$details->hostname = strtolower($details->hostname);
 		return $details;
 	}

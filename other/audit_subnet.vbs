@@ -1,9 +1,33 @@
-' Open Audit
-' Software and Hardware Inventory
-' (c) Mark Unwin 2012 
-' http://www.open-audit.org
-' Licensed under the AGPL v3
-' http://www.fsf.org/licensing/licenses/agpl-3.0.html 
+'  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+'
+'  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+'
+'  This file is part of Open-AudIT.
+'
+'  Open-AudIT is free software: you can redistribute it and/or modify
+'  it under the terms of the GNU Affero General Public License as published 
+'  by the Free Software Foundation, either version 3 of the License, or
+'  (at your option) any later version.
+'
+'  Open-AudIT is distributed in the hope that it will be useful,
+'  but WITHOUT ANY WARRANTY; without even the implied warranty of
+'  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+'  GNU Affero General Public License for more details.
+'
+'  You should have received a copy of the GNU Affero General Public License
+'  along with Open-AudIT (most likely in a file named LICENSE).
+'  If not, see <http://www.gnu.org/licenses/>
+'
+'  For further information on Open-AudIT or for a license other than AGPL please see
+'  www.opmantek.com or email contact@opmantek.com
+'
+' *****************************************************************************
+
+' @package Open-AudIT
+' @author Mark Unwin <marku@opmantek.com>
+' @version 1.2
+' @copyright Copyright (c) 2014, Opmantek
+' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 'Option Explicit
 
@@ -20,12 +44,12 @@ create_file = "n"
 submit_online = "y"
 subnet = ""
 syslog = "y"
-url = "http://localhost/index.php/system/add_nmap"
+url = "http://localhost/open-audit/index.php/system/add_nmap"
 echo_output = "n"
 
 ' only set the below if your PATH variable (in Windows) does not include this
-nmap_exe = "C:\program files(x86)\Nmap\"
-'nmap_exe = ""
+'nmap_exe = "C:\program files(x86)\Nmap\"
+nmap_exe = ""
 
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
@@ -121,7 +145,21 @@ if debugging > "0" then wscript.echo "My PID: " & current_pid
 if debugging > "0" then wscript.echo "Scanning Subnet: " & subnet
 
 command = "C:\Program Files (x86)\Nmap\nmap.exe -sP -PE -PP -n " & subnet
-set objExecObject = objShell.Exec(command)
+on error resume next
+	set objExecObject = objShell.Exec(command)
+	error_returned = Err.Number
+	error_description = Err.Description
+on error goto 0
+if (error_returned <> 0) then 
+	if debugging > "0" then wscript.echo "No Nmap found." end if
+	if syslog = "y" then
+		timestamp = get_timestamp()
+		log_entry = timestamp & " " & system_hostname & " " & current_pid & " No Nmap found, aborting" & vbcrlf
+		objTS.Write log_entry
+	end if
+	Err.Clear
+	WScript.Quit 1
+end if
 
 Do Until objExecObject.Status = 0
  WScript.Sleep 100
@@ -256,6 +294,10 @@ if submit_online = "y" then
 		objTS.Write log_entry
 	end if
 
+	' close the file so the PHP SNMP function can log to it
+	objTS.Close
+	Set objTS = Nothing
+
 	Err.clear
 	XmlObj = "ServerXMLHTTP"
 	Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
@@ -279,17 +321,42 @@ if submit_online = "y" then
 end if
 
 if create_file = "y" then
-	if debugging > "0" then wscript.echo "Creating file." end if
-	'echo -e "$result" > $xml_file
-	'chmod 777 $xml_file
+	if debugging > "0" then wscript.echo "Creating output File" end if
+	' Write the results to a file
+	file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
+	OutputFile = "subnet-" & subnet & "-" & file_timestamp & ".xml"
+	OutputFile = replace(OutputFile, "/", "-")
+	if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
+	Err.clear
+	on error resume next
+	Set objFileToWrite = CreateObject("Scripting.FileSystemObject").OpenTextFile(OutputFile,2,true)
+	objFileToWrite.WriteLine(result)
+	objFileToWrite.Close
+	Set objFileToWrite = Nothing
+	error_returned = Err.Number
+	error_description = Err.Description
+	on error goto 0
+	if (error_returned <> 0) then
+		if debugging > "0" then wscript.echo "Problem writing to file." end if
+		if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+		if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+	else
+		if debugging > "0" then wscript.echo "Output file created." end if
+	end if
 end if
 
 if syslog = "y" then
+	set objTS = objFSO.OpenTextFile("c:\xampplite\open-audit\other\open-audit.log", FOR_APPENDING, True)
 	timestamp = get_timestamp()
 	log_entry = timestamp & " " & system_hostname & " " & current_pid & " Job complete." & vbcrlf
 	objTS.Write log_entry
+	objTS.Close
+	Set objTS = Nothing
 end if
 
 function get_timestamp()
-	get_timestamp = Year(Now()) & "-" & Right("0" & Month(Now()),2) & "-" & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
+	' removed the below and using month short name, no year, as per other logging
+	' get_timestamp = Year(Now()) & "-" & Right("0" & Month(Now()),2) & "-" & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
+
+	get_timestamp = monthname(month(now()), True) & " " & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
 end function

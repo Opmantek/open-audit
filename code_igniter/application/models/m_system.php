@@ -1,9 +1,34 @@
-<?php
+<?php 
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
  * @package Open-AudIT
- * @author Mark Unwin <mark.unwin@gmail.com>
- * @version 1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -416,22 +441,120 @@ class M_system extends MY_Model {
 	}
 
 	function get_system_hostname($system_id) {
+		// $sql = "SELECT 
+		// 		system.hostname 
+		// 	FROM 
+		// 		system 
+		// 	WHERE 
+		// 		(system.system_id = ? OR
+		// 		system.system_key = ? OR
+		// 		system.hostname = ? )
+		// 	ORDER BY 
+		// 		system.timestamp
+		// 	LIMIT 1";
 		$sql = "SELECT 
 				system.hostname 
 			FROM 
 				system 
 			WHERE 
-				(system.system_id = ? OR
-				system.system_key = ? OR
-				system.hostname = ? )
+				system.system_id = ? 
 			ORDER BY 
 				system.timestamp
 			LIMIT 1";
 		$sql = $this->clean_sql($sql);
-		$data = array($system_id, $system_id, $system_id);
+		//$data = array($system_id, $system_id, $system_id);
+		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
 		return ($row->hostname);
+	}
+
+	function search_device($search) {
+		$search_ip = $search;
+		# remove a trailing "." if present because the ip padding will insert "000" and not match any ip
+		if (substr($search_ip, -1) == ".") {
+			$search_ip = substr($search_ip, 0, -1);
+		}
+		$myip = explode(".",$search_ip);
+		foreach ($myip as $index => $data) {
+			$myip[$index] = mb_substr("000" . $myip[$index], -3);
+		}
+		$search_ip = implode(".", $myip);
+		$sql = "SELECT 
+				system.system_id, 
+				system.hostname, 
+				system.man_ip_address, 
+				system.man_type, 
+				system.man_icon 
+			FROM 
+				system LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
+			WHERE 
+				( system.man_ip_address LIKE '%" . $search_ip . "%' OR
+				system.hostname LIKE '%" . $search . "%' OR 
+				sys_hw_network_card_ip.ip_address_v4 LIKE '%" . $search_ip . "%' OR 
+				sys_hw_network_card_ip.ip_address_v6 LIKE '%" . $search . "%' ) AND 
+				system.man_status = 'production' 
+			GROUP BY 
+				system.system_id 
+			ORDER BY 
+				system.hostname";
+		$sql = $this->clean_sql($sql);
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		for ($i=0; $i<count($result); $i++) {
+			$result[$i]->man_ip_address = $this->ip_address_from_db($result[$i]->man_ip_address);
+		}
+		#echo "<pre>\n";
+		#print_r($result);
+		#echo "</pre>\n";
+		#exit();
+		return ($result);
+	}
+
+	function search_device_columns() {
+		$i = new stdclass();
+		$result = array();
+		$i->column_order = '3';
+		$i->column_name = 'Icon';
+		$i->column_variable = 'man_icon';
+		$i->column_type = "image";
+		$i->column_align = "center";
+		$i->column_secondary = "man_type";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[0] = $i;
+		$i = new stdclass();
+		$i->column_order = '1';
+		$i->column_name = 'Type';
+		$i->column_variable = 'man_type';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[1] = $i;
+		$i = new stdclass();
+		$i->column_order = '0';
+		$i->column_name = 'Name';
+		$i->column_variable = 'hostname';
+		$i->column_type = "link";
+		$i->column_align = "left";
+		$i->column_secondary = "system_id";
+		$i->column_ternary = "";
+		$i->column_link = $this->data['config']->oae_url . "/system_summary/";
+		$result[2] = $i;
+		$i = new stdclass();
+		$i->column_order = '1';
+		$i->column_name = 'IP Address';
+		$i->column_variable = 'man_ip_address';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[3] = $i;
+		$i = new stdclass();
+		return ($result);
 	}
 
 	function get_system_popup($system_id) {
@@ -770,6 +893,9 @@ class M_system extends MY_Model {
 		if (!isset($details->man_status)) { $details->man_status = 'production'; }
 		if (!isset($details->man_type)) { $details->man_type = $details->type; }
 
+		# we now set a default location - 0 the location_id 
+		if (!isset($details->man_location_id)) { $details->man_location_id = '0'; }
+
 		if ((strripos($details->manufacturer, "vmware") !== false) or 
 			(strripos($details->manufacturer, "parallels") !== false) or 
 			(strripos($details->manufacturer, "virtual") !== false)) {
@@ -810,6 +936,10 @@ class M_system extends MY_Model {
 
 		$query = $this->db->query($sql);
 		$details->system_id = $this->db->insert_id();
+
+
+		# update the device icon
+		$this->m_system->reset_icons($details->system_id);
 
 		# insert the network card details of we have them
 		if ((isset($details->mac_address) and $details->mac_address != '') and 
@@ -1052,13 +1182,17 @@ class M_system extends MY_Model {
 				}
 			}
 			
-			if ($row->man_icon > '') {
+			if ($row->man_icon > '' and $row->man_icon != 'unknown') {
 				if (isset($details->man_icon)) { 
 					unset($details->man_icon); 
 				}
 			} else {
 				if (!isset($details->man_icon) or $details->man_icon == '') {
-					$details->man_icon = $details->type;
+					if (isset($details->icon) and $details->icon > "") {
+						$details->man_icon = $details->icon;
+					} else {
+						$details->man_icon = $details->type;
+					}
 				}
 			}
 		}	
@@ -1092,11 +1226,18 @@ class M_system extends MY_Model {
 		$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
 		$sql .= " WHERE system_id = '" . $details->system_id . "'";
 		$query = $this->db->query($sql);
+
+		# finally, update the device icon
+		$this->m_system->reset_icons($details->system_id);
 	}
 
 
-	function reset_icons() {
-		$sql = "SELECT system_id, man_type, type, os_name, man_os_name, os_family, man_os_family FROM system";
+	function reset_icons($system_id = '') {
+		if ($system_id != '') {
+			$sql = "SELECT system_id, man_type, type, os_name, man_os_name, os_family, man_os_family, icon, man_icon FROM system WHERE system_id = " . $system_id;
+		} else {
+			$sql = "SELECT system_id, man_type, type, os_name, man_os_name, os_family, man_os_family, icon, man_icon FROM system";
+		}
 		$query = $this->db->query($sql);
 		$result = $query->result();
 		$count = $query->num_rows();
@@ -1209,7 +1350,12 @@ class M_system extends MY_Model {
 			}
 			if ($details->icon == '') { $details->icon = 'unknown'; }
 			$details->icon = str_replace(" ", "_", strtolower($details->icon));
-			$details->man_icon = $details->icon;
+			if ($details->man_icon == "computer" or 
+				$details->man_icon = "unknown" or 
+				$details->man_icon = "general purpose" or 
+				$details->man_icon = "" ) {
+				$details->man_icon = $details->icon;
+			}
 			$sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
 			$data = array("$details->icon", "$details->man_icon", "$details->system_id");
 			$query = $this->db->query($sql, $data);

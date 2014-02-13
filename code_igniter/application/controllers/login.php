@@ -1,9 +1,35 @@
 <?php
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
  * @package Open-AudIT
- * @author Mark Unwin <mark.unwin@gmail.com>
- * @version 1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -35,7 +61,6 @@ class Login extends CI_Controller {
 		$data['oae_message'] = "";
 		$license = "";
 
-
 		$this->load->model('m_oa_config');
 		$oae_url = $this->m_oa_config->get_config_item("oae_url");
 		#echo "<!-- 1 " . $oae_url . " -->\n";
@@ -43,12 +68,17 @@ class Login extends CI_Controller {
 		if ($oae_url > "") {
 			#echo "<!-- " . $oae_url . " -->\n";
 			# remove leading and add trailing slash on the url, just so we are consistent
-			if (substr($oae_url, -1) != '/') { $oae_url = $oae_url . '/'; }
+			if (substr($oae_url, -1, 1) != '/') { $oae_url = $oae_url . '/'; }
 			#if (substr($oae_url, 0, 1) == '/') { $oae_url = substr($oae_url, 1); }
 
 			# if we already have http... in the oae_url variable, no need to do anything.
 			if (strpos(strtolower($oae_url), "http") === FALSE) {
 				# if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
+
+				# Make sure we have a leading /
+				if (substr($oae_url, 0, 1) != "/") {
+					$oae_url = "/" . $oae_url;
+				}
 
 				# need to create a link to OAE on port 8042 to check the license
 				# we cannot detect and use the browser http[s] as it may being used in the client browser, 
@@ -62,7 +92,7 @@ class Login extends CI_Controller {
 					$oae_url = "http://" . $_SERVER['HTTP_HOST'] . $oae_url;
 				}
 			} else {
-				# we already have a URL like http://something, leave it alone
+				# we already have a URL like http://something/omk/oae/ - leave it alone
 				$oae_license_url = $oae_url . "license";
 			}
 
@@ -70,7 +100,7 @@ class Login extends CI_Controller {
 			ini_set('default_socket_timeout', 3);  
 			# get the license status from the OAE API
 			# license status are: valid, invalid, expired, none
-			$license = @file_get_contents($oae_license_url, FALSE, $timeout);
+			$license = @file_get_contents($oae_license_url, FALSE);
 			if ($license !== FALSE) {
 				# remove the unneeded html tags
 				$license = str_replace("<pre>", "", $license);
@@ -164,7 +194,7 @@ class Login extends CI_Controller {
 			$variable['org_id'] = '';
 			$variable['windows_user_work_1'] = 'physicalDeliveryOfficeName';
 			$variable['windows_user_work_2'] = 'company';
-			$variable['debugging'] = '0';
+			$variable['debugging'] = '1';
 			$variable['ping_target'] = 'n';
 
 			foreach ($variable as $name => $value) {

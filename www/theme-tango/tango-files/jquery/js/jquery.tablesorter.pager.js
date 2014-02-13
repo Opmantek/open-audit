@@ -1,3 +1,10 @@
+/**
+* Author: Christian Bach
+* Maintainer: Rob Garrison (Mottie)
+* Version: 2.14.5 (changelog)      
+* Licence: Dual licensed under MIT or GPL licenses.
+*/
+
 (function($) {
 	$.extend({
 		tablesorterPager: new function() {

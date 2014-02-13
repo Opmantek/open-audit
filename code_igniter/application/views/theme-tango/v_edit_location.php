@@ -1,4 +1,37 @@
-<?php
+<?php 
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
+/**
+ * @package Open-AudIT
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
+ * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+ */
+
 if (isset($error_message))
 {
 	$error_message = "<font color='red'>&nbsp;" . $error_message . "</font>";
@@ -34,6 +67,7 @@ echo form_open('admin_location/edit_location') . "\n";
 					<option <?php if ($key->location_type == "Factory") { echo "selected "; } ?>value='Factory'>Factory</option>
 					<option <?php if ($key->location_type == "Fire Station") { echo "selected "; } ?>value='Fire Station'>Fire Station</option>
 					<option <?php if ($key->location_type == "Guard") { echo "selected "; } ?>value='Guard'>Guard</option>
+					<option <?php if ($key->location_type == "Head Office") { echo "selected "; } ?>value='Head Office'>Head Office</option>
 					<option <?php if ($key->location_type == "High School") { echo "selected "; } ?>value='High School'>High School</option>
 					<option <?php if ($key->location_type == "Hospital") { echo "selected "; } ?>value='Hospital'>Hospital</option>
 					<option <?php if ($key->location_type == "Hotel") { echo "selected "; } ?>value='Hotel'>Hotel</option>

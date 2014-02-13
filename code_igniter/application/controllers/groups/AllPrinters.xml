@@ -3,7 +3,7 @@
 	<details>
 		<group_name>All Printers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_status = 'production' and (type = 'printer' or man_type = 'printer' or type = 'network printer' or man_type = 'network printer')]]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_status = 'production' and (man_type = 'printer' or man_type = 'network printer')]]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_manufacturer, system.man_model, system.man_serial, system.man_ip_address, system.man_type, system.man_icon FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id]]></group_display_sql>

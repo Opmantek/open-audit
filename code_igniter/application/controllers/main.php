@@ -1,9 +1,35 @@
 <?php
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
  * @package Open-AudIT
- * @author Mark Unwin <mark.unwin@gmail.com>
- * @version 1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
  
@@ -257,6 +283,22 @@ class Main extends MY_Controller {
 		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
 	}
 
+	function search_device() {
+		# search for a mcth on PRODUCTION devices only.
+		# search for name, ip
+		$this->data['search'] = urldecode($this->uri->segment(3,0));
+		$this->data['search'] = html_entity_decode($this->data['search']);
+		$this->load->model("m_system");
+		$this->data['query'] = $this->m_system->search_device($this->data['search']);
+		$this->data['heading'] = 'Search Result (' . $this->data['search'] . ")";
+		$this->data['column'] = $this->m_system->search_device_columns();
+		$this->data['count'] = count($this->data['query']);
+		$this->data['include'] = 'v_dump'; 
+		$this->data['sortcolumn'] = '0';
+		$this->data['export_report'] = 'y';
+		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+	}
+
 	function disk_graph() {
 		$this->load->model("m_partition");
 		$this->load->model("m_system");
@@ -322,18 +364,6 @@ class Main extends MY_Controller {
 		$this->load->view('v_template', $this->data);
 	}
 
-	function help_how_do_i() {
-		$this->data['heading'] = 'How Do I?'; 
-		$this->data['include'] = 'v_help_how_do_i'; 
-		$this->load->view('v_template', $this->data);
-	}
-
-	function help_importing() {
-		$this->data['heading'] = 'Importing Devices'; 
-		$this->data['include'] = 'v_help_importing'; 
-		$this->load->view('v_template', $this->data);
-	}
-
 	function help_oae() {
 		$this->data['heading'] = 'Open-AudIT Enterprise'; 
 		$this->data['include'] = 'v_help_oae'; 
@@ -341,7 +371,7 @@ class Main extends MY_Controller {
 	}
 
 	function help_opmaps() {
-		$this->data['heading'] = 'opMaps'; 
+		$this->data['heading'] = 'Maps'; 
 		$this->data['include'] = 'v_help_opmaps'; 
 		$this->load->view('v_template', $this->data);
 	}
@@ -600,10 +630,31 @@ class Main extends MY_Controller {
 				$this->load->library('encrypt');
 				$this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
 				$this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
+				#echo "<pre>\n";
+				if (!isset($this->data['decoded_access_details']->ip_address)) { $this->data['decoded_access_details']->ip_address = ''; }
+				if (!isset($this->data['decoded_access_details']->snmp_version)) { $this->data['decoded_access_details']->snmp_version = ''; }
+				if (!isset($this->data['decoded_access_details']->snmp_community)) { $this->data['decoded_access_details']->snmp_community = ''; }
+				if (!isset($this->data['decoded_access_details']->ssh_username)) { $this->data['decoded_access_details']->ssh_username = ''; }
+				if (!isset($this->data['decoded_access_details']->ssh_password)) { $this->data['decoded_access_details']->ssh_password = ''; }
+				if (!isset($this->data['decoded_access_details']->windows_username)) { $this->data['decoded_access_details']->windows_username = ''; }
+				if (!isset($this->data['decoded_access_details']->windows_password)) { $this->data['decoded_access_details']->windows_password = ''; }
+				if (!isset($this->data['decoded_access_details']->windows_domain)) { $this->data['decoded_access_details']->windows_domain = ''; }
+				#var_dump($this->data['decoded_access_details']);
+				#exit();
+			} else {
+				$this->data['decoded_access_details'] = new stdClass();
+				$this->data['decoded_access_details']->ip_address = "";
+				$this->data['decoded_access_details']->snmp_version = "";
+				$this->data['decoded_access_details']->snmp_community = "";
+				$this->data['decoded_access_details']->ssh_username = "";
+				$this->data['decoded_access_details']->ssh_password = "";
+				$this->data['decoded_access_details']->windows_username = "";
+				$this->data['decoded_access_details']->windows_password = "";
+				$this->data['decoded_access_details']->windows_domain = "";
 			}
 
 		}
-
+#exit();
 		$this->data['include'] = "";
 		$formatted_type = str_replace(" ", "_", trim($this->data['system'][0]->man_type));
 		
@@ -645,6 +696,11 @@ class Main extends MY_Controller {
 			# check if an image matching the model exists
 			if ( ($system->man_picture == '') AND (file_exists($model_file_exists)) ) {
 				$system->man_picture = '' . $model_formatted . '.jpg';
+			}
+
+			# test for a generic ibm aix device
+			if (($system->man_picture == '') and (strtolower($system->man_os_family) == "ibm aix")) {
+				$system->man_picture = "ibm_aix.jpg";
 			}
 
 			# check if an image matching the type exists

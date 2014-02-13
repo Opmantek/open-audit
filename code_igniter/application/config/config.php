@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-$config['web_internal_version'] = '201311219';
-$config['web_display_version'] = '1.0.7';
+$config['web_internal_version'] = '20140204';
+$config['web_display_version'] = '1.2';
 # $config['debug'] = FALSE;
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +23,7 @@ if(isset($_SERVER['HTTP_HOST']))
 {
     $config['base_url'] = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
     $config['base_url'] .= '://'. $_SERVER['HTTP_HOST'];
-    $config['base_url'] .= isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80' ? ( ':'.$_SERVER['SERVER_PORT'] ) : '';
+    #$config['base_url'] .= isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80' ? ( ':'.$_SERVER['SERVER_PORT'] ) : '';
     $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 }
 else
@@ -31,7 +31,6 @@ else
     $config['base_url'] = 'http://localhost/';
 }
 
-#$config['base_url'] = str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
 
 /*
 |--------------------------------------------------------------------------
@@ -143,7 +142,7 @@ $config['subclass_prefix'] = 'MY_';
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:|(),_\-!=&[]';
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:|(),_\-!=&[]@*';
 
 
 /*

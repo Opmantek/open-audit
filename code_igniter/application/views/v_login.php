@@ -1,16 +1,36 @@
-<?php
+<?php 
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
- * Open-AudIT
- *
- * An open source network auditing application
- *
  * @package Open-AudIT
- * @author Mark Unwin <mark.unwin@gmail.com>
- * @version v1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
- 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -24,7 +44,6 @@
 	#container { width: 950px; margin: 0 auto; padding: 10px 0; border: 1px solid #555; border-radius: 5px;}
 	a { color: #101010; text-decoration: none }
 	a:hover { color: #729FCF; }
-	<!-- body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #dcd2bd; font-size:12px; color:#111;} -->
 	body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #fff; font-size:12px; color:#111;}
 	h2 { border-color:#DBD9C5; border-style:solid; border-width:0pt 0pt 1px; color:#555555; font-size:22px; font-weight:bold; padding:0px 0px 1px; }
 	img {border:0;}
@@ -60,8 +79,11 @@ if (!isset($logo)) {
 				</div>
 		<?php echo form_close(); ?>
 		<?php if ($systems == '0' ) {
-				echo "<div style=\"width: 100%; text-align: center;\"><br />&nbsp;<br />No systems, groups or reports are in the database.<br />
-				Initial credentials are admin / password.<br />Please log in and change these ASAP.<br /><br /></div>\n";
+				echo "<div style='width: 100%; text-align: center;'><br />&nbsp;<br />
+				<span style='font-size: 10pt; font-style: italic; color: blue;' >No devices are in the database.</span><br />
+				<span style='font-size: 10pt; font-style: italic; color: green;'>Initial login credentials are admin / password.</span><br />
+				<span style='font-size: 10pt; font-style: italic; color: red;'  >Please log in and change these ASAP.</span><br />
+				<br /></div>\n";
 			}
 		?>
 	</div>
@@ -76,6 +98,10 @@ if (!isset($logo)) {
 	function audit_my_pc() {
 		location.href = "<?php base_url(); ?>/index.php/login/audit_my_pc";
 	}
+<?php if ($systems == '0' ) { ?>
+document.getElementById("username").value = "admin";
+document.getElementById("password").value = "password"; 
+<?php } ?>
 </script>
 </body>
 </html>

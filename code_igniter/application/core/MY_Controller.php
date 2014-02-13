@@ -1,9 +1,35 @@
 <?php
+#
+#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published 
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+
 /**
  * @package Open-AudIT
- * @author Mark Unwin
- * @version 1.0.4
- * @copyright Copyright (c) 2013, Opmantek
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.2
+ * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -264,33 +290,40 @@ class MY_Controller extends CI_Controller {
 		if ($this->data['heading'] == "Devices Not Seen 30") {$i = "Devices Not Seen"; }
 		if ($this->data['heading'] == "Device Types") {$i = "data"; }
 		if ($this->data['heading'] == "Locations") {$i = "locations"; }
-		echo "{\"$i\": [\n";
-		$items = '';
-		foreach ($query AS $details) {
-			$items .= "\t{\n";
-			$output = "";
-			foreach ($details as $attribute=>$value) {
-				if ($attribute == "man_ip_address") {
-					$value = ip_address_from_db($value); 
-				}
-				$pos = strpos($value, "{\"");
-				if ($pos !== false) {
-					$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
-				} else {
-					$value = str_replace ('"', '\"', $value);
-					if (is_numeric($value) ) {
-						$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
-					} else { 
-						$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+		if (count($query) > 0) {
+			echo "{\"$i\": [\n";
+			$items = '';
+			foreach ($query AS $details) {
+				$items .= "\t{\n";
+				$output = "";
+				foreach ($details as $attribute=>$value) {
+					if ($attribute == "man_ip_address") {
+						$value = ip_address_from_db($value); 
 					}
-					#$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+					$pos = strpos($value, "{\"");
+					if ($pos !== false) {
+						$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
+					} else {
+						$value = str_replace ('"', '\"', $value);
+						if (is_numeric($value) ) {
+							$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
+						} else { 
+							$output .= "\t\t\"" . $attribute . "\": \"" . $value . "\",\n";
+						}
+					}
 				}
+				$items .= substr($output, 0, -2) . "\n\t},\n";
 			}
-			$items .= substr($output, 0, -2) . "\n\t},\n";
+			$items = substr($items, 0, -2);
+			$items .= "\n]}";
+			echo $items;
+		} else {
+			if ($this->data['heading'] == "Device Types") {
+				echo "{\"$i\": [{\"y\": 100, \"count\": 0, \"name\": \"No Devices\"}]}";
+			} else {
+				echo "{\"$i\": [{\"x\": \"" . time() . "\", \"y\": 0}]}";
+			}
 		}
-		$items = substr($items, 0, -2);
-		$items .= "\n]}";
-		echo $items;
 		header('Content-Type: application/json');
 		header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.json"');
 		header('Cache-Control: max-age=0');
