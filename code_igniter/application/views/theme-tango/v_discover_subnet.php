@@ -98,7 +98,9 @@ switch ($type) {
 				<p><label for='windows_domain'><?php echo __("Windows Domain"); ?>: </label> <input type='text' id='windows_domain' name='windows_domain' tabindex='8' title='Windows Domain' value='<?php echo $config->default_windows_domain; ?>' /></p>
 				<?php } ?>
 
+				<?php if ($type > "") { ?>
 				<p><label for='debug'><?php echo __("Debug"); ?>: </label> <input type='checkbox' id='debug' name='debug' tabindex='9' title='Debug' />Do not set this in normal use.</p>
+				<?php } ?>
 
 				<p><label for='submit'>&nbsp;</label><input type='submit' name='submit' id='submit' tabindex='10' value='<?php echo __($submit_text); ?>' /></p>
 				<?php if ($warning > '') { echo "<p><br /><br />$warning</p>\n"; } ?>
