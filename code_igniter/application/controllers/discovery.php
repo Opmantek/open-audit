@@ -104,9 +104,6 @@ class Discovery extends CI_Controller {
 				$url = "";
 			}
 
-			
-			
-
 			if ((php_uname('s') == 'Windows NT') and ($error == '')) {
 				# Windows host - start the script locally
 				$filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "\\open-audit\\other";
@@ -134,11 +131,6 @@ class Discovery extends CI_Controller {
 				$command_string = NULL;
 			}
 
-
-
-
-
-
 			if ((php_uname('s') == 'Linux' or php_uname('s') == "Darwin") and ($error == '')) {
 				# linux or OSX host - copy the script to the DC and start it
 				$filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/open-audit/other";
@@ -164,7 +156,6 @@ class Discovery extends CI_Controller {
 					$return_var = NULL;
 				}
 
-
 				# copy the windows audit script
 				if ($error == '') {
 					$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
@@ -185,7 +176,6 @@ class Discovery extends CI_Controller {
 					$output = NULL;
 					$return_var = NULL;
 				}
-
 
 				# start the domain audit
 				if ($error == "") {
@@ -418,7 +408,6 @@ class Discovery extends CI_Controller {
 				$url = base_url();
 			}
 
-
 			if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
 				if ($subnet > '' ) {
 
@@ -494,6 +483,18 @@ class Discovery extends CI_Controller {
 
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
 
 	function process_subnet() {
 		# accept or process the output of the discover subnet script - nmap details
