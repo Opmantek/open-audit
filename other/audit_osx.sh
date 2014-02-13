@@ -29,11 +29,18 @@ O=$IFS
 IFS=$'\n'
 
 url="http://localhost/open-audit/index.php/system/add_system"
-submit_online="y"
-create_file="n"
+submit_online="n"
+create_file="y"
 org_id=""
 terminal_print="n"
 debugging="3"
+
+# import the command line arguements
+for arg in "$@"; do
+	parameter=${arg%%=*}
+	value=${arg##*=} 
+	eval "$parameter"=\""$value\""
+done
 
 
 if [ "$debugging" -gt "0" ]; then
@@ -42,8 +49,8 @@ fi
 system_timestamp=`date +'%F %T'`
 system_uuid=`system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g'`
 system_hostname=`networksetup -getcomputername`
-system_domain=""
-system_description=""
+system_domain=`more /etc/resolv.conf | grep domain | cut -d" " -f2`
+#system_description=""
 system_os_version=`sw_vers | grep "ProductVersion:" | cut -f2`
 system_os_name="OSX $system_os_version"
 system_serial=`system_profiler SPHardwareDataType | grep "Serial Number (system):" | cut -d":" -f2 | sed 's/^ *//g'`
@@ -61,7 +68,6 @@ if [[ "$system_model" == *"MacBook"* ]]; then
 	system_form_factor="laptop"
 fi
 
-
 xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 echo  "form_systemXML=<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
@@ -69,7 +75,7 @@ echo  "	<sys>" >> $xml_file
 echo  "		<timestamp>$system_timestamp</timestamp>" >> $xml_file
 echo  "		<uuid>$system_uuid</uuid>" >> $xml_file
 echo  "		<hostname>$system_hostname</hostname>" >> $xml_file
-echo  "		<domain></domain>" >> $xml_file
+echo  "		<domain>$system_domain</domain>" >> $xml_file
 echo  "		<description></description>" >> $xml_file
 echo  "		<type>computer</type>" >> $xml_file
 echo  "		<os_icon>apple</os_icon>" >> $xml_file
@@ -161,8 +167,8 @@ fi
 processor_cores=`sysctl hw.ncpu | awk '{print $2}'`
 processor_socket=""
 processor_description=`sysctl -n machdep.cpu.brand_string`
-processor_speed=`system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1`
-processor_speed=`echo "scale = 0; $processor_speed * 1000" | bc`
+processor_speed=`system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
+processor_speed=`echo "scale = 0; $processor_speed*1000" | bc`
 processor_manufacturer="GenuineIntel"
 processor_power_management_supported=""
 
