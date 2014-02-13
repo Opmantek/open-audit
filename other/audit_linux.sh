@@ -394,6 +394,18 @@ if [ "$check_commands" = "y" ]; then
 	exit
 fi
 
+# test pinging the server hosting the URL
+if [ "$submit_online" = "y" ]; then
+	server=`echo "$url" | cut -d"/" -f3 | cut -d: -f1`
+	test=`ping 192.168.0.122 -n -c 3 | grep "100% packet loss"`
+	if [ "$test" != "" ]; then
+		if [ $debugging > 0 ]; then
+			echo "Server $server is not responding to a ping. Cannot submit audit result. Exiting."
+		fi
+		exit
+	fi
+fi
+
 ########################################################
 # CREATE THE AUDIT FILE                                #
 ########################################################
@@ -1435,7 +1447,10 @@ if [ $debugging -gt 0 ]; then
 fi
 
 if [ "$submit_online" = "y" ]; then
-	$OA_ECHO "Submitting results to server"
+	if [ $debugging -gt 1 ]; then
+		$OA_ECHO "Submitting results to server"
+		$OA_EHHO "URL: $url"
+	fi
 	$OA_WGET --delete-after --post-file="$xml_file" $url 2>/dev/null
 fi
 
