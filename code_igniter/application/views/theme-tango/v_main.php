@@ -158,7 +158,7 @@ if ($config->distinct_groups == 'y') {
 <?php } // end of distinct groups ?>
 <?php
 } else {
-	echo "<br />" . __('<h2>Welcome to Open-AudIT.</h2><br />Make sure you add both Groups and Reports by going to: <br />Admin -> Groups -> Activate Group &nbsp;&nbsp;&nbsp;and also to <br />Admin -> Reports -> Activate Report.');
+	echo "<br />" . __('<h2>Welcome to Open-AudIT.</h2><br />Please ensure you set the appropriate configuration items at Menu -> Admin -> Config. You should set all the "default_*" items, to take advantage of Discovery. Once that has been done, why not try running Discovery (Menu -> Admin -> Discovery) on your environment?<br /><br />Don\'t forget you can activate extra Groups via the Menu -> Admin -> Groups -> Activate Group item. This will automatically Group items and allow you to set User Access on a per Group Basis.<br /><br />Extra Reports are available at Menu -> Admin -> Reports -> Actiavte Report. Take a look - you might find exactly the Report you need.');
 }
 ?>
 <script type="text/javascript">
