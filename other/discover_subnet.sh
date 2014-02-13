@@ -102,6 +102,7 @@ write_log "$log_entry"
 
 if [ "$debugging" -gt 0 ]; then
 	echo "Scanning Subnet: $subnet"
+	echo "URL: $url"
 fi
 
 # Nmap command line switches explained
@@ -293,7 +294,6 @@ if [[ "$hosts" != "" ]]; then
 		fi
 
 		if [[ "$echo_output" == "y" ]]; then
-			echo "$url"
 			echo "$result"
 		fi
 
