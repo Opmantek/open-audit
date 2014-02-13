@@ -99,7 +99,7 @@ switch ($type) {
 				<?php } ?>
 
 				<?php if ($type > "") { ?>
-				<p><label for='debug'><?php echo __("Debug"); ?>: </label> <input type='checkbox' id='debug' name='debug' tabindex='9' title='Debug' />Do not set this in normal use.</p>
+				<p><label for='debug'><?php echo __("Debug"); ?>: </label> <input type='checkbox' id='debug' name='debug' tabindex='9' title='Debug' />Do not set this in normal use. This may take a while for the page to return - please be patient.</p>
 				<?php } ?>
 
 				<p><label for='submit'>&nbsp;</label><input type='submit' name='submit' id='submit' tabindex='10' value='<?php echo __($submit_text); ?>' /></p>

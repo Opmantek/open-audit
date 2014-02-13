@@ -3485,7 +3485,7 @@ if address_width = "64" then
 	objCtx.Add "__RequiredArchitecture", True
 	Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
-	if struser <> "" then
+	if ((struser <> "") and (instr(local_net, strComputer) = 0)) then
 		' Username & Password provided - assume not a domain local PC.
 		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
 	else
@@ -4406,7 +4406,7 @@ if address_width = "64" then
 	objCtx.Add "__RequiredArchitecture", True
 	Set objLocator = CreateObject("Wbemscripting.SWbemLocator")
 
-	if struser <> "" then
+	if ((struser <> "") and (instr(local_net, strComputer) = 0)) then
 		' Username & Password provided - assume not a domain local PC.
 		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait, objCtx)
 	else
