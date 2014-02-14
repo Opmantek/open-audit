@@ -137,7 +137,8 @@ class Discovery extends CI_Controller {
 
 				# copy the domain audit script
 				if ($error == '') {
-					$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\"";
+					#$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\"";
+					$command_string = "smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\"";
 					exec($command_string, $output, $return_var);
 					if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 						echo "\nCommand: $command_string\n\n";
@@ -158,7 +159,8 @@ class Discovery extends CI_Controller {
 
 				# copy the windows audit script
 				if ($error == '') {
-					$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
+					#$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
+					$command_string = "smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
 					exec($command_string, $output, $return_var);
 					if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 						echo "\nCommand: $command_string\n\n";
@@ -179,7 +181,8 @@ class Discovery extends CI_Controller {
 
 				# start the domain audit
 				if ($error == "") {
-					$command_string = "screen -D -m $filepath/winexe -U " . $_POST['domain'] . "/" . $_POST['user'] . "%" . $_POST['password'] . " --uninstall //" . $_POST['server'] . " \"cscript c:\windows\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=c:\windows\audit_windows.vbs url=" . $url . " debugging=0 struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " \" ";
+					#$command_string = "screen -D -m $filepath/winexe -U " . $_POST['domain'] . "/" . $_POST['user'] . "%" . $_POST['password'] . " --uninstall //" . $_POST['server'] . " \"cscript c:\windows\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=c:\windows\audit_windows.vbs url=" . $url . " debugging=0 struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " \" ";
+					$command_string = "screen -D -m winexe -U " . $_POST['domain'] . "/" . $_POST['user'] . "%" . $_POST['password'] . " --uninstall //" . $_POST['server'] . " \"cscript c:\windows\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=c:\windows\audit_windows.vbs url=" . $url . " debugging=0 struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " \" ";
 					exec($command_string, $output, $return_var);
 					if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
 						echo "\nCommand: $command_string\n\n";
@@ -436,9 +439,9 @@ class Discovery extends CI_Controller {
 					} else {
 						$command_string = "nohup $filepath/discover_subnet.sh subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
 						@exec($command_string, $output, $return_var);
-					}
-					if ($return_var != '0') { 
-						$error = "Discovery subnet starting script discover_subnet.sh ($subnet) has failed"; $this->log_event($error); 
+						if ($return_var != '0') { 
+							$error = "Discovery subnet starting script discover_subnet.sh ($subnet) has failed"; $this->log_event($error); 
+						}
 					}
 					$command_string = NULL;
 					$output = NULL;
@@ -806,7 +809,8 @@ class Discovery extends CI_Controller {
 
 						if (php_uname('s') == 'Linux') {
 							$error = "";
-							$command_string = "$filepath/smbclient \\\\\\\\" . $details->man_ip_address . "\\\\admin$ -U \"" . $details->windows_domain . "\\" . $details->windows_username . "%" . $details->windows_password . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
+							#$command_string = "$filepath/smbclient \\\\\\\\" . $details->man_ip_address . "\\\\admin$ -U \"" . $details->windows_domain . "\\" . $details->windows_username . "%" . $details->windows_password . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
+							$command_string = "smbclient \\\\\\\\" . $details->man_ip_address . "\\\\admin$ -U \"" . $details->windows_domain . "\\" . $details->windows_username . "%" . $details->windows_password . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
 							exec($command_string, $output, $return_var);
 							if ($return_var != '0') { 
 								$error = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to $details->man_ip_address has failed"; 
@@ -824,7 +828,8 @@ class Discovery extends CI_Controller {
 							$output = NULL;
 							$return_var = NULL;
 							if ($error == "") {
-								$command_string = "screen -D -m $filepath/winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=1 \" ";
+								#$command_string = "screen -D -m $filepath/winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=1 \" ";
+								$command_string = "screen -D -m winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=1 \" ";
 								exec($command_string, $output, $return_var);
 								if ($return_var != '0') { 
 									$error = "C:discovery F:process_subnet Attempting to run audit_windows.vbs on $details->man_ip_address has failed"; 
@@ -966,8 +971,6 @@ class Discovery extends CI_Controller {
 										} else {
 											$command_string = "sshpass -p \"" . $details->ssh_password . "\" ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . $details->ssh_username . "@" . $details->man_ip_address . " \"/tmp/audit_linux.sh submit_online=y create_file=n url=" . $url . "index.php/system/add_system debugging=1 \"";
 										}
-										echo "DEBUG command: " . $command_string . "\n";
-										#exit();
 										@exec($command_string, $output, $return_var);
 										if ($return_var != '0') { $error = "SSH audit command for linux audit script on $details->man_ip_address failed"; $this->log_event($error); }
 										if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
