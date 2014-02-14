@@ -81,7 +81,7 @@ switch ($type) {
 			<td width='100%'>
 				<p><label for='subnet'><?php echo __($scan_title); ?>: </label> <input type='text' id='subnet' name='subnet' tabindex='1' title='Subnet'  /></p>
 
-				<?php if ($type == "" or $type == "linux") { ?>
+				<?php if ($type == "" or $type == "linux" or (php_uname('s') == "Linux" and $type == "windows")) { ?>
 					<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $config->default_network_address; ?>' />The ip address or resolvable hostname used by external devices to talk to Open-AudIT (This should be the real IP Address of this Open-AudIT server).</p>
 				<?php } ?>
 
