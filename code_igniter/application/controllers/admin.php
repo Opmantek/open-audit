@@ -2380,6 +2380,7 @@ class Admin extends MY_Controller {
 				}
 				if ($returned_result->config_name == 'display_version') {
 					$db_display_version = $returned_result->config_value;
+					$this->data['config']->display_version = $returned_result->config_value;
 				}
 			}
 		}
