@@ -588,6 +588,12 @@ class MY_Controller extends CI_Controller {
 		echo "\t</thead>\n";
 		echo "\t<tbody>\n";
 		$i = 0;
+		if ((strpos(base_url(), '127.0.0.1') !== false) or (strpos(base_url(), 'localhost') !== false)) {
+			$base_url = str_replace("http://127.0.0.1", "", base_url());
+			$base_url = str_replace("http://localhost", "", $base_url);
+		} else {
+			$base_url = base_url();
+		}
 		foreach($data['query'] as $row) {
 			$i++;
 			echo "\t\t<tr>\n";
@@ -652,10 +658,10 @@ class MY_Controller extends CI_Controller {
 							if ($row->$column_variable_name == "") { $row->$column_variable_name = "unknown"; }
 							if ($column_align == '') {$column_align = 'center';}
 							if ($column->column_name == 'Icon') {
-								echo "\t\t\t<td style=\"text-align: $column_align;\"><img src=\"" . str_replace("index.php", "", site_url()) . "theme-tango/tango-images/16_" . str_replace(" ", "_", $row->$column_variable_name) . ".png\" style='border-width:0px;' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
+								echo "\t\t\t<td style=\"text-align: $column_align;\"><img src=\"" . $base_url . "theme-tango/tango-images/16_" . str_replace(" ", "_", $row->$column_variable_name) . ".png\" style='border-width:0px;' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
 							}
 							if ($column->column_name == 'Picture') {
-								echo "\t\t\t<td style=\"text-align: $column_align;\"><img src=\"" . str_replace("index.php", "", site_url()) . "device_images/" . $row->$column_variable_name . ".jpg\" style='border-width:0px; height:100px' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
+								echo "\t\t\t<td style=\"text-align: $column_align;\"><img src=\"" . $base_url . "device_images/" . $row->$column_variable_name . ".jpg\" style='border-width:0px; height:100px' title=\"" . $row->$column_variable_name_sec . "\" alt=\"" . $row->$column_variable_name_sec . "\" /></td>\n";
 							}
 							break;
 
@@ -676,7 +682,7 @@ class MY_Controller extends CI_Controller {
 							if ($column_variable_name_ter > '') {
 								$image = base_url() . "theme-tango/tango-images/16_" . $column_variable_name_ter . ".png";
 							} else {
-								$image = base_url() . "theme-tango/tango-images/16_browser.png";
+								$image = $base_url . "theme-tango/tango-images/16_browser.png";
 							}
 							
 							if (isset($row->$column_variable_name)) { 
