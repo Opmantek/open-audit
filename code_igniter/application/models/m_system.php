@@ -577,7 +577,7 @@ class M_system extends MY_Model {
 							man_class, man_os_group, man_os_family, man_os_name, 
 							man_manufacturer, man_model, man_serial, 
 							man_form_factor, 
-							location_name, date(system.timestamp) as 'timestamp'   
+							location_name, last_seen, last_seen_by  
 				FROM 		system
 				LEFT JOIN   oa_location on system.man_location_id = oa_location.location_id 
 				WHERE 		system.system_id = ? ";
@@ -1148,6 +1148,12 @@ class M_system extends MY_Model {
 				$details->man_os_family = $details->os_family;
 			}
 
+			# if the database entry for man_type is not set or 'unknown', update it
+			if ($row->man_type == '' or $row->man_type == 'unknown') {
+				if (isset($details->type) and $details->type > '' and $details->type != 'unknown') {
+					$details->man_type = $details->type;
+				}
+			}
 
 			# if the database entry for man_os_name is empty but we have something from an audit, set it.
 			if ($row->man_os_name == '' and isset($details->os_name)) { 
@@ -1187,13 +1193,13 @@ class M_system extends MY_Model {
 					unset($details->man_icon); 
 				}
 			} else {
-				if (!isset($details->man_icon) or $details->man_icon == '') {
+				if (!isset($details->man_icon) or $details->man_icon == '' or $details->man_icon == 'unknown') {
 					if (isset($details->icon) and $details->icon > "") {
 						$details->man_icon = $details->icon;
 					} else {
 						$details->man_icon = $details->type;
 					}
-				}
+				} 
 			}
 		}	
 
