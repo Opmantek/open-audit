@@ -49,6 +49,151 @@ class M_system extends MY_Model {
 		if (count($row) > 0) {return($row->access_details);} else {return;}
 	}
 
+	function update_credentials($credentials, $system_id) {
+		if ($system_id == '') { return; }
+	 	$this->load->library('encrypt');
+		$sql = "SELECT access_details FROM system WHERE system_id = ? LIMIT 1";
+		$data = array($system_id);
+		$query = $this->db->query($sql, $data);
+		$row = $query->row();
+		if (isset($row->access_details) and $row->access_details > '') {
+	        $decoded_access_details = $this->encrypt->decode($row->access_details);
+	        $decoded_access_details = json_decode($decoded_access_details);
+	        if (!isset($decoded_access_details->ip_address)) {
+	            $decoded_access_details->ip_address = '';
+	        }
+	        if (!isset($decoded_access_details->snmp_version)) {
+	            $decoded_access_details->snmp_version = '';
+	        }
+	        if (!isset($decoded_access_details->snmp_community)) {
+	            $decoded_access_details->snmp_community = '';
+	        }
+	        if (!isset($decoded_access_details->ssh_username)) {
+	            $decoded_access_details->ssh_username = '';
+	        }
+	        if (!isset($decoded_access_details->ssh_password)) {
+	            $decoded_access_details->ssh_password = '';
+	        }
+	        if (!isset($decoded_access_details->windows_username)) {
+	            $decoded_access_details->windows_username = '';
+	        }
+	        if (!isset($decoded_access_details->windows_password)) {
+	            $decoded_access_details->windows_password = '';
+	        }
+	        if (!isset($decoded_access_details->windows_domain)) {
+	            $decoded_access_details->windows_domain = '';
+	        }
+	    } else {
+	        $decoded_access_details = new stdClass();
+	        $decoded_access_details->ip_address = "";
+	        $decoded_access_details->snmp_version = "";
+	        $decoded_access_details->snmp_community = "";
+	        $decoded_access_details->ssh_username = "";
+	        $decoded_access_details->ssh_password = "";
+	        $decoded_access_details->windows_username = "";
+	        $decoded_access_details->windows_password = "";
+	        $decoded_access_details->windows_domain = "";
+	    }
+	    # we now have any existing credentials - compare and update if required
+	    if (isset($credentials->man_ip_address)) {
+	    	$new_credentials['man_ip_address'] = $credentials->man_ip_address;
+	    } else {
+	    	$new_credentials['man_ip_address'] = $decoded_access_details->man_ip_address;
+	    }
+
+	    if (isset($credentials->snmp_community)) {
+	    	$new_credentials['snmp_community'] = $credentials->snmp_community;
+	    } else {
+	    	$new_credentials['snmp_community'] = $decoded_access_details->snmp_community;
+	    }
+
+	    if (isset($credentials->ssh_username)) {
+	    	$new_credentials['ssh_username'] = $credentials->ssh_username;
+	    } else {
+	    	$new_credentials['ssh_username'] = $decoded_access_details->ssh_username;
+	    }
+
+	    if (isset($credentials->ssh_password)) {
+	    	$new_credentials['ssh_password'] = $credentials->ssh_password;
+	    } else {
+	    	$new_credentials['ssh_password'] = $decoded_access_details->ssh_password;
+	    }
+	    
+	    if (isset($credentials->windows_username)) {
+	    	$new_credentials['windows_username'] = $credentials->windows_username;
+	    } else {
+	    	$new_credentials['windows_username'] = $decoded_access_details->windows_username;
+	    }
+
+	    if (isset($credentials->windows_password)) {
+	    	$new_credentials['windows_password'] = $credentials->windows_password;
+	    } else {
+	    	$new_credentials['windows_password'] = $decoded_access_details->windows_password;
+	    }
+
+	    if (isset($credentials->windows_domain)) {
+	    	$new_credentials['windows_domain'] = $credentials->windows_domain;
+	    } else {
+	    	$new_credentials['windows_domain'] = $decoded_access_details->windows_domain;
+	    }
+
+	    # now encrypt what we have and store it
+	    $encoded = json_encode($new_credentials);
+        $encoded = $this->encrypt->encode($encoded);
+        $sql = "UPDATE system SET access_details = ? WHERE system_id = ?";
+        $data = array($encoded, $system_id);
+        $query = $this->db->query($sql, $data);
+        return;
+	}
+
+	function get_credentials($system_id) {
+		if ($system_id == '') { return; }
+		$sql = "SELECT access_details FROM system WHERE system_id = ? LIMIT 1";
+		$data = array($system_id);
+		$query = $this->db->query($sql, $data);
+		$row = $query->row();
+		if (isset($row->access_details) and $row->access_details > '') {
+	 		$this->load->library('encrypt');
+	        $decoded_access_details = $this->encrypt->decode($row->access_details);
+	        $decoded_access_details = json_decode($decoded_access_details);
+	        if (!isset($decoded_access_details->ip_address)) {
+	            $decoded_access_details->ip_address = '';
+	        }
+	        if (!isset($decoded_access_details->snmp_version)) {
+	            $decoded_access_details->snmp_version = '';
+	        }
+	        if (!isset($decoded_access_details->snmp_community)) {
+	            $decoded_access_details->snmp_community = '';
+	        }
+	        if (!isset($decoded_access_details->ssh_username)) {
+	            $decoded_access_details->ssh_username = '';
+	        }
+	        if (!isset($decoded_access_details->ssh_password)) {
+	            $decoded_access_details->ssh_password = '';
+	        }
+	        if (!isset($decoded_access_details->windows_username)) {
+	            $decoded_access_details->windows_username = '';
+	        }
+	        if (!isset($decoded_access_details->windows_password)) {
+	            $decoded_access_details->windows_password = '';
+	        }
+	        if (!isset($decoded_access_details->windows_domain)) {
+	            $decoded_access_details->windows_domain = '';
+	        }
+	    } else {
+	        $decoded_access_details = new stdClass();
+	        $decoded_access_details->ip_address = "";
+	        $decoded_access_details->snmp_version = "";
+	        $decoded_access_details->snmp_community = "";
+	        $decoded_access_details->ssh_username = "";
+	        $decoded_access_details->ssh_password = "";
+	        $decoded_access_details->windows_username = "";
+	        $decoded_access_details->windows_password = "";
+	        $decoded_access_details->windows_domain = "";
+	    }
+		return($decoded_access_details);
+	}
+
 	function create_system_key($details) {
 		$details = (object) $details;
 		if (!isset($details->system_key) or $details->system_key == '') {
@@ -1213,6 +1358,14 @@ class M_system extends MY_Model {
 
 		if (isset($details->man_ip_address)) {
 			$details->man_ip_address = ip_address_to_db($details->man_ip_address);
+		}
+
+		# if we don't have a real ip address, remove it
+		if ((isset($details->man_ip_address)) and
+			($details->man_ip_address == '' or 
+			$details->man_ip_address == '0.0.0.0' or
+			$details->man_ip_address == '000.000.000.000')) {
+				unset($details->man_ip_address);
 		}
 
 		$sql = "SHOW COLUMNS FROM system";
