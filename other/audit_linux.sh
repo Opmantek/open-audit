@@ -548,15 +548,15 @@ system_os_version=`$OA_UNAME -r`
 
 # Get the System Serial Number
 system_serial=""
-system_serial=`$OA_DMIDECODE -s system-serial-number`
+system_serial=`$OA_DMIDECODE -s system-serial-number 2>/dev/null`
 
 # Get the System Model
 system_model=""
-system_model=`$OA_DMIDECODE -s system-product-name`
+system_model=`$OA_DMIDECODE -s system-product-name 2>/dev/null`
 
 # Get the System Manufacturer
 system_manufacturer=""
-system_manufacturer=`$OA_DMIDECODE -s system-manufacturer`
+system_manufacturer=`$OA_DMIDECODE -s system-manufacturer 2>/dev/null`
 
 # Get the System Uptime
 system_uptime=`$OA_CAT /proc/uptime | $OA_CUT -d. -f1`
@@ -566,7 +566,7 @@ system_form_factor=""
 if [[ $system_model = "Bochs" || $system_model = "KVM" || $system_model = "Virtual Machine" ]]; then
 	system_form_factor="Virtual"
 else
-	system_form_factor=`$OA_DMIDECODE -s chassis-type`
+	system_form_factor=`$OA_DMIDECODE -s chassis-type 2>/dev/null`
 	if [ "$system_form_factor" = "<OUT OF SPEC>" ]; then
 		system_form_factor="Unknown"
 	fi
@@ -731,33 +731,19 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 # Get processor socket type
-processor_socket=`$OA_DMIDECODE -t processor |\
-	$OA_GREP Upgrade |\
-	$OA_HEAD -n1 |\
-	$OA_CUT -d: -f2`
+processor_socket=`$OA_DMIDECODE -t processor 2>/dev/null | $OA_GREP Upgrade | $OA_HEAD -n1 | $OA_CUT -d: -f2 2>/dev/null`
 
 # Get processor description
-processor_description=`$OA_CAT /proc/cpuinfo |\
-	$OA_GREP "model name" |\
-	$OA_HEAD -n1 |\
-	$OA_CUT -d: -f2`
+processor_description=`$OA_CAT /proc/cpuinfo | $OA_GREP "model name" | $OA_HEAD -n1 | $OA_CUT -d: -f2`
 
 # Get processor speed
-processor_speed=`$OA_CAT /proc/cpuinfo |\
-	$OA_GREP "cpu MHz" |\
-	$OA_HEAD -n1 |\
-	$OA_CUT -d: -f2 |\
-	$OA_AWK '{printf("%d\n",$1 + 0.5)}'`
+processor_speed=`$OA_CAT /proc/cpuinfo | $OA_GREP "cpu MHz" | $OA_HEAD -n1 | $OA_CUT -d: -f2 | $OA_AWK '{printf("%d\n",$1 + 0.5)}'`
 
 # Get processor manufacturer
-processor_manufacturer=`$OA_CAT /proc/cpuinfo |\
-	$OA_GREP vendor_id |\
-	$OA_HEAD -n1 |\
-	$OA_CUT -d: -f2`
+processor_manufacturer=`$OA_CAT /proc/cpuinfo | $OA_GREP vendor_id | $OA_HEAD -n1 | $OA_CUT -d: -f2`
 
 # Get processor power management support
-processor_power_management_supported=`$OA_DMIDECODE -t processor |\
-	$OA_GREP Thermal`
+processor_power_management_supported=`$OA_DMIDECODE -t processor 2>/dev/null | $OA_GREP Thermal 2>/dev/null`
 
 if [ "$processor_power_management_supported" != "" ]; then
 	processor_power_management_supported="True"
@@ -789,9 +775,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 memory_slots="0"
-memory_slots=`$OA_DMIDECODE -t 17 2>/dev/null |\
-	$OA_AWK '/DMI type 17/{print $2}' |\
-	$OA_WC -l`
+memory_slots=`$OA_DMIDECODE -t 17 2>/dev/null | $OA_AWK '/DMI type 17/{print $2}' | $OA_WC -l`
 
 if [ "$memory_slots" != "0" ]; then
 	#'''''''''''''''''''''''''''''''''
@@ -799,44 +783,54 @@ if [ "$memory_slots" != "0" ]; then
 	#'''''''''''''''''''''''''''''''''
 
 	$OA_ECHO "	<memory>">> $xml_file
-	for memory_handle in $($OA_DMIDECODE -t 17 |\
-		$OA_AWK '/DMI type 17/{print $2}'); do
+
+	for memory_handle in $($OA_DMIDECODE -t 17 2>/dev/null | $OA_AWK '/DMI type 17/{print $2}'); do
+
 			# memory_detail and memory_type are switched here to match the Windows results
-			bank_info=$($OA_DMIDECODE -t 17 |\
-				$OA_SED -n '/^Handle '"$memory_handle"'/,/^$/p')
-			memory_bank=$($OA_ECHO "$bank_info" |\
-				$OA_AWK '/^[^B]+Locator:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
-				$OA_AWK '{gsub(" ","");print}')
+			bank_info=$($OA_DMIDECODE -t 17 2>/dev/null | $OA_SED -n '/^Handle '"$memory_handle"'/,/^$/p')
+
+			memory_bank=$($OA_ECHO "$bank_info" | $OA_AWK '/^[^B]+Locator:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | $OA_AWK '{gsub(" ","");print}')
+			
 			memory_detail=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Type:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_AWK '{gsub(" ","");print}')
+
 			if [ "$memory_detail" = "<OUT OF SPEC>" ]; then
 				system_form_factor="Unknown"
 			fi
+			
 			memory_form_factor=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Form Factor/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_CUT -d" " -f1)
+			
 			memory_type=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Type Detail:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_CUT -d" " -f1)
+			
 			memory_capacity=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Size:/{print $2}' |\
 				$OA_SED 's/[^0-9]//g')
+			
 			if [ $($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Size:/{print $3}') = "kB" ];then
 					memory_capacity=`$OA_EXPR $memory_capacity / 1024`
 			fi
+			
 			memory_speed=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Speed:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_SED 's/[[:space:]]MHz.*//g')
+			
 			memory_tag=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Bank L.*:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}')
+			
 			memory_serial=$($OA_ECHO "$bank_info" |\
 					$OA_AWK '/Serial Number:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 					$OA_CUT -d" " -f1)
+			
 			if  [ "$memory_serial" = "Not" ] || [ "$memory_serial" = "Not " ] || [ "$memory_serial" = "Not Specified" ]; then
 				memory_serial=""
 			fi
+			
 			# Ignore empty slots
 			if [ "$memory_capacity" != "" ]; then
 				$OA_ECHO "		<slot>">> $xml_file
@@ -1046,7 +1040,6 @@ net_cards=`for dir in /sys/class/net/*;
                do [ -e $dir/device ] && {
 	          $OA_ECHO "$dir $(readlink -f $dir/device)" | $OA_AWK -F\/ '{ print $9"/"$5 }' | $OA_AWK -F\: '{ print $2":"$3 }' | tr -d '[:blank:]';
 	       }; done`;
-
 if [ "$net_cards" != "" ]; then
 	# Store the IP Addresses Information in a variable to write it later on the file
 	addr_info=""
@@ -1100,7 +1093,8 @@ if [ "$net_cards" != "" ]; then
 			# we don't have ethtool installed
 			net_card_type="Ethernet 802.3"
 		else
-			net_card_speed=`$OA_ETHTOOL $net_card_id |\
+			net_card_speed=""
+			net_card_speed=`$OA_ETHTOOL $net_card_id 2>/dev/null |\
 				$OA_GREP Speed |\
 				$OA_CUT -d: -f2 |\
 				$OA_SED 's/[^0-9]//g'`
@@ -1121,7 +1115,6 @@ if [ "$net_cards" != "" ]; then
 	fi
 
 	net_card_status=$(trim `$OA_CAT /sys/class/net/$net_card_id/operstate`)
-
 	if [ "$net_card_status" = "up" ]; then
 		net_card_status="Connected" 
 	else
@@ -1421,7 +1414,7 @@ $OA_ECHO "	</routes>" >> $xml_file
 if [ "$debugging" -gt "0" ]; then
 	$OA_ECHO "Netstat Info"
 fi
-netstatdump=`netstat -lntup | grep -v "(only servers)" | grep -v "Foreign Address"`
+netstatdump=`netstat -lntup 2>/dev/null | grep -v "(only servers)" | grep -v "Foreign Address"`
 $OA_ECHO "	<netstat>" >> $xml_file
 $OA_ECHO "		<![CDATA[$netstatdump]]>" >> $xml_file
 $OA_ECHO "	</netstat>" >> $xml_file
