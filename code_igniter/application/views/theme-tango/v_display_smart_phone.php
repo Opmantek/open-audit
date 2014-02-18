@@ -92,7 +92,7 @@ if ($access_level > 7) {
 		<fieldset id="system_menu" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
 			<div id="menu1" class="menuTree">
-				<ul>
+				<ul style="display: block;">
 					<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_cell_phone.png" /><a href="#" id="toggle_summary_phone">Phone Details</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
