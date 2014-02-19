@@ -88,7 +88,31 @@ if ($access_level > 7)
 $link_warranty = '';
 $link_downloads = '';
 
+if (isset($config->show_passwords) and $config->show_passwords != 'y') {
+	if (isset($decoded_access_details->ssh_password)) {
+		$ssh_password = str_replace($decoded_access_details->ssh_password, str_repeat("*", strlen($decoded_access_details->ssh_password)), $decoded_access_details->ssh_password);
+	} else {
+		$ssh_password = '';
+	}
+	if (isset($decoded_access_details->windows_password)) {
+		$windows_password = str_replace($decoded_access_details->windows_password, str_repeat("*", strlen($decoded_access_details->windows_password)), $decoded_access_details->windows_password);
+	} else {
+		$windows_password = '';
+	}
+} else {
+	$ssh_password = $decoded_access_details->ssh_password;
+	$windows_password = $decoded_access_details->windows_password;
+}
 
+if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y') {
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = str_replace($decoded_access_details->snmp_community, str_repeat("*", strlen($decoded_access_details->snmp_community)), $decoded_access_details->snmp_community);
+	} else {
+		$snmp_community = '';
+	}
+} else {
+	$snmp_community = $decoded_access_details->snmp_community;
+}
 
 ?>
 
@@ -148,7 +172,8 @@ $link_downloads = '';
 				<?php foreach($system as $key): ?>
 					<div>
 						<div style="float:left; width:50%;">
-							<p><label for="hostname"><?php echo __('Hostname')?>: </label><span id="hostname"><b><?php echo print_something($key->hostname)?></b></span></p>
+							<?php if ($key->hostname == '') {$key->hostname = '-'; } 
+							echo "<p><label for=\"hostname\">" . __('Hostname') . ": </label><span id=\"hostname\" $edit>$key->hostname</span></p>"; ?>
 							<p><label for="man_ip_address"><?php echo __('IP Address')?>: </label><span id="man_ip_address" <?php echo $edit?>><?php echo print_something(ip_address_from_db($key->man_ip_address))?></span></p>
 							<p><label for="man_type_select"><?php echo __('Type')?>: </label>
 							<?php if ($access_level > 7) { ?>
@@ -212,13 +237,13 @@ $link_downloads = '';
 				<p><label for='credentials_ip_address'>IP Address: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
 
 				<p><label for='credentials_ip_address'>SNMP Version: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
-				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($decoded_access_details->snmp_community); ?></span></p>
+				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($snmp_community); ?></span></p>
 
 				<p><label for='credentials_ssh_username'>SSH Username: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
-				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($decoded_access_details->ssh_password); ?></span></p>
+				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($ssh_password); ?></span></p>
 
 				<p><label for='credentials_windows_username'>Windows Username: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
-				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($decoded_access_details->windows_password); ?></span></p>
+				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($windows_password); ?></span></p>
 				<p><label for='credentials_windows_domain'>Windows Domain: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
 			</div>
 

@@ -135,6 +135,33 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		$link_warranty = "<a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
 	}
 }
+
+if (isset($config->show_passwords) and $config->show_passwords != 'y') {
+	if (isset($decoded_access_details->ssh_password)) {
+		$ssh_password = str_replace($decoded_access_details->ssh_password, str_repeat("*", strlen($decoded_access_details->ssh_password)), $decoded_access_details->ssh_password);
+	} else {
+		$ssh_password = '';
+	}
+	if (isset($decoded_access_details->windows_password)) {
+		$windows_password = str_replace($decoded_access_details->windows_password, str_repeat("*", strlen($decoded_access_details->windows_password)), $decoded_access_details->windows_password);
+	} else {
+		$windows_password = '';
+	}
+} else {
+	$ssh_password = $decoded_access_details->ssh_password;
+	$windows_password = $decoded_access_details->windows_password;
+}
+
+if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y') {
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = str_replace($decoded_access_details->snmp_community, str_repeat("*", strlen($decoded_access_details->snmp_community)), $decoded_access_details->snmp_community);
+	} else {
+		$snmp_community = '';
+	}
+} else {
+	$snmp_community = $decoded_access_details->snmp_community;
+}
+
 ?>
 
 
@@ -413,13 +440,13 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 				<p><label for='credentials_ip_address'>IP Address: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
 
 				<p><label for='credentials_ip_address'>SNMP Version: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
-				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($decoded_access_details->snmp_community); ?></span></p>
+				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($snmp_community); ?></span></p>
 
 				<p><label for='credentials_ssh_username'>SSH Username: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
-				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($decoded_access_details->ssh_password); ?></span></p>
+				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($ssh_password); ?></span></p>
 
 				<p><label for='credentials_windows_username'>Windows Username: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
-				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($decoded_access_details->windows_password); ?></span></p>
+				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($windows_password); ?></span></p>
 				<p><label for='credentials_windows_domain'>Windows Domain: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
 			</div>
 
@@ -889,12 +916,12 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Bios Details')?></span></legend>
 				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_gnome-cpu.png' alt='' title='' width='48'/>
 				<?php foreach($bios as $key): ?>
-					<p><label for="bios_description"><?php echo __('Description')?>: </label><span id="bios_description"><?php echo $key->bios_description?></span></p>
-					<p><label for="bios_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="bios_manufacturer"><?php echo $key->bios_manufacturer?></span></p>
-					<p><label for="bios_serial"><?php echo __('Serial')?>: </label><span id="bios_serial"><?php echo $key->bios_serial?>&nbsp;</span></p>
-					<p><label for="bios_smversion"><?php echo __('SMVersion')?>: </label><span id="bios_smversion"><?php echo $key->bios_smversion?></span></p>
-					<p><label for="bios_version"><?php echo __('Version')?>: </label><span id="bios_version"><?php echo $key->bios_version?></span></p>
-					<p><label for="bios_asset_tag"><?php echo __('Asset Tag')?>: </label><span id="bios_asset_tag"><?php echo $key->bios_asset_tag?></span></p>
+					<p><label for="bios_description"><?php echo __('Description')?>: </label><span id="bios_description"><?php echo print_something($key->bios_description); ?></span></p>
+					<p><label for="bios_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="bios_manufacturer"><?php echo print_something($key->bios_manufacturer); ?></span></p>
+					<p><label for="bios_serial"><?php echo __('Serial')?>: </label><span id="bios_serial"><?php echo print_something($key->bios_serial); ?>&nbsp;</span></p>
+					<p><label for="bios_smversion"><?php echo __('SMVersion')?>: </label><span id="bios_smversion"><?php echo print_something($key->bios_smversion); ?></span></p>
+					<p><label for="bios_version"><?php echo __('Version')?>: </label><span id="bios_version"><?php echo print_something($key->bios_version); ?></span></p>
+					<p><label for="bios_asset_tag"><?php echo __('Asset Tag')?>: </label><span id="bios_asset_tag"><?php echo print_something($key->bios_asset_tag); ?></span></p>
 				<?php endforeach; ?>
 				<?php echo display_custom_field('view_hardware_bios',  $additional_fields_data, $edit); ?>
 			</fieldset>

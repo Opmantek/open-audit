@@ -84,7 +84,34 @@ foreach($system_location as $key) {
 
 if ($access_level > 7) {
 	$edit = 'class="editText" style="color:blue;"';
-} 
+}
+
+if (isset($config->show_passwords) and $config->show_passwords != 'y') {
+	if (isset($decoded_access_details->ssh_password)) {
+		$ssh_password = str_replace($decoded_access_details->ssh_password, str_repeat("*", strlen($decoded_access_details->ssh_password)), $decoded_access_details->ssh_password);
+	} else {
+		$ssh_password = '';
+	}
+	if (isset($decoded_access_details->windows_password)) {
+		$windows_password = str_replace($decoded_access_details->windows_password, str_repeat("*", strlen($decoded_access_details->windows_password)), $decoded_access_details->windows_password);
+	} else {
+		$windows_password = '';
+	}
+} else {
+	$ssh_password = $decoded_access_details->ssh_password;
+	$windows_password = $decoded_access_details->windows_password;
+}
+
+if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y') {
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = str_replace($decoded_access_details->snmp_community, str_repeat("*", strlen($decoded_access_details->snmp_community)), $decoded_access_details->snmp_community);
+	} else {
+		$snmp_community = '';
+	}
+} else {
+	$snmp_community = $decoded_access_details->snmp_community;
+}
+
 ?>
 <!-- below is the menu div that sits on the left -->
 <div style="float: left; width: 180px; margin-left: 0%; vertical-align: top; position: fixed;" >
@@ -135,7 +162,8 @@ if ($access_level > 7) {
 				<?php foreach($system as $key): ?>
 					<div>
 						<div style="float:left; width:50%;">
-							<?php if ($key->hostname) { echo "<p><label for=\"hostname\">" . __('Hostname') . ": </label><span id=\"hostname\">$key->hostname</span></p>"; } ?>
+							<?php if ($key->hostname == '') {$key->hostname = '-'; } 
+							echo "<p><label for=\"hostname\">" . __('Hostname') . ": </label><span id=\"hostname\" $edit>$key->hostname</span></p>"; ?>
 							<?php if ($key->man_ip_address) { echo "<p><label for=\"man_ip_address\">" . __('IP Address') . ": </label><span id=\"man_ip_address\" $edit>" . ip_address_from_db($key->man_ip_address) . "</span></p>"; } ?>
 							<p><label for="man_environment_select"><?php echo __('Environment')?>: </label>
 							<?php if ($access_level > 7) { ?>
@@ -188,15 +216,29 @@ if ($access_level > 7) {
 	<div id="view_summary_credentials" style="float: left; width: 100%;">
 	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
 	<br />
-	<form action="#" method="post" class="niceforms">
+	<form action="../../admin_system/system_add_credentials" method="post" class="niceforms">
 		<fieldset id="summary_credentials_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Credentials')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
-			<span>NOTE - Read only at the moment. Can be set via Edit Multiple Systems from a Report page.</span>
-			<?php foreach($decoded_access_details as $key => $value) { 
-				echo "<p><label for='" . $key . "'>" . ucwords(str_replace("_", " ", $key)) . ": </label>";
-				echo "<span id='" . $key . "'>" . print_something($value) . "</span></p>";
-			} ?>
+			<div style="float:right; width: 120px; text-align:center">
+				<img style='margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
+				<?php if ($access_level > 7) { ?>
+					<br /><input type="button" onclick="display_credentials();" value='Edit' title='Edit' name='credentials_edit' alt='Edit' width='24' />
+				<?php } ?>
+			</div>
+			<div id="credentials">
+				<p><label for='credentials_ip_address'>IP Address: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
+
+				<p><label for='credentials_ip_address'>SNMP Version: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
+				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($snmp_community); ?></span></p>
+
+				<p><label for='credentials_ssh_username'>SSH Username: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
+				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($ssh_password); ?></span></p>
+
+				<p><label for='credentials_windows_username'>Windows Username: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
+				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($windows_password); ?></span></p>
+				<p><label for='credentials_windows_domain'>Windows Domain: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
+			</div>
+
 		</fieldset>
 	</form>
 	<?php } ?>
