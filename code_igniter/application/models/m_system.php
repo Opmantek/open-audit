@@ -95,46 +95,52 @@ class M_system extends MY_Model {
 	        $decoded_access_details->windows_domain = "";
 	    }
 	    # we now have any existing credentials - compare and update if required
-	    if (isset($credentials->man_ip_address)) {
-	    	$new_credentials['man_ip_address'] = $credentials->man_ip_address;
+	    if (isset($credentials->ip_address)) {
+	    	$new_credentials['ip_address'] = (string)$credentials->ip_address;
 	    } else {
-	    	$new_credentials['man_ip_address'] = $decoded_access_details->man_ip_address;
+	    	$new_credentials['ip_address'] = (string)$decoded_access_details->ip_address;
 	    }
 
 	    if (isset($credentials->snmp_community)) {
-	    	$new_credentials['snmp_community'] = $credentials->snmp_community;
+	    	$new_credentials['snmp_community'] = (string)$credentials->snmp_community;
 	    } else {
 	    	$new_credentials['snmp_community'] = $decoded_access_details->snmp_community;
 	    }
 
-	    if (isset($credentials->ssh_username)) {
-	    	$new_credentials['ssh_username'] = $credentials->ssh_username;
+	    if (isset($credentials->snmp_version)) {
+	    	$new_credentials['snmp_version'] = (string)$credentials->snmp_version;
 	    } else {
-	    	$new_credentials['ssh_username'] = $decoded_access_details->ssh_username;
+	    	$new_credentials['snmp_version'] = (string)$decoded_access_details->snmp_version;
+	    }
+
+	    if (isset($credentials->ssh_username)) {
+	    	$new_credentials['ssh_username'] = (string)$credentials->ssh_username;
+	    } else {
+	    	$new_credentials['ssh_username'] = (string)$decoded_access_details->ssh_username;
 	    }
 
 	    if (isset($credentials->ssh_password)) {
-	    	$new_credentials['ssh_password'] = $credentials->ssh_password;
+	    	$new_credentials['ssh_password'] = (string)$credentials->ssh_password;
 	    } else {
-	    	$new_credentials['ssh_password'] = $decoded_access_details->ssh_password;
+	    	$new_credentials['ssh_password'] = (string)$decoded_access_details->ssh_password;
 	    }
 	    
 	    if (isset($credentials->windows_username)) {
-	    	$new_credentials['windows_username'] = $credentials->windows_username;
+	    	$new_credentials['windows_username'] = (string)$credentials->windows_username;
 	    } else {
-	    	$new_credentials['windows_username'] = $decoded_access_details->windows_username;
+	    	$new_credentials['windows_username'] = (string)$decoded_access_details->windows_username;
 	    }
 
 	    if (isset($credentials->windows_password)) {
-	    	$new_credentials['windows_password'] = $credentials->windows_password;
+	    	$new_credentials['windows_password'] = (string)$credentials->windows_password;
 	    } else {
-	    	$new_credentials['windows_password'] = $decoded_access_details->windows_password;
+	    	$new_credentials['windows_password'] = (string)$decoded_access_details->windows_password;
 	    }
 
 	    if (isset($credentials->windows_domain)) {
-	    	$new_credentials['windows_domain'] = $credentials->windows_domain;
+	    	$new_credentials['windows_domain'] = (string)$credentials->windows_domain;
 	    } else {
-	    	$new_credentials['windows_domain'] = $decoded_access_details->windows_domain;
+	    	$new_credentials['windows_domain'] = (string)$decoded_access_details->windows_domain;
 	    }
 
 	    # now encrypt what we have and store it
@@ -438,8 +444,8 @@ class M_system extends MY_Model {
 			if (isset($details->hostname) and ($details->system_id == '') ) {
 				$i = explode(".", $details->hostname);
 				$hostname = $i[0];
-				$sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
-				$data = array("$hostname");
+				$sql = "SELECT system.system_id FROM system WHERE (hostname = ? or hostname = ?) AND system.man_status = 'production'";
+				$data = array("$hostname", "$details->hostname");
 				$query = $this->db->query($sql, $data);
 				$row = $query->row();
 				if (count($row) > 0) { 
