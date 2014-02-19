@@ -92,8 +92,6 @@ if ($access_level > 7) {
 	$tabcustom = '';
 }
 
-
-
 // creating manufacturer / warranty / search links
 $link_warranty = 'No links for the manufacturer';
 $link_downloads = 'No links for the manufacturer';
@@ -137,6 +135,33 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 		$link_warranty = "<a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
 	}
 }
+
+if (isset($config->show_passwords) and $config->show_passwords != 'y') {
+	if (isset($decoded_access_details->ssh_password)) {
+		$ssh_password = str_replace($decoded_access_details->ssh_password, str_repeat("*", strlen($decoded_access_details->ssh_password)), $decoded_access_details->ssh_password);
+	} else {
+		$ssh_password = '';
+	}
+	if (isset($decoded_access_details->windows_password)) {
+		$windows_password = str_replace($decoded_access_details->windows_password, str_repeat("*", strlen($decoded_access_details->windows_password)), $decoded_access_details->windows_password);
+	} else {
+		$windows_password = '';
+	}
+} else {
+	$ssh_password = $decoded_access_details->ssh_password;
+	$windows_password = $decoded_access_details->windows_password;
+}
+
+if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y') {
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = str_replace($decoded_access_details->snmp_community, str_repeat("*", strlen($decoded_access_details->snmp_community)), $decoded_access_details->snmp_community);
+	} else {
+		$snmp_community = '';
+	}
+} else {
+	$snmp_community = $decoded_access_details->snmp_community;
+}
+
 ?>
 
 
@@ -159,9 +184,13 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 <div id="menu1" class="menuTree">
 <ul>
 	<li class="parent"><img alt="" src="<?php echo $image_path?>16_device.png" id="toggle_summary_all" /><a href="#">Summary</a>
-		<ul>
-		 	<?php if (count($windows) > 0) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li> <?php } ?>
-		 	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
+		<ul style="display: block;">
+		 	<?php if (count($windows) > 0) { ?>
+		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li>
+		 	<?php } ?>
+		 	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
+		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li>
+		 	<?php } ?>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_devices.png" /><a href="#" id="toggle_summary_network">Network</a></li>
 		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
@@ -257,8 +286,8 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
 			<div style="float:right; width: 100px; text-align:center">
 				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $system[0]->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
-			<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
-				<input type="button" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');" value='SNMP Scan' title='SNMP Scan' name='SNMP Scan' alt='SNMP Scan' width='24' />
+			<?php if (($access_level > 7) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
+				<input type="button" onclick="window.location.href='<?php echo base_url(); ?>index.php/discovery/discover_subnet/device/<?php echo $system_id; ?>'" value='Discover Device' title='Discover Device' name='Discover Device' alt='Discover Device' width='24' />
 			<?php } ?>
 			<!--
 			<?php if (($access_level > 7) and ($last_seen == 'nmap')) { ?>
@@ -411,13 +440,13 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 				<p><label for='credentials_ip_address'>IP Address: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
 
 				<p><label for='credentials_ip_address'>SNMP Version: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
-				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($decoded_access_details->snmp_community); ?></span></p>
+				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($snmp_community); ?></span></p>
 
 				<p><label for='credentials_ssh_username'>SSH Username: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
-				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($decoded_access_details->ssh_password); ?></span></p>
+				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($ssh_password); ?></span></p>
 
 				<p><label for='credentials_windows_username'>Windows Username: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
-				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($decoded_access_details->windows_password); ?></span></p>
+				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($windows_password); ?></span></p>
 				<p><label for='credentials_windows_domain'>Windows Domain: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
 			</div>
 
@@ -887,12 +916,12 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Bios Details')?></span></legend>
 				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_gnome-cpu.png' alt='' title='' width='48'/>
 				<?php foreach($bios as $key): ?>
-					<p><label for="bios_description"><?php echo __('Description')?>: </label><span id="bios_description"><?php echo $key->bios_description?></span></p>
-					<p><label for="bios_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="bios_manufacturer"><?php echo $key->bios_manufacturer?></span></p>
-					<p><label for="bios_serial"><?php echo __('Serial')?>: </label><span id="bios_serial"><?php echo $key->bios_serial?>&nbsp;</span></p>
-					<p><label for="bios_smversion"><?php echo __('SMVersion')?>: </label><span id="bios_smversion"><?php echo $key->bios_smversion?></span></p>
-					<p><label for="bios_version"><?php echo __('Version')?>: </label><span id="bios_version"><?php echo $key->bios_version?></span></p>
-					<p><label for="bios_asset_tag"><?php echo __('Asset Tag')?>: </label><span id="bios_asset_tag"><?php echo $key->bios_asset_tag?></span></p>
+					<p><label for="bios_description"><?php echo __('Description')?>: </label><span id="bios_description"><?php echo print_something($key->bios_description); ?></span></p>
+					<p><label for="bios_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="bios_manufacturer"><?php echo print_something($key->bios_manufacturer); ?></span></p>
+					<p><label for="bios_serial"><?php echo __('Serial')?>: </label><span id="bios_serial"><?php echo print_something($key->bios_serial); ?>&nbsp;</span></p>
+					<p><label for="bios_smversion"><?php echo __('SMVersion')?>: </label><span id="bios_smversion"><?php echo print_something($key->bios_smversion); ?></span></p>
+					<p><label for="bios_version"><?php echo __('Version')?>: </label><span id="bios_version"><?php echo print_something($key->bios_version); ?></span></p>
+					<p><label for="bios_asset_tag"><?php echo __('Asset Tag')?>: </label><span id="bios_asset_tag"><?php echo print_something($key->bios_asset_tag); ?></span></p>
 				<?php endforeach; ?>
 				<?php echo display_custom_field('view_hardware_bios',  $additional_fields_data, $edit); ?>
 			</fieldset>
@@ -2185,8 +2214,6 @@ if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
 <?php include "include_display_javascript.php"; ?>
 
 <script type="text/javascript">
-
-var toggle_summary_windows;
 
 $(document).ready(function(){
 	

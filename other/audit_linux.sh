@@ -113,6 +113,12 @@ ldap_seen_date='2012-06-30'
 # attempt to ping a target computer before audit?
 ping_target='y'
 
+# set by the Discovery function - do not normally set this manually
+system_id=""
+
+PATH="$PATH:/sbin:/usr/sbin"
+export PATH
+
 
 ########################################################
 # DEFINE COMAMND LOCATIONS                             #
@@ -148,6 +154,7 @@ ping_target='y'
 	OA_IWLIST=`which iwlist 2>/dev/null`
 	OA_LS=`which ls --skip-alias 2>/dev/null`
 	OA_LSB_RELEASE=`which lsb_release 2>/dev/null`
+	OA_LSHAL=`which lshal 2>/dev/null`
 	OA_LSHW=`which lshw 2>/dev/null`
 	OA_LSPCI=`which lspci 2>/dev/null`
 	OA_LVM=`which lvm 2>/dev/null`
@@ -170,7 +177,6 @@ ping_target='y'
 	OA_WC=`which wc 2>/dev/null`
 	OA_WGET=`which wget 2>/dev/null`
 	OA_WHOAMI=`which whoami 2>/dev/null`
-
 
 ########################################################
 # DEFINE SCRIPT FUNCTIONS                              #
@@ -330,6 +336,8 @@ for arg in "$@"; do
 			strPass="$parameter_value" ;;
 		"submit_online" )
 			submit_online="$parameter_value" ;;
+		"system_id" )
+			system_id="$parameter_value" ;;
 		"url" )
 			url="$parameter_value" ;;
 		"use_proxy" )
@@ -372,6 +380,7 @@ if [ "$check_commands" = "y" ]; then
 	$OA_ECHO "ip                   : $OA_IP"
 	$OA_ECHO "iwlist               : $OA_IWLIST"
 	$OA_ECHO "lsb_release          : $OA_LSB_RELEASE"
+	$OA_ECHO "lshal                : $OA_LSHAL"
 	$OA_ECHO "lshw                 : $OA_LSHW"
 	$OA_ECHO "lspci                : $OA_LSPCI"
 	$OA_ECHO "lvm                  : $OA_LVM"
@@ -482,6 +491,14 @@ fi
 
 system_uuid=""
 system_uuid=`$OA_DMIDECODE -s system-uuid 2>/dev/null`
+if [ "$system_uuid" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		system_uuid=$(lshal | grep "system.hardware.uuid" | cut -d\' -f2)
+	fi
+fi
+if [ "$system_uuid" = "" ]; then
+	system_uuid=`cat /sys/class/dmi/id/product_uuid 2>/dev/null`
+fi
 
 # Get the hostname & DNS domain
 system_hostname=""
@@ -546,38 +563,74 @@ system_os_icon=`lcase $system_os_family`
 # Get the System OS Version
 system_os_version=`$OA_UNAME -r`
 
+
 # Get the System Serial Number
 system_serial=""
-system_serial=`$OA_DMIDECODE -s system-serial-number`
+system_serial=`$OA_DMIDECODE -s system-serial-number 2>/dev/null`
+if [ "$system_serial" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		system_serial=$(lshal | grep "system.hardware.serial" | cut -d\' -f2)
+	fi
+fi
+if [ "$system_serial" = "" ]; then
+	system_serial=`cat /sys/class/dmi/id/product_serial 2>dev/null`
+fi
+
 
 # Get the System Model
 system_model=""
-system_model=`$OA_DMIDECODE -s system-product-name`
+system_model=`$OA_DMIDECODE -s system-product-name 2>/dev/null`
+if [ "$system_model" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
+	fi
+fi
+if [ "$system_model" = "" ]; then
+	system_model=`cat /sys/devices/virtual/dmi/id/product_name`
+fi
+
 
 # Get the System Manufacturer
 system_manufacturer=""
-system_manufacturer=`$OA_DMIDECODE -s system-manufacturer`
+system_manufacturer=`$OA_DMIDECODE -s system-manufacturer 2>/dev/null`
+if [ "$system_manufacturer" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		system_manufacturer=$(lshal | grep "system.hardware.vendor" | cut -d\' -f2)
+	fi
+fi
+if [ "$system_manufacturer" = "" ]; then
+	system_manufacturer=`cat /sys/devices/virtual/dmi/id/sys_vendor`
+fi
+
 
 # Get the System Uptime
 system_uptime=`$OA_CAT /proc/uptime | $OA_CUT -d. -f1`
 
+
 # Get the System Form factor
 system_form_factor=""
-if [[ $system_model = "Bochs" || $system_model = "KVM" || $system_model = "Virtual Machine" ]]; then
+if [[ "$system_model" = "Bochs" || "$system_model" = "KVM" || "$system_model" = "Virtual Machine" || "$system_model" = "VMware Virtual Platform" ]]; then
 	system_form_factor="Virtual"
 else
-	system_form_factor=`$OA_DMIDECODE -s chassis-type`
+	system_form_factor=`$OA_DMIDECODE -s chassis-type 2>/dev/null`
 	if [ "$system_form_factor" = "<OUT OF SPEC>" ]; then
 		system_form_factor="Unknown"
 	fi
 	system_form_factor=`pcase $system_form_factor`
 fi
+if [ "$system_form_factor" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		system_form_factor=$(lshal | grep "system.chassis.type" | cut -d\' -f2)
+	fi
+fi
+
 
 # Get OS bits
 system_pc_os_bit=`$OA_UNAME -i | $OA_GREP x86_64 | $OA_CUT -d_ -f2`
 if [ -z $system_pc_os_bit ]; then
 	system_pc_os_bit=32
 fi
+
 
 # Get the System Memory
 system_pc_memory=$(trim `$OA_CAT /proc/meminfo | $OA_GREP MemTotal | $OA_CUT -d: -f2 | $OA_CUT -dk -f1`)
@@ -611,7 +664,9 @@ system_pc_cores_x_processor=`$OA_CAT /proc/cpuinfo | $OA_GREP cores | $OA_HEAD -
 system_pc_cores_x_processor=$(trim "$system_pc_cores_x_processor")
 
 if [ "$system_pc_cores_x_processor" = "" ]; then
-	system_pc_cores_x_processor=1
+	if [ "$OA_LSHAL" \> "" ]; then
+		system_pc_cores_x_processor=$(lshal | grep -c "processor.number")
+	fi
 fi
 
 # The number of siblings tell us the number of Threads x Physical Processor
@@ -662,6 +717,7 @@ $OA_ECHO "		<pc_memory>"$(escape_xml "$system_pc_memory")"</pc_memory>" >> $xml_
 $OA_ECHO "		<pc_num_processor>"$(escape_xml "$system_pc_total_threads")"</pc_num_processor>" >> $xml_file
 $OA_ECHO "		<pc_date_os_installation>"$(escape_xml "$system_pc_date_os_installation")"</pc_date_os_installation>" >> $xml_file
 $OA_ECHO "		<man_org_id>"$(escape_xml "$org_id")"</man_org_id>" >> $xml_file
+$OA_ECHO "		<system_id>"$(escape_xml "$system_id")"</system_id>" >> $xml_file
 $OA_ECHO "	</sys>" >> $xml_file
 
 
@@ -676,11 +732,33 @@ fi
 # Get the BIOS Manufacturer
 bios_manufacturer=""
 bios_manufacturer=`$OA_DMIDECODE -s bios-vendor 2>/dev/null`
+if [ "$bios_manufacturer" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		bios_manufacturer=$(lshal | grep "smbios.bios.vendor" | cut -d\' -f2)
+		if [ "$bios_manufacturer" = "" ]; then
+			bios_manufacturer=$(lshal | grep "system.firmware.vendor" | cut -d\' -f2)
+		fi
+	fi
+	if [ "$bios_manufacturer" = "" ]; then
+		bios_manufacturer=`cat /sys/class/dmi/id/bios_vendor`
+	fi
+fi
 
 # Get the BIOS Firmware Revision
 bios_firm_rev=""
 bios_firm_rev=`$OA_DMIDECODE 2>/dev/null | $OA_GREP "Firmware Revision" | $OA_CUT -d: -f2`
 bios_firm_rev=$(trim "$bios_firm_rev")
+if [ "$bios_firm_rev" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		bios_firm_rev=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
+		if [ "$bios_firm_rev" = "" ]; then
+			bios_firm_rev=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
+		fi
+		if [ "$bios_firm_rev" = "" ]; then
+			bios_firm_rev=`cat /sys/class/dmi/id/bios_version`
+		fi
+	fi
+fi
 
 # Make the BIOS Description using the manufacturer - Firmware Rev
 if [ "$bios_firm_rev" != "" ]; then
@@ -695,6 +773,14 @@ bios_serial="$system_serial"
 # Get the SMBIOS Version
 bios_smversion=""
 bios_smversion=`$OA_DMIDECODE 2>/dev/null | $OA_GREP -i SMBIOS | $OA_CUT -d' ' -f2`
+if [ "$bios_smversion" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		bios_smversion=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
+		if [ "$bios_smversion" = "" ]; then
+			bios_smversion=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
+		fi
+	fi
+fi
 
 # Get the BIOS Version
 bios_version_p1=`$OA_DMIDECODE -s bios-version 2>/dev/null`
@@ -702,10 +788,21 @@ bios_version_p2=`$OA_DMIDECODE 2>/dev/null | $OA_GREP "BIOS Revision" | $OA_CUT 
 bios_version_p2=$(trim "$bios_version_p2")
 bios_version_p3=`$OA_DMIDECODE -s bios-release-date 2>/dev/null`
 
-if [ "$bios_version_p2" != "" ]; then
-	bios_version="V.$bios_version_p1 Rev.$bios_version_p2 - $bios_version_p3"
-else
-	bios_version="V.$bios_version_p1 - $bios_version_p3"
+if [ "$bios_version_p1" != "" ]; then
+	if [ "$bios_version_p2" != "" ]; then
+		bios_version="V.$bios_version_p1 Rev.$bios_version_p2 - $bios_version_p3"
+	else
+		bios_version="V.$bios_version_p1 - $bios_version_p3"
+	fi
+fi
+
+if [ "$bios_version" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		bios_version=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
+		if [ "$bios_version" = "" ]; then
+			bios_version=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
+		fi
+	fi
 fi
 
 #'''''''''''''''''''''''''''''''''
@@ -731,33 +828,25 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 # Get processor socket type
-processor_socket=`$OA_DMIDECODE -t processor |\
-	$OA_GREP Upgrade |\
-	$OA_HEAD -n1 |\
-	$OA_CUT -d: -f2`
+processor_socket=`$OA_DMIDECODE -t processor 2>/dev/null | $OA_GREP Upgrade | $OA_HEAD -n1 | $OA_CUT -d: -f2 2>/dev/null`
 
 # Get processor description
-processor_description=`$OA_CAT /proc/cpuinfo |\
-	$OA_GREP "model name" |\
-	$OA_HEAD -n1 |\
-	$OA_CUT -d: -f2`
+processor_description=`$OA_CAT /proc/cpuinfo | $OA_GREP "model name" | $OA_HEAD -n1 | $OA_CUT -d: -f2`
 
 # Get processor speed
-processor_speed=`$OA_CAT /proc/cpuinfo |\
-	$OA_GREP "cpu MHz" |\
-	$OA_HEAD -n1 |\
-	$OA_CUT -d: -f2 |\
-	$OA_AWK '{printf("%d\n",$1 + 0.5)}'`
+processor_speed=`$OA_CAT /proc/cpuinfo | $OA_GREP "cpu MHz" | $OA_HEAD -n1 | $OA_CUT -d: -f2 | $OA_AWK '{printf("%d\n",$1 + 0.5)}'`
 
 # Get processor manufacturer
-processor_manufacturer=`$OA_CAT /proc/cpuinfo |\
-	$OA_GREP vendor_id |\
-	$OA_HEAD -n1 |\
-	$OA_CUT -d: -f2`
+processor_manufacturer=`$OA_CAT /proc/cpuinfo | $OA_GREP vendor_id | $OA_HEAD -n1 | $OA_CUT -d: -f2`
 
 # Get processor power management support
-processor_power_management_supported=`$OA_DMIDECODE -t processor |\
-	$OA_GREP Thermal`
+processor_power_management_supported=`$OA_DMIDECODE -t processor 2>/dev/null | $OA_GREP Thermal 2>/dev/null`
+if [ "$processor_power_management_supported" = "" ]; then
+	if [ "$OA_LSHAL" \> "" ]; then
+		processor_power_management_supported=$(lshal | grep -m 1 "processor.can_throttle" | cut -d= -f2 | cut -d" " -f2)
+	fi
+fi
+
 
 if [ "$processor_power_management_supported" != "" ]; then
 	processor_power_management_supported="True"
@@ -789,9 +878,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 memory_slots="0"
-memory_slots=`$OA_DMIDECODE -t 17 2>/dev/null |\
-	$OA_AWK '/DMI type 17/{print $2}' |\
-	$OA_WC -l`
+memory_slots=`$OA_DMIDECODE -t 17 2>/dev/null | $OA_AWK '/DMI type 17/{print $2}' | $OA_WC -l`
 
 if [ "$memory_slots" != "0" ]; then
 	#'''''''''''''''''''''''''''''''''
@@ -799,44 +886,54 @@ if [ "$memory_slots" != "0" ]; then
 	#'''''''''''''''''''''''''''''''''
 
 	$OA_ECHO "	<memory>">> $xml_file
-	for memory_handle in $($OA_DMIDECODE -t 17 |\
-		$OA_AWK '/DMI type 17/{print $2}'); do
+
+	for memory_handle in $($OA_DMIDECODE -t 17 2>/dev/null | $OA_AWK '/DMI type 17/{print $2}'); do
+
 			# memory_detail and memory_type are switched here to match the Windows results
-			bank_info=$($OA_DMIDECODE -t 17 |\
-				$OA_SED -n '/^Handle '"$memory_handle"'/,/^$/p')
-			memory_bank=$($OA_ECHO "$bank_info" |\
-				$OA_AWK '/^[^B]+Locator:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
-				$OA_AWK '{gsub(" ","");print}')
+			bank_info=$($OA_DMIDECODE -t 17 2>/dev/null | $OA_SED -n '/^Handle '"$memory_handle"'/,/^$/p')
+
+			memory_bank=$($OA_ECHO "$bank_info" | $OA_AWK '/^[^B]+Locator:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | $OA_AWK '{gsub(" ","");print}')
+			
 			memory_detail=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Type:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_AWK '{gsub(" ","");print}')
+
 			if [ "$memory_detail" = "<OUT OF SPEC>" ]; then
 				system_form_factor="Unknown"
 			fi
+			
 			memory_form_factor=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Form Factor/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_CUT -d" " -f1)
+			
 			memory_type=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Type Detail:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_CUT -d" " -f1)
+			
 			memory_capacity=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Size:/{print $2}' |\
 				$OA_SED 's/[^0-9]//g')
+			
 			if [ $($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Size:/{print $3}') = "kB" ];then
 					memory_capacity=`$OA_EXPR $memory_capacity / 1024`
 			fi
+			
 			memory_speed=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Speed:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_SED 's/[[:space:]]MHz.*//g')
+			
 			memory_tag=$($OA_ECHO "$bank_info" |\
 				$OA_AWK '/Bank L.*:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}')
+			
 			memory_serial=$($OA_ECHO "$bank_info" |\
 					$OA_AWK '/Serial Number:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 					$OA_CUT -d" " -f1)
+			
 			if  [ "$memory_serial" = "Not" ] || [ "$memory_serial" = "Not " ] || [ "$memory_serial" = "Not Specified" ]; then
 				memory_serial=""
 			fi
+			
 			# Ignore empty slots
 			if [ "$memory_capacity" != "" ]; then
 				$OA_ECHO "		<slot>">> $xml_file
@@ -1051,91 +1148,78 @@ if [ "$net_cards" != "" ]; then
 	# Store the IP Addresses Information in a variable to write it later on the file
 	addr_info=""
 	$OA_ECHO "	<network_cards>" >> $xml_file;
-	
-	#IFS=$'\n'; for net_card_connection_id in `$OA_LS -l /sys/class/net/ |\
-		##$OA_GREP -Ev 'bonding_masters|lo|total' |\
-		##$OA_SED -re 's/virtio[0-9]+\///' |\
-		##$OA_REV |\
-		##$OA_CUT -d/ -f1,3 |\
-		##$OA_REV |\
-		##$OA_CUT -d: -f2,3`; do
-	#IFS=$'\n'; for net_card_connection_id in `$OA_LS -l /sys/class/net/ |\
-		#$OA_GREP -Ev 'bonding_masters|lo|total' |\
-		#$OA_SED -re 's/virtio[0-9]+\///' |\
-		#$OA_REV |\
-		#$OA_AWK '{ print $1 }' |\
-		#$OA_REV`; do
-	IFS=$'\n'; for net_card_connection_id in $net_cards; do 
 
-			net_card_id=`$OA_ECHO $net_card_connection_id |\
-				$OA_CUT -d/ -f2`
-			net_card_pci=`$OA_ECHO $net_card_connection_id |\
-				$OA_CUT -d/ -f1`
-			net_card_mac=`$OA_CAT /sys/class/net/$net_card_id/address`
-			if [ $net_card_pci = 'virtual' ]; then
-				net_card_model="Virtual Interface"
-				net_card_manufacturer="Linux"
-			else
-				if [ "$OA_LSPCI" != "" ]; then
-					net_card_model=`$OA_LSPCI -vms $net_card_pci |\
-						$OA_GREP -v $net_card_pci |\
-						$OA_GREP ^Device |\
-						$OA_CUT -d: -f2 |\
-						$OA_CUT -c2-`
-					net_card_manufacturer=`$OA_LSPCI -vms $net_card_pci |\
-						$OA_GREP ^Vendor |\
-						$OA_CUT -d: -f2 |\
-						$OA_CUT -c2-`
-				else
-					net_card_model=""
-					net_card_manufacturer=""
-				fi
-			fi
-			net_card_description="$net_card_model"
+	IFS=$'\n'; 
+	for net_card_connection_id in $net_cards; do 
 
-	net_card_speed=""
+		net_card_id=`$OA_ECHO $net_card_connection_id | $OA_CUT -d/ -f2`
+		net_card_pci=`$OA_ECHO $net_card_connection_id | $OA_CUT -d/ -f1`
+		net_card_mac=`$OA_CAT /sys/class/net/$net_card_id/address`
 
-	if [ -z `$OA_ECHO $net_card_id | $OA_AWK '/^wl/{print $1}'` ]; then
-		if [ "$OA_ETHTOOL" = "" ]; then
-			# we don't have ethtool installed
-			net_card_type="Ethernet 802.3"
+		if [ $net_card_pci = 'virtual' ]; then
+			net_card_model="Virtual Interface"
+			net_card_manufacturer="Linux"
 		else
-			net_card_speed=`$OA_ETHTOOL $net_card_id |\
-				$OA_GREP Speed |\
-				$OA_CUT -d: -f2 |\
-				$OA_SED 's/[^0-9]//g'`
-			net_card_type="Ethernet 802.3"
+			if [ "$OA_LSPCI" != "" ]; then
+				net_card_model=`$OA_LSPCI -vms $net_card_pci |\
+					$OA_GREP -v $net_card_pci |\
+					$OA_GREP ^Device |\
+					$OA_CUT -d: -f2 |\
+					$OA_CUT -c2-`
+				net_card_manufacturer=`$OA_LSPCI -vms $net_card_pci |\
+					$OA_GREP ^Vendor |\
+					$OA_CUT -d: -f2 |\
+					$OA_CUT -c2-`
+			else
+				net_card_model=""
+				net_card_manufacturer=""
+			fi
 		fi
-	else
-		# This is a wireless link
-		net_card_speed=`$OA_IWLIST $net_card_id bitrate |\
-			$OA_GREP Current  |\
-			$OA_CUT -d. -f1 |\
-			$OA_GREP -oE '[[:digit:]]*'`
-		net_card_type="Wireless Ethernet 802.11"
-	fi
+		net_card_description="$net_card_model"
 
-	# if a speed was detected, it needs to be multiplied to show up in the web
-	if [ $net_card_speed ]; then
-		net_card_speed=$((net_card_speed * 10000))
-	fi
+		net_card_speed=""
 
-	net_card_status=$(trim `$OA_CAT /sys/class/net/$net_card_id/operstate`)
+		if [ -z `$OA_ECHO $net_card_id | $OA_AWK '/^wl/{print $1}'` ]; then
+			if [ "$OA_ETHTOOL" = "" ]; then
+				# we don't have ethtool installed
+				net_card_type="Ethernet 802.3"
+			else
+				net_card_speed=""
+				net_card_speed=`$OA_ETHTOOL $net_card_id 2>/dev/null |\
+					$OA_GREP Speed |\
+					$OA_CUT -d: -f2 |\
+					$OA_SED 's/[^0-9]//g'`
+				net_card_type="Ethernet 802.3"
+			fi
+		else
+			# This is a wireless link
+			net_card_speed=`$OA_IWLIST $net_card_id bitrate |\
+				$OA_GREP Current  |\
+				$OA_CUT -d. -f1 |\
+				$OA_GREP -oE '[[:digit:]]*'`
+			net_card_type="Wireless Ethernet 802.11"
+		fi
 
-	if [ "$net_card_status" = "up" ]; then
-		net_card_status="Connected" 
-	else
-		net_card_status="Disconnected"
-	fi
+		# if a speed was detected, it needs to be multiplied to show up in the web
+		if [ $net_card_speed ]; then
+			net_card_speed=$((net_card_speed * 10000))
+		fi
 
-	net_card_enabled="False"
+		net_card_status=$(trim `$OA_CAT /sys/class/net/$net_card_id/operstate`)
+		if [ "$net_card_status" = "up" ]; then
+			net_card_status="Connected" 
+		else
+			net_card_status="Disconnected"
+		fi
 
-	# Get Info on active IPV4 Addresses for this card
-	for net_card_enabled_ip4_addr in $($OA_IP addr show $net_card_id |\
-		$OA_GREP 'inet ' |\
-		$OA_CUT -dt -f2 |\
-		$OA_CUT -db -f1 |\
-		$OA_CUT -c2-); do
+		net_card_enabled="False"
+
+		# Get Info on active IPV4 Addresses for this card
+		for net_card_enabled_ip4_addr in $($OA_IP addr show $net_card_id |\
+			$OA_GREP 'inet ' |\
+			$OA_CUT -dt -f2 |\
+			$OA_CUT -db -f1 |\
+			$OA_CUT -c2-); do
 			net_card_enabled="True"
 			net_card_enabled_ip6_addr=""
 			net_card_enabled_ip_subnet=$(cidr2mask `$OA_ECHO $net_card_enabled_ip4_addr |\
@@ -1151,98 +1235,98 @@ if [ "$net_cards" != "" ]; then
 			addr_info=$addr_info"\t\t</ip_address>\n"
 		done
 
-	# Get Info on active IPV6 Addresses for this card
-	for net_card_enabled_ip6_addr in $($OA_IP addr show $net_card_id |\
+		# Get Info on active IPV6 Addresses for this card
+		for net_card_enabled_ip6_addr in $($OA_IP addr show $net_card_id |\
 			$OA_GREP 'inet6' |\
 			$OA_CUT -c11- |\
 			$OA_CUT -ds -f1); do
-				net_card_enabled="True"
-				net_card_enabled_ip4_addr=""
-   		 		net_card_enabled_ip_subnet=`$OA_ECHO $net_card_enabled_ip6_addr |\
-					$OA_CUT -d/ -f2`
-    			net_card_enabled_ip_version="6"
+			net_card_enabled="True"
+			net_card_enabled_ip4_addr=""
+		 		net_card_enabled_ip_subnet=`$OA_ECHO $net_card_enabled_ip6_addr |\
+				$OA_CUT -d/ -f2`
+			net_card_enabled_ip_version="6"
 
-				addr_info=$addr_info"\t\t<ip_address>\n"
-				addr_info=$addr_info"\t\t\t<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>\n"
-				addr_info=$addr_info"\t\t\t<ip_address_v4>"$(escape_xml "$net_card_enabled_ip4_addr")"</ip_address_v4>\n"
-				addr_info=$addr_info"\t\t\t<ip_address_v6>"$(escape_xml `$OA_ECHO $net_card_enabled_ip6_addr |\
-					$OA_CUT -d/ -f1`)"</ip_address_v6>\n"
-				addr_info=$addr_info"\t\t\t<ip_subnet>"$(escape_xml "$net_card_enabled_ip_subnet")"</ip_subnet>\n"
-				addr_info=$addr_info"\t\t\t<ip_address_version>"$(escape_xml "$net_card_enabled_ip_version")"</ip_address_version>\n"
-				addr_info=$addr_info"\t\t</ip_address>\n"
-			done
-
-			# Check DHCP lease for this card
-			# Distros store the lease info in different files/locations, I'm getting the file from the running process
-			net_card_lease_file=`$OA_PS -ef |\
-			$OA_GREP dhclient |\
-			$OA_GREP $net_card_id |\
-			$OA_SED -e 's/^.*-lf//' |\
-			$OA_CUT -d" " -f2`
-
-			if [ "$net_card_lease_file" = "" ]; then
-				net_card_dhcp_enab="False"
-				net_card_dhcp_server=""
-				net_card_dhcp_lease_expire=""
-			else
-				net_card_dhcp_enab="True"
-				net_card_dhcp_server=`$OA_CAT $net_card_lease_file |\
-					$OA_GREP dhcp-server |\
-					$OA_TAIL -n1 |\
-					$OA_SED 's/;//' |\
-					$OA_CUT -d" " -f5`
-				net_card_dhcp_lease_expire=`$OA_CAT $net_card_lease_file |\
-					$OA_GREP expire |\
-					$OA_TAIL -n1 |\
-					$OA_SED 's/;//' |\
-					$OA_CUT -d" " -f5 |\
-					$OA_SED 's|/|-|g'`
-				# To get the Obtained date we need to get lease time first
-				net_card_dhcp_lease_time=`$OA_CAT $net_card_lease_file |\
-					$OA_GREP lease-time |\
-					$OA_TAIL -n1 |\
-					$OA_SED 's/;//' |\
-					$OA_CUT -d" " -f5`
-				net_card_dhcp_lease_days=`$OA_EXPR $net_card_dhcp_lease_time / 60 / 60 / 24`
-				net_card_dhcp_lease_obtained=`$OA_DATE -d ''$net_card_dhcp_lease_expire' -'$net_card_dhcp_lease_days' days' +%F`
-			fi
-		
-			# TODO: Domain Registration & WINS Info (Samba)
-			net_card_domain_reg=""
-			net_card_dns_server=`$OA_AWK '/^name/{print $2}' /etc/resolv.conf |\
-				$OA_HEAD -n1`
-			net_card_dns_domain=`$OA_AWK '/^domain/{print $2}' /etc/resolv.conf |\
-				$OA_HEAD -n1`
-			if [ "$net_card_dns_domain" = "" ]; then
-				net_card_dns_domain=`$OA_AWK '/^search/{print $2}' /etc/resolv.conf |\
-				$OA_HEAD -n1`
-			fi
-
-			net_card_wins_primary=""
-
-			$OA_ECHO "		<network_card>" >> $xml_file
-			$OA_ECHO "			<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>" >> $xml_file
-			$OA_ECHO "			<net_manufacturer>"$(escape_xml "$net_card_manufacturer")"</net_manufacturer>" >> $xml_file
-			$OA_ECHO "			<net_model>"$(escape_xml "$net_card_model")"</net_model>" >> $xml_file
-			$OA_ECHO "			<net_description>"$(escape_xml "$net_card_description")"</net_description>" >> $xml_file
-			$OA_ECHO "			<net_ip_enabled>"$(escape_xml "$net_card_enabled")"</net_ip_enabled>" >> $xml_file
-			$OA_ECHO "			<net_connection_id>"$(escape_xml "$net_card_id")"</net_connection_id>" >> $xml_file
-			$OA_ECHO "			<net_connection_status>"$(escape_xml "$net_card_status")"</net_connection_status>" >> $xml_file
-			$OA_ECHO "			<net_speed>"$(escape_xml "$net_card_speed")"</net_speed>" >> $xml_file
-			$OA_ECHO "			<net_adapter_type>"$(escape_xml "$net_card_type")"</net_adapter_type>" >> $xml_file
-			$OA_ECHO "			<net_dhcp_enabled>"$(escape_xml "$net_card_dhcp_enab")"</net_dhcp_enabled>" >> $xml_file
-			$OA_ECHO "			<net_dhcp_server>"$(escape_xml "$net_card_dhcp_server")"</net_dhcp_server>" >> $xml_file
-			$OA_ECHO "			<net_dhcp_lease_obtained>"$(escape_xml "$net_card_dhcp_lease_obtained")"</net_dhcp_lease_obtained>" >> $xml_file
-			$OA_ECHO "			<net_dhcp_lease_expires>"$(escape_xml "$net_card_dhcp_lease_expire")"</net_dhcp_lease_expires>" >> $xml_file
-			$OA_ECHO "			<net_dns_host_name>"$(escape_xml "$system_hostname")"</net_dns_host_name>" >> $xml_file
-			$OA_ECHO "			<net_dns_domain>"$(escape_xml "$net_card_dns_domain")"</net_dns_domain>" >> $xml_file
-			$OA_ECHO "			<net_dns_domain_reg_enabled>"$(escape_xml "$net_card_domain_reg")"</net_dns_domain_reg_enabled>" >> $xml_file
-			$OA_ECHO "			<net_dns_server>"$(escape_xml "$net_card_dns_server")"</net_dns_server>" >> $xml_file
-			$OA_ECHO "			<net_wins_primary>"$(escape_xml "$net_card_wins_primary")"</net_wins_primary>" >> $xml_file
-			$OA_ECHO "			<net_wins_secondary></net_wins_secondary>" >> $xml_file
-			$OA_ECHO "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>" >> $xml_file
-			$OA_ECHO "		</network_card>" >> $xml_file
+			addr_info=$addr_info"\t\t<ip_address>\n"
+			addr_info=$addr_info"\t\t\t<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_v4>"$(escape_xml "$net_card_enabled_ip4_addr")"</ip_address_v4>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_v6>"$(escape_xml `$OA_ECHO $net_card_enabled_ip6_addr |\
+				$OA_CUT -d/ -f1`)"</ip_address_v6>\n"
+			addr_info=$addr_info"\t\t\t<ip_subnet>"$(escape_xml "$net_card_enabled_ip_subnet")"</ip_subnet>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_version>"$(escape_xml "$net_card_enabled_ip_version")"</ip_address_version>\n"
+			addr_info=$addr_info"\t\t</ip_address>\n"
 		done
+
+		# Check DHCP lease for this card
+		# Distros store the lease info in different files/locations, I'm getting the file from the running process
+		net_card_lease_file=`$OA_PS -ef |\
+		$OA_GREP dhclient |\
+		$OA_GREP $net_card_id |\
+		$OA_SED -e 's/^.*-lf//' |\
+		$OA_CUT -d" " -f2`
+
+		if [ "$net_card_lease_file" = "" ]; then
+			net_card_dhcp_enab="False"
+			net_card_dhcp_server=""
+			net_card_dhcp_lease_expire=""
+		else
+			net_card_dhcp_enab="True"
+			net_card_dhcp_server=`$OA_CAT $net_card_lease_file |\
+				$OA_GREP dhcp-server |\
+				$OA_TAIL -n1 |\
+				$OA_SED 's/;//' |\
+				$OA_CUT -d" " -f5`
+			net_card_dhcp_lease_expire=`$OA_CAT $net_card_lease_file |\
+				$OA_GREP expire |\
+				$OA_TAIL -n1 |\
+				$OA_SED 's/;//' |\
+				$OA_CUT -d" " -f5 |\
+				$OA_SED 's|/|-|g'`
+			# To get the Obtained date we need to get lease time first
+			net_card_dhcp_lease_time=`$OA_CAT $net_card_lease_file |\
+				$OA_GREP lease-time |\
+				$OA_TAIL -n1 |\
+				$OA_SED 's/;//' |\
+				$OA_CUT -d" " -f5`
+			net_card_dhcp_lease_days=`$OA_EXPR $net_card_dhcp_lease_time / 60 / 60 / 24`
+			net_card_dhcp_lease_obtained=`$OA_DATE -d ''$net_card_dhcp_lease_expire' -'$net_card_dhcp_lease_days' days' +%F`
+		fi
+		
+		# TODO: Domain Registration & WINS Info (Samba)
+		net_card_domain_reg=""
+		net_card_dns_server=`$OA_AWK '/^name/{print $2}' /etc/resolv.conf |\
+			$OA_HEAD -n1`
+		net_card_dns_domain=`$OA_AWK '/^domain/{print $2}' /etc/resolv.conf |\
+			$OA_HEAD -n1`
+		if [ "$net_card_dns_domain" = "" ]; then
+			net_card_dns_domain=`$OA_AWK '/^search/{print $2}' /etc/resolv.conf |\
+			$OA_HEAD -n1`
+		fi
+
+		net_card_wins_primary=""
+
+		$OA_ECHO "		<network_card>" >> $xml_file
+		$OA_ECHO "			<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>" >> $xml_file
+		$OA_ECHO "			<net_manufacturer>"$(escape_xml "$net_card_manufacturer")"</net_manufacturer>" >> $xml_file
+		$OA_ECHO "			<net_model>"$(escape_xml "$net_card_model")"</net_model>" >> $xml_file
+		$OA_ECHO "			<net_description>"$(escape_xml "$net_card_description")"</net_description>" >> $xml_file
+		$OA_ECHO "			<net_ip_enabled>"$(escape_xml "$net_card_enabled")"</net_ip_enabled>" >> $xml_file
+		$OA_ECHO "			<net_connection_id>"$(escape_xml "$net_card_id")"</net_connection_id>" >> $xml_file
+		$OA_ECHO "			<net_connection_status>"$(escape_xml "$net_card_status")"</net_connection_status>" >> $xml_file
+		$OA_ECHO "			<net_speed>"$(escape_xml "$net_card_speed")"</net_speed>" >> $xml_file
+		$OA_ECHO "			<net_adapter_type>"$(escape_xml "$net_card_type")"</net_adapter_type>" >> $xml_file
+		$OA_ECHO "			<net_dhcp_enabled>"$(escape_xml "$net_card_dhcp_enab")"</net_dhcp_enabled>" >> $xml_file
+		$OA_ECHO "			<net_dhcp_server>"$(escape_xml "$net_card_dhcp_server")"</net_dhcp_server>" >> $xml_file
+		$OA_ECHO "			<net_dhcp_lease_obtained>"$(escape_xml "$net_card_dhcp_lease_obtained")"</net_dhcp_lease_obtained>" >> $xml_file
+		$OA_ECHO "			<net_dhcp_lease_expires>"$(escape_xml "$net_card_dhcp_lease_expire")"</net_dhcp_lease_expires>" >> $xml_file
+		$OA_ECHO "			<net_dns_host_name>"$(escape_xml "$system_hostname")"</net_dns_host_name>" >> $xml_file
+		$OA_ECHO "			<net_dns_domain>"$(escape_xml "$net_card_dns_domain")"</net_dns_domain>" >> $xml_file
+		$OA_ECHO "			<net_dns_domain_reg_enabled>"$(escape_xml "$net_card_domain_reg")"</net_dns_domain_reg_enabled>" >> $xml_file
+		$OA_ECHO "			<net_dns_server>"$(escape_xml "$net_card_dns_server")"</net_dns_server>" >> $xml_file
+		$OA_ECHO "			<net_wins_primary>"$(escape_xml "$net_card_wins_primary")"</net_wins_primary>" >> $xml_file
+		$OA_ECHO "			<net_wins_secondary></net_wins_secondary>" >> $xml_file
+		$OA_ECHO "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>" >> $xml_file
+		$OA_ECHO "		</network_card>" >> $xml_file
+	done
 	$OA_ECHO "	</network_cards>" >> $xml_file
 fi
 
@@ -1362,10 +1446,7 @@ case $system_os_family in
 				INITDEFAULT=$($OA_AWK -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
 			fi
 			# upstart services
-			for s in `initctl list |\
-			$OA_AWK ' { print $1 } ' |\
-			$OA_SORT |\
-			$OA_UNIQ` ; do\
+			for s in $(initctl list 2>/dev/null | $OA_AWK ' { print $1 } ' | $OA_SORT | $OA_UNIQ) ; do\
 				if [ "$s" = "rc" ]; then
 					service_start_mode="Auto"
 				else
@@ -1409,11 +1490,9 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 $OA_ECHO "	<routes>" >> $xml_file
-
-IFS=$'\n'; for i in `$OA_ROUTE -n | $OA_TAIL -n +3` ; do $OA_ECHO $i | $OA_AWK ' { print "\t\t<route>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</route>" } ' ; done >>\
-$xml_file
-
+IFS=$'\n'; for i in `$OA_ROUTE -n | $OA_TAIL -n +3` ; do $OA_ECHO $i | $OA_AWK ' { print "\t\t<route>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</route>" } ' ; done >> $xml_file
 $OA_ECHO "	</routes>" >> $xml_file
+
 
 ########################################################
 # NETSTAT LISTENING PORTS                              #
@@ -1421,7 +1500,7 @@ $OA_ECHO "	</routes>" >> $xml_file
 if [ "$debugging" -gt "0" ]; then
 	$OA_ECHO "Netstat Info"
 fi
-netstatdump=`netstat -lntup | grep -v "(only servers)" | grep -v "Foreign Address"`
+netstatdump=`netstat -lntup 2>/dev/null | grep -v "(only servers)" | grep -v "Foreign Address"`
 $OA_ECHO "	<netstat>" >> $xml_file
 $OA_ECHO "		<![CDATA[$netstatdump]]>" >> $xml_file
 $OA_ECHO "	</netstat>" >> $xml_file

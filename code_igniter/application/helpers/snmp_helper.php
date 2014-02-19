@@ -122,6 +122,7 @@ if (!function_exists('get_snmp')) {
 		// }
 		if (!isset($details->snmp_version) or $details->snmp_version == '') { $details->snmp_version = '2c'; }
 		if (!isset($details->snmp_port) or $details->snmp_port == '') { $details->snmp_port = '161'; }
+		if (!isset($details->type)) { $details->type = ''; }
 
 
 		# we need at least an ip address or hostname
@@ -135,6 +136,12 @@ if (!function_exists('get_snmp')) {
 
 		$module = new stdclass;
 
+		if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
+			# not a valid ip address - assume it's a hostname
+			$details->hostname = $details->man_ip_address;
+			$details->man_ip_address = gethostbyname($details->hostname);
+		}
+
 		if (!isset($details->hostname) or $details->hostname == '') {
 			$details->hostname = gethostbyaddr(ip_address_from_db($details->man_ip_address));
 		}
@@ -144,9 +151,7 @@ if (!function_exists('get_snmp')) {
 			$details->man_ip_address = gethostbyname($details->hostname);
 		}
 
-		if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-			# we did not get a valid hostname back :-(
-		} else {
+		if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
 			# we have a name of some sort
 			if (strpos($details->hostname, ".") !== FALSE) {
 				# fqdn - explode it
@@ -157,10 +162,9 @@ if (!function_exists('get_snmp')) {
 					unset($i[0]);
 					$details->domain = implode(".", $i);
 				}
-			} else {
-				# it's just a name
 			}
 		}
+		
 		$timeout = '3000000';
 		$retries = '2';
 
@@ -486,7 +490,7 @@ if (!function_exists('get_snmp')) {
 				$i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.3.0"));
 				if (($i > '') and (strpos($i, ")") !== FALSE)){
 					$j = explode(")", $i);
-					$details->uptime = trim($j[1]);
+					$details->uptime = intval(trim($j[1]) * 24 * 60 * 60);
 				} else {
 					$details->uptime = '';
 				}
@@ -583,11 +587,11 @@ if (!function_exists('get_snmp')) {
 				}
 			}
 
-			if (mb_detect_encoding($details->serial) == 'UTF-8') {
+			if (isset($details->serial) and mb_detect_encoding($details->serial) == 'UTF-8') {
 				$details->serial = mb_convert_encoding($details->serial, 'UTF-8', 'ASCII');
 			}
 			
-			if (mb_detect_encoding($details->model) == 'UTF-8') {
+			if (isset($details->model) and mb_detect_encoding($details->model) == 'UTF-8') {
 				$details->model = mb_convert_encoding($details->model, "UTF-8", "ASCII");
 			}
 
@@ -616,7 +620,7 @@ if (!function_exists('get_snmp')) {
 			fclose($handle);
 		}
 
-		unset($details->snmp_version);
+		#unset($details->snmp_version);
 		if ($details->show_output == FALSE) { unset($details->show_output); }
 		$details->hostname = strtolower($details->hostname);
 		return $details;

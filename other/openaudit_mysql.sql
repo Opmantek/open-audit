@@ -1777,6 +1777,10 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_network_address', '', 'y', 'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
 
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_snmp_community', 'y', 'y', 'Show the SNMP community string on forms.');
+
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_passwords', 'y', 'y', 'Show any passwords on forms.');
+
 INSERT INTO oa_location (location_id, location_name, location_type, location_city, location_state, location_country, location_latitude, location_longitude, location_comments, location_icon, location_group_id) VALUES ('0', 'Default Location', 'Office', 'Gold Coast', 'Queensland', 'Australia', '-28.017260', '153.425705', 'Default location', 'office', '9');
 
 INSERT INTO oa_org (org_id, org_comments) VALUES ('', 'Default Organisation.');

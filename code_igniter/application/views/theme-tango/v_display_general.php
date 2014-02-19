@@ -80,7 +80,34 @@ foreach($system_location as $key) {
 
 if ($access_level > 7) {
 	$edit = 'class="editText" style="color:blue;"';
-} 
+}
+
+if (isset($config->show_passwords) and $config->show_passwords != 'y') {
+	if (isset($decoded_access_details->ssh_password)) {
+		$ssh_password = str_replace($decoded_access_details->ssh_password, str_repeat("*", strlen($decoded_access_details->ssh_password)), $decoded_access_details->ssh_password);
+	} else {
+		$ssh_password = '';
+	}
+	if (isset($decoded_access_details->windows_password)) {
+		$windows_password = str_replace($decoded_access_details->windows_password, str_repeat("*", strlen($decoded_access_details->windows_password)), $decoded_access_details->windows_password);
+	} else {
+		$windows_password = '';
+	}
+} else {
+	$ssh_password = $decoded_access_details->ssh_password;
+	$windows_password = $decoded_access_details->windows_password;
+}
+
+if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y') {
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = str_replace($decoded_access_details->snmp_community, str_repeat("*", strlen($decoded_access_details->snmp_community)), $decoded_access_details->snmp_community);
+	} else {
+		$snmp_community = '';
+	}
+} else {
+	$snmp_community = $decoded_access_details->snmp_community;
+}
+
 ?>
 <!-- below is the menu div that sits on the left -->
 <div style="float: left; width: 180px; margin-left: 0%; vertical-align: top; position: fixed;" >
@@ -88,7 +115,7 @@ if ($access_level > 7) {
 		<fieldset id="system_menu" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
 			<div id="menu1" class="menuTree">
-				<ul>
+				<ul style="display: block;">
 					<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
@@ -123,16 +150,22 @@ if ($access_level > 7) {
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
 			<div style="float:right; width: 120px; text-align:center">
 				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $system[0]->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
+			
+			<?php if (($access_level > 7) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
+			<input type="button" onclick="window.location.href='<?php echo base_url(); ?>index.php/discovery/discover_subnet/device/<?php echo $system_id; ?>'" value='Discover Device' title='Discover Device' name='Discover Device' alt='Discover Device' width='24' />
+			<?php } ?>
+			<!--
 			<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
 				<input type="button" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');" value='SNMP Scan' title='SNMP Scan' name='SNMP Scan' alt='SNMP Scan' width='24' />
 			<?php } ?>
+			-->
 			</div>
 			<div style="margin-right: 120px;">
 				<?php foreach($system as $key): ?>
 					<div>
 						<div style="float:left; width:50%;">
 							<?php if ($key->hostname == '') {$key->hostname = '-'; } 
-							echo "<p><label for=\"hostname\">" . __('Hostname') . ": </label><span id=\"hostname\">$key->hostname</span></p>"; ?>
+							echo "<p><label for=\"hostname\">" . __('Hostname') . ": </label><span id=\"hostname\" $edit>$key->hostname</span></p>"; ?>
 							<?php if ($key->man_ip_address) { echo "<p><label for=\"man_ip_address\">" . __('IP Address') . ": </label><span id=\"man_ip_address\" $edit>" . ip_address_from_db($key->man_ip_address) . "</span></p>"; } ?>
 							<p><label for="man_environment_select"><?php echo __('Environment')?>: </label>
 							<?php if ($access_level > 7) { ?>
@@ -199,13 +232,13 @@ if ($access_level > 7) {
 				<p><label for='credentials_ip_address'>IP Address: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
 
 				<p><label for='credentials_ip_address'>SNMP Version: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
-				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($decoded_access_details->snmp_community); ?></span></p>
+				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($snmp_community); ?></span></p>
 
 				<p><label for='credentials_ssh_username'>SSH Username: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
-				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($decoded_access_details->ssh_password); ?></span></p>
+				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($ssh_password); ?></span></p>
 
 				<p><label for='credentials_windows_username'>Windows Username: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
-				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($decoded_access_details->windows_password); ?></span></p>
+				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($windows_password); ?></span></p>
 				<p><label for='credentials_windows_domain'>Windows Domain: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
 			</div>
 
