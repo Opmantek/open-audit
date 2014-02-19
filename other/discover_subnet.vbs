@@ -187,7 +187,7 @@ Do Until objExecObject.StdOut.AtEndOfStream
 	if (instr(lcase(line), "scan report for")) then
 		if (instr(lcase(line), "[host down]")) then
 			if (log_no_response = "y") then
-				log_entry = "Non responsive ip address (" & line_split(4) & ")." 
+				log_entry = "Non responsive ip address " & line_split(4) 
 				write_log
 			end if
 		else
@@ -202,7 +202,7 @@ dim host
 for each host in hosts_in_subnet
 	if debugging > "0" then wscript.echo "Scanning Host: " & host end if
 
-	log_entry = "Scanning ip address (" & host & ")"
+	log_entry = "Scanning ip address " & host
 	write_log()
 
 	dim mac_address : mac_address = ""
@@ -355,7 +355,7 @@ for each host in hosts_in_subnet
 	Loop
 
 	' special case of determining WMI on localhost on Windows
-	if (instr(local_net, host) > 0) then
+	if (instr(local_net, host & " ") > 0) then
 		wmi_status = "true"
 	end if
 
@@ -384,7 +384,7 @@ for each host in hosts_in_subnet
 	if submit_online = "y" then
 		if debugging > "0" then wscript.echo "Submitting audit online" end if 
 
-		log_entry = "Submitting online (" & host & ")."
+		log_entry = "Submitting online " & host
 		write_log()
 
 		Err.clear
@@ -400,7 +400,7 @@ for each host in hosts_in_subnet
 		on error goto 0
 		if (error_returned <> 0) then
 			if debugging > "0" then wscript.echo "Result send failed (" & host & ")." end if
-			log_entry = "Result send failed (" & host & ")."
+			log_entry = "Result send failed " & host
 			write_log
 		else
 			if debugging > "0" then wscript.echo "Result sent (" & host & ")." end if

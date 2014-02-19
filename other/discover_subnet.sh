@@ -116,13 +116,14 @@ fi
 
 i=0
 j=0
-for line in $(nmap -v -sP -PE -PP -n "$subnet" 2>/dev/null | grep "scan report for"); do
+#for line in $(nmap -v -sP -PE -PP -n "$subnet" 2>/dev/null | grep "scan report for"); do
+for line in $(nmap -v -sn -n "$subnet" 2>/dev/null | grep "scan report for"); do
 	echo "$line"
 	host=$(echo "$line" | cut -d" " -f5)
 	let "i = i + 1"
 	if [[ "$line" == *"[host down]"* ]]; then
 		if [[ "$log_no_response" == "y" ]]; then
-			log_entry="Non responsive ip address ($host)."
+			log_entry="Non responsive ip address $host"
 			write_log "$log_entry"
 		fi
 	else
@@ -146,7 +147,7 @@ if [[ "$hosts" != "" ]]; then
 			echo "Scanning Host: $host"
 		fi
 
-		log_entry="Scanning ip address ($host)"
+		log_entry="Scanning ip address $host"
 		write_log "$log_entry"
 
 		mac_address=""
@@ -279,7 +280,7 @@ if [[ "$hosts" != "" ]]; then
 			if [ "$debugging" -gt 0 ]; then
 				echo "Submitting online."
 			fi
-			log_entry="Submitting online ($host)."
+			log_entry="Submitting online $host"
 			write_log "$log_entry"
 			if [[ $(uname) == "Linux" ]]; then
 				# -b   = background the wget command
