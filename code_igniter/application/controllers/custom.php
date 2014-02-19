@@ -7,7 +7,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -32,25 +32,25 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
- 
-class Custom extends MY_Controller {
 
-	function __construct() {
-		parent::__construct();
-		// must be an admin to access this page
-		if ($this->session->userdata('user_admin') != 'y') {
-			if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-				redirect($_SERVER['HTTP_REFERER']);
-			} else {
-				redirect('login/index');
-			}
-		}
-		$this->load->helper(array('form', 'url'));
-	}
+class custom extends MY_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+        // must be an admin to access this page
+        if ($this->session->userdata('user_admin') != 'y') {
+            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                redirect('login/index');
+            }
+        }
+        $this->load->helper(array('form', 'url'));
+    }
 
-
-	function index() {
-		redirect('/');
-	}
-
+    public function index()
+    {
+        redirect('/');
+    }
 }

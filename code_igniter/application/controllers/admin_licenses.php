@@ -7,7 +7,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -33,33 +33,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-class Admin_licenses extends MY_Controller {
+class Admin_licenses extends MY_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+        // must be an admin to access this page
+        if ($this->session->userdata('user_admin') != 'y') {
+            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
+                redirect($_SERVER['HTTP_REFERER']);
+            } else {
+                redirect('login/index');
+            }
+        }
+        $this->log_event();
+    }
 
-	function __construct() {
-		parent::__construct();
-		// must be an admin to access this page
-		if ($this->session->userdata('user_admin') != 'y') {
-			if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-				redirect($_SERVER['HTTP_REFERER']);
-			} else {
-				redirect('login/index');
-			}
-		}
-		$this->log_event();
-	}
+    public function index()
+    {
+        redirect('/');
+    }
 
-	function index() {
-		redirect('/');
-	}
-
-	function change_license() {
-		$this->load->model("m_oa_licensing");
-		$group_id = $this->uri->segment(3, 0);
-		$licenses = $this->uri->segment(4, 0);
-		$software_name = urldecode($this->uri->segment(5, 0));
-		$software_name = html_entity_decode($software_name);
-		$this->m_oa_licensing->change_license($group_id, $licenses, $software_name);
-		redirect('report/software_licensing/' . $group_id);
-	}
-
+    public function change_license()
+    {
+        $this->load->model("m_oa_licensing");
+        $group_id = $this->uri->segment(3, 0);
+        $licenses = $this->uri->segment(4, 0);
+        $software_name = urldecode($this->uri->segment(5, 0));
+        $software_name = html_entity_decode($software_name);
+        $this->m_oa_licensing->change_license($group_id, $licenses, $software_name);
+        redirect('report/software_licensing/' . $group_id);
+    }
 }
