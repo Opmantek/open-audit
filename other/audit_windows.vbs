@@ -107,6 +107,9 @@ ldap_seen_date = "2012-06-30"
 ' attempt to ping a target computer before audit?
 ping_target = "n"
 
+' set by the Discovery function - do not normally set this manually
+system_id = ""
+
 details_to_lower = "y"
 
 ' below we take any command line arguements
@@ -163,6 +166,9 @@ For Each strArg in objArgs
 			
 			case "submit_online"
 				submit_online = argValue
+			
+			case "system_id"
+				system_id = argValue
 			
 			case "url"
 				url = argValue
@@ -470,6 +476,7 @@ else
 						result.WriteText "		<windows_active_directory_ou>" & escape_xml(computer_ou) & "</windows_active_directory_ou>" & vbcrlf
 						result.WriteText "		<last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
 						result.WriteText "		<last_seen_by>active directory</last_seen_by>" & vbcrlf
+						result.WriteText "		<system_id>" & system_id & "</system_id>" & vbcrlf
 						result.WriteText "	</sys>" & vbcrlf
 					 end if
 						objRecordSet.MoveNext
@@ -779,6 +786,7 @@ result.WriteText "		<pc_memory>" & escape_xml(system_pc_memory) & "</pc_memory>"
 result.WriteText "		<pc_num_processor>" & escape_xml(system_pc_num_processor) & "</pc_num_processor>" & vbcrlf
 result.WriteText "		<pc_date_os_installation>" & escape_xml(system_pc_date_os_installation) & "</pc_date_os_installation>" & vbcrlf
 result.WriteText "		<man_org_id>" & escape_xml(org_id) & "</man_org_id>" & vbcrlf
+result.WriteText "		<system_id>" & escape_xml(system_id) & "</system_id>" & vbcrlf
 result.WriteText "	</sys>" & vbcrlf
 
 
