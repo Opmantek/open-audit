@@ -341,6 +341,15 @@ class system extends CI_Controller
                 if ($i == '' and $received_system_id > '') {
                     $i = $received_system_id;
                 }
+                if (($i > "" and $received_system_id > "") and ($i != $received_system_id)) {
+                    # We delete this original system as likely with limited data (from 
+                    # nmap and/or snmp) we couldn't match an existing system
+                    # Now we have an actual audit result with plenty of data
+                    # we have found a match and it's not the original
+                    $sql = "DELETE FROM system WHERE system_id = ?";
+                    $data = array($received_system_id);
+                    $query = $this->db->query($sql, $data);
+                }
                 $details->system_id = $i;
                 $details->last_seen = $details->timestamp;
                 $details->last_seen_by = 'audit';
