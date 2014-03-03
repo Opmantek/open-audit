@@ -53,7 +53,7 @@
 //	 Decoding of formula conditions, results, and tokens.
 //	 Support for user-defined named cells added as an array "namedcells"
 //		 Patch code for user-defined named cells supports single cells only.
-//		 NOTE: this patch only works for BIFF8 as BIFF5-7 use a different
+//		 note: this patch only works for BIFF8 as BIFF5-7 use a different
 //		 external sheet reference structure
 
 

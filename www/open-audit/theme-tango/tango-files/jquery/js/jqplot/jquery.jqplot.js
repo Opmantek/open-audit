@@ -976,7 +976,7 @@
                 }
             }
             else {
-                // TODO: figure out what to do with null values
+                // todo: figure out what to do with null values
                 // probably involve keeping nulls in data array
                 // and then updating renderers to break line
                 // when it hits null value.
@@ -4388,7 +4388,7 @@
                         var fasopts = $.extend(true, {}, opts, {fill:false, closePath:false});
                         this.renderer.shapeRenderer.draw(ctx, fasgd, fasopts);
                         //////////
-                        // TODO: figure out some way to do shadows nicely
+                        // todo: figure out some way to do shadows nicely
                         // if (shadow) {
                         //     this.renderer.shadowRenderer.draw(ctx, fasgd, fasopts);
                         // }
