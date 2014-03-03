@@ -228,7 +228,7 @@ class M_oa_device extends MY_Model {
 		// 	"$details->device_latitude", 
 		// 	"$details->device_longitude");
 		// $query = $this->db->query($sql, $data);
-		return($this->db->insert_id());
+		// return($this->db->insert_id());
 	}
 
 	/**

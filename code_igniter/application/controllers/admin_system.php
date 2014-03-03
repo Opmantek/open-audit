@@ -346,7 +346,7 @@ class Admin_system extends MY_Controller
             $details->hostname = mb_strtolower($details->hostname);
 
             if (isset($details->man_ip_address)) {
-                $details->man_ip_address = $this->ip_address_to_db($details->man_ip_address);
+                $details->man_ip_address = ip_address_to_db($details->man_ip_address);
             }
             $details->timestamp = date('Y-m-d H:i:s');
             $details->first_timestamp = $details->timestamp;
@@ -581,21 +581,5 @@ class Admin_system extends MY_Controller
                 redirect('main/index');
             }
         }
-    }
-
-    public function ip_address_to_db($ip)
-    {
-        if (($ip <> "") and (!(is_null($ip))) and (substr_count($ip, '.') == 3)) {
-            $myip = explode(".", $ip);
-            $myip[0] = mb_substr("000" . $myip[0], -3);
-            $myip[1] = mb_substr("000" . $myip[1], -3);
-            $myip[2] = mb_substr("000" . $myip[2], -3);
-            $myip[3] = mb_substr("000" . $myip[3], -3);
-            $ip_post = $myip[0] . "." . $myip[1] . "." . $myip[2] . "." . $myip[3];
-        } else {
-            $ip_post = "000.000.000.000";
-        }
-
-        return $ip_post;
     }
 }

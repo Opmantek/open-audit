@@ -1,0 +1,29 @@
+/*
+ * Droppy 0.1.2
+ * (c) 2008 Jason Frame (jason@onehackoranother.com)
+ */
+ 
+/* Basic code - don't modify */
+ 
+ #nav { display: block; margin: 0; padding: 0; position: relative; }
+  #nav li { display: block; list-style: none; margin: 0; padding: 0; float: left; position: relative; }
+  #nav a { display: block; }
+  #nav ul { display: none; position: absolute; left: 0; margin: 0; padding: 0; }
+  * html #nav ul { line-height: 0; } /* IE6 "fix" */
+  	#nav ul a { zoom: 1; } /* IE6/7 fix */
+    #nav ul li { float: none; }
+    #nav ul ul { top: 0; }
+    
+/* Essentials - configure this */
+
+#nav ul { width: 140px; }
+#nav ul ul { left: 141px; }
+
+#nav { background-color: #555; height: 24px; color: #fff;}
+#nav *:hover { background-color: #ffffff; }
+#nav a { color: #fff; font-size: 10pt; padding: 6px; line-height: 1; font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; }
+  #nav li.hover a { background-color: #777; }
+  #nav ul { top: 25px; }
+    #nav ul li a { background-color: #777; }
+      #nav ul li.hover > a { background-color: #888; opacity: 1; filter: alpha(opacity=90); }
+   #nav ul a { border-bottom: 1px solid #555; border-right: 1px solid #555; opacity: 0.9; filter: alpha(opacity=90); }
