@@ -300,3 +300,375 @@ function upload_attachment()
 }
 
 </script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+	
+	$('#view_summary_windows').hide();
+	$('#view_summary_credentials').hide();
+	$('#view_summary_purchase').hide();
+	$('#view_summary_network').hide();
+	$('#view_summary_audits').hide();
+	$('#view_summary_audit_log').hide();
+	$('#view_summary_alerts').hide();
+	$('#view_summary_location').hide();
+	$('#view_summary_custom').hide();
+	$('#view_summary_attachment').hide();
+	$('#view_summary_nmis').hide();
+
+	$('#toggle_summary_windows').click(function(){
+		$('#view_summary_windows').slideToggle("fast");
+	});
+
+	$('#toggle_summary_credentials').click(function(){
+		$('#view_summary_credentials').slideToggle("fast");
+	});
+
+	$('#toggle_summary_purchase').click(function(){
+		$('#view_summary_purchase').slideToggle("fast");
+	});
+
+	$('#toggle_summary_network').click(function(){
+		$('#view_summary_network').slideToggle("fast");
+	});
+
+	$('#toggle_summary_audits').click(function(){
+		$('#view_summary_audits').slideToggle("fast");
+	});
+
+	$('#toggle_summary_audit_log').click(function(){
+		$('#view_summary_audit_log').slideToggle("fast");
+	});
+
+	$('#toggle_summary_alert_log').click(function(){
+		$('#view_summary_alerts').slideToggle("fast");
+	});
+
+	$('#toggle_summary_location').click(function(){
+		$('#view_summary_location').slideToggle("fast");
+	});
+
+	$('#toggle_summary_custom').click(function(){
+		$('#view_summary_custom').slideToggle("fast");
+	});
+
+	$('#toggle_summary_attachment').click(function(){
+		$('#view_summary_attachment').slideToggle("fast");
+	});
+
+	$('#toggle_summary_nmis').click(function(){
+		$('#view_summary_nmis').slideToggle("fast");
+	});
+
+	var summary_toggle = 0;
+
+	$('#toggle_summary_all').click(function(){
+		if (summary_toggle == 0)
+		{
+			$('#view_summary_windows').show("fast");
+			$('#view_summary_credentials').show("fast");
+			$('#view_summary_purchase').show("fast");
+			$('#view_summary_network').show("fast");
+			$('#view_summary_audits').show("fast");
+			$('#view_summary_audit_log').show("fast");
+			$('#view_summary_alerts').show("fast");
+			$('#view_summary_location').show("fast");
+			$('#view_summary_custom').show("fast");
+			$('#view_summary_attachment').show("fast");
+			$('#view_summary_nmis').show("fast");
+			summary_toggle = 1;
+		}
+		else 
+		{
+			$('#view_summary_windows').hide("fast");
+			$('#view_summary_credentials').hide("fast");
+			$('#view_summary_purchase').hide("fast");
+			$('#view_summary_network').hide("fast");
+			$('#view_summary_audits').hide("fast");
+			$('#view_summary_audit_log').hide("fast");
+			$('#view_summary_alerts').hide("fast");
+			$('#view_summary_location').hide("fast");
+			$('#view_summary_custom').hide("fast");
+			$('#view_summary_attachment').hide("fast");
+			$('#view_summary_nmis').hide("fast");
+			summary_toggle = 0;
+		}
+	});
+
+
+	$('#view_hardware_processor').hide();
+	$('#view_hardware_memory').hide();
+	$('#view_hardware_bios').hide();
+	$('#view_hardware_motherboard').hide();
+	$('#view_hardware_scsi_controller').hide();
+	$('#view_hardware_network').hide();
+	$('#view_hardware_hard_drive').hide();
+	$('#view_hardware_optical').hide();
+	$('#view_hardware_video').hide();
+	$('#view_hardware_monitor').hide();
+	$('#view_hardware_sound').hide();
+	$('#view_hardware_printer').hide();
+        
+	var hardware_toggle = 0;
+
+	$('#toggle_hardware_processor').click(function(){
+		$('#view_hardware_processor').slideToggle("fast");
+	});
+
+	$('#toggle_hardware_memory').click(function(){
+		$('#view_hardware_memory').slideToggle("fast");
+	});
+ 
+	$('#toggle_hardware_bios').click(function(){
+		$('#view_hardware_bios').slideToggle("fast");
+	});   
+
+	$('#toggle_hardware_motherboard').click(function(){
+		$('#view_hardware_motherboard').slideToggle("fast");
+	});   
+
+	$('#toggle_hardware_scsi_controller').click(function(){
+		$('#view_hardware_scsi_controller').slideToggle("fast");
+	});
+
+	$('#toggle_hardware_network').click(function(){
+		$('#view_hardware_network').slideToggle("fast");
+	});
+
+	$('#toggle_hardware_hard_drive').click(function(){
+		$('#view_hardware_hard_drive').slideToggle("fast");
+	});
+
+	$('#toggle_hardware_optical').click(function(){
+		$('#view_hardware_optical').slideToggle("fast");
+	});
+
+	$('#toggle_hardware_video').click(function(){
+		$('#view_hardware_video').slideToggle("fast");
+	});
+
+	$('#toggle_hardware_monitor').click(function(){
+		$('#view_hardware_monitor').slideToggle("fast");
+	});
+
+	$('#toggle_hardware_sound').click(function(){
+		$('#view_hardware_sound').slideToggle("fast");
+	});
+
+	$('#toggle_hardware_printer').click(function(){
+		$('#view_hardware_printer').slideToggle("fast");
+	});
+
+	$('#toggle_hardware_all').click(function(){
+	if (hardware_toggle == 0)
+	{
+			$('#view_hardware_processor').show("fast");
+			$('#view_hardware_memory').show("fast");
+			$('#view_hardware_bios').show("fast");
+			$('#view_hardware_motherboard').show("fast");
+			$('#view_hardware_scsi_controller').show("fast");
+			$('#view_hardware_network').show("fast");
+			$('#view_hardware_hard_drive').show("fast");
+			$('#view_hardware_optical').show("fast");
+			$('#view_hardware_video').show("fast");
+			$('#view_hardware_monitor').show("fast");
+			$('#view_hardware_sound').show("fast");
+			$('#view_hardware_printer').show("fast");
+			hardware_toggle = 1;
+		}
+		else 
+		{
+			$('#view_hardware_processor').hide("fast");
+			$('#view_hardware_memory').hide("fast");
+			$('#view_hardware_bios').hide("fast");
+			$('#view_hardware_motherboard').hide("fast");
+			$('#view_hardware_scsi_controller').hide("fast");
+			$('#view_hardware_network').hide("fast");
+			$('#view_hardware_hard_drive').hide("fast");
+			$('#view_hardware_optical').hide("fast");
+			$('#view_hardware_video').hide("fast");
+			$('#view_hardware_monitor').hide("fast");
+			$('#view_hardware_sound').hide("fast");
+			$('#view_hardware_printer').hide("fast");
+			hardware_toggle = 0;
+		}
+	});
+
+	$('#view_software_installed').hide();
+	$('#view_software_updates').hide();
+	$('#view_software_services').hide();
+	$('#view_software_codecs').hide();
+	$('#view_software_odbc').hide();
+	$('#view_software_assembly').hide();
+	$('#view_software_keys').hide();
+
+	var software_toggle = 0;
+
+	$('#toggle_software_installed').click(function(){
+		$('#view_software_installed').slideToggle("fast");
+	});
+
+	$('#toggle_software_updates').click(function(){
+		$('#view_software_updates').slideToggle("fast");
+	});
+
+	$('#toggle_software_services').click(function(){
+		$('#view_software_services').slideToggle("fast");
+	});
+
+	$('#toggle_software_codecs').click(function(){
+		$('#view_software_codecs').slideToggle("fast");
+	});
+
+	$('#toggle_software_odbc').click(function(){
+		$('#view_software_odbc').slideToggle("fast");
+	});
+
+	$('#toggle_software_assembly').click(function(){
+		$('#view_software_assembly').slideToggle("fast");
+	});
+
+	$('#toggle_software_keys').click(function(){
+		$('#view_software_keys').slideToggle("fast");
+	});
+
+
+	$('#toggle_software_all').click(function(){
+		if (software_toggle == 0)
+		{
+			$('#view_software_installed').show("fast");
+			$('#view_software_updates').show("fast");
+			$('#view_software_services').show("fast");
+			$('#view_software_codecs').show("fast");
+			$('#view_software_odbc').show("fast");
+			$('#view_software_assembly').show("fast");
+			$('#view_software_keys').show("fast");
+			software_toggle = 1;
+		}
+		else 
+		{
+			$('#view_software_installed').hide("fast");
+			$('#view_software_updates').hide("fast");
+			$('#view_software_services').hide("fast");
+			$('#view_software_codecs').hide("fast");
+			$('#view_software_odbc').hide("fast");
+			$('#view_software_assembly').hide("fast");
+			$('#view_software_keys').hide("fast");
+			software_toggle = 0;
+		}
+	});
+
+	$('#view_settings_pagefile').hide();
+	$('#view_settings_shares').hide();
+	$('#view_settings_routes').hide();
+	$('#view_settings_users').hide();
+	$('#view_settings_groups').hide();
+	$('#view_settings_print_queue').hide();
+	$('#view_settings_dns').hide();
+	$('#view_settings_netstat').hide();
+	$('#view_settings_logs').hide();
+	$('#view_settings_variables').hide();
+               
+	var settings_toggle = 0;
+	
+	$('#toggle_settings_pagefile').click(function(){
+		$('#view_settings_pagefile').slideToggle("fast");
+	});
+
+	$('#toggle_settings_shares').click(function(){
+		$('#view_settings_shares').slideToggle("fast");
+	});
+		
+	$('#toggle_settings_routes').click(function(){
+		$('#view_settings_routes').slideToggle("fast");
+	});
+
+	$('#toggle_settings_users').click(function(){
+		$('#view_settings_users').slideToggle("fast");
+	});
+
+	$('#toggle_settings_groups').click(function(){
+		$('#view_settings_groups').slideToggle("fast");
+	});
+
+	$('#toggle_settings_print_queue').click(function(){
+		$('#view_settings_print_queue').slideToggle("fast");
+	});
+
+	$('#toggle_settings_dns').click(function(){
+		$('#view_settings_dns').slideToggle("fast");
+	});
+
+	$('#toggle_settings_netstat').click(function(){
+		$('#view_settings_netstat').slideToggle("fast");
+	});
+
+	$('#toggle_settings_logs').click(function(){
+		$('#view_settings_logs').slideToggle("fast");
+	});
+
+	$('#toggle_settings_variables').click(function(){
+		$('#view_settings_variables').slideToggle("fast");
+	});
+
+	$('#toggle_settings_all').click(function(){
+		if (settings_toggle == 0)
+		{
+			$('#view_settings_pagefile').show("fast");
+			$('#view_settings_shares').show("fast");
+			$('#view_settings_routes').show("fast");
+			$('#view_settings_users').show("fast");
+			$('#view_settings_groups').show("fast");
+			$('#view_settings_print_queue').show("fast");
+			$('#view_settings_dns').show("fast");
+			$('#view_settings_netstat').show("fast");
+			$('#view_settings_logs').show("fast");
+			$('#view_settings_variables').show("fast");
+			settings_toggle = 1;
+		}
+		else 
+		{
+			$('#view_settings_pagefile').hide("fast");
+			$('#view_settings_shares').hide("fast");
+			$('#view_settings_routes').hide("fast");
+			$('#view_settings_users').hide("fast");
+			$('#view_settings_groups').hide("fast");
+			$('#view_settings_print_queue').hide("fast");
+			$('#view_settings_dns').hide("fast");
+			$('#view_settings_netstat').hide("fast");
+			$('#view_settings_logs').hide("fast");
+			$('#view_settings_variables').hide("fast");
+			settings_toggle = 0;
+		}
+	});
+
+	$('#view_server_database').hide();
+	$('#view_server_web').hide();
+
+	var server_toggle = 0;
+
+	$('#toggle_server_database').click(function(){
+		$('#view_server_database').slideToggle("fast");
+	});
+
+	$('#toggle_server_web').click(function(){
+		$('#view_server_web').slideToggle("fast");
+	});
+
+	$('#toggle_server_all').click(function(){
+		if (server_toggle == 0)
+		{
+			$('#view_server_database').show("fast");
+			$('#view_server_web').show("fast");
+			server_toggle = 1;
+		}
+		else 
+		{
+			$('#view_server_database').hide("fast");
+			$('#view_server_web').hide("fast");
+			server_toggle = 0;
+		}
+	});
+});
+</script>

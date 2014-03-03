@@ -34,6 +34,8 @@
 
 ?>
 <!-- v_display_printer -->
+<?php include "include_display_php.php"; ?>
+
 <script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -380,7 +382,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Custom Details')?></span></legend>
 			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_custom.png' alt='' title='' width='48'/>
 			<?php 
-			echo display_custom_field('view_summary_custom', $additional_fields, $edit);
+			echo display_custom_field('view_summary_custom',  $additional_fields_data, $edit);
 			?>
 		</fieldset>
 	</form>
@@ -545,126 +547,5 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 
 
 
-
-
 <?php include "include_display_javascript.php"; ?>
 
-<script type="text/javascript">
-
-$(document).ready(function(){
-	
-	$('#view_summary_credentials').hide();
-	$('#view_summary_purchase').hide();
-	$('#view_summary_network').hide();
-	$('#view_summary_location').hide();
-	$('#view_summary_custom').hide();
-	$('#view_summary_audits').hide();
-	$('#view_summary_audit_log').hide();
-	$('#view_summary_alerts').hide();
-	$('#view_summary_nmis').hide();
-
-	$('#toggle_summary_credentials').click(function(){
-		$('#view_summary_credentials').slideToggle("fast");
-	});
-
-	$('#toggle_summary_purchase').click(function(){
-		$('#view_summary_purchase').slideToggle("fast");
-	});
-
-	$('#toggle_summary_network').click(function(){
-		$('#view_summary_network').slideToggle("fast");
-	});
-
-	$('#toggle_summary_location').click(function(){
-		$('#view_summary_location').slideToggle("fast");
-	});
-
-	$('#toggle_summary_custom').click(function(){
-		$('#view_summary_custom').slideToggle("fast");
-	});
-
-	$('#toggle_summary_audits').click(function(){
-		$('#view_summary_audits').slideToggle("fast");
-	});
-
-	$('#toggle_summary_audit_log').click(function(){
-		$('#view_summary_audit_log').slideToggle("fast");
-	});
-
-	$('#toggle_summary_alert_log').click(function(){
-		$('#view_summary_alerts').slideToggle("fast");
-	});
-
-	$('#toggle_summary_nmis').click(function(){
-		$('#view_summary_nmis').slideToggle("fast");
-	});
-
-	var summary_toggle = 0;
-
-	$('#toggle_summary_all').click(function(){
-		if (summary_toggle == 0)
-		{
-			$('#view_summary_credentials').show("fast");
-			$('#view_summary_purchase').show("fast");
-			$('#view_summary_network').show("fast");
-			$('#view_summary_location').show("fast");
-			$('#view_summary_custom').show("fast");
-			$('#view_summary_audits').show("fast");
-			$('#view_summary_audit_log').show("fast");
-			$('#view_summary_alerts').show("fast");
-			$('#view_summary_nmis').show("fast");
-			summary_toggle = 1;
-		}
-		else 
-		{
-			$('#view_summary_credentials').hide("fast");
-			$('#view_summary_purchase').hide("fast");
-			$('#view_summary_network').hide("fast");
-			$('#view_summary_location').hide("fast");
-			$('#view_summary_custom').hide("fast");
-			$('#view_summary_audits').hide("fast");
-			$('#view_summary_audit_log').hide("fast");
-			$('#view_summary_alerts').hide("fast");
-			$('#view_summary_nmis').hide("fast");
-			summary_toggle = 0;
-		}
-	});
-});
-</script>
-
-<?php
-
-function print_something($string)
-{
-	if ((mb_strlen($string) == 0) OR ($string == '0000-00-00'))
-	{
-		return '-';
-	} else {
-		return htmlentities($string);
-	}
-}
-
-function display_custom_field($field_placement, $additional_fields, $edit)
-{
-	foreach($additional_fields as $field)
-	{
-		if ($field->field_placement == $field_placement)
-		{
-			$data_id = "field_" . $field->field_type;
-			$data_id = $field->$data_id;
-			$data_value = "field_" . $field->field_type;
-			$data_value = $field->$data_value;
-			$width = "120";
-			if ($field_placement == 'view_summary_windows')
-			{
-				$width = '160';
-			}
-			# TODO: fix this string output hack with real html entities
-			echo "<div style=\"float: left; width: 90%; \">\n";
-			echo "<label for=\"custom_" . $field->field_type . "_" . str_replace(" ", "_", str_replace("#", "", ($data_id))) . "_" . $field->field_id . "_placement\" >" . __($field->field_name) . ": </label>";
-			echo "<span id=\"custom_" . $field->field_type . "_" . str_replace(" ", "_", str_replace("#", "", ($data_id))) . "_" . $field->field_id . "_placement\"" . $edit . ">" . print_something($data_value) . "</span>\n";
-			echo "</div>\n";
-		}
-	}
-}
-?>
