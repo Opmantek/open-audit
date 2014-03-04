@@ -611,6 +611,9 @@ class MY_Controller extends CI_Controller {
 					if (($column_variable_name == 'hostname') and ($row->$column_variable_name == '')) {
 						$row->hostname = "-";
 					}
+					if ( ! isset($this->data['group_id'])) { $this->data['group_id'] = ''; }
+					if ( ! isset($data['first_attribute'])) { $data['first_attribute'] = ''; }
+					if ( ! isset($column->column_quaternary)) { $column->column_quaternary = ''; }
 
 					switch($column_type) {	
 						case "":
