@@ -135,6 +135,8 @@ class discovery extends CI_Controller
             if ((php_uname('s') == 'Linux' or php_uname('s') == "Darwin") and ($error == '')) {
                 # linux or OSX host - copy the script to the DC and start it
                 $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/open-audit/other";
+                $_POST['user'] = str_replace('$', '\$', $_POST['user']);
+                $_POST['password'] = str_replace('$', '\$', $_POST['password']);
 
                 # copy the domain audit script
                 if ($error == '') {
