@@ -328,6 +328,7 @@ class system extends CI_Controller
         foreach ($xml->children() as $child) {
             if ($child->getName() == 'sys') {
                 $details = (object) $xml->sys;
+                $received_system_id = '';
                 if(!isset($details->system_id)) {
                     $details->system_id = '';
                 } else if ($details->system_id > '') {
