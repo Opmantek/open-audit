@@ -1528,7 +1528,7 @@ fi
 if [ "$submit_online" = "y" ]; then
 	if [ $debugging -gt 1 ]; then
 		$OA_ECHO "Submitting results to server"
-		$OA_EHHO "URL: $url"
+		$OA_ECHO "URL: $url"
 	fi
 	$OA_WGET --delete-after --post-file="$xml_file" $url 2>/dev/null
 fi
