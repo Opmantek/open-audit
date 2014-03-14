@@ -100,7 +100,7 @@ if (!isset($logo)) {
 <script type="text/javascript">
     function audit_my_pc()
     {
-        location.href = "/open-audit/login/audit_my_pc";
+        location.href = "/open-audit/index.php/login/audit_my_pc";
     }
 <?php if ($systems == '0') { ?>
     document.getElementById("username").value = "admin";

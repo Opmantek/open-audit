@@ -226,7 +226,7 @@ for l = 0 to ubound(domain_array)
 
 	if audit_run_type = "local" then
 		for i = 0 to ubound(pc_array)
-			while num_running > number_of_audits
+			while int(num_running) > int(number_of_audits)
 				if debugging > 0 then wscript.echo("processes running (" & num_running & ") greater than number wanted (" & number_of_audits & ")") end if
 				if debugging > 0 then wscript.echo("therefore - sleeping for 4 seconds.") end if
 				wscript.sleep 4000

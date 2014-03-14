@@ -97,7 +97,7 @@ class discovery extends CI_Controller
                 $log = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD submitted for " . $_POST['domain'];
                 $this->log_event($log);
                 $i = explode('/', base_url());
-                $url = str_replace($i[2], $_POST['network_address'], base_url()) . "index.php/system";
+                $url = str_replace($i[2], $_POST['network_address'], base_url()) . "index.php/system/add_system";
             } else {
                 $error = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD incomplete credentials.";
                 $this->log_event($log);
@@ -107,13 +107,14 @@ class discovery extends CI_Controller
             if ((php_uname('s') == 'Windows NT') and ($error == '')) {
                 # Windows host - start the script locally
                 $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "\\open-audit\\other";
-                $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $details->windows_domain . "\\" . $details->windows_username . " strpass=" . $details->windows_password . " url=" . $url . "index.php/system/add_system debugging=0";
-                $log_details = "C:discovery F:process_subnet Windows audit for $details->man_ip_address (System ID $details->system_id)";
-                $this->log_event($log_details);
+
+                $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " debugging=0";
+
                 $command_string = "%comspec% /c start /b cscript //nologo " . $script_string . " &";
 
                 if (isset($_POST['debug']) and ((isset($loggedin)) or ($this->session->userdata('logged_in') == true))) {
                     echo "\nCommand: $command_string\n\n";
+                    $command_string = str_replace('debugging=0', 'debugging=1', $command_string);
                     exec($command_string, $output, $return_var);
                     echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
                     print_r($output);
@@ -149,10 +150,10 @@ class discovery extends CI_Controller
                         print_r($output);
                     }
                     if ($return_var != '0') {
-                        $error = "C:discovery F:process_subnet SMBClient copy of audit_domain.vbs to " . $_POST['server'] . " has failed";
+                        $error = "C:discovery F:process_subnet SMBClient copy of discover_domain.vbs to " . $_POST['server'] . " has failed";
                         $this->log_event($error);
                     } else {
-                        $log = "C:discovery F:process_subnet SMBClient copy of audit_domain.vbs to " . $_POST['server'] . " has succeeded";
+                        $log = "C:discovery F:process_subnet SMBClient copy of discover_domain.vbs to " . $_POST['server'] . " has succeeded";
                         $this->log_event($log);
                     }
                     $command_string = null;

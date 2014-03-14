@@ -641,6 +641,7 @@ if (!function_exists('get_snmp')) {
 		$string = str_replace("INTEGER: ", "", $string);
 		$string = str_replace("Hex-STRING: ", "", $string);
 		$string = str_replace("Hex-", "", $string);
+		$string = str_replace("Gauge32: ", "", $string);
 
 		# remove the first and last characters if they are "
 		if (substr($string, 0, 1) == "\"") { $string = substr($string, 1, strlen($string)); }
