@@ -111,7 +111,11 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		$snmp_community = '';
 	}
 } else {
-	$snmp_community = $decoded_access_details->snmp_community;
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = $decoded_access_details->snmp_community;
+	} else {
+		$snmp_community = '';
+	}
 }
 
 ?>

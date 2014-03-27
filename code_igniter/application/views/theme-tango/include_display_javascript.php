@@ -153,6 +153,7 @@ function display_type() {
 	<option value='network printer'>Network Printer<\/option> \
 	<option value='network scanner'>Network Scanner<\/option> \
 	<option value='phone'>Phone<\/option> \
+	<option value='point of sale'>Point of Sale<\/option> \
 	<option value='printer'>Printer<\/option> \
 	<option value='projector'>Projector<\/option> \
 	<option value='remote access controller'>Remote Access Controller (ILO \/ RSA)<\/option> \
@@ -171,6 +172,7 @@ function display_type() {
 	<option value='vpn_terminator'>VPN Terminator<\/option> \
 	<option value='wan accelerator'>WAN Accelerator<\/option> \
 	<option value='wap'>WAP (Wireless Access Point)<\/option> \
+	<option value='web cache'>Web Cache<\/option> \
 	<option value='webcam'>Webcam<\/option> \
 	<option value='wireless router'>Wireless Router<\/option> \
 	<\/select>";

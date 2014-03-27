@@ -113,7 +113,11 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		$snmp_community = '';
 	}
 } else {
-	$snmp_community = $decoded_access_details->snmp_community;
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = $decoded_access_details->snmp_community;
+	} else {
+		$snmp_community = '';
+	}
 }
 
 ?>
@@ -135,6 +139,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
 					<li class="child"><img alt="" src="<?php echo $image_path?>16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
 		 			<?php if ($config->nmis == 'y') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
+		 			<?php if (count($network) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_network.png" /><a href="#" id="toggle_hardware_network">Network</a></li> <?php } ?>
 				</ul> 
 			</div>
 		</fieldset> 
@@ -164,11 +169,9 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 			<?php if (($access_level > 7) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
 			<input type="button" onclick="window.location.href='<?php echo base_url(); ?>index.php/discovery/discover_subnet/device/<?php echo $system_id; ?>'" value='Discover Device' title='Discover Device' name='Discover Device' alt='Discover Device' width='24' />
 			<?php } ?>
-			<!--
 			<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
 				<input type="button" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo $system_id; ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');" value='SNMP Scan' title='SNMP Scan' name='SNMP Scan' alt='SNMP Scan' width='24' />
 			<?php } ?>
-			-->
 		</div>
 			<div style="float: left; width:75%; margin-right: 120px;">
 				<?php foreach($system as $key): ?>
@@ -210,6 +213,16 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 							<p><label for="link_warranty"><?php echo __('Warranty Link')?>: </label><span id="link_warranty"><?php echo print_something($link_warranty)?> </span></p>
 							<p><label for="link_downloads"><?php echo __('Downloads Link')?>: </label><span id="link_downloads"><?php echo print_something($link_downloads)?> </span></p>
 							<?php if ($key->linked_sys <> '') {?><p><label for="linked_sys"><?php echo __('Linked Computer')?>: </label><span id="linked_sys"><a href="<?php echo base_url(); ?>index.php/main/system_display/<?php echo $key->linked_sys ?>"><?php echo $key->linked_sys ?></a></span></p><?php } ?>
+
+							<?php if ($access_level > 7) { ?>
+								<p><label for="man_icon"><?php echo __('Icon')?>: </label>
+									<span id="man_icon">
+										<a href="#" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_icon/<?php echo $system_id; ?>', 'Icon Picker', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=yes,status=no,titlebar=no,toolbar=no,top=100,width=400');" alt="Click to edit">
+											<img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $key->man_icon?>.png" /> (<?php echo str_replace('16_', '', str_replace('_', ' ', $key->man_icon)); ?>) <span style="color: blue;">click to edit</span></a></span></p>
+							<?php } else { ?>
+								<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $key->man_icon?>.png" /></span></p>
+							<?php } ?>
+
 						</div>
 					</div>
 				<?php endforeach; ?>
@@ -541,6 +554,74 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 				</div>
 			</fieldset>
 		</form>
+	</div>
+
+	<div id="view_hardware_network" style="float: left; width: 100%;">
+	<?php if (count($network) > 0) { ?>
+		<br />
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="network_details">
+				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Network Details')?></span></legend>
+				<fieldset id="network_hardware_details">
+					<legend><span style="font-size: 10pt;">&nbsp;<?php echo __('Hardware Interface Details')?></span></legend>
+					<table cellspacing="1" class="tablesorter" width="100%">
+						<thead>
+							<tr>
+								<th>MAC Address</th>
+								<th>Connection ID</th>
+								<th>Description</th>
+								<th>Type</th>
+								<th>Enabled</th>
+								<th>Speed</th>
+							</td>
+						</thead>
+						<tbody>
+						<?php foreach($network as $key) { ?><tr>
+								<td><?php echo $key->net_mac_address; ?></td>
+								<td><?php echo $key->net_connection_id; ?></td>
+								<td><?php echo $key->net_description; ?></td>
+								<td><?php echo $key->net_adapter_type; ?></td>
+								<td><?php echo $key->net_ip_enabled; ?></td>
+								<?php if (intval($key->net_speed) < 1000) {
+										$speed = number_format(intval($key->net_speed)) . " b/s";
+									}
+									if (intval($key->net_speed) >= 1000 and intval($key->net_speed) < 1000000) {
+										$speed = number_format(intval($key->net_speed / 1000 )) . " Kb/s";
+									}
+									if (intval($key->net_speed) >= 1000000 and intval($key->net_speed) < 1000000000) {
+										$speed = number_format(intval($key->net_speed / 1000 / 1000)) . " Mb/s";
+									}
+									if (intval($key->net_speed) >= 1000000000) {
+										$speed = number_format(intval($key->net_speed / 1000 / 1000 / 1000)) . " Gb/s";
+									} ?><td><?php echo $speed; ?></td>
+							</tr>
+						<?php } ?>
+					</table>
+				</fieldset>
+				<br />
+				<fieldset id="network_ip_details">
+					<legend><span style="font-size: 10pt;">&nbsp;<?php echo __('IP Address Details')?></span></legend>
+					<table cellspacing="1" class="tablesorter" width="100%">
+						<thead>
+							<tr>
+								<th>MAC Address</th>
+								<th>IP Address</th>
+								<th>Subnet</th>
+							</td>
+						</thead>
+						<tbody>
+						<?php foreach ($ip as $ip_address) { ?><tr>
+							<td><?php echo print_something($ip_address->net_mac_address)?></td>
+							<td><?php echo print_something(ip_address_from_db($ip_address->ip_address_v4))?></td>
+							<td><?php echo print_something($ip_address->ip_subnet)?></td>
+							</tr>
+						<?php } ?>
+					</table>
+				</fieldset>
+			</fieldset>
+		</form>
+	<?php } ?>
 	</div>
 
 <!-- end of content_column -->

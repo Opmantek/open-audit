@@ -91,3 +91,5 @@ function strTime($s) {
 	if ($s) $str .= $s . 's';
 	return $str;
 }
+
+

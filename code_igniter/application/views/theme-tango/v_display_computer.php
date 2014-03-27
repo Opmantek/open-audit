@@ -161,7 +161,11 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		$snmp_community = '';
 	}
 } else {
-	$snmp_community = $decoded_access_details->snmp_community;
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = $decoded_access_details->snmp_community;
+	} else {
+		$snmp_community = '';
+	}
 }
 
 ?>
@@ -353,6 +357,19 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 									<p><label for="link_express_code"><?php echo __('Dell Express Code')?>: </label><span id="link_express"><?php echo print_something($link_express_code)?> </span></p>
 								<?php } ?>
 							<?php } ?>
+
+
+
+							<?php if ($access_level > 7) { ?>
+								<p><label for="man_icon"><?php echo __('Icon')?>: </label>
+									<span id="man_icon">
+										<a href="#" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_icon/<?php echo $system_id; ?>', 'Icon Picker', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=yes,status=no,titlebar=no,toolbar=no,top=100,width=400');" alt="Click to edit">
+											<img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $key->man_icon?>.png" /> (<?php echo str_replace('16_', '', str_replace('_', ' ', $key->man_icon)); ?>) <span style="color: blue;">click to edit</span></a></span></p>
+							<?php } else { ?>
+								<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $key->man_icon?>.png" /></span></p>
+							<?php } ?>
+
+
 
 						</div>
 					</div>
@@ -960,7 +977,19 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		<form action="#" method="post" class="niceforms">
 			<fieldset id="network_details">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Network Details')?></span></legend>
-				<?php foreach($network as $key): ?>
+				<?php foreach($network as $key):
+						if (intval($key->net_speed) < 1000) {
+							$speed = number_format(intval($key->net_speed)) . " b/s";
+						}
+						if (intval($key->net_speed) >= 1000 and intval($key->net_speed) < 1000000) {
+							$speed = number_format(intval($key->net_speed / 1000 )) . " Kb/s";
+						}
+						if (intval($key->net_speed) >= 1000000 and intval($key->net_speed) < 1000000000) {
+							$speed = number_format(intval($key->net_speed / 1000 / 1000)) . " Mb/s";
+						}
+						if (intval($key->net_speed) >= 1000000000) {
+							$speed = number_format(intval($key->net_speed / 1000 / 1000 / 1000)) . " Gb/s";
+						} ?>
 				<fieldset id="network_details_<?php echo str_replace('/','-',$key->net_id)?>">
 				<legend><span style="font-size: 10pt;">&nbsp;<?php echo $key->net_description?> <?php echo __('Details')?></span></legend>
 				<div>
@@ -969,7 +998,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 						<p><label for="network_mac_address_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('MAC Address')?>: </label><span id="network_mac_address_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_mac_address)?></span></p>
 						<p><label for="network_model_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Model')?>: </label><span id="network_model_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_model)?></span></p>
 						<p><label for="network_manufacturer_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Manufacturer')?>: </label><span id="network_manufacturer_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_manufacturer)?></span></p>
-						<p><label for="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Speed')?>: </label><span id="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo number_format(intval($key->net_speed) / 10000)?>&nbsp;MB/s</span></p>
+						<p><label for="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Speed')?>: </label><span id="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo $speed; ?></span></p>
 						<p><label for="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Status')?>: </label><span id="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_connection_status)?></span></p>
 						<p><label for="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Adapter Type')?>: </label><span id="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_adapter_type)?></span></p>
 					</div>

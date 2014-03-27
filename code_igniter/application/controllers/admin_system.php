@@ -189,6 +189,102 @@ class Admin_system extends MY_Controller
         }
     }
 
+
+    public function system_icon()
+    {
+        # TODO - move this to a view and check credentials
+        
+        $system_id = intval($this->uri->segment(3, 0));
+        $base_url = base_url();
+        # set up the pop up page
+        echo "<html>
+    <head>
+        <script type=\"text/javascript\">
+        
+        window.onunload = refreshParent;
+        
+        function refreshParent(){
+            window.opener.location.reload();
+        }
+        
+        function CloseMe(){
+            window.opener.location.reload();
+            window.close();
+        }
+
+        function createRequestObject() {
+            var req;
+            if(window.XMLHttpRequest){
+                // Firefox, Safari, Opera...
+                req = new XMLHttpRequest();
+            } else if(window.ActiveXObject) {
+                // Internet Explorer 5+
+                req = new ActiveXObject(\"Microsoft.XMLHTTP\");
+            } else {
+                // There is an error creating the object,
+                // just as an old browser is being used.
+                alert('Problem creating the XMLHttpRequest object');
+            }
+            return req;
+        }
+
+        var http = createRequestObject();
+
+        function update(name) {
+            http.open('get', '" . $base_url . "index.php/ajax/update_system_man/" . $system_id . "/man_icon/'+name);
+            http.onreadystatechange = receive_update;
+            http.send(null);
+        }
+
+        function receive_update() {
+            window.opener.location.reload();
+            window.close();
+        }
+        </script>
+    </head>
+    <body>
+        <h3 style='text-align: center; font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif;'>Icons</h3>
+        <p style='font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif; font-size: 10px;'>
+        Click an icon to set it for the device.<br /><br />
+        <table>\n";
+
+
+        $directory =  str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"] . 'theme-tango/tango-images');
+        if (is_dir($directory)) {
+            if ($handle = opendir($directory)) {
+                while($file = readdir($handle)) {
+                    if (strpos($file, ".png") !== false and strpos($file, '16_') !== false) {
+                        $files[] = $file;
+                    }
+                }
+            }
+            closedir($handle);
+        }
+        sort($files);
+        $count = 0;
+        foreach ($files as $file) {
+            if ($file != '16_.png') {
+                $count++;
+                if ($count == 1) {
+                    echo "<tr>";
+                }
+                $db_store = str_replace('16_', '', $file);
+                $db_store = str_replace('.png', '', $db_store);
+                $name = str_replace('_', ' ', $db_store);
+                $name = ucwords($name);
+                $name = trim($name);
+                echo "<td><a style=\"text-decoration: none; font-size: 11px;\" href=\"#\" onclick=\"update('" . $db_store . "')\"><img src=\"/open-audit/theme-tango/tango-images/" . $file . "\" alt=\"\" /> " . $name . "</a></td>";
+                if ($count == 2) {
+                    $count = 0;
+                    echo "</tr>\n";
+                }
+            }
+        }
+
+        echo "</table>\b</body>";
+    }
+
+
     public function system_snmp()
     {
         // check to make sure we have SNMP capability
@@ -198,6 +294,8 @@ class Admin_system extends MY_Controller
         }
         $this->load->model("m_system");
         $this->load->model("m_sys_man_audits");
+        $this->load->model("m_network_card");
+        $this->load->model("m_ip_address");
         $this->load->model("m_oa_general");
         $this->load->library('encrypt');
         $this->load->helper('snmp');
@@ -230,7 +328,10 @@ class Admin_system extends MY_Controller
         <p style='font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif; font-size: 12px;'>";
 
         # audit the device via snmp
-        get_snmp($details);
+        $temp_array = get_snmp($details);
+        $details = $temp_array['details'];
+        $network_interfaces = $temp_array['interfaces'];
+
         $details->last_seen_by = 'snmp';
         $details->timestamp = date('Y-m-d G:i:s');
         $details->last_seen = $details->timestamp;
@@ -244,6 +345,25 @@ class Admin_system extends MY_Controller
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
             $this->m_system->update_system($details);
             $this->m_sys_man_audits->insert_audit($details);
+            
+            # update any network interfaces and ip addresses retrieved by SNMP
+            $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+            $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+            $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
+            
+            if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                foreach ($network_interfaces as $input) {
+                    $this->m_network_card->process_network_cards($input, $details);
+
+                    if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
+                        foreach ($input->ip_addresses as $ip_input) {
+                            $ip_input = (object) $ip_input;
+                            $this->m_ip_address->process_addresses($ip_input, $details);
+                        }
+                    }
+                }
+            }
         } else {
             echo "Audit NOT submitted.";
         }
@@ -515,7 +635,12 @@ class Admin_system extends MY_Controller
                             $encoded = $this->encrypt->encode($encoded);
                             $details->access_details = $encoded;
                             if (extension_loaded('snmp')) {
-                                get_snmp($details);
+                                #get_snmp($details);
+                                
+                                $temp_array = get_snmp($details);
+                                $details = $temp_array['details'];
+                                $network_interfaces = $temp_array['interfaces'];
+                                
                                 $details->last_seen_by = 'snmp';
                             }
                         }
@@ -530,7 +655,7 @@ class Admin_system extends MY_Controller
                         }
                         # setting the system_key - we don't have the required info to create a unique key
                         if (!isset($details->system_key) or $details->system_key == '') {
-                            $error = "Error on row #" . $count . ". Insufficient details to create system key. Please supply (in order of preference) fqdn, hostname and domain, ip address, type and (unique) serial.<br />";
+                            $error = "Error on row #" . $count . ". Insufficient details to create system key. Please supply (in order of preference) fqdn, hostname and domain, type and (unique) serial, ip address.<br />";
                             $this->data['error'] .= $error;
                         }
                         # make sure we have a hostname variable
@@ -558,9 +683,28 @@ class Admin_system extends MY_Controller
                             $details->system_id = $this->m_system->insert_system($details);
                         }
                         // Insert an entry in to the audit log
-                        $details->audits_ip = '';
-                        $details->type = $this->m_system->get_system_type($details->system_id);
+                        $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+                        if (!isset($details->type) or $details->type =='') {
+                            $details->type = $this->m_system->get_system_type($details->system_id);
+                        }
                         $this->m_sys_man_audits->insert_audit($details);
+
+                         # update any network interfaces and ip addresses retrieved by SNMP
+                        $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+                        $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+                        if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                            foreach ($network_interfaces as $input) {
+                                $this->m_network_card->process_network_cards($input, $details);
+
+                                if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
+                                    foreach ($input->ip_addresses as $ip_input) {
+                                        $ip_input = (object) $ip_input;
+                                        $this->m_ip_address->process_addresses($ip_input, $details);
+                                    }
+                                }
+                            }
+                        }
+
                         // Finally, update groups
                         $this->m_oa_group->update_system_groups($details);
                         unset($details);
