@@ -34,11 +34,10 @@
  */
 
 # Vendor Lexmark
-if (!function_exists('get_oid_details')) {
 
-	function get_oid_details($details){
-		if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106851') { $details->model = 'Lexmark E260dn'; $details->type = 'network printer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71107113') { $details->model = 'Lexmark MS810'; $details->type = 'network printer'; }
-		if ($details->snmp_oid == '1.3.6.1.4.1.641.2.71107143') { $details->model = 'Lexmark XM3150'; $details->type = 'network printer'; }
-	}
-}
+$get_oid_details = function($details){
+	if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106851') { $details->model = 'Lexmark E260dn'; $details->type = 'network printer'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106860') { $details->model = 'Lexmark T652'; $details->type = 'network printer'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71107113') { $details->model = 'Lexmark MS810'; $details->type = 'network printer'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.641.2.71107143') { $details->model = 'Lexmark XM3150'; $details->type = 'network printer'; }
+};

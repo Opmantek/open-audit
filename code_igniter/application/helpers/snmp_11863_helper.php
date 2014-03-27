@@ -34,12 +34,7 @@
  */
 
 # Vendor TP-Link
-if (!function_exists('get_oid_details')) {
 
-	function get_oid_details($details){
-		if ($details->snmp_oid == '1.3.6.1.4.1.11863.1.1.2') { $details->model = 'TP-LINK Router R860'; $details->type = 'router'; }
-	
-
-
-	}
-}
+$get_oid_details = function($details){
+	if ($details->snmp_oid == '1.3.6.1.4.1.11863.1.1.2') { $details->model = 'TP-LINK Router R860'; $details->type = 'router'; }
+};
