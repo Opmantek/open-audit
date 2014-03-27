@@ -61,6 +61,8 @@ script_timeout = 600
 ' the name and path of the audit script to use
 script_name = "c:\xampplite\open-audit\other\audit_windows.vbs"
 
+help = "n"
+
 ' update with any submitted command line switches
 Set objArgs = WScript.Arguments
 
@@ -69,14 +71,20 @@ For Each strArg in objArgs
 		varArray = split(strArg, "=")
 		select case varArray(0)
 
+			case "audit_run_type"
+				audit_run_type = varArray(1)
+
+			case "debugging"
+				debugging = varArray(1)
+
+			case "help"
+				help = varArray(1)
+
 			case "number_of_audits"
 				number_of_audits = varArray(1)
 
 			case "script_name"
 				script_name = varArray(1)
-
-			case "audit_run_type"
-				audit_run_type = varArray(1)
 
 			case "remote_user"
 				remote_user = varArray(1)
@@ -84,12 +92,53 @@ For Each strArg in objArgs
 			case "remote_password"
 				remote_password = varArray(1)
 
-			case "debugging"
-				debugging = varArray(1)
-
 		end select
+	else
+		if (strArg = "/?" or strArg = "/help") then
+			help = "y"
+		end if
 	end if
 Next 
+
+if (help = "y") then
+	wscript.echo "------------------------------"
+	wscript.echo "Open-AudIT Domain Audit Script"
+	wscript.echo "(c) Opmantek, 2014."
+	wscript.echo "------------------------------"
+	wscript.echo "This script should be run on a Windows based computer. It queries Active Directory and spawns an audit for each Windows computer found."
+	wscript.echo ""
+	wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	wscript.echo ""
+	wscript.echo "  audit_run_type"
+	wscript.echo "   *local - Run the audit_windows script from this PC, targetting a remote PC."
+	wscript.echo "   remote - Copy the audit_windows script to the remote PC and start it remotely."
+	wscript.echo ""
+	wscript.echo "  debugging"
+	wscript.echo "     0 - No output."
+	wscript.echo "     1 - Minimal Output."
+	wscript.echo "    *2 - Verbose output."
+	wscript.echo ""
+	wscript.echo "  /? or help=y"
+	wscript.echo "      y - Display this help output."
+	wscript.echo "     *n - Do not display this output."
+	wscript.echo ""
+	wscript.echo "  local_domain"
+	wscript.echo "        - The domain you wish to audit. Should be in the format LDAP://your.domain.name"
+	wscript.echo ""
+	wscript.echo "  number_of_audits"
+	wscript.echo "    *25 - The number of concurrently spawned Windows audits."
+	wscript.echo ""
+	wscript.echo "  script_name"
+	wscript.echo "   c:\xampplite\open-audit\other\audit_windows.vbs - The full path to and file name of audit_windows.vbs."
+	wscript.echo ""
+	wscript.echo "  remote_password"
+	wscript.echo "        - The passowrd of the supplied username (if any)."
+	wscript.echo ""
+	wscript.echo "  remote_user"
+	wscript.echo "        - The domain and username credentials used to perform the windows audits. Should be in the format domain/username."
+	wscript.echo ""
+	wscript.quit
+end if
 
 ' the array of computer names to audit
 pc_array = array ( "COMPUTERNAME1", "COMPUTERNAME2")

@@ -45,8 +45,49 @@ debugging="3"
 for arg in "$@"; do
 	parameter=${arg%%=*}
 	value=${arg##*=} 
+	if [ "$parameter" == "--help" ]; then parameter="help"; value="y"; fi
+	if [ "$parameter" == "-h" ]; then parameter="help"; value="y"; fi
 	eval "$parameter"=\""$value\""
 done
+
+if [ "$help" = "y" ]; then
+	echo ""
+	echo "---------------------------"
+	echo "Open-AudIT OSX Audit script"
+	echo "(c) Opmantek, 2014.        "
+	echo "---------------------------"
+	echo "This script should be run on a Mac OSX based computer using root or sudo access rights."
+	echo ""
+	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	echo ""
+	echo "  create_file"
+	echo "     y - Create an XML file containing the audit result."
+	echo "    *n - Do not create an XML result file."
+	echo ""
+	echo "  debugging"
+	echo "     0 - No output."
+	echo "     1 - Minimal Output."
+	echo "     2 - Verbose output."
+	echo "    *3 - Very Verbose output."
+	echo ""
+	echo "  -h or --help or help=y"
+	echo "      y - Display this help output."
+	echo "     *n - Do not display this output."
+	echo ""
+	echo "  org_id"
+	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+	echo ""
+	echo "  submit_online"
+	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
+	echo "     n - Do not submit the audit result"
+	echo ""
+	echo "  url"
+	echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
+	echo ""
+	echo ""
+	echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
+	exit
+fi
 
 
 if [ "$debugging" -gt "0" ]; then

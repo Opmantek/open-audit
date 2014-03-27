@@ -112,6 +112,8 @@ system_id = ""
 
 details_to_lower = "y"
 
+help = "n"
+
 hide_audit_window = "n"
 
 ' below we take any command line arguements
@@ -129,6 +131,9 @@ For Each strArg in objArgs
 			
 			case "debugging"
 				debugging = argValue
+
+			case "help"
+				help = argValue
 			
 			case "ldap"
 				ldap = argvalue
@@ -192,9 +197,97 @@ For Each strArg in objArgs
 				
 		end select
 	else
-		strcomputer = strArg
+		if (strArg = "/help") or (strArg = "/?") then
+			help = "y"
+		else
+			strcomputer = strArg
+		end if
 	end if
 next 
+
+if (help = "y") then
+	wscript.echo "------------------------------"
+	wscript.echo "Open-AudIT Domain Audit Script"
+	wscript.echo "(c) Opmantek, 2014."
+	wscript.echo "------------------------------"
+	wscript.echo "This script should be run against a Windows based computer. It audits the target Windows computer and creates a result which can be submitted to the Open-AudIT server or saved as an XML file."
+	wscript.echo ""
+	wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	wscript.echo ""
+	wscript.echo "  create_file"
+	wscript.echo "     y - Create an XML file containing the audit result."
+	wscript.echo "    *n - Do not create an XML result file."
+	wscript.echo ""
+	wscript.echo "  debugging"
+	wscript.echo "     0 - No output."
+	wscript.echo "    *1 - Minimal Output."
+	wscript.echo "     2 - Verbose output."
+	wscript.echo "     3 - Very Verbose output."
+	wscript.echo ""
+	wscript.echo "  /? or /help or help=y"
+	wscript.echo "      y - Display this help output."
+	wscript.echo "     *n - Do not display this output."
+	wscript.echo ""
+	wscript.echo "  ladp"
+	wscript.echo "       - Set by the audit_domain or discover_domain scripts. Do not set."
+	wscript.echo ""
+	wscript.echo "  local_domain"
+	wscript.echo "        - The domain you wish to audit. Should be in the format LDAP://your.domain.name"
+	wscript.echo ""
+	wscript.echo "  org_id"
+	wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+	wscript.echo ""
+	wscript.echo "  ping_target"
+	wscript.echo "      *n - Attempt to ping the target computer to determine if it is online."
+	wscript.echo ""
+	wscript.echo "  run_netstat"
+	wscript.echo "     *s - Run Netstat against 'server' class systems."
+	wscript.echo "      n - Do not run against any computers."
+	wscript.echo "      y - Run against all computers."
+	wscript.echo ""
+	wscript.echo "  self_delete"
+	wscript.echo "     *n - Do not delete the audit_windows script upon completion."
+	wscript.echo "      y - Delete the audit script file upon script completion."
+	wscript.echo ""
+	wscript.echo "  skip_*"
+	wscript.echo "     *n - Do no skip detecting attributes in this section of the audit script."
+	wscript.echo "      y - Skip detection of this particular section."
+	wscript.echo "     Valid sections are dns, printer, software, mount_point."
+	wscript.echo ""
+	wscript.echo "  strcomputer"
+	wscript.echo "       *. - The name (or IP address) of the computer being audited. Default is '.', which means the local system upon which the script is being run."
+	wscript.echo ""
+	wscript.echo "  struser / strpass"
+	wscript.echo "          - The username (in the format domain/username) and password of the account running the script. Defaults are not set, which means it will run in the context of the account running the script."
+	wscript.echo ""
+	wscript.echo "  submit_online"
+	wscript.echo "      *y - Submit the audit result to the Open-AudIT server."
+	wscript.echo "       n - Don't submit the audit result."
+	wscript.echo ""
+	wscript.echo "  use_proxy"
+	wscript.echo "      *n - Do not use the system or user level proxy to submit the audit result."
+	wscript.echo "       y - Use the proxy to submit the result."
+	wscript.echo ""
+	wscript.echo "  windows_user_work_1"
+	wscript.echo "      physicalDeliveryOfficeName - The Active Directory field to assign the computer to (first preference)."
+	wscript.echo ""
+	wscript.echo "  windows_user_work_2"
+	wscript.echo "      company - The Active Directory field to assign the computer to (second preference)."
+	wscript.echo ""
+	wscript.echo "  details_to_lower"
+	wscript.echo "      *y - Convert the hostname to lower."
+	wscript.echo "       n - Keep the hostname as per retrieved."
+	wscript.echo ""
+	wscript.echo "  hide_window"
+	wscript.echo "      *n - Do not hide the audit script window when executing."
+	wscript.echo "       y - Hide the audit script window when executing."
+	wscript.echo ""
+	wscript.echo "  url"
+	wscript.echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
+	wscript.echo ""
+	wscript.echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
+	wscript.quit
+end if
 
 if hide_audit_window = "y" then
 	hiddenExecution
@@ -2074,7 +2167,7 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfig
 	& "AND ServiceName<>'Rasl2tp' AND ServiceName<>'msloop' " _
 	& "AND ServiceName<>'PptpMiniport' AND ServiceName<>'Raspti' " _
 	& "AND ServiceName<>'NDISWan' AND ServiceName<>'NdisWan4' AND ServiceName<>'RasPppoe' " _
-	& "AND ServiceName<>'NdisIP' AND Description<>'PPP Adapter.') " _
+	& "AND ServiceName<>'NdisIP' AND ServiceName<>'tunmp' AND Description<>'PPP Adapter.') " _
 	& "AND MACAddress is not NULL" ,,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NetworkAdapterConfiguration)" : audit_wmi_fails = audit_wmi_fails & "Win32_NetworkAdapterConfiguration " : end if
 on error resume next
@@ -6341,13 +6434,18 @@ if submit_online = "y" then
 	result.position = 0
 	objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
 	if (Err.Number <> 0 or objHTTP.status <> 200) then
-		if debugging > "1" then wscript.echo "inside the second http request - Error: " & Err.Number & " HTTP:Status: " &  objHTTP.status & " HTTPResponse: " & objHTTP.ResponseText end if
-		XmlObj = "XMLHTTP"
-		Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
-		objHTTP.Open "POST", url, False
-		objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-		result.position = 0
-		objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
+		if debugging > "1" then 
+			wscript.echo "Error with http request"
+			wscript.echo "HTTP Error: " & Err.Number 
+			wscript.echo "HTTP Status: " &  objHTTP.status 
+			wscript.echo "HTTP Response: " & objHTTP.ResponseText 
+		end if
+		'XmlObj = "XMLHTTP"
+		'Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
+		'objHTTP.Open "POST", url, False
+		'objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+		'result.position = 0
+		'objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
 	end if
     Err.clear
 	if debugging > "0" then wscript.echo "Audit Submitted" end if 

@@ -58,7 +58,7 @@ class M_ip_address extends MY_Model {
 			$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
 					system_id, ip_address_v4, ip_address_v6, ip_address_version, 
 					ip_subnet, timestamp, first_timestamp ) 
-					VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+					VALUES ( LOWER(?), ?, ?, ?, ?, ?, ?, ?)";
 			$sql = $this->clean_sql($sql);
 			$data = array("$input->net_mac_address", "$details->system_id", 
 					$this->ip_address_to_db($input->ip_address_v4), 
@@ -70,7 +70,7 @@ class M_ip_address extends MY_Model {
 				WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
 					system.system_id = ? AND 
 					system.man_status = 'production' AND 
-					sys_hw_network_card_ip.net_mac_address = ? AND 
+					sys_hw_network_card_ip.net_mac_address = LOWER(?) AND 
 					(sys_hw_network_card_ip.ip_address_v4 = ? OR 
 					sys_hw_network_card_ip.ip_address_v6 = ? ) AND 
 					sys_hw_network_card_ip.ip_subnet = ? AND 
@@ -83,7 +83,7 @@ class M_ip_address extends MY_Model {
 			$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
 				WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
 				system.system_id = ? AND system.man_status = 'production' AND 
-				sys_hw_network_card_ip.net_mac_address = ? AND sys_hw_network_card_ip.ip_address_v4 = ? AND 
+				sys_hw_network_card_ip.net_mac_address = LOWER(?) AND sys_hw_network_card_ip.ip_address_v4 = ? AND 
 				sys_hw_network_card_ip.ip_subnet = ? AND ( sys_hw_network_card_ip.timestamp = ? OR 
 				sys_hw_network_card_ip.timestamp = ? )";
 			$sql = $this->clean_sql($sql);
@@ -101,7 +101,7 @@ class M_ip_address extends MY_Model {
 				$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
 						system_id, ip_address_v4, ip_address_v6, ip_address_version, 
 						ip_subnet, timestamp, first_timestamp ) 
-						VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+						VALUES ( LOWER(?), ?, ?, ?, ?, ?, ?, ?)";
 				$sql = $this->clean_sql($sql);
 				$data = array("$input->net_mac_address", "$details->system_id", 
 						$this->ip_address_to_db($input->ip_address_v4), 
@@ -184,7 +184,7 @@ class M_ip_address extends MY_Model {
 					sys_hw_network_card, 
 					system
 				WHERE 	
-					sys_hw_network_card_ip.net_mac_address 	= sys_hw_network_card.net_mac_address AND
+					LOWER(sys_hw_network_card_ip.net_mac_address) 	= LOWER(sys_hw_network_card.net_mac_address) AND
 					sys_hw_network_card.system_id 			= system.system_id AND
 					sys_hw_network_card_ip.timestamp 		= sys_hw_network_card_ip.first_timestamp AND
 					sys_hw_network_card_ip.timestamp 		= ? AND
@@ -208,7 +208,7 @@ class M_ip_address extends MY_Model {
 					sys_hw_network_card_ip,
 					sys_hw_network_card
 				WHERE	
-					sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address AND
+					LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(sys_hw_network_card.net_mac_address) AND
 					sys_hw_network_card.system_id = ? AND
 					(sys_hw_network_card_ip.timestamp = ? OR
 					sys_hw_network_card_ip.timestamp = ?) 

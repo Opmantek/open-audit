@@ -231,7 +231,11 @@ class Admin_cli extends CI_Controller
 					$device->snmp_version = $device->version;
 					$device->snmp_community = $device->community;
 					$device->snmp_port = '161';
-					$device = get_snmp($device);
+
+					$temp_array = get_snmp($details);
+					$details = $temp_array['details'];
+					$network_interfaces = $temp_array['interfaces'];
+
 					$device->access_details = $encoded;
 					$device->nmis_group = $device->group;
 					$device->nmis_name = $device->name;
@@ -259,6 +263,24 @@ class Admin_cli extends CI_Controller
 						$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . " admin_cli/import_nmis " . $device->ip_address . " (" . $device->hostname . ") - insert snmp result" . PHP_EOL;
 						file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
 					}
+
+					# update any network interfaces and ip addresses retrieved by SNMP
+					$details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+					$details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+					if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+						foreach ($network_interfaces as $input) {
+							$this->m_network_card->process_network_cards($input, $details);
+
+							if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
+								foreach ($input->ip_addresses as $ip_input) {
+									$ip_input = (object) $ip_input;
+									$this->m_ip_address->process_addresses($ip_input, $details);
+								}
+							}
+						}
+					}
+
+					# and update all groups
 					$this->m_oa_group->update_system_groups($device);
 				} else {
 					# just use hat we have from the nodes.nmis file

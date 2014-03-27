@@ -87,6 +87,39 @@ class System extends CI_Controller {
 		$this->load->view('v_system_add', $this->data);
 	}
 
+
+	public function get_ip_details($details)
+	{
+
+		if ((!isset($details->hostname) or $details->hostname == '') and 
+			(isset($details->man_ip_address) and $details->man_ip_addres != '' and 
+			 $details->man_ip_address != '0.0.0.0' and $details->man_ip_address != '000.000.000.000')) {
+
+			# no hostname, get using ip address
+			$details->hostname = gethostbyaddr(ip_address_from_db($details->man_ip_address));
+		}
+
+		if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or 
+			$details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000') and 
+			(isset($details->hostname) and $details->hostname != '')) {
+
+			# no ip address, get using hostname
+			$details->man_ip_address = gethostbyname($details->hostname);
+		}
+
+		if (isset($details->man_ip_address) and !filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
+			# not a valid ip address - assume it's a hostname
+			$details->hostname = $details->man_ip_address;
+			$details->man_ip_address = gethostbyname($details->hostname);
+		}
+
+		if (isset($details->hostname) and filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+			# we have an ip in the hostname field
+			$details->hostname = gethostbyaddr(ip_address_from_db($details->hostname));
+		}
+
+	}
+
 	public function add_nmap()
 	{
 		if ( ! isset($_POST['form_nmap'])) {
@@ -157,7 +190,11 @@ class System extends CI_Controller {
 					$details->snmp_community = @$decoded_access->snmp_community;
 					$details->snmp_version = @$decoded_access->snmp_version;
 					$details->snmp_port = @$decoded_access->snmp_port;
-					$details = get_snmp($details);
+					#$details = get_snmp($details);
+
+					$temp_array = get_snmp($details);
+					$details = $temp_array['details'];
+					$network_interfaces = $temp_array['interfaces'];
 				}
 
 				$details->system_key = '';
@@ -169,6 +206,7 @@ class System extends CI_Controller {
 					// we received a result from SNMP, use this data to update OR insert
 					$details->last_seen_by = 'snmp';
 					$details->audits_ip = '127.0.0.1';
+
 					if (isset($details->system_id) AND $details->system_id !== '') {
 						// we have a system_id AND snmp details to update
 						$this->m_system->update_system($details);
@@ -177,10 +215,25 @@ class System extends CI_Controller {
 						// we have a new system
 						$details->system_id = $this->m_system->insert_system($details);
 					}
+
+					# update any network interfaces and ip addresses retrieved by SNMP
+                    if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                        foreach ($network_interfaces as $input) {
+                            $this->m_network_card->process_network_cards($input, $details);
+
+                            if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
+                                foreach ($input->ip_addresses as $ip_input) {
+                                    $ip_input = (object) $ip_input;
+                                    $this->m_ip_address->process_addresses($ip_input, $details);
+                                }
+                            }
+                        }
+                    }
 				}
 					else {
 						// we received a result from nmap only, use this data to update OR insert
 						$details->last_seen_by = 'nmap';
+
 						if (isset($details->system_id) AND $details->system_id !== '') {
 							// we have a system id AND nmap details to update
 							$this->m_system->update_system($details);
@@ -318,16 +371,16 @@ class System extends CI_Controller {
 		$xml_input = iconv('UTF-8', 'UTF-8//TRANSLIT', $input);
 
 		libxml_use_internal_errors(TRUE);
-		$xml = simplexml_load_string($xml_input);
-		if ($xml === FALSE) {
-			echo "Failed loading XML\n";
-			foreach (libxml_get_errors() as $error) {
-				echo "<pre>\n";
-				print_r($error);
-				echo "</pre>\n";
-			}
-			exit;
-		}
+		// $xml = simplexml_load_string($xml_input);
+		// if ($xml === FALSE) {
+		// 	echo "Failed loading XML\n";
+		// 	foreach (libxml_get_errors() as $error) {
+		// 		echo "<pre>\n";
+		// 		print_r($error);
+		// 		echo "</pre>\n";
+		// 	}
+		// 	exit;
+		// }
 
 		try {
 			$xml = new SimpleXMLElement($xml_input, LIBXML_NOCDATA);
@@ -351,11 +404,19 @@ class System extends CI_Controller {
 		$log_hostname = php_uname('n');
 		$log_pid = getmypid();
 		$i = (string) $xml->sys[0]->hostname;
-		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . "\n";
+		$j = (string) $xml->sys[0]->system_id;
 		$handle = fopen($file, "a");
+		if ($j > '') {
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . " (Supplied System ID $j).\n";
+		} else {
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . "\n";
+		}
 		fwrite($handle, $log_line);
 		fclose($handle);
-echo "<pre>\n";
+
+
+echo "<pre>System Id Submitted 1: " . $j . "<br />\n";
+
 		foreach ($xml->children() as $child) {
 			if ($child->getName() === 'sys') {
 				$details = (object) $xml->sys;
@@ -364,18 +425,31 @@ echo "<pre>\n";
 					$details->system_id = '';
 				} 
 				else if ($details->system_id > '') {
-					$received_system_id = $details->system_id;
+					$received_system_id = (string) $details->system_id;
 				}
+echo "System Id Submitted 2: " . $received_system_id . "<br />\n";
+
+				$received_status = $this->m_oa_general->get_attribute('system', 'man_status', $received_system_id);
+echo "Received Status: " . $received_status . "<br />\n";
+
+				if ($received_status !== 'production') {
+					$received_system_id = '';
+				}
+echo "System Id Submitted 3: " . $received_system_id . "<br />\n";
+
 				$details->fqdn = $details->hostname . "." . $details->domain;
 				$details->type = 'computer';
 				$details->man_type = 'computer';
 				$details->system_key = $this->m_system->create_system_key($details);
 
 				$i = $this->m_system->find_system($details);
-				if ($i === '' AND $received_system_id > '') {
+				if ($i == '' and $received_system_id > '') {
+echo "Not found.<br />\n";
 					$i = $received_system_id;
 				}
-				if (($i > '' AND $received_system_id > '') AND ($i !== $received_system_id)) {
+echo "I: " . $i . "<br />\n";
+
+				if ($i != '' and $received_system_id != '' and $i != $received_system_id) {
 					// We delete this original system as likely with limited data (from 
 					// nmap and/or snmp) we couldn't match an existing system
 					// Now we have an actual audit result with plenty of data
@@ -385,6 +459,8 @@ echo "<pre>\n";
 					$query = $this->db->query($sql, $data);
 				}
 				$details->system_id = $i;
+echo "Final SystemId: " . $details->system_id . "<br />\n";
+
 				$details->last_seen = $details->timestamp;
 				if ((string) $details->last_seen_by === '') { 
 					$details->last_seen_by = 'audit';
@@ -398,17 +474,28 @@ echo "<pre>\n";
 				if ((string) $i === '') {
 					// insert a new system
 					$details->system_id = $this->m_system->insert_system($details);
+					$handle = fopen($file, "a");
+					$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Inserting result for " . $details->hostname . " (System ID " . $details->system_id . ").\n";
+					fwrite($handle, $log_line);
+					fclose($handle);
 					$details->original_timestamp = "";
 					echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
-				}
-				else {
+				} else {
 					// update an existing system
+					$handle = fopen($file, "a");
+					$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Updating result for " . $details->hostname . " (System ID " . $details->system_id . ").\n";
+					fwrite($handle, $log_line);
+					fclose($handle);
+
+
 					$details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
 					$details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+
 					$this->m_system->update_system($details);
 					echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 				}
 				$details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+				echo "TS: " . $details->first_timestamp . "\n";
 				$this->m_sys_man_audits->insert_audit($details);
 			}
 			if ($child->getName() === 'addresses') {
@@ -667,7 +754,7 @@ echo "<pre>\n";
 		$log_hostname = php_uname('n');
 		$log_pid = getmypid();
 		$i = (string) $xml->sys[0]->hostname;
-		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing completed for " . $i . "\n";
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing completed for " . $i . " (System ID " . $details->system_id . ").\n";
 		$handle = fopen($file, "a");
 		fwrite($handle, $log_line);
 		fclose($handle);

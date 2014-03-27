@@ -36,18 +36,13 @@ set -f
 IFS='
 '
 
-# debugging values
-# 0 = no debug
-# 1 = basic debug 
-# 2 = verbose debug
-
 create_file="n"
 debugging=2
 echo_output="y"
 log_no_response="n"
 org_id=""
 submit_online="y"
-subnet=""
+subnet_range=""
 subnet_timestamp=""
 syslog="y"
 url="http://localhost/open-audit/index.php/discovery/process_subnet"
@@ -64,8 +59,68 @@ fi
 for arg in "$@"; do
 	parameter=${arg%%=*}
 	value=${arg##*=} 
+	if [ "$parameter" == "help" ]; then value="y"; fi
+	if [ "$parameter" == "--help" ]; then parameter="help"; value="y"; fi
+	if [ "$parameter" == "-h" ]; then parameter="help"; value="y"; fi
 	eval "$parameter"=\""$value\""
 done
+
+if [ "$help" == "y" ]; then
+	echo ""
+	echo "---------------------------------"
+	echo "Open-AudIT Linux Discovery script"
+	echo "(c) Opmantek, 2014.              "
+	echo "---------------------------------"
+	echo "This script should be used on a Linux based computer to discover hosts in a subnet. This script is designed to be called by the Open-AudIT web GUI, not run directly from the command line."
+	echo ""
+	echo "Nmap and Wget are prerequisites for this script to function correctly."
+	echo ""
+	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	echo ""
+	echo "  create_file"
+	echo "     y - Create an XML file containing the audit result."
+	echo "    *n - Do not create an XML result file."
+	echo ""
+	echo "  debugging"
+	echo "     0 - No output."
+	echo "     1 - Minimal Output."
+	echo "    *2 - Verbose output."
+	echo ""
+	echo "  -h or --help or help=y"
+	echo "      y - Display this help output."
+	echo "     *n - Do not display this output."
+	echo ""
+	echo "  log_no_response"
+	echo "    *n - Do not submit a result if there is no device attached to the given ip address."
+	echo "     y - Submit a result even if nothing is found."
+	echo ""
+	echo "  org_id"
+	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+	echo ""
+	echo "  submit_online"
+	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
+	echo "     n - Do not submit the audit result"
+	echo ""
+	echo "  subnet"
+	echo "       - Any given subnet as per the Nmap command line options. http://nmap.org/book/man-target-specification.html EG - 192.168.1-3.1-20, 192.168.1.0/24, etc."
+	echo ""
+	echo "  subnet_timestamp"
+	echo "       - Set by the web GUI. Not used on the command line."
+	echo ""
+	echo "  syslog"
+	echo "     *y - Log entries to the Open-AudIT log file."
+	echo "      n - Do not log entries."
+	echo ""
+	echo "  url"
+	echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
+	echo ""
+	echo ""
+	echo "NOTE - The netstat section can take a few minutes to complete."
+	echo ""
+	echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
+	exit
+fi
+
 
 # logging to a file
 function write_log()
@@ -97,11 +152,11 @@ else
 	exit 1
 fi
 
-log_entry="Discovery for $subnet submitted at $subnet_timestamp starting"
+log_entry="Discovery for $subnet_range submitted at $subnet_timestamp starting"
 write_log "$log_entry"
 
 if [ "$debugging" -gt 0 ]; then
-	echo "Scanning Subnet: $subnet"
+	echo "Scanning Subnet: $subnet_range"
 	echo "URL: $url"
 fi
 
@@ -116,9 +171,11 @@ fi
 
 i=0
 j=0
-#for line in $(nmap -v -sP -PE -PP -n "$subnet" 2>/dev/null | grep "scan report for"); do
-for line in $(nmap -v -sn -n "$subnet" 2>/dev/null | grep "scan report for"); do
-	echo "$line"
+#for line in $(nmap -v -sP -PE -PP -n "$subnet_range" 2>/dev/null | grep "scan report for"); do
+for line in $(nmap -v -sn -n "$subnet_range" 2>/dev/null | grep "scan report for"); do
+	if [ "$debugging" -gt 0 ]; then
+		echo "$line"
+	fi
 	host=$(echo "$line" | cut -d" " -f5)
 	let "i = i + 1"
 	if [[ "$line" == *"[host down]"* ]]; then
@@ -255,12 +312,12 @@ if [[ "$hosts" != "" ]]; then
 		fi
 
 		result="	<device>"$'\n'
-		result="$result		<subnet>$subnet</subnet>"$'\n'
+		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
 		result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
 		result="$result		<mac_address>$mac_address</mac_address>"$'\n'
-		result="$result		<manufacturer>$manufacturer</manufacturer>"$'\n'
-		result="$result		<type>$type</type>"$'\n'
-		result="$result		<os_name>$os_name</os_name>"$'\n'
+		result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
+		result="$result		<type><![CDATA[$type]]></type>"$'\n'
+		result="$result		<os_name><![CDATA[$os_name]]></os_name>"$'\n'
 		result="$result		<description><![CDATA[$description]]></description>"$'\n'
 		result="$result		<org_id>$org_id</org_id>"$'\n'
 		result="$result		<snmp_status>$snmp_status</snmp_status>"$'\n'
@@ -274,11 +331,12 @@ if [[ "$hosts" != "" ]]; then
 
 		result_file="$result_file"$'\n'"$result"
 
-		result="<devices>"$'\n'"$result"$'\n'"</devices>"$'\n'
+		result="<devices>"$'\n'"$result"$'\n'"</devices>"
+		#result="<devices>"$result"</devices>"
 
 		if [[ "$submit_online" == "y" ]]; then
 			if [ "$debugging" -gt 0 ]; then
-				echo "Submitting online."
+				echo "Submitting online."$'\n'
 			fi
 			log_entry="Submitting online $host"
 			write_log "$log_entry"
@@ -286,16 +344,15 @@ if [[ "$hosts" != "" ]]; then
 				# -b   = background the wget command
 				# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 				# -q   = quiet (no output)
-				#  wget -b -O - -q --no-check-certificate ${url} --post-data=form_details="$result" 1>/dev/null
-				wget -b -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
+				#if [ "$debugging" -gt 0 ]; then
+				#	wget -O "$url" --post-data=form_details="$result" 1>/dev/null
+				#else
+					wget -b -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
+				#fi
 			fi
 			if [[ $(uname) == "Darwin" ]]; then
 				curl --data "form_details=$result" "$url"
 			fi
-		fi
-
-		if [[ "$echo_output" == "y" ]]; then
-			echo "$result"
 		fi
 
 		result=""
@@ -303,7 +360,8 @@ if [[ "$hosts" != "" ]]; then
 	done
 fi
 
-resultcomplete="<devices><device><subnet>$subnet</subnet><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
+#resultcomplete="<devices>$result_file<device><subnet_range>$subnet_range</subnet_range><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
+resultcomplete="<devices><device><subnet_range>$subnet_range</subnet_range><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
 
 if [[ "$submit_online" == "y" ]]; then
 	if [[ $(uname) == "Linux" ]]; then
@@ -320,7 +378,7 @@ if [[ "$submit_online" == "y" ]]; then
 fi
 
 if [[ "$echo_output" == "y" ]]; then
-	echo "$resultcomplete"
+	echo "<devices>$result_file<device><subnet_range>$subnet_range</subnet_range><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
 fi
 
 
@@ -329,5 +387,5 @@ if [[ "$create_file" == "y" ]]; then
 	echo "$result_file" > discovery_subnet.xml
 fi
 
-log_entry="Discovery for $subnet submitted at $subnet_timestamp completed"
+log_entry="Discovery for $subnet_range submitted at $subnet_timestamp completed"
 write_log "$log_entry"

@@ -99,6 +99,9 @@ self_delete='n'
 # 2 = verbose debug
 debugging=2
 
+# Display help
+help="n"
+
 # In normal use, DO NOT SET THIS.
 # This value is passed in when running the audit_domain script.
 # Only set this value if your audit host is on a different domain than audit targets and you are not using audit_domain.vbs - IE, you are running "cscript audit_windows.vbs COMPUTER" where COMPUTER is on a seperate domain that the PC you are running the command on. This would then apply to ALL systems audited like this. This would be the exception rather than the rule. Do not do this unless you know what you are doing :-)
@@ -312,6 +315,12 @@ for arg in "$@"; do
 			create_file="$parameter_value" ;;
 		"debugging" )
 			debugging="$parameter_value" ;;
+		"help" )
+			help="$parameter_value" ;;
+		"--help" )
+			help="y" ;;
+		"-h" )
+			help="y" ;;
 		"ldap" )
 			ldap="$parameter_value" ;;
 		"org_id" )
@@ -402,6 +411,52 @@ if [ "$check_commands" = "y" ]; then
 
 	exit
 fi
+
+if [ "$help" = "y" ]; then
+	echo ""
+	echo "-----------------------------"
+	echo "Open-AudIT Linux Audit script"
+	echo "-----------------------------"
+	echo "This script should be run on a Linux based computer using root or sudo access rights."
+	echo ""
+	echo "Prerequisites for this script to function correctly can be tested by running audit_linux.sh check_commands=y."
+	echo ""
+	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	echo ""
+	echo "  check_commands"
+	echo "     y - Run a test to determine if the required commands to run this script are present on the target system."
+	echo "    *n - Do not run the test."
+	echo ""
+	echo "  create_file"
+	echo "     y - Create an XML file containing the audit result."
+	echo "    *n - Do not create an XML result file."
+	echo ""
+	echo "  debugging"
+	echo "     0 - No output."
+	echo "     1 - Minimal Output."
+	echo "    *2 - Verbose output."
+	echo ""
+	echo "  -h or --help or help=y"
+	echo "      y - Display this help output."
+	echo "     *n - Do not display this output."
+	echo ""
+	echo "  org_id"
+	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+	echo ""
+	echo "  submit_online"
+	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
+	echo "     n - Do not submit the audit result"
+	echo ""
+	echo "  url"
+	echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
+	echo ""
+	echo ""
+	echo "NOTE - The netstat section can take a few minutes to complete."
+	echo ""
+	echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
+	exit
+fi
+
 
 # test pinging the server hosting the URL
 if [ "$submit_online" = "y" ]; then

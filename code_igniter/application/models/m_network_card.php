@@ -58,74 +58,84 @@ class M_network_card extends MY_Model {
 	}
 
 	function process_network_cards($input, $details) {	
-		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
-			# we have only seen this system once, and not via an audit script
-			# insert the software and set the first_timestamp == system.first_timestamp
-			# otherwise we cause alerts
-			$sql = "INSERT INTO sys_hw_network_card (	
-					system_id, 
-					net_mac_address, 
-					net_description, 
-					net_manufacturer, 
-					net_model,
-					net_ip_enabled,
-					net_index,
-					net_connection_id,
-					net_connection_status,
-					net_speed,
-					net_adapter_type,
-					net_dhcp_enabled,
-					net_dhcp_server,
-					net_dhcp_lease_obtained,
-					net_dhcp_lease_expires,
-					net_dns_host_name,
-					net_dns_domain,
-					net_dns_domain_reg_enabled,
-					net_dns_server,
-					timestamp,
-					first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-			$sql = $this->clean_sql($sql);
-			$data = array("$details->system_id", 
-					"$input->net_mac_address", 
-					"$input->net_description", 
-					"$input->net_manufacturer", 
-					"$input->net_model", 
-					"$input->net_ip_enabled", 
-					"$input->net_index", 
-					"$input->net_connection_id", 
-					"$input->net_connection_status", 
-					"$input->net_speed", 
-					"$input->net_adapter_type", 
-					"$input->net_dhcp_enabled", 
-					"$input->net_dhcp_server", 
-					"$input->net_dhcp_lease_obtained", 
-					"$input->net_dhcp_lease_expires", 
-					"$input->net_dns_host_name", 
-					"$input->net_dns_domain", 
-					"$input->net_dns_domain_reg_enabled", 
-					"$input->net_dns_server", 
-					"$details->timestamp", 
-					"$details->first_timestamp");
-			$query = $this->db->query($sql, $data);
-		} else {
+		// if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+		// 	# we have only seen this system once and not via an audit script
+		// 	# insert the card and set the first_timestamp == system.first_timestamp
+		// 	# otherwise we cause alerts
+		// 	$sql = "INSERT INTO sys_hw_network_card (	
+		// 			system_id, 
+		// 			net_mac_address, 
+		// 			net_description, 
+		// 			net_manufacturer, 
+		// 			net_model,
+		// 			net_ip_enabled,
+		// 			net_index,
+		// 			net_connection_id,
+		// 			net_connection_status,
+		// 			net_speed,
+		// 			net_adapter_type,
+		// 			net_dhcp_enabled,
+		// 			net_dhcp_server,
+		// 			net_dhcp_lease_obtained,
+		// 			net_dhcp_lease_expires,
+		// 			net_dns_host_name,
+		// 			net_dns_domain,
+		// 			net_dns_domain_reg_enabled,
+		// 			net_dns_server,
+		// 			timestamp,
+		// 			first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+		// 	$sql = $this->clean_sql($sql);
+		// 	$data = array("$details->system_id", 
+		// 			"$input->net_mac_address", 
+		// 			"$input->net_description", 
+		// 			"$input->net_manufacturer", 
+		// 			"$input->net_model", 
+		// 			"$input->net_ip_enabled", 
+		// 			"$input->net_index", 
+		// 			"$input->net_connection_id", 
+		// 			"$input->net_connection_status", 
+		// 			"$input->net_speed", 
+		// 			"$input->net_adapter_type", 
+		// 			"$input->net_dhcp_enabled", 
+		// 			"$input->net_dhcp_server", 
+		// 			"$input->net_dhcp_lease_obtained", 
+		// 			"$input->net_dhcp_lease_expires", 
+		// 			"$input->net_dns_host_name", 
+		// 			"$input->net_dns_domain", 
+		// 			"$input->net_dns_domain_reg_enabled", 
+		// 			"$input->net_dns_server", 
+		// 			"$details->timestamp", 
+		// 			"$details->first_timestamp");
+		// 	$query = $this->db->query($sql, $data);
+		// } else {
 			// need to check for network_card changes
-			$sql = "SELECT 	sys_hw_network_card.net_id 
-					FROM 	sys_hw_network_card, system 
-					WHERE 	sys_hw_network_card.system_id 	= system.system_id AND 
-							system.system_id				= ? AND 
-							system.man_status 				= 'production' AND 
-							net_mac_address 				= ? AND 
-							net_description 				= ? AND 
-							net_model 						= ? AND 
-							( sys_hw_network_card.timestamp = ? OR 
-							sys_hw_network_card.timestamp 	= ? )";
+			// $sql = "SELECT 	sys_hw_network_card.net_id 
+			// 		FROM 	sys_hw_network_card, system 
+			// 		WHERE 	sys_hw_network_card.system_id 	= system.system_id AND 
+			// 				system.system_id				= ? AND 
+			// 				system.man_status 				= 'production' AND 
+			// 				net_mac_address 				= ? AND 
+			// 				( sys_hw_network_card.timestamp = ? OR 
+			// 				sys_hw_network_card.timestamp 	= ? )";
+
+			$sql = "SELECT sys_hw_network_card.net_id 
+					FROM sys_hw_network_card, system 
+					WHERE sys_hw_network_card.system_id = system.system_id AND 
+						system.system_id = ? AND 
+						system.man_status = 'production' AND 
+						( (LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND sys_hw_network_card.net_mac_address > '' ) OR 
+							(LOWER(sys_hw_network_card.net_description) = LOWER(?)) )";
+
 			$sql = $this->clean_sql($sql);
+			// $data = array("$details->system_id", 
+			// 		"$input->net_mac_address", 
+			// 		"$input->net_description", 
+			// 		"$input->net_model", 
+			// 		"$details->original_timestamp", 
+			// 		"$details->timestamp");
 			$data = array("$details->system_id", 
-					"$input->net_mac_address", 
-					"$input->net_description", 
-					"$input->net_model", 
-					"$details->original_timestamp", 
-					"$details->timestamp");
+						"$input->net_mac_address", 
+						"$input->net_description");
 			$query = $this->db->query($sql, $data);
 			if ($query->num_rows() > 0) {
 				$row = $query->row();
@@ -199,7 +209,7 @@ class M_network_card extends MY_Model {
 						net_dns_domain_reg_enabled,
 						net_dns_server,
 						timestamp,
-						first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+						first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 				$sql = $this->clean_sql($sql);
 				$data = array("$details->system_id", 
 						"$input->net_mac_address", 
@@ -224,12 +234,12 @@ class M_network_card extends MY_Model {
 						"$details->timestamp");
 				$query = $this->db->query($sql, $data);
 			}
-		}
+		// }
 	} // end of function
 
 	function alert_network_card($details) {
 		// network_card no longer detected
-		$sql = "SELECT sys_hw_network_card.net_id, sys_hw_network_card.net_model, sys_hw_network_card.net_mac_address
+		$sql = "SELECT sys_hw_network_card.net_id, sys_hw_network_card.net_model, LOWER(sys_hw_network_card.net_mac_address)
 				FROM 	sys_hw_network_card, system
 				WHERE 	sys_hw_network_card.system_id = system.system_id AND
 						sys_hw_network_card.timestamp = ? AND
@@ -244,7 +254,7 @@ class M_network_card extends MY_Model {
 		}
 		
 		// new network_card
-		$sql = "SELECT sys_hw_network_card.net_id, sys_hw_network_card.net_model, sys_hw_network_card.net_mac_address
+		$sql = "SELECT sys_hw_network_card.net_id, sys_hw_network_card.net_model, LOWER(sys_hw_network_card.net_mac_address)
 				FROM 	sys_hw_network_card, system
 				WHERE 	sys_hw_network_card.system_id = system.system_id AND
 						sys_hw_network_card.timestamp = sys_hw_network_card.first_timestamp AND

@@ -65,6 +65,12 @@ for each strArg in objArgs
 		varArray = split(strArg, "=")
 		select case varArray(0)
 				
+			case "debugging"
+				debugging = varArray(1)
+
+			case "help"
+				help = varArray(1)
+				
 			case "network"
 				network = varArray(1)
 				
@@ -74,15 +80,44 @@ for each strArg in objArgs
 			case "subnet"
 				subnet = varArray(1)
 				
-			case "debugging"
-				debugging = varArray(1)
-				
 			case "use_nmap"
 				use_nmap = varArray(1)
 				
 		end select
+	else
+		if (strArg = "/?" or strArg = "/help") then
+			help = "y"
+		end if
 	end if
-next 
+next
+
+if (help = "y") then
+	wscript.echo "------------------------------"
+	wscript.echo "Open-AudIT Subnet Audit Script"
+	wscript.echo "(c) Opmantek, 2014.           "
+	wscript.echo "------------------------------"
+	wscript.echo "This script should be run on a Windows based computer. It queries Active Directory and spawns an audit for each Windows computer found."
+	wscript.echo ""
+	wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	wscript.echo ""
+	wscript.echo "  debugging"
+	wscript.echo "     0 - No output."
+	wscript.echo "     1 - Minimal Output."
+	wscript.echo "    *2 - Verbose output."
+	wscript.echo ""
+	wscript.echo "  /? or help=y"
+	wscript.echo "     y - Display this help output."
+	wscript.echo "    *n - Do not display this output."
+	wscript.echo ""
+	wscript.echo "  network"
+	wscript.echo "      - The subnet in to audit. Best to use a / separated network subnet."
+	wscript.echo ""
+	wscript.echo "  use_nmap"
+	wscript.echo "    *y - Use Nmap to detect target if ti is installed."
+	wscript.echo "     n - Do not use Nmap."
+	wscript.echo ""
+	wscript.quit
+end if
 
 ' leave the below settings
 const HKEY_CLASSES_ROOT  = &H80000000
