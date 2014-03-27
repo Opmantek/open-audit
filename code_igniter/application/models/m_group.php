@@ -92,6 +92,7 @@ class M_group extends MY_Model {
 		$sql = "SELECT sys_sw_group.group_id, sys_sw_group.group_name FROM sys_sw_group, 
 				system WHERE sys_sw_group.system_id = system.system_id AND sys_sw_group.timestamp = ? AND
 				system.system_id = ? AND system.timestamp = ?";
+		$sql = $this->clean_sql($sql);
 		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow)

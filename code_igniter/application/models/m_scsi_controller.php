@@ -165,6 +165,7 @@ class M_scsi_controller extends MY_Model {
 				sys_hw_scsi_controller.timestamp = ? AND
 				system.system_id = ? AND
 				system.timestamp = ?";
+		$sql = $this->clean_sql($sql);
 		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {

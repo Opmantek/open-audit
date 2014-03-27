@@ -65,7 +65,6 @@ class Admin extends MY_Controller {
 		parent::__construct();
 		// must be an admin to access this page
 		if ($this->session->userdata('user_admin') !== 'y') {
-			// if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
 			$referer = $this->input->server('HTTP_REFERER');
 			if ($referer > '') {
 				redirect($referer);
@@ -150,7 +149,24 @@ class Admin extends MY_Controller {
 	}
 
 	/**
-	 * Purge the lofile
+	 * Get the config
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  JSON array
+	 */
+	function get_config()
+	{
+		$json = json_encode($this->data['config']);
+		print_r($json);
+	}
+
+	/**
+	 * Purge the logfile
 	 *
 	 * @access	  public
 	 * @category  Function

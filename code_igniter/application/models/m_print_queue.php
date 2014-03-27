@@ -72,7 +72,7 @@ class M_print_queue extends MY_Model {
 					"$input->system_key", 
 					"$input->printer_name", 
 					"$input->printer_port_name", 
-					"$printer_ip", 
+					"$input->man_ip_address", 
 					"$input->description", 
 					"$input->model", 
 					"$input->manufacturer", 

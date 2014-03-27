@@ -73,6 +73,7 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='network printer'>Network Printer</option>
 			<option value='network scanner'>Network Scanner</option>
 			<option value='phone'>Phone</option>
+			<option value='point of sale'>Point of Sale</option>
 			<option value='printer'>Printer</option>
 			<option value='projector'>Projector</option>
 			<option value='remote access controller'>Remote Access Controller (ILO / RSA)</option>
@@ -91,6 +92,7 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='vpn_terminator'>VPN Terminator</option>
 			<option value='wan accelerator'>WAN Accelerator</option>
 			<option value='wap'>WAP (Wireless Access Point)</option>
+			<option value='web cache'>Web Cache</option>
 			<option value='webcam'>Web Camera</option>
 			<option value='wireless router'>Wireless Router</option>
 		</select>

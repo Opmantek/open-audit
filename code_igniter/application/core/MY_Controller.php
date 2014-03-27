@@ -106,7 +106,7 @@ class MY_Controller extends CI_Controller {
 				$this->load->model("m_userlogin");
 				if ($data = $this->m_userlogin->validate_user($username, $password)) {
 					if ($data != 'fail') {
-						#$this->session->set_userdata($data);
+						$this->session->set_userdata($data);
 						$this->data['user_full_name'] = $data['user_full_name'];
 						$this->data['user_lang'] = $data['user_lang'];
 						$this->data['user_theme'] = $data['user_theme'];
@@ -114,7 +114,8 @@ class MY_Controller extends CI_Controller {
 						$this->data['user_id'] = $data['user_id'];
 						$this->data['user_debug'] = 'n';
 						$loggedin = TRUE;
-						#print_r($this->data);
+						#echo "<pre>\n"; # debugging only
+						#print_r($this->data); # debugging only
 						#exit(); # debugging only
 					} else {
 						# username and password are set but do not validate
@@ -161,7 +162,7 @@ class MY_Controller extends CI_Controller {
 
 	function log_event() {
 		# setup the log file
-		if (php_uname('s') == 'Linux') {
+		if (php_uname('s') === 'Linux' or php_uname('s') === 'Darwin') {
 			$file = "/usr/local/open-audit/other/open-audit.log";
 		} else {
 			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";

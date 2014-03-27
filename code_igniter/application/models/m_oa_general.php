@@ -46,16 +46,27 @@ class M_oa_general extends MY_Model {
 	 * @return	string | array of objects
 	 */
 	function get_attribute($table = 'system', $attribute = 'hostname', $system_id = '') {
+		if ($system_id === '') { return(''); }
 		if ((strpos($attribute, ",") !== FALSE) or ($attribute == "*")) { $limit = ""; } else { $limit = "LIMIT 1"; }
 		$sql = "SELECT $attribute FROM $table WHERE system_id = ? " . $limit;
 		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
+
+		#if ($attribute === 'man_status'){
+			#echo $this->db->last_query() . "<br />\n";
+			#print_r($query->row());
+		#}
+
 		if ((strpos($attribute, ",") !== FALSE) or ($attribute == "*")) { 
 			$result = $query->result();
 			return ($result);
 		} else {
 			$row = $query->row();
-			return ($row->$attribute);
+			if (isset($row->$attribute)) {
+				return ($row->$attribute);
+			} else {
+				return('');
+			}
 		}
 	}
 
