@@ -51,21 +51,21 @@ class M_ip_address extends MY_Model {
 	}
 
 	function process_addresses($input, $details) {
-		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
-			# we have only seen this system once, and not via an audit script
-			# insert the software and set the first_timestamp == system.first_timestamp
-			# otherwise we cause alerts
-			$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
-					system_id, ip_address_v4, ip_address_v6, ip_address_version, 
-					ip_subnet, timestamp, first_timestamp ) 
-					VALUES ( LOWER(?), ?, ?, ?, ?, ?, ?, ?)";
-			$sql = $this->clean_sql($sql);
-			$data = array("$input->net_mac_address", "$details->system_id", 
-					$this->ip_address_to_db($input->ip_address_v4), 
-					"$input->ip_address_v6", "$input->ip_address_version", 
-					"$input->ip_subnet", "$details->timestamp", "$details->first_timestamp");
-			$query = $this->db->query($sql, $data);
-		} else {
+		// if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+		// 	# we have only seen this system once, and not via an audit script
+		// 	# insert the software and set the first_timestamp == system.first_timestamp
+		// 	# otherwise we cause alerts
+		// 	$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
+		// 			system_id, ip_address_v4, ip_address_v6, ip_address_version, 
+		// 			ip_subnet, timestamp, first_timestamp ) 
+		// 			VALUES ( LOWER(?), ?, ?, ?, ?, ?, ?, ?)";
+		// 	$sql = $this->clean_sql($sql);
+		// 	$data = array("$input->net_mac_address", "$details->system_id", 
+		// 			$this->ip_address_to_db($input->ip_address_v4), 
+		// 			"$input->ip_address_v6", "$input->ip_address_version", 
+		// 			"$input->ip_subnet", "$details->timestamp", "$details->first_timestamp");
+		// 	$query = $this->db->query($sql, $data);
+		// } else {
 			$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
 				WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
 					system.system_id = ? AND 
@@ -109,7 +109,7 @@ class M_ip_address extends MY_Model {
 						"$input->ip_subnet", "$details->timestamp", "$details->timestamp");
 				$query = $this->db->query($sql, $data);
 			}
-		}
+		// }
 
 		if ($input->ip_address_v4 != ''){
 			$myip = $input->ip_address_v4 . " " . $input->ip_subnet;
