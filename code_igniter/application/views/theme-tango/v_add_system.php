@@ -59,6 +59,7 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='cell phone'>Cell Phone</option>
 			<option value='cisco module'>Cisco Module</option>
 			<option value='computer'>Computer</option>
+			<option value='chassis'>Chassis</option>
 			<option value='dsl modem'>DSL Modem</option>
 			<option value='firewall'>Firewall</option>
 			<option value='game console'>Game Console</option>

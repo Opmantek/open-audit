@@ -138,6 +138,7 @@ function display_type() {
 	<option value='cable modem'>Cable Modem<\/option> \
 	<option value='cell phone'>Cell Phone<\/option> \
 	<option value='cisco module'>Cisco Module<\/option> \
+	<option value='chassis'>Chassis<\/option> \
 	<option value='computer'>Computer<\/option> \
 	<option value='dsl modem'>DSL Modem<\/option> \
 	<option value='firewall'>Firewall<\/option> \
