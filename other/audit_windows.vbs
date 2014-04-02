@@ -802,21 +802,33 @@ for each objItem in colItems
 	system_pc_memory = system_pc_memory + mem_size
 next
 
+' set this ahead of time.
+system_pc_num_processor = 0
+
+' Only get this value if later OS than XP/2003
+if windows_build_number > 3790 then
+	set colItems = objWMIService.ExecQuery("Select * from Win32_Processor",,32)
+	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Processor)" : audit_wmi_fails = audit_wmi_fails & "Win32_Processor " : end if
+	for each objItem in colItems
+		system_pc_num_processor = objItem.NumberOfCores
+	next
+end if
+
 set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
 for each objItem in colItems
 	' this is no longer used because it is actually the NetBIOS name, not the hostname
 	' we grab it to a temp variable to use below in a last resort situation
-	i = objItem.Name
+	netbiosname = objItem.Name
 	'This is not used because it is not available on Win2000 or WinXP
 	'system_hostname = LCase(objItem.DNSHostName)
 	system_domain = objItem.Domain
 	if details_to_lower = "y" then system_domain = lcase(system_domain) end if
-	system_pc_num_processor = 0
-	on error resume next
-		system_pc_num_processor = objItem.NumberOfLogicalProcessors
-	on error goto 0
-	if (system_pc_num_processor = 0) then system_pc_num_processor = objItem.NumberOfProcessors end if
+
+	if (windows_build_number =< 3790) or (system_pc_num_processor = 0) then
+		system_pc_num_processor = objItem.NumberOfProcessors
+	end if
+
 	system_model = objItem.Model
 	windows_domain_role = objItem.DomainRole
 	' below only checks when OS is XP or later (not 2000 or NT)
@@ -833,7 +845,7 @@ for each objItem in colItems
 	end if
 next
 if system_hostnme = "" then
-	system_hostname = i
+	system_hostname = netbiosname
 end if
 if details_to_lower = "y" then system_hostname = lcase(system_hostname) end if
 
