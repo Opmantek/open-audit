@@ -72,6 +72,7 @@ class Admin_report extends MY_Controller
                     fclose($file_handle);
                     $this->data['query'][$i]['file'] = $file;
                     $this->data['query'][$i]['report_name'] = $report_name;
+                    $this->data['query'][$i]['report_description'] = $report_description;
                     $this->data['query'][$i]['activated'] = $this->m_oa_report->get_report_id($report_name);
                     $i++;
                     // echo "$file<br />\n";
