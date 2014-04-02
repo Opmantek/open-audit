@@ -453,7 +453,9 @@ class M_oa_location extends MY_Model {
 		oa_location.location_postcode, oa_location.location_country, oa_location.location_geo, 
 		system.man_type, count(system.system_id) as count, oa_location.location_latitude, oa_location.location_longitude 
 		FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id 
-		WHERE system.man_status = 'production' 
+		WHERE system.man_status = 'production' and 
+		oa_location.location_latitude != '' and 
+		oa_location.location_longitude != '' 
 		GROUP BY system.man_location_id, system.man_type 
 		ORDER BY location_name";
 		$query = $this->db->query($sql);
