@@ -2634,7 +2634,7 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.896') { $details->model = 'Cisco Chassis Cat 296024LCS'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.897') { $details->model = 'Cisco Chassis Cat 296024PCS'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.898') { $details->model = 'Cisco Chassis Cat 296048PSTS'; $details->type = 'cisco module'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.899') { $details->model = 'Cisco UCS 6140XP'; $details->type = 'cisco module'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.899') { $details->model = 'Cisco UCS 6140XP'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.9') { $details->model = 'Cisco Chassis 2506'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.90') { $details->model = 'Cisco Chassis IGX8410'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.900') { $details->model = 'Cisco Chassis NMWAE900'; $details->type = 'cisco module'; }
