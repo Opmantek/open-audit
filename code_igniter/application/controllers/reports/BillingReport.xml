@@ -9,6 +9,7 @@
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
 		<report_sort_column>0</report_sort_column>
+		<report_description>Name, last seen on and by, type, class, manufacturer, model, serial, user, location.</report_description>
 	</details>
 	<columns>
 		<column>

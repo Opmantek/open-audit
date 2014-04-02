@@ -9,6 +9,7 @@
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
 		<report_sort_column>0</report_sort_column>
+		<report_description>Name, software name, software version where software_name like acrobat or Adobe Reader.</report_description>
 	</details>
 	<columns>
 		<column>

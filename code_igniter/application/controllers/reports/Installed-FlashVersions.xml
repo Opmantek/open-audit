@@ -8,10 +8,21 @@
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
 		<report_sort_column>0</report_sort_column>
+		<report_description>Name, software name, software version where software_name like flash player.</report_description>
 	</details>
 	<columns>
 		<column>
 			<column_order>0</column_order>
+			<column_name>System Name</column_name>
+			<column_variable>hostname</column_variable>
+			<column_table>system</column_table>
+			<column_type>link</column_type>
+			<column_link>/main/system_display/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
 			<column_name>Package Name</column_name>
 			<column_variable>software_name</column_variable>
 			<column_type>link</column_type>

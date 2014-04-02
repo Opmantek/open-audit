@@ -8,6 +8,7 @@
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
 		<report_sort_column>0</report_sort_column>
+		<report_description>Icon, type, name, first seen on, last seen on, last seen by, manufacturer, model, serial, owner, organisation, location, operating system.</report_description>
 	</details>
 	<columns>
 		<column>
