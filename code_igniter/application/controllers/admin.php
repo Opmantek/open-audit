@@ -2496,7 +2496,7 @@ class Admin extends MY_Controller {
 		}
 
 		if (($db_internal_version < '20140403') AND ($this->db->platform() == 'mysql')) {
-			# upgrade for 1.2.2
+			# upgrade for 1.3
 
 			$sql = "ALTER TABLE sys_hw_processor ADD processor_count int(2) unsigned NOT NULL default '0' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
@@ -2510,7 +2510,7 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 			
-			$sql = "UPDATE oa_config set config_value = '1.2.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$sql = "UPDATE oa_config set config_value = '1.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 		}
