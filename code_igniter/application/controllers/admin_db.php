@@ -120,7 +120,9 @@ class Admin_db extends MY_Controller
         $this->data['query'] = '';
 
         # non production systems
-        $this->data['count_non_prod'] = $this->m_system->count_non_production_systems();
+        $this->data['count_status_deleted'] = $this->m_system->count_non_production_systems('deleted');
+        $this->data['count_status_retired'] = $this->m_system->count_non_production_systems('retired');
+        $this->data['count_status_maintenance'] = $this->m_system->count_non_production_systems('maintenance');
 
         # systems not seen
         $this->data['count_not_seen_days'] = $this->m_system->count_not_seen_days($this->data['days']);
@@ -143,6 +145,41 @@ class Admin_db extends MY_Controller
         $this->data['include'] = 'v_db_maintenance';
         $this->load->view('v_template', $this->data);
     }
+
+    public function delete_status_deleted()
+    {
+        $days = $this->uri->segment(3, 365);
+        $this->load->model("m_system");
+        $this->data['count'] = $this->m_system->delete_non_production_systems('deleted');
+        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
+        redirect("admin_db/maintenance/" . $days);
+    }
+    public function delete_status_retired()
+    {
+        $days = $this->uri->segment(3, 365);
+        $this->load->model("m_system");
+        $this->data['count'] = $this->m_system->delete_non_production_systems('retired');
+        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
+        redirect("admin_db/maintenance/" . $days);
+    }
+    public function delete_status_maintenance()
+    {
+        $days = $this->uri->segment(3, 365);
+        $this->load->model("m_system");
+        $this->data['count'] = $this->m_system->delete_non_production_systems('maintenance');
+        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
+        redirect("admin_db/maintenance/" . $days);
+    }
+
+    public function delete_non_production_systems()
+    {
+        $days = $this->uri->segment(3, 365);
+        $this->load->model("m_system");
+        $this->data['count'] = $this->m_system->delete_non_production_systems();
+        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
+        redirect("admin_db/maintenance/" . $days);
+    }
+
 
     public function delete_all_temp()
     {
@@ -169,15 +206,6 @@ class Admin_db extends MY_Controller
         $this->data['count'] = $this->m_alerts->delete_all_alerts();
         $this->data['query'] = $this->data['count'] . " alerts removed from the database";
         $this->session->set_flashdata('message', $this->data['count'] . " alerts removed from the database");
-        redirect("admin_db/maintenance/" . $days);
-    }
-
-    public function delete_non_production_systems()
-    {
-        $days = $this->uri->segment(3, 365);
-        $this->load->model("m_system");
-        $this->data['count'] = $this->m_system->delete_non_production_systems();
-        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
         redirect("admin_db/maintenance/" . $days);
     }
 
