@@ -491,6 +491,9 @@ echo "Final SystemId: " . $details->system_id . "<br />\n";
 					$details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
 					$details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
 
+echo "Last Seen By: " . $details->original_last_seen_by . "<br />\n";
+echo "Original Timestamp: " . $details->original_timestamp . "<br />\n";
+
 					$this->m_system->update_system($details);
 					echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 				}
@@ -670,7 +673,7 @@ echo "Final SystemId: " . $details->system_id . "<br />\n";
 
 		// Now generate any needed alerts
 		$this->m_sys_man_audits->update_audit($details, 'generate initial audit alert');
-		if ($details->original_timestamp === '') {
+		if ($details->original_timestamp == '') {
 			// We have a new PC, so generate an alert
 			$this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', $details->timestamp);
 			// And also set it's IP Address in system.man_ip_address

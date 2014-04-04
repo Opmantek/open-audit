@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-$config['web_internal_version'] = '20140228';
-$config['web_display_version'] = '1.2.1';
+$config['web_internal_version'] = '20140403';
+$config['web_display_version'] = '1.2.2';
 # $config['debug'] = FALSE;
 /*
 |--------------------------------------------------------------------------

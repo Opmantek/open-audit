@@ -602,6 +602,9 @@ class main extends MY_Controller
         $this->data['dns'] = $this->m_dns->get_system_dns($this->data['id']);
         $this->data['hard_drive'] = $this->m_hard_drive->get_system_hard_drive($this->data['id']);
         $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
+        
+        $this->data['library'] = $this->m_software->get_system_software($this->data['id'], 7);
+        
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['memory'] = $this->m_memory->get_system_memory($this->data['id']);
         $this->data['monitor'] = $this->m_monitor->get_system_monitor($this->data['id']);

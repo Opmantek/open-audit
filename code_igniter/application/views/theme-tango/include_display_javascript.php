@@ -33,7 +33,9 @@
  */
 ?>
 <script type="text/javascript">
-$(document).ready( function() { $.NiceJForms.build(); } );
+$(document).ready( function() { 
+	$.NiceJForms.build(); 
+});
 
 function createRequestObject() {
 	var req;
@@ -306,6 +308,13 @@ function upload_attachment()
 
 <script type="text/javascript">
 
+
+var summary_toggle = 0;
+var hardware_toggle = 0;
+var software_toggle = 0;
+var settings_toggle = 0;
+var server_toggle = 0;
+
 $(document).ready(function(){
 	
 	$('#view_summary_windows').hide();
@@ -364,7 +373,7 @@ $(document).ready(function(){
 		$('#view_summary_nmis').slideToggle("fast");
 	});
 
-	var summary_toggle = 0;
+
 
 	$('#toggle_summary_all').click(function(){
 		if (summary_toggle == 0)
@@ -413,7 +422,6 @@ $(document).ready(function(){
 	$('#view_hardware_sound').hide();
 	$('#view_hardware_printer').hide();
         
-	var hardware_toggle = 0;
 
 	$('#toggle_hardware_processor').click(function(){
 		$('#view_hardware_processor').slideToggle("fast");
@@ -500,13 +508,13 @@ $(document).ready(function(){
 
 	$('#view_software_installed').hide();
 	$('#view_software_updates').hide();
+	$('#view_software_library').hide();
 	$('#view_software_services').hide();
 	$('#view_software_codecs').hide();
 	$('#view_software_odbc').hide();
 	$('#view_software_assembly').hide();
 	$('#view_software_keys').hide();
 
-	var software_toggle = 0;
 
 	$('#toggle_software_installed').click(function(){
 		$('#view_software_installed').slideToggle("fast");
@@ -514,6 +522,10 @@ $(document).ready(function(){
 
 	$('#toggle_software_updates').click(function(){
 		$('#view_software_updates').slideToggle("fast");
+	});
+
+	$('#toggle_software_library').click(function(){
+		$('#view_software_library').slideToggle("fast");
 	});
 
 	$('#toggle_software_services').click(function(){
@@ -542,6 +554,7 @@ $(document).ready(function(){
 		{
 			$('#view_software_installed').show("fast");
 			$('#view_software_updates').show("fast");
+			$('#view_software_library').show("fast");
 			$('#view_software_services').show("fast");
 			$('#view_software_codecs').show("fast");
 			$('#view_software_odbc').show("fast");
@@ -553,6 +566,7 @@ $(document).ready(function(){
 		{
 			$('#view_software_installed').hide("fast");
 			$('#view_software_updates').hide("fast");
+			$('#view_software_library').hide("fast");
 			$('#view_software_services').hide("fast");
 			$('#view_software_codecs').hide("fast");
 			$('#view_software_odbc').hide("fast");
@@ -573,7 +587,6 @@ $(document).ready(function(){
 	$('#view_settings_logs').hide();
 	$('#view_settings_variables').hide();
                
-	var settings_toggle = 0;
 	
 	$('#toggle_settings_pagefile').click(function(){
 		$('#view_settings_pagefile').slideToggle("fast");
@@ -649,7 +662,6 @@ $(document).ready(function(){
 	$('#view_server_database').hide();
 	$('#view_server_web').hide();
 
-	var server_toggle = 0;
 
 	$('#toggle_server_database').click(function(){
 		$('#view_server_database').slideToggle("fast");
