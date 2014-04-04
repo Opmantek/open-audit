@@ -9,6 +9,7 @@
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
 		<report_sort_column>1</report_sort_column>
+		<report_description>Device details - name, manufacturer, model, serial, location, owner, purchase date.</report_description>
 	</details>
 	<columns>
 		<column>
