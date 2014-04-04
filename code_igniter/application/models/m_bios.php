@@ -151,20 +151,11 @@ class M_bios extends MY_Model {
 	} // end of function
 
 	function alert_bios($details) {
-		$sql = "SELECT 
-				sys_hw_bios.bios_id, 
-				sys_hw_bios.bios_description
-			FROM 	
-				sys_hw_bios, 
-				system
-			WHERE 	
-				sys_hw_bios.system_id = system.system_id AND
-				sys_hw_bios.timestamp = sys_hw_bios.first_timestamp AND
-				sys_hw_bios.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		// only detect new bios
+		$sql = "SELECT bios_id, bios_description FROM sys_hw_bios WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
+
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		foreach ($result as $myrow) { 

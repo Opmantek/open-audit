@@ -134,19 +134,9 @@ class M_pagefile extends MY_Model {
 
 	function alert_pagefile($details) {
 		// pagefile no longer detected
-		$sql = "SELECT 
-				sys_sw_pagefile.pagefile_id, 
-				sys_sw_pagefile.pagefile_name
-			FROM 	
-				sys_sw_pagefile, 
-				system
-			WHERE 	
-				sys_sw_pagefile.system_id = system.system_id AND
-				sys_sw_pagefile.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT pagefile_id, pagefile_name FROM sys_sw_pagefile WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'pagefile removed - ' . $myrow->pagefile_name;
@@ -154,20 +144,9 @@ class M_pagefile extends MY_Model {
 		}
 
 		// new pagefile
-		$sql = "SELECT 
-				sys_sw_pagefile.pagefile_id, 
-				sys_sw_pagefile.pagefile_name
-			FROM 	
-				sys_sw_pagefile, 
-				system
-			WHERE 	
-				sys_sw_pagefile.system_id = system.system_id AND
-				sys_sw_pagefile.timestamp = sys_sw_pagefile.first_timestamp AND
-				sys_sw_pagefile.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT pagefile_id, pagefile_name FROM sys_sw_pagefile WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'pagefile installed - ' . $myrow->pagefile_name;

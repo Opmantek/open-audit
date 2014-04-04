@@ -124,14 +124,9 @@ class M_share extends MY_Model {
 
 	function alert_share($details) {
 		// share no longer detected
-		$sql = "SELECT sys_sw_share.share_id, sys_sw_share.share_name, sys_sw_share.share_caption
-				FROM 	sys_sw_share, system
-				WHERE 	sys_sw_share.system_id = system.system_id AND
-						sys_sw_share.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT share_id, share_name, share_caption FROM sys_sw_share WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'share deleted - ' . $myrow->share_name;
@@ -139,15 +134,9 @@ class M_share extends MY_Model {
 		}
 
 		// new share
-		$sql = "SELECT sys_sw_share.share_id, sys_sw_share.share_name, sys_sw_share.share_caption
-				FROM 	sys_sw_share, system
-				WHERE 	sys_sw_share.system_id = system.system_id AND
-						sys_sw_share.timestamp = sys_sw_share.first_timestamp AND
-						sys_sw_share.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT share_id, share_name, share_caption FROM sys_sw_share WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'share created - ' . $myrow->share_name;

@@ -843,9 +843,10 @@ class M_system extends MY_Model {
 		return ($result);
 	}
 
-	function count_non_production_systems() {
-		$sql = "SELECT COUNT(*) AS count FROM system WHERE man_status <> 'production'";
-		$query = $this->db->query($sql);
+	function count_non_production_systems($status = 'deleted') {
+		$sql = "SELECT COUNT(*) AS count FROM system WHERE man_status = ?";
+		$data = array("$status");
+		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		$row = $query->row();
 		return ($row->count);
@@ -865,9 +866,10 @@ class M_system extends MY_Model {
 		return ($count);
 	}
 
-	function delete_non_production_systems() {
-		$sql = "DELETE FROM system WHERE man_status = 'deleted'";
-		$query = $this->db->query($sql); 
+	function delete_non_production_systems($status='deleted') {
+		$sql = "DELETE FROM system WHERE man_status = ?";
+		$data = array($status);
+		$query = $this->db->query($sql, $data); 
 		$count = $this->db->affected_rows();
 		return ($count);
 	}

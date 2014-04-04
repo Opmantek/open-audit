@@ -52,24 +52,37 @@ class M_database extends MY_Model {
 	function process_database($input, $details) {
 		// find the version string, based on the version integer.
 		$version_string = "unknown";
+
+
+		if (mb_strpos($input->db_version, "12.00.2000") === 0) { $version_string = "SQL Server 2014 RTM"; }
+		if (mb_strpos($input->db_version, "12.00.1524") === 0) { $version_string = "SQL Server 2014 Community Technology Preview 2 (CTP2)"; }
+		if (mb_strpos($input->db_version, "11.00.9120") === 0) { $version_string = "SQL Server 2014 Community Technology Preview 1 (CTP1)"; }
+
+		if (mb_strpos($input->db_version, "11.00.3000") === 0) { $version_string = "SQL Server 2012 Service Pack 1"; }
 		if (mb_strpos($input->db_version, "11.00.2100.60") === 0) { $version_string = "SQL Server 2012 RTM"; }
+
+		if (mb_strpos($input->db_version, "10.50.4000") === 0) { $version_string = "SQL Server 2008 R2 Service Pack 2"; }
 		if (mb_strpos($input->db_version, "10.50.2500.0") === 0) { $version_string = "SQL Server 2008 R2 Service Pack 1"; }
 		if (mb_strpos($input->db_version, "10.50.1600.1") === 0) { $version_string = "SQL Server 2008 R2 RTM"; }
+
 		if ((mb_strpos($input->db_version, "10.00.5500.00") === 0) or (mb_strpos($input->db_version, "10.0.5500.0") === 0)){ $version_string = "SQL Server 2008 Service Pack 3"; }
 		if ((mb_strpos($input->db_version, "10.00.4000.00") === 0) or (mb_strpos($input->db_version, "10.0.4000.0") === 0)){ $version_string = "SQL Server 2008 Service Pack 2"; }
 		if ((mb_strpos($input->db_version, "10.00.2531.00") === 0) or (mb_strpos($input->db_version, "10.0.2531.0") === 0)){ $version_string = "SQL Server 2008 Service Pack 1"; }
 		if ((mb_strpos($input->db_version, "10.00.1600.22") === 0) or (mb_strpos($input->db_version, "10.0.1600.22") === 0)) { $version_string = "SQL Server 2008 RTM"; }
+
 		if ((mb_strpos($input->db_version, "9.00.5000") === 0) or (mb_strpos($input->db_version, "9.0.5000.0") === 0)) { $version_string = "SQL Server 2005 Service Pack 4"; }
 		if (mb_strpos($input->db_version, "9.00.4035") === 0) { $version_string = "SQL Server 2005 Service Pack 3"; }
 		if (mb_strpos($input->db_version, "9.00.3042") === 0) { $version_string = "SQL Server 2005 Service Pack 2"; }
 		if (mb_strpos($input->db_version, "9.00.2047") === 0) { $version_string = "SQL Server 2005 Service Pack 1"; }
 		if (mb_strpos($input->db_version, "9.00.1399") === 0) { $version_string = "SQL Server 2005 RTM"; }
+
 		if (mb_strpos($input->db_version, "8.00.2039") === 0) { $version_string = "SQL Server 2000 Service Pack 4"; }
 		if (mb_strpos($input->db_version, "8.00.761") === 0)  { $version_string = "SQL Server 2000 ServicePack 3a"; }
 		if (mb_strpos($input->db_version, "8.00.760") === 0)  { $version_string = "SQL Server 2000 Service Pack 3"; }
 		if (mb_strpos($input->db_version, "8.00.534") === 0)  { $version_string = "SQL Server 2000 Service Pack 2"; }
 		if (mb_strpos($input->db_version, "8.00.384") === 0)  { $version_string = "SQL Server 2000 Service Pack 1"; }
 		if (mb_strpos($input->db_version, "8.00.194") === 0)  { $version_string = "SQL Server 2000 RTM"; }
+
 		if (mb_strpos($input->db_version, "7.00.10") === 0)   { $version_string = "SQL Server 7 Service Pack 4"; }
 		if (mb_strpos($input->db_version, "7.00.961") === 0)  { $version_string = "SQL Server 7 Service Pack 3"; }
 		if (mb_strpos($input->db_version, "7.00.842") === 0)  { $version_string = "SQL Server 7 Service Pack 2"; }
@@ -129,24 +142,22 @@ class M_database extends MY_Model {
 
 	function alert_database($details) {
 		// database entry no longer detected
-		$sql = "SELECT sys_sw_database.db_id FROM sys_sw_database, system WHERE sys_sw_database.system_id = system.system_id AND sys_sw_database.timestamp = ? AND system.system_id = ? AND system.timestamp = ?";
+		$sql = "SELECT db_id, db_version FROM sys_sw_database WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'database service removed - ' . $myrow->db_id;
+			$alert_details = 'database service removed - ' . $myrow->db_version;
 			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_database', $myrow->db_id, $alert_details, $details->timestamp);
 		}
 
 		// new database
-		$sql = "SELECT  sys_sw_database.db_id FROM sys_sw_database, system WHERE sys_sw_database.system_id = system.system_id AND
-						sys_sw_database.timestamp = sys_sw_database.first_timestamp AND sys_sw_database.timestamp = ? AND
-						system.system_id = ? AND system.timestamp = ?";
+		$sql = "SELECT db_id, db_version FROM sys_sw_database WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'database service detected - ' . $myrow->db_id;
+			$alert_details = 'database service detected - ' . $myrow->db_version;
 			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_database', $myrow->db_id, $alert_details, $details->timestamp);
 		}
 	}

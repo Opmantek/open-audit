@@ -200,18 +200,7 @@ class M_printer extends MY_Model {
 
 	function alert_printer($details)
 	{
-		#$sql = "SELECT system.system_id, system.description
-		#	FROM 	system
-		#	WHERE 	system.linked_sys = ? AND
-		#		system.first_timestamp = ? ";
-		#		// does not account for local "not seen" printers yet
-		#$data = array("$details->system_id", "$details->timestamp");
-		#$query = $this->db->query($sql, $data);
-		#$result = $query->result();
-		#foreach ($result as $myrow){ 
-		#	$alert_details = 'printer detected - ' . $myrow->description;
-		#	$this->m_alerts->generate_alert($details->system_id, 'system', $myrow->system_id, $alert_details, $details->timestamp);
-		#}
+
 	}
 }
 ?>

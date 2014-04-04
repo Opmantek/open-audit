@@ -175,29 +175,27 @@ class M_ip_address extends MY_Model {
 	} // end of function
 
 	function alert_ip_address($details) {
-		// new network_card_ip - ONLY for "servers" or devices not using DHCP
-		$sql = "SELECT 
-					sys_hw_network_card_ip.ip_id, 
-					sys_hw_network_card_ip.ip_address_v4
-				FROM 	
-					sys_hw_network_card_ip, 
-					sys_hw_network_card, 
-					system
-				WHERE 	
-					LOWER(sys_hw_network_card_ip.net_mac_address) 	= LOWER(sys_hw_network_card.net_mac_address) AND
-					sys_hw_network_card.system_id 			= system.system_id AND
-					sys_hw_network_card_ip.timestamp 		= sys_hw_network_card_ip.first_timestamp AND
-					sys_hw_network_card_ip.timestamp 		= ? AND
-					system.system_id 						= ? AND
-					system.timestamp 						= ? AND
-					sys_hw_network_card.net_dhcp_enabled	= 'False' ";
+		// ip no longer detected - ONLY for devices not using DHCP
+		$sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.timestamp = ? and LOWER(sys_hw_network_card.net_dhcp_enabled) = 'false'";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'ip address changed - ' . $myrow->ip_address_v4;
+			$alert_details = 'ip address removed - ' . $myrow->ip_address_v4;
+			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_database_details', $myrow->details_id, $alert_details, $details->timestamp);
+		}
+
+		// new network_card_ip - ONLY for devices not using DHCP
+		$sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.first_timestamp = sys_hw_network_card_ip.timestamp and sys_hw_network_card_ip.first_timestamp != ? and LOWER(sys_hw_network_card.net_dhcp_enabled) = 'false'";
+		$data = array("$details->system_id", "$details->timestamp");
+		$sql = $this->clean_sql($sql);
+		$query = $this->db->query($sql, $data);
+		foreach ($query->result() as $myrow) {
+			$alert_details = 'ip address detected - ' . $myrow->ip_address_v4;
 			$this->m_alerts->generate_alert("$details->system_id", 'sys_hw_network_card_ip', "$myrow->ip_id", $alert_details, "$details->timestamp");
 		}
+
+
 	}
 
 	function set_initial_address($details) {

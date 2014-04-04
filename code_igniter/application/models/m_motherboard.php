@@ -137,41 +137,19 @@ class M_motherboard extends MY_Model {
 
 	function alert_motherboard($details) {
 		// motherboard no longer detected
-		$sql = "SELECT 
-				sys_hw_motherboard.motherboard_id, 
-				sys_hw_motherboard.manufacturer
-			FROM
-				sys_hw_motherboard, 
-				system
-			WHERE
-				sys_hw_motherboard.system_id = system.system_id AND
-				sys_hw_motherboard.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT motherboard_id, manufacturer, model FROM sys_hw_motherboard WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'motherboard removed - ' . $myrow->manufacturer;
+			$alert_details = 'motherboard removed - ' . $myrow->manufacturer . ' - ' . $myrow->model;
 			$this->m_alerts->generate_alert($details->system_id, 'sys_hw_motherboard', $myrow->motherboard_id, $alert_details, $details->timestamp);
 		}
 
 		// new motherboard
-		$sql = "SELECT  
-				sys_hw_motherboard.motherboard_id, 
-				sys_hw_motherboard.manufacturer, 
-				sys_hw_motherboard.model
-			FROM
-				sys_hw_motherboard, 
-				system
-			WHERE
-				sys_hw_motherboard.system_id = system.system_id AND
-				sys_hw_motherboard.timestamp = sys_hw_motherboard.first_timestamp AND
-				sys_hw_motherboard.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT motherboard_id, manufacturer, model FROM sys_hw_motherboard WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'motherboard installed - ' . $myrow->manufacturer . ' - ' . $myrow->model;

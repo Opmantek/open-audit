@@ -138,41 +138,19 @@ class M_memory extends MY_Model {
 
 	function alert_memory($details) {
 		// memory no longer detected
-		$sql = "SELECT 
-				sys_hw_memory.memory_id, 
-				sys_hw_memory.memory_bank
-			FROM
-				sys_hw_memory, 
-				system
-			WHERE
-				sys_hw_memory.system_id = system.system_id AND
-				sys_hw_memory.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT memory_id, memory_bank, memory_capacity FROM sys_hw_memory WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'memory removed - ' . $myrow->memory_bank;
+			$alert_details = 'memory removed - ' . $myrow->memory_bank . ' bank, ' . $myrow->memory_capacity . ' Mb.';
 			$this->m_alerts->generate_alert($details->system_id, 'sys_hw_memory', $myrow->memory_id, $alert_details, $details->timestamp);
 		}
 
 		// new memory
-		$sql = "SELECT  
-				sys_hw_memory.memory_id, 
-				sys_hw_memory.memory_bank,
-				sys_hw_memory.memory_capacity
-			FROM
-				sys_hw_memory, 
-				system
-			WHERE
-				sys_hw_memory.system_id = system.system_id AND
-				sys_hw_memory.timestamp = sys_hw_memory.first_timestamp AND
-				sys_hw_memory.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT memory_id, memory_bank, memory_capacity FROM sys_hw_memory WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'memory installed - ' . $myrow->memory_bank . ' bank, ' . $myrow->memory_capacity . ' Mb.';

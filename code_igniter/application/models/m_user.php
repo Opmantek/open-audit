@@ -120,23 +120,24 @@ class M_user extends MY_Model {
 	} // end of function
 
 	function alert_user($details) {
-		$sql = "SELECT 
-				sys_sw_user.user_id, 
-				sys_sw_user.user_name
-			FROM 	
-				sys_sw_user, system
-			WHERE 	
-				sys_sw_user.system_id = system.system_id AND
-				sys_sw_user.timestamp = sys_sw_user.first_timestamp AND
-				sys_sw_user.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		// user no longer detected
+		$sql = "SELECT user_id, user_name FROM sys_sw_user WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
+		$query = $this->db->query($sql, $data);
+		foreach ($result as $myrow) { 
+			$alert_details = 'user removed - ' . $myrow->user_name;
+			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_user', $myrow->processor_id, $alert_details, $details->timestamp);
+		}
+
+		// new user
+		$sql = "SELECT user_id, user_name FROM sys_sw_user WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
+		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		foreach ($result as $myrow) { 
-			$alert_details = 'user installed - ' . $myrow->processor_description;
+			$alert_details = 'user installed - ' . $myrow->user_name;
 			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_user', $myrow->processor_id, $alert_details, $details->timestamp);
 		}
 	}

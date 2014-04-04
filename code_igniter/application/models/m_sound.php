@@ -116,19 +116,9 @@ class M_sound extends MY_Model {
 
 	function alert_sound($details) {
 		// sound no longer detected
-		$sql = "SELECT 
-					sys_hw_sound.sound_id, 
-					sys_hw_sound.sound_name
-				FROM 	
-					sys_hw_sound, 
-					system
-				WHERE 	
-						sys_hw_sound.system_id = system.system_id AND
-						sys_hw_sound.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT sound_id, sound_name FROM sys_hw_sound WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'sound card removed - ' . $myrow->sound_name;
@@ -136,20 +126,9 @@ class M_sound extends MY_Model {
 		}
 
 		// new sound card
-		$sql = "SELECT  
-					sys_hw_sound.sound_id, 
-					sys_hw_sound.sound_name
-				FROM 	
-					sys_hw_sound, 
-					system
-				WHERE 	
-						sys_hw_sound.system_id = system.system_id AND
-						sys_hw_sound.timestamp = sys_hw_sound.first_timestamp AND
-						sys_hw_sound.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT sound_id, sound_name FROM sys_hw_sound WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'sound card installed - ' . $myrow->sound_name;

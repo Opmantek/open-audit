@@ -248,22 +248,9 @@ class M_netstat extends MY_Model {
 
 	function alert_netstat($details) {
 		// netstat no longer detected
-		$sql = "SELECT 
-				sys_sw_netstat.id, 
-				sys_sw_netstat.protocol, 
-				sys_sw_netstat.ip_address, 
-				sys_sw_netstat.port, 
-				sys_sw_netstat.program 
-			FROM
-				sys_sw_netstat, 
-				system
-			WHERE
-				sys_sw_netstat.system_id = system.system_id AND
-				sys_sw_netstat.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT id, protocol, ip_address, port, program FROM sys_sw_netstat WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'netstat removed - ' . $myrow->protocol . " " . $myrow->ip_address . ":" . $myrow->port . " (" . $myrow->program . ")";
@@ -271,23 +258,9 @@ class M_netstat extends MY_Model {
 		}
 
 		// new netstat
-		$sql = "SELECT  
-				sys_sw_netstat.id, 
-				sys_sw_netstat.protocol, 
-				sys_sw_netstat.ip_address, 
-				sys_sw_netstat.port, 
-				sys_sw_netstat.program 
-			FROM
-				sys_sw_netstat, 
-				system
-			WHERE
-				sys_sw_netstat.system_id = system.system_id AND
-				sys_sw_netstat.timestamp = sys_sw_netstat.first_timestamp AND
-				sys_sw_netstat.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT id, protocol, ip_address, port, program FROM sys_sw_netstat WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'netstat added - ' . $myrow->protocol . " " . $myrow->ip_address . ":" . $myrow->port . " (" . $myrow->program . ")";

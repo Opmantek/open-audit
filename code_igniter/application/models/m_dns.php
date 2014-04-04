@@ -86,12 +86,10 @@ class M_dns extends MY_Model {
 	} // end of function
 
 	function alert_dns($details) {
-		$sql = "SELECT sys_sw_dns.dns_id, sys_sw_dns.dns_name, sys_sw_dns.dns_ip_address FROM 	
-				sys_sw_dns, system WHERE sys_sw_dns.system_id = system.system_id AND
-				sys_sw_dns.timestamp = sys_sw_dns.first_timestamp AND sys_sw_dns.timestamp = ? AND
-				system.system_id = ? AND system.timestamp = ?";
+		// new dns
+		$sql = "SELECT dns_id, dns_name, dns_ip_address FROM sys_sw_dns WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		foreach ($result as $myrow) { 

@@ -114,14 +114,9 @@ class M_video extends MY_Model {
 
 	function alert_video($details) {
 		// video no longer detected
-		$sql = "SELECT sys_hw_video.video_id, sys_hw_video.video_description
-				FROM 	sys_hw_video, system
-				WHERE 	sys_hw_video.system_id = system.system_id AND
-						sys_hw_video.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT video_id, video_description FROM sys_hw_video WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'video card removed - ' . $myrow->video_description;
@@ -129,15 +124,9 @@ class M_video extends MY_Model {
 		}
 
 		// new video card
-		$sql = "SELECT  sys_hw_video.video_id, sys_hw_video.video_description
-				FROM 	sys_hw_video, system
-				WHERE 	sys_hw_video.system_id = system.system_id AND
-						sys_hw_video.timestamp = sys_hw_video.first_timestamp AND
-						sys_hw_video.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT video_id, video_description FROM sys_hw_video WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'video card installed - ' . $myrow->video_description;

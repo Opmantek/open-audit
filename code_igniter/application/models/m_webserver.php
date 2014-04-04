@@ -303,33 +303,22 @@ class M_webserver extends MY_Model {
 
 	function alert_web_server($details) {
 		// database entry no longer detected
-		$sql = "SELECT sys_sw_web_server.ws_id
-				FROM 	sys_sw_web_server, system
-				WHERE 	sys_sw_web_server.system_id = system.system_id AND
-						sys_sw_web_server.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT ws_id, webserver_type, webserver_version FROM sys_sw_web_server WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'web server service removed - ' . $myrow->db_id;
+			$alert_details = 'web server service removed - ' . $myrow->webserver_type . " (" . $myrow->webserver_version . ")";
 			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_web_server', $myrow->db_id, $alert_details, $details->timestamp);
 		}
 
 		// new web server
-		$sql = "SELECT  sys_sw_web_server.ws_id
-				FROM 	sys_sw_web_server, system
-				WHERE 	sys_sw_web_server.system_id = system.system_id AND
-						sys_sw_web_server.timestamp = sys_sw_web_server.first_timestamp AND
-						sys_sw_web_server.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT ws_id, webserver_type, webserver_version FROM sys_sw_web_server WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'web server service detected - ' . $myrow->db_id;
+			$alert_details = 'web server service detected - ' . $myrow->webserver_type . " (" . $myrow->webserver_version . ")";
 			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_web_server', $myrow->db_id, $alert_details, $details->timestamp);
 		}
 	}

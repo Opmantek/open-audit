@@ -142,20 +142,9 @@ class M_log extends MY_Model {
 
 	function alert_log($details) {
 		// log no longer detected
-		$sql = "SELECT 
-				sys_sw_log.log_id, 
-				sys_sw_log.log_name,
-				sys_sw_log.log_file_name
-			FROM
-				sys_sw_log, 
-				system
-			WHERE
-				sys_sw_log.system_id = system.system_id AND
-				sys_sw_log.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT log_id, log_name, log_file_name FROM sys_sw_log WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'log removed - ' . $myrow->log_name;
@@ -163,22 +152,11 @@ class M_log extends MY_Model {
 		}
 
 		// new log
-		$sql = "SELECT  
-				sys_sw_log.log_id,
-				sys_sw_log.log_name,
-				sys_sw_log.log_file_name
-			FROM
-				sys_sw_log, 
-				system
-			WHERE
-				sys_sw_log.system_id = system.system_id AND
-				sys_sw_log.timestamp = sys_sw_log.first_timestamp AND
-				sys_sw_log.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT log_id, log_name, log_file_name FROM sys_sw_log WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
+
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'log installed - ' . $myrow->log_name . ' (' .$myrow->log_file_name . ')';
 			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_log', $myrow->log_id, $alert_details, $details->timestamp);

@@ -129,6 +129,8 @@ class M_alerts extends MY_Model {
 		$sql = $this->clean_sql($sql);
 		$data = array("$system_id", "$alert_table", "$alert_foreign_row", "$alert_details", "$alert_timestamp");
 		$query = $this->db->query($sql, $data);
+echo "ALERT - " . $this->db->last_query() . "<br />\n";
+
 	}
 
 	/**

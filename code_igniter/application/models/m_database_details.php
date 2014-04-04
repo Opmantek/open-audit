@@ -121,18 +121,9 @@ class M_database_details extends MY_Model {
 
 	function alert_db_details($details) {
 		// database entry no longer detected
-		$sql = "SELECT 	sys_sw_database_details.details_id, 
-						sys_sw_database_details.details_name 
-				FROM 	sys_sw_database_details, 
-						sys_sw_database, 
-						system
-				WHERE 	sys_sw_database_details.db_id = sys_sw_database.db_id AND
-						sys_sw_database.system_id = system.system_id AND
-						sys_sw_database.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT details_id, details_name FROM sys_sw_database_details WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'database removed - ' . $myrow->details_name . ' (' . $myrow->details_id . ')';
@@ -140,19 +131,9 @@ class M_database_details extends MY_Model {
 		}
 
 		// new database
-		$sql = "SELECT  sys_sw_database_details.details_id, 
-						sys_sw_database_details.details_name 
-				FROM 	sys_sw_database_details, 
-						sys_sw_database, 
-						system
-				WHERE 	sys_sw_database_details.db_id = sys_sw_database.db_id AND 
-						sys_sw_database.system_id = system.system_id AND
-						sys_sw_database.timestamp = sys_sw_database.first_timestamp AND
-						sys_sw_database.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT details_id, details_name FROM sys_sw_database_details WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'database detected - ' . $myrow->db_name . ' (' . $myrow->db_id . ')';

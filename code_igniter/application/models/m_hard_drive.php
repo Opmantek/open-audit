@@ -105,30 +105,22 @@ class M_hard_drive extends MY_Model {
 	} // end of function
 
 	function alert_hard_drive($details) {
-		// hard_drive no longer detected
-		$sql = "SELECT sys_hw_hard_drive.hard_drive_id, sys_hw_hard_drive.hard_drive_caption
-				FROM sys_hw_hard_drive, system WHERE sys_hw_hard_drive.system_id = system.system_id AND
-				sys_hw_hard_drive.timestamp = ? AND system.system_id = ? AND system.timestamp = ? AND 
-				sys_hw_hard_drive.hard_drive_interface_type <> 'USB'";
+		// hard_drive no longer detected - excluding USB attached drives
+		$sql = "SELECT hard_drive_id, hard_drive_caption FROM sys_hw_hard_drive WHERE system_id = ? and timestamp = ? AND sys_hw_hard_drive.hard_drive_interface_type <> 'USB'";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
+
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'hard drive removed - ' . $myrow->hard_drive_caption;
 			$this->m_alerts->generate_alert($details->system_id, 'sys_hw_hard_drive', $myrow->hard_drive_id, $alert_details, $details->timestamp);
 		}
 
-		// new hard_drive
-		$sql = "SELECT sys_hw_hard_drive.hard_drive_id, sys_hw_hard_drive.hard_drive_caption
-				FROM 	sys_hw_hard_drive, system
-				WHERE 	sys_hw_hard_drive.system_id = system.system_id AND
-						sys_hw_hard_drive.timestamp = sys_hw_hard_drive.first_timestamp AND
-						sys_hw_hard_drive.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ? AND 
-						sys_hw_hard_drive.hard_drive_interface_type <> 'USB'";
+		// new hard_drive - excluding USB attached drives
+		$sql = "SELECT hard_drive_id, hard_drive_caption FROM sys_hw_hard_drive WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ? AND sys_hw_hard_drive.hard_drive_interface_type <> 'USB'";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
+
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'hard drive installed - ' . $myrow->hard_drive_caption;
