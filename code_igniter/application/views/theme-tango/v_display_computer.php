@@ -233,6 +233,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		<ul>
 		 	<?php if (count($software) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_installer.png" /><a href="#" id="toggle_software_installed">Installed</a></li> <?php } ?> 
 		 	<?php if (count($updates) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_update.png" /><a href="#" id="toggle_software_updates">Updates</a></li> <?php } ?> 
+		 	<?php if (count($library) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_assembly.png" /><a href="#" id="toggle_software_library">Libraries</a></li> <?php } ?> 
 		 	<?php if (count($codecs) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_multimedia.png" /><a href="#" id="toggle_software_codecs">Codecs</a></li> <?php } ?> 
 		 	<?php if (count($odbc) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_database.png" /><a href="#" id="toggle_software_odbc">ODBC Drivers</a></li> <?php } ?> 
 		 	<?php if (count($assembly) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_assembly.png" /><a href="#" id="toggle_software_assembly">Assembly</a></li> <?php } ?> 
@@ -840,26 +841,6 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Processor Details')?></span></legend>
 				<?php foreach($processor as $key):
 					$image = $image_path . '48_component_cpu.png';
-					if (mb_stripos($key->processor_description, 'pentium 4'))
-					{
-						$image = $image_path . '48_intel_p4.png';
-					}
-					if (mb_stripos($key->processor_description, 'xeon'))
-					{
-						$image = $image_path . '48_intel_xeon.png';
-					}
-					if (mb_stripos($key->processor_description, 'Duo'))
-					{
-						$image = $image_path . '48_intel_core_duo.png';
-					}
-					if (mb_stripos($key->processor_description, 'III processor'))
-					{
-						$image = $image_path . '48_intel_p3.png';
-					}
-					if (mb_stripos($key->processor_description, 'Intel Pentium D'))
-					{
-						$image = $image_path . '48_intel_pd.png';
-					}
 					if ((mb_substr_count($key->processor_manufacturer, 'GenuineIntel') > 0) and (substr_count($image, '48_component_cpu') > 0))
 					{
 						$image = $image_path . '48_intel.png';
@@ -868,12 +849,15 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 					{
 						$image = $image_path . '48_amd.png';
 					}
-					
+					if (! isset($key->processor_count) or $key->processor_count == '' or $key->processor_count == '0') { $key->processor_count = '&nbsp;'; }
+					if (! isset($key->processor_logical) or $key->processor_logical == '' or $key->processor_logical == '0') { $key->processor_logical = '&nbsp;'; }
 					?>
 					<img style='float: right; margin; 10px; ' src='<?php echo $image;?>' alt='' title='' width='48'/>
 					<p><label for="processor_description"><?php echo __('Description')?>: </label><span id="processor_description" class="form_field"><?php echo $key->processor_description?></span></p>
 					<p><label for="processor_speed"><?php echo __('Speed')?>: </label><span id="processor_speed" class="form_field"><?php echo $key->processor_speed?> MHz</span></p>
-					<p><label for="processor_cores"><?php echo __('Cores')?>: </label><span id="processor_cores" class="form_field"><?php echo $key->processor_cores?></span></p>
+					<p><label for="processor_count"><?php echo __('Physical Processors')?>: </label><span id="processor_count" class="form_field"><?php echo $key->processor_count?></span></p>
+					<p><label for="processor_cores"><?php echo __('Total Processor Cores')?>: </label><span id="processor_cores" class="form_field"><?php echo $key->processor_cores?></span></p>
+					<p><label for="processor_logical"><?php echo __('Total Logical Processors')?>: </label><span id="processor_logical" class="form_field"><?php echo $key->processor_logical?></span></p>
 					<p><label for="processor_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="processor_manufacturer" class="form_field"><?php echo $key->processor_manufacturer?></span></p>
 					<?php endforeach; ?>
 					<?php echo display_custom_field('view_hardware_processor',  $additional_fields_data, $edit); ?>
@@ -1488,7 +1472,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		<br />
 		<br />
 		<form action="#" method="post" class="niceforms">
-			<fieldset id="hf_software_listing" class="niceforms">
+			<fieldset id="software_listing_updates" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Software Updates')?></span></legend>
 			<table cellspacing="1" class="tablesorter" width="900">
 				<thead>
@@ -1501,6 +1485,49 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 				</thead>
 				<tbody>
 				<?php foreach($updates as $key): ?>
+				<tr>
+						<td><?php echo $key->software_name?></td>
+						<td align="center">
+							<?php
+							if (($key->software_url != '') AND ($key->software_url != ' '))
+							{
+								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_browser.png\" alt=\"\" /></a>";
+							}
+							if (($key->software_email != '') AND ($key->software_email != ' '))
+							{
+								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_email.png\" alt=\"\" /></a>";
+							}
+							?>
+						</td>
+						<td align="center"><?php echo $key->software_version?></td>
+						<td><?php echo htmlentities($key->software_publisher)?></td>
+					</tr>
+				<?php endforeach; ?>
+				</tbody>
+			</table>
+		</fieldset>
+		</form>
+	<?php } ?>
+	</div>
+
+	<div id="view_software_library" style="float: left; width: 100%;">
+	<?php if (count($library) > 0) { ?>
+		<br />
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="software_listing_library" class="niceforms">
+			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Software Libraries')?></span></legend>
+			<table cellspacing="1" class="tablesorter" width="900">
+				<thead>
+					<tr>
+						<th align="left" style='width:500px;'><?php echo __('Package Name')?></th>
+						<th style='width:100px;'><?php echo __('Contact')?>&nbsp;&nbsp;&nbsp;</th>
+						<th style='width:100px;'><?php echo __('Version')?></th>
+						<th style='width:200px;'><?php echo __('Publisher')?></th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php foreach($library as $key): ?>
 				<tr>
 						<td><?php echo $key->software_name?></td>
 						<td align="center">

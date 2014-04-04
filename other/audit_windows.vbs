@@ -804,13 +804,17 @@ next
 
 ' set this ahead of time.
 system_pc_num_processor = 0
+processor_count = 0
+processor_logical = 0
 
 ' Only get this value if later OS than XP/2003
 if windows_build_number > 3790 then
 	set colItems = objWMIService.ExecQuery("Select * from Win32_Processor",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Processor)" : audit_wmi_fails = audit_wmi_fails & "Win32_Processor " : end if
 	for each objItem in colItems
-		system_pc_num_processor = objItem.NumberOfCores
+		system_pc_num_processor = system_pc_num_processor + int(objItem.NumberOfCores)
+		processor_count = processor_count + 1
+		processor_logical = processor_logical + int(objItem.NumberOfLogicalProcessors)
 	next
 end if
 
@@ -1317,7 +1321,9 @@ for each objItem In colItems
 	end select
 next
 result.WriteText "	<processor>" & vbcrlf
+result.WriteText "		<processor_count>" & escape_xml(processor_count) & "</processor_count>" & vbcrlf
 result.WriteText "		<processor_cores>" & escape_xml(system_pc_num_processor) & "</processor_cores>" & vbcrlf
+result.WriteText "		<processor_logical>" & escape_xml(processor_logical) & "</processor_logical>" & vbcrlf
 result.WriteText "		<processor_socket>" & escape_xml(cpu_socket) & "</processor_socket>" & vbcrlf
 result.WriteText "		<processor_description>" & escape_xml(processor_description) & "</processor_description>" & vbcrlf
 result.WriteText "		<processor_speed>" & escape_xml(processor_speed) & "</processor_speed>" & vbcrlf

@@ -157,6 +157,7 @@ export PATH
 	OA_IWLIST=`which iwlist 2>/dev/null`
 	OA_LS=`which ls --skip-alias 2>/dev/null`
 	OA_LSB_RELEASE=`which lsb_release 2>/dev/null`
+	OA_LSCPU=`which lscpu 2>/dev/null`
 	OA_LSHAL=`which lshal 2>/dev/null`
 	OA_LSHW=`which lshw 2>/dev/null`
 	OA_LSPCI=`which lspci 2>/dev/null`
@@ -727,7 +728,7 @@ system_pc_memory=$(trim `$OA_CAT /proc/meminfo | $OA_GREP MemTotal | $OA_CUT -d:
 # 	system_pc_threads_x_processor=4
 #	system_pc_cores_x_processor=4
 #
-#       system_pc_physical_processors = system_pc_total_threads / system_pc_threads_x_processor
+#   system_pc_physical_processors = system_pc_total_threads / system_pc_threads_x_processor
 #
 
 system_pc_total_threads=`$OA_CAT /proc/cpuinfo | $OA_GREP "processor" | $OA_WC -l`
@@ -931,8 +932,13 @@ fi
 
 #'''''''''''''''''''''''''''''''''
 
+let total_cores=$system_pc_cores_x_processor*$system_pc_physical_processors
+let total_logical_processors=$system_pc_threads_x_processor*$system_pc_physical_processors
+
 $OA_ECHO "	<processor>" >> $xml_file
-$OA_ECHO "		<processor_cores>"$(escape_xml "$system_pc_cores_x_processor")"</processor_cores>" >> $xml_file
+$OA_ECHO "		<processor_count>"$(escape_xml "$system_pc_physical_processors")"</processor_count>" >> $xml_file
+$OA_ECHO "		<processor_cores>"$(escape_xml "$total_cores")"</processor_cores>" >> $xml_file
+$OA_ECHO "		<processor_logical>"$(escape_xml "$total_logical_processors")"</processor_logical>" >> $xml_file
 $OA_ECHO "		<processor_socket>"$(escape_xml "$processor_socket")"</processor_socket>" >> $xml_file
 $OA_ECHO "		<processor_description>"$(escape_xml "$processor_description")"</processor_description>" >> $xml_file
 $OA_ECHO "		<processor_speed>"$(escape_xml "$processor_speed")"</processor_speed>" >> $xml_file

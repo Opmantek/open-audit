@@ -817,7 +817,9 @@ DROP TABLE IF EXISTS `sys_hw_processor`;
 CREATE TABLE `sys_hw_processor` (
   `processor_id` int(10) unsigned NOT NULL auto_increment,
   `system_id` int(10) unsigned default NULL,
+  `processor_count` int(2) unsigned NOT NULL default '0',
   `processor_cores` int(2) unsigned NOT NULL default '0',
+  `processor_logical` int(2) unsigned NOT NULL default '0',
   `processor_description` varchar(100) NOT NULL default '',
   `processor_speed` int(10) unsigned NOT NULL default '0',
   `processor_manufacturer` varchar(100) NOT NULL default '',
