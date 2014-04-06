@@ -414,9 +414,6 @@ class System extends CI_Controller {
 		fwrite($handle, $log_line);
 		fclose($handle);
 
-
-echo "<pre>System Id Submitted 1: " . $j . "<br />\n";
-
 		foreach ($xml->children() as $child) {
 			if ($child->getName() === 'sys') {
 				$details = (object) $xml->sys;
@@ -427,16 +424,10 @@ echo "<pre>System Id Submitted 1: " . $j . "<br />\n";
 				else if ($details->system_id > '') {
 					$received_system_id = (string) $details->system_id;
 				}
-echo "System Id Submitted 2: " . $received_system_id . "<br />\n";
-
 				$received_status = $this->m_oa_general->get_attribute('system', 'man_status', $received_system_id);
-echo "Received Status: " . $received_status . "<br />\n";
-
 				if ($received_status !== 'production') {
 					$received_system_id = '';
 				}
-echo "System Id Submitted 3: " . $received_system_id . "<br />\n";
-
 				$details->fqdn = $details->hostname . "." . $details->domain;
 				$details->type = 'computer';
 				$details->man_type = 'computer';
@@ -444,11 +435,8 @@ echo "System Id Submitted 3: " . $received_system_id . "<br />\n";
 
 				$i = $this->m_system->find_system($details);
 				if ($i == '' and $received_system_id > '') {
-echo "Not found.<br />\n";
 					$i = $received_system_id;
 				}
-echo "I: " . $i . "<br />\n";
-
 				if ($i != '' and $received_system_id != '' and $i != $received_system_id) {
 					// We delete this original system as likely with limited data (from 
 					// nmap and/or snmp) we couldn't match an existing system
@@ -459,8 +447,6 @@ echo "I: " . $i . "<br />\n";
 					$query = $this->db->query($sql, $data);
 				}
 				$details->system_id = $i;
-echo "Final SystemId: " . $details->system_id . "<br />\n";
-
 				$details->last_seen = $details->timestamp;
 				if ((string) $details->last_seen_by === '') { 
 					$details->last_seen_by = 'audit';
@@ -486,19 +472,12 @@ echo "Final SystemId: " . $details->system_id . "<br />\n";
 					$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Updating result for " . $details->hostname . " (System ID " . $details->system_id . ").\n";
 					fwrite($handle, $log_line);
 					fclose($handle);
-
-
 					$details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
 					$details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
-
-echo "Last Seen By: " . $details->original_last_seen_by . "<br />\n";
-echo "Original Timestamp: " . $details->original_timestamp . "<br />\n";
-
 					$this->m_system->update_system($details);
 					echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 				}
 				$details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
-				echo "TS: " . $details->first_timestamp . "\n";
 				$this->m_sys_man_audits->insert_audit($details);
 			}
 			if ($child->getName() === 'addresses') {
