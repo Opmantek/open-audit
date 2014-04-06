@@ -1435,7 +1435,7 @@ fi
 
 $OA_ECHO "	<logs>" >> $xml_file
 
-for log in `$OA_LS -1 /etc/logrotate.d/ 2>/dev/null` ; do\
+for log in $(ls -1 /etc/logrotate.d/) ; do\
 	$OA_ECHO -e "\t\t<log>\n\t\t\t<log_name>$log</log_name>\n\t\t\t<log_file_name>\
 		`$OA_GREP -m 1 -E "^/" /etc/logrotate.d/$log | $OA_SED -e 's/\ {//g'`\
 			</log_file_name>\n\t\t\t<log_file_size></log_file_size>\n\t\t\t<log_max_file_size>\
@@ -1499,18 +1499,21 @@ case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' )
 			$OA_DPKGQUERY --show --showformat='\t\t<package>\n\t\t\t<software_name>${Package}</software_name>\n\t\t\t<software_version>${Version}</software_version>\n\t\t\t<software_url>${Homepage}</software_url>\n\t\t</package>\n' |\
 				$OA_SED -e 's/\&.*</</' |\
+				$OA_SED -e 's/+/%2B/g' |\
 				$OA_SED -e 's/url><.*><\/software/url><\/software/' >>\
 				$xml_file
 			;;
 		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
-			$OA_RPM -qa --queryformat="\t\t<package>\n\t\t\t<software_name>%{NAME}</software_name>\n\t\t\t<software_version>%{VERSION}</software_version>\n\t\t\t<software_url>%{URL}</software_url>\n\t\t</package>\n" |\
+			$OA_RPM -qa --queryformat="\t\t<package>\n\t\t\t<software_name><![CDATA[%{NAME}]]></software_name>\n\t\t\t<software_version><![CDATA[%{VERSION}]]></software_version>\n\t\t\t<software_url><![CDATA[%{URL}]]></software_url>\n\t\t</package>\n" |\
 				$OA_SED -e 's/\&.*</</' |\
+				$OA_SED -e 's/+/%2B/g' |\
 				$OA_SED -e 's/url><.*><\/software/url><\/software/' >>\
 				$xml_file
 			;;
 esac
 
 $OA_ECHO "	</software>" >> $xml_file
+
 
 ########################################################
 # SERVICE SECTION                                      #
