@@ -605,6 +605,7 @@ class Admin extends MY_Controller {
 			$variable['ldap_seen_days'] = $_POST['ldap_seen_days'];
 			$variable['ldap_seen_date'] = $_POST['ldap_seen_date'];
 			if (isset($_POST['ping_target'])) { $variable['ping_target'] = 'y'; } else { $variable['ping_target'] = 'n'; }
+			$variable['run_netstat'] = $_POST['run_netstat'];
 			$filename = dirname(dirname(dirname(dirname(__FILE__)))) . "/other/audit_windows.vbs";
 			if (!file_exists($filename)) {
 				exit("Error - $filename does not exist.<br />\n");
