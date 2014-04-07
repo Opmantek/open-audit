@@ -522,6 +522,7 @@ class main extends MY_Controller
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
         $this->data['query'] = $this->m_system->system_summary($this->data['id']);
+        $this->data['query'][0]->man_ip_address = ip_address_from_db($this->data['query'][0]->man_ip_address);
         print_r(json_encode($this->data['query']));
     }
 
