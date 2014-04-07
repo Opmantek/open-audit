@@ -52,7 +52,13 @@ echo form_open('admin_user/add_user') . "\n";
 				<p><label for='user_email'><?php echo __("Email Address")?>: </label><input type='text' id='user_email' name='user_email' tabindex='4' title='Email Address'  value="<?php echo set_value('user_email'); ?>"/></p>
 			</td>
 			<td width='50%'>
-				<p><label for='user_lang'><?php echo __("Language")?>: </label><input type='text' id='user_lang' name='user_lang' tabindex='5' title='Language' value="<?php echo set_value('user_lang', 'en'); ?>"/></p>
+				<p><label for='user_lang'><?php echo __("Language")?>: </label>
+					<select id='user_lang' name='user_lang' tabindex='5' title='Is Admin' />
+						<option value="en" selected>English</option>
+						<option value="es">Spanish</option>
+						<option value="pt-br">Brazilian Portuguese</option>
+					</select></p>
+
 		<!--	<p><label for='user_display_number'><?php echo __("Display Systems")?>: </label><input type='text' id='user_display_number' name='user_display_number' tabindex='6' title='Display Systems' value='10'  value="<?php echo set_value('user_display_number'); ?>"/></p> -->
 				<p><label for='user_theme'><?php echo __("Theme")?>: </label><input type='text' id='user_theme' name='user_theme' tabindex='7' title='Theme' value="<?php echo set_value('user_theme', 'tango'); ?>"/></p>
 				<p><label for='user_admin'><?php echo __("User is Admin")?>: </label><input type='checkbox' id='user_admin' name='user_admin' tabindex='8' title='Is Admin' /></p>
