@@ -6298,7 +6298,7 @@ end if
 
 result.WriteText "	</software_keys>" & vbcrlf
 
-if ((run_netstat = "y") or (run_netstat = "s" and instr(lcase(os_name), "server"))) then
+if ((run_netstat = "y") or (run_netstat = "s" and instr(lcase(system_os_name), "server"))) then
 	if debugging > "0" then wscript.echo "netstat info" end if 
 	cmd = "netstat -abn"
 	on error resume next
