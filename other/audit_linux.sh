@@ -1638,6 +1638,7 @@ if [ "$submit_online" = "y" ]; then
 fi
 
 sed -i -e 's/form_systemXML=//g' $xml_file
+sed -i -e 's/%2B/+/g' $xml_file
 if [ "$create_file" != "y" ]; then
 	`$OA_RM -f $PWD/$xml_file`
 fi
