@@ -597,6 +597,9 @@ if [ "$system_os_family" = "" ]; then
 	# The distro-release file should have the info in the first line
 	# system_os_family=`$OA_CAT /etc/$system_relase_file | $OA_HEAD -n1 | $OA_CUT -d" " -f1`
 	system_os_name=`$OA_CAT /etc/$system_release_file | $OA_GREP "^NAME=" | $OA_CUT -d= -f2`
+	if [ "$system_os_name" = "" ]; then
+		system_os_name=`$OA_CAT /etc/$system_release_file`
+	fi
 	system_os_name="${system_os_name%\"}"
 	system_os_name="${system_os_name#\"}"
 
@@ -744,6 +747,11 @@ if [ "$system_pc_cores_x_processor" = "" ]; then
 	if [ "$OA_LSHAL" \> "" ]; then
 		system_pc_cores_x_processor=$(lshal | grep -c "processor.number")
 	fi
+fi
+
+# RedHat 6.5 doesn't work with the above, so....
+if [ "$system_pc_cores_x_processor" = "" ]; then
+	system_pc_cores_x_processor=1
 fi
 
 # The number of siblings tell us the number of Threads x Physical Processor
@@ -1503,18 +1511,17 @@ case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' )
 			$OA_DPKGQUERY --show --showformat='\t\t<package>\n\t\t\t<software_name>${Package}</software_name>\n\t\t\t<software_version>${Version}</software_version>\n\t\t\t<software_url>${Homepage}</software_url>\n\t\t</package>\n' |\
 				$OA_SED -e 's/\&.*</</' |\
-				$OA_SED -e 's/+/%2B/g' |\
 				$OA_SED -e 's/url><.*><\/software/url><\/software/' >>\
 				$xml_file
 			;;
 		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
-			$OA_RPM -qa --queryformat="\t\t<package>\n\t\t\t<software_name><![CDATA[%{NAME}]]></software_name>\n\t\t\t<software_version><![CDATA[%{VERSION}]]></software_version>\n\t\t\t<software_url><![CDATA[%{URL}]]></software_url>\n\t\t</package>\n" |\
+			$OA_RPM -qa --queryformat="\t\t<package>\n\t\t\t<software_name>%{NAME}</software_name>\n\t\t\t<software_version>%{VERSION}</software_version>\n\t\t\t<software_url>%{URL}</software_url>\n\t\t</package>\n" |\
 				$OA_SED -e 's/\&.*</</' |\
-				$OA_SED -e 's/+/%2B/g' |\
 				$OA_SED -e 's/url><.*><\/software/url><\/software/' >>\
 				$xml_file
 			;;
 esac
+#				$OA_SED -e 's/+/%2B/g' |\
 
 $OA_ECHO "	</software>" >> $xml_file
 
@@ -1630,6 +1637,7 @@ if [ $debugging -gt 0 ]; then
 fi
 
 if [ "$submit_online" = "y" ]; then
+	sed -i -e 's/+/%2B/g' $xml_file
 	if [ $debugging -gt 1 ]; then
 		$OA_ECHO "Submitting results to server"
 		$OA_ECHO "URL: $url"
