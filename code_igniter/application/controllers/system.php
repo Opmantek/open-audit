@@ -736,7 +736,7 @@ class System extends CI_Controller {
 		$log_hostname = php_uname('n');
 		$log_pid = getmypid();
 		$i = (string) $xml->sys[0]->hostname;
-		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing completed for " . $i . " (System ID " . $details->system_id . ").\n";
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing completed for " . $i . " (System ID " . $details->system_id . ")." . PHP_EOL;
 		$handle = fopen($file, "a");
 		fwrite($handle, $log_line);
 		fclose($handle);
@@ -754,7 +754,7 @@ class System extends CI_Controller {
 		$log_timestamp = date("M d H:i:s");
 		$log_hostname = php_uname('n');
 		$log_pid = getmypid();
-		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . ".\n";
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
 		$handle = fopen($file, "a");
 		fwrite($handle, $log_line);
 		fclose($handle);

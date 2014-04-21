@@ -176,7 +176,7 @@ class MY_Controller extends CI_Controller {
 		$function = $router->fetch_method();
 		$user = $this->session->userdata('user_full_name');
 		$log_details = "C:" . $controller . " F:" . $function . " U:" . $user . " at " . $_SERVER['REMOTE_ADDR'];
-		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . ".\n";
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
 		if ($controller == "admin" and $function == "view_log") {
 			# don't bother logging this
 		} else {
