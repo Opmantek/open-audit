@@ -4479,11 +4479,16 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 
 
 			if audit_location = "local" then
-				Set objFolder = objFSO.GetFolder(iis_path)
-				site_size = int(objFolder.size / 1024 / 1024) ' NOTE - only works when run locally. Returns in MB.
+				if objFSO.FolderExists(iis_path) then
+					Set objFolder = objFSO.GetFolder(iis_path)
+					site_size = int(objFolder.size / 1024 / 1024) ' NOTE - only works when run locally. Returns in MB.
+				else 
+					site_size = ""
+				end if
 			else 
 				site_size = ""
 			end if
+				
 
 			result_site = result_site & "				<site_path>" & escape_xml(iis_path) & "</site_path>" & vbcrlf
 			result_site = result_site & "				<site_size>" & escape_xml(site_size) & "</site_size>" & vbcrlf
