@@ -857,7 +857,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 					<p><label for="processor_speed"><?php echo __('Speed')?>: </label><span id="processor_speed" class="form_field"><?php echo $key->processor_speed?> MHz</span></p>
 					<p><label for="processor_count"><?php echo __('Physical Processors')?>: </label><span id="processor_count" class="form_field"><?php echo $key->processor_count?></span></p>
 					<p><label for="processor_cores"><?php echo __('Total Processor Cores')?>: </label><span id="processor_cores" class="form_field"><?php echo $key->processor_cores?></span></p>
-					<p><label for="processor_logical"><?php echo __('Total Logical Processors')?>: </label><span id="processor_logical" class="form_field"><?php echo $key->processor_logical?></span></p>
+					<p><label for="processor_logical" style="white-space: nowrap;"><?php echo __('Total Logical Processors')?>: </label><span id="processor_logical" class="form_field"><?php echo $key->processor_logical?></span></p>
 					<p><label for="processor_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="processor_manufacturer" class="form_field"><?php echo $key->processor_manufacturer?></span></p>
 					<?php endforeach; ?>
 					<?php echo display_custom_field('view_hardware_processor',  $additional_fields_data, $edit); ?>
