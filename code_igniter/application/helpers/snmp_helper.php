@@ -265,7 +265,7 @@ if (!function_exists('get_snmp')) {
 
 		$log_line = '';
 		if ($test_v1 == '' and $test_v2 == '') {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " not SNMP scanned.\n";
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " not SNMP scanned." . PHP_EOL;
 			if ($details->show_output == TRUE) { echo "SNMP  - Unable to connect using SNMP (bad credentials or device not responding) - exiting.<br />"; }
 		}
 
@@ -783,9 +783,9 @@ if (!function_exists('get_snmp')) {
 		if ($test_v1 > '' or $test_v2 > '') {
 			$log_timestamp = date("M d H:i:s");
 			if (isset($details->snmp_oid) and $details->snmp_oid > "") {
-				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned.\n";
+				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned." . PHP_EOL;
 			} else {
-				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan failed (no OID returned).\n";
+				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan failed (no OID returned)." . PHP_EOL;
 			}
 			if ($details->show_output == TRUE) { echo "LOG   - " . $log_line; }
 			$handle = fopen($file, "a");

@@ -407,9 +407,9 @@ class System extends CI_Controller {
 		$j = (string) $xml->sys[0]->system_id;
 		$handle = fopen($file, "a");
 		if ($j > '') {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . " (Supplied System ID $j).\n";
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . " (Supplied System ID $j)." . PHP_EOL;
 		} else {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . "\n";
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . PHP_EOL;
 		}
 		fwrite($handle, $log_line);
 		fclose($handle);
@@ -469,7 +469,7 @@ class System extends CI_Controller {
 				} else {
 					// update an existing system
 					$handle = fopen($file, "a");
-					$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Updating result for " . $details->hostname . " (System ID " . $details->system_id . ").\n";
+					$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Updating result for " . $details->hostname . " (System ID " . $details->system_id . ")." . PHP_EOL;
 					fwrite($handle, $log_line);
 					fclose($handle);
 					$details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
