@@ -733,15 +733,19 @@ class M_system extends MY_Model {
 	}
 
 	function system_summary($system_id) {
-		$sql = "SELECT 		system.system_id, hostname, man_ip_address, man_environment, 
-							man_status, man_description, man_type, 
-							man_class, man_os_group, man_os_family, man_os_name, 
-							man_manufacturer, man_model, man_serial, 
-							man_form_factor, 
-							location_name, last_seen, last_seen_by  
-				FROM 		system
-				LEFT JOIN   oa_location on system.man_location_id = oa_location.location_id 
-				WHERE 		system.system_id = ? ";
+		// $sql = "SELECT 		system.system_id, hostname, man_ip_address, man_environment, 
+		// 					man_status, man_description, man_type, 
+		// 					man_class, man_os_group, man_os_family, man_os_name, 
+		// 					man_manufacturer, man_model, man_serial, 
+		// 					man_form_factor, 
+		// 					location_name, last_seen, last_seen_by  
+		// 		FROM 		system
+		// 		LEFT JOIN   oa_location on system.man_location_id = oa_location.location_id 
+		// 		WHERE 		system.system_id = ? ";
+
+		// Improved SQL to show the linked system for the case of devices like local attached, non-networked printers
+		$sql = "SELECT a.system_id, a.hostname, a.man_ip_address, a.man_environment, a.man_status, a.man_description, a.man_type, a.man_class, a.man_os_group, a.man_os_family, a.man_os_name, a.man_manufacturer, a.man_model, a.man_serial, a.man_form_factor, location_name, a.last_seen, a.last_seen_by, a.linked_sys, b.hostname, b.system_id FROM system a LEFT JOIN system b on a.linked_sys = b.system_id LEFT JOIN oa_location on a.man_location_id = oa_location.location_id WHERE a.system_id = ?";
+
 		$sql = $this->clean_sql($sql);
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
