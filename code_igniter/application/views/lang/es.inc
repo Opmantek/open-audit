@@ -1,6 +1,6 @@
 <?php
 $GLOBALS["lang"]["# Devices"]="# Dispositivos";
-$GLOBALS["lang"]["<h2>Welcome to Open-AudIT.</h2><br />Make sure you add both Groups and Reports by going to: <br />Admin -> Groups -> Activate Group &nbsp;&nbsp;&nbsp;and also to <br />Admin -> Reports -> Activate Report."]="<h2>Welcome to Open-AudIT.</h2><br />Make sure you add both Groups and Reports by going to: <br />Admin -> Groups -> Activate Group &nbsp;&nbsp;&nbsp;and also to <br />Admin -> Reports -> Activate Report.";
+$GLOBALS["lang"]["<h2>Welcome to Open-AudIT.</h2><br />Make sure you add both Groups and Reports by going to: <br />Admin -> Groups -> Activate Group &nbsp;&nbsp;&nbsp;and also to <br />Admin -> Reports -> Activate Report."]="<h2>Bienvenida para Open-AudIT.</h2><br />Asegurarse añadís las dos Grupos y lo Informes cerca vas que: Admin -> Grupos -> Activar Grupo y lo ademas que Admin -> Informes -> Activar Informe";
 $GLOBALS["lang"]["About Open-AudIT"]="Al respecto Open-AudIT";
 $GLOBALS["lang"]["About"]="Al respecto";
 $GLOBALS["lang"]["Access"]="Acceso";

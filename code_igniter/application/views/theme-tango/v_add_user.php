@@ -55,8 +55,10 @@ echo form_open('admin_user/add_user') . "\n";
 				<p><label for='user_lang'><?php echo __("Language")?>: </label>
 					<select id='user_lang' name='user_lang' tabindex='5' title='Is Admin' />
 						<option value="en" selected>English</option>
-						<option value="es">Spanish</option>
 						<option value="pt-br">Brazilian Portuguese</option>
+						<option value="fr">French</option>
+						<option value="de">German</option>
+						<option value="es">Spanish</option>
 					</select></p>
 
 		<!--	<p><label for='user_display_number'><?php echo __("Display Systems")?>: </label><input type='text' id='user_display_number' name='user_display_number' tabindex='6' title='Display Systems' value='10'  value="<?php echo set_value('user_display_number'); ?>"/></p> -->
