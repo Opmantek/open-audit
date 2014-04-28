@@ -285,7 +285,7 @@ if (help = "y") then
 	wscript.echo "  url"
 	wscript.echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
 	wscript.echo ""
-	wscript.echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
+	wscript.echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the complete timestamp the audit was started."
 	wscript.quit
 end if
 
@@ -4477,7 +4477,8 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 			Next
 			' End of Virtual Directories
 
-
+			site_size = ""
+			on error resume next
 			if audit_location = "local" then
 				if objFSO.FolderExists(iis_path) then
 					Set objFolder = objFSO.GetFolder(iis_path)
@@ -4485,9 +4486,8 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 				else 
 					site_size = ""
 				end if
-			else 
-				site_size = ""
 			end if
+			on error goto 0
 				
 
 			result_site = result_site & "				<site_path>" & escape_xml(iis_path) & "</site_path>" & vbcrlf
