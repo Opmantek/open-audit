@@ -379,6 +379,7 @@ class Admin_system extends MY_Controller
             $this->load->model("m_oa_location");
             $this->data['locations'] = $this->m_oa_location->get_location_names();
             $this->load->model("m_systems");
+            $this->load->model("m_oa_general");
             $this->data['os_group'] = $this->m_systems->get_distinct_os_group();
             $this->data['os_family'] = $this->m_systems->get_distinct_os_family();
             $this->data['os_name'] = $this->m_systems->get_distinct_os_name();
@@ -559,6 +560,7 @@ class Admin_system extends MY_Controller
             $this->load->model("m_oa_location");
             $this->load->model("m_sys_man_audits");
             $this->load->model("m_oa_group");
+            $this->load->model("m_oa_general");
             $this->load->helper('snmp');
             $this->load->helper('snmp_oid');
             $this->load->library('encrypt');
