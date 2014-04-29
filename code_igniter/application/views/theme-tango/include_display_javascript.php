@@ -168,6 +168,7 @@ function display_type() {
 	<option value='smart phone'>Smart Phone<\/option> \
 	<option value='switch'>Switch<\/option> \
 	<option value='tablet'>Tablet<\/option> \
+	<option value='unknown'>Unknown<\/option> \
 	<option value='ups'>UPS (Uninteruptable Power Supply)<\/option> \
 	<option value='voip adapter'>VoIP Adapter<\/option> \
 	<option value='voip gateway'>VoIP Gateway<\/option> \
