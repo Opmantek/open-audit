@@ -1479,8 +1479,8 @@ class M_system extends MY_Model {
 				$details->subnet = '0.0.0.0';
 			}
 
-			# search for any entries
-			$sql = "SELECT * FROM sys_hw_network_card WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+			# search for any entries in both sys_hw_network_card_ip
+			$sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
 			$data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
 			$query = $this->db->query($sql, $data);
 			$result = $query->result();
@@ -1490,10 +1490,9 @@ class M_system extends MY_Model {
 				$sql = $this->clean_sql($sql);
 				$data = array("$details->mac_address", "$details->system_id", "$details->man_ip_address", "$details->subnet", "$details->timestamp", "$details->timestamp");
 				$query = $this->db->query($sql, $data);
-
 			} else {
 				# match - update timestamp only
-				$sql = "UPDATE sys_hw_network_card SET timestamp = ? WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+				$sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
 				$data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
 				$query = $this->db->query($sql, $data);
 			}
