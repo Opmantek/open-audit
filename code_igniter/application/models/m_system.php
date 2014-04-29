@@ -1455,6 +1455,25 @@ class M_system extends MY_Model {
 			# ideally this would have already been done when the device was initially discovered, but we cannot count on that.
 			# need to check if an entry in sys_hw_network_card exists and if it does not AND we have details, insert something
 
+			# check to see if we have a timestamp
+			if (!isset($details->timestamp) or $details->timestamp == '') {
+				$sql = "SELECT timestamp, last_seen FROM syetm WHERE system_id = ?";
+				$data = array("$details->system_id");
+				$query = $this->db->query($sql, $data);
+				$result = $query->result();
+				foreach ($result as $db_details) {
+					if (!isset($db_details->timestamp) or $db_details->timestamp == '') {
+						if (!isset($db_details->last_seen) or $db_details->last_seen == '') {
+							# should NEVER get here - this would indicate nothing in timestamp AND nothing in last_seen
+						} else {
+							$details->timestamp = $db_details->last_seen;
+						}
+					} else {
+						$details->timestamp = $db_details->timestamp;
+					}
+				}
+			}
+
 			# insert a subnet so we have a default
 			if (!isset($details->subnet) or $details->subnet == '') {
 				$details->subnet = '0.0.0.0';
