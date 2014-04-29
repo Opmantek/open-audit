@@ -1457,7 +1457,7 @@ class M_system extends MY_Model {
 
 			# check to see if we have a timestamp
 			if (!isset($details->timestamp) or $details->timestamp == '') {
-				$sql = "SELECT timestamp, last_seen FROM syetm WHERE system_id = ?";
+				$sql = "SELECT timestamp, last_seen FROM system WHERE system_id = ?";
 				$data = array("$details->system_id");
 				$query = $this->db->query($sql, $data);
 				$result = $query->result();
