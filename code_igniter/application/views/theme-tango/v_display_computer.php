@@ -334,7 +334,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 							<?php } ?>
 							<!-- <p><label for="man_type"><?php echo __('Type')?>: </label><span id="man_type" <?php echo $edit?>><?php echo print_something($key->man_type)?></span></p> -->
 							<p><label for="man_class"><?php echo __('Class')?>: </label><span id="man_class" <?php echo $edit?>><?php echo print_something($key->man_class)?></span></p>
-							<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon" <?php echo $edit?>><?php echo print_something($key->man_icon)?></span></p>
+							<!-- <p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon" <?php echo $edit?>><?php echo print_something($key->man_icon)?></span></p> -->
 							<p><label for="man_os_group"><?php echo __('OS Group')?>: </label><span id="man_os_group" <?php echo $edit?>><?php echo print_something($key->man_os_group)?></span></p>
 							<p><label for="man_os_family"><?php echo __('OS Family')?>: </label><span id="man_os_family" <?php echo $edit?>><?php echo print_something($key->man_os_family)?></span></p>
 						</div>
