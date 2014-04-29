@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.2
+# @version 1.3
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -45,8 +45,49 @@ debugging="3"
 for arg in "$@"; do
 	parameter=${arg%%=*}
 	value=${arg##*=} 
+	if [ "$parameter" == "--help" ]; then parameter="help"; value="y"; fi
+	if [ "$parameter" == "-h" ]; then parameter="help"; value="y"; fi
 	eval "$parameter"=\""$value\""
 done
+
+if [ "$help" = "y" ]; then
+	echo ""
+	echo "---------------------------"
+	echo "Open-AudIT OSX Audit script"
+	echo "(c) Opmantek, 2014.        "
+	echo "---------------------------"
+	echo "This script should be run on a Mac OSX based computer using root or sudo access rights."
+	echo ""
+	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	echo ""
+	echo "  create_file"
+	echo "     y - Create an XML file containing the audit result."
+	echo "    *n - Do not create an XML result file."
+	echo ""
+	echo "  debugging"
+	echo "     0 - No output."
+	echo "     1 - Minimal Output."
+	echo "     2 - Verbose output."
+	echo "    *3 - Very Verbose output."
+	echo ""
+	echo "  -h or --help or help=y"
+	echo "      y - Display this help output."
+	echo "     *n - Do not display this output."
+	echo ""
+	echo "  org_id"
+	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+	echo ""
+	echo "  submit_online"
+	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
+	echo "     n - Do not submit the audit result"
+	echo ""
+	echo "  url"
+	echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
+	echo ""
+	echo ""
+	echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
+	exit
+fi
 
 
 if [ "$debugging" -gt "0" ]; then
@@ -68,7 +109,7 @@ system_form_factor=""
 system_pc_os_bit="64"
 system_pc_memory=`system_profiler SPHardwareDataType | grep "Memory:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1`
 system_pc_memory=`expr $system_pc_memory \* 1024`
-pc_num_processor=`sysctl hw.ncpu | awk '{print $2}'`
+processor_count=`system_profiler SPHardwareDataType | grep "Number of Processors" | cut -d: -f2`
 system_pc_date_os_installation=`date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S"`
 if [[ "$system_model" == *"MacBook"* ]]; then
 	system_form_factor="laptop"
@@ -96,7 +137,7 @@ echo  "		<uptime>$system_uptime</uptime>" >> $xml_file
 echo  "		<form_factor>$system_form_factor</form_factor>" >> $xml_file
 echo  "		<pc_os_bit>$system_pc_os_bit</pc_os_bit>" >> $xml_file
 echo  "		<pc_memory>$system_pc_memory</pc_memory>" >> $xml_file
-echo  "		<pc_num_processor>$pc_num_processor</pc_num_processor>" >> $xml_file
+echo  "		<pc_num_processor>$processor_count</pc_num_processor>" >> $xml_file
 echo  "		<pc_date_os_installation>$system_pc_date_os_installation</pc_date_os_installation>" >> $xml_file
 echo  "		<man_org_id>$org_id</man_org_id>" >> $xml_file
 echo  "	</sys>" >> $xml_file
@@ -170,7 +211,9 @@ echo "	</addresses>" >> $xml_file
 if [ "$debugging" -gt "0" ]; then
 	echo "Processor Info"
 fi
-processor_cores=`sysctl hw.ncpu | awk '{print $2}'`
+
+processor_cores=`system_profiler SPHardwareDataType | grep "Total Number of Cores" | awk '{print $5}'`
+processor_logical=`sysctl hw.ncpu | awk '{print $2}'`
 processor_socket=""
 processor_description=`sysctl -n machdep.cpu.brand_string`
 processor_speed=`system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
@@ -179,7 +222,9 @@ processor_manufacturer="GenuineIntel"
 processor_power_management_supported=""
 
 echo  "	<processor>" >> $xml_file
+echo  "		<processor_count>$processor_count</processor_count>" >> $xml_file
 echo  "		<processor_cores>$processor_cores</processor_cores>" >> $xml_file
+echo  "		<processor_logical>$processor_logical</processor_logical>" >> $xml_file
 echo  "		<processor_socket>$processor_socket</processor_socket>" >> $xml_file
 echo  "		<processor_description>$processor_description</processor_description>" >> $xml_file
 echo  "		<processor_speed>$processor_speed</processor_speed>" >> $xml_file
@@ -284,9 +329,78 @@ for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8); 
 		software_version=""
 		software_install_source=""
 	fi
-
 done
 echo "	</software>" >> $xml_file
+
+
+
+if [ "$debugging" -gt "0" ]; then
+	echo "Software Keys"
+fi
+echo "	<software_keys>" >> $xml_file
+key_name=""
+key_release=""
+key_text=""
+# Adobe CS5 and later
+if [ -d /Library/Application\ Support/regid.1986-12.com.adobe/ ] ; then
+	# Read each each found file and add its product to a list
+	for AFILE in /Library/Application\ Support/regid.1986-12.com.adobe/*
+	do
+		key_name=$( sed -n -e 's/.*<swid:product_title>\(.*\)<\/swid:product_title>.*/\1/p' "$AFILE" )
+		key_release=$( sed -n -e 's/.*<swid:activation_status>\(.*\)<\/swid:activation_status>.*/\1/p' "$AFILE" )
+		key_text=$( sed -n -e 's/.*<swid:serial_number>\(.*\)<\/swid:serial_number>.*/\1/p' "$AFILE" )
+		echo "		<key>" >> $xml_file
+		echo "			<key_name><![CDATA[$key_name]]></key_name>" >> $xml_file
+		echo "			<key_text><![CDATA[$key_text]]></key_text>" >> $xml_file
+		echo "			<key_release><![CDATA[$key_release]]></key_release>" >> $xml_file
+		echo "			<key_edition>OSX</key_edition>" >> $xml_file
+		echo "		</key>" >> $xml_file
+		key_name=""
+		key_release=""
+		key_text=""
+	done
+fi
+
+key_name=""
+key_release=""
+key_text=""
+
+# Adobe CS4
+if [ -d /Users/Shared/Adobe/ISO-19770/ ] ; then
+	# Read each found file add its product to the list
+	for AFILE in /Users/Shared/Adobe/ISO-19770/*
+	do
+		key_name=$( sed -n -e 's/.*<sat:product_title>\(.*\)<\/sat:product_title>.*/\1/p' "$AFILE" )
+		# Some products use a different version of SWID Tag where "sat:product_title" isn't valid.
+		# If "sat:product_title" isn't found in the tag then assume "product".
+		if [ "$key_name" = "" ] ; then
+			key_name=$( sed -n -e 's/.*<product>\(.*\)<\/product>.*/\1/p' "$AFILE" )
+			key_suite=$( sed -n -e 's/.*<part_of_suite>\(.*\)<\/part_of_suite>.*/\1/p' "$AFILE" )
+
+			# Some products such as Acrobat Pro may exist but this older version
+			# of SWID Tag will only indicate that it was part of a suite or standalone.
+			# Report if the product is part of a suite.
+
+			if [ "$key_suite" = "true" ] ; then
+				key_name="$key_name is part of an unknown CS4 suite"
+			fi
+		fi
+		key_release=$( sed -n -e 's/.*<sat:activation_status>\(.*\)<\/sat:activation_status>.*/\1/p' "$AFILE" )
+		echo "		<key>" >> $xml_file
+		echo "			<key_name><![CDATA[$key_name]]></key_name>" >> $xml_file
+		echo "			<key_text></key_text>" >> $xml_file
+		echo "			<key_release><![CDATA[$key_release]]></key_release>" >> $xml_file
+		echo "			<key_edition>OSX</key_edition>" >> $xml_file
+		echo "		</key>" >> $xml_file
+		key_name=""
+		key_release=""
+		key_text=""
+	done
+fi
+
+
+echo "	</software_keys>" >> $xml_file
+
 
 
 

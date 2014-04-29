@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -72,7 +72,7 @@ class M_print_queue extends MY_Model {
 					"$input->system_key", 
 					"$input->printer_name", 
 					"$input->printer_port_name", 
-					"$printer_ip", 
+					"$input->man_ip_address", 
 					"$input->description", 
 					"$input->model", 
 					"$input->manufacturer", 
@@ -145,20 +145,9 @@ class M_print_queue extends MY_Model {
 
 	function alert_print_queue($details) {
 		// print queue no longer detected
-		$sql = "SELECT 
-				sys_sw_print_queue.queue_id, 
-				sys_sw_print_queue.queue_system_key, 
-				sys_sw_print_queue.model 
-			FROM
-				sys_sw_print_queue, 
-				system
-			WHERE
-				sys_sw_print_queue.system_id = system.system_id AND
-				sys_sw_print_queue.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT queue_id, queue_system_key, model FROM sys_sw_print_queue WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'print queue removed - ' . $myrow->queue_system_key . ' (' . $myrow->model . ')';
@@ -166,21 +155,9 @@ class M_print_queue extends MY_Model {
 		}
 
 		// new print queue
-		$sql = "SELECT  
-				sys_sw_print_queue.queue_id,
-				sys_sw_print_queue.queue_system_key, 
-				sys_sw_print_queue.model 
-			FROM
-				sys_sw_print_queue, 
-				system
-			WHERE
-				sys_sw_print_queue.system_id = system.system_id AND
-				sys_sw_print_queue.timestamp = sys_sw_print_queue.first_timestamp AND
-				sys_sw_print_queue.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT queue_id, queue_system_key, model FROM sys_sw_print_queue WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'print queue installed - ' . $myrow->queue_system_key . ' (' . $myrow->model . ')';

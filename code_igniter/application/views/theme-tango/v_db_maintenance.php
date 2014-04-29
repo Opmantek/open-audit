@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -56,9 +56,19 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td><?php echo __("All Non Production Devices")?></td>
-				<td style="text-align: center;"><?php echo $count_non_prod; ?></td>
-				<td style="text-align: center;"><a href="<?php echo base_url()?>index.php/admin_db/delete_non_production_systems/<?php echo $days; ?>"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></a></td>
+				<td><?php echo __("Devices with 'Deleted' status")?></td>
+				<td style="text-align: center;"><?php echo $count_status_deleted; ?></td>
+				<td style="text-align: center;"><a href="<?php echo base_url()?>index.php/admin_db/delete_status_deleted/<?php echo $days; ?>"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></a></td>
+			</tr>
+			<tr>
+				<td><?php echo __("Devices with 'Retired' status")?></td>
+				<td style="text-align: center;"><?php echo $count_status_retired; ?></td>
+				<td style="text-align: center;"><a href="<?php echo base_url()?>index.php/admin_db/delete_status_retired/<?php echo $days; ?>"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></a></td>
+			</tr>
+			<tr>
+				<td><?php echo __("Devices with 'Maintenance' status")?></td>
+				<td style="text-align: center;"><?php echo $count_status_maintenance; ?></td>
+				<td style="text-align: center;"><a href="<?php echo base_url()?>index.php/admin_db/delete_status_maintenance/<?php echo $days; ?>"><img src='<?php echo $image_path; ?>16_delete.png' alt='' title='' width='16'/></a></td>
 			</tr>
 			<tr>
 				<td><?php echo __("All Alerts"); ?></td>

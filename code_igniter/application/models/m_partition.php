@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -216,19 +216,9 @@ class M_partition extends MY_Model {
 
 	function alert_partition($details) {
 		// partition no longer detected
-		$sql = "SELECT 
-				sys_hw_partition.partition_id, 
-				sys_hw_partition.partition_mount_point 
-			FROM 
-				sys_hw_partition, 
-				system 
-			WHERE 
-				sys_hw_partition.system_id = system.system_id AND 
-				sys_hw_partition.timestamp = ? AND 
-				system.system_id = ? AND 
-				system.timestamp = ?";
+		$sql = "SELECT partition_id, partition_mount_point FROM sys_hw_partition WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'partition removed - ' . $myrow->partition_mount_point;
@@ -236,14 +226,9 @@ class M_partition extends MY_Model {
 		}
 
 		// new partition
-		$sql = "SELECT  sys_hw_partition.partition_id, sys_hw_partition.partition_mount_point
-				FROM 	sys_hw_partition, system
-				WHERE 	sys_hw_partition.system_id = system.system_id AND
-						sys_hw_partition.timestamp = sys_hw_partition.first_timestamp AND
-						sys_hw_partition.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
+		$sql = "SELECT partition_id, partition_mount_point FROM sys_hw_partition WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
+		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'partition installed - ' . $myrow->partition_mount_point;

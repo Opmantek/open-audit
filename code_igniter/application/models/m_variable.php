@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -125,41 +125,19 @@ class M_variable extends MY_Model {
 
 	function alert_variable($details) {
 		// variable no longer detected
-		$sql = "SELECT 
-				sys_sw_variable.variable_id, 
-				sys_sw_variable.variable_name
-			FROM
-				sys_sw_variable, 
-				system
-			WHERE
-				sys_sw_variable.system_id = system.system_id AND
-				sys_sw_variable.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT variable_id, variable_name, variable_value FROM sys_sw_variable WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'variable removed - ' . $myrow->variable_name;
+			$alert_details = 'variable removed - ' . $myrow->variable_name . ' (' .$myrow->variable_value . ')';
 			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_variable', $myrow->variable_id, $alert_details, $details->timestamp);
 		}
 
 		// new variable
-		$sql = "SELECT  
-				sys_sw_variable.variable_id,
-				sys_sw_variable.variable_name,
-				sys_sw_variable.variable_value
-			FROM
-				sys_sw_variable, 
-				system
-			WHERE
-				sys_sw_variable.system_id = system.system_id AND
-				sys_sw_variable.timestamp = sys_sw_variable.first_timestamp AND
-				sys_sw_variable.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT variable_id, variable_name, variable_value FROM sys_sw_variable WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'variable installed - ' . $myrow->variable_name . ' (' .$myrow->variable_value . ')';

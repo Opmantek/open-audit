@@ -7,7 +7,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -28,42 +28,115 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
+/**
+ * Base Object Admin
+ *
+ * @access	 public
+ * @category Object
+ * @package  Open-AudIT
+ * @author   Mark Unwin <marku@opmantek.com>
+ * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+ * @link     http://www.open-audit.org
+ * @return	 Admin
+ */
 class Admin extends MY_Controller {
 
-	function __construct() {
+	/**
+	 * Constructor
+	 *
+	 * @access	  public
+	 * @category  Constructor
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  Admin
+	 */
+	function __construct() 
+	{
 		parent::__construct();
 		// must be an admin to access this page
-		if ($this->session->userdata('user_admin') != 'y') {
-			if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-				redirect($_SERVER['HTTP_REFERER']);
-			} else {
+		if ($this->session->userdata('user_admin') !== 'y') {
+			$referer = $this->input->server('HTTP_REFERER');
+			if ($referer > '') {
+				redirect($referer);
+			} 
+			else {
 				redirect('login/index');
 			}
 		}
 		$this->log_event();
 	}
 
-	function index() {
+	/**
+	 * Index
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function index()
+	{
 		redirect('/');
 	}
 
-	function test() {
-		echo $_SERVER['SCRIPT_FILENAME'];
+	/**
+	 * Just a simple echo of the page name for a test
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  string
+	 */
+	function test()
+	{
+		echo "<pre>\n";
 		exit();
 	}
 
-	function reset_icons() {
-		$this->load->model("m_system");
-		$count = $this->m_system->reset_icons();
-		redirect("/");
+	/**
+	 * Reset the device icons in the database
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function reset_icons()
+	{
+		$this->load->model('m_system');
+		$this->m_system->reset_icons();
+		redirect('/');
 	}
 
-	function edit_config() {
+	/**
+	 * The edit config page
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function edit_config()
+	{
 		$this->load->model("m_oa_config");
 		$this->data['query'] = $this->m_oa_config->get_config();
 		$this->data['heading'] = 'Edit Config';
@@ -72,7 +145,36 @@ class Admin extends MY_Controller {
 		$this->load->view('v_template', $this->data);
 	}
 
-	function purge_log() {
+	/**
+	 * Get the config
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  JSON array
+	 */
+	function get_config()
+	{
+		$json = json_encode($this->data['config']);
+		print_r($json);
+	}
+
+	/**
+	 * Purge the logfile
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function purge_log()
+	{
 		// full path to text file
 		if (php_uname('s') == 'Linux') {
 			$file = "/usr/local/open-audit/other/open-audit.log";
@@ -503,6 +605,7 @@ class Admin extends MY_Controller {
 			$variable['ldap_seen_days'] = $_POST['ldap_seen_days'];
 			$variable['ldap_seen_date'] = $_POST['ldap_seen_date'];
 			if (isset($_POST['ping_target'])) { $variable['ping_target'] = 'y'; } else { $variable['ping_target'] = 'n'; }
+			$variable['run_netstat'] = $_POST['run_netstat'];
 			$filename = dirname(dirname(dirname(dirname(__FILE__)))) . "/other/audit_windows.vbs";
 			if (!file_exists($filename)) {
 				exit("Error - $filename does not exist.<br />\n");
@@ -2378,6 +2481,43 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);
 		}
 
+		if (($db_internal_version < '20140228') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.2.1
+
+			$sql = "UPDATE oa_config set config_value = '20140228', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.2.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+		}
+
+		if (($db_internal_version < '20140403') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.3
+
+			$sql = "ALTER TABLE sys_hw_processor ADD processor_count int(2) unsigned NOT NULL default '0' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE sys_hw_processor ADD processor_logical int(2) unsigned NOT NULL default '0' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			# we need to upgrade the OAE user to admin because it needs to read the config to populate the discovery page in OAE
+			$sql = "UPDATE oa_user SET user_admin = 'y' WHERE user_name = 'open-audit_enterprise' ";
+			$this->data['output'] .= "We need to upgrade the open-audit_enterprise user to admin level because it needs to read the config to populate the discovery page in Open-AudIT Enterprise.<br /><br />\n";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20140403', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+		}
 
 		$config = $this->m_oa_config->get_config();
 		foreach ($config as $returned_result) {

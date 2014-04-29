@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -114,15 +114,11 @@ class M_windows extends MY_Model {
 					WHERE sys_sw_windows.system_id = system.system_id AND 
 						system.system_id = ? AND 
 						system.man_status = 'production' AND 
-						windows_registered_user = ? AND 
-						windows_client_site_name = ? AND 
 						windows_service_pack = ? AND
 						( sys_sw_windows.timestamp = ? OR 
 						sys_sw_windows.timestamp = ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
-					"$input->windows_registered_user", 
-					"$input->windows_client_site_name", 
 					"$input->windows_service_pack", 
 					"$details->original_timestamp", 
 					"$details->timestamp");
@@ -233,33 +229,22 @@ class M_windows extends MY_Model {
 
 	function alert_windows($details) {
 		// windows entry no longer detected
-		$sql = "SELECT sys_sw_windows.windows_id
-				FROM 	sys_sw_windows, system
-				WHERE 	sys_sw_windows.system_id = system.system_id AND
-						sys_sw_windows.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT windows_id, windows_service_pack FROM sys_sw_windows WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'windows entry removed - ' . $myrow->windows_id;
+			$alert_details = 'windows entry removed - ' . $myrow->windows_id . " (Service Pack " . $myrow->windows_service_pack . ")";
 			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_windows', $myrow->windows_id, $alert_details, $details->timestamp);
 		}
 
 		// new windows
-		$sql = "SELECT  sys_sw_windows.windows_id
-				FROM 	sys_sw_windows, system
-				WHERE 	sys_sw_windows.system_id = system.system_id AND
-						sys_sw_windows.timestamp = sys_sw_windows.first_timestamp AND
-						sys_sw_windows.timestamp = ? AND
-						system.system_id = ? AND
-						system.timestamp = ?";
+		$sql = "SELECT windows_id, windows_service_pack FROM sys_sw_windows WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'windows detected - ' . $myrow->windows_id;
+			$alert_details = 'windows detected - ' . $myrow->windows_id . " (Service Pack " . $myrow->windows_service_pack . ")";
 			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_windows', $myrow->windows_id, $alert_details, $details->timestamp);
 		}
 	}

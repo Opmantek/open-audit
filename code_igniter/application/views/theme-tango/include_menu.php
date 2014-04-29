@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -142,7 +142,6 @@
 
 			<li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
 				<ul>
-					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet'><?php echo __('Discover a Subnet')?></a></li>
 					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/windows'><?php echo __('Discover a Windows computer')?></a></li>
 					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/linux'><?php echo __('Discover a Linux computer')?></a></li>
 					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/snmp'><?php echo __('Discover a device using SNMP')?></a></li>

@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -522,6 +522,7 @@ class main extends MY_Controller
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
         $this->data['query'] = $this->m_system->system_summary($this->data['id']);
+        $this->data['query'][0]->man_ip_address = ip_address_from_db($this->data['query'][0]->man_ip_address);
         print_r(json_encode($this->data['query']));
     }
 
@@ -602,6 +603,9 @@ class main extends MY_Controller
         $this->data['dns'] = $this->m_dns->get_system_dns($this->data['id']);
         $this->data['hard_drive'] = $this->m_hard_drive->get_system_hard_drive($this->data['id']);
         $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
+        
+        $this->data['library'] = $this->m_software->get_system_software($this->data['id'], 7);
+        
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['memory'] = $this->m_memory->get_system_memory($this->data['id']);
         $this->data['monitor'] = $this->m_monitor->get_system_monitor($this->data['id']);

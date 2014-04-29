@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -51,6 +51,8 @@ if ($result = @dns_get_record(php_uname('n'))) {
 } else {
 	$dns_lookup = "<span style=\"color: red;\">Warning, could not resolve hostname.<br />Make sure an entry exists in DNS if you intend to use the audit script on another system.</span>";
 }
+
+$url[] = str_replace("localhost", $config->default_network_address, base_url());
 
 $file_exist = '';
 $filename = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/other/audit_windows.vbs";
@@ -82,6 +84,7 @@ echo form_open('admin/add_script_audit_windows') . "\n";
 						echo "<option value='" . $value->org_id . "'>" . $value->org_name . "&nbsp;</option>\n";
 					} ?>
 					</select>
+				</p>
 				<p><label for='windows_user_work_1'><?php echo __("Active Directory User Details")?> #1: </label><input type='text' id='windows_user_work_1' name='windows_user_work_1' tabindex='9' title=''  value="physicalDeliveryOfficeName"/></p>
 				<p><label for='windows_user_work_2'><?php echo __("Active Directory User Details")?> #2: </label><input type='text' id='windows_user_work_2' name='windows_user_work_2' tabindex='10' title=''  value="company"/></p>
 			</td><td width='50%'>
@@ -100,6 +103,12 @@ echo form_open('admin/add_script_audit_windows') . "\n";
 				<p><label for='ldap_seen_days'><?php echo __("LDAP - Seen by AD in the last XX days")?>: </label><input type='text' id='ldap_seen_days' name='ldap_seen_days' tabindex='18' title='' value='0'/></p>
 				<p><label for='ldap_seen_date'><?php echo __("LDAP - Seen by AD since XX date")?>: </label><input type='text' id='ldap_seen_date' name='ldap_seen_date' tabindex='19' title='' value='2012-06-30'/></p>
 				<p><label for='ping_target'><?php echo __("Ping the target before attempting to audit")?>: </label><input type='checkbox' id='ping_target' name='ping_target' tabindex='20' title='' /></p>
+				<p><label for='org_id'><?php echo __("NetStat")?>: </label><select id='run_netstat' name='run_netstat' tabindex='9' title=''>
+					<option value='n'>No</option>
+					<option value='y'>Yes</option>
+					<option value='s'>Servers Only</option>
+					</select>
+				</p>
 			</td>
 		</tr>
 	</table>

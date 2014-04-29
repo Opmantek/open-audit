@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -58,7 +58,17 @@
 					<td width='150px' align="right"><br /><label for='<?php $item->config_name ?>'><?php echo $item->config_name ?>: </label></td>
 					<td align='left' width='250px'><br />
 						<?php if ($item->config_editable == "y") {
-							if ($item->config_value == '') { $item->config_value = '-'; } ?>
+							if ($item->config_value == '') { $item->config_value = '-'; }
+
+							if ($item->config_name === 'default_snmp_community' and $config->show_snmp_community != 'y') {
+								$item->config_value = str_replace($item->config_value, str_repeat("*", strlen($item->config_value)), $item->config_value);
+							}
+
+							if (($item->config_name === 'default_ssh_password' or $item->config_name === 'default_windows_password') and 
+								($config->show_passwords != 'y')) {
+									$item->config_value = str_replace($item->config_value, str_repeat("*", strlen($item->config_value)), $item->config_value);
+							}
+							?>
 							<span id='<?php echo $item->config_name ?>' name='<?php echo$item->config_name ?>' class="editText" style="color:blue;"><?php echo $item->config_value; ?></span>
 						<?php } else { ?>
 							<span id='<?php echo $item->config_name ?>' name='<?php echo$item->config_name ?>'><?php echo $item->config_value; ?></span>

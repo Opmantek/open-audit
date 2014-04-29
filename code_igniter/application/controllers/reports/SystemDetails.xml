@@ -8,6 +8,7 @@
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
 		<report_sort_column>0</report_sort_column>
+		<report_description>Device details - name, os, class, owner, ip, model, first and last seen date, last seen by, os install date, manufacturer, serial, form factor, Windows client site name, Windows user name, location, active directory OU.</report_description>
 	</details>
 	<columns>
 		<column>

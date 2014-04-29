@@ -8,6 +8,7 @@
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
 		<report_sort_column>0</report_sort_column>
+		<report_description>The first and last times a device was audited.</report_description>
 	</details>
 	<columns>
 		<column>

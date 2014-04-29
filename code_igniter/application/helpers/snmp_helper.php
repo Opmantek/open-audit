@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -46,7 +46,15 @@ if (!function_exists('get_snmp')) {
 			$details->show_output = FALSE;
 		}
 
-		if ($details->show_output == TRUE) { echo "SNMP - scanning attempt on $details->man_ip_address.<br />"; }
+		if (isset($details->system_id) and $details->system_id > '') {
+			$extra =" (System ID " . $details->system_id . ")";
+		} else {
+			$extra = '';
+		}
+		if ($details->show_output == TRUE) {
+			echo "SNMP  - scanning attempt on $details->man_ip_address" . $extra . ".<br />"; 
+		}
+		unset($extra);
 
 		if (!isset($CI->data['config']->default_snmp_community)) {
 			$CI->load->model("m_oa_config");
@@ -130,7 +138,7 @@ if (!function_exists('get_snmp')) {
 			$details->man_ip_address == '000.000.000.000' or $details->man_ip_address == '0.0.0.0') and 
 			(!isset($details->hostname) or $details->hostname == '')) {
 			unset($details->man_ip_address);
-			if ($details->show_output == TRUE) { echo "SNMP - No ip address or hostname provided - exiting.<br />"; }
+			if ($details->show_output == TRUE) { echo "SNMP  - No ip address or hostname provided - exiting.<br />"; }
 			return;
 		}
 
@@ -142,7 +150,7 @@ if (!function_exists('get_snmp')) {
 			$details->man_ip_address = gethostbyname($details->hostname);
 		}
 
-		if (!isset($details->hostname) or $details->hostname == '') {
+		if (!isset($details->hostname) or $details->hostname == '' or $details->hostname == $details->man_ip_address) {
 			$details->hostname = gethostbyaddr(ip_address_from_db($details->man_ip_address));
 		}
 
@@ -164,13 +172,13 @@ if (!function_exists('get_snmp')) {
 				}
 			}
 		}
-		
+
 		$timeout = '3000000';
 		$retries = '2';
 
 		if (!extension_loaded('snmp')) { 
-			if ($details->show_output == TRUE) { echo "SNMP - PHP SNMP extension not loaded - exiting.<br />"; }
-			return($details); 
+			if ($details->show_output == TRUE) { echo "SNMP  - PHP SNMP extension not loaded - exiting.<br />"; }
+			return(array('details' => $details)); 
 		}
 
 		# test for SNMP version
@@ -189,7 +197,7 @@ if (!function_exists('get_snmp')) {
 			if ($test_v2 = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
-				if ($details->show_output == TRUE) { echo "SNMP - v2 connected to $details->man_ip_address using supplied credentials.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - v2 connected to $details->man_ip_address using supplied credentials.<br />"; }
 			} else {
 				$details->snmp_community = '';
 			}
@@ -201,7 +209,7 @@ if (!function_exists('get_snmp')) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				$details->snmp_community = $specific->snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP - v2 connected to $details->man_ip_address using device specific credentials.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - v2 connected to $details->man_ip_address using device specific credentials.<br />"; }
 			}
 		}
 		
@@ -211,7 +219,7 @@ if (!function_exists('get_snmp')) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				$details->snmp_community = $supplied->snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP - v2 connected to $details->man_ip_address using supplied credentials.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - v2 connected to $details->man_ip_address using supplied credentials.<br />"; }
 			}
 		}
 
@@ -221,7 +229,7 @@ if (!function_exists('get_snmp')) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				$details->snmp_community = $default->default_snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP - v2 connected to $details->man_ip_address using default credentials.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - v2 connected to $details->man_ip_address using default credentials.<br />"; }
 			}
 		}
 
@@ -231,7 +239,7 @@ if (!function_exists('get_snmp')) {
 				# v1 is contactable
 				$details->snmp_version = '1';
 				$details->snmp_community = $specific->snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP - v1 connected to $details->man_ip_address using device specific credentials.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - v1 connected to $details->man_ip_address using device specific credentials.<br />"; }
 			}
 		}
 
@@ -241,7 +249,7 @@ if (!function_exists('get_snmp')) {
 				# v1 is contactable
 				$details->snmp_version = '1';
 				$details->snmp_community = $supplied->snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP - v1 connected to $details->man_ip_address using supplied credentials.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - v1 connected to $details->man_ip_address using supplied credentials.<br />"; }
 			}
 		}
 
@@ -251,14 +259,14 @@ if (!function_exists('get_snmp')) {
 				# v1 is contactable
 				$details->snmp_version = '1';
 				$details->snmp_community = $default->default_snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP - v1 connected to $details->man_ip_address using default credentials.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - v1 connected to $details->man_ip_address using default credentials.<br />"; }
 			}
 		}
 
 		$log_line = '';
 		if ($test_v1 == '' and $test_v2 == '') {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " not SNMP scanned.\n";
-			if ($details->show_output == TRUE) { echo "SNMP - Unable to connect using SNMP (bad credentials or device not responding) - exiting.<br />"; }
+			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " not SNMP scanned." . PHP_EOL;
+			if ($details->show_output == TRUE) { echo "SNMP  - Unable to connect using SNMP (bad credentials or device not responding) - exiting.<br />"; }
 		}
 
 		if ($log_line > '') {
@@ -267,12 +275,13 @@ if (!function_exists('get_snmp')) {
 			fclose($handle);
 		}
 
+		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
+
 		if ($test_v2 > '') {
 			$details->snmp_version = '2';
 
-			if ($details->show_output == TRUE) { echo "SNMP - scanning using SNMP v2.<br />"; }
+			if ($details->show_output == TRUE) { echo "SNMP  - scanning using SNMP v2.<br />"; }
 
-			snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
 			$details->serial = "";
 			$details->model = "";
 			$details->type = "unknown";		
@@ -293,10 +302,10 @@ if (!function_exists('get_snmp')) {
 
 			// sysObjectID
 			$details->snmp_oid = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
-			if ($details->show_output == TRUE) { echo "SNMP - SysObjectId: $details->snmp_oid.<br />"; }
+			if ($details->show_output == TRUE) { echo "SNMP  - SysObjectId: $details->snmp_oid.<br />"; }
 			if ($details->snmp_oid > '') {
 				$details->manufacturer = get_oid($details->snmp_oid);
-				if ($details->show_output == TRUE and $details->manufacturer > "") { echo "SNMP - Manufacturer: $details->manufacturer.<br />"; }
+				if ($details->show_output == TRUE and $details->manufacturer > "") { echo "SNMP  - Manufacturer: $details->manufacturer.<br />"; }
 				$explode = explode(".", $details->snmp_oid);
 				if (!isset($explode[6])) {
 					# for some reason we got an OID, but not enough to specify a manufacturer
@@ -307,13 +316,16 @@ if (!function_exists('get_snmp')) {
 					}
 				} 
 				if (file_exists(BASEPATH . '../application/helpers/snmp_' . $explode[6] . '_helper.php')) {
-					if ($details->show_output == TRUE) { echo "SNMP - Loading Model Helper for " . $explode[6] . ".<br />"; }
-					$CI->load->helper('snmp_' . $explode[6]);
-					get_oid_details($details);
+					if ($details->show_output == TRUE) { echo "SNMP  - Loading Model Helper for " . $explode[6] . ".<br />"; }
+					#$CI->load->helper('snmp_' . $explode[6]);
+					#get_oid_details($details);
+					unset($get_oid_details);
+					include('snmp_' . $explode[6] . "_helper.php");
+					$get_oid_details($details);
 				} 
 			}
-			if ($details->show_output == TRUE) { echo "SNMP - Model: $details->model.<br />"; }
-			if ($details->show_output == TRUE and $details->type != 'unknown') { echo "SNMP - Type: $details->type.<br />"; }
+			if ($details->show_output == TRUE) { echo "SNMP  - Model: $details->model.<br />"; }
+			if ($details->show_output == TRUE and $details->type != 'unknown') { echo "SNMP  - Type: $details->type.<br />"; }
 
 			// guess at manufacturer using entity mib
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
@@ -324,14 +336,14 @@ if (!function_exists('get_snmp')) {
 			// guess at model using entity mib
 			if (!isset($details->model) or $details->model == '') {
 				$details->model =snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13"));
-				if ($details->show_output == TRUE) { echo "SNMP - Manufacturer: $details->manufacturer.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - Manufacturer: $details->manufacturer.<br />"; }
 			}
 
 
 			// guess at model using host resources mib
 			if (!isset($details->model) or $details->model == '' ) {
 				$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.3.1"));
-				if ($details->show_output == TRUE) { echo "SNMP - Manufacturer: $details->manufacturer.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - Manufacturer: $details->manufacturer.<br />"; }
 			}
 
 
@@ -340,23 +352,23 @@ if (!function_exists('get_snmp')) {
 				# the entity mib serial
 				if ($details->serial == '') {
 					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11"));
-					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP - Serial: $details->serial.<br />"; }
+					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP  - Serial: $details->serial.<br />"; }
 				}
 
 				# generic snmp
 				if ($details->serial == '') {
 					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1"));
-					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP - Serial: $details->serial.<br />"; }
+					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP  - Serial: $details->serial.<br />"; }
 				}
 
 				# below is another generic attempt - works for my NetGear Cable Modem
 				if ($details->serial == '') {
 					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0"));
-					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP - Serial: $details->serial.<br />"; }
+					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP  - Serial: $details->serial.<br />"; }
 				}
 			}
 
-			if ($details->show_output == TRUE and $details->serial == "") { echo "SNMP - Serial: <span style='color: blue;'>not retrieved</span>.<br />"; }
+			if ($details->show_output == TRUE and $details->serial == "") { echo "SNMP  - Serial: <span style='color: blue;'>not retrieved</span>.<br />"; }
 
 
 			// mac address
@@ -471,9 +483,9 @@ if (!function_exists('get_snmp')) {
 					#}
 				}
 				if ($details->show_output == TRUE and ($details->type == 'unknown' or $details->type == '')) { 
-					echo "SNMP - Type: <span style='color: blue;'>unknown</span>.<br />";
+					echo "SNMP  - Type: <span style='color: blue;'>unknown</span>.<br />";
 				} else {
-					echo "SNMP - Type: $details->type.<br />"; 
+					echo "SNMP  - Type: $details->type.<br />"; 
 				}
 			}
 			
@@ -515,13 +527,87 @@ if (!function_exists('get_snmp')) {
 			if (!isset($details->subnet) or $details->subnet == '' ) {
 				$details->subnet = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
 			}
-		}
+
+
+
+			// network intereface details
+			$interfaces = array();
+			$interfaces_filtered = array();
+			$interfaces = @snmp2_walk($details->man_ip_address, $details->snmp_community,          "1.3.6.1.2.1.2.2.1.1");
+			if (is_array($interfaces) and count($interfaces) > 0) {
+				$models = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.2");
+				$types = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,          "1.3.6.1.2.1.2.2.1.3");
+				$speeds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.5");
+				$mac_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6");
+				$ip_enableds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,    "1.3.6.1.2.1.2.2.1.8");
+				$ip_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,   "1.3.6.1.2.1.4.20.1.2");
+				$subnets = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.4.20.1.3");
+				$connection_ids = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
+				foreach ($interfaces as $key => $value) {
+					$interface = new stdclass();
+					$interface->net_index = snmp_clean($value);
+					$interface->net_mac_address = str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index]));
+					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
+						$test_mac = @snmp2_walk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
+						if (is_array($test_mac) and count($test_mac) > 0) {
+							# we have a mac address
+							$interface->net_mac_address = str_replace(" ", ":", snmp_clean($test_mac[0]));
+						}
+					}
+					$interface->net_model = snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
+					$interface->net_description = $interface->net_model;
+					$interface->net_connection_id = snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
+					$interface->net_adapter_type = interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
+					$interface->net_ip_enabled = ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
+					$interface->net_speed = snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
+					$interface->net_manufacturer = '';
+					$interface->net_connection_status = '';
+					$interface->net_dhcp_enabled = '';
+					$interface->net_dhcp_server = '';
+					$interface->net_dhcp_lease_obtained = '';
+					$interface->net_dhcp_lease_expires = '';
+					$interface->net_dns_host_name = '';
+					$interface->net_dns_domain = '';
+					$interface->net_dns_domain_reg_enabled = '';
+					$interface->net_dns_server = '';
+					$interface->net_wins_primary = '';
+					$interface->net_wins_secondary = '';
+					$interface->net_wins_lmhosts_enabled = '';
+					if (is_array($ip_addresses) and count($ip_addresses > 0)) {
+						foreach ($ip_addresses as $each_key => $each_value) {
+							$each_value = snmp_clean($each_value);
+							if ($each_value == $interface->net_index) {
+								$new_ip = new stdclass();
+								$new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.20.1.2.", "", $each_key);
+								$new_ip->net_mac_address = $interface->net_mac_address;
+								$new_ip->ip_address_v6 = '';
+								$new_ip->ip_subnet = snmp_clean($subnets[".1.3.6.1.2.1.4.20.1.3." . $new_ip->ip_address_v4]);
+								$new_ip->ip_address_version = '4';
+								$interface->ip_addresses[] = $new_ip;
+								$new_ip = NULL;
+							}
+						}
+					}
+					if (isset($details->os_group) and $details->os_group == 'windows') {
+						if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
+							if ($interface->net_adapter_type != 'softwareLoopback' ) {
+								$interfaces_filtered[] = $interface;
+							}
+						}
+					} else {
+						$interfaces_filtered[] = $interface;
+					}
+				}
+			} // end of network interfaces
+
+
+		} // end of v2
 
 
 
 		# snmp v1
 		if ($test_v1 > '' and $test_v2 == '') {
-			if ($details->show_output == TRUE) { echo "SNMP scanning using SNMP v1.<br />"; }
+			if ($details->show_output == TRUE) { echo "SNMP  - scanning using SNMP v1.<br />"; }
 			$details->snmp_version = '1';
 			$details->snmp_oid = '';
 			$details->snmp_oid = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
@@ -529,8 +615,11 @@ if (!function_exists('get_snmp')) {
 				$details->manufacturer = get_oid($details->snmp_oid);
 				$explode = explode(".", $details->snmp_oid);
 				if (file_exists(BASEPATH . '../application/helpers/snmp_' . $explode[6] . '_helper.php')) {
-					$CI->load->helper('snmp_' . $explode[6]);
-					get_oid_details($details);
+					#$CI->load->helper('snmp_' . $explode[6]);
+					#get_oid_details($details);
+					unset($get_oid_details);
+					include('snmp_' . $explode[6] . "_helper.php");
+					$get_oid_details($details);
 				}
 			}
 
@@ -595,7 +684,7 @@ if (!function_exists('get_snmp')) {
 				$details->model = mb_convert_encoding($details->model, "UTF-8", "ASCII");
 			}
 
-			# todo: below breaks on occasion when the external ip is not in snmp. We should really ask the device for any IPs it has and go from there.
+			# TODO: below breaks on occasion when the external ip is not in snmp. We should really ask the device for any IPs it has and go from there.
 			$interface_number = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
 			$i = "1.3.6.1.2.1.2.2.1.6." . $interface_number;
 			$details->mac_address = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, $i));
@@ -603,7 +692,90 @@ if (!function_exists('get_snmp')) {
 
 			$details->subnet = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
 			$details->next_hop = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
-		}
+
+
+
+			// new for 1.2.2 - network details
+			$interfaces = array();
+			$interfaces = @snmpwalk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.1");
+			if (is_array($interfaces) and count($interfaces) > 0) {
+				$models = @snmprealwalk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.2");
+				$types = @snmprealwalk($details->man_ip_address, $details->snmp_community,          "1.3.6.1.2.1.2.2.1.3");
+				$speeds = @snmprealwalk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.5");
+				$mac_addresses = @snmprealwalk($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6");
+				$ip_enableds = @snmprealwalk($details->man_ip_address, $details->snmp_community,    "1.3.6.1.2.1.2.2.1.8");
+				$ip_addresses = @snmprealwalk($details->man_ip_address, $details->snmp_community,   "1.3.6.1.2.1.4.20.1.2");
+				$subnets = @snmprealwalk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.4.20.1.3");
+				$connection_ids = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
+				foreach ($interfaces as $key => $value) {
+					$interface = new stdclass();
+					$interface->net_index = snmp_clean($value);
+					$interface->net_mac_address = str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index]));
+
+					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
+						$test_mac = @snmpwalk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
+						if (is_array($test_mac) and count($test_mac) > 0) {
+							# we have a mac address
+							$interface->net_mac_address = str_replace(" ", ":", snmp_clean($test_mac[0]));
+						}
+					}
+
+					$interface->net_model = snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
+					$interface->net_description = $interface->net_model;
+					$interface->net_connection_id = snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
+					$interface->net_adapter_type = interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
+					$interface->net_ip_enabled = ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
+					$interface->net_speed = snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
+					$interface->net_manufacturer = '';
+					$interface->net_connection_status = '';
+					$interface->net_dhcp_enabled = '';
+					$interface->net_dhcp_server = '';
+					$interface->net_dhcp_lease_obtained = '';
+					$interface->net_dhcp_lease_expires = '';
+					$interface->net_dns_host_name = '';
+					$interface->net_dns_domain = '';
+					$interface->net_dns_domain_reg_enabled = '';
+					$interface->net_dns_server = '';
+					$interface->net_wins_primary = '';
+					$interface->net_wins_secondary = '';
+					$interface->net_wins_lmhosts_enabled = '';
+					if (is_array($ip_addresses) and count($ip_addresses > 0)) {
+						foreach ($ip_addresses as $each_key => $each_value) {
+							$each_value = snmp_clean($each_value);
+							if ($each_value === $interface->net_index) {
+								$new_ip = new stdclass();
+								$new_ip->net_mac_address = $interface->net_mac_address;
+								$new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.20.1.2.", "", $each_key);
+								$new_ip->ip_address_v6 = '';
+								$new_ip->ip_subnet = snmp_clean($subnets[".1.3.6.1.2.1.4.20.1.3." . $new_ip->ip_address_v4]);
+								$new_ip->ip_address_version = '4';
+								$interface->ip_addresses[] = $new_ip;
+								$new_ip = NULL;
+							}
+						}
+					}
+					if (isset($details->os_group) and $details->os_group == 'windows') {
+						if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
+							if ($interface->net_adapter_type != 'softwareLoopback' ) {
+								$interfaces_filtered[] = $interface;
+							}
+						}
+					} else {
+						$interfaces_filtered[] = $interface;
+					}
+					#$interfaces[$key] = $interface;
+				}
+			}
+		} // end of v1
+
+
+
+
+
+
+
+
+
 
 		$log_line = '';
 		if ($details->snmp_version == '2') { $details->snmp_version = '2c'; }
@@ -611,10 +783,11 @@ if (!function_exists('get_snmp')) {
 		if ($test_v1 > '' or $test_v2 > '') {
 			$log_timestamp = date("M d H:i:s");
 			if (isset($details->snmp_oid) and $details->snmp_oid > "") {
-				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned.\n";
+				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned." . PHP_EOL;
 			} else {
-				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan failed (no OID returned).\n";
+				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan failed (no OID returned)." . PHP_EOL;
 			}
+			if ($details->show_output == TRUE) { echo "LOG   - " . $log_line; }
 			$handle = fopen($file, "a");
 			fwrite($handle, $log_line);
 			fclose($handle);
@@ -623,8 +796,28 @@ if (!function_exists('get_snmp')) {
 		#unset($details->snmp_version);
 		if ($details->show_output == FALSE) { unset($details->show_output); }
 		$details->hostname = strtolower($details->hostname);
-		return $details;
+		if (!isset($interfaces_filtered)) { $interfaces_filtered = array(); }
+		$return_array = array('details' => $details, 'interfaces' => $interfaces_filtered);
+		return($return_array);
+		#return $details;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	function snmp_clean($string) {
 		# make sure we have something in $string
@@ -641,6 +834,7 @@ if (!function_exists('get_snmp')) {
 		$string = str_replace("INTEGER: ", "", $string);
 		$string = str_replace("Hex-STRING: ", "", $string);
 		$string = str_replace("Hex-", "", $string);
+		$string = str_replace("Gauge32: ", "", $string);
 
 		# remove the first and last characters if they are "
 		if (substr($string, 0, 1) == "\"") { $string = substr($string, 1, strlen($string)); }
@@ -661,4 +855,759 @@ if (!function_exists('get_snmp')) {
 
 		return $string;
 	}
+
+	function ip_enabled($ip_enabled){
+		switch ($ip_enabled) {
+			case '1':
+				$ip_enabled = "True";
+				break;
+
+			case '2':
+				$ip_enabled = "False";
+				break;
+
+			case '3':
+				$ip_enabled = "Testing";
+				break;
+
+			case '4':
+				$ip_enabled = "Unknown";
+				break;
+
+			case '5':
+				$ip_enabled = "Dormant";
+				break;
+
+			case '6':
+				$ip_enabled = "NotPresent";
+				break;
+
+			case '7':
+				$ip_enabled = "LowerLayerDown";
+				break;
+			
+			default:
+				$ip_enabled = "True";
+				break;
+		}
+		return $ip_enabled;
+	}
+
+	function interface_type($int_type) {
+		switch ($int_type) {
+			case '1':
+				$int_type = 'other';
+				break;
+			case '2':
+				$int_type = 'regular1822';
+				break;
+			case '3':
+				$int_type = 'hdh1822';
+				break;
+			case '4':
+				$int_type = 'ddnX25';
+				break;
+			case '5':
+				$int_type = 'rfc877x25';
+				break;
+			case '6':
+				$int_type = 'ethernet Csmacd';
+				$int_type = 'ethernet';
+				break;
+			case '7':
+				$int_type = 'iso88023 Csmacd';
+				$int_type = 'iso88023';
+				break;
+			case '8':
+				$int_type = 'iso88024TokenBus';
+				break;
+			case '9':
+				$int_type = 'iso88025TokenRing';
+				break;
+			case '10':
+				$int_type = 'iso88026Man';
+				break;
+			case '11':
+				$int_type = 'starLan';
+				break;
+			case '12':
+				$int_type = 'proteon10Mbit';
+				break;
+			case '13':
+				$int_type = 'proteon80Mbit';
+				break;
+			case '14':
+				$int_type = 'hyperchannel';
+				break;
+			case '15':
+				$int_type = 'fddi';
+				break;
+			case '16':
+				$int_type = 'lapb';
+				break;
+			case '17':
+				$int_type = 'sdlc';
+				break;
+			case '18':
+				$int_type = 'ds1';
+				break;
+			case '19':
+				$int_type = 'e1';
+				break;
+			case '20':
+				$int_type = 'basic ISDN';
+				break;
+			case '21':
+				$int_type = 'primary ISDN';
+				break;
+			case '22':
+				$int_type = 'prop PointToPoint Serial';
+				break;
+			case '23':
+				$int_type = 'ppp';
+				break;
+			case '24':
+				$int_type = 'software loopback';
+				break;
+			case '25':
+				$int_type = 'eon';
+				break;
+			case '26':
+				$int_type = 'ethernet 3Mbit';
+				break;
+			case '27':
+				$int_type = 'nsip';
+				break;
+			case '28':
+				$int_type = 'slip';
+				break;
+			case '29':
+				$int_type = 'ultra';
+				break;
+			case '30':
+				$int_type = 'ds3';
+				break;
+			case '31':
+				$int_type = 'sip';
+				break;
+			case '32':
+				$int_type = 'frameRelay';
+				break;
+			case '33':
+				$int_type = 'rs232';
+				break;
+			case '34':
+				$int_type = 'para';
+				break;
+			case '35':
+				$int_type = 'arcnet';
+				break;
+			case '36':
+				$int_type = 'arcnetPlus';
+				break;
+			case '37':
+				$int_type = 'atm';
+				break;
+			case '38':
+				$int_type = 'miox25';
+				break;
+			case '39':
+				$int_type = 'sonet';
+				break;
+			case '40':
+				$int_type = 'x25ple';
+				break;
+			case '41':
+				$int_type = 'iso88022llc';
+				break;
+			case '42':
+				$int_type = 'localTalk';
+				break;
+			case '43':
+				$int_type = 'smdsDxi';
+				break;
+			case '44':
+				$int_type = 'frameRelayService';
+				break;
+			case '45':
+				$int_type = 'v35';
+				break;
+			case '46':
+				$int_type = 'hssi';
+				break;
+			case '47':
+				$int_type = 'hippi';
+				break;
+			case '48':
+				$int_type = 'modem';
+				break;
+			case '49':
+				$int_type = 'aal5';
+				break;
+			case '50':
+				$int_type = 'sonetPath';
+				break;
+			case '51':
+				$int_type = 'sonetVT';
+				break;
+			case '52':
+				$int_type = 'smdsIcip';
+				break;
+			case '53':
+				$int_type = 'propVirtual';
+				$int_type = 'virtual';
+				break;
+			case '54':
+				$int_type = 'propMultiplexor';
+				break;
+			case '55':
+				$int_type = 'ieee80212';
+				break;
+			case '56':
+				$int_type = 'fibreChannel';
+				break;
+			case '57':
+				$int_type = 'hippiInterface';
+				break;
+			case '58':
+				$int_type = 'frameRelayInterconnect';
+				break;
+			case '59':
+				$int_type = 'aflane8023';
+				break;
+			case '60':
+				$int_type = 'aflane8025';
+				break;
+			case '61':
+				$int_type = 'cctEmul';
+				break;
+			case '62':
+				$int_type = 'fastEther';
+				break;
+			case '63':
+				$int_type = 'isdn';
+				break;
+			case '64':
+				$int_type = 'v11';
+				break;
+			case '65':
+				$int_type = 'v36';
+				break;
+			case '66':
+				$int_type = 'g703at64k';
+				break;
+			case '67':
+				$int_type = 'g703at2mb';
+				break;
+			case '68':
+				$int_type = 'qllc';
+				break;
+			case '69':
+				$int_type = 'fastEtherFX';
+				break;
+			case '70':
+				$int_type = 'channel';
+				break;
+			case '71':
+				$int_type = 'ieee 80211';
+				break;
+			case '72':
+				$int_type = 'ibm370parChan';
+				break;
+			case '73':
+				$int_type = 'escon';
+				break;
+			case '74':
+				$int_type = 'dlsw';
+				break;
+			case '75':
+				$int_type = 'isdns';
+				break;
+			case '76':
+				$int_type = 'isdnu';
+				break;
+			case '77':
+				$int_type = 'lapd';
+				break;
+			case '78':
+				$int_type = 'ipSwitch';
+				break;
+			case '79':
+				$int_type = 'rsrb';
+				break;
+			case '80':
+				$int_type = 'atmLogical';
+				break;
+			case '81':
+				$int_type = 'ds0';
+				break;
+			case '82':
+				$int_type = 'ds0Bundle';
+				break;
+			case '83':
+				$int_type = 'bsc';
+				break;
+			case '84':
+				$int_type = 'async';
+				break;
+			case '85':
+				$int_type = 'cnr';
+				break;
+			case '86':
+				$int_type = 'iso88025Dtr';
+				break;
+			case '87':
+				$int_type = 'eplrs';
+				break;
+			case '88':
+				$int_type = 'arap';
+				break;
+			case '89':
+				$int_type = 'propCnls';
+				break;
+			case '90':
+				$int_type = 'hostPad';
+				break;
+			case '91':
+				$int_type = 'termPad';
+				break;
+			case '92':
+				$int_type = 'frameRelayMPI';
+				break;
+			case '93':
+				$int_type = 'x213';
+				break;
+			case '94':
+				$int_type = 'adsl';
+				break;
+			case '95':
+				$int_type = 'radsl';
+				break;
+			case '96':
+				$int_type = 'sdsl';
+				break;
+			case '97':
+				$int_type = 'vdsl';
+				break;
+			case '98':
+				$int_type = 'iso88025CRFPInt';
+				break;
+			case '99':
+				$int_type = 'myrinet';
+				break;
+			case '100':
+				$int_type = 'voiceEM';
+				break;
+			case '101':
+				$int_type = 'voiceFXO';
+				break;
+			case '102':
+				$int_type = 'voiceFXS';
+				break;
+			case '103':
+				$int_type = 'voiceEncap';
+				break;
+			case '104':
+				$int_type = 'voiceOverIp';
+				break;
+			case '105':
+				$int_type = 'atmDxi';
+				break;
+			case '106':
+				$int_type = 'atmFuni';
+				break;
+			case '107':
+				$int_type = 'atmIma';
+				break;
+			case '108':
+				$int_type = 'pppMultilinkBundle';
+				break;
+			case '109':
+				$int_type = 'ipOverCdlc';
+				break;
+			case '110':
+				$int_type = 'ipOverClaw';
+				break;
+			case '111':
+				$int_type = 'stackToStack';
+				break;
+			case '112':
+				$int_type = 'virtualIpAddress';
+				break;
+			case '113':
+				$int_type = 'mpc';
+				break;
+			case '114':
+				$int_type = 'ipOverAtm';
+				break;
+			case '115':
+				$int_type = 'iso88025Fiber';
+				break;
+			case '116':
+				$int_type = 'tdlc';
+				break;
+			case '117':
+				$int_type = 'gigabitEthernet';
+				break;
+			case '118':
+				$int_type = 'hdlc';
+				break;
+			case '119':
+				$int_type = 'lapf';
+				break;
+			case '120':
+				$int_type = 'v37';
+				break;
+			case '121':
+				$int_type = 'x25mlp';
+				break;
+			case '122':
+				$int_type = 'x25huntGroup';
+				break;
+			case '123':
+				$int_type = 'trasnpHdlc';
+				break;
+			case '124':
+				$int_type = 'interleave';
+				break;
+			case '125':
+				$int_type = 'fast';
+				break;
+			case '126':
+				$int_type = 'ip';
+				break;
+			case '127':
+				$int_type = 'docsCableMaclayer';
+				break;
+			case '128':
+				$int_type = 'docsCableDownstream';
+				break;
+			case '129':
+				$int_type = 'docsCableUpstream';
+				break;
+			case '130':
+				$int_type = 'a12MppSwitch';
+				break;
+			case '131':
+				$int_type = 'tunnel';
+				break;
+			case '132':
+				$int_type = 'coffee';
+				break;
+			case '133':
+				$int_type = 'ces';
+				break;
+			case '134':
+				$int_type = 'atmSubInterface';
+				break;
+			case '135':
+				$int_type = 'l2vlan';
+				break;
+			case '136':
+				$int_type = 'l3ipvlan';
+				break;
+			case '137':
+				$int_type = 'l3ipxvlan';
+				break;
+			case '138':
+				$int_type = 'digitalPowerline';
+				break;
+			case '139':
+				$int_type = 'mediaMailOverIp';
+				break;
+			case '140':
+				$int_type = 'dtm';
+				break;
+			case '141':
+				$int_type = 'dcn';
+				break;
+			case '142':
+				$int_type = 'ipForward';
+				break;
+			case '143':
+				$int_type = 'msdsl';
+				break;
+			case '144':
+				$int_type = 'ieee1394';
+				break;
+			case '145':
+				$int_type = 'if-gsn';
+				break;
+			case '146':
+				$int_type = 'dvbRccMacLayer';
+				break;
+			case '147':
+				$int_type = 'dvbRccDownstream';
+				break;
+			case '148':
+				$int_type = 'dvbRccUpstream';
+				break;
+			case '149':
+				$int_type = 'atmVirtual';
+				break;
+			case '150':
+				$int_type = 'mplsTunnel';
+				break;
+			case '151':
+				$int_type = 'srp';
+				break;
+			case '152':
+				$int_type = 'voiceOverAtm';
+				break;
+			case '153':
+				$int_type = 'voiceOverFrameRelay';
+				break;
+			case '154':
+				$int_type = 'idsl';
+				break;
+			case '155':
+				$int_type = 'compositeLink';
+				break;
+			case '156':
+				$int_type = 'ss7SigLink';
+				break;
+			case '157':
+				$int_type = 'propWirelessP2P';
+				break;
+			case '158':
+				$int_type = 'frForward';
+				break;
+			case '159':
+				$int_type = 'rfc1483';
+				break;
+			case '160':
+				$int_type = 'usb';
+				break;
+			case '161':
+				$int_type = '802.3ad link aggregation';
+				break;
+			case '162':
+				$int_type = 'bgp policy accounting';
+				break;
+			case '163':
+				$int_type = 'frf16MfrBundle';
+				break;
+			case '164':
+				$int_type = 'h323Gatekeeper';
+				break;
+			case '165':
+				$int_type = 'h323Proxy';
+				break;
+			case '166':
+				$int_type = 'mpls';
+				break;
+			case '167':
+				$int_type = 'mfSigLink';
+				break;
+			case '168':
+				$int_type = 'hdsl2';
+				break;
+			case '169':
+				$int_type = 'shdsl';
+				break;
+			case '170':
+				$int_type = 'ds1FDL';
+				break;
+			case '171':
+				$int_type = 'pos';
+				break;
+			case '172':
+				$int_type = 'dvbAsiIn';
+				break;
+			case '173':
+				$int_type = 'dvbAsiOut';
+				break;
+			case '174':
+				$int_type = 'plc';
+				break;
+			case '175':
+				$int_type = 'nfas';
+				break;
+			case '176':
+				$int_type = 'tr008';
+				break;
+			case '177':
+				$int_type = 'gr303RDT';
+				break;
+			case '178':
+				$int_type = 'gr303IDT';
+				break;
+			case '179':
+				$int_type = 'isup';
+				break;
+			case '180':
+				$int_type = 'propDocsWirelessMaclayer';
+				break;
+			case '181':
+				$int_type = 'propDocsWirelessDownstream';
+				break;
+			case '182':
+				$int_type = 'propDocsWirelessUpstream';
+				break;
+			case '183':
+				$int_type = 'hiperlan2';
+				break;
+			case '184':
+				$int_type = 'propBWAp2Mp';
+				break;
+			case '185':
+				$int_type = 'sonetOverheadChannel';
+				break;
+			case '186':
+				$int_type = 'digitalWrapperOverheadChannel';
+				break;
+			case '187':
+				$int_type = 'aal2';
+				break;
+			case '188':
+				$int_type = 'radioMAC';
+				break;
+			case '189':
+				$int_type = 'atmRadio';
+				break;
+			case '190':
+				$int_type = 'imt';
+				break;
+			case '191':
+				$int_type = 'mvl';
+				break;
+			case '192':
+				$int_type = 'reachDSL';
+				break;
+			case '193':
+				$int_type = 'frDlciEndPt';
+				break;
+			case '194':
+				$int_type = 'atmVciEndPt';
+				break;
+			case '195':
+				$int_type = 'opticalChannel';
+				break;
+			case '196':
+				$int_type = 'opticalTransport';
+				break;
+			case '197':
+				$int_type = 'propAtm';
+				break;
+			case '198':
+				$int_type = 'voiceOverCable';
+				break;
+			case '199':
+				$int_type = 'infiniband';
+				break;
+			case '200':
+				$int_type = 'teLink';
+				break;
+			case '201':
+				$int_type = 'q2931';
+				break;
+			case '202':
+				$int_type = 'virtualTg';
+				break;
+			case '203':
+				$int_type = 'sipTg';
+				break;
+			case '204':
+				$int_type = 'sipSig';
+				break;
+			case '205':
+				$int_type = 'docsCableUpstreamChannel';
+				break;
+			case '206':
+				$int_type = 'econet';
+				break;
+			case '207':
+				$int_type = 'pon155';
+				break;
+			case '208':
+				$int_type = 'pon622';
+				break;
+			case '209':
+				$int_type = 'bridge';
+				break;
+			case '210':
+				$int_type = 'linegroup';
+				break;
+			case '211':
+				$int_type = 'voiceEMFGD';
+				break;
+			case '212':
+				$int_type = 'voiceFGDEANA';
+				break;
+			case '213':
+				$int_type = 'voiceDID';
+				break;
+			case '214':
+				$int_type = 'mpegTransport';
+				break;
+			case '215':
+				$int_type = 'sixToFour';
+				break;
+			case '216':
+				$int_type = 'gtp';
+				break;
+			case '217':
+				$int_type = 'pdnEtherLoop1';
+				break;
+			case '218':
+				$int_type = 'pdnEtherLoop2';
+				break;
+			case '219':
+				$int_type = 'opticalChannelGroup';
+				break;
+			case '220':
+				$int_type = 'homepna';
+				break;
+			case '221':
+				$int_type = 'gfp';
+				break;
+			case '222':
+				$int_type = 'ciscoISLvlan';
+				break;
+			case '223':
+				$int_type = 'actelisMetaLOOP';
+				break;
+			case '224':
+				$int_type = 'fcipLink';
+				break;
+			case '225':
+				$int_type = 'rpr';
+				break;
+			case '226':
+				$int_type = 'qam';
+				break;
+			case '227':
+				$int_type = 'lmp';
+				break;
+			case '228':
+				$int_type = 'cblVectaStar';
+				break;
+			case '229':
+				$int_type = 'docsCableMCmtsDownstream';
+				break;
+			case '230':
+				$int_type = 'adsl2';
+				break;
+			case '231':
+				$int_type = 'macSecControlledIF';
+				break;
+			case '232':
+				$int_type = 'macSecUncontrolledIF';
+				break;
+			case '233':
+				$int_type = 'aviciOpticalEther';
+				break;
+			case '234':
+				$int_type = 'atmbond';
+				break;
+			default:
+				$int_type = "unknown";
+				break;
+		}
+		return $int_type;
+	}
+
+
+
+
 }

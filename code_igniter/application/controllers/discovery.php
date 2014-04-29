@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -44,6 +44,13 @@ class discovery extends CI_Controller
         $this->data['title'] = 'Open-AudIT';
         $this->load->library('session');
         $loggedin = @$this->session->userdata('logged_in');
+        $this->load->model("m_oa_config");
+        $conf = $this->m_oa_config->get_config();
+        $this->data['config'] = new stdclass();
+        foreach ($conf as $returned_result) {
+            $config_name = $returned_result->config_name;
+            $this->data['config']->$config_name = $returned_result->config_value;
+        }
     }
 
     public function index()
@@ -97,7 +104,7 @@ class discovery extends CI_Controller
                 $log = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD submitted for " . $_POST['domain'];
                 $this->log_event($log);
                 $i = explode('/', base_url());
-                $url = str_replace($i[2], $_POST['network_address'], base_url()) . "index.php/system";
+                $url = str_replace($i[2], $_POST['network_address'], base_url()) . "index.php/system/add_system";
             } else {
                 $error = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD incomplete credentials.";
                 $this->log_event($log);
@@ -107,13 +114,14 @@ class discovery extends CI_Controller
             if ((php_uname('s') == 'Windows NT') and ($error == '')) {
                 # Windows host - start the script locally
                 $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "\\open-audit\\other";
-                $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $details->windows_domain . "\\" . $details->windows_username . " strpass=" . $details->windows_password . " url=" . $url . "index.php/system/add_system debugging=0";
-                $log_details = "C:discovery F:process_subnet Windows audit for $details->man_ip_address (System ID $details->system_id)";
-                $this->log_event($log_details);
+
+                $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " debugging=0";
+
                 $command_string = "%comspec% /c start /b cscript //nologo " . $script_string . " &";
 
                 if (isset($_POST['debug']) and ((isset($loggedin)) or ($this->session->userdata('logged_in') == true))) {
                     echo "\nCommand: $command_string\n\n";
+                    $command_string = str_replace('debugging=0', 'debugging=1', $command_string);
                     exec($command_string, $output, $return_var);
                     echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
                     print_r($output);
@@ -135,6 +143,8 @@ class discovery extends CI_Controller
             if ((php_uname('s') == 'Linux' or php_uname('s') == "Darwin") and ($error == '')) {
                 # linux or OSX host - copy the script to the DC and start it
                 $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/open-audit/other";
+                $_POST['user'] = str_replace('$', '\$', $_POST['user']);
+                $_POST['password'] = str_replace('$', '\$', $_POST['password']);
 
                 # copy the domain audit script
                 if ($error == '') {
@@ -147,10 +157,10 @@ class discovery extends CI_Controller
                         print_r($output);
                     }
                     if ($return_var != '0') {
-                        $error = "C:discovery F:process_subnet SMBClient copy of audit_domain.vbs to " . $_POST['server'] . " has failed";
+                        $error = "C:discovery F:process_subnet SMBClient copy of discover_domain.vbs to " . $_POST['server'] . " has failed";
                         $this->log_event($error);
                     } else {
-                        $log = "C:discovery F:process_subnet SMBClient copy of audit_domain.vbs to " . $_POST['server'] . " has succeeded";
+                        $log = "C:discovery F:process_subnet SMBClient copy of discover_domain.vbs to " . $_POST['server'] . " has succeeded";
                         $this->log_event($log);
                     }
                     $command_string = null;
@@ -236,28 +246,87 @@ class discovery extends CI_Controller
 
     public function discover_subnet()
     {
+
         $this->load->helper('url');
 
-        # Only Admin users can access this function
-        # NOTE - because we're not using the My_Controller, we have to do a bit of manual setup
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
+        # if GET or POST has username and password, use that to validate and deliver page and do NOT set a cookie
+        if ((!isset($loggedin)) and ($this->session->userdata('logged_in') != TRUE and $this->session->userdata('user_admin') != 'y')) {
+
+            if ((strpos(current_url(), 'username') !== FALSE) AND (strpos(current_url(), 'password') !== FALSE)) {
+                $split_url = explode("/", current_url());
+                for ($i=0; $i <= count($split_url)-1 ; $i++) {
+                    if (strpos($split_url[$i], 'username') !== FALSE) {
+                        $username = $split_url[$i+1];
+                    }
+                    if (strpos($split_url[$i], 'password') !== FALSE) {
+                        $password = $split_url[$i+1];
+                    }
+                }
+            }
+
+            if (isset($_POST['username']) AND isset($_POST['password'])) {
+                $username = $_POST['username'];
+                $password = $_POST['password'];
+            }
+
+            if (isset($username) and $username != "" and isset($password) and $password != "") {
+                $this->load->model("m_userlogin");
+                if ($data = $this->m_userlogin->validate_user($username, $password)) {
+                    if ($data != 'fail') {
+                        if ($data['user_admin'] == 'y' or $data['user_full_name'] == 'Open-AudIT Enterprise') {
+                            # setup the user details
+                            $this->session->set_userdata($data);
+                            $this->data['user_full_name'] = $data['user_full_name'];
+                            $this->data['user_lang'] = $data['user_lang'];
+                            $this->data['user_theme'] = $data['user_theme'];
+                            $this->data['user_admin'] = $data['user_admin'];
+                            $this->data['user_id'] = $data['user_id'];
+                            $this->data['user_debug'] = 'n';
+                            $loggedin = TRUE;
+
+                            # load the config
+                            $this->load->model("m_oa_config");
+                            $conf = $this->m_oa_config->get_config();
+                            $this->data['config'] = new stdclass();
+                            foreach ($conf as $returned_result) {
+                                $config_name = $returned_result->config_name;
+                                $this->data['config']->$config_name = $returned_result->config_value;
+                            }
+                        } else {
+                            # valid user, but user is not an admin or OAE
+                        }
+                    } else {
+                        # username and password are set but do not validate
+                        exit();       
+                    }
+                } else {
+                    # username and password are set but validate_user fails for some reason
+                    exit();
+                }
             }
         } else {
-            $this->data['user_admin'] = 'y';
-            $this->load->model("m_oa_config");
-            $conf = $this->m_oa_config->get_config();
-            $this->data['config'] = new stdclass();
-            foreach ($conf as $returned_result) {
-                $config_name = $returned_result->config_name;
-                $this->data['config']->$config_name = $returned_result->config_value;
-            }
-            $this->data['user_full_name'] = $this->session->userdata('user_full_name');
-            $this->data['user_theme'] = 'tango';
+            if (!isset($this->data['user_full_name']) or $this->data['user_full_name'] == '') { $this->data['user_full_name'] = $this->session->userdata('user_full_name'); }
+            if (!isset($this->data['user_lang']) or $this->data['user_lang'] == '') { $this->data['user_lang'] = $this->session->userdata('user_lang'); }
+            if (!isset($this->data['user_theme']) or $this->data['user_theme'] == '') { $this->data['user_theme'] = $this->session->userdata('user_theme'); }
+            if (!isset($this->data['user_admin']) or $this->data['user_admin'] == '') { $this->data['user_admin'] = $this->session->userdata('user_admin'); }
+            if (!isset($this->data['user_id']) or $this->data['user_id'] == '') { $this->data['user_id'] = $this->session->userdata('user_id'); }
+            if (!isset($this->data['user_debug']) or $this->data['user_debug'] == '') { $this->data['user_debug'] = $this->session->userdata('user_debug'); }
+            $this->load->helper('url');
+            $this->load->helper('network');
+            $this->data['apppath'] = APPPATH;
+            $this->data['image_path'] = base_url() . 'theme-' . $this->data['user_theme'] . '/' . $this->data['user_theme'] . '-images/';
+            $this->load->model("m_oa_report");
+            $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
+            set_time_limit(600);
         }
+
+
+
+
+
+
+
+
         $timestamp = date('Y-m-d H:i:s');
         $this->load->model("m_system");
         $this->load->model("m_oa_general");
@@ -301,14 +370,14 @@ class discovery extends CI_Controller
 
             # create a network group if provided a subnet that includes a slash in the string AND
             # auto create network is set in the config to 'y'
-            if (isset($_POST['subnet']) and $_POST['subnet'] > "") {
-                $subnet = $_POST['subnet'];
-                $credentials->man_ip_address = $_POST['subnet'];
+            if (isset($_POST['subnet_range']) and $_POST['subnet_range'] > "") {
+                $subnet_range = $_POST['subnet_range'];
+                $credentials->man_ip_address = $_POST['subnet_range'];
             } else {
-                $subnet = "";
+                $subnet_range = "";
             }
 
-            $log = "C:discovery F:discover_subnet U:" . $this->data['user_full_name'] . " Discovery submitted for $subnet"; $this->log_event($log);
+            $log = "C:discovery F:discover_subnet U:" . $this->data['user_full_name'] . " Discovery submitted for $subnet_range"; $this->log_event($log);
 
             # we encode the supplied credentials and pass them to the script
             # the script will simply pass them back (still encoded) with each device result
@@ -383,16 +452,16 @@ class discovery extends CI_Controller
             } while ($i = 0);
 
             # TODO - fix this SQL with proper escaping
-            $sql = 'INSERT INTO oa_temp (temp_id, temp_name, temp_value, temp_timestamp) VALUES (NULL, "Subnet Credentials - ' . $subnet . '", "' . $credentials . '", "' . $timestamp . '")';
+            $sql = 'INSERT INTO oa_temp (temp_id, temp_name, temp_value, temp_timestamp) VALUES (NULL, "Subnet Credentials - ' . $subnet_range . '", "' . $credentials . '", "' . $timestamp . '")';
             $query = $this->db->query($sql);
             $credentials = "";
 
-            if (strpos($subnet, "/")) {
-                # we have a subnet - if it's not a /32, then test for a group
-                $subnet_split = explode("/", $subnet);
+            if (strpos($subnet_range, "/")) {
+                # we have a subnet_range - if it's not a /32, then test for a group
+                $subnet_split = explode("/", $subnet_range);
                 if ($subnet_split[1] <> "32") {
-                    # we have a real subnet
-                    $subnet_details = network_details($subnet);
+                    # we have a real subnet_range
+                    $subnet_details = network_details($subnet_range);
                     $sql = "SELECT config_value FROM oa_config WHERE config_name = 'auto_create_network_groups' ";
                     $query = $this->db->query($sql);
                     $row = $query->row();
@@ -408,7 +477,7 @@ class discovery extends CI_Controller
                             // group exists - no need to do anything
                         } else {
                             // group does not exist - insert
-                            $log = "C:discovery F:discover_subnet U:" . $this->data['user_full_name'] . " Creating Group for $subnet"; $this->log_event($log, 'y');
+                            $log = "C:discovery F:discover_subnet U:" . $this->data['user_full_name'] . " Creating Group for $subnet_range"; $this->log_event($log, 'y');
                             $sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (NULL, ?, ?, ?, '1', ?, 'network', 'switch')";
                             $group_name = "Network - " . $subnet_details->network . ' / ' . $subnet_details->network_slash;
                             $group_padded_name = "Network - " . ip_address_to_db($subnet_details->network);
@@ -421,7 +490,7 @@ class discovery extends CI_Controller
                             $result = $this->db->query($sql, $data);
                             # now we update this specific group
                             # this accounts for if another system has a IP that would fall in this group, but was submitted
-                            # without a subnet and no matching network group was previously created.
+                            # without a subnet_range and no matching network group was previously created.
                             # update the group with all systems that match
                             $this->load->model('m_oa_group');
                             $this->m_oa_group->update_specific_group($insert_id);
@@ -448,35 +517,35 @@ class discovery extends CI_Controller
             }
 
             if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
-                if ($subnet > '') {
+                if ($subnet_range > '') {
 
                     if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                        $command_string = "$filepath/discover_subnet.sh subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+                        $command_string = "$filepath/discover_subnet.sh subnet_range=$subnet_range url=" . $url . "index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
                         echo "\nCommand: $command_string\n\n";
+
                         @exec($command_string, $output, $return_var);
                         echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
-                        array_splice($output, 0, 1);
-                        array_splice($output, 19);
-                        $script_result = '';
-                        foreach ($output as $line) {
-                            $script_result .= $line;
+                        $output_new = str_replace("<", "&lt;", $output);
+                        print_r($output_new);
+                        if ($return_var != '0') {
+                            $error = "Discovery subnet starting script discover_subnet.sh ($subnet_range) has failed"; $this->log_event($error);
+                        } else {
+                            #array_splice($output, 0, 1);
+                            #array_splice($output, 19);
+                            $script_result = '';
+                            foreach ($output as $line) {
+                                $script_result .= $line . "\n";
+                            }
+                            $script_result = preg_replace('/\s+/', ' ',$script_result);
+                            $script_result = str_replace("> <", "><", $script_result);
+                            $_POST['form_details'] = trim($script_result);
+                            $this->process_subnet();
                         }
-                        $script_result = preg_replace('/\s+/', ' ',$script_result);
-                        $script_result = str_replace("> <", "><", $script_result);
-                        $formatted_script_result = str_replace("><", ">\n<", $script_result);
-                        $formatted_script_result = str_replace(">\n</", "></", $formatted_script_result);
-                        $formatted_script_result = str_replace("\n", "\n\t\t", $formatted_script_result);
-                        $formatted_script_result = str_replace("\t\t<device>", "\t<device>", $formatted_script_result);
-                        $formatted_script_result = str_replace("</device>", "\n\t</device>", $formatted_script_result);
-                        $formatted_script_result = str_replace("</devices>", "\n</devices>", $formatted_script_result);
-                        echo htmlentities($formatted_script_result) . "\n";
-                        $_POST['form_details'] = $script_result;
-                        $this->process_subnet();
                     } else {
-                        $command_string = "nohup $filepath/discover_subnet.sh subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
+                        $command_string = "nohup $filepath/discover_subnet.sh subnet_range=$subnet_range url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
                         @exec($command_string, $output, $return_var);
                         if ($return_var != '0') {
-                            $error = "Discovery subnet starting script discover_subnet.sh ($subnet) has failed"; $this->log_event($error);
+                            $error = "Discovery subnet starting script discover_subnet.sh ($subnet_range) has failed"; $this->log_event($error);
                         }
                     }
                     $command_string = NULL;
@@ -485,31 +554,29 @@ class discovery extends CI_Controller
                 }
             }
             if (php_uname('s') == 'Windows NT') {
-                if ($subnet > '') {
+                if ($subnet_range > '') {
                     if (isset($_POST['debug']) and ((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                        $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+                        $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet_range=$subnet_range url=" . $url . "index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
                         echo "\nCommand: $command_string\n\n";
+
                         @exec($command_string, $output, $return_var);
                         echo "Return Code: $return_var (0 indicates success).\nOutput of the command (as an array):\n";
-                        #array_splice($output, 0, 1);
-                        #array_splice($output, 19);
-                        $script_result = '';
-                        foreach ($output as $line) {
-                            $script_result .= $line;
+                        $output_new = str_replace("<", "&lt;", $output);
+                        print_r($output_new);
+                        if ($return_var != '0') {
+                            $error = "Discovery subnet starting script discover_subnet.sh ($subnet_range) has failed"; $this->log_event($error);
+                        } else {
+                            $script_result = '';
+                            foreach ($output as $line) {
+                                $script_result .= $line;
+                            }
+                            $script_result = preg_replace('/\s+/', ' ',$script_result);
+                            $script_result = str_replace("> <", "><", $script_result);
+                            $_POST['form_details'] = $script_result;
+                            $this->process_subnet();
                         }
-                        $script_result = preg_replace('/\s+/', ' ',$script_result);
-                        $script_result = str_replace("> <", "><", $script_result);
-                        $formatted_script_result = str_replace("><", ">\n<", $script_result);
-                        $formatted_script_result = str_replace(">\n</", "></", $formatted_script_result);
-                        $formatted_script_result = str_replace("\n", "\n\t\t", $formatted_script_result);
-                        $formatted_script_result = str_replace("\t\t<device>", "\t<device>", $formatted_script_result);
-                        $formatted_script_result = str_replace("</device>", "\n\t</device>", $formatted_script_result);
-                        $formatted_script_result = str_replace("</devices>", "\n</devices>", $formatted_script_result);
-                        echo htmlentities($formatted_script_result) . "\n";
-                        $_POST['form_details'] = $script_result;
-                        $this->process_subnet();
                     } else {
-                        $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet=$subnet url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+                        $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet_range=$subnet_range url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
                         pclose(popen($command_string,"r"));
                     }
                 }
@@ -552,7 +619,6 @@ class discovery extends CI_Controller
             }
 
             $this->load->helper("url");
-
             $this->load->model("m_oa_config");
             $conf = $this->m_oa_config->get_config();
             $this->data['config'] = new stdclass();
@@ -582,20 +648,20 @@ class discovery extends CI_Controller
                 $this->load->helper('snmp_oid');
             }
             $this->load->model("m_system");
+            $this->load->model("m_network_card");
+            $this->load->model("m_ip_address");
             $this->load->model("m_oa_group");
+            $this->load->model("m_oa_general");
             $this->load->model("m_sys_man_audits");
             $this->load->model("m_alerts");
             $timestamp = date('Y-m-d H:i:s');
             $xml_input = $_POST['form_details'];
-
             try {
                 $xml = new SimpleXMLElement($xml_input);
             } catch (Exception $e) {
                 # not a valid XML string
                 $log_details = "Invalid XML input for discovery from " . $_SERVER['REMOTE_ADDR'];
                 $this->log_event($log_details);
-                # this would also log the received form data
-                # $this->log_event($xml_input);
                 exit;
             }
 
@@ -605,15 +671,19 @@ class discovery extends CI_Controller
 
                 if (isset($details->complete) and $details->complete == 'y') {
                     # delete the credential set
+                    if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+                        echo "DEBUG - ----------------------------------------------------\n";
+                    }
                     sleep(5);
-                    $log_details = "C:discovery F:process_subnet Deleting credential set for " . $details->subnet . " submitted on " . $details->subnet_timestamp;
+                    $log_details = "C:discovery F:process_subnet Deleting credential set for " . $details->subnet_range . " submitted on " . $details->subnet_timestamp;
                     $this->log_event($log_details);
-                    $sql = "DELETE FROM oa_temp WHERE temp_name = 'Subnet Credentials - " . $details->subnet . "' AND temp_timestamp = '" . $details->subnet_timestamp . "' ";
+                    $sql = "DELETE FROM oa_temp WHERE temp_name = 'Subnet Credentials - " . $details->subnet_range . "' AND temp_timestamp = '" . $details->subnet_timestamp . "' ";
                     $query = $this->db->query($sql);
                 } else {
-
+                    # process the device result
                     if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
                         $details->show_output = TRUE;
+                        echo "DEBUG - ----------------------------------------------------\n";
                     }
                     $log_details = "C:discovery F:process_subnet Start processing $details->man_ip_address"; $this->log_event($log_details);
                     $count++;
@@ -636,15 +706,20 @@ class discovery extends CI_Controller
                         }
                     }
 
+                    # process what little data we have and try to make a system_key
                     $details->system_key = '';
                     $details->system_key = $this->m_system->create_system_key($details);
+
+                    # we have a system_key (best we can) - see if we can find an existing device
                     $details->system_id = '';
                     $details->system_id = $this->m_system->find_system($details);
-                    if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                        echo "DEBUG - find system_key: <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>\n";
-                    }
 
-                    $details->ssh_status = 'true';
+                    # If we find a device and we're in DEBUG, output a result line.
+                    if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+                        if (isset($details->system_id) and $details->system_id > ''){
+                            echo "DEBUG - existing system key found for System ID: <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.\n";
+                        }
+                    }
 
                     # device specific credentials
                     $device_specific_credentials = $this->m_system->get_access_details($details->system_id);
@@ -655,7 +730,7 @@ class discovery extends CI_Controller
                     $default = $this->m_oa_config->get_credentials();
 
                     # supplied credentials
-                    $sql = "SELECT temp_value FROM oa_temp WHERE temp_name = 'Subnet Credentials - " . $details->subnet . "' AND temp_timestamp = '" . $details->subnet_timestamp . "' ORDER BY temp_id DESC LIMIT 1";
+                    $sql = "SELECT temp_value FROM oa_temp WHERE temp_name = 'Subnet Credentials - " . $details->subnet_range . "' AND temp_timestamp = '" . $details->subnet_timestamp . "' ORDER BY temp_id DESC LIMIT 1";
                     $query = $this->db->query($sql);
                     $row = $query->row();
                     $supplied_credentials = @$row->temp_value;
@@ -688,9 +763,9 @@ class discovery extends CI_Controller
                         $details->network_address = '';
                     }
 
-
                     $details->last_user = $details->last_seen_user;
 
+                    # create the URL for use by the audit scripts
                     if (isset($_POST['network_address']) and $_POST['network_address'] > '') {
                         $i = explode('/', base_url());
                         $url = str_replace($i[2], $_POST['network_address'], base_url());
@@ -746,7 +821,6 @@ class discovery extends CI_Controller
                         $details->windows_username = $default->default_windows_username;
                     }
 
-
                     $details->windows_password = '';
                     if ($details->windows_password == '' and isset($specific->windows_password) and $specific->windows_password > '') {
                         $details->windows_password = $specific->windows_password;
@@ -769,40 +843,46 @@ class discovery extends CI_Controller
                         $details->windows_domain = $default->default_windows_domain;
                     }
 
-
-                    if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                        echo "DEBUG - SNMP Status: " . $details->snmp_status . "\n";
-                        echo "DEBUG - WMI Status: " . $details->wmi_status . "\n";
-                        echo "DEBUG - SSH Status: " . $details->ssh_status . "\n";
-                    }
-
                     # need to escape the dollar sign when processing using bash (substitution will occur otherwise).
                     if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
                         $details->ssh_password = str_replace('$', '\$', $details->ssh_password);
                         $details->windows_password = str_replace('$', '\$', $details->windows_password);
                     }
 
-                    $log_details = "C:discovery F:process_subnet WMI Status: $details->wmi_status $details->man_ip_address"; $this->log_event($log_details);
-                    $log_details = "C:discovery F:process_subnet SNMP Status: $details->snmp_status $details->man_ip_address"; $this->log_event($log_details);
-                    $log_details = "C:discovery F:process_subnet SSH Status: $details->ssh_status $details->man_ip_address"; $this->log_event($log_details);
+                    # output to log file and DEBUG the status of the three main services
+                    $log_details = "C:discovery F:process_subnet WMI Status: $details->wmi_status $details->man_ip_address"; 
+                    $this->log_event($log_details);
+                    $log_details = "C:discovery F:process_subnet SNMP Status: $details->snmp_status $details->man_ip_address"; 
+                    $this->log_event($log_details);
+                    $log_details = "C:discovery F:process_subnet SSH Status: $details->ssh_status $details->man_ip_address"; 
+                    $this->log_event($log_details);
 
+                     # try to get more information using SNMP (if ext loaded in PHP)
                     if (extension_loaded('snmp') and $details->snmp_status == "true") {
-                        # try to get more information using SNMP
-                        $log_details = "C:discovery F:process_subnet Attempting SNMP discovery on $details->man_ip_address"; $this->log_event($log_details);
-                        $details = get_snmp($details);
-                        if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                            #echo "DEBUG - \$details\n";
-                            $details_post_snmp = $details;
-                        }
+                        $log_details = "C:discovery F:process_subnet Attempting SNMP discovery on $details->man_ip_address"; 
+                        $this->log_event($log_details);
+
+                        # get rid of os_name as nmap only guesses
+                        $details->os_name = '';
+
+                        $temp_array = get_snmp($details);
+                        $details = $temp_array['details'];
+                        $network_interfaces = $temp_array['interfaces'];
                     }
 
                     # remove all the NULL, FALSE and Empty Strings but leaves 0 (zero) values
                     # $details = (object) array_filter((array) $details, 'strlen' );
 
                     if ((isset($details->snmp_oid)) and ($details->snmp_oid > '')) {
+
                         # we received a result from SNMP, use this data to update or insert
                         $details->last_seen_by = 'snmp';
                         $details->audits_ip = '127.0.0.1';
+
+                        # new for 1.2.2 - after we get additional SNMP data, re-check if we match an existing device
+                        $details->system_key = $this->m_system->create_system_key($details);
+                        $details->system_id = $this->m_system->find_system($details);
+
                         if (isset($details->system_id) and $details->system_id != '') {
                             # we have a system_id and snmp details to update
                             $this->m_system->update_system($details);
@@ -813,11 +893,16 @@ class discovery extends CI_Controller
                             $this->log_event($log_details);
                         } else {
                             # we have a new system
-                            $log_details = "C:discovery F:process_subnet SNMP insert for $details->man_ip_address"; $this->log_event($log_details);
                             $details->system_id = $this->m_system->insert_system($details);
+                            $log_details = "C:discovery F:process_subnet SNMP insert for $details->man_ip_address (System ID $details->system_id)"; 
+                            $this->log_event($log_details);
                             $this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', date('Y-m-d H:i:s'));
-                            if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { echo "DEBUG - SNMP insert for " . $details->system_id . "\n"; }
+                            if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { echo "DEBUG - SNMP insert for $details->man_ip_address (System ID " . $details->system_id . ")\n"; }
                         }
+
+                        $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+                        $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+
                         # also update the device credentials
                         $credentials = new stdClass();
                         $credentials->ip_address = $details->man_ip_address;
@@ -825,56 +910,81 @@ class discovery extends CI_Controller
                         $credentials->snmp_version = $details->snmp_version;
                         $this->m_system->update_credentials($credentials, $details->system_id);
                         unset($credentials);
+
+                        # update any network interfaces and ip addresses retrieved by SNMP
+                        if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                            foreach ($network_interfaces as $input) {
+                                $this->m_network_card->process_network_cards($input, $details);
+
+                                if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
+                                    foreach ($input->ip_addresses as $ip_input) {
+                                        $ip_input = (object) $ip_input;
+                                        $this->m_ip_address->process_addresses($ip_input, $details);
+                                    }
+                                }
+                            }
+                        }
+
                         if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                            echo "DEBUG - SNMP credential update for " . $details->system_id . "\n";
+                            echo "DEBUG - SNMP credential update for $details->man_ip_address (System ID $details->system_id).\n";
                         }
                         $log_details = "C:discovery F:process_subnet SNMP credential update for $details->man_ip_address (System ID $details->system_id)";
                         $this->log_event($log_details);
+
                     } else {
                         # we received a result from nmap only, use this data to update or insert
                         $details->last_seen_by = 'nmap';
                         if (isset($details->system_id) and $details->system_id != '') {
                             # we have a system id and nmap details to update
                             $this->m_system->update_system($details);
-                            if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { echo "DEBUG - Nmap update for " . $details->system_id . "\n"; }
-                            $log_details = "C:discovery F:process_subnet Nmap update for $details->man_ip_address (System ID $details->system_id)"; $this->log_event($log_details);
+                            if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { 
+                                echo "DEBUG - Nmap update for $details->man_ip_address (System ID " . $details->system_id . ").\n";
+                            }
+                            $log_details = "C:discovery F:process_subnet Nmap update for $details->man_ip_address (System ID $details->system_id)"; 
+                            $this->log_event($log_details);
                         } else {
                             # we have a new system
-                            $log_details = "C:discovery F:process_subnet Nmap insert for $details->man_ip_address"; $this->log_event($log_details);
                             $details->system_id = $this->m_system->insert_system($details);
+                            $log_details = "C:discovery F:process_subnet Nmap insert for $details->man_ip_address (System ID " . $details->system_id . ")"; $this->log_event($log_details);
                             $this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', date('Y-m-d H:i:s'));
-                            if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { echo "DEBUG - Nmap insert for " . $details->system_id . "\n"; }
+                            if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { 
+                                echo "DEBUG - Nmap insert for " . $details->system_id . "\n"; 
+                            }
                         }
                     }
+
+                    # Insert an audit
                     $this->m_sys_man_audits->insert_audit($details);
+
+                    # Update the groups
                     $this->m_oa_group->update_system_groups($details);
 
-                    # either we got nmap only or nmap and snmp details
-                    # either way, $details->system_id is now set
+                    # We got nmap only or nmap and snmp details
+                    # Either way, $details->system_id is now set
+                    # Output to DEBUG
                     if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
                         echo "DEBUG - System ID <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>\n";
                     }
-
-
-
-
-
 
 
                     # Windows WMI audit - audit_windows.vbs
                     if ($details->wmi_status == "true" and $details->windows_username > '' and $details->windows_domain > '' and $details->windows_password > '') {
                         $log_details = "C:discovery F:process_subnet Attempt Windows audit for $details->man_ip_address"; $this->log_event($log_details);
 
+
+
+                        # Auditing a Windows device from a Linux host
                         if (php_uname('s') == 'Linux') {
                             $error = "";
-                            #$command_string = "$filepath/smbclient \\\\\\\\" . $details->man_ip_address . "\\\\admin$ -U \"" . $details->windows_domain . "\\" . $details->windows_username . "%" . $details->windows_password . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
                             $command_string = "smbclient \\\\\\\\" . $details->man_ip_address . "\\\\admin$ -U \"" . $details->windows_domain . "\\" . $details->windows_username . "%" . $details->windows_password . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
+
                             exec($command_string, $output, $return_var);
+                            
                             if ($return_var != '0') {
-                                $error = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to $details->man_ip_address has failed";
+                                $error = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to $details->man_ip_address has failed.";
                                 $this->log_event($error);
                             } else {
-                                $log = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to $details->man_ip_address has succeeded";
+                                $log =   "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to $details->man_ip_address has succeeded.";
                                 $this->log_event($log);
                             }
                             if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
@@ -885,21 +995,25 @@ class discovery extends CI_Controller
                             $command_string = NULL;
                             $output = NULL;
                             $return_var = NULL;
-                            if ($error == "") {
-                                #$command_string = "screen -D -m $filepath/winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=1 \" ";
-                                $command_string = "screen -D -m winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=1 system_id=" . $details->system_id . "\" ";
+
+                            if ($error === "") {
+                                $command_string = "screen -D -m winexe -U " . $details->windows_domain . "/" . $details->windows_username . "%" . $details->windows_password . " --uninstall //" . $details->man_ip_address . " \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=" . $details->man_ip_address . " url=" . $url . "index.php/system/add_system debugging=3 system_id=" . $details->system_id . "\" ";
+
                                 exec($command_string, $output, $return_var);
+
                                 if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
                                     echo "DEBUG - command: " . $command_string . "\n";
                                     print_r($output);
                                     echo "\nDEBUG - Command Return Value: " . $return_var . "\n\n";
                                 }
+
                                 if ($return_var != '0') {
                                     $error = "C:discovery F:process_subnet Attempting to run audit_windows.vbs on $details->man_ip_address has failed";
                                     $this->log_event($error);
                                 } else {
                                     $log = "C:discovery F:process_subnet Attempt to run audit_windows.vbs on $details->man_ip_address has succeeded";
                                     $this->log_event($log);
+
                                     # also update the device credentials
                                     $credentials = new stdClass();
                                     $credentials->ip_address = $details->man_ip_address;
@@ -911,7 +1025,7 @@ class discovery extends CI_Controller
                                     if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
                                         echo "DEBUG - Windows credential update for " . $details->system_id . "\n";
                                     }
-                                    $log_details = "C:discovery F:process_subnet Windows credential update for $details->man_ip_address (System ID $details->system_id)";
+                                    $log_details = "C:discovery F:process_subnet Windows credential update for $details->man_ip_address (System ID $details->system_id).";
                                     $this->log_event($log_details);
                                 }
                                 $command_string = NULL;
@@ -920,6 +1034,9 @@ class discovery extends CI_Controller
                             }
                         }
 
+
+
+                        # Auditing a Windows device from a Windows host
                         if (php_uname('s') == 'Windows NT') {
 
                             $log_details = "C:discovery F:process_subnet Windows audit for $details->man_ip_address (System ID $details->system_id)"; $this->log_event($log_details);
@@ -974,10 +1091,6 @@ class discovery extends CI_Controller
                         }
                     }
 
-
-
-
-
                     # SSH based audit (usually Linux, unix or OSX)
                     if ($details->ssh_status == "true") {
                         if ($details->ssh_username == '' or $details->ssh_password == '') {
@@ -988,9 +1101,11 @@ class discovery extends CI_Controller
 
                             if (php_uname('s') == 'Linux') {
                                 # Linux server SSH audit
-                                if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { echo "DEBUG - Attempting SSH audit.\n"; }
-                                echo "DEBUG - struser: " . $details->ssh_username . "\n";
-                                echo "DEBUG - strpass: " . $details->ssh_password . "\n";
+                                if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) { 
+                                    echo "DEBUG - Attempting SSH audit.\n";
+                                    echo "DEBUG - struser: " . $details->ssh_username . "\n";
+                                    echo "DEBUG - strpass: " . $details->ssh_password . "\n";
+                                }
                                 $command_string = "sshpass -p \"" . $details->ssh_password . "\" ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . $details->ssh_username . "@" . $details->man_ip_address . " uname";
                                 exec($command_string, $output, $return_var);
                                 if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
@@ -1280,11 +1395,9 @@ class discovery extends CI_Controller
 
                         } # close SSH user and password
                     } # close ssh_status
-                    if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                        echo "Finish processing " . $details->man_ip_address . "\n";
-                    }
-                    $log = "C:discovery F:process_subnet Completed processing $details->man_ip_address"; $this->log_event($log);
+                    $log = "C:discovery F:process_subnet Completed processing $details->man_ip_address (System ID $details->system_id)"; $this->log_event($log);
                 } # close the device / complete switch
+                unset($details);
             } # close for each device in XML
         } # close for form submission
     } # close function
@@ -1333,13 +1446,13 @@ class discovery extends CI_Controller
         $log_timestamp = date("M d H:i:s");
         $log_hostname = php_uname('n');
         $log_pid = getmypid();
-        $log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . ".\n";
+        $log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
         $handle = fopen($file, "a");
         fwrite($handle, $log_line);
         fclose($handle);
         if ($display != 'n') {
             if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                echo "LOG - " . $log_line;
+                echo "LOG   - " . $log_line;
             }
         }
     }

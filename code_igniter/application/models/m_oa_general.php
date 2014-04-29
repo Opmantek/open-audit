@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -46,16 +46,27 @@ class M_oa_general extends MY_Model {
 	 * @return	string | array of objects
 	 */
 	function get_attribute($table = 'system', $attribute = 'hostname', $system_id = '') {
+		if ($system_id === '') { return(''); }
 		if ((strpos($attribute, ",") !== FALSE) or ($attribute == "*")) { $limit = ""; } else { $limit = "LIMIT 1"; }
 		$sql = "SELECT $attribute FROM $table WHERE system_id = ? " . $limit;
 		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
+
+		#if ($attribute === 'man_status'){
+			#echo $this->db->last_query() . "<br />\n";
+			#print_r($query->row());
+		#}
+
 		if ((strpos($attribute, ",") !== FALSE) or ($attribute == "*")) { 
 			$result = $query->result();
 			return ($result);
 		} else {
 			$row = $query->row();
-			return ($row->$attribute);
+			if (isset($row->$attribute)) {
+				return ($row->$attribute);
+			} else {
+				return('');
+			}
 		}
 	}
 

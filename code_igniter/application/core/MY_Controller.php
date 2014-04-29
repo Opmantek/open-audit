@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -106,7 +106,7 @@ class MY_Controller extends CI_Controller {
 				$this->load->model("m_userlogin");
 				if ($data = $this->m_userlogin->validate_user($username, $password)) {
 					if ($data != 'fail') {
-						#$this->session->set_userdata($data);
+						$this->session->set_userdata($data);
 						$this->data['user_full_name'] = $data['user_full_name'];
 						$this->data['user_lang'] = $data['user_lang'];
 						$this->data['user_theme'] = $data['user_theme'];
@@ -114,7 +114,8 @@ class MY_Controller extends CI_Controller {
 						$this->data['user_id'] = $data['user_id'];
 						$this->data['user_debug'] = 'n';
 						$loggedin = TRUE;
-						#print_r($this->data);
+						#echo "<pre>\n"; # debugging only
+						#print_r($this->data); # debugging only
 						#exit(); # debugging only
 					} else {
 						# username and password are set but do not validate
@@ -161,7 +162,7 @@ class MY_Controller extends CI_Controller {
 
 	function log_event() {
 		# setup the log file
-		if (php_uname('s') == 'Linux') {
+		if (php_uname('s') === 'Linux' or php_uname('s') === 'Darwin') {
 			$file = "/usr/local/open-audit/other/open-audit.log";
 		} else {
 			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
@@ -175,7 +176,7 @@ class MY_Controller extends CI_Controller {
 		$function = $router->fetch_method();
 		$user = $this->session->userdata('user_full_name');
 		$log_details = "C:" . $controller . " F:" . $function . " U:" . $user . " at " . $_SERVER['REMOTE_ADDR'];
-		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . ".\n";
+		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
 		if ($controller == "admin" and $function == "view_log") {
 			# don't bother logging this
 		} else {
@@ -611,6 +612,9 @@ class MY_Controller extends CI_Controller {
 					if (($column_variable_name == 'hostname') and ($row->$column_variable_name == '')) {
 						$row->hostname = "-";
 					}
+					if ( ! isset($this->data['group_id'])) { $this->data['group_id'] = ''; }
+					if ( ! isset($data['first_attribute'])) { $data['first_attribute'] = ''; }
+					if ( ! isset($column->column_quaternary)) { $column->column_quaternary = ''; }
 
 					switch($column_type) {	
 						case "":

@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -127,20 +127,9 @@ class M_route extends MY_Model {
 
 	function alert_route($details) {
 		// route no longer detected
-		$sql = "SELECT 
-				sys_sw_route.route_id, 
-				sys_sw_route.destination, 
-				sys_sw_route.next_hop 
-			FROM
-				sys_sw_route, 
-				system
-			WHERE
-				sys_sw_route.system_id = system.system_id AND
-				sys_sw_route.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT route_id, destination, next_hop FROM sys_sw_route WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'route removed - ' . $this->ip_address_from_db($myrow->destination) . ' -> ' . $this->ip_address_from_db($myrow->next_hop);
@@ -148,21 +137,9 @@ class M_route extends MY_Model {
 		}
 
 		// new route
-		$sql = "SELECT  
-				sys_sw_route.route_id,
-				sys_sw_route.destination, 
-				sys_sw_route.next_hop
-			FROM
-				sys_sw_route, 
-				system
-			WHERE
-				sys_sw_route.system_id = system.system_id AND
-				sys_sw_route.timestamp = sys_sw_route.first_timestamp AND
-				sys_sw_route.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT route_id, destination, next_hop FROM sys_sw_route WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'route installed - ' . $this->ip_address_from_db($myrow->destination) . ' -> ' . $this->ip_address_from_db($myrow->next_hop);

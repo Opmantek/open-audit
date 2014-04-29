@@ -25,13 +25,13 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.2
+' @version 1.3
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 Option Explicit
 
-dim log_entry, error_returned, error_description, exit_status, command, timestamp, exit_text, objExecObject, line, line_split, result_file
+dim log_entry, error_returned, error_description, exit_status, command, timestamp, exit_text, objExecObject, line, line_split, result_file, help
 
 ' TODO -
 ' 	log each non responding IP - option
@@ -47,7 +47,7 @@ dim echo_output : echo_output = "y"
 dim log_no_response : log_no_response = "n"
 dim org_id : org_id = ""
 dim submit_online : submit_online = "n"
-dim subnet : subnet = ""
+dim subnet_range : subnet_range = ""
 dim subnet_timestamp : subnet_timestamp = ""
 dim syslog : syslog = "y"
 dim url : url = "http://localhost/open-audit/index.php/system/process_subnet"
@@ -70,6 +70,9 @@ for each strArg in objArgs
 				
 			case "echo_output"
 				echo_output = varArray(1)
+
+			case "help"
+				help = varArray(1)
 				
 			case "log_no_response"
 				log_no_response = varArray(1)
@@ -80,8 +83,8 @@ for each strArg in objArgs
 			case "submit_online"
 				submit_online = varArray(1)
 
-			case "subnet"
-				subnet = varArray(1)
+			case "subnet_range"
+				subnet_range = varArray(1)
 
 			case "subnet_timestamp"
 				subnet_timestamp = varArray(1)
@@ -93,8 +96,65 @@ for each strArg in objArgs
 				url = varArray(1)
 
 		end select
+	else
+		if (strArg = "/?" or strArg = "/help") then
+			help = "y"
+		end if
 	end if
-next 
+next
+
+
+if (help = "y") then
+	wscript.echo "------------------------------"
+	wscript.echo "Open-AudIT Subnet Audit Script"
+	wscript.echo "(c) Opmantek, 2014.           "
+	wscript.echo "------------------------------"
+	wscript.echo "This script should be run on a Windows based computer. It queries Active Directory and spawns an audit for each Windows computer found."
+	wscript.echo ""
+	wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	wscript.echo ""
+	wscript.echo "  create_file"
+	wscript.echo "     y - Create an XML file containing the result."
+	wscript.echo "    *n - Do not create an XML result file."
+	wscript.echo ""
+	wscript.echo "  debugging"
+	wscript.echo "     0 - No output."
+	wscript.echo "     1 - Minimal Output."
+	wscript.echo "    *2 - Verbose output."
+	wscript.echo ""
+	wscript.echo "  echo_output"
+	wscript.echo "    *n - Do not echo the result to the screen."
+	wscript.echo "     y - Echo the result to the screen."
+	wscript.echo ""
+	wscript.echo "  /? or help=y"
+	wscript.echo "     y - Display this help output."
+	wscript.echo "    *n - Do not display this output."
+	wscript.echo ""
+	wscript.echo "  log_no_response"
+	wscript.echo "    *n - Do not submit a result if there is no device attached to the given ip address."
+	wscript.echo "     y - Submit a result even if nothing is found."
+	wscript.echo ""
+	wscript.echo "  org_id"
+	wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+	wscript.echo ""
+	wscript.echo "  submit_online"
+	wscript.echo "      *y - Submit the audit result to the Open-AudIT server."
+	wscript.echo "       n - Don't submit the audit result."
+	wscript.echo ""
+	wscript.echo "  subnet"
+	wscript.echo "      - The subnet in to audit."
+	wscript.echo ""
+	wscript.echo "  subnet_timestamp"
+	wscript.echo "       - Set by the web GUI. Not used on the command line."
+	wscript.echo ""
+	wscript.echo "  syslog"
+	wscript.echo "    *y - Log the script details to the Open-AudIT log file."
+	wscript.echo "     n - Do not log to the Open-AudIT log file."
+	wscript.echo ""
+	wscript.echo "  url"
+	wscript.echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
+	wscript.quit
+end if
 
 ' leave the below settings
 const HKEY_CLASSES_ROOT  = &H80000000
@@ -170,15 +230,15 @@ end if
 
 
 
-log_entry = "Discovery for " & subnet & " submitted at " & subnet_timestamp & " starting"
+log_entry = "Discovery for " & subnet_range & " submitted at " & subnet_timestamp & " starting"
 write_log()
 
 if debugging > "0" then wscript.echo "My PID: " & current_pid
-if debugging > "0" then wscript.echo "Scanning Subnet: " & subnet
+if debugging > "0" then wscript.echo "Scanning Subnet: " & subnet_range
 if debugging > "0" then wscript.echo "URL: " & url
 
 exit_status = "y"
-command = nmap_path & " -v -sP -PE -PP -n " & subnet
+command = nmap_path & " -v -sP -PE -PP -n " & subnet_range
 execute_command()
 dim hosts
 Do Until objExecObject.StdOut.AtEndOfStream
@@ -363,13 +423,13 @@ for each host in hosts_in_subnet
 	dim result
 	
 	result = "	<device>" & vbcrlf
-	result = result & "		<subnet>" & subnet & "</subnet>" & vbcrlf
+	result = result & "		<subnet_range>" & subnet_range & "</subnet_range>" & vbcrlf
 	result = result & "		<man_ip_address>" & host & "</man_ip_address>" & vbcrlf
 	result = result & "		<mac_address>" & mac_address & "</mac_address>" & vbcrlf
-	result = result & "		<manufacturer>" & manufacturer & "</manufacturer>" & vbcrlf
-	result = result & "		<type>" & system_type & "</type>" & vbcrlf
-	result = result & "		<os_name>" & os_name & "</os_name>" & vbcrlf
-	result = result & "		<description>" & description & "</description>" & vbcrlf
+	result = result & "		<manufacturer><![CDATA[" & manufacturer & "]]></manufacturer>" & vbcrlf
+	result = result & "		<type><![CDATA[" & system_type & "]]></type>" & vbcrlf
+	result = result & "		<os_name><![CDATA[" & os_name & "]]></os_name>" & vbcrlf
+	result = result & "		<description><![CDATA[" & description & "]]></description>" & vbcrlf
 	result = result & "		<snmp_status>" & snmp_status & "</snmp_status>" & vbcrlf
 	result = result & "		<ssh_status>" & ssh_status & "</ssh_status>" & vbcrlf
 	result = result & "		<wmi_status>" & wmi_status & "</wmi_status>" & vbcrlf
@@ -423,7 +483,7 @@ next
 
 if submit_online = "y" then
 	WScript.Sleep 5000
-	dim resultcomplete : resultcomplete="<devices><device><subnet>" & subnet & "</subnet><subnet_timestamp>" & subnet_timestamp & "</subnet_timestamp><complete>y</complete></device></devices>"
+	dim resultcomplete : resultcomplete="<devices><device><subnet_range>" & subnet_range & "</subnet_range><subnet_timestamp>" & subnet_timestamp & "</subnet_timestamp><complete>y</complete></device></devices>"
 	Err.clear
 	on error resume next
 		Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
@@ -434,12 +494,12 @@ if submit_online = "y" then
 		objHTTP.Send "form_details=" + resultcomplete + vbcrlf
 	on error goto 0
 	if (error_returned <> 0) then
-		if debugging > "0" then wscript.echo "Result complete send failed for " & subnet & " submitted at " & subnet_timestamp end if
-		log_entry = "Result complete send failed for " & subnet & " submitted at " & subnet_timestamp
+		if debugging > "0" then wscript.echo "Result complete send failed for " & subnet_range & " submitted at " & subnet_timestamp end if
+		log_entry = "Result complete send failed for " & subnet_range & " submitted at " & subnet_timestamp
 		write_log
 	else
-		if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet & " submitted at " & subnet_timestamp end if
-		log_entry = "Result complete send succeeded for " & subnet & " submitted at " & subnet_timestamp
+		if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp end if
+		log_entry = "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp
 		write_log
 	end if
 end if
@@ -456,7 +516,7 @@ if create_file = "y" then
 					Right("0" & Hour(Now()),2) & _ 
 					Right("0" & Minute(Now()),2) & _ 
 					Right("0" & Second(Now()),2)
-	dim OutputFile : OutputFile = "subnet-" & subnet & "-" & file_timestamp & ".xml"
+	dim OutputFile : OutputFile = "subnet-" & subnet_range & "-" & file_timestamp & ".xml"
 	OutputFile = replace(OutputFile, "/", "-")
 	if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
 	Err.clear
@@ -480,7 +540,7 @@ end if
 
 
 
-log_entry = "Discovery for " & subnet & " submitted at " & subnet_timestamp & " completed"
+log_entry = "Discovery for " & subnet_range & " submitted at " & subnet_timestamp & " completed"
 write_log()
 
 

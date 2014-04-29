@@ -8,6 +8,7 @@
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
 		<report_sort_column>0</report_sort_column>
+		<report_description>Device details - name, owner, ip, memory, model, os install date, Windows client site name, Windows user.</report_description>
 	</details>
 	<columns>
 		<column>

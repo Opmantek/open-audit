@@ -25,27 +25,19 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.2
+' @version 1.3
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
-'Option Explicit
-
-'Dim audit_windows, colItems, command, count, create_file, current_pid, debugging, ip_address, line, line_split, nmap_exe, nmap_result, nmap_result_array, objArgs, objExecObject, objFSO, objItem, objlocalwmiservice, objShell, objWMIService, objWMIService2, oReg, org_id, output_file, run_audit_windows, shell, snmp_installed, snmp_open, strArg, strComputer, system_hostname, system_mac_address, manufacturer, system_model, system_os, system_os_guess, system_running, system_timestamp, type, system_uuid, type_guess, varArray, wshNetwork, xml_result, number_of_audits, submit_online, subnet, syslog, url, 
-
-'Dim hosts_in_subnet, i, host, hosts, description, os_name 
-
-' 0 = no debug
-' 1 = basic debug 
-' 2 = verbose debug
-debugging = "1"
 
 create_file = "n"
+debugging = "1"
+echo_output = "n"
+help="n"
 submit_online = "y"
 subnet = ""
 syslog = "y"
 url = "http://localhost/open-audit/index.php/system/add_nmap"
-echo_output = "n"
 
 ' only set the below if your PATH variable (in Windows) does not include this
 'nmap_exe = "C:\program files(x86)\Nmap\"
@@ -60,30 +52,73 @@ for each strArg in objArgs
 		varArray = split(strArg, "=")
 		select case varArray(0)
 
-			case "subnet"
-				subnet = varArray(1)
-
 			case "create_file"
 				create_file = varArray(1)
-
-			case "submit_online"
-				submit_online = varArray(1)
-
-			case "syslog"
-				syslog = varArray(1)
 				
 			case "debugging"
 				debugging = varArray(1)
 				
-			case "nmap_exe"
-				nmap_exe = varArray(1)
-				
 			case "echo_output"
 				echo_output = varArray(1)
 
+			case "help"
+				help = varArray(1)
+				
+			case "nmap_exe"
+				nmap_exe = varArray(1)
+
+			case "submit_online"
+				submit_online = varArray(1)
+
+			case "subnet"
+				subnet = varArray(1)
+
+			case "syslog"
+				syslog = varArray(1)
+
 		end select
+	else
+		if (strArg = "/?" or strArg = "/help") then
+			help = "y"
+		end if
 	end if
 next 
+
+if (help = "y") then
+	wscript.echo "------------------------------"
+	wscript.echo "Open-AudIT Subnet Audit Script"
+	wscript.echo "(c) Opmantek, 2014.           "
+	wscript.echo "------------------------------"
+	wscript.echo "This script should be run on a Windows based computer. It queries Active Directory and spawns an audit for each Windows computer found."
+	wscript.echo ""
+	wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	wscript.echo ""
+	wscript.echo "  create_file"
+	wscript.echo "     y - Create an XML file containing the result."
+	wscript.echo "    *n - Do not create an XML result file."
+	wscript.echo ""
+	wscript.echo "  debugging"
+	wscript.echo "     0 - No output."
+	wscript.echo "     1 - Minimal Output."
+	wscript.echo "    *2 - Verbose output."
+	wscript.echo ""
+	wscript.echo "  echo_output"
+	wscript.echo "    *n - Do not echo the result to the screen."
+	wscript.echo "     y - Echo the result to the screen."
+	wscript.echo ""
+	wscript.echo "  /? or help=y"
+	wscript.echo "     y - Display this help output."
+	wscript.echo "    *n - Do not display this output."
+	wscript.echo ""
+	wscript.echo "  subnet"
+	wscript.echo "      - The subnet in to audit."
+	wscript.echo ""
+	wscript.echo "  syslog"
+	wscript.echo "    *y - Log the script details to the Open-AudIT log file."
+	wscript.echo "     n - Do not log to the Open-AudIT log file."
+	wscript.echo ""
+	wscript.quit
+end if
 
 ' leave the below settings
 const HKEY_CLASSES_ROOT  = &H80000000

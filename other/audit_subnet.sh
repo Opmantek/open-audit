@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.2
+# @version 1.3
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -38,6 +38,7 @@ IFS='
 create_file="n"
 debugging=0
 echo_output="n"
+help="n"
 submit_online="y"
 subnet=""
 syslog="y"
@@ -64,6 +65,12 @@ for arg in "$@"; do
 			debugging="$parameter_value" ;;
 		"echo_output" )
 			echo_output="$parameter_value" ;;
+		"help" )
+			help="$parameter_value" ;;
+		"--help" )
+			help="y" ;;
+		"-h" )
+			help="y" ;;
 		"org_id" )
 			org_id="$parameter_value" ;;
 		"submit_online" )
@@ -76,6 +83,62 @@ for arg in "$@"; do
 			url="$parameter_value" ;;
 	esac
 done
+
+if [ "$help" == "y" ]; then
+	echo ""
+	echo "---------------------------------"
+	echo "Open-AudIT Linux Discovery script"
+	echo "(c) Opmantek, 2014.              "
+	echo "---------------------------------"
+	echo "This script should be used on a Linux based computer to discover hosts in a subnet. This script is designed to be called by the Open-AudIT web GUI, not run directly from the command line."
+	echo ""
+	echo "Nmap and Wget are prerequisites for this script to function correctly."
+	echo ""
+	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	echo ""
+	echo "  create_file"
+	echo "     y - Create an XML file containing the audit result."
+	echo "    *n - Do not create an XML result file."
+	echo ""
+	echo "  debugging"
+	echo "     0 - No output."
+	echo "     1 - Minimal Output."
+	echo "    *2 - Verbose output."
+	echo ""
+	echo "  -h or --help or help=y"
+	echo "      y - Display this help output."
+	echo "     *n - Do not display this output."
+	echo ""
+	echo "  log_no_response"
+	echo "    *n - Do not submit a result if there is no device attached to the given ip address."
+	echo "     y - Submit a result even if nothing is found."
+	echo ""
+	echo "  org_id"
+	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+	echo ""
+	echo "  submit_online"
+	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
+	echo "     n - Do not submit the audit result"
+	echo ""
+	echo "  subnet"
+	echo "       - Any given subnet as per the Nmap command line options. http://nmap.org/book/man-target-specification.html EG - 192.168.1-3.1-20, 192.168.1.0/24, etc."
+	echo ""
+	echo "  subnet_timestamp"
+	echo "       - Set by the web GUI. Not used on the command line."
+	echo ""
+	echo "  syslog"
+	echo "     *y - Log entries to the Open-AudIT log file."
+	echo "      n - Do not log entries."
+	echo ""
+	echo "  url"
+	echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
+	echo ""
+	echo ""
+	echo "NOTE - The netstat section can take a few minutes to complete."
+	echo ""
+	echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
+	exit
+fi
 
 #if [[ $EUID -ne 0 ]]; then
 #   echo "This script must be run as root" 

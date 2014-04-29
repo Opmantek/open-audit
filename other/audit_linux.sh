@@ -25,6 +25,10 @@
 #
 # *****************************************************************************
 
+# @package Open-AudIT
+# @version 1.3
+# @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+
 ########################################################
 # CREDITS                                              #
 ########################################################
@@ -99,6 +103,9 @@ self_delete='n'
 # 2 = verbose debug
 debugging=2
 
+# Display help
+help="n"
+
 # In normal use, DO NOT SET THIS.
 # This value is passed in when running the audit_domain script.
 # Only set this value if your audit host is on a different domain than audit targets and you are not using audit_domain.vbs - IE, you are running "cscript audit_windows.vbs COMPUTER" where COMPUTER is on a seperate domain that the PC you are running the command on. This would then apply to ALL systems audited like this. This would be the exception rather than the rule. Do not do this unless you know what you are doing :-)
@@ -154,6 +161,7 @@ export PATH
 	OA_IWLIST=`which iwlist 2>/dev/null`
 	OA_LS=`which ls --skip-alias 2>/dev/null`
 	OA_LSB_RELEASE=`which lsb_release 2>/dev/null`
+	OA_LSCPU=`which lscpu 2>/dev/null`
 	OA_LSHAL=`which lshal 2>/dev/null`
 	OA_LSHW=`which lshw 2>/dev/null`
 	OA_LSPCI=`which lspci 2>/dev/null`
@@ -312,6 +320,12 @@ for arg in "$@"; do
 			create_file="$parameter_value" ;;
 		"debugging" )
 			debugging="$parameter_value" ;;
+		"help" )
+			help="$parameter_value" ;;
+		"--help" )
+			help="y" ;;
+		"-h" )
+			help="y" ;;
 		"ldap" )
 			ldap="$parameter_value" ;;
 		"org_id" )
@@ -402,6 +416,52 @@ if [ "$check_commands" = "y" ]; then
 
 	exit
 fi
+
+if [ "$help" = "y" ]; then
+	echo ""
+	echo "-----------------------------"
+	echo "Open-AudIT Linux Audit script"
+	echo "-----------------------------"
+	echo "This script should be run on a Linux based computer using root or sudo access rights."
+	echo ""
+	echo "Prerequisites for this script to function correctly can be tested by running audit_linux.sh check_commands=y."
+	echo ""
+	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
+	echo ""
+	echo "  check_commands"
+	echo "     y - Run a test to determine if the required commands to run this script are present on the target system."
+	echo "    *n - Do not run the test."
+	echo ""
+	echo "  create_file"
+	echo "     y - Create an XML file containing the audit result."
+	echo "    *n - Do not create an XML result file."
+	echo ""
+	echo "  debugging"
+	echo "     0 - No output."
+	echo "     1 - Minimal Output."
+	echo "    *2 - Verbose output."
+	echo ""
+	echo "  -h or --help or help=y"
+	echo "      y - Display this help output."
+	echo "     *n - Do not display this output."
+	echo ""
+	echo "  org_id"
+	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+	echo ""
+	echo "  submit_online"
+	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
+	echo "     n - Do not submit the audit result"
+	echo ""
+	echo "  url"
+	echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
+	echo ""
+	echo ""
+	echo "NOTE - The netstat section can take a few minutes to complete."
+	echo ""
+	echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
+	exit
+fi
+
 
 # test pinging the server hosting the URL
 if [ "$submit_online" = "y" ]; then
@@ -530,15 +590,35 @@ system_os_name=`$OA_LSB_RELEASE -ds 2>/dev/null | $OA_AWK '{gsub("\"","");print}
 
 # Find the release file
 # The release file should be like /etc/distro-release or /etc/distro_version or /etc/lsb-release
-system_relase_file=`$OA_LS -la --time-style='long-iso' /etc/*[_-]{version,release} 2>/dev/null | $OA_GREP -Ev '^l' | $OA_HEAD -n1 | $OA_CUT -d"/" -f3`
+system_release_file=`$OA_LS -la --time-style='long-iso' /etc/*[_-]{version,release} 2>/dev/null | $OA_GREP -Ev '^l' | $OA_HEAD -n1 | $OA_CUT -d"/" -f3`
 
 if [ "$system_os_family" = "" ]; then
 	# No lsb-release package not installed... Try with the release file
 	# The distro-release file should have the info in the first line
-	system_os_family=`$OA_CAT /etc/$system_relase_file | $OA_HEAD -n1 | $OA_CUT -d" " -f1`
-	system_os_name=`$OA_CAT /etc/$system_relase_file | $OA_HEAD -n1`
+	# system_os_family=`$OA_CAT /etc/$system_relase_file | $OA_HEAD -n1 | $OA_CUT -d" " -f1`
+	system_os_name=`$OA_CAT /etc/$system_release_file | $OA_GREP "^NAME=" | $OA_CUT -d= -f2`
+	if [ "$system_os_name" = "" ]; then
+		system_os_name=`$OA_CAT /etc/$system_release_file`
+	fi
+	system_os_name="${system_os_name%\"}"
+	system_os_name="${system_os_name#\"}"
 
-	# DEBIAN: The release file (/etc/debian_version) contains only the version number. /etc/issue.net should have all the required info
+	if [[ "$system_os_name" == *"Red"* ]] && [[ "$system_os_name" == *"Hat"* ]]; then
+		system_os_family="RedHat";
+		system_os_pretty_name=`$OA_CAT /etc/$system_release_file | $OA_GREP "^PRETTY_NAME=" | $OA_CUT -d= -f2`
+		system_os_pretty_name="${system_os_pretty_name%\"}"
+		system_os_pretty_name="${system_os_pretty_name#\"}"
+		if [[ "$system_os_pretty_name" != "" ]]; then
+			system_os_name="$system_os_pretty_name";
+		fi
+	fi
+
+	if [ "$system_os_family" = "" ]; then
+		system_os_family=`$OA_ECHO "$system_os_name" | $OA_CUT -d" " -f1`
+	fi
+
+	# DEBIAN: The release file (/etc/debian_version) contains only the version number. 
+	# /etc/issue.net should have all the required info
 	if [ "$system_relase_file" =  "debian_version" ] || [ "$system_relase_file" =  "debian-version" ]; then
 	# The right info should be on the /etc/issue.net file
 		if $OA_TEST -f /etc/issue.net; then
@@ -573,7 +653,7 @@ if [ "$system_serial" = "" ]; then
 	fi
 fi
 if [ "$system_serial" = "" ]; then
-	system_serial=`cat /sys/class/dmi/id/product_serial 2>dev/null`
+	system_serial=`cat /sys/class/dmi/id/product_serial 2>/dev/null`
 fi
 
 
@@ -655,7 +735,7 @@ system_pc_memory=$(trim `$OA_CAT /proc/meminfo | $OA_GREP MemTotal | $OA_CUT -d:
 # 	system_pc_threads_x_processor=4
 #	system_pc_cores_x_processor=4
 #
-#       system_pc_physical_processors = system_pc_total_threads / system_pc_threads_x_processor
+#   system_pc_physical_processors = system_pc_total_threads / system_pc_threads_x_processor
 #
 
 system_pc_total_threads=`$OA_CAT /proc/cpuinfo | $OA_GREP "processor" | $OA_WC -l`
@@ -667,6 +747,11 @@ if [ "$system_pc_cores_x_processor" = "" ]; then
 	if [ "$OA_LSHAL" \> "" ]; then
 		system_pc_cores_x_processor=$(lshal | grep -c "processor.number")
 	fi
+fi
+
+# RedHat 6.5 doesn't work with the above, so....
+if [ "$system_pc_cores_x_processor" = "" ]; then
+	system_pc_cores_x_processor=1
 fi
 
 # The number of siblings tell us the number of Threads x Physical Processor
@@ -684,7 +769,7 @@ system_pc_physical_processors=`$OA_EXPR $system_pc_total_threads / $system_pc_th
 # There is no way to know for sure the install date. /etc/distro-release should give a clue, but it is not really accurate
 #
 
-system_pc_date_os_installation=`$OA_LS -lac --time-style="long-iso" /etc/$system_relase_file | $OA_CUT -d" " -f6`
+system_pc_date_os_installation=`$OA_LS -lac --time-style="long-iso" /etc/$system_release_file | $OA_CUT -d" " -f6`
 
 
 #'''''''''''''''''''''''''''''''''
@@ -859,8 +944,13 @@ fi
 
 #'''''''''''''''''''''''''''''''''
 
+let total_cores=$system_pc_cores_x_processor*$system_pc_physical_processors
+let total_logical_processors=$system_pc_threads_x_processor*$system_pc_physical_processors
+
 $OA_ECHO "	<processor>" >> $xml_file
-$OA_ECHO "		<processor_cores>"$(escape_xml "$system_pc_cores_x_processor")"</processor_cores>" >> $xml_file
+$OA_ECHO "		<processor_count>"$(escape_xml "$system_pc_physical_processors")"</processor_count>" >> $xml_file
+$OA_ECHO "		<processor_cores>"$(escape_xml "$total_cores")"</processor_cores>" >> $xml_file
+$OA_ECHO "		<processor_logical>"$(escape_xml "$total_logical_processors")"</processor_logical>" >> $xml_file
 $OA_ECHO "		<processor_socket>"$(escape_xml "$processor_socket")"</processor_socket>" >> $xml_file
 $OA_ECHO "		<processor_description>"$(escape_xml "$processor_description")"</processor_description>" >> $xml_file
 $OA_ECHO "		<processor_speed>"$(escape_xml "$processor_speed")"</processor_speed>" >> $xml_file
@@ -1118,7 +1208,7 @@ case $system_os_family in
 					$OA_TAIL -n +6 >>\
 					$xml_file
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
 				$OA_SERVICE smb status > /dev/null 2>&1 &&\
 					$OA_SED -e '/^$/d' -e 's/^[ \t]*//' -e '/^[#;]/d' /etc/samba/smb.conf |\
 					$OA_GREP -E "^\[|^comment|^path" |\
@@ -1144,6 +1234,12 @@ net_cards=`for dir in /sys/class/net/*;
 	          $OA_ECHO "$dir $(readlink -f $dir/device)" | $OA_AWK -F\/ '{ print $9"/"$5 }' | $OA_AWK -F\: '{ print $2":"$3 }' | tr -d '[:blank:]';
 	       }; done`;
 
+# $icards=$(ls /sys/class/net/); do
+# 	if [ -e "$icards"/device ]; then
+# 		icard=`$OA_ECHO 
+# 	fi
+# done
+
 if [ "$net_cards" != "" ]; then
 	# Store the IP Addresses Information in a variable to write it later on the file
 	addr_info=""
@@ -1151,8 +1247,7 @@ if [ "$net_cards" != "" ]; then
 
 	IFS=$'\n'; 
 	for net_card_connection_id in $net_cards; do 
-
-		net_card_id=`$OA_ECHO $net_card_connection_id | $OA_CUT -d/ -f2`
+		net_card_id=`$OA_ECHO $net_card_connection_id | cut -d"/" -f2`
 		net_card_pci=`$OA_ECHO $net_card_connection_id | $OA_CUT -d/ -f1`
 		net_card_mac=`$OA_CAT /sys/class/net/$net_card_id/address`
 
@@ -1219,11 +1314,12 @@ if [ "$net_cards" != "" ]; then
 			$OA_GREP 'inet ' |\
 			$OA_CUT -dt -f2 |\
 			$OA_CUT -db -f1 |\
-			$OA_CUT -c2-); do
+			$OA_CUT -c2- |\
+			$OA_CUT -d" " -f1); do
 			net_card_enabled="True"
 			net_card_enabled_ip6_addr=""
-			net_card_enabled_ip_subnet=$(cidr2mask `$OA_ECHO $net_card_enabled_ip4_addr |\
-				$OA_CUT -d/ -f2`)
+			echo "NCEIA: $net_card_enabled_ip4_addr"
+			net_card_enabled_ip_subnet=$(cidr2mask `$OA_ECHO $net_card_enabled_ip4_addr | $OA_CUT -d/ -f2`)
 			net_card_enabled_ip_version="4"
 			addr_info=$addr_info"\t\t<ip_address>\n"
 			addr_info=$addr_info"\t\t\t<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>\n"
@@ -1351,7 +1447,7 @@ fi
 
 $OA_ECHO "	<logs>" >> $xml_file
 
-for log in `$OA_LS -1 /etc/logrotate.d/` ; do\
+for log in $(ls -1 /etc/logrotate.d/) ; do\
 	$OA_ECHO -e "\t\t<log>\n\t\t\t<log_name>$log</log_name>\n\t\t\t<log_file_name>\
 		`$OA_GREP -m 1 -E "^/" /etc/logrotate.d/$log | $OA_SED -e 's/\ {//g'`\
 			</log_file_name>\n\t\t\t<log_file_size></log_file_size>\n\t\t\t<log_max_file_size>\
@@ -1418,15 +1514,17 @@ case $system_os_family in
 				$OA_SED -e 's/url><.*><\/software/url><\/software/' >>\
 				$xml_file
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
 			$OA_RPM -qa --queryformat="\t\t<package>\n\t\t\t<software_name>%{NAME}</software_name>\n\t\t\t<software_version>%{VERSION}</software_version>\n\t\t\t<software_url>%{URL}</software_url>\n\t\t</package>\n" |\
 				$OA_SED -e 's/\&.*</</' |\
 				$OA_SED -e 's/url><.*><\/software/url><\/software/' >>\
 				$xml_file
 			;;
 esac
+#				$OA_SED -e 's/+/%2B/g' |\
 
 $OA_ECHO "	</software>" >> $xml_file
+
 
 ########################################################
 # SERVICE SECTION                                      #
@@ -1490,7 +1588,20 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 $OA_ECHO "	<routes>" >> $xml_file
-IFS=$'\n'; for i in `$OA_ROUTE -n | $OA_TAIL -n +3` ; do $OA_ECHO $i | $OA_AWK ' { print "\t\t<route>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</route>" } ' ; done >> $xml_file
+if [ "$OA_ROUTE" != "" ]; then
+	IFS=$'\n'; for i in `$OA_ROUTE -n | $OA_TAIL -n +3` ; do $OA_ECHO $i | $OA_AWK ' { print "\t\t<route>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</route>" } ' ; done >> $xml_file
+fi
+if [ "$OA_ROUTE" = "" ] && [ $OA_IP != "" ]; then
+	#route_mask=$(cidr2mask `$OA_IP r | grep "default via" | cut -d" " -f1 | cut -d"\"" -f2`)
+	route_next_hop=`$OA_IP r | grep "default via" | cut -d" " -f3`
+	route_metric=`$OA_IP r | grep "default via" | cut -d" " -f10`
+	$OA_ECHO "		<route>" >> $xml_file
+	$OA_ECHO "			<destination>0.0.0.0</destination>" >> $xml_file
+	$OA_ECHO "			<mask></mask>" >> $xml_file
+	$OA_ECHO "			<metric>$route_metric</metric>" >> $xml_file
+	$OA_ECHO "			<next_hop>$route_next_hop</next_hop>" >> $xml_file
+	$OA_ECHO "		</route>" >> $xml_file
+fi
 $OA_ECHO "	</routes>" >> $xml_file
 
 
@@ -1526,14 +1637,16 @@ if [ $debugging -gt 0 ]; then
 fi
 
 if [ "$submit_online" = "y" ]; then
+	sed -i -e 's/+/%2B/g' $xml_file
 	if [ $debugging -gt 1 ]; then
 		$OA_ECHO "Submitting results to server"
-		$OA_EHHO "URL: $url"
+		$OA_ECHO "URL: $url"
 	fi
 	$OA_WGET --delete-after --post-file="$xml_file" $url 2>/dev/null
 fi
 
 sed -i -e 's/form_systemXML=//g' $xml_file
+sed -i -e 's/%2B/+/g' $xml_file
 if [ "$create_file" != "y" ]; then
 	`$OA_RM -f $PWD/$xml_file`
 fi

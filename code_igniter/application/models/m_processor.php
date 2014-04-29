@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -39,19 +39,7 @@ class M_processor extends MY_Model {
 	}
 	
 	function get_system_processor($system_id) {
-		$sql = "SELECT 	
-				processor_cores, 
-				processor_description, 
-				processor_speed, 
-				processor_manufacturer 
-			FROM	
-				sys_hw_processor,
-				system
-			WHERE 	
-				sys_hw_processor.system_id = system.system_id AND
-				sys_hw_processor.timestamp = system.timestamp AND
-				system.system_id = ?
-			LIMIT 1";
+		$sql = "SELECT * FROM sys_hw_processor, system WHERE sys_hw_processor.system_id = system.system_id AND sys_hw_processor.timestamp = system.timestamp AND system.system_id = ? LIMIT 1";
 		$sql = $this->clean_sql($sql);
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
@@ -65,17 +53,25 @@ class M_processor extends MY_Model {
 		$input->processor_description = str_ireplace("(tm)", "", $input->processor_description);
 		$input->processor_description = preg_replace('/\s\s+/', ' ', $input->processor_description);
 
+		if ( ! isset($input->processor_count)) {
+			$input->processor_count = '';
+		}
+		if ( ! isset($input->processor_logical)) {
+			$input->processor_logical = '';
+		}
 
 		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
 			# we have only seen this system once, and not via an audit script
 			# insert the software and set the first_timestamp == system.first_timestamp
 			# otherwise we cause alerts
-			$sql = "INSERT INTO sys_hw_processor ( system_id, processor_cores, 
+			$sql = "INSERT INTO sys_hw_processor ( system_id, processor_count, processor_cores, processor_logical, 
 					processor_description, processor_speed, processor_manufacturer,
-					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
+					"$input->processor_count", 
 					"$input->processor_cores", 
+					"$input->processor_logical", 
 					"$input->processor_description", 
 					"$input->processor_speed", 
 					"$input->processor_manufacturer", 
@@ -98,17 +94,19 @@ class M_processor extends MY_Model {
 			if ($query->num_rows() > 0) {
 				$row = $query->row();
 				// the processor exists - need to update it
-				$sql = "UPDATE sys_hw_processor SET timestamp = ?, processor_description = ? WHERE ? = processor_id";
-				$data = array("$details->timestamp", "$input->processor_description", "$row->processor_id");
+				$sql = "UPDATE sys_hw_processor SET timestamp = ?, processor_description = ?, processor_count = ?, processor_cores = ?, processor_logical = ?  WHERE ? = processor_id";
+				$data = array("$details->timestamp", "$input->processor_description", "$input->processor_count", "$input->processor_cores", "$input->processor_logical", "$row->processor_id");
 				$query = $this->db->query($sql, $data);
 			} else {
 				// the processor does not exist - insert it
-			$sql = "INSERT INTO sys_hw_processor ( system_id, processor_cores, 
+			$sql = "INSERT INTO sys_hw_processor ( system_id, processor_count, processor_cores, processor_logical, 
 					processor_description, processor_speed, processor_manufacturer,
-					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ? )";
+					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 				$sql = $this->clean_sql($sql);
 				$data = array("$details->system_id", 
+						"$input->processor_count", 
 						"$input->processor_cores", 
+						"$input->processor_logical", 
 						"$input->processor_description", 
 						"$input->processor_speed", 
 						"$input->processor_manufacturer", 
@@ -120,15 +118,10 @@ class M_processor extends MY_Model {
 	} // end of function
 
 	function alert_processor($details) {
-		$sql = "SELECT sys_hw_processor.processor_id, sys_hw_processor.processor_description 
-			FROM 	sys_hw_processor, system 
-			WHERE 	sys_hw_processor.system_id = system.system_id AND 
-					sys_hw_processor.timestamp = sys_hw_processor.first_timestamp AND 
-					sys_hw_processor.timestamp = ? AND 
-					system.system_id = ? AND 
-					system.timestamp = ?";
+		// new processor
+		$sql = "SELECT processor_id, processor_description FROM sys_hw_processor WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		foreach ($result as $myrow) { 

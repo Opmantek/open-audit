@@ -27,13 +27,15 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 ?>
 <!-- v_display_smart_phone -->
+<?php include "include_display_php.php"; ?>
+
 <script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -109,7 +111,11 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		$snmp_community = '';
 	}
 } else {
-	$snmp_community = $decoded_access_details->snmp_community;
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = $decoded_access_details->snmp_community;
+	} else {
+		$snmp_community = '';
+	}
 }
 
 ?>
@@ -531,122 +537,4 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 
 
 
-
-
 <?php include "include_display_javascript.php"; ?>
-
-<script type="text/javascript">
-
-$(document).ready(function(){
-	
-	$('#view_summary_credentials').hide();
-	$('#view_summary_phone').hide();
-	$('#view_summary_purchase').hide();
-	$('#view_summary_location').hide();
-	$('#view_summary_custom').hide();
-	$('#view_summary_audits').hide();
-	$('#view_summary_audit_log').hide();
-	$('#view_summary_alerts').hide();
-
-	$('#toggle_summary_phone').click(function(){
-		$('#view_summary_phone').slideToggle("fast");
-	});
-
-	$('#toggle_summary_credentials').click(function(){
-		$('#view_summary_credentials').slideToggle("fast");
-	});
-
-	$('#toggle_summary_purchase').click(function(){
-		$('#view_summary_purchase').slideToggle("fast");
-	});
-
-	$('#toggle_summary_location').click(function(){
-		$('#view_summary_location').slideToggle("fast");
-	});
-
-	$('#toggle_summary_custom').click(function(){
-		$('#view_summary_custom').slideToggle("fast");
-	});
-
-	$('#toggle_summary_audits').click(function(){
-		$('#view_summary_audits').slideToggle("fast");
-	});
-
-	$('#toggle_summary_audit_log').click(function(){
-		$('#view_summary_audit_log').slideToggle("fast");
-	});
-
-	$('#toggle_summary_alert_log').click(function(){
-		$('#view_summary_alerts').slideToggle("fast");
-	});
-
-	var summary_toggle = 0;
-
-	$('#toggle_summary_all').click(function(){
-		if (summary_toggle == 0)
-		{
-			$('#view_summary_credentials').show("fast");
-			$('#view_summary_phone').show("fast");
-			$('#view_summary_purchase').show("fast");
-			$('#view_summary_location').show("fast");
-			$('#view_summary_custom').show("fast");
-			$('#view_summary_audits').show("fast");
-			$('#view_summary_audit_log').show("fast");
-			$('#view_summary_alerts').show("fast");
-			summary_toggle = 1;
-		}
-		else 
-		{
-			$('#view_summary_credentials').hide("fast");
-			$('#view_summary_phone').hide("fast");
-			$('#view_summary_purchase').hide("fast");
-			$('#view_summary_location').hide("fast");
-			$('#view_summary_custom').hide("fast");
-			$('#view_summary_audits').hide("fast");
-			$('#view_summary_audit_log').hide("fast");
-			$('#view_summary_alerts').hide("fast");
-			summary_toggle = 0;
-		}
-	});
-});
-</script>
-
-<?php
-
-function print_something($string) {
-	if ((mb_strlen($string) == 0) OR ($string == '0000-00-00')) {
-		return '-';
-	} else {
-		return $string;
-	}
-}
-
-function display_custom_field($field_placement, $additional_fields, $edit) {
-	foreach($additional_fields as $field)
-	{
-		if ($field->field_placement == $field_placement)
-		{
-			$data_id = "field_" . $field->field_type;
-			$data_id = $field->$data_id;
-			$data_value = "field_" . $field->field_type;
-			$data_value = $field->$data_value;
-
-			switch ($field->field_type) {
-				case 'varchar':
-					$data = $field->field_varchar;
-					echo "<div style=\"float: left; width: 90%; \">\n";
-					echo "<label for=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" >" . __($field->field_name) . ": </label>";
-					echo   "<span id=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" " . $edit . ">" . print_something($data_value) . "</span><br />&nbsp;\n";
-					echo "</div>\n";
-					break;
-				
-				default:
-					# code...
-					break;
-			}
-
-		}
-	}
-}
-
-?>

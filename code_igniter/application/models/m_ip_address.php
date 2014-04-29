@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -51,26 +51,26 @@ class M_ip_address extends MY_Model {
 	}
 
 	function process_addresses($input, $details) {
-		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
-			# we have only seen this system once, and not via an audit script
-			# insert the software and set the first_timestamp == system.first_timestamp
-			# otherwise we cause alerts
-			$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
-					system_id, ip_address_v4, ip_address_v6, ip_address_version, 
-					ip_subnet, timestamp, first_timestamp ) 
-					VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
-			$sql = $this->clean_sql($sql);
-			$data = array("$input->net_mac_address", "$details->system_id", 
-					$this->ip_address_to_db($input->ip_address_v4), 
-					"$input->ip_address_v6", "$input->ip_address_version", 
-					"$input->ip_subnet", "$details->timestamp", "$details->first_timestamp");
-			$query = $this->db->query($sql, $data);
-		} else {
+		// if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
+		// 	# we have only seen this system once, and not via an audit script
+		// 	# insert the software and set the first_timestamp == system.first_timestamp
+		// 	# otherwise we cause alerts
+		// 	$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
+		// 			system_id, ip_address_v4, ip_address_v6, ip_address_version, 
+		// 			ip_subnet, timestamp, first_timestamp ) 
+		// 			VALUES ( LOWER(?), ?, ?, ?, ?, ?, ?, ?)";
+		// 	$sql = $this->clean_sql($sql);
+		// 	$data = array("$input->net_mac_address", "$details->system_id", 
+		// 			$this->ip_address_to_db($input->ip_address_v4), 
+		// 			"$input->ip_address_v6", "$input->ip_address_version", 
+		// 			"$input->ip_subnet", "$details->timestamp", "$details->first_timestamp");
+		// 	$query = $this->db->query($sql, $data);
+		// } else {
 			$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
 				WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
 					system.system_id = ? AND 
 					system.man_status = 'production' AND 
-					sys_hw_network_card_ip.net_mac_address = ? AND 
+					sys_hw_network_card_ip.net_mac_address = LOWER(?) AND 
 					(sys_hw_network_card_ip.ip_address_v4 = ? OR 
 					sys_hw_network_card_ip.ip_address_v6 = ? ) AND 
 					sys_hw_network_card_ip.ip_subnet = ? AND 
@@ -83,7 +83,7 @@ class M_ip_address extends MY_Model {
 			$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
 				WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
 				system.system_id = ? AND system.man_status = 'production' AND 
-				sys_hw_network_card_ip.net_mac_address = ? AND sys_hw_network_card_ip.ip_address_v4 = ? AND 
+				sys_hw_network_card_ip.net_mac_address = LOWER(?) AND sys_hw_network_card_ip.ip_address_v4 = ? AND 
 				sys_hw_network_card_ip.ip_subnet = ? AND ( sys_hw_network_card_ip.timestamp = ? OR 
 				sys_hw_network_card_ip.timestamp = ? )";
 			$sql = $this->clean_sql($sql);
@@ -101,7 +101,7 @@ class M_ip_address extends MY_Model {
 				$sql = "INSERT INTO sys_hw_network_card_ip ( net_mac_address, 
 						system_id, ip_address_v4, ip_address_v6, ip_address_version, 
 						ip_subnet, timestamp, first_timestamp ) 
-						VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)";
+						VALUES ( LOWER(?), ?, ?, ?, ?, ?, ?, ?)";
 				$sql = $this->clean_sql($sql);
 				$data = array("$input->net_mac_address", "$details->system_id", 
 						$this->ip_address_to_db($input->ip_address_v4), 
@@ -109,7 +109,7 @@ class M_ip_address extends MY_Model {
 						"$input->ip_subnet", "$details->timestamp", "$details->timestamp");
 				$query = $this->db->query($sql, $data);
 			}
-		}
+		// }
 
 		if ($input->ip_address_v4 != ''){
 			$myip = $input->ip_address_v4 . " " . $input->ip_subnet;
@@ -175,29 +175,27 @@ class M_ip_address extends MY_Model {
 	} // end of function
 
 	function alert_ip_address($details) {
-		// new network_card_ip - ONLY for "servers" or devices not using DHCP
-		$sql = "SELECT 
-					sys_hw_network_card_ip.ip_id, 
-					sys_hw_network_card_ip.ip_address_v4
-				FROM 	
-					sys_hw_network_card_ip, 
-					sys_hw_network_card, 
-					system
-				WHERE 	
-					sys_hw_network_card_ip.net_mac_address 	= sys_hw_network_card.net_mac_address AND
-					sys_hw_network_card.system_id 			= system.system_id AND
-					sys_hw_network_card_ip.timestamp 		= sys_hw_network_card_ip.first_timestamp AND
-					sys_hw_network_card_ip.timestamp 		= ? AND
-					system.system_id 						= ? AND
-					system.timestamp 						= ? AND
-					sys_hw_network_card.net_dhcp_enabled	= 'False' ";
+		// ip no longer detected - ONLY for devices not using DHCP
+		$sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.timestamp = ? and LOWER(sys_hw_network_card.net_dhcp_enabled) = 'false'";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'ip address changed - ' . $myrow->ip_address_v4;
+			$alert_details = 'ip address removed - ' . $myrow->ip_address_v4;
+			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_database_details', $myrow->details_id, $alert_details, $details->timestamp);
+		}
+
+		// new network_card_ip - ONLY for devices not using DHCP
+		$sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.first_timestamp = sys_hw_network_card_ip.timestamp and sys_hw_network_card_ip.first_timestamp != ? and LOWER(sys_hw_network_card.net_dhcp_enabled) = 'false'";
+		$data = array("$details->system_id", "$details->timestamp");
+		$sql = $this->clean_sql($sql);
+		$query = $this->db->query($sql, $data);
+		foreach ($query->result() as $myrow) {
+			$alert_details = 'ip address detected - ' . $myrow->ip_address_v4;
 			$this->m_alerts->generate_alert("$details->system_id", 'sys_hw_network_card_ip', "$myrow->ip_id", $alert_details, "$details->timestamp");
 		}
+
+
 	}
 
 	function set_initial_address($details) {
@@ -208,7 +206,7 @@ class M_ip_address extends MY_Model {
 					sys_hw_network_card_ip,
 					sys_hw_network_card
 				WHERE	
-					sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address AND
+					LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(sys_hw_network_card.net_mac_address) AND
 					sys_hw_network_card.system_id = ? AND
 					(sys_hw_network_card_ip.timestamp = ? OR
 					sys_hw_network_card_ip.timestamp = ?) 

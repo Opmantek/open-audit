@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -228,7 +228,7 @@ class M_oa_device extends MY_Model {
 		// 	"$details->device_latitude", 
 		// 	"$details->device_longitude");
 		// $query = $this->db->query($sql, $data);
-		return($this->db->insert_id());
+		// return($this->db->insert_id());
 	}
 
 	/**

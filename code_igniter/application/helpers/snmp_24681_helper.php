@@ -28,32 +28,30 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor QNAP
-if (!function_exists('get_oid_details')) {
 
-	function get_oid_details($details){
-		$details->type = 'nas';
+$get_oid_details = function($details){
+	$details->type = 'nas';
 
-		if ($details->snmp_version == '2') {
-			$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1" ));
-			$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.7.1" ));
-			if ($details->model == "") {
-				$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.24681.1.3.12.0" ));
-			}
+	if ($details->snmp_version == '2') {
+		$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1" ));
+		$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.7.1" ));
+		if ($details->model == "") {
+			$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.24681.1.3.12.0" ));
 		}
-
-		if ($details->snmp_version == '1') {
-			$details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1" ));
-			$details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.7.1" ));
-			if ($details->model == "") {
-				$details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.24681.1.3.12.0" ));
-			}
-		}
-
 	}
-}
+
+	if ($details->snmp_version == '1') {
+		$details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1" ));
+		$details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.7.1" ));
+		if ($details->model == "") {
+			$details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.24681.1.3.12.0" ));
+		}
+	}
+
+};

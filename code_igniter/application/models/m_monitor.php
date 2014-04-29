@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -145,21 +145,9 @@ class M_monitor extends MY_Model {
 
 	function alert_monitor($details) {
 		// monitor no longer detected
-		$sql = "SELECT 
-				sys_hw_monitor.monitor_id, 
-				sys_hw_monitor.manufacturer, 
-				sys_hw_monitor.serial, 
-				sys_hw_monitor.model 
-			FROM 	
-				sys_hw_monitor, 
-				system
-			WHERE 	
-				sys_hw_monitor.system_id = system.system_id AND
-				sys_hw_monitor.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT monitor_id, manufacturer, model, serial FROM sys_hw_monitor WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->original_timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'monitor removed - ' . $myrow->manufacturer . ', ' . $myrow->model . ', (Serial: ' . $myrow->serial . ')';
@@ -167,22 +155,9 @@ class M_monitor extends MY_Model {
 		}
 
 		// new monitor
-		$sql = "SELECT 
-				sys_hw_monitor.monitor_id, 
-				sys_hw_monitor.manufacturer, 
-				sys_hw_monitor.serial, 
-				sys_hw_monitor.model 
-			FROM 	
-				sys_hw_monitor, 
-				system
-			WHERE 	
-				sys_hw_monitor.system_id = system.system_id AND
-				sys_hw_monitor.timestamp = sys_hw_monitor.first_timestamp AND
-				sys_hw_monitor.timestamp = ? AND
-				system.system_id = ? AND
-				system.timestamp = ?";
+		$sql = "SELECT monitor_id, manufacturer, model, serial FROM sys_hw_monitor WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
-		$data = array("$details->timestamp", "$details->system_id", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'monitor installed - ' . $myrow->manufacturer . ', ' . $myrow->model . ', (Serial: ' . $myrow->serial . ')';

@@ -27,13 +27,15 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 ?>
 <!-- v_display_computer -->
+<?php include "include_display_php.php"; ?>
+
 <script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -159,7 +161,11 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		$snmp_community = '';
 	}
 } else {
-	$snmp_community = $decoded_access_details->snmp_community;
+	if (isset($decoded_access_details->snmp_community)) {
+		$snmp_community = $decoded_access_details->snmp_community;
+	} else {
+		$snmp_community = '';
+	}
 }
 
 ?>
@@ -227,6 +233,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		<ul>
 		 	<?php if (count($software) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_installer.png" /><a href="#" id="toggle_software_installed">Installed</a></li> <?php } ?> 
 		 	<?php if (count($updates) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_update.png" /><a href="#" id="toggle_software_updates">Updates</a></li> <?php } ?> 
+		 	<?php if (count($library) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_assembly.png" /><a href="#" id="toggle_software_library">Libraries</a></li> <?php } ?> 
 		 	<?php if (count($codecs) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_multimedia.png" /><a href="#" id="toggle_software_codecs">Codecs</a></li> <?php } ?> 
 		 	<?php if (count($odbc) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_database.png" /><a href="#" id="toggle_software_odbc">ODBC Drivers</a></li> <?php } ?> 
 		 	<?php if (count($assembly) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_assembly.png" /><a href="#" id="toggle_software_assembly">Assembly</a></li> <?php } ?> 
@@ -351,6 +358,19 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 									<p><label for="link_express_code"><?php echo __('Dell Express Code')?>: </label><span id="link_express"><?php echo print_something($link_express_code)?> </span></p>
 								<?php } ?>
 							<?php } ?>
+
+
+
+							<?php if ($access_level > 7) { ?>
+								<p><label for="man_icon"><?php echo __('Icon')?>: </label>
+									<span id="man_icon">
+										<a href="#" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_icon/<?php echo $system_id; ?>', 'Icon Picker', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=yes,status=no,titlebar=no,toolbar=no,top=100,width=400');" alt="Click to edit">
+											<img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $key->man_icon?>.png" /> (<?php echo str_replace('16_', '', str_replace('_', ' ', $key->man_icon)); ?>) <span style="color: blue;">click to edit</span></a></span></p>
+							<?php } else { ?>
+								<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $key->man_icon?>.png" /></span></p>
+							<?php } ?>
+
+
 
 						</div>
 					</div>
@@ -821,26 +841,6 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Processor Details')?></span></legend>
 				<?php foreach($processor as $key):
 					$image = $image_path . '48_component_cpu.png';
-					if (mb_stripos($key->processor_description, 'pentium 4'))
-					{
-						$image = $image_path . '48_intel_p4.png';
-					}
-					if (mb_stripos($key->processor_description, 'xeon'))
-					{
-						$image = $image_path . '48_intel_xeon.png';
-					}
-					if (mb_stripos($key->processor_description, 'Duo'))
-					{
-						$image = $image_path . '48_intel_core_duo.png';
-					}
-					if (mb_stripos($key->processor_description, 'III processor'))
-					{
-						$image = $image_path . '48_intel_p3.png';
-					}
-					if (mb_stripos($key->processor_description, 'Intel Pentium D'))
-					{
-						$image = $image_path . '48_intel_pd.png';
-					}
 					if ((mb_substr_count($key->processor_manufacturer, 'GenuineIntel') > 0) and (substr_count($image, '48_component_cpu') > 0))
 					{
 						$image = $image_path . '48_intel.png';
@@ -849,12 +849,15 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 					{
 						$image = $image_path . '48_amd.png';
 					}
-					
+					if (! isset($key->processor_count) or $key->processor_count == '' or $key->processor_count == '0') { $key->processor_count = '&nbsp;'; }
+					if (! isset($key->processor_logical) or $key->processor_logical == '' or $key->processor_logical == '0') { $key->processor_logical = '&nbsp;'; }
 					?>
 					<img style='float: right; margin; 10px; ' src='<?php echo $image;?>' alt='' title='' width='48'/>
 					<p><label for="processor_description"><?php echo __('Description')?>: </label><span id="processor_description" class="form_field"><?php echo $key->processor_description?></span></p>
 					<p><label for="processor_speed"><?php echo __('Speed')?>: </label><span id="processor_speed" class="form_field"><?php echo $key->processor_speed?> MHz</span></p>
-					<p><label for="processor_cores"><?php echo __('Cores')?>: </label><span id="processor_cores" class="form_field"><?php echo $key->processor_cores?></span></p>
+					<p><label for="processor_count"><?php echo __('Physical Processors')?>: </label><span id="processor_count" class="form_field"><?php echo $key->processor_count?></span></p>
+					<p><label for="processor_cores"><?php echo __('Total Processor Cores')?>: </label><span id="processor_cores" class="form_field"><?php echo $key->processor_cores?></span></p>
+					<p><label for="processor_logical" style="white-space: nowrap;"><?php echo __('Total Logical Processors')?>: </label><span id="processor_logical" class="form_field"><?php echo $key->processor_logical?></span></p>
 					<p><label for="processor_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="processor_manufacturer" class="form_field"><?php echo $key->processor_manufacturer?></span></p>
 					<?php endforeach; ?>
 					<?php echo display_custom_field('view_hardware_processor',  $additional_fields_data, $edit); ?>
@@ -958,7 +961,19 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		<form action="#" method="post" class="niceforms">
 			<fieldset id="network_details">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Network Details')?></span></legend>
-				<?php foreach($network as $key): ?>
+				<?php foreach($network as $key):
+						if (intval($key->net_speed) < 1000) {
+							$speed = number_format(intval($key->net_speed)) . " b/s";
+						}
+						if (intval($key->net_speed) >= 1000 and intval($key->net_speed) < 1000000) {
+							$speed = number_format(intval($key->net_speed / 1000 )) . " Kb/s";
+						}
+						if (intval($key->net_speed) >= 1000000 and intval($key->net_speed) < 1000000000) {
+							$speed = number_format(intval($key->net_speed / 1000 / 1000)) . " Mb/s";
+						}
+						if (intval($key->net_speed) >= 1000000000) {
+							$speed = number_format(intval($key->net_speed / 1000 / 1000 / 1000)) . " Gb/s";
+						} ?>
 				<fieldset id="network_details_<?php echo str_replace('/','-',$key->net_id)?>">
 				<legend><span style="font-size: 10pt;">&nbsp;<?php echo $key->net_description?> <?php echo __('Details')?></span></legend>
 				<div>
@@ -967,7 +982,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 						<p><label for="network_mac_address_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('MAC Address')?>: </label><span id="network_mac_address_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_mac_address)?></span></p>
 						<p><label for="network_model_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Model')?>: </label><span id="network_model_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_model)?></span></p>
 						<p><label for="network_manufacturer_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Manufacturer')?>: </label><span id="network_manufacturer_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_manufacturer)?></span></p>
-						<p><label for="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Speed')?>: </label><span id="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo number_format(intval($key->net_speed) / 10000)?>&nbsp;MB/s</span></p>
+						<p><label for="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Speed')?>: </label><span id="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo $speed; ?></span></p>
 						<p><label for="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Status')?>: </label><span id="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_connection_status)?></span></p>
 						<p><label for="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Adapter Type')?>: </label><span id="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_adapter_type)?></span></p>
 					</div>
@@ -1457,7 +1472,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		<br />
 		<br />
 		<form action="#" method="post" class="niceforms">
-			<fieldset id="hf_software_listing" class="niceforms">
+			<fieldset id="software_listing_updates" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Software Updates')?></span></legend>
 			<table cellspacing="1" class="tablesorter" width="900">
 				<thead>
@@ -1470,6 +1485,49 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 				</thead>
 				<tbody>
 				<?php foreach($updates as $key): ?>
+				<tr>
+						<td><?php echo $key->software_name?></td>
+						<td align="center">
+							<?php
+							if (($key->software_url != '') AND ($key->software_url != ' '))
+							{
+								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_browser.png\" alt=\"\" /></a>";
+							}
+							if (($key->software_email != '') AND ($key->software_email != ' '))
+							{
+								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_email.png\" alt=\"\" /></a>";
+							}
+							?>
+						</td>
+						<td align="center"><?php echo $key->software_version?></td>
+						<td><?php echo htmlentities($key->software_publisher)?></td>
+					</tr>
+				<?php endforeach; ?>
+				</tbody>
+			</table>
+		</fieldset>
+		</form>
+	<?php } ?>
+	</div>
+
+	<div id="view_software_library" style="float: left; width: 100%;">
+	<?php if (count($library) > 0) { ?>
+		<br />
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="software_listing_library" class="niceforms">
+			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Software Libraries')?></span></legend>
+			<table cellspacing="1" class="tablesorter" width="900">
+				<thead>
+					<tr>
+						<th align="left" style='width:500px;'><?php echo __('Package Name')?></th>
+						<th style='width:100px;'><?php echo __('Contact')?>&nbsp;&nbsp;&nbsp;</th>
+						<th style='width:100px;'><?php echo __('Version')?></th>
+						<th style='width:200px;'><?php echo __('Publisher')?></th>
+					</tr>
+				</thead>
+				<tbody>
+				<?php foreach($library as $key): ?>
 				<tr>
 						<td><?php echo $key->software_name?></td>
 						<td align="center">
@@ -2157,490 +2215,6 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 		</div>
 	<?php } ?>
 
-
-
-
-
-
-
-
-
-
-<!--
-<?php if ($tabcustom <> '') { ?>
-<div id="tabcustom" style="float: left; width: 100%;">
-	
-	<form action="#" method="post" class="niceforms">
-	<fieldset id="server_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Custom Defined Fields')?></span></legend>
-	<?php
-	foreach($additional_fields as $field)
-	{
-		$data_id = "field_" . $field->field_type . "_id";
-	#	$data_id = $field->$data_id;
-		$data_value = "field_" . $field->field_type;
-
-	#	$data_value = $field->$data_value;
-		echo "<p><label for=\"" . $data_id . "\" style=\"width:300px;\">" . __($field->field_name) . ": </label>";
-		echo "<span id=\"custom_" . $field->field_type . "_" . $data_id . "_" . $field->field_id . "\" " . $edit . ">" . print_something($field->$data_value) . "</span></p>";
-	}
-	?>
-	</fieldset>
-	</form>
-	<?php
-	echo "<pre>\n";
-	print_r($additional_fields);
-	echo "</pre>\n";
-	?>
-</div>
-<?php } ?>
--->
-
-
-
-
-
-
-
-
-
-
 <!-- end of content_column -->
 
-
-
-
-
 <?php include "include_display_javascript.php"; ?>
-
-<script type="text/javascript">
-
-$(document).ready(function(){
-	
-	$('#view_summary_windows').hide();
-	$('#view_summary_credentials').hide();
-	$('#view_summary_purchase').hide();
-	$('#view_summary_network').hide();
-	$('#view_summary_audits').hide();
-	$('#view_summary_audit_log').hide();
-	$('#view_summary_alerts').hide();
-	$('#view_summary_location').hide();
-	$('#view_summary_custom').hide();
-	$('#view_summary_attachment').hide();
-	$('#view_summary_nmis').hide();
-
-	$('#toggle_summary_windows').click(function(){
-		$('#view_summary_windows').slideToggle("fast");
-	});
-
-	$('#toggle_summary_credentials').click(function(){
-		$('#view_summary_credentials').slideToggle("fast");
-	});
-
-	$('#toggle_summary_purchase').click(function(){
-		$('#view_summary_purchase').slideToggle("fast");
-	});
-
-	$('#toggle_summary_network').click(function(){
-		$('#view_summary_network').slideToggle("fast");
-	});
-
-	$('#toggle_summary_audits').click(function(){
-		$('#view_summary_audits').slideToggle("fast");
-	});
-
-	$('#toggle_summary_audit_log').click(function(){
-		$('#view_summary_audit_log').slideToggle("fast");
-	});
-
-	$('#toggle_summary_alert_log').click(function(){
-		$('#view_summary_alerts').slideToggle("fast");
-	});
-
-	$('#toggle_summary_location').click(function(){
-		$('#view_summary_location').slideToggle("fast");
-	});
-
-	$('#toggle_summary_custom').click(function(){
-		$('#view_summary_custom').slideToggle("fast");
-	});
-
-	$('#toggle_summary_attachment').click(function(){
-		$('#view_summary_attachment').slideToggle("fast");
-	});
-
-	$('#toggle_summary_nmis').click(function(){
-		$('#view_summary_nmis').slideToggle("fast");
-	});
-
-	var summary_toggle = 0;
-
-	$('#toggle_summary_all').click(function(){
-		if (summary_toggle == 0)
-		{
-			$('#view_summary_windows').show("fast");
-			$('#view_summary_credentials').show("fast");
-			$('#view_summary_purchase').show("fast");
-			$('#view_summary_network').show("fast");
-			$('#view_summary_audits').show("fast");
-			$('#view_summary_audit_log').show("fast");
-			$('#view_summary_alerts').show("fast");
-			$('#view_summary_location').show("fast");
-			$('#view_summary_custom').show("fast");
-			$('#view_summary_attachment').show("fast");
-			$('#view_summary_nmis').show("fast");
-			summary_toggle = 1;
-		}
-		else 
-		{
-			$('#view_summary_windows').hide("fast");
-			$('#view_summary_credentials').hide("fast");
-			$('#view_summary_purchase').hide("fast");
-			$('#view_summary_network').hide("fast");
-			$('#view_summary_audits').hide("fast");
-			$('#view_summary_audit_log').hide("fast");
-			$('#view_summary_alerts').hide("fast");
-			$('#view_summary_location').hide("fast");
-			$('#view_summary_custom').hide("fast");
-			$('#view_summary_attachment').hide("fast");
-			$('#view_summary_nmis').hide("fast");
-			summary_toggle = 0;
-		}
-	});
-
-
-	$('#view_hardware_processor').hide();
-	$('#view_hardware_memory').hide();
-	$('#view_hardware_bios').hide();
-	$('#view_hardware_motherboard').hide();
-	$('#view_hardware_scsi_controller').hide();
-	$('#view_hardware_network').hide();
-	$('#view_hardware_hard_drive').hide();
-	$('#view_hardware_optical').hide();
-	$('#view_hardware_video').hide();
-	$('#view_hardware_monitor').hide();
-	$('#view_hardware_sound').hide();
-	$('#view_hardware_printer').hide();
-        
-	var hardware_toggle = 0;
-
-	$('#toggle_hardware_processor').click(function(){
-		$('#view_hardware_processor').slideToggle("fast");
-	});
-
-	$('#toggle_hardware_memory').click(function(){
-		$('#view_hardware_memory').slideToggle("fast");
-	});
- 
-	$('#toggle_hardware_bios').click(function(){
-		$('#view_hardware_bios').slideToggle("fast");
-	});   
-
-	$('#toggle_hardware_motherboard').click(function(){
-		$('#view_hardware_motherboard').slideToggle("fast");
-	});   
-
-	$('#toggle_hardware_scsi_controller').click(function(){
-		$('#view_hardware_scsi_controller').slideToggle("fast");
-	});
-
-	$('#toggle_hardware_network').click(function(){
-		$('#view_hardware_network').slideToggle("fast");
-	});
-
-	$('#toggle_hardware_hard_drive').click(function(){
-		$('#view_hardware_hard_drive').slideToggle("fast");
-	});
-
-	$('#toggle_hardware_optical').click(function(){
-		$('#view_hardware_optical').slideToggle("fast");
-	});
-
-	$('#toggle_hardware_video').click(function(){
-		$('#view_hardware_video').slideToggle("fast");
-	});
-
-	$('#toggle_hardware_monitor').click(function(){
-		$('#view_hardware_monitor').slideToggle("fast");
-	});
-
-	$('#toggle_hardware_sound').click(function(){
-		$('#view_hardware_sound').slideToggle("fast");
-	});
-
-	$('#toggle_hardware_printer').click(function(){
-		$('#view_hardware_printer').slideToggle("fast");
-	});
-
-	$('#toggle_hardware_all').click(function(){
-	if (hardware_toggle == 0)
-	{
-			$('#view_hardware_processor').show("fast");
-			$('#view_hardware_memory').show("fast");
-			$('#view_hardware_bios').show("fast");
-			$('#view_hardware_motherboard').show("fast");
-			$('#view_hardware_scsi_controller').show("fast");
-			$('#view_hardware_network').show("fast");
-			$('#view_hardware_hard_drive').show("fast");
-			$('#view_hardware_optical').show("fast");
-			$('#view_hardware_video').show("fast");
-			$('#view_hardware_monitor').show("fast");
-			$('#view_hardware_sound').show("fast");
-			$('#view_hardware_printer').show("fast");
-			hardware_toggle = 1;
-		}
-		else 
-		{
-			$('#view_hardware_processor').hide("fast");
-			$('#view_hardware_memory').hide("fast");
-			$('#view_hardware_bios').hide("fast");
-			$('#view_hardware_motherboard').hide("fast");
-			$('#view_hardware_scsi_controller').hide("fast");
-			$('#view_hardware_network').hide("fast");
-			$('#view_hardware_hard_drive').hide("fast");
-			$('#view_hardware_optical').hide("fast");
-			$('#view_hardware_video').hide("fast");
-			$('#view_hardware_monitor').hide("fast");
-			$('#view_hardware_sound').hide("fast");
-			$('#view_hardware_printer').hide("fast");
-			hardware_toggle = 0;
-		}
-	});
-
-	$('#view_software_installed').hide();
-	$('#view_software_updates').hide();
-	$('#view_software_services').hide();
-	$('#view_software_codecs').hide();
-	$('#view_software_odbc').hide();
-	$('#view_software_assembly').hide();
-	$('#view_software_keys').hide();
-
-	var software_toggle = 0;
-
-	$('#toggle_software_installed').click(function(){
-		$('#view_software_installed').slideToggle("fast");
-	});
-
-	$('#toggle_software_updates').click(function(){
-		$('#view_software_updates').slideToggle("fast");
-	});
-
-	$('#toggle_software_services').click(function(){
-		$('#view_software_services').slideToggle("fast");
-	});
-
-	$('#toggle_software_codecs').click(function(){
-		$('#view_software_codecs').slideToggle("fast");
-	});
-
-	$('#toggle_software_odbc').click(function(){
-		$('#view_software_odbc').slideToggle("fast");
-	});
-
-	$('#toggle_software_assembly').click(function(){
-		$('#view_software_assembly').slideToggle("fast");
-	});
-
-	$('#toggle_software_keys').click(function(){
-		$('#view_software_keys').slideToggle("fast");
-	});
-
-
-	$('#toggle_software_all').click(function(){
-		if (software_toggle == 0)
-		{
-			$('#view_software_installed').show("fast");
-			$('#view_software_updates').show("fast");
-			$('#view_software_services').show("fast");
-			$('#view_software_codecs').show("fast");
-			$('#view_software_odbc').show("fast");
-			$('#view_software_assembly').show("fast");
-			$('#view_software_keys').show("fast");
-			software_toggle = 1;
-		}
-		else 
-		{
-			$('#view_software_installed').hide("fast");
-			$('#view_software_updates').hide("fast");
-			$('#view_software_services').hide("fast");
-			$('#view_software_codecs').hide("fast");
-			$('#view_software_odbc').hide("fast");
-			$('#view_software_assembly').hide("fast");
-			$('#view_software_keys').hide("fast");
-			software_toggle = 0;
-		}
-	});
-
-	$('#view_settings_pagefile').hide();
-	$('#view_settings_shares').hide();
-	$('#view_settings_routes').hide();
-	$('#view_settings_users').hide();
-	$('#view_settings_groups').hide();
-	$('#view_settings_print_queue').hide();
-	$('#view_settings_dns').hide();
-	$('#view_settings_netstat').hide();
-	$('#view_settings_logs').hide();
-	$('#view_settings_variables').hide();
-               
-	var settings_toggle = 0;
-	
-	$('#toggle_settings_pagefile').click(function(){
-		$('#view_settings_pagefile').slideToggle("fast");
-	});
-
-	$('#toggle_settings_shares').click(function(){
-		$('#view_settings_shares').slideToggle("fast");
-	});
-		
-	$('#toggle_settings_routes').click(function(){
-		$('#view_settings_routes').slideToggle("fast");
-	});
-
-	$('#toggle_settings_users').click(function(){
-		$('#view_settings_users').slideToggle("fast");
-	});
-
-	$('#toggle_settings_groups').click(function(){
-		$('#view_settings_groups').slideToggle("fast");
-	});
-
-	$('#toggle_settings_print_queue').click(function(){
-		$('#view_settings_print_queue').slideToggle("fast");
-	});
-
-	$('#toggle_settings_dns').click(function(){
-		$('#view_settings_dns').slideToggle("fast");
-	});
-
-	$('#toggle_settings_netstat').click(function(){
-		$('#view_settings_netstat').slideToggle("fast");
-	});
-
-	$('#toggle_settings_logs').click(function(){
-		$('#view_settings_logs').slideToggle("fast");
-	});
-
-	$('#toggle_settings_variables').click(function(){
-		$('#view_settings_variables').slideToggle("fast");
-	});
-
-	$('#toggle_settings_all').click(function(){
-		if (settings_toggle == 0)
-		{
-			$('#view_settings_pagefile').show("fast");
-			$('#view_settings_shares').show("fast");
-			$('#view_settings_routes').show("fast");
-			$('#view_settings_users').show("fast");
-			$('#view_settings_groups').show("fast");
-			$('#view_settings_print_queue').show("fast");
-			$('#view_settings_dns').show("fast");
-			$('#view_settings_netstat').show("fast");
-			$('#view_settings_logs').show("fast");
-			$('#view_settings_variables').show("fast");
-			settings_toggle = 1;
-		}
-		else 
-		{
-			$('#view_settings_pagefile').hide("fast");
-			$('#view_settings_shares').hide("fast");
-			$('#view_settings_routes').hide("fast");
-			$('#view_settings_users').hide("fast");
-			$('#view_settings_groups').hide("fast");
-			$('#view_settings_print_queue').hide("fast");
-			$('#view_settings_dns').hide("fast");
-			$('#view_settings_netstat').hide("fast");
-			$('#view_settings_logs').hide("fast");
-			$('#view_settings_variables').hide("fast");
-			settings_toggle = 0;
-		}
-	});
-
-	$('#view_server_database').hide();
-	$('#view_server_web').hide();
-
-	var server_toggle = 0;
-
-	$('#toggle_server_database').click(function(){
-		$('#view_server_database').slideToggle("fast");
-	});
-
-	$('#toggle_server_web').click(function(){
-		$('#view_server_web').slideToggle("fast");
-	});
-
-	$('#toggle_server_all').click(function(){
-		if (server_toggle == 0)
-		{
-			$('#view_server_database').show("fast");
-			$('#view_server_web').show("fast");
-			server_toggle = 1;
-		}
-		else 
-		{
-			$('#view_server_database').hide("fast");
-			$('#view_server_web').hide("fast");
-			server_toggle = 0;
-		}
-	});
-});
-</script>
-
-<?php
-function clean_url($url) {
-	$url = str_replace("&amp;", "&", $url);
-	$url = str_replace("&", "&amp;", $url);
-	$url = str_replace("\\", '/', $url);
-	return $url;	
-}
-
-function print_something($string)
-{
-	if ((mb_strlen($string) == 0) OR ($string == '0000-00-00') ) {
-		return '-';
-	} else {
-		return $string;
-	}
-}
-
-function display_custom_field($field_placement, $additional_fields, $edit) {
-	foreach($additional_fields as $field)
-	{
-		if ($field->field_placement == $field_placement)
-		{			
-			$data_id = "";
-			$data_value = "";
-			
-			$data_id = "field_" . $field->field_type;
-			$data_id = $field->$data_id;
-			
-			$data_value = "field_" . $field->field_type;
-			$data_value = $field->$data_value;
-			
-			$width = "120";
-			if ($field_placement == 'view_summary_windows')
-			{
-				$width = '160';
-			}
-			# TODO: fix this string output hack with real html entities
-			echo "<div style=\"float: left; width: 90%; \">\n";
-			echo "<label for=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" >" . __($field->field_name) . ": </label>";
-			echo   "<span id=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" " . $edit . ">" . print_something($data_value) . "</span><br />&nbsp;\n";
-			echo "</div>\n";
-		}
-	}
-}
-
-function strTime($s) {
-	$str = "";
-	$d = intval($s/86400);
-	$s -= $d*86400;
-	$h = intval($s/3600);
-	$s -= $h*3600;
-	$m = intval($s/60);
-	$s -= $m*60;
-	if ($d) $str = $d . 'd ';
-	if ($h) $str .= $h . 'h ';
-	if ($m) $str .= $m . 'm ';
-	if ($s) $str .= $s . 's';
-	return $str;
-}

@@ -28,26 +28,25 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.2
+ * @version 1.3
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor VMware
-if (!function_exists('get_oid_details')) {
+
+$get_oid_details = function($details){
+	$model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.1.0" ));
+	$version = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.2.0" ));
+	$details->model = $model . " (" . $version . ")";
+	$details->model =str_replace("\"", "", $details->model);
+	$details->os_group = "VMware";
+	$details->os_family = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.1.0" ));
+	$details->os_family = str_replace("\"", "", $details->os_family);
+	$details->os_name = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
+	$details->os_name =str_replace("\"", "", $details->os_name);
+	$details->type = 'computer';
+	$details->device_type = 'computer';
+	$details->man_class = 'hypervisor';
+};
 	
-	function get_oid_details($details){
-		$model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.1.0" ));
-		$version = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.2.0" ));
-		$details->model = $model . " (" . $version . ")";
-		$details->model =str_replace("\"", "", $details->model);
-		$details->os_group = "VMware";
-		$details->os_family = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.1.1.0" ));
-		$details->os_family = str_replace("\"", "", $details->os_family);
-		$details->os_name = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
-		$details->os_name =str_replace("\"", "", $details->os_name);
-		$details->type = 'computer';
-		$details->device_type = 'computer';
-		$details->man_class = 'hypervisor';
-	}
-}
