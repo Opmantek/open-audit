@@ -1110,6 +1110,11 @@ class M_system extends MY_Model {
 		# update the device icon
 		$this->m_system->reset_icons($details->system_id);
 
+		# insert a subnet so we have a default
+		if (!isset($details->subnet) or $details->subnet == '') {
+			$details->subnet = '0.0.0.0';
+		}
+
 		# insert the network card details of we have them
 		if ((isset($details->mac_address) and $details->mac_address != '') and 
 			(isset($details->man_ip_address) and $details->man_ip_address != '') and 
@@ -1439,6 +1444,43 @@ class M_system extends MY_Model {
 
 		# finally, update the device icon
 		$this->m_system->reset_icons($details->system_id);
+
+		if (isset($details->mac_address) and 
+			$details->mac_address != '' and 
+			isset($details->man_ip_address) and 
+			$details->man_ip_address != ''){
+			# we need to check if we have an entry in sys_hw_network_card
+			# if we do not, but we have details (ex- an nmap device that previously existed but did not have a MAC, but now does)
+			# we need to insert it.
+			# ideally this would have already been done when the device was initially discovered, but we cannot count on that.
+			# need to check if an entry in sys_hw_network_card exists and if it does not AND we have details, insert something
+
+			# insert a subnet so we have a default
+			if (!isset($details->subnet) or $details->subnet == '') {
+				$details->subnet = '0.0.0.0';
+			}
+
+			# search for any entries
+			$sql = "SELECT * FROM sys_hw_network_card WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+			$data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
+			$query = $this->db->query($sql, $data);
+			$result = $query->result();
+			if (count($result) == 0){
+				# no match - insert 
+				$sql = "INSERT INTO sys_hw_network_card_ip (net_mac_address, system_id, ip_address_v4, ip_subnet, ip_address_version, timestamp, first_timestamp) VALUES(LOWER(?), ?, ?, ?, '4', ?, ?)";
+				$sql = $this->clean_sql($sql);
+				$data = array("$details->mac_address", "$details->system_id", "$details->man_ip_address", "$details->subnet", "$details->timestamp", "$details->timestamp");
+				$query = $this->db->query($sql, $data);
+
+			} else {
+				# match - update timestamp only
+				$sql = "UPDATE sys_hw_network_card SET timestamp = ? WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+				$data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
+				$query = $this->db->query($sql, $data);
+			}
+		}
+
+
 	}
 
 
