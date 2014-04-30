@@ -285,11 +285,9 @@ echo "	<software>" >> $xml_file
 software_name=""
 software_version=""
 software_install_source=""
-for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8); do
+for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8 -A 1 | grep -e '^$' -v); do
 
-	#echo "LINE: $line"
-
-	if [[ "$software_name" == "" ]]; then
+	if [[ "$software_name" == "" && "$line" != *"Get Info String: "* ]]; then
 		#software_name=`echo "$line"`     # | cut -d":" -f0 | sed 's/^ *//'`
 		software_name=`echo "$line" | sed 's/^ *//'`
 	fi
@@ -303,14 +301,30 @@ for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8); 
 	fi
 
 	if [[ "$line" == *"App Store: Yes"* ]]; then
-		software_install_source="App Store"
+		software_install_source="Mac App Store"
 	fi
 
 	if [[ "$line" == *"App Store: No"* ]]; then
-		software_install_source=""
+		software_install_source="Unknown"
 	fi
 
-	if [[ "$line" == *"Get Info String: "* ]]; then
+	if [[ "$line" == *"Obtained from: "* ]]; then
+		software_install_source=`echo "$line" | cut -d":" -f2 | sed 's/^ *//'`
+	fi
+
+	if [[ "$line" == *"Signed by: Developer ID Application"* ]]; then
+		software_publisher=`echo "$line" | cut -d":" -f3 | cut -d"," -f1 | sed 's/^ *//'`
+	fi
+
+	if [[ "$line" == *"Signed by: Microsoft Corporation"* ]]; then
+		software_publisher="Microsoft"
+	fi
+
+	if [[ "$software_install_source" == "Apple" ]]; then
+		software_publisher="Apple"
+	fi
+
+	if [[ "$line" == *"Get Info String: "* && "$software_publisher" == "" ]]; then
 		software_publisher=`echo "$line" | sed 's/^ *//'`
 		software_publisher=`echo "$software_publisher" | sed 's/^Get Info String: //'`
 	fi
@@ -327,7 +341,9 @@ for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8); 
 		echo "		</package>" >> $xml_file
 		software_name=""
 		software_version=""
+		software_location=""
 		software_install_source=""
+		software_publisher=""
 	fi
 done
 echo "	</software>" >> $xml_file
