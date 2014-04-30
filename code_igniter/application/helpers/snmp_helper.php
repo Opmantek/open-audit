@@ -546,7 +546,7 @@ if (!function_exists('get_snmp')) {
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
-					$interface->net_mac_address = str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index]));
+					$interface->net_mac_address = @str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index]));
 					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
 						$test_mac = @snmp2_walk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
 						if (is_array($test_mac) and count($test_mac) > 0) {
@@ -554,12 +554,12 @@ if (!function_exists('get_snmp')) {
 							$interface->net_mac_address = str_replace(" ", ":", snmp_clean($test_mac[0]));
 						}
 					}
-					$interface->net_model = snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
+					$interface->net_model = @snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
 					$interface->net_description = $interface->net_model;
-					$interface->net_connection_id = snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
-					$interface->net_adapter_type = interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
-					$interface->net_ip_enabled = ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
-					$interface->net_speed = snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
+					$interface->net_connection_id = @snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
+					$interface->net_adapter_type = @interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
+					$interface->net_ip_enabled = @ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
+					$interface->net_speed = @snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
 					$interface->net_manufacturer = '';
 					$interface->net_connection_status = '';
 					$interface->net_dhcp_enabled = '';
