@@ -108,7 +108,7 @@ system_uptime=""
 system_form_factor=""
 system_pc_os_bit="64"
 system_pc_memory=`system_profiler SPHardwareDataType | grep "Memory:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1`
-system_pc_memory=`expr $system_pc_memory \* 1024`
+system_pc_memory=`expr $system_pc_memory \* 1024 \* 1024`
 processor_count=`system_profiler SPHardwareDataType | grep "Number of Processors" | cut -d: -f2`
 system_pc_date_os_installation=`date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S"`
 if [[ "$system_model" == *"MacBook"* ]]; then
