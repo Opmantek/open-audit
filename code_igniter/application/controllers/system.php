@@ -740,8 +740,8 @@ class System extends CI_Controller {
 		$this->m_oa_group->update_system_groups($details);
 		$this->m_sys_man_audits->update_audit($details, '');
 		$this->benchmark->mark('code_end');
-		echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds.<br />';
-		echo '</body>\n</html>';
+		echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds.';
+		echo '</body></html>';
 
 
 		if ((php_uname('s') === 'Linux') OR (php_uname('s') === 'Darwin')) {

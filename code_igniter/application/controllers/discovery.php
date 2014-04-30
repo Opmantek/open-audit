@@ -608,13 +608,13 @@ class discovery extends CI_Controller
 
     public function process_subnet()
     {
-        $log_details = "C:discovery F:process_subnet function called"; $this->log_event($log_details);
+        #$log_details = "C:discovery F:process_subnet function called"; $this->log_event($log_details);
         # accept or process the output of the discover subnet script - nmap details
         if (!isset($_POST['form_details'])) {
-            $log_details = "C:discovery F:process_subnet form_details set"; $this->log_event($log_details);
+            #$log_details = "C:discovery F:process_subnet form_details set"; $this->log_event($log_details);
             $this->load->view('v_process_subnet', $this->data);
         } else {
-            $log_details = "C:discovery F:process_subnet form_details not set"; $this->log_event($log_details);
+            #$log_details = "C:discovery F:process_subnet form_details not set"; $this->log_event($log_details);
 
             if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
                 echo "<pre>\n";
