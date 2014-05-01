@@ -414,9 +414,27 @@ class System extends CI_Controller {
 		fwrite($handle, $log_line);
 		fclose($handle);
 
+		# this allows for no additional audit script and snmp code
+		# and inserts all the (or any) retrieved mac addresses into the sys XML section
+		# which are then compared against in the m_system->find_system function to match a device
+		foreach ($xml->children() as $child) {
+			if ($child->getName() === 'network_cards') {
+				foreach ($child->children() as $card) {
+					$mac = '';
+					$mac = strtolower((string)$card->net_mac_address);
+					if ($mac != '') {
+						$xml->sys->mac_addresses->$mac = $card->net_mac_address;
+					}
+				}
+			}
+		}
+		unset($mac);
+
+
 		foreach ($xml->children() as $child) {
 			if ($child->getName() === 'sys') {
 				$details = (object) $xml->sys;
+
 				$received_system_id = '';
 				if(!isset($details->system_id)) {
 					$details->system_id = '';
@@ -723,7 +741,7 @@ class System extends CI_Controller {
 		$this->m_sys_man_audits->update_audit($details, '');
 		$this->benchmark->mark('code_end');
 		echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds.';
-		echo '</body>\n</html>';
+		echo '</body></html>';
 
 
 		if ((php_uname('s') === 'Linux') OR (php_uname('s') === 'Darwin')) {
