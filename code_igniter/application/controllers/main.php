@@ -587,25 +587,19 @@ class main extends MY_Controller
         $sort = $this->m_additional_fields->get_additional_fields($this->data['id']);
         sort($sort);
         $this->data['additional_fields'] = $sort;
-
         $this->data['alerts'] = $this->m_alerts->get_system_alerts($this->data['id']);
         $this->data['assembly'] = $this->m_software->get_system_software($this->data['id'], 6);
         $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
         $this->data['audit_log'] = $this->m_audit_log->get_audit_log($this->data['id']);
         $this->data['audits'] = $this->m_sys_man_audits->get_system_audits($this->data['id']);
-
-        #$this->data['bios'] = $this->m_bios->get_system_bios($this->data['id']);
         $this->data['bios'] = $this->m_oa_general->get_system_attribute('sys_hw_bios', '*', $this->data['id']);
-
         $this->data['codecs'] = $this->m_software->get_system_software($this->data['id'], 5);
         $this->data['database'] = $this->m_database->get_system_db($this->data['id']);
         $this->data['database_details'] = $this->m_database_details->get_system_db_details($this->data['id']);
         $this->data['dns'] = $this->m_dns->get_system_dns($this->data['id']);
         $this->data['hard_drive'] = $this->m_hard_drive->get_system_hard_drive($this->data['id']);
         $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
-        
         $this->data['library'] = $this->m_software->get_system_software($this->data['id'], 7);
-        
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['memory'] = $this->m_memory->get_system_memory($this->data['id']);
         $this->data['monitor'] = $this->m_monitor->get_system_monitor($this->data['id']);
@@ -623,16 +617,10 @@ class main extends MY_Controller
         $this->data['route'] = $this->m_route->get_system_route($this->data['id']);
         $this->data['scsi_controller'] = $this->m_scsi_controller->get_system_scsi_controller($this->data['id']);
         $this->data['service'] = $this->m_service->get_system_service($this->data['id']);
-
-        #$this->data['share'] = $this->m_share->get_system_share($this->data['id']);
         $this->data['share'] = $this->m_oa_general->get_system_attribute('sys_sw_share', '*', $this->data['id']);
-
         $this->data['software'] = $this->m_software->get_system_software($this->data['id'], 0);
         $this->data['sound'] = $this->m_sound->get_system_sound($this->data['id']);
-
-        #$this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
-        $this->data['system'] = $this->m_oa_general->get_attribute('system', '*', $this->data['id']);
-
+        $this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
         $this->data['system_group'] = $this->m_group->get_system_group($this->data['id']);
         $this->data['system_id'] = $this->data['id'];
         $this->data['system_location'] = $this->m_oa_location->get_system_location($this->data['id']);
@@ -698,26 +686,29 @@ class main extends MY_Controller
 
         }
 
-        $this->data['include'] = "";
-        $formatted_type = str_replace(" ", "_", trim($this->data['system'][0]->man_type));
+        // $this->data['include'] = "";
+        // $formatted_type = str_replace(" ", "_", trim($this->data['system'][0]->man_type));
+        // if ($formatted_type == 'network_printer') { $formatted_type = 'printer'; }
 
-        if ($this->data['system'][0]->man_type == 'computer') {
-            if (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_computer_" . $this->data['system'][0]->man_os_group . ".php")) {
-                $this->data['include'] = "v_display_computer_" . $this->data['system'][0]->man_os_group;
-            } else {
-                $this->data['include'] = "v_display_computer";
-            }
+        // if ($this->data['system'][0]->man_type == 'computer') {
+        //     if (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_computer_" . $this->data['system'][0]->man_os_group . ".php")) {
+        //         $this->data['include'] = "v_display_computer_" . $this->data['system'][0]->man_os_group;
+        //     } else {
+        //         $this->data['include'] = "v_display_computer";
+        //     }
 
-        } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $this->data['system'][0]->man_type . ".php")) {
-            $this->data['include'] = "v_display_" . trim($this->data['system'][0]->man_type);
+        // } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $this->data['system'][0]->man_type . ".php")) {
+        //     $this->data['include'] = "v_display_" . trim($this->data['system'][0]->man_type);
 
-        } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $formatted_type . ".php")) {
-            $this->data['include'] = "v_display_" . str_replace(" ", "_", trim($this->data['system'][0]->man_type));
+        // } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $formatted_type . ".php")) {
+        //     $this->data['include'] = "v_display_" . $formatted_type;
 
-        } else {
-            $this->data['include'] = "v_display_general";
-        }
+        // } else {
+        //     $this->data['include'] = "v_display_general";
+        // }
 
+        $this->data['include'] = "v_display_device";
+        
         foreach ($this->data['system'] as $system) {
             $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
             $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
@@ -736,7 +727,7 @@ class main extends MY_Controller
                 $system->man_picture = 'custom/' . $system->system_id . '.jpg';
             }
 
-            # check if an image matching the and exists
+            # check if an image matching the model exists
             if (($system->man_picture == '') and (file_exists($model_file_exists))) {
                 $system->man_picture = '' . $model_formatted . '.jpg';
             }
