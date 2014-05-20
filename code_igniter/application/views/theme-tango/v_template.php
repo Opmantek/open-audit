@@ -175,7 +175,7 @@ if ($function == "list_devices") {
 	</style>
 
 	<?php
-	if ($include == "v_main" or $include == "v_report" or $include == "v_search_result") {
+	if ($include == "v_main" or $include == "v_report" or $include == "v_search_result" or $include == "v_report_software_licensing") {
 		include("popup_js.php");
 		include("popup_css.php");
 	}
