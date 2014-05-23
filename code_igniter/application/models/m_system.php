@@ -687,7 +687,7 @@ class M_system extends MY_Model {
 	}
 
 	function get_system_summary($system_id) {
-		$sql = "SELECT * FROM system WHERE system.system_id = ? LIMIT 1";
+		$sql = "SELECT system.*, location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE system.system_id = ? LIMIT 1";
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
