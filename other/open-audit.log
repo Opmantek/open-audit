@@ -1,0 +1,228 @@
+May 12 16:38:54 mark 17103 C:admin F:get_config U:NMIS at 127.0.0.1.
+May 12 16:39:16 mark 17546 C:discovery F:discover_subnet U:NMIS Discovery submitted for 192.168.0.0/24.
+May 12 16:39:16 mark 17546 C:discovery F:discover_subnet U:NMIS Creating Group for 192.168.0.0/24.
+May 12 16:39:16 mark 17624 S:discover_subnet U:www-data Discovery for 192.168.0.0/24 submitted at 2014-05-12 16:39:16 starting
+May 12 16:39:21 mark 17624 S:discover_subnet U:www-data Scanning ip address 192.168.0.1
+May 12 16:39:24 mark 17624 S:discover_subnet U:www-data Submitting online 192.168.0.1
+May 12 16:39:24 mark 17624 S:discover_subnet U:www-data Scanning ip address 192.168.0.2
+May 12 16:39:24 mark 12886 C:discovery F:process_subnet Start processing 192.168.0.1.
+May 12 16:39:24 mark 12886 C:discovery F:process_subnet WMI Status: false 192.168.0.1.
+May 12 16:39:24 mark 12886 C:discovery F:process_subnet SNMP Status: true 192.168.0.1.
+May 12 16:39:24 mark 12886 C:discovery F:process_subnet SSH Status: false 192.168.0.1.
+May 12 16:39:24 mark 12886 C:discovery F:process_subnet Attempting SNMP discovery on 192.168.0.1.
+May 12 16:39:24 mark 12886 H:snmp_helper F:get_snmp 192.168.0.1 SNMP v2c scanned.
+May 12 16:39:24 mark 12886 C:discovery F:process_subnet SNMP insert for 192.168.0.1 (System ID 1).
+May 12 16:39:24 mark 12886 C:discovery F:process_subnet SNMP credential update for 192.168.0.1 (System ID 1).
+May 12 16:39:24 mark 12886 C:discovery F:process_subnet Completed processing 192.168.0.1 (System ID 1).
+May 12 16:40:55 mark 17624 S:discover_subnet U:www-data Submitting online 192.168.0.2
+May 12 16:40:55 mark 17624 S:discover_subnet U:www-data Scanning ip address 192.168.0.3
+May 12 16:40:56 mark 17588 C:discovery F:process_subnet Start processing 192.168.0.2.
+May 12 16:40:56 mark 17588 C:discovery F:process_subnet WMI Status: false 192.168.0.2.
+May 12 16:40:56 mark 17588 C:discovery F:process_subnet SNMP Status: true 192.168.0.2.
+May 12 16:40:56 mark 17588 C:discovery F:process_subnet SSH Status: false 192.168.0.2.
+May 12 16:40:56 mark 17588 C:discovery F:process_subnet Attempting SNMP discovery on 192.168.0.2.
+May 12 16:40:59 mark 17624 S:discover_subnet U:www-data Submitting online 192.168.0.3
+May 12 16:40:59 mark 17624 S:discover_subnet U:www-data Scanning ip address 192.168.0.4
+May 12 16:40:59 mark 18452 C:discovery F:process_subnet Start processing 192.168.0.3.
+May 12 16:40:59 mark 18452 C:discovery F:process_subnet WMI Status: false 192.168.0.3.
+May 12 16:40:59 mark 18452 C:discovery F:process_subnet SNMP Status: false 192.168.0.3.
+May 12 16:40:59 mark 18452 C:discovery F:process_subnet SSH Status: false 192.168.0.3.
+May 12 16:40:59 mark 18452 C:discovery F:process_subnet Nmap insert for 192.168.0.3 (System ID 2).
+May 12 16:40:59 mark 18452 C:discovery F:process_subnet Completed processing 192.168.0.3 (System ID 2).
+May 12 16:41:11 mark 17624 S:discover_subnet U:www-data Submitting online 192.168.0.4
+May 12 16:41:11 mark 17624 S:discover_subnet U:www-data Scanning ip address 192.168.0.8
+May 12 16:41:12 mark 12886 C:discovery F:process_subnet Start processing 192.168.0.4.
+May 12 16:41:12 mark 12886 C:discovery F:process_subnet WMI Status: false 192.168.0.4.
+May 12 16:41:12 mark 12886 C:discovery F:process_subnet SNMP Status: true 192.168.0.4.
+May 12 16:41:12 mark 12886 C:discovery F:process_subnet SSH Status: false 192.168.0.4.
+May 12 16:41:12 mark 12886 C:discovery F:process_subnet Attempting SNMP discovery on 192.168.0.4.
+May 12 16:41:24 mark 17624 S:discover_subnet U:www-data Submitting online 192.168.0.8
+May 12 16:41:24 mark 17624 S:discover_subnet U:www-data Scanning ip address 192.168.0.10
+May 12 16:41:24 mark 18454 C:discovery F:process_subnet Start processing 192.168.0.8.
+May 12 16:41:24 mark 18454 C:discovery F:process_subnet WMI Status: false 192.168.0.8.
+May 12 16:41:24 mark 18454 C:discovery F:process_subnet SNMP Status: false 192.168.0.8.
+May 12 16:41:24 mark 18454 C:discovery F:process_subnet SSH Status: true 192.168.0.8.
+May 12 16:41:24 mark 18454 C:discovery F:process_subnet Nmap insert for 192.168.0.8 (System ID 3).
+May 12 16:41:31 mark 17624 S:discover_subnet U:www-data Submitting online 192.168.0.10
+May 12 16:41:31 mark 17624 S:discover_subnet U:www-data Scanning ip address 192.168.0.13
+May 12 16:41:31 mark 18453 C:discovery F:process_subnet Start processing 192.168.0.10.
+May 12 16:41:31 mark 18453 C:discovery F:process_subnet WMI Status: false 192.168.0.10.
+May 12 16:41:31 mark 18453 C:discovery F:process_subnet SNMP Status: true 192.168.0.10.
+May 12 16:41:31 mark 18453 C:discovery F:process_subnet SSH Status: true 192.168.0.10.
+May 12 16:41:31 mark 18453 C:discovery F:process_subnet Attempting SNMP discovery on 192.168.0.10.
+May 12 16:41:31 mark 18453 H:snmp_helper F:get_snmp 192.168.0.10 not SNMP scanned.
+May 12 16:41:31 mark 18453 C:discovery F:process_subnet Nmap insert for 192.168.0.10 (System ID 4).
+May 12 16:41:31 mark 18453 C:discovery F:process_subnet Completed processing 192.168.0.10 (System ID 4).
+May 12 16:41:33 mark 17624 S:discover_subnet U:www-data Submitting online 192.168.0.13
+May 12 16:41:33 mark 17624 S:discover_subnet U:www-data Scanning ip address 192.168.0.15
+May 12 16:41:34 mark 18467 C:discovery F:process_subnet Start processing 192.168.0.13.
+May 12 16:41:34 mark 18467 C:discovery F:process_subnet WMI Status: false 192.168.0.13.
+May 12 16:41:34 mark 18467 C:discovery F:process_subnet SNMP Status: false 192.168.0.13.
+May 12 16:41:34 mark 18467 C:discovery F:process_subnet SSH Status: false 192.168.0.13.
+May 12 16:41:34 mark 18467 C:discovery F:process_subnet Nmap insert for 192.168.0.13 (System ID 5).
+May 12 16:41:34 mark 18467 C:discovery F:process_subnet Completed processing 192.168.0.13 (System ID 5).
+May 12 16:41:34 mark 18454 C:discovery F:process_subnet Attempting SSH audit for discovery on 192.168.0.8 (linux).
+May 12 16:41:47 mark 17624 S:discover_subnet U:www-data Submitting online 192.168.0.15
+May 12 16:41:47 mark 17624 S:discover_subnet U:www-data Scanning ip address 192.168.0.200
+May 12 16:41:47 mark 18453 C:discovery F:process_subnet Start processing 192.168.0.15.
+May 12 16:41:47 mark 18453 C:discovery F:process_subnet WMI Status: false 192.168.0.15.
+May 12 16:41:47 mark 18453 C:discovery F:process_subnet SNMP Status: false 192.168.0.15.
+May 12 16:41:47 mark 18453 C:discovery F:process_subnet SSH Status: true 192.168.0.15.
+May 12 16:41:47 mark 18453 C:discovery F:process_subnet Nmap insert for 192.168.0.15 (System ID 6).
+May 12 16:41:48 mark 12886 H:snmp_helper F:get_snmp 192.168.0.4 SNMP v1 scanned.
+May 12 16:41:48 mark 12886 C:discovery F:process_subnet SNMP insert for 192.168.0.4 (System ID 7).
+May 12 16:41:48 mark 12886 C:discovery F:process_subnet SNMP credential update for 192.168.0.4 (System ID 7).
+May 12 16:41:48 mark 12886 C:discovery F:process_subnet Completed processing 192.168.0.4 (System ID 7).
+May 12 16:40:56 mark 17588 H:snmp_helper F:get_snmp 192.168.0.2 not SNMP scanned.
+May 12 16:41:50 mark 17588 C:discovery F:process_subnet Nmap insert for 192.168.0.2 (System ID 8).
+May 12 16:41:50 mark 17588 C:discovery F:process_subnet Completed processing 192.168.0.2 (System ID 8).
+May 12 16:41:51 mark 17624 S:discover_subnet U:www-data Submitting online 192.168.0.200
+May 12 16:41:51 mark 17624 S:discover_subnet U:www-data Discovery for 192.168.0.0/24 submitted at 2014-05-12 16:39:16 completed
+May 12 16:41:51 mark 18467 C:discovery F:process_subnet Start processing 192.168.0.200.
+May 12 16:41:55 mark 18453 C:discovery F:process_subnet Attempting SSH audit for discovery on 192.168.0.15 (linux).
+May 12 16:41:56 mark 17602 C:discovery F:process_subnet Deleting credential set for 192.168.0.0/24 submitted on 2014-05-12 16:39:16.
+May 12 16:41:56 mark 18467 C:discovery F:process_subnet WMI Status: false 192.168.0.200.
+May 12 16:41:56 mark 18467 C:discovery F:process_subnet SNMP Status: false 192.168.0.200.
+May 12 16:41:56 mark 18467 C:discovery F:process_subnet SSH Status: false 192.168.0.200.
+May 12 16:41:56 mark 18467 C:discovery F:process_subnet Nmap insert for 192.168.0.200 (System ID 9).
+May 12 16:41:56 mark 18467 C:discovery F:process_subnet Completed processing 192.168.0.200 (System ID 9).
+May 12 16:41:59 mark 19472 C:system F:add_system Processing audit result for mark (Supplied System ID 3).
+May 12 16:41:59 mark 19472 C:system F:add_system Updating result for mark (System ID 3).
+May 12 16:42:14 mark 19472 C:system F:add_system Processing completed for mark (System ID 3).
+May 12 16:42:14 mark 18454 C:discovery F:process_subnet Successful SSH audit for discovery on 192.168.0.8 (linux).
+May 12 16:42:14 mark 18454 C:discovery F:process_subnet SSH credential update for 192.168.0.8 (System ID 3).
+May 12 16:42:14 mark 18454 C:discovery F:process_subnet Completed processing 192.168.0.8 (System ID 3).
+May 12 16:42:27 mark 18471 C:system F:add_system Processing audit result for server (Supplied System ID 6).
+May 12 16:42:27 mark 18471 C:system F:add_system Updating result for server (System ID 6).
+May 12 16:42:34 mark 18471 C:system F:add_system Processing completed for server (System ID 6).
+May 12 16:42:34 mark 18453 C:discovery F:process_subnet Successful SSH audit for discovery on 192.168.0.15 (linux).
+May 12 16:42:34 mark 18453 C:discovery F:process_subnet SSH credential update for 192.168.0.15 (System ID 6).
+May 12 16:42:34 mark 18453 C:discovery F:process_subnet Completed processing 192.168.0.15 (System ID 6).
+May 12 16:56:14 mark 18454 C:admin_system F:system_icon U:Administrator at 127.0.0.1.
+May 12 16:56:38 mark 22106 C:admin_system F:system_icon U:Administrator at 127.0.0.1.
+May 13 14:36:05 mark 18454 C:admin_system F:system_snmp U:Administrator at 192.168.88.138.
+May 13 14:36:06 mark 18454 H:snmp_helper F:get_snmp 192.168.0.1 SNMP v2c scanned.
+May 13 14:36:29 mark 3212 C:discovery F:discover_subnet U:Administrator Discovery submitted for 192.168.0.1.
+May 13 14:36:29 mark 7250 S:discover_subnet U:www-data Discovery for 192.168.0.1 submitted at 2014-05-13 14:36:29 starting
+May 13 14:36:29 mark 7250 S:discover_subnet U:www-data Scanning ip address 192.168.0.1
+May 13 14:36:31 mark 7250 S:discover_subnet U:www-data Submitting online 192.168.0.1
+May 13 14:36:31 mark 7250 S:discover_subnet U:www-data Discovery for 192.168.0.1 submitted at 2014-05-13 14:36:29 completed
+May 13 14:36:31 mark 5837 C:discovery F:process_subnet Start processing 192.168.0.1.
+May 13 14:36:36 mark 18454 C:discovery F:process_subnet Deleting credential set for 192.168.0.1 submitted on 2014-05-13 14:36:29.
+May 13 14:36:36 mark 5837 C:discovery F:process_subnet WMI Status: false 192.168.0.1.
+May 13 14:36:36 mark 5837 C:discovery F:process_subnet SNMP Status: true 192.168.0.1.
+May 13 14:36:36 mark 5837 C:discovery F:process_subnet SSH Status: false 192.168.0.1.
+May 13 14:36:36 mark 5837 C:discovery F:process_subnet Attempting SNMP discovery on 192.168.0.1.
+May 13 14:36:42 mark 5837 H:snmp_helper F:get_snmp 192.168.0.1 SNMP v2c scanned.
+May 13 14:36:42 mark 5837 C:discovery F:process_subnet SNMP update for 192.168.0.1 (System ID 1).
+May 13 14:36:42 mark 5837 C:discovery F:process_subnet SNMP credential update for 192.168.0.1 (System ID 1).
+May 13 14:36:42 mark 5837 C:discovery F:process_subnet Completed processing 192.168.0.1 (System ID 1).
+May 19 09:08:27 mark 13391 C:admin F:add_script_audit_windows U:Administrator at 127.0.0.1.
+May 20 11:15:20 mark 26425 C:admin_licenses F:change_license U:Administrator at 192.168.88.138.
+May 20 12:02:05 mark 26429 C:admin_system F:system_icon U:Administrator at 192.168.88.138.
+May 20 14:30:03 mark 26713 C:admin F:add_script_audit_windows U:Administrator at 192.168.88.138.
+May 20 14:44:06 mark 26746 C:admin F:add_script_audit_windows U:Administrator at 192.168.88.138.
+May 20 14:44:19 mark 27809 C:admin_user F:list_users U:Administrator at 192.168.88.138.
+May 20 14:44:32 mark 29561 C:admin F:add_script_audit_windows U:Administrator at 192.168.88.138.
+May 20 14:45:36 mark 28255 C:admin F:add_script_audit_windows U:Administrator at 192.168.88.138.
+May 20 14:46:33 mark 27810 C:admin_user F:list_users U:Administrator at 192.168.88.138.
+May 20 14:50:14 mark 29561 C:admin F:add_script_audit_windows U:Administrator at 192.168.88.138.
+May 20 15:17:59 mark 30442 C:admin_field F:list_fields U:Administrator at 192.168.88.138.
+May 20 15:18:00 mark 30442 C:admin_field F:add_field U:Administrator at 192.168.88.138.
+May 20 15:18:02 mark 30442 C:admin F:edit_config U:Administrator at 192.168.88.138.
+May 20 15:18:03 mark 30442 C:admin_connection F:list_connections U:Administrator at 192.168.88.138.
+May 20 15:18:03 mark 30442 C:admin_connection F:add_connection U:Administrator at 192.168.88.138.
+May 20 15:18:05 mark 30442 C:admin_db F:backup U:Administrator at 192.168.88.138.
+May 20 15:18:11 mark 28255 C:admin_db F:export_table U:Administrator at 192.168.88.138.
+May 20 15:18:12 mark 26746 C:admin_db F:maintenance U:Administrator at 192.168.88.138.
+May 20 15:18:12 mark 28255 C:admin_system F:add_system U:Administrator at 192.168.88.138.
+May 20 15:18:13 mark 26746 C:admin_system F:add_systems U:Administrator at 192.168.88.138.
+May 20 15:18:17 mark 26746 C:admin F:scan_ad U:Administrator at 192.168.88.138.
+May 20 15:18:19 mark 26746 C:admin_group F:list_groups U:Administrator at 192.168.88.138.
+May 20 15:18:19 mark 26746 C:admin_group F:add_group U:Administrator at 192.168.88.138.
+May 20 15:18:20 mark 26746 C:admin_group F:add_group U:Administrator at 192.168.88.138.
+May 20 15:18:20 mark 27809 C:admin_group F:import_group U:Administrator at 192.168.88.138.
+May 20 15:18:20 mark 27809 C:admin_group F:activate_group U:Administrator at 192.168.88.138.
+May 20 15:18:22 mark 27809 C:admin_location F:list_locations U:Administrator at 192.168.88.138.
+May 20 15:18:22 mark 27809 C:admin_location F:add_location U:Administrator at 192.168.88.138.
+May 20 15:18:23 mark 27809 C:admin_location F:add_locations U:Administrator at 192.168.88.138.
+May 20 15:18:27 mark 27809 C:admin_org F:list_orgs U:Administrator at 192.168.88.138.
+May 20 15:18:27 mark 27809 C:admin_org F:add_org U:Administrator at 192.168.88.138.
+May 20 15:18:28 mark 27809 C:admin_org F:add_orgs U:Administrator at 192.168.88.138.
+May 20 15:18:30 mark 27809 C:admin_report F:list_reports U:Administrator at 192.168.88.138.
+May 20 15:18:30 mark 27809 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:18:31 mark 27809 C:admin_report F:import_report U:Administrator at 192.168.88.138.
+May 20 15:18:32 mark 27809 C:admin F:add_script_audit_windows U:Administrator at 192.168.88.138.
+May 20 15:18:33 mark 27809 C:admin_user F:list_users U:Administrator at 192.168.88.138.
+May 20 15:18:34 mark 27809 C:admin_user F:add_user U:Administrator at 192.168.88.138.
+May 20 15:31:55 mark 27810 C:admin_report F:list_reports U:Administrator at 192.168.88.138.
+May 20 15:32:26 mark 29561 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:33:54 mark 30672 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:35:37 mark 27809 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:36:51 mark 28255 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:38:46 mark 27810 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:50:39 mark 30442 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:55:18 mark 26713 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:56:18 mark 30672 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:56:53 mark 26713 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:57:13 mark 31752 C:admin_report F:list_reports U:Administrator at 192.168.88.138.
+May 20 15:57:22 mark 31542 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:57:50 mark 31766 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 15:58:32 mark 27810 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:00:40 mark 30442 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:02:44 mark 31752 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:04:14 mark 31789 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:05:20 mark 27810 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:06:24 mark 26713 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:07:26 mark 31782 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:08:12 mark 31895 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:08:44 mark 31789 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:08:53 mark 31782 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:09:34 mark 30442 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:09:38 mark 26713 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:11:17 mark 30672 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:11:27 mark 31916 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:16:46 mark 31789 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:17:27 mark 31916 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:21:00 mark 31955 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:22:15 mark 31789 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:24:01 mark 30672 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:28:06 mark 32066 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:28:14 mark 31895 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:28:59 mark 31789 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:30:16 mark 31916 C:admin_user F:list_users U:Administrator at 192.168.88.138.
+May 20 16:30:34 mark 32066 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:31:20 mark 32164 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:31:40 mark 32054 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:34:16 mark 30672 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:35:29 mark 31782 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:35:45 mark 30672 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:37:54 mark 32260 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:38:33 mark 30672 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:40:49 mark 32267 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:41:40 mark 31782 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:44:11 mark 32279 C:admin_user F:list_users U:Administrator at 192.168.88.138.
+May 20 16:44:30 mark 32267 C:admin_user F:list_users U:Administrator at 192.168.88.138.
+May 20 16:44:42 mark 32303 C:admin_report F:list_reports U:Administrator at 192.168.88.138.
+May 20 16:44:46 mark 32303 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 16:44:56 mark 32337 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 20 17:01:59 mark 32279 C:admin_report F:activate_report U:Administrator at 192.168.88.138.
+May 21 10:34:53 mark 14967 C:admin_report F:activate_report U:Administrator at 127.0.0.1.
+May 21 10:35:36 mark 14968 C:admin_user F:list_users U:Administrator at 127.0.0.1.
+May 21 10:38:11 mark 14969 C:admin_db F:maintenance U:Administrator at 127.0.0.1.
+May 21 10:38:21 mark 14970 C:admin_db F:maintenance U:Administrator at 127.0.0.1.
+May 22 00:12:16 desktop 29286 C:discovery F:discover_subnet U:Administrator Discovery submitted for 192.168.0.1.
+May 22 00:12:16 desktop 29344 S:discover_subnet U:www-data Discovery for 192.168.0.1 submitted at 2014-05-22 00:12:16 starting
+May 22 00:12:17 desktop 29344 S:discover_subnet U:www-data Scanning ip address 192.168.0.1
+May 22 00:13:23 desktop 29344 S:discover_subnet U:www-data Submitting online 192.168.0.1
+May 22 00:13:23 desktop 29344 S:discover_subnet U:www-data Discovery for 192.168.0.1 submitted at 2014-05-22 00:12:16 completed
+May 22 00:13:29 desktop 26868 C:discovery F:process_subnet Start processing 192.168.0.1.
+May 22 00:13:29 desktop 26868 C:discovery F:process_subnet WMI Status: false 192.168.0.1.
+May 22 00:13:29 desktop 26868 C:discovery F:process_subnet SNMP Status: true 192.168.0.1.
+May 22 00:13:29 desktop 26868 C:discovery F:process_subnet SSH Status: false 192.168.0.1.
+May 22 00:13:29 desktop 26868 C:discovery F:process_subnet Attempting SNMP discovery on 192.168.0.1.
+May 22 00:13:29 desktop 26868 H:snmp_helper F:get_snmp 192.168.0.1 SNMP v2c scanned.
+May 22 00:13:30 desktop 26868 C:discovery F:process_subnet SNMP insert for 192.168.0.1 (System ID 1).
+May 22 00:13:30 desktop 26868 C:discovery F:process_subnet SNMP credential update for 192.168.0.1 (System ID 1).
+May 22 00:13:30 desktop 26868 C:discovery F:process_subnet Completed processing 192.168.0.1 (System ID 1).
+May 22 00:13:34 desktop 29289 C:discovery F:process_subnet Deleting credential set for 192.168.0.1 submitted on 2014-05-22 00:12:16.
