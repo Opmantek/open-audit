@@ -40,6 +40,7 @@ if (!isset($this->session->userdata["user_lang"]) or $this->session->userdata["u
 }
 
 $language_file = APPPATH . "/views/lang/" . $GLOBALS["user_lang"] . ".inc";
+$language_file = APPPATH . "views/lang/" . $GLOBALS["user_lang"] . ".inc";
 
 include($language_file);
 
@@ -56,7 +57,7 @@ if(!function_exists('__')) {
 			$language_file = APPPATH . "views/lang/" . $GLOBALS["user_lang"] . ".inc";
 			include($language_file);
 		}
-
+		$word = (string)$word;
 		if(isset($GLOBALS["lang"][$word]))
 		{
 			return $GLOBALS["lang"][$word];

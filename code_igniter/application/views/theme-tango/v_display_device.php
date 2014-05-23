@@ -129,7 +129,7 @@ $summary_attributes = array('hostname' => 'text' ,
 if ($system[0]->man_type == 'computer') {
 	$summary_attributes = array_slice($summary_attributes, 0, 3) + 
 			array('man_class' => 'select') + 
-			array('man_function' => 'select') + 
+			array('man_function' => 'text') + 
 			array_slice($summary_attributes, 3, count($summary_attributes) - 1, true);
 
 	$summary_attributes = array_slice($summary_attributes, 0, 8) + 
@@ -193,7 +193,7 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 				$text = str_replace('_', ' ', $text);
 				$text = ucwords($text);
 				if ($text == 'Ip Address') { $text = 'IP Address'; }
-				if ($text == 'Snmp Oid') { $text = 'Snmp OID'; }
+				if ($text == 'Snmp Oid') { $text = 'SNMP OID'; }
 				if (strpos($text, 'Os ') !== false) { $text = str_replace('Os ', 'OS ', $text); }
 
 				if ($value == '' and isset($system[0]->$key) and $system[0]->$key > '') {

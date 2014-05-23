@@ -57,7 +57,7 @@ echo form_open('discovery/discover_active_directory') ?>
 
 				<p><label for='domain'><?php echo __("Domain Name")?>: </label><input type='text' id='domain' name='domain' tabindex='5' title='Domain Name' value='<?php echo $config->default_windows_domain; ?>'  /> eg: open-audit.local</p>
 
-				<p><label for='number_of_audits'><?php echo __("# Audits")?>: </label><input type='text' id='number_of_audits' name='number_of_audits' tabindex='6' title='# Audits' value='20'  /> This is the number of audit processes that will be spawned at any given time.</p>
+				<p><label for='number_of_audits'># <?php echo __("Audits")?>: </label><input type='text' id='number_of_audits' name='number_of_audits' tabindex='6' title='# Audits' value='20'  /> This is the number of audit processes that will be spawned at any given time.</p>
 
 				<p><label for='debug'><?php echo __("Debug"); ?>: </label> <input type='checkbox' id='debug' name='debug' tabindex='9' title='Debug' />Do not set this in normal use.</p>
 

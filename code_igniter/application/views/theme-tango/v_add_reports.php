@@ -50,7 +50,7 @@ if (count($query) > 1) { ?>
 		<?php foreach($query as $key): ?>
 			<?php if ($key['report_name'] > '') { ?>
 				<tr>
-					<td><?php echo $key['report_name']; ?></td>
+					<td><?php echo __($key['report_name']); ?></td>
 					<td><?php echo $key['report_description']; ?></td>
 					<?php if ($key['activated']) { ?>
 						<td align="center"><a href="action_deactivate_report/<?php echo $key['activated'];?>"><img src="<?php echo $image_path; ?>16_delete.png" alt="" title="" width="16"/></a></td>

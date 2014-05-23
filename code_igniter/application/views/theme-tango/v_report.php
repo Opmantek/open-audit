@@ -71,7 +71,7 @@ foreach($columns as $column) {
 		} else {
 			$style = '';
 		}
-		echo "\t\t\t<th style=\"text-align: $column->column_align; $style\">" . $column->column_name . "</th>\n";
+		echo "\t\t\t<th style=\"text-align: $column->column_align; $style\">" . __($column->column_name) . "</th>\n";
 	}
 }
 if ( ($manual_edit == 'y') and ($system_id = "set") ){

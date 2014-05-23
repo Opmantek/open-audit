@@ -86,7 +86,7 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='smart phone'>Smart Phone</option>
 			<option value='switch'>Switch</option>
 			<option value='tablet'>Tablet</option>
-			<option value='ups'>UPS (Uninteruptable Power Supply)</option>
+			<option value='ups'>UPS (Uninterruptible Power Supply)</option>
 			<option value='voip_adapter'>VoIP Adapter</option>
 			<option value='voip gateway'>VoIP Gateway</option>
 			<option value='voip phone'>VoIP Phone</option>
