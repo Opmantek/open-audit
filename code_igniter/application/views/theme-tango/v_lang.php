@@ -50,7 +50,7 @@ if(!function_exists('__')) {
 
 		//Learning-Mode
 		//Only for Developers !!!!
-		$language_learning_mode=0;
+		$language_learning_mode=1;
 		
 		if($language_learning_mode==1)  
 		{
