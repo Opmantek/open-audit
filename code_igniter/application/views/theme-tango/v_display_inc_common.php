@@ -87,7 +87,8 @@ $edit = '';
 $edit_icon = '';
 if ($access_level > 7) {
 	$edit = 'class="editText" style="color:blue;"';
-	$edit_icon = '<img src="' . $image_path . '10_edit.png" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
+	#$edit_icon = '<img src="' . $image_path . '10_edit.png" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
+	$edit_icon = '<img src="' . $image_path . '16_edit_out.png" onMouseOver="this.src=\'' . $image_path . '16_edit_hover.png\'" onMouseOut="this.src=\'' . $image_path . '16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
 	$edit_custom = 'class="editCustom" style="color:blue;"';
 	$tabcustom = '<li><a href="#tabcustom"><span>' . __('Custom') . '</span></a></li>';
 } else {
@@ -223,7 +224,10 @@ function display_custom_field($field_placement, $additional_fields, $edit) {
 			echo "<div style=\"float: left; width: 90%; \">\n";
 			echo "<label for=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" >" . __($field->field_name) . ": </label>";
 			echo   "<span id=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" " . $edit . ">" . print_something($data_value) . "</span>";
-			if ($edit != '') { echo '<img src="' . base_url() . 'theme-tango/tango-images/' . '10_edit.png" alt="Click the blue text to edit!" title="Click the blue text to edit!" />'; }
+			if ($edit != '') { 
+				#echo '<img src="' . base_url() . 'theme-tango/tango-images/' . '10_edit.png" alt="Click the blue text to edit!" title="Click the blue text to edit!" />'; 
+				echo '<img src="' . base_url() . 'theme-tango/tango-images/16_edit_out.png" onMouseOver="this.src=\'' . base_url() . 'theme-tango/tango-images/16_edit_hover.png\'" onMouseOut="this.src=\'' . base_url() . 'theme-tango/tango-images/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
+			}
 			echo "<br />&nbsp;\n";
 			echo "</div>\n";
 		}
