@@ -158,7 +158,17 @@ if ($config->distinct_groups == 'y') {
 <?php } // end of distinct groups ?>
 <?php
 } else {
-	echo "<br />" . __('<h2>Welcome to Open-AudIT.</h2><br />Please ensure you set the appropriate configuration items at Menu -> Admin -> Config. You should set all the "default_*" items, to take advantage of Discovery. Once that has been done, why not try running Discovery (Menu -> Admin -> Discovery) on your environment?<br /><br />Don\'t forget you can activate extra Groups via the Menu -> Admin -> Groups -> Activate Group item. This will automatically Group items and allow you to set User Access on a per Group Basis.<br /><br />Extra Reports are available at Menu -> Admin -> Reports -> Activate Report. Take a look - you might find exactly the Report you need.');
+	echo "<div style=\"text-align: center;\">\n";
+	echo "<br /><h2>";
+	echo __('Welcome to Open-AudIT.');
+	echo "</h2><br />\n";
+	echo __("Please ensure you set the appropriate configuration items at Menu -> Admin -> Config.") . "<br />\n";
+	echo __("You should set all the 'default_*' items, to take advantage of Discovery.") . "<br />\n";
+	echo __("Once that has been done, why not try running Discovery (Menu -> Admin -> Discovery) on your environment?") . "<br /><br />\n";
+	echo __("Don't forget you can activate extra Groups via the Menu -> Admin -> Groups -> Activate Group item.") . "<br />\n";
+	echo __("This will automatically Group items and allow you to set User Access on a per Group Basis.") . "<br /><br />\n";
+	echo __("Extra Reports are available at Menu -> Admin -> Reports -> Activate Report.<br />Take a look, you might find exactly the Report you need.") . "<br />\n";
+	echo "</div>\v";
 }
 ?>
 <script type="text/javascript">
