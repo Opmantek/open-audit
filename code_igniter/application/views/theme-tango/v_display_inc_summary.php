@@ -471,7 +471,7 @@
 									}
 									if (intval($key->net_speed) >= 1000000000) {
 										$speed = number_format(intval($key->net_speed / 1000 / 1000 / 1000)) . " Gb/s";
-									} ?><td><?php echo $speed; ?></td>
+									} ?><td><?php echo "<span style=\"display: none;\">" . substr('000000000000'.$key->net_speed, -13) . "</span>" . $speed; ?></td>
 							</tr>
 						<?php } ?>
 					</table>
@@ -483,14 +483,18 @@
 						<thead>
 							<tr>
 								<th>MAC Address</th>
+								<th>Interface</th>
 								<th>IP Address</th>
 								<th>Subnet</th>
 							</td>
 						</thead>
 						<tbody>
-						<?php foreach ($ip as $ip_address) { ?><tr>
-							<td><?php echo print_something($ip_address->net_mac_address)?></td>
-							<td><?php echo print_something(ip_address_from_db($ip_address->ip_address_v4))?></td>
+						<?php foreach ($ip as $ip_address) { 
+							if ($ip_address->net_connection_id != '') {
+								$ip_address->net_connection_id = $ip_address->net_connection_id . " - "; }?><tr>
+							<td><?php echo $ip_address->net_mac_address; ?></td>
+							<td><?php echo $ip_address->net_connection_id . $ip_address->net_description; ?></td>
+							<td><?php echo "<span style=\"display: none;\">" . $ip_address->ip_address_v4 . "</span>" . print_something(ip_address_from_db($ip_address->ip_address_v4))?></td>
 							<td><?php echo print_something($ip_address->ip_subnet)?></td>
 							</tr>
 						<?php } ?>

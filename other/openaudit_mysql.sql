@@ -748,6 +748,7 @@ CREATE TABLE `sys_hw_network_card_ip` (
   `ip_id` int(10) unsigned NOT NULL auto_increment,
   `net_mac_address` varchar(17) NOT NULL default '',
   `system_id` int(10) unsigned default NULL,
+  `net_index` varchar(10) NOT NULL default '',
   `ip_address_v4` varchar(30) NOT NULL default '',
   `ip_address_v6` varchar(30) NOT NULL default '',
   `ip_subnet` varchar(30) NOT NULL default '',

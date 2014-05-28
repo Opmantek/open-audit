@@ -876,6 +876,7 @@ class discovery extends CI_Controller
                         }
                     }
 
+
                     # remove all the NULL, FALSE and Empty Strings but leaves 0 (zero) values
                     # $details = (object) array_filter((array) $details, 'strlen' );
 
@@ -929,6 +930,8 @@ class discovery extends CI_Controller
                                     }
                                 }
                             }
+                            # finish off with updating any network IPs that don't have a matching interface
+                            $this->m_ip_address->update_missing_interfaces($details->system_id);
                         }
 
                         if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {

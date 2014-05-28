@@ -546,12 +546,12 @@ if (!function_exists('get_snmp')) {
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
-					$interface->net_mac_address = @str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index]));
+					$interface->net_mac_address = format_mac(@str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index])));
 					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
 						$test_mac = @snmp2_walk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
 						if (is_array($test_mac) and count($test_mac) > 0) {
 							# we have a mac address
-							$interface->net_mac_address = str_replace(" ", ":", snmp_clean($test_mac[0]));
+							$interface->net_mac_address = format_mac(str_replace(" ", ":", snmp_clean($test_mac[0])));
 						}
 					}
 					$interface->net_model = @snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
@@ -578,6 +578,7 @@ if (!function_exists('get_snmp')) {
 							$each_value = snmp_clean($each_value);
 							if ($each_value == $interface->net_index) {
 								$new_ip = new stdclass();
+								$new_ip->net_index = $interface->net_index;
 								$new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.20.1.2.", "", $each_key);
 								$new_ip->net_mac_address = $interface->net_mac_address;
 								$new_ip->ip_address_v6 = '';
@@ -710,13 +711,13 @@ if (!function_exists('get_snmp')) {
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
-					$interface->net_mac_address = str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index]));
+					$interface->net_mac_address = format_mac(str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index])));
 
 					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
 						$test_mac = @snmpwalk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
 						if (is_array($test_mac) and count($test_mac) > 0) {
 							# we have a mac address
-							$interface->net_mac_address = str_replace(" ", ":", snmp_clean($test_mac[0]));
+							$interface->net_mac_address = format_mac(str_replace(" ", ":", snmp_clean($test_mac[0])));
 						}
 					}
 
@@ -830,6 +831,7 @@ if (!function_exists('get_snmp')) {
 		$string = str_replace("OID: .", "", $string);
 
 		$string = str_replace("STRING: ", "", $string);
+		$string = str_replace("string: ", "", $string);
 		$string = str_replace("IpAddress: ", "", $string);
 		$string = str_replace("INTEGER: ", "", $string);
 		$string = str_replace("Hex-STRING: ", "", $string);
@@ -894,6 +896,11 @@ if (!function_exists('get_snmp')) {
 	}
 
 	function interface_type($int_type) {
+		$i = (string) intval($int_type);
+		if ($int_type != $i ) {
+			$int_type = substr($int_type, strpos($int_type, "(")+1);
+			$int_type = substr($int_type, 0, strpos($int_type, ")"));
+		}
 		switch ($int_type) {
 			case '1':
 				$int_type = 'other';
@@ -1607,7 +1614,14 @@ if (!function_exists('get_snmp')) {
 		return $int_type;
 	}
 
-
+	function format_mac($mac_address) {
+		$mymac = explode(":",$mac_address);
+		for($i=0; $i<count($mymac); $i++) {
+			$mymac[$i] = mb_substr("00" . $mymac[$i], -2);
+		}
+		$mac_address = implode(":", $mymac);
+		return($mac_address);
+	}
 
 
 }

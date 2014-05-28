@@ -2534,6 +2534,10 @@ class Admin extends MY_Controller {
 		if (($db_internal_version < '20140515') AND ($this->db->platform() == 'mysql')) {
 			# upgrade for 1.3.2
 
+			$sql = "ALTER TABLE sys_hw_network_card_ip ADD net_index varchar(10) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "UPDATE oa_config set config_value = '20140515', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
