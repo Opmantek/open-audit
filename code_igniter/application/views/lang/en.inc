@@ -747,4 +747,13 @@ $GLOBALS["lang"]["Your Open-AudIT database contains the following devices in a p
 $GLOBALS["lang"]["Extra Reports are available at Menu -> Admin -> Reports -> Activate Report.<br />Take a look, you might find exactly the Report you need."]="Extra Reports are available at Menu -> Admin -> Reports -> Activate Report.<br />Take a look, you might find exactly the Report you need.";
 $GLOBALS["lang"]["OS / Device"]="OS / Device";
 $GLOBALS["lang"]["Uptime"]="Uptime";
+$GLOBALS["lang"]["Discover the devices on your network"]="Discover the devices on your network";
+$GLOBALS["lang"]["Discover"]="Discover";
+$GLOBALS["lang"]["First Seen"]="First Seen";
+$GLOBALS["lang"]["Assigned To"]="Assigned To";
+$GLOBALS["lang"]["OS"]="OS";
+$GLOBALS["lang"]["Discover a device"]="Discover a device";
+$GLOBALS["lang"]["Downloads Link"]="Downloads Link";
+$GLOBALS["lang"]["Warranty Link"]="Warranty Link";
+$GLOBALS["lang"]["Warranty Link"]="Warranty Link";
 ?>
