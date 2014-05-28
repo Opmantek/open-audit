@@ -745,6 +745,7 @@ if (!function_exists('get_snmp')) {
 							$each_value = snmp_clean($each_value);
 							if ($each_value === $interface->net_index) {
 								$new_ip = new stdclass();
+								$new_ip->net_index = $interface->net_index;
 								$new_ip->net_mac_address = $interface->net_mac_address;
 								$new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.20.1.2.", "", $each_key);
 								$new_ip->ip_address_v6 = '';
@@ -1615,11 +1616,13 @@ if (!function_exists('get_snmp')) {
 	}
 
 	function format_mac($mac_address) {
-		$mymac = explode(":",$mac_address);
-		for($i=0; $i<count($mymac); $i++) {
-			$mymac[$i] = mb_substr("00" . $mymac[$i], -2);
+		if ($mac_address != '') {
+			$mymac = explode(":",$mac_address);
+			for($i=0; $i<count($mymac); $i++) {
+				$mymac[$i] = mb_substr("00" . $mymac[$i], -2);
+			}
+			$mac_address = implode(":", $mymac);
 		}
-		$mac_address = implode(":", $mymac);
 		return($mac_address);
 	}
 
