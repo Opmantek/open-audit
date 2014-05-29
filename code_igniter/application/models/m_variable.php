@@ -135,7 +135,14 @@ class M_variable extends MY_Model {
 		}
 
 		// new variable
-		$sql = "SELECT variable_id, variable_name, variable_value FROM sys_sw_variable WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT variable_id, variable_name, variable_value 
+			FROM 
+				sys_sw_variable LEFT JOIN system ON (sys_sw_variable.system_id = system.system_id) 
+			WHERE 
+				sys_sw_variable.system_id = ? AND 
+				sys_sw_variable.first_timestamp = ? AND 
+				sys_sw_variable.first_timestamp = .timestamp AND 
+				sys_sw_variable.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

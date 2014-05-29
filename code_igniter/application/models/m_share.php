@@ -134,7 +134,14 @@ class M_share extends MY_Model {
 		}
 
 		// new share
-		$sql = "SELECT share_id, share_name, share_caption FROM sys_sw_share WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT share_id, share_name, share_caption 
+			FROM 
+				sys_sw_share LEFT JOIN system ON (sys_sw_share.system_id = system.system_id) 
+			WHERE 
+				sys_sw_share.system_id = ? AND 
+				sys_sw_share.first_timestamp = ? AND 
+				sys_sw_share.first_timestamp = sys_sw_share.timestamp AND 
+				sys_sw_share.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

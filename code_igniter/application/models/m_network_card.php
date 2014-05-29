@@ -194,7 +194,14 @@ class M_network_card extends MY_Model {
 		}
 		
 		// new network card
-		$sql = "SELECT net_id, net_model, LOWER(net_mac_address) as net_mac_address FROM sys_hw_network_card WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT net_id, net_model, LOWER(net_mac_address) as net_mac_address 
+			FROM 
+				sys_hw_network_card LEFT JOIN system ON (sys_hw_network_card.system_id = system.system_id) 
+			WHERE 
+				sys_hw_network_card.system_id = ? AND 
+				sys_hw_network_card.first_timestamp = ? AND 
+				sys_hw_network_card.first_timestamp = sys_hw_network_card.timestamp AND 
+				sys_hw_network_card.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

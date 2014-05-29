@@ -119,7 +119,14 @@ class M_processor extends MY_Model {
 
 	function alert_processor($details) {
 		// new processor
-		$sql = "SELECT processor_id, processor_description FROM sys_hw_processor WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT processor_id, processor_description 
+			FROM 
+				sys_hw_processor LEFT JOIN system ON (sys_hw_processor.system_id = system.system_id) 
+			WHERE 
+				sys_hw_processor.system_id = ? AND 
+				sys_hw_processor.first_timestamp = ? AND 
+				sys_hw_processor.first_timestamp = sys_hw_processor.timestamp AND 
+				sys_hw_processor.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

@@ -351,7 +351,13 @@ class M_software extends MY_Model {
 		}
 		
 		// new software
-		$sql = "SELECT software_id, software_name, software_version FROM sys_sw_software WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_version 
+		FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id) 
+		WHERE 
+		sys_sw_software.system_id = ? AND 
+		sys_sw_software.first_timestamp = sys_sw_software.timestamp AND 
+		sys_sw_software.first_timestamp = ? AND 
+		sys_sw_software.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

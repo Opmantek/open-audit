@@ -131,7 +131,14 @@ class M_user extends MY_Model {
 		}
 
 		// new user
-		$sql = "SELECT user_id, user_name FROM sys_sw_user WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT user_id, user_name 
+			FROM 
+				sys_sw_user LEFT JOIN system ON (sys_sw_user.system_id = system.system_id) 
+			WHERE 
+				sys_sw_user.system_id = ? AND 
+				sys_sw_user.first_timestamp = ? AND 
+				sys_sw_user.first_timestamp = sys_sw_user.timestamp AND 
+				sys_sw_user.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

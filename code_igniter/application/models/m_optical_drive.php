@@ -133,7 +133,14 @@ class M_optical_drive extends MY_Model {
 		}
 		
 		// new optical_drive
-		$sql = "SELECT optical_drive_id, optical_drive_model, optical_drive_mount_point FROM sys_hw_optical_drive WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT optical_drive_id, optical_drive_model, optical_drive_mount_point 
+			FROM 
+				sys_hw_optical_drive LEFT JOIN system ON (sys_hw_optical_drive.system_id = system.system_id) 
+			WHERE 
+				sys_hw_optical_drive.system_id = ? AND 
+				sys_hw_optical_drive.first_timestamp = ? AND 
+				sys_hw_optical_drive.first_timestamp = sys_hw_optical_drive.timestamp AND 
+				sys_hw_optical_drive.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

@@ -152,7 +152,15 @@ class M_database extends MY_Model {
 		}
 
 		// new database
-		$sql = "SELECT db_id, db_version FROM sys_sw_database WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT sys_sw_database.db_id, sys_sw_database.db_version 
+			FROM 
+				sys_sw_database LEFT JOIN system ON (sys_sw_database.system_id = system.system_id) 
+			WHERE 
+				sys_sw_database.system_id = ? AND 
+				sys_sw_database.first_timestamp = ? AND 
+				sys_sw_database.first_timestamp = sys_sw_database.timestamp AND 
+				sys_sw_database.first_timestamp != system.first_timestamp";
+
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

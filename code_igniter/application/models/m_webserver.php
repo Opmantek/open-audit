@@ -313,7 +313,14 @@ class M_webserver extends MY_Model {
 		}
 
 		// new web server
-		$sql = "SELECT ws_id, webserver_type, webserver_version FROM sys_sw_web_server WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT ws_id, webserver_type, webserver_version 
+			FROM 
+				sys_sw_web_server LEFT JOIN system ON (sys_sw_web_server.system_id = system.system_id) 
+			WHERE 
+				sys_sw_web_server.system_id = ? AND 
+				sys_sw_web_server.first_timestamp = ? AND 
+				sys_sw_web_server.first_timestamp = sys_sw_web_server.timestamp AND 
+				sys_sw_web_server.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

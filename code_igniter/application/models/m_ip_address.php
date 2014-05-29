@@ -211,7 +211,21 @@ class M_ip_address extends MY_Model {
 		}
 
 		// new network_card_ip - ONLY for devices not using DHCP
-		$sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.first_timestamp = sys_hw_network_card_ip.timestamp and sys_hw_network_card_ip.first_timestamp != ? and LOWER(sys_hw_network_card.net_dhcp_enabled) = 'false'";
+		$sql = "SELECT 
+					sys_hw_network_card_ip.ip_id, 
+					sys_hw_network_card_ip.ip_address_v4 
+				FROM 
+					sys_hw_network_card_ip 
+				LEFT JOIN 
+					sys_hw_network_card ON (sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address) 
+				LEFT JOIN 
+					system ON (sys_hw_network_card_ip.system_id = system.system_id) 
+				WHERE 
+					sys_hw_network_card_ip.system_id = ? AND 
+					sys_hw_network_card_ip.first_timestamp = ? AND 
+					sys_hw_network_card_ip.first_timestamp = sys_hw_network_card_ip.timestamp AND 
+					sys_hw_network_card_ip.first_timestamp != system.first_timestamp
+					LOWER(sys_hw_network_card.net_dhcp_enabled) = 'false'";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

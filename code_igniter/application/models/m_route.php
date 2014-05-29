@@ -137,7 +137,14 @@ class M_route extends MY_Model {
 		}
 
 		// new route
-		$sql = "SELECT route_id, destination, next_hop FROM sys_sw_route WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT route_id, destination, next_hop 
+			FROM 
+				sys_sw_route LEFT JOIN system ON (sys_sw_route.system_id = system.system_id) 
+			WHERE 
+				sys_sw_route.system_id = ? AND 
+				sys_sw_route.first_timestamp = ? AND 
+				sys_sw_route.first_timestamp = sys_sw_route.timestamp AND 
+				sys_sw_route.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

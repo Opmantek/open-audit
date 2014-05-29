@@ -100,7 +100,14 @@ class M_group extends MY_Model {
 		}
 
 		// new group
-		$sql = "SELECT group_id, group_name FROM sys_sw_group WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT group_id, group_name 
+			FROM 
+				sys_sw_group LEFT JOIN system ON (sys_sw_group.system_id = system.system_id) 
+			WHERE 
+				sys_sw_group.system_id = ? AND 
+				sys_sw_group.first_timestamp = ? AND 
+				sys_sw_group.first_timestamp = sys_sw_group.timestamp AND 
+				sys_sw_group.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

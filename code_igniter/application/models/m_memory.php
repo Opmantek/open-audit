@@ -148,7 +148,14 @@ class M_memory extends MY_Model {
 		}
 
 		// new memory
-		$sql = "SELECT memory_id, memory_bank, memory_capacity FROM sys_hw_memory WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT memory_id, memory_bank, memory_capacity 
+			FROM 
+				sys_hw_memory LEFT JOIN system ON (sys_hw_memory.system_id = system.system_id) 
+			WHERE 
+				sys_hw_memory.system_id = ? AND 
+				sys_hw_memory.first_timestamp = ? AND 
+				sys_hw_memory.first_timestamp = sys_hw_memory.timestamp AND 
+				sys_hw_memory.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

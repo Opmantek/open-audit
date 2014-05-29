@@ -143,7 +143,14 @@ class M_scsi_controller extends MY_Model {
 		}
 
 		// new scsi card
-		$sql = "SELECT scsi_controller_id, scsi_controller_name FROM sys_hw_scsi_controller WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT scsi_controller_id, scsi_controller_name 
+			FROM 
+				sys_hw_scsi_controller LEFT JOIN system ON (sys_hw_scsi_controller.system_id = system.system_id) 
+			WHERE 
+				sys_hw_scsi_controller.system_id = ? AND 
+				sys_hw_scsi_controller.first_timestamp = ? AND 
+				sys_hw_scsi_controller.first_timestamp = sys_hw_scsi_controller.timestamp AND 
+				sys_hw_scsi_controller.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

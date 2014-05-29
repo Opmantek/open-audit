@@ -226,7 +226,14 @@ class M_partition extends MY_Model {
 		}
 
 		// new partition
-		$sql = "SELECT partition_id, partition_mount_point FROM sys_hw_partition WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT partition_id, partition_mount_point 
+			FROM 
+				sys_hw_partition LEFT JOIN system ON (sys_hw_partition.system_id = system.system_id) 
+			WHERE 
+				sys_hw_partition.system_id = ? AND 
+				sys_hw_partition.first_timestamp = ? AND 
+				sys_hw_partition.first_timestamp = sys_hw_partition.timestamp AND 
+				sys_hw_partition.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

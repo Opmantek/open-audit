@@ -126,7 +126,14 @@ class M_sound extends MY_Model {
 		}
 
 		// new sound card
-		$sql = "SELECT sound_id, sound_name FROM sys_hw_sound WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT sound_id, sound_name 
+			FROM 
+				sys_hw_sound LEFT JOIN system ON (sys_hw_sound.system_id = system.system_id) 
+			WHERE 
+				sys_hw_sound.system_id = ? AND 
+				sys_hw_sound.first_timestamp = ? AND 
+				sys_hw_sound.first_timestamp = sys_hw_sound.timestamp AND 
+				sys_hw_sound.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

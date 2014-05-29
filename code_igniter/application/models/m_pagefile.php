@@ -144,7 +144,14 @@ class M_pagefile extends MY_Model {
 		}
 
 		// new pagefile
-		$sql = "SELECT pagefile_id, pagefile_name FROM sys_sw_pagefile WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT pagefile_id, pagefile_name 
+			FROM 
+				sys_sw_pagefile LEFT JOIN system ON (sys_sw_pagefile.system_id = system.system_id) 
+			WHERE 
+				sys_sw_pagefile.system_id = ? AND 
+				sys_sw_pagefile.first_timestamp = ? AND 
+				sys_sw_pagefile.first_timestamp = sys_sw_pagefile.timestamp AND 
+				sys_sw_pagefile.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);
