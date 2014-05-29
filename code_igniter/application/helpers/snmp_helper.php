@@ -349,26 +349,35 @@ if (!function_exists('get_snmp')) {
 
 			// serial 
 			if (!isset($details->serial) or $details->serial == '') {
+				$details->serial = '';
 				# the entity mib serial
 				if ($details->serial == '') {
 					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11"));
-					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP  - Serial: $details->serial.<br />"; }
 				}
-
+				if ($details->serial == '') {
+					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1"));
+				}
+				if ($details->serial == '') {
+					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1.0"));
+				}
 				# generic snmp
 				if ($details->serial == '') {
 					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1"));
-					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP  - Serial: $details->serial.<br />"; }
 				}
-
 				# below is another generic attempt - works for my NetGear Cable Modem
 				if ($details->serial == '') {
 					$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.4491.2.4.1.1.1.3.0"));
-					if ($details->show_output == TRUE and $details->serial > "") { echo "SNMP  - Serial: $details->serial.<br />"; }
 				}
 			}
 
-			if ($details->show_output == TRUE and $details->serial == "") { echo "SNMP  - Serial: <span style='color: blue;'>not retrieved</span>.<br />"; }
+			# echo the serial if required
+			if ($details->show_output == TRUE) {
+				if ($details->serial != "") { 
+					echo "SNMP  - Serial: $details->serial.<br />"; 
+				} else {
+					echo "SNMP  - Serial: <span style='color: blue;'>not retrieved</span>.<br />"; 
+				}
+			}
 
 
 			// mac address
