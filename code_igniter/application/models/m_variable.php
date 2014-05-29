@@ -141,7 +141,7 @@ class M_variable extends MY_Model {
 			WHERE 
 				sys_sw_variable.system_id = ? AND 
 				sys_sw_variable.first_timestamp = ? AND 
-				sys_sw_variable.first_timestamp = .timestamp AND 
+				sys_sw_variable.first_timestamp = sys_sw_variable.timestamp AND 
 				sys_sw_variable.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
