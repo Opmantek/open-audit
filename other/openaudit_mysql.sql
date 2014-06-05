@@ -1458,6 +1458,29 @@ CREATE TABLE `sys_sw_variable` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `sys_sw_virtual_machine`
+--
+
+DROP TABLE IF EXISTS `sys_sw_virtual_machine`;
+CREATE TABLE `sys_sw_virtual_machine` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `system_id` int(10) unsigned default NULL,
+  `guest_system_id` int(10) unsigned default NULL,
+  `name` varchar(100) NOT NULL default '',
+  `vm_id` int(12) unsigned NOT NULL default '0',
+  `uuid` text NOT NULL default '',
+  `vm_group` text NOT NULL default '',
+  `memory` int(12) unsigned NOT NULL default '0',
+  `cpu` int(10) unsigned NOT NULL default '0',
+  `status` varchar(100) NOT NULL default '',
+  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_virtual_machine_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `sys_sw_web_server`
 --
 
@@ -1657,7 +1680,7 @@ CREATE TABLE `system` (
   `man_status` enum('production', 'deleted', 'lost', 'maintenance', 'retired', 'unallocated') NOT NULL default 'production',
   `man_environment` enum('production', 'dev', 'dr', 'eval', 'pre-prod', 'test', 'train', 'uat') NOT NULL default 'production',
   `man_criticality` enum('critical', 'normal', 'low') NOT NULL default 'normal', 
-  `man_class` enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','') NOT NULL default '', 
+  `man_class` enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','','hypervisor') NOT NULL default '', 
   `man_description` varchar(250) NOT NULL default '',
   `man_function` varchar(100) NOT NULL default '',
   `man_type` varchar(100) NOT NULL default '',
@@ -1783,6 +1806,10 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_snmp_community', 'n', 'y', 'Show the SNMP community string on forms.');
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_passwords', 'n', 'y', 'Show any passwords on forms.');
+
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_enable', 'y', 'y', 'Enable the RSS feed.');
+
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_url', 'https://community.opmantek.com/createrssfeed.action?types=page&types=blogpost&spaces=OA&title=Recent+Contributors&labelString%3D&excludedSpaceKeys%3D&sort=modified&maxResults=3&timeSpan=365&showContent=false&confirm=Create+RSS+Feed', 'y', 'The RSS feed URL.');
 
 INSERT INTO oa_location (location_id, location_name, location_type, location_city, location_state, location_country, location_latitude, location_longitude, location_comments, location_icon, location_group_id) VALUES ('0', 'Default Location', 'Office', 'Gold Coast', 'Queensland', 'Australia', '-28.017260', '153.425705', 'Default location', 'office', '9');
 
