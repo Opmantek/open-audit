@@ -940,8 +940,10 @@ class M_system extends MY_Model {
 		if ((strripos($details->manufacturer, "vmware") !== false) or 
 			(strripos($details->manufacturer, "parallels") !== false) or 
 			(strripos($details->manufacturer, "virtual") !== false)) {
-			$details->form_factor = 'Virtual';
-			$details->man_form_factor = 'Virtual';
+			if (!isset($details->man_class) or $details->man_class != 'hypervisor') {
+				$details->form_factor = 'Virtual';
+				$details->man_form_factor = 'Virtual';
+			}
 		}
 
 		$details->man_ip_address = ip_address_to_db($details->man_ip_address);

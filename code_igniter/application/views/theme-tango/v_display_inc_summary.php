@@ -504,3 +504,63 @@
 		</form>
 	<?php } ?>
 	</div>
+
+
+
+
+
+
+
+	<div id="view_summary_vms" style="float: left; width: 100%;">
+	<?php if (count($vm) > 0) { ?>
+		<br />
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="vm_details">
+				<legend><span style="font-size: 10pt;">&nbsp;<?php echo __('Virtual Machine Details')?></span></legend>
+				<table cellspacing="1" class="tablesorter" width="100%">
+					<thead>
+						<tr>
+							<th align="center">Icon</th>
+							<th>Name</th>
+							<!-- <th>Group</th> -->
+							<th align="center">Memory</th>
+							<th align="center">CPU</th>
+							<th align="center">Status</th>
+							<th>UUID</th>
+						</td>
+					</thead>
+					<tbody>
+					<?php foreach($vm as $key) { 
+						if ($key->man_icon == 'unknown' or $key->man_icon == '') { 
+							$icon = ''; 
+						} else {
+							$icon = "<a href=\"" . base_url() . "index.php/main/system_display/" . $key->guest_system_id . "\"><img src=\"" . base_url() . "theme-tango/tango-images/16_" . $key->man_icon . ".png\" /></a>\n";
+						}
+						if (trim($key->status) == 'powered off') {
+							$status = '<span style="color: red;">' . $key->status . '</span>'; 
+						} else {
+							$status = '<span style="color: green;">' . $key->status . '</span>'; 
+						} 
+						if ($key->guest_system_id != '' and $key->guest_system_id != '0') {
+							$link = "<a href=\"" . base_url() . "index.php/main/system_display/" . $key->guest_system_id . "\">" . $key->name . "</a>\n";
+						} else {
+							$link = $key->name;
+						}
+						?><tr>
+							<td align="center"><?php echo $icon; ?></td>
+							<td><?php echo $link; ?></td>
+							<!-- <td><?php echo $key->vm_group; ?></td> -->
+							<td align="center"><?php echo $key->memory; ?></td>
+							<td align="center"><?php echo $key->cpu; ?></td>
+							<td align="center"><?php echo $status; ?></td>
+							<td><?php echo $key->uuid; ?></td>
+						</tr>
+					<?php } ?>
+				</table>
+				Note - Status as at <?php echo $system[0]->last_seen; ?>.<br />Note - Click icon to view guest details.
+			</fieldset>
+			<br />
+		</form>
+	<?php } ?>
+	</div>

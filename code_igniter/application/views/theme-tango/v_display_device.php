@@ -128,19 +128,26 @@ $summary_attributes = array('hostname' => 'text' ,
 # computers
 if ($system[0]->man_type == 'computer') {
 	$summary_attributes = array_slice($summary_attributes, 0, 3) + 
-			array('man_class' => 'select') + 
-			array('man_function' => 'text') + 
-			array_slice($summary_attributes, 3, count($summary_attributes) - 1, true);
+		array('man_class' => 'select') + 
+		array('man_function' => 'text') + 
+		array_slice($summary_attributes, 3, count($summary_attributes) - 1, true);
 
 	$summary_attributes = array_slice($summary_attributes, 0, 8) + 
-			array('os_group' => 'text') + 
-			array('os_family' => 'text') + 
-			array('os_name' => 'text') + 
-			array_slice($summary_attributes, 8, count($summary_attributes) - 1, true);
+		array('os_group' => 'text') + 
+		array('os_family' => 'text') + 
+		array('os_name' => 'text') + 
+		array_slice($summary_attributes, 8, count($summary_attributes) - 1, true);
 
 	$summary_attributes = array_slice($summary_attributes, 0, 15) + 
-			array('man_form_factor' => 'text') + 
-			array_slice($summary_attributes, 15, count($summary_attributes) - 1, true);
+		array('man_form_factor' => 'text') + 
+		array_slice($summary_attributes, 15, count($summary_attributes) - 1, true);
+
+	if ($system[0]->form_factor == 'Virtual') {
+		$summary_attributes = array_slice($summary_attributes, 0, 16) + 
+			array('man_vm_group' => 'text') + 
+			array('man_vm_server_name' => 'text') + 
+			array_slice($summary_attributes, 16, count($summary_attributes) - 1, true);
+	}
 
 } else {
 	$summary_attributes = array_slice($summary_attributes, 0, 6) + 

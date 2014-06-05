@@ -576,6 +576,7 @@ class main extends MY_Controller
         $this->load->model("m_sys_man_audits");
         $this->load->model("m_user");
         $this->load->model("m_variable");
+        $this->load->model("m_virtual_machine");
         $this->load->model("m_video");
         $this->load->model("m_webserver");
         $this->load->model("m_windows");
@@ -630,6 +631,7 @@ class main extends MY_Controller
         $this->data['system_variable'] = $this->m_variable->get_system_variable($this->data['id']);
         $this->data['updates'] = $this->m_software->get_system_software($this->data['id'], 2);
         $this->data['video'] = $this->m_video->get_system_video($this->data['id']);
+        $this->data['vm'] = $this->m_virtual_machine->get_vm($this->data['id']);
         $this->data['windows'] = $this->m_windows->get_system_windows($this->data['id']);
         $this->data['webserver'] = $this->m_webserver->get_system_webserver($this->data['id']);
         $this->data['website_details'] = $this->m_webserver->get_system_websites($this->data['id']);

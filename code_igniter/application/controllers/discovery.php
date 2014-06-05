@@ -653,6 +653,7 @@ class discovery extends CI_Controller
             $this->load->model("m_system");
             $this->load->model("m_network_card");
             $this->load->model("m_ip_address");
+            $this->load->model("m_virtual_machine");
             $this->load->model("m_oa_group");
             $this->load->model("m_oa_general");
             $this->load->model("m_sys_man_audits");
@@ -865,6 +866,10 @@ class discovery extends CI_Controller
                         $temp_array = get_snmp($details);
                         $details = $temp_array['details'];
                         $network_interfaces = $temp_array['interfaces'];
+                        unset($guests);
+                        if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
+                            $guests = $temp_array['guests'];
+                        }
                         if (isset($network_interfaces) and count($network_interfaces > 0)) {
                             foreach ($network_interfaces as $interface) {
                                 if (isset($interface->net_mac_address) and (string)$interface->net_mac_address != '') {
@@ -932,6 +937,13 @@ class discovery extends CI_Controller
                             }
                             # finish off with updating any network IPs that don't have a matching interface
                             $this->m_ip_address->update_missing_interfaces($details->system_id);
+                        }
+
+                        # insert any found virtual machines
+                        if (isset($guests) and is_array($guests) and count($guests) > 0) {
+                            foreach($guests as $guest) {
+                                $this->m_virtual_machine->process_vm($guest, $details);
+                            }
                         }
 
                         if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {

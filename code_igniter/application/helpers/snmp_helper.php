@@ -317,10 +317,9 @@ if (!function_exists('get_snmp')) {
 				} 
 				if (file_exists(BASEPATH . '../application/helpers/snmp_' . $explode[6] . '_helper.php')) {
 					if ($details->show_output == TRUE) { echo "SNMP  - Loading Model Helper for " . $explode[6] . ".<br />"; }
-					#$CI->load->helper('snmp_' . $explode[6]);
-					#get_oid_details($details);
 					unset($get_oid_details);
 					include('snmp_' . $explode[6] . "_helper.php");
+					$vendor_oid = $explode[6];
 					$get_oid_details($details);
 				} 
 			}
@@ -611,6 +610,14 @@ if (!function_exists('get_snmp')) {
 			} // end of network interfaces
 
 
+			// Virtual Guests
+			if (isset($vendor_oid) and $vendor_oid == '6876') {
+				if (file_exists(BASEPATH . '../application/helpers/snmp_6876_2_helper.php')) {
+					if ($details->show_output == TRUE) { echo "SNMP  - Loading Model Helper for VMware virtual guests.<br />"; }
+					include('snmp_6876_2_helper.php');
+				} 
+			}
+
 		} // end of v2
 
 
@@ -781,13 +788,6 @@ if (!function_exists('get_snmp')) {
 
 
 
-
-
-
-
-
-
-
 		$log_line = '';
 		if ($details->snmp_version == '2') { $details->snmp_version = '2c'; }
 
@@ -804,13 +804,14 @@ if (!function_exists('get_snmp')) {
 			fclose($handle);
 		}
 
-		#unset($details->snmp_version);
 		if ($details->show_output == FALSE) { unset($details->show_output); }
 		$details->hostname = strtolower($details->hostname);
 		if (!isset($interfaces_filtered)) { $interfaces_filtered = array(); }
-		$return_array = array('details' => $details, 'interfaces' => $interfaces_filtered);
+		if (!isset($guests)) { 
+			$guests = array(); 
+		}
+		$return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests);
 		return($return_array);
-		#return $details;
 	}
 
 
