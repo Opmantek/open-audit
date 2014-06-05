@@ -45,18 +45,18 @@
 		<table cellspacing="1" class="tablesorter" width="100%">
 			<thead>
 				<tr>
-					<th><?php echo __('Config Name')?></th>
-					<th><?php echo __('Config Value')?></th>
-					<th><?php echo __('Description')?></th>
-					<th><?php echo __('Last Editied By')?></th>
-					<th><?php echo __('Last Edited On')?></th>
+					<th width="20%"><?php echo __('Config Name')?></th>
+					<th width="20%"><?php echo __('Config Value')?></th>
+					<th width="20%"><?php echo __('Description')?></th>
+					<th width="20%"><?php echo __('Last Editied By')?></th>
+					<th width="20%"><?php echo __('Last Edited On')?></th>
 				</tr>
 			</thead>
 			<tbody>
 			<?php foreach ($query as $item) { ?>
 				<tr>
-					<td width='150px' align="right"><br /><label for='<?php $item->config_name ?>'><?php echo $item->config_name ?>: </label></td>
-					<td align='left' width='250px'><br />
+					<td align="left"><br /><?php echo $item->config_name ?> </td>
+					<td align='left'><br />
 						<?php if ($item->config_editable == "y") {
 							if ($item->config_value == '') { $item->config_value = '-'; }
 
