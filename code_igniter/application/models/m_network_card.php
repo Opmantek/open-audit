@@ -67,15 +67,25 @@ class M_network_card extends MY_Model {
 			// 			( (LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND sys_hw_network_card.net_mac_address > '' ) OR 
 			// 				(LOWER(sys_hw_network_card.net_description) = LOWER(?)) )";
 
+			// $sql = "SELECT sys_hw_network_card.net_id 
+			// 		FROM sys_hw_network_card
+			// 		WHERE sys_hw_network_card.system_id = ? AND 
+			// 			LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND 
+			// 			LOWER(sys_hw_network_card.net_connection_id) = LOWER(?) ";
+
 			$sql = "SELECT sys_hw_network_card.net_id 
 					FROM sys_hw_network_card
 					WHERE sys_hw_network_card.system_id = ? AND 
 						LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND 
-						LOWER(sys_hw_network_card.net_connection_id) = LOWER(?) ";
+						LOWER(sys_hw_network_card.net_index) = LOWER(?) ";
+
 			$sql = $this->clean_sql($sql);
+			// $data = array("$details->system_id", 
+			// 			"$input->net_mac_address", 
+			// 			"$input->net_connection_id");
 			$data = array("$details->system_id", 
 						"$input->net_mac_address", 
-						"$input->net_connection_id");
+						"$input->net_index");
 			$query = $this->db->query($sql, $data);
 
 #echo "1 - " . $this->db->last_query() . "<br />\n";

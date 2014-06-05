@@ -224,7 +224,7 @@ class M_ip_address extends MY_Model {
 					sys_hw_network_card_ip.system_id = ? AND 
 					sys_hw_network_card_ip.first_timestamp = ? AND 
 					sys_hw_network_card_ip.first_timestamp = sys_hw_network_card_ip.timestamp AND 
-					sys_hw_network_card_ip.first_timestamp != system.first_timestamp
+					sys_hw_network_card_ip.first_timestamp != system.first_timestamp AND 
 					LOWER(sys_hw_network_card.net_dhcp_enabled) = 'false'";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);

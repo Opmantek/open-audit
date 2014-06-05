@@ -1250,6 +1250,7 @@ if [ "$net_cards" != "" ]; then
 		net_card_id=`$OA_ECHO $net_card_connection_id | cut -d"/" -f2`
 		net_card_pci=`$OA_ECHO $net_card_connection_id | $OA_CUT -d/ -f1`
 		net_card_mac=`$OA_CAT /sys/class/net/$net_card_id/address`
+		net_index=`$OA_CAT /sys/class/net/$net_card_id/ifindex`
 
 		if [ $net_card_pci = 'virtual' ]; then
 			net_card_model="Virtual Interface"
@@ -1323,6 +1324,7 @@ if [ "$net_cards" != "" ]; then
 			net_card_enabled_ip_version="4"
 			addr_info=$addr_info"\t\t<ip_address>\n"
 			addr_info=$addr_info"\t\t\t<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>\n"
+			addr_info=$addr_info"\t\t\t<net_index>"$(escape_xml "$net_index")"</net_index>\n"
 			addr_info=$addr_info"\t\t\t<ip_address_v4>"$(escape_xml `$OA_ECHO $net_card_enabled_ip4_addr |\
 				$OA_CUT -d/ -f1`)"</ip_address_v4>\n"
 			addr_info=$addr_info"\t\t\t<ip_address_v6>"$(escape_xml "$net_card_enabled_ip6_addr")"</ip_address_v6>\n"
@@ -1344,6 +1346,7 @@ if [ "$net_cards" != "" ]; then
 
 			addr_info=$addr_info"\t\t<ip_address>\n"
 			addr_info=$addr_info"\t\t\t<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>\n"
+			addr_info=$addr_info"\t\t\t<net_index>"$(escape_xml "$net_index")"</net_index>\n"
 			addr_info=$addr_info"\t\t\t<ip_address_v4>"$(escape_xml "$net_card_enabled_ip4_addr")"</ip_address_v4>\n"
 			addr_info=$addr_info"\t\t\t<ip_address_v6>"$(escape_xml `$OA_ECHO $net_card_enabled_ip6_addr |\
 				$OA_CUT -d/ -f1`)"</ip_address_v6>\n"
@@ -1401,6 +1404,7 @@ if [ "$net_cards" != "" ]; then
 		net_card_wins_primary=""
 
 		$OA_ECHO "		<network_card>" >> $xml_file
+		$OA_ECHO "			<net_index>"$(escape_xml "$net_index")"</net_index>" >> $xml_file
 		$OA_ECHO "			<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>" >> $xml_file
 		$OA_ECHO "			<net_manufacturer>"$(escape_xml "$net_card_manufacturer")"</net_manufacturer>" >> $xml_file
 		$OA_ECHO "			<net_model>"$(escape_xml "$net_card_model")"</net_model>" >> $xml_file
