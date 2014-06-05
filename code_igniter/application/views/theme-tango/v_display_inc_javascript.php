@@ -152,7 +152,8 @@ function display_man_class() {
 	<option value='laptop'><?php echo __("Laptop"); ?><\/option>\
 	<option value='tablet'><?php echo __("Tablet"); ?><\/option>\
 	<option value='workstation'><?php echo __("Workstation"); ?><\/option>\
-	<option value='Server'><?php echo __("Server"); ?><\/option>\
+	<option value='server'><?php echo __("Server"); ?><\/option>\
+	<option value='hypervisor'><?php echo __("Hypervisor"); ?><\/option>\
 	<option value='virtual server'><?php echo __("Virtual Server"); ?><\/option>\
 	<option value='virtual desktop'><?php echo __("Virtual Desktop"); ?><\/option>\
 	<\/select>";
