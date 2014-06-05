@@ -756,4 +756,15 @@ $GLOBALS["lang"]["Discover a device"]="Discover a device";
 $GLOBALS["lang"]["Downloads Link"]="Downloads Link";
 $GLOBALS["lang"]["Warranty Link"]="Warranty Link";
 $GLOBALS["lang"]["Warranty Link"]="Warranty Link";
+$GLOBALS["lang"]["Google Search"]="Google Search";
+$GLOBALS["lang"]["Alerts - Hardware"]="Alerts - Hardware";
+$GLOBALS["lang"]["Devices Discovered 30"]="Devices Discovered 30";
+$GLOBALS["lang"]["Hypervisor"]="Hypervisor";
+$GLOBALS["lang"]["Vm Group"]="Vm Group";
+$GLOBALS["lang"]["Vm Server Name"]="Vm Server Name";
+$GLOBALS["lang"]["Virtual Machine Details"]="Virtual Machine Details";
+$GLOBALS["lang"]["OS Installed"]="OS Installed";
+$GLOBALS["lang"]["Windows Site"]="Windows Site";
+$GLOBALS["lang"]["IP"]="IP";
+$GLOBALS["lang"]["OU"]="OU";
 ?>
