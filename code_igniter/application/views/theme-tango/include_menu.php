@@ -227,6 +227,7 @@
 			<li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
 			<li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
 			<li><a href='<?php echo base_url()?>index.php/main/help_statistics'><?php echo __('Statistics')?></a></li>
+			<li><a href='<?php echo base_url()?>index.php/main/help_support'><?php echo __('Support')?></a></li>
 			<!-- 
 			<li><a href='javascript:void(0)'><?php echo __('Support')?></a></li>
 			-->

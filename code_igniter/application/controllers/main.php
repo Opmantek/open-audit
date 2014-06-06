@@ -808,4 +808,439 @@ class main extends MY_Controller
             }
         }
     }
+
+    public function help_support()
+    {
+        $data = array();
+
+        $data['application_environment'] = ENVIRONMENT;
+        $data['application_log_permission'] = '';
+        $data['application_web_version'] = $this->config->item('web_display_version');
+        $data['application_web_internal_version'] = $this->config->item('web_internal_version');
+        $data['application_db_database_version'] = $this->data['config']->display_version;
+        $data['application_db_internal_version'] = $this->data['config']->internal_version;
+        $data['application_nmis_enabled'] = $this->data['config']->nmis;
+        $data['application_nmis_url'] = $this->data['config']->nmis_url;
+        $data['application_oae_status'] = $this->data['config']->logo;
+        $data['application_name_match'] = $this->data['config']->name_match;
+        $data['application_ad_domain'] = $this->data['config']->ad_domain;
+        $data['application_ad_server'] = $this->data['config']->ad_server;
+        $data['application_permitted_uri_chars'] =  $this->config->item('permitted_uri_chars');
+        $data['application_base_url'] = $this->config->item('base_url');
+
+
+        $data['os_platform'] = 'unknown';
+        $data['os_version'] = '';
+        $data['os_database'] = $this->db->platform() . " (version " . $this->db->version() . ")";
+        $data['os_webserver'] = getenv("SERVER_SOFTWARE");
+        $data['os_timezone'] = '';
+
+        $data['prereq_apache_mod_proxy'] = 'n';
+        $data['prereq_curl'] = 'n';
+        $data['prereq_samba-client'] = 'n';
+        $data['prereq_nmap'] = 'n';
+        $data['prereq_nmap_perms'] = '';
+        $data['prereq_php-cli'] = '';
+        $data['prereq_screen'] = 'n';
+        $data['prereq_snmp'] = 'n';
+        $data['prereq_sshpass'] = 'n';
+        $data['prereq_wget'] = 'n';
+        $data['prereq_winexe'] = 'n';
+        $data['prereq_zip'] = 'n';
+
+
+        $data['php_version'] = phpversion();
+        $data['php_error_reporting'] = ini_get('error_reporting');
+        $data['php_timezone'] = date_default_timezone_get();
+        $data['php_process_owner'] = '';
+        $data['php_memory_limit'] = ini_get('memory_limit');
+        $data['php_max_execution_time'] = ini_get('max_execution_time');
+        $data['php_max_input_time'] = ini_get('max_input_time');
+        $data['php_display_errors'] = ini_get('display_errors');
+        $data['php_upload_max_filesize'] = ini_get('upload_max_filesize');
+        $data['php_ext_ldap'] = $this->ext('ldap');
+        $data['php_ext_mbstring'] = $this->ext('mbstring');
+        $data['php_ext_mcrypt'] = $this->ext('mcrypt');
+        $data['php_ext_mysql'] = $this->ext('mysql');
+        $data['php_ext_snmp'] = $this->ext('snmp');
+        $data['php_ext_xml'] = $this->ext('xml');
+
+        $data['oae_link'] = '';
+        $data['oae_server'] = '';
+        $data['oae_username'] = '';
+
+
+        if (php_uname('s') == 'Windows NT') {
+            $data['os_platform'] = 'Windows';
+            $opCommon = 'c:\omk\conf\opCommon.nmis';
+            $phpini = 'c:\xampplite\php\php.ini';
+            exec("echo. |WMIC OS Get Caption", $output);
+            if (isset($output[1])) {
+                $data['os_version'] = $output[1];
+            }
+            unset($output);
+        }
+
+
+        if (php_uname('s') == 'Linux') {
+            $data['os_platform'] = 'linux';
+            if (file_exists('/etc/issue.net')) {
+                $i = file('/etc/issue.net');
+                $data['os_version'] = $i[0];
+            }
+            if ((stripos($data['os_version'], 'red') !== false) and (stripos($data['os_version'], 'hat') !== false)) { $data['os_platform'] = 'Linux (Redhat)'; }
+            if (stripos($data['os_version'], 'centos') !== false) { $data['os_platform'] = 'Linux (Redhat)'; }
+            if (stripos($data['os_version'], 'fedora') !== false) { $data['os_platform'] = 'Linux (Redhat)'; }
+
+            if (stripos($data['os_version'], 'debian') !== false) { $data['os_platform'] = 'Linux (Debian)'; }
+            if (stripos($data['os_version'], 'ubuntu') !== false) { $data['os_platform'] = 'Linux (Debian)'; }
+            if (stripos($data['os_version'], 'mint') !== false) { $data['os_platform'] = 'Linux (Debian)'; }
+
+            if ($data['os_platform'] == 'Linux (Debian)') {
+                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
+                $phpini = '/etc/php5/apache2/php.ini';
+                $package_install = 'apt-get install';
+            }
+            if ($data['os_platform'] == 'Linux (Redhat)') {
+                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
+                $phpini = '/etc/php.ini';
+                $package_install = 'yum install';
+            }
+        }
+
+
+        if (php_uname('s') == 'Darwin') {
+            $data['os_platform'] = 'OSX';
+        }
+
+
+        if ($data['os_platform'] == 'Windows') {
+            # nmap
+            $test_path = 'c:\Program Files\Nmap\Nmap.exe';
+            if ($data['prereq_nmap'] == 'n' and file_exists($test_path)) {
+                $data['prereq_nmap'] = 'c:\Program Files\Nmap\Nmap.exe';
+            }
+            $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
+            if ($data['prereq_nmap'] == 'n' and file_exists($test_path)) {
+                $data['prereq_nmap'] = 'c:\Program Files (x86)\Nmap\Nmap.exe';
+            }
+            unset($test_path);
+
+            # system timezone
+            $command_string = 'tzutil /g';
+            exec($command_string, $output, $return_var);
+            $data['os_timezone'] = @$output[0];
+
+
+            $data['application_log_permission'] = '-rw-rw-rw-';
+            $data['prereq_apache_mod_proxy'] = 'y';
+        }
+
+        if ($data['os_platform'] == 'OSX') {
+            #nmap
+            $test_path = '/usr/local/bin/nmap';
+            if (file_exists($test_path)) {
+                $data['prereq_nmap'] = 'y';
+            }
+
+        }
+
+        if (strpos($data['os_platform'], 'Linux') !== false) {
+            ### general items ###
+
+            # log file perms
+            $command_string = 'ls -l /usr/local/open-audit/other/open-audit.log | cut -d" " -f1';
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['application_log_permission'] = $output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # php process owner
+            $i = posix_getpwuid(posix_geteuid());
+            $data['php_process_owner'] = $i['name'];
+            unset($i);
+
+            # system timezone
+            if ($data['os_platform'] == 'Linux (Redhat)') {
+                $command_string = 'cat /etc/sysconfig/clock | grep ZONE | cut -d"\"" -f2';
+                exec($command_string, $output, $return_var);
+                $data['os_timezone'] = @$output[0];
+            }
+            if ($data['os_platform'] == 'Linux (Debian)') {
+                $command_string = 'cat /etc/timezone';
+                exec($command_string, $output, $return_var);
+                $data['os_timezone'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            ### prereqs ###
+
+            # curl
+            $command_string = "which curl 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_curl'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # nmap
+            $command_string = "which nmap 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0]) and strpos($output[0], 'nmap')) {
+                $data['prereq_nmap'] = $output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # nmap perms
+            $command_string = 'ls -l ' . $data['prereq_nmap'] . ' | cut -d" " -f1';
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_nmap_perms'] = $output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # screen
+            $command_string = "which screen 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_screen'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # snmp
+            $command_string = "which snmpwalk 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_snmp'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+            
+            # sshpass
+            $command_string = "which sshpass 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_sshpass'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+            
+            # wget
+            $command_string = "which wget 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_wget'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+            
+            # zip
+            $command_string = "which zip 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_zip'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+
+            # winexe
+            $command_string = "which winexe 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_winexe'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            if ($data['os_platform'] == 'Linux (Debian)') {
+                # Samba Client
+                $command_string = "which smbclient 2>/dev/null";
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_samba-client'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+
+                # Apache Mod Proxy
+                $command_string = 'dpkg-query -s libapache2-mod-proxy-html | grep "Status: "';
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_apache_mod_proxy'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+
+                # PHP CLI
+                $command_string = 'dpkg-query -s php5-cli | grep "Status: "';
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_php-cli'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+
+            }
+
+
+            if ($data['os_platform'] == 'Linux (Redhat)') {
+                # Samba Client
+                $command_string = "which samba-client 2>/dev/null";
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_samba-client'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+
+                # Apache Mod Proxy (installed by default on RedHat)
+                $data['prereq_apache_mod_proxy'] = 'y';
+
+                # PHP CLI
+                $command_string = 'rpm -qa php-cli';
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_php-cli'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+            }
+
+        }
+
+        unset($output);
+        unset($command_string);
+
+        ### oae config details ###
+
+        # oae link
+        if (stripos($data['os_platform'], 'linux') !== false) {
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_link';
+        } elseif ($data['os_platform'] == 'Windows') {
+            $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_link"';
+        }
+        exec($command_string, $output, $return_var);
+        if (isset($output[0])) {
+            $data['oae_link'] = @$output[0];
+            $data['oae_link'] = str_replace(",", "", str_replace("'", "", trim(str_replace("'oae_link' => '", '', @$output[0]))));
+        }
+        unset($output);
+        unset($command_string);
+
+        # oae server
+        if (stripos($data['os_platform'], 'linux') !== false) {
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_server';
+        } elseif ($data['os_platform'] == 'Windows') {
+            $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_server"';
+        }
+        exec($command_string, $output, $return_var);
+        if (isset($output[0])) {
+            $data['oae_server'] = @$output[0];
+            $data['oae_server'] = str_replace(",", "", str_replace("'", "", trim(str_replace("'oae_server' => '", '', @$output[0]))));
+        }
+        unset($output);
+        unset($command_string);
+
+        # oae user
+        if (stripos($data['os_platform'], 'linux') !== false) {
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_user';
+        } elseif ($data['os_platform'] == 'Windows') {
+            $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_user"';
+        }
+        exec($command_string, $output, $return_var);
+        if (isset($output[0])) {
+            $data['oae_username'] = str_replace(",", "", str_replace("'", "", trim(str_replace("'oae_username' => '", '', @$output[0]))));
+        }
+        unset($output);
+        unset($command_string);
+
+
+        # Intelligent hints about incorrect configuration
+        $hints = array();
+
+        if ($data['oae_server'] != 'http://127.0.0.1/open-audit/') {
+            $hints['oae_server'] = 'You have Open-AudIT Enterprise installed on this server, but it is not pointing at the correct URL for Open-AudIT. It should be set to http://127.0.0.1/open-audit/ in the file ' . $opCommon;
+        }
+
+        $t1 = FCPATH . SELF;
+        $t2 = str_replace('\\', '/', $t1);
+        if ((strpos($t1, $data['oae_link'] . 'index.php') === false) and (strpos($t2, $data['oae_link'] . 'index.php') === false)) {
+            $hints['oae_link'] = FCPATH . SELF . 'The links from your Open-AudIT Enterprise config to your Open-AudIT installation do not appear correct. Please check the file ' . $opCommon . ' and set the value of oae_link to /open-audit/';
+        }
+
+        if ($data['application_environment'] != 'development') {
+            $hints['application_environment'] = 'When having issues with Open-AudIT, it is best to set the application to \'debug\' mode. To do this, go to ' . FCPATH . SELF . ' and edit the line: define(\'ENVIRONMENT\', \'' . $data['application_environment'] . '\'); This should be line 57 (or thereabouts), and change it to define(\'ENVIRONMENT\', \'development\');';
+        }
+
+        if (strpos($data['os_platform'], 'Linux') !== false) {
+            foreach ($data as $key => $value) {
+                if ((strpos($key, 'prereq') !== false) and ($value == 'n' or $value == '')) {
+                    if ($key != 'prereq_nmap_perms') {
+                        $hints[$key] = 'The prerequisite package ' . str_replace('prereq_', '', $key) . ' is missing or incorrect.';
+                        $package_name = str_replace('prereq_', '', $key);
+                        if ($package_name == 'php-cli' and $data['os_platform'] == 'Linux (Debian)') { $package_name = 'php5-cli'; }
+                        if ($key == 'prereq_winexe') { 
+                            $hints[$key] .= ' Winexe is required to be able to audit a Windows machine from a Linux Open-AudIT server. You can download Winexe from <a href="http://download.opensuse.org/repositories/home:/ahajda:/winexe/" style="color: blue; text-decoration: underline;">here</a>.'; 
+                        } else {
+                            $hints[$key] .= ' You can likely install it with "' . $package_install . ' ' . $package_name . '".';
+                        }
+                    }
+                }
+            }
+        }
+
+        if (($data['prereq_nmap_perms'] != '-rwsr-xr-x') and (stripos($data['os_platform'], 'linux') !== false)) {
+            $hints['prereq_nmap_perms'] = 'It appears that nmap has not had its SUID set. This can be fixed by "chmod u+s ' . $data['prereq_nmap'] . '" (sans quotes).';
+        }
+
+        if ($data['application_log_permission'] != '-rw-rw-rw-') {
+            $hints['application_log_permission'] = 'The permissions on your open-audit log file are not set correctly. This can be fixed by "chmod 666 /usr/local/open-audit/other/open-audit.log" (sans quotes).';
+        }
+
+        if ($data['os_timezone'] != $data['php_timezone']) {
+            $hints['timezone'] = 'Your operating system and PHP timezones are different. Please ensure they are the same. Your php.ini should be found at ' . $phpini . '.';
+            if ($data['os_platform'] == 'Windows') {
+                $hints['timezone'] .= ' Please note the Windows timezones do not match (exactly) the PHP timezones. Therefore (on Windows) this warning may not be valid - just make sure you have set your timezones for Windows and PHP correctly.';
+            }
+        }
+
+        foreach ($data as $key => $value) {
+            if ((strpos($key, 'php_ext_') !== false) and ($value == 'n' or $value == '')) {
+                $hints[$key] = 'The PHP module ' . str_replace('php_ext_', '', $key) . ' is missing.';
+                if ($data['os_platform'] == 'Linux (Debian)') {
+                    $hints[$key] .= ' On Debian based Linux systems, if php-mcrypt is installed, you make need to activate it with "php5enmod ' . str_replace('php_ext_', '', $key) . '"
+                     and then restart Apache with "service apache2 restart" (both sans quotes).';
+                }
+            }
+        }
+
+
+
+
+
+
+
+        $this->data['hints'] = $hints;
+        $this->data['data'] = $data;
+        $this->data['include'] = 'v_help_support';
+        $this->data['heading'] = 'Support Data';
+        $this->load->view('v_template', $this->data);
+    }
+
+        function ext($extension) {
+            if (!extension_loaded($extension)) {
+                return('n');
+            } else {
+                return('y');
+            }
+        }
+
 }
