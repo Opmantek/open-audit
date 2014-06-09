@@ -94,8 +94,8 @@ class M_virtual_machine extends MY_Model {
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
 			// the vm exists - need to update it
-			$sql = "UPDATE sys_sw_virtual_machine SET status = ?, timestamp = ? WHERE id = ? ";
-			$data = array("$input->status", "$details->timestamp", "$row->id");
+			$sql = "UPDATE sys_sw_virtual_machine SET guest_system_id = ?, status = ?, timestamp = ? WHERE id = ? ";
+			$data = array("$input->guest_system_id", "$input->status", "$details->timestamp", "$row->id");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// the vm does not exist - insert it

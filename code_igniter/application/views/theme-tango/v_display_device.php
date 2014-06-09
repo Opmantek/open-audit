@@ -133,9 +133,9 @@ if ($system[0]->man_type == 'computer') {
 		array_slice($summary_attributes, 3, count($summary_attributes) - 1, true);
 
 	$summary_attributes = array_slice($summary_attributes, 0, 8) + 
-		array('os_group' => 'text') + 
-		array('os_family' => 'text') + 
-		array('os_name' => 'text') + 
+		array('man_os_group' => 'text') + 
+		array('man_os_family' => 'text') + 
+		array('man_os_name' => 'text') + 
 		array_slice($summary_attributes, 8, count($summary_attributes) - 1, true);
 
 	$summary_attributes = array_slice($summary_attributes, 0, 15) + 
