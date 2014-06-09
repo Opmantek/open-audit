@@ -31,11 +31,22 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+
+$email = "mailto:support@opmantek.com?subject=Support Page Result for Open-AudIT&body=ISSUE%0APlease describe the issue you are having here:%0A%0AHINTS";
+foreach ($hints as $key => $value) {
+	$email .= "%0A" . $key . " = " . str_replace("'", "", $value) . "%0A";
+}
+$email .= "%0A%0ADATA";
+foreach ($data as $key => $value) {
+	$email .= "%0A" . $key . " = " . str_replace("'", "", $value);
+}
 ?>
+
 
 <form action="vars.php" method="post" class="niceforms">
 	<fieldset id="about" class="niceforms">
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Support Data')?></span></legend>
+		To email this data to Opmantek for assistance, <a href='<?php echo $email; ?>' style='color:red; text-decoration:underline;'>CLICK HERE</a>. This will open an email in your mail client and will not automatically send the data to opmantek. You should review the data and add your issue to the email.<br />
 		<?php
 		if (count($hints) > 0) {
 			foreach ($hints as $key => $value) {

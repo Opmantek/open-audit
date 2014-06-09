@@ -180,5 +180,22 @@ class M_systems extends MY_Model {
 		$count = $result[0]->count;
 		return($count);
 	}
+
+	function get_non_prod_count() {
+		$sql = "SELECT count(*) AS count FROM system WHERE man_status <> 'production'";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		$count = $result[0]->count;
+		return($count);
+	}
+
+	function get_group_system_count($group_id = '0') {
+		$sql = "SELECT count(*) as total FROM oa_group_sys WHERE group_id = ?";
+		$sql = $this->clean_sql($sql);
+		$data = array("$group_id");
+		$query = $this->db->query($sql, $data);
+		$row = $query->row(); 
+		return $row->total;
+	}
 }
 ?>

@@ -139,7 +139,7 @@ class main extends MY_Controller
         }
         $data['systems'] = array();
         foreach ($_POST as $key => $value) {
-            if ((mb_strpos($key, 'system_') !== false) and ($value != '')) {
+            if ((mb_strpos($key, 'system_') === 0) and ($value != '')) {
                 $item = array($key, $value);
                 array_push($data['systems'], ($item));
                 $item = null;
@@ -161,9 +161,11 @@ class main extends MY_Controller
                 }
             }
         }
+
         foreach ($_POST as $field_name => $field_data) {
             # input all the manual fields
-            if (((mb_strpos($field_name, 'man_') !== false) or (mb_strpos($field_name, 'nmis_') !== false)) && ($field_data != '')) {
+            if (((mb_strpos($field_name, 'man_') !== false) or 
+                (mb_strpos($field_name, 'nmis_') !== false)) && ($field_data != '')) {
                 foreach ($data['systems'] as $system) {
                     $this->m_system->update_system_man($system[1], $field_name, $field_data);
                     $this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
@@ -643,11 +645,28 @@ class main extends MY_Controller
             $this->load->model("m_software_key");
             $this->data['software_key'] = $this->m_software_key->get_system_key($this->data['id']);
 
-            if ($this->data['system'][0]->access_details) {
+            $this->data['decoded_access_details'] = new stdClass();
+            $this->data['decoded_access_details']->ip_address = '';
+            $this->data['decoded_access_details']->snmp_version = '';
+            $this->data['decoded_access_details']->snmp_community = '';
+            $this->data['decoded_access_details']->ssh_username = '';
+            $this->data['decoded_access_details']->ssh_password = '';
+            $this->data['decoded_access_details']->windows_username = '';
+            $this->data['decoded_access_details']->windows_password = '';
+            $this->data['decoded_access_details']->windows_domain = '';
+
+            if (isset($this->data['system'][0]->access_details)
+                and json_decode($this->data['system'][0]->access_details) != '') {
                 $this->load->library('encrypt');
+
                 $this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
                 $this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
-                #echo "<pre>\n";
+                // echo "<pre>\n";
+                // print_r($this->data['system'][0]->access_details);
+                // echo "\nDECODE: " . json_decode($this->data['decoded_access_details']) . "\n";
+                // print_r($this->data['decoded_access_details']);
+                // echo "</pre>\n";
+
                 if (!isset($this->data['decoded_access_details']->ip_address)) {
                     $this->data['decoded_access_details']->ip_address = '';
                 }
@@ -811,6 +830,9 @@ class main extends MY_Controller
 
     public function help_support()
     {
+        $this->load->model("m_systems");
+        $this->load->model("m_oa_admin_database");
+
         $data = array();
 
         $data['application_environment'] = ENVIRONMENT;
@@ -827,6 +849,10 @@ class main extends MY_Controller
         $data['application_ad_server'] = $this->data['config']->ad_server;
         $data['application_permitted_uri_chars'] =  $this->config->item('permitted_uri_chars');
         $data['application_base_url'] = $this->config->item('base_url');
+        $data['application_prod_devices'] = $this->m_systems->get_count();
+        $data['application_prod_devices_in_all'] = $this->m_systems->get_group_system_count('1');
+        $data['application_non-prod_devices'] = $this->m_systems->get_non_prod_count();
+        $data['application_temp_rows'] = $this->m_oa_admin_database->count_all_rows('oa_temp');
 
 
         $data['os_platform'] = 'unknown';
@@ -1222,7 +1248,17 @@ class main extends MY_Controller
             }
         }
 
+        if ($data['application_prod_devices'] != $data['application_prod_devices_in_all']) {
+            $hints['application_prod_devices'] = 'You have different numbers of devices in your database, compared to the All Devices Group. You can update the devices in Groups by going to Menu -> Admin -> Groups -> List Groups and clicking the "update" icon on the right side.';
+        }
 
+        if (intval($data['application_non-prod_devices']) > 0) {
+            $hints['application_non-prod_devices'] = 'You have devices in your database in a non-production status. You can remove these devices by going to Menu -> Admin -> Database -> Database Maintenance and clicking the Delete icon to remove devices of various Status.';
+        }
+
+        if (intval($data['application_temp_rows']) > 0) {
+            $hints['application_temp_rows'] = 'You have temporary rows in your database tables. If you are certain there are no Discovery processes running you can remove these rows by going to Menu -> Admin -> Database -> Database Maintenance and clicking the Delete icon to remove Rows in Temp Table.';
+        }
 
 
 
