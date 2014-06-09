@@ -2542,7 +2542,7 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 			
-			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_url', 'https://community.opmantek.com/createrssfeed.action?types=page&types=blogpost&spaces=OA&title=Recent+Contributors&labelString%3D&excludedSpaceKeys%3D&sort=modified&maxResults=3&timeSpan=365&showContent=false&confirm=Create+RSS+Feed', 'y', 'The RSS feed URL.')";
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_url', 'https://community.opmantek.com/OA-rss.php', 'y', 'The RSS feed URL.')";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
