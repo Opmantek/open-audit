@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -54,7 +54,7 @@ date_default_timezone_set(ini_get('date.timezone'));
  * NOTE If you change these, also change the error_reporting() code below
  *
  */
-	define('ENVIRONMENT', 'production');
+	define('ENVIRONMENT', 'development');
 /*
  *---------------------------------------------------------------
  * ERROR REPORTING
