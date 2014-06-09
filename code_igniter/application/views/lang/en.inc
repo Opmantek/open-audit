@@ -768,4 +768,5 @@ $GLOBALS["lang"]["Windows Site"]="Windows Site";
 $GLOBALS["lang"]["IP"]="IP";
 $GLOBALS["lang"]["OU"]="OU";
 $GLOBALS["lang"]["Support Data"]="Support Data";
+$GLOBALS["lang"]["Host"]="Host";
 ?>
