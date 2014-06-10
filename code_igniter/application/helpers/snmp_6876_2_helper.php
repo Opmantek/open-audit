@@ -42,6 +42,7 @@
 # memory - 1.3.6.1.4.1.6876.2.1.1.5
 # CPUs - 1.3.6.1.4.1.6876.2.1.1.9
 # Status - 1.3.6.1.4.1.6876.2.1.1.6
+# Config file - 1.3.6.1.4.1.6876.2.1.1.3
 
 $guest_name = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.2.1.1.2");
 if (is_array($guest_name) and count($guest_name) > 0) {
@@ -68,6 +69,7 @@ if (is_array($guest_name) and count($guest_name) > 0) {
 		$guest->memory = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.2.1.1.5." . $guest->vm_id));
 		$guest->cpu = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.2.1.1.9." . $guest->vm_id));
 		$guest->status = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.2.1.1.6." . $guest->vm_id));
+		$guest->config_file = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6876.2.1.1.3." . $guest->vm_id));
 		$guest->vm_group = '';
 		$guests[] = $guest;
 		unset($guest);

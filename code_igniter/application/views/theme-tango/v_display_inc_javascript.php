@@ -224,7 +224,7 @@ function display_man_type() {
 	<option value='voip adapter'><?php echo __("VoIP Adapter"); ?><\/option> \
 	<option value='voip gateway'><?php echo __("VoIP Gateway"); ?><\/option> \
 	<option value='voip phone'><?php echo __("VoIP Phone"); ?><\/option> \
-	<option value='vpn_terminator'><?php echo __("VPN Terminator"); ?><\/option> \
+	<option value='vpn terminator'><?php echo __("VPN Terminator"); ?><\/option> \
 	<option value='wan accelerator'><?php echo __("WAN Accelerator"); ?><\/option> \
 	<option value='wap'><?php echo __("WAP (Wireless Access Point)"); ?><\/option> \
 	<option value='web cache'><?php echo __("Web Cache"); ?><\/option> \
@@ -382,7 +382,32 @@ $(document).ready(function(){
 	$('#view_summary_custom').hide();
 	$('#view_summary_attachment').hide();
 	$('#view_summary_nmis').hide();
-	$('#view_summary_network_interfaces').hide();
+	<?php if ($system[0]->man_type == 'access point' or 
+		$system[0]->man_type == 'adsl modem' or
+		$system[0]->man_type == 'bdsl modem' or
+		$system[0]->man_type == 'cable modem' or
+		$system[0]->man_type == 'dsl modem' or
+		$system[0]->man_type == 'firewall' or
+		$system[0]->man_type == 'gateway' or
+		$system[0]->man_type == 'load balancer' or
+		$system[0]->man_type == 'nas' or
+		$system[0]->man_type == 'network device' or
+		$system[0]->man_type == 'network ids' or
+		$system[0]->man_type == 'network printer' or
+		$system[0]->man_type == 'network scanner' or
+		$system[0]->man_type == 'router' or
+		$system[0]->man_type == 'san' or
+		$system[0]->man_type == 'switch' or
+		$system[0]->man_type == 'voip gateway' or
+		$system[0]->man_type == 'vpn terminator' or
+		$system[0]->man_type == 'wan accelerator' or
+		$system[0]->man_type == 'wap' or
+		$system[0]->man_type == 'wireless router' ) { ?>
+	$('#view_summary_network_interfaces').show();
+	<?php } ?>
+	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
+	$('#view_summary_phone').show();
+	<?php } ?>
 
 	$('#toggle_summary_windows').click(function(){
 		$('#view_summary_windows').slideToggle("fast");
@@ -432,6 +457,11 @@ $(document).ready(function(){
 		$('#view_summary_network_interfaces').slideToggle("fast");
 	});
 
+	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
+	$('#toggle_summary_phone').click(function(){
+		$('#view_summary_phone').slideToggle("fast");
+	});
+	<?php } ?>
 
 
 	$('#toggle_summary_all').click(function(){
@@ -449,6 +479,9 @@ $(document).ready(function(){
 			$('#view_summary_attachment').show("fast");
 			$('#view_summary_nmis').show("fast");
 			$('#view_summary_network_interfaces').show("fast");
+			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
+			$('#view_summary_phone').show("fast");
+			<?php } ?>
 			summary_toggle = 1;
 		}
 		else 
@@ -465,6 +498,9 @@ $(document).ready(function(){
 			$('#view_summary_attachment').hide("fast");
 			$('#view_summary_nmis').hide("fast");
 			$('#view_summary_network_interfaces').hide("fast");
+			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
+			$('#view_summary_phone').hide("fast");
+			<?php } ?>
 			summary_toggle = 0;
 		}
 	});

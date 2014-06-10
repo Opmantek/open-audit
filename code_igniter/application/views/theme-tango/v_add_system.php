@@ -90,7 +90,7 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='voip_adapter'>VoIP Adapter</option>
 			<option value='voip gateway'>VoIP Gateway</option>
 			<option value='voip phone'>VoIP Phone</option>
-			<option value='vpn_terminator'>VPN Terminator</option>
+			<option value='vpn terminator'>VPN Terminator</option>
 			<option value='wan accelerator'>WAN Accelerator</option>
 			<option value='wap'>WAP (Wireless Access Point)</option>
 			<option value='web cache'>Web Cache</option>

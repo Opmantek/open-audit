@@ -33,7 +33,7 @@
  */
 
 ?>
-<!-- v_display_php.php -->
+<!-- v_display_inc_common.php -->
 <script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -181,7 +181,7 @@ if (mb_strpos($system[0]->man_manufacturer,  "Gateway") !== false) {
 	}
 }
 ?>
-<!-- end of v_display_php.php prodecural -->
+<!-- end of v_display_inc_common.php prodecural -->
 <?php
 # end the prodecural stuff. Functions are below
 

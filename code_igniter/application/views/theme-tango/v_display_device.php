@@ -145,9 +145,16 @@ if ($system[0]->man_type == 'computer') {
 	if ($system[0]->form_factor == 'Virtual') {
 		$summary_attributes = array_slice($summary_attributes, 0, 16) + 
 			array('man_vm_group' => 'text') + 
-			array('man_vm_server_name' => 'text') + 
+			array('man_vm_server_name' => '') + 
 			array_slice($summary_attributes, 16, count($summary_attributes) - 1, true);
 	}
+
+	# TODO - need to better implement this, vm_server is linked by system id, but we should allow it to be manual as well
+	# vm_system_id is only settable in the edit multiple devices form.
+	if (isset($system[0]->man_vm_server_name) and $system[0]->man_vm_server_name != '' and 
+		isset($system[0]->man_vm_system_id) and $system[0]->man_vm_system_id != '') {
+		$system[0]->man_vm_server_name = '<a style="text-decoration: underline; color:blue;" href="' . base_url() . 'index.php/main/system_display/' . $system[0]->man_vm_system_id . '">' . $system[0]->man_vm_server_name . '</a>';
+	} 
 
 } else {
 	$summary_attributes = array_slice($summary_attributes, 0, 6) + 
@@ -201,6 +208,8 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 				$text = ucwords($text);
 				if ($text == 'Ip Address') { $text = 'IP Address'; }
 				if ($text == 'Snmp Oid') { $text = 'SNMP OID'; }
+				if ($text == 'Vm Group') { $text = 'VM Group'; }
+				if ($text == 'Vm Server Name') { $text = 'VM Server Name'; }
 				if (strpos($text, 'Os ') !== false) { $text = str_replace('Os ', 'OS ', $text); }
 
 				if ($value == '' and isset($system[0]->$key) and $system[0]->$key > '') {

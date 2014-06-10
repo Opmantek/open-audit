@@ -528,6 +528,7 @@
 							<th align="center">CPU</th>
 							<th align="center">Status</th>
 							<th>UUID</th>
+							<th>Config File</th>
 						</td>
 					</thead>
 					<tbody>
@@ -555,6 +556,7 @@
 							<td align="center"><?php echo $key->cpu; ?></td>
 							<td align="center"><?php echo $status; ?></td>
 							<td><?php echo $key->uuid; ?></td>
+							<td><?php echo $key->config_file; ?></td>
 						</tr>
 					<?php } ?>
 				</table>

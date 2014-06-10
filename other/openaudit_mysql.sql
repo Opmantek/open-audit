@@ -1470,6 +1470,7 @@ CREATE TABLE `sys_sw_virtual_machine` (
   `vm_id` int(12) unsigned NOT NULL default '0',
   `uuid` text NOT NULL default '',
   `vm_group` text NOT NULL default '',
+  `config_file` text NOT NULL default '',
   `memory` int(12) unsigned NOT NULL default '0',
   `cpu` int(10) unsigned NOT NULL default '0',
   `status` varchar(100) NOT NULL default '',

@@ -73,6 +73,13 @@ class M_virtual_machine extends MY_Model {
 			}
 		}
 
+		# update the system table 
+		if ($input->guest_system_id != '') {
+			$sql = "UPDATE system SET man_vm_server_name = ?, man_vm_system_id = ? WHERE system_id = ?";
+			$data = array("$details->hostname", "$details->system_id", "$input->guest_system_id");
+			$query = $this->db->query($sql, $data);
+		}
+
 		# check for virtual machine changes
 		$sql = "SELECT 
 				sys_sw_virtual_machine.id 
@@ -106,12 +113,13 @@ class M_virtual_machine extends MY_Model {
 					vm_id,  
 					uuid, 
 					vm_group,
+					config_file, 
 					memory,
 					cpu,
 					status, 
 					timestamp,
 					first_timestamp ) 
-				VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+				VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->guest_system_id", 
@@ -119,6 +127,7 @@ class M_virtual_machine extends MY_Model {
 					"$input->vm_id", 
 					"$input->uuid", 
 					"$input->vm_group", 
+					"$input->config_file", 
 					"$input->memory", 
 					"$input->cpu", 
 					"$input->status", 
@@ -128,25 +137,36 @@ class M_virtual_machine extends MY_Model {
 		}
 	} // end of function
 
-	// function alert_bios($details) {
-	// 	// only detect new bios
-	// 	$sql = "SELECT sys_hw_bios.bios_id, sys_hw_bios.bios_description 
-	// 		FROM 
-	// 			sys_hw_bios LEFT JOIN system ON (sys_hw_bios.system_id = system.system_id) 
-	// 		WHERE 
-	// 			sys_hw_bios.system_id = ? AND 
-	// 			sys_hw_bios.first_timestamp = ? AND 
-	// 			sys_hw_bios.first_timestamp = sys_hw_bios.timestamp AND 
-	// 			sys_hw_bios.first_timestamp != system.first_timestamp";
-	// 	$data = array("$details->system_id", "$details->timestamp");
+	function alert_vm($details) {
+		// vm no longer detected
+		$sql = "SELECT id, name FROM sys_sw_virtual_machine WHERE system_id = ? and timestamp = ?";
+		$data = array("$details->system_id", "$details->original_timestamp");
+		$sql = $this->clean_sql($sql);
+		$query = $this->db->query($sql, $data);
+		foreach ($query->result() as $myrow)
+		{
+			$alert_details = 'vm removed - ' . $myrow->name;
+			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_virtual_machine', $myrow->id, $alert_details, $details->timestamp);
+		}
 
-	// 	$sql = $this->clean_sql($sql);
-	// 	$query = $this->db->query($sql, $data);
-	// 	$result = $query->result();
-	// 	foreach ($result as $myrow) { 
-	// 		$alert_details = 'bios installed - ' . $myrow->bios_description;
-	// 		$this->m_alerts->generate_alert($details->system_id, 'sys_hw_bios', $myrow->bios_id, $alert_details, $details->timestamp);
-	// 	}
-	// }
+		// only detect new VM
+		$sql = "SELECT sys_sw_virtual_machine.id, sys_sw_virtual_machine.name 
+			FROM 
+				sys_sw_virtual_machine LEFT JOIN system ON (sys_sw_virtual_machine.system_id = system.system_id) 
+			WHERE 
+				sys_sw_virtual_machine.system_id = ? AND 
+				sys_sw_virtual_machine.first_timestamp = ? AND 
+				sys_sw_virtual_machine.first_timestamp = sys_sw_virtual_machine.timestamp AND 
+				sys_sw_virtual_machine.first_timestamp != system.first_timestamp";
+		$data = array("$details->system_id", "$details->timestamp");
+
+		$sql = $this->clean_sql($sql);
+		$query = $this->db->query($sql, $data);
+		$result = $query->result();
+		foreach ($result as $myrow) { 
+			$alert_details = 'vm guest installed - ' . $myrow->name;
+			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_virtual_machine', $myrow->id, $alert_details, $details->timestamp);
+		}
+	}
 }
 ?>
