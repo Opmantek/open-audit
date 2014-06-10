@@ -912,7 +912,7 @@ class main extends MY_Controller
             $data['os_platform'] = 'linux';
             if (file_exists('/etc/issue.net')) {
                 $i = file('/etc/issue.net');
-                $data['os_version'] = $i[0];
+                $data['os_version'] = trim($i[0]);
             }
             if ((stripos($data['os_version'], 'red') !== false) and (stripos($data['os_version'], 'hat') !== false)) { $data['os_platform'] = 'Linux (Redhat)'; }
             if (stripos($data['os_version'], 'centos') !== false) { $data['os_platform'] = 'Linux (Redhat)'; }
