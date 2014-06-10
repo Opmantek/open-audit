@@ -405,9 +405,12 @@ $(document).ready(function(){
 		$system[0]->man_type == 'wireless router' ) { ?>
 	$('#view_summary_network_interfaces').show();
 	<?php } ?>
-	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
-	$('#view_summary_phone').show();
-	<?php } ?>
+	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').show();<?php } ?>
+	<?php if (count($vm) > 0) { ?>$('#view_summary_vms').show();<?php } ?>
+
+
+
+
 
 	$('#toggle_summary_windows').click(function(){
 		$('#view_summary_windows').slideToggle("fast");
@@ -463,6 +466,11 @@ $(document).ready(function(){
 	});
 	<?php } ?>
 
+	<?php if (count($vm) > 0) { ?>
+	$('#toggle_summary_vms').click(function(){
+		$('#view_summary_vms').slideToggle("fast");
+	});
+	<?php } ?>
 
 	$('#toggle_summary_all').click(function(){
 		if (summary_toggle == 0)
@@ -479,9 +487,8 @@ $(document).ready(function(){
 			$('#view_summary_attachment').show("fast");
 			$('#view_summary_nmis').show("fast");
 			$('#view_summary_network_interfaces').show("fast");
-			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
-			$('#view_summary_phone').show("fast");
-			<?php } ?>
+			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').show("fast");<?php } ?>
+			<?php if (count($vm) > 0) { ?>$('#view_summary_vms').show("fast");<?php } ?>
 			summary_toggle = 1;
 		}
 		else 
@@ -498,9 +505,8 @@ $(document).ready(function(){
 			$('#view_summary_attachment').hide("fast");
 			$('#view_summary_nmis').hide("fast");
 			$('#view_summary_network_interfaces').hide("fast");
-			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
-			$('#view_summary_phone').hide("fast");
-			<?php } ?>
+			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').hide("fast");<?php } ?>
+			<?php if (count($vm) > 0) { ?>$('#view_summary_vms').hide("fast");<?php } ?>
 			summary_toggle = 0;
 		}
 	});

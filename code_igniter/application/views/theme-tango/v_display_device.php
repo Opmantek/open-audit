@@ -76,16 +76,18 @@
 				 			
 				 			<?php if ($config->nmis == 'y') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
 				 			
-				 			<?php if (count($network) > 0 and $system[0]->man_type != 'computer') { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_network.png" /><a href="#" id="toggle_summary_network_interfaces">Network Interfaces</a></li> <?php } ?>
+				 			<?php if (count($network) > 0 and ($system[0]->man_type != 'computer' or $system[0]->man_class == 'hypervisor')) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_network.png" /><a href="#" id="toggle_summary_network_interfaces">Network Interfaces</a></li> <?php } ?>
 				 			
 				 			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_cell_phone.png" /><a href="#" id="toggle_summary_phone">Phone Details</a></li> <?php } ?>
 						 	
 						 	<?php if (count($windows) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li><?php } ?>
+
+						 	<?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_vmware.png" /><a href="#" id="toggle_summary_vms">VM Guest Details</a></li><?php } ?>
 						</ul>
 					</li>
 					<?php 
 					# the computer device type specific menu items are in the below file
-					if ($system[0]->man_type == 'computer') {
+					if ($system[0]->man_type == 'computer' and $system[0]->man_class != 'hypervisor') {
 						include "v_display_inc_menu.php"; 
 					}
 					?>
