@@ -1810,7 +1810,7 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_enable', 'y', 'y', 'Enable the RSS feed.');
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_url', 'https://community.opmantek.com/OA-rss.php', 'y', 'The RSS feed URL.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_url', 'https://community.opmantek.com/rss/OA.xml', 'y', 'The RSS feed URL.');
 
 INSERT INTO oa_location (location_id, location_name, location_type, location_city, location_state, location_country, location_latitude, location_longitude, location_comments, location_icon, location_group_id) VALUES ('0', 'Default Location', 'Office', 'Gold Coast', 'Queensland', 'Australia', '-28.017260', '153.425705', 'Default location', 'office', '9');
 
