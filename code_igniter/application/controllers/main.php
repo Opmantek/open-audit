@@ -833,6 +833,7 @@ class main extends MY_Controller
         $this->load->model("m_systems");
         $this->load->model("m_oa_admin_database");
 
+        $hints = array();
         $data = array();
 
         $data['application_environment'] = ENVIRONMENT;
@@ -989,7 +990,8 @@ class main extends MY_Controller
                 $data['php_process_owner'] = $i['name'];
                 unset($i);
             } else {
-                $data['php_process_owner'] = 'No PHP posix extension loaded - cannot determine process owner.';
+                $hints['php_process_owner'] = 'No PHP posix extension loaded - cannot determine process owner.';
+                $data['php_process_owner'] = '';
             }
 
             # system timezone
@@ -1193,7 +1195,6 @@ class main extends MY_Controller
 
 
         # Intelligent hints about incorrect configuration
-        $hints = array();
 
         if ($data['oae_server'] != 'http://127.0.0.1/open-audit/') {
             $hints['oae_server'] = 'You have Open-AudIT Enterprise installed on this server, but it is not pointing at the correct URL for Open-AudIT. It should be set to http://127.0.0.1/open-audit/ in the file ' . $opCommon;
