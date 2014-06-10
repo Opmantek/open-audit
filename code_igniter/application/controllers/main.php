@@ -854,7 +854,6 @@ class main extends MY_Controller
         $data['application_non-prod_devices'] = $this->m_systems->get_non_prod_count();
         $data['application_temp_rows'] = $this->m_oa_admin_database->count_all_rows('oa_temp');
 
-
         $data['os_platform'] = 'unknown';
         $data['os_version'] = '';
         $data['os_database'] = $this->db->platform() . " (version " . $this->db->version() . ")";
@@ -868,7 +867,7 @@ class main extends MY_Controller
         $data['prereq_nmap_perms'] = '';
         $data['prereq_php-cli'] = '';
         $data['prereq_screen'] = 'n';
-        $data['prereq_snmp'] = 'n';
+        #$data['prereq_snmp'] = 'n';
         $data['prereq_sshpass'] = 'n';
         $data['prereq_wget'] = 'n';
         $data['prereq_winexe'] = 'n';
@@ -888,6 +887,7 @@ class main extends MY_Controller
         $data['php_ext_mbstring'] = $this->ext('mbstring');
         $data['php_ext_mcrypt'] = $this->ext('mcrypt');
         $data['php_ext_mysql'] = $this->ext('mysql');
+        $data['php_ext_posix'] = $this->ext('posix');
         $data['php_ext_snmp'] = $this->ext('snmp');
         $data['php_ext_xml'] = $this->ext('xml');
 
@@ -984,9 +984,13 @@ class main extends MY_Controller
             unset($command_string);
 
             # php process owner
-            $i = posix_getpwuid(posix_geteuid());
-            $data['php_process_owner'] = $i['name'];
-            unset($i);
+            if (extension_loaded('posix')) {
+                $i = posix_getpwuid(posix_geteuid());
+                $data['php_process_owner'] = $i['name'];
+                unset($i);
+            } else {
+                $data['php_process_owner'] = 'No PHP posix extension loaded - cannot determine process owner.';
+            }
 
             # system timezone
             if ($data['os_platform'] == 'Linux (Redhat)') {
@@ -1041,13 +1045,13 @@ class main extends MY_Controller
             unset($command_string);
 
             # snmp
-            $command_string = "which snmpwalk 2>/dev/null";
-            exec($command_string, $output, $return_var);
-            if (isset($output[0])) {
-                $data['prereq_snmp'] = @$output[0];
-            }
-            unset($output);
-            unset($command_string);
+            // $command_string = "which snmpwalk 2>/dev/null";
+            // exec($command_string, $output, $return_var);
+            // if (isset($output[0])) {
+            //     $data['prereq_snmp'] = @$output[0];
+            // }
+            // unset($output);
+            // unset($command_string);
             
             # sshpass
             $command_string = "which sshpass 2>/dev/null";
@@ -1075,7 +1079,6 @@ class main extends MY_Controller
             }
             unset($output);
             unset($command_string);
-
 
             # winexe
             $command_string = "which winexe 2>/dev/null";
@@ -1119,7 +1122,7 @@ class main extends MY_Controller
 
             if ($data['os_platform'] == 'Linux (Redhat)') {
                 # Samba Client
-                $command_string = "which samba-client 2>/dev/null";
+                $command_string = "which smbclient 2>/dev/null";
                 exec($command_string, $output, $return_var);
                 if (isset($output[0])) {
                     $data['prereq_samba-client'] = $output[0];
@@ -1223,7 +1226,9 @@ class main extends MY_Controller
             }
         }
 
-        if (($data['prereq_nmap_perms'] != '-rwsr-xr-x') and (stripos($data['os_platform'], 'linux') !== false)) {
+        if ($data['prereq_nmap_perms'] != '-rwsr-xr-x' and 
+            $data['prereq_nmap_perms'] != '-rwsr-xr-x.' and 
+            stripos($data['os_platform'], 'linux') !== false) {
             $hints['prereq_nmap_perms'] = 'It appears that nmap has not had its SUID set. This can be fixed by "chmod u+s ' . $data['prereq_nmap'] . '" (sans quotes).';
         }
 
