@@ -460,7 +460,7 @@
 						} else {
 							$icon = "<a href=\"" . base_url() . "index.php/main/system_display/" . $key->guest_system_id . "\"><img src=\"" . base_url() . "theme-tango/tango-images/16_" . $key->man_icon . ".png\" /></a>\n";
 						}
-						if (trim($key->status) == 'powered off') {
+						if (trim($key->status) == 'powered off' or trim($key->status) == 'poweredOff') {
 							$status = '<span style="color: red;">' . $key->status . '</span>'; 
 						} else {
 							$status = '<span style="color: green;">' . $key->status . '</span>'; 
