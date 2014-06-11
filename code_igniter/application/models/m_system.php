@@ -324,7 +324,7 @@ class M_system extends MY_Model {
 
 		if (isset($name_match) and $name_match == "y") {
 			# check hostname
-			if (isset($details->hostname) and ($details->system_id == '') ) {
+			if (isset($details->hostname) and $details->hostname != '' and $details->system_id == '') {
 				$i = explode(".", $details->hostname);
 				$hostname = $i[0];
 				$sql = "SELECT system.system_id FROM system WHERE (hostname = ? or hostname = ?) AND system.man_status = 'production'";
@@ -338,7 +338,7 @@ class M_system extends MY_Model {
 			}
 
 			# check short hostname in $details
-			if (isset($details->hostname) and ($details->system_id == '') ) {
+			if (isset($details->hostname) and $details->hostname != '' and $details->system_id == '') {
 				if (isset($details->hostname_length) and $details->hostname_length == 'short') {
 					# we grabbed the hostname from SNMP.
 					# SNMP hostnames on Windows are truncated to 15 characters
