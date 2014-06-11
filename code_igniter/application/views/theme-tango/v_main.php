@@ -187,7 +187,7 @@ li a {text-decoration: underline; color: #729FCF;}
 
 <table cellspacing="1" class="tablesorter">
 	<tr>
-		<td><ul class="fade" name="newsfeed" id="newsfeed" style="list-style-type: none;"><li>&nbsp;&nbsp;&nbsp;<img src="<?php echo $image_path;?>16_nmis.png" />&nbsp;&nbsp;Open-AudIT Community: from the <a href="https://community.opmantek.com/display/OA/Home">Open-AudIT wiki</a>.</li></ul></td>
+		<td><ul class="fade" name="newsfeed" id="newsfeed" style="list-style-type: none;"><li>&nbsp;&nbsp;&nbsp;<img src="<?php echo $image_path;?>16_nmis.png" />&nbsp;&nbsp;Open-AudIT Community: from the <a target="_blank" href="https://community.opmantek.com/display/OA/Home">Open-AudIT wiki</a>.</li></ul></td>
 	</tr>
 </table>
 
@@ -246,9 +246,10 @@ var rssfeed = $.get(rssurl, function(data) {
             }
             var li = document.createElement("li");
             var updateDate = new Date($this.find("updated").text());
-            var updatedDate = updateDate.getFullYear() + "/" + updateDate.getMonth() + "/" + updateDate.getDate(); 
+            var month = parseInt(updateDate.getMonth()) + 1;
+            var updatedDate = updateDate.getFullYear() + "/" + month + "/" + updateDate.getDate(); 
             li.style.display="none";
-            li.innerHTML = "&nbsp;&nbsp;&nbsp;<img src=\"<?php echo $image_path;?>16_nmis.png\" />&nbsp;&nbsp;Open-AudIT Community: <a href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> by " + $this.find("author").text() + " on " + updatedDate + ".";
+            li.innerHTML = "&nbsp;&nbsp;&nbsp;<img src=\"<?php echo $image_path;?>16_nmis.png\" />&nbsp;&nbsp;Open-AudIT Community: <a target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> by " + $this.find("author").text() + " on " + updatedDate + ".";
             document.getElementById("newsfeed").appendChild(li);
     });
 });
