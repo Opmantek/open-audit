@@ -34,8 +34,16 @@
  */
 
 # Vendor Alcatel
-
+# NOTE - this is VERY much guesswork.
+# http://www.zhone.com/support/manuals/docs/AZ/SNMP-A2-GB20-00.pdf
 $get_oid_details = function($details){
-	if ($details->snmp_oid == '1.3.6.1.4.1.637.61.1') { $details->model = 'ASAM'; $details->type = 'dslam'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.637.69.2.1.1.63') { $details->model = '7670 RSP'; $details->type = 'unknown'; }
+	$details->manufacturer = 'Alcatel';
+	$i =snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.8059.1.1.2.1.1.1.1"));
+	if ($i == '1') { $details->model = '12000'; $details->type = 'dslam'; }
+	if ($i == '2') { $details->model = '4000'; $details->type = 'dslam'; }
+	if ($i == '3') { $details->model = 'Mini DSLAM'; $details->type = 'dslam'; }
+	if ($i == '4') { $details->model = 'Micro DSLAM'; $details->type = 'dslam'; }
+	if ($i == '5') { $details->model = 'Network Extender'; $details->type = 'network device'; }
+	if ($i == '6') { $details->model = '12000E'; $details->type = 'dslam'; }
+	if ($i == '7') { $details->model = '4000E'; $details->type = 'dslam'; }
 };

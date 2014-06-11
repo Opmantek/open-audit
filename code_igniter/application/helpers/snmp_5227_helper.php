@@ -33,9 +33,13 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-# Vendor Alcatel
+# Melco Buffalo
 
 $get_oid_details = function($details){
-	if ($details->snmp_oid == '1.3.6.1.4.1.637.61.1') { $details->model = 'ASAM'; $details->type = 'dslam'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.637.69.2.1.1.63') { $details->model = '7670 RSP'; $details->type = 'unknown'; }
+	$details->manufacturer = 'Buffalo';
+	if ($details->snmp_oid == '1.3.6.1.4.1.5227.4') { $details->model = 'AirStation WLM2'; $details->type = 'wap'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.5227.12') { $details->model = 'BS-2024GM'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.5227.18') { $details->model = 'AirStation WAPM-APG300N'; $details->type = 'wap'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.5227.32') { $details->model = 'BSL-WS-G2116M'; $details->type = 'switch'; }
+
 };

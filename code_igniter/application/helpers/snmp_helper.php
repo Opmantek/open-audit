@@ -326,6 +326,19 @@ if (!function_exists('get_snmp')) {
 			if ($details->show_output == TRUE) { echo "SNMP  - Model: $details->model.<br />"; }
 			if ($details->show_output == TRUE and $details->type != 'unknown') { echo "SNMP  - Type: $details->type.<br />"; }
 
+			// some generic guesses for 'computer' devices
+			if (stripos($details->description, 'buffalo terastation') !== false) {
+				$details->manufacturer = 'Buffalo';
+				$details->model = 'TeraStation';
+				$details->type = 'nas';
+			}
+			if ((stripos($details->description, 'synology nas') !== false) or 
+				(stripos($details->description, 'synology') !== false and stripos($details->description, 'diskstation') !== false)){
+				$details->manufacturer = 'Synology';
+				$details->model = 'DiskStation';
+				$details->type = 'nas';
+			}
+
 			// guess at manufacturer using entity mib
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
 				$details->manufacturer = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1"));
@@ -344,7 +357,6 @@ if (!function_exists('get_snmp')) {
 				$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.3.1"));
 				if ($details->show_output == TRUE) { echo "SNMP  - Manufacturer: $details->manufacturer.<br />"; }
 			}
-
 
 			// serial 
 			if (!isset($details->serial) or $details->serial == '') {

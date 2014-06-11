@@ -33,9 +33,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-# Vendor Alcatel
+# Vendor Corecess
 
 $get_oid_details = function($details){
-	if ($details->snmp_oid == '1.3.6.1.4.1.637.61.1') { $details->model = 'ASAM'; $details->type = 'dslam'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.637.69.2.1.1.63') { $details->model = '7670 RSP'; $details->type = 'unknown'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.2971.13') { $details->model = 'DSL-6524'; $details->type = 'dslam'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.2971.13.2.1.1.3') { $details->model = 'FX5408M'; $details->type = 'switch'; }
 };

@@ -157,6 +157,7 @@ $get_oid_details = function($details){
 	if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.7.1.1') { $details->model = 'ProCurve Secure Router 7001dl (J8751A)'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.7.1.2') { $details->model = 'ProCurve Secure Router 7102dl'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.7.1.3') { $details->model = 'ProCurve Secure Router 7103dl'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.2.51') { $details->model = 'StorageWorks SAN'; $details->type = 'san'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.11.5.7.1.2') { $details->model = 'BladeSystem OA'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.11.5.7.5.1') { $details->model = 'VirtualConnect Flex10'; $details->type = 'switch'; }
 

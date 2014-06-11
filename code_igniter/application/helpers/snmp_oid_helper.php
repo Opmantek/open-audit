@@ -5253,7 +5253,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5224') { $new->manufacturer = 'Hitachi Data Systems (Europe) Ltd.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5225') { $new->manufacturer = 'Universidad de Cantabria- ATC'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5226') { $new->manufacturer = 'Harmonix Limited'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5227') { $new->manufacturer = 'MELCO Inc.'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5227') { $new->manufacturer = 'Buffalo'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5228') { $new->manufacturer = 'Littlefeet Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5229') { $new->manufacturer = 'Big Fish Communications'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5230') { $new->manufacturer = 'ComRoesGroup'; }
@@ -5801,7 +5801,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5773') { $new->manufacturer = 'Equiinet Ltd.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5774') { $new->manufacturer = 'Beijing Telecable Network System Ltd.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5775') { $new->manufacturer = 'Advanced Technology Solutions International'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5776') { $new->manufacturer = 'Express Scripts, Inc.'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5776') { $new->manufacturer = 'Buffalo'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5778') { $new->manufacturer = 'Universidad Autonoma de Madrid'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5779') { $new->manufacturer = 'Data-GUYS Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5780') { $new->manufacturer = 'PDA Verticals Corp.'; }
