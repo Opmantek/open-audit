@@ -194,6 +194,7 @@ function display_man_type() {
 	<option value='chassis'><?php echo __("Chassis"); ?><\/option> \
 	<option value='computer'><?php echo __("Computer"); ?><\/option> \
 	<option value='dsl modem'><?php echo __("DSL Modem"); ?><\/option> \
+	<option value='dslam'><?php echo __("DSLAM"); ?><\/option> \
 	<option value='firewall'><?php echo __("Firewall"); ?><\/option> \
 	<option value='game console'><?php echo __("Game Console"); ?><\/option> \
 	<option value='gateway'><?php echo __("Gateway"); ?><\/option> \
@@ -206,6 +207,7 @@ function display_man_type() {
 	<option value='network ids'><?php echo __("Network IDS (Intrusion Detection)"); ?><\/option> \
 	<option value='network printer'><?php echo __("Network Printer"); ?><\/option> \
 	<option value='network scanner'><?php echo __("Network Scanner"); ?><\/option> \
+	<option value='pdu'><?php echo __("Power Distribution Unit"); ?><\/option> \
 	<option value='phone'><?php echo __("Phone"); ?><\/option> \
 	<option value='point of sale'><?php echo __("Point of Sale"); ?><\/option> \
 	<option value='printer'><?php echo __("Printer"); ?><\/option> \

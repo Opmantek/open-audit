@@ -61,6 +61,7 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='computer'>Computer</option>
 			<option value='chassis'>Chassis</option>
 			<option value='dsl modem'>DSL Modem</option>
+			<option value='dslam'>DSLAM</option>
 			<option value='firewall'>Firewall</option>
 			<option value='game console'>Game Console</option>
 			<option value='gateway'>Gateway</option>
@@ -73,6 +74,7 @@ echo form_open('admin_system/add_system') . "\n";
 			<option value='network ids'>Network IDS (Intrusion Detection)</option>
 			<option value='network printer'>Network Printer</option>
 			<option value='network scanner'>Network Scanner</option>
+			<option value='pdu'>Power Distribution Unit</option>
 			<option value='phone'>Phone</option>
 			<option value='point of sale'>Point of Sale</option>
 			<option value='printer'>Printer</option>
