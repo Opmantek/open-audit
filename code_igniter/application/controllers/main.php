@@ -1233,7 +1233,7 @@ class main extends MY_Controller
             $hints['prereq_nmap_perms'] = 'It appears that nmap has not had its SUID set. This can be fixed by "chmod u+s ' . $data['prereq_nmap'] . '" (sans quotes).';
         }
 
-        if ($data['application_log_permission'] != '-rw-rw-rw-') {
+        if ($data['application_log_permission'] != '-rw-rw-rw-' and $data['application_log_permission'] != '-rw-rw-rw-.') {
             $hints['application_log_permission'] = 'The permissions on your open-audit log file are not set correctly. This can be fixed by "chmod 666 /usr/local/open-audit/other/open-audit.log" (sans quotes).';
         }
 
