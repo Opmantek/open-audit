@@ -49,7 +49,7 @@ if (php_uname('s') == "Windows NT") {
 
 $upgrade_message = "";
 if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') == 'y')) {
-	$upgrade_message = "<span style='font-size:20px;'>Please <a style='color: red;' href='" . site_url() . "/admin/upgrade'>click here</a> to upgrade your database.</span>";
+	$upgrade_message = "<span style='font-size:20px;'>Please <a style='color:red; text-decoration:underline;' href='" . site_url() . "/admin/upgrade'>click here</a> to upgrade your database.</span>";
 }
 if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') != 'y')) {
 	$upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>";
