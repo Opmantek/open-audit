@@ -188,6 +188,84 @@ class Admin extends MY_Controller {
 
 	}
 
+	function download_file() {
+        $this->load->helper('file');
+		$file = @intval($this->uri->segment(3,0));
+		$complete_filename = '';
+		if (php_uname('s') == 'Linux') {
+			switch ($file) {
+				case '1':
+					$complete_filename = '/usr/local/open-audit/other/open-audit.log';
+					break;
+
+				case '2':
+					$complete_filename = '/usr/local/omk/log/oae.log';
+					break;
+
+				case '3':
+					$complete_filename = '/usr/local/omk/log/opCommon.log';
+					break;
+
+				case '4':
+					$complete_filename = '/usr/local/omk/log/opDaemon.log';
+					break;
+
+				case '5':
+					$complete_filename = '/usr/local/omk/log/performance.log';
+					break;
+
+				case '6':
+					$complete_filename = '/usr/local/omk/conf/opCommon.nmis';
+					break;
+				
+				default:
+					# code...
+					break;
+			}
+		}
+		if (php_uname('s') == 'Windows NT') {
+			switch ($file) {
+				case '1':
+					$complete_filename = 'c:\xampplite\open-audit\other\open-audit.log';
+					break;
+
+				case '2':
+					$complete_filename = 'c:\omk\log\oae.log';
+					break;
+
+				case '3':
+					$complete_filename = 'c:\omk\log\opCommon.log';
+					break;
+
+				case '4':
+					$complete_filename = 'c:\omk\log\opDaemon.log';
+					break;
+
+				case '5':
+					$complete_filename = 'c:\omk\log\performance.log';
+					break;
+
+				case '6':
+					$complete_filename = 'c:\omk\conf\opCommon.nmis';
+					break;
+				
+				default:
+					# code...
+					break;
+			}
+		}
+		if ($complete_filename != '') {
+        	$i = explode('/', $complete_filename);
+	        $filename = $i[count($i)-1];
+	        header('Content-Type: ' . get_mime_by_extension($complete_filename));
+	        header('Content-Disposition: attachment;filename="' . $filename . '"');
+	        header('Cache-Control: max-age=0');
+	        readfile($complete_filename);
+	    } else {
+	    	echo "No file specified.";
+	    }
+	}
+
 	function view_log() {		
 		// number of lines to read from the end of file
 		$lines = @intval($this->uri->segment(3,0));
