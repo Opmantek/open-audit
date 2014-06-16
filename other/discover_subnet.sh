@@ -311,6 +311,14 @@ if [[ "$hosts" != "" ]]; then
 				tel_status="true"
 		fi
 
+		# test for telnet
+		ipmi_status="false"
+		command=$(nmap -n -sU -p623 "$host" 2>/dev/null | grep "623/udp open")
+		if [[ "$command" == *"623/tcp open"* ]]; then
+				ipmi_status="true"
+				type="remote access controller"
+		fi
+
 		result="	<device>"$'\n'
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
 		result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
@@ -326,6 +334,7 @@ if [[ "$hosts" != "" ]]; then
 		result="$result		<p80_status>$p80_status</p80_status>"$'\n'
 		result="$result		<p443_status>$p443_status</p443_status>"$'\n'
 		result="$result		<tel_status>$tel_status</tel_status>"$'\n'
+		result="$result		<ipmi_status>$ipmi_status</ipmi_status>"$'\n'
 		result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
 		result="$result	</device>"
 
