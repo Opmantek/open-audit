@@ -314,7 +314,7 @@ if [[ "$hosts" != "" ]]; then
 		# test for telnet
 		ipmi_status="false"
 		command=$(nmap -n -sU -p623 "$host" 2>/dev/null | grep "623/udp open")
-		if [[ "$command" == *"623/tcp open"* ]]; then
+		if [[ "$command" == *"623/udp open"* ]]; then
 				ipmi_status="true"
 				type="remote access controller"
 		fi
