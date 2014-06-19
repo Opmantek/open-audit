@@ -34,6 +34,8 @@
 O=$IFS
 IFS=$'\n'
 
+export PATH=$PATH:/usr/sbin
+
 url="http://localhost/open-audit/index.php/system/add_system"
 submit_online="n"
 create_file="y"
