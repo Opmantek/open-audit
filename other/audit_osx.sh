@@ -27,12 +27,14 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.3.1
+# @version 1.3.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 O=$IFS
 IFS=$'\n'
+
+export PATH=$PATH:/usr/sbin
 
 url="http://localhost/open-audit/index.php/system/add_system"
 submit_online="n"
@@ -156,6 +158,7 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
 	i=`echo "${i}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
 	j=`system_profiler SPNetworkDataType | grep "BSD Device Name: $line" -B 3 | grep ":" | grep "Type" | cut -d":" -f2`
 	j=`echo "${j}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
+	net_index="$line"
 	net_manufacturer="Apple"
 	net_model="$i"
 	net_description="$i $j"
@@ -165,6 +168,7 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
 	net_adapter_type="$j"
 	if [[ "$net_mac_address" > "" ]]; then
 		echo "		<network_card>" >> $xml_file
+		echo "			<net_index>$net_index</net_index>" >> $xml_file
 		echo "			<net_mac_address>$net_mac_address</net_mac_address>" >> $xml_file
 		echo "			<net_manufacturer>$net_manufacturer</net_manufacturer>" >> $xml_file
 		echo "			<net_model>$net_model</net_model>" >> $xml_file
@@ -194,9 +198,11 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
 	line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
 	net_mac_address=`ifconfig $line 2>/dev/null | grep "ether" | awk '{print $2}'`
 	if [[ "$net_mac_address" > "" ]]; then
+		net_index="$line"
 		ip_address_v4=`ipconfig getifaddr $line`
 		ip_subnet=`ipconfig getpacket $line | grep "subnet_mask" | cut -d" " -f3`
 		echo "		<ip_address>" >> $xml_file
+		echo "			<net_index>$net_index</net_index>" >> $xml_file
 		echo "			<net_mac_address>$net_mac_address</net_mac_address>" >> $xml_file
 		echo "			<ip_address_v4>$ip_address_v4</ip_address_v4>" >> $xml_file
 		echo "			<ip_address_v6></ip_address_v6>" >> $xml_file

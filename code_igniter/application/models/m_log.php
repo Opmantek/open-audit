@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -152,7 +152,14 @@ class M_log extends MY_Model {
 		}
 
 		// new log
-		$sql = "SELECT log_id, log_name, log_file_name FROM sys_sw_log WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT log_id, log_name, log_file_name 
+			FROM 
+				sys_sw_log LEFT JOIN system ON (sys_sw_log.system_id = system.system_id) 
+			WHERE 
+				sys_sw_log.system_id = ? AND 
+				sys_sw_log.first_timestamp = ? AND 
+				sys_sw_log.first_timestamp = sys_sw_log.timestamp AND 
+				sys_sw_log.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

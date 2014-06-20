@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -66,7 +66,7 @@ echo form_open('main/process_edit_systems') . "\n";
 	<label for="man_org_id"><?php echo __("Organisation Name"); ?>: </label><select name="man_org_id" style="width: 200px"><option value="">&nbsp;</option><?php foreach ($orgs as $org){ echo "<option value=\"" . $org->org_id . "\">" . $org->org_name . "</option>\n"; } ?></select><br /><br />
 	<label for="nmis_group"><?php echo __("NMIS Group"); ?>: </label><input type="text" name="nmis_group" style="width: 200px" /><br /><br />
 	<label for="nmis_name"><?php echo __("NMIS Name"); ?>: </label><input type="text" name="nmis_name" style="width: 200px" /><br /><br />
-	<label for="nmis_role"><?php echo __("NMIS Role"); ?>: </label><select name="nmis_role" style="width: 200px"><option value="">&nbsp;</option><option value="access"><?php echo __("Access"); ?></option><option value="core"><?php echo __("Core"); ?></option><option value="distriubtion"><?php echo __("Distriubtion"); ?></option></select><br /><br />
+	<label for="nmis_role"><?php echo __("NMIS Role"); ?>: </label><select name="nmis_role" style="width: 200px"><option value="">&nbsp;</option><option value="access"><?php echo __("Access"); ?></option><option value="core"><?php echo __("Core"); ?></option><option value="distribution"><?php echo __("Distribution"); ?></option></select><br /><br />
 	<label for="man_os_family"><?php echo __("OS Family"); ?>: </label><input type="text" name="man_os_family" style="width: 200px" /><br /><br />
 	<label for="man_os_group"><?php echo __("OS Group"); ?>: </label><input type="text" name="man_os_group" style="width: 200px" /><br /><br />
 	<label for="man_os_name"><?php echo __("OS Name"); ?>: </label><input type="text" name="man_os_name" style="width: 200px" /><br /><br />

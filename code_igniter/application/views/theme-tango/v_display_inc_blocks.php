@@ -27,365 +27,13 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 ?>
 <!-- v_display_computer -->
-<?php include "include_display_php.php"; ?>
-
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-$(function() {
-	$('#menu1').menuTree({
-	expandSpeed: 300,
-	collapseSpeed: 300,
-	parentMenuTriggerCallback: false,
-	multiOpenedSubMenu: true
-	});
-});
-</script>
-
-<?php 
-$images_directory = str_replace("index.php", "", $_SERVER["SCRIPT_FILENAME"]) . "theme-tango/tango-images/";
-$link_serial = '';
-$link_model = '';
-$link_manufacturer = '';
-
-foreach($system as $key) {
-	if (mb_strtolower($key->man_os_group) == 'windows') {
-		$os='windows';
-	} else {
-		$os='other';
-	}
-	$org_id = $key->man_org_id;
-	$location_id = $key->man_location_id;
-	$location_rack = $key->man_location_rack;
-	$location_rack_position = $key->man_location_rack_position;
-	$location_level = $key->man_location_level;
-	$location_suite = $key->man_location_suite;
-	$location_room = $key->man_location_room;
-	$os_name = $key->man_os_name;
-	$serial = $key->serial;
-	$link_manufacturer = $key->manufacturer;
-	$link_serial = $key->serial;
-	$link_model = $key->model;
-	$last_seen = $key->last_seen_by;
-	$icon = $key->man_icon;	
-	$type = $key->man_type;
-}
-
-$location_name = '';
-
-foreach($system_location as $key) {
-	$location_name = $key->location_name;
-}
-
-$edit = '';
-
-if ($access_level > 7) {
-	$edit = 'class="editText" style="color:blue;"';
-	$edit_custom = 'class="editCustom" style="color:blue;"';
-	$tabcustom = '<li><a href="#tabcustom"><span>' . __('Custom') . '</span></a></li>';
-} else {
-	$tabcustom = '';
-}
-
-// creating manufacturer / warranty / search links
-$link_warranty = 'No links for the manufacturer';
-$link_downloads = 'No links for the manufacturer';
-$link_express_code = '';
-
-if (mb_strpos($link_manufacturer,  "Dell") !== false)  {
-	// we have a Dell system
-	if ($link_serial != ""){
-	$link_warranty = "<a href='http://www.dell.com/support/my-support/us/en/04/product-support/servicetag/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>";
-	$link_downloads = "<a href='http://www.dell.com/support/drivers/us/en/04/ServiceTag/" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
-		$link_express_code = base_convert($link_serial,36,10);
-		$link_express_code_formatted = mb_substr($link_express_code,0,3)."-".mb_substr($link_express_code,3,3)."-".mb_substr($link_express_code,6,3)."-".mb_substr($link_express_code,9,2);
-		$link_express_code = $link_express_code_formatted;
-	}
-}
-
-if ( (mb_strpos($link_manufacturer,  "Compaq") !== false) OR (mb_strpos($link_manufacturer,  "HP") !== false) OR (mb_strpos($link_manufacturer,  "Hewlett-Packard") !== false) ) {
-	// we have a HP system
-	if ($link_serial != ""){
-		$link_warranty = "<a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>";
-	}
-	if ($link_model != ""){
-		$link_downloads = "<a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $link_model . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
-	}
-}
-
-if ( (mb_strpos($link_manufacturer,  "IBM") !== false) OR (mb_strpos($link_manufacturer,  "Lenovo") !== false) ) {
-	// we have a Lenovo/IBM system
-	if ($link_model != ""){
-		$link_downloads = "<a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=" . $link_model . "' onclick=\"this.target='_blank';\">".__("Product Page")."</a>";
-	}
-	if ( ($link_model != '') and ($link_serial != '') ) {
-		$link_warranty = "<a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=" . mb_substr($link_model,0,4) . "&amp;serial=" . $link_serial . "&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
-		$link_warranty .= " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=" . mb_substr($link_model,-9,-5) . "&amp;serial=" . $link_serial . "&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";   
-	}
-}
-
-if (mb_strpos($link_manufacturer,  "Gateway") !== false) {
-	// we have a Gateway system
-	if ($link_serial != '' ) {
-		$link_warranty = "<a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $link_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
-	}
-}
-
-if (isset($config->show_passwords) and $config->show_passwords != 'y') {
-	if (isset($decoded_access_details->ssh_password)) {
-		$ssh_password = str_replace($decoded_access_details->ssh_password, str_repeat("*", strlen($decoded_access_details->ssh_password)), $decoded_access_details->ssh_password);
-	} else {
-		$ssh_password = '';
-	}
-	if (isset($decoded_access_details->windows_password)) {
-		$windows_password = str_replace($decoded_access_details->windows_password, str_repeat("*", strlen($decoded_access_details->windows_password)), $decoded_access_details->windows_password);
-	} else {
-		$windows_password = '';
-	}
-} else {
-	$ssh_password = $decoded_access_details->ssh_password;
-	$windows_password = $decoded_access_details->windows_password;
-}
-
-if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y') {
-	if (isset($decoded_access_details->snmp_community)) {
-		$snmp_community = str_replace($decoded_access_details->snmp_community, str_repeat("*", strlen($decoded_access_details->snmp_community)), $decoded_access_details->snmp_community);
-	} else {
-		$snmp_community = '';
-	}
-} else {
-	if (isset($decoded_access_details->snmp_community)) {
-		$snmp_community = $decoded_access_details->snmp_community;
-	} else {
-		$snmp_community = '';
-	}
-}
-
-?>
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- below is the menu div that sits on the left -->
-<div style="float: left; width: 180px; margin-left: 0%; vertical-align: top; position: fixed;" >
-
-<form action="#" method="post" class="niceforms">
-<fieldset id="system_menu" class="niceforms">
-<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
-<div id="menu1" class="menuTree">
-<ul>
-	<li class="parent"><img alt="" src="<?php echo $image_path?>16_device.png" id="toggle_summary_all" /><a href="#">Summary</a>
-		<ul style="display: block;">
-		 	<?php if (count($windows) > 0) { ?>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li>
-		 	<?php } ?>
-		 	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li>
-		 	<?php } ?>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_devices.png" /><a href="#" id="toggle_summary_network">Network</a></li>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_font.png" /><a href="#" id="toggle_summary_custom">Custom</a></li>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_word.png" /><a href="#" id="toggle_summary_attachment">Attachments</a></li>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
-		 	<li class="child"><img alt="" src="<?php echo $image_path?>16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
-		 	<?php if ($config->nmis == 'y') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
-		</ul>
-	</li>
-	<?php if ((count($processor) > 0) or (count($memory) > 0) or (count($bios) > 0) or (count($motherboard) > 0) or (count($network) > 0) or 
-		(count($scsi_controller) > 0) or (count($hard_drive) > 0) or (count($optical) > 0) or (count($video) > 0) or (count($monitor) > 0) or
-		(count($sound) > 0) or (count($printer) > 0)) { ?>
-	<li class="parent"><img alt="" src="<?php echo $image_path?>16_router.png" id="toggle_hardware_all"/><a href="#">Hardware</a>
-		<ul>
-			<?php if (count($processor) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path; ?>16_processor.png" /><a href="#" id="toggle_hardware_processor">Processor</a></li> <?php } ?> 
-		 	<?php if (count($memory) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path; ?>16_memory.png" /><a href="#" id="toggle_hardware_memory">Memory</a></li> <?php } ?> 
-		 	<?php if (count($bios) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_bios.png" /><a href="#" id="toggle_hardware_bios">Bios</a></li> <?php } ?> 
-		 	<?php if (count($motherboard) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_media-memory.png" /><a href="#" id="toggle_hardware_motherboard">Motherboard</a></li> <?php } ?> 
-		 	<?php if (count($network) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_network.png" /><a href="#" id="toggle_hardware_network">Network</a></li> <?php } ?> 
-		 	<?php if (count($scsi_controller) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_general.png" /><a href="#" id="toggle_hardware_scsi_controller">SCSI Controller</a></li> <?php } ?>
-		 	<?php if (count($hard_drive) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_harddisk.png" /><a href="#" id="toggle_hardware_hard_drive">Disk</a></li> <?php } ?>
-		 	<?php if (count($optical) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_cdrom.png" /><a href="#" id="toggle_hardware_optical">Optical</a></li> <?php } ?>
-		 	<?php if (count($video) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_background.png" /><a href="#" id="toggle_hardware_video">Video</a></li> <?php } ?>
-		 	<?php if (count($monitor) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_monitor.png" /><a href="#" id="toggle_hardware_monitor">Monitor</a></li> <?php } ?>
-		 	<?php if (count($sound) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_sound.png" /><a href="#" id="toggle_hardware_sound">Sound</a></li> <?php } ?>
-		 	<?php if (count($printer) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_printer.png" /><a href="#" id="toggle_hardware_printer">Printers</a></li> <?php } ?>
-		</ul>
-	</li>
-	<?php } ?>
-	<?php if ((count($software) > 0) or (count($updates) > 0) or (count($codecs) > 0) or (count($odbc) > 0) or (count($assembly) > 0) or (count($service) > 0) or (count($software_key) > 0)) { ?>
-	<li class="parent"><img alt="" src="<?php echo $image_path?>16_archive.png" id="toggle_software_all"/><a href="#">Software</a>
-		<ul>
-		 	<?php if (count($software) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_installer.png" /><a href="#" id="toggle_software_installed">Installed</a></li> <?php } ?> 
-		 	<?php if (count($updates) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_update.png" /><a href="#" id="toggle_software_updates">Updates</a></li> <?php } ?> 
-		 	<?php if (count($library) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_assembly.png" /><a href="#" id="toggle_software_library">Libraries</a></li> <?php } ?> 
-		 	<?php if (count($codecs) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_multimedia.png" /><a href="#" id="toggle_software_codecs">Codecs</a></li> <?php } ?> 
-		 	<?php if (count($odbc) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_database.png" /><a href="#" id="toggle_software_odbc">ODBC Drivers</a></li> <?php } ?> 
-		 	<?php if (count($assembly) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_assembly.png" /><a href="#" id="toggle_software_assembly">Assembly</a></li> <?php } ?> 
-		 	<?php if (count($service) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_system.png" /><a href="#" id="toggle_software_services">Services</a></li> <?php } ?> 
-		 	<?php if (isset($software_key) and count($software_key) > 0 and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_authentication.png" /><a href="#" id="toggle_software_keys">Keys</a></li> <?php } ?> 
-		</ul>
-	</li>
-	<?php } ?>
-	<?php if ((count($share) > 0) or (count($route) > 0) or (count($system_user) > 0) or (count($system_group) > 0) or (count($dns) > 0) or (count($system_log) > 0) or (count($system_variable) > 0) or (count($netstat) > 0)) { ?>
-	<li class="parent"><img alt="" src="<?php echo $image_path?>16_settings.png" id="toggle_settings_all"/><a href="#">Settings</a>
-		<ul>
-		 	<?php if (count($share) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_share.png" /><a href="#" id="toggle_settings_shares">Shares</a></li> <?php } ?> 
-		 	<?php if (count($pagefile) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_general.png" /><a href="#" id="toggle_settings_pagefile">Pagefiles</a></li> <?php } ?> 
-		 	<?php if (count($route) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_routes.png" /><a href="#" id="toggle_settings_routes">Routes</a></li> <?php } ?> 
-		 	<?php if (count($system_user) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_theme.png" /><a href="#" id="toggle_settings_users">Users</a></li> <?php } ?> 
-		 	<?php if (count($system_group) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_users.png" /><a href="#" id="toggle_settings_groups">Groups</a></li> <?php } ?> 
-		 	<?php if (count($dns) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_font.png" /><a href="#" id="toggle_settings_dns">DNS</a></li> <?php } ?> 
-		 	<?php if (count($netstat) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_network.png" /><a href="#" id="toggle_settings_netstat">NetStat</a></li> <?php } ?> 
-		 	<?php if (count($print_queue) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_printer.png" /><a href="#" id="toggle_settings_print_queue">Print Queue</a></li> <?php } ?> 
-		 	<?php if (count($system_log) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_fill.png" /><a href="#" id="toggle_settings_logs">Logs</a></li> <?php } ?> 
-		 	<?php if (count($system_variable) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_font.png" /><a href="#" id="toggle_settings_variables">Variables</a></li> <?php } ?> 
-		</ul>
-	</li>
-	<?php } ?>
-	<?php if ((count($database) > 0) or (count($webserver) > 0)) { ?>
-	<li class="parent"><img alt="" src="<?php echo $image_path?>16_devices.png" id="toggle_server_all" /><a href="#">Servers</a>
-		<ul>
-		<?php if (count($database) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_database.png" /><a href="#" id="toggle_server_database">Database</a></li><?php } ?> 
-		<?php if (count($webserver) > 0)        { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_web.png" /><a href="#" id="toggle_server_web">WebServer</a></li><?php } ?> 
-		</ul>
-	</li>
-	<?php } ?>
-</ul> 
-</div>
-</fieldset> 
-</form> 
-</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-<div id="content_column" style="margin-left: 200px;">
-
-	<!-- below are the main content blocks -->
-	
-	<div id="summary" style="float: left; width: 100%;" >
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="system_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
-			<div style="float:right; width: 100px; text-align:center">
-				<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $system[0]->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
-			<?php if (($access_level > 7) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
-				<input type="button" onclick="window.location.href='<?php echo base_url(); ?>index.php/discovery/discover_subnet/device/<?php echo $system_id; ?>'" value='Discover Device' title='Discover Device' name='Discover Device' alt='Discover Device' width='24' />
-			<?php } ?>
-			<!--
-			<?php if (($access_level > 7) and ($last_seen == 'nmap')) { ?>
-				<input type="button" onclick="parent.location='<?php echo base_url(); ?>index.php/admin_system/merge_system/<?php echo $system_id; ?>'" value='Merge' title='Merge' name='Merge' alt='Merge' width='24' />
-			<?php } ?>
-			-->
-
-			</div>
-			<div style="margin-right: 120px;">
-				<?php foreach($system as $key): ?>
-					<?php $os_install_date = $key->pc_date_os_installation; ?>
-					<div>
-						<div style="float:left; width:50%;">
-							<p><label for="hostname"><?php echo __('Hostname')?>: </label><span id="hostname" <?php echo $edit?>><?php echo print_something($key->hostname)?></span></p>
-							<p><label for="man_ip_address"><?php echo __('IP Address')?>: </label><span id="man_ip_address" <?php echo $edit?>><?php echo print_something(ip_address_from_db($key->man_ip_address))?></span></p>
-
-							<p><label for="man_environment_select"><?php echo __('Environment')?>: </label>
-							<?php if ($access_level > 7) { ?>
-								<span id="man_environment_select" style="color:blue;"><span onclick="display_environment();"><?php echo print_something($key->man_environment)?></span></span></p>
-							<?php } else { ?>
-								<span id="man_environment_select"><?php echo print_something($key->man_environment)?></span></p>
-							<?php } ?>
-
-							<p><label for="man_status_select"><?php echo __('Status')?>: </label>
-							<?php if ($access_level > 7) { ?>
-								<span id="man_status_select" style="color:blue;"><span onclick="display_status();"><?php echo print_something($key->man_status)?></span></span></p>
-							<?php } else { ?>
-								<span id="man_status_select"><?php echo print_something($key->man_status)?></span></p>
-							<?php } ?>
-
-							<p><label for="man_description"><?php echo __('Description')?>: </label><span id="man_description" <?php echo $edit?>><?php echo print_something($key->man_description)?></span></p>
-							<p><label for="man_type_select"><?php echo __('Type')?>: </label>
-							<?php if ($access_level > 7) { ?>
-								<span id="man_type_select" style="color:blue;"><span onclick="display_type();"><?php echo print_something($key->man_type)?></span></span></p>
-							<?php } else { ?>
-								<span id="man_type_select"><?php echo print_something($key->man_type)?></span></p>
-							<?php } ?>
-							<!-- <p><label for="man_type"><?php echo __('Type')?>: </label><span id="man_type" <?php echo $edit?>><?php echo print_something($key->man_type)?></span></p> -->
-							<p><label for="man_class"><?php echo __('Class')?>: </label><span id="man_class" <?php echo $edit?>><?php echo print_something($key->man_class)?></span></p>
-							<!-- <p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon" <?php echo $edit?>><?php echo print_something($key->man_icon)?></span></p> -->
-							<p><label for="man_os_group"><?php echo __('OS Group')?>: </label><span id="man_os_group" <?php echo $edit?>><?php echo print_something($key->man_os_group)?></span></p>
-							<p><label for="man_os_family"><?php echo __('OS Family')?>: </label><span id="man_os_family" <?php echo $edit?>><?php echo print_something($key->man_os_family)?></span></p>
-						</div>
-						<div style="float:right; width:50%;">
-							<p><label for="man_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="man_manufacturer" <?php echo $edit?>><?php echo print_something($key->man_manufacturer)?></span></p>
-							<p><label for="man_model"><?php echo __('Model')?>: </label><span id="man_model" <?php echo $edit?>><?php echo print_something($key->man_model)?></span></p>
-							<p><label for="man_serial"><?php echo __('Serial')?>: </label><span id='man_serial' <?php echo $edit?>><?php echo print_something($key->man_serial)?></span></p>
-							<p><label for="man_form_factor"><?php echo __('Form Factor')?>: </label><span id="man_form_factor" <?php echo $edit?>><?php echo print_something($key->man_form_factor)?></span></p>
-							<p><label for='st_memory'><?php echo __('Memory')?>: </label><span id='st_memory' class="form_field"><?php echo number_format(intval($key->pc_memory / 1024)); ?> MiB&nbsp;</span></p>
-							<p><label for='st_uptime'><?php echo __('Uptime')?>: </label><span id='st_uptime' class="form_field"><?php echo print_something(strTime($key->uptime)) ?>&nbsp;</span></p>
-							<p><label for="man_location_name"><?php echo __('Location Name')?>: </label><span id="man_location_name"><?php echo print_something($location_name)?>&nbsp;</span></p>
-							<p><label for="man_function"><?php echo __('Function')?>: </label><span id="man_function" <?php echo $edit?>><?php echo print_something($key->man_function)?></span></p>
-							
-							<?php if(mb_strpos($key->manufacturer, 'VMware') !== false ){ ?>
-								<p><label for="man_vm_server_name"><?php echo __('Physical Host')?>: </label><span id="man_vm_server_name" <?php echo $edit?>><?php echo print_something($key->man_vm_server_name)?></span></p>
-								<p><label for="man_vm_group"><?php echo __('Virtual Machine Group')?>: </label><span id="man_vm_group" <?php echo $edit?>><?php echo print_something($key->man_vm_group)?></span></p>
-							<?php } else { ?>
-								<p><label for="link_warranty"><?php echo __('Warranty Link')?>: </label><span id="link_warranty"><?php echo print_something($link_warranty)?> </span></p>
-								<p><label for="link_downloads"><?php echo __('Downloads Link')?>: </label><span id="link_downloads"><?php echo print_something($link_downloads)?> </span></p>
-								<?php if ($link_express_code != '' ){ ?>
-									<p><label for="link_express_code"><?php echo __('Dell Express Code')?>: </label><span id="link_express"><?php echo print_something($link_express_code)?> </span></p>
-								<?php } ?>
-							<?php } ?>
-
-
-
-							<?php if ($access_level > 7) { ?>
-								<p><label for="man_icon"><?php echo __('Icon')?>: </label>
-									<span id="man_icon">
-										<a href="#" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_icon/<?php echo $system_id; ?>', 'Icon Picker', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=yes,status=no,titlebar=no,toolbar=no,top=100,width=400');" alt="Click to edit">
-											<img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $key->man_icon?>.png" /> (<?php echo str_replace('16_', '', str_replace('_', ' ', $key->man_icon)); ?>) <span style="color: blue;">click to edit</span></a></span></p>
-							<?php } else { ?>
-								<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $key->man_icon?>.png" /></span></p>
-							<?php } ?>
-
-
-
-						</div>
-					</div>
-				<?php endforeach; ?>
-			</div>
-			<div style="margin-right: 120px;">
-				<label for="man_os_name"><?php echo __('OS Name')?>: </label><span id="man_os_name" <?php echo $edit?>><?php echo print_something($os_name)?></span>
-			</div>
-			
-			<?php echo display_custom_field('system_details', $additional_fields_data, $edit); ?>
-				
-		</fieldset>
-	</form>
-	</div> <!-- end of div Summary -->
-
 	<?php if (count($windows) > 0) { ?>
 	<div id="view_summary_windows" style="float: left; width: 100%;">
 	<br />
@@ -440,397 +88,6 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 	</form>
 	</div> <!-- end of view_summary_windows -->
 	<?php } ?>
-
-
-
-
-	<div id="view_summary_credentials" style="float: left; width: 100%;">
-	<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?>
-	<br />
-	<form action="../../admin_system/system_add_credentials" method="post" class="niceforms">
-		<fieldset id="summary_credentials_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Credentials')?></span></legend>
-			<div style="float:right; width: 120px; text-align:center">
-				<img style='margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
-				<?php if ($access_level > 7) { ?>
-					<br /><input type="button" onclick="display_credentials();" value='Edit' title='Edit' name='credentials_edit' alt='Edit' width='24' />
-				<?php } ?>
-			</div>
-			<div id="credentials">
-				<p><label for='credentials_ip_address'>IP Address: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
-
-				<p><label for='credentials_ip_address'>SNMP Version: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
-				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($snmp_community); ?></span></p>
-
-				<p><label for='credentials_ssh_username'>SSH Username: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
-				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($ssh_password); ?></span></p>
-
-				<p><label for='credentials_windows_username'>Windows Username: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
-				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($windows_password); ?></span></p>
-				<p><label for='credentials_windows_domain'>Windows Domain: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
-			</div>
-
-		</fieldset>
-	</form>
-	<?php } ?>
-	</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-	<div id="view_summary_purchase" style="float: left; width: 100%;">
-	<br />
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="summary_purchase_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Purchase Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_purchases.png' alt='' title='' width='48'/>
-			<?php foreach($system as $key): ?>
-				<p><label for="man_asset_number"><?php echo __('Asset Number')?>: </label><span id="man_asset_number" <?php echo $edit?>><?php echo print_something($key->man_asset_number)?></span></p>
-				<p><label for="man_purchase_vendor"><?php echo __('Vendor')?>: </label><span id="man_purchase_vendor" <?php echo $edit?>><?php echo print_something($key->man_purchase_vendor)?></span></p>
-				<p><label for="man_purchase_order_number"><?php echo __('PO Number')?>: </label><span id="man_purchase_order_number" <?php echo $edit?>><?php echo print_something($key->man_purchase_order_number)?></span></p>
-				<p><label for="man_purchase_invoice"><?php echo __('Invoice Number')?>: </label><span id="man_purchase_invoice" <?php echo $edit?>><?php echo print_something($key->man_purchase_invoice)?></span></p>
-				<p><label for="man_purchase_date"><?php echo __('Purchase Date')?>: </label><span id="man_purchase_date" <?php echo $edit?>><?php echo print_something($key->man_purchase_date)?></span>NOTE - format should be yyyy-mm-dd.</p>
-				<p><label for="man_purchase_amount"><?php echo __('Purchase Amount')?>: </label><span id="man_purchase_amount" <?php echo $edit?>><?php echo print_something($key->man_purchase_amount)?></span></p>
-				<p><label for="man_warranty_duration"><?php echo __('Warranty Length')?>: </label><span id="man_warranty_duration" <?php echo $edit?>><?php echo print_something($key->man_warranty_duration)?></span></p>
-				<p><label for="man_warranty_expires"><?php echo __('Warranty Expires')?>: </label><span id="man_warranty_expires" <?php echo $edit?>><?php echo print_something($key->man_warranty_expires)?></span>NOTE - format should be yyyy-mm-dd.</p>
-			<?php 
-			endforeach;
-			echo display_custom_field('view_summary_purchase',  $additional_fields_data, $edit); ?>
-		</fieldset>
-	</form>
-	</div>
-
-	<div id="view_summary_network" style="float: left; width: 100%;">
-	<br />
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="summary_network_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Network Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network_wireless.png' alt='' title='' width='48'/>
-			<?php foreach($system as $key): ?>
-				<p><label for="man_switch_id"><?php echo __('Switch ID')?>: </label><span id="man_switch_id" <?php echo $edit?>><?php echo print_something($key->man_switch_id)?></span></p>
-				<p><label for="man_switch_port"><?php echo __('Switch Port')?>: </label><span id="man_switch_port" <?php echo $edit?>><?php echo print_something($key->man_switch_port)?></span></p>
-				<p><label for="man_patch_panel"><?php echo __('Patch Panel')?>: </label><span id="man_patch_panel" <?php echo $edit?>><?php echo print_something($key->man_patch_panel)?></span></p>
-				<p><label for="man_wall_port"><?php echo __('Wall Port')?>: </label><span id="man_wall_port" <?php echo $edit?>><?php echo print_something($key->man_wall_port)?></span></p>
-			<?php 
-			endforeach; 
-			echo display_custom_field('view_summary_network',  $additional_fields_data, $edit);
-			?>
-		</fieldset>
-	</form>
-	</div>
-
-
-				
-	<div id="view_summary_location" style="float: left; width: 100%;">
-	<br />
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="summary_location_details">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Location / Owner Details')?></span></legend>
-			<div style="float:left; width:50%;">
-				<div id="location_container">
-					<?php if (count($system_location) > 0) {
-						foreach($system_location as $key) {
-							if ($access_level > 7) { 
-								echo "<p><label for='man_location_id_select'>" . __('Location Name') . ": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>" . print_something($key->location_name) . "</span></span></p>\n";
-							} else {
-								echo "<p><label for='location_name'>" . __('Location Name') . ": </label><span id='location_name'>" . print_something($key->location_name) . "</span></p>\n";
-							} 
-							$full_location = '';
-							if ($key->location_room > '') { $full_location = __('Room') . ' ' . $key->location_room . ', '; }
-							if ($key->location_suite > '') { $full_location .= __('Suite') . ' ' . $key->location_suite . ', '; }
-							if ($key->location_level > '') { $full_location .= __('Level') . ' ' . $key->location_level . ', '; }
-							$full_location .= $key->location_address; ?>
-							<p><label for="location_full_address"><?php echo __('Full Location')?>: </label><span id="location_full_address"><?php echo print_something($full_location)?></span></p>
-							<p><label for="location_address"><?php echo __('Building Address')?>: </label><span id="location_address"><?php echo print_something($key->location_address)?></span></p>
-							<p><label for="location_city"><?php echo __('City')?>: </label><span id="location_city"><?php echo print_something($key->location_city)?></span></p>
-							<p><label for="location_state"><?php echo __('State')?>: </label><span id="location_state"><?php echo print_something($key->location_state)?></span></p>
-							<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something($key->location_country)?></span></p>
-						<?php } # end for each
-					} else { 
-						if ($access_level > 7) { 
-							echo "<p><label for='man_location_id_select'>" . __('Location Name') . ": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>" . print_something('') . "</span></span></p>\n";
-						} else {
-							echo "<p><label for='location_name'>" . __('Location Name') . ": </label><span id='location_name'>" . print_something('') . "</span></p>\n";
-						} 
-						?>
-						<p><label for="location_address"><?php echo __('Address')?>: </label><span id="location_address"><?php echo print_something('')?></span></p>
-						<p><label for="location_city"><?php echo __('City')?>: </label><span id="location_city"><?php echo print_something('')?></span></p>
-						<p><label for="location_state"><?php echo __('State')?>: </label><span id="location_state"><?php echo print_something('')?></span></p>
-						<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something('')?></span></p>
-						<p><label for="location_room"><?php echo __('Room')?>: </label><span id="location_room"><?php echo print_something('')?></span></p></span></p>
-					<?php } ?>
-					<p><label for="man_location_level"><?php echo __('Device specific Level')?>: </label><span id="man_location_level" <?php echo $edit?>><?php echo print_something($location_level)?></span></p> 
-					<p><label for="man_location_suite"><?php echo __('Device specific Suite')?>: </label><span id="man_location_suite" <?php echo $edit?>><?php echo print_something($location_suite)?></span></p> 
-					<p><label for="man_location_room"><?php echo __('Device specific Room')?>: </label><span id="man_location_room" <?php echo $edit?>><?php echo print_something($location_room)?></span></p> 
-					<p><label for="man_location_rack"><?php echo __('Rack')?>: </label><span id="man_location_rack" <?php echo $edit?>><?php echo print_something($location_rack)?></span></p> 
-					<p><label for="man_location_rack_position"><?php echo __('Rack Position')?>: </label><span id="man_location_rack_position" <?php echo $edit?>><?php echo print_something($location_rack_position)?></span></p> 
-				</div>
-			</div>	
-			<div style="float:left; width:50%;">
-				<?php foreach($system as $key): ?>
-					<p><label for="man_owner"><?php echo __('Owner')?>: </label><span id="man_owner" <?php echo $edit?>><?php echo print_something($key->man_owner)?></span></p>
-				<?php endforeach; ?>
-				<div id="org_container">
-				<?php if (count($system_org) > 0) {
-					foreach($system_org as $key):
-						echo "<p><label for='man_org_id_select'>" . __('Org Name') . ": </label>";
-						if ($access_level > 7) { 
-							echo "<span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>" . print_something($key->org_name) . "</span></span></p>\n"; 
-						} else { 
-							echo "<span id='org_name'>" . print_something($key->org_name) . "</span></p>\n"; 
-						} 
-						if ($key->org_name > ""){ 
-							if ($key->org_parent_id == '0') { $key->org_parent_id = ''; } 
-							echo "<p><label for='org_contact'>" . __('Org Contact') . ": </label><span id='org_contact'>" . print_something($key->contact_id) . "</span></p>\n";
-							echo "<p><label for='parent_org'>" . __('Parent Org') . ": </label><span id='parent_org'>" . print_something($key->org_parent_name) . "</span></p>\n";
-							echo "<p><label for='org_comments'>" . __('Comments') . ": </label><span id='org_comments'>" . print_something($key->org_comments) . "</span></p>\n";
-						}
-					endforeach;
-				} ?>
-				</div>
-			</div>
-			<div style="float:right; width: 100px; margin-left: -80%;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
-			</div>
-			<?php
-			echo display_custom_field('view_summary_location',  $additional_fields_data, $edit);
-			?>
-		</fieldset>
-	</form>
-	</div>
-
-	<div id="view_summary_custom" style="float: left; width: 100%;">
-	<br />
-	<br />
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="summary_custom_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Custom Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_custom.png' alt='' title='' width='48'/>
-			<?php 
-			echo display_custom_field('view_summary_custom',  $additional_fields_data, $edit);
-			?>
-		</fieldset>
-	</form>
-	</div>
-
-	<div id="view_summary_attachment" style="float: left; width: 100%;">
-	<br />
-	<br />
-	<?php if ($access_level > 7) { ?>
-	<form action="<?php echo base_url();?>index.php/main/add_attachment/<?php echo $system_id; ?>" method="post" enctype="multipart/form-data" class="niceforms">
-	<?php } else { ?>
-	<form action="#" method="post" class="niceforms">
-	<?php } ?>
-		<fieldset id="summary_attachment_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Attachment Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_custom.png' alt='' title='' width='48'/><br />
-			<?php if ($access_level > 7) { ?>
-			<input style='float: right; margin; 10px; ' type='button' value='Upload' onclick='upload_attachment()' alt='' title='' width='48'/>
-			<?php } ?>
-			<?php if (count($attachment) > 0) { ?>
-			<table cellspacing="1" class="tablesorter" width="100%">
-				<thead>
-					<tr>
-						<th><?php echo __('Name')?></th>
-						<th><?php echo __('Uploaded On')?></th>
-						<th align="center"><?php echo __('View')?></th>
-						<th align="center"><?php echo __('Download')?></th>
-						<?php if ($access_level > 7) { ?>
-						<th align="center"><?php echo __('Delete')?></th>
-						<?php } ?>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach($attachment as $key): ?>
-					<tr>
-						<td><?php echo print_something($key->att_title)?></td>
-						<td><?php echo print_something($key->timestamp)?></td>
-						<td align="center"><a href="<?php echo base_url();?>index.php/main/show_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $image_path;?>16_word.png' alt='' title='' /></a></td>
-						<td align="center"><a href="<?php echo base_url();?>index.php/main/download_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $image_path;?>16_link.png' alt='' title='' /></a></td>
-						<?php if ($access_level > 7) { ?>
-						<td align="center"><a href="<?php echo base_url();?>index.php/main/delete_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $image_path;?>16_delete.png' alt='' title='' /></a></td>
-						<?php } ?>
-					</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
-			<?php } ?>
-			<span id='attachment_listing'><br /><br /></span>
-			
-		</fieldset>
-	</form>
-	</div>
-
-	<div id="view_summary_audits" style="float: left; width: 100%;">
-	<?php if (count($audits) > 0) { ?>
-		<br />
-		<form action="#" method="post" class="niceforms">
-			<fieldset id="summary_audits">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Audits')?></span></legend>
-				<div style="min-width: 50px; float: right;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_search.png' alt='' title='' width='48'/>
-				</div>
-				<div style="width: 90%; float:left;">
-				<table cellspacing="1" class="tablesorter" width="100%">
-					<thead>
-						<tr>
-							<th align="left"><?php echo __('ID')?></th>
-							<th><?php echo __('By')?>&nbsp;&nbsp;&nbsp;</th>
-							<th><?php echo __('Type')?></th>
-							<th><?php echo __('Submitted On')?></th>
-							<th><?php echo __('Submitted From')?></th>
-							<th><?php echo __('Audited On')?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach($audits as $key): ?>
-						<tr>
-							<td><?php echo print_something($key->system_audits_id)?></td>
-							<td><?php echo print_something($key->system_audits_username)?></td>
-							<td><?php echo print_something($key->system_audits_type)?></td>
-							<td><?php echo print_something($key->timestamp)?></td>
-							<?php 
-							if (isset($key->system_audits_ip)) {
-								echo "<td><span style=\"display:none;\">" . print_something($key->system_audits_ip) . "</span>" . print_something(ip_address_from_db($key->system_audits_ip)) . "</td>\n";
-							} else {
-								echo "<td></td>";
-							} ?>
-							<td><?php echo print_something($key->system_audits_time)?></td>
-						</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-				</div>
-			</fieldset>
-		</form>
-	<?php } ?>
-	</div>
-
-	<div id="view_summary_audit_log" style="float: left; width: 100%;">
-	<?php if (count($audit_log) > 0 ) { ?>
-		<br />
-		<form action="#" method="post" class="niceforms">
-			<fieldset id="summary_audit_log">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Audit Log')?></span></legend>
-				<div style="min-width: 50px; float: right;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_audit_log.png' alt='' title='' width='48'/>
-				</div>
-				<div style="width: 90%; float:left;">
-				<table cellspacing="1" class="tablesorter" width="100%">
-					<thead>
-						<tr>
-							<th><?php echo __('By')?></th>
-							<th><?php echo __('On')?></th>
-							<th><?php echo __('Type')?></th>
-							<th><?php echo __('Details')?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach($audit_log as $key): ?>
-						<tr>
-							<td><?php echo $key->user_full_name?>&nbsp;</td>
-							<td><?php echo $key->timestamp?>&nbsp;</td>
-							<td><?php echo $key->audit_log_event_type?>&nbsp;</td>
-							<td><?php echo $key->audit_log_event_details?>&nbsp;</td>
-						</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-				</div>
-			</fieldset>
-		</form>
-	<?php } ?>
-	</div>
-	
-	<div id="view_summary_alerts" style="float: left; width: 100%;">
-	<?php if (count($alerts) > 0 ) { ?>
-		<br />
-		<form action="#" method="post" class="niceforms">
-			<fieldset id="summary_alert_log">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Alert Log')?></span></legend>
-				<div style="min-width: 50px; float: right;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_alerts.png' alt='' title='' width='48'/>
-				</div>
-				<div style="width: 90%; float:left;">
-				<table cellspacing="1" class="tablesorter" width="100%">
-					<thead>
-						<tr>
-							<th><?php echo __('Timestamp')?></th>
-							<th><?php echo __('Type')?></th>
-							<th><?php echo __('Details')?></th>
-							<th><?php echo __('Ack Time')?></th>
-							<th><?php echo __('Ack User')?></th>
-							<th><?php echo __('Type')?></th>
-							<th><?php echo __('Note')?></th>
-							<th><?php echo __('External')?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach($alerts as $key): ?>
-						<?php $key->alert_table = str_replace('sys_sw_', '', $key->alert_table); ?>
-						<?php $key->alert_table = str_replace('sys_hw_', '', $key->alert_table); ?>
-						<?php $key->alert_table = str_replace('_', ' ', $key->alert_table); ?>
-						<?php $key->alert_table = ucwords($key->alert_table); ?>
-						<?php 
-						if ((!is_null($key->external_change_link) AND $key->external_change_link != '' ) AND 
-							($key->external_change_id == '' OR is_null($key->external_change_id))) 
-						{ 
-							$key->external_change_id = 'link';
-						} 
-						?>
-						<?php if ( ($key->external_change_link == '') OR (is_null($key->external_change_link))) {$key->external_change_link = '#';} ?>
-						<tr>
-							<td><?php echo $key->timestamp?></td>
-							<td><?php echo $key->alert_table?></td>
-							<td><?php echo $key->alert_details?></td>
-							<td><?php echo $key->alert_ack_time?></td>
-							<td><?php echo $key->user_full_name?></td>
-							<td><?php echo $key->change_type?></td>
-							<td><?php echo $key->alert_note?></td>
-							<td><a href="<?php echo $key->external_change_link?>" ><?php echo $key->external_change_id?> </a></td>
-						</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-				</div>
-			</fieldset>
-		</form>
-	<?php } ?> 
-	</div>
-
-
-	<div id="view_summary_nmis" style="float: left; width: 100%;">
-		<br />
-		<form action="#" method="post" class="niceforms">
-			<fieldset id="summary_nmis">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('NMIS Details')?></span></legend>
-				<div style="min-width: 50px; float: right;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network.png' alt='' title='' width='48'/>
-				</div>
-				<div style="width: 90%; float:left;">
-					<?php #foreach($system as $key): ?>
-					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>
-					<p><label for="nmis_name"><?php echo __('NMIS Name')?>: </label><span id="nmis_name" <?php echo $edit?>><?php echo print_something($system[0]->nmis_name)?></span></p>
-					<p><label for="nmis_role_select"><?php echo __('NMIS Role')?>: </label><span id="nmis_role_select" style="color:blue;"><span onclick="display_nmis_role();"><?php echo print_something($system[0]->nmis_role)?></span></span></p>
-					<?php #endforeach; ?>
-				</div>
-			</fieldset>
-		</form>
-	</div>
-
-
-
-
-
 
 	<div id="view_hardware_processor" style="float: left; width: 100%;">
 	<?php if (count($processor) > 0) { ?>
@@ -956,7 +213,7 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 
 	<div id="view_hardware_network" style="float: left; width: 100%;">
 	<?php if (count($network) > 0) { ?>
-		<br />
+	<br />
 		<br />
 		<form action="#" method="post" class="niceforms">
 			<fieldset id="network_details">
@@ -973,29 +230,28 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 						}
 						if (intval($key->net_speed) >= 1000000000) {
 							$speed = number_format(intval($key->net_speed / 1000 / 1000 / 1000)) . " Gb/s";
-						} ?>
-				<fieldset id="network_details_<?php echo str_replace('/','-',$key->net_id)?>">
-				<legend><span style="font-size: 10pt;">&nbsp;<?php echo $key->net_description?> <?php echo __('Details')?></span></legend>
-				<div>
-					<div style="float:left; width:50%;">
-						<p><label for="network_connection_id_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Connection ID')?>: </label><span id="network_connection_id_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_connection_id)?></span></p>
-						<p><label for="network_mac_address_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('MAC Address')?>: </label><span id="network_mac_address_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_mac_address)?></span></p>
-						<p><label for="network_model_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Model')?>: </label><span id="network_model_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_model)?></span></p>
-						<p><label for="network_manufacturer_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Manufacturer')?>: </label><span id="network_manufacturer_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_manufacturer)?></span></p>
-						<p><label for="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Speed')?>: </label><span id="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo $speed; ?></span></p>
-						<p><label for="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Status')?>: </label><span id="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_connection_status)?></span></p>
-						<p><label for="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Adapter Type')?>: </label><span id="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_adapter_type)?></span></p>
-					</div>
-					<div style="float:left; width:50%;">
-						<p><label for="network_dhcp_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DHCP Enabled')?>: </label><span id="network_dhcp_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dhcp_enabled)?></span></p>
-						<p><label for="network_dhcp_server_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DHCP Server')?>: </label><span id="network_dhcp_server_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dhcp_server)?></span></p>
-						<p><label for="network_dhcp_lease_obtained_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DHCP Lease Obtained')?>: </label><span id="network_dhcp_lease_obtained_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dhcp_lease_obtained)?></span></p>
-						<p><label for="network_dhcp_lease_expires_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DHCP Lease Expires')?>: </label><span id="network_dhcp_lease_expires_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dhcp_lease_expires)?></span></p>
-						<p><label for="network_dns_domain_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DNS Domain')?>: </label><span id="network_dns_domain_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dns_domain)?></span></p>
-						<p><label for="network_dns_server_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DNS Server(s)')?>: </label><span id="network_dns_server_<?php echo str_replace('/','-',$key->net_id)?>"><span><?php echo print_something(str_replace(",", ", ", $key->net_dns_server))?></span></span></p>
-						<p><label for="network_dns_domain_reg_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DNS Auto-Register')?>: </label><span id="network_dns_domain_reg_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dns_domain_reg_enabled)?></span></p>
-					</div>
-				</div>	
+						} ?><fieldset id="network_details_<?php echo str_replace('/','-',$key->net_id)?>">
+					<legend><span style="font-size: 10pt;">&nbsp;<?php echo $key->net_description?> <?php echo __('Details')?></span></legend>
+					<div>
+						<div style="float:left; width:50%;">
+							<p><label for="network_connection_id_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Connection ID')?>: </label><span id="network_connection_id_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_connection_id)?></span></p>
+							<p><label for="network_mac_address_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('MAC Address')?>: </label><span id="network_mac_address_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_mac_address)?></span></p>
+							<p><label for="network_model_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Model')?>: </label><span id="network_model_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_model)?></span></p>
+							<p><label for="network_manufacturer_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Manufacturer')?>: </label><span id="network_manufacturer_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_manufacturer)?></span></p>
+							<p><label for="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Speed')?>: </label><span id="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo $speed; ?></span></p>
+							<p><label for="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Status')?>: </label><span id="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_connection_status)?></span></p>
+							<p><label for="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Adapter Type')?>: </label><span id="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_adapter_type)?></span></p>
+						</div>
+						<div style="float:left; width:50%;">
+							<p><label for="network_dhcp_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DHCP Enabled')?>: </label><span id="network_dhcp_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dhcp_enabled)?></span></p>
+							<p><label for="network_dhcp_server_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DHCP Server')?>: </label><span id="network_dhcp_server_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dhcp_server)?></span></p>
+							<p><label for="network_dhcp_lease_obtained_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DHCP Lease Obtained')?>: </label><span id="network_dhcp_lease_obtained_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dhcp_lease_obtained)?></span></p>
+							<p><label for="network_dhcp_lease_expires_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DHCP Lease Expires')?>: </label><span id="network_dhcp_lease_expires_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dhcp_lease_expires)?></span></p>
+							<p><label for="network_dns_domain_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DNS Domain')?>: </label><span id="network_dns_domain_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dns_domain)?></span></p>
+							<p><label for="network_dns_server_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DNS Server(s)')?>: </label><span id="network_dns_server_<?php echo str_replace('/','-',$key->net_id)?>"><span><?php echo print_something(str_replace(",", ", ", $key->net_dns_server))?></span></span></p>
+							<p><label for="network_dns_domain_reg_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DNS Auto-Register')?>: </label><span id="network_dns_domain_reg_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dns_domain_reg_enabled)?></span></p>
+						</div>
+					</div>	
 				<?php
 					if (mb_substr_count(mb_strtoupper($key->net_model), 'WIRELESS') > 0) 
 					{
@@ -1006,55 +262,45 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 					if (file_exists($images_directory . "48_" . str_replace(" ", "", strtolower($key->net_manufacturer)) . ".png")) {
 						$image = "48_" . strtolower($key->net_manufacturer);
 					}
-				?>
-				<div style="float:right; width: 100px; margin-left: -80%;">
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path . $image; ?>.png' alt='' title='' width='48'/>
-				</div>						
-				<table cellspacing="1" class="tablesorter" width="100%">
-				<thead>
-					<tr>
-						<th><?php echo __('IP Address')?></th>
-						<th><?php echo __('Subnet')?></th>
-						<th><?php echo __('IP Version')?></th>
-					</tr>
-				</thead>
-				<tbody>
-				<?php
+				?>	<div style="float:right; width: 100px; margin-left: -80%;">
+						<img style='float: right; margin; 10px; ' src='<?php echo $image_path . $image; ?>.png' alt='' title='' width='48'/>
+					</div>						
+					<table cellspacing="1" class="tablesorter" width="100%">
+						<thead>
+							<tr>
+								<th><?php echo __('IP Address')?></th>
+								<th><?php echo __('Subnet')?></th>
+								<th><?php echo __('IP Version')?></th>
+							</tr>
+						</thead>
+						<tbody>
+<?php
 				$ip_count = 0;
-				foreach ($ip as $ip_address)
-				{
-					if ($ip_address->net_mac_address == $key->net_mac_address)
-					{
+				foreach ($ip as $ip_address) {
+					if ($ip_address->net_mac_address == $key->net_mac_address) {
 						$ip_address_displayed = '000.000.000.000';
-						if ($ip_address->ip_address_version == '6'){
+						if ($ip_address->ip_address_version == '6') {
 							$ip_address_displayed = $ip_address->ip_address_v6;
 						} else {
 							$ip_address_displayed = ip_address_from_db($ip_address->ip_address_v4);
 						}
 						$ip_count ++;
-						?>
-						<tr>
-							<td><?php echo print_something($ip_address_displayed)?></td>
-							<td><?php echo print_something($ip_address->ip_subnet)?></td>
-							<td><?php echo print_something($ip_address->ip_address_version)?></td>
-						</tr>
-						
-					<?php } ?>
-				<?php } ?>
-				<?php if ($ip_count == 0) { ?>
+						echo "							<tr><td>" . print_something($ip_address_displayed) . "</td><td>" . print_something($ip_address->ip_subnet) . "</td><td>" . print_something($ip_address->ip_address_version) . "</td></tr>\n";
+				}
+				}
+				if ($ip_count == 0) { ?>
 				<tr>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 					<td>&nbsp;</td>
 				</tr>
 				<?php } ?>
-				</tbody>
-				</table>
+						</tbody>
+					</table>
 				</fieldset>
 				<br /><br />
-				<?php endforeach; ?>
-				<?php echo display_custom_field('view_hardware_network',  $additional_fields_data, $edit); ?>
-			</fieldset>
+			<?php endforeach; 
+				echo display_custom_field('view_hardware_network',  $additional_fields_data, $edit); ?></fieldset>
 		</form>
 	<?php } ?>
 	</div>
@@ -2217,4 +1463,3 @@ if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y')
 
 <!-- end of content_column -->
 
-<?php include "include_display_javascript.php"; ?>

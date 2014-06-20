@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -152,7 +152,14 @@ class M_bios extends MY_Model {
 
 	function alert_bios($details) {
 		// only detect new bios
-		$sql = "SELECT bios_id, bios_description FROM sys_hw_bios WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT sys_hw_bios.bios_id, sys_hw_bios.bios_description 
+			FROM 
+				sys_hw_bios LEFT JOIN system ON (sys_hw_bios.system_id = system.system_id) 
+			WHERE 
+				sys_hw_bios.system_id = ? AND 
+				sys_hw_bios.first_timestamp = ? AND 
+				sys_hw_bios.first_timestamp = sys_hw_bios.timestamp AND 
+				sys_hw_bios.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 
 		$sql = $this->clean_sql($sql);

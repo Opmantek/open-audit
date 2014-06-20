@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -653,6 +653,7 @@ class discovery extends CI_Controller
             $this->load->model("m_system");
             $this->load->model("m_network_card");
             $this->load->model("m_ip_address");
+            $this->load->model("m_virtual_machine");
             $this->load->model("m_oa_group");
             $this->load->model("m_oa_general");
             $this->load->model("m_sys_man_audits");
@@ -865,6 +866,10 @@ class discovery extends CI_Controller
                         $temp_array = get_snmp($details);
                         $details = $temp_array['details'];
                         $network_interfaces = $temp_array['interfaces'];
+                        unset($guests);
+                        if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
+                            $guests = $temp_array['guests'];
+                        }
                         if (isset($network_interfaces) and count($network_interfaces > 0)) {
                             foreach ($network_interfaces as $interface) {
                                 if (isset($interface->net_mac_address) and (string)$interface->net_mac_address != '') {
@@ -875,6 +880,7 @@ class discovery extends CI_Controller
                             }
                         }
                     }
+
 
                     # remove all the NULL, FALSE and Empty Strings but leaves 0 (zero) values
                     # $details = (object) array_filter((array) $details, 'strlen' );
@@ -928,6 +934,15 @@ class discovery extends CI_Controller
                                         $this->m_ip_address->process_addresses($ip_input, $details);
                                     }
                                 }
+                            }
+                            # finish off with updating any network IPs that don't have a matching interface
+                            $this->m_ip_address->update_missing_interfaces($details->system_id);
+                        }
+
+                        # insert any found virtual machines
+                        if (isset($guests) and is_array($guests) and count($guests) > 0) {
+                            foreach($guests as $guest) {
+                                $this->m_virtual_machine->process_vm($guest, $details);
                             }
                         }
 

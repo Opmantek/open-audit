@@ -360,10 +360,24 @@ class System extends CI_Controller {
 		// date_default_timezone_set("Australia/Queensland");
 		$timestamp = date('Y-m-d H:i:s');
 
-		// first, undo what the XSS filter does
-		$input = html_entity_decode($_POST['form_systemXML']);
+		// get the input either from the textfield or the uploaded file
+		if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_name'] != '') {
+			$target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
+			try {
+				move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
+			} catch (Exception $e) {
+				$this->data['query'] = $e;
+				$this->data['error'] = "There was an error uploading the file, please try again.";
+				$this->data['include'] = 'v_error';
+				$this->load->view('v_template', $this->data);
+			}
+			$input = file_get_contents($target_path);
+			unlink($target_path);
+		} else {
+			$input = html_entity_decode($_POST['form_systemXML']);
+		}
 
-		// then convert to UTF8 (if required)
+		// convert to UTF8 (if required)
 		if (mb_detect_encoding($input) !== 'UTF-8') {
 			$input = utf8_encode($input);
 		}
@@ -371,16 +385,6 @@ class System extends CI_Controller {
 		$xml_input = iconv('UTF-8', 'UTF-8//TRANSLIT', $input);
 
 		libxml_use_internal_errors(TRUE);
-		// $xml = simplexml_load_string($xml_input);
-		// if ($xml === FALSE) {
-		// 	echo "Failed loading XML\n";
-		// 	foreach (libxml_get_errors() as $error) {
-		// 		echo "<pre>\n";
-		// 		print_r($error);
-		// 		echo "</pre>\n";
-		// 	}
-		// 	exit;
-		// }
 
 		try {
 			$xml = new SimpleXMLElement($xml_input, LIBXML_NOCDATA);
@@ -400,6 +404,7 @@ class System extends CI_Controller {
 		else {
 			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
 		}
+
 		$log_timestamp = date("M d H:i:s");
 		$log_hostname = php_uname('n');
 		$log_pid = getmypid();

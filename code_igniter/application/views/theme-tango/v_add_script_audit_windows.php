@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -94,25 +94,25 @@ echo form_open('admin/add_script_audit_windows') . "\n";
 				<p><label for='skip_dns'><?php echo __("Do not audit DNS information")?>: </label><input type='checkbox' id='skip_dns' name='skip_dns' tabindex='14' title='' checked /></p>
 				<p><label for='self_delete'><?php echo __("Have the script delete itself after running")?>: </label><input type='checkbox' id='self_delete' name='self_delete' tabindex='15' title='' /></p>
 				<p><label for='debugging'><?php echo __("Debugging level")?>: </label><select id='debugging' name='debugging' tabindex='16' title=''>
-					<option value='0'>0 - silent</option>
-					<option value='1' selected>1 - basic</option>
-					<option value='2'>2 - verbose</option>
-					<option value='3'>3 - very verbose</option>
+					<option value='0'>0 - <?php echo __("silent"); ?></option>
+					<option value='1' selected>1 - <?php echo __("basic"); ?></option>
+					<option value='2'>2 - <?php echo __("verbose"); ?></option>
+					<option value='3'>3 - <?php echo __("very verbose"); ?></option>
 				</select></p>
 				<p><label for='ldap'><?php echo __("LDAP - do not normally set this")?>: </label><input type='text' id='ldap' name='ldap' tabindex='17' title='' value=''/></p>
 				<p><label for='ldap_seen_days'><?php echo __("LDAP - Seen by AD in the last XX days")?>: </label><input type='text' id='ldap_seen_days' name='ldap_seen_days' tabindex='18' title='' value='0'/></p>
 				<p><label for='ldap_seen_date'><?php echo __("LDAP - Seen by AD since XX date")?>: </label><input type='text' id='ldap_seen_date' name='ldap_seen_date' tabindex='19' title='' value='2012-06-30'/></p>
 				<p><label for='ping_target'><?php echo __("Ping the target before attempting to audit")?>: </label><input type='checkbox' id='ping_target' name='ping_target' tabindex='20' title='' /></p>
 				<p><label for='org_id'><?php echo __("NetStat")?>: </label><select id='run_netstat' name='run_netstat' tabindex='9' title=''>
-					<option value='n'>No</option>
-					<option value='y'>Yes</option>
-					<option value='s'>Servers Only</option>
+					<option value='n'><?php echo __("no"); ?></option>
+					<option value='y'><?php echo __("yes"); ?></option>
+					<option value='s'><?php echo __("servers only"); ?></option>
 					</select>
 				</p>
 			</td>
 		</tr>
 	</table>
-	<p><label for='AddScript'>&nbsp;</label><?php echo form_submit(array('id'=>'AddScript', 'name'=>'AddScript'), 'Create Script'); ?></p>
+	<p><label for='AddScript'>&nbsp;</label><?php echo form_submit(array('id'=>'AddScript', 'name'=>'AddScript'), __("Create Script")); ?></p>
 	<?php echo $file_exist; ?><br /><br />
 	<?php echo $dns_lookup; ?>
 	<p><?php echo $this->session->flashdata('message'); ?>&nbsp;</p>

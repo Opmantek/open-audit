@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -135,7 +135,14 @@ class M_software_key extends MY_Model {
 		}
 		
 		// new software
-		$sql = "SELECT key_id, key_name, key_edition FROM sys_sw_software_key WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT key_id, key_name, key_edition 
+			FROM 
+				sys_sw_software_key LEFT JOIN system ON (sys_sw_software_key.system_id = system.system_id) 
+			WHERE 
+				sys_sw_software_key.system_id = ? AND 
+				sys_sw_software_key.first_timestamp = ? AND 
+				sys_sw_software_key.first_timestamp = sys_sw_software_key.timestamp AND 
+				sys_sw_software_key.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

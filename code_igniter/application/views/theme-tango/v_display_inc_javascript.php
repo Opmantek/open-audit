@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -68,21 +68,31 @@ function display_credentials() {
 		$snmp_community_field = 'text';
 	}
 	?>
-	status_text="<p><label for='ip_address'>IP Address: <\/label><input type='text' id='ip_address' name='ip_address' value='<?php if (isset($decoded_access_details->ip_address) and $decoded_access_details->ip_address > '') { echo $decoded_access_details->ip_address; } elseif (isset($system[0]->man_ip_address) and $system[0]->man_ip_address != '' and $system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0') { echo ip_address_from_db($system[0]->man_ip_address); } ?>' \/><\/p> \
-	<p><label for='snmp_version'>SNMP Version: <\/label><input type='text' id='snmp_version' name='snmp_version' value='<?php if (isset($decoded_access_details->snmp_version) and $decoded_access_details->snmp_version > '') { echo $decoded_access_details->snmp_version; } else { echo '2c'; } ?>' \/><\/p> \
-	<p><label for='snmp_community'>SNMP Community: <\/label><input type='<?php echo $snmp_community_field; ?>' id='snmp_community' name='snmp_community' value='<?php if (isset($decoded_access_details->snmp_community) and $decoded_access_details->snmp_community > '') { echo $decoded_access_details->snmp_community; } else { echo $config->default_snmp_community; } ?>' \/><\/p> \
-	<p><label for='ssh_username'>SSH Username: <\/label><input type='text' id='ssh_username' name='ssh_username' value='<?php echo $decoded_access_details->ssh_username; ?>' \/><\/p> \
-	<p><label for='ssh_password'>SSH Password: <\/label><input type='<?php echo $password_field; ?>' id='ssh_password' name='ssh_password' value='<?php echo $decoded_access_details->ssh_password; ?>'\ /><\/p> \
-	<p><label for='windows_username'>Windows Username: <\/label><input type='text' id='windows_username' name='windows_username' value='<?php echo $decoded_access_details->windows_username; ?>' \/><\/p> \
-	<p><label for='windows_password'>Windows Password: <\/label><input type='<?php echo $password_field; ?>' id='windows_password' name='windows_password' value='<?php echo $decoded_access_details->windows_password; ?>' \/><\/p> \
-	<p><label for='windows_domain'>Windows Domain: <\/label><input type='text' id='windows_domain' name='windows_domain' value='<?php if (isset($decoded_access_details->windows_domain) and $decoded_access_details->windows_domain > '') { echo $decoded_access_details->windows_domain; } elseif (isset($windows[0]->windows_domain_short)) { echo $windows[0]->windows_domain_short; } ?>' \/><\/p> \
-	<p><label for='submit'>Update Credentials: <\/label><input type='submit' id='submit' name='submit' value='Submit' \/><\/p> \
+	status_text="<p><label for='ip_address'><?php echo __("IP Address"); ?>: <\/label><input type='text' id='ip_address' name='ip_address' value='<?php if (isset($decoded_access_details->ip_address) and $decoded_access_details->ip_address > '') { echo $decoded_access_details->ip_address; } elseif (isset($system[0]->man_ip_address) and $system[0]->man_ip_address != '' and $system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0') { echo ip_address_from_db($system[0]->man_ip_address); } ?>' \/><\/p> \
+	<p><label for='snmp_version'><?php echo __("SNMP Version"); ?>: <\/label><input type='text' id='snmp_version' name='snmp_version' value='<?php if (isset($decoded_access_details->snmp_version) and $decoded_access_details->snmp_version > '') { echo $decoded_access_details->snmp_version; } else { echo '2c'; } ?>' \/><\/p> \
+	<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: <\/label><input type='<?php echo $snmp_community_field; ?>' id='snmp_community' name='snmp_community' value='<?php if (isset($decoded_access_details->snmp_community) and $decoded_access_details->snmp_community > '') { echo $decoded_access_details->snmp_community; } else { echo $config->default_snmp_community; } ?>' \/><\/p> \
+	<p><label for='ssh_username'><?php echo __("SSH Username"); ?>: <\/label><input type='text' id='ssh_username' name='ssh_username' value='<?php echo $decoded_access_details->ssh_username; ?>' \/><\/p> \
+	<p><label for='ssh_password'><?php echo __("SSH Password"); ?>: <\/label><input type='<?php echo $password_field; ?>' id='ssh_password' name='ssh_password' value='<?php echo $decoded_access_details->ssh_password; ?>'\ /><\/p> \
+	<p><label for='windows_username'><?php echo __("Windows Username"); ?>: <\/label><input type='text' id='windows_username' name='windows_username' value='<?php echo $decoded_access_details->windows_username; ?>' \/><\/p> \
+	<p><label for='windows_password'><?php echo __("Windows Password"); ?>: <\/label><input type='<?php echo $password_field; ?>' id='windows_password' name='windows_password' value='<?php echo $decoded_access_details->windows_password; ?>' \/><\/p> \
+	<p><label for='windows_domain'><?php echo __("Windows Domain"); ?>: <\/label><input type='text' id='windows_domain' name='windows_domain' value='<?php if (isset($decoded_access_details->windows_domain) and $decoded_access_details->windows_domain > '') { echo $decoded_access_details->windows_domain; } elseif (isset($windows[0]->windows_domain_short)) { echo $windows[0]->windows_domain_short; } ?>' \/><\/p> \
+	<p><label for='submit'><?php echo __("Update Credentials"); ?>: <\/label><input type='submit' id='submit' name='submit' value='Submit' \/><\/p> \
 	<input type='hidden' id='system_id' name='system_id' value='<?php echo $system[0]->system_id; ?>' \/>";
 	document.getElementById("credentials").innerHTML = status_text;
 }
 
-function display_environment() {
-	status_text="<select id='man_environment' onchange='send_environment();'><option value=' '>Choose an Environment<\/option><option value='production'>Production<\/option><option value='pre-prod'>PreProduction<\/option><option value='test'>Testing<\/option><option value='uat'>User Acceptance Testing<\/option><option value='eval'>Evaluation<\/option><option value='dev'>Development<\/option><option value='dr'>Disaster Recovery<\/option><\/select>";
+function display_man_environment() {
+	status_text="<select id='man_environment' onchange='send_environment();'>\
+	<option value=' '><?php echo __("Choose an Environment"); ?><\/option>\
+	<option value='production'><?php echo __("Production"); ?><\/option>\
+	<option value='dev'><?php echo __("Development"); ?><\/option>\
+	<option value='dr'><?php echo __("Disaster Recovery"); ?><\/option>\
+	<option value='eval'><?php echo __("Evaluation"); ?><\/option>\
+	<option value='pre-prod'><?php echo __("PreProduction"); ?><\/option>\
+	<option value='test'><?php echo __("Testing"); ?><\/option>\
+	<option value='train'><?php echo __("Training"); ?><\/option>\
+	<option value='uat'><?php echo __("User Acceptance Testing"); ?><\/option>\
+	<\/select>";
 	document.getElementById("man_environment_select").innerHTML = status_text;
 }
 
@@ -104,8 +114,16 @@ function receive_environment() {
   }
 }
 
-function display_status() {
-	status_text="<select id='man_status' onchange='send_status();'><option value=' '>Choose a status<\/option><option value='production'>Production<\/option><option value='retired'>Retired<\/option><option value='maintenance'>Maintenance<\/option><option value='deleted'>Deleted<\/option><\/select>";
+function display_man_status() {
+	status_text="<select id='man_status' onchange='send_status();'>\
+	<option value=' '><?php echo __("Choose a status"); ?><\/option>\
+	<option value='production'><?php echo __("Production"); ?><\/option>\
+	<option value='deleted'><?php echo __("Deleted"); ?><\/option>\
+	<option value='lost'><?php echo __("Lost"); ?><\/option>\
+	<option value='maintenance'><?php echo __("Maintenance"); ?><\/option>\
+	<option value='retired'><?php echo __("Retired"); ?><\/option>\
+	<option value='unallocated'><?php echo __("Unallocated"); ?><\/option>\
+	<\/select>";
 	document.getElementById("man_status_select").innerHTML = status_text;
 }
 
@@ -127,58 +145,93 @@ function receive_status() {
   }
 }
 
-function display_type() {
+function display_man_class() {
+	status_text="<select id='man_class' onchange='send_man_class();'>\
+	<option value=' '><?php echo __("Choose a class"); ?><\/option>\
+	<option value='desktop'><?php echo __("Desktop"); ?><\/option>\
+	<option value='laptop'><?php echo __("Laptop"); ?><\/option>\
+	<option value='tablet'><?php echo __("Tablet"); ?><\/option>\
+	<option value='workstation'><?php echo __("Workstation"); ?><\/option>\
+	<option value='server'><?php echo __("Server"); ?><\/option>\
+	<option value='hypervisor'><?php echo __("Hypervisor"); ?><\/option>\
+	<option value='virtual server'><?php echo __("Virtual Server"); ?><\/option>\
+	<option value='virtual desktop'><?php echo __("Virtual Desktop"); ?><\/option>\
+	<\/select>";
+	document.getElementById("man_class_select").innerHTML = status_text;
+}
+
+function send_man_class() {
+	table_text=document.getElementById("man_class").value;
+	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_class/'+table_text);
+	http.onreadystatechange = receive_man_class;
+	http.send(null);
+}
+
+function receive_man_class() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      update="<span onclick='display_man_class();'>"+http.responseText+"<\/span>";
+      document.getElementById("man_class_select").innerHTML = update;
+    }
+  }
+}
+
+function display_man_type() {
 	type_text = "<select id='man_type' onchange='send_type();'> \
-	<option value=' '>Choose a type<\/option> \
-	<option value='access point'>Access Point<\/option> \
-	<option value='access server'>Access Server<\/option> \
-	<option value='access token'>Access Token<\/option> \
-	<option value='adsl modem'>ADSL Modem<\/option> \
-	<option value='alarm'>Alarm<\/option> \
-	<option value='bdsl modem'>BDSL Modem<\/option> \
-	<option value='building management'>Building Management<\/option> \
-	<option value='cable modem'>Cable Modem<\/option> \
-	<option value='cell phone'>Cell Phone<\/option> \
-	<option value='cisco module'>Cisco Module<\/option> \
-	<option value='chassis'>Chassis<\/option> \
-	<option value='computer'>Computer<\/option> \
-	<option value='dsl modem'>DSL Modem<\/option> \
-	<option value='firewall'>Firewall<\/option> \
-	<option value='game console'>Game Console<\/option> \
-	<option value='gateway'>Gateway<\/option> \
-	<option value='ip phone'>IP Phone<\/option> \
-	<option value='kvm'>KVM (Keyboard, Video, Mouse switch)<\/option> \
-	<option value='load balancer'>Load Balancer<\/option> \
-	<option value='mobile modem'>Mobile Modem<\/option> \
-	<option value='nas'>NAS (Network Attached Storage)<\/option> \
-	<option value='network device'>Network Device<\/option> \
-	<option value='network ids'>Network IDS (Intrusion Detection)<\/option> \
-	<option value='network printer'>Network Printer<\/option> \
-	<option value='network scanner'>Network Scanner<\/option> \
-	<option value='phone'>Phone<\/option> \
-	<option value='point of sale'>Point of Sale<\/option> \
-	<option value='printer'>Printer<\/option> \
-	<option value='projector'>Projector<\/option> \
-	<option value='remote access controller'>Remote Access Controller (ILO \/ RSA)<\/option> \
-	<option value='router'>Router<\/option> \
-	<option value='san'>SAN (Storage Area Network)<\/option> \
-	<option value='satellite phone'>Satellite Phone<\/option> \
-	<option value='scanner'>Scanner<\/option> \
-	<option value='security camera'>Security Camera<\/option> \
-	<option value='smart phone'>Smart Phone<\/option> \
-	<option value='switch'>Switch<\/option> \
-	<option value='tablet'>Tablet<\/option> \
-	<option value='unknown'>Unknown<\/option> \
-	<option value='ups'>UPS (Uninteruptable Power Supply)<\/option> \
-	<option value='voip adapter'>VoIP Adapter<\/option> \
-	<option value='voip gateway'>VoIP Gateway<\/option> \
-	<option value='voip phone'>VoIP Phone<\/option> \
-	<option value='vpn_terminator'>VPN Terminator<\/option> \
-	<option value='wan accelerator'>WAN Accelerator<\/option> \
-	<option value='wap'>WAP (Wireless Access Point)<\/option> \
-	<option value='web cache'>Web Cache<\/option> \
-	<option value='webcam'>Webcam<\/option> \
-	<option value='wireless router'>Wireless Router<\/option> \
+	<option value=' '><?php echo __("Choose a type"); ?><\/option> \
+	<option value='access point'><?php echo __("Access Point"); ?><\/option> \
+	<option value='access server'><?php echo __("Access Server"); ?><\/option> \
+	<option value='access token'><?php echo __("Access Token"); ?><\/option> \
+	<option value='adsl modem'><?php echo __("ADSL Modem"); ?><\/option> \
+	<option value='alarm'><?php echo __("Alarm"); ?><\/option> \
+	<option value='bdsl modem'><?php echo __("BDSL Modem"); ?><\/option> \
+	<option value='building management'><?php echo __("Building Management"); ?><\/option> \
+	<option value='cable modem'><?php echo __("Cable Modem"); ?><\/option> \
+	<option value='cell phone'><?php echo __("Cell Phone"); ?><\/option> \
+	<option value='cisco module'><?php echo __("Cisco Module"); ?><\/option> \
+	<option value='chassis'><?php echo __("Chassis"); ?><\/option> \
+	<option value='computer'><?php echo __("Computer"); ?><\/option> \
+	<option value='dsl modem'><?php echo __("DSL Modem"); ?><\/option> \
+	<option value='dslam'><?php echo __("DSLAM"); ?><\/option> \
+	<option value='firewall'><?php echo __("Firewall"); ?><\/option> \
+	<option value='game console'><?php echo __("Game Console"); ?><\/option> \
+	<option value='gateway'><?php echo __("Gateway"); ?><\/option> \
+	<option value='ip phone'><?php echo __("IP Phone"); ?><\/option> \
+	<option value='kvm'><?php echo __("KVM (Keyboard, Video, Mouse switch)"); ?><\/option> \
+	<option value='load balancer'><?php echo __("Load Balancer"); ?><\/option> \
+	<option value='mobile modem'><?php echo __("Mobile Modem"); ?><\/option> \
+	<option value='nas'><?php echo __("NAS (Network Attached Storage)"); ?><\/option> \
+	<option value='network device'><?php echo __("Network Device"); ?><\/option> \
+	<option value='network ids'><?php echo __("Network IDS (Intrusion Detection)"); ?><\/option> \
+	<option value='network printer'><?php echo __("Network Printer"); ?><\/option> \
+	<option value='network scanner'><?php echo __("Network Scanner"); ?><\/option> \
+	<option value='pdu'><?php echo __("Power Distribution Unit"); ?><\/option> \
+	<option value='phone'><?php echo __("Phone"); ?><\/option> \
+	<option value='point of sale'><?php echo __("Point of Sale"); ?><\/option> \
+	<option value='printer'><?php echo __("Printer"); ?><\/option> \
+	<option value='projector'><?php echo __("Projector"); ?><\/option> \
+	<option value='remote access controller'><?php echo __("Remote Access Controller (ILO \/ RSA)"); ?><\/option> \
+	<option value='router'><?php echo __("Router"); ?><\/option> \
+	<option value='san'><?php echo __("SAN (Storage Area Network)"); ?><\/option> \
+	<option value='satellite phone'><?php echo __("Satellite Phone"); ?><\/option> \
+	<option value='scanner'><?php echo __("Scanner"); ?><\/option> \
+	<option value='security camera'><?php echo __("Security Camera"); ?><\/option> \
+	<option value='smart phone'><?php echo __("Smart Phone"); ?><\/option> \
+	<option value='switch'><?php echo __("Switch"); ?><\/option> \
+	<option value='tablet'><?php echo __("Tablet"); ?><\/option> \
+	<option value='unknown'><?php echo __("Unknown"); ?><\/option> \
+	<option value='ups'><?php echo __("UPS (Uninterruptible Power Supply)"); ?><\/option> \
+	<option value='voip adapter'><?php echo __("VoIP Adapter"); ?><\/option> \
+	<option value='voip gateway'><?php echo __("VoIP Gateway"); ?><\/option> \
+	<option value='voip phone'><?php echo __("VoIP Phone"); ?><\/option> \
+	<option value='vpn terminator'><?php echo __("VPN Terminator"); ?><\/option> \
+	<option value='wan accelerator'><?php echo __("WAN Accelerator"); ?><\/option> \
+	<option value='wap'><?php echo __("WAP (Wireless Access Point)"); ?><\/option> \
+	<option value='web cache'><?php echo __("Web Cache"); ?><\/option> \
+	<option value='webcam'><?php echo __("Webcam"); ?><\/option> \
+	<option value='wireless router'><?php echo __("Wireless Router"); ?><\/option> \
 	<\/select>";
 	document.getElementById("man_type_select").innerHTML = type_text;
 }
@@ -202,7 +255,12 @@ function receive_type() {
 }
 
 function display_nmis_role() {
-	status_text="<select id='nmis_role' onchange='send_nmis_role();'><option value=' '>Choose an NMIS role</option><option value='access'>Access</option><option value='core'>Core</option><option value='distriubtion'>Distriubtion</option></select>";
+	status_text="<select id='nmis_role' onchange='send_nmis_role();'>\
+	<option value=' '><?php echo __("Choose an NMIS role"); ?></option>\
+	<option value='access'>Access</option>\
+	<option value='core'>Core</option>\
+	<option value='distribution'>Distribution</option>\
+	</select>";
 	document.getElementById("nmis_role_select").innerHTML = status_text;
 }
 
@@ -227,16 +285,14 @@ function receive_nmis_role() {
 
 function display_location() {
 	<?php
-	$location_form = "<option value=' '>Choose a Location<\/option>";
-	foreach ($locations as $location)
-	{
+	$location_form = "<option value=' '>" . __("Choose a Location") . "<\/option>";
+	foreach ($locations as $location) {
 		$location_form .= "<option value='" . $location->location_id . "'>" . $location->location_name . "<\/option>";
 	}
-	if ($location_id <> "")
-	{
+	if ($location_id <> "") {
 		$location_form = "<select id='man_location_id' onchange='send_location();'>" . $location_form . "<\/select>";
 	} else {
-		$location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>Choose a location<\/option>" . $location_form . "<\/select>";
+		$location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>" . __("Choose a location") . "<\/option>" . $location_form . "<\/select>";
 	}
 		
 	?>
@@ -267,14 +323,14 @@ function receive_location() {
 
 function display_org() {
 	<?php
-	$org_form = "<option value=' '>Choose an Org<\/option>";
+	$org_form = "<option value=' '>" . __("Choose an Org") . "<\/option>";
 	foreach ($orgs as $org) {
 		$org_form .= "<option value='" . $org->org_id . "'>" . $org->org_name . "<\/option>";
 	}
 	if ($org_id <> "") {
 		$org_form = "<select id='man_org_id' onchange='send_org();'>" . $org_form . "<\/select>";
 	} else {
-		$org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>Choose an Org<\/option>" . $org_form . "<\/select>";
+		$org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>" . __("Choose an Org") . "<\/option>" . $org_form . "<\/select>";
 	}
 	?>
 	status_text="<?php echo $org_form;?>";
@@ -301,14 +357,13 @@ function receive_org() {
 function upload_attachment()
 {
 	status_text=document.getElementById("attachment_listing").innerHTML;
-	status_text=status_text+"<input type='hidden' id='system_id' name='system_id' value='"+formVars+"' /><input type='file' name='attachment' id='attachment' size='20' /><br />Attachment Title: <input type='text' name='title' id='title' size='20' /><br /><input type='submit' name='submit' id='submit' value='Submit' />";
+	status_text=status_text+"<input type='hidden' id='system_id' name='system_id' value='"+formVars+"' /><input type='file' name='attachment' id='attachment' size='20' /><br /><?php echo __("Attachment Title"); ?>: <input type='text' name='title' id='title' size='20' /><br /><input type='submit' name='submit' id='submit' value='Submit' />";
 	document.getElementById("attachment_listing").innerHTML = status_text;
 }
 
 </script>
 
 <script type="text/javascript">
-
 
 var summary_toggle = 0;
 var hardware_toggle = 0;
@@ -329,6 +384,35 @@ $(document).ready(function(){
 	$('#view_summary_custom').hide();
 	$('#view_summary_attachment').hide();
 	$('#view_summary_nmis').hide();
+	<?php if ($system[0]->man_type == 'access point' or 
+		$system[0]->man_type == 'adsl modem' or
+		$system[0]->man_type == 'bdsl modem' or
+		$system[0]->man_type == 'cable modem' or
+		$system[0]->man_type == 'dsl modem' or
+		$system[0]->man_type == 'firewall' or
+		$system[0]->man_type == 'gateway' or
+		$system[0]->man_type == 'load balancer' or
+		$system[0]->man_type == 'nas' or
+		$system[0]->man_type == 'network device' or
+		$system[0]->man_type == 'network ids' or
+		$system[0]->man_type == 'network printer' or
+		$system[0]->man_type == 'network scanner' or
+		$system[0]->man_type == 'router' or
+		$system[0]->man_type == 'san' or
+		$system[0]->man_type == 'switch' or
+		$system[0]->man_type == 'voip gateway' or
+		$system[0]->man_type == 'vpn terminator' or
+		$system[0]->man_type == 'wan accelerator' or
+		$system[0]->man_type == 'wap' or
+		$system[0]->man_type == 'wireless router' ) { ?>
+	$('#view_summary_network_interfaces').show();
+	<?php } ?>
+	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').show();<?php } ?>
+	<?php if (count($vm) > 0) { ?>$('#view_summary_vms').show();<?php } ?>
+
+
+
+
 
 	$('#toggle_summary_windows').click(function(){
 		$('#view_summary_windows').slideToggle("fast");
@@ -374,7 +458,21 @@ $(document).ready(function(){
 		$('#view_summary_nmis').slideToggle("fast");
 	});
 
+	$('#toggle_summary_network_interfaces').click(function(){
+		$('#view_summary_network_interfaces').slideToggle("fast");
+	});
 
+	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
+	$('#toggle_summary_phone').click(function(){
+		$('#view_summary_phone').slideToggle("fast");
+	});
+	<?php } ?>
+
+	<?php if (count($vm) > 0) { ?>
+	$('#toggle_summary_vms').click(function(){
+		$('#view_summary_vms').slideToggle("fast");
+	});
+	<?php } ?>
 
 	$('#toggle_summary_all').click(function(){
 		if (summary_toggle == 0)
@@ -390,6 +488,9 @@ $(document).ready(function(){
 			$('#view_summary_custom').show("fast");
 			$('#view_summary_attachment').show("fast");
 			$('#view_summary_nmis').show("fast");
+			$('#view_summary_network_interfaces').show("fast");
+			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').show("fast");<?php } ?>
+			<?php if (count($vm) > 0) { ?>$('#view_summary_vms').show("fast");<?php } ?>
 			summary_toggle = 1;
 		}
 		else 
@@ -405,6 +506,9 @@ $(document).ready(function(){
 			$('#view_summary_custom').hide("fast");
 			$('#view_summary_attachment').hide("fast");
 			$('#view_summary_nmis').hide("fast");
+			$('#view_summary_network_interfaces').hide("fast");
+			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').hide("fast");<?php } ?>
+			<?php if (count($vm) > 0) { ?>$('#view_summary_vms').hide("fast");<?php } ?>
 			summary_toggle = 0;
 		}
 	});

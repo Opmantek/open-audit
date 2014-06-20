@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -218,8 +218,22 @@ function process_service($input, $details) {
 		}
 		
 		// new service
-		$sql = "SELECT service_id, service_name FROM sys_sw_service WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT service_id, service_name 
+		FROM sys_sw_service 
+		WHERE system_id = ? and 
+		first_timestamp = timestamp and 
+		first_timestamp != ?";
 		$data = array("$details->system_id", "$details->timestamp");
+
+		$sql = "SELECT sys_sw_service.service_id, sys_sw_service.service_name 
+		FROM sys_sw_service LEFT JOIN system ON (sys_sw_service.system_id = system.system_id) 
+		WHERE 
+		sys_sw_service.system_id = ? AND 
+		sys_sw_service.first_timestamp = sys_sw_service.timestamp AND 
+		sys_sw_service.first_timestamp = ? AND 
+		sys_sw_service.first_timestamp != system.first_timestamp";
+		$data = array("$details->system_id", "$details->timestamp");
+
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) { 

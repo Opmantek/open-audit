@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.3.1
+' @version 1.3.2
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -2287,6 +2287,7 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfig
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NetworkAdapterConfiguration)" : audit_wmi_fails = audit_wmi_fails & "Win32_NetworkadapterConfiguration " : end if
 for each objItem in colItems
 	net_mac_address = objItem.MACAddress
+	net_index = objItem.Index
 	if net_mac_address > "" then
 		for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
 			ip_address = objItem.IPAddress(i)
@@ -2304,6 +2305,7 @@ for each objItem in colItems
 				count = count + 1
 				item = item & "		<ip_address>" & vbcrlf
 				item = item & "			<net_mac_address>" & escape_xml(net_mac_address) & "</net_mac_address>" & vbcrlf
+				item = item & "			<net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
 				item = item & "			<ip_address_v4>" & escape_xml(ip_address_v4) & "</ip_address_v4>" & vbcrlf
 				item = item & "			<ip_address_v6>" & escape_xml(ip_address_v6) & "</ip_address_v6>" & vbcrlf
 				item = item & "			<ip_subnet>" & escape_xml(ip_subnet) & "</ip_subnet>" & vbcrlf

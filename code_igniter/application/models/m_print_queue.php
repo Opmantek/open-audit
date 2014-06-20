@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -155,7 +155,14 @@ class M_print_queue extends MY_Model {
 		}
 
 		// new print queue
-		$sql = "SELECT queue_id, queue_system_key, model FROM sys_sw_print_queue WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT sys_sw_print_queue.queue_id, sys_sw_print_queue.queue_system_key, sys_sw_print_queue.model 
+			FROM 
+				sys_sw_print_queue LEFT JOIN system ON (sys_sw_print_queue.system_id = system.system_id) 
+			WHERE 
+				sys_sw_print_queue.system_id = ? AND 
+				sys_sw_print_queue.first_timestamp = ? AND 
+				sys_sw_print_queue.first_timestamp = sys_sw_print_queue.timestamp AND 
+				sys_sw_print_queue.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

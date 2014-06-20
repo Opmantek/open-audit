@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -45,7 +45,7 @@
 			<tr>
 				<td>
 					<p><label for='org_name'><?php echo __("Name")?>: </label><span id='org_name' name='org_name'><?php echo $org->org_name?></span></p>
-					<p><label for='org_devices'><?php echo __("# Devices")?>: </label><span id='org_devices' name='org_devices'><?php echo $org->total?></span></p>
+					<p><label for='org_devices'># <?php echo __("Devices")?>: </label><span id='org_devices' name='org_devices'><?php echo $org->total?></span></p>
 					<p><label for='org_parent'><?php echo __("Parent Org")?>: </label><span id='org_parent' name='org_parent'><a href='<?php echo $org->org_parent_id?>'><?php echo $org->org_parent_name?></a></span></p>
 					<p><label for='org_comments'><?php echo __("Comments")?>: </label><span id='org_comments' name='org_comments'><?php echo $org->org_comments?></span></p>	
 					<p><label for='org_picture'><?php echo __("Picture")?>: </label><?php echo $org->org_picture?></p>

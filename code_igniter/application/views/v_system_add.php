@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -39,12 +39,19 @@
 <title>Open-AudIT System Input</title>
 </head>
 <body>
-<?php $attributes = array('accept-charset'=>'UTF-8'); ?>
-<?php echo form_open('system/add_system', $attributes) . "\n"; ?>
-    <?php echo form_fieldset('Add a System') . "\n"; ?>
-        <label for="form_systemXML">Details: </label><p><?php echo form_textarea(array('name' => 'form_systemXML', 'id' => 'form_systemXML', 'rows' => '15', 'cols' => '100')); ?></p>
-        <p><?php echo form_submit('submit', 'Submit'); ?></p>
-    <?php echo form_fieldset_close(); ?>
-<?php echo form_close(); ?>
+<?php 
+$attributes = array('accept-charset'=>'UTF-8');
+#echo form_open('system/add_system', $attributes) . "\n";
+echo form_open_multipart('system/add_system', $attributes) . "\n";
+echo form_fieldset('Paste the XML') . "\n";
+echo '<p>' . form_textarea(array('name' => 'form_systemXML', 'id' => 'form_systemXML', 'rows' => '15', 'cols' => '100')) . "</p>\n";
+echo form_fieldset_close();
+echo "<br /><br />or<br /><br />\n";
+echo form_fieldset('Select a File') . "\n";
+echo form_upload('upload_file');
+echo form_fieldset_close();
+echo '<p>' . form_submit('submit', 'Submit') . "</p>\n";
+echo form_close(); 
+?>
 </body>
 </html>

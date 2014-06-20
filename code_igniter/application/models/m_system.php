@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -204,18 +204,21 @@ class M_system extends MY_Model {
 		if (isset($details->mac_addresses) and count($details->mac_addresses) > 0) {
 			foreach ($details->mac_addresses as $mac_address) {
 				foreach ($mac_address as $mac) {
-					# check the sys_hw_network_card_ip table
-					$sql = "SELECT system.system_id FROM system 
-							LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
-							WHERE LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(?) 
-							AND system.man_status = 'production' LIMIT 1";
-					$sql = $this->clean_sql($sql);
-					$data = array("$mac");
-					$query = $this->db->query($sql, $data);
-					$row = $query->row();
-					if (count($row) > 0 ) { 
-						$details->system_id = $row->system_id; 
+					if ($mac != '') {
+						# check the sys_hw_network_card_ip table
+						$sql = "SELECT system.system_id FROM system 
+								LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND 
+									system.timestamp = sys_hw_network_card_ip.timestamp) 
+								WHERE LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(?) 
+								AND system.man_status = 'production' LIMIT 1";
+						$sql = $this->clean_sql($sql);
+						$data = array("$mac");
+						$query = $this->db->query($sql, $data);
+						$row = $query->row();
+						if (count($row) > 0 ) { 
+							$details->system_id = $row->system_id; 
 #echo "Hit on MAC Address from audit result.\n";
+						}
 					}
 				}
 			}
@@ -321,7 +324,7 @@ class M_system extends MY_Model {
 
 		if (isset($name_match) and $name_match == "y") {
 			# check hostname
-			if (isset($details->hostname) and ($details->system_id == '') ) {
+			if (isset($details->hostname) and $details->hostname != '' and $details->system_id == '') {
 				$i = explode(".", $details->hostname);
 				$hostname = $i[0];
 				$sql = "SELECT system.system_id FROM system WHERE (hostname = ? or hostname = ?) AND system.man_status = 'production'";
@@ -335,7 +338,7 @@ class M_system extends MY_Model {
 			}
 
 			# check short hostname in $details
-			if (isset($details->hostname) and ($details->system_id == '') ) {
+			if (isset($details->hostname) and $details->hostname != '' and $details->system_id == '') {
 				if (isset($details->hostname_length) and $details->hostname_length == 'short') {
 					# we grabbed the hostname from SNMP.
 					# SNMP hostnames on Windows are truncated to 15 characters
@@ -687,7 +690,7 @@ class M_system extends MY_Model {
 	}
 
 	function get_system_summary($system_id) {
-		$sql = "SELECT * FROM system WHERE system.system_id = ? LIMIT 1";
+		$sql = "SELECT system.*, location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE system.system_id = ? LIMIT 1";
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
@@ -937,8 +940,10 @@ class M_system extends MY_Model {
 		if ((strripos($details->manufacturer, "vmware") !== false) or 
 			(strripos($details->manufacturer, "parallels") !== false) or 
 			(strripos($details->manufacturer, "virtual") !== false)) {
-			$details->form_factor = 'Virtual';
-			$details->man_form_factor = 'Virtual';
+			if (!isset($details->man_class) or $details->man_class != 'hypervisor') {
+				$details->form_factor = 'Virtual';
+				$details->man_form_factor = 'Virtual';
+			}
 		}
 
 		$details->man_ip_address = ip_address_to_db($details->man_ip_address);
@@ -1316,10 +1321,8 @@ class M_system extends MY_Model {
 		# finally, update the device icon
 		$this->m_system->reset_icons($details->system_id);
 
-		if (isset($details->mac_address) and 
-			$details->mac_address != '' and 
-			isset($details->man_ip_address) and 
-			$details->man_ip_address != ''){
+		if (isset($details->mac_address) and $details->mac_address != '' and 
+			isset($details->man_ip_address) and $details->man_ip_address != ''){
 			# we need to check if we have an entry in sys_hw_network_card
 			# if we do not, but we have details (ex- an nmap device that previously existed but did not have a MAC, but now does)
 			# we need to insert it.
@@ -1355,7 +1358,7 @@ class M_system extends MY_Model {
 			}
 
 			# search for any entries in both sys_hw_network_card_ip
-			$sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+			$sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
 			$data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
 			$query = $this->db->query($sql, $data);
 			$result = $query->result();
@@ -1367,7 +1370,7 @@ class M_system extends MY_Model {
 				$query = $this->db->query($sql, $data);
 			} else {
 				# match - update timestamp only
-				$sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+				$sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
 				$data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
 				$query = $this->db->query($sql, $data);
 			}

@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -117,7 +117,14 @@ class M_hard_drive extends MY_Model {
 		}
 
 		// new hard_drive - excluding USB attached drives
-		$sql = "SELECT hard_drive_id, hard_drive_caption FROM sys_hw_hard_drive WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ? AND sys_hw_hard_drive.hard_drive_interface_type <> 'USB'";
+		$sql = "SELECT hard_drive_id, hard_drive_caption 
+			FROM 
+				sys_hw_hard_drive LEFT JOIN system ON (sys_hw_hard_drive.system_id = system.system_id) 
+			WHERE 
+				sys_hw_hard_drive.system_id = ? AND 
+				sys_hw_hard_drive.first_timestamp = ? AND 
+				sys_hw_hard_drive.first_timestamp = sys_hw_hard_drive.timestamp AND 
+				sys_hw_hard_drive.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 

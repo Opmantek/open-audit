@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report>
+	<details>
+		<report_name>Alerts - Hardware</report_name>
+		<report_display_in_menu>y</report_display_in_menu>
+		<report_sql><![CDATA[SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group AND oa_alert_log.alert_table like 'sys_hw_%' GROUP BY oa_alert_log.alert_id ORDER BY oa_alert_log.timestamp DESC ]]></report_sql>
+		<report_view_file>v_report_alerts</report_view_file>
+		<report_view_contents></report_view_contents>
+		<report_processing></report_processing>
+		<report_sort_column>0</report_sort_column>
+		<report_description>Any Hardware Alerts created by newly found, no longer present or changed items.</report_description>
+	</details>
+	<columns>
+		<column>
+			<column_order>0</column_order>
+			<column_name>Timestamp</column_name>
+			<column_variable>timestamp</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>IP Address</column_name>
+			<column_variable>man_ip_address</column_variable>
+			<column_type>ip_address</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>2</column_order>
+			<column_name>System Name</column_name>
+			<column_variable>hostname</column_variable>
+			<column_type>link</column_type>
+			<column_link>/main/system_display/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>3</column_order>
+			<column_name>System Description</column_name>
+			<column_variable>man_description</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>4</column_order>
+			<column_name>Details</column_name>
+			<column_variable>alert_details</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>5</column_order>
+			<column_name>Tags</column_name>
+			<column_variable>tag</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+	</columns>
+</report>

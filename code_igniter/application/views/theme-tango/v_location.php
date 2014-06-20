@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -43,7 +43,7 @@
 			<tr>
 				<td valign="top">
 					<p><label for='location_name'><?php echo __("Name")?>: </label><span id='location_name' name='location_name'>&nbsp;<?php echo $location->location_name?></span></p>
-					<p><label for='location_devices'><?php echo __("# Devices")?>: </label><span id='location_devices' name='location_devices'>&nbsp;<?php echo $location->total?></span></p>
+					<p><label for='location_devices'># <?php echo __("Devices")?>: </label><span id='location_devices' name='location_devices'>&nbsp;<?php echo $location->total?></span></p>
 					<p><label for='location_type'><?php echo __("Type")?>: </label><span id='location_type' name='location_type'>&nbsp;<?php echo $location->location_type?></span></p>	
 					<p><label for='location_room'><?php echo __("Room")?>: </label><span id='location_room' name='location_room'>&nbsp;<?php echo $location->location_room?></span></p>	
 					<p><label for='location_suite'><?php echo __("Suite")?>: </label><span id='location_suite' name='location_suite'>&nbsp;<?php echo $location->location_suite?></span></p>	

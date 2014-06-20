@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -124,7 +124,14 @@ class M_video extends MY_Model {
 		}
 
 		// new video card
-		$sql = "SELECT video_id, video_description FROM sys_hw_video WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT video_id, video_description 
+			FROM 
+				sys_hw_video LEFT JOIN system ON (sys_hw_video.system_id = system.system_id) 
+			WHERE 
+				sys_hw_video.system_id = ? AND 
+				sys_hw_video.first_timestamp = ? AND 
+				sys_hw_video.first_timestamp = sys_hw_video.timestamp AND 
+				sys_hw_video.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

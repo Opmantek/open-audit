@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.3.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -85,7 +85,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 14) == '1.3.6.1.4.1.42') { $new->manufacturer = 'Sun Microsystems'; }
 		if (substr($oid, 0, 14) == '1.3.6.1.4.1.43') { $new->manufacturer = '3Com'; }
 		if (substr($oid, 0, 14) == '1.3.6.1.4.1.44') { $new->manufacturer = 'CMC'; }
-		if (substr($oid, 0, 14) == '1.3.6.1.4.1.45') { $new->manufacturer = 'SynOptics'; }
+		if (substr($oid, 0, 14) == '1.3.6.1.4.1.45') { $new->manufacturer = 'Nortel Networks'; }
 		if (substr($oid, 0, 14) == '1.3.6.1.4.1.46') { $new->manufacturer = 'Cheyenne Software'; }
 		if (substr($oid, 0, 14) == '1.3.6.1.4.1.47') { $new->manufacturer = 'Prime Computer'; }
 		if (substr($oid, 0, 14) == '1.3.6.1.4.1.48') { $new->manufacturer = 'MCNC/North Carolina'; }
@@ -602,7 +602,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.559') { $new->manufacturer = 'Sonix Communications, Ltd.'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.560') { $new->manufacturer = 'Paul Freeman Associates, Inc.'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.561') { $new->manufacturer = 'John S. Barnes, Corp.'; }
-		if (substr($oid, 0, 15) == '1.3.6.1.4.1.562') { $new->manufacturer = 'Northern Telecom, Ltd.'; }
+		if (substr($oid, 0, 15) == '1.3.6.1.4.1.562') { $new->manufacturer = 'Nortel Networks'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.563') { $new->manufacturer = 'CAP Debris'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.564') { $new->manufacturer = 'Telco Systems NAC'; }
 		if (substr($oid, 0, 15) == '1.3.6.1.4.1.565') { $new->manufacturer = 'Tosco Refining Co'; }
@@ -1132,7 +1132,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1089') { $new->manufacturer = 'Net X, Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1090') { $new->manufacturer = 'PNC PLC'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1091') { $new->manufacturer = 'DanaSoft, Inc.'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1092') { $new->manufacturer = 'Yokogawa-Hewlett-Packard'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1092') { $new->manufacturer = 'Yokogawa Hewlett Packard'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1093') { $new->manufacturer = 'Citem'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1094') { $new->manufacturer = 'Link Telecom, Ltd.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1095') { $new->manufacturer = 'Xirion bv'; }
@@ -1753,7 +1753,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1710') { $new->manufacturer = 'Acclaim Communications'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1711') { $new->manufacturer = 'BISS Limited'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1712') { $new->manufacturer = 'Caravelle Inc.'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1713') { $new->manufacturer = 'Diamond Lane Communications Corporation'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1713') { $new->manufacturer = 'Nokia'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1714') { $new->manufacturer = 'Infortrend Technology, Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1715') { $new->manufacturer = 'Orda-B N.V.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1716') { $new->manufacturer = 'Ariel Corporation'; }
@@ -1912,7 +1912,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1869') { $new->manufacturer = 'Optical Transmission Labs, Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1870') { $new->manufacturer = 'CyberCash, Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1871') { $new->manufacturer = 'NetSpeed, Inc.'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1872') { $new->manufacturer = 'Alteon Networks, Inc.'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1872') { $new->manufacturer = 'Nortel Networks'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1873') { $new->manufacturer = 'Internet Middleware Corporation'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1874') { $new->manufacturer = 'ISOnova GmbH'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.1875') { $new->manufacturer = 'Amiga IOPS Project'; }
@@ -2310,7 +2310,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2269') { $new->manufacturer = 'Ordinox Network, Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2270') { $new->manufacturer = 'Telinc Corporation'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2271') { $new->manufacturer = 'DRS Consulting Group'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2272') { $new->manufacturer = 'Rapid City Communication'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2272') { $new->manufacturer = 'Nortel Networks'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2273') { $new->manufacturer = 'Invisible Fence Sales Company'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2274') { $new->manufacturer = 'Troika Management Services'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2275') { $new->manufacturer = 'VXtreme Inc.'; }
@@ -2543,7 +2543,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2502') { $new->manufacturer = 'LunarWave Communications'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2503') { $new->manufacturer = 'Bangkok Pattaya Hospital'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2504') { $new->manufacturer = 'Roke Manor Research Limited Keith'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2505') { $new->manufacturer = 'New Oak Communications, Inc.'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2505') { $new->manufacturer = 'Nortel Networks'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2506') { $new->manufacturer = 'Bug Free Development'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2507') { $new->manufacturer = 'ARC Technologies Group, Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.2508') { $new->manufacturer = 'Internet Dynamics, Inc.'; }
@@ -5253,7 +5253,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5224') { $new->manufacturer = 'Hitachi Data Systems (Europe) Ltd.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5225') { $new->manufacturer = 'Universidad de Cantabria- ATC'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5226') { $new->manufacturer = 'Harmonix Limited'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5227') { $new->manufacturer = 'MELCO Inc.'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5227') { $new->manufacturer = 'Buffalo'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5228') { $new->manufacturer = 'Littlefeet Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5229') { $new->manufacturer = 'Big Fish Communications'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5230') { $new->manufacturer = 'ComRoesGroup'; }
@@ -5801,7 +5801,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5773') { $new->manufacturer = 'Equiinet Ltd.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5774') { $new->manufacturer = 'Beijing Telecable Network System Ltd.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5775') { $new->manufacturer = 'Advanced Technology Solutions International'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5776') { $new->manufacturer = 'Express Scripts, Inc.'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5776') { $new->manufacturer = 'Buffalo'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5778') { $new->manufacturer = 'Universidad Autonoma de Madrid'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5779') { $new->manufacturer = 'Data-GUYS Inc.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.5780') { $new->manufacturer = 'PDA Verticals Corp.'; }
@@ -11167,7 +11167,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11144') { $new->manufacturer = 'RadPharm'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11145') { $new->manufacturer = 'Siemens Financial Services GmbH'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11146') { $new->manufacturer = 'Siemens Informations Systems Limited'; }
-		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11147') { $new->manufacturer = 'SVTO Hewlett-Packard'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11147') { $new->manufacturer = 'SVTO Hewlett Packard'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11148') { $new->manufacturer = 'Swan Systems'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11149') { $new->manufacturer = 'TI, d.o.o.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11150') { $new->manufacturer = 'Unwiredsoft'; }
@@ -16318,7 +16318,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.16398') { $new->manufacturer = 'Metallect Corp.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.16399') { $new->manufacturer = 'Greyhavens'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.16400') { $new->manufacturer = 'Singapore Telecommunication Limited'; }
-		if (substr($oid, 0, 17) == '1.3.6.1.4.1.16401') { $new->manufacturer = 'Hewlett-Packard Slovakia'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.16401') { $new->manufacturer = 'Hewlett Packard Slovakia'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.16402') { $new->manufacturer = 'Teleformix, LLC'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.16403') { $new->manufacturer = 'Brobus International, Inc.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.16404') { $new->manufacturer = 'NeuralWorx'; }
@@ -18527,6 +18527,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25376') { $new->manufacturer = 'Suretec Systems Ltd.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25404') { $new->manufacturer = 'citadel.org - the Citadel groupware project'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25461') { $new->manufacturer = 'Palo Alto Networks'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25506') { $new->manufacturer = 'Hewlett Packard'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25511') { $new->manufacturer = 'SPALE NETWORKS'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.25719') { $new->manufacturer = 'Polysys Ltd'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.26012') { $new->manufacturer = 'Holmboe Consulting'; }

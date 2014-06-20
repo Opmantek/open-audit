@@ -748,6 +748,7 @@ CREATE TABLE `sys_hw_network_card_ip` (
   `ip_id` int(10) unsigned NOT NULL auto_increment,
   `net_mac_address` varchar(17) NOT NULL default '',
   `system_id` int(10) unsigned default NULL,
+  `net_index` varchar(10) NOT NULL default '',
   `ip_address_v4` varchar(30) NOT NULL default '',
   `ip_address_v6` varchar(30) NOT NULL default '',
   `ip_subnet` varchar(30) NOT NULL default '',
@@ -1457,6 +1458,30 @@ CREATE TABLE `sys_sw_variable` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `sys_sw_virtual_machine`
+--
+
+DROP TABLE IF EXISTS `sys_sw_virtual_machine`;
+CREATE TABLE `sys_sw_virtual_machine` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `system_id` int(10) unsigned default NULL,
+  `guest_system_id` int(10) unsigned default NULL,
+  `name` varchar(100) NOT NULL default '',
+  `vm_id` int(12) unsigned NOT NULL default '0',
+  `uuid` text NOT NULL default '',
+  `vm_group` text NOT NULL default '',
+  `config_file` text NOT NULL default '',
+  `memory` int(12) unsigned NOT NULL default '0',
+  `cpu` int(10) unsigned NOT NULL default '0',
+  `status` varchar(100) NOT NULL default '',
+  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_virtual_machine_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `sys_sw_web_server`
 --
 
@@ -1653,10 +1678,10 @@ CREATE TABLE `system` (
   `man_os_family` varchar(50) NOT NULL default '',
   `man_os_name` varchar(100) NOT NULL default '',
   `man_domain` varchar(100) NOT NULL default '',
-  `man_status` enum('production', 'retired', 'maintenance', 'deleted', 'unallocated', 'lost') NOT NULL default 'production',
-  `man_environment` enum('production', 'pre-prod', 'test', 'uat', 'dev', 'eval', 'dr', 'train') NOT NULL default 'production',
+  `man_status` enum('production', 'deleted', 'lost', 'maintenance', 'retired', 'unallocated') NOT NULL default 'production',
+  `man_environment` enum('production', 'dev', 'dr', 'eval', 'pre-prod', 'test', 'train', 'uat') NOT NULL default 'production',
   `man_criticality` enum('critical', 'normal', 'low') NOT NULL default 'normal', 
-  `man_class` enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','') NOT NULL default '', 
+  `man_class` enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','','hypervisor') NOT NULL default '', 
   `man_description` varchar(250) NOT NULL default '',
   `man_function` varchar(100) NOT NULL default '',
   `man_type` varchar(100) NOT NULL default '',
@@ -1755,8 +1780,8 @@ INSERT INTO `oa_user` VALUES  (3, 'nmis', '5a7f9a638ea430196d765ef8d3875eafd64ee
 
 INSERT INTO `oa_group_user` (`group_user_id`,`user_id`,`group_id`,`group_user_access_level`) VALUES (2,1,1,10),(3,1,2,10),(4,1,8,10),(5,1,6,10),(6,1,3,10),(7,1,4,10),(8,1,7,10),(9,1,5,10),(10,3,1,10),(11,3,2,10),(12,3,8,10),(13,3,6,10),(14,3,3,10),(15,3,4,10),(16,3,7,10),(17,3,5,10),(18,1,9,10),(19,3,9,10),(20,1,10,10),(21,3,10,10),(23,2,1,3),(24,2,2,0),(25,2,8,0),(26,2,6,0),(27,2,9,0),(28,2,10,5),(29,2,3,0),(30,2,4,0),(31,2,7,0),(32,2,5,0); 
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20140501', 'n', 'The internal numerical version.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.3.1', 'n', 'The version shown on the web pages.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20140515', 'n', 'The internal numerical version.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.3.2', 'n', 'The version shown on the web pages.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('non_admin_search', 'y', 'y', 'Enable or disable search for non-Administrators');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate. EG - open-audit.org');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1');
@@ -1779,9 +1804,13 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_network_address', '', 'y', 'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_snmp_community', 'y', 'y', 'Show the SNMP community string on forms.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_snmp_community', 'n', 'y', 'Show the SNMP community string on forms.');
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_passwords', 'y', 'y', 'Show any passwords on forms.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_passwords', 'n', 'y', 'Show any passwords on forms.');
+
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_enable', 'y', 'y', 'Enable the RSS feed.');
+
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_url', 'https://community.opmantek.com/rss/OA.xml', 'y', 'The RSS feed URL.');
 
 INSERT INTO oa_location (location_id, location_name, location_type, location_city, location_state, location_country, location_latitude, location_longitude, location_comments, location_icon, location_group_id) VALUES ('0', 'Default Location', 'Office', 'Gold Coast', 'Queensland', 'Australia', '-28.017260', '153.425705', 'Default location', 'office', '9');
 
