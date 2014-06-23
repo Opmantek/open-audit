@@ -284,11 +284,11 @@ class login extends CI_Controller
                 }
             } else {
                 $this->session->set_flashdata('message', '<div id="message">Incorrect credentials.</div>');
-                redirect('login/index');
+                redirect('login/index/main/list_groups');
             }
         } else {
             $this->session->set_flashdata('message', '<div id="message">Incorrect credentials.</div>');
-            redirect('login/index');
+            redirect('login/index/main/list_groups');
         }
     }
 
