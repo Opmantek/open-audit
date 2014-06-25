@@ -233,25 +233,50 @@ li a {text-decoration: none;}
     })(jQuery)
 
 var rssurl = "<?php echo $config->rss_url; ?>"
-var rssfeed = $.get(rssurl, function(data) {
-    var $xml = $(data);
+// var rssfeed = $.get(rssurl, function(data) {
+//     var $xml = $(data);
+//     $xml.find("entry").each(function() {
+//         var $this = $(this),
+//             item = {
+//                 title: $this.find("title").text(),
+//                 link: $this.find("link").text(),
+//                 description: $this.find("description").text(),
+//                 pubDate: $this.find("pubDate").text(),
+//                 author: $this.find("author").text()
+//             }
+//             var li = document.createElement("li");
+//             var updateDate = new Date($this.find("updated").text());
+//             var month = parseInt(updateDate.getMonth()) + 1;
+//             var updatedDate = updateDate.getFullYear() + "/" + month + "/" + updateDate.getDate(); 
+//             li.style.display="none";
+//             li.innerHTML = "&nbsp;&nbsp;&nbsp;<img src=\"<?php echo $image_path;?>16_nmis.png\" />&nbsp;&nbsp;Open-AudIT Community: <a target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> by " + $this.find("author").text() + " on " + updatedDate + ".";
+//             document.getElementById("newsfeed").appendChild(li);
+//     });
+// });
+
+var rssfeed = $.ajax({
+  url: "<?php echo $config->rss_url; ?>",
+  ifModified: true
+})
+.done(function(data) {
+	var $xml = $(data);
     $xml.find("entry").each(function() {
         var $this = $(this),
-            item = {
-                title: $this.find("title").text(),
-                link: $this.find("link").text(),
-                description: $this.find("description").text(),
-                pubDate: $this.find("pubDate").text(),
-                author: $this.find("author").text()
-            }
-            var li = document.createElement("li");
-            var updateDate = new Date($this.find("updated").text());
-            var month = parseInt(updateDate.getMonth()) + 1;
-            var updatedDate = updateDate.getFullYear() + "/" + month + "/" + updateDate.getDate(); 
-            li.style.display="none";
-            li.innerHTML = "&nbsp;&nbsp;&nbsp;<img src=\"<?php echo $image_path;?>16_nmis.png\" />&nbsp;&nbsp;Open-AudIT Community: <a target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> by " + $this.find("author").text() + " on " + updatedDate + ".";
-            document.getElementById("newsfeed").appendChild(li);
-    });
+        item = {
+            title: $this.find("title").text(),
+            link: $this.find("link").text(),
+            description: $this.find("description").text(),
+            pubDate: $this.find("pubDate").text(),
+            author: $this.find("author").text()
+        }
+        var li = document.createElement("li");
+        var updateDate = new Date($this.find("updated").text());
+        var month = parseInt(updateDate.getMonth()) + 1;
+        var updatedDate = updateDate.getFullYear() + "/" + month + "/" + updateDate.getDate(); 
+        li.style.display="none";
+        li.innerHTML = "&nbsp;&nbsp;&nbsp;<img src=\"<?php echo $image_path;?>16_nmis.png\" />&nbsp;&nbsp;Open-AudIT Community: <a target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> by " + $this.find("author").text() + " on " + updatedDate + ".";
+        document.getElementById("newsfeed").appendChild(li);
+    })
 });
 
 $(document).ready(function() {
@@ -267,4 +292,6 @@ $(document).ready(function() {
 });
 </script>
 
-<?php } ?>
+<?php 
+# https://github.com/progpars/inewsticker
+} ?>
