@@ -57,139 +57,126 @@ class M_network_card extends MY_Model {
 		return ($result);
 	}
 
-	function process_network_cards($input, $details) {	
+	function process_network_cards($input, $details) {
 
-			// $sql = "SELECT sys_hw_network_card.net_id 
-			// 		FROM sys_hw_network_card, system 
-			// 		WHERE sys_hw_network_card.system_id = system.system_id AND 
-			// 			system.system_id = ? AND 
-			// 			system.man_status = 'production' AND 
-			// 			( (LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND sys_hw_network_card.net_mac_address > '' ) OR 
-			// 				(LOWER(sys_hw_network_card.net_description) = LOWER(?)) )";
+		# added net_alias in 1.3.3
+		if (is_null($input->net_alias)) { $input->net_alias = ''; }
 
-			// $sql = "SELECT sys_hw_network_card.net_id 
-			// 		FROM sys_hw_network_card
-			// 		WHERE sys_hw_network_card.system_id = ? AND 
-			// 			LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND 
-			// 			LOWER(sys_hw_network_card.net_connection_id) = LOWER(?) ";
+		$sql = "SELECT sys_hw_network_card.net_id 
+				FROM sys_hw_network_card
+				WHERE sys_hw_network_card.system_id = ? AND 
+					LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND 
+					LOWER(sys_hw_network_card.net_index) = LOWER(?) ";
 
-			$sql = "SELECT sys_hw_network_card.net_id 
-					FROM sys_hw_network_card
-					WHERE sys_hw_network_card.system_id = ? AND 
-						LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND 
-						LOWER(sys_hw_network_card.net_index) = LOWER(?) ";
+		$sql = $this->clean_sql($sql);
+		$data = array("$details->system_id", 
+					"$input->net_mac_address", 
+					"$input->net_index");
+		$query = $this->db->query($sql, $data);
 
-			$sql = $this->clean_sql($sql);
-			// $data = array("$details->system_id", 
-			// 			"$input->net_mac_address", 
-			// 			"$input->net_connection_id");
-			$data = array("$details->system_id", 
-						"$input->net_mac_address", 
-						"$input->net_index");
+		if ($query->num_rows() > 0) {
+			$row = $query->row();
+			// the network_card exists - update it
+			$sql = "UPDATE sys_hw_network_card SET 
+					net_description = ?,
+					net_manufacturer = ?,
+					net_model = ?,
+					net_ip_enabled = ?,
+					net_index = ?,
+					net_connection_id = ?,
+					net_alias = ?,
+					net_connection_status = ?,
+					net_speed = ?,
+					net_adapter_type = ?,
+					net_dhcp_enabled = ?,
+					net_dhcp_server = ?,
+					net_dhcp_lease_obtained = ?,
+					net_dhcp_lease_expires = ?,
+					net_dns_host_name = ?,
+					net_dns_domain = ?,
+					net_dns_domain_reg_enabled = ?,
+					net_dns_server = ?,
+					net_wins_primary = ?,
+					net_wins_secondary = ?,
+					net_wins_lmhosts_enabled = ?,
+					timestamp = ?
+				WHERE net_id = ?";
+			$data = array("$input->net_description",
+					"$input->net_manufacturer",
+					"$input->net_model",
+					"$input->net_ip_enabled",
+					"$input->net_index",
+					"$input->net_connection_id",
+					"$input->net_alias",
+					"$input->net_connection_status",
+					"$input->net_speed",
+					"$input->net_adapter_type",
+					"$input->net_dhcp_enabled",
+					"$input->net_dhcp_server",
+					"$input->net_dhcp_lease_obtained",
+					"$input->net_dhcp_lease_expires",
+					"$input->net_dns_host_name",
+					"$input->net_dns_domain",
+					"$input->net_dns_domain_reg_enabled",
+					"$input->net_dns_server",
+					"$input->net_wins_primary",
+					"$input->net_wins_secondary",
+					"$input->net_wins_lmhosts_enabled",
+					"$details->timestamp",
+					"$row->net_id");
 			$query = $this->db->query($sql, $data);
 
-#echo "1 - " . $this->db->last_query() . "<br />\n";
+		} else {
+			// the network_card does not exist - insert it
+			$sql = "INSERT INTO sys_hw_network_card (	
+					system_id, 
+					net_mac_address, 
+					net_description, 
+					net_manufacturer, 
+					net_model,
+					net_ip_enabled,
+					net_index,
+					net_connection_id,
+					net_alias,
+					net_connection_status,
+					net_speed,
+					net_adapter_type,
+					net_dhcp_enabled,
+					net_dhcp_server,
+					net_dhcp_lease_obtained,
+					net_dhcp_lease_expires,
+					net_dns_host_name,
+					net_dns_domain,
+					net_dns_domain_reg_enabled,
+					net_dns_server,
+					timestamp,
+					first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+					"$input->net_mac_address", 
+					"$input->net_description", 
+					"$input->net_manufacturer", 
+					"$input->net_model", 
+					"$input->net_ip_enabled", 
+					"$input->net_index", 
+					"$input->net_connection_id", 
+					"$input->net_alias", 
+					"$input->net_connection_status", 
+					"$input->net_speed", 
+					"$input->net_adapter_type", 
+					"$input->net_dhcp_enabled", 
+					"$input->net_dhcp_server", 
+					"$input->net_dhcp_lease_obtained", 
+					"$input->net_dhcp_lease_expires", 
+					"$input->net_dns_host_name", 
+					"$input->net_dns_domain", 
+					"$input->net_dns_domain_reg_enabled", 
+					"$input->net_dns_server", 
+					"$details->timestamp", 
+					"$details->timestamp");
+			$query = $this->db->query($sql, $data);
 
-			if ($query->num_rows() > 0) {
-				$row = $query->row();
-				// the network_card exists - update it
-				$sql = "UPDATE sys_hw_network_card SET 
-						net_description = ?,
-						net_manufacturer = ?,
-						net_model = ?,
-						net_ip_enabled = ?,
-						net_index = ?,
-						net_connection_id = ?,
-						net_connection_status = ?,
-						net_speed = ?,
-						net_adapter_type = ?,
-						net_dhcp_enabled = ?,
-						net_dhcp_server = ?,
-						net_dhcp_lease_obtained = ?,
-						net_dhcp_lease_expires = ?,
-						net_dns_host_name = ?,
-						net_dns_domain = ?,
-						net_dns_domain_reg_enabled = ?,
-						net_dns_server = ?,
-						net_wins_primary = ?,
-						net_wins_secondary = ?,
-						net_wins_lmhosts_enabled = ?,
-						timestamp = ?
-					WHERE net_id = ?";
-				$data = array("$input->net_description",
-						"$input->net_manufacturer",
-						"$input->net_model",
-						"$input->net_ip_enabled",
-						"$input->net_index",
-						"$input->net_connection_id",
-						"$input->net_connection_status",
-						"$input->net_speed",
-						"$input->net_adapter_type",
-						"$input->net_dhcp_enabled",
-						"$input->net_dhcp_server",
-						"$input->net_dhcp_lease_obtained",
-						"$input->net_dhcp_lease_expires",
-						"$input->net_dns_host_name",
-						"$input->net_dns_domain",
-						"$input->net_dns_domain_reg_enabled",
-						"$input->net_dns_server",
-						"$input->net_wins_primary",
-						"$input->net_wins_secondary",
-						"$input->net_wins_lmhosts_enabled",
-						"$details->timestamp",
-						"$row->net_id");
-				$query = $this->db->query($sql, $data);
-#echo "2 - " . $this->db->last_query() . "<br />\n";
-			} else {
-				// the network_card does not exist - insert it
-				$sql = "INSERT INTO sys_hw_network_card (	
-						system_id, 
-						net_mac_address, 
-						net_description, 
-						net_manufacturer, 
-						net_model,
-						net_ip_enabled,
-						net_index,
-						net_connection_id,
-						net_connection_status,
-						net_speed,
-						net_adapter_type,
-						net_dhcp_enabled,
-						net_dhcp_server,
-						net_dhcp_lease_obtained,
-						net_dhcp_lease_expires,
-						net_dns_host_name,
-						net_dns_domain,
-						net_dns_domain_reg_enabled,
-						net_dns_server,
-						timestamp,
-						first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
-				$sql = $this->clean_sql($sql);
-				$data = array("$details->system_id", 
-						"$input->net_mac_address", 
-						"$input->net_description", 
-						"$input->net_manufacturer", 
-						"$input->net_model", 
-						"$input->net_ip_enabled", 
-						"$input->net_index", 
-						"$input->net_connection_id", 
-						"$input->net_connection_status", 
-						"$input->net_speed", 
-						"$input->net_adapter_type", 
-						"$input->net_dhcp_enabled", 
-						"$input->net_dhcp_server", 
-						"$input->net_dhcp_lease_obtained", 
-						"$input->net_dhcp_lease_expires", 
-						"$input->net_dns_host_name", 
-						"$input->net_dns_domain", 
-						"$input->net_dns_domain_reg_enabled", 
-						"$input->net_dns_server", 
-						"$details->timestamp", 
-						"$details->timestamp");
-				$query = $this->db->query($sql, $data);
-#echo "3 - " . $this->db->last_query() . "<br />\n";
-			}
-		// }
+		}
 	} // end of function
 
 	function alert_network_card($details) {

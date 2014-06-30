@@ -563,6 +563,7 @@ if (!function_exists('get_snmp')) {
 				$ip_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,   "1.3.6.1.2.1.4.20.1.2");
 				$subnets = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.4.20.1.3");
 				$connection_ids = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
+				$aliases = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.18");
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
@@ -577,6 +578,7 @@ if (!function_exists('get_snmp')) {
 					$interface->net_model = @snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
 					$interface->net_description = $interface->net_model;
 					$interface->net_connection_id = @snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
+					$interface->net_alias = @snmp_clean($aliases[".1.3.6.1.2.1.31.1.1.1.18.".$interface->net_index]);
 					$interface->net_adapter_type = @interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
 					$interface->net_ip_enabled = @ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
 					$interface->net_speed = @snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
@@ -736,6 +738,7 @@ if (!function_exists('get_snmp')) {
 				$ip_addresses = @snmprealwalk($details->man_ip_address, $details->snmp_community,   "1.3.6.1.2.1.4.20.1.2");
 				$subnets = @snmprealwalk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.4.20.1.3");
 				$connection_ids = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
+				$aliases = @snmprealwalk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.31.1.1.1.18");
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
@@ -752,6 +755,7 @@ if (!function_exists('get_snmp')) {
 					$interface->net_model = snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
 					$interface->net_description = $interface->net_model;
 					$interface->net_connection_id = snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
+					$interface->net_alias = snmp_clean($aliases[".1.3.6.1.2.1.31.1.1.1.18.".$interface->net_index]);
 					$interface->net_adapter_type = interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
 					$interface->net_ip_enabled = ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
 					$interface->net_speed = snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);

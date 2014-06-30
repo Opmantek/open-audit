@@ -502,9 +502,11 @@
 					<table cellspacing="1" class="tablesorter" width="100%">
 						<thead>
 							<tr>
+								<th>Index</th>
 								<th>MAC Address</th>
 								<th>Connection ID</th>
 								<th>Description</th>
+								<th>Alias</th>
 								<th>Type</th>
 								<th>Enabled</th>
 								<th>Speed</th>
@@ -512,9 +514,11 @@
 						</thead>
 						<tbody>
 						<?php foreach($network as $key) { ?><tr>
+								<td><?php echo $key->net_index; ?></td>
 								<td><?php echo $key->net_mac_address; ?></td>
 								<td><?php echo $key->net_connection_id; ?></td>
 								<td><?php echo $key->net_description; ?></td>
+								<td><?php echo $key->net_alias; ?></td>
 								<td><?php echo $key->net_adapter_type; ?></td>
 								<td><?php echo $key->net_ip_enabled; ?></td>
 								<?php if (intval($key->net_speed) < 1000) {
@@ -539,6 +543,7 @@
 					<table cellspacing="1" class="tablesorter" width="100%">
 						<thead>
 							<tr>
+								<th>Index</th>
 								<th>MAC Address</th>
 								<th>Interface</th>
 								<th>IP Address</th>
@@ -549,6 +554,7 @@
 						<?php foreach ($ip as $ip_address) { 
 							if ($ip_address->net_connection_id != '') {
 								$ip_address->net_connection_id = $ip_address->net_connection_id . " - "; }?><tr>
+							<td><?php echo $ip_address->net_index; ?></td>
 							<td><?php echo $ip_address->net_mac_address; ?></td>
 							<td><?php echo $ip_address->net_connection_id . $ip_address->net_description; ?></td>
 							<td><?php echo "<span style=\"display: none;\">" . $ip_address->ip_address_v4 . "</span>" . print_something(ip_address_from_db($ip_address->ip_address_v4))?></td>
