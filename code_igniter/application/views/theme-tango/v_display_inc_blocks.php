@@ -275,18 +275,18 @@
 						</thead>
 						<tbody>
 <?php
-				$ip_count = 0;
-				foreach ($ip as $ip_address) {
-					if ($ip_address->net_mac_address == $key->net_mac_address) {
-						$ip_address_displayed = '000.000.000.000';
-						if ($ip_address->ip_address_version == '6') {
-							$ip_address_displayed = $ip_address->ip_address_v6;
-						} else {
-							$ip_address_displayed = ip_address_from_db($ip_address->ip_address_v4);
-						}
-						$ip_count ++;
-						echo "							<tr><td>" . print_something($ip_address_displayed) . "</td><td>" . print_something($ip_address->ip_subnet) . "</td><td>" . print_something($ip_address->ip_address_version) . "</td></tr>\n";
-				}
+					$ip_count = 0;
+					foreach ($ip as $ip_address) {
+						if ($ip_address->net_mac_address == $key->net_mac_address and $ip_address->net_index == $key->net_index) {
+							$ip_address_displayed = '000.000.000.000';
+							if ($ip_address->ip_address_version == '6') {
+								$ip_address_displayed = $ip_address->ip_address_v6;
+							} else {
+								$ip_address_displayed = ip_address_from_db($ip_address->ip_address_v4);
+							}
+							$ip_count ++;
+							echo "							<tr><td>" . print_something($ip_address_displayed) . "</td><td>" . print_something($ip_address->ip_subnet) . "</td><td>" . print_something($ip_address->ip_address_version) . "</td></tr>\n";
+					}
 				}
 				if ($ip_count == 0) { ?>
 				<tr>
