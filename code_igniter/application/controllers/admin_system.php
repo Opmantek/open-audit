@@ -395,6 +395,8 @@ class Admin_system extends MY_Controller
             $this->data['os_group'] = $this->m_systems->get_distinct_os_group();
             $this->data['os_family'] = $this->m_systems->get_distinct_os_family();
             $this->data['os_name'] = $this->m_systems->get_distinct_os_name();
+            include('include_device_types.php');
+            $this->data['device_types'] = $device_types;
             $this->data['heading'] = 'Add Device';
             $this->data['include'] = 'v_add_system';
             $this->load->view('v_template', $this->data);

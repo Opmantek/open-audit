@@ -638,6 +638,10 @@ class main extends MY_Controller
         $this->data['webserver'] = $this->m_webserver->get_system_webserver($this->data['id']);
         $this->data['website_details'] = $this->m_webserver->get_system_websites($this->data['id']);
 
+
+        include('include_device_types.php');
+        $this->data['device_types'] = $device_types;
+
         # TODO: add in browser addons and odbc drivers
 
         # only show to users with 'view sensitive details' level of access access level >= 7
