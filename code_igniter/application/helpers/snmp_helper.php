@@ -725,6 +725,10 @@ if (!function_exists('get_snmp')) {
 			$details->next_hop = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 
 
+			// description
+			$details->description = '';
+			$details->description = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
+
 
 			// new for 1.2.2 - network details
 			$interfaces = array();
