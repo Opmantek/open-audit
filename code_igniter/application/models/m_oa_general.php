@@ -92,13 +92,50 @@ class M_oa_general extends MY_Model {
 		$object = new stdclass();
 		foreach ($tables as $table){
 			if (((strpos($table, 'sys_hw_') !== FALSE) OR (strpos($table, 'sys_sw_') !== FALSE)) AND (strpos($table, "sys_hw_warranty") === FALSE)) {
-				#$sql = "DELETE $table FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
-				#$query = $this->db->query($sql);
-				#$string .= $table . " - rows deleted = " . $this->db->affected_rows() . "<br />\n";
 				$object->table = '';
 				$object->count = '';
 				$sql = "SELECT COUNT(*) as count FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) 
 				WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
+				$query = $this->db->query($sql);
+				$row = $query->row();
+				$object->count = $row->count;
+				$object->table = $table;
+				$return[] = clone $object;
+			}
+		}
+		return($return);
+	}
+
+	function count_all_hw_attributes() {
+		$tables = $this->db->list_tables();
+		$string = '';
+		$return = array();
+		$object = new stdclass();
+		foreach ($tables as $table){
+			if (strpos($table, 'sys_hw_') !== FALSE AND strpos($table, "sys_hw_warranty") === FALSE) {
+				$object->table = '';
+				$object->count = '';
+				$sql = "SELECT COUNT(*) as count FROM $table";
+				$query = $this->db->query($sql);
+				$row = $query->row();
+				$object->count = $row->count;
+				$object->table = $table;
+				$return[] = clone $object;
+			}
+		}
+		return($return);
+	}
+
+	function count_all_sw_attributes() {
+		$tables = $this->db->list_tables();
+		$string = '';
+		$return = array();
+		$object = new stdclass();
+		foreach ($tables as $table){
+			if (strpos($table, 'sys_sw_') !== FALSE) {
+				$object->table = '';
+				$object->count = '';
+				$sql = "SELECT COUNT(*) as count FROM $table";
 				$query = $this->db->query($sql);
 				$row = $query->row();
 				$object->count = $row->count;
