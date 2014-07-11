@@ -51,6 +51,8 @@ class M_system extends MY_Model {
 
 	function create_system_key($details) {
 
+		$log = "M:system F:create_system_key System Key being generated for $details->hostname"; $this->log_event($log);
+
 		$details = (object) $details;
 		if (!isset($details->system_key)) {
 			$details->system_key = '';
@@ -70,19 +72,22 @@ class M_system extends MY_Model {
 			isset($details->hostname) and $details->hostname != '') { 
 				$details->system_key = $details->uuid . "-" . $details->hostname; 
 				$details->system_key_type = 'uuho';
+				$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type uuho"; $this->log_event($log);
 		}
 
 		# this is anything that has a FQDN
 		if  ((isset($details->fqdn) and $details->fqdn != '') and ($details->system_key_type != 'uuho')) {
 			$details->system_key = $details->fqdn;
 			$details->system_key_type = 'fqdn';
+			$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type fqdn"; $this->log_event($log);
 		}
 
 		# We might have only a serial number
 		# if this is all we have, we also require a type.
 		# first check to make sure we have a type or man_type
-		if ((!isset($details->type) or $details->type == '') and 
-			isset($details->man_type) and $details->man_type != '') { $details->type = $details->man_type; }
+		if ((!isset($details->type) or $details->type == '') and isset($details->man_type) and $details->man_type != '') { 
+			$details->type = $details->man_type;
+		}
 
 		# next check if we also have a serial and set the system_key if so
 		if (isset($details->serial) and $details->serial != '') {
@@ -90,6 +95,7 @@ class M_system extends MY_Model {
 				if ($details->system_key_type  != 'uuho' and $details->system_key_type != 'fqdn') {
 					$details->system_key = $details->type . "_" . $details->serial;
 					$details->system_key_type = 'tyse';
+					$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type tyse"; $this->log_event($log);
 				}
 			}
 		}
@@ -101,9 +107,12 @@ class M_system extends MY_Model {
 
 			$details->system_key = $details->man_ip_address;
 			$details->system_key_type = 'ipad';
+			$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type ipad"; $this->log_event($log);
 		}
 
-		$log = "M:system F:create_system_key System Key is $details->system_key for $details->man_ip_address"; $this->log_event($log);
+		if ($details->system_key == '') {
+			$log = "M:system F:create_system_key System Key is blank for $details->hostname ERROR"; $this->log_event($log);
+		}
 		return $details->system_key;
 	}
 
