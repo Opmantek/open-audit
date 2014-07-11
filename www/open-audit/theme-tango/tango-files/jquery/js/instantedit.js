@@ -75,13 +75,10 @@ function fieldEnter(campo,evt,idfld) {
 	if (evt.keyCode == 13) {
 		elem = document.getElementById( idfld );
 		remotos = new datosServidor;
-		 // nt = remotos.enviar(urlBase + "?fieldname=" +encodeURI(elem.id)+ "&content="+encodeURI(campo.value)+"&"+formVars,"");
 		 var fieldName = elem.id;
-		 fieldName = fieldName.replace(/\//g, "^^^");
 		 fieldName = encodeURI(fieldName);
 		 var fieldValue = campo.value;
-		 fieldValue = fieldValue.replace(/\//g, "^^^");
-		 fieldValue = encodeURI(fieldValue);
+		 fieldValue = encodeURIComponent(fieldValue);
 		 nt = remotos.enviar(urlBase+"/"+formVars+"/"+fieldName+"/"+fieldValue,"");
 		 //remove glow
 		noLight(elem);
@@ -99,13 +96,10 @@ function fieldBlur(campo,idfld) {
 	if (campo.value!="") {
 		elem = document.getElementById( idfld );
 		remotos = new datosServidor;
-		// nt = remotos.enviar(urlBase + "?fieldname=" +escape(elem.id)+ "&content="+escape(campo.value)+"&"+formVars,"");
 		 var fieldName = elem.id;
-		 fieldName = fieldName.replace(/\//g, "^^^");
 		 fieldName = escape(fieldName);
 		 var fieldValue = campo.value;
-		 fieldValue = fieldValue.replace(/\//g, "^^^");
-		 fieldValue = escape(fieldValue);
+		 fieldValue = encodeURIComponent(fieldValue);
 		nt = remotos.enviar(urlBase+"/"+formVars+"/"+fieldName+"/"+fieldValue,"");
 		elem.innerHTML = nt;
 		changing = false;
