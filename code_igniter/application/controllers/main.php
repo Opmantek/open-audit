@@ -646,6 +646,7 @@ class main extends MY_Controller
 
         # only show to users with 'view sensitive details' level of access access level >= 7
         if ($this->data['access_level'] >= '7') {
+
             $this->load->model("m_software_key");
             $this->data['software_key'] = $this->m_software_key->get_system_key($this->data['id']);
 
@@ -659,15 +660,15 @@ class main extends MY_Controller
             $this->data['decoded_access_details']->windows_password = '';
             $this->data['decoded_access_details']->windows_domain = '';
 
-            if (isset($this->data['system'][0]->access_details)
-                and json_decode($this->data['system'][0]->access_details) != '') {
+            if (isset($this->data['system'][0]->access_details)) {
+
                 $this->load->library('encrypt');
 
                 $this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
                 $this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
                 // echo "<pre>\n";
                 // print_r($this->data['system'][0]->access_details);
-                // echo "\nDECODE: " . json_decode($this->data['decoded_access_details']) . "\n";
+                // echo "\nDECODE: \n";
                 // print_r($this->data['decoded_access_details']);
                 // echo "</pre>\n";
 

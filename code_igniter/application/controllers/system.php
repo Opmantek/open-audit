@@ -381,43 +381,32 @@ class System extends CI_Controller {
 		if (mb_detect_encoding($input) !== 'UTF-8') {
 			$input = utf8_encode($input);
 		}
-
 		$xml_input = iconv('UTF-8', 'UTF-8//TRANSLIT', $input);
-
 		libxml_use_internal_errors(TRUE);
 
 		try {
 			$xml = new SimpleXMLElement($xml_input, LIBXML_NOCDATA);
 		} catch (Exception $error) {
+			$errors = libxml_get_errors();
+			echo "Invalid XML.<br />\n<pre>\n";
+			print_r($errors);
 			// not a valid XML string
 			$xml_split = explode("\n", $xml_input, 10);
 			$hostname = str_replace("\t\t<system_hostname>", '', $xml_split[5]);
 			$hostname = str_replace('</system_hostname>', '', $hostname);
 			$error_output = 'Invalid XML input for: ' . $hostname;
+			$log = "C:system F:add_system Invalid XML result for $hostname"; $this->log_event($log);
 			error_log($error_output);
 			exit;
 		}
 
-		if ((php_uname('s') === 'Linux') OR (php_uname('s') === 'Darwin')) {
-			$file = '/usr/local/open-audit/other/open-audit.log';
-		}
-		else {
-			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
-		}
-
-		$log_timestamp = date("M d H:i:s");
-		$log_hostname = php_uname('n');
-		$log_pid = getmypid();
 		$i = (string) $xml->sys[0]->hostname;
 		$j = (string) $xml->sys[0]->system_id;
-		$handle = fopen($file, "a");
 		if ($j > '') {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . " (Supplied System ID $j)." . PHP_EOL;
+			$log = "C:system F:add_system Processing audit result for " . $i . " (Supplied System ID $j)"; $this->log_event($log);
 		} else {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing audit result for " . $i . PHP_EOL;
+			$log = "C:system F:add_system Processing audit result for " . $i; $this->log_event($log);
 		}
-		fwrite($handle, $log_line);
-		fclose($handle);
 
 		# this allows for no additional audit script and snmp code
 		# and inserts all the (or any) retrieved mac addresses into the sys XML section
@@ -434,7 +423,6 @@ class System extends CI_Controller {
 			}
 		}
 		unset($mac);
-
 
 		foreach ($xml->children() as $child) {
 			if ($child->getName() === 'sys') {
@@ -468,6 +456,7 @@ class System extends CI_Controller {
 					$sql = "DELETE FROM system WHERE system_id = ?";
 					$data = array($received_system_id);
 					$query = $this->db->query($sql, $data);
+					$log = "C:system F:add_system SystemId provided differs from SystemId found for " . $details->hostname; $this->log_event($log);
 				}
 				$details->system_id = $i;
 				$details->last_seen = $details->timestamp;
@@ -483,18 +472,12 @@ class System extends CI_Controller {
 				if ((string) $i === '') {
 					// insert a new system
 					$details->system_id = $this->m_system->insert_system($details);
-					$handle = fopen($file, "a");
-					$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Inserting result for " . $details->hostname . " (System ID " . $details->system_id . ").\n";
-					fwrite($handle, $log_line);
-					fclose($handle);
+					$log = "C:system F:add_system Inserting result for " . $details->hostname . " (System ID " . $details->system_id . ")"; $this->log_event($log);
 					$details->original_timestamp = "";
 					echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 				} else {
 					// update an existing system
-					$handle = fopen($file, "a");
-					$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Updating result for " . $details->hostname . " (System ID " . $details->system_id . ")." . PHP_EOL;
-					fwrite($handle, $log_line);
-					fclose($handle);
+					$log = "C:system F:add_system Updating result for " . $details->hostname . " (System ID " . $details->system_id . ")"; $this->log_event($log);
 					$details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
 					$details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
 					$this->m_system->update_system($details);
@@ -745,24 +728,11 @@ class System extends CI_Controller {
 		$this->m_oa_group->update_system_groups($details);
 		$this->m_sys_man_audits->update_audit($details, '');
 		$this->benchmark->mark('code_end');
-		echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds.';
+		echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
+		$i = (string) $xml->sys[0]->hostname;
+		$log = "C:system F:add_system C:system F:add_system Processing completed for " . $i . " (System ID " . $details->system_id . "), took " . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds"; $this->log_event($log);
 		echo '</body></html>';
 
-
-		if ((php_uname('s') === 'Linux') OR (php_uname('s') === 'Darwin')) {
-			$file = '/usr/local/open-audit/other/open-audit.log';
-		}
-		else {
-			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
-		}
-		$log_timestamp = date("M d H:i:s");
-		$log_hostname = php_uname('n');
-		$log_pid = getmypid();
-		$i = (string) $xml->sys[0]->hostname;
-		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " C:system F:add_system Processing completed for " . $i . " (System ID " . $details->system_id . ")." . PHP_EOL;
-		$handle = fopen($file, "a");
-		fwrite($handle, $log_line);
-		fclose($handle);
 	}
 
 	public function log_event($log_details)
@@ -781,5 +751,8 @@ class System extends CI_Controller {
 		$handle = fopen($file, "a");
 		fwrite($handle, $log_line);
 		fclose($handle);
+		if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+			echo "LOG   - " . $log_line . "<br />\n";
+		}
 	}
 }

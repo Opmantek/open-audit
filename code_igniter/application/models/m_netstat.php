@@ -134,8 +134,11 @@ class M_netstat extends MY_Model {
 					}
 					$t_program = trim($t_program);
 					$t_explode = explode("/", $t_program);
-					$i->program = $t_explode[1];
-					if ($i->protocol != '') { $input_array[] = $i; }
+					$i->program = @$t_explode[1];
+					if (!isset($i->program)) { $i->program = ''; }
+					if ($i->protocol != '') { 
+						$input_array[] = $i;
+					}
 				}
 			}
 		}
