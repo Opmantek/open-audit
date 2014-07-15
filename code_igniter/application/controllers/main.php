@@ -663,7 +663,7 @@ class main extends MY_Controller
             if (isset($this->data['system'][0]->access_details)) {
 
                 $this->load->library('encrypt');
-
+                
                 $this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
                 $this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
                 // echo "<pre>\n";
@@ -671,6 +671,8 @@ class main extends MY_Controller
                 // echo "\nDECODE: \n";
                 // print_r($this->data['decoded_access_details']);
                 // echo "</pre>\n";
+
+                if (!isset($this->data['decoded_access_details'])) { $this->data['decoded_access_details'] = new stdClass(); }
 
                 if (!isset($this->data['decoded_access_details']->ip_address)) {
                     $this->data['decoded_access_details']->ip_address = '';
