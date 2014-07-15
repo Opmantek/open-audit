@@ -621,6 +621,7 @@ CREATE TABLE `sys_hw_hard_drive` (
   `hard_drive_size` int(10) unsigned NOT NULL default '0',
   `hard_drive_device_id` varchar(200) NOT NULL default '',
   `hard_drive_status` varchar(100) NOT NULL default '',
+  `hard_drive_firmware` varchar(100) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`hard_drive_id`),

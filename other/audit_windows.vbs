@@ -1887,6 +1887,7 @@ for each objItem In colDiskDrives
 	hard_drive_interface_type = objItem.InterfaceType
 	hard_drive_scsi_logical_unit = objItem.SCSITargetId
 	hard_drive_model = objItem.Model
+	hard_drive_firmware = objItem.FirmwareRevision
 	hard_drive_serial = ""
 	hard_drive_pnp_id = lcase(objItem.PNPDeviceID & "_0")
 	
@@ -1939,6 +1940,7 @@ for each objItem In colDiskDrives
 	item = item & "			<hard_drive_device_id>" & escape_xml(hard_drive_device_id) & "</hard_drive_device_id>" & vbcrlf
 	item = item & "			<hard_drive_partitions>" & escape_xml(hard_drive_partitions) & "</hard_drive_partitions>" & vbcrlf
 	item = item & "			<hard_drive_status>" & escape_xml(hard_drive_status) & "</hard_drive_status>" & vbcrlf
+	item = item & "			<hard_drive_firmware>" & escape_xml(hard_drive_firmware) & "</hard_drive_firmware>" & vbcrlf
 	item = item & "			<hard_drive_scsi_logical_unit>" & escape_xml(hard_drive_scsi_logical_unit) & "</hard_drive_scsi_logical_unit>" & vbcrlf
 	item = item & "		</hard_disk>" & vbcrlf
 next
