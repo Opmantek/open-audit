@@ -360,7 +360,7 @@
 				<p><label for="man_serial_sim"><?php echo __('SIM Serial')?>: </label><span id="man_serial_sim" <?php echo $edit?>><?php echo print_something($key->man_serial_sim)?></span><?php echo $edit_icon; ?></p>
 			<?php 
 			endforeach;
-			echo display_custom_field('view_summary_purchase', $additional_fields_data, $edit);
+			echo display_custom_field('view_summary_phone', $additional_fields_data, $edit);
 			?>
 		</fieldset>
 	</form>
