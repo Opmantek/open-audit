@@ -1506,9 +1506,9 @@ class M_system extends MY_Model {
 			if ($details->icon == '') { $details->icon = 'unknown'; }
 			$details->icon = str_replace(" ", "_", strtolower($details->icon));
 			if ($details->man_icon == "computer" or 
-				$details->man_icon = "unknown" or 
-				$details->man_icon = "general purpose" or 
-				$details->man_icon = "" ) {
+				$details->man_icon == "unknown" or 
+				$details->man_icon == "general purpose" or 
+				$details->man_icon == "" ) {
 				$details->man_icon = $details->icon;
 			}
 			$sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
