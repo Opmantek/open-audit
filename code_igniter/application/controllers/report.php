@@ -48,21 +48,26 @@ class report extends MY_Controller
     public function _remap($method)
     {
         $this->data['report_name'] = str_replace('_', ' ', $this->uri->segment(2, 0));
+        $this->data['report_name'] = str_replace('%20', ' ', $this->data['report_name']);
         $this->data['group_id'] = $this->uri->segment(3, 0);
         $this->data['first_attribute'] = $this->uri->segment(4, 0);
         $this->data['second_attribute'] = $this->uri->segment(5, 0);
         $this->data['third_attribute'] = $this->uri->segment(6, 0);
         $this->load->model("m_oa_report");
         $this->data['report_id'] = $this->m_oa_report->get_report_id($this->data['report_name']);
+
+        $url = 'report/show_report/' . $this->data['report_id'] . '/' . $this->data['group_id'];
+        if ( $this->data['first_attribute'] != '') {
+            $url .= '/' . $this->data['first_attribute'];
+        }
+        if ( $this->data['second_attribute'] != '') {
+            $url .= '/' . $this->data['second_attribute'];
+        }
+        if ( $this->data['third_attribute'] != '') {
+            $url .= '/' . $this->data['third_attribute'];
+        }
         if (!is_null($this->data['report_id'])) {
-            redirect(
-                'report/show_report/' .
-                $this->data['report_id'] . '/' .
-                $this->data['group_id'] . '/' .
-                $this->data['first_attribute'] . '/' .
-                $this->data['second_attribute'] . '/' .
-                $this->data['third_attribute']
-            );
+            redirect($url);
         } else {
             $classMethods = get_class_methods($this);
             if (!$classMethods) {
@@ -86,6 +91,15 @@ class report extends MY_Controller
     public function show_report()
     {
         $this->data['report_id'] = $this->uri->segment(3, 0);
+        if (!is_numeric($this->data['report_id'])) {
+            # we have a non-numeric value, assuming it's a report name
+            $this->data['report_name'] = str_replace('%20', ' ', $this->data['report_id']);
+            $this->load->model("m_oa_report");
+            $this->data['report_id'] = $this->m_oa_report->get_report_id($this->data['report_name']);
+            if (!is_numeric($this->data['report_id'])) {
+                # we did not find a matching report id - this will fail to an error page
+            }
+        }
         $this->data['group_id'] = $this->uri->segment(4, 0);
         $this->data['first_attribute'] = urldecode($this->uri->segment(5, 0));
         if ($this->data['first_attribute'] == '-') {
