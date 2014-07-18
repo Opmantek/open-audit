@@ -922,6 +922,12 @@ class main extends MY_Controller
                 $i = file('/etc/issue.net');
                 $data['os_version'] = trim($i[0]);
             }
+            if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
+            } else if (file_exists('/usr/local/opmojo/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/opmojo/conf/opCommon.nmis';
+            }
+
             if ((stripos($data['os_version'], 'red') !== false) and (stripos($data['os_version'], 'hat') !== false)) { $data['os_platform'] = 'Linux (Redhat)'; }
             if (stripos($data['os_version'], 'centos') !== false) { $data['os_platform'] = 'Linux (Redhat)'; }
             if (stripos($data['os_version'], 'fedora') !== false) { $data['os_platform'] = 'Linux (Redhat)'; }
@@ -931,12 +937,10 @@ class main extends MY_Controller
             if (stripos($data['os_version'], 'mint') !== false) { $data['os_platform'] = 'Linux (Debian)'; }
 
             if ($data['os_platform'] == 'Linux (Debian)') {
-                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
                 $phpini = '/etc/php5/apache2/php.ini';
                 $package_install = 'apt-get install';
             }
             if ($data['os_platform'] == 'Linux (Redhat)') {
-                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
                 $phpini = '/etc/php.ini';
                 $package_install = 'yum install';
             }
@@ -1175,9 +1179,9 @@ class main extends MY_Controller
 
         # oae server
         if (stripos($data['os_platform'], 'linux') !== false) {
-            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_server';
+            $command_string = 'cat ' . $opCommon . ' | grep oae_server';
         } elseif ($data['os_platform'] == 'Windows') {
-            $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_server"';
+            $command_string = 'type ' . $opCommon . ' | find "oae_server"';
         }
         exec($command_string, $output, $return_var);
         if (isset($output[0])) {
@@ -1204,7 +1208,7 @@ class main extends MY_Controller
         # Intelligent hints about incorrect configuration
 
         if ($data['oae_server'] != 'http://127.0.0.1/open-audit/') {
-            $hints['oae_server'] = 'You have Open-AudIT Enterprise installed on this server, but it is not pointing at the correct URL for Open-AudIT. It should be set to http://127.0.0.1/open-audit/ in the file ' . $opCommon;
+            $hints['oae_server'] = 'You have Open-AudIT Enterprise installed on this server, but it is not pointing at the correct URL for Open-AudIT. It should be set to http://127.0.0.1/open-audit/ in the file ' . $opCommon . ', it is currently set to ' . $data['oae_server'];
         }
 
         $t1 = FCPATH . SELF;
