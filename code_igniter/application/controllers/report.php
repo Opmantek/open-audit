@@ -452,8 +452,7 @@ class report extends MY_Controller
         $this->determine_output($this->data['format']);
     }
 
-    public function locations()
-    {
+    public function locations() {
         $this->load->model("m_oa_location");
         $this->data['heading'] = "Locations";
         $this->data['query'] = $this->m_oa_location->location_report();
@@ -463,5 +462,10 @@ class report extends MY_Controller
         $this->data['sortcolumn'] = '0';
         $this->data['export_report'] = 'y';
         $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+    }
+
+    public function list_reports() {
+        $this->load->model("m_oa_report");
+        echo json_encode($this->m_oa_report->list_reports_in_menu());
     }
 }
