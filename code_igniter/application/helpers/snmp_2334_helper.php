@@ -36,22 +36,29 @@
 # Vendor Packeteer
 
 $get_oid_details = function($details){
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.1') { $details->model = 'PacketShaper - 2000'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.2') { $details->model = 'PacketShaper - 4000'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.3') { $details->model = 'PacketShaper - 1000'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.4') { $details->model = 'PacketShaper - 2500'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.5') { $details->model = 'PacketShaper - 4500'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.6') { $details->model = 'PacketShaper - 1500'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.7') { $details->model = 'PacketShaper - asm50'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.8') { $details->model = 'PacketShaper - asm70'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.9') { $details->model = 'PacketShaper - asm30'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.10') { $details->model = 'PacketShaper - asm90'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.11') { $details->model = 'PacketShaper - 6500'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.12') { $details->model = 'PacketShaper - 8500'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.13') { $details->model = 'PacketShaper - asm110'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.15') { $details->model = 'PacketShaper - 9500'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.16') { $details->model = 'PacketShaper - 2550'; $details->type = 'wan accelerator'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.2334.1.1.17') { $details->model = 'PacketShaper - 10000'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1') { $details->model = 'PacketShaper'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.1') { $details->model = 'PacketShaper - 2000'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.10') { $details->model = 'PacketShaper - asm90'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.11') { $details->model = 'PacketShaper - 6500'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.12') { $details->model = 'PacketShaper - 8500'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.13') { $details->model = 'PacketShaper - asm110'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.14') { $details->model = 'PacketShaper 1550'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.15') { $details->model = 'PacketShaper - 9500'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.16') { $details->model = 'PacketShaper - 2550'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.17') { $details->model = 'PacketShaper - 10000'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.18') { $details->model = 'PacketShaper 1200'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.19') { $details->model = 'PacketShaper 3500'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.2') { $details->model = 'PacketShaper - 4000'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.20') { $details->model = 'PacketShaper 7500'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.21') { $details->model = 'PacketShaper 1700'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.22') { $details->model = 'PacketShaper 1400'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.3') { $details->model = 'PacketShaper - 1000'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.4') { $details->model = 'PacketShaper - 2500'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.5') { $details->model = 'PacketShaper - 4500'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.6') { $details->model = 'PacketShaper - 1500'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.7') { $details->model = 'PacketShaper - asm50'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.8') { $details->model = 'PacketShaper - asm70'; $details->type = 'wan accelerator'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.2334.1.1.9') { $details->model = 'PacketShaper - asm30'; $details->type = 'wan accelerator'; }
 
 	if ($details->snmp_version == '2') {
 		#$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25461.2.1.2.1.3.0" ));
