@@ -79,6 +79,7 @@
 	$device_types['printer'] = 'Printer';
 	$device_types['print server'] = 'Print Server';
 	$device_types['projector'] = 'Projector';
+	$device_types['proxy'] = 'Proxy';
 	$device_types['remote access controller'] = 'Remote Access Controller (ILO / RSA)';
 	$device_types['router'] = 'Router';
 	$device_types['san'] = 'SAN (Storage Area Network)';
