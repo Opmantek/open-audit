@@ -446,7 +446,6 @@ if ((struser <> "") and (instr(local_net, strcomputer) = 0)) then
 	Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
 	On Error Resume Next
 	Set wmiNameSpace = wmiLocator.ConnectServer(strcomputer, "\root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
-	wmiNameSpace.Security_.ImpersonationLevel = 3
 	error_returned = Err.Number
 	error_description = Err.Description
 	on error goto 0
@@ -456,16 +455,36 @@ if ((struser <> "") and (instr(local_net, strcomputer) = 0)) then
 		if debugging > "0" then wscript.echo "Error Description:" & error_description end if
 	end if
 
+	On Error Resume Next
+	wmiNameSpace.Security_.ImpersonationLevel = 3
+	error_returned = Err.Number
+	error_description = Err.Description
+	on error goto 0
+	if (error_returned <> 0) then 
+		if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
+		if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+		if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+	end if
+
 	if (error_returned = 0) then
 		On Error Resume Next
 		Set oReg = wmiNameSpace.Get("StdRegProv")
 		Set objWMIService = wmiLocator.ConnectServer(strcomputer, "\root\cimv2",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
+		error_returned = Err.Number
+		error_description = Err.Description
+		on error goto 0
+		if (error_returned <> 0) then 
+			if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
+			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+		end if
+		On Error Resume Next
 		objWMIService.Security_.ImpersonationLevel = 3
 		error_returned = Err.Number
 		error_description = Err.Description
 		on error goto 0
 		if (error_returned <> 0) then 
-			if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
+			if debugging > "0" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
 			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
 		end if
@@ -474,12 +493,21 @@ if ((struser <> "") and (instr(local_net, strcomputer) = 0)) then
 	if (error_returned = 0) then
 		On Error Resume Next
 		Set objWMIService2 = wmiLocator.ConnectServer(strcomputer, "\root\WMI",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
+		error_returned = Err.Number
+		error_description = Err.Description
+		on error goto 0
+		if (error_returned <> 0) then 
+			if debugging > "0" then wscript.echo "Problem authenticating (5) to " &  strcomputer end if
+			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+		end if
+		On Error Resume Next
 		objWMIService2.Security_.ImpersonationLevel = 3
 		error_returned = Err.Number
 		error_description = Err.Description
 		on error goto 0
 		if (error_returned <> 0) then 
-			if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
+			if debugging > "0" then wscript.echo "Problem authenticating (6) to " &  strcomputer end if
 			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
 		end if
@@ -489,14 +517,32 @@ else
 		' no credentials passed, therefore auditing as the user running this script
 		On Error Resume Next
 		set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2") 
+		error_returned = Err.Number
+		error_description = Err.Description
+		on error goto 0
+		if (error_returned <> 0) then 
+			if debugging > "0" then wscript.echo "Problem authenticating (7) to " &  strcomputer end if
+			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+		end if
+		On Error Resume Next
 		set objWMIService2 = GetObject("winmgmts:\\" & strcomputer & "\root\WMI")
+		error_returned = Err.Number
+		error_description = Err.Description
+		on error goto 0
+		if (error_returned <> 0) then 
+			if debugging > "0" then wscript.echo "Problem authenticating (8) to " &  strcomputer end if
+			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+		end if
+		On Error Resume Next
 		set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strcomputer & "\root\default:StdRegProv")
 		error_returned = Err.Number
 		error_description = Err.Description
 		if error_description = "" then error_description = "Access Denied. Check Firewall and user security permissions."
 		on error goto 0
 		if (error_returned <> 0) then
-			if debugging > "1" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
+			if debugging > "1" then wscript.echo "Problem authenticating (9) to " &  strcomputer end if
 			if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
 			if debugging > "1" then wscript.echo "Error Description:" & error_description end if
 		end if
