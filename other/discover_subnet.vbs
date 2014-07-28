@@ -488,11 +488,14 @@ for each host in hosts_in_subnet
 		end if
 	end if
 
-	if echo_output = "y" then
-		wscript.echo result
-	end if
+	' if echo_output = "y" then
+	' 	wscript.echo result
+	' end if
 next
 
+if echo_output = "y" then
+	wscript.echo "<devices>" & result_file & "<device><subnet_range>" & subnet_range & "</subnet_range><subnet_timestamp>" & subnet_timestamp & "</subnet_timestamp><complete>y</complete></device></devices>"
+end if
 
 
 if submit_online = "y" then
