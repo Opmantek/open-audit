@@ -34,14 +34,8 @@ Option Explicit
 forceCScriptExecution
 
 ' these can be overridden on the command line
-dim user
-dim help
-dim debugging : debugging = 0
-dim arg
-dim arg_name
-dim arg_value
-dim objArgs
-
+dim user, help, arg, arg_name, arg_value, objArgs, debugging
+debugging = 0
 
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
@@ -110,19 +104,30 @@ end if
 Const wbemFlagReturnImmediately = &h10
 Const wbemFlagForwardOnly = &h20
 dim objNetwork
+
+On Error Resume Next
 Set objNetwork = WScript.CreateObject("WScript.Network")
+If Err.Number <> 0 Then ShowError("Cannot create wscript.network.")
+
 dim objWMIService
+On Error Resume Next
 Set objWMIService = GetObject("winmgmts:\\.\root\CIMV2")
+If Err.Number <> 0 Then ShowError("Cannot connect to local WMI.")
 
 dim temp, hostname, colItems, objItem, user_domain, user_name, user_ldap, user_ldap_groups
 dim dns_hostname, computer_domain, domain_role, part_of_domain, domain_short, group_domain
 dim member_domain, local_administrators, local_admin, domain_admin, colGroups, objGroups, objGroup
 dim objUser, ldap_domain, objConnection, objCommand, objRecordSet, temp2, temp3
-dim colMembers, strMember, strPath, objNestedGroup, running_user, running_user_domain
+dim colMembers, strMember, strPath, objNestedGroup, running_user, running_user_domain, short_domain_name
 
 hostname = objNetwork.ComputerName
+If Err.Number <> 0 Then ShowError("Cannot retrieve local computer name.")
+
 running_user = objNetwork.userName
+If Err.Number <> 0 Then ShowError("Cannot retrieve user name of user running this script.")
+
 running_user_domain = objNetwork.userDomain
+If Err.Number <> 0 Then ShowError("Cannot retrieve user domain of user running this script.")
 
 wscript.echo
 wscript.echo "------------------------"
@@ -133,71 +138,134 @@ wscript.echo "User running this script: " & running_user
 wscript.echo "Domain of user running this script: " & running_user_domain
 
 Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_ComputerSystem", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+If Err.Number <> 0 Then ShowError("Cannot select from Win32_ComputerSystem (1).")
+
 if (user = "") then
 	For Each objItem In colItems
 		user = objItem.userName
+		If Err.Number <> 0 Then ShowError("Cannot select userName.")
 	Next
 	temp = split(user, "\")
+	If Err.Number <> 0 Then ShowError("No slash in retrieved userName.")
 	user_domain = temp(0)
+	If Err.Number <> 0 Then ShowError("Cannot select userName, domain.")
 	user_name = temp(1)
+	If Err.Number <> 0 Then ShowError("Cannot select userName name.")
 else
 	temp = split(user, "@")
+	If Err.Number <> 0 Then ShowError("No @ in supplied user name.")
 	user_domain = temp(1)
+	If Err.Number <> 0 Then ShowError("No domain in supplied user name.")
 	user_name = temp(0)
+	If Err.Number <> 0 Then ShowError("No name in supplied user name.")
 end if
 
 wscript.echo "User Name: " & user_name
 wscript.echo "User Domain: " & user_domain
 
 Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_ComputerSystem", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+If Err.Number <> 0 Then ShowError("Cannot select from Win32_ComputerSystem (2).")
 For Each objItem In colItems
-	WScript.Echo "CurrentTimeZone: " & objItem.CurrentTimeZone
-	WScript.Echo "DaylightInEffect: " & objItem.DaylightInEffect
+	wscript.echo "CurrentTimeZone: " & objItem.CurrentTimeZone
+	If Err.Number <> 0 Then ShowError("Cannot select CurrentTimezone from Win32_ComputerSystem.")
+
+	wscript.echo "DaylightInEffect: " & objItem.DaylightInEffect
+	If Err.Number <> 0 Then ShowError("Cannot select DaylightInEffect from Win32_ComputerSystem.")
+
 	dns_hostname = objItem.DNSHostName
-	WScript.Echo "DNSHostName: " & dns_hostname
+	If Err.Number <> 0 Then ShowError("Cannot select DNSHostName from Win32_ComputerSystem.")
+	wscript.echo "DNSHostName: " & dns_hostname
+
 	computer_domain = objItem.Domain
-	WScript.Echo "Domain: " & computer_domain
+	If Err.Number <> 0 Then ShowError("Cannot select Domain from Win32_ComputerSystem.")
+	wscript.echo "Domain: " & computer_domain
+
+	domain_role = "unknown"
 	if objItem.DomainRole = 0 then domain_role = "Standalone Workstation" end if
 	if objItem.DomainRole = 1 then domain_role = "Member Workstation"
 	if objItem.DomainRole = 2 then domain_role = "Standalone Server"
 	if objItem.DomainRole = 3 then domain_role = "Member Server"
 	if objItem.DomainRole = 4 then domain_role = "Backup Domain Controller"
 	if objItem.DomainRole = 5 then domain_role = "Primary Domain Controller"
-	WScript.Echo "DomainRole: " & domain_role
-	WScript.Echo "EnableDaylightSavingsTime: " & objItem.EnableDaylightSavingsTime
-	WScript.Echo "Name: " & objItem.Name
+	wscript.echo "DomainRole: " & domain_role
+
+	wscript.echo "EnableDaylightSavingsTime: " & objItem.EnableDaylightSavingsTime
+	If Err.Number <> 0 Then ShowError("Cannot select EnableDaylightSavingsTime from Win32_ComputerSystem.")
+
+	wscript.echo "Name: " & objItem.Name
+	If Err.Number <> 0 Then ShowError("Cannot select Name from Win32_ComputerSystem.")
+
 	part_of_domain = objItem.PartOfDomain
-	WScript.Echo "PartOfDomain: " & part_of_domain
-	WScript.Echo "Workgroup: " & objItem.Workgroup
+	If Err.Number <> 0 Then ShowError("Cannot select PartOfDomain from Win32_ComputerSystem.")
+	wscript.echo "PartOfDomain: " & part_of_domain
+
+	wscript.echo "Workgroup: " & objItem.Workgroup
+	If Err.Number <> 0 Then ShowError("Cannot select Workgroup from Win32_ComputerSystem.")
 Next
 
 Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_NTDomain where domainname > '' ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+If Err.Number <> 0 Then ShowError("Cannot select from Win32_NTDomain.")
 For Each objItem In colItems
-	WScript.Echo "ClientSiteName: " & objItem.ClientSiteName
-	WScript.Echo "DcSiteName: " & objItem.DcSiteName
+	wscript.echo "ClientSiteName: " & objItem.ClientSiteName
+	If Err.Number <> 0 Then ShowError("Cannot select ClientSiteName from Win32_NTDomain.")
+
+	wscript.echo "DcSiteName: " & objItem.DcSiteName
+	If Err.Number <> 0 Then ShowError("Cannot select DcSiteName from Win32_NTDomain.")
+
 	domain_short = objItem.Description
-	WScript.Echo "Description: " & domain_short
-	WScript.Echo "DnsForestName: " & objItem.DnsForestName
-	WScript.Echo "DomainControllerAddress: " & objItem.DomainControllerAddress
-	WScript.Echo "DomainControllerAddressType: " & objItem.DomainControllerAddressType
-	WScript.Echo "DomainControllerName: " & objItem.DomainControllerName
-	WScript.Echo "DomainName: " & objItem.DomainName
-	WScript.Echo "DSDirectoryServiceFlag: " & objItem.DSDirectoryServiceFlag
-	WScript.Echo "DSDnsControllerFlag: " & objItem.DSDnsControllerFlag
-	WScript.Echo "DSDnsDomainFlag: " & objItem.DSDnsDomainFlag
-	WScript.Echo "DSDnsForestFlag: " & objItem.DSDnsForestFlag
-	WScript.Echo "DSPrimaryDomainControllerFlag: " & objItem.DSPrimaryDomainControllerFlag
-	WScript.Echo "Name: " & objItem.Name
-	WScript.Echo "Status: " & objItem.Status
+	If Err.Number <> 0 Then ShowError("Cannot select Description from Win32_NTDomain.")
+	wscript.echo "Description: " & domain_short
+
+	wscript.echo "DnsForestName: " & objItem.DnsForestName
+	If Err.Number <> 0 Then ShowError("Cannot select DnsForestName from Win32_NTDomain.")
+
+	wscript.echo "DomainControllerAddress: " & objItem.DomainControllerAddress
+	If Err.Number <> 0 Then ShowError("Cannot select DomainControllerAddress from Win32_NTDomain.")
+
+	wscript.echo "DomainControllerAddressType: " & objItem.DomainControllerAddressType
+	If Err.Number <> 0 Then ShowError("Cannot select DomainControllerAddressType from Win32_NTDomain.")
+
+	wscript.echo "DomainControllerName: " & objItem.DomainControllerName
+	If Err.Number <> 0 Then ShowError("Cannot select DomainControllerName from Win32_NTDomain.")
+
+	short_domain_name = objItem.DomainName
+	If Err.Number <> 0 Then ShowError("Cannot select DomainName from Win32_NTDomain.")
+	wscript.echo "DomainName: " & short_domain_name
+
+	wscript.echo "DSDirectoryServiceFlag: " & objItem.DSDirectoryServiceFlag
+	If Err.Number <> 0 Then ShowError("Cannot select DSDirectoryServiceFlag from Win32_NTDomain.")
+
+	wscript.echo "DSDnsControllerFlag: " & objItem.DSDnsControllerFlag
+	If Err.Number <> 0 Then ShowError("Cannot select DSDnsControllerFlag from Win32_NTDomain.")
+
+	wscript.echo "DSDnsDomainFlag: " & objItem.DSDnsDomainFlag
+	If Err.Number <> 0 Then ShowError("Cannot select DSDnsDomainFlag from Win32_NTDomain.")
+
+	wscript.echo "DSDnsForestFlag: " & objItem.DSDnsForestFlag
+	If Err.Number <> 0 Then ShowError("Cannot select DSDnsForestFlag from Win32_NTDomain.")
+
+	wscript.echo "DSPrimaryDomainControllerFlag: " & objItem.DSPrimaryDomainControllerFlag
+	If Err.Number <> 0 Then ShowError("Cannot select DSPrimaryDomainControllerFlag from Win32_NTDomain.")
+
+	wscript.echo "Name: " & objItem.Name
+	If Err.Number <> 0 Then ShowError("Cannot select Name from Win32_NTDomain.")
+
+	wscript.echo "Status: " & objItem.Status
+	If Err.Number <> 0 Then ShowError("Cannot select Status from Win32_NTDomain.")
 Next
 
 Set colGroups = GetObject("WinNT://" & hostname & "")
+If Err.Number <> 0 Then ShowError("Cannot select from WinNT.")
 colGroups.Filter = Array("group")
+If Err.Number <> 0 Then ShowError("Cannot filter Group from WinNT.")
 For Each objGroup In colGroups
 	if objGroup.Name = "Administrators" then
+	If Err.Number <> 0 Then ShowError("Cannot select Name from WinNT.")
 	    For Each objUser in objGroup.Members
 	    	group_domain = split(objUser.ADSPath, "/")
+	    	If Err.Number <> 0 Then ShowError("Cannot split ADSPath from WinNT.")
 			member_domain = group_domain(ubound(group_domain)-1)
+			If Err.Number <> 0 Then ShowError("Cannot get domain from split ADSPath.")
 	        local_administrators = local_administrators & objUser.name & "@" & member_domain & ","
 	    Next
 	    wscript.echo "Local Administrators: " & left(local_administrators,len(local_administrators)-1)
@@ -206,9 +274,16 @@ Next
 
 if (part_of_domain = "True" and _
 		lcase(user_domain) <> lcase(hostname) and _
-		lcase(running_user_domain) <> lcase(computer_domain)) then
+		lcase(running_user_domain) <> lcase(computer_domain) and _
+		lcase(running_user_domain) <> lcase(short_domain_name)) then
+
 	' we need to use an Active Directory account to be able to query Active Directory
 	wscript.echo vbcrlf & "FAIL - You must use a domain account to run this script if you are querying a domain. Please log on to this computer with a domain account and re-run this script."
+	wscript.echo "PartOfDomain: " & part_of_domain
+	wscript.echo "UserDomain: " & lcase(user_domain)
+	wscript.echo "Hostname: " & lcase(hostname)
+	wscript.echo "User Running Domain: " & lcase(running_user_domain)
+	wscript.echo "Computer Domain: " & lcase(computer_domain)
 	wscript.quit 1
 end if
 
@@ -220,43 +295,44 @@ if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
 
 	Const ADS_SCOPE_SUBTREE = 2
 	Set objConnection = CreateObject("ADODB.Connection")
+	If Err.Number <> 0 Then ShowError("Cannot create ADODB.Connection.")
 	Set objCommand =   CreateObject("ADODB.Command")
+	If Err.Number <> 0 Then ShowError("Cannot create ADODB.Command.")
 	objConnection.Provider = "ADsDSOObject"
+	If Err.Number <> 0 Then ShowError("Cannot create ADODB.Provider.")
 	objConnection.Open "Active Directory Provider"
+	If Err.Number <> 0 Then ShowError("Cannot open ADODB.Connection.")
 	Set objCommand.ActiveConnection = objConnection
+	If Err.Number <> 0 Then ShowError("Cannot create objConnection.")
 	objCommand.Properties("Page Size") = 1000
+	If Err.Number <> 0 Then ShowError("Cannot set Page Size.")
 	objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE 
+	If Err.Number <> 0 Then ShowError("Cannot set Search Scope.")
 	dim command_text : command_text = "SELECT distinguishedName FROM 'LDAP://" & ldap_domain & "' WHERE objectCategory='user' AND sAMAccountName='" & user_name & "'"
 	wscript.echo "LDAP Connect String: " & command_text
-	
-	On Error Resume Next
-			objCommand.CommandText = command_text
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
 
-	On Error Resume Next
-			Set objRecordSet = objCommand.Execute
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
+	objCommand.CommandText = command_text
+	If Err.Number <> 0 Then ShowError("Cannot set CommandText.")
 
-	On Error Resume Next
-			objRecordSet.MoveFirst
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
+	Set objRecordSet = objCommand.Execute
+	If Err.Number <> 0 Then ShowError("Cannot execute CommandText.")
+
+	objRecordSet.MoveFirst
+	If Err.Number <> 0 Then ShowError("Cannot moveFirst over CommandText.")
 	
 	
 	Do Until objRecordSet.EOF
 		user_ldap = objRecordSet.Fields("distinguishedName").Value
+		If Err.Number <> 0 Then ShowError("Cannot get distinguishedName.")
 		wscript.echo "User LDAP Account: " & user_ldap
 		objRecordSet.MoveNext
 	Loop
 
 	if (debugging = 1) then wscript.echo VBCRLF & "-----Domain PC and User------" end if
 	Set objUser = GetObject("LDAP://" & user_ldap) 
+	If Err.Number <> 0 Then ShowError("Cannot connect to LDAP.")
 	Set colGroups = objUser.Groups
+	If Err.Number <> 0 Then ShowError("Cannot get Groups from LDAP.")
 	For Each objGroup in colGroups
 		if (debugging = 1) then wscript.echo "objGroup.CN: " & objGroup.CN end if
 	    if (instr(lcase(user_ldap_groups), lcase(objGroup.CN & ",")) > 0) then
@@ -268,7 +344,6 @@ if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
 	    end if
 	Next
 	Function GetNested(objGroup)
-
 		if (debugging = 1) then wscript.echo "objGroup.CN: " & objGroup.CN end if
 	    if (instr(lcase(user_ldap_groups), lcase(objGroup.CN & ",")) > 0) then
 	    	if (debugging = 1) then wscript.echo "Not Adding 2 " & objGroup.CN end if
@@ -276,7 +351,6 @@ if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
 	    	if (debugging = 1) then wscript.echo "Adding 2 " & objGroup.CN end if
 	    	user_ldap_groups = user_ldap_groups & objGroup.CN & ","
 	    end if
-
 	    On Error Resume Next
 	    colMembers = objGroup.GetEx("memberOf")
 	    For Each strMember in colMembers
@@ -290,7 +364,6 @@ if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
 		        user_ldap_groups = user_ldap_groups & objNestedGroup.CN & ","
 		        GetNested(objNestedGroup)
 		    end if
-	        
 	    Next
 	End Function
 	if (user_ldap_groups > "") then
@@ -309,8 +382,10 @@ wscript.echo "------------------------"
 if (lcase(user_domain) = lcase(hostname)) then
 	if (lcase(user_name) = "administrator") then
 		wscript.echo "PASS - Account is the local Administrator."
+		wscript.quit
 	else
 		wscript.echo "FAIL - Local account but not the actual Administrator account."
+		wscript.quit
 	end if
 end if
 
@@ -318,6 +393,7 @@ end if
 ' The domain user must be a member of the local Administrators group
 if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname) and instr(lcase(local_administrators), lcase(user))) then
 	wscript.echo "PASS - Domain account is in the local Administrators group."
+	wscript.quit
 end if
 
 
@@ -348,8 +424,10 @@ if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
 	next
 	if (hit_la = "y") then
 		wscript.echo "PASS - Domain account is a member of " & d_group & " which is a member of the local Administrators group."
+		wscript.quit
 	else
 		wscript.echo "FAIL - Account is not a member of the local Administrators group (or subgroup)."
+		qscript.quit
 	end if
 end if
 
@@ -361,6 +439,19 @@ Sub forceCScriptExecution
 			Str = Str & " " & Arg
 		Next
 		CreateObject("WScript.Shell").Run "cscript //nologo """ & WScript.ScriptFullName & """ " & Str
-		WScript.Quit
-	End If
+    	wscript.quit
+	end if
+End Sub
+
+
+
+Sub ShowError(strMessage)
+	wscript.echo "-----ERROR-----"
+    wscript.echo strMessage
+    wscript.echo "Error Number: " & Err.Number
+    wscript.echo "Source: " & Err.Source 
+    wscript.echo "Description: " &  Err.Description
+    wscript.echo "---------------"
+    Err.Clear
+    wscript.quit
 End Sub
