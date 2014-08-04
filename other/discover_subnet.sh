@@ -210,6 +210,8 @@ if [[ "$hosts" != "" ]]; then
 		mac_address=""
 		manufacturer=""
 		description=""
+		os_group=""
+		os_family=""
 		os_name=""
 		type="unknown"
 
@@ -243,9 +245,86 @@ if [[ "$hosts" != "" ]]; then
 			fi
 
 			NEEDLE="Running:"
-			if [[ "$line" == *"$NEEDLE"* ]]; then 
+			if [[ "$line" == "$NEEDLE"* ]]; then 
 				os_name=$(echo "$line" | cut -d":" -f2 | cut -d "," -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+
+				$NEEDLE="Cisco IOS"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Cisco"
+					os_family="Cisco IOS"
+				fi
+
+				NEEDLE="Windows"
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					os_group="Windows"
+					NEEDLE="Vista"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows Vista"
+					fi
+					NEEDLE="7"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 7"
+					fi
+					NEEDLE="8"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 8"
+					fi
+					NEEDLE="2003"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 2003"
+					fi
+					NEEDLE="2008"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 2008"
+					fi
+					NEEDLE="2012"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 2012"
+					fi
+				fi
+				$NEEDLE="IRIX"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Irix"
+				fi
+				$NEEDLE="OpenBSD"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="BSD"
+					os_family="Open BSD"
+				fi
+				$NEEDLE="FreeBSD"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="BSD"
+					os_family="Free BSD"
+				fi
+				$NEEDLE="NetBSD"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="BSD"
+					os_family="Net BSD"
+				fi
+				$NEEDLE="SunOS"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="SunOS"
+				fi
+				$NEEDLE="Solaris"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Solaris"
+				fi
+				$NEEDLE="Linux"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Linux"
+				fi
+				$NEEDLE="VMware"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="VMware"
+					os_family="VMware ESXi"
+				fi
+				$NEEDLE="Apple Mac OS X"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Apple"
+					os_family="Apple OSX"
+				fi
 			fi
+
 
 			NEEDLE="Running (JUST GUESSING):"
 			if [[ "$line" == *"$NEEDLE"* ]]; then 
@@ -311,12 +390,49 @@ if [[ "$hosts" != "" ]]; then
 				tel_status="true"
 		fi
 
-		# test for telnet
+		# test for ipmi (ILO)
 		ipmi_status="false"
-		command=$(nmap -n -sU -p623 "$host" 2>/dev/null | grep "623/udp open")
-		if [[ "$command" == *"623/udp open"* ]]; then
+		ipmi_tool=`which ipmitool`
+		if [[ "$ipmi_tool" != "" ]]; then
+			test=`ipmitool -H $host -U admin -P password lan print | grep "MAC Address" | cut -d":" -f2- | cut -d" " -f2`
+			if [[ "$test" != "" ]]; then
 				ipmi_status="true"
 				type="remote access controller"
+				if [[ "$mac_address" == "" ]]; then
+					mac_address="$test"
+				fi
+				description_test_1=`ipmitool -H $host -U admin -P admin fru list | grep "Product Manufacturer"`
+				if [[ "$description_test_1" != "" ]]; then
+					if [[ "$manufacturer" == "unknown" ]] || [[ "$manufacturer" == "" ]]; then
+						manufacturer="$description_text_1"
+					fi
+				fi
+				description_test_2=`ipmitool -H $host -U admin -P admin fru list | grep "Product Name"`
+				description_test="$description_test_1 $description_test_2"
+				if [[ "$description_test" != "" ]]; then
+					description="$description_test"
+				fi
+			else
+				test=`ipmitool -H $host -U admin -P admin lan print | grep "MAC Address" | cut -d":" -f2- | cut -d" " -f2`
+				if [[ "$test" != "" ]]; then
+					ipmi_status="true"
+					type="remote access controller"
+					if [[ "$mac_address" == "" ]]; then
+						mac_address="$test"
+					fi
+					description_test_1=`ipmitool -H $host -U admin -P admin fru list | grep "Product Manufacturer"`
+					if [[ "$description_test_1" != "" ]]; then
+						if [[ "$manufacturer" == "unknown" ]] || [[ "$manufacturer" == "" ]]; then
+							manufacturer="$description_text_1"
+						fi
+					fi
+					description_test_2=`ipmitool -H $host -U admin -P admin fru list | grep "Product Name"`
+					description_test="$description_test_1 $description_test_2"
+					if [[ "$description_test" != "" ]]; then
+						description="$description_test"
+					fi
+				fi
+			fi
 		fi
 
 		result="	<device>"$'\n'
@@ -325,6 +441,8 @@ if [[ "$hosts" != "" ]]; then
 		result="$result		<mac_address>$mac_address</mac_address>"$'\n'
 		result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
 		result="$result		<type><![CDATA[$type]]></type>"$'\n'
+		result="$result		<os_group><![CDATA[$os_group]]></os_group>"$'\n'
+		result="$result		<os_family><![CDATA[$os_family]]></os_family>"$'\n'
 		result="$result		<os_name><![CDATA[$os_name]]></os_name>"$'\n'
 		result="$result		<description><![CDATA[$description]]></description>"$'\n'
 		result="$result		<org_id>$org_id</org_id>"$'\n'

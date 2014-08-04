@@ -269,6 +269,8 @@ for each host in hosts_in_subnet
 	dim manufacturer : manufacturer = ""
 	dim system_type : system_type = "unknown"
 	dim description : description = ""
+	dim os_group : os_group = ""
+	dim os_family : os_family = ""
 	dim os_name : os_name = ""
 	dim i
 
@@ -311,6 +313,47 @@ for each host in hosts_in_subnet
 			os_name = replace(os_name, ")", "")
 			os_name = replace(os_name, "(", "")
 			os_name = trim(os_name)
+			if (instr(lcase(line), "cisco ios")) then
+				os_group = "Cisco"
+				os_family="Cisco IOS"
+			end if
+			if (instr(lcase(line), "windows")) then
+				os_group = "Windows"
+				if (lcase(line), "vista") then os_family = "Windows Vista" end if
+				if (lcase(line), "7") then os_family = "Windows 7" end if
+				if (lcase(line), "8") then os_family = "Windows 8" end if
+				if (lcase(line), "2003") then os_family = "Windows 2003" end if
+				if (lcase(line), "2008") then os_family = "Windows 2008" end if
+				if (lcase(line), "2012") then os_family = "Windows 2012" end if
+			end if
+			if (instr(lcase(line), "irix")) then
+				os_group = "IRIX"
+			end if
+			if (instr(lcase(line), "OpenBSD")) then
+				os_group = "BSD"
+				os_family = "Open BSD"
+			end if
+			if (instr(lcase(line), "FreeBSD")) then
+				os_group = "BSD"
+				os_family = "Free BSD"
+			end if
+			if (instr(lcase(line), "NetBSD")) then
+				os_group = "BSD"
+				os_family = "Net BSD"
+			end if
+			if (instr(lcase(line), "sunos")) then
+				os_group = "SunOS"
+			end if
+			if (instr(lcase(line), "solaris")) then
+				os_group = "Solaris"
+			end if
+			if (instr(lcase(line), "linux")) then
+				os_group = "Linux"
+			end if
+			if (instr(lcase(line), "vmware")) then
+				os_group = "VMware"
+				os_family = "VMware ESXi"
+			end if
 		end if
 
 		if instr(lcase(line), "running (just guessing):") and os_name = "" then
@@ -414,18 +457,18 @@ for each host in hosts_in_subnet
 		end if
 	Loop
 
-	' test for IPMI
+	' test for IPMI (ILO)
 	dim ipmi_status : ipmi_status = "false"
-	exit_status = "n"
-	command = nmap_path & " -n -sU -p623 " & host 
-	execute_command
-	Do Until objExecObject.StdOut.AtEndOfStream
-		line = objExecObject.StdOut.ReadLine
-		if instr(lcase(line), "623/udp open") then
-			ipmi_status = "true"
-			system_type = "remote access controller"
-		end if
-	Loop
+	'exit_status = "n"
+	'command = nmap_path & " -n -sU -p623 " & host 
+	'execute_command
+	'Do Until objExecObject.StdOut.AtEndOfStream
+	'	line = objExecObject.StdOut.ReadLine
+	'	if instr(lcase(line), "623/udp open") then
+	'		ipmi_status = "true"
+	'		system_type = "remote access controller"
+	'	end if
+	'Loop
 
 	' special case of determining WMI on localhost on Windows
 	if (instr(local_net, host & " ") > 0) then
@@ -441,6 +484,8 @@ for each host in hosts_in_subnet
 	result = result & "		<mac_address>" & mac_address & "</mac_address>" & vbcrlf
 	result = result & "		<manufacturer><![CDATA[" & manufacturer & "]]></manufacturer>" & vbcrlf
 	result = result & "		<type><![CDATA[" & system_type & "]]></type>" & vbcrlf
+	result = result & "		<os_group><![CDATA[" & os_group & "]]></os_group>" & vbcrlf
+	result = result & "		<os_family><![CDATA[" & os_family & "]]></os_family>" & vbcrlf
 	result = result & "		<os_name><![CDATA[" & os_name & "]]></os_name>" & vbcrlf
 	result = result & "		<description><![CDATA[" & description & "]]></description>" & vbcrlf
 	result = result & "		<snmp_status>" & snmp_status & "</snmp_status>" & vbcrlf
@@ -506,7 +551,7 @@ if submit_online = "y" then
 		Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
 		objHTTP.setTimeouts 5000, 5000, 5000, 120000
 		objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-		objHTTP.Open "POST", url, False
+		objHTTP.Open "POST", url, TRUE
 		objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
 		objHTTP.Send "form_details=" + resultcomplete + vbcrlf
 	on error goto 0
@@ -515,9 +560,9 @@ if submit_online = "y" then
 		log_entry = "Result complete send failed for " & subnet_range & " submitted at " & subnet_timestamp
 		write_log
 	else
-		if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp end if
-		log_entry = "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp
-		write_log
+		'if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp end if
+		'log_entry = " for " & subnet_range & " submitted at " & subnet_timestamp
+		'write_log
 	end if
 end if
 
