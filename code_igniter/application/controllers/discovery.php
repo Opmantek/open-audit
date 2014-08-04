@@ -1046,7 +1046,7 @@ class discovery extends CI_Controller
                                     if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
                                         echo "DEBUG - Windows credential update for " . $details->system_id . "\n";
                                     }
-                                    $log_details = "C:discovery F:process_subnet Windows credential update for $details->man_ip_address (System ID $details->system_id).";
+                                    $log_details = "C:discovery F:process_subnet Windows credential update for $details->man_ip_address (System ID $details->system_id)";
                                     $this->log_event($log_details);
                                 }
                                 $command_string = NULL;
