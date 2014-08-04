@@ -290,6 +290,7 @@ class MY_Controller extends CI_Controller {
 		if ($this->data['heading'] == "Devices Discovered 30") {$i = "Daily Discovered Devices"; }
 		if ($this->data['heading'] == "Devices Not Seen 30") {$i = "Devices Not Seen"; }
 		if ($this->data['heading'] == "Device Types") {$i = "data"; }
+		if ($this->data['heading'] == "OS Types") {$i = "data"; }
 		if ($this->data['heading'] == "Locations") {$i = "locations"; }
 		if (count($query) > 0) {
 			echo "{\"$i\": [\n";
