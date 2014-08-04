@@ -225,7 +225,7 @@ class M_system extends MY_Model {
 						$row = $query->row();
 						if (count($row) > 0 ) { 
 							$details->system_id = $row->system_id;
-							$log = "M:system F:find_system HIT on mac address from audit result for $details->man_ip_address"; $this->log_event($log);
+							$log = "M:system F:find_system HIT on mac address from audit result for " . strtolower($mac) . " (System ID " . $row->system_id . ")"; $this->log_event($log);
 						}
 					}
 				}
@@ -376,12 +376,17 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id; 
-				$log = "M:system F:find_system HIT on short hostname $details->man_ip_address"; $this->log_event($log);
+					$log = "M:system F:find_system HIT on short hostname $details->man_ip_address"; $this->log_event($log);
 				}
 			}
 		}
 
-		$log = "M:system F:find_system Returning system id $details->system_id"; $this->log_event($log);
+		$i = @(string)$details->system_id;
+		if ($i != '') {
+			$log = "M:system F:find_system Returning system id " . $i; $this->log_event($log);
+		} else {
+			$log = "M:system F:find_system Returning system id <none>"; $this->log_event($log);
+		}
 		return $details->system_id;
 	}
 
@@ -922,9 +927,6 @@ class M_system extends MY_Model {
 		}
 		if ($details->icon == '') { $details->icon = 'unknown'; }
 		$details->icon = str_replace(" ", "_", strtolower($details->icon));
-		if (isset($details->man_icon)) {
-			$details->man_icon = str_replace(" ", "_", strtolower($details->man_icon));
-		}
 
 		# account for any "man_" items
 		if (!isset($details->man_description)) { $details->man_description = $details->description; }
@@ -1270,7 +1272,7 @@ class M_system extends MY_Model {
 					}
 				} else {
 					if (!isset($details->icon) or $details->icon == '') {
-						$details->icon = str_replace(' ', '_', $details->type);
+						$details->icon = $details->type;
 					}
 				}
 				
@@ -1510,7 +1512,7 @@ class M_system extends MY_Model {
 			$details->icon = str_replace(" ", "_", strtolower($details->icon));
 			if ($details->man_icon == "computer" or 
 				$details->man_icon == "unknown" or 
-				$details->man_icon == "general_purpose" or 
+				$details->man_icon == "general purpose" or 
 				$details->man_icon == "" ) {
 				$details->man_icon = $details->icon;
 			}
