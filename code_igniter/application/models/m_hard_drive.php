@@ -61,7 +61,7 @@ class M_hard_drive extends MY_Model {
 					hard_drive_index, hard_drive_interface_type, hard_drive_manufacturer, 
 					hard_drive_model, hard_drive_serial, hard_drive_size, 
 					hard_drive_device_id, hard_drive_scsi_logical_unit, hard_drive_status, hard_drive_firmware, 
-					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", "$input->hard_drive_caption", "$input->hard_drive_index", 
 					mb_strtoupper($input->hard_drive_interface_type), "$input->hard_drive_manufacturer", 
