@@ -62,16 +62,24 @@ class M_network_card extends MY_Model {
 		# added net_alias in 1.3.3
 		if (is_null($input->net_alias)) { $input->net_alias = ''; }
 
-		$sql = "SELECT sys_hw_network_card.net_id 
-				FROM sys_hw_network_card
-				WHERE sys_hw_network_card.system_id = ? AND 
-					LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND 
-					LOWER(sys_hw_network_card.net_index) = LOWER(?) ";
-
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", 
-					"$input->net_mac_address", 
-					"$input->net_index");
+		if ($details->type == 'computer') {
+			$sql = "SELECT sys_hw_network_card.net_id 
+					FROM sys_hw_network_card
+					WHERE sys_hw_network_card.system_id = ? AND 
+						LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) ";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", "$input->net_mac_address");
+		} else {
+			$sql = "SELECT sys_hw_network_card.net_id 
+					FROM sys_hw_network_card
+					WHERE sys_hw_network_card.system_id = ? AND 
+						LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND 
+						LOWER(sys_hw_network_card.net_index) = LOWER(?) ";
+			$sql = $this->clean_sql($sql);
+			$data = array("$details->system_id", 
+						"$input->net_mac_address", 
+						"$input->net_index");
+		}
 		$query = $this->db->query($sql, $data);
 
 		if ($query->num_rows() > 0) {
