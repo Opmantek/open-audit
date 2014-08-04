@@ -611,9 +611,9 @@ if (!function_exists('get_snmp')) {
 							}
 						}
 					}
-					if (isset($details->os_group) and $details->os_group == 'windows') {
+					if (isset($details->os_group) and strtolower($details->os_group) == 'windows') {
 						if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-							if ($interface->net_adapter_type != 'softwareLoopback' ) {
+							if (strtolower($interface->net_adapter_type) != 'softwareloopback' and strtolower($interface->net_adapter_type) != 'software loopback') {
 								$interfaces_filtered[] = $interface;
 							}
 						}
@@ -792,9 +792,9 @@ if (!function_exists('get_snmp')) {
 							}
 						}
 					}
-					if (isset($details->os_group) and $details->os_group == 'windows') {
+					if (isset($details->os_group) and strtolower($details->os_group) == 'windows') {
 						if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-							if ($interface->net_adapter_type != 'softwareLoopback' ) {
+							if (strtolower($interface->net_adapter_type) != 'softwareloopback' and strtolower($interface->net_adapter_type) != 'software loopback') {
 								$interfaces_filtered[] = $interface;
 							}
 						}
