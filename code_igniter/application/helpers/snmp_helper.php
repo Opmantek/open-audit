@@ -332,11 +332,17 @@ if (!function_exists('get_snmp')) {
 				$details->model = 'TeraStation';
 				$details->type = 'nas';
 			}
-			if ((stripos($details->description, 'synology nas') !== false) or 
-				(stripos($details->description, 'synology') !== false and stripos($details->description, 'diskstation') !== false)){
+			if (stripos($details->description, 'synology') !== false or 
+			    stripos($details->description, 'diskstation') !== false){
 				$details->manufacturer = 'Synology';
-				$details->model = 'DiskStation';
+				$temp = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.1.0" ));
+				$details->model = trim('DiskStation ' . $temp);
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.2.0" ));
 				$details->type = 'nas';
+				$details->os_group = 'Linux';
+				$details->os_family = 'Synology DSM';
+				$details->os_name = 'Synology ' . snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.3.0" ));
+				
 			}
 
 			// guess at manufacturer using entity mib
@@ -611,9 +617,9 @@ if (!function_exists('get_snmp')) {
 							}
 						}
 					}
-					if (isset($details->os_group) and strtolower($details->os_group) == 'windows') {
+					if (isset($details->os_group) and $details->os_group == 'windows') {
 						if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-							if (strtolower($interface->net_adapter_type) != 'softwareloopback' and strtolower($interface->net_adapter_type) != 'software loopback') {
+							if ($interface->net_adapter_type != 'softwareLoopback' ) {
 								$interfaces_filtered[] = $interface;
 							}
 						}
@@ -792,9 +798,9 @@ if (!function_exists('get_snmp')) {
 							}
 						}
 					}
-					if (isset($details->os_group) and strtolower($details->os_group) == 'windows') {
+					if (isset($details->os_group) and $details->os_group == 'windows') {
 						if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-							if (strtolower($interface->net_adapter_type) != 'softwareloopback' and strtolower($interface->net_adapter_type) != 'software loopback') {
+							if ($interface->net_adapter_type != 'softwareLoopback' ) {
 								$interfaces_filtered[] = $interface;
 							}
 						}
