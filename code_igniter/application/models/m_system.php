@@ -382,7 +382,7 @@ class M_system extends MY_Model {
 		}
 
 		$i = @(string)$details->system_id;
-		if ($i != '') {
+		if (!is_null($i) and $i != '') { 
 			$log = "M:system F:find_system Returning system id " . $i; $this->log_event($log);
 		} else {
 			$log = "M:system F:find_system Returning system id <none>"; $this->log_event($log);
