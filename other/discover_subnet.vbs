@@ -354,6 +354,10 @@ for each host in hosts_in_subnet
 				os_group = "VMware"
 				os_family = "VMware ESXi"
 			end if
+			if (instr(lcase(line), "apple mac os x")) then
+				os_group="Apple"
+				os_family="Apple OSX"
+			end if
 		end if
 
 		if instr(lcase(line), "running (just guessing):") and os_name = "" then
