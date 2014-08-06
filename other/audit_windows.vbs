@@ -4261,8 +4261,8 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 						item = item & "			<details_current_size>" & escape_xml(filesize) & "</details_current_size>" & vbcrlf
 						item = item & "			<details_creation_date>" & escape_xml(objRS("crdate")) & "</details_creation_date>" & vbcrlf
 						item = item & "		</details>" & vbcrlf
-						objRS.Movenext
 					end if
+					objRS.Movenext
 				Loop
 			end if
 			'On Error Goto 0 
@@ -6740,7 +6740,7 @@ end function
 
 function WMIOSLanguage(lang)
 	if lang = "1" then WMIOSLanguage = "Arabic" end if 
-	if lang = "4" then WMIOSLanguage = "Chinese (Simplified)– China" end if 
+	if lang = "4" then WMIOSLanguage = "Chinese (Simplified)â€“ China" end if 
 	if lang = "9" then WMIOSLanguage = "English" end if 
 	if lang = "1025" then WMIOSLanguage = "Arabic - Saudi Arabia" end if 
 	if lang = "1026" then WMIOSLanguage = "Bulgarian" end if 
@@ -6748,7 +6748,7 @@ function WMIOSLanguage(lang)
 	if lang = "1028" then WMIOSLanguage = "Chinese (Traditional) - Taiwan" end if 
 	if lang = "1029" then WMIOSLanguage = "Czech" end if 
 	if lang = "1030" then WMIOSLanguage = "Danish" end if 
-	if lang = "1031" then WMIOSLanguage = "German – Germany" end if 
+	if lang = "1031" then WMIOSLanguage = "German â€“ Germany" end if 
 	if lang = "1032" then WMIOSLanguage = "Greek" end if 
 	if lang = "1033" then WMIOSLanguage = "English - United States" end if 
 	if lang = "1034" then WMIOSLanguage = "Spanish - Traditional Sort" end if 
@@ -6799,7 +6799,7 @@ function WMIOSLanguage(lang)
 	if lang = "1085" then WMIOSLanguage = "Yiddish" end if 
 	if lang = "1086" then WMIOSLanguage = "Malay - Malaysia" end if 
 	if lang = "2049" then WMIOSLanguage = "Arabic - Iraq" end if 
-	if lang = "2052" then WMIOSLanguage = "Chinese (Simplified) – PRC" end if 
+	if lang = "2052" then WMIOSLanguage = "Chinese (Simplified) â€“ PRC" end if 
 	if lang = "2055" then WMIOSLanguage = "German - Switzerland" end if 
 	if lang = "2057" then WMIOSLanguage = "English - United Kingdom" end if 
 	if lang = "2058" then WMIOSLanguage = "Spanish - Mexico" end if 
