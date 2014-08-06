@@ -468,4 +468,121 @@ class report extends MY_Controller
         $this->load->model("m_oa_report");
         echo json_encode($this->m_oa_report->list_reports_in_menu());
     }
+
+    public function json_dates() {
+        
+        $debug = '';
+
+        
+
+        $start_date = date('Y-m-d', strtotime('-30 days'));
+        $end_date = date('Y-m-d');
+        $report = 'new devices';
+
+        # make a default start date of 30 days ago if none provided
+        # check if GET start date passed
+        $get_start_date = $this->uri->segment(3, 0);
+        if (isset($get_start_date) and date('Y-m-d', strtotime($get_start_date)) and $get_start_date != '0') {
+            $start_date = $get_start_date;
+        }
+        # check if POST start date passed
+        $post_start_date = @$_POST['start_date'];
+        if (isset($post_start_date) and date('Y-m-d', strtotime($post_start_date)) and $post_start_date != '0' and $post_start_date != '') {
+            $start_date = $post_start_date;
+        } 
+        
+        # make a default end dat of today if none provided
+        # check if GET end date passed
+        $get_end_date =  $this->uri->segment(4, 0);
+        if (isset($get_end_date) and date('Y-m-d', strtotime($get_end_date)) and $get_end_date != '0') {
+            $end_date = $get_end_date;
+        } 
+        # check if POST end date passed
+        $post_end_date = @$_POST['end_date'];
+        if (isset($post_end_date) and date('Y-m-d', strtotime($post_end_date)) and $post_end_date != '0' and $post_end_date != '') {
+            $end_date = $post_end_date;
+        }
+
+        # get the report name if provided
+        $post_report = @$_POST['report'];
+        if (isset($post_report) and $post_report != '') {
+            $report = $post_report;
+        } else if ($this->uri->segment(5, 0) != '0') {
+            $report = $this->uri->segment(5, 0);
+        }
+        $report = str_replace("%20", " ", $report);
+        $report = str_replace("+", " ", $report);
+
+        # define the SQL for the report
+        switch($report) {
+            case "missing_devices":
+            $sql = "SELECT COUNT(system_id) as count FROM system WHERE last_seen < DATE_SUB('?', INTERVAL 30 DAY)";
+            $this->data['heading'] = "Devices Not Seen 30";
+            break;
+
+            case "new_software":
+            $sql = "SELECT COUNT(DISTINCT(oa_alert_log.alert_details)) as count FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) WHERE alert_table = 'sys_sw_software' AND alert_details LIKE 'software installed - %' AND DATE(oa_alert_log.timestamp) = '?' AND system.man_status = 'production'";
+            $this->data['heading'] = "Software Discovered 30";
+            break;
+
+            case "new_devices":
+            $sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?'";
+            $this->data['heading'] = "Devices Discovered 30";
+            break;
+
+            default:
+            $sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?'";
+            $this->data['heading'] = "Devices Discovered 30";
+            break;
+        }
+
+        # debug output if required
+        if ($debug == 'y') {
+            echo "<pre>\n";
+            echo "GSD: " . $get_start_date . "\n";
+            echo "PSD: " . $post_start_date . "\n";
+            echo "GED: " . $get_end_date . "\n";
+            echo "PED: " . $post_end_date . "\n";
+            echo "Start Date: " . $start_date . "<br />\n";
+            echo "End Date: " . $end_date . "<br />\n";
+            echo "Report: " . $report . "\n";
+            echo "SQL: " . $sql . "\n";
+        }
+
+        $return_json = array();
+        $each_json = array();
+     
+        while (strtotime($start_date) <= strtotime($end_date)) {
+            $each_sql = str_replace('?', $start_date, $sql);
+
+            # below uses PHP to create the timestamp
+            $mktime_array = explode('-', $start_date);
+            $timestamp = gmmktime(0, 0, 0, $mktime_array[1], $mktime_array[2], $mktime_array[0]);
+            # we could alternatively use MySQL to derive this by
+            # inserting UNIX_TIMESTAMP('?') as timestamp into the select
+
+            if ($debug == 'y') {
+                echo $each_sql . "<br />\n";
+            }
+            $query = $this->db->query($each_sql);
+            $result = $query->result();
+
+            foreach ($result as $key) {
+                $each_json = array('x' => intval($timestamp), 'y' => intval($key->count) );
+                $return_json[] = $each_json;
+            }
+            $start_date = date ("Y-m-d", strtotime("+1 day", strtotime($start_date)));
+        }
+
+        
+        $this->data['query'] = $return_json;
+        
+        if ($debug == 'y') {
+            print_r($return_json);
+        }
+
+        if ($debug != 'y') {
+            $this->determine_output('json');
+        }
+    }
 }

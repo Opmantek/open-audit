@@ -97,11 +97,11 @@ class discovery extends CI_Controller
             }
             # run the audit_domain script
             if ((isset($_POST['server']) and $_POST['server'] > '') and
-            (isset($_POST['user']) and $_POST['user'] > '') and
-            (isset($_POST['password']) and $_POST['password'] > '') and
-            (isset($_POST['domain']) and $_POST['domain'] > '')) {
+            (isset($_POST['windows_username']) and $_POST['windows_username'] > '') and
+            (isset($_POST['windows_password']) and $_POST['windows_password'] > '') and
+            (isset($_POST['windows_domain']) and $_POST['windows_domain'] > '')) {
                 $error = "";
-                $log = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD submitted for " . $_POST['domain'];
+                $log = "C:discovery F:discover_active_directory U:" . $this->data['user_full_name'] . " Discovery AD submitted for " . $_POST['windows_domain'];
                 $this->log_event($log);
                 $i = explode('/', base_url());
                 $url = str_replace($i[2], $_POST['network_address'], base_url()) . "index.php/system/add_system";
@@ -115,7 +115,7 @@ class discovery extends CI_Controller
                 # Windows host - start the script locally
                 $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "\\open-audit\\other";
 
-                $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " debugging=0";
+                $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['windows_domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['windows_domain'] . "\\" . $_POST['windows_user'] . " strpass=" . $_POST['windows_password'] . " debugging=0";
 
                 $command_string = "%comspec% /c start /b cscript //nologo " . $script_string . " &";
 
@@ -143,13 +143,13 @@ class discovery extends CI_Controller
             if ((php_uname('s') == 'Linux' or php_uname('s') == "Darwin") and ($error == '')) {
                 # linux or OSX host - copy the script to the DC and start it
                 $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/open-audit/other";
-                $_POST['user'] = str_replace('$', '\$', $_POST['user']);
-                $_POST['password'] = str_replace('$', '\$', $_POST['password']);
+                $_POST['windows_username'] = str_replace('$', '\$', $_POST['windows_username']);
+                $_POST['windows_password'] = str_replace('$', '\$', $_POST['windows_password']);
 
                 # copy the domain audit script
                 if ($error == '') {
                     #$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\"";
-                    $command_string = "smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\"";
+                    $command_string = "smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['windows_domain'] . "\\" . $_POST['windows_username'] . "%" . $_POST['windows_password'] . "\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\"";
                     exec($command_string, $output, $return_var);
                     if (isset($_POST['debug']) and ((isset($loggedin)) or ($this->session->userdata('logged_in') == true))) {
                         echo "\nCommand: $command_string\n\n";
@@ -171,7 +171,7 @@ class discovery extends CI_Controller
                 # copy the windows audit script
                 if ($error == '') {
                     #$command_string = "$filepath/smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
-                    $command_string = "smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['domain'] . "\\" . $_POST['user'] . "%" . $_POST['password'] . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
+                    $command_string = "smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['windows_domain'] . "\\" . $_POST['windows_username'] . "%" . $_POST['windows_password'] . "\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\"";
                     exec($command_string, $output, $return_var);
                     if (isset($_POST['debug']) and ((isset($loggedin)) or ($this->session->userdata('logged_in') == true))) {
                         echo "\nCommand: $command_string\n\n";
@@ -193,7 +193,7 @@ class discovery extends CI_Controller
                 # start the domain audit
                 if ($error == "") {
                     #$command_string = "screen -D -m $filepath/winexe -U " . $_POST['domain'] . "/" . $_POST['user'] . "%" . $_POST['password'] . " --uninstall //" . $_POST['server'] . " \"cscript c:\windows\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=c:\windows\audit_windows.vbs url=" . $url . " debugging=0 struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " \" ";
-                    $command_string = "screen -D -m winexe -U " . $_POST['domain'] . "/" . $_POST['user'] . "%" . $_POST['password'] . " --uninstall //" . $_POST['server'] . " \"cscript c:\windows\discover_domain.vbs local_domain=LDAP://" . $_POST['domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=c:\windows\audit_windows.vbs url=" . $url . " debugging=0 struser=" . $_POST['domain'] . "\\" . $_POST['user'] . " strpass=" . $_POST['password'] . " \" ";
+                    $command_string = "screen -D -m winexe -U " . $_POST['windows_domain'] . "/" . $_POST['windows_username'] . "%" . $_POST['windows_password'] . " --uninstall //" . $_POST['server'] . " \"cscript c:\windows\discover_domain.vbs local_domain=LDAP://" . $_POST['windows_domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=c:\windows\audit_windows.vbs url=" . $url . " debugging=0 struser=" . $_POST['windows_domain'] . "\\" . $_POST['windows_username'] . " strpass=" . $_POST['windows_password'] . " \" ";
                     exec($command_string, $output, $return_var);
                     if (isset($_POST['debug']) and ((isset($loggedin)) or ($this->session->userdata('logged_in') == true))) {
                         echo "\nCommand: $command_string\n\n";
