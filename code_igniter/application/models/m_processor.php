@@ -59,13 +59,16 @@ class M_processor extends MY_Model {
 		if ( ! isset($input->processor_logical)) {
 			$input->processor_logical = '';
 		}
+		if ( ! isset($input->processor_architecture)) {
+			$input->processor_architecture = '';
+		}
 
 		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
 			# we have only seen this system once, and not via an audit script
 			# insert the software and set the first_timestamp == system.first_timestamp
 			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_hw_processor ( system_id, processor_count, processor_cores, processor_logical, 
-					processor_description, processor_speed, processor_manufacturer,
+					processor_description, processor_speed, processor_manufacturer, processor_architecture, 
 					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
@@ -75,6 +78,7 @@ class M_processor extends MY_Model {
 					"$input->processor_description", 
 					"$input->processor_speed", 
 					"$input->processor_manufacturer", 
+					"$input->processor_architecture", 
 					"$details->timestamp", 
 					"$details->first_timestamp");
 			$query = $this->db->query($sql, $data);
@@ -94,14 +98,14 @@ class M_processor extends MY_Model {
 			if ($query->num_rows() > 0) {
 				$row = $query->row();
 				// the processor exists - need to update it
-				$sql = "UPDATE sys_hw_processor SET timestamp = ?, processor_description = ?, processor_count = ?, processor_cores = ?, processor_logical = ?  WHERE ? = processor_id";
-				$data = array("$details->timestamp", "$input->processor_description", "$input->processor_count", "$input->processor_cores", "$input->processor_logical", "$row->processor_id");
+				$sql = "UPDATE sys_hw_processor SET timestamp = ?, processor_description = ?, processor_count = ?, processor_cores = ?, processor_logical = ?, process_architecture = ?  WHERE ? = processor_id";
+				$data = array("$details->timestamp", "$input->processor_description", "$input->processor_count", "$input->processor_cores", "$input->processor_logical", "$input->processor_architecture", "$row->processor_id");
 				$query = $this->db->query($sql, $data);
 			} else {
 				// the processor does not exist - insert it
 			$sql = "INSERT INTO sys_hw_processor ( system_id, processor_count, processor_cores, processor_logical, 
-					processor_description, processor_speed, processor_manufacturer,
-					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+					processor_description, processor_speed, processor_manufacturer, processor_architecture,  
+					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 				$sql = $this->clean_sql($sql);
 				$data = array("$details->system_id", 
 						"$input->processor_count", 
@@ -110,6 +114,7 @@ class M_processor extends MY_Model {
 						"$input->processor_description", 
 						"$input->processor_speed", 
 						"$input->processor_manufacturer", 
+						"$input->processor_architecture", 
 						"$details->timestamp", 
 						"$details->timestamp");
 				$query = $this->db->query($sql, $data);

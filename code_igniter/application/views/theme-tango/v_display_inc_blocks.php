@@ -116,6 +116,7 @@
 					<p><label for="processor_cores"><?php echo __('Total Processor Cores')?>: </label><span id="processor_cores" class="form_field"><?php echo $key->processor_cores?></span></p>
 					<p><label for="processor_logical" style="white-space: nowrap;"><?php echo __('Total Logical Processors')?>: </label><span id="processor_logical" class="form_field"><?php echo $key->processor_logical?></span></p>
 					<p><label for="processor_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="processor_manufacturer" class="form_field"><?php echo $key->processor_manufacturer?></span></p>
+					<p><label for="processor_architecture"><?php echo __('Architecture')?>: </label><span id="processor_architecture" class="form_field"><?php echo $key->processor_architecture?></span></p>
 					<?php endforeach; ?>
 					<?php echo display_custom_field('view_hardware_processor',  $additional_fields_data, $edit); ?>
 			</fieldset>

@@ -137,7 +137,7 @@ class Admin extends MY_Controller {
 	 */
 	function edit_config()
 	{
-		$this->load->model("m_oa_config");
+		$this->load->model('m_oa_config');
 		$this->data['query'] = $this->m_oa_config->get_config();
 		$this->data['heading'] = 'Edit Config';
 		$this->data['include'] = 'v_edit_config'; 
@@ -176,23 +176,36 @@ class Admin extends MY_Controller {
 	function purge_log()
 	{
 		// full path to text file
-		if (php_uname('s') == 'Linux') {
-			$file = "/usr/local/open-audit/other/open-audit.log";
-		} else {
-			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+		if (php_uname('s') === 'Linux') {
+			$file = '/usr/local/open-audit/other/open-audit.log';
+		} 
+		else {
+			$file = 'c:\\xampplite\\open-audit\\other\\open-audit.log';
 		}
-		$handle = fopen($file, "w");
-		fwrite($handle, "");
+		$handle = fopen($file, 'w');
+		fwrite($handle, '');
 		fclose($handle);
-		redirect("admin/view_log");
+		redirect('admin/view_log');
 
 	}
 
-	function download_file() {
-        $this->load->helper('file');
-		$file = @intval($this->uri->segment(3,0));
+	/**
+	 * Download the logfile
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function download_file() 
+	{
+		$this->load->helper('file');
+		$file = @intval($this->uri->segment(3, 0));
 		$complete_filename = '';
-		if (php_uname('s') == 'Linux') {
+		if (php_uname('s') === 'Linux') {
 			switch ($file) {
 				case '1':
 					$complete_filename = '/usr/local/open-audit/other/open-audit.log';
@@ -2661,6 +2674,10 @@ class Admin extends MY_Controller {
 			# upgrade for 1.4
 
 			$sql = "ALTER TABLE sys_hw_hard_drive ADD hard_drive_firmware varchar(100) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE sys_hw_processor ADD processor_architecture varchar(100) NOT NULL default '' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 

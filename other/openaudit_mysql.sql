@@ -826,6 +826,7 @@ CREATE TABLE `sys_hw_processor` (
   `processor_description` varchar(100) NOT NULL default '',
   `processor_speed` int(10) unsigned NOT NULL default '0',
   `processor_manufacturer` varchar(100) NOT NULL default '',
+  `processor_architecture` varchar(100) NOT NULL default '',
   `processor_power_management_supported` varchar(20) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',

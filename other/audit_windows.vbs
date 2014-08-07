@@ -1426,6 +1426,18 @@ for each objItem In colItems
 		case "185"    cpu_socket = "Socket P (478)"
 		case Default  cpu_socket = "Unknown"
 	end select
+
+   select case  objItem.Architecture
+      case "0"      processor_architecture = "x86"
+      case "1"      processor_architecture = "MIPS"
+      case "2"      processor_architecture = "Alpha"
+      case "3"      processor_architecture = "PowerPC"
+      case "5"      processor_architecture = "ARM"
+      case "6"      processor_architecture = "Itanium-based systems"
+      case "9"      processor_architecture = "x64"
+      case Default  processor_architecture = "Unknown"
+   end select
+
 next
 result.WriteText "	<processor>" & vbcrlf
 result.WriteText "		<processor_count>" & escape_xml(processor_count) & "</processor_count>" & vbcrlf
@@ -1435,6 +1447,7 @@ result.WriteText "		<processor_socket>" & escape_xml(cpu_socket) & "</processor_
 result.WriteText "		<processor_description>" & escape_xml(processor_description) & "</processor_description>" & vbcrlf
 result.WriteText "		<processor_speed>" & escape_xml(processor_speed) & "</processor_speed>" & vbcrlf
 result.WriteText "		<processor_manufacturer>" & escape_xml(processor_manufacturer) & "</processor_manufacturer>" & vbcrlf
+result.WriteText "		<processor_architecture>" & escape_xml(processor_architecture) & "</processor_architecture>" & vbcrlf
 result.WriteText "		<processor_power_management_supported>" & escape_xml(processor_power_management_supported) & "</processor_power_management_supported>" & vbcrlf
 result.WriteText "	</processor>" & vbcrlf
 
