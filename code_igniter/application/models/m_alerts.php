@@ -1,4 +1,5 @@
 <?php 
+/**
 #  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -23,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*/
 
 /**
  * @package Open-AudIT
@@ -32,9 +34,18 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
+/**
+ * @access	 public
+ * @category Object
+ * @package  Open-AudIT
+ * @author   Mark Unwin <marku@opmantek.com>
+ * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+ * @link     http://www.open-audit.org
+ */
 class M_alerts extends MY_Model {
 
-	function __construct() {
+	function __construct() 
+	{
 		parent::__construct();
 	}
 
@@ -44,14 +55,22 @@ class M_alerts extends MY_Model {
 	 * @access	public
 	 * @return	int
 	 */
-	function delete_all_alerts() {
+	function delete_all_alerts() 
+	{
 		$sql = "DELETE FROM oa_alert_log";
 		$query = $this->db->query($sql); 
 		$count = $this->db->affected_rows();
 		return ($count);
 	}
 
-	function delete_alerts_days($days = 365) {
+	/**
+	 * Delete all alerts older than $days in the DB 
+	 *
+	 * @access	public
+	 * @return	int
+	 */
+	function delete_alerts_days($days = 365) 
+	{
 		$sql = "DELETE FROM oa_alert_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
 		$query = $this->db->query($sql); 
 		$count = $this->db->affected_rows();
