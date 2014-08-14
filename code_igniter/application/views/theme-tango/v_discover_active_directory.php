@@ -40,6 +40,11 @@ if (php_uname('s') != "Windows NT") {
 } else {
 	$ldap_server_addition = "";
 }
+if (isset($config->show_passwords) and $config->show_passwords == 'n') {
+	$password_field = 'password';
+} else {
+	$password_field = 'text';
+}
 echo form_open('discovery/discover_active_directory') ?>
 <fieldset id="group_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Discover and Audit an Active Directory Domain')?></span></legend>
@@ -53,7 +58,7 @@ echo form_open('discovery/discover_active_directory') ?>
 
 				<p><label for='windows_username'><?php echo __("User")?>: </label><input type='text' id='windows_username' name='windows_username' tabindex='3' title='User' value='<?php echo $config->default_windows_username; ?>' /> eg: administrator</p>
 
-				<p><label for='windows_password'><?php echo __("Password")?>: </label><input type='text' id='windows_password' name='windows_password' tabindex='4' title='Password' value='<?php echo $config->default_windows_password; ?>' /></p>
+				<p><label for='windows_password'><?php echo __("Password")?>: </label><input type='<?php echo $password_field; ?>' id='windows_password' name='windows_password' tabindex='4' title='Password' value='<?php echo $config->default_windows_password; ?>' /></p>
 
 				<p><label for='windows_domain'><?php echo __("Domain Name")?>: </label><input type='text' id='windows_domain' name='windows_domain' tabindex='5' title='Domain Name' value='<?php echo $config->default_windows_domain; ?>'  /> eg: open-audit.local</p>
 
