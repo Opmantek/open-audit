@@ -69,7 +69,7 @@ class M_processor extends MY_Model {
 			# otherwise we cause alerts
 			$sql = "INSERT INTO sys_hw_processor ( system_id, processor_count, processor_cores, processor_logical, 
 					processor_description, processor_speed, processor_manufacturer, processor_architecture, 
-					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->processor_count", 
@@ -98,7 +98,7 @@ class M_processor extends MY_Model {
 			if ($query->num_rows() > 0) {
 				$row = $query->row();
 				// the processor exists - need to update it
-				$sql = "UPDATE sys_hw_processor SET timestamp = ?, processor_description = ?, processor_count = ?, processor_cores = ?, processor_logical = ?, process_architecture = ?  WHERE ? = processor_id";
+				$sql = "UPDATE sys_hw_processor SET timestamp = ?, processor_description = ?, processor_count = ?, processor_cores = ?, processor_logical = ?, processor_architecture = ?  WHERE ? = processor_id";
 				$data = array("$details->timestamp", "$input->processor_description", "$input->processor_count", "$input->processor_cores", "$input->processor_logical", "$input->processor_architecture", "$row->processor_id");
 				$query = $this->db->query($sql, $data);
 			} else {
