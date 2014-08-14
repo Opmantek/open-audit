@@ -342,3 +342,5 @@ class Admin_connection extends MY_Controller
 		redirect('admin_connection/list_connections');
 	}
 }
+// End of file admin_connection.php
+// Location: ./controllers/admin_connection.php
