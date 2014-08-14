@@ -109,14 +109,17 @@ function fieldBlur(campo,idfld) {
 
 //edit field created
 function editBox(actual) {
-	//alert(actual.nodeName+' '+changing);
+	// Added in 1.4 - mask the field if config show passwords is true.
+	var type = "text";
+	type = actual.getAttribute("data-type");
+
 	if(!changing){
 		width = widthEl(actual.id) + 20;
-		height =heightEl(actual.id) + 2;
+		height = heightEl(actual.id) + 2;
 
 		if(height < 40){
 			if(width < 100)	width = 150;
-			actual.innerHTML = "<input id=\""+ actual.id +"_field\" style=\"width: "+width+"px; height: "+height+"px; font-family: Verdana;\" maxlength=\"254\" type=\"text\" value=\"" + actual.innerHTML + "\" onkeypress=\"return fieldEnter(this,event,'" + actual.id + "')\" onfocus=\"highLight(this);\" onblur=\"noLight(this); return fieldBlur(this,'" + actual.id + "');\" />";
+			actual.innerHTML = "<input id=\""+ actual.id +"_field\" style=\"width: "+width+"px; height: "+height+"px; font-family: Verdana;\" maxlength=\"254\" type=\""+type+"\" value=\"" + actual.innerHTML + "\" onkeypress=\"return fieldEnter(this,event,'" + actual.id + "')\" onfocus=\"highLight(this);\" onblur=\"noLight(this); return fieldBlur(this,'" + actual.id + "');\" />";
 		}else{
 			if(width < 70) width = 90;
 			if(height < 50) height = 50;
