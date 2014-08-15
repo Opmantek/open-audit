@@ -153,6 +153,7 @@ class ajax extends MY_Controller
         $masked = str_pad('', strlen($config_value), '*');
         if ($config_name == 'default_windows_password' and $this->data['config']->show_passwords == 'n') { $config_value = $masked; }
         if ($config_name == 'default_ssh_password' and $this->data['config']->show_passwords == 'n') { $config_value = $masked; }
+        if ($config_name == 'default_ipmi_password' and $this->data['config']->show_passwords == 'n') { $config_value = $masked; }
         if ($config_name == 'default_snmp_community' and $this->data['config']->show_snmp_community == 'n') { $config_value = $masked; }
         echo $config_value;
     }

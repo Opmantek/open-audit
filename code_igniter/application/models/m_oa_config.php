@@ -58,6 +58,8 @@ class M_oa_config extends MY_Model {
 		$credentials->default_windows_domain = '';
 		foreach ($result as $item) {
 			if ($item->config_name == 'default_snmp_community') { $credentials->default_snmp_community = $item->config_value; }
+			if ($item->config_name == 'default_ipmi_username') { $credentials->default_ipmi_username = $item->config_value; }
+			if ($item->config_name == 'default_ipmi_password') { $credentials->default_ipmi_password = $item->config_value; }
 			if ($item->config_name == 'default_ssh_username') { $credentials->default_ssh_username = $item->config_value; }
 			if ($item->config_name == 'default_ssh_password') { $credentials->default_ssh_password = $item->config_value; }
 			if ($item->config_name == 'default_windows_username') { $credentials->default_windows_username = $item->config_value; }
