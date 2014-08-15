@@ -45,6 +45,107 @@ class main extends MY_Controller
         redirect('main/list_groups/');
     }
 
+	public function api_index()
+	{
+		$level = $this->uri->segment(3, 0);
+		if (isset($_POST['level'])) {
+			$level = $_POST['level'];
+		}
+		if ($level !== 'min' AND $level !== 'select' AND $level !== 'max') {
+			$level = 'min';
+		}
+		$this->load->model('m_systems');
+		$result = $this->m_systems->api_index($level);
+		for ($count = 0; $count<count($result); $count++) {
+			$result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
+			foreach ($result[$count] as $key => $value) {
+				if (is_numeric($value)) {
+					$result[$count]->$key = intval($result[$count]->$key);
+				}
+			}
+		}
+		echo json_encode($result);
+		header('Content-Type: application/json');
+		//header('Content-Disposition: attachment;filename=api_index_' . $level . '.json');
+		header('Cache-Control: max-age=0');
+	}
+
+    public function api_node_resource()
+    {
+        $system_id = $this->uri->segment(3, 0);
+        if (isset($_POST['system_id'])) {
+            $system_id = $_POST['system_id'];
+        }
+        $resource = $this->uri->segment(4, 'system');
+        if (isset($_POST['resource'])) {
+            $resource = $_POST['resource'];
+        }
+        $attribute = $this->uri->segment(5, '*');
+        if (isset($_POST['attribute'])) {
+            $attribute = $_POST['attribute'];
+        }
+        $this->load->model('m_oa_general');
+        $result = $this->m_oa_general->get_system_attribute_api($resource, $attribute, $system_id);
+        if (is_array($result)) {
+            for ($count = 0; $count<count($result); $count++) {
+                $result[$count]->system_id = $system_id;
+                foreach ($result[$count] as $key => $value) {
+                    if (is_numeric($value)) {
+                        $result[$count]->$key = intval($result[$count]->$key);
+                    }
+                    if ($key == 'man_ip_address') {
+                        $result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
+                    }
+                }
+            }
+        }
+        echo json_encode($result);
+        header('Content-Type: application/json');
+        header('Cache-Control: max-age=0');
+    }
+
+    public function api_node_config()
+    {
+        $system_id = $this->uri->segment(3, 0);
+        if (isset($_POST['system_id'])) {
+            $system_id = $_POST['system_id'];
+        }
+        $this->load->model('m_oa_general');
+        $document = array();
+        $list = array('system', 'bios', 'group', 'hard drive', 'installed software', 'ip', 'memory', 
+            'motherboard', 'netstat', 'network card', 'partition', 'processor', 'route', 'service', 
+            'share', 'software library', 'software update', 'user', 'variable', 'windows');
+        foreach($list as $table) {
+            $result = $this->m_oa_general->get_system_document_api($table, $system_id);
+            if (is_array($result) AND count($result) != 0) {
+                $document["$table"] = new stdclass();
+                for ($count = 0; $count<count($result); $count++) {
+                    #$result[$count]->system_id = $system_id;
+                    foreach ($result[$count] as $key => $value) {
+                        if (is_numeric($value)) {
+                            $result[$count]->$key = intval($result[$count]->$key);
+                        }
+                        // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
+                        if ($key == 'man_ip_address' or 
+                            $key == 'destination'    or 
+                            $key == 'ip_address_v4'  or
+                            $key == 'next_hop') {
+                            $result[$count]->$key = ip_address_from_db($result[$count]->$key);
+                        }
+                        if ($key == 'ip_address_v4' and ($value == '000.000.000.000' or $value == '0.0.0.0')) {
+                            $result[$count]->ip_address_v4 = '';
+                        }
+                    }
+                }
+                $document["$table"] = $result;
+            }
+        }
+        echo json_encode($document);
+        #print_r($document);
+        header('Content-Type: application/json');
+        header('Cache-Control: max-age=0');
+    }
+
     public function view_org()
     {
         $this->load->model("m_oa_org");
