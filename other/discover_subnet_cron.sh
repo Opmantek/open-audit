@@ -146,7 +146,9 @@ cat <<EOF
 
 HELP
 ---------------------------------------
-This script should be used on a Linux based computer to discover hosts in a subnet. This script is designed to be called by cron or run directly from the command line.
+This script should be used on a Linux based computer to discover hosts in a subnet.
+It will run nmap against the target subnet and submit the result.
+This script is designed to be called by cron or run directly from the command line.
 
 Wget is the only prerequisite for this script to function correctly.
 
