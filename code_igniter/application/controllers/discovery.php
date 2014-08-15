@@ -202,7 +202,7 @@ class discovery extends CI_Controller
 						echo 'DEBUG - Command Executed: ' . $command_string . "\n";
 						echo 'DEBUG - Return Value: ' . $return_var . "\n";
 						// echo "DEBUG - Command Output:\n";  // nooutput because of use of 'screen' command
-						print_r($output);
+						// print_r($output);
 					}
 					if ($return_var != '0') {
 						$error = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on " . $_POST['server'] . " has failed";
@@ -541,7 +541,7 @@ class discovery extends CI_Controller
 						exit();
 					} else {
 						// run the script and continue (do not wait for result)
-						$command_string = "nohup $filepath/discover_subnet.sh subnet_range=$subnet_range url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/NULL 2>&1 &";
+						$command_string = "nohup $filepath/discover_subnet.sh subnet_range=$subnet_range url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
 						@exec($command_string, $output, $return_var);
 						if ($return_var != '0') {
 							$error = "Discovery subnet starting script discover_subnet.sh ($subnet_range) has failed"; 
@@ -888,6 +888,125 @@ class discovery extends CI_Controller
 						}
 					}
 
+					// if ipmi tools are installed and we're running Linux
+					if (php_uname('s') == 'Linux') {
+						$error = '';
+						$command_string = 'which ipmitool 2>&1';
+						exec($command_string, $output, $return_var);
+						if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+							echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+							echo 'DEBUG - Return Value: ' . $return_var . "\n";
+							echo "DEBUG - Command Output:\n";
+							print_r($output);
+						}
+						if ($return_var != '0') {
+							$error = 'C:discovery F:process_subnet ipmitools not detected';
+							$this->log_event($error);
+						} else {
+							$log = 'C:discovery F:process_subnet ipmitools detected';
+							$this->log_event($log);
+						}
+						$command_string = NULL;
+						$output = NULL;
+						$return_var = NULL;
+
+						if ($error == '') {
+							// ipmitools are installed
+							// Attempt to get MAC Address
+							$command_string = 'ipmitool -H ' . $details->man_ip_address . ' -U ' . $default->default_ipmi_username . ' -P ' . $default->default_ipmi_password . ' lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2';
+							exec($command_string, $output, $return_var);
+							if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+								echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+								echo 'DEBUG - Return Value: ' . $return_var . "\n";
+								echo "DEBUG - Command Output:\n";
+								print_r($output);
+							}
+							if ($return_var != '0') {
+								$error = 'C:discovery F:process_subnet ipmitools could not retrieve MAC Address';
+								$this->log_event($error);
+							} 
+							$command_string = NULL;
+							$return_var = NULL;
+
+							if ($error == '' AND isset($output[0]) AND $output[0] != '') {
+								$log = 'C:discovery F:process_subnet ipmitools successfully retrieved MAC Address';
+								$this->log_event($log);
+								// We have a response (containing a MAC Address) from the target
+								$details->type = 'remote access controller';
+								if ($details->mac_address == '') { $details->mac_address = strtolower($output[0]); }
+								$output = NULL;
+								
+								// attempt to retrieve the Subnet Mask
+								$command_string = 'ipmitool -H ' . $details->man_ip_address . ' -U ' . $default->default_ipmi_username . ' -P ' . $default->default_ipmi_password . ' lan print 2>/dev/null | grep "Subnet Mask" | cut -d":" -f2 ';
+								exec($command_string, $output, $return_var);
+								if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+									echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+									echo 'DEBUG - Return Value: ' . $return_var . "\n";
+									echo "DEBUG - Command Output:\n";
+									print_r($output);
+								}
+								if (isset($output[0]) AND trim($output[0]) != '') {
+									$details->subnet = trim($output[0]);
+								}
+								$command_string = NULL;
+								$output = NULL;
+								$return_var = NULL;
+								
+								// attempt to retrieve the Manufacturer
+								$command_string = 'ipmitool -H ' . $details->man_ip_address . ' -U ' . $default->default_ipmi_username . ' -P ' . $default->default_ipmi_password . ' fru list 2>/dev/null | grep "Product Manufacturer" | cut -d":" -f2 ';
+								exec($command_string, $output, $return_var);
+								if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+									echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+									echo 'DEBUG - Return Value: ' . $return_var . "\n";
+									echo "DEBUG - Command Output:\n";
+									print_r($output);
+								}
+								if (isset($output[0]) AND trim($output[0]) != '') {
+									$details->manufacturer = trim($output[0]);
+								}
+								$command_string = NULL;
+								$output = NULL;
+								$return_var = NULL;
+
+								// attempt to retrieve the Model
+								$command_string = 'ipmitool -H ' . $details->man_ip_address . ' -U ' . $default->default_ipmi_username . ' -P ' . $default->default_ipmi_password . ' fru list 2>/dev/null | grep "Product Name" | cut -d":" -f2 ';
+								exec($command_string, $output, $return_var);
+								if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+									echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+									echo 'DEBUG - Return Value: ' . $return_var . "\n";
+									echo "DEBUG - Command Output:\n";
+									print_r($output);
+								}
+								if (isset($output[0]) AND trim($output[0]) != '') {
+									$details->model = trim($output[0]);
+								}
+								$command_string = NULL;
+								$output = NULL;
+								$return_var = NULL;
+
+								// attempt to retrieve the Serial
+								$command_string = 'ipmitool -H ' . $details->man_ip_address . ' -U ' . $default->default_ipmi_username . ' -P ' . $default->default_ipmi_password . ' fru list 2>/dev/null | grep "Product Serial" | cut -d":" -f2 ';
+								exec($command_string, $output, $return_var);
+								if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+									echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+									echo 'DEBUG - Return Value: ' . $return_var . "\n";
+									echo "DEBUG - Command Output:\n";
+									print_r($output);
+								}
+								if (isset($output[0]) AND trim($output[0]) != '') {
+									$details->serial = trim($output[0]);
+								}
+								$command_string = NULL;
+								$output = NULL;
+								$return_var = NULL;
+							}
+						}
+						$command_string = NULL;
+						$output = NULL;
+						$return_var = NULL;
+					}
+
+
 
 					// remove all the NULL, FALSE AND Empty Strings but leaves 0 (zero) values
 					// $details = (object) array_filter((array) $details, 'strlen' );
@@ -902,7 +1021,7 @@ class discovery extends CI_Controller
 						$details->system_key = $this->m_system->create_system_key($details);
 						$details->system_id = $this->m_system->find_system($details);
 
-						if (isset($details->system_id) AND $details->system_id !== '') {
+						if (isset($details->system_id) AND $details->system_id != '') {
 							// we have a system_id AND snmp details to update
 							$this->m_system->update_system($details);
 							$log_details = "C:discovery F:process_subnet SNMP update for $details->man_ip_address (System ID $details->system_id)";
@@ -1017,7 +1136,7 @@ class discovery extends CI_Controller
 									echo 'DEBUG - Command Executed: ' . $command_string . "\n";
 									echo 'DEBUG - Return Value: ' . $return_var . "\n";
 									// echo "DEBUG - Command Output:\n"; // no output because of use of 'screen' command
-									print_r($output);
+									// print_r($output);
 								}
 
 								if ($return_var != '0') {
@@ -1115,7 +1234,7 @@ class discovery extends CI_Controller
 									echo "DEBUG - struser: " . $details->ssh_username . "\n";
 									echo "DEBUG - strpass: " . $details->ssh_password . "\n";
 								}
-								$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/NULL " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " uname 2>&1";
+								$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " uname ";
 								exec($command_string, $output, $return_var);
 								if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 									echo 'DEBUG - Command Executed: ' . $command_string . "\n";
@@ -1128,75 +1247,36 @@ class discovery extends CI_Controller
 									$this->log_event($error);
 									if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 										echo "DEBUG - Running with 'ssh -v' for your inspection. Possible credential failure.\n";
-										$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -v -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/NULL " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " uname 2>&1";
+										$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -v -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " uname 2>&1";
 										exec($command_string, $output, $return_var);
 										echo 'DEBUG - Command Executed: ' . $command_string . "\n";
 										echo 'DEBUG - Return Value: ' . $return_var . "\n";
 										echo "DEBUG - Command Output:\n";
 										print_r($output);
 									}
-									exit();
-								}
-								// Linux, Darwin, ESX, AIX
-								if (isset($output[0]) AND $output[0] > '') {
-									$remote_os = $output[0];
 								} else {
-									$remote_os = "";
-								}
-								echo "DEBUG - Remote OS: " . $remote_os . "\n";
-								$command_string = NULL;
-								$output = NULL;
-								$return_var = NULL;
 
-								if ($remote_os === 'Linux' OR $remote_os === 'Darwin' OR $remote_os === 'VMkernel') {
-									if ($remote_os === 'Linux') { $audit_script = 'audit_linux.sh'; }
-									if ($remote_os === 'Darwin') { $audit_script = 'audit_osx.sh'; }
-									if ($remote_os === 'VMkernel') { $audit_script = 'audit_esxi.sh'; }
-									$error = '';
-									$log_details = 'C:discovery F:process_subnet Attempting SSH audit for discovery on ' . $details->man_ip_address . ' (' . $remote_os . ')'; 
-									$this->log_event($log_details);
-
-									// Attempt to copy the audit script
-									$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . $filepath . '/' . $audit_script . ' ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ':/tmp/ 2>&1';
-									exec($command_string, $output, $return_var);
-									if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
-										echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-										echo 'DEBUG - Return Value: ' . $return_var . "\n";
-										echo "DEBUG - Command Output:\n";
-										print_r($output);
+									// Linux, Darwin, ESX, AIX
+									if (isset($output[0]) AND $output[0] > '') {
+										$remote_os = $output[0];
+									} else {
+										$remote_os = "";
 									}
-									if ($return_var != '0') {
-										$error = 'C:discovery F:process_subnet SSH copy of ' . $audit_script . ' to ' . $details->man_ip_address . ' has failed';
-										$this->log_event($error);
-										exit();
-									}
+									echo "DEBUG - Remote OS: " . $remote_os . "\n";
 									$command_string = NULL;
 									$output = NULL;
 									$return_var = NULL;
 
-									// Attempt to chmod the script so it's executable
-									if ($error == '') {
-										$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " chmod 777 /tmp/" . $audit_script . ' 2>&1';
-										exec($command_string, $output, $return_var);
-										if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
-											echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-											echo 'DEBUG - Return Value: ' . $return_var . "\n";
-											echo "DEBUG - Command Output:\n";
-											print_r($output);
-										}
-										if ($return_var != '0') { 
-											$error = 'C:discovery F:process_subnet SSH chmod command for ' . $remote_os . 'audit script on ' . $details->man_ip_address . ' failed';
-											$this->log_event($error);
-											exit();
-										}
-										$command_string = NULL;
-										$output = NULL;
-										$return_var = NULL;
-									}
+									if ($remote_os === 'Linux' OR $remote_os === 'Darwin' OR $remote_os === 'VMkernel') {
+										if ($remote_os === 'Linux') { $audit_script = 'audit_linux.sh'; }
+										if ($remote_os === 'Darwin') { $audit_script = 'audit_osx.sh'; }
+										if ($remote_os === 'VMkernel') { $audit_script = 'audit_esxi.sh'; }
+										$error = '';
+										$log_details = 'C:discovery F:process_subnet Attempting SSH audit for discovery on ' . $details->man_ip_address . ' (' . $remote_os . ')'; 
+										$this->log_event($log_details);
 
-									// Attempt to determine if SUDO is present on target system
-									if ($error == '' AND strtolower($details->ssh_username) != 'root') {
-										$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/NULL ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' which sudo 2>&1';
+										// Attempt to copy the audit script
+										$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . $filepath . '/' . $audit_script . ' ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ':/tmp/ ';
 										exec($command_string, $output, $return_var);
 										if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 											echo 'DEBUG - Command Executed: ' . $command_string . "\n";
@@ -1205,37 +1285,96 @@ class discovery extends CI_Controller
 											print_r($output);
 										}
 										if ($return_var != '0') {
-											$error = 'C:discovery F:process_subnet SSH which sudo command for ' . $remote_os . ' audit script on ' . $details->man_ip_address . ' failed';
-											$this->log_event($error); 
-										}
-										if (isset($output[0]) AND $output[0] !== '') {
-											$sudo = $output[0];
-										} else {
-											$sudo = '';
+											$error = 'C:discovery F:process_subnet SSH copy of ' . $audit_script . ' to ' . $details->man_ip_address . ' has failed';
+											$this->log_event($error);
+											exit();
 										}
 										$command_string = NULL;
 										$output = NULL;
 										$return_var = NULL;
-									} else {
-										$sudo = '';
-									}
 
-									// Attempt to run the audit script
-									if ($error == '') {
-										if ($sudo !== '' AND $details->ssh_username !== 'root') {
-											$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/NULL ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "echo ' . escapeshellarg($details->ssh_password) . ' | ' . $sudo . ' -S /tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" 2>&1';
-											@exec($command_string, $output, $return_var);
+										// Attempt to chmod the script so it's executable
+										if ($error == '') {
+											$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " chmod 777 /tmp/" . $audit_script . ' ';
+											exec($command_string, $output, $return_var);
 											if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 												echo 'DEBUG - Command Executed: ' . $command_string . "\n";
 												echo 'DEBUG - Return Value: ' . $return_var . "\n";
 												echo "DEBUG - Command Output:\n";
 												print_r($output);
 											}
-
-											if ($return_var != '0') {
-												$error = 'C:discovery F:process_subnet SSH audit command for linux audit using sudo ' . $audit_script . ' on ' . $details->man_ip_address . ' failed. Attempting to run without sudo.'; 
+											if ($return_var != '0') { 
+												$error = 'C:discovery F:process_subnet SSH chmod command for ' . $remote_os . 'audit script on ' . $details->man_ip_address . ' failed';
 												$this->log_event($error);
-												$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/NULL ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=3 system_id=' . $details->system_id . '" 2>&1';
+												exit();
+											}
+											$command_string = NULL;
+											$output = NULL;
+											$return_var = NULL;
+										}
+
+										// Attempt to determine if SUDO is present on target system
+										if ($error == '' AND strtolower($details->ssh_username) != 'root') {
+											$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' which sudo ';
+											exec($command_string, $output, $return_var);
+											if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+												echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+												echo 'DEBUG - Return Value: ' . $return_var . "\n";
+												echo "DEBUG - Command Output:\n";
+												print_r($output);
+											}
+											if ($return_var != '0') {
+												$error = 'C:discovery F:process_subnet SSH which sudo command for ' . $remote_os . ' audit script on ' . $details->man_ip_address . ' failed';
+												$this->log_event($error); 
+											}
+											if (isset($output[0]) AND $output[0] !== '') {
+												$sudo = $output[0];
+											} else {
+												$sudo = '';
+											}
+											$command_string = NULL;
+											$output = NULL;
+											$return_var = NULL;
+										} else {
+											$sudo = '';
+										}
+
+										// Attempt to run the audit script
+										if ($error == '') {
+											if ($sudo !== '' AND $details->ssh_username !== 'root') {
+												$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "echo ' . escapeshellarg($details->ssh_password) . ' | ' . $sudo . ' -S /tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" ';
+												@exec($command_string, $output, $return_var);
+												if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+													echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+													echo 'DEBUG - Return Value: ' . $return_var . "\n";
+													echo "DEBUG - Command Output:\n";
+													print_r($output);
+												}
+
+												if ($return_var != '0') {
+													$error = 'C:discovery F:process_subnet SSH audit command for linux audit using sudo ' . $audit_script . ' on ' . $details->man_ip_address . ' failed. Attempting to run without sudo.'; 
+													$this->log_event($error);
+													$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=3 system_id=' . $details->system_id . '" ';
+													@exec($command_string, $output, $return_var);
+													if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+														echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+														echo 'DEBUG - Return Value: ' . $return_var . "\n";
+														echo "DEBUG - Command Output:\n";
+														print_r($output);
+													}
+													if ($return_var != '0') {
+														$error = 'C:discovery F:process_subnet SSH audit command for ' . $remote_os . ' audit not using sudo script on ' . $details->man_ip_address . ' failed';
+														$this->log_event($error);
+														exit();
+													} else {
+														$error = '';
+													}
+												}
+												$command_string = NULL;
+												$output = NULL;
+												$return_var = NULL;
+											} else {
+												$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" 2>/dev/null';
 												@exec($command_string, $output, $return_var);
 												if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 													echo 'DEBUG - Command Executed: ' . $command_string . "\n";
@@ -1244,47 +1383,28 @@ class discovery extends CI_Controller
 													print_r($output);
 												}
 												if ($return_var != '0') {
-													$error = 'C:discovery F:process_subnet SSH audit command for ' . $remote_os . ' audit not using sudo script on ' . $details->man_ip_address . ' failed';
+													$error = 'C:discovery F:process_subnet SSH audit command for linux audit script on ' . $details->man_ip_address . ' failed'; 
 													$this->log_event($error);
 													exit();
-												} else {
-													$error = '';
-												}
-											}
-											$command_string = NULL;
-											$output = NULL;
-											$return_var = NULL;
-										} else {
-											$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/NULL ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" 2>&1';
-											@exec($command_string, $output, $return_var);
-											if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
-												echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-												echo 'DEBUG - Return Value: ' . $return_var . "\n";
-												echo "DEBUG - Command Output:\n";
-												print_r($output);
-											}
-											if ($return_var != '0') {
-												$error = 'C:discovery F:process_subnet SSH audit command for linux audit script on ' . $details->man_ip_address . ' failed'; 
-												$this->log_event($error);
-												exit();
-											} 
-										} // End of use sudo / root
-									}
+												} 
+											} // End of use sudo / root
+										}
 
-									if ($error == '') {
-										$log_details = 'C:discovery F:process_subnet Successful SSH audit for discovery on ' . $details->man_ip_address . ' (' . $remote_os . ')';
-										$this->log_event($log_details);
-										// also update the device credentials
-										$credentials = new stdClass();
-										$credentials->ip_address = $details->man_ip_address;
-										$credentials->ssh_username = $details->ssh_username;
-										$credentials->ssh_password = $details->ssh_password;
-										$this->m_system->update_credentials($credentials, $details->system_id);
-										unset($credentials);
-										$log_details = 'C:discovery F:process_subnet SSH credential update for ' . $details->man_ip_address . ' (System ID ' . $details->system_id . ')';
-										$this->log_event($log_details);
-									} 
-								} // End of if error
+										if ($error == '') {
+											$log_details = 'C:discovery F:process_subnet Successful SSH audit for discovery on ' . $details->man_ip_address . ' (' . $remote_os . ')';
+											$this->log_event($log_details);
+											// also update the device credentials
+											$credentials = new stdClass();
+											$credentials->ip_address = $details->man_ip_address;
+											$credentials->ssh_username = $details->ssh_username;
+											$credentials->ssh_password = $details->ssh_password;
+											$this->m_system->update_credentials($credentials, $details->system_id);
+											unset($credentials);
+											$log_details = 'C:discovery F:process_subnet SSH credential update for ' . $details->man_ip_address . ' (System ID ' . $details->system_id . ')';
+											$this->log_event($log_details);
+										} 
+									} // End of if error
+								} // end of uname attempt
 							} // Close Linux server
 
 							if (php_uname('s') == 'Windows NT') {
