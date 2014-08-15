@@ -71,7 +71,9 @@ if [ "$help" == "y" ]; then
 	echo "Open-AudIT Linux Discovery script"
 	echo "(c) Opmantek, 2014.              "
 	echo "---------------------------------"
-	echo "This script should be used on a Linux based computer to discover hosts in a subnet. This script is designed to be called by the Open-AudIT web GUI, not run directly from the command line."
+	echo "This script should be used on a Linux based computer to discover hosts in a subnet."
+	echo "It will run nmap against the target subnet and submit the result."
+	echo "This script is designed to be called by the Open-AudIT web GUI, not run directly from the command line."
 	echo ""
 	echo "Nmap and Wget are prerequisites for this script to function correctly."
 	echo ""
@@ -248,7 +250,7 @@ if [[ "$hosts" != "" ]]; then
 			if [[ "$line" == "$NEEDLE"* ]]; then 
 				os_name=$(echo "$line" | cut -d":" -f2 | cut -d "," -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 
-				$NEEDLE="Cisco IOS"
+				NEEDLE="Cisco IOS"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="Cisco"
 					os_family="Cisco IOS"
@@ -282,47 +284,53 @@ if [[ "$hosts" != "" ]]; then
 						os_family="Windows 2012"
 					fi
 				fi
-				$NEEDLE="IRIX"
+				NEEDLE="IRIX"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="Irix"
 				fi
-				$NEEDLE="OpenBSD"
+				NEEDLE="OpenBSD"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="BSD"
 					os_family="Open BSD"
 				fi
-				$NEEDLE="FreeBSD"
+				NEEDLE="FreeBSD"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="BSD"
 					os_family="Free BSD"
 				fi
-				$NEEDLE="NetBSD"
+				NEEDLE="NetBSD"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="BSD"
 					os_family="Net BSD"
 				fi
-				$NEEDLE="SunOS"
+				NEEDLE="SunOS"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="SunOS"
 				fi
-				$NEEDLE="Solaris"
+				NEEDLE="Solaris"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="Solaris"
 				fi
-				$NEEDLE="Linux"
+				NEEDLE="Linux"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="Linux"
 				fi
-				$NEEDLE="VMware"
+				NEEDLE="VMware"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="VMware"
 					os_family="VMware ESXi"
 				fi
-				$NEEDLE="Apple Mac OS X"
+				NEEDLE="Apple Mac OS X"
 				if [[ "$line" == *"$NEEDLE"* ]]; then 
 					os_group="Apple"
 					os_family="Apple OSX"
 				fi
+				NEEDLE="Apple iOS"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Apple"
+					os_family="Apple IOS"
+				fi
+
 			fi
 
 
@@ -391,49 +399,49 @@ if [[ "$hosts" != "" ]]; then
 		fi
 
 		# test for ipmi (ILO)
-		ipmi_status="false"
-		ipmi_tool=`which ipmitool`
-		if [[ "$ipmi_tool" != "" ]]; then
-			test=`ipmitool -H $host -U admin -P password lan print | grep "MAC Address" | cut -d":" -f2- | cut -d" " -f2`
-			if [[ "$test" != "" ]]; then
-				ipmi_status="true"
-				type="remote access controller"
-				if [[ "$mac_address" == "" ]]; then
-					mac_address="$test"
-				fi
-				description_test_1=`ipmitool -H $host -U admin -P admin fru list | grep "Product Manufacturer"`
-				if [[ "$description_test_1" != "" ]]; then
-					if [[ "$manufacturer" == "unknown" ]] || [[ "$manufacturer" == "" ]]; then
-						manufacturer="$description_text_1"
-					fi
-				fi
-				description_test_2=`ipmitool -H $host -U admin -P admin fru list | grep "Product Name"`
-				description_test="$description_test_1 $description_test_2"
-				if [[ "$description_test" != "" ]]; then
-					description="$description_test"
-				fi
-			else
-				test=`ipmitool -H $host -U admin -P admin lan print | grep "MAC Address" | cut -d":" -f2- | cut -d" " -f2`
-				if [[ "$test" != "" ]]; then
-					ipmi_status="true"
-					type="remote access controller"
-					if [[ "$mac_address" == "" ]]; then
-						mac_address="$test"
-					fi
-					description_test_1=`ipmitool -H $host -U admin -P admin fru list | grep "Product Manufacturer"`
-					if [[ "$description_test_1" != "" ]]; then
-						if [[ "$manufacturer" == "unknown" ]] || [[ "$manufacturer" == "" ]]; then
-							manufacturer="$description_text_1"
-						fi
-					fi
-					description_test_2=`ipmitool -H $host -U admin -P admin fru list | grep "Product Name"`
-					description_test="$description_test_1 $description_test_2"
-					if [[ "$description_test" != "" ]]; then
-						description="$description_test"
-					fi
-				fi
-			fi
-		fi
+		# ipmi_status="false"
+		# ipmi_tool=`which ipmitool`
+		# if [[ "$ipmi_tool" != "" ]]; then
+		# 	test=`ipmitool -H $host -U admin -P password lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2 `
+		# 	if [[ "$test" != "" ]]; then
+		# 		ipmi_status="true"
+		# 		type="remote access controller"
+		# 		if [[ "$mac_address" == "" ]]; then
+		# 			mac_address="$test"
+		# 		fi
+		# 		description_test_1=`ipmitool -H $host -U admin -P admin fru list 2>/dev/null | grep "^Product Manufacturer" 2>/dev/null`
+		# 		if [[ "$description_test_1" != "" ]]; then
+		# 			if [[ "$manufacturer" == "unknown" ]] || [[ "$manufacturer" == "" ]]; then
+		# 				manufacturer="$description_text_1"
+		# 			fi
+		# 		fi
+		# 		description_test_2=`ipmitool -H $host -U admin -P admin fru list 2>/dev/null | grep "^Product Name" `
+		# 		description_test="$description_test_1 $description_test_2"
+		# 		if [[ "$description_test" != "" ]]; then
+		# 			description="$description_test"
+		# 		fi
+		# 	else
+		# 		test=`ipmitool -H $host -U admin -P admin lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2 `
+		# 		if [[ "$test" != "" ]]; then
+		# 			ipmi_status="true"
+		# 			type="remote access controller"
+		# 			if [[ "$mac_address" == "" ]]; then
+		# 				mac_address="$test"
+		# 			fi
+		# 			description_test_1=`ipmitool -H $host -U admin -P admin fru list 2>/dev/null | grep "^Product Manufacturer" `
+		# 			if [[ "$description_test_1" != "" ]]; then
+		# 				if [[ "$manufacturer" == "unknown" ]] || [[ "$manufacturer" == "" ]]; then
+		# 					manufacturer="$description_text_1"
+		# 				fi
+		# 			fi
+		# 			description_test_2=`ipmitool -H $host -U admin -P admin fru list 2>/dev/null | grep "^Product Name" `
+		# 			description_test="$description_test_1 $description_test_2"
+		# 			if [[ "$description_test" != "" ]]; then
+		# 				description="$description_test"
+		# 			fi
+		# 		fi
+		# 	fi
+		# fi
 
 		result="	<device>"$'\n'
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
@@ -452,7 +460,7 @@ if [[ "$hosts" != "" ]]; then
 		result="$result		<p80_status>$p80_status</p80_status>"$'\n'
 		result="$result		<p443_status>$p443_status</p443_status>"$'\n'
 		result="$result		<tel_status>$tel_status</tel_status>"$'\n'
-		result="$result		<ipmi_status>$ipmi_status</ipmi_status>"$'\n'
+		#result="$result		<ipmi_status>$ipmi_status</ipmi_status>"$'\n'
 		result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
 		result="$result	</device>"
 

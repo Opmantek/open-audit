@@ -109,7 +109,9 @@ if (help = "y") then
 	wscript.echo "Open-AudIT Subnet Audit Script"
 	wscript.echo "(c) Opmantek, 2014.           "
 	wscript.echo "------------------------------"
-	wscript.echo "This script should be run on a Windows based computer. It queries Active Directory and spawns an audit for each Windows computer found."
+	wscript.echo "This script should be used on a Windows based computer to discover hosts in a subnet."
+	wscript.echo "It will run nmap against the target subnet and submit the result."
+	wscript.echo "This script is designed to be called by the Open-AudIT web GUI, not run directly from the command line."
 	wscript.echo ""
 	wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
 	wscript.echo ""
@@ -498,7 +500,7 @@ for each host in hosts_in_subnet
 	result = result & "		<p80_status>" & p80_status & "</p80_status>" & vbcrlf
 	result = result & "		<p443_status>" & p443_status & "</p443_status>" & vbcrlf
 	result = result & "		<tel_status>" & tel_status & "</tel_status>" & vbcrlf
-	result = result & "		<ipmi_status>" & ipmi_status & "</ipmi_status>" & vbcrlf
+	'result = result & "		<ipmi_status>" & ipmi_status & "</ipmi_status>" & vbcrlf
 	result = result & "		<subnet_timestamp>" & subnet_timestamp & "</subnet_timestamp>" & vbcrlf
 	result = result & "	</device>" & vbcrlf
 	result_file = result_file & result
