@@ -463,24 +463,10 @@ for each host in hosts_in_subnet
 		end if
 	Loop
 
-	' test for IPMI (ILO)
-	dim ipmi_status : ipmi_status = "false"
-	'exit_status = "n"
-	'command = nmap_path & " -n -sU -p623 " & host 
-	'execute_command
-	'Do Until objExecObject.StdOut.AtEndOfStream
-	'	line = objExecObject.StdOut.ReadLine
-	'	if instr(lcase(line), "623/udp open") then
-	'		ipmi_status = "true"
-	'		system_type = "remote access controller"
-	'	end if
-	'Loop
-
 	' special case of determining WMI on localhost on Windows
 	if (instr(local_net, host & " ") > 0) then
 		wmi_status = "true"
 	end if
-
 
 	dim result
 	
@@ -500,7 +486,6 @@ for each host in hosts_in_subnet
 	result = result & "		<p80_status>" & p80_status & "</p80_status>" & vbcrlf
 	result = result & "		<p443_status>" & p443_status & "</p443_status>" & vbcrlf
 	result = result & "		<tel_status>" & tel_status & "</tel_status>" & vbcrlf
-	'result = result & "		<ipmi_status>" & ipmi_status & "</ipmi_status>" & vbcrlf
 	result = result & "		<subnet_timestamp>" & subnet_timestamp & "</subnet_timestamp>" & vbcrlf
 	result = result & "	</device>" & vbcrlf
 	result_file = result_file & result

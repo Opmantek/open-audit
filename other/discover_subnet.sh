@@ -398,51 +398,6 @@ if [[ "$hosts" != "" ]]; then
 				tel_status="true"
 		fi
 
-		# test for ipmi (ILO)
-		# ipmi_status="false"
-		# ipmi_tool=`which ipmitool`
-		# if [[ "$ipmi_tool" != "" ]]; then
-		# 	test=`ipmitool -H $host -U admin -P password lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2 `
-		# 	if [[ "$test" != "" ]]; then
-		# 		ipmi_status="true"
-		# 		type="remote access controller"
-		# 		if [[ "$mac_address" == "" ]]; then
-		# 			mac_address="$test"
-		# 		fi
-		# 		description_test_1=`ipmitool -H $host -U admin -P admin fru list 2>/dev/null | grep "^Product Manufacturer" 2>/dev/null`
-		# 		if [[ "$description_test_1" != "" ]]; then
-		# 			if [[ "$manufacturer" == "unknown" ]] || [[ "$manufacturer" == "" ]]; then
-		# 				manufacturer="$description_text_1"
-		# 			fi
-		# 		fi
-		# 		description_test_2=`ipmitool -H $host -U admin -P admin fru list 2>/dev/null | grep "^Product Name" `
-		# 		description_test="$description_test_1 $description_test_2"
-		# 		if [[ "$description_test" != "" ]]; then
-		# 			description="$description_test"
-		# 		fi
-		# 	else
-		# 		test=`ipmitool -H $host -U admin -P admin lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2 `
-		# 		if [[ "$test" != "" ]]; then
-		# 			ipmi_status="true"
-		# 			type="remote access controller"
-		# 			if [[ "$mac_address" == "" ]]; then
-		# 				mac_address="$test"
-		# 			fi
-		# 			description_test_1=`ipmitool -H $host -U admin -P admin fru list 2>/dev/null | grep "^Product Manufacturer" `
-		# 			if [[ "$description_test_1" != "" ]]; then
-		# 				if [[ "$manufacturer" == "unknown" ]] || [[ "$manufacturer" == "" ]]; then
-		# 					manufacturer="$description_text_1"
-		# 				fi
-		# 			fi
-		# 			description_test_2=`ipmitool -H $host -U admin -P admin fru list 2>/dev/null | grep "^Product Name" `
-		# 			description_test="$description_test_1 $description_test_2"
-		# 			if [[ "$description_test" != "" ]]; then
-		# 				description="$description_test"
-		# 			fi
-		# 		fi
-		# 	fi
-		# fi
-
 		result="	<device>"$'\n'
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
 		result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
@@ -460,7 +415,6 @@ if [[ "$hosts" != "" ]]; then
 		result="$result		<p80_status>$p80_status</p80_status>"$'\n'
 		result="$result		<p443_status>$p443_status</p443_status>"$'\n'
 		result="$result		<tel_status>$tel_status</tel_status>"$'\n'
-		#result="$result		<ipmi_status>$ipmi_status</ipmi_status>"$'\n'
 		result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
 		result="$result	</device>"
 
