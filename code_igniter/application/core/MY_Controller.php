@@ -320,7 +320,7 @@ class MY_Controller extends CI_Controller {
 			$items .= "\n]}";
 			echo $items;
 		} else {
-			if ($this->data['heading'] == "Device Types") {
+			if ($this->data['heading'] == "Device Types" or $this->data['heading'] == "OS Types") {
 				echo "{\"$i\": [{\"y\": 100, \"count\": 0, \"name\": \"No Devices\"}]}";
 			} else {
 				echo "{\"$i\": [{\"x\": \"" . time() . "\", \"y\": 0}]}";
