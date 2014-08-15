@@ -110,38 +110,45 @@ class main extends MY_Controller
         if (isset($_POST['system_id'])) {
             $system_id = $_POST['system_id'];
         }
-        $this->load->model('m_oa_general');
-        $document = array();
-        $list = array('system', 'bios', 'group', 'hard drive', 'installed software', 'ip', 'memory', 
-            'motherboard', 'netstat', 'network card', 'partition', 'processor', 'route', 'service', 
-            'share', 'software library', 'software update', 'user', 'variable', 'windows');
-        foreach($list as $table) {
-            $result = $this->m_oa_general->get_system_document_api($table, $system_id);
-            if (is_array($result) AND count($result) != 0) {
-                $document["$table"] = new stdclass();
-                for ($count = 0; $count<count($result); $count++) {
-                    #$result[$count]->system_id = $system_id;
-                    foreach ($result[$count] as $key => $value) {
-                        if (is_numeric($value)) {
-                            $result[$count]->$key = intval($result[$count]->$key);
-                        }
-                        // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
-                        if ($key == 'man_ip_address' or 
-                            $key == 'destination'    or 
-                            $key == 'ip_address_v4'  or
-                            $key == 'next_hop') {
-                            $result[$count]->$key = ip_address_from_db($result[$count]->$key);
-                        }
-                        if ($key == 'ip_address_v4' and ($value == '000.000.000.000' or $value == '0.0.0.0')) {
-                            $result[$count]->ip_address_v4 = '';
+
+        if (isset($system_id) and $system_id != '') {
+            $this->load->model('m_oa_general');
+            $document = array();
+            $list = array('system', 'bios', 'group', 'hard drive', 'installed software', 'ip', 'memory', 
+                'motherboard', 'netstat', 'network card', 'partition', 'processor', 'route', 'service', 
+                'share', 'software library', 'software update', 'user', 'variable', 'windows');
+            foreach($list as $table) {
+                $result = $this->m_oa_general->get_system_document_api($table, $system_id);
+                if (is_array($result) AND count($result) != 0) {
+                    $document["$table"] = new stdclass();
+                    for ($count = 0; $count<count($result); $count++) {
+                        #$result[$count]->system_id = $system_id;
+                        foreach ($result[$count] as $key => $value) {
+                            if (is_numeric($value)) {
+                                $result[$count]->$key = intval($result[$count]->$key);
+                            }
+                            // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
+                            if ($key == 'man_ip_address' or 
+                                $key == 'destination'    or 
+                                $key == 'ip_address_v4'  or
+                                $key == 'next_hop') {
+                                $result[$count]->$key = ip_address_from_db($result[$count]->$key);
+                            }
+                            if ($key == 'ip_address_v4' and ($value == '000.000.000.000' or $value == '0.0.0.0')) {
+                                $result[$count]->ip_address_v4 = '';
+                            }
                         }
                     }
+                    $document["$table"] = $result;
                 }
-                $document["$table"] = $result;
             }
+            
+        } else {
+            $this->load->model('m_systems');
+            $document = $this->m_systems->api_index('list');
+
         }
         echo json_encode($document);
-        #print_r($document);
         header('Content-Type: application/json');
         header('Cache-Control: max-age=0');
     }

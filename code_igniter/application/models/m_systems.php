@@ -38,6 +38,24 @@ class M_systems extends MY_Model {
 		parent::__construct();
 	}
 
+	function api_index($level = 'min') {
+		if ($level === 'list' ) {
+			$sql = 'SELECT system_id AS id, concat("/omk/oae/node_config_documents/", system_id) as show_resource FROM system WHERE man_status = "production"';
+		}
+		if ($level === 'min' ) {
+			$sql = 'SELECT system_id, hostname, man_ip_address, man_os_name, man_type FROM system WHERE man_status = "production"';
+		}
+		if ($level === 'select' ) {
+			$sql = 'SELECT system_id, hostname, domain, man_ip_address, man_os_group, man_os_family, man_os_name, man_type, man_serial, man_model, man_manufacturer, pc_memory, pc_num_processor, man_environment, man_class FROM system WHERE man_status = "production"';
+		}
+		if ($level === 'max' ) {
+			$sql = 'SELECT * FROM system WHERE man_status = "production"';
+		}
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		return ($result);
+	}
+
 	function search($search_term = '', $group_id = '0') {
 		$result = $this->db->list_tables();
 		$sql = '';
@@ -197,5 +215,6 @@ class M_systems extends MY_Model {
 		$row = $query->row(); 
 		return $row->total;
 	}
+
 }
 ?>
