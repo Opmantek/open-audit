@@ -532,7 +532,7 @@ class report extends MY_Controller
 		# define the SQL for the report
 		switch($report) {
 			case "missing_devices":
-			$sql = "SELECT COUNT(system_id) as count FROM system WHERE last_seen < DATE_SUB('?', INTERVAL 30 DAY)";
+			$sql = "SELECT COUNT(system_id) as count FROM system WHERE last_seen < DATE_SUB('?', INTERVAL 30 DAY) AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000'";
 			$this->data['heading'] = "Devices Not Seen 30";
 			break;
 
@@ -542,12 +542,12 @@ class report extends MY_Controller
 			break;
 
 			case "new_devices":
-			$sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?'";
+			$sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?' AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' ";
 			$this->data['heading'] = "Devices Discovered 30";
 			break;
 
 			default:
-			$sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?'";
+			$sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?' AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000'";
 			$this->data['heading'] = "Devices Discovered 30";
 			break;
 		}
