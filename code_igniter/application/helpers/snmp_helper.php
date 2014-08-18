@@ -619,7 +619,8 @@ if (!function_exists('get_snmp')) {
 					}
 					if (isset($details->os_group) and $details->os_group == 'windows') {
 						if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-							if ($interface->net_adapter_type != 'softwareLoopback' ) {
+							#if ($interface->net_adapter_type != 'softwareLoopback' ) {
+							if (strpos(strtolower($interface->net_adapter_type), 'loopback') === FALSE) {
 								$interfaces_filtered[] = $interface;
 							}
 						}

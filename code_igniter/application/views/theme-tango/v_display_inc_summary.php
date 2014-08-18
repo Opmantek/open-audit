@@ -194,9 +194,9 @@
 							<th align="left"><?php echo __('ID')?></th>
 							<th><?php echo __('By')?>&nbsp;&nbsp;&nbsp;</th>
 							<th><?php echo __('Type')?></th>
+							<th><?php echo __('Audited On')?></th>
 							<th><?php echo __('Submitted On')?></th>
 							<th><?php echo __('Submitted From')?></th>
-							<th><?php echo __('Audited On')?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -205,6 +205,7 @@
 							<td><?php echo print_something($key->system_audits_id)?></td>
 							<td><?php echo print_something($key->system_audits_username)?></td>
 							<td><?php echo print_something($key->system_audits_type)?></td>
+							<td><?php echo print_something($key->system_audits_time)?></td>
 							<td><?php echo print_something($key->timestamp)?></td>
 							<?php 
 							if (isset($key->system_audits_ip)) {
@@ -212,7 +213,6 @@
 							} else {
 								echo "<td></td>";
 							} ?>
-							<td><?php echo print_something($key->system_audits_time)?></td>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -432,7 +432,6 @@
 		</form>
 	</div>
 
-
 	<div id="view_summary_vms" style="float: left; width: 100%;">
 	<?php if (count($vm) > 0) { ?>
 		<br />
@@ -491,7 +490,7 @@
 
 	
 	<div id="view_summary_network_interfaces" style="float: left; width: 100%;">
-	<?php if (count($network) > 0 and ($system[0]->man_type != 'computer' or $system[0]->man_class == 'hypervisor')) { ?>
+	<?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?>
 		<br />
 		<br />
 		<form action="#" method="post" class="niceforms">

@@ -698,6 +698,7 @@ class discovery extends CI_Controller
 					$log_details = 'C:discovery F:process_subnet Start processing ' . $details->man_ip_address;
 					$this->log_event($log_details);
 					$count++;
+					$details->timestamp = $timestamp;
 					$details->last_seen = $timestamp;
 					$details->last_user = '';
 
@@ -1029,9 +1030,9 @@ class discovery extends CI_Controller
 						} else {
 							// we have a new system
 							$details->system_id = $this->m_system->insert_system($details);
+							$this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', date('Y-m-d H:i:s'));
 							$log_details = "C:discovery F:process_subnet SNMP insert for $details->man_ip_address (System ID $details->system_id)"; 
 							$this->log_event($log_details);
-							$this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', date('Y-m-d H:i:s'));
 						}
 
 						$details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
@@ -1341,20 +1342,41 @@ class discovery extends CI_Controller
 
 										// Attempt to run the audit script
 										if ($error == '') {
-											if ($sudo !== '' AND $details->ssh_username !== 'root') {
-												$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "echo ' . escapeshellarg($details->ssh_password) . ' | ' . $sudo . ' -S /tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" ';
-												@exec($command_string, $output, $return_var);
-												if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
-													echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-													echo 'DEBUG - Return Value: ' . $return_var . "\n";
-													echo "DEBUG - Command Output:\n";
-													print_r($output);
-												}
+											if ($remote_os != 'VMkernel') {
+												if ($sudo !== '' AND $details->ssh_username !== 'root') {
+													$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "echo ' . escapeshellarg($details->ssh_password) . ' | ' . $sudo . ' -S /tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" ';
+													@exec($command_string, $output, $return_var);
+													if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+														echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+														echo 'DEBUG - Return Value: ' . $return_var . "\n";
+														echo "DEBUG - Command Output:\n";
+														print_r($output);
+													}
 
-												if ($return_var != '0') {
-													$error = 'C:discovery F:process_subnet SSH audit command for linux audit using sudo ' . $audit_script . ' on ' . $details->man_ip_address . ' failed. Attempting to run without sudo.'; 
-													$this->log_event($error);
-													$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=3 system_id=' . $details->system_id . '" ';
+													if ($return_var != '0') {
+														$error = 'C:discovery F:process_subnet SSH audit command for linux audit using sudo ' . $audit_script . ' on ' . $details->man_ip_address . ' failed. Attempting to run without sudo.'; 
+														$this->log_event($error);
+														$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=3 system_id=' . $details->system_id . '" ';
+														@exec($command_string, $output, $return_var);
+														if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+															echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+															echo 'DEBUG - Return Value: ' . $return_var . "\n";
+															echo "DEBUG - Command Output:\n";
+															print_r($output);
+														}
+														if ($return_var != '0') {
+															$error = 'C:discovery F:process_subnet SSH audit command for ' . $remote_os . ' audit not using sudo script on ' . $details->man_ip_address . ' failed';
+															$this->log_event($error);
+															exit();
+														} else {
+															$error = '';
+														}
+													}
+													$command_string = NULL;
+													$output = NULL;
+													$return_var = NULL;
+												} else {
+													$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" 2>/dev/null';
 													@exec($command_string, $output, $return_var);
 													if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 														echo 'DEBUG - Command Executed: ' . $command_string . "\n";
@@ -1363,31 +1385,106 @@ class discovery extends CI_Controller
 														print_r($output);
 													}
 													if ($return_var != '0') {
-														$error = 'C:discovery F:process_subnet SSH audit command for ' . $remote_os . ' audit not using sudo script on ' . $details->man_ip_address . ' failed';
+														$error = 'C:discovery F:process_subnet SSH audit command for ' . $remote_os . ' audit script on ' . $details->man_ip_address . ' failed'; 
 														$this->log_event($error);
-														exit();
-													} else {
-														$error = '';
-													}
-												}
-												$command_string = NULL;
-												$output = NULL;
-												$return_var = NULL;
+													} 
+												} // End of use sudo / root on != ESXi
 											} else {
-												$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" 2>/dev/null';
+												$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
 												@exec($command_string, $output, $return_var);
 												if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 													echo 'DEBUG - Command Executed: ' . $command_string . "\n";
 													echo 'DEBUG - Return Value: ' . $return_var . "\n";
 													echo "DEBUG - Command Output:\n";
-													print_r($output);
+													#$output_new = str_replace("<", "&lt;", $output);
+													#print_r($output_new);
 												}
+
 												if ($return_var != '0') {
-													$error = 'C:discovery F:process_subnet SSH audit command for linux audit script on ' . $details->man_ip_address . ' failed'; 
+													$error = 'C:discovery F:process_subnet SSH audit command for ESXi audit script on ' . $details->man_ip_address . ' failed'; 
 													$this->log_event($error);
-													exit();
-												} 
-											} // End of use sudo / root
+												} else {
+													$script_result = '';
+													foreach ($output as $line) {
+														$script_result .= $line . "\n";
+													}
+													$script_result = preg_replace('/\s+/', ' ',$script_result);
+													$script_result = str_replace("> <", "><", $script_result);
+													$esx_input = trim($script_result);
+													try {
+														$esx_xml = new SimpleXMLElement($esx_input);
+													} catch (Exception $error) {
+														// not a valid XML string
+														$log_details = 'C:discovery F:process_subnet Invalid XML input for ESX audit script';
+														$this->log_event($log_details);
+														exit;
+													}
+
+													$count = 0;
+													$this->load->model('m_processor');
+													$this->load->model('m_bios');
+													$this->load->model('m_memory');
+													$this->load->model('m_motherboard');
+													$this->load->model('m_video');
+													$this->load->model('m_software');
+
+													foreach ($esx_xml->children() as $child) {
+														if ($child->getName() === 'sys') {
+															$esx_details = (object) $esx_xml->sys;
+															$esx_details->system_key = $this->m_system->create_system_key($esx_details);
+															$esx_details->system_id = $this->m_system->find_system($esx_details);
+															$esx_details->timestamp = $details->timestamp;
+
+															if (isset($esx_details->system_id) AND $esx_details->system_id != '') {
+																// we have an existing device
+																$this->m_system->update_system($esx_details);
+																$log_details = "C:discovery F:process_subnet ESX update for $esx_details->man_ip_address (System ID $esx_details->system_id)";
+																$this->log_event($log_details);
+															} else {
+																// we have a new system
+																$esx_details->system_id = $this->m_system->insert_system($esx_details);
+																$log_details = "C:discovery F:process_subnet ESX insert for $esx_details->man_ip_address (System ID $esx_details->system_id)"; 
+																$this->log_event($log_details);
+																$this->m_alerts->generate_alert($details->system_id, 'system', $esx_details->system_id, 'system detected', date('Y-m-d H:i:s'));
+															}
+														}
+														if ($child->getName() === 'bios') {
+															$this->m_sys_man_audits->update_audit($esx_details, $child->getName());
+															$this->m_bios->process_bios($esx_xml->bios, $esx_details);
+														}
+														if ($child->getName() === 'memory') {
+															$this->m_sys_man_audits->update_audit($esx_details, $child->getName());
+															foreach ($esx_xml->memory->slot as $input) {
+																$this->m_memory->process_memory($input, $esx_details);
+															}
+														}
+														if ($child->getName() === 'motherboard') {
+															$this->m_sys_man_audits->update_audit($esx_details, $child->getName());
+															$this->m_motherboard->process_motherboard($esx_xml->motherboard, $esx_details);
+														}
+														if ($child->getName() === 'network_cards') {
+															$this->m_sys_man_audits->update_audit($esx_details, $child->getName());
+															foreach ($esx_xml->network_cards->network_card as $input) {
+																$this->m_network_card->process_network_cards($input, $esx_details);
+															}
+														}
+														if ($child->getName() === 'processor') {
+															$this->m_sys_man_audits->update_audit($esx_details, $child->getName());
+															$this->m_processor->process_processor($esx_xml->processor, $esx_details);
+														}
+														if ($child->getName() === 'software') {
+															$this->m_sys_man_audits->update_audit($esx_details, $child->getName());
+															$this->m_software->process_software($esx_xml->software, $esx_details);
+														}
+														if ($child->getName() === 'video_cards') {
+															$this->m_sys_man_audits->update_audit($esx_details, $child->getName());
+															foreach ($esx_xml->video_cards->video_card as $input) {
+																$this->m_video->process_video_cards($input, $esx_details);
+															}
+														}
+													}
+												}
+											}
 										}
 
 										if ($error == '') {
