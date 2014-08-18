@@ -712,7 +712,7 @@ CREATE TABLE `sys_hw_network_card` (
   `system_id` int(10) unsigned default NULL,
   `net_mac_address` varchar(17) NOT NULL default '',
   `net_manufacturer` varchar(100) NOT NULL default '',
-  `net_model` varchar(100) NOT NULL default '',
+  `net_model` varchar(255) NOT NULL default '',
   `net_description` varchar(255) NOT NULL default '',
   `net_alias` varchar(255) NOT NULL default '',
   `net_ip_enabled` varchar(10) NOT NULL default '',
