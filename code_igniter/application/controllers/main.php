@@ -938,6 +938,27 @@ class main extends MY_Controller
                 if ($this->session->userdata('user_admin') == 'y') {
                     $this->m_oa_group->edit_user_groups($details);
                 }
+                // Reset the admin user password in OAE
+                if ($details->user_name == 'admin') {
+                    $server_os = php_uname('s');
+                    if ($server_os == 'Windows NT') {
+                        $command_string = 'c:\xampplite\apache\bin\htpasswd.exe -mb c:\omk\conf\users.dat admin ' . $details->user_password . ' 2>&1';
+                    }
+                    if (php_uname('s') == 'Linux' OR php_uname('s') == "Darwin") {
+                        $command_string = 'htpasswd -mb /usr/local/opmojo/conf/users.dat admin ' . $details->user_password . ' 2>&1';
+                    }
+                    exec($command_string, $output, $return_var);
+                    if ($return_var != '0') {
+                        $error = 'C:admin_user F:edit_user Admin user password reset attempt for Open-AudIT and Open-AudIT Enterprise has failed';
+                        $this->log_function($error);
+                    } else {
+                        $log = 'C:admin_user F:edit_user Admin user password reset successful for Open-AudIT and Open-AudIT Enterprise';
+                        $this->log_function($log);
+                    }
+                    $command_string = NULL;
+                    $output = NULL;
+                    $return_var = NULL;
+                }
                 redirect('admin_user/list_users');
             }
         }
