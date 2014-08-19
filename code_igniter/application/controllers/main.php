@@ -1425,4 +1425,26 @@ class main extends MY_Controller
             }
         }
 
+    public function log_function($log_details, $display='n')
+    {
+        // setup the log file
+        if ((php_uname('s') == 'Linux') OR (php_uname('s') == 'Darwin')) {
+            $file = "/usr/local/open-audit/other/open-audit.log";
+        } else {
+            $file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+        }
+        $log_timestamp = date("M d H:i:s");
+        $log_hostname = php_uname('n');
+        $log_pid = getmypid();
+        $log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
+        $handle = fopen($file, "a");
+        fwrite($handle, $log_line);
+        fclose($handle);
+        if ($display != 'n') {
+            if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+                echo "LOG   - " . $log_line;
+            }
+        }
+    }
+
 }

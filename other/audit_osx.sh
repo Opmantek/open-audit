@@ -239,6 +239,7 @@ echo  "		<processor_description>$processor_description</processor_description>" 
 echo  "		<processor_speed>$processor_speed</processor_speed>" >> $xml_file
 echo  "		<processor_manufacturer>$processor_manufacturer</processor_manufacturer>" >> $xml_file
 echo  "		<processor_power_management_supported>$processor_power_management_supported</processor_power_management_supported>" >> $xml_file
+echo "		<processor_architecture>x64</processor_architecture>" >> $xml_file
 echo  "	</processor>" >> $xml_file
 
 
@@ -306,12 +307,16 @@ partition_used_space=""
 partition_format=""
 partition_caption=""
 partition_device_id=""
+media_name=""
+temp_partition=""
+temp_disk=""
 
 echo "	<hard_disks>" >> $xml_file
 for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 
 	if [[ "$line" == *"Media Name"* ]]; then
 		hard_drive_caption=$(echo "$line" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ Media//g')
+		media_name="$media_name $hard_drive_caption "
 	fi
 
 	if [[ "$line" == *"BSD Name"* ]]; then
@@ -324,6 +329,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 		hard_drive_interface_type=`echo "$line" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g'`
 
 		if [[ "$hard_drive_interface_type" == "SATA" ]]; then
+
 			for each in $(system_profiler SPSerialATADataType | grep "$hard_drive_caption" -A15); do
 
 				if [[ "$each" == *"Model"* ]]; then
@@ -344,21 +350,19 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 
 				if [[ "$each" == *"Volumes:"* ]] && [[ "$volumes" == "0" ]]; then
 					volumes="1"
-					#echo "system_profiler SPSerialATADataType | grep \"$hard_drive_caption\" -A100 | grep \"Volumes:\" -A 30 | egrep \"^$\" -B30 | grep -v \"Volumes:\"";
 
 					for vol in $(system_profiler SPSerialATADataType | grep "$hard_drive_caption" -A100 | grep "Volumes:" -A 30 | egrep "^$" -B30 | grep -v "Volumes:"); do
 
 						partition_mount_type="mount point"
 
+						
+
 						if [[ "$vol" == *"Mount Point"* ]]; then
 							partition_mount_point=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-							#echo "Mount Point: $partition_mount_point"
 						fi
 
 						if [[ "$vol" == *"BSD Name"* ]]; then
 							partition_disk_index=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | cut -dk -f2 | cut -ds -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-							#echo "DiskIndex: $hard_drive_index"
-							#echo "PartitionIndex: $partition_disk_index"
 						fi
 
 						if [[ "$vol" == *"Capacity"* ]]; then
@@ -369,7 +373,6 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 							if [[ "$vol" == *"TB"* ]]; then
 								partition_size=`echo "$partition_size * 1024 * 1024" | bc | cut -d"." -f1`
 							fi
-							#echo "Size: $partition_size"
 						fi
 
 						if [[ "$vol" == *"Available"* ]]; then
@@ -380,24 +383,19 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 							if [[ "$vol" == *"TB"* ]]; then
 								partition_free_space=`echo "$partition_free_space * 1024 * 1024" | bc | cut -d"." -f1`
 							fi
-							#echo "Avail: $partition_free_space"
 							partition_used_space=`echo "$partition_size - $partition_free_space" | bc`
-							#echo "Used: $partition_used_space"
 						fi
 
 						if [[ "$vol" == *"File System"* ]]; then
 							partition_format=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-							#echo "Format: $partition_format"
 						fi
 
 						if [[ "$vol" == *"Content"* ]]; then
 							partition_caption=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-							#echo "Caption: $partition_caption"
 						fi
 
 						if [[ "$vol" == *"Volume UUID"* ]]; then
 							partition_device_id=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-							#echo "DevID: $partition_device_id"
 						fi
 
 						partition_type="volume"
@@ -405,9 +403,56 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 						partition_quotas_enabled=""
 						partition_serial=""
 
+
+						# test if we have a blank line
 						test=$(echo "$vol" | cut -d":" -f2)
+
 						if [[ "$test" == "" ]] ; then
 							if [[ "$partition_size" != "" ]]; then
+								#echo "TEMP PART: $temp_partition"
+								#echo "PART INDEX: d$hard_drive_index p$partition_disk_index "
+								if [[ "$temp_partition" != *" d$hard_drive_index p$partition_disk_index "* ]]; then
+									#echo "in sata 2, writing partition info to XML for $partition_name on $hard_drive_caption"
+									partition="$partition		<partition>"$'\n'
+									partition="$partition			<hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
+									partition="$partition			<partition_mount_type>partition</partition_mount_type>"$'\n'
+									partition="$partition			<partition_mount_point>$partition_mount_point</partition_mount_point>"$'\n'
+									partition="$partition			<partition_name>$partition_name</partition_name>"$'\n'
+									partition="$partition			<partition_size>$partition_size</partition_size>"$'\n'
+									partition="$partition			<partition_free_space>$partition_free_space</partition_free_space>"$'\n'
+									partition="$partition			<partition_used_space>$partition_used_space</partition_used_space>"$'\n'
+									partition="$partition			<partition_format>$partition_format</partition_format>"$'\n'
+									partition="$partition			<partition_caption>$partition_caption</partition_caption>"$'\n'
+									partition="$partition			<partition_device_id>$partition_device_id</partition_device_id>"$'\n'
+									partition="$partition			<partition_disk_index>$partition_disk_index</partition_disk_index>"$'\n'
+									partition="$partition			<partition_bootable></partition_bootable>"$'\n'
+									partition="$partition			<partition_type>local hard disk</partition_type>"$'\n'
+									partition="$partition			<partition_quotas_supported></partition_quotas_supported>"$'\n'
+									partition="$partition			<partition_quotas_enabled></partition_quotas_enabled>"$'\n'
+									partition="$partition			<partition_serial>$partition_serial</partition_serial>"$'\n'
+									partition="$partition		</partition>"$'\n'
+									temp_partition="$temp_partition d$hard_drive_index p$partition_disk_index "
+									
+									partition_name=$(echo "$vol" | cut -d":" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+									partition_mount_point=""
+									partition_disk_index=""
+									partition_size=""
+									partition_free_space=""
+									partition_used_space=""
+									partition_format=""
+									partition_caption=""
+									partition_device_id=""
+								fi
+							else
+								partition_name=$(echo "$vol" | cut -d":" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+							fi
+						fi
+
+						if [[ "$vol" == *"Volume UUID"* ]] && [[ "$partition_size" != "" ]]; then
+							#echo "TEMP PART: $temp_partition"
+							#echo "PART INDEX: d$hard_drive_index p$partition_disk_index "
+							if [[ "$temp_partition" != *" d$hard_drive_index p$partition_disk_index "* ]]; then
+								#echo "in sata 4, writing partition info to XML for $partition_name on $hard_drive_caption"
 								partition="$partition		<partition>"$'\n'
 								partition="$partition			<hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
 								partition="$partition			<partition_mount_type>partition</partition_mount_type>"$'\n'
@@ -426,8 +471,8 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 								partition="$partition			<partition_quotas_enabled></partition_quotas_enabled>"$'\n'
 								partition="$partition			<partition_serial>$partition_serial</partition_serial>"$'\n'
 								partition="$partition		</partition>"$'\n'
-								
-								partition_name=$(echo "$vol" | cut -d":" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+								temp_partition="$temp_partition d$hard_drive_index p$partition_disk_index "
+
 								partition_mount_point=""
 								partition_disk_index=""
 								partition_size=""
@@ -436,12 +481,77 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 								partition_format=""
 								partition_caption=""
 								partition_device_id=""
-							else
-								partition_name=$(echo "$vol" | cut -d":" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 							fi
 						fi
 
-						if [[ "$vol" == *"Volume UUID"* ]] && [[ "$partition_size" != "" ]]; then
+					done
+				fi
+
+			done
+		fi # end of linterface == SATA
+
+		if [[ "$hard_drive_interface_type" == "USB" ]]; then
+			for each in $(system_profiler SPUSBDataType | grep "BSD Name: disk$hard_drive_index\$" -B12 -A4); do
+				if [[ "$each" == *"Serial Number"* ]]; then
+					hard_drive_serial=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+				fi
+				if [[ "$each" == *"Manufacturer"* ]]; then
+					hard_drive_manufacturer=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+				fi
+				if [[ "$each" == *"Version"* ]]; then
+					hard_drive_firmware=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+				fi
+				if [[ "$each" == *"S.M.A.R.T. status"* ]]; then
+					hard_drive_status=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+				fi
+			done
+			for vol in $(system_profiler SPUSBDataType | grep "BSD Name: disk$hard_drive_index\$" -A30 | grep "Volumes:" -A20 | grep -v "Volumes:"); do
+				partition_mount_type="mount point"
+				if [[ "$vol" == *"Mount Point"* ]]; then
+					partition_mount_point=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+				fi
+				if [[ "$vol" == *"BSD Name"* ]]; then
+					partition_disk_index=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | cut -dk -f2 | cut -ds -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+				fi
+				if [[ "$vol" == *"Capacity"* ]]; then
+					partition_size=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+					if [[ "$vol" == *"GB"* ]]; then
+						partition_size=`echo "$partition_size * 1024" | bc | cut -d"." -f1`
+					fi
+					if [[ "$vol" == *"TB"* ]]; then
+						partition_size=`echo "$partition_size * 1024 * 1024" | bc | cut -d"." -f1`
+					fi
+				fi
+				if [[ "$vol" == *"Available"* ]]; then
+					partition_free_space=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+					if [[ "$vol" == *"GB"* ]]; then
+						partition_free_space=`echo "$partition_free_space * 1024" | bc | cut -d"." -f1`
+					fi
+					if [[ "$vol" == *"TB"* ]]; then
+						partition_free_space=`echo "$partition_free_space * 1024 * 1024" | bc | cut -d"." -f1`
+					fi
+					partition_used_space=`echo "$partition_size - $partition_free_space" | bc`
+				fi
+				if [[ "$vol" == *"File System"* ]]; then
+					partition_format=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+				fi
+				if [[ "$vol" == *"Content"* ]]; then
+					partition_caption=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+				fi
+				if [[ "$vol" == *"Volume UUID"* ]]; then
+					partition_device_id=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+				fi
+				partition_type="volume"
+				partition_quotas_supported=""
+				partition_quotas_enabled=""
+				partition_serial=""
+				test=$(echo "$vol" | cut -d":" -f2)
+				if [[ "$test" == "" ]] ; then
+					if [[ "$partition_size" != "" ]]; then
+						#echo "TEMP PART: $temp_partition"
+						#echo "PART INDEX: d$hard_drive_index p$partition_disk_index "
+						if [[ "$temp_partition" != *" d$hard_drive_index p$partition_disk_index "* ]]; then
+							#echo "in usb 2, writing partition info to XML for $partition_name on $hard_drive_caption"
 							partition="$partition		<partition>"$'\n'
 							partition="$partition			<hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
 							partition="$partition			<partition_mount_type>partition</partition_mount_type>"$'\n'
@@ -460,7 +570,8 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 							partition="$partition			<partition_quotas_enabled></partition_quotas_enabled>"$'\n'
 							partition="$partition			<partition_serial>$partition_serial</partition_serial>"$'\n'
 							partition="$partition		</partition>"$'\n'
-
+							temp_partition="$temp_partition d$hard_drive_index p$partition_disk_index "
+							partition_name=$(echo "$vol" | cut -d":" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 							partition_mount_point=""
 							partition_disk_index=""
 							partition_size=""
@@ -470,84 +581,15 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 							partition_caption=""
 							partition_device_id=""
 						fi
-
-					done
-				fi
-
-			done
-		fi # end of linterface == SATA
-
-		if [[ "$hard_drive_interface_type" == "USB" ]]; then
-			#echo "system_profiler SPUSBDataType | grep \"BSD Name: disk$hard_drive_index\\\$\" -B12 -A4"
-			for each in $(system_profiler SPUSBDataType | grep "BSD Name: disk$hard_drive_index\$" -B12 -A4); do
-				if [[ "$each" == *"Serial Number"* ]]; then
-					hard_drive_serial=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-				fi
-				if [[ "$each" == *"Manufacturer"* ]]; then
-					hard_drive_manufacturer=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-				fi
-				if [[ "$each" == *"Version"* ]]; then
-					hard_drive_firmware=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-				fi
-				if [[ "$each" == *"S.M.A.R.T. status"* ]]; then
-					hard_drive_status=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-				fi
-			done
-			#echo "system_profiler SPUSBDataType | grep \"BSD Name: disk$hard_drive_index\\\$\" -A30 | grep \"Volumes:\" -A20 | grep -v \"Volumes:\""
-			for vol in $(system_profiler SPUSBDataType | grep "BSD Name: disk$hard_drive_index\$" -A30 | grep "Volumes:" -A20 | grep -v "Volumes:"); do
-				partition_mount_type="mount point"
-				if [[ "$vol" == *"Mount Point"* ]]; then
-					partition_mount_point=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-					echo "Mount Point: $partition_mount_point"
-				fi
-				if [[ "$vol" == *"BSD Name"* ]]; then
-					partition_disk_index=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | cut -dk -f2 | cut -ds -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-					#echo "DiskIndex: $hard_drive_index"
-					#echo "PartitionIndex: $partition_disk_index"
-				fi
-				if [[ "$vol" == *"Capacity"* ]]; then
-					partition_size=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-					if [[ "$vol" == *"GB"* ]]; then
-						partition_size=`echo "$partition_size * 1024" | bc | cut -d"." -f1`
+					else
+						partition_name=$(echo "$vol" | cut -d":" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 					fi
-					if [[ "$vol" == *"TB"* ]]; then
-						partition_size=`echo "$partition_size * 1024 * 1024" | bc | cut -d"." -f1`
-					fi
-					#echo "Size: $partition_size"
 				fi
-				if [[ "$vol" == *"Available"* ]]; then
-					partition_free_space=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-					if [[ "$vol" == *"GB"* ]]; then
-						partition_free_space=`echo "$partition_free_space * 1024" | bc | cut -d"." -f1`
-					fi
-					if [[ "$vol" == *"TB"* ]]; then
-						partition_free_space=`echo "$partition_free_space * 1024 * 1024" | bc | cut -d"." -f1`
-					fi
-					#echo "Avail: $partition_free_space"
-					partition_used_space=`echo "$partition_size - $partition_free_space" | bc`
-					#echo "Used: $partition_used_space"
-				fi
-				if [[ "$vol" == *"File System"* ]]; then
-					partition_format=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-					#echo "Format: $partition_format"
-				fi
-				if [[ "$vol" == *"Content"* ]]; then
-					partition_caption=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-					#echo "Caption: $partition_caption"
-				fi
-				if [[ "$vol" == *"Volume UUID"* ]]; then
-					partition_device_id=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-					#echo "DevID: $partition_device_id"
-				fi
-				partition_type="volume"
-				partition_quotas_supported=""
-				partition_quotas_enabled=""
-				partition_serial=""
-				test=$(echo "$vol" | cut -d":" -f2)
-				if [[ "$test" == "" ]] ; then
-					#echo "2"
-					if [[ "$partition_size" != "" ]]; then
-						echo "---------------------"
+				if [[ "$vol" == *"Volume UUID"* ]] && [[ "$partition_size" != "" ]]; then
+						#echo "TEMP PART: $temp_partition"
+						#echo "PART INDEX: d$hard_drive_index p$partition_disk_index "
+					if [[ "$temp_partition" != *" d$hard_drive_index p$partition_disk_index "* ]]; then
+						#echo "in usb 4, writing partition ifo to XML for $partition_name on $hard_drive_caption"
 						partition="$partition		<partition>"$'\n'
 						partition="$partition			<hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
 						partition="$partition			<partition_mount_type>partition</partition_mount_type>"$'\n'
@@ -566,7 +608,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 						partition="$partition			<partition_quotas_enabled></partition_quotas_enabled>"$'\n'
 						partition="$partition			<partition_serial>$partition_serial</partition_serial>"$'\n'
 						partition="$partition		</partition>"$'\n'
-						partition_name=$(echo "$vol" | cut -d":" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+						temp_partition="$temp_partition d$hard_drive_index p$partition_disk_index "
 						partition_mount_point=""
 						partition_disk_index=""
 						partition_size=""
@@ -575,39 +617,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 						partition_format=""
 						partition_caption=""
 						partition_device_id=""
-					else
-						partition_name=$(echo "$vol" | cut -d":" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
-						#echo "3"
 					fi
-				fi
-				if [[ "$vol" == *"Volume UUID"* ]] && [[ "$partition_size" != "" ]]; then
-					#echo "4"
-					partition="$partition		<partition>"$'\n'
-					partition="$partition			<hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
-					partition="$partition			<partition_mount_type>partition</partition_mount_type>"$'\n'
-					partition="$partition			<partition_mount_point>$partition_mount_point</partition_mount_point>"$'\n'
-					partition="$partition			<partition_name>$partition_name</partition_name>"$'\n'
-					partition="$partition			<partition_size>$partition_size</partition_size>"$'\n'
-					partition="$partition			<partition_free_space>$partition_free_space</partition_free_space>"$'\n'
-					partition="$partition			<partition_used_space>$partition_used_space</partition_used_space>"$'\n'
-					partition="$partition			<partition_format>$partition_format</partition_format>"$'\n'
-					partition="$partition			<partition_caption>$partition_caption</partition_caption>"$'\n'
-					partition="$partition			<partition_device_id>$partition_device_id</partition_device_id>"$'\n'
-					partition="$partition			<partition_disk_index>$partition_disk_index</partition_disk_index>"$'\n'
-					partition="$partition			<partition_bootable></partition_bootable>"$'\n'
-					partition="$partition			<partition_type>local hard disk</partition_type>"$'\n'
-					partition="$partition			<partition_quotas_supported></partition_quotas_supported>"$'\n'
-					partition="$partition			<partition_quotas_enabled></partition_quotas_enabled>"$'\n'
-					partition="$partition			<partition_serial>$partition_serial</partition_serial>"$'\n'
-					partition="$partition		</partition>"$'\n'
-					partition_mount_point=""
-					partition_disk_index=""
-					partition_size=""
-					partition_free_space=""
-					partition_used_space=""
-					partition_format=""
-					partition_caption=""
-					partition_device_id=""
 				fi
 			done
 		fi # end of interface == USB
@@ -640,31 +650,35 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 	fi
 
 	if [[ "$line" == *"Partition Map Type"* ]]; then
-		echo "		<hard_disk>" >> $xml_file
-		echo "			<hard_drive_caption>$hard_drive_caption</hard_drive_caption>" >> $xml_file
-		echo "			<hard_drive_index>$hard_drive_index</hard_drive_index>" >> $xml_file
-		echo "			<hard_drive_interface_type>$hard_drive_interface_type</hard_drive_interface_type>" >> $xml_file
-		echo "			<hard_drive_manufacturer>$hard_drive_manufacturer</hard_drive_manufacturer>" >> $xml_file
-		echo "			<hard_drive_model>$hard_drive_model</hard_drive_model>" >> $xml_file
-		echo "			<hard_drive_serial>$hard_drive_serial</hard_drive_serial>" >> $xml_file
-		echo "			<hard_drive_size>$hard_drive_size</hard_drive_size>" >> $xml_file
-		echo "			<hard_drive_device_id>$hard_drive_device_id</hard_drive_device_id>" >> $xml_file
-		echo "			<hard_drive_partitions>$hard_drive_partitions</hard_drive_partitions>" >> $xml_file
-		echo "			<hard_drive_status>$hard_drive_status</hard_drive_status>" >> $xml_file
-		echo "			<hard_drive_firmware>$hard_drive_firmware</hard_drive_firmware>" >> $xml_file
-		echo "			<hard_drive_scsi_logical_unit></hard_drive_scsi_logical_unit>" >> $xml_file
-		echo "		</hard_disk>" >> $xml_file
-		hard_drive_caption=""
-		hard_drive_index=""
-		hard_drive_interface_type=""
-		hard_drive_model=""
-		hard_drive_serial=""
-		hard_drive_size=""
-		hard_drive_device_id=""
-		hard_drive_partitions=""
-		hard_drive_status=""
-		hard_drive_firmware=""
-
+		#echo "TEMP DISK: $temp_disk"
+		#echo "DISK INDEX: d$hard_drive_index "
+		if [[ "$temp_disk" != *" d$hard_drive_index "* ]]; then
+			echo "		<hard_disk>" >> $xml_file
+			echo "			<hard_drive_caption>$hard_drive_caption</hard_drive_caption>" >> $xml_file
+			echo "			<hard_drive_index>$hard_drive_index</hard_drive_index>" >> $xml_file
+			echo "			<hard_drive_interface_type>$hard_drive_interface_type</hard_drive_interface_type>" >> $xml_file
+			echo "			<hard_drive_manufacturer>$hard_drive_manufacturer</hard_drive_manufacturer>" >> $xml_file
+			echo "			<hard_drive_model>$hard_drive_model</hard_drive_model>" >> $xml_file
+			echo "			<hard_drive_serial>$hard_drive_serial</hard_drive_serial>" >> $xml_file
+			echo "			<hard_drive_size>$hard_drive_size</hard_drive_size>" >> $xml_file
+			echo "			<hard_drive_device_id>$hard_drive_device_id</hard_drive_device_id>" >> $xml_file
+			echo "			<hard_drive_partitions>$hard_drive_partitions</hard_drive_partitions>" >> $xml_file
+			echo "			<hard_drive_status>$hard_drive_status</hard_drive_status>" >> $xml_file
+			echo "			<hard_drive_firmware>$hard_drive_firmware</hard_drive_firmware>" >> $xml_file
+			echo "			<hard_drive_scsi_logical_unit></hard_drive_scsi_logical_unit>" >> $xml_file
+			echo "		</hard_disk>" >> $xml_file
+			temp_disk="$temp_disk d$hard_drive_index "
+			hard_drive_caption=""
+			hard_drive_index=""
+			hard_drive_interface_type=""
+			hard_drive_model=""
+			hard_drive_serial=""
+			hard_drive_size=""
+			hard_drive_device_id=""
+			hard_drive_partitions=""
+			hard_drive_status=""
+			hard_drive_firmware=""
+		fi
 	fi
 done
 echo "	</hard_disks>" >> $xml_file
@@ -672,10 +686,6 @@ echo "	</hard_disks>" >> $xml_file
 echo "	<partitions>" >> $xml_file
 echo "$partition" >> $xml_file
 echo "	</partitions>" >> $xml_file
-
-#echo "</system>" >> $xml_file
-#exit 0
-
 
 
 if [ "$debugging" -gt "0" ]; then
@@ -826,7 +836,7 @@ echo "</system>" >> $xml_file
 if [ "$submit_online" = "y" ]; then
 	echo "Submitting results to server"
 	#curl --data="$xml_file" $url 2>/dev/null
-	curl --data @"$xml_file" $url 
+	curl --data @"$xml_file" $url 1&2>dev/null
 fi
 
 sed -i -e 's/form_systemXML=//g' $xml_file

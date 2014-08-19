@@ -321,25 +321,25 @@ for each host in hosts_in_subnet
 			end if
 			if (instr(lcase(line), "windows")) then
 				os_group = "Windows"
-				if (lcase(line), "vista") then os_family = "Windows Vista" end if
-				if (lcase(line), "7") then os_family = "Windows 7" end if
-				if (lcase(line), "8") then os_family = "Windows 8" end if
-				if (lcase(line), "2003") then os_family = "Windows 2003" end if
-				if (lcase(line), "2008") then os_family = "Windows 2008" end if
-				if (lcase(line), "2012") then os_family = "Windows 2012" end if
+				if (instr(lcase(line), "vista")) then os_family = "Windows Vista" end if
+				if (instr(lcase(line), "7")) then os_family = "Windows 7" end if
+				if (instr(lcase(line), "8")) then os_family = "Windows 8" end if
+				if (instr(lcase(line), "2003")) then os_family = "Windows 2003" end if
+				if (instr(lcase(line), "2008")) then os_family = "Windows 2008" end if
+				if (instr(lcase(line), "2012")) then os_family = "Windows 2012" end if
 			end if
 			if (instr(lcase(line), "irix")) then
 				os_group = "IRIX"
 			end if
-			if (instr(lcase(line), "OpenBSD")) then
+			if (instr(lcase(line), "openbsd")) then
 				os_group = "BSD"
 				os_family = "Open BSD"
 			end if
-			if (instr(lcase(line), "FreeBSD")) then
+			if (instr(lcase(line), "freebsd")) then
 				os_group = "BSD"
 				os_family = "Free BSD"
 			end if
-			if (instr(lcase(line), "NetBSD")) then
+			if (instr(lcase(line), "netbsd")) then
 				os_group = "BSD"
 				os_family = "Net BSD"
 			end if
