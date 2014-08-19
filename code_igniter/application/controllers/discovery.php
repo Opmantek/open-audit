@@ -1458,10 +1458,11 @@ class discovery extends CI_Controller
 									$output = NULL;
 								}
 
-								if ($remote_os == 'Linux' OR $remote_os == 'Darwin' OR $remote_os == 'VMkernel') {
+								// if ($remote_os == 'Linux' OR $remote_os == 'Darwin' OR $remote_os == 'VMkernel') {
+								if ($remote_os == 'Linux' OR $remote_os == 'Darwin') {
 									if ($remote_os == 'Linux') { $audit_script = 'audit_linux.sh'; }
 									if ($remote_os == 'Darwin') { $audit_script = 'audit_osx.sh'; }
-									if ($remote_os == 'VMkernel') { $audit_script = 'audit_esxi.sh'; }
+									// if ($remote_os == 'VMkernel') { $audit_script = 'audit_esxi.sh'; }
 								}
 
 								if ($error == '' and $audit_script != '') {
@@ -1531,7 +1532,7 @@ class discovery extends CI_Controller
 								// Attempt to run the audit script
 								if ($error == '' and $audit_script != '') {
 									if ($sudo > "" AND $details->ssh_username != 'root') {
-										$command_string = "$filepath\\plink.exe -pw " . $details->ssh_password . " " . $details->ssh_username . "@" . $details->man_ip_address . " \"echo " . $details->ssh_password . " | $sudo -S /tmp/" . $audit__script . " submit_online=y create_file=n url=" . $url . "index.php/system/add_system debugging=1 system_id=" . $details->system_id . "\"";
+										$command_string = "$filepath\\plink.exe -pw " . $details->ssh_password . " " . $details->ssh_username . "@" . $details->man_ip_address . " \"echo " . $details->ssh_password . " | $sudo -S /tmp/" . $audit_script . " submit_online=y create_file=n url=" . $url . "index.php/system/add_system debugging=1 system_id=" . $details->system_id . "\"";
 										@exec($command_string, $output, $return_var);
 										if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 											echo 'DEBUG - Command Executed: ' . $command_string . "\n";
