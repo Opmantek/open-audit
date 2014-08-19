@@ -239,6 +239,7 @@ echo  "		<processor_description>$processor_description</processor_description>" 
 echo  "		<processor_speed>$processor_speed</processor_speed>" >> $xml_file
 echo  "		<processor_manufacturer>$processor_manufacturer</processor_manufacturer>" >> $xml_file
 echo  "		<processor_power_management_supported>$processor_power_management_supported</processor_power_management_supported>" >> $xml_file
+echo "		<processor_architecture>x64</processor_architecture>" >> $xml_file
 echo  "	</processor>" >> $xml_file
 
 
