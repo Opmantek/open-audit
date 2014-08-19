@@ -1,5 +1,4 @@
 <?php
-/**
 #
 #  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
 #
@@ -25,15 +24,13 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
- * The Controler for admin_cli
- *
- * @category  Controller
- * @package   Open-AudIT
- * @author    Mark Unwin <marku@opmantek.com>
- * @copyright 2014 Opmantek
- * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   1.3.2
- * @link      http://www.open-audit.org
+
+/**
+ * @package Open-AudIT
+ * @author Mark Unwin <marku@opmantek.com>
+ * @version 1.4
+ * @copyright Copyright (c) 2014, Opmantek
+ * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 /**
