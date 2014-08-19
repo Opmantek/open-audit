@@ -116,9 +116,9 @@ class discovery extends CI_Controller
 				$filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "\\open-audit\\other";
 
 				if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
-					$script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['windows_domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['windows_domain'] . "\\" . $_POST['windows_user'] . " strpass=" . $_POST['windows_password'] . " debugging=1";
+					$script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['windows_domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['windows_domain'] . "\\" . $_POST['windows_username'] . " strpass=" . $_POST['windows_password'] . " debugging=1";
 				} else {
-					$script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['windows_domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['windows_domain'] . "\\" . $_POST['windows_user'] . " strpass=" . $_POST['windows_password'] . " debugging=0";
+					$script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['windows_domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['windows_domain'] . "\\" . $_POST['windows_username'] . " strpass=" . $_POST['windows_password'] . " debugging=0";
 				}
 				$command_string = "%comspec% /c start /b cscript //nologo " . $script_string . " &";
 
@@ -130,10 +130,10 @@ class discovery extends CI_Controller
 					echo "DEBUG - Command Output:\n";
 					print_r($output);
 					if ($return_var != '0') {
-						$error = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on " . $_POST['server'] . " has failed";
+						$error = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on localhost has failed";
 						$this->log_event($error);
 					} else {
-						$log = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on " . $_POST['server'] . " has succeeded";
+						$log = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on localhost has succeeded";
 						$this->log_event($log);
 					}
 				} else {
