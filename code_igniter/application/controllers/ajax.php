@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -150,6 +150,11 @@ class ajax extends MY_Controller
             $config_value = '';
         }
         $this->m_oa_config->update_config($config_name, $config_value, $this->data['user_id'], date('Y-m-d H:i:s'));
+        $masked = str_pad('', strlen($config_value), '*');
+        if ($config_name == 'default_windows_password' and $this->data['config']->show_passwords == 'n') { $config_value = $masked; }
+        if ($config_name == 'default_ssh_password' and $this->data['config']->show_passwords == 'n') { $config_value = $masked; }
+        if ($config_name == 'default_ipmi_password' and $this->data['config']->show_passwords == 'n') { $config_value = $masked; }
+        if ($config_name == 'default_snmp_community' and $this->data['config']->show_snmp_community == 'n') { $config_value = $masked; }
         echo $config_value;
     }
 

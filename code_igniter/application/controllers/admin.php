@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -137,7 +137,7 @@ class Admin extends MY_Controller {
 	 */
 	function edit_config()
 	{
-		$this->load->model("m_oa_config");
+		$this->load->model('m_oa_config');
 		$this->data['query'] = $this->m_oa_config->get_config();
 		$this->data['heading'] = 'Edit Config';
 		$this->data['include'] = 'v_edit_config'; 
@@ -176,23 +176,36 @@ class Admin extends MY_Controller {
 	function purge_log()
 	{
 		// full path to text file
-		if (php_uname('s') == 'Linux') {
-			$file = "/usr/local/open-audit/other/open-audit.log";
-		} else {
-			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+		if (php_uname('s') === 'Linux') {
+			$file = '/usr/local/open-audit/other/open-audit.log';
+		} 
+		else {
+			$file = 'c:\\xampplite\\open-audit\\other\\open-audit.log';
 		}
-		$handle = fopen($file, "w");
-		fwrite($handle, "");
+		$handle = fopen($file, 'w');
+		fwrite($handle, '');
 		fclose($handle);
-		redirect("admin/view_log");
+		redirect('admin/view_log');
 
 	}
 
-	function download_file() {
-        $this->load->helper('file');
-		$file = @intval($this->uri->segment(3,0));
+	/**
+	 * Download the logfile
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function download_file() 
+	{
+		$this->load->helper('file');
+		$file = @intval($this->uri->segment(3, 0));
 		$complete_filename = '';
-		if (php_uname('s') == 'Linux') {
+		if (php_uname('s') === 'Linux') {
 			switch ($file) {
 				case '1':
 					$complete_filename = '/usr/local/open-audit/other/open-audit.log';
@@ -2639,6 +2652,54 @@ class Admin extends MY_Controller {
 			$sql = "UPDATE oa_config set config_value = '1.3.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
+		}
+
+		if (($db_internal_version < '20140620') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.3.3
+
+			$sql = "ALTER TABLE sys_hw_network_card ADD net_alias varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20140620', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.3.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);		
+		}
+
+		if (($db_internal_version < '20140720') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.4
+
+			$sql = "ALTER TABLE sys_hw_hard_drive ADD hard_drive_firmware varchar(100) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "ALTER TABLE sys_hw_processor ADD processor_architecture varchar(100) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ipmi_username', '', 'y', 'The default username used by Open-AudIT to audit devices via IPMI.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ipmi_password', '', 'y', 'The default password used by Open-AudIT to audit devices via IPMI.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE sys_hw_network_card CHANGE net_model net_model varchar(255) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20140720', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.4', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);		
 		}
 
 		$config = $this->m_oa_config->get_config();

@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -332,11 +332,17 @@ if (!function_exists('get_snmp')) {
 				$details->model = 'TeraStation';
 				$details->type = 'nas';
 			}
-			if ((stripos($details->description, 'synology nas') !== false) or 
-				(stripos($details->description, 'synology') !== false and stripos($details->description, 'diskstation') !== false)){
+			if (stripos($details->description, 'synology') !== false or 
+			    stripos($details->description, 'diskstation') !== false){
 				$details->manufacturer = 'Synology';
-				$details->model = 'DiskStation';
+				$temp = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.1.0" ));
+				$details->model = trim('DiskStation ' . $temp);
+				$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.2.0" ));
 				$details->type = 'nas';
+				$details->os_group = 'Linux';
+				$details->os_family = 'Synology DSM';
+				$details->os_name = 'Synology ' . snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.3.0" ));
+				
 			}
 
 			// guess at manufacturer using entity mib
@@ -563,6 +569,7 @@ if (!function_exists('get_snmp')) {
 				$ip_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,   "1.3.6.1.2.1.4.20.1.2");
 				$subnets = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.4.20.1.3");
 				$connection_ids = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
+				$aliases = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.18");
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
@@ -577,6 +584,7 @@ if (!function_exists('get_snmp')) {
 					$interface->net_model = @snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
 					$interface->net_description = $interface->net_model;
 					$interface->net_connection_id = @snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
+					$interface->net_alias = @snmp_clean($aliases[".1.3.6.1.2.1.31.1.1.1.18.".$interface->net_index]);
 					$interface->net_adapter_type = @interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
 					$interface->net_ip_enabled = @ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
 					$interface->net_speed = @snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
@@ -611,7 +619,8 @@ if (!function_exists('get_snmp')) {
 					}
 					if (isset($details->os_group) and $details->os_group == 'windows') {
 						if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-							if ($interface->net_adapter_type != 'softwareLoopback' ) {
+							#if ($interface->net_adapter_type != 'softwareLoopback' ) {
+							if (strpos(strtolower($interface->net_adapter_type), 'loopback') === FALSE) {
 								$interfaces_filtered[] = $interface;
 							}
 						}
@@ -723,6 +732,10 @@ if (!function_exists('get_snmp')) {
 			$details->next_hop = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
 
 
+			// description
+			$details->description = '';
+			$details->description = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
+
 
 			// new for 1.2.2 - network details
 			$interfaces = array();
@@ -736,6 +749,7 @@ if (!function_exists('get_snmp')) {
 				$ip_addresses = @snmprealwalk($details->man_ip_address, $details->snmp_community,   "1.3.6.1.2.1.4.20.1.2");
 				$subnets = @snmprealwalk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.4.20.1.3");
 				$connection_ids = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
+				$aliases = @snmprealwalk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.31.1.1.1.18");
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
@@ -752,6 +766,7 @@ if (!function_exists('get_snmp')) {
 					$interface->net_model = snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
 					$interface->net_description = $interface->net_model;
 					$interface->net_connection_id = snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
+					$interface->net_alias = snmp_clean($aliases[".1.3.6.1.2.1.31.1.1.1.18.".$interface->net_index]);
 					$interface->net_adapter_type = interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
 					$interface->net_ip_enabled = ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
 					$interface->net_speed = snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);

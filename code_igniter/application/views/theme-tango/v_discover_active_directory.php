@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -40,6 +40,11 @@ if (php_uname('s') != "Windows NT") {
 } else {
 	$ldap_server_addition = "";
 }
+if (isset($config->show_passwords) and $config->show_passwords == 'n') {
+	$password_field = 'password';
+} else {
+	$password_field = 'text';
+}
 echo form_open('discovery/discover_active_directory') ?>
 <fieldset id="group_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Discover and Audit an Active Directory Domain')?></span></legend>
@@ -51,11 +56,11 @@ echo form_open('discovery/discover_active_directory') ?>
 
 				<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $config->default_network_address; ?>' /> This servers network address.</p>
 
-				<p><label for='user'><?php echo __("User")?>: </label><input type='text' id='user' name='user' tabindex='3' title='User' value='<?php echo $config->default_windows_username; ?>' /> eg: administrator</p>
+				<p><label for='windows_username'><?php echo __("User")?>: </label><input type='text' id='windows_username' name='windows_username' tabindex='3' title='User' value='<?php echo $config->default_windows_username; ?>' /> eg: administrator</p>
 
-				<p><label for='password'><?php echo __("Password")?>: </label><input type='text' id='password' name='password' tabindex='4' title='Password' value='<?php echo $config->default_windows_password; ?>' /></p>
+				<p><label for='windows_password'><?php echo __("Password")?>: </label><input type='<?php echo $password_field; ?>' id='windows_password' name='windows_password' tabindex='4' title='Password' value='<?php echo $config->default_windows_password; ?>' /></p>
 
-				<p><label for='domain'><?php echo __("Domain Name")?>: </label><input type='text' id='domain' name='domain' tabindex='5' title='Domain Name' value='<?php echo $config->default_windows_domain; ?>'  /> eg: open-audit.local</p>
+				<p><label for='windows_domain'><?php echo __("Domain Name")?>: </label><input type='text' id='windows_domain' name='windows_domain' tabindex='5' title='Domain Name' value='<?php echo $config->default_windows_domain; ?>'  /> eg: open-audit.local</p>
 
 				<p><label for='number_of_audits'># <?php echo __("Audits")?>: </label><input type='text' id='number_of_audits' name='number_of_audits' tabindex='6' title='# Audits' value='20'  /> This is the number of audit processes that will be spawned at any given time.</p>
 

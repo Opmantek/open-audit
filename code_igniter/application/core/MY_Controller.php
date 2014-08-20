@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -290,6 +290,7 @@ class MY_Controller extends CI_Controller {
 		if ($this->data['heading'] == "Devices Discovered 30") {$i = "Daily Discovered Devices"; }
 		if ($this->data['heading'] == "Devices Not Seen 30") {$i = "Devices Not Seen"; }
 		if ($this->data['heading'] == "Device Types") {$i = "data"; }
+		if ($this->data['heading'] == "OS Types") {$i = "data"; }
 		if ($this->data['heading'] == "Locations") {$i = "locations"; }
 		if (count($query) > 0) {
 			echo "{\"$i\": [\n";
@@ -319,7 +320,7 @@ class MY_Controller extends CI_Controller {
 			$items .= "\n]}";
 			echo $items;
 		} else {
-			if ($this->data['heading'] == "Device Types") {
+			if ($this->data['heading'] == "Device Types" or $this->data['heading'] == "OS Types") {
 				echo "{\"$i\": [{\"y\": 100, \"count\": 0, \"name\": \"No Devices\"}]}";
 			} else {
 				echo "{\"$i\": [{\"x\": \"" . time() . "\", \"y\": 0}]}";

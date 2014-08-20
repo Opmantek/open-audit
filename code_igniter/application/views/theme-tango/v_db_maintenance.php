@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -118,7 +118,28 @@
 		</tbody>
 	</table>
 </fieldset>
-
+<br />
+<fieldset id="details" class="niceforms">
+	<legend><span style="font-size: 12pt;">&nbsp;All Attributes</span></legend>
+	<table cellspacing="1" class="tablesorter">
+		<thead>
+			<tr>
+				<th>Table</th>
+				<th style="text-align: center;" width="10%">Count</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($all_hw_attributes as $attribute) { ?><tr>
+				<td><?php echo $attribute->table; ?></td>
+				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
+			</tr><?php } ?>
+			<?php foreach ($all_sw_attributes as $attribute) { ?><tr>
+				<td><?php echo $attribute->table; ?></td>
+				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
+			</tr><?php } ?>
+		</tbody>
+	</table>
+</fieldset>
 
 <script type="text/javascript">
 	function newdays(e){

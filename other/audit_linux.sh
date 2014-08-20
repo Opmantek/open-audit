@@ -26,7 +26,7 @@
 # *****************************************************************************
 
 # @package Open-AudIT
-# @version 1.3.2
+# @version 1.4
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 ########################################################
@@ -706,7 +706,8 @@ fi
 
 
 # Get OS bits
-system_pc_os_bit=`$OA_UNAME -i | $OA_GREP x86_64 | $OA_CUT -d_ -f2`
+#system_pc_os_bit=`$OA_UNAME -i | $OA_GREP x86_64 | $OA_CUT -d_ -f2`
+system_pc_os_bit=`$OA_UNAME -i | $OA_GREP 64 | $OA_CUT -d_ -f2`
 if [ -z $system_pc_os_bit ]; then
 	system_pc_os_bit=32
 fi

@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -134,8 +134,11 @@ class M_netstat extends MY_Model {
 					}
 					$t_program = trim($t_program);
 					$t_explode = explode("/", $t_program);
-					$i->program = $t_explode[1];
-					if ($i->protocol != '') { $input_array[] = $i; }
+					$i->program = @$t_explode[1];
+					if (!isset($i->program)) { $i->program = ''; }
+					if ($i->protocol != '') { 
+						$input_array[] = $i;
+					}
 				}
 			}
 		}

@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -179,60 +179,9 @@ function receive_man_class() {
 }
 
 function display_man_type() {
-	type_text = "<select id='man_type' onchange='send_type();'> \
-	<option value=' '><?php echo __("Choose a type"); ?><\/option> \
-	<option value='access point'><?php echo __("Access Point"); ?><\/option> \
-	<option value='access server'><?php echo __("Access Server"); ?><\/option> \
-	<option value='access token'><?php echo __("Access Token"); ?><\/option> \
-	<option value='adsl modem'><?php echo __("ADSL Modem"); ?><\/option> \
-	<option value='alarm'><?php echo __("Alarm"); ?><\/option> \
-	<option value='bdsl modem'><?php echo __("BDSL Modem"); ?><\/option> \
-	<option value='building management'><?php echo __("Building Management"); ?><\/option> \
-	<option value='cable modem'><?php echo __("Cable Modem"); ?><\/option> \
-	<option value='cell phone'><?php echo __("Cell Phone"); ?><\/option> \
-	<option value='cisco module'><?php echo __("Cisco Module"); ?><\/option> \
-	<option value='chassis'><?php echo __("Chassis"); ?><\/option> \
-	<option value='computer'><?php echo __("Computer"); ?><\/option> \
-	<option value='dsl modem'><?php echo __("DSL Modem"); ?><\/option> \
-	<option value='dslam'><?php echo __("DSLAM"); ?><\/option> \
-	<option value='firewall'><?php echo __("Firewall"); ?><\/option> \
-	<option value='game console'><?php echo __("Game Console"); ?><\/option> \
-	<option value='gateway'><?php echo __("Gateway"); ?><\/option> \
-	<option value='ip phone'><?php echo __("IP Phone"); ?><\/option> \
-	<option value='kvm'><?php echo __("KVM (Keyboard, Video, Mouse switch)"); ?><\/option> \
-	<option value='load balancer'><?php echo __("Load Balancer"); ?><\/option> \
-	<option value='mobile modem'><?php echo __("Mobile Modem"); ?><\/option> \
-	<option value='nas'><?php echo __("NAS (Network Attached Storage)"); ?><\/option> \
-	<option value='network device'><?php echo __("Network Device"); ?><\/option> \
-	<option value='network ids'><?php echo __("Network IDS (Intrusion Detection)"); ?><\/option> \
-	<option value='network printer'><?php echo __("Network Printer"); ?><\/option> \
-	<option value='network scanner'><?php echo __("Network Scanner"); ?><\/option> \
-	<option value='pdu'><?php echo __("Power Distribution Unit"); ?><\/option> \
-	<option value='phone'><?php echo __("Phone"); ?><\/option> \
-	<option value='point of sale'><?php echo __("Point of Sale"); ?><\/option> \
-	<option value='printer'><?php echo __("Printer"); ?><\/option> \
-	<option value='projector'><?php echo __("Projector"); ?><\/option> \
-	<option value='remote access controller'><?php echo __("Remote Access Controller (ILO \/ RSA)"); ?><\/option> \
-	<option value='router'><?php echo __("Router"); ?><\/option> \
-	<option value='san'><?php echo __("SAN (Storage Area Network)"); ?><\/option> \
-	<option value='satellite phone'><?php echo __("Satellite Phone"); ?><\/option> \
-	<option value='scanner'><?php echo __("Scanner"); ?><\/option> \
-	<option value='security camera'><?php echo __("Security Camera"); ?><\/option> \
-	<option value='smart phone'><?php echo __("Smart Phone"); ?><\/option> \
-	<option value='switch'><?php echo __("Switch"); ?><\/option> \
-	<option value='tablet'><?php echo __("Tablet"); ?><\/option> \
-	<option value='unknown'><?php echo __("Unknown"); ?><\/option> \
-	<option value='ups'><?php echo __("UPS (Uninterruptible Power Supply)"); ?><\/option> \
-	<option value='voip adapter'><?php echo __("VoIP Adapter"); ?><\/option> \
-	<option value='voip gateway'><?php echo __("VoIP Gateway"); ?><\/option> \
-	<option value='voip phone'><?php echo __("VoIP Phone"); ?><\/option> \
-	<option value='vpn terminator'><?php echo __("VPN Terminator"); ?><\/option> \
-	<option value='wan accelerator'><?php echo __("WAN Accelerator"); ?><\/option> \
-	<option value='wap'><?php echo __("WAP (Wireless Access Point)"); ?><\/option> \
-	<option value='web cache'><?php echo __("Web Cache"); ?><\/option> \
-	<option value='webcam'><?php echo __("Webcam"); ?><\/option> \
-	<option value='wireless router'><?php echo __("Wireless Router"); ?><\/option> \
-	<\/select>";
+	// we now pass the list of device types from the controller
+	// see the file controllers/include_device_types.php to edit
+	type_text = "<select id='man_type' onchange='send_type();'><?php foreach($device_types as $key => $value) { echo "<option value='$key'>" . __("$value") . "</option>"; } ?><\/select>";
 	document.getElementById("man_type_select").innerHTML = type_text;
 }
 

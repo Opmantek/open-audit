@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -76,7 +76,7 @@
 				 			
 				 			<?php if ($config->nmis == 'y') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
 				 			
-				 			<?php if (count($network) > 0 and ($system[0]->man_type != 'computer' or $system[0]->man_class == 'hypervisor')) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_network.png" /><a href="#" id="toggle_summary_network_interfaces">Network Interfaces</a></li> <?php } ?>
+				 			<?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_network.png" /><a href="#" id="toggle_summary_network_interfaces">Network Interfaces</a></li> <?php } ?>
 				 			
 				 			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_cell_phone.png" /><a href="#" id="toggle_summary_phone">Phone Details</a></li> <?php } ?>
 						 	
@@ -87,7 +87,8 @@
 					</li>
 					<?php 
 					# the computer device type specific menu items are in the below file
-					if ($system[0]->man_type == 'computer' and $system[0]->man_class != 'hypervisor') {
+					#if ($system[0]->man_type == 'computer' and $system[0]->man_class != 'hypervisor') {
+					if ($system[0]->man_type == 'computer') {
 						include "v_display_inc_menu.php"; 
 					}
 					?>

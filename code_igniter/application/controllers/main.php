@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -43,6 +43,114 @@ class main extends MY_Controller
     public function index()
     {
         redirect('main/list_groups/');
+    }
+
+	public function api_index()
+	{
+		$level = $this->uri->segment(3, 0);
+		if (isset($_POST['level'])) {
+			$level = $_POST['level'];
+		}
+		if ($level !== 'min' AND $level !== 'select' AND $level !== 'max') {
+			$level = 'min';
+		}
+		$this->load->model('m_systems');
+		$result = $this->m_systems->api_index($level);
+		for ($count = 0; $count<count($result); $count++) {
+			$result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
+			foreach ($result[$count] as $key => $value) {
+				if (is_numeric($value)) {
+					$result[$count]->$key = intval($result[$count]->$key);
+				}
+			}
+		}
+		echo json_encode($result);
+		header('Content-Type: application/json');
+		//header('Content-Disposition: attachment;filename=api_index_' . $level . '.json');
+		header('Cache-Control: max-age=0');
+	}
+
+    public function api_node_resource()
+    {
+        $system_id = $this->uri->segment(3, 0);
+        if (isset($_POST['system_id'])) {
+            $system_id = $_POST['system_id'];
+        }
+        $resource = $this->uri->segment(4, 'system');
+        if (isset($_POST['resource'])) {
+            $resource = $_POST['resource'];
+        }
+        $attribute = $this->uri->segment(5, '*');
+        if (isset($_POST['attribute'])) {
+            $attribute = $_POST['attribute'];
+        }
+        $this->load->model('m_oa_general');
+        $result = $this->m_oa_general->get_system_attribute_api($resource, $attribute, $system_id);
+        if (is_array($result)) {
+            for ($count = 0; $count<count($result); $count++) {
+                $result[$count]->system_id = $system_id;
+                foreach ($result[$count] as $key => $value) {
+                    if (is_numeric($value)) {
+                        $result[$count]->$key = intval($result[$count]->$key);
+                    }
+                    if ($key == 'man_ip_address') {
+                        $result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
+                    }
+                }
+            }
+        }
+        echo json_encode($result);
+        header('Content-Type: application/json');
+        header('Cache-Control: max-age=0');
+    }
+
+    public function api_node_config()
+    {
+        $system_id = $this->uri->segment(3, 0);
+        if (isset($_POST['system_id'])) {
+            $system_id = $_POST['system_id'];
+        }
+
+        if (isset($system_id) and $system_id != '') {
+            $this->load->model('m_oa_general');
+            $document = array();
+            $list = array('system', 'sys_hw_bios', 'sys_sw_group', 'sys_hw_hard_drive', 'sys_sw_software', 'sys_hw_network_card_ip', 'sys_hw_memory', 
+                'sys_hw_motherboard', 'sys_sw_netstat', 'sys_hw_network_card', 'sys_hw_partition', 'sys_hw_processor', 'sys_sw_route', 'sys_sw_service', 
+                'sys_sw_share', 'sys_sw_software_library', 'sys_sw_software_update', 'sys_sw_user', 'sys_sw_variable', 'sys_sw_windows');
+            foreach($list as $table) {
+                $result = $this->m_oa_general->get_system_document_api($table, $system_id);
+                if (is_array($result) AND count($result) != 0) {
+                    $document["$table"] = new stdclass();
+                    for ($count = 0; $count<count($result); $count++) {
+                        #$result[$count]->system_id = $system_id;
+                        foreach ($result[$count] as $key => $value) {
+                            if (is_numeric($value)) {
+                                $result[$count]->$key = intval($result[$count]->$key);
+                            }
+                            // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
+                            if ($key == 'man_ip_address' or 
+                                $key == 'destination'    or 
+                                $key == 'ip_address_v4'  or
+                                $key == 'next_hop') {
+                                $result[$count]->$key = ip_address_from_db($result[$count]->$key);
+                            }
+                            if ($key == 'ip_address_v4' and ($value == '000.000.000.000' or $value == '0.0.0.0')) {
+                                $result[$count]->ip_address_v4 = '';
+                            }
+                        }
+                    }
+                    $document["$table"] = $result;
+                }
+            }
+            
+        } else {
+            $this->load->model('m_systems');
+            $document = $this->m_systems->api_index('list');
+
+        }
+        echo json_encode($document);
+        header('Content-Type: application/json');
+        header('Cache-Control: max-age=0');
     }
 
     public function view_org()
@@ -638,10 +746,15 @@ class main extends MY_Controller
         $this->data['webserver'] = $this->m_webserver->get_system_webserver($this->data['id']);
         $this->data['website_details'] = $this->m_webserver->get_system_websites($this->data['id']);
 
+
+        include('include_device_types.php');
+        $this->data['device_types'] = $device_types;
+
         # TODO: add in browser addons and odbc drivers
 
         # only show to users with 'view sensitive details' level of access access level >= 7
         if ($this->data['access_level'] >= '7') {
+
             $this->load->model("m_software_key");
             $this->data['software_key'] = $this->m_software_key->get_system_key($this->data['id']);
 
@@ -655,17 +768,19 @@ class main extends MY_Controller
             $this->data['decoded_access_details']->windows_password = '';
             $this->data['decoded_access_details']->windows_domain = '';
 
-            if (isset($this->data['system'][0]->access_details)
-                and json_decode($this->data['system'][0]->access_details) != '') {
-                $this->load->library('encrypt');
+            if (isset($this->data['system'][0]->access_details)) {
 
+                $this->load->library('encrypt');
+                
                 $this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
                 $this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
                 // echo "<pre>\n";
                 // print_r($this->data['system'][0]->access_details);
-                // echo "\nDECODE: " . json_decode($this->data['decoded_access_details']) . "\n";
+                // echo "\nDECODE: \n";
                 // print_r($this->data['decoded_access_details']);
                 // echo "</pre>\n";
+
+                if (!isset($this->data['decoded_access_details'])) { $this->data['decoded_access_details'] = new stdClass(); }
 
                 if (!isset($this->data['decoded_access_details']->ip_address)) {
                     $this->data['decoded_access_details']->ip_address = '';
@@ -823,6 +938,27 @@ class main extends MY_Controller
                 if ($this->session->userdata('user_admin') == 'y') {
                     $this->m_oa_group->edit_user_groups($details);
                 }
+                // Reset the admin user password in OAE
+                if ($details->user_name == 'admin') {
+                    $server_os = php_uname('s');
+                    if ($server_os == 'Windows NT') {
+                        $command_string = 'c:\xampplite\apache\bin\htpasswd.exe -mb c:\omk\conf\users.dat admin ' . $details->user_password . ' 2>&1';
+                    }
+                    if (php_uname('s') == 'Linux' OR php_uname('s') == "Darwin") {
+                        $command_string = 'htpasswd -mb /usr/local/opmojo/conf/users.dat admin ' . $details->user_password . ' 2>&1';
+                    }
+                    exec($command_string, $output, $return_var);
+                    if ($return_var != '0') {
+                        $error = 'C:admin_user F:edit_user Admin user password reset attempt for Open-AudIT and Open-AudIT Enterprise has failed';
+                        $this->log_function($error);
+                    } else {
+                        $log = 'C:admin_user F:edit_user Admin user password reset successful for Open-AudIT and Open-AudIT Enterprise';
+                        $this->log_function($log);
+                    }
+                    $command_string = NULL;
+                    $output = NULL;
+                    $return_var = NULL;
+                }
                 redirect('admin_user/list_users');
             }
         }
@@ -915,6 +1051,12 @@ class main extends MY_Controller
                 $i = file('/etc/issue.net');
                 $data['os_version'] = trim($i[0]);
             }
+            if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
+            } else if (file_exists('/usr/local/opmojo/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/opmojo/conf/opCommon.nmis';
+            }
+
             if ((stripos($data['os_version'], 'red') !== false) and (stripos($data['os_version'], 'hat') !== false)) { $data['os_platform'] = 'Linux (Redhat)'; }
             if (stripos($data['os_version'], 'centos') !== false) { $data['os_platform'] = 'Linux (Redhat)'; }
             if (stripos($data['os_version'], 'fedora') !== false) { $data['os_platform'] = 'Linux (Redhat)'; }
@@ -924,12 +1066,10 @@ class main extends MY_Controller
             if (stripos($data['os_version'], 'mint') !== false) { $data['os_platform'] = 'Linux (Debian)'; }
 
             if ($data['os_platform'] == 'Linux (Debian)') {
-                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
                 $phpini = '/etc/php5/apache2/php.ini';
                 $package_install = 'apt-get install';
             }
             if ($data['os_platform'] == 'Linux (Redhat)') {
-                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
                 $phpini = '/etc/php.ini';
                 $package_install = 'yum install';
             }
@@ -1168,9 +1308,9 @@ class main extends MY_Controller
 
         # oae server
         if (stripos($data['os_platform'], 'linux') !== false) {
-            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_server';
+            $command_string = 'cat ' . $opCommon . ' | grep oae_server';
         } elseif ($data['os_platform'] == 'Windows') {
-            $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_server"';
+            $command_string = 'type ' . $opCommon . ' | find "oae_server"';
         }
         exec($command_string, $output, $return_var);
         if (isset($output[0])) {
@@ -1197,7 +1337,7 @@ class main extends MY_Controller
         # Intelligent hints about incorrect configuration
 
         if ($data['oae_server'] != 'http://127.0.0.1/open-audit/') {
-            $hints['oae_server'] = 'You have Open-AudIT Enterprise installed on this server, but it is not pointing at the correct URL for Open-AudIT. It should be set to http://127.0.0.1/open-audit/ in the file ' . $opCommon;
+            $hints['oae_server'] = 'You have Open-AudIT Enterprise installed on this server, but it is not pointing at the correct URL for Open-AudIT. It should be set to http://127.0.0.1/open-audit/ in the file ' . $opCommon . ', it is currently set to ' . $data['oae_server'];
         }
 
         $t1 = FCPATH . SELF;
@@ -1284,5 +1424,27 @@ class main extends MY_Controller
                 return('y');
             }
         }
+
+    public function log_function($log_details, $display='n')
+    {
+        // setup the log file
+        if ((php_uname('s') == 'Linux') OR (php_uname('s') == 'Darwin')) {
+            $file = "/usr/local/open-audit/other/open-audit.log";
+        } else {
+            $file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+        }
+        $log_timestamp = date("M d H:i:s");
+        $log_hostname = php_uname('n');
+        $log_pid = getmypid();
+        $log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
+        $handle = fopen($file, "a");
+        fwrite($handle, $log_line);
+        fclose($handle);
+        if ($display != 'n') {
+            if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+                echo "LOG   - " . $log_line;
+            }
+        }
+    }
 
 }

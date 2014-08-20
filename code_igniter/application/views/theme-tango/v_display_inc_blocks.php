@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -54,7 +54,7 @@
 					<p><label for="windows_time_daylight"><?php echo __('Time (daylight)')?>: </label><span id="windows_time_daylight"><?php echo print_something($key->windows_time_daylight)?></span></p>
 					<p><label for="windows_part_of_domain"><?php echo __('Part of Domain')?>: </label><span id="windows_part_of_domain"><?php echo print_something($key->windows_part_of_domain)?></span></p>
 					<p><label for="windows_domain_role"><?php echo __('Domain Role')?>: </label><span id="windows_domain_role"><?php echo print_something($key->windows_domain_role)?></span></p>
-					<p><label for="os_install_date"><?php echo __('OS Install Date')?>: </label><span id="os_install_date"><?php echo print_something($os_install_date)?></span></p>
+					<p><label for="os_install_date"><?php echo __('OS Install Date')?>: </label><span id="os_install_date"><?php echo print_something($system[0]->pc_date_os_installation)?></span></p>
 				</div>
 				<div style="float:left; width:40%;">
 					<p><label for="windows_domain_short"><?php echo __('Domain')?>: </label><span id="windows_domain_short"><?php echo print_something($key->windows_domain_short)?></span></p>
@@ -116,6 +116,7 @@
 					<p><label for="processor_cores"><?php echo __('Total Processor Cores')?>: </label><span id="processor_cores" class="form_field"><?php echo $key->processor_cores?></span></p>
 					<p><label for="processor_logical" style="white-space: nowrap;"><?php echo __('Total Logical Processors')?>: </label><span id="processor_logical" class="form_field"><?php echo $key->processor_logical?></span></p>
 					<p><label for="processor_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="processor_manufacturer" class="form_field"><?php echo $key->processor_manufacturer?></span></p>
+					<p><label for="processor_architecture"><?php echo __('Architecture')?>: </label><span id="processor_architecture" class="form_field"><?php echo $key->processor_architecture?></span></p>
 					<?php endforeach; ?>
 					<?php echo display_custom_field('view_hardware_processor',  $additional_fields_data, $edit); ?>
 			</fieldset>
@@ -275,18 +276,18 @@
 						</thead>
 						<tbody>
 <?php
-				$ip_count = 0;
-				foreach ($ip as $ip_address) {
-					if ($ip_address->net_mac_address == $key->net_mac_address) {
-						$ip_address_displayed = '000.000.000.000';
-						if ($ip_address->ip_address_version == '6') {
-							$ip_address_displayed = $ip_address->ip_address_v6;
-						} else {
-							$ip_address_displayed = ip_address_from_db($ip_address->ip_address_v4);
-						}
-						$ip_count ++;
-						echo "							<tr><td>" . print_something($ip_address_displayed) . "</td><td>" . print_something($ip_address->ip_subnet) . "</td><td>" . print_something($ip_address->ip_address_version) . "</td></tr>\n";
-				}
+					$ip_count = 0;
+					foreach ($ip as $ip_address) {
+						if ($ip_address->net_mac_address == $key->net_mac_address and $ip_address->net_index == $key->net_index) {
+							$ip_address_displayed = '000.000.000.000';
+							if ($ip_address->ip_address_version == '6') {
+								$ip_address_displayed = $ip_address->ip_address_v6;
+							} else {
+								$ip_address_displayed = ip_address_from_db($ip_address->ip_address_v4);
+							}
+							$ip_count ++;
+							echo "							<tr><td>" . print_something($ip_address_displayed) . "</td><td>" . print_something($ip_address->ip_subnet) . "</td><td>" . print_something($ip_address->ip_address_version) . "</td></tr>\n";
+					}
 				}
 				if ($ip_count == 0) { ?>
 				<tr>
@@ -384,13 +385,14 @@
 						</div>
 						<div style="float:left; width:40%; vertical-align:top;">
 							<p><label for='hd_size_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Size')?>: </label><span id='hd_size_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo number_format($key->hard_drive_size); ?> MiB&nbsp;</span></p>
-							<p><label for='hd_serial_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('SMART Status')?>: </label><span id='hd_status_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_status?>&nbsp;</span></p>
+							<p><label for='hd_status_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('SMART Status')?>: </label><span id='hd_status_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_status?>&nbsp;</span></p>
 							<?php if ($key->hard_drive_interface_type == "SCSI") { ?>
 							<p><label for='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Interface')?>: </label><span id='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_interface_type?></span></p>
 							<p><label for='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>'><?php echo __('SCSI id')?>: </label><span id='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>' class="form_field"><?php echo $key->hard_drive_scsi_logical_unit?></span></p>
 							<?php } else { ?>
 							<p><label for='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Interface')?>: </label><span id='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_interface_type?>&nbsp;</span></p>
 							<?php } ?>
+							<p><label for='hd_firmware_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Firmware')?>: </label><span id='hd_firmware_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_firmware?>&nbsp;</span></p>
 						</div>
 					</div>
 					<table cellspacing="1" class="tablesorter" width="900">

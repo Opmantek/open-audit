@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -194,9 +194,9 @@
 							<th align="left"><?php echo __('ID')?></th>
 							<th><?php echo __('By')?>&nbsp;&nbsp;&nbsp;</th>
 							<th><?php echo __('Type')?></th>
+							<th><?php echo __('Audited On')?></th>
 							<th><?php echo __('Submitted On')?></th>
 							<th><?php echo __('Submitted From')?></th>
-							<th><?php echo __('Audited On')?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -205,6 +205,7 @@
 							<td><?php echo print_something($key->system_audits_id)?></td>
 							<td><?php echo print_something($key->system_audits_username)?></td>
 							<td><?php echo print_something($key->system_audits_type)?></td>
+							<td><?php echo print_something($key->system_audits_time)?></td>
 							<td><?php echo print_something($key->timestamp)?></td>
 							<?php 
 							if (isset($key->system_audits_ip)) {
@@ -212,7 +213,6 @@
 							} else {
 								echo "<td></td>";
 							} ?>
-							<td><?php echo print_something($key->system_audits_time)?></td>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -360,7 +360,7 @@
 				<p><label for="man_serial_sim"><?php echo __('SIM Serial')?>: </label><span id="man_serial_sim" <?php echo $edit?>><?php echo print_something($key->man_serial_sim)?></span><?php echo $edit_icon; ?></p>
 			<?php 
 			endforeach;
-			echo display_custom_field('view_summary_purchase', $additional_fields_data, $edit);
+			echo display_custom_field('view_summary_phone', $additional_fields_data, $edit);
 			?>
 		</fieldset>
 	</form>
@@ -432,7 +432,6 @@
 		</form>
 	</div>
 
-
 	<div id="view_summary_vms" style="float: left; width: 100%;">
 	<?php if (count($vm) > 0) { ?>
 		<br />
@@ -491,7 +490,7 @@
 
 	
 	<div id="view_summary_network_interfaces" style="float: left; width: 100%;">
-	<?php if (count($network) > 0 and ($system[0]->man_type != 'computer' or $system[0]->man_class == 'hypervisor')) { ?>
+	<?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?>
 		<br />
 		<br />
 		<form action="#" method="post" class="niceforms">
@@ -502,9 +501,11 @@
 					<table cellspacing="1" class="tablesorter" width="100%">
 						<thead>
 							<tr>
+								<th>Index</th>
 								<th>MAC Address</th>
 								<th>Connection ID</th>
 								<th>Description</th>
+								<th>Alias</th>
 								<th>Type</th>
 								<th>Enabled</th>
 								<th>Speed</th>
@@ -512,9 +513,11 @@
 						</thead>
 						<tbody>
 						<?php foreach($network as $key) { ?><tr>
+								<td><?php echo $key->net_index; ?></td>
 								<td><?php echo $key->net_mac_address; ?></td>
 								<td><?php echo $key->net_connection_id; ?></td>
 								<td><?php echo $key->net_description; ?></td>
+								<td><?php echo $key->net_alias; ?></td>
 								<td><?php echo $key->net_adapter_type; ?></td>
 								<td><?php echo $key->net_ip_enabled; ?></td>
 								<?php if (intval($key->net_speed) < 1000) {
@@ -539,6 +542,7 @@
 					<table cellspacing="1" class="tablesorter" width="100%">
 						<thead>
 							<tr>
+								<th>Index</th>
 								<th>MAC Address</th>
 								<th>Interface</th>
 								<th>IP Address</th>
@@ -549,6 +553,7 @@
 						<?php foreach ($ip as $ip_address) { 
 							if ($ip_address->net_connection_id != '') {
 								$ip_address->net_connection_id = $ip_address->net_connection_id . " - "; }?><tr>
+							<td><?php echo $ip_address->net_index; ?></td>
 							<td><?php echo $ip_address->net_mac_address; ?></td>
 							<td><?php echo $ip_address->net_connection_id . $ip_address->net_description; ?></td>
 							<td><?php echo "<span style=\"display: none;\">" . $ip_address->ip_address_v4 . "</span>" . print_something(ip_address_from_db($ip_address->ip_address_v4))?></td>

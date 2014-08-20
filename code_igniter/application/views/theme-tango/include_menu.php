@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -62,7 +62,7 @@
 	usort($menu, "cmp");
 	
 	if (isset($group_id)){
-		echo "<li><a href='" . base_url() . "index.php/main/list_devices/" . $group_id . "'>" . mb_strtoupper(__('Reports')) . "</a>\n";
+		echo "<li><a href='" . base_url() . "index.php/main/list_devices/" . $group_id . "'>" . mb_strtoupper(__('Queries')) . "</a>\n";
 		echo "<ul>\n";
 		echo "<li style=\"width:200px;\"><a href='" . base_url() . "index.php/main/list_devices/" . $group_id . "'>List Items</a></li>\n";
 		foreach ($menu as $report):
@@ -143,7 +143,7 @@
 			<li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
 				<ul>
 					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/windows'><?php echo __('Discover a Windows computer')?></a></li>
-					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/linux'><?php echo __('Discover a Linux computer')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/linux'><?php echo __('Discover a device using SSH')?></a></li>
 					<li><a href='<?php echo base_url()?>index.php/discovery/discover_subnet/snmp'><?php echo __('Discover a device using SNMP')?></a></li>
 					<li><a href='<?php echo base_url()?>index.php/discovery/discover_active_directory'><?php echo __('Discover Active Directory')?></a></li>
 					<li><a href='<?php echo base_url()?>index.php/admin/scan_ad'><?php echo __('Import Active Directory')?></a></li>
@@ -180,11 +180,11 @@
 				</ul>
 			</li>
 			
-			<li><a href='javascript:void(0)'><?php echo __('Reports')?></a>
+			<li><a href='javascript:void(0)'><?php echo __('Queries')?></a>
 				<ul>
-					<li><a href='<?php echo base_url()?>index.php/admin_report/list_reports'><?php echo __('List Reports')?></a></li>
-					<li><a href='<?php echo base_url()?>index.php/admin_report/activate_report'><?php echo __('Activate Report')?></a></li>
-					<li><a href='<?php echo base_url()?>index.php/admin_report/import_report'><?php echo __('Import Report')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin_report/list_reports'><?php echo __('List Queries')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin_report/activate_report'><?php echo __('Activate Query')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin_report/import_report'><?php echo __('Import Query')?></a></li>
 				</ul>
 			</li>
 

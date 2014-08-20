@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.2
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -131,13 +131,29 @@ class Admin_db extends MY_Controller
         $this->data['count_alerts'] = $this->m_alerts->count_alerts();
         $this->data['count_alerts_days'] = $this->m_alerts->count_alerts_days($this->data['days']);
 
-        # attributes
+        # old attributes
         $this->data['non_current_attributes'] = $this->m_oa_general->count_old_attributes($this->data['days']);
         $count = 0;
         foreach ($this->data['non_current_attributes'] as $attribute) {
             $count = $count + $attribute->count;
         }
         $this->data['count_non_current_attributes'] = $count;
+
+        # all attributes hw
+        $this->data['all_hw_attributes'] = $this->m_oa_general->count_all_hw_attributes();
+        $count = 0;
+        foreach ($this->data['all_hw_attributes'] as $attribute) {
+            $count = $count + $attribute->count;
+        }
+        $this->data['count_all_hw_attributes'] = $count;
+
+        # all attributes sw
+        $this->data['all_sw_attributes'] = $this->m_oa_general->count_all_sw_attributes();
+        $count = 0;
+        foreach ($this->data['all_sw_attributes'] as $attribute) {
+            $count = $count + $attribute->count;
+        }
+        $this->data['count_all_sw_attributes'] = $count;
 
         $this->data['count_temp'] = $this->m_oa_admin_database->count_all_rows('oa_temp');
 

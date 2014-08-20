@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.3.2
+' @version 1.4
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -125,7 +125,8 @@ if (help = "y") then
 	wscript.echo "Open-AudIT Domain Audit Script"
 	wscript.echo "(c) Opmantek, 2014."
 	wscript.echo "------------------------------"
-	wscript.echo "This script should be run on a Windows based computer. It queries Active Directory and spawns an audit for each Windows computer found."
+	wscript.echo "This script should be used on a Windows based computer to discover Active Directory computers."
+	wscript.echo "It queries Active Directory and spawns an audit for each Windows computer found."
 	wscript.echo ""
 	wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
 	wscript.echo ""

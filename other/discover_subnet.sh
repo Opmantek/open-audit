@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.3.2
+# @version 1.4
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -71,7 +71,9 @@ if [ "$help" == "y" ]; then
 	echo "Open-AudIT Linux Discovery script"
 	echo "(c) Opmantek, 2014.              "
 	echo "---------------------------------"
-	echo "This script should be used on a Linux based computer to discover hosts in a subnet. This script is designed to be called by the Open-AudIT web GUI, not run directly from the command line."
+	echo "This script should be used on a Linux based computer to discover hosts in a subnet."
+	echo "It will run nmap against the target subnet and submit the result."
+	echo "This script is designed to be called by the Open-AudIT web GUI, not run directly from the command line."
 	echo ""
 	echo "Nmap and Wget are prerequisites for this script to function correctly."
 	echo ""
@@ -210,6 +212,8 @@ if [[ "$hosts" != "" ]]; then
 		mac_address=""
 		manufacturer=""
 		description=""
+		os_group=""
+		os_family=""
 		os_name=""
 		type="unknown"
 
@@ -243,9 +247,92 @@ if [[ "$hosts" != "" ]]; then
 			fi
 
 			NEEDLE="Running:"
-			if [[ "$line" == *"$NEEDLE"* ]]; then 
+			if [[ "$line" == "$NEEDLE"* ]]; then 
 				os_name=$(echo "$line" | cut -d":" -f2 | cut -d "," -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+
+				NEEDLE="Cisco IOS"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Cisco"
+					os_family="Cisco IOS"
+				fi
+
+				NEEDLE="Windows"
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					os_group="Windows"
+					NEEDLE="Vista"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows Vista"
+					fi
+					NEEDLE="7"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 7"
+					fi
+					NEEDLE="8"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 8"
+					fi
+					NEEDLE="2003"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 2003"
+					fi
+					NEEDLE="2008"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 2008"
+					fi
+					NEEDLE="2012"
+					if [[ "$line" == *"$NEEDLE"* ]]; then
+						os_family="Windows 2012"
+					fi
+				fi
+				NEEDLE="IRIX"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Irix"
+				fi
+				NEEDLE="OpenBSD"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="BSD"
+					os_family="Open BSD"
+				fi
+				NEEDLE="FreeBSD"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="BSD"
+					os_family="Free BSD"
+				fi
+				NEEDLE="NetBSD"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="BSD"
+					os_family="Net BSD"
+				fi
+				NEEDLE="SunOS"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="SunOS"
+				fi
+				NEEDLE="Solaris"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Solaris"
+				fi
+				NEEDLE="Linux"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Linux"
+				fi
+				NEEDLE="VMware"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="VMware"
+					os_family="VMware ESXi"
+				fi
+				NEEDLE="Apple Mac OS X"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Apple"
+					os_family="Apple OSX"
+				fi
+				NEEDLE="Apple iOS"
+				if [[ "$line" == *"$NEEDLE"* ]]; then 
+					os_group="Apple"
+					os_family="Apple IOS"
+				fi
+
 			fi
+
 
 			NEEDLE="Running (JUST GUESSING):"
 			if [[ "$line" == *"$NEEDLE"* ]]; then 
@@ -311,20 +398,14 @@ if [[ "$hosts" != "" ]]; then
 				tel_status="true"
 		fi
 
-		# test for telnet
-		ipmi_status="false"
-		command=$(nmap -n -sU -p623 "$host" 2>/dev/null | grep "623/udp open")
-		if [[ "$command" == *"623/udp open"* ]]; then
-				ipmi_status="true"
-				type="remote access controller"
-		fi
-
 		result="	<device>"$'\n'
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
 		result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
 		result="$result		<mac_address>$mac_address</mac_address>"$'\n'
 		result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
 		result="$result		<type><![CDATA[$type]]></type>"$'\n'
+		result="$result		<os_group><![CDATA[$os_group]]></os_group>"$'\n'
+		result="$result		<os_family><![CDATA[$os_family]]></os_family>"$'\n'
 		result="$result		<os_name><![CDATA[$os_name]]></os_name>"$'\n'
 		result="$result		<description><![CDATA[$description]]></description>"$'\n'
 		result="$result		<org_id>$org_id</org_id>"$'\n'
@@ -334,7 +415,6 @@ if [[ "$hosts" != "" ]]; then
 		result="$result		<p80_status>$p80_status</p80_status>"$'\n'
 		result="$result		<p443_status>$p443_status</p443_status>"$'\n'
 		result="$result		<tel_status>$tel_status</tel_status>"$'\n'
-		result="$result		<ipmi_status>$ipmi_status</ipmi_status>"$'\n'
 		result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
 		result="$result	</device>"
 
