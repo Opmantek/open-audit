@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -40,6 +40,7 @@ if (!isset($this->session->userdata["user_lang"]) or $this->session->userdata["u
 }
 
 $language_file = APPPATH . "/views/lang/" . $GLOBALS["user_lang"] . ".inc";
+$language_file = APPPATH . "views/lang/" . $GLOBALS["user_lang"] . ".inc";
 
 include($language_file);
 
@@ -56,7 +57,7 @@ if(!function_exists('__')) {
 			$language_file = APPPATH . "views/lang/" . $GLOBALS["user_lang"] . ".inc";
 			include($language_file);
 		}
-
+		$word = (string)$word;
 		if(isset($GLOBALS["lang"][$word]))
 		{
 			return $GLOBALS["lang"][$word];

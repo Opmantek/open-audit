@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -51,6 +51,8 @@ class M_system extends MY_Model {
 
 	function create_system_key($details) {
 
+		$log = "M:system F:create_system_key System Key being generated for $details->hostname"; $this->log_event($log);
+
 		$details = (object) $details;
 		if (!isset($details->system_key)) {
 			$details->system_key = '';
@@ -70,19 +72,22 @@ class M_system extends MY_Model {
 			isset($details->hostname) and $details->hostname != '') { 
 				$details->system_key = $details->uuid . "-" . $details->hostname; 
 				$details->system_key_type = 'uuho';
+				$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type uuho"; $this->log_event($log);
 		}
 
 		# this is anything that has a FQDN
 		if  ((isset($details->fqdn) and $details->fqdn != '') and ($details->system_key_type != 'uuho')) {
 			$details->system_key = $details->fqdn;
 			$details->system_key_type = 'fqdn';
+			$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type fqdn"; $this->log_event($log);
 		}
 
 		# We might have only a serial number
 		# if this is all we have, we also require a type.
 		# first check to make sure we have a type or man_type
-		if ((!isset($details->type) or $details->type == '') and 
-			isset($details->man_type) and $details->man_type != '') { $details->type = $details->man_type; }
+		if ((!isset($details->type) or $details->type == '') and isset($details->man_type) and $details->man_type != '') { 
+			$details->type = $details->man_type;
+		}
 
 		# next check if we also have a serial and set the system_key if so
 		if (isset($details->serial) and $details->serial != '') {
@@ -90,6 +95,7 @@ class M_system extends MY_Model {
 				if ($details->system_key_type  != 'uuho' and $details->system_key_type != 'fqdn') {
 					$details->system_key = $details->type . "_" . $details->serial;
 					$details->system_key_type = 'tyse';
+					$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type tyse"; $this->log_event($log);
 				}
 			}
 		}
@@ -101,8 +107,12 @@ class M_system extends MY_Model {
 
 			$details->system_key = $details->man_ip_address;
 			$details->system_key_type = 'ipad';
+			$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type ipad"; $this->log_event($log);
 		}
-#echo "<pre>SystemKey: " . $details->system_key . "<br />\n";
+
+		if ($details->system_key == '') {
+			$log = "M:system F:create_system_key System Key is blank for $details->hostname ERROR"; $this->log_event($log);
+		}
 		return $details->system_key;
 	}
 
@@ -114,43 +124,41 @@ class M_system extends MY_Model {
 		$details = (object) $details;
 		$details->system_id = '';
 
-#echo "INSIDE find_system. System Key is " . $details->system_key . "<br />";
-
 		# check system_key
-		if (isset($details->system_key) and ($details->system_id == '')) {
+		if (isset($details->system_key) and $details->system_id == '') {
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
 			$data = array("$details->system_key");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { 
-				$details->system_id = $row->system_id; 
-#echo "HIT on system_key. " . $details->system_id . "<br />";
+				$details->system_id = $row->system_id;
+				$log = "M:system F:find_system HIT on system_key for $details->man_ip_address"; $this->log_event($log);
 			} 
 		}
 
 		# check if the previous hostname had 15 characters and the submittied hostname has > 15
-		if (isset($details->hostname) and (strlen($details->hostname) > 15) and (isset($details->uuid))) {
+		if (isset($details->hostname) and strlen($details->hostname) > 15 and isset($details->uuid) and $details->system_id == '') {
 			$temp_uuid = $details->uuid . "-" . substr($details->hostname, 0, 15);
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
 			$data = array("$temp_uuid");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { 
-				$details->system_id = $row->system_id; 
-#echo "HIT on truncated system_key. " . $details->system_id . "<br />";
+				$details->system_id = $row->system_id;
+				$log = "M:system F:find_system HIT on truncated system_key for $details->man_ip_address"; $this->log_event($log);
 			} 
 		}
 
 		# use the full hostname as provided
-		if (isset($details->hostname) and isset($details->uuid)) {
+		if (isset($details->hostname) and isset($details->uuid) and $details->system_id == '') {
 			$temp_uuid = $details->uuid . "-" . $details->hostname;
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
 			$data = array("$temp_uuid");
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { 
-				$details->system_id = $row->system_id; 
-#echo "HIT on full hostname + uuid system_key. " . $details->system_id . "<br />";
+				$details->system_id = $row->system_id;
+				$log = "M:system F:find_system HIT on hostname + uuid system_key for $details->man_ip_address"; $this->log_event($log);
 			} 
 		}
 
@@ -161,8 +169,8 @@ class M_system extends MY_Model {
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { 
-				$details->system_id = $row->system_id; 
-#echo "HIT on fqdn. " . $details->system_id . "<br />";
+				$details->system_id = $row->system_id;
+				$log = "M:system F:find_system HIT on fqdn for $details->man_ip_address"; $this->log_event($log);
 			} 
 		}
 
@@ -174,8 +182,8 @@ class M_system extends MY_Model {
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0) { 
-				$details->system_id = $row->system_id; 
-#echo "HIT on host + domain. " . $details->system_id . "<br />";
+				$details->system_id = $row->system_id;
+				$log = "M:system F:find_system HIT on host + domain for $details->man_ip_address"; $this->log_event($log);
 			} 			
 		}
 
@@ -184,7 +192,7 @@ class M_system extends MY_Model {
 		if (!isset($details->mac_address) and (isset($details->mac))) {$details->mac_address = $details->mac;}
 
 		# check MAC Address - this caters for a single mac address, usually from a nmap result
-		if (isset($details->mac_address) and $details->mac_address > '' and ($details->system_id == '')) {
+		if (isset($details->mac_address) and $details->mac_address > '' and $details->system_id == '') {
 			# check the sys_hw_network_card_ip table
 			$sql = "SELECT system.system_id FROM system 
 					LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
@@ -195,27 +203,30 @@ class M_system extends MY_Model {
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 			if (count($row) > 0 ) { 
-				$details->system_id = $row->system_id; 
-#echo "Hit on MAC Address.";
+				$details->system_id = $row->system_id;
+				$log = "M:system F:find_system HIT on mac address for $details->man_ip_address"; $this->log_event($log);
 			}
 		}
 
 		# check all MAC addresses - this caters for an actual audit script result
-		if (isset($details->mac_addresses) and count($details->mac_addresses) > 0) {
+		if (isset($details->mac_addresses) and count($details->mac_addresses) > 0 and $details->system_id == '') {
 			foreach ($details->mac_addresses as $mac_address) {
 				foreach ($mac_address as $mac) {
-					# check the sys_hw_network_card_ip table
-					$sql = "SELECT system.system_id FROM system 
-							LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
-							WHERE LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(?) 
-							AND system.man_status = 'production' LIMIT 1";
-					$sql = $this->clean_sql($sql);
-					$data = array("$mac");
-					$query = $this->db->query($sql, $data);
-					$row = $query->row();
-					if (count($row) > 0 ) { 
-						$details->system_id = $row->system_id; 
-#echo "Hit on MAC Address from audit result.\n";
+					if ($mac != '') {
+						# check the sys_hw_network_card_ip table
+						$sql = "SELECT system.system_id FROM system 
+								LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND 
+									system.timestamp = sys_hw_network_card_ip.timestamp) 
+								WHERE LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(?) 
+								AND system.man_status = 'production' LIMIT 1";
+						$sql = $this->clean_sql($sql);
+						$data = array("$mac");
+						$query = $this->db->query($sql, $data);
+						$row = $query->row();
+						if (count($row) > 0 ) { 
+							$details->system_id = $row->system_id;
+							$log = "M:system F:find_system HIT on mac address from audit result for " . strtolower($mac) . " (System ID " . $row->system_id . ")"; $this->log_event($log);
+						}
 					}
 				}
 			}
@@ -234,7 +245,7 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) {  
 				$details->system_id = $row->system_id;
-#echo "Hit on man_ip_address == system_key in system table.";
+				$log = "M:system F:find_system HIT on man_ip_address == system_key for $details->man_ip_address"; $this->log_event($log);
 			}
 
 
@@ -244,8 +255,8 @@ class M_system extends MY_Model {
 				$query = $this->db->query($sql, $data);
 				$row = $query->row();
 				if (count($row) > 0) {  
-					$details->system_id = $row->system_id; 
-#echo "Hit on man_ip_address in system table.";
+					$details->system_id = $row->system_id;
+					$log = "M:system F:find_system HIT on man_ip_address for $details->man_ip_address"; $this->log_event($log);
 				}
 			}
 
@@ -260,15 +271,15 @@ class M_system extends MY_Model {
 				$query = $this->db->query($sql, $data);
 				$row = $query->row();
 				if (count($row) > 0) { 
-					$details->system_id = $row->system_id; 
-#echo "Hit on ip_address in network table.";
+					$details->system_id = $row->system_id;
+					$log = "M:system F:find_system HIT on ip_address in network table for $details->man_ip_address"; $this->log_event($log);
 				}
 			}
 		}
 
 		# check serial
 		# in this case, we also need to know a TYPE
-		if ((isset($details->serial) and ($details->serial > '') and ($details->system_id == ''))) {
+		if (isset($details->serial) and $details->serial > '' and $details->system_id == '') {
 			if ((!isset($details->type) or $details->type == '') and 
 				isset($details->man_type) and $details->man_type != '') { 
 				$details->type = $details->man_type; }
@@ -288,14 +299,14 @@ class M_system extends MY_Model {
 					$row = $query->row();
 					if (count($row) > 0) { 
 						$details->system_id = $row->system_id;
-#echo "Hit on serial in system table.";
+						$log = "M:system F:find_system HIT on serial for $details->man_ip_address"; $this->log_event($log);
 					}
 				}
 			}
 		}
 
 		# check man_serial
-		if ((isset($details->man_serial) and ($details->man_serial > '') and ($details->system_id == ''))) {
+		if (isset($details->man_serial) and $details->man_serial > '' and $details->system_id == '') {
 			if (isset($details->man_type) and $details->man_type > '') {$man_type = $details->man_type; } 
 			if (!isset($man_type)) { $man_type = ''; }
 			if (isset($details->type) and $details->type > '') {$type = $details->type; }
@@ -305,8 +316,8 @@ class M_system extends MY_Model {
 				$query = $this->db->query($sql, $data);
 				$row = $query->row();
 				if (count($row) > 0) { 
-					$details->system_id = $row->system_id; 
-#echo "Hit on man_serial in system table.";
+					$details->system_id = $row->system_id;
+					$log = "M:system F:find_system HIT on man_serial for $details->man_ip_address"; $this->log_event($log);
 				}
 			}
 		}
@@ -321,7 +332,7 @@ class M_system extends MY_Model {
 
 		if (isset($name_match) and $name_match == "y") {
 			# check hostname
-			if (isset($details->hostname) and ($details->system_id == '') ) {
+			if (isset($details->hostname) and $details->hostname != '' and $details->system_id == '') {
 				$i = explode(".", $details->hostname);
 				$hostname = $i[0];
 				$sql = "SELECT system.system_id FROM system WHERE (hostname = ? or hostname = ?) AND system.man_status = 'production'";
@@ -330,12 +341,12 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id; 
-#echo "Hit on hostname in system table.";
+					$log = "M:system F:find_system HIT on hostname for $details->man_ip_address"; $this->log_event($log);
 				}
 			}
 
 			# check short hostname in $details
-			if (isset($details->hostname) and ($details->system_id == '') ) {
+			if (isset($details->hostname) and $details->hostname != '' and $details->system_id == '') {
 				if (isset($details->hostname_length) and $details->hostname_length == 'short') {
 					# we grabbed the hostname from SNMP.
 					# SNMP hostnames on Windows are truncated to 15 characters
@@ -347,8 +358,8 @@ class M_system extends MY_Model {
 						$query = $this->db->query($sql);
 						$row = $query->row();
 						if (count($row) > 0) { 
-							$details->system_id = $row->system_id; 
-#echo "Hit on hostname short in details.";
+							$details->system_id = $row->system_id;
+							$log = "M:system F:find_system HIT on hostname short for $details->man_ip_address"; $this->log_event($log);
 						}
 					}
 				}
@@ -365,14 +376,18 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id; 
-#echo "Hit on hostname in system table.";
+					$log = "M:system F:find_system HIT on short hostname $details->man_ip_address"; $this->log_event($log);
 				}
 			}
 		}
 
-		#echo "Returning SystemID: " . $details->system_id . "<br />\n";
+		$i = @(string)$details->system_id;
+		if (is_null($i) or $i == '') { 
+			$log = "M:system F:find_system Returning system id <none>"; $this->log_event($log);
+		} else {
+			$log = "M:system F:find_system Returning system id $i"; $this->log_event($log);
+		}
 		return $details->system_id;
-
 	}
 
 	function process_system_from_ad($details) {
@@ -687,7 +702,7 @@ class M_system extends MY_Model {
 	}
 
 	function get_system_summary($system_id) {
-		$sql = "SELECT * FROM system WHERE system.system_id = ? LIMIT 1";
+		$sql = "SELECT system.*, location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE system.system_id = ? LIMIT 1";
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
@@ -937,8 +952,10 @@ class M_system extends MY_Model {
 		if ((strripos($details->manufacturer, "vmware") !== false) or 
 			(strripos($details->manufacturer, "parallels") !== false) or 
 			(strripos($details->manufacturer, "virtual") !== false)) {
-			$details->form_factor = 'Virtual';
-			$details->man_form_factor = 'Virtual';
+			if (!isset($details->man_class) or $details->man_class != 'hypervisor') {
+				$details->form_factor = 'Virtual';
+				$details->man_form_factor = 'Virtual';
+			}
 		}
 
 		$details->man_ip_address = ip_address_to_db($details->man_ip_address);
@@ -1316,10 +1333,8 @@ class M_system extends MY_Model {
 		# finally, update the device icon
 		$this->m_system->reset_icons($details->system_id);
 
-		if (isset($details->mac_address) and 
-			$details->mac_address != '' and 
-			isset($details->man_ip_address) and 
-			$details->man_ip_address != ''){
+		if (isset($details->mac_address) and $details->mac_address != '' and 
+			isset($details->man_ip_address) and $details->man_ip_address != ''){
 			# we need to check if we have an entry in sys_hw_network_card
 			# if we do not, but we have details (ex- an nmap device that previously existed but did not have a MAC, but now does)
 			# we need to insert it.
@@ -1355,7 +1370,7 @@ class M_system extends MY_Model {
 			}
 
 			# search for any entries in both sys_hw_network_card_ip
-			$sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+			$sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
 			$data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
 			$query = $this->db->query($sql, $data);
 			$result = $query->result();
@@ -1367,7 +1382,7 @@ class M_system extends MY_Model {
 				$query = $this->db->query($sql, $data);
 			} else {
 				# match - update timestamp only
-				$sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+				$sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
 				$data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
 				$query = $this->db->query($sql, $data);
 			}
@@ -1496,9 +1511,9 @@ class M_system extends MY_Model {
 			if ($details->icon == '') { $details->icon = 'unknown'; }
 			$details->icon = str_replace(" ", "_", strtolower($details->icon));
 			if ($details->man_icon == "computer" or 
-				$details->man_icon = "unknown" or 
-				$details->man_icon = "general purpose" or 
-				$details->man_icon = "" ) {
+				$details->man_icon == "unknown" or 
+				$details->man_icon == "general purpose" or 
+				$details->man_icon == "" ) {
 				$details->man_icon = $details->icon;
 			}
 			$sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
@@ -1659,6 +1674,30 @@ class M_system extends MY_Model {
 	    }
 		return($decoded_access_details);
 	}
+
+
+    public function log_event($log_details, $display='y')
+    {
+        # setup the log file
+        if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
+            $file = "/usr/local/open-audit/other/open-audit.log";
+        } else {
+            $file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+        }
+
+        $log_timestamp = date("M d H:i:s");
+        $log_hostname = php_uname('n');
+        $log_pid = getmypid();
+        $log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
+        $handle = fopen($file, "a");
+        fwrite($handle, $log_line);
+        fclose($handle);
+        if ($display != 'n') {
+            if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
+                echo "LOG   - " . $log_line;
+            }
+        }
+    }
 
 }
 

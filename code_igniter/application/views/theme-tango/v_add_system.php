@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -47,55 +47,7 @@ echo form_open('admin_system/add_system') . "\n";
 	<p><?php echo $error_message; ?>&nbsp;</p>
 	<p><label for='man_type'><?php echo __("Type")?>: </label>
 		<select id='man_type' name='man_type' tabindex='1' style='width: 135px' onchange='select_device();'>
-			<option value=''>&nbsp;</option>
-			<option value='access point'>Access Point</option>
-			<option value='access server'>Access Server</option>
-			<option value='access token'>Access Token</option>
-			<option value='adsl modem'>ADSL Modem</option>
-			<option value='alarm'>Alarm</option>
-			<option value='bdsl modem'>BDSL Modem</option>
-			<option value='building management'>Building Management</option>
-			<option value='cable modem'>Cable Modem</option>
-			<option value='cell phone'>Cell Phone</option>
-			<option value='cisco module'>Cisco Module</option>
-			<option value='computer'>Computer</option>
-			<option value='chassis'>Chassis</option>
-			<option value='dsl modem'>DSL Modem</option>
-			<option value='firewall'>Firewall</option>
-			<option value='game console'>Game Console</option>
-			<option value='gateway'>Gateway</option>
-			<option value='ip phone'>IP Phone</option>
-			<option value='kvm'>KVM (Keyboard, Video, Mouse switch)</option>
-			<option value='load balancer'>Load Balancer</option>
-			<option value='mobile modem'>Mobile Modem</option>
-			<option value='nas'>NAS (Network Attached Storage)</option>
-			<option value='network device'>Network Device</option>
-			<option value='network ids'>Network IDS (Intrusion Detection)</option>
-			<option value='network printer'>Network Printer</option>
-			<option value='network scanner'>Network Scanner</option>
-			<option value='phone'>Phone</option>
-			<option value='point of sale'>Point of Sale</option>
-			<option value='printer'>Printer</option>
-			<option value='projector'>Projector</option>
-			<option value='remote access controller'>Remote Access Controller (ILO / RSA)</option>
-			<option value='router'>Router</option>
-			<option value='san'>SAN (Storage Area Network)</option>
-			<option value='satellite phone'>Satellite Phone</option>
-			<option value='scanner'>Scanner</option>
-			<option value='security camera'>Security Camera</option>
-			<option value='smart phone'>Smart Phone</option>
-			<option value='switch'>Switch</option>
-			<option value='tablet'>Tablet</option>
-			<option value='ups'>UPS (Uninteruptable Power Supply)</option>
-			<option value='voip_adapter'>VoIP Adapter</option>
-			<option value='voip gateway'>VoIP Gateway</option>
-			<option value='voip phone'>VoIP Phone</option>
-			<option value='vpn_terminator'>VPN Terminator</option>
-			<option value='wan accelerator'>WAN Accelerator</option>
-			<option value='wap'>WAP (Wireless Access Point)</option>
-			<option value='web cache'>Web Cache</option>
-			<option value='webcam'>Web Camera</option>
-			<option value='wireless router'>Wireless Router</option>
+			<?php foreach($device_types as $key => $value) { echo "<option value='$key'>" . __("$value") . "</option>\n"; } ?>
 		</select>
 	</p>
 	<p><label for='notes1'> </label><span id='notes1' style='color: blue;'>*</span> You must have at least one of the blue attributes.<br />

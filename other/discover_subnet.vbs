@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.3.1
+' @version 1.4
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -109,7 +109,9 @@ if (help = "y") then
 	wscript.echo "Open-AudIT Subnet Audit Script"
 	wscript.echo "(c) Opmantek, 2014.           "
 	wscript.echo "------------------------------"
-	wscript.echo "This script should be run on a Windows based computer. It queries Active Directory and spawns an audit for each Windows computer found."
+	wscript.echo "This script should be used on a Windows based computer to discover hosts in a subnet."
+	wscript.echo "It will run nmap against the target subnet and submit the result."
+	wscript.echo "This script is designed to be called by the Open-AudIT web GUI, not run directly from the command line."
 	wscript.echo ""
 	wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
 	wscript.echo ""
@@ -269,6 +271,8 @@ for each host in hosts_in_subnet
 	dim manufacturer : manufacturer = ""
 	dim system_type : system_type = "unknown"
 	dim description : description = ""
+	dim os_group : os_group = ""
+	dim os_family : os_family = ""
 	dim os_name : os_name = ""
 	dim i
 
@@ -311,6 +315,51 @@ for each host in hosts_in_subnet
 			os_name = replace(os_name, ")", "")
 			os_name = replace(os_name, "(", "")
 			os_name = trim(os_name)
+			if (instr(lcase(line), "cisco ios")) then
+				os_group = "Cisco"
+				os_family="Cisco IOS"
+			end if
+			if (instr(lcase(line), "windows")) then
+				os_group = "Windows"
+				if (instr(lcase(line), "vista")) then os_family = "Windows Vista" end if
+				if (instr(lcase(line), "7")) then os_family = "Windows 7" end if
+				if (instr(lcase(line), "8")) then os_family = "Windows 8" end if
+				if (instr(lcase(line), "2003")) then os_family = "Windows 2003" end if
+				if (instr(lcase(line), "2008")) then os_family = "Windows 2008" end if
+				if (instr(lcase(line), "2012")) then os_family = "Windows 2012" end if
+			end if
+			if (instr(lcase(line), "irix")) then
+				os_group = "IRIX"
+			end if
+			if (instr(lcase(line), "openbsd")) then
+				os_group = "BSD"
+				os_family = "Open BSD"
+			end if
+			if (instr(lcase(line), "freebsd")) then
+				os_group = "BSD"
+				os_family = "Free BSD"
+			end if
+			if (instr(lcase(line), "netbsd")) then
+				os_group = "BSD"
+				os_family = "Net BSD"
+			end if
+			if (instr(lcase(line), "sunos")) then
+				os_group = "SunOS"
+			end if
+			if (instr(lcase(line), "solaris")) then
+				os_group = "Solaris"
+			end if
+			if (instr(lcase(line), "linux")) then
+				os_group = "Linux"
+			end if
+			if (instr(lcase(line), "vmware")) then
+				os_group = "VMware"
+				os_family = "VMware ESXi"
+			end if
+			if (instr(lcase(line), "apple mac os x")) then
+				os_group="Apple"
+				os_family="Apple OSX"
+			end if
 		end if
 
 		if instr(lcase(line), "running (just guessing):") and os_name = "" then
@@ -419,7 +468,6 @@ for each host in hosts_in_subnet
 		wmi_status = "true"
 	end if
 
-
 	dim result
 	
 	result = "	<device>" & vbcrlf
@@ -428,6 +476,8 @@ for each host in hosts_in_subnet
 	result = result & "		<mac_address>" & mac_address & "</mac_address>" & vbcrlf
 	result = result & "		<manufacturer><![CDATA[" & manufacturer & "]]></manufacturer>" & vbcrlf
 	result = result & "		<type><![CDATA[" & system_type & "]]></type>" & vbcrlf
+	result = result & "		<os_group><![CDATA[" & os_group & "]]></os_group>" & vbcrlf
+	result = result & "		<os_family><![CDATA[" & os_family & "]]></os_family>" & vbcrlf
 	result = result & "		<os_name><![CDATA[" & os_name & "]]></os_name>" & vbcrlf
 	result = result & "		<description><![CDATA[" & description & "]]></description>" & vbcrlf
 	result = result & "		<snmp_status>" & snmp_status & "</snmp_status>" & vbcrlf
@@ -474,11 +524,14 @@ for each host in hosts_in_subnet
 		end if
 	end if
 
-	if echo_output = "y" then
-		wscript.echo result
-	end if
+	' if echo_output = "y" then
+	' 	wscript.echo result
+	' end if
 next
 
+if echo_output = "y" then
+	wscript.echo "<devices>" & result_file & "<device><subnet_range>" & subnet_range & "</subnet_range><subnet_timestamp>" & subnet_timestamp & "</subnet_timestamp><complete>y</complete></device></devices>"
+end if
 
 
 if submit_online = "y" then
@@ -489,7 +542,7 @@ if submit_online = "y" then
 		Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
 		objHTTP.setTimeouts 5000, 5000, 5000, 120000
 		objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-		objHTTP.Open "POST", url, False
+		objHTTP.Open "POST", url, TRUE
 		objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
 		objHTTP.Send "form_details=" + resultcomplete + vbcrlf
 	on error goto 0
@@ -498,9 +551,9 @@ if submit_online = "y" then
 		log_entry = "Result complete send failed for " & subnet_range & " submitted at " & subnet_timestamp
 		write_log
 	else
-		if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp end if
-		log_entry = "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp
-		write_log
+		'if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp end if
+		'log_entry = " for " & subnet_range & " submitted at " & subnet_timestamp
+		'write_log
 	end if
 end if
 

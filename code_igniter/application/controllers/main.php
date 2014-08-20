@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -43,6 +43,114 @@ class main extends MY_Controller
     public function index()
     {
         redirect('main/list_groups/');
+    }
+
+	public function api_index()
+	{
+		$level = $this->uri->segment(3, 0);
+		if (isset($_POST['level'])) {
+			$level = $_POST['level'];
+		}
+		if ($level !== 'min' AND $level !== 'select' AND $level !== 'max') {
+			$level = 'min';
+		}
+		$this->load->model('m_systems');
+		$result = $this->m_systems->api_index($level);
+		for ($count = 0; $count<count($result); $count++) {
+			$result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
+			foreach ($result[$count] as $key => $value) {
+				if (is_numeric($value)) {
+					$result[$count]->$key = intval($result[$count]->$key);
+				}
+			}
+		}
+		echo json_encode($result);
+		header('Content-Type: application/json');
+		//header('Content-Disposition: attachment;filename=api_index_' . $level . '.json');
+		header('Cache-Control: max-age=0');
+	}
+
+    public function api_node_resource()
+    {
+        $system_id = $this->uri->segment(3, 0);
+        if (isset($_POST['system_id'])) {
+            $system_id = $_POST['system_id'];
+        }
+        $resource = $this->uri->segment(4, 'system');
+        if (isset($_POST['resource'])) {
+            $resource = $_POST['resource'];
+        }
+        $attribute = $this->uri->segment(5, '*');
+        if (isset($_POST['attribute'])) {
+            $attribute = $_POST['attribute'];
+        }
+        $this->load->model('m_oa_general');
+        $result = $this->m_oa_general->get_system_attribute_api($resource, $attribute, $system_id);
+        if (is_array($result)) {
+            for ($count = 0; $count<count($result); $count++) {
+                $result[$count]->system_id = $system_id;
+                foreach ($result[$count] as $key => $value) {
+                    if (is_numeric($value)) {
+                        $result[$count]->$key = intval($result[$count]->$key);
+                    }
+                    if ($key == 'man_ip_address') {
+                        $result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
+                    }
+                }
+            }
+        }
+        echo json_encode($result);
+        header('Content-Type: application/json');
+        header('Cache-Control: max-age=0');
+    }
+
+    public function api_node_config()
+    {
+        $system_id = $this->uri->segment(3, 0);
+        if (isset($_POST['system_id'])) {
+            $system_id = $_POST['system_id'];
+        }
+
+        if (isset($system_id) and $system_id != '') {
+            $this->load->model('m_oa_general');
+            $document = array();
+            $list = array('system', 'sys_hw_bios', 'sys_sw_group', 'sys_hw_hard_drive', 'sys_sw_software', 'sys_hw_network_card_ip', 'sys_hw_memory', 
+                'sys_hw_motherboard', 'sys_sw_netstat', 'sys_hw_network_card', 'sys_hw_partition', 'sys_hw_processor', 'sys_sw_route', 'sys_sw_service', 
+                'sys_sw_share', 'sys_sw_software_library', 'sys_sw_software_update', 'sys_sw_user', 'sys_sw_variable', 'sys_sw_windows');
+            foreach($list as $table) {
+                $result = $this->m_oa_general->get_system_document_api($table, $system_id);
+                if (is_array($result) AND count($result) != 0) {
+                    $document["$table"] = new stdclass();
+                    for ($count = 0; $count<count($result); $count++) {
+                        #$result[$count]->system_id = $system_id;
+                        foreach ($result[$count] as $key => $value) {
+                            if (is_numeric($value)) {
+                                $result[$count]->$key = intval($result[$count]->$key);
+                            }
+                            // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
+                            if ($key == 'man_ip_address' or 
+                                $key == 'destination'    or 
+                                $key == 'ip_address_v4'  or
+                                $key == 'next_hop') {
+                                $result[$count]->$key = ip_address_from_db($result[$count]->$key);
+                            }
+                            if ($key == 'ip_address_v4' and ($value == '000.000.000.000' or $value == '0.0.0.0')) {
+                                $result[$count]->ip_address_v4 = '';
+                            }
+                        }
+                    }
+                    $document["$table"] = $result;
+                }
+            }
+            
+        } else {
+            $this->load->model('m_systems');
+            $document = $this->m_systems->api_index('list');
+
+        }
+        echo json_encode($document);
+        header('Content-Type: application/json');
+        header('Cache-Control: max-age=0');
     }
 
     public function view_org()
@@ -139,7 +247,7 @@ class main extends MY_Controller
         }
         $data['systems'] = array();
         foreach ($_POST as $key => $value) {
-            if ((mb_strpos($key, 'system_') !== false) and ($value != '')) {
+            if ((mb_strpos($key, 'system_') === 0) and ($value != '')) {
                 $item = array($key, $value);
                 array_push($data['systems'], ($item));
                 $item = null;
@@ -161,9 +269,11 @@ class main extends MY_Controller
                 }
             }
         }
+
         foreach ($_POST as $field_name => $field_data) {
             # input all the manual fields
-            if (((mb_strpos($field_name, 'man_') !== false) or (mb_strpos($field_name, 'nmis_') !== false)) && ($field_data != '')) {
+            if (((mb_strpos($field_name, 'man_') !== false) or 
+                (mb_strpos($field_name, 'nmis_') !== false)) && ($field_data != '')) {
                 foreach ($data['systems'] as $system) {
                     $this->m_system->update_system_man($system[1], $field_name, $field_data);
                     $this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
@@ -576,6 +686,7 @@ class main extends MY_Controller
         $this->load->model("m_sys_man_audits");
         $this->load->model("m_user");
         $this->load->model("m_variable");
+        $this->load->model("m_virtual_machine");
         $this->load->model("m_video");
         $this->load->model("m_webserver");
         $this->load->model("m_windows");
@@ -587,25 +698,19 @@ class main extends MY_Controller
         $sort = $this->m_additional_fields->get_additional_fields($this->data['id']);
         sort($sort);
         $this->data['additional_fields'] = $sort;
-
         $this->data['alerts'] = $this->m_alerts->get_system_alerts($this->data['id']);
         $this->data['assembly'] = $this->m_software->get_system_software($this->data['id'], 6);
         $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
         $this->data['audit_log'] = $this->m_audit_log->get_audit_log($this->data['id']);
         $this->data['audits'] = $this->m_sys_man_audits->get_system_audits($this->data['id']);
-
-        #$this->data['bios'] = $this->m_bios->get_system_bios($this->data['id']);
         $this->data['bios'] = $this->m_oa_general->get_system_attribute('sys_hw_bios', '*', $this->data['id']);
-
         $this->data['codecs'] = $this->m_software->get_system_software($this->data['id'], 5);
         $this->data['database'] = $this->m_database->get_system_db($this->data['id']);
         $this->data['database_details'] = $this->m_database_details->get_system_db_details($this->data['id']);
         $this->data['dns'] = $this->m_dns->get_system_dns($this->data['id']);
         $this->data['hard_drive'] = $this->m_hard_drive->get_system_hard_drive($this->data['id']);
         $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
-        
         $this->data['library'] = $this->m_software->get_system_software($this->data['id'], 7);
-        
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['memory'] = $this->m_memory->get_system_memory($this->data['id']);
         $this->data['monitor'] = $this->m_monitor->get_system_monitor($this->data['id']);
@@ -623,16 +728,10 @@ class main extends MY_Controller
         $this->data['route'] = $this->m_route->get_system_route($this->data['id']);
         $this->data['scsi_controller'] = $this->m_scsi_controller->get_system_scsi_controller($this->data['id']);
         $this->data['service'] = $this->m_service->get_system_service($this->data['id']);
-
-        #$this->data['share'] = $this->m_share->get_system_share($this->data['id']);
         $this->data['share'] = $this->m_oa_general->get_system_attribute('sys_sw_share', '*', $this->data['id']);
-
         $this->data['software'] = $this->m_software->get_system_software($this->data['id'], 0);
         $this->data['sound'] = $this->m_sound->get_system_sound($this->data['id']);
-
-        #$this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
-        $this->data['system'] = $this->m_oa_general->get_attribute('system', '*', $this->data['id']);
-
+        $this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
         $this->data['system_group'] = $this->m_group->get_system_group($this->data['id']);
         $this->data['system_id'] = $this->data['id'];
         $this->data['system_location'] = $this->m_oa_location->get_system_location($this->data['id']);
@@ -642,22 +741,47 @@ class main extends MY_Controller
         $this->data['system_variable'] = $this->m_variable->get_system_variable($this->data['id']);
         $this->data['updates'] = $this->m_software->get_system_software($this->data['id'], 2);
         $this->data['video'] = $this->m_video->get_system_video($this->data['id']);
+        $this->data['vm'] = $this->m_virtual_machine->get_vm($this->data['id']);
         $this->data['windows'] = $this->m_windows->get_system_windows($this->data['id']);
         $this->data['webserver'] = $this->m_webserver->get_system_webserver($this->data['id']);
         $this->data['website_details'] = $this->m_webserver->get_system_websites($this->data['id']);
+
+
+        include('include_device_types.php');
+        $this->data['device_types'] = $device_types;
 
         # TODO: add in browser addons and odbc drivers
 
         # only show to users with 'view sensitive details' level of access access level >= 7
         if ($this->data['access_level'] >= '7') {
+
             $this->load->model("m_software_key");
             $this->data['software_key'] = $this->m_software_key->get_system_key($this->data['id']);
 
-            if ($this->data['system'][0]->access_details) {
+            $this->data['decoded_access_details'] = new stdClass();
+            $this->data['decoded_access_details']->ip_address = '';
+            $this->data['decoded_access_details']->snmp_version = '';
+            $this->data['decoded_access_details']->snmp_community = '';
+            $this->data['decoded_access_details']->ssh_username = '';
+            $this->data['decoded_access_details']->ssh_password = '';
+            $this->data['decoded_access_details']->windows_username = '';
+            $this->data['decoded_access_details']->windows_password = '';
+            $this->data['decoded_access_details']->windows_domain = '';
+
+            if (isset($this->data['system'][0]->access_details)) {
+
                 $this->load->library('encrypt');
+                
                 $this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
                 $this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
-                #echo "<pre>\n";
+                // echo "<pre>\n";
+                // print_r($this->data['system'][0]->access_details);
+                // echo "\nDECODE: \n";
+                // print_r($this->data['decoded_access_details']);
+                // echo "</pre>\n";
+
+                if (!isset($this->data['decoded_access_details'])) { $this->data['decoded_access_details'] = new stdClass(); }
+
                 if (!isset($this->data['decoded_access_details']->ip_address)) {
                     $this->data['decoded_access_details']->ip_address = '';
                 }
@@ -698,26 +822,29 @@ class main extends MY_Controller
 
         }
 
-        $this->data['include'] = "";
-        $formatted_type = str_replace(" ", "_", trim($this->data['system'][0]->man_type));
+        // $this->data['include'] = "";
+        // $formatted_type = str_replace(" ", "_", trim($this->data['system'][0]->man_type));
+        // if ($formatted_type == 'network_printer') { $formatted_type = 'printer'; }
 
-        if ($this->data['system'][0]->man_type == 'computer') {
-            if (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_computer_" . $this->data['system'][0]->man_os_group . ".php")) {
-                $this->data['include'] = "v_display_computer_" . $this->data['system'][0]->man_os_group;
-            } else {
-                $this->data['include'] = "v_display_computer";
-            }
+        // if ($this->data['system'][0]->man_type == 'computer') {
+        //     if (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_computer_" . $this->data['system'][0]->man_os_group . ".php")) {
+        //         $this->data['include'] = "v_display_computer_" . $this->data['system'][0]->man_os_group;
+        //     } else {
+        //         $this->data['include'] = "v_display_computer";
+        //     }
 
-        } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $this->data['system'][0]->man_type . ".php")) {
-            $this->data['include'] = "v_display_" . trim($this->data['system'][0]->man_type);
+        // } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $this->data['system'][0]->man_type . ".php")) {
+        //     $this->data['include'] = "v_display_" . trim($this->data['system'][0]->man_type);
 
-        } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $formatted_type . ".php")) {
-            $this->data['include'] = "v_display_" . str_replace(" ", "_", trim($this->data['system'][0]->man_type));
+        // } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $formatted_type . ".php")) {
+        //     $this->data['include'] = "v_display_" . $formatted_type;
 
-        } else {
-            $this->data['include'] = "v_display_general";
-        }
+        // } else {
+        //     $this->data['include'] = "v_display_general";
+        // }
 
+        $this->data['include'] = "v_display_device";
+        
         foreach ($this->data['system'] as $system) {
             $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
             $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
@@ -736,7 +863,7 @@ class main extends MY_Controller
                 $system->man_picture = 'custom/' . $system->system_id . '.jpg';
             }
 
-            # check if an image matching the and exists
+            # check if an image matching the model exists
             if (($system->man_picture == '') and (file_exists($model_file_exists))) {
                 $system->man_picture = '' . $model_formatted . '.jpg';
             }
@@ -811,8 +938,513 @@ class main extends MY_Controller
                 if ($this->session->userdata('user_admin') == 'y') {
                     $this->m_oa_group->edit_user_groups($details);
                 }
+                // Reset the admin user password in OAE
+                if ($details->user_name == 'admin') {
+                    $server_os = php_uname('s');
+                    if ($server_os == 'Windows NT') {
+                        $command_string = 'c:\xampplite\apache\bin\htpasswd.exe -mb c:\omk\conf\users.dat admin ' . $details->user_password . ' 2>&1';
+                    }
+                    if (php_uname('s') == 'Linux' OR php_uname('s') == "Darwin") {
+                        $command_string = 'htpasswd -mb /usr/local/opmojo/conf/users.dat admin ' . $details->user_password . ' 2>&1';
+                    }
+                    exec($command_string, $output, $return_var);
+                    if ($return_var != '0') {
+                        $error = 'C:admin_user F:edit_user Admin user password reset attempt for Open-AudIT and Open-AudIT Enterprise has failed';
+                        $this->log_function($error);
+                    } else {
+                        $log = 'C:admin_user F:edit_user Admin user password reset successful for Open-AudIT and Open-AudIT Enterprise';
+                        $this->log_function($log);
+                    }
+                    $command_string = NULL;
+                    $output = NULL;
+                    $return_var = NULL;
+                }
                 redirect('admin_user/list_users');
             }
         }
     }
+
+    public function help_support()
+    {
+        $this->load->model("m_systems");
+        $this->load->model("m_oa_admin_database");
+
+        $hints = array();
+        $data = array();
+
+        $data['application_environment'] = ENVIRONMENT;
+        $data['application_log_permission'] = '';
+        $data['application_web_version'] = $this->config->item('web_display_version');
+        $data['application_web_internal_version'] = $this->config->item('web_internal_version');
+        $data['application_db_database_version'] = $this->data['config']->display_version;
+        $data['application_db_internal_version'] = $this->data['config']->internal_version;
+        $data['application_nmis_enabled'] = $this->data['config']->nmis;
+        $data['application_nmis_url'] = $this->data['config']->nmis_url;
+        $data['application_oae_status'] = $this->data['config']->logo;
+        $data['application_name_match'] = $this->data['config']->name_match;
+        $data['application_ad_domain'] = $this->data['config']->ad_domain;
+        $data['application_ad_server'] = $this->data['config']->ad_server;
+        $data['application_permitted_uri_chars'] =  $this->config->item('permitted_uri_chars');
+        $data['application_base_url'] = $this->config->item('base_url');
+        $data['application_prod_devices'] = $this->m_systems->get_count();
+        $data['application_prod_devices_in_all'] = $this->m_systems->get_group_system_count('1');
+        $data['application_non-prod_devices'] = $this->m_systems->get_non_prod_count();
+        $data['application_temp_rows'] = $this->m_oa_admin_database->count_all_rows('oa_temp');
+
+        $data['os_platform'] = 'unknown';
+        $data['os_version'] = '';
+        $data['os_database'] = $this->db->platform() . " (version " . $this->db->version() . ")";
+        $data['os_webserver'] = getenv("SERVER_SOFTWARE");
+        $data['os_timezone'] = '';
+
+        $data['prereq_apache_mod_proxy'] = 'n';
+        $data['prereq_curl'] = 'n';
+        $data['prereq_samba-client'] = 'n';
+        $data['prereq_nmap'] = 'n';
+        $data['prereq_nmap_perms'] = '';
+        $data['prereq_php-cli'] = '';
+        $data['prereq_screen'] = 'n';
+        #$data['prereq_snmp'] = 'n';
+        $data['prereq_sshpass'] = 'n';
+        $data['prereq_wget'] = 'n';
+        $data['prereq_winexe'] = 'n';
+        $data['prereq_zip'] = 'n';
+
+
+        $data['php_version'] = phpversion();
+        $data['php_error_reporting'] = ini_get('error_reporting');
+        $data['php_timezone'] = date_default_timezone_get();
+        $data['php_process_owner'] = '';
+        $data['php_memory_limit'] = ini_get('memory_limit');
+        $data['php_max_execution_time'] = ini_get('max_execution_time');
+        $data['php_max_input_time'] = ini_get('max_input_time');
+        $data['php_display_errors'] = ini_get('display_errors');
+        $data['php_upload_max_filesize'] = ini_get('upload_max_filesize');
+        $data['php_ext_ldap'] = $this->ext('ldap');
+        $data['php_ext_mbstring'] = $this->ext('mbstring');
+        $data['php_ext_mcrypt'] = $this->ext('mcrypt');
+        $data['php_ext_mysql'] = $this->ext('mysql');
+        $data['php_ext_posix'] = $this->ext('posix');
+        $data['php_ext_snmp'] = $this->ext('snmp');
+        $data['php_ext_xml'] = $this->ext('xml');
+
+        $data['oae_link'] = '';
+        $data['oae_server'] = '';
+        $data['oae_username'] = '';
+
+
+        if (php_uname('s') == 'Windows NT') {
+            $data['os_platform'] = 'Windows';
+            $opCommon = 'c:\omk\conf\opCommon.nmis';
+            $phpini = 'c:\xampplite\php\php.ini';
+            exec("echo. |WMIC OS Get Caption", $output);
+            if (isset($output[1])) {
+                $data['os_version'] = $output[1];
+            }
+            unset($output);
+        }
+
+
+        if (php_uname('s') == 'Linux') {
+            $data['os_platform'] = 'linux';
+            if (file_exists('/etc/issue.net')) {
+                $i = file('/etc/issue.net');
+                $data['os_version'] = trim($i[0]);
+            }
+            if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
+            } else if (file_exists('/usr/local/opmojo/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/opmojo/conf/opCommon.nmis';
+            }
+
+            if ((stripos($data['os_version'], 'red') !== false) and (stripos($data['os_version'], 'hat') !== false)) { $data['os_platform'] = 'Linux (Redhat)'; }
+            if (stripos($data['os_version'], 'centos') !== false) { $data['os_platform'] = 'Linux (Redhat)'; }
+            if (stripos($data['os_version'], 'fedora') !== false) { $data['os_platform'] = 'Linux (Redhat)'; }
+
+            if (stripos($data['os_version'], 'debian') !== false) { $data['os_platform'] = 'Linux (Debian)'; }
+            if (stripos($data['os_version'], 'ubuntu') !== false) { $data['os_platform'] = 'Linux (Debian)'; }
+            if (stripos($data['os_version'], 'mint') !== false) { $data['os_platform'] = 'Linux (Debian)'; }
+
+            if ($data['os_platform'] == 'Linux (Debian)') {
+                $phpini = '/etc/php5/apache2/php.ini';
+                $package_install = 'apt-get install';
+            }
+            if ($data['os_platform'] == 'Linux (Redhat)') {
+                $phpini = '/etc/php.ini';
+                $package_install = 'yum install';
+            }
+        }
+
+
+        if (php_uname('s') == 'Darwin') {
+            $data['os_platform'] = 'OSX';
+        }
+
+
+        if ($data['os_platform'] == 'Windows') {
+            # nmap
+            $test_path = 'c:\Program Files\Nmap\Nmap.exe';
+            if ($data['prereq_nmap'] == 'n' and file_exists($test_path)) {
+                $data['prereq_nmap'] = 'c:\Program Files\Nmap\Nmap.exe';
+            }
+            $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
+            if ($data['prereq_nmap'] == 'n' and file_exists($test_path)) {
+                $data['prereq_nmap'] = 'c:\Program Files (x86)\Nmap\Nmap.exe';
+            }
+            unset($test_path);
+
+            # system timezone
+            $command_string = 'tzutil /g';
+            exec($command_string, $output, $return_var);
+            $data['os_timezone'] = @$output[0];
+
+
+            $data['application_log_permission'] = '-rw-rw-rw-';
+            $data['prereq_apache_mod_proxy'] = 'y';
+        }
+
+        if ($data['os_platform'] == 'OSX') {
+            #nmap
+            $test_path = '/usr/local/bin/nmap';
+            if (file_exists($test_path)) {
+                $data['prereq_nmap'] = 'y';
+            }
+
+        }
+
+        if (strpos($data['os_platform'], 'Linux') !== false) {
+            ### general items ###
+
+            # log file perms
+            $command_string = 'ls -l /usr/local/open-audit/other/open-audit.log | cut -d" " -f1';
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['application_log_permission'] = $output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # php process owner
+            if (extension_loaded('posix')) {
+                $i = posix_getpwuid(posix_geteuid());
+                $data['php_process_owner'] = $i['name'];
+                unset($i);
+            } else {
+                $hints['php_process_owner'] = 'No PHP posix extension loaded - cannot determine process owner.';
+                $data['php_process_owner'] = '';
+            }
+
+            # system timezone
+            if ($data['os_platform'] == 'Linux (Redhat)') {
+                $command_string = 'cat /etc/sysconfig/clock | grep ZONE | cut -d"\"" -f2';
+                exec($command_string, $output, $return_var);
+                $data['os_timezone'] = @$output[0];
+            }
+            if ($data['os_platform'] == 'Linux (Debian)') {
+                $command_string = 'cat /etc/timezone';
+                exec($command_string, $output, $return_var);
+                $data['os_timezone'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            ### prereqs ###
+
+            # curl
+            $command_string = "which curl 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_curl'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # nmap
+            $command_string = "which nmap 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0]) and strpos($output[0], 'nmap')) {
+                $data['prereq_nmap'] = $output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # nmap perms
+            $command_string = 'ls -l ' . $data['prereq_nmap'] . ' | cut -d" " -f1';
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_nmap_perms'] = $output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # screen
+            $command_string = "which screen 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_screen'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # snmp
+            // $command_string = "which snmpwalk 2>/dev/null";
+            // exec($command_string, $output, $return_var);
+            // if (isset($output[0])) {
+            //     $data['prereq_snmp'] = @$output[0];
+            // }
+            // unset($output);
+            // unset($command_string);
+            
+            # sshpass
+            $command_string = "which sshpass 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_sshpass'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+            
+            # wget
+            $command_string = "which wget 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_wget'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+            
+            # zip
+            $command_string = "which zip 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_zip'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            # winexe
+            $command_string = "which winexe 2>/dev/null";
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['prereq_winexe'] = @$output[0];
+            }
+            unset($output);
+            unset($command_string);
+
+            if ($data['os_platform'] == 'Linux (Debian)') {
+                # Samba Client
+                $command_string = "which smbclient 2>/dev/null";
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_samba-client'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+
+                # Apache Mod Proxy
+                $command_string = 'dpkg-query -s libapache2-mod-proxy-html | grep "Status: "';
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_apache_mod_proxy'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+
+                # PHP CLI
+                $command_string = 'dpkg-query -s php5-cli | grep "Status: "';
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_php-cli'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+
+            }
+
+
+            if ($data['os_platform'] == 'Linux (Redhat)') {
+                # Samba Client
+                $command_string = "which smbclient 2>/dev/null";
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_samba-client'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+
+                # Apache Mod Proxy (installed by default on RedHat)
+                $data['prereq_apache_mod_proxy'] = 'y';
+
+                # PHP CLI
+                $command_string = 'rpm -qa php-cli';
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_php-cli'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
+            }
+
+        }
+
+        unset($output);
+        unset($command_string);
+
+        ### oae config details ###
+
+        # oae link
+        if (stripos($data['os_platform'], 'linux') !== false) {
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_link';
+        } elseif ($data['os_platform'] == 'Windows') {
+            $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_link"';
+        }
+        exec($command_string, $output, $return_var);
+        if (isset($output[0])) {
+            $data['oae_link'] = @$output[0];
+            $data['oae_link'] = str_replace(",", "", str_replace("'", "", trim(str_replace("'oae_link' => '", '', @$output[0]))));
+        }
+        unset($output);
+        unset($command_string);
+
+        # oae server
+        if (stripos($data['os_platform'], 'linux') !== false) {
+            $command_string = 'cat ' . $opCommon . ' | grep oae_server';
+        } elseif ($data['os_platform'] == 'Windows') {
+            $command_string = 'type ' . $opCommon . ' | find "oae_server"';
+        }
+        exec($command_string, $output, $return_var);
+        if (isset($output[0])) {
+            $data['oae_server'] = @$output[0];
+            $data['oae_server'] = str_replace(",", "", str_replace("'", "", trim(str_replace("'oae_server' => '", '', @$output[0]))));
+        }
+        unset($output);
+        unset($command_string);
+
+        # oae user
+        if (stripos($data['os_platform'], 'linux') !== false) {
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_user';
+        } elseif ($data['os_platform'] == 'Windows') {
+            $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_user"';
+        }
+        exec($command_string, $output, $return_var);
+        if (isset($output[0])) {
+            $data['oae_username'] = str_replace(",", "", str_replace("'", "", trim(str_replace("'oae_username' => '", '', @$output[0]))));
+        }
+        unset($output);
+        unset($command_string);
+
+
+        # Intelligent hints about incorrect configuration
+
+        if ($data['oae_server'] != 'http://127.0.0.1/open-audit/') {
+            $hints['oae_server'] = 'You have Open-AudIT Enterprise installed on this server, but it is not pointing at the correct URL for Open-AudIT. It should be set to http://127.0.0.1/open-audit/ in the file ' . $opCommon . ', it is currently set to ' . $data['oae_server'];
+        }
+
+        $t1 = FCPATH . SELF;
+        $t2 = str_replace('\\', '/', $t1);
+        if ((strpos($t1, $data['oae_link'] . 'index.php') === false) and (strpos($t2, $data['oae_link'] . 'index.php') === false)) {
+            $hints['oae_link'] = FCPATH . SELF . 'The links from your Open-AudIT Enterprise config to your Open-AudIT installation do not appear correct. Please check the file ' . $opCommon . ' and set the value of oae_link to /open-audit/';
+        }
+
+        if ($data['application_environment'] != 'development') {
+            $hints['application_environment'] = 'When having issues with Open-AudIT, it is best to set the application to \'debug\' mode. To do this, go to ' . FCPATH . SELF . ' and edit the line: define(\'ENVIRONMENT\', \'' . $data['application_environment'] . '\'); This should be line 57 (or thereabouts), and change it to define(\'ENVIRONMENT\', \'development\');';
+        }
+
+        if (strpos($data['os_platform'], 'Linux') !== false) {
+            foreach ($data as $key => $value) {
+                if ((strpos($key, 'prereq') !== false) and ($value == 'n' or $value == '')) {
+                    if ($key != 'prereq_nmap_perms') {
+                        $hints[$key] = 'The prerequisite package ' . str_replace('prereq_', '', $key) . ' is missing or incorrect.';
+                        $package_name = str_replace('prereq_', '', $key);
+                        if ($package_name == 'php-cli' and $data['os_platform'] == 'Linux (Debian)') { $package_name = 'php5-cli'; }
+                        if ($key == 'prereq_winexe') { 
+                            $hints[$key] .= ' Winexe is required to be able to audit a Windows machine from a Linux Open-AudIT server. You can download Winexe from <a href="http://download.opensuse.org/repositories/home:/ahajda:/winexe/" style="color: blue; text-decoration: underline;">here</a>.'; 
+                        } else {
+                            $hints[$key] .= ' You can likely install it with "' . $package_install . ' ' . $package_name . '".';
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($data['prereq_nmap_perms'] != '-rwsr-xr-x' and 
+            $data['prereq_nmap_perms'] != '-rwsr-xr-x.' and 
+            stripos($data['os_platform'], 'linux') !== false) {
+            $hints['prereq_nmap_perms'] = 'It appears that nmap has not had its SUID set. This can be fixed by "chmod u+s ' . $data['prereq_nmap'] . '" (sans quotes).';
+        }
+
+        if ($data['application_log_permission'] != '-rw-rw-rw-' and $data['application_log_permission'] != '-rw-rw-rw-.') {
+            $hints['application_log_permission'] = 'The permissions on your open-audit log file are not set correctly. This can be fixed by "chmod 666 /usr/local/open-audit/other/open-audit.log" (sans quotes).';
+        }
+
+        if ($data['os_timezone'] != $data['php_timezone']) {
+            $hints['timezone'] = 'Your operating system and PHP timezones are different. Please ensure they are the same. Your php.ini should be found at ' . $phpini . '.';
+            if ($data['os_platform'] == 'Windows') {
+                $hints['timezone'] .= ' Please note the Windows timezones do not match (exactly) the PHP timezones. Therefore (on Windows) this warning may not be valid - just make sure you have set your timezones for Windows and PHP correctly.';
+            }
+        }
+
+        foreach ($data as $key => $value) {
+            if ((strpos($key, 'php_ext_') !== false) and ($value == 'n' or $value == '')) {
+                $hints[$key] = 'The PHP module ' . str_replace('php_ext_', '', $key) . ' is missing.';
+                if ($data['os_platform'] == 'Linux (Debian)') {
+                    $hints[$key] .= ' On Debian based Linux systems, if php-mcrypt is installed, you make need to activate it with "php5enmod ' . str_replace('php_ext_', '', $key) . '"
+                     and then restart Apache with "service apache2 restart" (both sans quotes).';
+                }
+            }
+        }
+
+        if ($data['application_prod_devices'] != $data['application_prod_devices_in_all']) {
+            $hints['application_prod_devices'] = 'You have different numbers of devices in your database, compared to the All Devices Group. You can update the devices in Groups by going to Menu -> Admin -> Groups -> List Groups and clicking the "update" icon on the right side.';
+        }
+
+        if (intval($data['application_non-prod_devices']) > 0) {
+            $hints['application_non-prod_devices'] = 'You have devices in your database in a non-production status. You can remove these devices by going to Menu -> Admin -> Database -> Database Maintenance and clicking the Delete icon to remove devices of various Status.';
+        }
+
+        if (intval($data['application_temp_rows']) > 0) {
+            $hints['application_temp_rows'] = 'You have temporary rows in your database tables. If you are certain there are no Discovery processes running you can remove these rows by going to Menu -> Admin -> Database -> Database Maintenance and clicking the Delete icon to remove Rows in Temp Table.';
+        }
+
+
+
+
+
+        $this->data['hints'] = $hints;
+        $this->data['data'] = $data;
+        $this->data['include'] = 'v_help_support';
+        $this->data['heading'] = 'Support Data';
+        $this->load->view('v_template', $this->data);
+    }
+
+        function ext($extension) {
+            if (!extension_loaded($extension)) {
+                return('n');
+            } else {
+                return('y');
+            }
+        }
+
+    public function log_function($log_details, $display='n')
+    {
+        // setup the log file
+        if ((php_uname('s') == 'Linux') OR (php_uname('s') == 'Darwin')) {
+            $file = "/usr/local/open-audit/other/open-audit.log";
+        } else {
+            $file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+        }
+        $log_timestamp = date("M d H:i:s");
+        $log_hostname = php_uname('n');
+        $log_pid = getmypid();
+        $log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
+        $handle = fopen($file, "a");
+        fwrite($handle, $log_line);
+        fclose($handle);
+        if ($display != 'n') {
+            if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+                echo "LOG   - " . $log_line;
+            }
+        }
+    }
+
 }

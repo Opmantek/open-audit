@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -155,7 +155,14 @@ class M_monitor extends MY_Model {
 		}
 
 		// new monitor
-		$sql = "SELECT monitor_id, manufacturer, model, serial FROM sys_hw_monitor WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT sys_hw_monitor.monitor_id, sys_hw_monitor.manufacturer, sys_hw_monitor.model, sys_hw_monitor.serial 
+			FROM 
+				sys_hw_monitor LEFT JOIN system ON (sys_hw_monitor.system_id = system.system_id) 
+			WHERE 
+				sys_hw_monitor.system_id = ? AND 
+				sys_hw_monitor.first_timestamp = ? AND 
+				sys_hw_monitor.first_timestamp = sys_hw_monitor.timestamp AND 
+				sys_hw_monitor.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

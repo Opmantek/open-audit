@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -36,6 +36,24 @@ class M_systems extends MY_Model {
 
 	function __construct() {
 		parent::__construct();
+	}
+
+	function api_index($level = 'min') {
+		if ($level === 'list' ) {
+			$sql = 'SELECT system_id AS id, concat("/omk/oae/node_config_documents/", system_id) as show_resource FROM system WHERE man_status = "production"';
+		}
+		if ($level === 'min' ) {
+			$sql = 'SELECT system_id, hostname, man_ip_address, man_os_name, man_type FROM system WHERE man_status = "production"';
+		}
+		if ($level === 'select' ) {
+			$sql = 'SELECT system_id, hostname, domain, man_ip_address, man_os_group, man_os_family, man_os_name, man_type, man_serial, man_model, man_manufacturer, pc_memory, pc_num_processor, man_environment, man_class FROM system WHERE man_status = "production"';
+		}
+		if ($level === 'max' ) {
+			$sql = 'SELECT * FROM system WHERE man_status = "production"';
+		}
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		return ($result);
 	}
 
 	function search($search_term = '', $group_id = '0') {
@@ -180,5 +198,23 @@ class M_systems extends MY_Model {
 		$count = $result[0]->count;
 		return($count);
 	}
+
+	function get_non_prod_count() {
+		$sql = "SELECT count(*) AS count FROM system WHERE man_status <> 'production'";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		$count = $result[0]->count;
+		return($count);
+	}
+
+	function get_group_system_count($group_id = '0') {
+		$sql = "SELECT count(*) as total FROM oa_group_sys WHERE group_id = ?";
+		$sql = $this->clean_sql($sql);
+		$data = array("$group_id");
+		$query = $this->db->query($sql, $data);
+		$row = $query->row(); 
+		return $row->total;
+	}
+
 }
 ?>

@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -68,8 +68,16 @@ class M_sys_man_audits extends MY_Model {
 			$inserted_user = '';
 		}
 
+		$timestamp = date('Y-m-d H:i:s');
+		if (isset($details->last_seen)) {
+			$timestamp = $details->last_seen;
+		} elseif (isset($details->timestamp)) {
+			$timestamp = $details->timestamp;
+		}
+
 		$sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp, system_audits_ip ) VALUES (?, ?, ?, ?, ?, ?)";
-		$data = array("$details->system_id", "$inserted_user", "$inserted_via", "$details->timestamp", date('Y-m-d H:i:s'), "$details->audits_ip");
+		#$data = array("$details->system_id", "$inserted_user", "$inserted_via", "$details->timestamp", date('Y-m-d H:i:s'), "$details->audits_ip");
+		$data = array("$details->system_id", "$inserted_user", "$inserted_via", "$timestamp", date('Y-m-d H:i:s'), "$details->audits_ip");
 		$query = $this->db->query($sql, $data);
 	}
 	

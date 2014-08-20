@@ -79,8 +79,8 @@ jQuery.NiceJForms = {
 		
 		// test if images are disabled or not
 		var testImg = document.createElement('img');
-		//$(testImg).attr("src", jQuery.NiceJForms.options.imagesPath + "blank.gif").attr("id", "imagineTest");
-		$(testImg).attr("src", "http://localhost/theme-tango/tango-files/images/default/blank.gif").attr("id", "imagineTest");
+		$(testImg).attr("src", jQuery.NiceJForms.options.imagesPath + "blank.gif").attr("id", "imagineTest");
+		//$(testImg).attr("src", "http://localhost/theme-tango/tango-files/images/default/blank.gif").attr("id", "imagineTest");
 		jQuery('body').append(testImg);
 		
 		if(testImg.complete)

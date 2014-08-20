@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -71,7 +71,7 @@ foreach($columns as $column) {
 		} else {
 			$style = '';
 		}
-		echo "\t\t\t<th style=\"text-align: $column->column_align; $style\">" . $column->column_name . "</th>\n";
+		echo "\t\t\t<th style=\"text-align: $column->column_align; $style\">" . __($column->column_name) . "</th>\n";
 	}
 }
 if ( ($manual_edit == 'y') and ($system_id = "set") ){

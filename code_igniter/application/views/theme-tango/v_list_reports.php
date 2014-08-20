@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -57,7 +57,7 @@ if (count($query) > 0)
 					$delete_pic = "<a href=\"delete_report/" . $key->report_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
 			 ?>
 			<tr>
-				<td><?php echo $key->report_name?></td>
+				<td><?php echo __($key->report_name)?></td>
 				<td align="center"><?php echo $edit_pic?></td>
 				<td align="center"><?php echo $export_pic?></td>
 				<td align="center"><?php echo $delete_pic?></td>

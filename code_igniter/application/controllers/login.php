@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -174,41 +174,134 @@ class login extends CI_Controller
 
     public function audit_my_pc()
     {
-        $filename = dirname(dirname(dirname(dirname(__FILE__)))) . "/other/audit_windows.vbs";
-        if (!file_exists($filename)) {
-            # do nothing - we don't have a template for audit_windows.vbs
-        } else {
-            $file = file($filename);
-            $variable['strcomputer'] = '.';
-            $variable['submit_online'] = 'y';
-            $variable['create_file'] = 'n';
-            $variable['url'] = base_url() . 'index.php/system';
-            $variable['use_proxy'] = 'n';
-            $variable['struser'] = '';
-            $variable['strpass'] = '';
-            $variable['org_id'] = '';
-            $variable['windows_user_work_1'] = 'physicalDeliveryOfficeName';
-            $variable['windows_user_work_2'] = 'company';
-            $variable['debugging'] = '1';
-            $variable['ping_target'] = 'n';
+        $client = 'win';
+        $client = $this->uri->segment(3, 0);
+        if ($client == '') { $client = 'win'; }
 
-            foreach ($variable as $name => $value) {
-                foreach ($file as $line_num => $line) {
-                    if (strpos($line, $name . " =") === 0) {
-                        # set the variable
-                        $file[$line_num] = $name . " = \"" . $value . "\"\n";
-                        break;
+        if ($client == 'win') {
+            # the Windows audit
+            $filename = dirname(dirname(dirname(dirname(__FILE__)))) . "/other/audit_windows.vbs";
+            if (!file_exists($filename)) {
+                # do nothing - we don't have a template for audit_windows.vbs
+            } else {
+                $file = file($filename);
+                $variable['strcomputer'] = '.';
+                $variable['submit_online'] = 'y';
+                $variable['create_file'] = 'n';
+                $variable['url'] = base_url() . 'index.php/system';
+                $variable['use_proxy'] = 'n';
+                $variable['struser'] = '';
+                $variable['strpass'] = '';
+                $variable['org_id'] = '';
+                $variable['windows_user_work_1'] = 'physicalDeliveryOfficeName';
+                $variable['windows_user_work_2'] = 'company';
+                $variable['debugging'] = '1';
+                $variable['ping_target'] = 'n';
+
+                foreach ($variable as $name => $value) {
+                    foreach ($file as $line_num => $line) {
+                        if (strpos($line, $name . " =") === 0) {
+                            # set the variable
+                            $file[$line_num] = $name . " = \"" . $value . "\"\n";
+                            break;
+                        }
                     }
                 }
+                // Set headers
+                header("Cache-Control: public");
+                header("Content-Description: File Transfer");
+                header("Content-Disposition: attachment; filename=audit_windows.vbs");
+                #header("Content-Type: application/zip");
+                #header("Content-Type: text/vbscript");
+                header("Content-Type: text/plain");
+                header("Content-Transfer-Encoding: binary");
+                foreach ($file as $line => $value) {
+                    echo $value;
+                }
             }
-            // Set headers
-            header("Cache-Control: public");
-            header("Content-Description: File Transfer");
-            header("Content-Disposition: attachment; filename=audit_windows.vbs");
-            header("Content-Type: application/zip");
-            header("Content-Transfer-Encoding: binary");
-            foreach ($file as $line => $value) {
-                echo $value;
+        }
+
+        if ($client == 'lin') {
+            # the linux audit
+            $filename = dirname(dirname(dirname(dirname(__FILE__)))) . "/other/audit_linux.sh";
+            if (!file_exists($filename)) {
+                # do nothing - we don't have a template for audit_linux.sh
+            } else {
+                $file = file($filename);
+                $variable['strcomputer'] = '.';
+                $variable['submit_online'] = 'y';
+                $variable['create_file'] = 'n';
+                $variable['url'] = base_url() . 'index.php/system';
+                $variable['use_proxy'] = 'n';
+                $variable['struser'] = '';
+                $variable['strpass'] = '';
+                $variable['org_id'] = '';
+                $variable['windows_user_work_1'] = 'physicalDeliveryOfficeName';
+                $variable['windows_user_work_2'] = 'company';
+                $variable['debugging'] = '1';
+                $variable['ping_target'] = 'n';
+
+                foreach ($variable as $name => $value) {
+                    foreach ($file as $line_num => $line) {
+                        if (strpos($line, $name . "=") === 0) {
+                            # set the variable
+                            $file[$line_num] = $name . "=\"" . $value . "\"\n";
+                            break;
+                        }
+                    }
+                }
+                // Set headers
+                header("Cache-Control: public");
+                header("Content-Description: File Transfer");
+                header("Content-Disposition: attachment; filename=audit_linux.sh");
+                header("Content-Type: text/plain");
+                #header("Content-Type: application/x-sh");
+                header("Content-Transfer-Encoding: binary");
+                foreach ($file as $line => $value) {
+                    echo $value;
+                }
+            }
+        }
+
+        if ($client == 'osx') {
+            # the linux audit
+            $filename = dirname(dirname(dirname(dirname(__FILE__)))) . "/other/audit_osx.sh";
+            if (!file_exists($filename)) {
+                # do nothing - we don't have a template for audit_linux.sh
+            } else {
+                $file = file($filename);
+                $variable['strcomputer'] = '.';
+                $variable['submit_online'] = 'y';
+                $variable['create_file'] = 'n';
+                $variable['url'] = base_url() . 'index.php/system';
+                $variable['use_proxy'] = 'n';
+                $variable['struser'] = '';
+                $variable['strpass'] = '';
+                $variable['org_id'] = '';
+                $variable['windows_user_work_1'] = 'physicalDeliveryOfficeName';
+                $variable['windows_user_work_2'] = 'company';
+                $variable['debugging'] = '1';
+                $variable['ping_target'] = 'n';
+
+                foreach ($variable as $name => $value) {
+                    foreach ($file as $line_num => $line) {
+                        if (strpos($line, $name . "=") === 0) {
+                            # set the variable
+                            $file[$line_num] = $name . "=\"" . $value . "\"\n";
+                            break;
+                        }
+                    }
+                }
+                // Set headers
+                header("Cache-Control: public");
+                header("Content-Description: File Transfer");
+                header("Content-Disposition: attachment; filename=audit_osx.sh");
+                header("Content-Type: text/plain");
+                #header("Content-Type: application/x-sh");
+                header("Content-Transfer-Encoding: binary");
+                foreach ($file as $line => $value) {
+                    echo $value;
+                }
             }
         }
     }
@@ -284,11 +377,11 @@ class login extends CI_Controller
                 }
             } else {
                 $this->session->set_flashdata('message', '<div id="message">Incorrect credentials.</div>');
-                redirect('login/index');
+                redirect('login/index/main/list_groups');
             }
         } else {
             $this->session->set_flashdata('message', '<div id="message">Incorrect credentials.</div>');
-            redirect('login/index');
+            redirect('login/index/main/list_groups');
         }
     }
 

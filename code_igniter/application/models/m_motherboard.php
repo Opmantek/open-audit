@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -147,7 +147,14 @@ class M_motherboard extends MY_Model {
 		}
 
 		// new motherboard
-		$sql = "SELECT motherboard_id, manufacturer, model FROM sys_hw_motherboard WHERE system_id = ? and first_timestamp = timestamp and first_timestamp != ?";
+		$sql = "SELECT sys_hw_motherboard.motherboard_id, sys_hw_motherboard.manufacturer, sys_hw_motherboard.model 
+			FROM 
+				sys_hw_motherboard LEFT JOIN system ON (sys_hw_motherboard.system_id = system.system_id) 
+			WHERE 
+				sys_hw_motherboard.system_id = ? AND 
+				sys_hw_motherboard.first_timestamp = ? AND 
+				sys_hw_motherboard.first_timestamp = sys_hw_motherboard.timestamp AND 
+				sys_hw_motherboard.first_timestamp != system.first_timestamp";
 		$data = array("$details->system_id", "$details->timestamp");
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);

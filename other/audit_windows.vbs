@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.3.1
+' @version 1.4
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -409,17 +409,40 @@ for each objItem in colItems
 	end if
 next
 local_net = local_net & " " & local_hostname & " "
+if debugging > "1" then 
+	wscript.echo "LocalNet: " & local_net 
+	wscript.echo "Target: " & strcomputer
+	if (instr(lcase(local_net), lcase(strcomputer)) <> 0) then
+		wscript.echo "Match: Auditing localhost."
+	else
+		wscript.echo "No Match: Auditing remote host."
+	end if
+end if
 
+' Are we auditing the local machine?
+if (instr(lcase(local_net), lcase(strcomputer)) <> 0) and (strcomputer <> ".") then
+	if debugging > "0" then wscript.echo "Changed strcomputer from " & strcomputer & " to . because we're auditing this local machine." end if
+	strcomputer = "."
+end if
 
+' If auditing the local machine, disregard and supplied credentials
+if (struser <> "" and strcomputer = ".") then
+	if debugging > "0" then wscript.echo "Disregarding username / password as WMI does not support connecting to localhost with credentials." end if
+	struser = ""
+	strpass = ""
+end if
+
+' Ping Test
 pc_alive = 0
 if ping_target = "y" then
 	if (strcomputer = ".") then
 		pc_alive = 1
-		if debugging > "0" then wscript.echo "Localhost, not pinging target, attempting to audit." end if
+		if debugging > "0" then wscript.echo "Disregarding ping_target because we're auditing localhost." end if
 	else
 		if (cint(local_windows_build_number) > 2222 and not local_windows_build_number = "3000") then 
-			on error goto 0	
+			On Error Resume Next
 			set ping = objWMIService.ExecQuery("SELECT * FROM Win32_PingStatus WHERE Timeout = 200 and Address = '" & strcomputer & "'")
+			on error goto 0	
 			for each item in ping
 				if (IsNull(item.StatusCode) or (item.Statuscode <> 0)) then
 					' it is not switched on
@@ -436,71 +459,156 @@ if ping_target = "y" then
 		end if
 	end if
 else
-	if debugging > "0" then wscript.echo "Not pinging target, attempting to audit." end if
+	if (strcomputer = ".") then
+		pc_alive = 1
+		if debugging > "0" then wscript.echo "Not pinging target because we're auditing localhost." end if
+	else
+		if debugging > "0" then wscript.echo "Not pinging target (override with ping_target=y)." end if
+	end if
 end if
 
-
-error_returned = ""
-if ((struser <> "") and (instr(local_net, strcomputer) = 0)) then
+error_returned = 0
+if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 	' credentials passed and not localhost
-	Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
-	On Error Resume Next
-	Set wmiNameSpace = wmiLocator.ConnectServer(strcomputer, "\root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
-	wmiNameSpace.Security_.ImpersonationLevel = 3
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then 
-		if debugging > "0" then wscript.echo "Problem authenticating (1) to " &  strcomputer end if
-		if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-		if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
 
-	if (error_returned = 0) then
-		On Error Resume Next
-		Set oReg = wmiNameSpace.Get("StdRegProv")
-		Set objWMIService = wmiLocator.ConnectServer(strcomputer, "\root\cimv2",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
-		objWMIService.Security_.ImpersonationLevel = 3
-		error_returned = Err.Number
-		error_description = Err.Description
-		on error goto 0
-		if (error_returned <> 0) then 
-			if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
-			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-		end if
-	end if
-
-	if (error_returned = 0) then
-		On Error Resume Next
-		Set objWMIService2 = wmiLocator.ConnectServer(strcomputer, "\root\WMI",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
-		objWMIService2.Security_.ImpersonationLevel = 3
-		error_returned = Err.Number
-		error_description = Err.Description
-		on error goto 0
-		if (error_returned <> 0) then 
-			if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
-			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-		end if
-	end if
-else
 	if ((pc_alive = 1) or (ping_target = "n")) then
-		' no credentials passed, therefore auditing as the user running this script
-		On Error Resume Next
-		set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2") 
-		set objWMIService2 = GetObject("winmgmts:\\" & strcomputer & "\root\WMI")
-		set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strcomputer & "\root\default:StdRegProv")
-		error_returned = Err.Number
-		error_description = Err.Description
-		if error_description = "" then error_description = "Access Denied. Check Firewall and user security permissions."
-		on error goto 0
-		if (error_returned <> 0) then
-			if debugging > "1" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
-			if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
-			if debugging > "1" then wscript.echo "Error Description:" & error_description end if
+
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then 
+				if debugging > "0" then wscript.echo "Problem creating WBEM object (0) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if	
 		end if
-	end if
+
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set wmiNameSpace = wmiLocator.ConnectServer(strcomputer, "\root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then 
+				if debugging > "0" then wscript.echo "Problem authenticating (1) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
+
+		if (error_returned = 0) then
+			On Error Resume Next
+			wmiNameSpace.Security_.ImpersonationLevel = 3
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then 
+				if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
+
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set oReg = wmiNameSpace.Get("StdRegProv")
+			Set objWMIService = wmiLocator.ConnectServer(strcomputer, "\root\cimv2",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then 
+				if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
+
+		if (error_returned = 0) then
+			On Error Resume Next
+			objWMIService.Security_.ImpersonationLevel = 3
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then 
+				if debugging > "0" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
+
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set objWMIService2 = wmiLocator.ConnectServer(strcomputer, "\root\WMI",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then 
+				if debugging > "0" then wscript.echo "Problem authenticating (5) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
+
+		if (error_returned = 0) then
+			On Error Resume Next
+			objWMIService2.Security_.ImpersonationLevel = 3
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then 
+				if debugging > "0" then wscript.echo "Problem authenticating (6) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
+	end if ' pc_alive or ping_target = n
+else
+	' localhost or no credentials passed, therefore auditing as the user running this script
+	if ((pc_alive = 1) or (ping_target = "n")) then
+		
+		if (error_returned = 0) then
+			On Error Resume Next
+			set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2") 
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then 
+				if debugging > "0" then wscript.echo "Problem authenticating (7) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
+
+		if (error_returned = 0) then
+			On Error Resume Next
+			set objWMIService2 = GetObject("winmgmts:\\" & strcomputer & "\root\WMI")
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then 
+				if debugging > "0" then wscript.echo "Problem authenticating (8) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
+
+		if (error_returned = 0) then
+			On Error Resume Next
+			set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strcomputer & "\root\default:StdRegProv")
+			error_returned = Err.Number
+			error_description = Err.Description
+			if error_description = "" then error_description = "Access Denied. Check Firewall and user security permissions."
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "1" then wscript.echo "Problem authenticating (9) to " &  strcomputer end if
+				if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "1" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
+	end if ' pc_alive or ping_target = n
 end if
 
 
@@ -515,7 +623,6 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 	end if
 
 	if debugging > "1" then wscript.echo "Attempting Active Directory data retrieval." end if
-
 
 	if ldap = "" then
 		if debugging > "1" then wscript.echo "No default LDAP provided, using local settings." end if
@@ -1319,6 +1426,18 @@ for each objItem In colItems
 		case "185"    cpu_socket = "Socket P (478)"
 		case Default  cpu_socket = "Unknown"
 	end select
+
+   select case  objItem.Architecture
+      case "0"      processor_architecture = "x86"
+      case "1"      processor_architecture = "MIPS"
+      case "2"      processor_architecture = "Alpha"
+      case "3"      processor_architecture = "PowerPC"
+      case "5"      processor_architecture = "ARM"
+      case "6"      processor_architecture = "Itanium-based systems"
+      case "9"      processor_architecture = "x64"
+      case Default  processor_architecture = "Unknown"
+   end select
+
 next
 result.WriteText "	<processor>" & vbcrlf
 result.WriteText "		<processor_count>" & escape_xml(processor_count) & "</processor_count>" & vbcrlf
@@ -1328,6 +1447,7 @@ result.WriteText "		<processor_socket>" & escape_xml(cpu_socket) & "</processor_
 result.WriteText "		<processor_description>" & escape_xml(processor_description) & "</processor_description>" & vbcrlf
 result.WriteText "		<processor_speed>" & escape_xml(processor_speed) & "</processor_speed>" & vbcrlf
 result.WriteText "		<processor_manufacturer>" & escape_xml(processor_manufacturer) & "</processor_manufacturer>" & vbcrlf
+result.WriteText "		<processor_architecture>" & escape_xml(processor_architecture) & "</processor_architecture>" & vbcrlf
 result.WriteText "		<processor_power_management_supported>" & escape_xml(processor_power_management_supported) & "</processor_power_management_supported>" & vbcrlf
 result.WriteText "	</processor>" & vbcrlf
 
@@ -1887,6 +2007,7 @@ for each objItem In colDiskDrives
 	hard_drive_interface_type = objItem.InterfaceType
 	hard_drive_scsi_logical_unit = objItem.SCSITargetId
 	hard_drive_model = objItem.Model
+	hard_drive_firmware = objItem.FirmwareRevision
 	hard_drive_serial = ""
 	hard_drive_pnp_id = lcase(objItem.PNPDeviceID & "_0")
 	
@@ -1939,6 +2060,7 @@ for each objItem In colDiskDrives
 	item = item & "			<hard_drive_device_id>" & escape_xml(hard_drive_device_id) & "</hard_drive_device_id>" & vbcrlf
 	item = item & "			<hard_drive_partitions>" & escape_xml(hard_drive_partitions) & "</hard_drive_partitions>" & vbcrlf
 	item = item & "			<hard_drive_status>" & escape_xml(hard_drive_status) & "</hard_drive_status>" & vbcrlf
+	item = item & "			<hard_drive_firmware>" & escape_xml(hard_drive_firmware) & "</hard_drive_firmware>" & vbcrlf
 	item = item & "			<hard_drive_scsi_logical_unit>" & escape_xml(hard_drive_scsi_logical_unit) & "</hard_drive_scsi_logical_unit>" & vbcrlf
 	item = item & "		</hard_disk>" & vbcrlf
 next
@@ -2287,6 +2409,7 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfig
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NetworkAdapterConfiguration)" : audit_wmi_fails = audit_wmi_fails & "Win32_NetworkadapterConfiguration " : end if
 for each objItem in colItems
 	net_mac_address = objItem.MACAddress
+	net_index = objItem.Index
 	if net_mac_address > "" then
 		for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
 			ip_address = objItem.IPAddress(i)
@@ -2304,6 +2427,7 @@ for each objItem in colItems
 				count = count + 1
 				item = item & "		<ip_address>" & vbcrlf
 				item = item & "			<net_mac_address>" & escape_xml(net_mac_address) & "</net_mac_address>" & vbcrlf
+				item = item & "			<net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
 				item = item & "			<ip_address_v4>" & escape_xml(ip_address_v4) & "</ip_address_v4>" & vbcrlf
 				item = item & "			<ip_address_v6>" & escape_xml(ip_address_v6) & "</ip_address_v6>" & vbcrlf
 				item = item & "			<ip_subnet>" & escape_xml(ip_subnet) & "</ip_subnet>" & vbcrlf
@@ -4150,8 +4274,8 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 						item = item & "			<details_current_size>" & escape_xml(filesize) & "</details_current_size>" & vbcrlf
 						item = item & "			<details_creation_date>" & escape_xml(objRS("crdate")) & "</details_creation_date>" & vbcrlf
 						item = item & "		</details>" & vbcrlf
-						objRS.Movenext
 					end if
+					objRS.Movenext
 				Loop
 			end if
 			'On Error Goto 0 
@@ -6629,7 +6753,7 @@ end function
 
 function WMIOSLanguage(lang)
 	if lang = "1" then WMIOSLanguage = "Arabic" end if 
-	if lang = "4" then WMIOSLanguage = "Chinese (Simplified)– China" end if 
+	if lang = "4" then WMIOSLanguage = "Chinese (Simplified)â€“ China" end if 
 	if lang = "9" then WMIOSLanguage = "English" end if 
 	if lang = "1025" then WMIOSLanguage = "Arabic - Saudi Arabia" end if 
 	if lang = "1026" then WMIOSLanguage = "Bulgarian" end if 
@@ -6637,7 +6761,7 @@ function WMIOSLanguage(lang)
 	if lang = "1028" then WMIOSLanguage = "Chinese (Traditional) - Taiwan" end if 
 	if lang = "1029" then WMIOSLanguage = "Czech" end if 
 	if lang = "1030" then WMIOSLanguage = "Danish" end if 
-	if lang = "1031" then WMIOSLanguage = "German – Germany" end if 
+	if lang = "1031" then WMIOSLanguage = "German â€“ Germany" end if 
 	if lang = "1032" then WMIOSLanguage = "Greek" end if 
 	if lang = "1033" then WMIOSLanguage = "English - United States" end if 
 	if lang = "1034" then WMIOSLanguage = "Spanish - Traditional Sort" end if 
@@ -6688,7 +6812,7 @@ function WMIOSLanguage(lang)
 	if lang = "1085" then WMIOSLanguage = "Yiddish" end if 
 	if lang = "1086" then WMIOSLanguage = "Malay - Malaysia" end if 
 	if lang = "2049" then WMIOSLanguage = "Arabic - Iraq" end if 
-	if lang = "2052" then WMIOSLanguage = "Chinese (Simplified) – PRC" end if 
+	if lang = "2052" then WMIOSLanguage = "Chinese (Simplified) â€“ PRC" end if 
 	if lang = "2055" then WMIOSLanguage = "German - Switzerland" end if 
 	if lang = "2057" then WMIOSLanguage = "English - United Kingdom" end if 
 	if lang = "2058" then WMIOSLanguage = "Spanish - Mexico" end if 

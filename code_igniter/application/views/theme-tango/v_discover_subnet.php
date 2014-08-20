@@ -27,10 +27,50 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+
+# check if we have nmap installed
+$nmap_installed = 'n';
+if (php_uname('s') == "Windows NT") {
+	# check the obvious Windows install locations
+	$test_path = 'c:\Program Files\Nmap\Nmap.exe';
+	if ($nmap_installed == 'n' and file_exists($test_path)) {
+		$nmap_installed = 'y';
+	}
+	$test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
+	if ($nmap_installed == 'n' and file_exists($test_path)) {
+		$nmap_installed = 'y';
+	}
+	unset($test_path);
+} elseif (php_uname('s') == "Linux") {
+	$command_string = "which nmap 2>/dev/null";
+    exec($command_string, $output, $return_var);
+    if (isset($output[0]) and strpos($output[0], 'nmap')) {
+    	$nmap_installed = 'y';
+    } else {
+    	$output[0] = '';
+    }
+} elseif (php_uname('s') == "Darwin") {
+	$test_path = '/usr/local/bin/nmap';
+	if ($nmap_installed == 'n' and file_exists($test_path)) {
+		$nmap_installed = 'y';
+	}
+}
+
+if ($nmap_installed == 'n') {
+	echo "<span style=\"color:red; font-size:14pt; \">NMap not detected</span> - please install Nmap before running Discovery.<br />\n";
+	if (php_uname('s') == "Windows NT") {
+		echo "Locations checked were: \"c:\Program Files\Nmap\Nmap.exe\" and \"c:\Program Files (x86)\Nmap\Nmap.exe\".<br />\n";
+	} elseif (php_uname('s') == "Linux") {
+		echo "Command run was: \"which nmap\" which resulted in \"" . $output[0] . "\"<br />\n";
+	} elseif (php_uname('s') == "Darwin") {
+		echo "Location checked was: /usr/local/bin/nmap.<br />\n";
+	}
+	echo "If you have modified your discovery script or have Nmap installed on the path, you are likely fine to run Discovery and ignore this warning.<br /><br />\n";
+}
 
 echo form_open('discovery/discover_subnet');
 $image_path = base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-images/';

@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -175,7 +175,7 @@ if ($function == "list_devices") {
 	</style>
 
 	<?php
-	if ($include == "v_main" or $include == "v_report" or $include == "v_search_result") {
+	if ($include == "v_main" or $include == "v_report" or $include == "v_search_result" or $include == "v_report_software_licensing") {
 		include("popup_js.php");
 		include("popup_css.php");
 	}

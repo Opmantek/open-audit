@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.3.1
+ * @version 1.4
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -297,6 +297,7 @@ class Admin_system extends MY_Controller
         $this->load->model("m_network_card");
         $this->load->model("m_ip_address");
         $this->load->model("m_oa_general");
+        $this->load->model("m_virtual_machine");
         $this->load->library('encrypt');
         $this->load->helper('snmp');
         $this->load->helper('snmp_oid');
@@ -331,6 +332,10 @@ class Admin_system extends MY_Controller
         $temp_array = get_snmp($details);
         $details = $temp_array['details'];
         $network_interfaces = $temp_array['interfaces'];
+        unset($guests);
+        if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
+            $guests = $temp_array['guests'];
+        }
 
         $details->last_seen_by = 'snmp';
         $details->timestamp = date('Y-m-d G:i:s');
@@ -341,7 +346,6 @@ class Admin_system extends MY_Controller
         unset($details->show_output);
         unset($details->man_ip_address);
         echo "<pre>\n";
-        #print_r($details);
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
             $this->m_system->update_system($details);
             $this->m_sys_man_audits->insert_audit($details);
@@ -364,6 +368,14 @@ class Admin_system extends MY_Controller
                     }
                 }
             }
+
+            # insert any found virtual machines
+            if (isset($guests) and is_array($guests) and count($guests) > 0) {
+                foreach($guests as $guest) {
+                    $this->m_virtual_machine->process_vm($guest, $details);
+                }
+            }
+
         } else {
             echo "Audit NOT submitted.";
         }
@@ -383,6 +395,8 @@ class Admin_system extends MY_Controller
             $this->data['os_group'] = $this->m_systems->get_distinct_os_group();
             $this->data['os_family'] = $this->m_systems->get_distinct_os_family();
             $this->data['os_name'] = $this->m_systems->get_distinct_os_name();
+            include('include_device_types.php');
+            $this->data['device_types'] = $device_types;
             $this->data['heading'] = 'Add Device';
             $this->data['include'] = 'v_add_system';
             $this->load->view('v_template', $this->data);
