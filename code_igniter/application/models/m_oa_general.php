@@ -89,61 +89,61 @@ class M_oa_general extends MY_Model {
 		if ($table == 'system') {
 			$sql = 'SELECT system_id, hostname, man_ip_address, man_type, man_class, man_function, man_environment, man_status, man_description, man_os_group, man_os_family, man_os_name, man_manufacturer, man_model, man_serial, man_form_factor, man_vm_group, uptime, location_name, last_seen, last_seen_by, icon, snmp_oid FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?';
 
-		} elseif ($table == 'bios') {
+		} elseif ($table == 'sys_hw_bios') {
 			$sql = 'SELECT bios_description, bios_manufacturer, bios_serial, bios_smversion, bios_version, bios_asset_tag FROM sys_hw_bios LEFT JOIN system ON system.system_id = sys_hw_bios.system_id AND system.timestamp = sys_hw_bios.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'group') {
+		} elseif ($table == 'sys_sw_group') {
 			$sql = 'SELECT group_name, group_description, group_sid, group_members FROM sys_sw_group LEFT JOIN system ON system.system_id = sys_sw_group.system_id AND system.timestamp = sys_sw_group.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'hard drive') {
+		} elseif ($table == 'sys_hw_hard_drive') {
 			$sql = 'SELECT hard_drive_caption, hard_drive_index, hard_drive_interface_type, hard_drive_manufacturer, hard_drive_model, hard_drive_serial, hard_drive_partitions, hard_drive_scsi_bus, hard_drive_scsi_logical_unit, hard_drive_scsi_port, hard_drive_size, hard_drive_status, hard_drive_firmware FROM sys_hw_hard_drive LEFT JOIN system ON system.system_id = sys_hw_hard_drive.system_id AND system.timestamp = sys_hw_hard_drive.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'installed software') {
+		} elseif ($table == 'sys_sw_software') {
 			$sql = 'SELECT software_name, software_url, software_email, software_version, software_publisher, date(sys_sw_software.timestamp) as software_date_detected, date(software_installed_on) as software_installed_on, software_installed_by FROM sys_sw_software LEFT JOIN system ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp WHERE system.system_id = ? AND software_comment = ""';
 
-		} elseif ($table == 'ip') {
+		} elseif ($table == 'sys_hw_network_card_ip') {
 			$sql = 'SELECT ip_address_v4, ip_address_v6, ip_subnet, ip_address_version, sys_hw_network_card_ip.net_mac_address, net_connection_id FROM sys_hw_network_card_ip LEFT JOIN system ON system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_index = sys_hw_network_card.net_index WHERE system.system_id = ?';
 
-		} elseif ($table == 'memory') {
+		} elseif ($table == 'sys_hw_memory') {
 			$sql = 'SELECT memory_bank, memory_type, memory_form_factor, memory_detail, memory_capacity, memory_speed, memory_tag, memory_serial FROM sys_hw_memory LEFT JOIN system ON system.system_id = sys_hw_memory.system_id AND system.timestamp = sys_hw_memory.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'motherboard') {
+		} elseif ($table == 'sys_hw_motherboard') {
 			$sql = 'SELECT sys_hw_motherboard.* FROM sys_hw_motherboard LEFT JOIN system ON system.system_id = sys_hw_motherboard.system_id AND system.timestamp = sys_hw_motherboard.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'netstat') {
+		} elseif ($table == 'sys_sw_netstat') {
 			$sql = 'SELECT protocol, ip_address, port, program FROM sys_sw_netstat LEFT JOIN system ON system.system_id = sys_sw_netstat.system_id AND system.timestamp = sys_sw_netstat.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'network card') {
+		} elseif ($table == 'sys_hw_network_card') {
 			$sql = 'SELECT net_connection_id, net_mac_address, net_model, man_manufacturer, net_speed, net_connection_status, net_adapter_type, net_dhcp_enabled, net_dhcp_server, net_dhcp_lease_obtained, net_dhcp_lease_expires, net_dns_domain, net_dns_server, net_dns_domain_reg_enabled FROM sys_hw_network_card LEFT JOIN system ON system.system_id = sys_hw_network_card.system_id AND system.timestamp = sys_hw_network_card.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'partition') {
+		} elseif ($table == 'sys_hw_partition') {
 			$sql = 'SELECT hard_drive_index, partition_mount_type, partition_mount_point, partition_name, partition_size, partition_free_space, partition_used_space, partition_format, partition_caption, partition_disk_index, partition_bootable, partition_type, partition_quotas_supported, partition_quotas_enabled, partition_serial FROM sys_hw_partition LEFT JOIN system ON system.system_id = sys_hw_partition.system_id AND system.timestamp = sys_hw_partition.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'processor') {
+		} elseif ($table == 'sys_hw_processor') {
 			$sql = 'SELECT processor_description, processor_speed, processor_count, processor_cores, processor_logical, processor_manufacturer FROM sys_hw_processor LEFT JOIN system ON system.system_id = sys_hw_processor.system_id AND system.timestamp = sys_hw_processor.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'route') {
+		} elseif ($table == 'sys_sw_route') {
 			$sql = 'SELECT destination, next_hop, mask, metric, protocol, sys_sw_route.type FROM sys_sw_route LEFT JOIN system ON system.system_id = sys_sw_route.system_id AND system.timestamp = sys_sw_route.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'service') {
+		} elseif ($table == 'sys_sw_service') {
 			$sql = 'SELECT service_display_name, service_name, service_start_mode, service_start_name, service_state FROM sys_sw_service LEFT JOIN system ON system.system_id = sys_sw_service.system_id AND system.timestamp = sys_sw_service.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'share') {
+		} elseif ($table == 'sys_sw_share') {
 			$sql = 'SELECT share_name, share_size, share_caption, share_path FROM sys_sw_share LEFT JOIN system ON system.system_id = sys_sw_share.system_id AND system.timestamp = sys_sw_share.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'software library') {
+		} elseif ($table == 'sys_sw_software_library') {
 			$sql = 'SELECT software_name, software_url, software_email, software_version, software_publisher, date(sys_sw_software.timestamp) as software_date_detected, date(software_installed_on) as software_installed_on, software_installed_by FROM sys_sw_software LEFT JOIN system ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp WHERE system.system_id = ? AND software_comment = "library"';
 
-		} elseif ($table == 'software update') {
+		} elseif ($table == 'sys_sw_software_update') {
 			$sql = 'SELECT software_name, software_url, software_email, software_version, software_publisher, date(sys_sw_software.timestamp) as software_date_detected, date(software_installed_on) as software_installed_on, software_installed_by FROM sys_sw_software LEFT JOIN system ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp WHERE system.system_id = ? AND software_comment = "update"';
 
-		} elseif ($table == 'user') {
+		} elseif ($table == 'sys_sw_user') {
 			$sql = 'SELECT user_name, user_caption, user_sid, user_domain, user_disabled, user_full_name, user_password_changeable, user_password_expires, user_password_required, user_status, user_type FROM sys_sw_user LEFT JOIN system ON system.system_id = sys_sw_user.system_id AND system.timestamp = sys_sw_user.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'variable') {
+		} elseif ($table == 'sys_sw_variable') {
 			$sql = 'SELECT variable_name, variable_value FROM sys_sw_variable LEFT JOIN system ON system.system_id = sys_sw_variable.system_id AND system.timestamp = sys_sw_variable.timestamp WHERE system.system_id = ?';
 
-		} elseif ($table == 'windows') {
+		} elseif ($table == 'sys_sw_windows') {
 			$sql = 'SELECT windows_build_number, windows_user_name, windows_client_site_name, windows_domain_short, windows_domain_controller_address, windows_domain_controller_name, windows_domain_role, windows_part_of_domain, windows_time_caption, windows_time_daylight, windows_boot_device, windows_country_code, windows_organisation, windows_language, windows_registered_user, windows_service_pack, windows_version, windows_install_directory, windows_active_directory_ou FROM sys_sw_windows LEFT JOIN system ON system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp WHERE system.system_id = ?';
 		}
 		$data = array("$system_id");
