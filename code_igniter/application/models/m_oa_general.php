@@ -87,7 +87,7 @@ class M_oa_general extends MY_Model {
 			return;
 		}
 		if ($table == 'system') {
-			$sql = 'SELECT system_id, hostname, man_ip_address, man_type, man_class, man_function, man_environment, man_status, man_description, man_os_group, man_os_family, man_os_name, man_manufacturer, man_model, man_serial, man_form_factor, man_vm_group, uptime, location_name, last_seen, last_seen_by, icon, snmp_oid FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?';
+			$sql = 'SELECT system_id, hostname, man_ip_address, man_type, man_class, os_version, man_function, man_environment, man_status, man_description, man_os_group, man_os_family, man_os_name, man_manufacturer, man_model, man_serial, man_form_factor, man_vm_group, uptime, location_name, last_seen, last_seen_by, icon, snmp_oid FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?';
 
 		} elseif ($table == 'sys_hw_bios') {
 			$sql = 'SELECT bios_description, bios_manufacturer, bios_serial, bios_smversion, bios_version, bios_asset_tag FROM sys_hw_bios LEFT JOIN system ON system.system_id = sys_hw_bios.system_id AND system.timestamp = sys_hw_bios.timestamp WHERE system.system_id = ?';
@@ -99,7 +99,7 @@ class M_oa_general extends MY_Model {
 			$sql = 'SELECT hard_drive_caption, hard_drive_index, hard_drive_interface_type, hard_drive_manufacturer, hard_drive_model, hard_drive_serial, hard_drive_partitions, hard_drive_scsi_bus, hard_drive_scsi_logical_unit, hard_drive_scsi_port, hard_drive_size, hard_drive_status, hard_drive_firmware FROM sys_hw_hard_drive LEFT JOIN system ON system.system_id = sys_hw_hard_drive.system_id AND system.timestamp = sys_hw_hard_drive.timestamp WHERE system.system_id = ?';
 
 		} elseif ($table == 'sys_sw_software') {
-			$sql = 'SELECT software_name, software_url, software_email, software_version, software_publisher, date(sys_sw_software.timestamp) as software_date_detected, date(software_installed_on) as software_installed_on, software_installed_by FROM sys_sw_software LEFT JOIN system ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp WHERE system.system_id = ? AND software_comment = ""';
+			$sql = 'SELECT software_name, software_url, software_email, software_version, software_publisher, date(software_installed_on) as software_installed_on, software_installed_by FROM sys_sw_software LEFT JOIN system ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp WHERE system.system_id = ? AND software_comment = ""';
 
 		} elseif ($table == 'sys_hw_network_card_ip') {
 			$sql = 'SELECT ip_address_v4, ip_address_v6, ip_subnet, ip_address_version, sys_hw_network_card_ip.net_mac_address, net_connection_id FROM sys_hw_network_card_ip LEFT JOIN system ON system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_index = sys_hw_network_card.net_index WHERE system.system_id = ?';
@@ -108,7 +108,7 @@ class M_oa_general extends MY_Model {
 			$sql = 'SELECT memory_bank, memory_type, memory_form_factor, memory_detail, memory_capacity, memory_speed, memory_tag, memory_serial FROM sys_hw_memory LEFT JOIN system ON system.system_id = sys_hw_memory.system_id AND system.timestamp = sys_hw_memory.timestamp WHERE system.system_id = ?';
 
 		} elseif ($table == 'sys_hw_motherboard') {
-			$sql = 'SELECT sys_hw_motherboard.* FROM sys_hw_motherboard LEFT JOIN system ON system.system_id = sys_hw_motherboard.system_id AND system.timestamp = sys_hw_motherboard.timestamp WHERE system.system_id = ?';
+			$sql = 'SELECT sys_hw_motherboard.manufacturer, sys_hw_motherboard.memory_slots, sys_hw_motherboard.model, sys_hw_motherboard.processor_slots, sys_hw_motherboard.processor_type, sys_hw_motherboard.serial FROM sys_hw_motherboard LEFT JOIN system ON system.system_id = sys_hw_motherboard.system_id AND system.timestamp = sys_hw_motherboard.timestamp WHERE system.system_id = ?';
 
 		} elseif ($table == 'sys_sw_netstat') {
 			$sql = 'SELECT protocol, ip_address, port, program FROM sys_sw_netstat LEFT JOIN system ON system.system_id = sys_sw_netstat.system_id AND system.timestamp = sys_sw_netstat.timestamp WHERE system.system_id = ?';
