@@ -148,7 +148,6 @@ export PATH
 	fi
 	OA_DPKG=`which dpkg 2>/dev/null`
 	OA_DPKGQUERY=`which dpkg-query 2>/dev/null`
-	OA_ECHO=`which echo 2>/dev/null`
 	OA_ETHTOOL=`which ethtool 2>/dev/null`
 	OA_EXPR=`which expr 2>/dev/null`
 	OA_FDISK=`which fdisk 2>/dev/null`
@@ -190,7 +189,7 @@ export PATH
 # DEFINE SCRIPT FUNCTIONS                              #
 ########################################################
 
-function timer()
+timer ()
 # Returns the elapsed time in seconds.
 #
 # usage :
@@ -200,18 +199,18 @@ function timer()
 #   total_seconds=$(timer "$start")
 #
 {
-if [[ $# -eq 0 ]]; then
-	$OA_ECHO $($OA_DATE '+%s')
+if [ $# -eq 0 ]; then
+	echo $($OA_DATE '+%s')
 else
 	local  stime=$1
 	etime=$($OA_DATE '+%s')
-	if [[ -z "$stime" ]]; then stime=$etime; fi
+	if [ -z "$stime" ]; then stime=$etime; fi
 	dt=$((etime - stime))
-	$OA_ECHO $dt
+	echo $dt
 fi
 }
 
-function lcase()
+lcase ()
 # Returns the lower case version of the argument.
 #
 # usage :
@@ -219,11 +218,11 @@ function lcase()
 #   lower_version=$(lcase "$var")
 #
 {
-	result=$($OA_ECHO "$1" | $OA_AWK '{print tolower($0)}')
-	$OA_ECHO $result
+	result=$(echo "$1" | $OA_AWK '{print tolower($0)}')
+	echo $result
 }
 
-function ucase()
+ucase ()
 # Returns the upper case version of the argument.
 #
 # usage :
@@ -231,11 +230,11 @@ function ucase()
 #   upper_version=$(ucase "$var")
 #
 {
-	result=$($OA_ECHO "$1" | $OA_AWK '{print toupper($0)}')
-	$OA_ECHO $result
+	result=$(echo "$1" | $OA_AWK '{print toupper($0)}')
+	echo $result
 }
 
-function pcase()
+pcase ()
 # Returns the propper case version of the argument.
 #
 # usage :
@@ -244,10 +243,10 @@ function pcase()
 #
 {
 	result=`lcase "$1" |  $OA_AWK '{ for ( i=1; i <= NF; i++) {   sub(".", substr(toupper($i),1,1) , $i) } print }'`
-	$OA_ECHO $result
+	echo $result
 }
 
-function trim()
+trim ()
 # Remove the leading/trailing spaces from the argument.
 #
 # usage :
@@ -255,11 +254,11 @@ function trim()
 #   trimmed_version=$(trim "$var")
 #
 {
-	result=`$OA_ECHO "$1" | $OA_SED 's/^ *//g' | $OA_SED 's/ *$//g'`
-	$OA_ECHO $result
+	result=`echo "$1" | $OA_SED 's/^ *//g' | $OA_SED 's/ *$//g'`
+	echo $result
 }
 
-function escape_xml()
+escape_xml ()
 # If a special character exists in the string, escape the XML.
 #
 # usage :
@@ -268,14 +267,14 @@ function escape_xml()
 #
 {
 	# escape characters 
-	result=`$OA_ECHO "$1"`
-	if [[ "$result" == *"&"* ]] || [[ "$result" == *"<"* ]] || [[ "$result" == *">"* ]] || [[ "$result" == *"\""* ]] || [[ "$result" == *"'"* ]]; then
+	result=`echo "$1"`
+	if echo "$result" | grep -Eq -e '[&<>"]' -e "'"; then
 		result="<![CDATA[$result]]>"
 	fi
 
 	# Trim leading/trailing spaces
 	result=`trim "$result"`
-	$OA_ECHO $result
+	echo $result
 }
 
 function cidr2mask() {
@@ -306,11 +305,11 @@ function cidr2mask() {
 # NOTE - argurments are case sensitive
 
 for arg in "$@"; do
-	parameter=$($OA_ECHO "$arg" | $OA_CUT -d= -f1)
+	parameter=$(echo "$arg" | $OA_CUT -d= -f1)
 	parameter=$(lcase "$parameter")
 	parameter=$(trim "$parameter")
 
-	parameter_value=$($OA_ECHO "$arg" | $OA_CUT -d= -f2)
+	parameter_value=$(echo "$arg" | $OA_CUT -d= -f2)
 	parameter_value=$(trim "$parameter_value")
 
 	case "$parameter" in
@@ -370,49 +369,49 @@ done
 ########################################################
 
 if [ "$check_commands" = "y" ]; then
-	$OA_ECHO "Checking commands on $strComputer"
-	$OA_ECHO "----------------------" 
-	$OA_ECHO "awk                  : $OA_AWK"
-	$OA_ECHO "bc                   : $OA_BC"
-	$OA_ECHO "cat                  : $OA_CAT"
-	$OA_ECHO "cdrdao               : $OA_CDRDAO"
-	$OA_ECHO "cut                  : $OA_CUT"
-	$OA_ECHO "date                 : $OA_DATE"
-	$OA_ECHO "df                   : $OA_DF"
-	$OA_ECHO "dmesg                : $OA_DMESG"
-	$OA_ECHO "dmidecode            : $OA_DMIDECODE"
-	$OA_ECHO "dpkg                 : $OA_DPKG"
-	$OA_ECHO "echo                 : $OA_ECHO"
-	$OA_ECHO "ethtool              : $OA_ETHTOOL"
-	$OA_ECHO "expr                 : $OA_EXPR"
-	$OA_ECHO "find                 : $OA_FIND"
-	$OA_ECHO "fdisk                : $OA_FDISK"
-	$OA_ECHO "grep                 : $OA_GREP"
-	$OA_ECHO "head                 : $OA_HEAD"
-	$OA_ECHO "hostname             : $OA_HOSTNAME"
-	$OA_ECHO "ifconfig             : $OA_IFCONFIG"
-	$OA_ECHO "ip                   : $OA_IP"
-	$OA_ECHO "iwlist               : $OA_IWLIST"
-	$OA_ECHO "lsb_release          : $OA_LSB_RELEASE"
-	$OA_ECHO "lshal                : $OA_LSHAL"
-	$OA_ECHO "lshw                 : $OA_LSHW"
-	$OA_ECHO "lspci                : $OA_LSPCI"
-	$OA_ECHO "lvm                  : $OA_LVM"
-	$OA_ECHO "mdadm                : $OA_MDADM"
-	$OA_ECHO "partprobe            : $OA_PARTPROBE"
-	$OA_ECHO "ping                 : $OA_PING"
-	$OA_ECHO "ps                   : $OA_PS"
-	$OA_ECHO "rev                  : $OA_REV"
-	$OA_ECHO "rm                   : $OA_RM"
-	$OA_ECHO "sed                  : $OA_SED"
-	$OA_ECHO "sort                 : $OA_SORT"
-	$OA_ECHO "swapon               : $OA_SWAPON"
-	$OA_ECHO "tail                 : $OA_TAIL"
-	$OA_ECHO "test                 : $OA_TEST"
-	$OA_ECHO "uname                : $OA_UNAME"
-	$OA_ECHO "wc                   : $OA_WC"
-	$OA_ECHO "wget                 : $OA_WGET"
-	$OA_ECHO "whoami               : $OA_WHOAMI"
+	echo "Checking commands on $strComputer"
+	echo "----------------------" 
+	echo "awk                  : $OA_AWK"
+	echo "bc                   : $OA_BC"
+	echo "cat                  : $OA_CAT"
+	echo "cdrdao               : $OA_CDRDAO"
+	echo "cut                  : $OA_CUT"
+	echo "date                 : $OA_DATE"
+	echo "df                   : $OA_DF"
+	echo "dmesg                : $OA_DMESG"
+	echo "dmidecode            : $OA_DMIDECODE"
+	echo "dpkg                 : $OA_DPKG"
+	echo "echo                 : echo"
+	echo "ethtool              : $OA_ETHTOOL"
+	echo "expr                 : $OA_EXPR"
+	echo "find                 : $OA_FIND"
+	echo "fdisk                : $OA_FDISK"
+	echo "grep                 : $OA_GREP"
+	echo "head                 : $OA_HEAD"
+	echo "hostname             : $OA_HOSTNAME"
+	echo "ifconfig             : $OA_IFCONFIG"
+	echo "ip                   : $OA_IP"
+	echo "iwlist               : $OA_IWLIST"
+	echo "lsb_release          : $OA_LSB_RELEASE"
+	echo "lshal                : $OA_LSHAL"
+	echo "lshw                 : $OA_LSHW"
+	echo "lspci                : $OA_LSPCI"
+	echo "lvm                  : $OA_LVM"
+	echo "mdadm                : $OA_MDADM"
+	echo "partprobe            : $OA_PARTPROBE"
+	echo "ping                 : $OA_PING"
+	echo "ps                   : $OA_PS"
+	echo "rev                  : $OA_REV"
+	echo "rm                   : $OA_RM"
+	echo "sed                  : $OA_SED"
+	echo "sort                 : $OA_SORT"
+	echo "swapon               : $OA_SWAPON"
+	echo "tail                 : $OA_TAIL"
+	echo "test                 : $OA_TEST"
+	echo "uname                : $OA_UNAME"
+	echo "wc                   : $OA_WC"
+	echo "wget                 : $OA_WGET"
+	echo "whoami               : $OA_WHOAMI"
 
 	exit
 fi
@@ -483,7 +482,7 @@ fi
 start_time=$(timer)
 
 if [ $debugging -gt 0 ]; then
-	$OA_ECHO "Starting audit - $strComputer"
+	echo "Starting audit - $strComputer"
 fi
 
 pc_alive=0
@@ -500,21 +499,21 @@ fi
 
 if [ $debugging -gt 0 ]; then
 	if [ "$ping_target" = "n" ]; then
-		$OA_ECHO "Not pinging target, attempting to audit."
+		echo "Not pinging target, attempting to audit."
 	else
 		if [ "$pc_alive" = "1" ]; then
-			$OA_ECHO "PC $strComputer responding to ping"
+			echo "PC $strComputer responding to ping"
 		else
-			$OA_ECHO "PC $strComputer not responding to ping"
+			echo "PC $strComputer not responding to ping"
 		fi
 	fi
 fi
 
 local_hostname=""
-local_hostname=`$OA_HOSTNAME -s 2>/dev/null`
+local_hostname=`hostname -s 2>/dev/null`
 
 if [ "$local_hostname" = "" ]; then
-	local_hostname=`$OA_HOSTNAME 2>/dev/null`
+	local_hostname=`hostname 2>/dev/null`
 fi
 
 if [ "$strComputer" = "." ] || [ "$strComputer" = "127.0.0.1" ] || [ $(lcase $strComputer) = $(lcase $local_hostname) ]; then
@@ -527,16 +526,16 @@ fi
 system_timestamp=`$OA_DATE +'%F %T'`
 
 # Get the script name
-sScriptName=`$OA_ECHO $0 | $OA_REV | $OA_CUT -d/ -f1 | rev`
+sScriptName=`echo $0 | $OA_REV | $OA_CUT -d/ -f1 | rev`
 
 # Set the Process ID
 nPID="$BASHPID"
 
 if [ $debugging -gt 0 ]; then 
-	$OA_ECHO "My PID is : $nPID"
-	$OA_ECHO "Audit Start Time : $system_timestamp"
-	$OA_ECHO "Audit Location: $audit_location" 
-	$OA_ECHO "-------------------" 
+	echo "My PID is : $nPID"
+	echo "Audit Start Time : $system_timestamp"
+	echo "Audit Location: $audit_location" 
+	echo "-------------------" 
 fi
 
 #========================
@@ -544,7 +543,7 @@ fi
 #========================
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "System Info"
+	echo "System Info"
 fi
 
 # Set the UUID
@@ -562,86 +561,53 @@ fi
 
 # Get the hostname & DNS domain
 system_hostname=""
-system_hostname=`$OA_HOSTNAME -s 2>/dev/null`
+system_hostname=`hostname -s 2>/dev/null`
 
 if [ "$system_hostname" = "" ]; then
-	system_hostname=`$OA_HOSTNAME 2>/dev/null`
+	system_hostname=`hostname 2>/dev/null`
 	system_domain=""
 else
-	system_domain=`$OA_HOSTNAME -d 2>/dev/null`
+	system_domain=`hostname -d 2>/dev/null`
 fi 
 
-# Set Description
-system_description=""
-
-# Set System type
-system_type="computer"
-
-# System OS Icon - Not yet, after finding the System Family
-
-#Get the System OS Group
-#system_os_group=`$OA_UNAME -o`
-system_os_group="Linux"
-
 # Get System Family (Distro Name) and the OS Name
-system_os_family=""
-system_os_family=`$OA_LSB_RELEASE -is 2>/dev/null | $OA_CUT -d" " -f1`
-system_os_name=`$OA_LSB_RELEASE -ds 2>/dev/null | $OA_AWK '{gsub("\"","");print}'`
+# Debian and Ubuntu will match on the below
+system_description=""
+system_type="computer"
+system_os_group="Linux"
+system_os_family=`lsb_release -is 2>/dev/null`
+system_os_name=`lsb_release -ds 2>/dev/null`
+system_os_version=`lsb_release -rs 2>/dev/null`
 
-# Find the release file
-# The release file should be like /etc/distro-release or /etc/distro_version or /etc/lsb-release
-system_release_file=`$OA_LS -la --time-style='long-iso' /etc/*[_-]{version,release} 2>/dev/null | $OA_GREP -Ev '^l' | $OA_HEAD -n1 | $OA_CUT -d"/" -f3`
+if [ -z "$system_os_version" ]; then
+	for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
+		[ -f "$system_release_file" ] || continue;
+		system_os_name=`cat $system_release_file`
 
-if [ "$system_os_family" = "" ]; then
-	# No lsb-release package not installed... Try with the release file
-	# The distro-release file should have the info in the first line
-	# system_os_family=`$OA_CAT /etc/$system_relase_file | $OA_HEAD -n1 | $OA_CUT -d" " -f1`
-	system_os_name=`$OA_CAT /etc/$system_release_file | $OA_GREP "^NAME=" | $OA_CUT -d= -f2`
-	if [ "$system_os_name" = "" ]; then
-		system_os_name=`$OA_CAT /etc/$system_release_file`
-	fi
-	system_os_name="${system_os_name%\"}"
-	system_os_name="${system_os_name#\"}"
-
-	if [[ "$system_os_name" == *"Red"* ]] && [[ "$system_os_name" == *"Hat"* ]]; then
-		system_os_family="RedHat";
-		system_os_pretty_name=`$OA_CAT /etc/$system_release_file | $OA_GREP "^PRETTY_NAME=" | $OA_CUT -d= -f2`
-		system_os_pretty_name="${system_os_pretty_name%\"}"
-		system_os_pretty_name="${system_os_pretty_name#\"}"
-		if [[ "$system_os_pretty_name" != "" ]]; then
-			system_os_name="$system_os_pretty_name";
+		# Suse Based
+		if echo "$system_os_name" | grep -Fqi "Suse" ; then
+			system_os_family="Suse"
 		fi
-	fi
 
-	if [ "$system_os_family" = "" ]; then
-		system_os_family=`$OA_ECHO "$system_os_name" | $OA_CUT -d" " -f1`
-	fi
-
-	# DEBIAN: The release file (/etc/debian_version) contains only the version number. 
-	# /etc/issue.net should have all the required info
-	if [ "$system_relase_file" =  "debian_version" ] || [ "$system_relase_file" =  "debian-version" ]; then
-	# The right info should be on the /etc/issue.net file
-		if $OA_TEST -f /etc/issue.net; then
-			system_os_family=`$OA_CAT /etc/issue.net | $OA_HEAD -n1 | $OA_CUT -d" " -f1`
-			system_os_name=`$OA_CAT /etc/issue.net | $OA_HEAD -n1`
-		else
-			# This should never happen... but, this is a Debian-based system anyway
-			system_os_family="Debian"
-			system_os_name="Debian Based OS"
+		# RedHat based
+		if [ "$system_release_file" = "centos-release" -o "$system_release_file" = "redhat-release" ]; then
+			system_os_family="RedHat";
+			for i in `cat "$system_release_file" `; do 
+				if echo $i | grep -Eq '^[0-9.]+$'; then 
+					system_os_version="$i"; 
+					break; 
+				fi; 
+			done
+			break;
 		fi
-	fi
 
-	# SUSE: The result of the system_os_family is going to be different with this method.  Let's change it to match the lsb_release result
-	if [ "$system_os_family" = "openSUSE" ]; then
-		system_os_family="SUSE"
-	fi
+	done
 fi
+
 
 # Set the icon as the lower case version of the System Family.
 system_os_icon=`lcase $system_os_family`
 
-# Get the System OS Version
-system_os_version=`$OA_UNAME -r`
 
 
 # Get the System Serial Number
@@ -689,7 +655,7 @@ system_uptime=`$OA_CAT /proc/uptime | $OA_CUT -d. -f1`
 
 # Get the System Form factor
 system_form_factor=""
-if [[ "$system_model" = "Bochs" || "$system_model" = "KVM" || "$system_model" = "Virtual Machine" || "$system_model" = "VMware Virtual Platform" ]]; then
+if [ "$system_model" = "Bochs" -o "$system_model" = "KVM" -o "$system_model" = "Virtual Machine" -o "$system_model" = "VMware Virtual Platform" ]; then
 	system_form_factor="Virtual"
 else
 	system_form_factor=`$OA_DMIDECODE -s chassis-type 2>/dev/null`
@@ -779,32 +745,32 @@ system_pc_date_os_installation=`$OA_LS -lac --time-style="long-iso" /etc/$system
 
 xml_file="$system_hostname"-`$OA_DATE +%Y%m%d%H%M%S`.xml
 
-$OA_ECHO "form_systemXML=<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
-$OA_ECHO "<system>" >> $xml_file
-$OA_ECHO "	<sys>" >> $xml_file
-$OA_ECHO "		<timestamp>"$(escape_xml "$system_timestamp")"</timestamp>" >> $xml_file
-$OA_ECHO "		<uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
-$OA_ECHO "		<hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
-$OA_ECHO "		<domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file
-$OA_ECHO "		<description></description>" >> $xml_file
-$OA_ECHO "		<type>"$(escape_xml "$system_type")"</type>" >> $xml_file
-$OA_ECHO "		<os_icon>"$(escape_xml "$system_os_icon")"</os_icon>" >> $xml_file
-$OA_ECHO "		<os_group>"$(escape_xml "$system_os_group")"</os_group>" >> $xml_file
-$OA_ECHO "		<os_family>"$(escape_xml "$system_os_family")"</os_family>" >> $xml_file
-$OA_ECHO "		<os_name>"$(escape_xml "$system_os_name")"</os_name>" >> $xml_file
-$OA_ECHO "		<os_version>"$(escape_xml "$system_os_version")"</os_version>" >> $xml_file
-$OA_ECHO "		<serial>"$(escape_xml "$system_serial")"</serial>" >> $xml_file
-$OA_ECHO "		<model>"$(escape_xml "$system_model")"</model>" >> $xml_file
-$OA_ECHO "		<manufacturer>"$(escape_xml "$system_manufacturer")"</manufacturer>" >> $xml_file
-$OA_ECHO "		<uptime>"$(escape_xml "$system_uptime")"</uptime>" >> $xml_file
-$OA_ECHO "		<form_factor>"$(escape_xml "$system_form_factor")"</form_factor>" >> $xml_file
-$OA_ECHO "		<pc_os_bit>"$(escape_xml "$system_pc_os_bit")"</pc_os_bit>" >> $xml_file
-$OA_ECHO "		<pc_memory>"$(escape_xml "$system_pc_memory")"</pc_memory>" >> $xml_file
-$OA_ECHO "		<pc_num_processor>"$(escape_xml "$system_pc_total_threads")"</pc_num_processor>" >> $xml_file
-$OA_ECHO "		<pc_date_os_installation>"$(escape_xml "$system_pc_date_os_installation")"</pc_date_os_installation>" >> $xml_file
-$OA_ECHO "		<man_org_id>"$(escape_xml "$org_id")"</man_org_id>" >> $xml_file
-$OA_ECHO "		<system_id>"$(escape_xml "$system_id")"</system_id>" >> $xml_file
-$OA_ECHO "	</sys>" >> $xml_file
+echo "form_systemXML=<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
+echo "<system>" >> $xml_file
+echo "	<sys>" >> $xml_file
+echo "		<timestamp>"$(escape_xml "$system_timestamp")"</timestamp>" >> $xml_file
+echo "		<uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
+echo "		<hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
+echo "		<domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file
+echo "		<description></description>" >> $xml_file
+echo "		<type>"$(escape_xml "$system_type")"</type>" >> $xml_file
+echo "		<os_icon>"$(escape_xml "$system_os_icon")"</os_icon>" >> $xml_file
+echo "		<os_group>"$(escape_xml "$system_os_group")"</os_group>" >> $xml_file
+echo "		<os_family>"$(escape_xml "$system_os_family")"</os_family>" >> $xml_file
+echo "		<os_name>"$(escape_xml "$system_os_name")"</os_name>" >> $xml_file
+echo "		<os_version>"$(escape_xml "$system_os_version")"</os_version>" >> $xml_file
+echo "		<serial>"$(escape_xml "$system_serial")"</serial>" >> $xml_file
+echo "		<model>"$(escape_xml "$system_model")"</model>" >> $xml_file
+echo "		<manufacturer>"$(escape_xml "$system_manufacturer")"</manufacturer>" >> $xml_file
+echo "		<uptime>"$(escape_xml "$system_uptime")"</uptime>" >> $xml_file
+echo "		<form_factor>"$(escape_xml "$system_form_factor")"</form_factor>" >> $xml_file
+echo "		<pc_os_bit>"$(escape_xml "$system_pc_os_bit")"</pc_os_bit>" >> $xml_file
+echo "		<pc_memory>"$(escape_xml "$system_pc_memory")"</pc_memory>" >> $xml_file
+echo "		<pc_num_processor>"$(escape_xml "$system_pc_total_threads")"</pc_num_processor>" >> $xml_file
+echo "		<pc_date_os_installation>"$(escape_xml "$system_pc_date_os_installation")"</pc_date_os_installation>" >> $xml_file
+echo "		<man_org_id>"$(escape_xml "$org_id")"</man_org_id>" >> $xml_file
+echo "		<system_id>"$(escape_xml "$system_id")"</system_id>" >> $xml_file
+echo "	</sys>" >> $xml_file
 
 
 ##################################
@@ -812,7 +778,7 @@ $OA_ECHO "	</sys>" >> $xml_file
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "BIOS Info"
+	echo "BIOS Info"
 fi
 
 # Get the BIOS Manufacturer
@@ -848,9 +814,9 @@ fi
 
 # Make the BIOS Description using the manufacturer - Firmware Rev
 if [ "$bios_firm_rev" != "" ]; then
-	bios_description=$($OA_ECHO $bios_manufacturer | $OA_CUT -d" " -f1)" BIOS - Firmware Rev. $bios_firm_rev"
+	bios_description=$(echo $bios_manufacturer | $OA_CUT -d" " -f1)" BIOS - Firmware Rev. $bios_firm_rev"
 else
-	bios_description=$($OA_ECHO $bios_manufacturer | $OA_CUT -d" " -f1)" BIOS"
+	bios_description=$(echo $bios_manufacturer | $OA_CUT -d" " -f1)" BIOS"
 fi
 
 # Get the BIOS Serial = System Serial
@@ -896,13 +862,13 @@ fi
 
 #'''''''''''''''''''''''''''''''''
 
-$OA_ECHO "	<bios>" >> $xml_file
-$OA_ECHO "		<bios_description>"$(escape_xml "$bios_description")"</bios_description>" >> $xml_file
-$OA_ECHO "		<bios_manufacturer>"$(escape_xml "$bios_manufacturer")"</bios_manufacturer>" >> $xml_file
-$OA_ECHO "		<bios_serial>"$(escape_xml "$bios_serial")"</bios_serial>" >> $xml_file
-$OA_ECHO "		<bios_smversion>"$(escape_xml "$bios_smversion")"</bios_smversion>" >> $xml_file
-$OA_ECHO "		<bios_version>"$(escape_xml "$bios_version")"</bios_version>" >> $xml_file
-$OA_ECHO "	</bios>" >> $xml_file
+echo "	<bios>" >> $xml_file
+echo "		<bios_description>"$(escape_xml "$bios_description")"</bios_description>" >> $xml_file
+echo "		<bios_manufacturer>"$(escape_xml "$bios_manufacturer")"</bios_manufacturer>" >> $xml_file
+echo "		<bios_serial>"$(escape_xml "$bios_serial")"</bios_serial>" >> $xml_file
+echo "		<bios_smversion>"$(escape_xml "$bios_smversion")"</bios_smversion>" >> $xml_file
+echo "		<bios_version>"$(escape_xml "$bios_version")"</bios_version>" >> $xml_file
+echo "	</bios>" >> $xml_file
 
 
 ##################################
@@ -910,7 +876,7 @@ $OA_ECHO "	</bios>" >> $xml_file
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Processor Info"
+	echo "Processor Info"
 fi
 
 # Get processor socket type
@@ -948,16 +914,16 @@ fi
 let total_cores=$system_pc_cores_x_processor*$system_pc_physical_processors
 let total_logical_processors=$system_pc_threads_x_processor*$system_pc_physical_processors
 
-$OA_ECHO "	<processor>" >> $xml_file
-$OA_ECHO "		<processor_count>"$(escape_xml "$system_pc_physical_processors")"</processor_count>" >> $xml_file
-$OA_ECHO "		<processor_cores>"$(escape_xml "$total_cores")"</processor_cores>" >> $xml_file
-$OA_ECHO "		<processor_logical>"$(escape_xml "$total_logical_processors")"</processor_logical>" >> $xml_file
-$OA_ECHO "		<processor_socket>"$(escape_xml "$processor_socket")"</processor_socket>" >> $xml_file
-$OA_ECHO "		<processor_description>"$(escape_xml "$processor_description")"</processor_description>" >> $xml_file
-$OA_ECHO "		<processor_speed>"$(escape_xml "$processor_speed")"</processor_speed>" >> $xml_file
-$OA_ECHO "		<processor_manufacturer>"$(escape_xml "$processor_manufacturer")"</processor_manufacturer>" >> $xml_file
-$OA_ECHO "		<processor_power_management_supported>"$(escape_xml "$processor_power_management_supported")"</processor_power_management_supported>" >> $xml_file
-$OA_ECHO "	</processor>" >> $xml_file
+echo "	<processor>" >> $xml_file
+echo "		<processor_count>"$(escape_xml "$system_pc_physical_processors")"</processor_count>" >> $xml_file
+echo "		<processor_cores>"$(escape_xml "$total_cores")"</processor_cores>" >> $xml_file
+echo "		<processor_logical>"$(escape_xml "$total_logical_processors")"</processor_logical>" >> $xml_file
+echo "		<processor_socket>"$(escape_xml "$processor_socket")"</processor_socket>" >> $xml_file
+echo "		<processor_description>"$(escape_xml "$processor_description")"</processor_description>" >> $xml_file
+echo "		<processor_speed>"$(escape_xml "$processor_speed")"</processor_speed>" >> $xml_file
+echo "		<processor_manufacturer>"$(escape_xml "$processor_manufacturer")"</processor_manufacturer>" >> $xml_file
+echo "		<processor_power_management_supported>"$(escape_xml "$processor_power_management_supported")"</processor_power_management_supported>" >> $xml_file
+echo "	</processor>" >> $xml_file
 
 
 ##################################
@@ -965,7 +931,7 @@ $OA_ECHO "	</processor>" >> $xml_file
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Memory Info"
+	echo "Memory Info"
 fi
 
 memory_slots="0"
@@ -976,16 +942,16 @@ if [ "$memory_slots" != "0" ]; then
 	#' Write to the audit file       '
 	#'''''''''''''''''''''''''''''''''
 
-	$OA_ECHO "	<memory>">> $xml_file
+	echo "	<memory>">> $xml_file
 
 	for memory_handle in $($OA_DMIDECODE -t 17 2>/dev/null | $OA_AWK '/DMI type 17/{print $2}'); do
 
 			# memory_detail and memory_type are switched here to match the Windows results
 			bank_info=$($OA_DMIDECODE -t 17 2>/dev/null | $OA_SED -n '/^Handle '"$memory_handle"'/,/^$/p')
 
-			memory_bank=$($OA_ECHO "$bank_info" | $OA_AWK '/^[^B]+Locator:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | $OA_AWK '{gsub(" ","");print}')
+			memory_bank=$(echo "$bank_info" | $OA_AWK '/^[^B]+Locator:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | $OA_AWK '{gsub(" ","");print}')
 			
-			memory_detail=$($OA_ECHO "$bank_info" |\
+			memory_detail=$(echo "$bank_info" |\
 				$OA_AWK '/Type:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_AWK '{gsub(" ","");print}')
 
@@ -993,31 +959,31 @@ if [ "$memory_slots" != "0" ]; then
 				system_form_factor="Unknown"
 			fi
 			
-			memory_form_factor=$($OA_ECHO "$bank_info" |\
+			memory_form_factor=$(echo "$bank_info" |\
 				$OA_AWK '/Form Factor/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_CUT -d" " -f1)
 			
-			memory_type=$($OA_ECHO "$bank_info" |\
+			memory_type=$(echo "$bank_info" |\
 				$OA_AWK '/Type Detail:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_CUT -d" " -f1)
 			
-			memory_capacity=$($OA_ECHO "$bank_info" |\
+			memory_capacity=$(echo "$bank_info" |\
 				$OA_AWK '/Size:/{print $2}' |\
 				$OA_SED 's/[^0-9]//g')
 			
-			if [ $($OA_ECHO "$bank_info" |\
+			if [ $(echo "$bank_info" |\
 				$OA_AWK '/Size:/{print $3}') = "kB" ];then
 					memory_capacity=`$OA_EXPR $memory_capacity / 1024`
 			fi
 			
-			memory_speed=$($OA_ECHO "$bank_info" |\
+			memory_speed=$(echo "$bank_info" |\
 				$OA_AWK '/Speed:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				$OA_SED 's/[[:space:]]MHz.*//g')
 			
-			memory_tag=$($OA_ECHO "$bank_info" |\
+			memory_tag=$(echo "$bank_info" |\
 				$OA_AWK '/Bank L.*:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}')
 			
-			memory_serial=$($OA_ECHO "$bank_info" |\
+			memory_serial=$(echo "$bank_info" |\
 					$OA_AWK '/Serial Number:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 					$OA_CUT -d" " -f1)
 			
@@ -1027,20 +993,20 @@ if [ "$memory_slots" != "0" ]; then
 			
 			# Ignore empty slots
 			if [ "$memory_capacity" != "" ]; then
-				$OA_ECHO "		<slot>">> $xml_file
-				$OA_ECHO "			<bank>"$(escape_xml "$memory_bank")"</bank>">> $xml_file
-				$OA_ECHO "			<type>"$(escape_xml "$memory_type")"</type>">> $xml_file
-				$OA_ECHO "			<form_factor>"$(escape_xml "$memory_form_factor")"</form_factor>">> $xml_file
-				$OA_ECHO "			<detail>"$(escape_xml "$memory_detail")"</detail>">> $xml_file
-				$OA_ECHO "			<capacity>"$(escape_xml "$memory_capacity")"</capacity>">> $xml_file
-				$OA_ECHO "			<speed>"$(escape_xml "$memory_speed")"</speed>">> $xml_file
-				$OA_ECHO "			<tag>"$(escape_xml "$memory_tag")"</tag>">> $xml_file
-				$OA_ECHO "			<serial>"$(escape_xml "$memory_serial")"</serial>">> $xml_file
-				$OA_ECHO "		</slot>">> $xml_file
+				echo "		<slot>">> $xml_file
+				echo "			<bank>"$(escape_xml "$memory_bank")"</bank>">> $xml_file
+				echo "			<type>"$(escape_xml "$memory_type")"</type>">> $xml_file
+				echo "			<form_factor>"$(escape_xml "$memory_form_factor")"</form_factor>">> $xml_file
+				echo "			<detail>"$(escape_xml "$memory_detail")"</detail>">> $xml_file
+				echo "			<capacity>"$(escape_xml "$memory_capacity")"</capacity>">> $xml_file
+				echo "			<speed>"$(escape_xml "$memory_speed")"</speed>">> $xml_file
+				echo "			<tag>"$(escape_xml "$memory_tag")"</tag>">> $xml_file
+				echo "			<serial>"$(escape_xml "$memory_serial")"</serial>">> $xml_file
+				echo "		</slot>">> $xml_file
 			fi
 	done
 
-	$OA_ECHO "	</memory>">> $xml_file
+	echo "	</memory>">> $xml_file
 fi
 
 
@@ -1049,7 +1015,7 @@ fi
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Motherboard Info"
+	echo "Motherboard Info"
 fi
 
 mobo_manufacturer=$($OA_DMIDECODE -s baseboard-manufacturer 2> /dev/null)
@@ -1068,14 +1034,14 @@ fi
 #'''''''''''''''''''''''''''''''''
 
 if [ "$mobo_manufacturer" != "" ] || [ "$mobo_model" != "" ]; then
-	$OA_ECHO "	<motherboard>">> $xml_file
-	$OA_ECHO "		<manufacturer>"$(escape_xml "$mobo_manufacturer")"</manufacturer>" >> $xml_file
-	$OA_ECHO "		<model>"$(escape_xml "$mobo_model")"</model>" >> $xml_file
-	$OA_ECHO "		<serial>"$(escape_xml "$mobo_serial")"</serial>" >> $xml_file
-	$OA_ECHO "		<processor_slots>"$(escape_xml "$system_pc_physical_processors")"</processor_slots>" >> $xml_file
-	$OA_ECHO "		<processor_type>"$(escape_xml "$processor_socket")"</processor_type>" >> $xml_file
-	$OA_ECHO "		<memory_slots>"$(escape_xml "$memory_slots")"</memory_slots>" >> $xml_file
-	$OA_ECHO "	</motherboard>" >> $xml_file
+	echo "	<motherboard>">> $xml_file
+	echo "		<manufacturer>"$(escape_xml "$mobo_manufacturer")"</manufacturer>" >> $xml_file
+	echo "		<model>"$(escape_xml "$mobo_model")"</model>" >> $xml_file
+	echo "		<serial>"$(escape_xml "$mobo_serial")"</serial>" >> $xml_file
+	echo "		<processor_slots>"$(escape_xml "$system_pc_physical_processors")"</processor_slots>" >> $xml_file
+	echo "		<processor_type>"$(escape_xml "$processor_socket")"</processor_type>" >> $xml_file
+	echo "		<memory_slots>"$(escape_xml "$memory_slots")"</memory_slots>" >> $xml_file
+	echo "	</motherboard>" >> $xml_file
 fi
 
 
@@ -1084,7 +1050,7 @@ fi
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Optical Drives Info"
+	echo "Optical Drives Info"
 fi
 optical_num_devices=`$OA_CDRDAO scanbus 2>&1 | $OA_GREP '/dev' | $OA_WC -l`
 
@@ -1101,25 +1067,25 @@ if [ "$optical_num_devices" != "0" ]; then
 	#' Write to the audit file       '
 	#'''''''''''''''''''''''''''''''''
 	
-	$OA_ECHO "	<optical_drives>" >> $xml_file
+	echo "	<optical_drives>" >> $xml_file
 
 	IFS=$'\n'; for optical_device in $($OA_CDRDAO scanbus 2>&1 | $OA_GREP '/dev'); do
-		optical_drive_vendor=$(ucase $(trim `$OA_ECHO $optical_device | $OA_CUT -d: -f2 | $OA_CUT -d, -f1`))
-		optical_drive_model=$(trim `$OA_ECHO $optical_device | $OA_CUT -d: -f2 | $OA_CUT -d, -f2`)
-		optical_drive_release=$(trim `$OA_ECHO $optical_device | $OA_CUT -d: -f2 | $OA_CUT -d, -f3`)
+		optical_drive_vendor=$(ucase $(trim `echo $optical_device | $OA_CUT -d: -f2 | $OA_CUT -d, -f1`))
+		optical_drive_model=$(trim `echo $optical_device | $OA_CUT -d: -f2 | $OA_CUT -d, -f2`)
+		optical_drive_release=$(trim `echo $optical_device | $OA_CUT -d: -f2 | $OA_CUT -d, -f3`)
                 if [ "$optical_drive_release" != "" ]; then
                   optical_drive_release="Rel.$optical_drive_release"
                 fi
-		optical_device_ID=$(trim `$OA_ECHO $optical_device | $OA_CUT -d: -f1`)
+		optical_device_ID=$(trim `echo $optical_device | $OA_CUT -d: -f1`)
 		optical_caption="$optical_drive_vendor $optical_drive_model"
-		$OA_ECHO "		<optical_drive>">> $xml_file
-		$OA_ECHO "			<optical_drive_caption>"$(escape_xml "$optical_caption")"</optical_drive_caption>" >> $xml_file
-		$OA_ECHO "			<optical_drive_model>"$(escape_xml "$optical_caption $optical_drive_release")"</optical_drive_model>" >> $xml_file
-		$OA_ECHO "			<optical_drive_device_id>"$(escape_xml "$optical_device_ID")" </optical_drive_device_id>" >> $xml_file
-		$OA_ECHO "			<optical_drive_mount_point>"$(escape_xml "$optical_drive_mount_point")"</optical_drive_mount_point>" >> $xml_file
-		$OA_ECHO "		</optical_drive>" >> $xml_file
+		echo "		<optical_drive>">> $xml_file
+		echo "			<optical_drive_caption>"$(escape_xml "$optical_caption")"</optical_drive_caption>" >> $xml_file
+		echo "			<optical_drive_model>"$(escape_xml "$optical_caption $optical_drive_release")"</optical_drive_model>" >> $xml_file
+		echo "			<optical_drive_device_id>"$(escape_xml "$optical_device_ID")" </optical_drive_device_id>" >> $xml_file
+		echo "			<optical_drive_mount_point>"$(escape_xml "$optical_drive_mount_point")"</optical_drive_mount_point>" >> $xml_file
+		echo "		</optical_drive>" >> $xml_file
 	done
-	$OA_ECHO "	</optical_drives>" >> $xml_file
+	echo "	</optical_drives>" >> $xml_file
 fi
 
 ##################################
@@ -1127,14 +1093,14 @@ fi
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Video Cards Info"
+	echo "Video Cards Info"
 fi
 
 video_pci_adapters=""
 video_pci_adapters=`$OA_LSPCI | $OA_GREP VGA | $OA_CUT -d" " -f1`
 
 if [ "$video_pci_adapters" != "" ]; then
-	$OA_ECHO "	<video_cards>" >> $xml_file
+	echo "	<video_cards>" >> $xml_file
 	for video_adapter in $video_pci_adapters; do 
 		video_device_name=`$OA_LSPCI -vms $video_adapter | $OA_GREP '^Device' | $OA_TAIL -n1  | $OA_CUT -d: -f2 | $OA_CUT -c2-`
 		video_revision=`$OA_LSPCI -vms $video_adapter | $OA_GREP '^Rev' | $OA_CUT -d: -f2 | $OA_CUT -c2-`
@@ -1161,14 +1127,14 @@ fi
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Sound Cards Info"
+	echo "Sound Cards Info"
 fi
 
 sound_pci_adapters=""
 sound_pci_adapters=`$OA_LSPCI | $OA_GREP -Ei 'audio | multmedia' | $OA_CUT -d" " -f1`
 
 if [ "$sound_pci_adapters" != "" ]; then
-	$OA_ECHO "	<sound_cards>" >> $xml_file
+	echo "	<sound_cards>" >> $xml_file
 	for sound_adapter in $sound_pci_adapters; do 
 		sound_device_name=`$OA_LSPCI -vms $sound_adapter | $OA_GREP '^Device' | $OA_TAIL -n1  | $OA_CUT -d: -f2 | $OA_CUT -c2-`
 		sound_revision=`$OA_LSPCI -vms $sound_adapter | $OA_GREP '^Rev' | $OA_CUT -d: -f2 | $OA_CUT -c2-`
@@ -1179,13 +1145,13 @@ if [ "$sound_pci_adapters" != "" ]; then
 		fi
 		sound_manufacturer=`$OA_LSPCI -vms $sound_adapter | $OA_GREP '^Vendor' | $OA_CUT -d: -f2 | $OA_CUT -c2-`
 
-		$OA_ECHO "		<sound_card>" >> $xml_file
-		$OA_ECHO "			<sound_name>"$(escape_xml "$sound_name")"</sound_name>" >> $xml_file
-		$OA_ECHO "			<sound_manufacturer>"$(escape_xml "$sound_manufacturer")"</sound_manufacturer>" >> $xml_file
-		$OA_ECHO "			<sound_device_id>"$(escape_xml "$sound_adapter")"</sound_device_id>" >> $xml_file
-		$OA_ECHO "		</sound_card>" >> $xml_file
+		echo "		<sound_card>" >> $xml_file
+		echo "			<sound_name>"$(escape_xml "$sound_name")"</sound_name>" >> $xml_file
+		echo "			<sound_manufacturer>"$(escape_xml "$sound_manufacturer")"</sound_manufacturer>" >> $xml_file
+		echo "			<sound_device_id>"$(escape_xml "$sound_adapter")"</sound_device_id>" >> $xml_file
+		echo "		</sound_card>" >> $xml_file
 	done
-	$OA_ECHO "	</sound_cards>" >> $xml_file
+	echo "	</sound_cards>" >> $xml_file
 fi
 
 ##################################
@@ -1193,10 +1159,10 @@ fi
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Shares Info"
+	echo "Shares Info"
 fi
 
-$OA_ECHO "	<shares>" >> $xml_file
+echo "	<shares>" >> $xml_file
 
 case $system_os_family in
 		'Ubuntu' | 'Debian' )
@@ -1220,36 +1186,36 @@ case $system_os_family in
 			;;
 esac
 
-$OA_ECHO "	</shares>" >> $xml_file
+echo "	</shares>" >> $xml_file
 
 ##################################
 # NETWORK CARDS SECTION          #
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Network Cards Info"
+	echo "Network Cards Info"
 fi
 
 net_cards=`for dir in /sys/class/net/*; 
                do [ -e $dir/device ] && {
-	          $OA_ECHO "$dir $(readlink -f $dir/device)" | $OA_AWK -F\/ '{ print $9"/"$5 }' | $OA_AWK -F\: '{ print $2":"$3 }' | tr -d '[:blank:]';
+	          echo "$dir $(readlink -f $dir/device)" | $OA_AWK -F\/ '{ print $9"/"$5 }' | $OA_AWK -F\: '{ print $2":"$3 }' | tr -d '[:blank:]';
 	       }; done`;
 
 # $icards=$(ls /sys/class/net/); do
 # 	if [ -e "$icards"/device ]; then
-# 		icard=`$OA_ECHO 
+# 		icard=`echo 
 # 	fi
 # done
 
 if [ "$net_cards" != "" ]; then
 	# Store the IP Addresses Information in a variable to write it later on the file
 	addr_info=""
-	$OA_ECHO "	<network_cards>" >> $xml_file;
+	echo "	<network_cards>" >> $xml_file;
 
 	IFS=$'\n'; 
 	for net_card_connection_id in $net_cards; do 
-		net_card_id=`$OA_ECHO $net_card_connection_id | cut -d"/" -f2`
-		net_card_pci=`$OA_ECHO $net_card_connection_id | $OA_CUT -d/ -f1`
+		net_card_id=`echo $net_card_connection_id | cut -d"/" -f2`
+		net_card_pci=`echo $net_card_connection_id | $OA_CUT -d/ -f1`
 		net_card_mac=`$OA_CAT /sys/class/net/$net_card_id/address`
 		net_index=`$OA_CAT /sys/class/net/$net_card_id/ifindex`
 
@@ -1276,7 +1242,7 @@ if [ "$net_cards" != "" ]; then
 
 		net_card_speed=""
 
-		if [ -z `$OA_ECHO $net_card_id | $OA_AWK '/^wl/{print $1}'` ]; then
+		if [ -z `echo $net_card_id | $OA_AWK '/^wl/{print $1}'` ]; then
 			if [ "$OA_ETHTOOL" = "" ]; then
 				# we don't have ethtool installed
 				net_card_type="Ethernet 802.3"
@@ -1321,12 +1287,12 @@ if [ "$net_cards" != "" ]; then
 			net_card_enabled="True"
 			net_card_enabled_ip6_addr=""
 			echo "NCEIA: $net_card_enabled_ip4_addr"
-			net_card_enabled_ip_subnet=$(cidr2mask `$OA_ECHO $net_card_enabled_ip4_addr | $OA_CUT -d/ -f2`)
+			net_card_enabled_ip_subnet=$(cidr2mask `echo $net_card_enabled_ip4_addr | $OA_CUT -d/ -f2`)
 			net_card_enabled_ip_version="4"
 			addr_info=$addr_info"\t\t<ip_address>\n"
 			addr_info=$addr_info"\t\t\t<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>\n"
 			addr_info=$addr_info"\t\t\t<net_index>"$(escape_xml "$net_index")"</net_index>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_v4>"$(escape_xml `$OA_ECHO $net_card_enabled_ip4_addr |\
+			addr_info=$addr_info"\t\t\t<ip_address_v4>"$(escape_xml `echo $net_card_enabled_ip4_addr |\
 				$OA_CUT -d/ -f1`)"</ip_address_v4>\n"
 			addr_info=$addr_info"\t\t\t<ip_address_v6>"$(escape_xml "$net_card_enabled_ip6_addr")"</ip_address_v6>\n"
 			addr_info=$addr_info"\t\t\t<ip_subnet>"$(escape_xml "$net_card_enabled_ip_subnet")"</ip_subnet>\n"
@@ -1341,7 +1307,7 @@ if [ "$net_cards" != "" ]; then
 			$OA_CUT -ds -f1); do
 			net_card_enabled="True"
 			net_card_enabled_ip4_addr=""
-		 		net_card_enabled_ip_subnet=`$OA_ECHO $net_card_enabled_ip6_addr |\
+		 		net_card_enabled_ip_subnet=`echo $net_card_enabled_ip6_addr |\
 				$OA_CUT -d/ -f2`
 			net_card_enabled_ip_version="6"
 
@@ -1349,7 +1315,7 @@ if [ "$net_cards" != "" ]; then
 			addr_info=$addr_info"\t\t\t<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>\n"
 			addr_info=$addr_info"\t\t\t<net_index>"$(escape_xml "$net_index")"</net_index>\n"
 			addr_info=$addr_info"\t\t\t<ip_address_v4>"$(escape_xml "$net_card_enabled_ip4_addr")"</ip_address_v4>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_v6>"$(escape_xml `$OA_ECHO $net_card_enabled_ip6_addr |\
+			addr_info=$addr_info"\t\t\t<ip_address_v6>"$(escape_xml `echo $net_card_enabled_ip6_addr |\
 				$OA_CUT -d/ -f1`)"</ip_address_v6>\n"
 			addr_info=$addr_info"\t\t\t<ip_subnet>"$(escape_xml "$net_card_enabled_ip_subnet")"</ip_subnet>\n"
 			addr_info=$addr_info"\t\t\t<ip_address_version>"$(escape_xml "$net_card_enabled_ip_version")"</ip_address_version>\n"
@@ -1404,31 +1370,31 @@ if [ "$net_cards" != "" ]; then
 
 		net_card_wins_primary=""
 
-		$OA_ECHO "		<network_card>" >> $xml_file
-		$OA_ECHO "			<net_index>"$(escape_xml "$net_index")"</net_index>" >> $xml_file
-		$OA_ECHO "			<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>" >> $xml_file
-		$OA_ECHO "			<net_manufacturer>"$(escape_xml "$net_card_manufacturer")"</net_manufacturer>" >> $xml_file
-		$OA_ECHO "			<net_model>"$(escape_xml "$net_card_model")"</net_model>" >> $xml_file
-		$OA_ECHO "			<net_description>"$(escape_xml "$net_card_description")"</net_description>" >> $xml_file
-		$OA_ECHO "			<net_ip_enabled>"$(escape_xml "$net_card_enabled")"</net_ip_enabled>" >> $xml_file
-		$OA_ECHO "			<net_connection_id>"$(escape_xml "$net_card_id")"</net_connection_id>" >> $xml_file
-		$OA_ECHO "			<net_connection_status>"$(escape_xml "$net_card_status")"</net_connection_status>" >> $xml_file
-		$OA_ECHO "			<net_speed>"$(escape_xml "$net_card_speed")"</net_speed>" >> $xml_file
-		$OA_ECHO "			<net_adapter_type>"$(escape_xml "$net_card_type")"</net_adapter_type>" >> $xml_file
-		$OA_ECHO "			<net_dhcp_enabled>"$(escape_xml "$net_card_dhcp_enab")"</net_dhcp_enabled>" >> $xml_file
-		$OA_ECHO "			<net_dhcp_server>"$(escape_xml "$net_card_dhcp_server")"</net_dhcp_server>" >> $xml_file
-		$OA_ECHO "			<net_dhcp_lease_obtained>"$(escape_xml "$net_card_dhcp_lease_obtained")"</net_dhcp_lease_obtained>" >> $xml_file
-		$OA_ECHO "			<net_dhcp_lease_expires>"$(escape_xml "$net_card_dhcp_lease_expire")"</net_dhcp_lease_expires>" >> $xml_file
-		$OA_ECHO "			<net_dns_host_name>"$(escape_xml "$system_hostname")"</net_dns_host_name>" >> $xml_file
-		$OA_ECHO "			<net_dns_domain>"$(escape_xml "$net_card_dns_domain")"</net_dns_domain>" >> $xml_file
-		$OA_ECHO "			<net_dns_domain_reg_enabled>"$(escape_xml "$net_card_domain_reg")"</net_dns_domain_reg_enabled>" >> $xml_file
-		$OA_ECHO "			<net_dns_server>"$(escape_xml "$net_card_dns_server")"</net_dns_server>" >> $xml_file
-		$OA_ECHO "			<net_wins_primary>"$(escape_xml "$net_card_wins_primary")"</net_wins_primary>" >> $xml_file
-		$OA_ECHO "			<net_wins_secondary></net_wins_secondary>" >> $xml_file
-		$OA_ECHO "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>" >> $xml_file
-		$OA_ECHO "		</network_card>" >> $xml_file
+		echo "		<network_card>" >> $xml_file
+		echo "			<net_index>"$(escape_xml "$net_index")"</net_index>" >> $xml_file
+		echo "			<net_mac_address>"$(escape_xml "$net_card_mac")"</net_mac_address>" >> $xml_file
+		echo "			<net_manufacturer>"$(escape_xml "$net_card_manufacturer")"</net_manufacturer>" >> $xml_file
+		echo "			<net_model>"$(escape_xml "$net_card_model")"</net_model>" >> $xml_file
+		echo "			<net_description>"$(escape_xml "$net_card_description")"</net_description>" >> $xml_file
+		echo "			<net_ip_enabled>"$(escape_xml "$net_card_enabled")"</net_ip_enabled>" >> $xml_file
+		echo "			<net_connection_id>"$(escape_xml "$net_card_id")"</net_connection_id>" >> $xml_file
+		echo "			<net_connection_status>"$(escape_xml "$net_card_status")"</net_connection_status>" >> $xml_file
+		echo "			<net_speed>"$(escape_xml "$net_card_speed")"</net_speed>" >> $xml_file
+		echo "			<net_adapter_type>"$(escape_xml "$net_card_type")"</net_adapter_type>" >> $xml_file
+		echo "			<net_dhcp_enabled>"$(escape_xml "$net_card_dhcp_enab")"</net_dhcp_enabled>" >> $xml_file
+		echo "			<net_dhcp_server>"$(escape_xml "$net_card_dhcp_server")"</net_dhcp_server>" >> $xml_file
+		echo "			<net_dhcp_lease_obtained>"$(escape_xml "$net_card_dhcp_lease_obtained")"</net_dhcp_lease_obtained>" >> $xml_file
+		echo "			<net_dhcp_lease_expires>"$(escape_xml "$net_card_dhcp_lease_expire")"</net_dhcp_lease_expires>" >> $xml_file
+		echo "			<net_dns_host_name>"$(escape_xml "$system_hostname")"</net_dns_host_name>" >> $xml_file
+		echo "			<net_dns_domain>"$(escape_xml "$net_card_dns_domain")"</net_dns_domain>" >> $xml_file
+		echo "			<net_dns_domain_reg_enabled>"$(escape_xml "$net_card_domain_reg")"</net_dns_domain_reg_enabled>" >> $xml_file
+		echo "			<net_dns_server>"$(escape_xml "$net_card_dns_server")"</net_dns_server>" >> $xml_file
+		echo "			<net_wins_primary>"$(escape_xml "$net_card_wins_primary")"</net_wins_primary>" >> $xml_file
+		echo "			<net_wins_secondary></net_wins_secondary>" >> $xml_file
+		echo "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>" >> $xml_file
+		echo "		</network_card>" >> $xml_file
 	done
-	$OA_ECHO "	</network_cards>" >> $xml_file
+	echo "	</network_cards>" >> $xml_file
 fi
 
 ##################################
@@ -1436,8 +1402,8 @@ fi
 ##################################
 
 if [ "$addr_info" != "" ]; then
-	$OA_ECHO "	<addresses>" >> $xml_file
-	$OA_ECHO -e $addr_info"	</addresses>" >>  $xml_file
+	echo "	<addresses>" >> $xml_file
+	echo -e $addr_info"	</addresses>" >>  $xml_file
 fi
 
 
@@ -1447,13 +1413,13 @@ fi
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Log Info"
+	echo "Log Info"
 fi
 
-$OA_ECHO "	<logs>" >> $xml_file
+echo "	<logs>" >> $xml_file
 
 for log in $(ls -1 /etc/logrotate.d/) ; do\
-	$OA_ECHO -e "\t\t<log>\n\t\t\t<log_name>$log</log_name>\n\t\t\t<log_file_name>\
+	echo -e "\t\t<log>\n\t\t\t<log_name>$log</log_name>\n\t\t\t<log_file_name>\
 		`$OA_GREP -m 1 -E "^/" /etc/logrotate.d/$log | $OA_SED -e 's/\ {//g'`\
 			</log_file_name>\n\t\t\t<log_file_size></log_file_size>\n\t\t\t<log_max_file_size>\
 			`$OA_GREP -E '\ size\ ' /etc/logrotate.d/$log |\
@@ -1461,7 +1427,7 @@ for log in $(ls -1 /etc/logrotate.d/) ; do\
 	$xml_file
 
 
-$OA_ECHO "	</logs>" >> $xml_file
+echo "	</logs>" >> $xml_file
 
 
 ##################################
@@ -1469,12 +1435,12 @@ $OA_ECHO "	</logs>" >> $xml_file
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Swap Info"
+	echo "Swap Info"
 fi
 
 FS=$'\n'; for swap in `$OA_CAT /proc/swaps |\
 	$OA_TAIL -n +2` ; do\
-		$OA_ECHO $swap |\
+		echo $swap |\
 		$OA_AWK ' { print "\t<pagefile>\n\t\t<file_name>"$1"</file_name>\n\t\t<initial_size>"$3"</initial_size>\n\t\t<max_size>"$3"</max_size>\n\t</pagefile>" } ' ; done >>\
 		$xml_file
 
@@ -1484,22 +1450,22 @@ FS=$'\n'; for swap in `$OA_CAT /proc/swaps |\
 ##################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "User Info"
+	echo "User Info"
 fi
 
-$OA_ECHO "	<users>" >> $xml_file
+echo "	<users>" >> $xml_file
 
 ORIGIFS=$IFS
 
-IFS=`$OA_ECHO -en "\n\b"`; \
+IFS=`echo -en "\n\b"`; \
 	for i in `$OA_CAT /etc/passwd` ; do\
-		$OA_ECHO $i |\
+		echo $i |\
 		$OA_AWK -F: ' { print "\t\t<user>\n" "\t\t\t<user_name>"$1"</user_name>\n" "\t\t\t<user_full_name>"$5"</user_full_name>\n" "\t\t\t<user_sid>"$3"</user_sid>\n" "\t\t</user>" } ' >> $xml_file ;\
 	done
 
 IFS=$ORIGIFS
 
-$OA_ECHO "	</users>" >> $xml_file
+echo "	</users>" >> $xml_file
 
 
 ########################################################
@@ -1507,10 +1473,10 @@ $OA_ECHO "	</users>" >> $xml_file
 ########################################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Software Info"
+	echo "Software Info"
 fi
 
-$OA_ECHO "	<software>" >> $xml_file
+echo "	<software>" >> $xml_file
 
 case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' )
@@ -1528,7 +1494,7 @@ case $system_os_family in
 esac
 #				$OA_SED -e 's/+/%2B/g' |\
 
-$OA_ECHO "	</software>" >> $xml_file
+echo "	</software>" >> $xml_file
 
 
 ########################################################
@@ -1536,10 +1502,10 @@ $OA_ECHO "	</software>" >> $xml_file
 ########################################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Service Info"
+	echo "Service Info"
 fi
 
-$OA_ECHO "	<services>" >> $xml_file
+echo "	<services>" >> $xml_file
 
 case $system_os_family in
 		'Ubuntu' | 'Debian' )
@@ -1549,27 +1515,29 @@ case $system_os_family in
 				INITDEFAULT=$($OA_AWK -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
 			fi
 			# upstart services
-			for s in $(initctl list 2>/dev/null | $OA_AWK ' { print $1 } ' | $OA_SORT | $OA_UNIQ) ; do\
+			for s in $(q 2>/dev/null | $OA_AWK ' { print $1 } ' | $OA_SORT | $OA_UNIQ) ; do\
 				if [ "$s" = "rc" ]; then
 					service_start_mode="Auto"
 				else
 					service_start_mode="Manual"
 				fi 
-				$OA_ECHO -e "\t\t<service>\n\t\t\t<service_name>$s</service_name>\n\t\t\t<service_start_mode>$service_start_mode</service_start_mode>\n\t\t</service>" ;\
+				service_name=`escape_xml "$s"`
+				echo -e "\t\t<service>\n\t\t\t<service_name>$service_name</service_name>\n\t\t\t<service_start_mode>$service_start_mode</service_start_mode>\n\t\t</service>" ;\
 				done >>\
 			$xml_file
 			# sysv services
 			for s in `$OA_LS -l /etc/init.d/ |\
 			$OA_GREP -Ev '^total|README|upstart' |\
-			$OA_AWK ' { print $9 } '` ; do\
-				$OA_ECHO -e "\t\t<service>\n\t\t\t<service_name>$s</service_name>" ;\
+			$OA_AWK ' { print $9 } '` ; do
+				service_name=`escape_xml "$s"`
+				echo -e "\t\t<service>\n\t\t\t<service_name>$service_name</service_name>" ;\
 			if ! $OA_LS -1 /etc/rc$INITDEFAULT\.d |\
 			$OA_GREP $s > /dev/null ; then\
-				$OA_ECHO -e "\t\t\t<service_start_mode>Manual</service_start_mode>" ;
+				echo -e "\t\t\t<service_start_mode>Manual</service_start_mode>" ;
 			else
-				$OA_ECHO -e "\t\t\t<service_start_mode>Auto</service_start_mode>" ;
+				echo -e "\t\t\t<service_start_mode>Auto</service_start_mode>" ;
 			fi ;\
-			$OA_ECHO -e "\t\t</service>" ;\
+			echo -e "\t\t</service>" ;\
 			done >>\
 			$xml_file
 			;;
@@ -1582,44 +1550,44 @@ case $system_os_family in
 			;;
 esac
 
-$OA_ECHO "	</services>" >> $xml_file
+echo "	</services>" >> $xml_file
 
 ########################################################
 # ROUTE SECTION                                        #
 ########################################################
 
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Route Info"
+	echo "Route Info"
 fi
 
-$OA_ECHO "	<routes>" >> $xml_file
+echo "	<routes>" >> $xml_file
 if [ "$OA_ROUTE" != "" ]; then
-	IFS=$'\n'; for i in `$OA_ROUTE -n | $OA_TAIL -n +3` ; do $OA_ECHO $i | $OA_AWK ' { print "\t\t<route>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</route>" } ' ; done >> $xml_file
+	IFS=$'\n'; for i in `$OA_ROUTE -n | $OA_TAIL -n +3` ; do echo $i | $OA_AWK ' { print "\t\t<route>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</route>" } ' ; done >> $xml_file
 fi
 if [ "$OA_ROUTE" = "" ] && [ $OA_IP != "" ]; then
 	#route_mask=$(cidr2mask `$OA_IP r | grep "default via" | cut -d" " -f1 | cut -d"\"" -f2`)
 	route_next_hop=`$OA_IP r | grep "default via" | cut -d" " -f3`
 	route_metric=`$OA_IP r | grep "default via" | cut -d" " -f10`
-	$OA_ECHO "		<route>" >> $xml_file
-	$OA_ECHO "			<destination>0.0.0.0</destination>" >> $xml_file
-	$OA_ECHO "			<mask></mask>" >> $xml_file
-	$OA_ECHO "			<metric>$route_metric</metric>" >> $xml_file
-	$OA_ECHO "			<next_hop>$route_next_hop</next_hop>" >> $xml_file
-	$OA_ECHO "		</route>" >> $xml_file
+	echo "		<route>" >> $xml_file
+	echo "			<destination>0.0.0.0</destination>" >> $xml_file
+	echo "			<mask></mask>" >> $xml_file
+	echo "			<metric>$route_metric</metric>" >> $xml_file
+	echo "			<next_hop>$route_next_hop</next_hop>" >> $xml_file
+	echo "		</route>" >> $xml_file
 fi
-$OA_ECHO "	</routes>" >> $xml_file
+echo "	</routes>" >> $xml_file
 
 
 ########################################################
 # NETSTAT LISTENING PORTS                              #
 ########################################################
 if [ "$debugging" -gt "0" ]; then
-	$OA_ECHO "Netstat Info"
+	echo "Netstat Info"
 fi
 netstatdump=`netstat -lntup 2>/dev/null | grep -v "(only servers)" | grep -v "Foreign Address"`
-$OA_ECHO "	<netstat>" >> $xml_file
-$OA_ECHO "		<![CDATA[$netstatdump]]>" >> $xml_file
-$OA_ECHO "	</netstat>" >> $xml_file
+echo "	<netstat>" >> $xml_file
+echo "		<![CDATA[$netstatdump]]>" >> $xml_file
+echo "	</netstat>" >> $xml_file
 
 
 
@@ -1631,21 +1599,21 @@ $OA_ECHO "	</netstat>" >> $xml_file
 # CLOSE THE AUDIT FILE                                 #
 ########################################################
 
-$OA_ECHO "</system>" >> $xml_file
+echo "</system>" >> $xml_file
 
 ########################################################
 # SUBMIT RESULTS                                       #
 ########################################################
 
 if [ $debugging -gt 0 ]; then
-	$OA_ECHO 'Audit Generated in ' $(timer $start_time) ' seconds.' 
+	echo 'Audit Generated in ' $(timer $start_time) ' seconds.' 
 fi
 
 if [ "$submit_online" = "y" ]; then
 	sed -i -e 's/+/%2B/g' $xml_file
 	if [ $debugging -gt 1 ]; then
-		$OA_ECHO "Submitting results to server"
-		$OA_ECHO "URL: $url"
+		echo "Submitting results to server"
+		echo "URL: $url"
 	fi
 	$OA_WGET --delete-after --post-file="$xml_file" $url 2>/dev/null
 fi
@@ -1658,6 +1626,6 @@ fi
 
 
 if [ $debugging -gt 0 ]; then
-	$OA_ECHO 'Audit Completed in ' $(timer $start_time) ' seconds.' 
+	echo 'Audit Completed in ' $(timer $start_time) ' seconds.' 
 fi
 
