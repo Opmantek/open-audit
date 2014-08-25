@@ -591,7 +591,7 @@ if [ -z "$system_os_version" ]; then
 
 		# CentOS based - must come before RedHat based
 		if [ "$system_release_file" = "/etc/centos-release" ]; then
-			system_os_family="RedHat";
+			system_os_family="CentOS";
 			for i in `cat "$system_release_file" `; do 
 				if echo $i | grep -Eq '^[0-9.]+$'; then 
 					system_os_version="$i"; 
