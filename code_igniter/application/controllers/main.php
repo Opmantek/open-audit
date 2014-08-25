@@ -58,11 +58,6 @@ class main extends MY_Controller
 		$result = $this->m_systems->api_index($level);
 		for ($count = 0; $count<count($result); $count++) {
 			$result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
-			foreach ($result[$count] as $key => $value) {
-				if (is_numeric($value)) {
-					$result[$count]->$key = intval($result[$count]->$key);
-				}
-			}
 		}
 		echo json_encode($result);
 		header('Content-Type: application/json');
@@ -90,11 +85,15 @@ class main extends MY_Controller
             for ($count = 0; $count<count($result); $count++) {
                 $result[$count]->system_id = $system_id;
                 foreach ($result[$count] as $key => $value) {
-                    if (is_numeric($value)) {
-                        $result[$count]->$key = intval($result[$count]->$key);
+                    // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
+                    if ($key == 'man_ip_address' or 
+                        $key == 'destination'    or 
+                        $key == 'ip_address_v4'  or
+                        $key == 'next_hop') {
+                        $result[$count]->$key = ip_address_from_db($result[$count]->$key);
                     }
-                    if ($key == 'man_ip_address') {
-                        $result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
+                    if ($key == 'ip_address_v4' and ($value == '000.000.000.000' or $value == '0.0.0.0')) {
+                        $result[$count]->ip_address_v4 = '';
                     }
                 }
             }
@@ -124,9 +123,6 @@ class main extends MY_Controller
                     for ($count = 0; $count<count($result); $count++) {
                         #$result[$count]->system_id = $system_id;
                         foreach ($result[$count] as $key => $value) {
-                            if (is_numeric($value)) {
-                                $result[$count]->$key = intval($result[$count]->$key);
-                            }
                             // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
                             if ($key == 'man_ip_address' or 
                                 $key == 'destination'    or 
