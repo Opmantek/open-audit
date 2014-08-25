@@ -590,7 +590,7 @@ if [ -z "$system_os_version" ]; then
 		fi
 
 		# RedHat based
-		if [ "$system_release_file" = "centos-release" -o "$system_release_file" = "redhat-release" ]; then
+		if [ "$system_release_file" = "/etc/centos-release" -o "$system_release_file" = "/etc/redhat-release" ]; then
 			system_os_family="RedHat";
 			for i in `cat "$system_release_file" `; do 
 				if echo $i | grep -Eq '^[0-9.]+$'; then 
@@ -736,7 +736,7 @@ system_pc_physical_processors=`$OA_EXPR $system_pc_total_threads / $system_pc_th
 # There is no way to know for sure the install date. /etc/distro-release should give a clue, but it is not really accurate
 #
 
-system_pc_date_os_installation=`$OA_LS -lac --time-style="long-iso" /etc/$system_release_file | $OA_CUT -d" " -f6`
+system_pc_date_os_installation=`ls -lac --time-style="long-iso" $system_release_file | cut -d" " -f6`
 
 
 #'''''''''''''''''''''''''''''''''
