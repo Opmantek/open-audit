@@ -575,9 +575,9 @@ fi
 system_description=""
 system_type="computer"
 system_os_group="Linux"
-system_os_family=`lsb_release -is 2>/dev/null`
-system_os_name=`lsb_release -ds 2>/dev/null`
-system_os_version=`lsb_release -rs 2>/dev/null`
+system_os_family=`lsb_release -is | tr -d '"' 2>/dev/null`
+system_os_name=`lsb_release -ds | tr -d '"' 2>/dev/null`
+system_os_version=`lsb_release -rs | tr -d '"'2>/dev/null`
 
 if [ -z "$system_os_version" ]; then
 	for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
@@ -589,8 +589,20 @@ if [ -z "$system_os_version" ]; then
 			system_os_family="Suse"
 		fi
 
+		# CentOS based - must come before RedHat based
+		if [ "$system_release_file" = "/etc/centos-release" ]; then
+			system_os_family="RedHat";
+			for i in `cat "$system_release_file" `; do 
+				if echo $i | grep -Eq '^[0-9.]+$'; then 
+					system_os_version="$i"; 
+					break; 
+				fi; 
+			done
+			break;
+		fi
+
 		# RedHat based
-		if [ "$system_release_file" = "/etc/centos-release" -o "$system_release_file" = "/etc/redhat-release" ]; then
+		if [ "$system_release_file" = "/etc/redhat-release" ]; then
 			system_os_family="RedHat";
 			for i in `cat "$system_release_file" `; do 
 				if echo $i | grep -Eq '^[0-9.]+$'; then 
