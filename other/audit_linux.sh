@@ -577,16 +577,19 @@ system_type="computer"
 system_os_group="Linux"
 system_os_family=`lsb_release -is | tr -d '"' 2>/dev/null`
 system_os_name=`lsb_release -ds | tr -d '"' 2>/dev/null`
-system_os_version=`lsb_release -rs | tr -d '"'2>/dev/null`
+system_os_version=`lsb_release -rs | tr -d '"' 2>/dev/null`
 
 if [ -z "$system_os_version" ]; then
 	for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 		[ -f "$system_release_file" ] || continue;
+		[ "$system_release_file" = "/etc/os-release" ] && continue;
+
 		system_os_name=`cat $system_release_file`
 
 		# Suse Based
 		if echo "$system_os_name" | grep -Fqi "Suse" ; then
 			system_os_family="Suse"
+			break;
 		fi
 
 		# CentOS based - must come before RedHat based
