@@ -90,38 +90,69 @@ class report extends MY_Controller
 
 	public function show_report()
 	{
+		$this->load->model("m_oa_report_column");
+		$this->load->model("m_oa_report");
+
 		$this->data['report_id'] = $this->uri->segment(3, 0);
+		$this->data['group_id'] = $this->uri->segment(4, 0);
+		$this->data['first_attribute'] = urldecode($this->uri->segment(5, 0));
+		$this->data['format'] = $this->uri->segment($this->uri->total_rsegments());
+
+		if (isset($_POST['group_id']) and $_POST['group_id'] != '') { $this->data['group_id'] = $_POST['group_id']; }
+		if (isset($_POST['format']) and $_POST['format'] != '') { $this->data['format'] = $_POST['format']; }
+		if (isset($_POST['report']) and $_POST['report'] != '') { $this->data['report_id'] = $_POST['report']; }
+		if (isset($_POST['first_attribute']) and $_POST['first_attribute'] != '') { $this->data['first_attribute'] = $_POST['first_attribute']; }
+		if (isset($_POST['second_attribute']) and $_POST['second_attribute'] != '') { $this->data['second_attribute'] = $_POST['second_attribute']; }
+		if (isset($_POST['filter']) and $_POST['filter'] != '') { $this->data['filter'] = $_POST['filter']; }
+
 		if (!is_numeric($this->data['report_id'])) {
 			# we have a non-numeric value, assuming it's a report name
-			$this->data['report_name'] = str_replace('%20', ' ', $this->data['report_id']);
+			$this->data['report_name'] = str_replace('_', ' ', $this->data['report_id']);
+			$this->data['report_name'] = str_replace('%20', ' ', $this->data['report_name']);
 			$this->load->model("m_oa_report");
 			$this->data['report_id'] = $this->m_oa_report->get_report_id($this->data['report_name']);
 			if (!is_numeric($this->data['report_id'])) {
 				# we did not find a matching report id - this will fail to an error page
 			}
 		}
-		$this->data['group_id'] = $this->uri->segment(4, 0);
-		$this->data['first_attribute'] = urldecode($this->uri->segment(5, 0));
+
 		if ($this->data['first_attribute'] == '-') {
 			$this->data['first_attribute'] = '';
 		}
-		$segs = $this->uri->segment_array();
-		$this->load->model("m_oa_report_column");
-		$this->load->model("m_oa_report");
 
 		$i = 0;
 		$filter = array();
+		$segs = $this->uri->segment_array();
 		foreach ($segs as $segment) {
-			if (((strpos($segment, 'out') === 0) or (strpos($segment, 'only') === 0) ) and (strpos($segment, '___'))) {
+			if ((strpos($segment, 'out') === 0 or 
+				 strpos($segment, 'only') === 0 or 
+				 strpos($segment, 'like') === 0) and 
+				 strpos($segment, '___') !== FALSE) {
+
 				$filter_array = explode("___", $segment);
 				$filter[$i]['variable'] = $filter_array[1];
 				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
 				if ($filter_array[0] == 'only') {
 					$filter[$i]['condition'] = '=';
-				} else {
+				} elseif ($filter_array[0] == 'out') {
 					$filter[$i]['condition'] = '<>';
+				} elseif ($filter_array[0] == 'like') {
+					$filter[$i]['condition'] = 'LIKE';
 				}
 				$i++;
+			}
+		}
+
+		if (isset($this->data['filter']) and $this->data['filter'] != '') {
+			$filter_array = explode("___", $this->data['filter']);
+			$filter[$i]['variable'] = $filter_array[1];
+			$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+			if ($filter_array[0] == 'only') {
+				$filter[$i]['condition'] = '=';
+			} elseif ($filter_array[0] == 'out') {
+				$filter[$i]['condition'] = '<>';
+			} elseif ($filter_array[0] == 'like') {
+				$filter[$i]['condition'] = 'LIKE';
 			}
 		}
 
@@ -135,7 +166,6 @@ class report extends MY_Controller
 			$this->data['export_report'] = 'y';
 			$this->data['group_id'] = '0';
 			$this->load->view('v_template', $this->data);
-
 			return;
 		}
 
@@ -207,6 +237,9 @@ class report extends MY_Controller
 						if (($key->$enum_filter['variable'] != $enum_filter['value']) and ($enum_filter['condition'] == '=')) {
 							$remove = true;
 						}
+						if (strpos($key->$enum_filter['variable'], $enum_filter['value']) === FALSE and $enum_filter['condition'] == 'LIKE') {
+							$remove = true;
+						}
 					}
 				}
 				if ($remove == true) {
@@ -225,7 +258,7 @@ class report extends MY_Controller
 		$this->data['include'] = $this->m_oa_report->get_report_view($this->data['report_id']);
 		$this->data['sortcolumn'] = $this->m_oa_report->get_report_sort_column($this->data['report_id']);
 		$this->data['export_report'] = 'y';
-		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+		$this->determine_output($this->data['format']);
 	}
 
 	public function partition_alerts()
