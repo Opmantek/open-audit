@@ -115,7 +115,7 @@ class main extends MY_Controller
             $document = array();
             $list = array('system', 'sys_hw_bios', 'sys_sw_group', 'sys_hw_hard_drive', 'sys_sw_software', 'sys_hw_network_card_ip', 'sys_hw_memory', 
                 'sys_hw_motherboard', 'sys_sw_netstat', 'sys_hw_network_card', 'sys_hw_partition', 'sys_hw_processor', 'sys_sw_route', 'sys_sw_service', 
-                'sys_sw_share', 'sys_sw_software_library', 'sys_sw_software_update', 'sys_sw_user', 'sys_sw_variable', 'sys_sw_windows');
+                'sys_sw_share', 'sys_sw_user', 'sys_sw_variable', 'sys_sw_windows');
             foreach($list as $table) {
                 $result = $this->m_oa_general->get_system_document_api($table, $system_id);
                 if (is_array($result) AND count($result) != 0) {
