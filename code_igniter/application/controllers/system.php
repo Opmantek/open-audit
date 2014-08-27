@@ -397,6 +397,8 @@ class System extends CI_Controller {
 			$error_output = 'Invalid XML input for: ' . $hostname;
 			$log = "C:system F:add_system Invalid XML result for $hostname"; $this->log_event($log);
 			error_log($error_output);
+			echo "<pre>\n";
+			print_r($xml);
 			exit;
 		}
 
