@@ -1285,7 +1285,7 @@ class M_system extends MY_Model {
 						if (isset($details->icon) and $details->icon > "") {
 							$details->man_icon = $details->icon;
 						} else {
-							$details->man_icon = $details->type;
+							$details->man_icon = str_replace(' ', '_', $details->type);
 						}
 					} 
 				}
