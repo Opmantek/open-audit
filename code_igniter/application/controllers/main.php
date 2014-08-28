@@ -1003,7 +1003,7 @@ class main extends MY_Controller
         #$data['prereq_snmp'] = 'n';
         $data['prereq_sshpass'] = 'n';
         $data['prereq_wget'] = 'n';
-        $data['prereq_winexe'] = 'n';
+        #$data['prereq_winexe'] = 'n'; # As at 1.4 we ship a compile binary in /usr/local/open-audit/other/winexe-static
         $data['prereq_zip'] = 'n';
 
 
@@ -1218,14 +1218,14 @@ class main extends MY_Controller
             unset($output);
             unset($command_string);
 
-            # winexe
-            $command_string = "which winexe 2>/dev/null";
-            exec($command_string, $output, $return_var);
-            if (isset($output[0])) {
-                $data['prereq_winexe'] = @$output[0];
-            }
-            unset($output);
-            unset($command_string);
+            // # winexe
+            // $command_string = "which winexe 2>/dev/null";
+            // exec($command_string, $output, $return_var);
+            // if (isset($output[0])) {
+            //     $data['prereq_winexe'] = @$output[0];
+            // }
+            // unset($output);
+            // unset($command_string);
 
             if ($data['os_platform'] == 'Linux (Debian)') {
                 # Samba Client
@@ -1353,11 +1353,11 @@ class main extends MY_Controller
                         $hints[$key] = 'The prerequisite package ' . str_replace('prereq_', '', $key) . ' is missing or incorrect.';
                         $package_name = str_replace('prereq_', '', $key);
                         if ($package_name == 'php-cli' and $data['os_platform'] == 'Linux (Debian)') { $package_name = 'php5-cli'; }
-                        if ($key == 'prereq_winexe') { 
-                            $hints[$key] .= ' Winexe is required to be able to audit a Windows machine from a Linux Open-AudIT server. You can download Winexe from <a href="http://download.opensuse.org/repositories/home:/ahajda:/winexe/" style="color: blue; text-decoration: underline;">here</a>.'; 
-                        } else {
+                        #if ($key == 'prereq_winexe') { 
+                        #    $hints[$key] .= ' Winexe is required to be able to audit a Windows machine from a Linux Open-AudIT server. You can download Winexe from <a href="http://download.opensuse.org/repositories/home:/ahajda:/winexe/" style="color: blue; text-decoration: underline;">here</a>.'; 
+                        #} else {
                             $hints[$key] .= ' You can likely install it with "' . $package_install . ' ' . $package_name . '".';
-                        }
+                        #}
                     }
                 }
             }
@@ -1369,8 +1369,8 @@ class main extends MY_Controller
             $hints['prereq_nmap_perms'] = 'It appears that nmap has not had its SUID set. This can be fixed by "chmod u+s ' . $data['prereq_nmap'] . '" (sans quotes).';
         }
 
-        if ($data['application_log_permission'] != '-rw-rw-rw-' and $data['application_log_permission'] != '-rw-rw-rw-.') {
-            $hints['application_log_permission'] = 'The permissions on your open-audit log file are not set correctly. This can be fixed by "chmod 666 /usr/local/open-audit/other/open-audit.log" (sans quotes).';
+        if ($data['application_log_permission'] != '-rw-rw-r--' and $data['application_log_permission'] != '-rw-rw-r--.') {
+            $hints['application_log_permission'] = 'The permissions on your open-audit log file are not set correctly. This can be fixed by "chmod 664 /usr/local/open-audit/other/open-audit.log" (sans quotes).';
         }
 
         if ($data['os_timezone'] != $data['php_timezone']) {
