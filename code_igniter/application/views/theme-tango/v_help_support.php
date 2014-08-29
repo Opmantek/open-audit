@@ -48,7 +48,7 @@ if (php_uname('s') == 'Linux') {
 /usr/local/omk/conf/opCommon.nmis';
 }
 
-$email = "mailto:support+oac@opmantek.com?subject=Support Page Result for Open-AudIT&body=ISSUE%0APlease describe the issue you are having here:%0A%0AFILES%0APlease attach the following files from your Open-AudIT Server (these are available on the Help -> Support page inside Open-AudIT):%0A" . $files . "%0A%0AHINTS";
+$email = "mailto:open-audit@opmantek.com?subject=Support Page Result for Open-AudIT&body=ISSUE%0APlease describe the issue you are having here:%0A%0AFILES%0APlease attach the following files from your Open-AudIT Server (these are available on the Help -> Support page inside Open-AudIT):%0A" . $files . "%0A%0AHINTS";
 foreach ($hints as $key => $value) {
 	$email .= "%0A" . $key . " = " . str_replace("'", "", $value) . "%0A";
 }
