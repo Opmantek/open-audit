@@ -1501,7 +1501,7 @@ case $system_os_family in
 				$xml_file
 			;;
 		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
-			$OA_RPM -qa --queryformat="\t\t<package>\n\t\t\t<software_name>%{NAME}</software_name>\n\t\t\t<software_version>%{VERSION}</software_version>\n\t\t\t<software_url>%{URL}</software_url>\n\t\t</package>\n" |\
+			$OA_RPM -qa --queryformat="\t\t<package>\n\t\t\t<software_name>%{NAME}</software_name>\n\t\t\t<software_version>%{VERSION}-%{RELEASE}</software_version>\n\t\t\t<software_version_orig>%{VERSION}</software_version_orig>\n\t\t\t<software_url>%{URL}</software_url>\n\t\t</package>\n" |\
 				$OA_SED -e 's/\&.*</</' |\
 				$OA_SED -e 's/url><.*><\/software/url><\/software/' >>\
 				$xml_file
@@ -1510,7 +1510,6 @@ esac
 #				$OA_SED -e 's/+/%2B/g' |\
 
 echo "	</software>" >> $xml_file
-
 
 ########################################################
 # SERVICE SECTION                                      #
