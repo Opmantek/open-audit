@@ -2007,10 +2007,17 @@ for each objItem In colDiskDrives
 	hard_drive_interface_type = objItem.InterfaceType
 	hard_drive_scsi_logical_unit = objItem.SCSITargetId
 	hard_drive_model = objItem.Model
-	hard_drive_firmware = objItem.FirmwareRevision
 	hard_drive_serial = ""
 	hard_drive_pnp_id = lcase(objItem.PNPDeviceID & "_0")
-	
+
+	' Win 2k3 doesn't support this property
+	on error resume next
+		hard_drive_firmware = objItem.FirmwareRevision
+	on error goto 0 
+	if ((len(hard_drive_firmware) = 0) or (isnull(hard_drive_firmware))) then
+		hard_drive_firmware = ""
+	end if
+
 	on error resume next
 		hard_drive_serial = objItem.SerialNumber
 	on error goto 0 
