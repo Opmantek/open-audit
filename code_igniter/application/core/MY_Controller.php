@@ -39,12 +39,14 @@ class MY_Controller extends CI_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->benchmark->mark('code_start');
-		if ($this->config->item('debug')) { $this->output->enable_profiler(TRUE); }
+		if ($this->config->item('debug')) {
+			$this->output->enable_profiler(TRUE);
+		}
 		$this->load->helper('url');
 		$loggedin = $this->session->userdata('logged_in');
 		
 		
-		$this->load->model("m_oa_config");
+		$this->load->model('m_oa_config');
 		$conf = $this->m_oa_config->get_config();
 		$this->data['config'] = new stdclass();
 		foreach ($conf as $returned_result) {
@@ -52,8 +54,8 @@ class MY_Controller extends CI_Controller {
 			$this->data['config']->$config_name = $returned_result->config_value;
 		}
 
-		#TODO: check this
-		$this->load->model("m_oa_user");
+		// TODO: check this
+		$this->load->model('m_oa_user');
 		if ($this->m_oa_user->select_user('open-audit_enterprise')) {
 			$this->data['config']->oae = 'y';
 		} else {
@@ -62,7 +64,7 @@ class MY_Controller extends CI_Controller {
 
 
 
-		# turn on/off debugging from GET string
+		// turn on/off debugging from GET string
 		if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE)) AND 
 			($this->uri->segment($this->uri->total_rsegments()-1) == 'user_debug') ) {
 			if ($this->session->userdata['user_admin'] == 'y') {
@@ -85,10 +87,10 @@ class MY_Controller extends CI_Controller {
 		}
 
 
-		# if GET or POST has username and password, use that to validate and deliver page and do NOT set a cookie
+		// if GET or POST has username and password, use that to validate and deliver page and do NOT set a cookie
 		if ((!isset($loggedin)) OR ($this->session->userdata('logged_in') != TRUE)) {
 			if ((strpos(current_url(), 'username') !== FALSE) AND (strpos(current_url(), 'password') !== FALSE)) {
-				$split_url = explode("/", current_url());
+				$split_url = explode('/', current_url());
 				for ($i=0; $i <= count($split_url)-1 ; $i++) {
 					if (strpos($split_url[$i], 'username') !== FALSE) {
 						$username = $split_url[$i+1];
@@ -102,8 +104,8 @@ class MY_Controller extends CI_Controller {
 				$username = $_POST['username'];
 				$password = $_POST['password'];
 			}
-			if (isset($username) and $username != "" and isset($password) and $password != "") {
-				$this->load->model("m_userlogin");
+			if (isset($username) AND $username != '' AND isset($password) AND $password != '') {
+				$this->load->model('m_userlogin');
 				if ($data = $this->m_userlogin->validate_user($username, $password)) {
 					if ($data != 'fail') {
 						$this->session->set_userdata($data);
@@ -327,7 +329,9 @@ class MY_Controller extends CI_Controller {
 					} else {
 						$value = str_replace ('"', '\"', $value);
 						if (is_numeric($value) ) {
-							$output .= "\t\t\"" . $attribute . "\": " . json_encode($value, JSON_NUMERIC_CHECK) . ",\n";
+							#$output .= "\t\t\"" . $attribute . "\": " . json_encode($value, JSON_NUMERIC_CHECK) . ",\n";
+							# Windows does not like the above line
+							$output .= "\t\t\"" . $attribute . "\": " . $value . ",\n";
 						} else { 
 							$output .= "\t\t\"" . $attribute . "\": "  . json_encode($value) . ",\n";
 						}
