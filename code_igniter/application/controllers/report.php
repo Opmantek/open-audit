@@ -144,15 +144,19 @@ class report extends MY_Controller
 		}
 
 		if (isset($this->data['filter']) and $this->data['filter'] != '') {
-			$filter_array = explode("___", $this->data['filter']);
-			$filter[$i]['variable'] = $filter_array[1];
-			$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
-			if ($filter_array[0] == 'only') {
-				$filter[$i]['condition'] = '=';
-			} elseif ($filter_array[0] == 'out') {
-				$filter[$i]['condition'] = '<>';
-			} elseif ($filter_array[0] == 'like') {
-				$filter[$i]['condition'] = 'LIKE';
+			$temp_array = explode("|||", $this->data['filter']);
+			foreach ($temp_array as $value) {
+				#$filter_array = explode("___", $this->data['filter']);
+				$filter_array = explode("___", $value);
+				$filter[$i]['variable'] = $filter_array[1];
+				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+				if ($filter_array[0] == 'only') {
+					$filter[$i]['condition'] = '=';
+				} elseif ($filter_array[0] == 'out') {
+					$filter[$i]['condition'] = '<>';
+				} elseif ($filter_array[0] == 'like') {
+					$filter[$i]['condition'] = 'LIKE';
+				}
 			}
 		}
 
@@ -231,13 +235,13 @@ class report extends MY_Controller
 			foreach ($this->data['query'] as $key) {
 				foreach ($filter as $enum_filter) {
 					if (property_exists($key, $enum_filter['variable'])) {
-						if (($key->$enum_filter['variable'] == $enum_filter['value']) and ($enum_filter['condition'] == '<>')) {
+						if ((strtolower($key->$enum_filter['variable']) == strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<>')) {
 							$remove = true;
 						}
-						if (($key->$enum_filter['variable'] != $enum_filter['value']) and ($enum_filter['condition'] == '=')) {
+						if ((strtolower($key->$enum_filter['variable']) != strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '=')) {
 							$remove = true;
 						}
-						if (strpos($key->$enum_filter['variable'], $enum_filter['value']) === FALSE and $enum_filter['condition'] == 'LIKE') {
+						if (strpos(strtolower($key->$enum_filter['variable']), strtolower($enum_filter['value'])) === FALSE and $enum_filter['condition'] == 'LIKE') {
 							$remove = true;
 						}
 					}
