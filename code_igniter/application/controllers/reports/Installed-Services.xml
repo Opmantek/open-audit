@@ -16,7 +16,7 @@
 			<column_name>Service Display Name</column_name>
 			<column_variable>service_display_name</column_variable>
 			<column_type>link</column_type>
-			<column_link>/report/specific_service/$group_id/</column_link>
+			<column_link>/report/Specific Service/$group_id/</column_link>
 			<column_secondary>service_id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>

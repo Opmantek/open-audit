@@ -26,7 +26,7 @@
 			<column_name>Key Name</column_name>
 			<column_variable>key_name</column_variable>
 			<column_type>link</column_type>
-			<column_link>/report/specific_key_name/$group_id/</column_link>
+			<column_link>/report/Specific Key Name/$group_id/</column_link>
 			<column_secondary>key_id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
@@ -36,7 +36,7 @@
 			<column_name>Key Text</column_name>
 			<column_variable>key_text</column_variable>
 			<column_type>link</column_type>
-			<column_link>/report/specific_key_text/$group_id/</column_link>
+			<column_link>/report/Specific Key Text/$group_id/</column_link>
 			<column_secondary>key_text</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>

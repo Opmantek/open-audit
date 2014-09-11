@@ -2718,6 +2718,36 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);		
 		}	
 
+		if (($db_internal_version < '20140827') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.5
+
+			$sql = 'UPDATE oa_report_column SET column_link = "/report/Specific Service/$group_id/" WHERE column_link = "/report/specific_service/$group_id/"';
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = 'UPDATE oa_report_column SET column_link = "/report/Specific Software/$group_id/" WHERE column_link = "/report/specific_software/$group_id/"';
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = 'UPDATE oa_report_column SET column_link = "/report/Specific Key Name/$group_id/" WHERE column_link = "/report/specific_key_name/$group_id/"';
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = 'UPDATE oa_report_column SET column_link = "/report/Specific Key Text/$group_id/" WHERE column_link = "/report/specific_key_text/$group_id/"';
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20140827', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.5', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);		
+		}	
+
+
+
 		$config = $this->m_oa_config->get_config();
 		foreach ($config as $returned_result) {
 			if (isset($returned_result->config_name)) {
