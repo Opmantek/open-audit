@@ -123,7 +123,7 @@ class MY_Controller extends CI_Controller {
 			if (isset($username) AND (string)$username !== '' AND isset($password) AND (string)$password !== '') {
 				$this->load->model('m_userlogin');
 				if ($data = $this->m_userlogin->validate_user($username, $password)) {
-					if ((string)$data !== 'fail') {
+					if ((string)$data[0] !== 'fail') {
 						$this->session->set_userdata($data);
 						$this->data['user_full_name'] = $data['user_full_name'];
 						$this->data['user_lang'] = $data['user_lang'];
