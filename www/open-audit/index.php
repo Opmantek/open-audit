@@ -36,6 +36,9 @@
 $query_count = 0;
 ob_start();
 
+// date_default_timezone_set('YOUR_TIMEZONE');
+// http://www.php.net/manual/en/timezones.php
+
 // Get the timezone from the system if not set in php.ini
 if ( ! ini_get('date.timezone') OR (string)ini_get('date.timezone') === 'Australia/Brisbane') {
 	// Australia/Brisbane is the default on our shipped Windows installer.
