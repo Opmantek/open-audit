@@ -380,6 +380,7 @@
 						<div style="float:left; width:50%;">
 							<p><label for='hd_manufacturer_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Manufacturer')?>: </label><span id='hd_manufacturer_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_manufacturer?>&nbsp;</span></p>
 							<p><label for='hd_model_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Model')?>: </label><span id='hd_model_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_model?>&nbsp;</span></p>
+							<p><label for='hd_model_family_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Model Family')?>: </label><span id='hd_model_family_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_model_family?>&nbsp;</span></p>
 							<p><label for='hd_serial_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Serial')?>: </label><span id='hd_serial_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_serial?>&nbsp;</span></p>
 							<p><label for='hd_caption_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Caption')?>: </label><span id='hd_caption_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_caption?>&nbsp;</span></p>
 						</div>
@@ -388,7 +389,7 @@
 							<p><label for='hd_status_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('SMART Status')?>: </label><span id='hd_status_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_status?>&nbsp;</span></p>
 							<?php if ($key->hard_drive_interface_type == "SCSI") { ?>
 							<p><label for='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Interface')?>: </label><span id='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_interface_type?></span></p>
-							<p><label for='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>'><?php echo __('SCSI id')?>: </label><span id='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>' class="form_field"><?php echo $key->hard_drive_scsi_logical_unit?></span></p>
+							<p><label for='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>'><?php echo __('SCSI id')?>: </label><span id='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>' class="form_field"><?php echo $key->hard_drive_scsi_logical_unit?>&nbsp;</span></p>
 							<?php } else { ?>
 							<p><label for='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Interface')?>: </label><span id='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_interface_type?>&nbsp;</span></p>
 							<?php } ?>
@@ -399,6 +400,7 @@
 					<thead>
 						<tr>
 							<th><?php echo __('Graph')?></th>
+							<th><?php echo __('Device ID')?></th>
 							<th><?php echo __('Mount Point')?></th>
 							<th><?php echo __('Name')?></th>
 							<th><?php echo __('Format')?></th>
@@ -414,6 +416,7 @@
 						<?php $partition_count++; ?>
 							<tr>
 								<td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo $system_id . "/" . $key_partition->partition_id?>"><img src='<?php echo $image_path;?>16_graph.png' alt='' title='' /></a></td>
+								<td><?php echo $key_partition->partition_device_id; ?></td>
 								<td><?php echo $key_partition->partition_mount_point; ?></td>
 								<td><?php echo $key_partition->partition_name?></td>
 								<td><?php echo $key_partition->partition_format?></td>

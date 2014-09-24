@@ -41,6 +41,7 @@ class M_partition extends MY_Model {
 	function get_system_partition($system_id) {
 		$sql = "SELECT 
 				partition_id, 
+				partition_device_id, 
 				partition_mount_point, 
 				partition_name, 
 				partition_size, 

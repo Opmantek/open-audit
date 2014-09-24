@@ -532,8 +532,8 @@ CREATE TABLE `oa_user` (
 DROP TABLE IF EXISTS `oa_user_sessions`;
 CREATE TABLE  `oa_user_sessions` (
   `session_id` varchar(40) NOT NULL default '0',
-  `ip_address` varchar(16) NOT NULL default '0',
-  `user_agent` varchar(50) NOT NULL,
+  `ip_address` varchar(45) NOT NULL default '0',
+  `user_agent` varchar(120) NOT NULL,
   `last_activity` int(10) unsigned NOT NULL default '0',
   `user_data` text NOT NULL,
   PRIMARY KEY  (`session_id`)
@@ -622,6 +622,7 @@ CREATE TABLE `sys_hw_hard_drive` (
   `hard_drive_device_id` varchar(200) NOT NULL default '',
   `hard_drive_status` varchar(100) NOT NULL default '',
   `hard_drive_firmware` varchar(100) NOT NULL default '',
+  `hard_drive_model_family` varchar(200) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`hard_drive_id`),
