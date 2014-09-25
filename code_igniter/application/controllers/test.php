@@ -53,6 +53,17 @@ class test extends MY_Controller
         redirect('/');
     }
 
+    public function mark()
+    {
+        $this->load->helper('url');
+        echo "<pre>\n";
+        echo "BaseURL: " . base_url() . "\n";
+        echo "SiteURL: " . site_url() . "\n";
+        echo "URI String: " . uri_string() . "\n";
+        echo "Index Page: " . index_page() . "\n";
+        
+    }
+
     public function test_date()
     {
         $date = date("Y-m-d");// current date

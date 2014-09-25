@@ -383,7 +383,7 @@ class login extends CI_Controller
 		if ($data = $this->m_userlogin->validate_user($username, $password)) {
 			if ($data != 'fail') {
 				$this->session->set_userdata($data);
-				if ($page != '1') {
+				if ($page != '') {
 					redirect($page . '/' . $function . '/' . $id . '/' . $first_attribute);
 				} else {
 					redirect('main/index');
