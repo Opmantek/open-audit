@@ -1321,7 +1321,7 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 		hard_drive_manufacturer=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_VENDOR= | cut -d= -f2)
 	fi
 
-	if [ -n $(which smartctl) ]; then
+	if [ -n $(which smartctl 2>/dev/null) ]; then
 		# use smart tools as they are installed
 		hard_drive_status=$(smartctl -H /dev/"$disk" 2>/dev/null | grep "SMART overall" | cut -d: -f2)
 		hard_drive_model_family=$(smartctl -i /dev/"$disk" 2>/dev/null | grep "Model Family" | cut -d: -f2)
@@ -1336,7 +1336,7 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 		hard_drive_manufacturer="VMware"
 	fi
 
-	if [[ "$hard_drive_model" == *"VMware Virtual S"* ]]; then
+	if [[ "$hard_drive_model" == *"VMware Virtual S"* ]] || [[ "$hard_drive_model" == *"Virtual disk"* ]]; then
 		hard_drive_model="VMware Virtual SCSI Disk Device"
 	fi
 
@@ -1360,30 +1360,60 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 
 	for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ ); do
 		if [ -n "$partition" ] && [ "$partition" != "$disk" ]; then
-			partition_mount_type=$(lsblk -lndo TYPE /dev/"$partition" 2>/dev/null)
+
+			# partition_mount_type=$(lsblk -lndo TYPE /dev/"$partition" 2>/dev/null)
+			partition_mount_type=$(lsblk -lno NAME,TYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+			partition_mount_type=$(trim "$partition_mount_type")
 			if [ "$partition_mount_type" = "part" ]; then
 				partition_mount_type="partition"
 			fi
-			partition_mount_point=$(lsblk -lndo MOUNTPOINT /dev/"$partition" 2>/dev/null)
-			partition_name=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
-			partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
+
+			#partition_mount_point=$(lsblk -lndo MOUNTPOINT /dev/"$partition" 2>/dev/null)
+			partition_mount_point=$(lsblk -lno NAME,MOUNTPOINT /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+			partition_mount_point=$(trim "$partition_mount_point")
+
+			#partition_name=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
+			partition_name=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+			partition_name=$(trim "$partition_name")
+
+			#partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
+			partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition" | sed -e "s/$partition//" )
+			partition_size=$(trim "$partition_size")
 			partition_size=$((partition_size /1024 / 1024))
-			partition_format=$(lsblk -lndo FSTYPE /dev/"$partition" 2>/dev/null)
-			partition_caption=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
+
+			#partition_format=$(lsblk -lndo FSTYPE /dev/"$partition" 2>/dev/null)
+			partition_format=$(lsblk -lno NAME,FSTYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+			partition_format=$(trim "$partition_format")
+
+			#partition_caption=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
+			partition_caption=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+			partition_caption=$(trim "$partition_caption")
+
 			partition_device_id="/dev/$partition"
 			partition_disk_index="$disk"
 			partition_bootable=""
 			partition_type="$partition_mount_type"
 			partition_quotas_supported=""
 			partition_quotas_enabled=""
-			partition_serial=$(lsblk -lndo UUID /dev/"$partition" 2>/dev/null)
-			partition_free_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $4}')
+
+			#partition_serial=$(lsblk -lndo UUID /dev/"$partition" 2>/dev/null)
+			partition_serial=$(lsblk -lno NAME,UUID /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+			partition_serial=$(trim "$partition_serial")
+
+			#partition_free_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $4}')
+			partition_free_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $4}')
 			if [ -z "$partition_free_space" ] && [ -n "$partition_serial" ]; then
 				partition_free_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $4}')
 			fi
-			partition_used_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $3}')
+			#partition_used_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $3}')
+			partition_used_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $3}')
 			if [ -z "$partition_used_space" ] && [ -n "$partition_serial" ]; then
 				partition_used_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $3}')
+			fi
+
+			if [ "$partition_format" = "swap" ]; then
+				partition_used_space=$(free -m | grep -i swap | awk '{print $3}')
+				partition_free_space=$(free -m | grep -i swap | awk '{print $4}')
 			fi
 
 			partition_result=$partition_result"		<partition>\n"
