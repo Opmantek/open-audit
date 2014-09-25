@@ -347,32 +347,31 @@
 							} else {
 								$image = '48_gnome-dev-harddisk';
 							}
-							if (mb_substr_count(mb_strtoupper("$key->hard_drive_manufacturer"), 'SEAGATE') > 0) {
-								$image = '48_seagate';
-							}
-							if (mb_substr_count(mb_strtoupper("$key->hard_drive_manufacturer"), 'WESTERN DIGITAL') > 0) {
-								$image = '48_western_digital';
-							}
-							if (mb_substr_count(mb_strtoupper("$key->hard_drive_manufacturer"), 'HITACHI') > 0) {
-								$image = '48_hitachi';
-							}
-							if (mb_substr_count(mb_strtoupper("$key->hard_drive_manufacturer"), 'MAXTOR') > 0) {
-								$image = '48_maxtor';
-							}
-							if (mb_substr_count(mb_strtoupper("$key->hard_drive_manufacturer"), 'SANDISK') > 0) {
-								$image = '48_sandisk';
-							}
-							if ((mb_substr_count(mb_strtoupper("$key->hard_drive_model"), 'HP LOGICAL VOLUME SCSI') > 0) and substr_count($image, '48_gnome-') > 0){
-								$image = '48_hp';
-							}
-							if ((mb_substr_count(mb_strtoupper("$key->hard_drive_model"), 'COMPAQ') > 0) and substr_count($image, '48_gnome-') > 0){
-								$image = '48_hp';
+							if (file_exists($images_directory . '48_' . strtolower(str_replace(' ', '_', $key->hard_drive_manufacturer)) . '.png')) {
+								$image = '48_' . strtolower(str_replace(' ', '_', $key->hard_drive_manufacturer));
 							}
 							if ((mb_substr_count(mb_strtoupper("$key->hard_drive_model"), 'POWERDEVICE BY POWERPATH') > 0) and substr_count($image, '48_gnome-') > 0){
 								$image = '48_dell';
 							}
-							if ((mb_substr_count(mb_strtoupper("$key->hard_drive_model"), 'DELL') > 0) and substr_count($image, '48_gnome-') > 0){
-								$image = '48_dell';
+							if ((mb_substr_count(mb_strtoupper("$key->hard_drive_model"), 'HP LOGICAL VOLUME SCSI') > 0) and substr_count($image, '48_gnome-') > 0){
+								$image = '48_hp';
+							}
+							# Linux device with SmartMonTools installed, but no Model Family result
+							if ($system[0]->os_group == 'Linux' and $key->hard_drive_model_family == '' and $key->hard_drive_status != '') { 
+								$key->hard_drive_model_family = '<img src="' . $image_path . '16_question.png" alt="Model Family not in SmartMonTools DB" title="Model Family not in SmartMonTools DB" />';
+							}
+							# Linux device without SmartMonTools installed
+							if ($system[0]->os_group == 'Linux' and $key->hard_drive_model_family == '' and $key->hard_drive_status == '') { 
+								$key->hard_drive_model_family = '<img src="' . $image_path . '16_question.png" alt="Install SmartMonTools for Model Family" title="Install SmartMonTools for Model Family" />';
+							}
+							# Linux device without SmartMonTools installed
+							if ($system[0]->os_group == 'Linux' and $key->hard_drive_status == '') { 
+								$key->hard_drive_status = '<img src="' . $image_path . '16_question.png" alt="Install SmartMonTools for SMART status" title="Install SmartMonTools for SMART status" />';
+							}
+							# VMware does not return a result for SMART status, regardless of OS
+							if ($key->hard_drive_manufacturer == 'VMware' or strpos($key->hard_drive_model, 'VMware') !== FALSE) { 
+								$key->hard_drive_status = '<img src="' . $image_path . '16_question.png" alt="SMART status not available under VMware" title="SMART status not available under VMware" />';
+								$key->hard_drive_serial = '<img src="' . $image_path . '16_question.png" alt="Serial not available under VMware" title="Serial not available under VMware" />';
 							}
 						?>
 					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?><?php echo $image?>.png' alt='' title='' width='48'/>
@@ -380,18 +379,18 @@
 						<div style="float:left; width:50%;">
 							<p><label for='hd_manufacturer_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Manufacturer')?>: </label><span id='hd_manufacturer_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_manufacturer?>&nbsp;</span></p>
 							<p><label for='hd_model_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Model')?>: </label><span id='hd_model_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_model?>&nbsp;</span></p>
+							<?php if ($system[0]->os_group == 'Linux') { ?>
 							<p><label for='hd_model_family_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Model Family')?>: </label><span id='hd_model_family_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_model_family?>&nbsp;</span></p>
+							<?php } ?>
 							<p><label for='hd_serial_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Serial')?>: </label><span id='hd_serial_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_serial?>&nbsp;</span></p>
 							<p><label for='hd_caption_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Caption')?>: </label><span id='hd_caption_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_caption?>&nbsp;</span></p>
 						</div>
 						<div style="float:left; width:40%; vertical-align:top;">
 							<p><label for='hd_size_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Size')?>: </label><span id='hd_size_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo number_format($key->hard_drive_size); ?> MiB&nbsp;</span></p>
 							<p><label for='hd_status_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('SMART Status')?>: </label><span id='hd_status_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_status?>&nbsp;</span></p>
-							<?php if ($key->hard_drive_interface_type == "SCSI") { ?>
-							<p><label for='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Interface')?>: </label><span id='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_interface_type?></span></p>
-							<p><label for='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>'><?php echo __('SCSI id')?>: </label><span id='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>' class="form_field"><?php echo $key->hard_drive_scsi_logical_unit?>&nbsp;</span></p>
-							<?php } else { ?>
 							<p><label for='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Interface')?>: </label><span id='hd_interface_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_interface_type?>&nbsp;</span></p>
+							<?php if ($key->hard_drive_scsi_logical_unit != "") { ?>
+							<p><label for='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>'><?php echo __('SCSI id')?>: </label><span id='scsi_id_<?php echo str_replace('/','-',$key->hard_drive_scsi_logical_unit)?>' class="form_field"><?php echo $key->hard_drive_scsi_logical_unit?>&nbsp;</span></p>
 							<?php } ?>
 							<p><label for='hd_firmware_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Firmware')?>: </label><span id='hd_firmware_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_firmware?>&nbsp;</span></p>
 						</div>

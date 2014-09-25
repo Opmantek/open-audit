@@ -1332,12 +1332,14 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 		hard_drive_manufacturer="Crucial"
 	fi
 
-	if [ "$hard_drive_manufacturer" = "VMware_" ]; then
+	if [[ "$hard_drive_manufacturer" == *"VMware"* ]]; then
 		hard_drive_manufacturer="VMware"
+		hard_drive_model_family="VMware"
+		hard_drive_model="VMware Virtual Disk"
 	fi
 
-	if [[ "$hard_drive_model" == *"VMware Virtual S"* ]] || [[ "$hard_drive_model" == *"Virtual disk"* ]]; then
-		hard_drive_model="VMware Virtual SCSI Disk Device"
+	if [[ "$hard_drive_model" == *"VMware"* ]] || [[ "$hard_drive_model" == *"Virtual"* ]]; then
+		hard_drive_model="VMware Virtual Disk"
 	fi
 
 	{

@@ -2008,7 +2008,7 @@ for each objItem In colDiskDrives
 	hard_drive_scsi_logical_unit = objItem.SCSITargetId
 	hard_drive_model = objItem.Model
 	if hard_drive_model = "VMware, VMware Virtual S SCSI Disk Device" then
-		hard_drive_model = "VMware Virtual SCSI Disk Device"
+		hard_drive_model = "VMware Virtual Disk"
 	end if
 	hard_drive_serial = ""
 	hard_drive_pnp_id = lcase(objItem.PNPDeviceID & "_0")
