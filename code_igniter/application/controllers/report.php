@@ -144,15 +144,19 @@ class report extends MY_Controller
 		}
 
 		if (isset($this->data['filter']) and $this->data['filter'] != '') {
-			$filter_array = explode("___", $this->data['filter']);
-			$filter[$i]['variable'] = $filter_array[1];
-			$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
-			if ($filter_array[0] == 'only') {
-				$filter[$i]['condition'] = '=';
-			} elseif ($filter_array[0] == 'out') {
-				$filter[$i]['condition'] = '<>';
-			} elseif ($filter_array[0] == 'like') {
-				$filter[$i]['condition'] = 'LIKE';
+			$temp_array = explode("|||", $this->data['filter']);
+			foreach ($temp_array as $value) {
+				#$filter_array = explode("___", $this->data['filter']);
+				$filter_array = explode("___", $value);
+				$filter[$i]['variable'] = $filter_array[1];
+				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+				if ($filter_array[0] == 'only') {
+					$filter[$i]['condition'] = '=';
+				} elseif ($filter_array[0] == 'out') {
+					$filter[$i]['condition'] = '<>';
+				} elseif ($filter_array[0] == 'like') {
+					$filter[$i]['condition'] = 'LIKE';
+				}
 			}
 		}
 
@@ -231,13 +235,13 @@ class report extends MY_Controller
 			foreach ($this->data['query'] as $key) {
 				foreach ($filter as $enum_filter) {
 					if (property_exists($key, $enum_filter['variable'])) {
-						if (($key->$enum_filter['variable'] == $enum_filter['value']) and ($enum_filter['condition'] == '<>')) {
+						if ((strtolower($key->$enum_filter['variable']) == strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<>')) {
 							$remove = true;
 						}
-						if (($key->$enum_filter['variable'] != $enum_filter['value']) and ($enum_filter['condition'] == '=')) {
+						if ((strtolower($key->$enum_filter['variable']) != strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '=')) {
 							$remove = true;
 						}
-						if (strpos($key->$enum_filter['variable'], $enum_filter['value']) === FALSE and $enum_filter['condition'] == 'LIKE') {
+						if (strpos(strtolower($key->$enum_filter['variable']), strtolower($enum_filter['value'])) === FALSE and $enum_filter['condition'] == 'LIKE') {
 							$remove = true;
 						}
 					}
@@ -516,44 +520,42 @@ class report extends MY_Controller
 	 */
 	public function json_dates() {
 		
-		# should be called like:
-		# index.php/report/json_dates/REPORT-NAME/START-DATE/END-DATE
-		# Returns a JSON document containing a unix timestamp and a count of items per row.
+		// should be called like:
+		// index.php/report/json_dates/REPORT-NAME/START-DATE/END-DATE
+		// Returns a JSON document containing a unix timestamp and a count of items per row.
 
 		$debug = 'n';
-
-		
 
 		$start_date = date('Y-m-d', strtotime('-30 days'));
 		$end_date = date('Y-m-d');
 		$report = 'new devices';
 
-		# make a default start date of 30 days ago if none provided
-		# check if GET start date passed
+		// make a default start date of 30 days ago if none provided
+		// check if GET start date passed
 		$get_start_date = $this->uri->segment(4, 0);
 		if (isset($get_start_date) and date('Y-m-d', strtotime($get_start_date)) and $get_start_date != '0') {
 			$start_date = $get_start_date;
 		}
-		# check if POST start date passed
+		// check if POST start date passed
 		$post_start_date = @$_POST['start_date'];
 		if (isset($post_start_date) and date('Y-m-d', strtotime($post_start_date)) and $post_start_date != '0' and $post_start_date != '') {
 			$start_date = $post_start_date;
 		} 
 		
-		# make a default end dat of today if none provided
-		# check if GET end date passed
+		// make a default end dat of today if none provided
+		// check if GET end date passed
 		$get_end_date =  $this->uri->segment(5, 0);
 		if (isset($get_end_date) and date('Y-m-d', strtotime($get_end_date)) and $get_end_date != '0') {
 			$end_date = $get_end_date;
 		} 
-		# check if POST end date passed
+		// check if POST end date passed
 		$post_end_date = @$_POST['end_date'];
 		if (isset($post_end_date) and date('Y-m-d', strtotime($post_end_date)) and $post_end_date != '0' and $post_end_date != '') {
 			$end_date = $post_end_date;
 		}
 
-		# get the report name if provided
-		$post_report = @$_POST['report'];
+		// get the report name if provided
+		$post_report = $this->input->post('report');
 		if (isset($post_report) and $post_report != '') {
 			$report = $post_report;
 		} else if ($this->uri->segment(3, 0) != '0') {
@@ -562,7 +564,7 @@ class report extends MY_Controller
 		$report = str_replace("%20", " ", $report);
 		$report = str_replace("+", " ", $report);
 
-		# define the SQL for the report
+		// define the SQL for the report
 		switch($report) {
 			case "missing_devices":
 			$sql = "SELECT COUNT(system_id) as count FROM system WHERE last_seen < DATE_SUB('?', INTERVAL 30 DAY) AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000'";

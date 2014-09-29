@@ -55,6 +55,10 @@ class Admin_db extends MY_Controller
         redirect('/');
     }
 
+    /**
+     * [export_table description]
+     * @return [type]
+     */
     public function export_table()
     {
         # load the export form
@@ -65,6 +69,10 @@ class Admin_db extends MY_Controller
         $this->load->view('v_template', $this->data);
     }
 
+    /**
+     * [backup description]
+     * @return [type]
+     */
     public function backup()
     {
         # load the backup table page

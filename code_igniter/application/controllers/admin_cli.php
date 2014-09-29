@@ -34,7 +34,7 @@
  */
 
 /**
- * Base Object Admin
+ * Base Object Admin_cli
  *
  * @access	 public
  * @category Object
@@ -169,7 +169,7 @@ class Admin_cli extends CI_Controller
 			$device->hostname = '';
 			$device->fqdn = '';
 
-			if ($device->host !== '127.0.0.1') {
+			if ((string)$device->host !== '127.0.0.1') {
 				if (filter_var($device->host, FILTER_VALIDATE_IP)) {
 					// we have an ip address as opposed to a name or fqdn
 					$device->ip_address = $device->host;
@@ -189,13 +189,13 @@ class Admin_cli extends CI_Controller
 					}
 				}
 
-				if ($device->ip_address > '') {
+				if ((string)$device->ip_address !== '') {
 					// lookup the name
 					$device->hostname = gethostbyaddr($device->ip_address);
 				}
 				else {
 					// lookup the ip
-					if ($device->fqdn > '') {
+					if ((string)$device->fqdn !== '') {
 						$device->ip_address = gethostbyname($device->fqdn);
 					}
 					else {
@@ -206,12 +206,11 @@ class Admin_cli extends CI_Controller
 				$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - scanning' . PHP_EOL;
 				file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
 
-				if ($device->version === 'snmpv2c') {
+				if ((string)$device->version === 'snmpv2c') {
 					$device->version = '2c';
 				}
 
-				$snmp_details->name = '';
-				if (($device->community > '') AND ($device->version === '2c') AND ($device->ip_address > '')) {
+				if (((string)$device->community !== '') AND ((string)$device->version === '2c') AND ((string)$device->ip_address !== '')) {
 					$encode['ip_address'] = $device->ip_address;
 					$encode['fqdn'] = $device->fqdn;
 					$encode['hostname'] = $device->hostname;
@@ -243,9 +242,9 @@ class Admin_cli extends CI_Controller
 				$device->system_id = '';
 				$device->system_id = $this->m_system->find_system($device);
 
-				if ((isset($device->oid)) AND ($device->oid > '')) {
+				if ((isset($device->oid)) AND ((string)$device->oid !== '')) {
 					// we received a result from snmp, use this data to update or insert
-					if (isset($device->system_id) AND $device->system_id !== '') {
+					if (isset($device->system_id) AND (string)$device->system_id !== '') {
 						// update an existing device with snmp
 						$device->last_seen_by = 'snmp nmis import';
 						$this->m_system->update_system($device);
@@ -256,32 +255,29 @@ class Admin_cli extends CI_Controller
 						// insert a new device
 						$device->last_seen_by = 'snmp nmis import';
 						$device->system_id = $this->m_system->insert_system($device);
-						$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - insert snmp result' . PHP_EOL;
+						$log_stamp = date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - insert snmp result' . PHP_EOL;
 						file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
 					}
-
 					// update any network interfaces AND ip addresses retrieved by SNMP
 					$details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
 					$details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
 					if (isset($network_interfaces) AND is_array($network_interfaces) AND count($network_interfaces) > 0) {
 						foreach ($network_interfaces as $input) {
 							$this->m_network_card->process_network_cards($input, $details);
-
 							if (isset($input->ip_addresses) AND is_array($input->ip_addresses)) {
 								foreach ($input->ip_addresses as $ip_input) {
-									$ip_input = (object) $ip_input;
+									$ip_input = (object)$ip_input;
 									$this->m_ip_address->process_addresses($ip_input, $details);
 								}
 							}
 						}
 					}
-
-					// AND update all groups
+					// and update all groups
 					$this->m_oa_group->update_system_groups($device);
 				}
 				else {
 					// just use hat we have from the nodes.nmis file
-					if (isset($device->system_id) AND $device->system_id !== '') {
+					if (isset($device->system_id) AND (string)$device->system_id !== '') {
 						// update an existing device
 						$device->last_seen_by = 'nmis import';
 						$this->m_system->update_system($device);
@@ -296,7 +292,7 @@ class Admin_cli extends CI_Controller
 						file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
 					}
 				}
-				if (isset($device->system_id) AND $device->system_id !== '') {
+				if (isset($device->system_id) AND (string)$device->system_id !== '') {
 					$this->m_oa_group->update_system_groups($device);
 				}
 			}

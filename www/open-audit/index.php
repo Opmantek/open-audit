@@ -35,8 +35,77 @@
 
 $query_count = 0;
 ob_start();
-#date_default_timezone_set(ini_get('date.timezone'));
-/*
+
+// date_default_timezone_set('YOUR_TIMEZONE');
+// http://www.php.net/manual/en/timezones.php
+
+// Get the timezone from the system if not set in php.ini
+if ( ! ini_get('date.timezone') OR (string)ini_get('date.timezone') === 'Australia/Brisbane') {
+	// Australia/Brisbane is the default on our shipped Windows installer.
+	// Consider Australia/Brisbane equivalent to not being set
+	$timezone = '';
+	$default = 'UTC';
+
+	if ((string)php_uname('s') !== 'Windows NT') {
+		// On many systems (Mac, for instance) "/etc/localtime" is a symlink
+		// to the file with the timezone info
+		if (@is_link('/etc/localtime')) {
+			// If it is, that file's name is actually the "Olsen" format timezone
+			$temp_file = @readlink('/etc/localtime');
+			$temp_pos = strpos($temp_file, 'zoneinfo');
+			if ($temp_pos) {
+				// When it is, it's in the "/usr/share/zoneinfo/" folder
+				$timezone = substr($temp_file, $temp_pos + strlen('zoneinfo/'));
+			}
+		}
+		else {
+			// On other systems, like Ubuntu, there's file with the Olsen time right inside it.
+			$timezone = @file_get_contents('/etc/timezone');
+			if ( ! strlen($timezone)) {
+				$timezone = $default;
+			}
+		}
+		if ((string)$timezone === '') {
+			$timezone = $default;
+		}
+	}
+	else {
+		$wbem_locator = new COM ('WbemScripting.SWbemLocator');
+		$wbem_services = $wbem_locator->ConnectServer('.', 'root\\cimv2');
+		$zones = $wbem_services->ExecQuery('Select * from Win32_TimeZone');
+		foreach ($zones as $zone) {
+			$wmi_zone_offset = (int)$zone->Bias * 60;
+			$wmi_caption = strtok($zone->Caption, ' ');
+			$wmi_location = strtok('|');
+		}
+		// Attempt to match based on the offset and part of the WMI string in the Caption field
+		foreach(timezone_abbreviations_list() as $timezone_abbr) {
+			foreach($timezone_abbr as $entry){
+				if ((int)$entry['offset'] === (int)$wmi_zone_offset AND strpos($entry['timezone_id'], $wmi_location) !== FALSE) {
+					$timezone = trim($entry['timezone_id']);
+				}
+			}
+		}
+		if ((string)$timezone === '') {
+			// No match on offset + string, try for simply offset
+			foreach(timezone_abbreviations_list() as $timezone_abbr) {
+				foreach($timezone_abbr as $entry){
+					if ((int)$entry['offset'] === (int)$wmi_zone_offset) {
+						$timezone = trim($entry['timezone_id']);
+					}
+				}
+			}
+		}
+		if ((string)$timezone === '') {
+			// last resort
+			$timezone = $default;
+		}
+	}
+	date_default_timezone_set(trim($timezone));
+}
+
+
+/**
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT
  *---------------------------------------------------------------
@@ -53,16 +122,16 @@ ob_start();
  *
  * NOTE If you change these, also change the error_reporting() code below
  *
- */
+ **/
 	define('ENVIRONMENT', 'development');
-/*
+/**
  *---------------------------------------------------------------
  * ERROR REPORTING
  *---------------------------------------------------------------
  *
  * Different environments will require different levels of error reporting.
  * By default development will show errors but testing and live will hide them.
- */
+ **/
 
 if (defined('ENVIRONMENT'))
 {
@@ -70,19 +139,19 @@ if (defined('ENVIRONMENT'))
 	{
 		case 'development':
 			error_reporting(E_ALL);
-		break;
+						break;
 	
 		case 'testing':
 		case 'production':
 			error_reporting(0);
-		break;
+						break;
 
 		default:
-			exit('The application environment is not set correctly.');
+						exit('The application environment is not set correctly.');
 	}
 }
 
-/*
+/**
  *---------------------------------------------------------------
  * SYSTEM FOLDER NAME
  *---------------------------------------------------------------
@@ -91,14 +160,14 @@ if (defined('ENVIRONMENT'))
  * Include the path if the folder is not in the same  directory
  * as this file.
  *
- */
+ **/
 	
-	# windows
+	// windows
 	$system_path = 'c:/xampplite/open-audit/code_igniter/system';
-	# linux
+	// linux
 	$system_path = '/usr/local/open-audit/code_igniter/system';
 
-/*
+/**
  *---------------------------------------------------------------
  * APPLICATION FOLDER NAME
  *---------------------------------------------------------------
@@ -111,14 +180,14 @@ if (defined('ENVIRONMENT'))
  *
  * NO TRAILING SLASH!
  *
- */
+ **/
 	
-	# windows
+	// windows
 	$application_folder = 'c:/xampplite/open-audit/code_igniter/application';
-	# linux
+	// linux
 	$application_folder = '/usr/local/open-audit/code_igniter/application';
 
-/*
+/**
  * --------------------------------------------------------------------
  * DEFAULT CONTROLLER
  * --------------------------------------------------------------------
@@ -137,7 +206,7 @@ if (defined('ENVIRONMENT'))
  *
  * Un-comment the $routing array below to use this feature
  *
- */
+ **/
 	// The directory name, relative to the "controllers" folder.  Leave blank
 	// if your controller is not in a sub-folder within the "controllers" folder
 	// $routing['directory'] = '';
@@ -149,7 +218,7 @@ if (defined('ENVIRONMENT'))
 	// $routing['function']	= '';
 
 
-/*
+/**
  * -------------------------------------------------------------------
  *  CUSTOM CONFIG VALUES
  * -------------------------------------------------------------------
@@ -163,7 +232,7 @@ if (defined('ENVIRONMENT'))
  *
  * Un-comment the $assign_to_config array below to use this feature
  *
- */
+ **/
 	// $assign_to_config['name_of_config_item'] = 'value of config item';
 
 
@@ -172,7 +241,7 @@ if (defined('ENVIRONMENT'))
 // END OF USER CONFIGURABLE SETTINGS.  DO NOT EDIT BELOW THIS LINE
 // --------------------------------------------------------------------
 
-/*
+/**
  * ---------------------------------------------------------------
  *  Resolve the system path for increased reliability
  * ---------------------------------------------------------------
@@ -195,14 +264,14 @@ if (defined('ENVIRONMENT'))
 	// Is the system path correct?
 	if ( ! is_dir($system_path))
 	{
-		exit("Your system folder path does not appear to be set correctly. Please open the following file and correct this: ".pathinfo(__FILE__, PATHINFO_BASENAME));
+		exit('Your system folder path does not appear to be set correctly. Please open the following file and correct this: ' . pathinfo(__FILE__, PATHINFO_BASENAME));
 	}
 
-/*
+/**
  * -------------------------------------------------------------------
  *  Now that we know the path, set the main path constants
  * -------------------------------------------------------------------
- */
+ **/
 	// The name of THIS file
 	define('SELF', pathinfo(__FILE__, PATHINFO_BASENAME));
 
@@ -211,7 +280,7 @@ if (defined('ENVIRONMENT'))
 	define('EXT', '.php');
 
 	// Path to the system folder
-	define('BASEPATH', str_replace("\\", "/", $system_path));
+	define('BASEPATH', str_replace('\\', '/', $system_path));
 
 	// Path to the front controller (this file)
 	define('FCPATH', str_replace(SELF, '', __FILE__));
@@ -229,21 +298,18 @@ if (defined('ENVIRONMENT'))
 	{
 		if ( ! is_dir(BASEPATH.$application_folder.'/'))
 		{
-			exit("Your application folder path does not appear to be set correctly. Please open the following file and correct this: ".SELF);
+			exit('Your application folder path does not appear to be set correctly. Please open the following file and correct this: ' . SELF);
 		}
 
 		define('APPPATH', BASEPATH.$application_folder.'/');
 	}
 
-/*
+/**
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
  * --------------------------------------------------------------------
  *
  * And away we go...
  *
- */
+ **/
 require_once BASEPATH.'core/CodeIgniter.php';
-
-/* End of file index.php */
-/* Location: ./index.php */

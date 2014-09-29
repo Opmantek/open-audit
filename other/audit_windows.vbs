@@ -2007,10 +2007,20 @@ for each objItem In colDiskDrives
 	hard_drive_interface_type = objItem.InterfaceType
 	hard_drive_scsi_logical_unit = objItem.SCSITargetId
 	hard_drive_model = objItem.Model
-	hard_drive_firmware = objItem.FirmwareRevision
+	if hard_drive_model = "VMware, VMware Virtual S SCSI Disk Device" then
+		hard_drive_model = "VMware Virtual Disk"
+	end if
 	hard_drive_serial = ""
 	hard_drive_pnp_id = lcase(objItem.PNPDeviceID & "_0")
-	
+
+	' Win 2k3 doesn't support this property
+	on error resume next
+		hard_drive_firmware = objItem.FirmwareRevision
+	on error goto 0 
+	if ((len(hard_drive_firmware) = 0) or (isnull(hard_drive_firmware))) then
+		hard_drive_firmware = ""
+	end if
+
 	on error resume next
 		hard_drive_serial = objItem.SerialNumber
 	on error goto 0 
@@ -2028,6 +2038,7 @@ for each objItem In colDiskDrives
 		if lcase(left(hard_drive_model, 2)) = "st"     	then hard_drive_manufacturer = "Seagate"         	end if
 		if lcase(left(hard_drive_model, 4)) = "wdc "   	then hard_drive_manufacturer = "Western Digital" 	end if
 		if lcase(left(hard_drive_model, 3)) = "wd "   		then hard_drive_manufacturer = "Western Digital" 	end if
+		if lcase(left(hard_drive_model, 6)) = "VMware"   		then hard_drive_manufacturer = "VMware" 	end if
 	end if
 	
 	hard_drive_status = "Not available"

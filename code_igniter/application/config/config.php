@@ -252,6 +252,7 @@ $config['encryption_key'] = "openaudit";
 |
 */
 $config['sess_cookie_name']		= 'ci_session';
+$config['sess_cookie_name']		= 'openaudit';
 $config['sess_expiration']		= 7200;
 $config['sess_expiration']		= 0;
 $config['sess_encrypt_cookie']	= TRUE;

@@ -318,7 +318,7 @@ class System extends CI_Controller {
 		echo "<head>
 		<title>Open-AudIT</title>
 		</head>\n
-		<body>\n";
+		<body>\n<pre>\n";
 		echo "<a href='" . base_url() . "index.php/system'>Back to input page</a><br />\n";
 		echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
 		$this->load->model('m_alerts');

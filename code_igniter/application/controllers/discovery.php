@@ -63,13 +63,15 @@ class discovery extends CI_Controller
 		$this->load->helper('url');
 		// only Admin users can access this function
 		// NOTE - because we're not using the My_Controller, we have to do a bit of manual setup
-		if ($this->session->userdata('user_admin') != 'y') {
-			if (isset($_SERVER['HTTP_REFERER']) AND $_SERVER['HTTP_REFERER'] > '') {
-				redirect($_SERVER['HTTP_REFERER']);
-			} else {
+		if ((string)$this->session->userdata('user_admin') !== 'y') {
+			if ($this->input->server('HTTP_REFERER')) {
+				redirect($this->input->server('HTTP_REFERER'));
+			}
+			else {
 				redirect('login/index');
 			}
-		} else {
+		}
+		else {
 			$this->data['user_admin'] = 'y';
 			$this->load->model('m_oa_config');
 			$conf = $this->m_oa_config->get_config();
@@ -83,7 +85,7 @@ class discovery extends CI_Controller
 		}
 		$timestamp = date('Y-m-d H:i:s');
 
-		if ( ! isset($_POST['submit'])) {
+		if ( ! $this->input->post('submit')) {
 			// show the form to accept scan details
 			$this->data['type'] = $this->uri->segment(3);
 			$this->data['warning'] = '';
@@ -91,8 +93,9 @@ class discovery extends CI_Controller
 			$this->data['sortcolumn'] = '1';
 			$this->data['heading'] = 'Active Directory Discovery';
 			$this->load->view('v_template', $this->data);
-		} else {
-			if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+		}
+		else {
+			if ($this->input->post('debug') AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE))) {
 				echo "<pre>\n";
 			}
 			// run the audit_domain script
@@ -117,7 +120,8 @@ class discovery extends CI_Controller
 
 				if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 					$script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['windows_domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['windows_domain'] . "\\" . $_POST['windows_username'] . " strpass=" . $_POST['windows_password'] . " debugging=1";
-				} else {
+				}
+				else {
 					$script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://" . $_POST['windows_domain'] . " number_of_audits=" . $_POST['number_of_audits'] . " script_name=$filepath\\audit_windows.vbs url=" . $url . " struser=" . $_POST['windows_domain'] . "\\" . $_POST['windows_username'] . " strpass=" . $_POST['windows_password'] . " debugging=0";
 				}
 				$command_string = "%comspec% /c start /b cscript //nologo " . $script_string . " &";
@@ -132,12 +136,14 @@ class discovery extends CI_Controller
 					if ($return_var != '0') {
 						$error = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on localhost has failed";
 						$this->log_event($error);
-					} else {
+					}
+					else {
 						$log = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on localhost has succeeded";
 						$this->log_event($log);
 					}
-				} else {
-					pclose(popen($command_string, "r"));
+				}
+				else {
+					pclose(popen($command_string, 'r'));
 				}
 				$output = NULL;
 				$return_var = NULL;
@@ -154,7 +160,7 @@ class discovery extends CI_Controller
 				if ($error == '') {
 					$command_string = "smbclient \\\\\\\\" . $_POST['server'] . "\\\\admin$ -U \"" . $_POST['windows_domain'] . "\\" . $_POST['windows_username'] . "%" . $_POST['windows_password'] . "\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\" 2>&1";
 					exec($command_string, $output, $return_var);
-					if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+					if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE))) {
 						echo 'DEBUG - Command Executed: ' . $command_string . "\n";
 						echo 'DEBUG - Return Value: ' . $return_var . "\n";
 						echo "DEBUG - Command Output:\n";
@@ -163,7 +169,8 @@ class discovery extends CI_Controller
 					if ($return_var != '0') {
 						$error = "C:discovery F:process_subnet SMBClient copy of discover_domain.vbs to " . $_POST['server'] . " has failed";
 						$this->log_event($error);
-					} else {
+					}
+					else {
 						$log = "C:discovery F:process_subnet SMBClient copy of discover_domain.vbs to " . $_POST['server'] . " has succeeded";
 						$this->log_event($log);
 					}
@@ -185,7 +192,8 @@ class discovery extends CI_Controller
 					if ($return_var != '0') {
 						$error = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to " . $_POST['server'] . " has failed";
 						$this->log_event($error);
-					} else {
+					}
+					else {
 						$log = "C:discovery F:process_subnet SMBClient copy of audit_windows.vbs to " . $_POST['server'] . " has succeeded";
 						$this->log_event($log);
 					}
@@ -204,11 +212,12 @@ class discovery extends CI_Controller
 						// echo "DEBUG - Command Output:\n";  // nooutput because of use of 'screen' command
 						// print_r($output);
 					}
-					if ($return_var != '0') {
-						$error = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on " . $_POST['server'] . " has failed";
+					if ((string)$return_var !== '0') {
+						$error = 'C:discovery F:process_subnet Attempt to run discover_domain.vbs on ' . $this->input->post('server') . ' has failed';
 						$this->log_event($error);
-					} else {
-						$log = "C:discovery F:process_subnet Attempt to run discover_domain.vbs on " . $_POST['server'] . " has succeeded";
+					}
+					else {
+						$log = 'C:discovery F:process_subnet Attempt to run discover_domain.vbs on ' . $this->input->post('server') . ' has succeeded';
 						$this->log_event($log);
 					}
 					$command_string = NULL;
@@ -219,7 +228,8 @@ class discovery extends CI_Controller
 			} // end of Linux domain audit
 			if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 				// do not redirect
-			} else {
+			}
+			else {
 				redirect('admin/view_log');
 			}
 		} // end of submit / not submit
@@ -1224,7 +1234,7 @@ class discovery extends CI_Controller
 						}
 					}
 
-					// SSH based audit (usually Linux, Unix, OSX or ESX)
+					// SSH based audit (usually Linux, Unix, OSX, AIX or ESX)
 					if ($details->ssh_status == "true") {
 						if ($details->ssh_username == '' OR $details->ssh_password == '') {
 							$script_string = "audit_linux.sh strcomputer=" . $details->man_ip_address . " submit_online=y create_file=n struser=" . $details->ssh_username . " strpass=" . $details->ssh_password . " debugging=0";
@@ -1233,7 +1243,7 @@ class discovery extends CI_Controller
 						} else {
 
 							if (php_uname('s') == 'Linux') {
-								// Auditing a Linux target device from a Linux Open-AudIT Server
+								// Auditing a target device from a Linux Open-AudIT Server
 								if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) { 
 									echo "DEBUG - Attempting SSH audit.\n";
 									echo "DEBUG - struser: " . $details->ssh_username . "\n";
@@ -1261,7 +1271,7 @@ class discovery extends CI_Controller
 									}
 								} else {
 
-									// Linux, Darwin, ESX, AIX
+									// Linux, Darwin, AIX, VMKernel
 									if (isset($output[0]) AND $output[0] > '') {
 										$remote_os = $output[0];
 									} else {
@@ -1272,10 +1282,15 @@ class discovery extends CI_Controller
 									$output = NULL;
 									$return_var = NULL;
 
-									if ($remote_os === 'Linux' OR $remote_os === 'Darwin' OR $remote_os === 'VMkernel') {
+									if ($remote_os == 'VMkernel') {
+										// TODO - audit ESX
+										// if ($remote_os === 'VMkernel') { $audit_script = 'audit_esxi.sh'; }
+									}
+
+									if ($remote_os === 'Linux' OR $remote_os === 'Darwin' OR $remote_os === 'AIX') {
 										if ($remote_os === 'Linux') { $audit_script = 'audit_linux.sh'; }
 										if ($remote_os === 'Darwin') { $audit_script = 'audit_osx.sh'; }
-										if ($remote_os === 'VMkernel') { $audit_script = 'audit_esxi.sh'; }
+										if ($remote_os === 'AIX') { $audit_script = 'audit_aix.sh'; }
 										$error = '';
 										$log_details = 'C:discovery F:process_subnet Attempting SSH audit for discovery on ' . $details->man_ip_address . ' (' . $remote_os . ')'; 
 										$this->log_event($log_details);
@@ -1347,7 +1362,7 @@ class discovery extends CI_Controller
 										// Attempt to run the audit script
 										if ($error == '') {
 											if (strtolower($remote_os) != 'vmkernel') {
-												// Exclude VMware ESXas it does not have a usable wget to send post-data back to Open-AudIT
+												// Exclude VMware ESX as it does not have a usable wget to send post-data back to Open-AudIT
 												if ($sudo != '' AND $details->ssh_username != 'root') {
 													$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "echo ' . escapeshellarg($details->ssh_password) . ' | ' . $sudo . ' -S /tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" ';
 													@exec($command_string, $output, $return_var);
@@ -1359,7 +1374,7 @@ class discovery extends CI_Controller
 													}
 
 													if ($return_var != '0') {
-														$error = 'C:discovery F:process_subnet SSH audit command for linux audit using sudo ' . $audit_script . ' on ' . $details->man_ip_address . ' failed. Attempting to run without sudo.'; 
+														$error = 'C:discovery F:process_subnet SSH audit command for ' . $remote_os . ' audit using sudo on ' . $details->man_ip_address . ' failed. Attempting to run without sudo.'; 
 														$this->log_event($error);
 														$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=3 system_id=' . $details->system_id . '" ';
 														@exec($command_string, $output, $return_var);
@@ -1370,7 +1385,7 @@ class discovery extends CI_Controller
 															print_r($output);
 														}
 														if ($return_var != '0') {
-															$error = 'C:discovery F:process_subnet SSH audit command for ' . $remote_os . ' audit not using sudo script on ' . $details->man_ip_address . ' failed';
+															$error = 'C:discovery F:process_subnet SSH audit command for ' . $remote_os . ' audit not using sudo on ' . $details->man_ip_address . ' failed';
 															$this->log_event($error);
 															exit();
 														} else {
