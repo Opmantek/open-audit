@@ -123,7 +123,7 @@ class MY_Controller extends CI_Controller {
 			if (isset($username) AND (string)$username !== '' AND isset($password) AND (string)$password !== '') {
 				$this->load->model('m_userlogin');
 				if ($data = $this->m_userlogin->validate_user($username, $password)) {
-					if ((string)$data[0] !== 'fail') {
+					if (is_array($data)) {
 						$this->session->set_userdata($data);
 						$this->data['user_full_name'] = $data['user_full_name'];
 						$this->data['user_lang'] = $data['user_lang'];
@@ -132,9 +132,6 @@ class MY_Controller extends CI_Controller {
 						$this->data['user_id'] = $data['user_id'];
 						$this->data['user_debug'] = 'n';
 						$loggedin = TRUE;
-						// echo "<pre>\n"; # debugging only
-						// print_r($this->data); # debugging only
-						// exit(); # debugging only
 					}
 					else {
 						// username and password are set but do not validate
