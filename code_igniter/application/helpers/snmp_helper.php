@@ -41,7 +41,7 @@ if (!function_exists('get_snmp')) {
 	function get_snmp($details ) {
 		error_reporting(E_ALL);
 		$CI =& get_instance();
-
+snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 		if (!isset($details->show_output)) {
 			$details->show_output = FALSE;
 		}
@@ -573,7 +573,8 @@ if (!function_exists('get_snmp')) {
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
-					$interface->net_mac_address = format_mac(@str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index])));
+					$interface->net_mac_address = snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index]);
+					$interface->net_mac_address = format_mac(@str_replace(" ", ":", $interface->net_mac_address));
 					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
 						$test_mac = @snmp2_walk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
 						if (is_array($test_mac) and count($test_mac) > 0) {
@@ -862,19 +863,24 @@ if (!function_exists('get_snmp')) {
 		# make sure we have something in $string
 		if (!isset($string) or is_null($string) ) { $string = ''; }
 		$string = trim($string);
+		return $string;
 
 		# remove the standard response type strings
-		$string = str_replace("OID: iso", "1", $string);
-		$string = str_replace("OID: .iso", "1", $string);
-		$string = str_replace("OID: .", "", $string);
+		// $string = str_replace("OID: iso", "1", $string);
+		// $string = str_replace("OID: .iso", "1", $string);
+		// $string = str_replace("OID: .", "", $string);
+		// $string = str_replace("STRING: ", "", $string);
+		// $string = str_replace("string: ", "", $string);
+		// $string = str_replace("IpAddress: ", "", $string);
+		// $string = str_replace("INTEGER: ", "", $string);
+		// $string = str_replace("Hex-STRING: ", "", $string);
+		// $string = str_replace("Hex-", "", $string);
+		// $string = str_replace("Gauge32: ", "", $string);
 
-		$string = str_replace("STRING: ", "", $string);
-		$string = str_replace("string: ", "", $string);
-		$string = str_replace("IpAddress: ", "", $string);
-		$string = str_replace("INTEGER: ", "", $string);
-		$string = str_replace("Hex-STRING: ", "", $string);
-		$string = str_replace("Hex-", "", $string);
-		$string = str_replace("Gauge32: ", "", $string);
+		if (strpos($string, ":") !== FALSE) {
+			$string = substr($string, strpos($string, ":")+1);
+			$string = trim($string);
+		}
 
 		# remove the first and last characters if they are "
 		if (substr($string, 0, 1) == "\"") { $string = substr($string, 1, strlen($string)); }
