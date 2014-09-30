@@ -427,6 +427,9 @@ if (!function_exists('get_snmp')) {
 				$details->mac_address = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface_number));
 				$details->mac_address = format_mac($details->mac_address);
 			}
+			if ($details->show_output == TRUE) {
+				echo "SNMP  - MAC: $details->mac_address.<br />";
+			}
 
 				
 			// type
@@ -930,9 +933,9 @@ if (!function_exists('get_snmp')) {
 
 			# check for a substring thus "abcdef"
 			if (substr_count($mac_address, ' ') == 0 AND substr_count($mac_address, ':') == 0 AND strlen($mac_address) == 12) {
-				$mac_address = substr($mac_address, 0, 1) . ':' . substr($mac_address, 2, 3) . ':' . 
-							   substr($mac_address, 4, 5) . ':' . substr($mac_address, 6, 7) . ':' . 
-							   substr($mac_address, 8, 9) . ':' . substr($mac_address, 10, 11);
+				$mac_address = substr($mac_address, 0, 2) . ':' . substr($mac_address, 2, 2) . ':' . 
+							   substr($mac_address, 4, 2) . ':' . substr($mac_address, 6, 2) . ':' . 
+							   substr($mac_address, 8, 2) . ':' . substr($mac_address, 10, 2);
 			}
 
 			# we should now have a mac address of the format ab:cd:ef
@@ -947,6 +950,7 @@ if (!function_exists('get_snmp')) {
 
 			# join it back together
 			$mac_address = implode(":", $mymac);
+
 		}
 		return($mac_address);
 	}
