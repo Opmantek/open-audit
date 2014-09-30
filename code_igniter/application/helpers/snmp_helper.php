@@ -41,7 +41,13 @@ if (!function_exists('get_snmp')) {
 	function get_snmp($details ) {
 		error_reporting(E_ALL);
 		$CI =& get_instance();
-snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+		
+		# new in 1.5 - remove the type from the returned SNMP query.
+		# this affects the snmp_clean function in this file
+		snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+
+		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
+
 		if (!isset($details->show_output)) {
 			$details->show_output = FALSE;
 		}
@@ -275,8 +281,6 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 			fclose($handle);
 		}
 
-		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
-
 		if ($test_v2 > '') {
 			$details->snmp_version = '2';
 
@@ -321,9 +325,15 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 					include('snmp_' . $explode[6] . "_helper.php");
 					$vendor_oid = $explode[6];
 					$get_oid_details($details);
-				} 
+				} else {
+					if ($details->show_output == TRUE) { echo 'SNMP  - Could not find SNMP Model Helper for OID ' . $explode[6] . ' when scanning ' . $details->man_ip_address . '.<br />'; }
+					$log_line = $log_timestamp . ' ' . $log_hostname . ' ' . $log_pid . ' ' . $log_name . ' Could not find SNMP helper for OID ' . $explode[6] . ' when scanning ' . $details->man_ip_address . '.' . PHP_EOL;
+					$handle = fopen($file, "a");
+					fwrite($handle, $log_line);
+					fclose($handle);
+				}
 			}
-			if ($details->show_output == TRUE) { echo "SNMP  - Model: $details->model.<br />"; }
+
 			if ($details->show_output == TRUE and $details->type != 'unknown') { echo "SNMP  - Type: $details->type.<br />"; }
 
 			// some generic guesses for 'computer' devices
@@ -331,6 +341,9 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 				$details->manufacturer = 'Buffalo';
 				$details->model = 'TeraStation';
 				$details->type = 'nas';
+				if ($details->show_output == TRUE) {
+					echo 'SNMP  - Deriving details from description for Buffalo device.<br />';
+				}
 			}
 			if (stripos($details->description, 'synology') !== false or 
 			    stripos($details->description, 'diskstation') !== false){
@@ -342,26 +355,37 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 				$details->os_group = 'Linux';
 				$details->os_family = 'Synology DSM';
 				$details->os_name = 'Synology ' . snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.3.0" ));
-				
+				if ($details->show_output == TRUE) {
+					echo 'SNMP  - Deriving details from description for Synolody device.<br />';
+				}
+			}
+
+			if ($details->show_output == TRUE) { 
+				if ($details->model == '') {
+					echo 'SNMP  - Could not find model to match OID in snmp_' . $explode[6] . '_helper.php file.<br />';
+				} else {
+					echo "SNMP  - Model: $details->model.<br />";
+				}
 			}
 
 			// guess at manufacturer using entity mib
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
 				$details->manufacturer = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1"));
+				if ($details->show_output == TRUE) { echo "SNMP  - Manufacturer: $details->manufacturer (using Entity MIB).<br />"; }
 			}
 			
 
 			// guess at model using entity mib
 			if (!isset($details->model) or $details->model == '') {
 				$details->model =snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13"));
-				if ($details->show_output == TRUE) { echo "SNMP  - Manufacturer: $details->manufacturer.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - Model: $details->model (using Entity MIB).<br />"; }
 			}
 
 
 			// guess at model using host resources mib
 			if (!isset($details->model) or $details->model == '' ) {
 				$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.3.1"));
-				if ($details->show_output == TRUE) { echo "SNMP  - Manufacturer: $details->manufacturer.<br />"; }
+				if ($details->show_output == TRUE) { echo "SNMP  - Model: $details->model (using Resources MIB).<br />"; }
 			}
 
 			// serial 
@@ -401,15 +425,7 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 			if (!isset($details->mac_address) or $details->mac_address == '' ) {
 				$interface_number = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
 				$details->mac_address = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface_number));
-				$details->mac_address = @str_replace(" ", ":", $details->mac_address);
-				# need to split and join because of the dropped 0's
-				$i = explode(":", $details->mac_address);
-				for ($k=0; $k<count($i); $k++) {
-					if (strlen($i[$k]) == 1) { $i[$k] = '0' . $i[$k]; }
-					if (strlen($i[$k]) == 0) { $i[$k] = '00'; }
-				}
-				$details->mac_address = strtoupper(implode(":", $i));
-				if ($details->mac_address == '00') { $details->mac_address = ''; }
+				$details->mac_address = format_mac($details->mac_address);
 			}
 
 				
@@ -453,7 +469,7 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
 				} else {
 
-					# If the device is a Switch, the OID 1.3.6.1.2.1.17.1.2.0 and OID 1.3.6.1.2.1.4.1.0 should have a value of 2
+					# If the device is a Switch, the OID 1.3.6.1.2.1.17.1.2.0 is an integer and OID 1.3.6.1.2.1.4.1.0 should have a value of 2
 					$i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.17.1.2.0"));
 					$j = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.1.0"));
 					if (($i == intval($i)) and ($j == '2')) {
@@ -620,7 +636,6 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 					}
 					if (isset($details->os_group) and $details->os_group == 'windows') {
 						if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-							#if ($interface->net_adapter_type != 'softwareLoopback' ) {
 							if (strpos(strtolower($interface->net_adapter_type), 'loopback') === FALSE) {
 								$interfaces_filtered[] = $interface;
 							}
@@ -727,7 +742,7 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 			$interface_number = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
 			$i = "1.3.6.1.2.1.2.2.1.6." . $interface_number;
 			$details->mac_address = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, $i));
-			$details->mac_address = str_replace(" ", ":", $details->mac_address);
+			$details->mac_address = format_mac($details->mac_address);
 
 			$details->subnet = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
 			$details->next_hop = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.21.1.7.0.0.0.0"));
@@ -860,47 +875,82 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
 
 	function snmp_clean($string) {
-		# make sure we have something in $string
-		if (!isset($string) or is_null($string) ) { $string = ''; }
-		$string = trim($string);
-		return $string;
-
-		# remove the standard response type strings
-		// $string = str_replace("OID: iso", "1", $string);
-		// $string = str_replace("OID: .iso", "1", $string);
-		// $string = str_replace("OID: .", "", $string);
-		// $string = str_replace("STRING: ", "", $string);
-		// $string = str_replace("string: ", "", $string);
-		// $string = str_replace("IpAddress: ", "", $string);
-		// $string = str_replace("INTEGER: ", "", $string);
-		// $string = str_replace("Hex-STRING: ", "", $string);
-		// $string = str_replace("Hex-", "", $string);
-		// $string = str_replace("Gauge32: ", "", $string);
-
-		if (strpos($string, ":") !== FALSE) {
-			$string = substr($string, strpos($string, ":")+1);
-			$string = trim($string);
+		// make sure we have something in $string
+		if (!isset($string) OR is_null($string) ) {
+			$string = '';
 		}
 
-		# remove the first and last characters if they are "
+		# some strings are returned as below. Notably MAC Addresses.
+		if (mb_detect_encoding($string) == 'UTF-8') {
+			$string = bin2hex($string);
+		}
+
+		if ($string == '""') {
+			$string = '';
+		}
+
+		$string = trim($string);
+
+		# if the first character is a '.', remove it.
+		if (strpos($string, '.') === 0) {
+			$string = substr($string, 1);
+		}
+
+		// remove the first and last characters if they are "
 		if (substr($string, 0, 1) == "\"") { $string = substr($string, 1, strlen($string)); }
 		if (substr($string, -1, 1) == "\"") { $string = substr($string, 0, strlen($string)-1); }
 
-		# remove some return strings
-		if (strtolower($string) == 'no such instance currently exists at this oid') { $string = ''; }
-		if (strtolower($string) == 'no such object available on this agent at this oid') { $string = ''; }
+		// remove some return strings
+		if (strpos(strtolower($string), '/etc/snmp') !== FALSE OR 
+			strpos(strtolower($string), 'no such instance') !== FALSE OR
+			strpos(strtolower($string), 'no such object') !== FALSE OR
+			strpos(strtolower($string), 'not set') !== FALSE ) {
+			$string = '';
+		}
 
-		# remove any quotation marks
-		$string = str_replace("\"", "", $string);
-		$string = str_replace("\n", " ", $string);
+		// remove any quotation marks
+		$string = str_replace('"', ' ', $string);
 
-		# remove some other useless items
-		if ($string == 'Unknown (edit /etc/snmp/snmpd.conf)') {$string = '';}
-		if ($string == 'Root  (configure /etc/snmp/snmpd.conf)') {$string = '';}
-		if ($string == 'not set') {$string = '';}
+		// replace any line breaks with spaces
+		$string = str_replace(array("\r", "\n"), " ", $string);
 
 		return $string;
 	}
+
+	function format_mac($mac_address) {
+		if ($mac_address != '') {
+
+			# trim any unrequired beginning or ending spaces
+			$mac_address = trim($mac_address);
+
+			# check for a string thus "ab cd ef"
+			if (substr_count($mac_address, ' ') > 0) {
+				$mac_address = str_replace(' ', ':', $mac_address);
+			}
+
+			# check for a substring thus "abcdef"
+			if (substr_count($mac_address, ' ') == 0 AND substr_count($mac_address, ':') == 0 AND strlen($mac_address) == 12) {
+				$mac_address = substr($mac_address, 0, 1) . ':' . substr($mac_address, 2, 3) . ':' . 
+							   substr($mac_address, 4, 5) . ':' . substr($mac_address, 6, 7) . ':' . 
+							   substr($mac_address, 8, 9) . ':' . substr($mac_address, 10, 11);
+			}
+
+			# we should now have a mac address of the format ab:cd:ef
+			
+			# split the string by :
+			$mymac = explode(":",$mac_address);
+
+			# for each section, make sure it's padded with a 0.
+			for($i=0; $i<count($mymac); $i++) {
+				$mymac[$i] = mb_substr("00" . $mymac[$i], -2);
+			}
+
+			# join it back together
+			$mac_address = implode(":", $mymac);
+		}
+		return($mac_address);
+	}
+
 
 	function ip_enabled($ip_enabled){
 		switch ($ip_enabled) {
@@ -1658,16 +1708,7 @@ snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 		return $int_type;
 	}
 
-	function format_mac($mac_address) {
-		if ($mac_address != '') {
-			$mymac = explode(":",$mac_address);
-			for($i=0; $i<count($mymac); $i++) {
-				$mymac[$i] = mb_substr("00" . $mymac[$i], -2);
-			}
-			$mac_address = implode(":", $mymac);
-		}
-		return($mac_address);
-	}
+
 
 
 }
