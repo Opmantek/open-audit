@@ -411,8 +411,8 @@ class login extends CI_Controller
 		// those attributes are useable in OAC, this page will set a cookie/session.
 		// OAE will then proceed to log the user into OAE, but will have an OAC cookie set so if the user clicks
 		// the OAC link from within OAE, they will not be asked to re-login.
-		$username = $this->uri->segment(3);
-		$password  = $this->uri->segment(4);
+		$username = urldecode($this->uri->segment(3));
+		$password  = urldecode($this->uri->segment(4));
 		$this->load->model('m_userlogin');
 		$this->load->model('m_oa_config');
 		$this->data['config'] = $this->m_oa_config->get_config();
