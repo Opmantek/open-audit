@@ -65,7 +65,18 @@ class Admin_report extends MY_Controller
                     $report_description = '';
                     $file_handle = fopen(BASEPATH.'../application/controllers/reports/'.$file, "rb");
                     $contents = fread($file_handle, filesize(BASEPATH.'../application/controllers/reports/'.$file));
-                    $xml = new SimpleXMLElement($contents);
+					try {
+						$xml = new SimpleXMLElement($contents);
+					} catch (Exception $error) {
+						$errors = libxml_get_errors();
+						echo "Invalid XML.<br />\n<pre>\n";
+						print_r($errors);
+						// not a valid XML string
+						echo'Invalid XML input for: ' . $file;
+						echo "<pre>\n";
+						print_r($xml);
+						exit;
+					}
                     $report_name = $xml->details->report_name;
                     $report_description = $xml->details->report_description;
                     unset($xml);
