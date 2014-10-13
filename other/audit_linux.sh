@@ -177,7 +177,8 @@ escape_xml ()
 	echo "$result"
 }
 
-function cidr2mask() {
+cidr2mask () 
+{
   local i mask=""
   local full_octets=$(($1/8))
   local partial_octet=$(($1%8))
