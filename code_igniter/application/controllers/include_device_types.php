@@ -94,6 +94,7 @@
 	$device_types['router'] = 'Router';
 	$device_types['san'] = 'SAN (Storage Area Network)';
 	$device_types['satellite phone'] = 'Satellite Phone';
+	$device_types['satellite receiver'] = 'Satellite Receiver';
 	$device_types['scanner'] = 'Scanner';
 	$device_types['security camera'] = 'Security Camera';
 	$device_types['security misc'] = 'Security Misc';
