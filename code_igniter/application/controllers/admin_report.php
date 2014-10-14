@@ -91,7 +91,7 @@ class Admin_report extends MY_Controller
             }
             closedir($handle);
         }
-        $this->data['heading'] = 'Activate Reports';
+        $this->data['heading'] = 'Activate Queries';
         $this->data['include'] = 'v_add_reports';
         $this->data['sortcolumn'] = '0';
         $this->load->view('v_template', $this->data);
@@ -131,7 +131,7 @@ class Admin_report extends MY_Controller
     {
         $this->load->model("m_oa_report");
         $this->data['query'] = $this->m_oa_report->list_reports();
-        $this->data['heading'] = 'List Reports';
+        $this->data['heading'] = 'List Queries';
         $this->data['include'] = 'v_list_reports';
         $this->data['sortcolumn'] = '0';
         $this->load->view('v_template', $this->data);
@@ -190,7 +190,7 @@ class Admin_report extends MY_Controller
     {
         if (!isset($_POST['submit'])) {
             # nothing submitted - display the form
-            $this->data['heading'] = 'Import Report';
+            $this->data['heading'] = 'Import Query';
             $this->data['include'] = 'v_import_report';
             $this->load->view('v_template', $this->data);
         }
