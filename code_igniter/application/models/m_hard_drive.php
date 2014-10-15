@@ -82,15 +82,15 @@ class M_hard_drive extends MY_Model {
 			// We altered the model result under Windows.
 			// What used to return "VMware, VMware Virtual S SCSI Disk Device" now
 			// returns "VMware Virtual Disk", hence when we check, we match on either string
-			if ($input->hard_drive_model = 'VMware Virtual Disk') {
-			$sql = "SELECT sys_hw_hard_drive.hard_drive_id FROM sys_hw_hard_drive, system WHERE 
+			if ($input->hard_drive_model == 'VMware Virtual Disk') {
+				$sql = "SELECT sys_hw_hard_drive.hard_drive_id FROM sys_hw_hard_drive, system WHERE 
 					sys_hw_hard_drive.system_id = system.system_id AND system.system_id = ? AND 
 					system.man_status = 'production' AND (hard_drive_model = ? or hard_drive_model = 'VMware, VMware Virtual S SCSI Disk Device') AND 
 					hard_drive_serial = ? AND hard_drive_index = ? AND 
 					hard_drive_size = ? AND ( sys_hw_hard_drive.timestamp = ? OR sys_hw_hard_drive.timestamp = ? ) 
 				LIMIT 1";
 			} else {
-			$sql = "SELECT sys_hw_hard_drive.hard_drive_id FROM sys_hw_hard_drive, system WHERE 
+				$sql = "SELECT sys_hw_hard_drive.hard_drive_id FROM sys_hw_hard_drive, system WHERE 
 					sys_hw_hard_drive.system_id = system.system_id AND system.system_id = ? AND 
 					system.man_status = 'production' AND hard_drive_model = ? AND 
 					hard_drive_serial = ? AND hard_drive_index = ? AND 

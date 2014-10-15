@@ -907,7 +907,8 @@ if (!function_exists('get_snmp')) {
 		if (strpos(strtolower($string), '/etc/snmp') !== FALSE OR 
 			strpos(strtolower($string), 'no such instance') !== FALSE OR
 			strpos(strtolower($string), 'no such object') !== FALSE OR
-			strpos(strtolower($string), 'not set') !== FALSE ) {
+			strpos(strtolower($string), 'not set') !== FALSE OR 
+			strpos(strtolower($string), 'unknown value type') !== FALSE ) {
 			$string = '';
 		}
 

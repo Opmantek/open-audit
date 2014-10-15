@@ -1292,13 +1292,21 @@ class M_system extends MY_Model {
 			} // end of row count > 0
 		}	
 
-		# only update system.timestamp if we have an audit result - not for nmap, snmp, etc
-		if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
-			# leave it alone
-		} else {
-			unset ($details->timestamp);
-			unset ($details->first_timestamp);
-		}
+		if (!isset($details->timestamp) or $details->timestamp == '') { $details->timestamp = date('Y-m-d H:i:s'); }
+		
+		$sql_timestamp = "SELECT timestamp FROM system WHERE system_id = ?";
+		$sql_data = array("$details->system_id");
+		$query = $this->db->query($sql_timestamp, $sql_data);
+		$row = $query->row();
+		$details->original_timestamp = $row->timestamp;
+
+		// # only update system.timestamp if we have an audit result - not for nmap, snmp, etc
+		// if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
+		// 	# leave it alone
+		// } else {
+		// 	unset ($details->timestamp);
+		// 	unset ($details->first_timestamp);
+		// }
 
 		if (isset($details->man_ip_address)) {
 			$details->man_ip_address = ip_address_to_db($details->man_ip_address);
@@ -1365,10 +1373,6 @@ class M_system extends MY_Model {
 				$details->subnet = '0.0.0.0';
 			}
 
-			if (!isset($details->original_timestamp)) {
-				$details->original_timestamp = '';
-			}
-
 			# search for any entries in both sys_hw_network_card_ip
 			$sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
 			$data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
@@ -1385,6 +1389,30 @@ class M_system extends MY_Model {
 				$sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
 				$data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
 				$query = $this->db->query($sql, $data);
+			}
+		}
+
+		# As at 1.5, update the timestamps in the linked tables
+		if ($details->last_seen_by != 'audit') {
+			if ($details->last_seen_by != 'snmp') {
+				$table_array = array('sys_hw_bios', 'sys_hw_hard_drive', 'sys_hw_memory', 'sys_hw_monitor', 'sys_hw_motherboard', 'sys_hw_network_card', 
+					'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 'sys_hw_sound', 'sys_hw_video', 'sys_hw_warranty', 
+					'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_log', 'sys_sw_netstat', 'sys_sw_pagefile', 'sys_sw_print_queue', 
+					'sys_sw_route', 'sys_sw_scheduled_task', 'sys_sw_service', 'sys_sw_share', 'sys_sw_share_perms', 'sys_sw_software', 'sys_sw_software_key', 
+					'sys_sw_user', 'sys_sw_variable', 'sys_sw_virtual_machine', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site', 
+					'sys_sw_web_site_header', 'sys_sw_web_site_virtual', 'sys_sw_windows');
+			} else {
+				$table_array = array('sys_hw_bios', 'sys_hw_hard_drive', 'sys_hw_memory', 'sys_hw_monitor', 'sys_hw_motherboard',                        
+					'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 'sys_hw_sound', 'sys_hw_video', 'sys_hw_warranty', 
+					'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_log', 'sys_sw_netstat', 'sys_sw_pagefile', 'sys_sw_print_queue', 
+					'sys_sw_route', 'sys_sw_scheduled_task', 'sys_sw_service', 'sys_sw_share', 'sys_sw_share_perms', 'sys_sw_software', 'sys_sw_software_key', 
+					'sys_sw_user', 'sys_sw_variable', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site', 
+					'sys_sw_web_site_header', 'sys_sw_web_site_virtual', 'sys_sw_windows');
+			}
+			foreach ($table_array as $key => $value) {
+				$update_sql = "UPDATE $value SET timestamp = ? WHERE timestamp = ? AND system_id = ?";
+				$update_data = array("$details->timestamp", "$details->original_timestamp", "$details->system_id");
+				$query = $this->db->query($update_sql, $update_data);
 			}
 		}
 

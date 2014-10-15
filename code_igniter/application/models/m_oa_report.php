@@ -39,7 +39,7 @@ class M_oa_report extends MY_Model {
 	}
 
 	function list_reports_in_menu() {
-		$sql = "SELECT report_id, report_name FROM oa_report WHERE report_display_in_menu = 'y' ORDER BY report_name";
+		$sql = "SELECT report_id, report_name, '' as report_url FROM oa_report WHERE report_display_in_menu = 'y' ORDER BY report_name";
 		$query = $this->db->query($sql);
 		return($query->result());
 	}

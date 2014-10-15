@@ -347,13 +347,13 @@ class Admin_system extends MY_Controller
         unset($details->man_ip_address);
         echo "<pre>\n";
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
+            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
             $this->m_system->update_system($details);
             $this->m_sys_man_audits->insert_audit($details);
             
             # update any network interfaces and ip addresses retrieved by SNMP
             $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
             $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
-            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
             $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
             
             if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
