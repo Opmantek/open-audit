@@ -76,7 +76,7 @@ class report extends MY_Controller
 			if (in_array($method, $class_methods)) {
 				$this->$method();
 			} else {
-				$this->data['error'] = 'This Report does not exist.<br />You may need to activate the ' . ucwords(str_replace('_', ' ', $method)) . ' Report. <br />As an Admin level user go to Admin -> Reports -> Activate Report, find the correct Report and click the Activate Icon.<br />If you are an Admin level user, you can try to activate the report by clicking <a style="color: blue;" href="../../../admin_report/action_activate_report/' . str_replace(' ', '', ucwords(str_replace('_', ' ', $method))) . '.xml">here</a> (assuming it exists).';
+				$this->data['error'] = 'This Report does not exist.<br />You may need to activate the ' . ucwords(str_replace('_', ' ', $method)) . ' Query. <br />As an Admin level user go to Admin -> Queries -> Activate Query, find the correct Query and click the Activate Icon.<br />If you are an Admin level user, you can try to activate the report by clicking <a style="color: blue;" href="../../../admin_report/action_activate_report/' . str_replace(' ', '', ucwords(str_replace('_', ' ', $method))) . '.xml">here</a> (assuming it exists).';
 				$this->data['query'] = '';
 				$this->data['heading'] = 'Error';
 				$this->data['include'] = 'v_error';
@@ -482,6 +482,75 @@ class report extends MY_Controller
 			$data = array($this->data['first_attribute'], $this->data['second_attribute'], $this->data['third_attribute']);
 			$query = $this->db->query($sql, $data);
 			$this->data['query'] = $query->result();
+		}
+
+		# new for 1.5 - ability to filter OAE based reports
+		$i = 0;
+		$filter = array();
+		// $segs = $this->uri->segment_array();
+		// foreach ($segs as $segment) {
+		// 	if ((strpos($segment, 'out') === 0 or 
+		// 		 strpos($segment, 'only') === 0 or 
+		// 		 strpos($segment, 'like') === 0) and 
+		// 		 strpos($segment, '___') !== FALSE) {
+
+		// 		$filter_array = explode("___", $segment);
+		// 		$filter[$i]['variable'] = $filter_array[1];
+		// 		$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+		// 		if ($filter_array[0] == 'only') {
+		// 			$filter[$i]['condition'] = '=';
+		// 		} elseif ($filter_array[0] == 'out') {
+		// 			$filter[$i]['condition'] = '<>';
+		// 		} elseif ($filter_array[0] == 'like') {
+		// 			$filter[$i]['condition'] = 'LIKE';
+		// 		}
+		// 		$i++;
+		// 	}
+		// }
+
+		if (isset($_POST['filter']) and $_POST['filter'] != '') {
+			$temp_array = explode("|||", $_POST['filter']);
+			foreach ($temp_array as $value) {
+				$filter_array = explode("___", $value);
+				$filter[$i]['variable'] = $filter_array[1];
+				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+				if ($filter_array[0] == 'only') {
+					$filter[$i]['condition'] = '=';
+				} elseif ($filter_array[0] == 'out') {
+					$filter[$i]['condition'] = '<>';
+				} elseif ($filter_array[0] == 'like') {
+					$filter[$i]['condition'] = 'LIKE';
+				}
+			}
+		}
+
+		$remove = false;
+		$new_query = array();
+		if (count($filter) > 0) {
+			foreach ($this->data['query'] as $key) {
+				foreach ($filter as $enum_filter) {
+					if (property_exists($key, $enum_filter['variable'])) {
+						if ((strtolower($key->$enum_filter['variable']) == strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<>')) {
+							$remove = true;
+						}
+						if ((strtolower($key->$enum_filter['variable']) != strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '=')) {
+							$remove = true;
+						}
+						if (strpos(strtolower($key->$enum_filter['variable']), strtolower($enum_filter['value'])) === FALSE and $enum_filter['condition'] == 'LIKE') {
+							$remove = true;
+						}
+					}
+				}
+				if ($remove == true) {
+					# do not push this object to the new array
+				} else {
+					# we want to keep this element - no matches above.
+					# push this onto the new query array
+					$new_query[] = $key;
+				}
+				$remove = false;
+			}
+			$this->data['query'] = $new_query;
 		}
 
 		$this->data['count'] = count($this->data['query']);
