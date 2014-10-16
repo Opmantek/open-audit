@@ -252,7 +252,7 @@ class MY_Controller extends CI_Controller {
 		$this->relative_url = '/' . implode('/', $temp);
 		$this->relative_index = '/' . implode('/', $temp) . 'index.php/';
 		unset($temp);
-
+		
 		switch ($output_type) {
 			case 'excel':
 			$this->excel_report($this->data['query']);
@@ -601,6 +601,12 @@ class MY_Controller extends CI_Controller {
 							$col_link = str_replace('$group_id', $this->data['group_id'], $col_link);
 							$temp_link = $query_row->$col_var_name_sec;
 							$temp_url = $this->make_url($col_link, $temp_link);
+
+							if ($column->column_ternary != ''
+								and isset($col_var_name_ter) and isset($query_row->$col_var_name_ter)) {
+								$temp_url .= '/' . $query_row->$col_var_name_ter;
+							}
+
 							echo '			<td style="text-align: ' . $col_align . ';">';
 							echo '<a href="' . $temp_url . '">' . htmlentities($query_row->$col_var_name, ENT_QUOTES, 'UTF-8') . "</a></td>\n";
 										break;
@@ -718,8 +724,6 @@ class MY_Controller extends CI_Controller {
 			header('Cache-Control: max-age=0');
 		}
 	}
-
-
 
 
 	/**
