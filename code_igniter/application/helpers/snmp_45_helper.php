@@ -133,6 +133,9 @@ $get_oid_details = function($details){
 	if ($details->snmp_oid =='1.3.6.1.4.1.45.3.72.4') { $details->model = 'Nortel ERS 2500-50T-PWR'; $details->type = 'switch'; }
 	if ($details->snmp_oid =='1.3.6.1.4.1.45.3.74.2') { $details->model = 'Ethernet Routing Switch 5698TFD'; $details->type = 'switch'; }
 	if ($details->snmp_oid =='1.3.6.1.4.1.45.3.74.4') { $details->model = 'Ethernet Routing Switch 5650TD'; $details->type = 'switch'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.45.3.80.2') { $details->model = 'Ethernet Routing Switch 3526T-PWR+'; $details->type = 'switch'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.45.3.80.4') { $details->model = 'Ethernet Routing Switch 3524GT-PWR+'; $details->type = 'switch'; }
+	if ($details->snmp_oid =='1.3.6.1.4.1.45.3.80.6') { $details->model = 'Ethernet Routing Switch 3510GT-PWR+'; $details->type = 'switch'; }
 	if ($details->snmp_oid =='1.3.6.1.4.1.45.6.1.3.1.3') { $details->model = 'Nortel WSS2380'; $details->type = 'switch'; }
 
 	if ($details->snmp_version == '2') {
