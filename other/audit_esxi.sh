@@ -526,7 +526,8 @@ echo "		<uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
 echo "		<hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
 echo "		<domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file
 echo "		<description></description>" >> $xml_file
-echo "		<type>"$(escape_xml "$system_type")"</type>" >> $xml_file
+echo "		<type>computer</type>" >> $xml_file
+echo "		<man_type>computer</man_type>" >> $xml_file
 echo "		<os_icon>"$(escape_xml "$system_os_icon")"</os_icon>" >> $xml_file
 echo "		<os_group>"$(escape_xml "$system_os_group")"</os_group>" >> $xml_file
 echo "		<os_family>"$(escape_xml "$system_os_family")"</os_family>" >> $xml_file
@@ -544,6 +545,7 @@ echo "		<pc_date_os_installation>"$(escape_xml "$system_pc_date_os_installation"
 echo "		<man_org_id>"$(escape_xml "$org_id")"</man_org_id>" >> $xml_file
 echo "		<system_id>"$(escape_xml "$system_id")"</system_id>" >> $xml_file
 echo "		<last_seen_by>audit</last_seen_by>" >> $xml_file
+echo "		<man_class>hypervisor</man_class>" >> $xml_file
 echo "	</sys>" >> $xml_file
 
 
