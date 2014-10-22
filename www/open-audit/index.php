@@ -161,11 +161,13 @@ if (defined('ENVIRONMENT'))
  * as this file.
  *
  **/
-	
-	// windows
-	$system_path = 'c:/xampplite/open-audit/code_igniter/system';
-	// linux
-	$system_path = '/usr/local/open-audit/code_igniter/system';
+	if ((string)php_uname('s') !== 'Windows NT') {
+		// windows
+		$system_path = 'c:/xampplite/open-audit/code_igniter/system';
+	} else {
+		// linux
+		$system_path = '/usr/local/open-audit/code_igniter/system';
+	}
 
 /**
  *---------------------------------------------------------------
@@ -181,11 +183,13 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  **/
-	
-	// windows
-	$application_folder = 'c:/xampplite/open-audit/code_igniter/application';
-	// linux
-	$application_folder = '/usr/local/open-audit/code_igniter/application';
+	if ((string)php_uname('s') !== 'Windows NT') {
+		// windows
+		$application_folder = 'c:/xampplite/open-audit/code_igniter/application';
+	} else {
+		// linux
+		$application_folder = '/usr/local/open-audit/code_igniter/application';
+	}
 
 /**
  * --------------------------------------------------------------------
