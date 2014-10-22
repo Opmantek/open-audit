@@ -102,7 +102,7 @@ class M_oa_general extends MY_Model {
 			$sql = 'SELECT software_name, software_url, software_email, software_version, software_publisher, date(software_installed_on) as software_installed_on, software_installed_by FROM sys_sw_software LEFT JOIN system ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp WHERE system.system_id = ? ';
 
 		} elseif ($table == 'sys_hw_network_card_ip') {
-			$sql = 'SELECT ip_address_v4, ip_address_v6, ip_subnet, ip_address_version, sys_hw_network_card_ip.net_mac_address, net_connection_id FROM sys_hw_network_card_ip LEFT JOIN system ON system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_index = sys_hw_network_card.net_index WHERE system.system_id = ?';
+			$sql = 'SELECT ip_address_v4, ip_address_v6, ip_subnet, ip_address_version, sys_hw_network_card_ip.net_mac_address, net_connection_id FROM sys_hw_network_card_ip LEFT JOIN system ON system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_index = sys_hw_network_card.net_index WHERE system.system_id = ? GROUP BY sys_hw_network_card_ip.ip_id';
 
 		} elseif ($table == 'sys_hw_memory') {
 			$sql = 'SELECT memory_bank, memory_type, memory_form_factor, memory_detail, memory_capacity, memory_speed, memory_tag, memory_serial FROM sys_hw_memory LEFT JOIN system ON system.system_id = sys_hw_memory.system_id AND system.timestamp = sys_hw_memory.timestamp WHERE system.system_id = ?';
