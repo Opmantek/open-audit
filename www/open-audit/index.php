@@ -161,7 +161,7 @@ if (defined('ENVIRONMENT'))
  * as this file.
  *
  **/
-	if ((string)php_uname('s') !== 'Windows NT') {
+	if ((string)php_uname('s') == 'Windows NT') {
 		// windows
 		$system_path = 'c:/xampplite/open-audit/code_igniter/system';
 	} else {
@@ -183,7 +183,7 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  **/
-	if ((string)php_uname('s') !== 'Windows NT') {
+	if ((string)php_uname('s') == 'Windows NT') {
 		// windows
 		$application_folder = 'c:/xampplite/open-audit/code_igniter/application';
 	} else {
