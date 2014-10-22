@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -1538,15 +1538,17 @@ class M_system extends MY_Model {
 			}
 			if ($details->icon == '') { $details->icon = 'unknown'; }
 			$details->icon = str_replace(" ", "_", strtolower($details->icon));
-			if ($details->man_icon == "computer" or 
-				$details->man_icon == "unknown" or 
-				$details->man_icon == "general purpose" or 
-				$details->man_icon == "" ) {
-				$details->man_icon = $details->icon;
-			}
+			// if ($details->man_icon == "computer" or 
+			// 	$details->man_icon == "unknown" or 
+			// 	$details->man_icon == "general purpose" or 
+			// 	$details->man_icon == "" ) {
+			// 	$details->man_icon = $details->icon;
+			// }
+			$details->man_icon = $details->icon;
 			$sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
 			$data = array("$details->icon", "$details->man_icon", "$details->system_id");
 			$query = $this->db->query($sql, $data);
+
 		}
 		return ($count);
 	}

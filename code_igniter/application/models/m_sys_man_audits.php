@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -58,7 +58,11 @@ class M_sys_man_audits extends MY_Model {
 
 	function insert_audit($details) {
 		// TODO: - create a variable for the username running the script_windows.vbs
-		if (isset($details->last_seen_by)) { $inserted_via = $details->last_seen_by; } else { $inserted_via = 'audit'; }
+		if (isset($details->last_seen_by)) {
+			$inserted_via = $details->last_seen_by;
+		} else {
+			$inserted_via = 'audit';
+		}
 		
 		if (isset($details->last_seen_user) and $details->last_seen_user > '') { 
 			$inserted_user = $details->last_seen_user; 
@@ -76,7 +80,6 @@ class M_sys_man_audits extends MY_Model {
 		}
 
 		$sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp, system_audits_ip ) VALUES (?, ?, ?, ?, ?, ?)";
-		#$data = array("$details->system_id", "$inserted_user", "$inserted_via", "$details->timestamp", date('Y-m-d H:i:s'), "$details->audits_ip");
 		$data = array("$details->system_id", "$inserted_user", "$inserted_via", "$timestamp", date('Y-m-d H:i:s'), "$details->audits_ip");
 		$query = $this->db->query($sql, $data);
 	}

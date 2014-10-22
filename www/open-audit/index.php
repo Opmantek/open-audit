@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -161,11 +161,13 @@ if (defined('ENVIRONMENT'))
  * as this file.
  *
  **/
-	
-	// windows
-	$system_path = 'c:/xampplite/open-audit/code_igniter/system';
-	// linux
-	$system_path = '/usr/local/open-audit/code_igniter/system';
+	if ((string)php_uname('s') !== 'Windows NT') {
+		// windows
+		$system_path = 'c:/xampplite/open-audit/code_igniter/system';
+	} else {
+		// linux
+		$system_path = '/usr/local/open-audit/code_igniter/system';
+	}
 
 /**
  *---------------------------------------------------------------
@@ -181,11 +183,13 @@ if (defined('ENVIRONMENT'))
  * NO TRAILING SLASH!
  *
  **/
-	
-	// windows
-	$application_folder = 'c:/xampplite/open-audit/code_igniter/application';
-	// linux
-	$application_folder = '/usr/local/open-audit/code_igniter/application';
+	if ((string)php_uname('s') !== 'Windows NT') {
+		// windows
+		$application_folder = 'c:/xampplite/open-audit/code_igniter/application';
+	} else {
+		// linux
+		$application_folder = '/usr/local/open-audit/code_igniter/application';
+	}
 
 /**
  * --------------------------------------------------------------------
