@@ -1770,6 +1770,8 @@ class discovery extends CI_Controller
 												}
 												if (isset($esx_details->system_id) AND $esx_details->system_id != '') {
 													// we have an existing device
+													$esx_details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $esx_details->system_id);
+													$esx_details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $esx_details->system_id);
 													$this->m_system->update_system($esx_details);
 													$log_details = "C:discovery F:process_subnet ESX update for $esx_details->man_ip_address (System ID $esx_details->system_id)";
 													$this->log_event($log_details);

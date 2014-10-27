@@ -524,6 +524,12 @@ class System extends CI_Controller {
 					$this->m_group->process_group($input, $details);
 				}
 			}
+			if ($child->getName() === 'guests') {
+				$this->m_sys_man_audits->update_audit($details, $child->getName());
+				foreach($xml->guests->guest as $input) {
+					$this->m_virtual_machine->process_vm($input, $details);
+				}
+			}
 			if ($child->getName() === 'hard_disks') {
 				$this->m_sys_man_audits->update_audit($details, $child->getName());
 				foreach ($xml->hard_disks->hard_disk as $input) {
