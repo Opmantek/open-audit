@@ -381,11 +381,13 @@ class M_system extends MY_Model {
 			}
 		}
 
-		$i = @(string)$details->system_id;
-		if (is_null($i) or $i == '') { 
-			$log = "M:system F:find_system Returning system id <none>"; $this->log_event($log);
+		$temp = @(string)$details->system_id;
+		if (is_null($temp) OR $temp == '') { 
+			$log = "M:system F:find_system System id not found"; 
+			$this->log_event($log);
 		} else {
-			$log = "M:system F:find_system Returning system id $i"; $this->log_event($log);
+			$log = "M:system F:find_system Returning system id " . $details->system_id; 
+			$this->log_event($log);
 		}
 		return $details->system_id;
 	}
