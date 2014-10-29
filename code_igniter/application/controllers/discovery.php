@@ -1019,6 +1019,7 @@ class discovery extends CI_Controller
 						$command_string = NULL;
 						$output = NULL;
 						$return_var = NULL;
+						$error = "";
 					}
 
 
