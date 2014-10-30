@@ -108,8 +108,10 @@ if (isset($config->show_passwords) and $config->show_passwords != 'y') {
 		$windows_password = '';
 	}
 } else {
-	$ssh_password = $decoded_access_details->ssh_password;
-	$windows_password = $decoded_access_details->windows_password;
+	if (isset($decoded_access_details->ssh_password)) {
+		$ssh_password = $decoded_access_details->ssh_password;
+		$windows_password = $decoded_access_details->windows_password;
+	}
 }
 
 if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y') {
