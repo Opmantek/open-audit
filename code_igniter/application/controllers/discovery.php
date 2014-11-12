@@ -882,7 +882,9 @@ class discovery extends CI_Controller
 						$log_details = 'C:discovery F:process_subnet Attempting SNMP discovery on ' . $details->man_ip_address; 
 						$this->log_event($log_details);
 
-						// get rid of os_name as nmap only guesses
+						// get rid of os_* as nmap only guesses
+						$details->os_group = '';
+						$details->os_family = '';
 						$details->os_name = '';
 
 						$temp_array = get_snmp($details);
@@ -1023,7 +1025,6 @@ class discovery extends CI_Controller
 					}
 
 
-
 					// remove all the NULL, FALSE AND Empty Strings but leaves 0 (zero) values
 					// $details = (object) array_filter((array) $details, 'strlen' );
 
@@ -1114,6 +1115,7 @@ class discovery extends CI_Controller
 					if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 						echo "DEBUG - System ID <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>\n";
 					}
+
 
 					// Windows WMI audit - audit_windows.vbs
 					if ($details->wmi_status == "true" AND $details->windows_username > '' AND $details->windows_domain > '' AND $details->windows_password > '') {
