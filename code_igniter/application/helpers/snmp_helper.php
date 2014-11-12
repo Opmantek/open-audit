@@ -45,7 +45,6 @@ if (!function_exists('get_snmp')) {
 		# new in 1.5 - remove the type from the returned SNMP query.
 		# this affects the snmp_clean function in this file
 		snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-
 		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
 
 		if (!isset($details->show_output)) {
@@ -96,9 +95,14 @@ if (!function_exists('get_snmp')) {
 		// }
 
 		# device specific credentials
-		$device_specific_credentials = $CI->m_system->get_access_details($details->system_id);
-		$device_specific_credentials = $CI->encrypt->decode($device_specific_credentials);
-		$specific = json_decode($device_specific_credentials);
+		if (isset($details->system_id) and $details->system_id != '') {
+			$device_specific_credentials = $CI->m_system->get_access_details($details->system_id);
+			$device_specific_credentials = $CI->encrypt->decode($device_specific_credentials);
+			$specific = json_decode($device_specific_credentials);
+		} else {
+			$device_specific_credentials = '';
+			$specific = '';
+		}
 
 		# default Open-AudIT credentials
 		$default = $CI->m_oa_config->get_credentials();
@@ -200,7 +204,7 @@ if (!function_exists('get_snmp')) {
 		if (!isset($details->snmp_community) or $details->snmp_community == '') { 
 			$details->snmp_community = ''; 
 		} else {
-			if ($test_v2 = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+			if ($test_v2 = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				if ($details->show_output == TRUE) { echo "SNMP  - v2 connected to $details->man_ip_address using supplied credentials.<br />"; }
@@ -211,7 +215,7 @@ if (!function_exists('get_snmp')) {
 
 		# test the device specific credentials
 		if ($details->snmp_community == '' and isset($specific->snmp_community) and $specific->snmp_community > '') {
-			if ($test_v2 = @snmp2_get($details->man_ip_address, $specific->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+			if ($test_v2 = @snmp2_get($details->man_ip_address, $specific->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				$details->snmp_community = $specific->snmp_community;
@@ -221,7 +225,7 @@ if (!function_exists('get_snmp')) {
 		
 		# test the supplied credentials
 		if ($details->snmp_community == '' and isset($supplied->snmp_community) and $supplied->snmp_community > '') {
-			if ($test_v2 = @snmp2_get($details->man_ip_address, $supplied->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+			if ($test_v2 = @snmp2_get($details->man_ip_address, $supplied->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				$details->snmp_community = $supplied->snmp_community;
@@ -231,7 +235,7 @@ if (!function_exists('get_snmp')) {
 
 		# test the open-audit default credentials
 		if ($details->snmp_community == '' and isset($default->default_snmp_community) and $default->default_snmp_community > '') {
-			if ($test_v2 = @snmp2_get($details->man_ip_address, $default->default_snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+			if ($test_v2 = @snmp2_get($details->man_ip_address, $default->default_snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				$details->snmp_community = $default->default_snmp_community;
@@ -241,7 +245,7 @@ if (!function_exists('get_snmp')) {
 
 		# test the device specific credentials
 		if ($details->snmp_community == '' and isset($specific->snmp_community) and $specific->snmp_community > '') {
-			if ($test_v1 = @snmpget($details->man_ip_address, $specific->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+			if ($test_v1 = @snmpget($details->man_ip_address, $specific->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
 				# v1 is contactable
 				$details->snmp_version = '1';
 				$details->snmp_community = $specific->snmp_community;
@@ -251,7 +255,7 @@ if (!function_exists('get_snmp')) {
 
 		# test the supplied credentials
 		if ($details->snmp_community == '' and isset($supplied->snmp_community) and $supplied->snmp_community > '') {
-			if ($test_v1 = @snmpget($details->man_ip_address, $supplied->snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+			if ($test_v1 = @snmpget($details->man_ip_address, $supplied->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
 				# v1 is contactable
 				$details->snmp_version = '1';
 				$details->snmp_community = $supplied->snmp_community;
@@ -261,7 +265,7 @@ if (!function_exists('get_snmp')) {
 
 		# test the open-audit default credentials
 		if ($details->snmp_community == '' and isset($default->default_snmp_community) and $default->default_snmp_community > '') {
-			if ($test_v1 = @snmpget($details->man_ip_address, $default->default_snmp_community, "1.3.6.1.2.1.1.5.0", $timeout)) {
+			if ($test_v1 = @snmpget($details->man_ip_address, $default->default_snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
 				# v1 is contactable
 				$details->snmp_version = '1';
 				$details->snmp_community = $default->default_snmp_community;
@@ -288,7 +292,17 @@ if (!function_exists('get_snmp')) {
 
 			$details->serial = "";
 			$details->model = "";
-			$details->type = "unknown";		
+			$details->type = "unknown";
+
+
+			// new for 1.5.1 - store variables in corresponding SNMP nonclemanture
+			$details->sysDescr = 	@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0");
+			$details->sysObjectID = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0"));
+			$details->sysUpTime =	snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.3.0"));
+			$details->sysContact = 	@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.4.0");
+			$details->sysName = 	snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
+			$details->sysLocation = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");
+
 
 			// hostname
 			if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
@@ -302,6 +316,7 @@ if (!function_exists('get_snmp')) {
 			// description
 			$details->description = '';
 			$details->description = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
+
 
 
 			// sysObjectID
@@ -424,11 +439,13 @@ if (!function_exists('get_snmp')) {
 			// mac address
 			if (!isset($details->mac_address) or $details->mac_address == '' ) {
 				$interface_number = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
+				snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
 				$details->mac_address = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface_number));
+				snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 				$details->mac_address = format_mac($details->mac_address);
 			}
 			if ($details->show_output == TRUE) {
-				echo "SNMP  - MAC: $details->mac_address.<br />";
+				echo "SNMP  - MAC: " . $details->mac_address . "<br />";
 			}
 
 				
@@ -573,8 +590,6 @@ if (!function_exists('get_snmp')) {
 				$details->subnet = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
 			}
 
-
-
 			// network intereface details
 			$interfaces = array();
 			$interfaces_filtered = array();
@@ -592,15 +607,21 @@ if (!function_exists('get_snmp')) {
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
-					$interface->net_mac_address = snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index]);
-					$interface->net_mac_address = format_mac(@str_replace(" ", ":", $interface->net_mac_address));
+
+					snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+					$interface->net_mac_address = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6." . $interface->net_index ));
+					snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+					$interface->net_mac_address = format_mac($interface->net_mac_address);
+
 					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
+						snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
 						$test_mac = @snmp2_walk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
+						snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 						if (is_array($test_mac) and count($test_mac) > 0) {
-							# we have a mac address
-							$interface->net_mac_address = format_mac(str_replace(" ", ":", snmp_clean($test_mac[0])));
+							$interface->net_mac_address = format_mac(snmp_clean($test_mac[0]));
 						}
 					}
+
 					$interface->net_model = @snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
 					$interface->net_description = $interface->net_model;
 					$interface->net_connection_id = @snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
@@ -679,6 +700,14 @@ if (!function_exists('get_snmp')) {
 					$get_oid_details($details);
 				}
 			}
+
+			// new for 1.5.1 - store variables in corresponding SNMP nonclemanture
+			$details->sysDescr = 	@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0");
+			$details->sysObjectID = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0"));
+			$details->sysUpTime =	snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.3.0"));
+			$details->sysContact = 	@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.4.0");
+			$details->sysName = 	snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
+			$details->sysLocation = @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");
 
 			$h = @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.2.1");
 			if (strpos($h, "1.3.6.1.2.1.25.3.1") !== FALSE) {
@@ -772,13 +801,18 @@ if (!function_exists('get_snmp')) {
 				foreach ($interfaces as $key => $value) {
 					$interface = new stdclass();
 					$interface->net_index = snmp_clean($value);
-					$interface->net_mac_address = format_mac(str_replace(" ", ":", snmp_clean($mac_addresses[".1.3.6.1.2.1.2.2.1.6.".$interface->net_index])));
+
+					snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+					$interface->net_mac_address = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6." . $interface->net_index ));
+					snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+					$interface->net_mac_address = format_mac($interface->net_mac_address);
 
 					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
+						snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
 						$test_mac = @snmpwalk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
+						snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 						if (is_array($test_mac) and count($test_mac) > 0) {
-							# we have a mac address
-							$interface->net_mac_address = format_mac(str_replace(" ", ":", snmp_clean($test_mac[0])));
+							$interface->net_mac_address = format_mac(snmp_clean($test_mac[0]));
 						}
 					}
 
@@ -883,9 +917,12 @@ if (!function_exists('get_snmp')) {
 			$string = '';
 		}
 
-		# some strings are returned as below. Notably MAC Addresses.
-		if (mb_detect_encoding($string) == 'UTF-8') {
-			$string = bin2hex($string);
+		# some strings are returned as 'hex-string' below. Notably MAC Addresses.
+		if (strripos($string, 'hex-string') !== FALSE) {
+			$string = strtolower($string);
+			$string = str_replace('hex-string: ', '', $string);
+			$string = str_replace('"', ' ', $string);
+			$string = trim($string);
 		}
 
 		if ($string == '""') {
@@ -937,8 +974,9 @@ if (!function_exists('get_snmp')) {
 				$mac_address = substr($mac_address, 0, 2) . ':' . substr($mac_address, 2, 2) . ':' . 
 							   substr($mac_address, 4, 2) . ':' . substr($mac_address, 6, 2) . ':' . 
 							   substr($mac_address, 8, 2) . ':' . substr($mac_address, 10, 2);
-			}
+			} else {
 
+			}
 			# we should now have a mac address of the format ab:cd:ef
 			
 			# split the string by :
@@ -951,7 +989,6 @@ if (!function_exists('get_snmp')) {
 
 			# join it back together
 			$mac_address = implode(":", $mymac);
-
 		}
 		return($mac_address);
 	}
