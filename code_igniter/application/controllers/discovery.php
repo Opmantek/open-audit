@@ -1377,6 +1377,7 @@ class discovery extends CI_Controller
 														$error = 'C:discovery F:process_subnet SSH audit command for ' . $remote_os . ' audit using sudo on ' . $details->man_ip_address . ' failed. Attempting to run without sudo.'; 
 														$this->log_event($error);
 														$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=3 system_id=' . $details->system_id . '" ';
+														$return_var = '';
 														@exec($command_string, $output, $return_var);
 														if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 															echo 'DEBUG - Command Executed: ' . $command_string . "\n";
