@@ -6832,7 +6832,7 @@ $get_oid_details = function($details) {
 		$i = explode("$", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.5" ));
 		if (isset($i[1]) and $i[1] > '') { $details->os_version = trim($i[1]); }
 		$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.7" );
-		if (strpos($i, "IOS") !== FALSE) { 
+		if (stripos($i, "IOS") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco IOS'; 
@@ -6840,7 +6840,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco IOS version " . $details->os_version;
 			$details->man_os_name = "Cisco IOS version " . $details->os_version;
 		}
-		if (strpos($details->description, "Cisco IOS Software") !== FALSE) { 
+		if (stripos($details->description, "Cisco IOS Software") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco IOS'; 
@@ -6848,7 +6848,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco IOS version " . $details->os_version;
 			$details->man_os_name = "Cisco IOS version " . $details->os_version;
 		}
-		if (strpos($details->description, "Cisco Internetwork Operating System Software") !== FALSE) { 
+		if (stripos($details->description, "Cisco Internetwork Operating System Software") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco IOS'; 
@@ -6856,7 +6856,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco IOS version " . $details->os_version;
 			$details->man_os_name = "Cisco IOS version " . $details->os_version;
 		}
-		if (strpos($i, "Catalyst Operating") !== FALSE) { 
+		if (stripos($i, "Catalyst Operating") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco Catalyst OS';
@@ -6864,7 +6864,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
 			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
 		}
-		if (strpos($details->description, "Cisco Systems WS-C") !== FALSE) { 
+		if (stripos($details->description, "Cisco Systems WS-C") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco Catalyst OS';
@@ -6872,7 +6872,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
 			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
 		}
-		if (strpos($details->description, "Cisco Systems, Inc. WS-C") !== FALSE) { 
+		if (stripos($details->description, "Cisco Systems, Inc. WS-C") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco Catalyst OS';
@@ -6881,7 +6881,7 @@ $get_oid_details = function($details) {
 			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
 		}
 		if (!isset($details->os_group) or $details->os_group == '') {
-			if (strpos($details->description, 'NX-OS')) {
+			if (stripos($details->description, 'NX-OS')) {
 				$details->os_group = 'Cisco';
 				$details->man_os_group = 'Cisco'; 
 				$details->os_family = 'Cisco Nexus OS';
@@ -6895,6 +6895,12 @@ $get_oid_details = function($details) {
 		if ($details->model == '') {
 			$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1"));
 		}
+
+		# catch all for catalyst == switch
+		if (stripos($details->model, 'catalyst') !== FALSE OR stripos($details->os_family, 'cataylst') !== FALSE) {
+		   $details->type = 'switch';
+		   $details->man_type = 'switch';
+		} 
 
 		# Generic Cisco serial
 		if ($details->serial == '') {
