@@ -334,8 +334,9 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 
 				if [[ "$each" == *"Model"* ]]; then
 					hard_drive_model=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
-					if [[ "$hard_drive_model" == *"APPLE"* ]];
+					if [[ "$hard_drive_model" == *"APPLE"* ]]; then
 						hard_drive_manufacturer="Apple"
+					fi
 				fi
 
 				if [[ "$each" == *"Serial Number"* ]]; then
