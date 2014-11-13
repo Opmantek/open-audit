@@ -575,6 +575,7 @@ class Admin_system extends MY_Controller
             $this->load->model("m_sys_man_audits");
             $this->load->model("m_oa_group");
             $this->load->model("m_oa_general");
+            $this->load->model("m_network_card");
             $this->load->helper('snmp');
             $this->load->helper('snmp_oid');
             $this->load->library('encrypt');
@@ -651,12 +652,9 @@ class Admin_system extends MY_Controller
                             $encoded = $this->encrypt->encode($encoded);
                             $details->access_details = $encoded;
                             if (extension_loaded('snmp')) {
-                                #get_snmp($details);
-                                
                                 $temp_array = get_snmp($details);
                                 $details = $temp_array['details'];
                                 $network_interfaces = $temp_array['interfaces'];
-                                
                                 $details->last_seen_by = 'snmp';
                             }
                         }

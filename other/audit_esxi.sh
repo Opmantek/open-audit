@@ -792,7 +792,7 @@ for card in `esxcfg-nics -l | grep -v ^Name`; do
 	echo "			<net_mac_address>"$(escape_xml "$net_mac_address")"</net_mac_address>" >> $xml_file
 	echo "			<net_manufacturer>"$(escape_xml "$net_manufacturer")"</net_manufacturer>" >> $xml_file
 	echo "			<net_model>"$(escape_xml "$net_model")"</net_model>" >> $xml_file
-	echo "			<net_description>"$(escape_xml "$net_card_description")"</net_description>" >> $xml_file
+	echo "			<net_description>"$(escape_xml "$net_model")"</net_description>" >> $xml_file
 	echo "			<net_ip_enabled>"$(escape_xml "$net_ip_enabled")"</net_ip_enabled>" >> $xml_file
 	echo "			<net_connection_id>"$(escape_xml "$net_connection_id")"</net_connection_id>" >> $xml_file
 	echo "			<net_connection_status>"$(escape_xml "$net_connection_status")"</net_connection_status>" >> $xml_file

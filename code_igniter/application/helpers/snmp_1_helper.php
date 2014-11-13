@@ -33,10 +33,15 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-# Vendor TP-Link
+# Vendor NxNetworks
 
 $get_oid_details = function($details){
-	if ($details->snmp_oid == '1.3.6.1.4.1.11863.1.1.2') { $details->model = 'Wireless AP WA5210G'; $details->type = 'wap'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.11863.100.101') { $details->model = 'TL-SL3428'; $details->type = 'switch'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.11863.100.102') { $details->model = 'TL-SL3452'; $details->type = 'switch'; }
+	
+	# TP-LINK adsl modem
+	if ($details->sysDescr == 'TD-W8951ND') { 
+		$details->model = 'TD-W8951ND'; 
+		$details->manufacturer = 'TP-Link Technology Co.,Ltd'; 
+		$details->type = 'adsl modem';
+	}
+
 };

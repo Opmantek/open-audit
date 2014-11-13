@@ -770,17 +770,17 @@ class main extends MY_Controller
 				
 				$this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
 				$this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
-				// echo "<pre>\n";
-				// print_r($this->data['system'][0]->access_details);
-				// echo "\nDECODE: \n";
-				// print_r($this->data['decoded_access_details']);
-				// echo "</pre>\n";
+				# this returns an array if it doesn't contain data
 
-				if (!isset($this->data['decoded_access_details'])) { $this->data['decoded_access_details'] = new stdClass(); }
+				if (!isset($this->data['decoded_access_details']) or 
+					count($this->data['decoded_access_details']) == 0) {
+					$this->data['decoded_access_details'] = new stdClass();
+				}
 
 				if (!isset($this->data['decoded_access_details']->ip_address)) {
 					$this->data['decoded_access_details']->ip_address = '';
 				}
+
 				if (!isset($this->data['decoded_access_details']->snmp_version)) {
 					$this->data['decoded_access_details']->snmp_version = '';
 				}
@@ -802,8 +802,7 @@ class main extends MY_Controller
 				if (!isset($this->data['decoded_access_details']->windows_domain)) {
 					$this->data['decoded_access_details']->windows_domain = '';
 				}
-				#var_dump($this->data['decoded_access_details']);
-				#exit();
+
 			} else {
 				$this->data['decoded_access_details'] = new stdClass();
 				$this->data['decoded_access_details']->ip_address = "";

@@ -2718,7 +2718,7 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);		
 		}	
 
-		if (($db_internal_version < '20140827') AND ($this->db->platform() == 'mysql')) {
+		if (($db_internal_version < '20141024') AND ($this->db->platform() == 'mysql')) {
 			# upgrade for 1.5
 
 			$sql = "ALTER TABLE oa_user_sessions CHANGE ip_address ip_address varchar(45) DEFAULT '0' NOT NULL";
@@ -2745,16 +2745,50 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "UPDATE oa_config set config_value = '20140827', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$sql = "UPDATE oa_config set config_value = '20141024', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 			
 			$sql = "UPDATE oa_config set config_value = '1.5', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);		
-		}	
+		}
 
+		if (($db_internal_version < '20141130') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.5.1
 
+			$sql = "ALTER TABLE system ADD sysDescr varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysObjectID varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysUpTime varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysContact varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysName varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysLocation varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20141130', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.5.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+		}
 
 		$config = $this->m_oa_config->get_config();
 		foreach ($config as $returned_result) {

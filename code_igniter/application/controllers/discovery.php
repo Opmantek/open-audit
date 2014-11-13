@@ -882,7 +882,9 @@ class discovery extends CI_Controller
 						$log_details = 'C:discovery F:process_subnet Attempting SNMP discovery on ' . $details->man_ip_address; 
 						$this->log_event($log_details);
 
-						// get rid of os_name as nmap only guesses
+						// get rid of os_* as nmap only guesses
+						$details->os_group = '';
+						$details->os_family = '';
 						$details->os_name = '';
 
 						$temp_array = get_snmp($details);
@@ -1019,8 +1021,8 @@ class discovery extends CI_Controller
 						$command_string = NULL;
 						$output = NULL;
 						$return_var = NULL;
+						$error = "";
 					}
-
 
 
 					// remove all the NULL, FALSE AND Empty Strings but leaves 0 (zero) values
@@ -1113,6 +1115,7 @@ class discovery extends CI_Controller
 					if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
 						echo "DEBUG - System ID <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>\n";
 					}
+
 
 					// Windows WMI audit - audit_windows.vbs
 					if ($details->wmi_status == "true" AND $details->windows_username > '' AND $details->windows_domain > '' AND $details->windows_password > '') {
@@ -1770,6 +1773,8 @@ class discovery extends CI_Controller
 												}
 												if (isset($esx_details->system_id) AND $esx_details->system_id != '') {
 													// we have an existing device
+													$esx_details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $esx_details->system_id);
+													$esx_details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $esx_details->system_id);
 													$this->m_system->update_system($esx_details);
 													$log_details = "C:discovery F:process_subnet ESX update for $esx_details->man_ip_address (System ID $esx_details->system_id)";
 													$this->log_event($log_details);

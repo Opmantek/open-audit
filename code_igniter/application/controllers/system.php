@@ -1,13 +1,13 @@
 <?php
 /**
- * The is the admin controller for Open-AudIT
+ * The is the system controller for Open-AudIT
  * 
  * @category  Controller
  * @package   Open-AudIT
  * @author    Mark Unwin <marku@opmantek.com>
  * @copyright 2014 Opmantek
  * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- * @version   1.2
+ * @version   1.5
  * @link      http://www.open-audit.org
  */
 
@@ -135,6 +135,8 @@ class System extends CI_Controller {
 			}
 			$this->load->model('m_system');
 			$this->load->model('m_oa_group');
+			$this->load->model('m_network_card');
+			$this->load->model('m_ip_address');
 			$this->load->model('m_sys_man_audits');
 			$timestamp = date('Y-m-d H:i:s');
 			$xml_input = $_POST['form_nmap'];
@@ -207,13 +209,15 @@ class System extends CI_Controller {
 					$details->last_seen_by = 'snmp';
 					$details->audits_ip = '127.0.0.1';
 
-					if (isset($details->system_id) AND $details->system_id !== '') {
+					if (isset($details->system_id) AND !empty($details->system_id)) {
 						// we have a system_id AND snmp details to update
 						$this->m_system->update_system($details);
+						echo "<p>Update sytem ".$details->system_id."</p>";
 					}
 					else {
 						// we have a new system
 						$details->system_id = $this->m_system->insert_system($details);
+						echo "<p>Add new sytem ".$details->system_id."</p>";
 					}
 
 					# update any network interfaces and ip addresses retrieved by SNMP
@@ -522,6 +526,12 @@ class System extends CI_Controller {
 				$this->m_sys_man_audits->update_audit($details, $child->getName());
 				foreach ($xml->groups->group as $input) {
 					$this->m_group->process_group($input, $details);
+				}
+			}
+			if ($child->getName() === 'guests') {
+				$this->m_sys_man_audits->update_audit($details, $child->getName());
+				foreach($xml->guests->guest as $input) {
+					$this->m_virtual_machine->process_vm($input, $details);
 				}
 			}
 			if ($child->getName() === 'hard_disks') {
