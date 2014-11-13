@@ -2729,9 +2729,18 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "ALTER TABLE sys_hw_hard_drive ADD hard_drive_model_family varchar(200) NOT NULL default '' ";
-			$this->data['output'] .= $sql . "<br /><br />\n";
-			$query = $this->db->query($sql);
+			$fields = $this->db->list_fields('sys_hw_hard_drive');
+			$temp_hit = 0;
+			foreach ($fields as $field) {
+			   if ($field == 'hard_drive_model_family') {
+					$temp_hit = 1;
+				}
+			}
+			if ($temp_hit == 0) {
+				$sql = "ALTER TABLE sys_hw_hard_drive ADD hard_drive_model_family varchar(200) NOT NULL default '' ";
+				$this->data['output'] .= $sql . "<br /><br />\n";
+				$query = $this->db->query($sql);
+			}
 
 			$sql = 'UPDATE oa_report_column SET column_link = "/report/Specific Software/$group_id/" WHERE column_link = "/report/specific_software/$group_id/"';
 			$this->data['output'] .= $sql . "<br /><br />\n";
