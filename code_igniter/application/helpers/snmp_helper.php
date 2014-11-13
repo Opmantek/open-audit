@@ -949,55 +949,43 @@ if (!function_exists('get_snmp')) {
 	}
 
 	function format_mac($mac_address) {
-		if ($mac_address != '') {
-echo "MAC STT: " . $mac_address . "\n";
-			# trim any unrequired beginning or ending spaces
-			$mac_address = trim($mac_address);
-
 			# set to lower case
 			$mac_address = strtolower($mac_address);
-
 			# remove any quotes
 			$mac_address = str_replace('"', ' ', $mac_address);
 			$mac_address = str_replace("'", " ", $mac_address);
-
 			# some strings are returned as 'hex-string' 
-			if (strripos($mac_address, 'hex-string') !== FALSE) {
+			if (strrpos($mac_address, 'hex-string') !== FALSE) {
 				$mac_address = str_replace('hex-string: ', '', $mac_address);
 			}
-
 			# some strings are returned as 'string' 
-			if (strripos($mac_address, 'string') !== FALSE) {
+			if (strrpos($mac_address, 'string') !== FALSE) {
 				$mac_address = str_replace('string: ', '', $mac_address);
 			}
-
+			# trim any unrequired beginning or ending spaces
+			$mac_address = trim($mac_address);
 			# check for a string thus "ab cd ef"
 			if (substr_count($mac_address, ' ') > 0) {
 				$mac_address = str_replace(' ', ':', $mac_address);
 			}
-
 			# check for a substring thus "abcdef"
-			if (substr_count($mac_address, ' ') == 0 AND substr_count($mac_address, ':') == 0 AND strlen($mac_address) == 12) {
+			if (substr_count($mac_address, ' ') == 0 AND 
+				substr_count($mac_address, ':') == 0 AND 
+				strlen($mac_address) == 12) {
 				$mac_address = substr($mac_address, 0, 2) . ':' . substr($mac_address, 2, 2) . ':' . 
 							   substr($mac_address, 4, 2) . ':' . substr($mac_address, 6, 2) . ':' . 
 							   substr($mac_address, 8, 2) . ':' . substr($mac_address, 10, 2);
-			} else {
-
 			}
-			# we should now have a mac address of the format ab:cd:ef
-			
-			# split the string by :
-			$mymac = explode(":",$mac_address);
-
-			# for each section, make sure it's padded with a 0.
-			for($i=0; $i<count($mymac); $i++) {
-				$mymac[$i] = mb_substr("00" . $mymac[$i], -2);
+			if (substr_count($mac_address, ':') != 0 ) {
+				# split the string by :
+				$mymac = explode(":",$mac_address);
+				# for each section, make sure it's padded with a 0.
+				for($i=0; $i<count($mymac); $i++) {
+					$mymac[$i] = mb_substr("00" . $mymac[$i], -2);
+				}
+				# join it back together
+				$mac_address = implode(":", $mymac);
 			}
-
-			# join it back together
-			$mac_address = implode(":", $mymac);
-		}
-if ($mac_address > '') { echo "MAC END: " . $mac_address . "\n";}
 		return($mac_address);
 	}
 
