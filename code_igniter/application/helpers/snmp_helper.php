@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5
+ * @version 1.5.1
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -440,7 +440,7 @@ if (!function_exists('get_snmp')) {
 			if (!isset($details->mac_address) or $details->mac_address == '' ) {
 				$interface_number = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
 				snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-				$details->mac_address = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface_number));
+				$details->mac_address = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface_number);
 				snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 				$details->mac_address = format_mac($details->mac_address);
 			}
@@ -609,16 +609,15 @@ if (!function_exists('get_snmp')) {
 					$interface->net_index = snmp_clean($value);
 
 					snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-					$interface->net_mac_address = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6." . $interface->net_index ));
+					$interface->net_mac_address = format_mac(@snmp2_get($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6." . $interface->net_index ));
 					snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-					$interface->net_mac_address = format_mac($interface->net_mac_address);
 
 					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
 						snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
 						$test_mac = @snmp2_walk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
 						snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 						if (is_array($test_mac) and count($test_mac) > 0) {
-							$interface->net_mac_address = format_mac(snmp_clean($test_mac[0]));
+							$interface->net_mac_address = format_mac($test_mac[0]);
 						}
 					}
 
@@ -773,7 +772,7 @@ if (!function_exists('get_snmp')) {
 			# TODO: below breaks on occasion when the external ip is not in snmp. We should really ask the device for any IPs it has and go from there.
 			$interface_number = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
 			$i = "1.3.6.1.2.1.2.2.1.6." . $interface_number;
-			$details->mac_address = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, $i));
+			$details->mac_address = @snmpget($details->man_ip_address, $details->snmp_community, $i);
 			$details->mac_address = format_mac($details->mac_address);
 
 			$details->subnet = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
@@ -803,16 +802,15 @@ if (!function_exists('get_snmp')) {
 					$interface->net_index = snmp_clean($value);
 
 					snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-					$interface->net_mac_address = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6." . $interface->net_index ));
+					$interface->net_mac_address = format_mac(@snmpget($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6." . $interface->net_index ));
 					snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-					$interface->net_mac_address = format_mac($interface->net_mac_address);
 
 					if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
 						snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
 						$test_mac = @snmpwalk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2." . $interface->net_index);
 						snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 						if (is_array($test_mac) and count($test_mac) > 0) {
-							$interface->net_mac_address = format_mac(snmp_clean($test_mac[0]));
+							$interface->net_mac_address = format_mac($test_mac[0]);
 						}
 					}
 
@@ -917,14 +915,6 @@ if (!function_exists('get_snmp')) {
 			$string = '';
 		}
 
-		# some strings are returned as 'hex-string' below. Notably MAC Addresses.
-		if (strripos($string, 'hex-string') !== FALSE) {
-			$string = strtolower($string);
-			$string = str_replace('hex-string: ', '', $string);
-			$string = str_replace('"', ' ', $string);
-			$string = trim($string);
-		}
-
 		if ($string == '""') {
 			$string = '';
 		}
@@ -960,9 +950,26 @@ if (!function_exists('get_snmp')) {
 
 	function format_mac($mac_address) {
 		if ($mac_address != '') {
-
+echo "MAC STT: " . $mac_address . "\n";
 			# trim any unrequired beginning or ending spaces
 			$mac_address = trim($mac_address);
+
+			# set to lower case
+			$mac_address = strtolower($mac_address);
+
+			# remove any quotes
+			$mac_address = str_replace('"', ' ', $mac_address);
+			$mac_address = str_replace("'", " ", $mac_address);
+
+			# some strings are returned as 'hex-string' 
+			if (strripos($mac_address, 'hex-string') !== FALSE) {
+				$mac_address = str_replace('hex-string: ', '', $mac_address);
+			}
+
+			# some strings are returned as 'string' 
+			if (strripos($mac_address, 'string') !== FALSE) {
+				$mac_address = str_replace('string: ', '', $mac_address);
+			}
 
 			# check for a string thus "ab cd ef"
 			if (substr_count($mac_address, ' ') > 0) {
@@ -990,6 +997,7 @@ if (!function_exists('get_snmp')) {
 			# join it back together
 			$mac_address = implode(":", $mymac);
 		}
+if ($mac_address > '') { echo "MAC END: " . $mac_address . "\n";}
 		return($mac_address);
 	}
 
