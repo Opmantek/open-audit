@@ -303,6 +303,18 @@ if (!function_exists('get_snmp')) {
 			$details->sysName = 	snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
 			$details->sysLocation = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");
 
+			if (stripos($details->sysDescr, 'dd-wrt') !== FALSE) {
+				$details->os_group = 'Linux';
+				$details->os_name = 'DD-WRT';
+				$details->type = 'router';
+				$details->man_type = 'router';
+
+				if (stripos($details->manufacturer, 'tplink') !== FALSE OR 
+					stripos($details->manufacturer, 'tp-link') !== FALSE ) {
+					$details->manufacturer = 'TP-Link Technology Co.,Ltd';
+				}
+			}
+
 
 			// hostname
 			if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
@@ -489,7 +501,8 @@ if (!function_exists('get_snmp')) {
 
 				} else {
 
-					# If the device is a Switch, the OID 1.3.6.1.2.1.17.1.2.0 is an integer and OID 1.3.6.1.2.1.4.1.0 should have a value of 2
+					# If the device is a Switch, the OID 1.3.6.1.2.1.17.1.2.0 is an integer and 
+					#								 OID 1.3.6.1.2.1.4.1.0    should have a value of 2
 					$i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.17.1.2.0"));
 					$j = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.1.0"));
 					if (($i == intval($i)) and ($j == '2')) {

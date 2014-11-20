@@ -1237,8 +1237,39 @@ class discovery extends CI_Controller
 						}
 					}
 
+					if ($details->ssh_status == 'true' AND 
+						isset($details->sysDescr) AND 
+						stripos($details->sysDescr, 'dd-wrt') !== FALSE) {
+						# we have a DD-WRT based system with SSH open
+						# run some DD-WRT specific commands
+						$command = 'nvram get DD_BOARD';
+						$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " " . $command;
+						exec($command_string, $output, $return_var);
+						if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
+							echo 'DEBUG - Command Executed: ' . $command_string . "\n";
+							echo 'DEBUG - Return Value: ' . $return_var . "\n";
+							echo "DEBUG - Command Output:\n";
+							print_r($output);
+						}
+						if ($return_var == 0) {
+							# success
+							$temp_array = explode(' ', $output[count($output)-1]);
+							$details->manufacturer = $temp_array[0];
+							$details->model = $temp_array[1];
+							unset($temp_array);
+							$details->last_seen_by = 'audit';
+						}
+						$this->m_system->update_system($details);
+						$log_details = "C:discovery F:process_subnet DD-WRT audit update for $details->man_ip_address (System ID $details->system_id)"; 
+						$this->log_event($log_details);
+					}
+
+
+
 					// SSH based audit (usually Linux, Unix, OSX, AIX or ESX)
-					if ($details->ssh_status == "true") {
+					if ($details->ssh_status == "true" and 
+						(!isset($details->sysDescr) OR 
+						(isset($details->sysDescr) AND stripos($details->sysDescr, 'dd-wrt') === FALSE ) ) ) {
 						if ($details->ssh_username == '' OR $details->ssh_password == '') {
 							$script_string = "audit_linux.sh strcomputer=" . $details->man_ip_address . " submit_online=y create_file=n struser=" . $details->ssh_username . " strpass=" . $details->ssh_password . " debugging=0";
 							$log_details = "C:discovery F:process_subnet No credentials supplied for SSH audit for $details->man_ip_address (System ID $details->system_id)";
