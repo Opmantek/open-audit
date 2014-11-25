@@ -384,6 +384,15 @@ class Admin extends MY_Controller {
 				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
 				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">" . $this->data['config']->default_snmp_community . "</span>"; }
 
+				# snmp version
+				if (isset($j->snmp_version)) {
+					$this->data['query'][$i]->nmis_snmp_version = $j->snmp_version;
+				}
+				if (!isset($this->data['query'][$i]->nmis_snmp_version) or $this->data['query'][$i]->nmis_snmp_version == '') { 
+					$this->data['query'][$i]->nmis_snmp_version = "<span style=\"color: blue;\">2c</span>";
+				}
+
+
 				$j=null;
 			}
 			$this->data['group_id'] = $this->data['id'];
@@ -399,7 +408,7 @@ class Admin extends MY_Controller {
 			$this->load->model("m_system");
 			$this->load->model("m_oa_group");
 			$this->load->library('encrypt');
-			$csv = "name,host,group,role,community\n";
+			$csv = "name,host,group,role,community,version\n";
 			$query = array();
 			$i = 0; # I set $i = 0 so I could copy/paste the code from above :-)
 			foreach ($device_array as $key => $value) {
@@ -432,13 +441,22 @@ class Admin extends MY_Controller {
 				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
 				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = $this->data['config']->default_snmp_community; }
 
+				# snmp version
+				if (isset($j->snmp_version)) {
+					$this->data['query'][$i]->nmis_snmp_version = 'snmpv' . $j->snmp_version;
+				}
+				if (!isset($this->data['query'][$i]->nmis_snmp_version) or $this->data['query'][$i]->nmis_snmp_version == '') { 
+					$this->data['query'][$i]->nmis_snmp_version = "snmpv2c";
+				}
+
 				$j=null;
 
 				$csv .= $this->data['query'][$i]->nmis_name . "," . 
 						$this->data['query'][$i]->nmis_host . "," . 
 						$this->data['query'][$i]->nmis_group . "," . 
 						$this->data['query'][$i]->nmis_role . "," . 
-						$this->data['query'][$i]->nmis_community . "\n";
+						$this->data['query'][$i]->nmis_community . "," .
+						$this->data['query'][$i]->nmis_snmp_version . "\n";
 			}
 			if (!file_exists("/usr/local/nmis8/admin/import_nodes.pl")) {
 				echo $csv;
