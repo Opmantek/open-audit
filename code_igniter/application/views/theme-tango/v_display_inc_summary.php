@@ -427,6 +427,8 @@
 					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>
 					<p><label for="nmis_name"><?php echo __('NMIS Name')?>: </label><span id="nmis_name" <?php echo $edit?>><?php echo print_something($system[0]->nmis_name)?></span></p>
 					<p><label for="nmis_role_select"><?php echo __('NMIS Role')?>: </label><span id="nmis_role_select" style="color:blue;"><span onclick="display_nmis_role();"><?php echo print_something($system[0]->nmis_role)?></span></span></p>
+					<!-- <p><label for="nmis_export_select"><?php echo __('NMIS Export')?>: </label><span id="nmis_export_select" style="color:blue;" data-nmis="<?php echo $system[0]->nmis_export?>"><span onclick="display_nmis_export();"><?php echo print_something($system[0]->nmis_export)?></span></span></p> -->
+					<p><label for="nmis_export"><?php echo __('NMIS Export')?>: </label><input id="nmis_export" onClick="check_nmis_export();" type="checkbox"<?php if ($system[0]->nmis_export == 'true') { echo " checked"; } ?><?php if ($access_level != 10) { echo " disabled"; } ?> /></p>
 				</div>
 			</fieldset>
 		</form>

@@ -57,7 +57,8 @@ echo "<th width=\"30%\" align=\"left\">Name</th>";
 echo "<th width=\"20%\" align=\"left\">Host</th>";
 echo "<th width=\"20%\" align=\"left\">Group</th>";
 echo "<th width=\"10%\" align=\"left\">Role</th>";
-echo "<th width=\"10%\" align=\"left\">Community</th>";
+echo "<th width=\"10%\" align=\"left\">SNMP Community</th>";
+echo "<th width=\"10%\" align=\"left\">SNMP Version</th>";
 
 # edit column
 #echo "<th align=\"center\" class=\"{sorter: false}\"><button onClick=\"document.change_form.submit();\">Edit</button>";
@@ -81,9 +82,12 @@ if (count($query) > 0) {
 		echo "\t\t\t<td align=\"left\">" . $key->nmis_group . "</td>\n";
 		echo "\t\t\t<td align=\"left\">" . $key->nmis_role . "</td>\n";
 		echo "\t\t\t<td align=\"left\">" . $key->nmis_community . "</td>\n";
+		echo "\t\t\t<td align=\"left\">" . $key->nmis_snmp_version . "</td>\n";
 		if ( $manual_edit == 'y') { 
-			#echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_" . $key->system_id . "\" name=\"system_id_" . $key->system_id . "\" /></td>\n";
-			echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_" . $key->system_id . "\" name=\"system_id_" . $key->system_id . "\" /></td>\n";
+			echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_";
+			echo $key->system_id . "\" name=\"system_id_" . $key->system_id . "\"";
+			if ($key->nmis_export == 'true') { echo "checked"; }
+			echo "/></td>\n";
 		}
 		echo "\n\t\t</tr>\n";
 	}
