@@ -354,7 +354,7 @@ class Admin extends MY_Controller {
 			$this->load->model("m_systems");
 			$data = array($this->data['id']);
 			$query = $this->db->query('SET @group = ?', $data);
-			$sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, access_details FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id"; 
+			$sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id"; 
 			$query = $this->db->query($sql);
 			$this->data['query'] = $query->result();
 			$this->load->library('encrypt');
@@ -365,14 +365,54 @@ class Admin extends MY_Controller {
 					$j = json_decode($j);
 				}
 
-				# nmis name
-				if ($this->data['query'][$i]->nmis_name == '' and $this->data['query'][$i]->hostname > '') {$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname; }
-				if (($this->data['query'][$i]->nmis_name == '' or $this->data['query'][$i]->nmis_name == $this->data['query'][$i]->hostname) and $this->data['query'][$i]->fqdn > '') { $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn; }
-				if ($this->data['query'][$i]->nmis_name == '') { $this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host); }
+				if ($this->data['query'][$i]->nmis_name == '') {
+					# need to create a nmis name
 
+					if ($this->data['query'][$i]->hostname != '') {
+						# hostname is our preferred choice
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname;
+
+					} elseif ($this->data['query'][$i]->fqdn != '') {
+						# second choice is to use the FQDN
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn;
+					
+					} elseif ($this->data['query'][$i]->hostname != '' AND $this->data['query'][$i]->domain != '') {
+						# third - create the FQDN from the hostname + domain
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
+					
+					} elseif ($this->data['query'][$i]->nmis_host != '') {
+						# lastly - use the ip address
+						$this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host);
+					}
+					# ensure we don't have a name ending in a .
+					if (strrpos($this->data['query'][$i]->nmis_name, '.') == strlen($this->data['query'][$i]->nmis_name)-1 ) {
+						$this->data['query'][$i]->nmis_name = substr($this->data['query'][$i]->nmis_name, 0, strlen($this->data['query'][$i]->nmis_name)-1);
+					}
+					$this->data['query'][$i]->nmis_name = "<span style=\"color: blue;\">" . $this->data['query'][$i]->nmis_name . "</span>";
+
+				}
+
+				
 				# nmis host
-				$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
-				if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+				#$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				#if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+				if ($this->data['query'][$i]->fqdn != '') {
+					# first choice is to use the FQDN
+					$this->data['query'][$i]->nmis_host = $this->data['query'][$i]->fqdn;
+				
+				} elseif ($this->data['query'][$i]->hostname != '' AND $this->data['query'][$i]->domain != '') {
+					# second - create the FQDN from the hostname + domain
+					$this->data['query'][$i]->nmis_host = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
+				
+				} elseif ($this->data['query'][$i]->nmis_host != '') {
+					# lastly - use the ip address
+					$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				}
+				# ensure we don't have a host ending in a .
+				if (strrpos($this->data['query'][$i]->nmis_host, '.') == strlen($this->data['query'][$i]->nmis_host)-1 ) {
+					$this->data['query'][$i]->nmis_host = substr($this->data['query'][$i]->nmis_host, 0, strlen($this->data['query'][$i]->nmis_host)-1);
+				}
+
 
 				# nmis group
 				if ($this->data['query'][$i]->nmis_group == '') { $this->data['query'][$i]->nmis_group = "<span style=\"color: blue;\">Open-AudIT</span>"; }
@@ -412,7 +452,8 @@ class Admin extends MY_Controller {
 			$query = array();
 			$i = 0; # I set $i = 0 so I could copy/paste the code from above :-)
 			foreach ($device_array as $key => $value) {
-				$sql = "SELECT system.nmis_name, system.man_ip_address as nmis_host, system.nmis_group, system.nmis_role, system.hostname, system.fqdn, '' as nmis_community, '' as nmis_version, 'true' as nmis_collect, '' as nmis_net, access_details FROM system WHERE system_id = ?"; 
+				#$sql = "SELECT system.nmis_name, system.man_ip_address as nmis_host, system.nmis_group, system.nmis_role, system.hostname, system.fqdn, '' as nmis_community, '' as nmis_version, 'true' as nmis_collect, '' as nmis_net, access_details FROM system WHERE system_id = ?"; 
+				$sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system WHERE system_id = ?"; 
 				$data = array($value);
 				$query = $this->db->query($sql, $data);
 				$this->data['query'] = $query->result();
@@ -422,14 +463,51 @@ class Admin extends MY_Controller {
 					$j = json_decode($j);
 				}
 
-				# nmis name
-				if ($this->data['query'][$i]->nmis_name == '' and $this->data['query'][$i]->hostname > '') {$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname; }
-				if (($this->data['query'][$i]->nmis_name == '' or $this->data['query'][$i]->nmis_name == $this->data['query'][$i]->hostname) and $this->data['query'][$i]->fqdn > '') { $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn; }
-				if ($this->data['query'][$i]->nmis_name == '') { $this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host); }
+				# blank nmis name and populated hostname
+				if ($this->data['query'][$i]->nmis_name == '') {
+					# need to create a nmis name
+					
+					if ($this->data['query'][$i]->hostname != '') {
+						# hostname is our preferred choice
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname;
+
+					} elseif ($this->data['query'][$i]->fqdn != '') {
+						# second choice is to use the FQDN
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn;
+					
+					} elseif ($this->data['query'][$i]->hostname != '' AND $this->data['query'][$i]->domain != '') {
+						# third - create the FQDN from the hostname + domain
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
+					
+					} elseif ($this->data['query'][$i]->nmis_host != '') {
+						# lastly - use the ip address
+						$this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host);
+					}
+				}
+				# ensure we don't have a name ending in a .
+				if (strrpos($this->data['query'][$i]->nmis_name, '.') == strlen($this->data['query'][$i]->nmis_name)-1 ) {
+					$this->data['query'][$i]->nmis_name = substr($this->data['query'][$i]->nmis_name, 0, strlen($this->data['query'][$i]->nmis_name)-1);
+				}
 
 				# nmis host
-				$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
-				if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+				#$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				#if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+				if ($this->data['query'][$i]->fqdn != '') {
+					# first choice is to use the FQDN
+					$this->data['query'][$i]->nmis_host = $this->data['query'][$i]->fqdn;
+				
+				} elseif ($this->data['query'][$i]->hostname != '' AND $this->data['query'][$i]->domain != '') {
+					# second - create the FQDN from the hostname + domain
+					$this->data['query'][$i]->nmis_host = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
+				
+				} elseif ($this->data['query'][$i]->nmis_host != '') {
+					# lastly - use the ip address
+					$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				}
+				# ensure we don't have a host ending in a .
+				if (strrpos($this->data['query'][$i]->nmis_host, '.') == strlen($this->data['query'][$i]->nmis_host)-1 ) {
+					$this->data['query'][$i]->nmis_host = substr($this->data['query'][$i]->nmis_host, 0, strlen($this->data['query'][$i]->nmis_host)-1);
+				}
 
 				# nmis group
 				if ($this->data['query'][$i]->nmis_group == '') { $this->data['query'][$i]->nmis_group = "Open-AudIT"; }
@@ -2817,6 +2895,22 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);
 			
 			$sql = "UPDATE oa_config set config_value = '1.5.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+		}
+
+		if (($db_internal_version < '20141208') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.5.2
+
+			$sql = "ALTER TABLE system ADD nmis_export enum('true', 'false') NOT NULL default 'false' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20141208', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.5.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 		}

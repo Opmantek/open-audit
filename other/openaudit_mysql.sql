@@ -1750,6 +1750,7 @@ CREATE TABLE `system` (
   `nmis_group` varchar(50) NOT NULL default '',
   `nmis_name` varchar(50) NOT NULL default '',
   `nmis_role` varchar(50) NOT NULL default '',
+  `nmis_export` enum('true', 'false') NOT NULL default 'false',
   `system_key_type` varchar(4) NOT NULL default '',
   `sysDescr` varchar(255) NOT NULL default '',
   `sysObjectID` varchar(255) NOT NULL default '',
@@ -1795,8 +1796,8 @@ INSERT INTO `oa_user` VALUES  (3, 'nmis', '5a7f9a638ea430196d765ef8d3875eafd64ee
 
 INSERT INTO `oa_group_user` (`group_user_id`,`user_id`,`group_id`,`group_user_access_level`) VALUES (2,1,1,10),(3,1,2,10),(4,1,8,10),(5,1,6,10),(6,1,3,10),(7,1,4,10),(8,1,7,10),(9,1,5,10),(10,3,1,10),(11,3,2,10),(12,3,8,10),(13,3,6,10),(14,3,3,10),(15,3,4,10),(16,3,7,10),(17,3,5,10),(18,1,9,10),(19,3,9,10),(20,1,10,10),(21,3,10,10),(23,2,1,3),(24,2,2,0),(25,2,8,0),(26,2,6,0),(27,2,9,0),(28,2,10,5),(29,2,3,0),(30,2,4,0),(31,2,7,0),(32,2,5,0); 
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20141130', 'n', 'The internal numerical version.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.5.1', 'n', 'The version shown on the web pages.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20141208', 'n', 'The internal numerical version.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.5.2', 'n', 'The version shown on the web pages.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('non_admin_search', 'y', 'y', 'Enable or disable search for non-Administrators');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate. EG - open-audit.org');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1');
