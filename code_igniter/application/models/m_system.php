@@ -46,7 +46,11 @@ class M_system extends MY_Model {
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
-		if (count($row) > 0) {return($row->access_details);} else {return;}
+		if (count($row) > 0) {
+			return($row->access_details);
+		} else {
+			return;
+		}
 	}
 
 	function create_system_key($details) {
@@ -795,6 +799,9 @@ class M_system extends MY_Model {
 		# this is an insert - we do NOT want a system_id
 		unset($details->system_id);
 
+		$log = "M:system F:insert_system System insert start for $details->man_ip_address ($details->hostname)";
+		$this->log_event($log);
+
 		# ensure we have something not null for all the below
 		if (!isset($details->timestamp) or $details->timestamp == '') { $details->timestamp = date('Y-m-d H:i:s'); }
 		$details->first_timestamp = $details->timestamp;
@@ -1023,6 +1030,10 @@ class M_system extends MY_Model {
 				"$details->timestamp");
 			$query = $this->db->query($sql, $data);
 		}
+
+		$log = "M:system F:insert_system System insert end for $details->man_ip_address ($details->hostname) (system id $details->system_id)";
+		$this->log_event($log);
+
 		return $details->system_id;
 	}
 
@@ -1040,6 +1051,15 @@ class M_system extends MY_Model {
 		$details = (object) $details;
 		$details = (array) $details;
 		$details = (object) $details;
+
+		if ($details->man_ip_address != '') {
+			$temp_ip = $details->man_ip_address . ' ';
+		} else {
+			$temp_ip = '';
+		}
+		$log = "M:system F:update_system System update start for $temp_ip($details->hostname) (system id $details->system_id)";
+		$this->log_event($log);
+		unset($temp_ip);
 
 		# if we're updating and we don't have a real hostname, only the ip address
 		# stored in the hostname field, we shouldn't update it
@@ -1417,8 +1437,14 @@ class M_system extends MY_Model {
 				$query = $this->db->query($update_sql, $update_data);
 			}
 		}
-
-
+		if ($details->man_ip_address != '') {
+			$temp_ip = $details->man_ip_address . ' ';
+		} else {
+			$temp_ip = '';
+		}
+		$log = "M:system F:update_system System update end for $temp_ip($details->hostname) (system id $details->system_id)";
+		$this->log_event($log);
+		unset($temp_ip);
 	}
 
 
