@@ -103,6 +103,122 @@ class main extends MY_Controller
 		header('Cache-Control: max-age=0');
 	}
 
+	public function api_node_config_history()
+	{
+		$system_id = $this->uri->segment(3, 0);
+		if (isset($_POST['system_id'])) {
+			$system_id = $_POST['system_id'];
+		}
+
+		$table = $this->uri->segment(4, 0);
+		if (isset($_POST['table'])) {
+			$table = $_POST['table'];
+		}
+
+		if (isset($system_id) and $system_id != '') {
+			$this->load->model('m_oa_general');
+			$document = array();
+			// $list = array(
+			// 	'system', 'sys_sw_netstat_history_full', 'sys_sw_netstat_history_delta', 
+			// 	'sys_sw_service_history_full', 'sys_sw_service_history_delta', 
+			// 	'sys_sw_software_history_full', 'sys_sw_software_history_delta');
+			$list = array("$table");
+
+			foreach($list as $table) {
+				$result = $this->m_oa_general->get_system_document_api_history($table, $system_id);
+				if (is_array($result) AND count($result) != 0) {
+					$document["$table"] = new stdclass();
+					for ($count = 0; $count<count($result); $count++) {
+						#$result[$count]->system_id = $system_id;
+						foreach ($result[$count] as $key => $value) {
+							// special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
+							if ($key == 'man_ip_address' or 
+								$key == 'destination'    or 
+								$key == 'ip_address_v4'  or
+								$key == 'next_hop') {
+								$result[$count]->$key = ip_address_from_db($result[$count]->$key);
+							}
+							if ($key == 'ip_address_v4' and ($value == '000.000.000.000' or $value == '0.0.0.0')) {
+								$result[$count]->ip_address_v4 = '';
+							}
+						}
+					}
+					$document["$table"] = $result;
+				}
+			}
+		} else {
+			$this->load->model('m_systems');
+			$document = $this->m_systems->api_index('list');
+		}
+		$document['system'] = $this->m_oa_general->get_system_document_api_new("system", $system_id);
+		echo json_encode($document);
+		header('Content-Type: application/json');
+		header('Cache-Control: max-age=0');
+	}
+
+	public function api_node_config_new()
+	{
+		$system_id = $this->uri->segment(3, 0);
+		if (isset($_POST['system_id'])) {
+			$system_id = $_POST['system_id'];
+		}
+
+		if (isset($system_id) and $system_id != '') {
+			$this->load->model('m_oa_general');
+			$document = array();
+			$list = array(
+				'system', 
+				'oa_alert_log', 'oa_audit_log', 
+				'sys_hw_bios', 'sys_sw_group', 'sys_hw_hard_drive', 
+				'sys_hw_network_card_ip', 'sys_hw_memory', 'sys_hw_motherboard', 'sys_hw_network_card', 
+				'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 
+				'sys_hw_sound', 'sys_hw_video', 
+				'sys_man_audits', 
+				'sys_sw_netstat', 
+				'sys_sw_route', 
+				'sys_sw_service', 
+				'sys_sw_share', 
+				'sys_sw_software', 'sys_sw_software_key', 
+				'sys_sw_user', 'sys_sw_variable', 'sys_sw_virtual_machine', 'sys_sw_windows');
+			foreach($list as $table) {
+				$result = $this->m_oa_general->get_system_document_api_new($table, $system_id);
+				if (is_array($result) AND count($result) != 0) {
+					$document["$table"] = new stdclass();
+					for ($count = 0; $count<count($result); $count++) {
+						#$result[$count]->system_id = $system_id;
+						foreach ($result[$count] as $key => $value) {
+							// special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
+							if ($key == 'man_ip_address' or 
+								$key == 'destination'    or 
+								$key == 'ip_address_v4'  or
+								$key == 'next_hop') {
+								$result[$count]->$key = ip_address_from_db($result[$count]->$key);
+							}
+							if ($key == 'ip_address_v4' and ($value == '000.000.000.000' or $value == '0.0.0.0')) {
+								$result[$count]->ip_address_v4 = '';
+							}
+						}
+					}
+					$document["$table"] = $result;
+				}
+			}
+		} else {
+			$this->load->model('m_systems');
+			$document = $this->m_systems->api_index('list');
+		}
+
+		# device specific credentials
+		$this->load->model('m_system');
+		$this->load->library('encrypt');
+		$credentials = $this->m_system->get_access_details($system_id);
+		$creds = $this->encrypt->decode($credentials);
+		$creds = json_decode($creds);
+		$document['credentials'][0] = $creds;
+		echo json_encode($document);
+		header('Content-Type: application/json');
+		header('Cache-Control: max-age=0');
+	}
+
 	public function api_node_config()
 	{
 		$system_id = $this->uri->segment(3, 0);
@@ -138,11 +254,9 @@ class main extends MY_Controller
 					$document["$table"] = $result;
 				}
 			}
-			
 		} else {
 			$this->load->model('m_systems');
 			$document = $this->m_systems->api_index('list');
-
 		}
 		echo json_encode($document);
 		header('Content-Type: application/json');

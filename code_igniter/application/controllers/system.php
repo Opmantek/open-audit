@@ -126,6 +126,9 @@ class System extends CI_Controller {
 			$this->load->view('v_system_add_nmap', $this->data);
 		}
 		else {
+			$log = "C:system F:add_nmap Start processing nmap submitted data";
+			$this->log_event($log);
+
 			$this->load->helper('url');
 			$this->load->helper('xml');
 			$this->load->library('encrypt');
@@ -156,6 +159,7 @@ class System extends CI_Controller {
 				if (((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE))) {
 					echo 'Device IP: ' . $details->man_ip_address . "\n";
 				}
+
 				$count++;
 				$details->last_seen = $timestamp;
 				$details->last_user = '';
@@ -166,6 +170,9 @@ class System extends CI_Controller {
 				$details->hostname = strtolower($details->hostname);
 				$details->domain = '';
 				$details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+
+				$log = "C:system F:add_nmap Processing nmap audit result for " . $details->man_ip_address . " (" . $details->hostname . ")";
+				$this->log_event($log);
 
 				if ( ! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
 					if (strpos($details->hostname, '.') !== FALSE) {
@@ -211,13 +218,17 @@ class System extends CI_Controller {
 
 					if (isset($details->system_id) AND !empty($details->system_id)) {
 						// we have a system_id AND snmp details to update
+						$log = "C:system F:add_nmap SNMP update for " . $details->man_ip_address . " (system id " . $details->system_id . ")";
+						$this->log_event($log);
 						$this->m_system->update_system($details);
-						echo "<p>Update sytem ".$details->system_id."</p>";
+						#echo "<p>Update sytem ".$details->system_id."</p>";
 					}
 					else {
 						// we have a new system
+						$log = "C:system F:add_nmap SNMP insert for " . $details->man_ip_address;
+						$this->log_event($log);
 						$details->system_id = $this->m_system->insert_system($details);
-						echo "<p>Add new sytem ".$details->system_id."</p>";
+						#echo "<p>Add new sytem ".$details->system_id."</p>";
 					}
 
 					# update any network interfaces and ip addresses retrieved by SNMP
@@ -233,23 +244,30 @@ class System extends CI_Controller {
                             }
                         }
                     }
-				}
-					else {
-						// we received a result from nmap only, use this data to update OR insert
-						$details->last_seen_by = 'nmap';
+				} else {
+					// we received a result from nmap only, use this data to update OR insert
+					$details->last_seen_by = 'nmap';
 
-						if (isset($details->system_id) AND $details->system_id !== '') {
-							// we have a system id AND nmap details to update
-							$this->m_system->update_system($details);
-						}
-						else {
-							// we have a new system
-							$details->system_id = $this->m_system->insert_system($details);
-						}
+					if (isset($details->system_id) AND $details->system_id !== '') {
+						// we have a system id AND nmap details to update
+						$log = "C:system F:add_nmap Nmap update for " . $details->man_ip_address . " (system id " . $details->system_id . ")";
+						$this->log_event($log);
+						$this->m_system->update_system($details);
 					}
+					else {
+						// we have a new system
+						$log = "C:system F:add_nmap Nmap insert for " . $details->man_ip_address;
+						$this->log_event($log);
+						$details->system_id = $this->m_system->insert_system($details);
+					}
+				}
 				$this->m_sys_man_audits->insert_audit($details);
 				$this->m_oa_group->update_system_groups($details);
 			}
+
+			$log = "C:system F:add_nmap Finish processing nmap submitted data";
+			$this->log_event($log);
+
 			if (((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE))) {
 				echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
 				echo "<head>\n<title>Open-AudIT</title>\n</head>\n<body>\n<pre>\n";
