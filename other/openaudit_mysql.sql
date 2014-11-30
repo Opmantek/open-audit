@@ -26,7 +26,7 @@
 
 -- @package Open-AudIT
 -- @author Mark Unwin <marku@opmantek.com>
--- @version 1.5.1
+-- @version 1.5.2
 -- @copyright Copyright (c) 2014, Opmantek
 -- @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -1661,7 +1661,7 @@ CREATE TABLE `system` (
   `hostname` varchar(100) NOT NULL default '',
   `domain` varchar(100) NOT NULL default '',
   `fqdn` text NOT NULL default '',
-  `description` varchar(250) NOT NULL default '',
+  `description` text NOT NULL default '',
   `type` varchar(50) NOT NULL default '',
   `icon` varchar(50) NOT NULL default '',
   `os_group` varchar(50) NOT NULL default '',
@@ -1691,7 +1691,7 @@ CREATE TABLE `system` (
   `man_environment` enum('production', 'dev', 'dr', 'eval', 'pre-prod', 'test', 'train', 'uat') NOT NULL default 'production',
   `man_criticality` enum('critical', 'normal', 'low') NOT NULL default 'normal', 
   `man_class` enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','','hypervisor') NOT NULL default '', 
-  `man_description` varchar(250) NOT NULL default '',
+  `man_description` text NOT NULL default '',
   `man_function` varchar(100) NOT NULL default '',
   `man_type` varchar(100) NOT NULL default '',
   `man_ip_address` varchar(30) NOT NULL default '',
@@ -1752,7 +1752,7 @@ CREATE TABLE `system` (
   `nmis_role` varchar(50) NOT NULL default '',
   `nmis_export` enum('true', 'false') NOT NULL default 'false',
   `system_key_type` varchar(4) NOT NULL default '',
-  `sysDescr` varchar(255) NOT NULL default '',
+  `sysDescr` text NOT NULL default '',
   `sysObjectID` varchar(255) NOT NULL default '',
   `sysUpTime` varchar(255) NOT NULL default '',
   `sysContact` varchar(255) NOT NULL default '',
