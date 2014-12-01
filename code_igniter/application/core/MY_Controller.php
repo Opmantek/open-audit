@@ -890,7 +890,8 @@ class MY_Controller extends CI_Controller {
 				$col_link = substr($col_link, 1);
 			}
 			$temp_url = $this->relative_index . $col_link . $col_var_name_sec;
-			$temp_url = str_replace($this->relative_index . 'main/system_display', '/omk/oae/system_summary', $temp_url);
+			#$temp_url = str_replace($this->relative_index . 'main/system_display', '/omk/oae/system_summary', $temp_url);
+			$temp_url = str_replace($this->relative_index . 'main/system_display', '/omk/oae/device_details', $temp_url);
 			$temp_url = str_replace($this->relative_index . 'omk/oae', '/omk/oae', $temp_url);
 			$temp_url = str_replace($this->relative_index . 'report/show_report', '/omk/oae/show_report', $temp_url);
 			$temp_url = str_replace($this->relative_index . 'report/', '/omk/oae/show_report/', $temp_url);
