@@ -443,6 +443,8 @@ else
 	system_domain=$(hostname -d 2>/dev/null)
 fi 
 
+system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/' | head -n 1)
+
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
 #system_description=""
@@ -653,6 +655,7 @@ echo "	<sys>"
 echo "		<timestamp>$(escape_xml "$system_timestamp")</timestamp>"
 echo "		<uuid>$(escape_xml "$system_uuid")</uuid>"
 echo "		<hostname>$(escape_xml "$system_hostname")</hostname>"
+echo "		<man_ip_address>$(escape_xml "$system_ip_address")</man_ip_address>"
 echo "		<domain>$(escape_xml "$system_domain")</domain>"
 echo "		<description></description>"
 echo "		<type>$(escape_xml "$system_type")</type>"
