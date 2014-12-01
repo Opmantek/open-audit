@@ -38,7 +38,7 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
-<link rel="shortcut icon" href="<?php echo base_url();?>favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="<?php echo base_url();?>favicon.png" type="image/x-icon" />
     <title>Open-AudIT</title>
     <style type="text/css">
     #container { width: 950px; margin: 0 auto; padding: 10px 0; border: 1px solid #555; border-radius: 5px;}
