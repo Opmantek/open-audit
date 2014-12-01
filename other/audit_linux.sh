@@ -376,7 +376,11 @@ if [ "$debugging" -gt 0 ]; then
 fi
 
 local_hostname=""
-local_hostname=$(hostname -s 2>/dev/null)
+if [ -f /etc/hostname ]; then
+	local_hostname=$(cat /etc/hostname 2>/dev/null)
+else
+	local_hostname=$(hostname -s 2>/dev/null)
+fi
 
 if [ -z "$local_hostname" ]; then
 	local_hostname=$(hostname 2>/dev/null)
@@ -426,7 +430,11 @@ fi
 
 # Get the hostname & DNS domain
 system_hostname=""
-system_hostname=$(hostname -s 2>/dev/null)
+if [ -f /etc/hostname ]; then
+	system_hostname=$(cat /etc/hostname 2>/dev/null)
+else
+	system_hostname=$(hostname -s 2>/dev/null)
+fi
 
 if [ -z "$system_hostname" ]; then
 	system_hostname=$(hostname 2>/dev/null)
@@ -1510,7 +1518,7 @@ IFS=$(echo -en "\n\b");
 #for i in $(cat /etc/passwd) ; do
 #	echo $i | awk -F: ' { print "\t\t<user>\n" "\t\t\t<user_name>"$1"</user_name>\n" "\t\t\t<user_full_name>"$5"</user_full_name>\n" "\t\t\t<user_sid>"$3"</user_sid>\n" "\t\t</user>" } ' >> "$xml_file"
 grep -v '^ *#' < /etc/passwd | while IFS= read -r line; do
-	echo "$line" | awk -F: ' { print "\t\t<user>\n" "\t\t\t<user_name>"$1"</user_name>\n" "\t\t\t<user_full_name>"$5"</user_full_name>\n" "\t\t\t<user_sid>"$3"</user_sid>\n" "\t\t</user>" } ' >> "$xml_file"
+	echo "$line" | awk -F: ' { print "\t\t<user>\n" "\t\t\t<user_name>"$1"</user_name>\n" "\t\t\t<user_full_name><![CDATA["$5"]]></user_full_name>\n" "\t\t\t<user_sid>"$3"</user_sid>\n" "\t\t</user>" } ' >> "$xml_file"
 done
 echo "	</users>" >> "$xml_file"
 
