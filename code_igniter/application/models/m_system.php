@@ -799,7 +799,7 @@ class M_system extends MY_Model {
 		# this is an insert - we do NOT want a system_id
 		unset($details->system_id);
 
-		$log = "M:system F:insert_system System insert start for $details->man_ip_address ($details->hostname)";
+		$log = "M:system F:insert_system System insert start for " . ip_address_from_db($details->man_ip_address) . " ($details->hostname)";
 		$this->log_event($log);
 
 		# ensure we have something not null for all the below
@@ -1052,8 +1052,8 @@ class M_system extends MY_Model {
 		$details = (array) $details;
 		$details = (object) $details;
 
-		if ($details->man_ip_address != '') {
-			$temp_ip = $details->man_ip_address . ' ';
+		if (isset($details->man_ip_address) and $details->man_ip_address != '') {
+			$temp_ip = $details->man_ip_address;
 		} else {
 			$temp_ip = '';
 		}
@@ -1421,12 +1421,12 @@ class M_system extends MY_Model {
 				$query = $this->db->query($update_sql, $update_data);
 			}
 		}
-		if ($details->man_ip_address != '') {
-			$temp_ip = $details->man_ip_address . ' ';
+		if (isset($details->man_ip_address) and $details->man_ip_address != '') {
+			$temp_ip = $details->man_ip_address;
 		} else {
 			$temp_ip = '';
 		}
-		$log = "M:system F:update_system System update end for $temp_ip($details->hostname) (System ID $details->system_id)";
+		$log = "M:system F:update_system System update end for " . ip_address_from_db($temp_ip) . " ($details->hostname) (System ID $details->system_id)";
 		$this->log_event($log);
 		unset($temp_ip);
 	}
