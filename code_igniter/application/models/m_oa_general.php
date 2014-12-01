@@ -272,28 +272,34 @@ class M_oa_general extends MY_Model {
 		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
+		$first_audit_timestamp = $result[0]->system_audits_time;
+
+		$sql = 'SELECT system_audits_time FROM sys_man_audits WHERE system_id = ? ORDER BY system_audits_time LIMIT 1';
+		$data = array("$system_id");
+		$query = $this->db->query($sql, $data);
+		$result = $query->result();
 		$first_timestamp = $result[0]->system_audits_time;
 
 		if ($table == 'sys_sw_software_history_delta') {
-			$sql = 'SELECT sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.first_timestamp, sys_sw_software.timestamp, IF(sys_sw_software.first_timestamp = ?, "y", "n") as original_install, IF(sys_sw_software.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id) WHERE system.system_id = ?';
+			$sql = 'SELECT sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.first_timestamp, sys_sw_software.timestamp, IF((sys_sw_software.first_timestamp = ? OR sys_sw_software.first_timestamp = ?), "y", "n") as original_install, IF(sys_sw_software.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id) WHERE system.system_id = ?';
 
 		} elseif ($table == 'sys_sw_software_history_full') {
-			$sql = 'SELECT sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.first_timestamp, sys_sw_software.timestamp, IF(sys_sw_software.first_timestamp = ?, "y", "n") as original_install, IF(sys_sw_software.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id) WHERE system.system_id = ? AND (sys_sw_software.first_timestamp = ? OR system.timestamp = sys_sw_software.timestamp)';
+			$sql = 'SELECT sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.first_timestamp, sys_sw_software.timestamp, IF((sys_sw_software.first_timestamp = ? OR sys_sw_software.first_timestamp = ?), "y", "n") as original_install, IF(sys_sw_software.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id) WHERE system.system_id = ? AND (sys_sw_software.first_timestamp = ? OR system.timestamp = sys_sw_software.timestamp)';
 
 		} elseif ($table == 'sys_sw_netstat_history_delta') {
-			$sql = 'SELECT sys_sw_netstat.protocol, sys_sw_netstat.port, sys_sw_netstat.ip_address, sys_sw_netstat.program, sys_sw_netstat.first_timestamp, sys_sw_netstat.timestamp, IF(sys_sw_netstat.first_timestamp = ?, "y", "n") as original_install, IF(sys_sw_netstat.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_netstat LEFT JOIN system ON (sys_sw_netstat.system_id = system.system_id) WHERE system.system_id = ?';
+			$sql = 'SELECT sys_sw_netstat.protocol, sys_sw_netstat.port, sys_sw_netstat.ip_address, sys_sw_netstat.program, sys_sw_netstat.first_timestamp, sys_sw_netstat.timestamp, IF((sys_sw_netstat.first_timestamp = ? OR sys_sw_netstat.first_timestamp = ?), "y", "n") as original_install, IF(sys_sw_netstat.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_netstat LEFT JOIN system ON (sys_sw_netstat.system_id = system.system_id) WHERE system.system_id = ?';
 
 		} elseif ($table == 'sys_sw_netstat_history_full') {
-			$sql = 'SELECT sys_sw_netstat.protocol, sys_sw_netstat.port, sys_sw_netstat.ip_address, sys_sw_netstat.program, sys_sw_netstat.first_timestamp, sys_sw_netstat.timestamp, IF(sys_sw_netstat.first_timestamp = ?, "y", "n") as original_install, IF(sys_sw_netstat.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_netstat LEFT JOIN system ON (sys_sw_netstat.system_id = system.system_id) WHERE system.system_id = ? AND (sys_sw_netstat.first_timestamp = ? OR system.timestamp = sys_sw_netstat.timestamp)';
+			$sql = 'SELECT sys_sw_netstat.protocol, sys_sw_netstat.port, sys_sw_netstat.ip_address, sys_sw_netstat.program, sys_sw_netstat.first_timestamp, sys_sw_netstat.timestamp, IF((sys_sw_netstat.first_timestamp = ? OR sys_sw_netstat.first_timestamp = ?), "y", "n") as original_install, IF(sys_sw_netstat.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_netstat LEFT JOIN system ON (sys_sw_netstat.system_id = system.system_id) WHERE system.system_id = ? AND (sys_sw_netstat.first_timestamp = ? OR system.timestamp = sys_sw_netstat.timestamp)';
 
 		} elseif ($table == 'sys_sw_service_history_delta') {
-			$sql = 'SELECT sys_sw_service.service_id, sys_sw_service.service_name, sys_sw_service.service_state, sys_sw_service.first_timestamp, sys_sw_service.timestamp, IF(sys_sw_service.first_timestamp = ?, "y", "n") as original_install, IF(sys_sw_service.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_service LEFT JOIN system ON (sys_sw_service.system_id = system.system_id) WHERE system.system_id = ?';
+			$sql = 'SELECT sys_sw_service.service_id, sys_sw_service.service_name, sys_sw_service.service_state, sys_sw_service.first_timestamp, sys_sw_service.timestamp, IF((sys_sw_service.first_timestamp = ? OR sys_sw_service.first_timestamp = ?), "y", "n") as original_install, IF(sys_sw_service.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_service LEFT JOIN system ON (sys_sw_service.system_id = system.system_id) WHERE system.system_id = ?';
 
 		} elseif ($table == 'sys_sw_service_history_full') {
-			$sql = 'SELECT sys_sw_service.service_id, sys_sw_service.service_name, sys_sw_service.service_state, sys_sw_service.first_timestamp, sys_sw_service.timestamp, IF(sys_sw_service.first_timestamp = ?, "y", "n") as original_install, IF(sys_sw_service.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_service LEFT JOIN system ON (sys_sw_service.system_id = system.system_id) WHERE system.system_id = ? AND (sys_sw_service.first_timestamp = ? OR system.timestamp = sys_sw_service.timestamp)';
+			$sql = 'SELECT sys_sw_service.service_id, sys_sw_service.service_name, sys_sw_service.service_state, sys_sw_service.first_timestamp, sys_sw_service.timestamp, IF((sys_sw_service.first_timestamp = ? OR sys_sw_service.first_timestamp = ?), "y", "n") as original_install, IF(sys_sw_service.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_service LEFT JOIN system ON (sys_sw_service.system_id = system.system_id) WHERE system.system_id = ? AND (sys_sw_service.first_timestamp = ? OR system.timestamp = sys_sw_service.timestamp)';
 		}
 		if ($sql != '') {
-			$data = array("$first_timestamp", "$system_id", "$first_timestamp");
+			$data = array("$first_timestamp", "$first_audit_timestamp", "$system_id", "$first_timestamp");
 			$query = $this->db->query($sql, $data);
 			$result = $query->result();
 			return ($result);
