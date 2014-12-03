@@ -192,7 +192,10 @@ For Each strArg in objArgs
 				windows_user_work_1 = argvalue
 			
 			case "windows_user_work_2"
-				windows_user_work_2 = argvalue	
+				windows_user_work_2 = argvalue
+			
+			case "win32_product"
+				win32_product = argvalue
 			
 			case "details_to_lower"
 				details_to_lower = argvalue	
@@ -278,6 +281,10 @@ if (help = "y") then
 	wscript.echo ""
 	wscript.echo "  windows_user_work_2"
 	wscript.echo "      company - The Active Directory field to assign the computer to (second preference)."
+	wscript.echo ""
+	wscript.echo "  win32_product"
+	wscript.echo "      *n - Tells the audit script to NOT query the win32_product class. It is recommended by Microsoft not to use this class as is causes Windows to check the integrity of all installed packages (resulting in 1035 events in the log) and can cause performance issues."
+	wscript.echo "       y - Do query win32_product anyway and use the result to add to the list of installed software."
 	wscript.echo ""
 	wscript.echo "  details_to_lower"
 	wscript.echo "      *y - Convert the hostname to lower."
