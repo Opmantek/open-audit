@@ -74,6 +74,11 @@ skip_printer = "n"
 ' audit installed software
 skip_software = "n"
 
+' use the win32_product WMI class (not recommended by Microsoft).
+' https://support.microsoft.com/kb/974524
+' added and set to disabled by default in 1.5.2
+win32_product = "n"
+
 ' retrieve all DNS names
 skip_dns = "n"
 
@@ -3591,79 +3596,80 @@ if (skip_software = "n") then
 	end if
 
 
-
-	if (address_width = "64" and reg_node = "y") then
-		if debugging > "0" then wscript.echo "Software for 64bit" end if 
-		result.WriteText "		<!-- start of 64 #1 -->" & vbcrlf
-		' we enumerate this WMI, that we would not otherwise
-		
-		on error resume next
-			set colItems2 = objWMIService.ExecQuery("Select * from Win32_Product",,32)
-			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Product)" : audit_wmi_fails = audit_wmi_fails & "Win32_Product " : end if
-		on error goto 0
-		
-		if (error_returned <> 0) then 
-			' we had an error - skip the next part
-		else
-			on error resume next
-			for each objItem2 in colItems2
-				error_returned = Err.Number
-				error_message = Err.Message
+	if (win32_product = "y") then
+		if (address_width = "64" and reg_node = "y") then
+			if debugging > "0" then wscript.echo "Software for 64bit" end if 
+			result.WriteText "		<!-- start of 64 #1 -->" & vbcrlf
+			' we enumerate this WMI, that we would not otherwise
 			
-				package_name = objItem2.name
-				package_installed_by = ""
-				package_installed_on = ""
+			on error resume next
+				set colItems2 = objWMIService.ExecQuery("Select * from Win32_Product",,32)
+				error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Product)" : audit_wmi_fails = audit_wmi_fails & "Win32_Product " : end if
+			on error goto 0
+			
+			if (error_returned <> 0) then 
+				' we had an error - skip the next part
+			else
+				on error resume next
+				for each objItem2 in colItems2
+					error_returned = Err.Number
+					error_message = Err.Message
+				
+					package_name = objItem2.name
+					package_installed_by = ""
+					package_installed_on = ""
 
-				if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
-					software_url = objItem2.URLUpdateInfo
-					software_install_source = objItem2.InstallSource
-				else 
-					software_url = ""
-					software_install_source = ""
-				end if
+					if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
+						software_url = objItem2.URLUpdateInfo
+						software_install_source = objItem2.InstallSource
+					else 
+						software_url = ""
+						software_install_source = ""
+					end if
 
-				for each objItem in colItems
-					if objItem.Message <> "" then
-						colonPos = InStr(objItem.Message,":")
-						dashPos = InStr(objItem.Message,"--")
-						message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-						if (not isNull(message_retrieved)) then
-							if (InStr(message_retrieved, package_name) = 1) then
-								package_installed_by = objItem.User
-								if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-								package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-								package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-								exit for
-							else
-								package_installed_by = ""
-								package_installed_on = ""
+					for each objItem in colItems
+						if objItem.Message <> "" then
+							colonPos = InStr(objItem.Message,":")
+							dashPos = InStr(objItem.Message,"--")
+							message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+							if (not isNull(message_retrieved)) then
+								if (InStr(message_retrieved, package_name) = 1) then
+									package_installed_by = objItem.User
+									if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+									package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+									package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+									exit for
+								else
+									package_installed_by = ""
+									package_installed_on = ""
+								end if
 							end if
 						end if
-					end if
+					next
+						
+					result.WriteText "		<package>" & vbcrlf
+					result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
+					result.WriteText "			<software_version>" & escape_xml(objItem2.version) & "</software_version>" & vbcrlf
+					result.WriteText "			<software_location>" & escape_xml(objItem2.InstallLocation) & "</software_location>" & vbcrlf
+					result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+					result.WriteText "			<software_install_date>" & escape_xml(objItem2.InstallDate) & "</software_install_date>" & vbcrlf
+					result.WriteText "			<software_publisher>" & escape_xml(objItem2.Vendor) & "</software_publisher>" & vbcrlf
+					result.WriteText "			<software_install_source>" & escape_xml(software_install_source) & "</software_install_source>" & vbcrlf
+					result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+					result.WriteText "			<software_url>" & escape_xml(software_url) & "</software_url>" & vbcrlf
+					result.WriteText "			<software_email></software_email>" & vbcrlf
+					result.WriteText "			<software_comment></software_comment>" & vbcrlf
+					result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+					result.WriteText "			<software_status></software_status>" & vbcrlf
+					result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
+					result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
+					result.WriteText "		</package>" & vbcrlf
 				next
-					
-				result.WriteText "		<package>" & vbcrlf
-				result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
-				result.WriteText "			<software_version>" & escape_xml(objItem2.version) & "</software_version>" & vbcrlf
-				result.WriteText "			<software_location>" & escape_xml(objItem2.InstallLocation) & "</software_location>" & vbcrlf
-				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-				result.WriteText "			<software_install_date>" & escape_xml(objItem2.InstallDate) & "</software_install_date>" & vbcrlf
-				result.WriteText "			<software_publisher>" & escape_xml(objItem2.Vendor) & "</software_publisher>" & vbcrlf
-				result.WriteText "			<software_install_source>" & escape_xml(software_install_source) & "</software_install_source>" & vbcrlf
-				result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-				result.WriteText "			<software_url>" & escape_xml(software_url) & "</software_url>" & vbcrlf
-				result.WriteText "			<software_email></software_email>" & vbcrlf
-				result.WriteText "			<software_comment></software_comment>" & vbcrlf
-				result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-				result.WriteText "			<software_status></software_status>" & vbcrlf
-				result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
-				result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
-				result.WriteText "		</package>" & vbcrlf
-			next
-			on error goto 0
+				on error goto 0
+			end if
 		end if
+		result.WriteText "		<!-- end of 64 #1 -->" & vbcrlf
 	end if
-	result.WriteText "		<!-- end of 64 #1 -->" & vbcrlf
 
 
 	strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
