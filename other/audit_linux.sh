@@ -1172,7 +1172,7 @@ if [ -n "$net_cards" ]; then
 
 		# if a speed was detected, it needs to be multiplied to show up in the web
 		if [ $net_card_speed ]; then
-			net_card_speed=$((net_card_speed * 10000))
+			net_card_speed=$((net_card_speed * 1000000))
 		fi
 
 		temp=$(cat /sys/class/net/"$net_card_id"/operstate)
