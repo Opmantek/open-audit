@@ -594,7 +594,7 @@ class M_system extends MY_Model {
 		$i->column_align = "left";
 		$i->column_secondary = "system_id";
 		$i->column_ternary = "";
-		$i->column_link = $this->data['config']->oae_url . "/system_summary/";
+		$i->column_link = $this->data['config']->oae_url . "/device_details/";
 		$result[2] = $i;
 		$i = new stdclass();
 		$i->column_order = '1';
