@@ -241,6 +241,7 @@ class M_system extends MY_Model {
 				$details->man_ip_address > '' and 
 				$details->man_ip_address != '0.0.0.0' and 
 				$details->man_ip_address != '000.000.000.000' and 
+				filter_var($details->man_ip_address, FILTER_VALIDATE_IP) and 
 				$details->system_id == '') {
 
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";

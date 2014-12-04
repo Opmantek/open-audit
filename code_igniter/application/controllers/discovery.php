@@ -715,6 +715,7 @@ class discovery extends CI_Controller
 					$details->hostname = '';
 					if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
 						$details->hostname = $details->man_ip_address;
+						$details->man_ip_address = gethostbyname($details->man_ip_address);
 					} else {
 						$details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
 					}
