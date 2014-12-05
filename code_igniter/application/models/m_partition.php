@@ -290,6 +290,8 @@ class M_partition extends MY_Model {
 				sys_hw_partition.partition_mount_point > '' AND 
 				sys_hw_partition.partition_mount_point <> 'Y:' AND 
 				sys_hw_partition.partition_mount_point not like ? 
+			GROUP BY
+				system.hostname, sys_hw_partition.partition_mount_point 
 			ORDER BY 
 				system.hostname, 
 				sys_hw_partition.partition_mount_point ";
