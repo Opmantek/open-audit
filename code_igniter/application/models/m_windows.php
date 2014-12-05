@@ -64,6 +64,7 @@ class M_windows extends MY_Model {
 						windows_user_name, 
 						windows_client_site_name, 
 						windows_domain_short,
+						windows_workgroup,
 						windows_domain_controller_address, 
 						windows_domain_controller_name, 
 						windows_domain_role, 
@@ -81,13 +82,14 @@ class M_windows extends MY_Model {
 						windows_install_directory, 
 						windows_active_directory_ou,
 						timestamp,
-						first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+						first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->windows_build_number", 
 					"$input->windows_user_name", 
 					"$input->windows_client_site_name", 
 					"$input->windows_domain_short", 
+					"$input->windows_workgroup", 
 					"$input->windows_domain_controller_address", 
 					"$input->windows_domain_controller_name", 
 					"$input->windows_domain_role", 
@@ -131,6 +133,7 @@ class M_windows extends MY_Model {
 							windows_user_name = ?, 
 							windows_client_site_name = ?, 
 							windows_domain_short = ?, 
+							windows_workgroup = ?, 
 							windows_domain_controller_address = ?, 
 							windows_domain_controller_name = ?, 
 							windows_domain_role = ?, 
@@ -154,6 +157,7 @@ class M_windows extends MY_Model {
 						"$input->windows_user_name", 
 						"$input->windows_client_site_name", 
 						"$input->windows_domain_short", 
+						"$input->windows_workgroup", 
 						"$input->windows_domain_controller_address", 
 						"$input->windows_domain_controller_name", 
 						"$input->windows_domain_role", 
@@ -180,6 +184,7 @@ class M_windows extends MY_Model {
 							windows_user_name, 
 							windows_client_site_name, 
 							windows_domain_short,
+							windows_workgroup,
 							windows_domain_controller_address, 
 							windows_domain_controller_name, 
 							windows_domain_role, 
@@ -197,13 +202,14 @@ class M_windows extends MY_Model {
 							windows_install_directory, 
 							windows_active_directory_ou,
 							timestamp,
-							first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+							first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 				$sql = $this->clean_sql($sql);
 				$data = array("$details->system_id", 
 						"$input->windows_build_number", 
 						"$input->windows_user_name", 
 						"$input->windows_client_site_name", 
 						"$input->windows_domain_short", 
+						"$input->windows_workgroup", 
 						"$input->windows_domain_controller_address", 
 						"$input->windows_domain_controller_name", 
 						"$input->windows_domain_role", 

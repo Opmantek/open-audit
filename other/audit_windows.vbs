@@ -955,8 +955,16 @@ for each objItem in colItems
 	system_model = objItem.Model
 	windows_domain_role = objItem.DomainRole
 	' below only checks when OS is XP or later (not 2000 or NT)
-	windows_part_of_domain = FALSE
-	if (windows_build_number >= 2600) then windows_part_of_domain = objItem.PartOfDomain end if
+	windows_part_of_domain = False
+	if (windows_build_number >= 2600) then 
+		windows_part_of_domain = objItem.PartOfDomain
+	end if
+
+	' as at 1.5.3 do not store the workgroup in the domain field
+	if (windows_part_of_domain <> True) then
+		windows_workgroup = system_domain
+		system_domain = ""
+	end if
 next
 
 system_hostname = ""
@@ -1098,7 +1106,7 @@ if windows_domain_role = "4" then windows_domain_role = "Backup Domain Controlle
 if windows_domain_role = "5" then windows_domain_role = "Primary Domain Controller" end if
 
 error = 0
-	if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
+if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
 	' Get domain NetBIOS name from domain DNS name
 	domain_dn = "DC=" & Replace(system_domain,".",",DC=")
 	set oTranslate = CreateObject("NameTranslate")
@@ -1138,44 +1146,43 @@ error = 0
 			objrecordset.movenext
 		loop
 		on error goto 0
-			if error = 1 then
-			' we failed when using GC:// - try using LDAP://
-				error = 0
-				objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
-				set objrecordset = objcommand.execute
-				on error resume next
-					objrecordset.movefirst
-					if err.number <> 0 then error = 1 end if
-					do until objrecordset.eof
-						windows_active_directory_ou = objrecordset.fields("distinguishedName").value
-						objrecordset.movenext
-					loop
-				on error goto 0
-			end if
-
-			if error = 1 then
-				windows_active_directory_ou = full_ad_domain
-			else
-				stemp = split(replace(windows_active_directory_ou, "\,","X!X"), ",")
-				stemp(0) = ""
-				ttemp = join(stemp, ",")
-				ttemp = mid(ttemp, 2)
-				windows_active_directory_ou = replace(ttemp, "X!X",",")
-				erase stemp
-				ttemp = NULL
-			end if
+		if error = 1 then
+		' we failed when using GC:// - try using LDAP://
+			error = 0
+			objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
+			set objrecordset = objcommand.execute
+			on error resume next
+				objrecordset.movefirst
+				if err.number <> 0 then error = 1 end if
+				do until objrecordset.eof
+					windows_active_directory_ou = objrecordset.fields("distinguishedName").value
+					objrecordset.movenext
+				loop
+			on error goto 0
 		end if
-	else
-		domain_nb = "workgroup"
-		windows_client_site_name = ""
-		windows_domain_controller_address = ""
-		windows_domain_controller_name = ""
-		windows_active_directory_ou = ""
+
+		if error = 1 then
+			windows_active_directory_ou = full_ad_domain
+		else
+			stemp = split(replace(windows_active_directory_ou, "\,","X!X"), ",")
+			stemp(0) = ""
+			ttemp = join(stemp, ",")
+			ttemp = mid(ttemp, 2)
+			windows_active_directory_ou = replace(ttemp, "X!X",",")
+			erase stemp
+			ttemp = NULL
+		end if
 	end if
+else
+	domain_nb = ""
+	windows_client_site_name = ""
+	windows_domain_controller_address = ""
+	windows_domain_controller_name = ""
+	windows_active_directory_ou = ""
+end if
 if details_to_lower = "y" then windows_active_directory_ou = lcase(windows_active_directory_ou) end if
 
 if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (windows_user_work_1 > "")) then
-
 	if (instr(windows_user_name, "@")) then
 		split_user = split(windows_user_name, "@")
 		sam_account_name = split_user(0)
@@ -1184,7 +1191,6 @@ if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (wind
 		sam_account_name = windows_user_name
 		windows_user_domain = ""
 	end if
-
 	struserDN = ""
 	if (windows_user_domain > "") then
 		on error resume next
@@ -1209,7 +1215,6 @@ if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (wind
 	else
 		struserDN = ""
 	end if
-		
 	if ((struserDN > "") and (struserDN <> " ")) then
 		windows_user_company = windows_user_get_attribute (struserDN, windows_user_work_1, sam_account_name)
 		if (isnull(windows_user_company) or windows_user_company = "") then
@@ -1306,6 +1311,7 @@ result.WriteText "		<windows_build_number>" & escape_xml(windows_build_number) &
 result.WriteText "		<windows_user_name>" & escape_xml(windows_user_name) & "</windows_user_name>" & vbcrlf
 result.WriteText "		<windows_client_site_name>" & escape_xml(windows_client_site_name) & "</windows_client_site_name>" & vbcrlf
 result.WriteText "		<windows_domain_short>" & escape_xml(domain_nb) & "</windows_domain_short>" & vbcrlf
+result.WriteText "		<windows_workgroup>" & escape_xml(windows_workgroup) & "</windows_workgroup>" & vbcrlf
 result.WriteText "		<windows_domain_controller_address>" & escape_xml(windows_domain_controller_address) & "</windows_domain_controller_address>" & vbcrlf
 result.WriteText "		<windows_domain_controller_name>" & escape_xml(windows_domain_controller_name) & "</windows_domain_controller_name>" & vbcrlf
 result.WriteText "		<windows_domain_role>" & escape_xml(windows_domain_role) & "</windows_domain_role>" & vbcrlf

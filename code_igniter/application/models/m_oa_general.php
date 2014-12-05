@@ -252,7 +252,7 @@ class M_oa_general extends MY_Model {
 			$sql = 'SELECT sys_sw_virtual_machine.* FROM sys_sw_virtual_machine LEFT JOIN system ON system.system_id = sys_sw_virtual_machine.system_id AND system.timestamp = sys_sw_virtual_machine.timestamp WHERE system.system_id = ?';
 
 		} elseif ($table == 'sys_sw_windows') {
-			$sql = 'SELECT windows_build_number, windows_user_name, windows_client_site_name, windows_domain_short, windows_domain_controller_address, windows_domain_controller_name, windows_domain_role, windows_part_of_domain, windows_time_caption, windows_time_daylight, windows_boot_device, windows_country_code, windows_organisation, windows_language, windows_registered_user, windows_service_pack, windows_version, windows_install_directory, windows_active_directory_ou FROM sys_sw_windows LEFT JOIN system ON system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp WHERE system.system_id = ?';
+			$sql = 'SELECT windows_build_number, windows_user_name, windows_client_site_name, windows_domain_short, windows_domain_controller_address, windows_workgroup, windows_domain_controller_name, windows_domain_role, windows_part_of_domain, windows_time_caption, windows_time_daylight, windows_boot_device, windows_country_code, windows_organisation, windows_language, windows_registered_user, windows_service_pack, windows_version, windows_install_directory, windows_active_directory_ou FROM sys_sw_windows LEFT JOIN system ON system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp WHERE system.system_id = ?';
 		
 		}
 		if ($sql != '') {

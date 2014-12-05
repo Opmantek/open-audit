@@ -57,6 +57,7 @@
 					<p><label for="os_install_date"><?php echo __('OS Install Date')?>: </label><span id="os_install_date"><?php echo print_something($system[0]->pc_date_os_installation)?></span></p>
 				</div>
 				<div style="float:left; width:40%;">
+					<p><label for="windows_workgroup"><?php echo __('Workgroup')?>: </label><span id="windows_workgroup"><?php echo print_something($key->windows_workgroup)?></span></p>
 					<p><label for="windows_domain_short"><?php echo __('Domain')?>: </label><span id="windows_domain_short"><?php echo print_something($key->windows_domain_short)?></span></p>
 					<p><label for="windows_domain_controller_address"><?php echo __('DC Address')?>: </label><span id="windows_domain_controller_address"><?php echo print_something($key->windows_domain_controller_address)?></span></p>
 					<p><label for="windows_domain_controller_name"><?php echo __('DC Name')?>: </label><span id="windows_domain_controller_name"><?php echo print_something($key->windows_domain_controller_name)?></span></p>
