@@ -577,27 +577,29 @@ class report extends MY_Controller
 
 
 	/**
-	 * Index
+	 * This will returns a JSON document containing a unix timestamp and a count of items per row for each date inclusive.
+	 * Can be requested via GET or POST
+	 * GET example - index.php/report/json_dates/REPORT-NAME/START-DATE/END-DATE
+	 * POST example should use the attributes as defined below
 	 *
 	 * @access	public
-	 * @category  Function
-	 * @package   Open-AudIT
-	 * @author	Mark Unwin <marku@opmantek.com>
-	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-	 * @link	  http://www.open-audit.org
-	 * @return	JSON
+	 * @category 	Function
+	 * @package		Open-AudIT
+	 * @author		Mark Unwin <marku@opmantek.com>
+	 * @license		http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link		http://www.open-audit.org
+	 * @return		JSON
+	 * @param 		string report      The name of one of the available reports below (missing_devices, new_software, new_devices) (default = new_devices)
+	 * @param		date   start_date  The date you wish to report FROM (default = 30 days ago)
+	 * @param		date   end_date    The date you wish to report TO (default = today)
 	 */
 	public function json_dates() {
-		
-		// should be called like:
-		// index.php/report/json_dates/REPORT-NAME/START-DATE/END-DATE
-		// Returns a JSON document containing a unix timestamp and a count of items per row.
 
 		$debug = 'n';
 
 		$start_date = date('Y-m-d', strtotime('-30 days'));
 		$end_date = date('Y-m-d');
-		$report = 'new devices';
+		$report = 'new_devices';
 
 		// make a default start date of 30 days ago if none provided
 		// check if GET start date passed
