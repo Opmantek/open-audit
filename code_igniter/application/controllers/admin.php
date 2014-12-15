@@ -2928,7 +2928,7 @@ class Admin extends MY_Controller {
 		}
 
 		if (($db_internal_version < '20141225') AND ($this->db->platform() == 'mysql')) {
-			# upgrade for 1.5.2
+			# upgrade for 1.5.3
 
 			$sql = "ALTER TABLE sys_sw_windows ADD windows_workgroup varchar(255) NOT NULL default '' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
@@ -2942,6 +2942,7 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 		}
+
 
 		$config = $this->m_oa_config->get_config();
 		foreach ($config as $returned_result) {
