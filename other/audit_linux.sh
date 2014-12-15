@@ -1671,6 +1671,8 @@ fi
 
 if [ "$submit_online" = "y" ]; then
 	sed -i -e 's/+/%2B/g' "$xml_file"
+	sed -i -e 's/"/%22/g' "$xml_file"
+	sed -i -e 's/&/%26/g' "$xml_file"
 	if [ "$debugging" -gt 1 ]; then
 		echo "Submitting results to server"
 		echo "URL: $url"
@@ -1680,6 +1682,9 @@ fi
 
 sed -i -e 's/form_systemXML=//g' "$xml_file"
 sed -i -e 's/%2B/+/g' "$xml_file"
+sed -i -e 's/%22/"/g' "$xml_file"
+sed -i -e 's/%26/&/g' "$xml_file"
+
 if [ "$create_file" != "y" ]; then
 	rm -f "$PWD"/"$xml_file"
 fi
