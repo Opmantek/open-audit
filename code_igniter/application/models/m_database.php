@@ -53,36 +53,45 @@ class M_database extends MY_Model {
 		// find the version string, based on the version integer.
 		$version_string = "unknown";
 
+		// SQL 2014
+		if (mb_strpos($input->db_version, "12.00.2000") === 0 or mb_strpos($input->db_version, "12.0.2000") === 0) { $version_string = "SQL Server 2014 RTM"; }
+		if (mb_strpos($input->db_version, "12.00.1524") === 0 or mb_strpos($input->db_version, "12.0.1524") === 0) { $version_string = "SQL Server 2014 Community Technology Preview 2 (CTP2)"; }
+		if (mb_strpos($input->db_version, "11.00.9120") === 0 or mb_strpos($input->db_version, "11.0.9120") === 0) { $version_string = "SQL Server 2014 Community Technology Preview 1 (CTP1)"; }
 
-		if (mb_strpos($input->db_version, "12.00.2000") === 0) { $version_string = "SQL Server 2014 RTM"; }
-		if (mb_strpos($input->db_version, "12.00.1524") === 0) { $version_string = "SQL Server 2014 Community Technology Preview 2 (CTP2)"; }
-		if (mb_strpos($input->db_version, "11.00.9120") === 0) { $version_string = "SQL Server 2014 Community Technology Preview 1 (CTP1)"; }
+		// SQL 2012
+		if (mb_strpos($input->db_version, "11.00.5058") === 0 or mb_strpos($input->db_version, "11.0.5058") === 0 or mb_strpos($input->db_version, "11.2.5058.0") === 0) { $version_string = "SQL Server 2012 Service Pack 2"; }
+		if (mb_strpos($input->db_version, "11.00.3000") === 0 or mb_strpos($input->db_version, "11.0.3000") === 0) { $version_string = "SQL Server 2012 Service Pack 1"; }
+		if (mb_strpos($input->db_version, "11.00.2100") === 0 or mb_strpos($input->db_version, "11.0.2100") === 0) { $version_string = "SQL Server 2012 RTM"; }
 
-		if (mb_strpos($input->db_version, "11.00.3000") === 0) { $version_string = "SQL Server 2012 Service Pack 1"; }
-		if (mb_strpos($input->db_version, "11.00.2100.60") === 0) { $version_string = "SQL Server 2012 RTM"; }
+		// SQL 2008 r2
+		if (mb_strpos($input->db_version, "10.50.6000") === 0 or mb_strpos($input->db_version, "10.53.6000") === 0) { $version_string = "SQL Server 2008 R2 Service Pack 3"; }
+		if (mb_strpos($input->db_version, "10.50.4000") === 0 or mb_strpos($input->db_version, "10.52.4000") === 0) { $version_string = "SQL Server 2008 R2 Service Pack 2"; }
+		if (mb_strpos($input->db_version, "10.50.2500") === 0 or mb_strpos($input->db_version, "10.51.2500") === 0) { $version_string = "SQL Server 2008 R2 Service Pack 1"; }
+		if (mb_strpos($input->db_version, "10.50.1600") === 0) { $version_string = "SQL Server 2008 R2 RTM"; }
 
-		if (mb_strpos($input->db_version, "10.50.4000") === 0) { $version_string = "SQL Server 2008 R2 Service Pack 2"; }
-		if (mb_strpos($input->db_version, "10.50.2500.0") === 0) { $version_string = "SQL Server 2008 R2 Service Pack 1"; }
-		if (mb_strpos($input->db_version, "10.50.1600.1") === 0) { $version_string = "SQL Server 2008 R2 RTM"; }
+		// SQL 2008
+		if (mb_strpos($input->db_version, "10.00.6000") === 0 or mb_strpos($input->db_version, "10.0.6000") === 0 or mb_strpos($input->db_version, "10.4.6000") === 0) { $version_string = "SQL Server 2008 Service Pack 4"; }
+		if (mb_strpos($input->db_version, "10.00.5500") === 0 or mb_strpos($input->db_version, "10.0.5500") === 0 or mb_strpos($input->db_version, "10.3.5500") === 0) { $version_string = "SQL Server 2008 Service Pack 3"; }
+		if (mb_strpos($input->db_version, "10.00.4000") === 0 or mb_strpos($input->db_version, "10.0.4000") === 0 or mb_strpos($input->db_version, "10.2.4000") === 0) { $version_string = "SQL Server 2008 Service Pack 2"; }
+		if (mb_strpos($input->db_version, "10.00.2531") === 0 or mb_strpos($input->db_version, "10.0.2531") === 0 or mb_strpos($input->db_version, "10.1.2531") === 0) { $version_string = "SQL Server 2008 Service Pack 1"; }
+		if (mb_strpos($input->db_version, "10.00.1600") === 0 or mb_strpos($input->db_version, "10.0.1600") === 0) { $version_string = "SQL Server 2008 RTM"; }
 
-		if ((mb_strpos($input->db_version, "10.00.5500.00") === 0) or (mb_strpos($input->db_version, "10.0.5500.0") === 0)){ $version_string = "SQL Server 2008 Service Pack 3"; }
-		if ((mb_strpos($input->db_version, "10.00.4000.00") === 0) or (mb_strpos($input->db_version, "10.0.4000.0") === 0)){ $version_string = "SQL Server 2008 Service Pack 2"; }
-		if ((mb_strpos($input->db_version, "10.00.2531.00") === 0) or (mb_strpos($input->db_version, "10.0.2531.0") === 0)){ $version_string = "SQL Server 2008 Service Pack 1"; }
-		if ((mb_strpos($input->db_version, "10.00.1600.22") === 0) or (mb_strpos($input->db_version, "10.0.1600.22") === 0)) { $version_string = "SQL Server 2008 RTM"; }
+		// SQL 2005
+		if (mb_strpos($input->db_version, "9.00.5000") === 0 or mb_strpos($input->db_version, "9.0.5000") === 0) { $version_string = "SQL Server 2005 Service Pack 4"; }
+		if (mb_strpos($input->db_version, "9.00.4035") === 0 or mb_strpos($input->db_version, "9.0.4035") === 0) { $version_string = "SQL Server 2005 Service Pack 3"; }
+		if (mb_strpos($input->db_version, "9.00.3042") === 0 or mb_strpos($input->db_version, "9.0.3042") === 0) { $version_string = "SQL Server 2005 Service Pack 2"; }
+		if (mb_strpos($input->db_version, "9.00.2047") === 0 or mb_strpos($input->db_version, "9.0.2047") === 0) { $version_string = "SQL Server 2005 Service Pack 1"; }
+		if (mb_strpos($input->db_version, "9.00.1399") === 0 or mb_strpos($input->db_version, "9.0.1399") === 0) { $version_string = "SQL Server 2005 RTM"; }
 
-		if ((mb_strpos($input->db_version, "9.00.5000") === 0) or (mb_strpos($input->db_version, "9.0.5000.0") === 0)) { $version_string = "SQL Server 2005 Service Pack 4"; }
-		if (mb_strpos($input->db_version, "9.00.4035") === 0) { $version_string = "SQL Server 2005 Service Pack 3"; }
-		if (mb_strpos($input->db_version, "9.00.3042") === 0) { $version_string = "SQL Server 2005 Service Pack 2"; }
-		if (mb_strpos($input->db_version, "9.00.2047") === 0) { $version_string = "SQL Server 2005 Service Pack 1"; }
-		if (mb_strpos($input->db_version, "9.00.1399") === 0) { $version_string = "SQL Server 2005 RTM"; }
-
+		// SQL 2000
 		if (mb_strpos($input->db_version, "8.00.2039") === 0) { $version_string = "SQL Server 2000 Service Pack 4"; }
-		if (mb_strpos($input->db_version, "8.00.761") === 0)  { $version_string = "SQL Server 2000 ServicePack 3a"; }
+		if (mb_strpos($input->db_version, "8.00.761") === 0)  { $version_string = "SQL Server 2000 Service Pack 3a"; }
 		if (mb_strpos($input->db_version, "8.00.760") === 0)  { $version_string = "SQL Server 2000 Service Pack 3"; }
 		if (mb_strpos($input->db_version, "8.00.534") === 0)  { $version_string = "SQL Server 2000 Service Pack 2"; }
 		if (mb_strpos($input->db_version, "8.00.384") === 0)  { $version_string = "SQL Server 2000 Service Pack 1"; }
 		if (mb_strpos($input->db_version, "8.00.194") === 0)  { $version_string = "SQL Server 2000 RTM"; }
 
+		// SQL 7
 		if (mb_strpos($input->db_version, "7.00.10") === 0)   { $version_string = "SQL Server 7 Service Pack 4"; }
 		if (mb_strpos($input->db_version, "7.00.961") === 0)  { $version_string = "SQL Server 7 Service Pack 3"; }
 		if (mb_strpos($input->db_version, "7.00.842") === 0)  { $version_string = "SQL Server 7 Service Pack 2"; }
