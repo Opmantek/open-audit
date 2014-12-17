@@ -437,6 +437,7 @@
 					<?php echo display_custom_field('view_hardware_hard_drive',  $additional_fields_data, $edit); ?>
 
 					<!-- mounted volumes - not associated with any particular disk -->
+					<?php $volumes = 0; ?>
 					<?php foreach($partition as $key_partition): ?>
 						<?php if ($key_partition->hard_drive_index == ''){ $volumes = 1; } else { $volumes = 0; } ?>
 					<?php endforeach; ?>
