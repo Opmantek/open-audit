@@ -38,6 +38,11 @@ class report extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		// log the attempt
+		$log_details = new stdClass();
+		$log_details->severity = 6;
+		stdlog($log_details);
+		unset($log_details);
 	}
 
 	public function index()
@@ -142,11 +147,12 @@ class report extends MY_Controller
 				$i++;
 			}
 		}
+		unset($i);
 
 		if (isset($this->data['filter']) and $this->data['filter'] != '') {
 			$temp_array = explode("|||", $this->data['filter']);
+			$i=0;
 			foreach ($temp_array as $value) {
-				#$filter_array = explode("___", $this->data['filter']);
 				$filter_array = explode("___", $value);
 				$filter[$i]['variable'] = $filter_array[1];
 				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
@@ -157,6 +163,7 @@ class report extends MY_Controller
 				} elseif ($filter_array[0] == 'like') {
 					$filter[$i]['condition'] = 'LIKE';
 				}
+				$i++;
 			}
 		}
 
@@ -248,6 +255,7 @@ class report extends MY_Controller
 				}
 				if ($remove == true) {
 					# do not push this object to the new array
+
 				} else {
 					# we want to keep this element - no matches above.
 					# push this onto the new query array
@@ -508,6 +516,7 @@ class report extends MY_Controller
 		// 	}
 		// }
 
+		$i=0;
 		if (isset($_POST['filter']) and $_POST['filter'] != '') {
 			$temp_array = explode("|||", $_POST['filter']);
 			foreach ($temp_array as $value) {
@@ -522,7 +531,9 @@ class report extends MY_Controller
 					$filter[$i]['condition'] = 'LIKE';
 				}
 			}
+			$i++;
 		}
+		unset($i);
 
 		$remove = false;
 		$new_query = array();
