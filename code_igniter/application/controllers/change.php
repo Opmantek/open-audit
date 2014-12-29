@@ -38,6 +38,11 @@ class change extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+        // log the attempt
+        $log_details = new stdClass();
+        $log_details->severity = 6;
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()

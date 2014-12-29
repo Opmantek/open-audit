@@ -46,7 +46,10 @@ class Admin_system extends MY_Controller
                 redirect('login/index');
             }
         }
-        $this->log_event();
+
+        $log_details = new stdClass();
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()
@@ -683,8 +686,6 @@ class Admin_system extends MY_Controller
                         $details->system_id = $this->m_system->find_system($details);
                     }
 
-
-                    error_log($details->system_id);
                     if ($error != '') {
                         $error = '';
                     } else {

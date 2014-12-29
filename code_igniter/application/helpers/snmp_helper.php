@@ -47,19 +47,26 @@ if (!function_exists('get_snmp')) {
 		snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 		snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
 
-		if (!isset($details->show_output)) {
-			$details->show_output = FALSE;
+		if (isset($log_details)) {
+			$orig_log_details = $log_details;
+			unset($log_details);
 		}
 
+		$log_details = new stdClass();
+		$log_details->file = 'system';
+		$log_details->severity = 7;
+
+		$log_details->display = 'n';
+		if (isset($details->show_output)) {
+			$log_details->display = 'y';
+		}
+
+		$log_machine = '';
 		if (isset($details->system_id) and $details->system_id > '') {
-			$extra =" (System ID " . $details->system_id . ")";
+			$log_machine = $details->man_ip_address . ' (System ID ' . $details->system_id . ')';
 		} else {
-			$extra = '';
+			$log_machine = $details->man_ip_address;
 		}
-		if ($details->show_output == TRUE) {
-			echo "SNMP  - scanning attempt on $details->man_ip_address" . $extra . ".<br />"; 
-		}
-		unset($extra);
 
 		if (!isset($CI->data['config']->default_snmp_community)) {
 			$CI->load->model("m_oa_config");
@@ -70,29 +77,6 @@ if (!function_exists('get_snmp')) {
 		if ($default_snmp_community == '') {
 			$default_snmp_community = 'public';
 		}
-		
-		# setup the log file
-		if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
-			$file = "/usr/local/open-audit/other/open-audit.log";
-		} else {
-			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
-		}
-
-		// if (!isset($details->system_id) or $details->system_id == '') {
-		// 	$details->snmp_community = $default_snmp_community;
-		// 	$details->snmp_version = '2c';
-		// 	$details->snmp_port = '161';
-		// } else {
-		// 	$encrypted_access_details = $CI->m_system->get_access_details($details->system_id);
-		// 	if ($encrypted_access_details > '') { 
-		// 		$decoded_access_details = $CI->encrypt->decode($encrypted_access_details);
-		// 		$decoded_access_details = json_decode($decoded_access_details);
-		// 		$details->snmp_community = @$decoded_access_details->snmp_community;
-		// 		$details->snmp_version = @$decoded_access_details->snmp_version;
-		// 		$details->snmp_port = @$decoded_access_details->snmp_port;
-		// 		$details->man_ip_address = @$decoded_access_details->ip_address;
-		// 	}
-		// }
 
 		# device specific credentials
 		if (isset($details->system_id) and $details->system_id != '') {
@@ -132,23 +116,19 @@ if (!function_exists('get_snmp')) {
 			$supplied->windows_domain = '';
 		}
 
-		// if (!isset($details->snmp_community) or $details->snmp_community == '') { 
-		// 	$details->snmp_community = $default_snmp_community;
-		// 	if ($details->show_output == TRUE) { echo "<br />Using <span style='color: blue;'>default</span> SNMP community. You can set the device credentials on the System Summary page. On the left menu, click 'Summary' then 'Credentials'.<br /><br />"; }
-		// } else {
-		// 	if ($details->show_output == TRUE) { echo "Using device specific SNMP credentials.<br />"; }
-		// }
 		if (!isset($details->snmp_version) or $details->snmp_version == '') { $details->snmp_version = '2c'; }
 		if (!isset($details->snmp_port) or $details->snmp_port == '') { $details->snmp_port = '161'; }
 		if (!isset($details->type)) { $details->type = ''; }
-
 
 		# we need at least an ip address or hostname
 		if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or 
 			$details->man_ip_address == '000.000.000.000' or $details->man_ip_address == '0.0.0.0') and 
 			(!isset($details->hostname) or $details->hostname == '')) {
 			unset($details->man_ip_address);
-			if ($details->show_output == TRUE) { echo "SNMP  - No ip address or hostname provided - exiting.<br />"; }
+			$log_details->message = 'SNMP scan received no ip address or hostname (aborting attempted scan)';
+			$log_details->severity = '5';
+			stdlog($log_details);
+			unset($log_details);
 			return;
 		}
 
@@ -187,7 +167,10 @@ if (!function_exists('get_snmp')) {
 		$retries = '2';
 
 		if (!extension_loaded('snmp')) { 
-			if ($details->show_output == TRUE) { echo "SNMP  - PHP SNMP extension not loaded - exiting.<br />"; }
+			$log_details->message = 'SNMP extension for PHP is not present, aborting attempted scan on ' . $log_machine;
+			$log_details->severity = '5';
+			stdlog($log_details);
+			unset($log_details);
 			return(array('details' => $details)); 
 		}
 
@@ -207,7 +190,8 @@ if (!function_exists('get_snmp')) {
 			if ($test_v2 = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
-				if ($details->show_output == TRUE) { echo "SNMP  - v2 connected to $details->man_ip_address using supplied credentials.<br />"; }
+				$log_details->message = 'SNMPv2 connected to ' . $log_machine . ' using supplied credentials';
+				stdlog($log_details);
 			} else {
 				$details->snmp_community = '';
 			}
@@ -219,7 +203,8 @@ if (!function_exists('get_snmp')) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				$details->snmp_community = $specific->snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP  - v2 connected to $details->man_ip_address using device specific credentials.<br />"; }
+				$log_details->message = 'SNMPv2 connected to ' . $log_machine . ' using device specific credentials';
+				stdlog($log_details);
 			}
 		}
 		
@@ -229,7 +214,8 @@ if (!function_exists('get_snmp')) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				$details->snmp_community = $supplied->snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP  - v2 connected to $details->man_ip_address using supplied credentials.<br />"; }
+				$log_details->message = 'SNMPv2 connected to ' . $log_machine . ' using supplied credentials';
+				stdlog($log_details);
 			}
 		}
 
@@ -239,7 +225,8 @@ if (!function_exists('get_snmp')) {
 				# v2 is contactable
 				$details->snmp_version = '2c';
 				$details->snmp_community = $default->default_snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP  - v2 connected to $details->man_ip_address using default credentials.<br />"; }
+				$log_details->message = 'SNMPv2 connected to ' . $log_machine . ' using Open-AudIT default credentials';
+				stdlog($log_details);
 			}
 		}
 
@@ -249,7 +236,8 @@ if (!function_exists('get_snmp')) {
 				# v1 is contactable
 				$details->snmp_version = '1';
 				$details->snmp_community = $specific->snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP  - v1 connected to $details->man_ip_address using device specific credentials.<br />"; }
+				$log_details->message = 'SNMPv1 connected to ' . $log_machine . ' using device specific credentials';
+				stdlog($log_details);
 			}
 		}
 
@@ -259,7 +247,8 @@ if (!function_exists('get_snmp')) {
 				# v1 is contactable
 				$details->snmp_version = '1';
 				$details->snmp_community = $supplied->snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP  - v1 connected to $details->man_ip_address using supplied credentials.<br />"; }
+				$log_details->message = 'SNMPv1 connected to ' . $log_machine . ' using supplied credentials';
+				stdlog($log_details);
 			}
 		}
 
@@ -269,31 +258,25 @@ if (!function_exists('get_snmp')) {
 				# v1 is contactable
 				$details->snmp_version = '1';
 				$details->snmp_community = $default->default_snmp_community;
-				if ($details->show_output == TRUE) { echo "SNMP  - v1 connected to $details->man_ip_address using default credentials.<br />"; }
+				$log_details->message = 'SNMPv1 connected to ' . $log_machine . ' using Open-AudIT default credentials';
+				stdlog($log_details);
 			}
 		}
 
-		$log_line = '';
-		if ($test_v1 == '' and $test_v2 == '') {
-			$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " not SNMP scanned." . PHP_EOL;
-			if ($details->show_output == TRUE) { echo "SNMP  - Unable to connect using SNMP (bad credentials or device not responding) - exiting.<br />"; }
-		}
 
-		if ($log_line > '') {
-			$handle = fopen($file, "a");
-			fwrite($handle, $log_line);
-			fclose($handle);
+		if ($test_v1 == '' and $test_v2 == '') {
+			$log_details->message = 'SNMP is unable to connect (bad credentials or device not responding) for ' . $log_machine;
+			$log_severity = 6;
+			stdlog($log_details);
+			$log_severity = 7;
 		}
 
 		if ($test_v2 > '') {
 			$details->snmp_version = '2';
 
-			if ($details->show_output == TRUE) { echo "SNMP  - scanning using SNMP v2.<br />"; }
-
 			$details->serial = "";
 			$details->model = "";
 			$details->type = "unknown";
-
 
 			// new for 1.5.1 - store variables in corresponding SNMP nonclemanture
 			$details->sysDescr = 	@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0");
@@ -333,10 +316,13 @@ if (!function_exists('get_snmp')) {
 
 			// sysObjectID
 			$details->snmp_oid = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
-			if ($details->show_output == TRUE) { echo "SNMP  - SysObjectId: $details->snmp_oid.<br />"; }
+			$log_details->message = 'SNMPv2 SysObjectId for ' . $log_machine . ' is ' . $details->snmp_oid;
+			stdlog($log_details);
+
 			if ($details->snmp_oid > '') {
 				$details->manufacturer = get_oid($details->snmp_oid);
-				if ($details->show_output == TRUE and $details->manufacturer > "") { echo "SNMP  - Manufacturer: $details->manufacturer.<br />"; }
+				$log_details->message = 'SNMPv2 manufacturer for ' . $log_machine . ' is: ' . $details->manufacturer;
+				stdlog($log_details);
 				$explode = explode(".", $details->snmp_oid);
 				if (!isset($explode[6])) {
 					# for some reason we got an OID, but not enough to specify a manufacturer
@@ -347,30 +333,33 @@ if (!function_exists('get_snmp')) {
 					}
 				} 
 				if (file_exists(BASEPATH . '../application/helpers/snmp_' . $explode[6] . '_helper.php')) {
-					if ($details->show_output == TRUE) { echo "SNMP  - Loading Model Helper for " . $explode[6] . ".<br />"; }
+					$log_details->message = 'SNMPv2 is loading the snmp helper for ' . $explode[6] . ' when scanning ' . $log_machine;
+					stdlog($log_details);
+
 					unset($get_oid_details);
 					include('snmp_' . $explode[6] . "_helper.php");
 					$vendor_oid = $explode[6];
 					$get_oid_details($details);
 				} else {
-					if ($details->show_output == TRUE) { echo 'SNMP  - Could not find SNMP Model Helper for OID ' . $explode[6] . ' when scanning ' . $details->man_ip_address . '.<br />'; }
-					$log_line = $log_timestamp . ' ' . $log_hostname . ' ' . $log_pid . ' ' . $log_name . ' Could not find SNMP helper for OID ' . $explode[6] . ' when scanning ' . $details->man_ip_address . '.' . PHP_EOL;
-					$handle = fopen($file, "a");
-					fwrite($handle, $log_line);
-					fclose($handle);
+					$log_details->message = 'SNMPv2 could not load the snmp helper for ' . $explode[6] . ' when scanning ' . $log_machine;
+					$log_severity = 6;
+					stdlog($log_details);
+					$log_severity = 7;
 				}
 			}
 
-			if ($details->show_output == TRUE and $details->type != 'unknown') { echo "SNMP  - Type: $details->type.<br />"; }
+			if ($details->type != 'unknown') {
+				$log_details->message = 'SNMPv2 thinks ' . $log_machine . ' is a ' . $details->type;
+				stdlog($log_details);
+			}
 
 			// some generic guesses for 'computer' devices
 			if (stripos($details->description, 'buffalo terastation') !== false) {
 				$details->manufacturer = 'Buffalo';
 				$details->model = 'TeraStation';
 				$details->type = 'nas';
-				if ($details->show_output == TRUE) {
-					echo 'SNMP  - Deriving details from description for Buffalo device.<br />';
-				}
+				$log_details->message = 'SNMPv2 is deriving details from description for a Buffalo device for ' . $log_machine;
+				stdlog($log_details);
 			}
 			if (stripos($details->description, 'synology') !== false or 
 			    stripos($details->description, 'diskstation') !== false){
@@ -382,38 +371,39 @@ if (!function_exists('get_snmp')) {
 				$details->os_group = 'Linux';
 				$details->os_family = 'Synology DSM';
 				$details->os_name = 'Synology ' . snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.3.0" ));
-				if ($details->show_output == TRUE) {
-					echo 'SNMP  - Deriving details from description for Synolody device.<br />';
-				}
+				$log_details->message = 'SNMPv2 is deriving details from description for a Synology device for ' . $log_machine;
+				stdlog($log_details);
 			}
 
-			if ($details->show_output == TRUE) { 
-				if ($details->model == '') {
-					echo 'SNMP  - Could not find model to match OID in snmp_' . $explode[6] . '_helper.php file.<br />';
-				} else {
-					echo "SNMP  - Model: $details->model.<br />";
-				}
-			}
 
 			// guess at manufacturer using entity mib
 			if (!isset($details->manufacturer) or $details->manufacturer == '') {
 				$details->manufacturer = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.12.1"));
-				if ($details->show_output == TRUE) { echo "SNMP  - Manufacturer: $details->manufacturer (using Entity MIB).<br />"; }
+				$log_details->message = 'SNMPv2 manufacturer for ' . $log_machine . ' is: ' . $details->manufacturer . '(using Entity MIB)';
+				stdlog($log_details);
 			}
 			
 
 			// guess at model using entity mib
 			if (!isset($details->model) or $details->model == '') {
 				$details->model =snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13"));
-				if ($details->show_output == TRUE) { echo "SNMP  - Model: $details->model (using Entity MIB).<br />"; }
+				$log_details->message = 'SNMPv2 model for ' . $log_machine . ' is: ' . $details->manufacturer . '(using Entity MIB)';
+				stdlog($log_details);
 			}
 
 
 			// guess at model using host resources mib
 			if (!isset($details->model) or $details->model == '' ) {
 				$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.3.1"));
-				if ($details->show_output == TRUE) { echo "SNMP  - Model: $details->model (using Resources MIB).<br />"; }
+				$log_details->message = 'SNMPv2 model for ' . $log_machine . ' is: ' . $details->model . '(using Resources MIB)';
+				stdlog($log_details);
 			}
+
+			if (!isset($details->model) OR $details->model == '' OR $details->model == 'unknown') {
+				$log_details->message = 'SNMPv2 model for ' . $log_machine . ' is unknown';
+				stdlog($log_details);
+			}
+			
 
 			// serial 
 			if (!isset($details->serial) or $details->serial == '') {
@@ -438,14 +428,13 @@ if (!function_exists('get_snmp')) {
 				}
 			}
 
-			# echo the serial if required
-			if ($details->show_output == TRUE) {
-				if ($details->serial != "") { 
-					echo "SNMP  - Serial: $details->serial.<br />"; 
-				} else {
-					echo "SNMP  - Serial: <span style='color: blue;'>not retrieved</span>.<br />"; 
-				}
+			if ($details->serial != "") { 
+				$log_details->message = 'SNMPv2 serial for ' . $log_machine . ' is: ' . $details->serial;
+			} else {
+				$log_details->message = 'SNMPv2 serial for ' . $log_machine . ' is unknown';
 			}
+			stdlog($log_details);
+
 
 
 			// mac address
@@ -456,10 +445,15 @@ if (!function_exists('get_snmp')) {
 				snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 				$details->mac_address = format_mac($details->mac_address);
 			}
-			if ($details->show_output == TRUE) {
-				echo "SNMP  - MAC: " . $details->mac_address . "<br />";
+			// last attempt at a MAC - just use whatever's in the first interface MAC
+			if (!isset($details->mac_address) or $details->mac_address == '') {
+				snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+				$details->mac_address = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6.1");
+				snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+				$details->mac_address = format_mac($details->mac_address);
 			}
-
+			$log_details->message = 'SNMPv2 MAC Address for ' . $log_machine . ' is ' . $details->mac_address;
+			stdlog($log_details);
 				
 			// type
 			if (!isset($details->type) or $details->type == '' or $details->type == 'unknown' or $details->type == 'network printer') {
@@ -557,10 +551,12 @@ if (!function_exists('get_snmp')) {
 					}
 					#}
 				}
-				if ($details->show_output == TRUE and ($details->type == 'unknown' or $details->type == '')) { 
-					echo "SNMP  - Type: <span style='color: blue;'>unknown</span>.<br />";
+				if ($details->type == 'unknown' or $details->type == '') {
+					$log_details->message = 'SNMPv2 is unable to determine a type for ' . $log_machine;
+					stdlog($log_details);
 				} else {
-					echo "SNMP  - Type: $details->type.<br />"; 
+					$log_details->message = 'SNMPv2 has determined a type of ' . $details->type . ' for ' . $log_machine;
+					stdlog($log_details);
 				}
 			}
 			
@@ -686,7 +682,8 @@ if (!function_exists('get_snmp')) {
 			// Virtual Guests
 			if (isset($vendor_oid) and $vendor_oid == '6876') {
 				if (file_exists(BASEPATH . '../application/helpers/snmp_6876_2_helper.php')) {
-					if ($details->show_output == TRUE) { echo "SNMP  - Loading Model Helper for VMware virtual guests.<br />"; }
+					$log_details->message = 'SNMPv2 is loading the model helper for VMware virtual guests';
+					stdlog($log_details);
 					include('snmp_6876_2_helper.php');
 				} 
 			}
@@ -697,7 +694,9 @@ if (!function_exists('get_snmp')) {
 
 		# snmp v1
 		if ($test_v1 > '' and $test_v2 == '') {
-			if ($details->show_output == TRUE) { echo "SNMP  - scanning using SNMP v1.<br />"; }
+			$log_details->message = 'SNMPv1 scanning ' . $log_machine;
+			stdlog($log_details);
+
 			$details->snmp_version = '1';
 			$details->snmp_oid = '';
 			$details->snmp_oid = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
@@ -705,8 +704,6 @@ if (!function_exists('get_snmp')) {
 				$details->manufacturer = get_oid($details->snmp_oid);
 				$explode = explode(".", $details->snmp_oid);
 				if (file_exists(BASEPATH . '../application/helpers/snmp_' . $explode[6] . '_helper.php')) {
-					#$CI->load->helper('snmp_' . $explode[6]);
-					#get_oid_details($details);
 					unset($get_oid_details);
 					include('snmp_' . $explode[6] . "_helper.php");
 					$get_oid_details($details);
@@ -877,24 +874,19 @@ if (!function_exists('get_snmp')) {
 			}
 		} // end of v1
 
-
-
-		$log_line = '';
-		if ($details->snmp_version == '2') { $details->snmp_version = '2c'; }
+		
 
 		if ($test_v1 > '' or $test_v2 > '') {
-			$log_timestamp = date("M d H:i:s");
 			if (isset($details->snmp_oid) and $details->snmp_oid > "") {
-				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scanned." . PHP_EOL;
+				$log_details->message = 'SNMPv' . $details->snmp_version . ' scan of ' . $log_machine . ' completed';
+				stdlog($log_details);
 			} else {
-				$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_name . " " . $details->man_ip_address . " SNMP v" . $details->snmp_version . " scan failed (no OID returned)." . PHP_EOL;
+				$log_details->message = 'SNMPv' . $details->snmp_version . ' scan of ' . $log_machine . ' failed (no OID returned)';
+				stdlog($log_details);
 			}
-			if ($details->show_output == TRUE) { echo "LOG   - " . $log_line; }
-			$handle = fopen($file, "a");
-			fwrite($handle, $log_line);
-			fclose($handle);
 		}
 
+		if ($details->snmp_version == '2') { $details->snmp_version = '2c'; }
 		if ($details->show_output == FALSE) { unset($details->show_output); }
 		$details->hostname = strtolower($details->hostname);
 		if (!isset($interfaces_filtered)) { $interfaces_filtered = array(); }
@@ -902,6 +894,13 @@ if (!function_exists('get_snmp')) {
 			$guests = array(); 
 		}
 		$return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests);
+
+		unset($log_details);
+		if (isset($orig_log_details)) {
+			$log_details = $orig_log_details;
+			unset($orig_log_details);
+		}
+
 		return($return_array);
 	}
 

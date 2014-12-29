@@ -53,6 +53,14 @@ class test extends MY_Controller
         redirect('/');
     }
 
+    public function log() {
+        $this->load->helper('log');
+        $log_details = new stdClass();
+        $log_details->file = 'access';
+        $log_details->severity = 5;
+        stdlog($log_details);
+    }
+
     public function mark()
     {
         $this->load->helper('url');

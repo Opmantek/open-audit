@@ -69,6 +69,13 @@ class System extends CI_Controller {
 		$this->data['title'] = 'Open-AudIT';
 		$this->load->library('session');
 		$loggedin = @$this->session->userdata('logged_in');
+
+		// log the attempt
+		$this->load->helper('log');
+		$log_details = new stdClass();
+		$log_details->severity = 6;
+		stdlog($log_details);
+		unset($log_details);
 	}
 
 	/**
@@ -126,8 +133,12 @@ class System extends CI_Controller {
 			$this->load->view('v_system_add_nmap', $this->data);
 		}
 		else {
-			$log = "C:system F:add_nmap Start processing nmap submitted data";
-			$this->log_event($log);
+			$log_details = new stdClass();
+			$log_details->severity = 7;
+			$log_details->file = 'system';
+			$log_details->message = 'Start processing nmap submitted data';
+			stdlog($log_details);
+			unset($log_details);
 
 			$this->load->helper('url');
 			$this->load->helper('xml');
@@ -148,8 +159,12 @@ class System extends CI_Controller {
 				$xml_post = new SimpleXMLElement($xml_input);
 			} catch (Exception $error) {
 				// not a valid XML string
-				$error_output = 'Invalid XML input for NMap import.';
-				error_log($error_output);
+				$log_details = new stdClass();
+				$log_details->severity = 5;
+				$log_details->file = 'system';
+				$log_details->message = 'Invalid XML input for NMap import';
+				stdlog($log_details);
+				unset($log_details);
 				exit;
 			}
 			$count = 0;
@@ -171,8 +186,12 @@ class System extends CI_Controller {
 				$details->domain = '';
 				$details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
-				$log = "C:system F:add_nmap Processing nmap audit result for " . $details->man_ip_address . " (" . $details->hostname . ")";
-				$this->log_event($log);
+				$log_details = new stdClass();
+				$log_details->severity = 7;
+				$log_details->file = 'system';
+				$log_details->message = 'Processing nmap audit result for ' . $details->man_ip_address . ' (' . $details->hostname . ')';
+				stdlog($log_details);
+				unset($log_details);
 
 				if ( ! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
 					if (strpos($details->hostname, '.') !== FALSE) {
@@ -218,24 +237,28 @@ class System extends CI_Controller {
 
 					if (isset($details->system_id) AND !empty($details->system_id)) {
 						// we have a system_id AND snmp details to update
-						$log = "C:system F:add_nmap SNMP update for " . $details->man_ip_address . " (system id " . $details->system_id . ")";
-						$this->log_event($log);
+						$log_details = new stdClass();
+						$log_details->severity = 7;
+						$log_details->file = 'system';
+						$log_details->message = 'SNMP update for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+						stdlog($log_details);
+						unset($log_details);
 						$this->m_system->update_system($details);
-						#echo "<p>Update sytem ".$details->system_id."</p>";
 					}
 					else {
 						// we have a new system
-						$log = "C:system F:add_nmap SNMP insert for " . $details->man_ip_address;
-						$this->log_event($log);
 						$details->system_id = $this->m_system->insert_system($details);
-						#echo "<p>Add new sytem ".$details->system_id."</p>";
+						$log_details = new stdClass();
+						$log_details->severity = 7;
+						$log_details->message = 'SNMP insert for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+						stdlog($log_details);
+						unset($log_details);
 					}
 
 					# update any network interfaces and ip addresses retrieved by SNMP
                     if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                         foreach ($network_interfaces as $input) {
                             $this->m_network_card->process_network_cards($input, $details);
-
                             if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
                                 foreach ($input->ip_addresses as $ip_input) {
                                     $ip_input = (object) $ip_input;
@@ -250,23 +273,26 @@ class System extends CI_Controller {
 
 					if (isset($details->system_id) AND $details->system_id !== '') {
 						// we have a system id AND nmap details to update
-						$log = "C:system F:add_nmap Nmap update for " . $details->man_ip_address . " (system id " . $details->system_id . ")";
-						$this->log_event($log);
+						$log_details = new stdClass();
+						$log_details->severity = 7;
+						$log_details->message = 'Nmap update for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+						stdlog($log_details);
+						unset($log_details);
 						$this->m_system->update_system($details);
 					}
 					else {
 						// we have a new system
-						$log = "C:system F:add_nmap Nmap insert for " . $details->man_ip_address;
-						$this->log_event($log);
 						$details->system_id = $this->m_system->insert_system($details);
+						$log_details = new stdClass();
+						$log_details->severity = 7;
+						$log_details->message = 'Nmap insert for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+						stdlog($log_details);
+						unset($log_details);
 					}
 				}
 				$this->m_sys_man_audits->insert_audit($details);
 				$this->m_oa_group->update_system_groups($details);
 			}
-
-			$log = "C:system F:add_nmap Finish processing nmap submitted data";
-			$this->log_event($log);
 
 			if (((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE))) {
 				echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
@@ -299,8 +325,11 @@ class System extends CI_Controller {
 				$xml_post = new SimpleXMLElement($xml_input);
 			} catch (Exception $error) {
 				// not a valid XML string
-				$error_output = 'Invalid XML input for Active Directory import.';
-				error_log($error_output);
+				$log_details = new stdClass();
+				$log_details->severity = 5;
+				$log_details->message = 'Invalid XML input for Active Directory import';
+				stdlog($log_details);
+				unset($log_details);
 				exit;
 			}
 			$count = 0;
@@ -414,11 +443,17 @@ class System extends CI_Controller {
 			print_r($errors);
 			// not a valid XML string
 			$xml_split = explode("\n", $xml_input, 10);
-			$hostname = str_replace("\t\t<system_hostname>", '', $xml_split[5]);
-			$hostname = str_replace('</system_hostname>', '', $hostname);
+			$hostname = str_replace("\t\t<hostname>", '', $xml_split[5]);
+			$hostname = str_replace('</hostname>', '', $hostname);
 			$error_output = 'Invalid XML input for: ' . $hostname;
-			$log = "C:system F:add_system Invalid XML result for $hostname"; $this->log_event($log);
-			error_log($error_output);
+
+			$log_details = new stdClass();
+			$log_details->severity = 5;
+			$log_details->file = 'system';
+			$log_details->message = 'Invalid XML audit result for ' . $hostname;
+			stdlog($log_details);
+			unset($log_details);
+
 			echo "<pre>\n";
 			print_r($xml);
 			exit;
@@ -426,11 +461,16 @@ class System extends CI_Controller {
 
 		$i = (string) $xml->sys[0]->hostname;
 		$j = (string) $xml->sys[0]->system_id;
+		$log_details = new stdClass();
+		$log_details->severity = 7;
+		$log_details->file = 'system';
 		if ($j > '') {
-			$log = "C:system F:add_system Processing audit result for " . $i . " (Supplied System ID $j)"; $this->log_event($log);
+			$log_details->message = 'Processing audit result for ' . $i . ' (Supplied System ID ' . $j . ')';
 		} else {
-			$log = "C:system F:add_system Processing audit result for " . $i; $this->log_event($log);
+			$log_details->message = 'Processing audit result for ' . $i;
 		}
+		stdlog($log_details);
+		unset($log_details);
 
 		# this allows for no additional audit script and snmp code
 		# and inserts all the (or any) retrieved mac addresses into the sys XML section
@@ -480,7 +520,14 @@ class System extends CI_Controller {
 					$sql = "DELETE FROM system WHERE system_id = ?";
 					$data = array($received_system_id);
 					$query = $this->db->query($sql, $data);
-					$log = "C:system F:add_system SystemId provided differs from SystemId found for " . $details->hostname; $this->log_event($log);
+
+					$log_details = new stdClass();
+					$log_details->severity = 6;
+					$log_details->file = 'system';
+					$log_details->message = 'SystemId provided differs from SystemId found for ' . $details->hostname;
+					stdlog($log_details);
+					unset($log_details);
+
 				}
 				$details->system_id = $i;
 				$details->last_seen = $details->timestamp;
@@ -496,12 +543,26 @@ class System extends CI_Controller {
 				if ((string) $i === '') {
 					// insert a new system
 					$details->system_id = $this->m_system->insert_system($details);
-					$log = "C:system F:add_system Inserting result for " . $details->hostname . " (System ID " . $details->system_id . ")"; $this->log_event($log);
+
+					$log_details = new stdClass();
+					$log_details->severity = 7;
+					$log_details->file = 'system';
+					$log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->system_id . ')';
+					stdlog($log_details);
+					unset($log_details);
+
 					$details->original_timestamp = "";
 					echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
 				} else {
 					// update an existing system
-					$log = "C:system F:add_system Updating result for " . $details->hostname . " (System ID " . $details->system_id . ")"; $this->log_event($log);
+
+					$log_details = new stdClass();
+					$log_details->severity = 7;
+					$log_details->file = 'system';
+					$log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->system_id . ')';
+					stdlog($log_details);
+					unset($log_details);
+
 					$details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
 					$details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
 					$this->m_system->update_system($details);
@@ -760,29 +821,16 @@ class System extends CI_Controller {
 		$this->benchmark->mark('code_end');
 		echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
 		$i = (string) $xml->sys[0]->hostname;
-		$log = "C:system F:add_system C:system F:add_system Processing completed for " . $i . " (System ID " . $details->system_id . "), took " . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds"; $this->log_event($log);
+
+		$log_details = new stdClass();
+		$log_details->severity = 7;
+		$log_details->file = 'system';
+		$log_details->message = 'Processing completed for ' . $i . ' (System ID ' . $details->system_id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+		stdlog($log_details);
+		unset($log_details);
+
 		echo '</body></html>';
 
 	}
 
-	public function log_event($log_details)
-	{
-		// setup the log file
-		if (php_uname('s') === 'Linux') {
-			$file = "/usr/local/open-audit/other/open-audit.log";
-		}
-		else {
-			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
-		}
-		$log_timestamp = date("M d H:i:s");
-		$log_hostname = php_uname('n');
-		$log_pid = getmypid();
-		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
-		$handle = fopen($file, "a");
-		fwrite($handle, $log_line);
-		fclose($handle);
-		if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-			echo "LOG   - " . $log_line . "<br />\n";
-		}
-	}
 }

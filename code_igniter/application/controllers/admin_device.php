@@ -46,7 +46,10 @@ class Admin_device extends MY_Controller
                 redirect('login/index');
             }
         }
-        $this->log_event();
+
+        $log_details = new stdClass();
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()

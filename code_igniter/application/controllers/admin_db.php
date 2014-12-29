@@ -47,7 +47,10 @@ class Admin_db extends MY_Controller
             }
         }
         set_time_limit(240);
-        $this->log_event();
+
+        $log_details = new stdClass();
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()

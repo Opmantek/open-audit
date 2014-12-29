@@ -44,6 +44,13 @@ class login extends CI_Controller
 		$this->load->library('session');
 		$this->load->helper('url');
 		$this->load->helper('form');
+		$this->load->helper('log');
+
+		// log the attempt
+		$log_details = new stdClass();
+		$log_details->severity = 6;
+		stdlog($log_details);
+		unset($log_details);
 	}
 
 /**
@@ -358,9 +365,12 @@ class login extends CI_Controller
 			$ad_secret = $password;
 			$ad = ldap_connect($ad_ldap_connect);
 			if (!$ad) {
-				$string = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' error could not connect to Active Directory at ' . $ad_ldap_connect;
-				$this->log_event($string);
-				unset($string);
+				$log_details = new stdClass();
+				$log_details->severity = 5;
+				$log_details->file = 'system';
+				$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' error could not connect to Active Directory at ' . $ad_ldap_connect;
+				stdlog($log_details);
+				unset($log_details);
 				redirect('login/index');
 			}
 			ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
@@ -370,9 +380,12 @@ class login extends CI_Controller
 				$data = $this->m_userlogin->get_user_details($username);
 				if ($data['user_active'] == 'y') {
 					$this->session->set_userdata($data);
-					$string = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' was verified by AD';
-					$this->log_event($string);
-					unset($string);
+					$log_details = new stdClass();
+					$log_details->severity = 7;
+					$log_details->file = 'system';
+					$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' was verified by AD';
+					stdlog($log_details);
+					unset($log_details);
 					if ($page != '1') {
 						redirect($page . '/' . $function . '/' . $id . '/' . $first_attribute);
 					} else {
@@ -381,41 +394,56 @@ class login extends CI_Controller
 				} else {
 					// the user does not have their 'user_active' flag set to 'y'.
 					// don't log them in, redirect the to the login page.
-					$string = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' was verified by AD, but does not have their user_active attribute set in Open-AudIT';
-					$this->log_event($string);
-					unset($string);
+					$log_details = new stdClass();
+					$log_details->severity = 5;
+					$log_details->file = 'system';
+					$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' was verified by AD, but does not have their user_active attribute set in Open-AudIT';
+					stdlog($log_details);
+					unset($log_details);
 					redirect('login/index');
 				}
 			} else {
 				// failed Active Dirctory validation
 				// fall through this function and attempt to validate using local credentials
-				$string = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' could not be verified by Active Directory. AD Server ' . $ad_ldap_connect . ' AD User ' . $ad_user ;
-				$this->log_event($string);
-				unset($string);
+				$log_details = new stdClass();
+				$log_details->severity = 5;
+				$log_details->file = 'system';
+				$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' could not be verified by Active Directory. AD Server ' . $ad_ldap_connect . ' AD User ' . $ad_user ;
+				stdlog($log_details);
+				unset($log_details);
 			}
 		}
 		// attempt use the internal database to validate user
 		if ($data = $this->m_userlogin->validate_user($username, $password)) {
 			if ($data != 'fail') {
 				$this->session->set_userdata($data);
-				$string = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' was verified by Open-AudIT';
-				$this->log_event($string);
-				unset($string);
+				$log_details = new stdClass();
+				$log_details->severity = 7;
+				$log_details->file = 'system';
+				$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' was verified by Open-AudIT';
+				stdlog($log_details);
+				unset($log_details);
 				if ($page != '') {
 					redirect($page . '/' . $function . '/' . $id . '/' . $first_attribute);
 				} else {
 					redirect('main/index');
 				}
 			} else {
-				$string = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' could not be verified by Open-AudIT';
-				$this->log_event($string);
-				unset($string);
+				$log_details = new stdClass();
+				$log_details->severity = 7;
+				$log_details->file = 'system';
+				$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' could not be verified by Open-AudIT';
+				stdlog($log_details);
+				unset($log_details);
 				redirect('login/index/main/list_groups');
 			}
 		} else {
-			$string = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' error attempting to validate credentials';
-			$this->log_event($string);
-			unset($string);
+			$log_details = new stdClass();
+			$log_details->severity = 5;
+			$log_details->file = 'system';
+			$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' error attempting to validate credentials';
+			stdlog($log_details);
+			unset($log_details);
 			redirect('login/index/main/list_groups');
 		}
 	}
@@ -499,33 +527,5 @@ class login extends CI_Controller
 	{
 		$this->session->sess_destroy();
 		redirect('login/index/main/list_groups');
-	}
-
-/**
- * [log_event description]
- * 
- * @return [null] [logs the provided string to the log file]
- */
-	function log_event($string)
-	{
-		// setup the log file
-		if ((string)php_uname('s') === 'Linux' OR (string)php_uname('s') === 'Darwin') {
-			$file = '/usr/local/open-audit/other/open-audit.log';
-		} else {
-			$file = 'c:\xampplite\open-audit\other\open-audit.log';
-		}
-		$log_timestamp = date('M d H:i:s');
-		$log_hostname = php_uname('n');
-		$log_pid = getmypid();
-		$router =& load_class('Router', 'core');
-		$controller = $router->fetch_class();
-		$router =& load_class('Router', 'core');
-		$function = $router->fetch_method();
-		$log_details = 'C:' . $controller . ' F:' . $function . $string;
-		$log_line = $log_timestamp . ' ' . $log_hostname . ' ' . $log_pid . ' ' . $log_details . '.' . PHP_EOL;
-		// log the page view
-		$handle = fopen($file, 'a');
-		fwrite($handle, $log_line);
-		fclose($handle);
 	}
 }

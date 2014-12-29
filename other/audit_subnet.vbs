@@ -145,7 +145,7 @@ if instr(lcase(objShell.ExpandEnvironmentStrings( "PATH=%PATH%" )), "\Nmap") the
 end if
 
 on error resume next
-set objTS = objFSO.OpenTextFile("c:\xampplite\open-audit\other\open-audit.log", FOR_APPENDING, True)
+set objTS = objFSO.OpenTextFile("c:\xampplite\open-audit\other\log_system.log", FOR_APPENDING, True)
 error_returned = Err.Number
 error_description = Err.Description
 on error goto 0
@@ -156,6 +156,8 @@ if (error_returned <> 0) then
 	syslog = "n"
 	Err.Clear
 end if
+objTS.Close
+Set objTS = Nothing
 
 
 
@@ -169,13 +171,7 @@ next
 set wshNetwork = WScript.CreateObject("WScript.Network")
 system_hostname = wshNetwork.ComputerName
 
-if syslog = "y" then
-	timestamp = get_timestamp()
-	log_entry = timestamp & " " & system_hostname & " " & current_pid & " Job Starting" & vbcrlf
-	objTS.Write log_entry
-	log_entry = timestamp & " " & system_hostname & " " & current_pid & " Scanning Subnet: " & subnet & vbcrlf
-	objTS.Write log_entry
-end if
+write_log("Job starting - scanning subnet " & subnet)
 
 if debugging > "0" then wscript.echo "My PID: " & current_pid
 if debugging > "0" then wscript.echo "Scanning Subnet: " & subnet
@@ -188,11 +184,7 @@ on error resume next
 on error goto 0
 if (error_returned <> 0) then 
 	if debugging > "0" then wscript.echo "No Nmap found." end if
-	if syslog = "y" then
-		timestamp = get_timestamp()
-		log_entry = timestamp & " " & system_hostname & " " & current_pid & " No Nmap found, aborting" & vbcrlf
-		objTS.Write log_entry
-	end if
+	write_log("Nmap not found, aborting")
 	Err.Clear
 	WScript.Quit 1
 end if
@@ -217,11 +209,7 @@ for each host in hosts_in_subnet
 
 	if debugging > "0" then wscript.echo "Scanning Host: " & host end if
 
-	if syslog = "y" then
-		timestamp = get_timestamp()
-		log_entry = timestamp & " " & system_hostname & " " & current_pid & " Host: " & host & vbcrlf
-		objTS.Write log_entry
-	end if
+	write_log(host & " being nmap scanned")
 
 	mac_address = ""
 	manufacturer = ""
@@ -238,7 +226,6 @@ for each host in hosts_in_subnet
 
 	Do Until objExecObject.StdOut.AtEndOfStream
 		line = objExecObject.StdOut.ReadLine
-		'wscript.echo line
 
 		if instr(lcase(line), "mac address:") then
 			i = split(line, " ")
@@ -311,11 +298,7 @@ next
 
 result = result & "</devices>" & vbcrlf
 
-if syslog = "y" then
-	timestamp = get_timestamp()
-	log_entry = timestamp & " " & system_hostname & " " & current_pid & " Scan completed." & vbcrlf
-	objTS.Write log_entry
-end if
+write_log("Scan of " & host & " completed")
 
 if echo_output = "y" then
 	wscript.echo result
@@ -324,15 +307,7 @@ end if
 if submit_online = "y" then
 	if debugging > "0" then wscript.echo "Submitting audit online" end if 
 
-	if syslog = "y" then
-		timestamp = get_timestamp()
-		log_entry = timestamp & " " & system_hostname & " " & current_pid & " Submitting online." & vbcrlf
-		objTS.Write log_entry
-	end if
-
-	' close the file so the PHP SNMP function can log to it
-	objTS.Close
-	Set objTS = Nothing
+	write_log("Submitting scan result for " & host & " online")
 
 	Err.clear
 	XmlObj = "ServerXMLHTTP"
@@ -381,18 +356,23 @@ if create_file = "y" then
 	end if
 end if
 
-if syslog = "y" then
-	set objTS = objFSO.OpenTextFile("c:\xampplite\open-audit\other\open-audit.log", FOR_APPENDING, True)
-	timestamp = get_timestamp()
-	log_entry = timestamp & " " & system_hostname & " " & current_pid & " Job complete." & vbcrlf
-	objTS.Write log_entry
-	objTS.Close
-	Set objTS = Nothing
-end if
+write_log("Job complete - scanning subnet " & subnet)
+
+wscript.quit
 
 function get_timestamp()
 	' removed the below and using month short name, no year, as per other logging
 	' get_timestamp = Year(Now()) & "-" & Right("0" & Month(Now()),2) & "-" & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
 
 	get_timestamp = monthname(month(now()), True) & " " & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
+end function
+
+function write_log(log_message)
+	if syslog = "y" then
+		set objTS = objFSO.OpenTextFile("c:\xampplite\open-audit\other\log_system.log", FOR_APPENDING, True)
+		timestamp = monthname(month(now()), True) & " " & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
+		log_entry = timestamp & " " & system_hostname & " " & current_pid & " 7 " & "S:audit_subnet M:" & log_message & vbcrlf
+		objTS.Write log_entry
+		objTS.Close
+		Set objTS = Nothing
 end function

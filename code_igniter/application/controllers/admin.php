@@ -70,7 +70,10 @@ class Admin extends MY_Controller {
 				redirect('login/index');
 			}
 		}
-		$this->log_event();
+
+		$log_details = new stdClass();
+		stdlog($log_details);
+        unset($log_details);
 	}
 
 	/**
@@ -167,6 +170,52 @@ class Admin extends MY_Controller {
 	}
 
 	/**
+	 * The edit config page
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function get_config_all()
+	{
+		$this->load->model('m_oa_config');
+		$json = $this->m_oa_config->get_config();
+		$json = json_encode($json);
+		print_r($json);
+	}
+
+	/**
+	 * The set config api - esigned to take a JSON format of config_name: config_value from a POST
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function set_config()
+	{
+		if (isset($_POST['config'])) {
+			if ($config = json_decode($_POST['config'])) {
+				$this->load->model('m_oa_config');
+				foreach ($config as $name => $value) {
+					$value = urldecode($value);
+					$this->m_oa_config->update_config($name, $value, $this->data['user_id'], date('Y-m-d H:i:s'));
+				}
+				header(' ', true, 200);
+			} else {
+				header(' ', true, 400);
+			}
+		}
+	}
+
+	/**
 	 * Purge the logfile
 	 *
 	 * @access	  public
@@ -179,18 +228,26 @@ class Admin extends MY_Controller {
 	 */
 	function purge_log()
 	{
+		// default
+		$logfile = 'system';
+		$temp = @$this->uri->segment(3);
+		if ($temp != '') {
+			if ($temp == 'access' OR $temp == 'debug' OR $temp == 'system') {
+				$logfile = $temp;
+			}
+		}
+		unset($temp);
 		// full path to text file
 		if (php_uname('s') === 'Linux') {
-			$file = '/usr/local/open-audit/other/open-audit.log';
+			$file = '/usr/local/open-audit/other/log_' . $logfile . '.log';
 		} 
 		else {
-			$file = 'c:\\xampplite\\open-audit\\other\\open-audit.log';
+			$file = 'c:\\xampplite\\open-audit\\other\\log_' . $logfile . '.log';
 		}
 		$handle = fopen($file, 'w');
 		fwrite($handle, '');
 		fclose($handle);
-		redirect('admin/view_log');
-
+		redirect('admin/view_log/' . $logfile);
 	}
 
 	/**
@@ -212,7 +269,7 @@ class Admin extends MY_Controller {
 		if (php_uname('s') === 'Linux') {
 			switch ($file) {
 				case '1':
-					$complete_filename = '/usr/local/open-audit/other/open-audit.log';
+					$complete_filename = '/usr/local/open-audit/other/log_system.log';
 					break;
 
 				case '2':
@@ -243,7 +300,7 @@ class Admin extends MY_Controller {
 		if (php_uname('s') == 'Windows NT') {
 			switch ($file) {
 				case '1':
-					$complete_filename = 'c:\xampplite\open-audit\other\open-audit.log';
+					$complete_filename = 'c:\xampplite\open-audit\other\log_system.log';
 					break;
 
 				case '2':
@@ -284,15 +341,37 @@ class Admin extends MY_Controller {
 	}
 
 	function view_log() {		
-		// number of lines to read from the end of file
-		$lines = @intval($this->uri->segment(3,0));
-		if ($lines < 1) { $lines = 25; }
+
+		// defaults
+		$logfile = 'system';
+		$lines = 25;
+
+		// if present, read this specified log file
+		$temp = @$this->uri->segment(3);
+		if ($temp != '') {
+			if (is_int($temp)) {
+				$lines = intval($temp);
+			} else {
+				if ($temp == 'system' OR $temp == 'access' OR $temp == 'debug') {
+					$logfile = $temp;
+				}
+			}
+		}
+		$temp = @$this->uri->segment(4);
+		if ($temp != '') {
+			if (is_int($temp)) {
+				$lines = intval($this->uri->segment(4));
+			}
+		}
+		if ($lines < 1) { 
+			$lines = 25;
+		}
 
 		// full path to text file
 		if (php_uname('s') == 'Linux') {
-			$file = "/usr/local/open-audit/other/open-audit.log";
+			$file = "/usr/local/open-audit/other/log_" . $logfile . ".log";
 		} else {
-			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+			$file = "c:\\xampplite\\open-audit\\other\\log_" . $logfile . ".log";
 		}
 
 		$fsize = round(filesize($file)/1024/1024,2);
@@ -339,7 +418,7 @@ class Admin extends MY_Controller {
 			$this->data['sortcolumn'] = '1';
 			$this->load->view('v_template', $this->data);
 		} else {
-			$cmd = "php " . $_SERVER['SCRIPT_FILENAME'] . " admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+			$cmd = "php " . $_SERVER['SCRIPT_FILENAME'] . " admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/log_system.log 2>&1 &";
 			redirect('/admin/view_log');
 		}
 	}
@@ -546,7 +625,7 @@ class Admin extends MY_Controller {
 				$handle = fopen($filename, "w");
 				fwrite($handle, $csv);
 				fclose($handle);
-				$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+				$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /usr/local/open-audit/other/log_system.log 2>&1 &";
 				exec($cmd);
 				redirect('/admin/view_log');	
 			}
@@ -614,16 +693,16 @@ class Admin extends MY_Controller {
 
 			if ($operating_system == 'Darwin') {
 				if ($subnet > '' ) {
-					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
-					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/log_debug.log 2>&1 &";
+					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/log_debug.log 2>&1 &";
 					exec($cmd);
 				}
 			}
 
 			if ($operating_system == 'Linux') {
 				if ($subnet > '' ) {
-					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
-					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/log_debug.log 2>&1 &";
+					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/log_debug.log 2>&1 &";
 					exec($cmd);
 				}
 			}
@@ -2931,6 +3010,14 @@ class Admin extends MY_Controller {
 			# upgrade for 1.5.3
 
 			$sql = "ALTER TABLE sys_sw_windows ADD windows_workgroup varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('log_style', 'syslog', 'y', 'Tells Open-AudIT which log format to use. Valid values are json and syslog.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('log_level', '5', 'y', 'Tells Open-AudIT which severity of event (at least) should be logged.')";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 

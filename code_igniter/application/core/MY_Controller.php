@@ -147,7 +147,8 @@ class MY_Controller extends CI_Controller {
 
 		$this->data['title'] = 'Open-AudIT';
 		$this->data['id'] = $this->uri->segment(3, 0);
-
+		$this->load->helper('log');
+		
 		if (((bool)$loggedin === TRUE) OR ((int)$loggedin === 1) OR ((bool)$this->session->userdata('logged_in') === TRUE)) {
 			// logged in
 			if ( ! isset($this->data['user_full_name']) OR (string)$this->data['user_full_name'] === '')
@@ -194,43 +195,6 @@ class MY_Controller extends CI_Controller {
 			else {
 				redirect('login/index');
 			}
-		}
-	}
-
-/**
- * [log_event description]
- * 
- * @return [null] [logs the provided string to the log file]
- */
-	function log_event()
-	{
-		// setup the log file
-		if ((string)php_uname('s') === 'Linux' OR (string)php_uname('s') === 'Darwin')
-		{
-			$file = '/usr/local/open-audit/other/open-audit.log';
-		}
-		else {
-			// $file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
-			$file = 'c:\xampplite\open-audit\other\open-audit.log';
-		}
-		$log_timestamp = date('M d H:i:s');
-		$log_hostname = php_uname('n');
-		$log_pid = getmypid();
-		$router =& load_class('Router', 'core');
-		$controller = $router->fetch_class();
-		$router =& load_class('Router', 'core');
-		$function = $router->fetch_method();
-		$user = $this->session->userdata('user_full_name');
-		$log_details = 'C:' . $controller . ' F:' . $function . ' U:' . $user . ' at ' . $this->input->server('REMOTE_ADDR');
-		$log_line = $log_timestamp . ' ' . $log_hostname . ' ' . $log_pid . ' ' . $log_details . '.' . PHP_EOL;
-		if ((string)$controller === 'admin' AND (string)$function === 'view_log') {
-			// don't bother logging this
-		}
-		else {
-			// log the page view
-			$handle = fopen($file, 'a');
-			fwrite($handle, $log_line);
-			fclose($handle);
 		}
 	}
 

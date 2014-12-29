@@ -32,7 +32,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (php_uname('s') == 'Windows NT') {
-	$files = 'c:%5Cxampplite%5Copen-audit%5Cother%5Copen-audit.log,%0A 
+	$files = 'c:%5Cxampplite%5Copen-audit%5Cother%5Clog_system.log,%0A 
 c:%5Comk%5Clog%5Coae.log,%0A 
 c:%5Comk%5Clog%5CopCommon.log,%0A 
 c:%5Comk%5Clog%5CopDaemon.log,%0A 
@@ -40,7 +40,7 @@ c:%5Comk%5Clog%5Cperformance.log,%0A
 c:%5Comk%5Cconf%5CopCommon.nmis';
 }
 if (php_uname('s') == 'Linux') {
-	$files = '/usr/local/open-audit/other/open-audit.log,%0A 
+	$files = '/usr/local/open-audit/other/log_system.log,%0A 
 /usr/local/omk/log/oae.log,%0A 
 /usr/local/omk/log/opCommon.log,%0A 
 /usr/local/omk/log/opDaemon.log,%0A 
@@ -64,7 +64,7 @@ foreach ($data as $key => $value) {
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Support Data')?></span></legend>
 		To email this data to Opmantek for assistance, <a href='<?php echo $email; ?>' style='color:red; text-decoration:underline;'>CLICK HERE</a>. This will open an email in your mail client and will not automatically send the data to opmantek. You should review the data and add your issue to the email.<br /><br />
 
-		If you are emailing this result to Opmantek, please download the files below and add them as attachments to the email (NOTE: you need to be an Admin level user in Open-AudIT to download these files): <a style="color:blue; text-decoration:underline;" href="../admin/download_file/1">open-audit.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/2">oae.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/3">opCommon.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/4">opDaemon.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/5">performance.log</a>, 		<a style="color:blue; text-decoration:underline;" href="../admin/download_file/6">opCommon.nmis</a>.<br /><br />
+		If you are emailing this result to Opmantek, please download the files below and add them as attachments to the email (NOTE: you need to be an Admin level user in Open-AudIT to download these files): <a style="color:blue; text-decoration:underline;" href="../admin/download_file/1">log_system.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/2">oae.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/3">opCommon.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/4">opDaemon.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/5">performance.log</a>, 		<a style="color:blue; text-decoration:underline;" href="../admin/download_file/6">opCommon.nmis</a>.<br /><br />
 
 		<?php
 		if (count($hints) > 0) {

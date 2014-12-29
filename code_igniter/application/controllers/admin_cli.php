@@ -65,7 +65,10 @@ class Admin_cli extends CI_Controller
 		if ( ! $this->input->is_cli_request()) {
 			exit();
 		}
-		$this->log_event();
+
+		$log_details = new stdClass();
+		stdlog($log_details);
+		unset($log_details);
 	}
 
 	/**
@@ -102,7 +105,7 @@ class Admin_cli extends CI_Controller
 		$nodes_file = str_replace('/admin_cli/import_nmis/', '', $this->uri->uri_string());
 
 		$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis Starting Nodes.nmis import' . PHP_EOL;
-		file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
+		file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 
 		$this->load->helper('snmp_oid');
 		$this->load->helper('snmp');
@@ -112,7 +115,7 @@ class Admin_cli extends CI_Controller
 
 		// read in the Nodes.nmis file
 		$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis - importing nodes from ' . $nodes_file . PHP_EOL;
-		file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
+		file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 
 		$file_handle = fopen($nodes_file, 'r');
 		$string = fread($file_handle, filesize($nodes_file));
@@ -204,7 +207,7 @@ class Admin_cli extends CI_Controller
 				}
 
 				$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - scanning' . PHP_EOL;
-				file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
+				file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 
 				if ((string)$device->version === 'snmpv2c') {
 					$device->version = '2c';
@@ -249,14 +252,14 @@ class Admin_cli extends CI_Controller
 						$device->last_seen_by = 'snmp nmis import';
 						$this->m_system->update_system($device);
 						$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - update snmp result' . PHP_EOL;
-						file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
+						file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 					} 
 					else {
 						// insert a new device
 						$device->last_seen_by = 'snmp nmis import';
 						$device->system_id = $this->m_system->insert_system($device);
 						$log_stamp = date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - insert snmp result' . PHP_EOL;
-						file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
+						file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 					}
 					// update any network interfaces AND ip addresses retrieved by SNMP
 					$details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
@@ -282,14 +285,14 @@ class Admin_cli extends CI_Controller
 						$device->last_seen_by = 'nmis import';
 						$this->m_system->update_system($device);
 						$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - update basic result' . PHP_EOL;
-						file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
+						file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 					}
 					else {
 						// insert a new device
 						$device->last_seen_by = 'nmis import';
 						$device->system_id = $this->m_system->insert_system($device);
 						$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' admin_cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - new basic result' . PHP_EOL;
-						file_put_contents('/usr/local/open-audit/other/open-audit.log', $log_stamp, FILE_APPEND | LOCK_EX);
+						file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 					}
 				}
 				if (isset($device->system_id) AND (string)$device->system_id !== '') {

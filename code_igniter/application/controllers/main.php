@@ -38,6 +38,11 @@ class main extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		// log the attempt
+		$log_details = new stdClass();
+		$log_details->severity = 6;
+		stdlog($log_details);
+		unset($log_details);
 	}
 
 	public function index()
@@ -1058,11 +1063,20 @@ class main extends MY_Controller
 					}
 					exec($command_string, $output, $return_var);
 					if ($return_var != '0') {
-						$error = 'C:admin_user F:edit_user Admin user password reset attempt for Open-AudIT and Open-AudIT Enterprise has failed';
-						$this->log_function($error);
+						$log_details = new stdClass();
+						$log_details->severity = 5;
+						$log_details->file = 'system';
+						$log_details->message = 'Admin user password reset attempt for Open-AudIT and Open-AudIT Enterprise has failed';
+						stdlog($log_details);
+						unset($log_details);
+
 					} else {
-						$log = 'C:admin_user F:edit_user Admin user password reset successful for Open-AudIT and Open-AudIT Enterprise';
-						$this->log_function($log);
+						$log_details = new stdClass();
+						$log_details->severity = 5;
+						$log_details->file = 'system';
+						$log_details->message = 'Admin user password reset successful for Open-AudIT and Open-AudIT Enterprise';
+						stdlog($log_details);
+						unset($log_details);
 					}
 					$command_string = NULL;
 					$output = NULL;
@@ -1226,7 +1240,7 @@ class main extends MY_Controller
 			### general items ###
 
 			# log file perms
-			$command_string = 'ls -l /usr/local/open-audit/other/open-audit.log | cut -d" " -f1';
+			$command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
 			exec($command_string, $output, $return_var);
 			if (isset($output[0])) {
 				$data['application_log_permission'] = $output[0];
@@ -1466,7 +1480,7 @@ class main extends MY_Controller
 		}
 
 		if ($data['application_log_permission'] != '-rw-rw-r--' and $data['application_log_permission'] != '-rw-rw-r--.') {
-			$hints['application_log_permission'] = 'The permissions on your open-audit log file are not set correctly. This can be fixed by "chmod 664 /usr/local/open-audit/other/open-audit.log" (sans quotes).';
+			$hints['application_log_permission'] = 'The permissions on your open-audit log file are not set correctly. This can be fixed by "chmod 664 /usr/local/open-audit/other/log_system.log" (sans quotes).';
 		}
 
 		if ($data['os_timezone'] != $data['php_timezone'] OR $data['os_timezone'] != $data['application_timezone']) {
@@ -1505,34 +1519,11 @@ class main extends MY_Controller
 		$this->load->view('v_template', $this->data);
 	}
 
-		function ext($extension) {
-			if (!extension_loaded($extension)) {
-				return('n');
-			} else {
-				return('y');
-			}
-		}
-
-	public function log_function($log_details, $display='n')
-	{
-		// setup the log file
-		if ((php_uname('s') == 'Linux') OR (php_uname('s') == 'Darwin')) {
-			$file = "/usr/local/open-audit/other/open-audit.log";
+	function ext($extension) {
+		if (!extension_loaded($extension)) {
+			return('n');
 		} else {
-			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
-		}
-		$log_timestamp = date("M d H:i:s");
-		$log_hostname = php_uname('n');
-		$log_pid = getmypid();
-		$log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
-		$handle = fopen($file, "a");
-		fwrite($handle, $log_line);
-		fclose($handle);
-		if ($display != 'n') {
-			if (isset($_POST['debug']) AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') == true))) {
-				echo "LOG   - " . $log_line;
-			}
+			return('y');
 		}
 	}
-
 }

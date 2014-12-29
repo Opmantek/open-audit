@@ -6,5 +6,8 @@
 .DS_Store
 ._.DS_Store
 other/open-audit.log
+other/log_access.log
+other/log_debug.log
+other/log_system.log
 code_igniter/application/controllers/admin_test_private.php
 ._*

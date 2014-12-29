@@ -132,7 +132,7 @@ function write_log()
 		if [[ $debugging -gt 1 ]]; then
 			echo "Logged: $1"
 		fi
-		echo "$now $system_hostname $$ S:discover_subnet U:$user $1" >> /usr/local/open-audit/other/open-audit.log
+		echo "$now $system_hostname $$ 7 U:$user S:discover_subnet M:$1" >> /usr/local/open-audit/other/log_system.log
 	fi	
 }
 

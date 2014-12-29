@@ -47,6 +47,10 @@ class custom extends MY_Controller
             }
         }
         $this->load->helper(array('form', 'url'));
+        // log the attempt
+        $log_details = new stdClass();
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()

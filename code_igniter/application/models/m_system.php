@@ -55,7 +55,11 @@ class M_system extends MY_Model {
 
 	function create_system_key($details) {
 
-		$log = "M:system F:create_system_key System Key being generated for $details->hostname"; $this->log_event($log);
+		$log_details = new stdClass();
+		$log_details->message = 'System Key being generated for ' . $details->hostname;
+		$log_details->severity = 7;
+		$log_details->file = 'system';
+		stdlog($log_details);
 
 		$details = (object) $details;
 		if (!isset($details->system_key)) {
@@ -76,14 +80,16 @@ class M_system extends MY_Model {
 			isset($details->hostname) and $details->hostname != '') { 
 				$details->system_key = $details->uuid . "-" . $details->hostname; 
 				$details->system_key_type = 'uuho';
-				$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type uuho"; $this->log_event($log);
+				$log_details->message = "System Key is $details->system_key for $details->hostname type uuho";
+				stdlog($log_details);
 		}
 
 		# this is anything that has a FQDN
 		if  ((isset($details->fqdn) and $details->fqdn != '') and ($details->system_key_type != 'uuho')) {
 			$details->system_key = $details->fqdn;
 			$details->system_key_type = 'fqdn';
-			$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type fqdn"; $this->log_event($log);
+			$log_details->message = "System Key is $details->system_key for $details->hostname type fqdn";
+			stdlog($log_details);
 		}
 
 		# We might have only a serial number
@@ -99,7 +105,8 @@ class M_system extends MY_Model {
 				if ($details->system_key_type  != 'uuho' and $details->system_key_type != 'fqdn') {
 					$details->system_key = $details->type . "_" . $details->serial;
 					$details->system_key_type = 'tyse';
-					$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type tyse"; $this->log_event($log);
+					$log_details->message = "System Key is $details->system_key for $details->hostname type tyse";
+					stdlog($log_details);
 				}
 			}
 		}
@@ -111,12 +118,17 @@ class M_system extends MY_Model {
 
 			$details->system_key = $details->man_ip_address;
 			$details->system_key_type = 'ipad';
-			$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type ipad"; $this->log_event($log);
+			$log_details->message = "System Key is $details->system_key for $details->hostname type ipad";
+			stdlog($log_details);
 		}
 
 		if ($details->system_key == '') {
-			$log = "M:system F:create_system_key System Key is blank for $details->hostname ERROR"; $this->log_event($log);
+			$log_details->message = "System Key is blank for $details->hostname ERROR";
+			$log_details->severity = 5;
+			stdlog($log_details);
 		}
+
+		unset($log_details);
 		return $details->system_key;
 	}
 
@@ -128,6 +140,10 @@ class M_system extends MY_Model {
 		$details = (object) $details;
 		$details->system_id = '';
 
+		$log_details = new stdClass();
+		$log_details->severity = 7;
+		$log_details->file = 'system';
+
 		# check system_key
 		if (isset($details->system_key) and $details->system_id == '') {
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
@@ -136,7 +152,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on system_key for " . ip_address_from_db($details->man_ip_address); $this->log_event($log);
+				$log_details->message = 'HIT on system_key for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 
 		}
 
@@ -149,7 +166,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on truncated system_key for " . ip_address_from_db($details->man_ip_address); $this->log_event($log);
+				$log_details->message = 'HIT on truncated system_key for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 
 		}
 
@@ -162,7 +180,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on hostname + uuid system_key for " . ip_address_from_db($details->man_ip_address); $this->log_event($log);
+				$log_details->message = 'HIT on hostname + uuid system_key for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 
 		}
 
@@ -174,7 +193,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on fqdn for " . ip_address_from_db($details->man_ip_address); $this->log_event($log);
+				$log_details->message = 'HIT on fqdn for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 
 		}
 
@@ -187,7 +207,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on host + domain for " . ip_address_from_db($details->man_ip_address); $this->log_event($log);
+				$log_details->message = 'HIT on host + domain for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 			
 		}
 
@@ -208,7 +229,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0 ) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on mac address for $details->man_ip_address"; $this->log_event($log);
+				$log_details->message = 'HIT on mac address for ' . $details->man_ip_address . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			}
 		}
 
@@ -229,7 +251,8 @@ class M_system extends MY_Model {
 						$row = $query->row();
 						if (count($row) > 0 ) { 
 							$details->system_id = $row->system_id;
-							$log = "M:system F:find_system HIT on mac address from audit result for " . strtolower($mac) . " (System ID " . $row->system_id . ")"; $this->log_event($log);
+							$log_details->message = 'HIT on mac address from audit result for ' . strtolower($mac) . ' (System ID ' . $row->system_id . ')';
+							stdlog($log_details);
 						}
 					}
 				}
@@ -250,7 +273,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) {  
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on man_ip_address == system_key for $details->man_ip_address"; $this->log_event($log);
+				$log_details->message = 'HIT on man_ip_address == system_key for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+				stdlog($log_details);
 			}
 
 
@@ -261,7 +285,8 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) {  
 					$details->system_id = $row->system_id;
-					$log = "M:system F:find_system HIT on man_ip_address for $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on man_ip_address for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 
@@ -277,7 +302,8 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id;
-					$log = "M:system F:find_system HIT on ip_address in network table for $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on ip_address in network table for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 		}
@@ -304,7 +330,8 @@ class M_system extends MY_Model {
 					$row = $query->row();
 					if (count($row) > 0) { 
 						$details->system_id = $row->system_id;
-						$log = "M:system F:find_system HIT on serial for $details->man_ip_address"; $this->log_event($log);
+						$log_details->message = 'HIT on serial for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+						stdlog($log_details);
 					}
 				}
 			}
@@ -322,7 +349,8 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id;
-					$log = "M:system F:find_system HIT on man_serial for $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on man_serial for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 		}
@@ -346,7 +374,8 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id; 
-					$log = "M:system F:find_system HIT on hostname for $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on hostname for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 
@@ -364,7 +393,8 @@ class M_system extends MY_Model {
 						$row = $query->row();
 						if (count($row) > 0) { 
 							$details->system_id = $row->system_id;
-							$log = "M:system F:find_system HIT on hostname short for $details->man_ip_address"; $this->log_event($log);
+							$log_details->message = 'HIT on hostname short for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+							stdlog($log_details);
 						}
 					}
 				}
@@ -381,19 +411,21 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id; 
-					$log = "M:system F:find_system HIT on short hostname $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on short hostname ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 		}
 
 		$temp = @(string)$details->system_id;
 		if (is_null($temp) OR $temp == '') { 
-			$log = "M:system F:find_system System ID not found"; 
-			$this->log_event($log);
+			$log_details->message = 'System ID not found for ' . $details->man_ip_address;
+			stdlog($log_details);
 		} else {
-			$log = "M:system F:find_system Returning System ID " . $details->system_id; 
-			$this->log_event($log);
+			$log_details->message = 'Returning System ID ' . $details->system_id . ' for ' . $details->man_ip_address;
+			stdlog($log_details);
 		}
+		unset($log_details);
 		return $details->system_id;
 	}
 
@@ -800,8 +832,11 @@ class M_system extends MY_Model {
 		# this is an insert - we do NOT want a system_id
 		unset($details->system_id);
 
-		$log = "M:system F:insert_system System insert start for " . ip_address_from_db($details->man_ip_address) . " ($details->hostname)";
-		$this->log_event($log);
+		$log_details = new stdClass();
+		$log_details->message = 'System insert start for ' . ip_address_from_db($details->man_ip_address) . ' (' . $details->hostname . ')';
+		$log_details->severity = 7;
+		$log_details->file = 'system';
+		stdlog($log_details);
 
 		# ensure we have something not null for all the below
 		if (!isset($details->timestamp) or $details->timestamp == '') { $details->timestamp = date('Y-m-d H:i:s'); }
@@ -1032,9 +1067,9 @@ class M_system extends MY_Model {
 			$query = $this->db->query($sql, $data);
 		}
 
-		$log = "M:system F:insert_system System insert end for " . ip_address_from_db($details->man_ip_address) . " ($details->hostname) (System ID $details->system_id)";
-		$this->log_event($log);
-
+		$log_details->message = 'System insert end for ' . ip_address_from_db($details->man_ip_address) . ' (' . $details->hostname . ') (System ID ' . $details->system_id . ')';
+		stdlog($log_details);
+		unset($log_details);
 		return $details->system_id;
 	}
 
@@ -1054,12 +1089,17 @@ class M_system extends MY_Model {
 		$details = (object) $details;
 
 		if (isset($details->man_ip_address) and $details->man_ip_address != '') {
-			$temp_ip = $details->man_ip_address;
+			$temp_ip = $details->man_ip_address . ' ';
 		} else {
 			$temp_ip = '';
 		}
-		$log = "M:system F:update_system System update start for " . ip_address_from_db($temp_ip) . " ($details->hostname) (System ID $details->system_id)";
-		$this->log_event($log);
+
+		$log_details = new stdClass();
+		$log_details->message = 'System update start for ' . ip_address_from_db($temp_ip) . '(' . $details->hostname . ') (System ID ' . $details->system_id . ')';
+		$log_details->severity = 7;
+		$log_details->file = 'system';
+		stdlog($log_details);
+
 		unset($temp_ip);
 
 		# if we're updating and we don't have a real hostname, only the ip address
@@ -1423,12 +1463,14 @@ class M_system extends MY_Model {
 			}
 		}
 		if (isset($details->man_ip_address) and $details->man_ip_address != '') {
-			$temp_ip = $details->man_ip_address;
+			$temp_ip = $details->man_ip_address . ' ';
 		} else {
 			$temp_ip = '';
 		}
-		$log = "M:system F:update_system System update end for " . ip_address_from_db($temp_ip) . " ($details->hostname) (System ID $details->system_id)";
-		$this->log_event($log);
+
+		$log_details->message = 'System update end for ' . ip_address_from_db($temp_ip) . '(' . $details->hostname . ') (System ID ' . $details->system_id . ')';
+		stdlog($log_details);
+		unset($log_details);
 		unset($temp_ip);
 	}
 
@@ -1717,32 +1759,5 @@ class M_system extends MY_Model {
 	    }
 		return($decoded_access_details);
 	}
-
-
-    public function log_event($log_details, $display='y')
-    {
-        # setup the log file
-        if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
-            $file = "/usr/local/open-audit/other/open-audit.log";
-        } else {
-            $file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
-        }
-
-        $log_timestamp = date("M d H:i:s");
-        $log_hostname = php_uname('n');
-        $log_pid = getmypid();
-        $log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
-        $handle = fopen($file, "a");
-        fwrite($handle, $log_line);
-        fclose($handle);
-        if ($display != 'n') {
-            if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                echo "LOG   - " . $log_line;
-            }
-        }
-    }
-
 }
-
-
 ?>

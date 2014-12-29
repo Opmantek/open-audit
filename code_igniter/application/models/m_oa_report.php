@@ -146,6 +146,9 @@ class M_oa_report extends MY_Model {
 		$query = $this->db->query('SET @group = ?', $data);
 
 		$data = array($first_attribute);
+
+		#$sql = str_ireplace('WHERE ' , 'WHERE ' . $log_message, $sql);
+
 		$query = $this->db->query($sql, $data);
 
 		return($query->result());

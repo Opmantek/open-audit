@@ -34,7 +34,7 @@
 ?>
 <div id="menu" style="float: left; width: 100%; ">
 <ul id="nav">
-	<li><a href='<?php echo base_url()?>index.php/main'><?php echo mb_strtoupper(__('Home'))?></a></li>
+	<li><a href='<?php echo base_url()?>index.php/main/list_groups'><?php echo mb_strtoupper(__('Home'))?></a></li>
 	<?php
 	# add any custom reports to the $menu array
 	# leave the ID blank
@@ -168,8 +168,10 @@
 			</li>
 			<li><a href='javascript:void(0)'><?php echo __('Logs')?></a>
 				<ul>
-					<li><a href='<?php echo base_url()?>index.php/admin/view_log'><?php echo __('View Log')?></a></li>
-					<li><a href='<?php echo base_url()?>index.php/admin/purge_log'><?php echo __('Purge Log')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin/view_log/access'><?php echo __('View Access Log')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin/view_log/system'><?php echo __('View System Log')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin/purge_log/access'><?php echo __('Purge Access Log')?></a></li>
+					<li><a href='<?php echo base_url()?>index.php/admin/purge_log/system'><?php echo __('Purge System Log')?></a></li>
 				</ul>
 			</li>
 			<li><a href='javascript:void(0)'><?php echo __('Organisations')?></a>

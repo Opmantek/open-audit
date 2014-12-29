@@ -610,7 +610,7 @@ function write_log()
 	if syslog = "y" then
 		on error resume next
 		dim objTS
-		set objTS = objFSO.OpenTextFile("c:\xampplite\open-audit\other\open-audit.log", FOR_APPENDING, True)
+		set objTS = objFSO.OpenTextFile("c:\xampplite\open-audit\other\log_system.log", FOR_APPENDING, True)
 		error_returned = Err.Number
 		error_description = Err.Description
 		on error goto 0

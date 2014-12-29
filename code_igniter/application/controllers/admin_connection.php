@@ -71,7 +71,10 @@ class Admin_connection extends MY_Controller
 				redirect('login/index');
 			}
 		}
-		$this->log_event();
+
+		$log_details = new stdClass();
+		stdlog($log_details);
+        unset($log_details);
 	}
 
 	/**
