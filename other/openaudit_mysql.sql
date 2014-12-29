@@ -1642,7 +1642,7 @@ CREATE TABLE `sys_sw_windows` (
   `windows_version` varchar(20) NOT NULL default '',
   `windows_install_directory` varchar(20) NOT NULL default '',
   `windows_active_directory_ou` varchar(200) NOT NULL default '',
-  `windows_workgroup` varchar(255) NOT NULL default ''
+  `windows_workgroup` varchar(255) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`windows_id`),
