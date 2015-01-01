@@ -74,7 +74,11 @@ class M_oa_config extends MY_Model {
 		$data = array("$config_name");
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
-		return ($row->config_value);
+		if (isset($row->config_value)) {
+			return ($row->config_value);
+		} else {
+			return;
+		}
 	}
 
 	function update_config($config_name, $config_value, $user_id, $timestamp) {
