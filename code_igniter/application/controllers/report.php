@@ -606,13 +606,16 @@ class report extends MY_Controller
 	 */
 	public function json_dates() {
 
-		$debug = 'n';
 
-		$start_date = date('Y-m-d', strtotime('-30 days'));
-		$end_date = date('Y-m-d');
-		$report = 'new_devices';
+		$debug = 'n';
+		if ($debug == 'y') {
+			$time_start = new DateTime();
+			$start = $time_start->getTimestamp();
+			echo "<pre>\n";
+		}
 
 		// make a default start date of 30 days ago if none provided
+		$start_date = date('Y-m-d', strtotime('-30 days'));
 		// check if GET start date passed
 		$get_start_date = $this->uri->segment(4, 0);
 		if (isset($get_start_date) and date('Y-m-d', strtotime($get_start_date)) and $get_start_date != '0') {
@@ -624,7 +627,8 @@ class report extends MY_Controller
 			$start_date = $post_start_date;
 		} 
 		
-		// make a default end dat of today if none provided
+		// make a default end date of today if none provided
+		$end_date = date('Y-m-d');
 		// check if GET end date passed
 		$get_end_date =  $this->uri->segment(5, 0);
 		if (isset($get_end_date) and date('Y-m-d', strtotime($get_end_date)) and $get_end_date != '0') {
@@ -636,6 +640,8 @@ class report extends MY_Controller
 			$end_date = $post_end_date;
 		}
 
+		// set the default repot name
+		$report = 'new_devices';
 		// get the report name if provided
 		$post_report = $this->input->post('report');
 		if (isset($post_report) and $post_report != '') {
@@ -646,32 +652,70 @@ class report extends MY_Controller
 		$report = str_replace("%20", " ", $report);
 		$report = str_replace("+", " ", $report);
 
+
 		// define the SQL for the report
 		switch($report) {
 			case "missing_devices":
-			$sql = "SELECT COUNT(system_id) as count FROM system WHERE last_seen < DATE_SUB('?', INTERVAL 30 DAY) AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000'";
+			#$sql = "SELECT DATE_ADD(GREATEST(date(system.timestamp), date(system.last_seen)), INTERVAL 30 DAY) as 'date', count(system_id) as count FROM system WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL 30 day) GROUP BY GREATEST(date(system.timestamp), date(system.last_seen))";
+			$sql = "SELECT COUNT(ftd.system_id) AS count, DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date' FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM ( SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system_id, first_timestamp, timestamp, last_seen FROM system WHERE man_ip_address <> '' AND man_ip_address <> '0.0.0.0' AND man_ip_address <> '000.000.000.000' and man_status = 'production') ftd ON (DATE(ftd.timestamp) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc;";
 			$this->data['heading'] = "Devices Not Seen 30";
+			$data = array($end_date, $end_date);
 			break;
 
 			case "new_software":
-			$sql = "SELECT COUNT(DISTINCT(oa_alert_log.alert_details)) as count FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) WHERE alert_table = 'sys_sw_software' AND alert_details LIKE 'software installed - %' AND DATE(oa_alert_log.timestamp) = '?' AND system.man_status = 'production'";
+			$sql = "SELECT DATE(oa_alert_log.timestamp) AS 'date', COUNT(DISTINCT(oa_alert_log.alert_details)) as count FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) WHERE alert_table = 'sys_sw_software' AND alert_details LIKE 'software installed - %' AND DATE(oa_alert_log.timestamp) >= ? AND DATE(oa_alert_log.timestamp) <= ? AND system.man_status = 'production' GROUP BY DATE(oa_alert_log.timestamp)";
 			$this->data['heading'] = "Software Discovered 30";
+			$data = array($start_date, $end_date);
 			break;
 
 			case "new_devices":
-			$sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?' AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' ";
+			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system WHERE DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' ";
 			$this->data['heading'] = "Devices Discovered 30";
+			$data = array($start_date, $end_date);
 			break;
 
 			default:
-			$sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?' AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000'";
+			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system WHERE DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' ";
 			$this->data['heading'] = "Devices Discovered 30";
+			$data = array($start_date, $end_date);
 			break;
 		}
 
-		# debug output if required
+		$return_json = array();
+		$each_json = array();
+
+		$query = $this->db->query($sql, $data);
+		$result = $query->result();
+
+		$dataset = array();
+		foreach ($result as $line) {
+			$dataset[$line->date] = $line->count;
+		}
+
+		$begin = new DateTime( $start_date );
+		$end = new DateTime( $end_date );
+		$interval = DateInterval::createFromDateString('1 day');
+		$period = new DatePeriod($begin, $interval, $end);
+		foreach ( $period as $dt ) {
+			$the_date = $dt->format( "Y-m-d" );
+			if (!isset($dataset[$the_date])) {
+				$dataset[$the_date] = 0;
+			}
+		}
+		ksort($dataset);
+
+		foreach ($dataset as $key => $value) {
+			if (isset($key) and $key != '') {
+				$mktime_array = explode('-', $key);
+				$timestamp = gmmktime(0, 12, 0, intval($mktime_array[1]), intval($mktime_array[2]), intval($mktime_array[0]));
+				$each_json = array('x' => intval($timestamp), 'y' => intval($value) );
+				$return_json[] = $each_json;
+			}
+		}
+
+		$this->data['query'] = $return_json;
+		
 		if ($debug == 'y') {
-			echo "<pre>\n";
 			echo "GSD: " . $get_start_date . "\n";
 			echo "PSD: " . $post_start_date . "\n";
 			echo "GED: " . $get_end_date . "\n";
@@ -679,38 +723,14 @@ class report extends MY_Controller
 			echo "Start Date: " . $start_date . "<br />\n";
 			echo "End Date: " . $end_date . "<br />\n";
 			echo "Report: " . $report . "\n";
-			echo "SQL: " . $sql . "\n";
-		}
-
-		$return_json = array();
-		$each_json = array();
-	 
-		while (strtotime($start_date) <= strtotime($end_date)) {
-			$each_sql = str_replace('?', $start_date, $sql);
-
-			# below uses PHP to create the timestamp
-			$mktime_array = explode('-', $start_date);
-			$timestamp = gmmktime(0, 12, 0, $mktime_array[1], $mktime_array[2], $mktime_array[0]);
-			# we could alternatively use MySQL to derive this by
-			# inserting UNIX_TIMESTAMP('?') as timestamp into the select
-
-			if ($debug == 'y') {
-				echo $each_sql . "<br />\n";
-			}
-			$query = $this->db->query($each_sql);
-			$result = $query->result();
-
-			foreach ($result as $key) {
-				$each_json = array('x' => intval($timestamp), 'y' => intval($key->count) );
-				$return_json[] = $each_json;
-			}
-			$start_date = date ("Y-m-d", strtotime("+1 day", strtotime($start_date)));
-		}
-
-		
-		$this->data['query'] = $return_json;
-		
-		if ($debug == 'y') {
+			echo "SQL: " . $this->db->last_query() . "\n";
+			$time_end = new DateTime();
+			$end = $time_end->getTimestamp();
+			$elapsed_time = intval($end) - intval($start);
+			echo "Elapsed: " . $elapsed_time . "\n";
+			echo "RESULT:\n";
+			print_r($result);
+			echo "RETURNED JSON:\n";
 			print_r($return_json);
 		}
 
