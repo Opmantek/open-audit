@@ -349,7 +349,7 @@ class Admin extends MY_Controller {
 		// if present, read this specified log file
 		$temp = @$this->uri->segment(3);
 		if ($temp != '') {
-			if (is_int($temp)) {
+			if (is_numeric($temp)) {
 				$lines = intval($temp);
 			} else {
 				if ($temp == 'system' OR $temp == 'access' OR $temp == 'debug') {
@@ -359,7 +359,7 @@ class Admin extends MY_Controller {
 		}
 		$temp = @$this->uri->segment(4);
 		if ($temp != '') {
-			if (is_int($temp)) {
+			if (is_numeric($temp)) {
 				$lines = intval($this->uri->segment(4));
 			}
 		}
