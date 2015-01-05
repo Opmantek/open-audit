@@ -1655,49 +1655,49 @@ class M_system extends MY_Model {
 	        $decoded_access_details->windows_domain = "";
 	    }
 	    # we now have any existing credentials - compare and update if required
-	    if (isset($credentials->ip_address)) {
+	    if (isset($credentials->ip_address) AND $credentials->ip_address != '') {
 	    	$new_credentials['ip_address'] = (string)$credentials->ip_address;
 	    } else {
 	    	$new_credentials['ip_address'] = (string)$decoded_access_details->ip_address;
 	    }
 
-	    if (isset($credentials->snmp_community)) {
+	    if (isset($credentials->snmp_community) AND $credentials->snmp_community != '') {
 	    	$new_credentials['snmp_community'] = (string)$credentials->snmp_community;
 	    } else {
 	    	$new_credentials['snmp_community'] = $decoded_access_details->snmp_community;
 	    }
 
-	    if (isset($credentials->snmp_version)) {
+	    if (isset($credentials->snmp_version) AND $credentials->snmp_version != '') {
 	    	$new_credentials['snmp_version'] = (string)$credentials->snmp_version;
 	    } else {
 	    	$new_credentials['snmp_version'] = (string)$decoded_access_details->snmp_version;
 	    }
 
-	    if (isset($credentials->ssh_username)) {
+	    if (isset($credentials->ssh_username) AND $credentials->ssh_username != '') {
 	    	$new_credentials['ssh_username'] = (string)$credentials->ssh_username;
 	    } else {
 	    	$new_credentials['ssh_username'] = (string)$decoded_access_details->ssh_username;
 	    }
 
-	    if (isset($credentials->ssh_password)) {
+	    if (isset($credentials->ssh_password) AND $credentials->ssh_password != '') {
 	    	$new_credentials['ssh_password'] = (string)$credentials->ssh_password;
 	    } else {
 	    	$new_credentials['ssh_password'] = (string)$decoded_access_details->ssh_password;
 	    }
 	    
-	    if (isset($credentials->windows_username)) {
+	    if (isset($credentials->windows_username) AND $credentials->windows_username != '') {
 	    	$new_credentials['windows_username'] = (string)$credentials->windows_username;
 	    } else {
 	    	$new_credentials['windows_username'] = (string)$decoded_access_details->windows_username;
 	    }
 
-	    if (isset($credentials->windows_password)) {
+	    if (isset($credentials->windows_password) AND $credentials->windows_password != '') {
 	    	$new_credentials['windows_password'] = (string)$credentials->windows_password;
 	    } else {
 	    	$new_credentials['windows_password'] = (string)$decoded_access_details->windows_password;
 	    }
 
-	    if (isset($credentials->windows_domain)) {
+	    if (isset($credentials->windows_domain) AND $credentials->windows_domain != '') {
 	    	$new_credentials['windows_domain'] = (string)$credentials->windows_domain;
 	    } else {
 	    	$new_credentials['windows_domain'] = (string)$decoded_access_details->windows_domain;

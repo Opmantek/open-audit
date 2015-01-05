@@ -69,6 +69,114 @@ class discovery extends CI_Controller
 
 
 
+public function discover_list($ids = '')
+	{
+		// take a list of system_id's and run discovery on them
+		// do not wait for the return result, go back to the webpage ASAP
+		// 
+		// ids should be a comma separated list of device id's (integers) - no spaces
+		// this will be converted to an array (system_ids)
+
+		$log_details = new stdClass();
+		$log_details->severity = 6;
+
+		$this->load->model('m_oa_general');
+		$this->load->model('m_system');
+		$this->load->library('encrypt');
+		$this->load->helper('url');
+		$system_ids = '';
+		
+		// accept a list passed into the function from PHP
+		if ($ids != '') {
+			$system_ids = explode(',', $ids);
+		}
+
+		// accept the "ids" POST variable as a list
+		$test = @$this->input->post('ids');
+		if ($test != '' AND $system_ids == '') {
+			$system_ids = explode(',', $test);
+		}
+		unset($test);
+
+		// accept a GET variable that's a comma separated list
+		$test = @$this->uri->segment(3);
+		if ($test != '' AND $system_ids == '') {
+			$system_ids = explode(',', $test);
+		}
+		unset($test);
+
+		// accept a redirect from bulk credential update
+		$test = @$this->session->flashdata('discover_list');
+		if (strlen($test) > 0 AND $system_ids == '') {
+			$system_ids = explode(',', $test);
+		}
+		unset($test);
+
+		// make sure we have some ids
+		if (count($system_ids) == 0) {
+			return;
+		}
+
+		// spawn a discovery process for each system_id
+		foreach ($system_ids as $key => $value) {
+			$timestamp = date('Y-m-d H:i:s');
+			$system_id = $value;
+			$ip_address = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $system_id));
+			$credentials = $this->m_system->get_credentials($system_id);
+			$credentials->last_user = $this->session->userdata('user_full_name');
+			$encoded = json_encode($credentials);
+			$credentials = $this->encrypt->encode($encoded);
+			// make sure we don't have any '/' characters as it breaks the SQL storage
+			$i = 0;
+			do {
+				if (strpos($credentials, "\"") != FALSE) {
+					$credentials = $this->encrypt->encode($encoded);
+				} else {
+					$i = 1;
+				}
+			} while ($i = 0);
+			// store it in the DB
+			$sql = 'INSERT INTO oa_temp (temp_id, temp_name, temp_value, temp_timestamp) VALUES (NULL, "Subnet Credentials - ' . $ip_address . '", "' . $credentials . '", "' . $timestamp . '")';
+			$query = $this->db->query($sql);
+			$credentials = "";
+
+			if ((php_uname('s') == 'Linux') OR (php_uname('s') == 'Darwin')) {
+				$filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/open-audit/other";
+			} else {
+				$filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "\\open-audit\\other";
+			}
+			// set the URL to submit to
+			// TODO - check this on the form
+			$i = explode('/', base_url());
+			$url = str_replace($i[2], $this->data['config']->default_network_address, base_url());
+			if ((php_uname('s') == 'Linux') OR (php_uname('s') == 'Darwin')) {
+				// run the script and continue (do not wait for result)
+				$command_string = "nohup $filepath/discover_subnet.sh subnet_range=$ip_address url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
+				@exec($command_string, $output, $return_var);
+				if ($return_var != '0') {
+					$error = 'Discovery subnet starting script discover_subnet.sh (' . $ip_address . ') has failed';
+					$log_details->message = $error;
+					$log_details->severity = 5;
+					stdlog($log_details);
+				}
+				$command_string = NULL;
+				$output = NULL;
+				$return_var = NULL;
+			}
+			if (php_uname('s') == 'Windows NT') {
+				// run the script and continue (do not wait for result)
+				$command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet_range=$ip_address url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+				pclose(popen($command_string,"r"));
+			}
+		}
+		// remove the log object
+		unset($log_details);
+		// redirect to the log page
+		redirect('admin/view_log');
+	}
+
+
+
 
 	public function discover_active_directory()
 	{
@@ -260,6 +368,18 @@ class discovery extends CI_Controller
 		} // end of submit / not submit
 	}
 
+
+
+
+
+
+
+
+
+
+
+
+	
 
 
 
@@ -703,8 +823,18 @@ class discovery extends CI_Controller
 				$filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . '\\open-audit\\other';
 			}
 
-			$this->load->helper('url');
 			$this->load->helper('xml');
+			$xml_input = $_POST['form_details'];
+			try {
+				$xml = new SimpleXMLElement($xml_input);
+			} catch (Exception $error) {
+				// not a valid XML string
+				$log_details->message = 'Invalid XML input for discovery from ' . $_SERVER['REMOTE_ADDR'];
+				stdlog($log_details);
+				exit;
+			}
+
+			$this->load->helper('url');
 			$this->load->library('encrypt');
 			if (extension_loaded('snmp')) {
 				$this->load->helper('snmp');
@@ -719,15 +849,6 @@ class discovery extends CI_Controller
 			$this->load->model('m_sys_man_audits');
 			$this->load->model('m_alerts');
 			$timestamp = date('Y-m-d H:i:s');
-			$xml_input = $_POST['form_details'];
-			try {
-				$xml = new SimpleXMLElement($xml_input);
-			} catch (Exception $error) {
-				// not a valid XML string
-				$log_details->message = 'Invalid XML input for discovery from ' . $_SERVER['REMOTE_ADDR'];
-				stdlog($log_details);
-				exit;
-			}
 
 			$count = 0;
 			foreach ($xml->children() AS $details) {
@@ -842,6 +963,7 @@ class discovery extends CI_Controller
 					}
 
 					$details->last_user = $details->last_seen_user;
+					$log_details->user = $details->last_seen_user;
 
 					// create the URL for use by the audit scripts
 					if (isset($_POST['network_address']) AND $_POST['network_address'] > '') {

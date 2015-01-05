@@ -369,19 +369,27 @@ class main extends MY_Controller
 			}
 		}
 
-		# create the SNMP credentials
-		if (($_POST['snmp_community'] > '') and ($_POST['snmp_version'] > '')) {
+		$discover_ids = '';
+		$credentials = new stdClass();
+		$credentials->windows_username = @$this->input->post('windows_username');
+		$credentials->windows_password = @$this->input->post('windows_password');
+		$credentials->windows_domain = @$this->input->post('windows_domain');
+		$credentials->ssh_username = @$this->input->post('ssh_username');
+		$credentials->ssh_password = @$this->input->post('ssh_password');
+		$credentials->snmp_version = @$this->input->post('snmp_version');
+		$credentials->snmp_community = @$this->input->post('snmp_community');
+
+		if ((isset($credentials->windows_username) AND $credentials->windows_username != '') OR
+			(isset($credentials->windows_password) AND $credentials->windows_password != '') OR
+			(isset($credentials->windows_domain) AND $credentials->windows_domain != '') OR
+			(isset($credentials->ssh_username) AND $credentials->ssh_username != '') OR
+			(isset($credentials->ssh_password) AND $credentials->ssh_password != '') OR
+			(isset($credentials->snmp_version) AND $credentials->snmp_version != '') OR
+			(isset($credentials->snmp_community) AND $credentials->snmp_community != '')) {
 			foreach ($data['systems'] as $system) {
-				$encode['ip_address'] = ip_address_from_db($this->m_system->check_man_ip_address($system[1]));
-				# make sure the device in question actually has an ip address
-				if (($encode['ip_address'] > '') and ($encode['ip_address'] <> '0.0.0.0')) {
-					$encode['snmp_version'] = $_POST['snmp_version'];
-					$encode['snmp_community'] = $_POST['snmp_community'];
-					$encoded = json_encode($encode);
-					$encoded = $this->encrypt->encode($encoded);
-					$this->m_system->update_system_man($system[1], 'access_details', $encoded);
-					$this->m_audit_log->insert_audit_event('access details', 'Details changed (not displayed here for security reasons).', $system[1]);
-				}
+				$credentials->ip_address = ip_address_from_db($this->m_system->check_man_ip_address($system[1]));
+				$system_id = $system[1];
+				$this->m_system->update_credentials($credentials, $system_id);
 			}
 		}
 
@@ -395,13 +403,25 @@ class main extends MY_Controller
 				}
 			}
 		}
+
+		$details = new stdClass();
 		foreach ($data['systems'] as $system) {
 			$details->system_id = $system[1];
 			$details->type = 'computer';
+			$discover_ids .= $system[1] . ',';
 			$this->m_oa_group->update_system_groups($details);
 		}
-		redirect('/main/list_devices/' . $group_id);
+
+		$test = $this->input->post('run_discovery');
+		if (isset($test) AND $test == 'yes') {
+			$discover_ids = substr($discover_ids, 0, -1);
+			$this->session->set_flashdata('discover_list', $discover_ids);
+			redirect('discovery/discover_list');
+		} else {
+			redirect('/main/list_devices/' . $group_id);
+		}
 	}
+
 
 	public function list_groups()
 	{
