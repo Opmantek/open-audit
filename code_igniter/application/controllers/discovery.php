@@ -1424,18 +1424,11 @@ public function discover_list($ids = '')
 						stripos($details->sysDescr, 'dd-wrt') !== FALSE) {
 						# we have a DD-WRT based system with SSH open
 						# run some DD-WRT specific commands
-						$command = 'nvram get DD_BOARD';
-						$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " " . $command;
-						exec($command_string, $output, $return_var);
-						if ($display == 'y') {
-							echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-							echo 'DEBUG - Return Value: ' . $return_var . "\n";
-							echo "DEBUG - Command Output:\n";
-							print_r($output);
-						}
-						if ($return_var == 0) {
+						$ssh_command = "sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " nvram get DD_BOARD";
+						$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+						if ($ssh_result['status'] == 0) {
 							# success
-							$temp_array = explode(' ', $output[count($output)-1]);
+							$temp_array = explode(' ', end($ssh_result['output']));
 							$details->manufacturer = $temp_array[0];
 							$details->model = $temp_array[1];
 							unset($temp_array);
@@ -1452,9 +1445,8 @@ public function discover_list($ids = '')
 
 
 					// SSH based audit (usually Linux, Unix, OSX, AIX or ESX)
-					if ($details->ssh_status == "true" and 
-						(!isset($details->sysDescr) OR 
-						(isset($details->sysDescr) AND stripos($details->sysDescr, 'dd-wrt') === FALSE ) ) ) {
+					if ($details->ssh_status == "true" AND (!isset($details->sysDescr) OR (isset($details->sysDescr) AND stripos($details->sysDescr, 'dd-wrt') === FALSE ) ) ) {
+						$error = '';
 						if ($details->ssh_username == '' OR $details->ssh_password == '') {
 							$script_string = "audit_linux.sh strcomputer=" . $details->man_ip_address . " submit_online=y create_file=n struser=" . $details->ssh_username . " strpass=" . $details->ssh_password . " debugging=0";
 							$log_details->message = "No credentials supplied for SSH audit for $details->man_ip_address (System ID $details->system_id)";
@@ -1468,41 +1460,30 @@ public function discover_list($ids = '')
 									echo "DEBUG - struser: " . $details->ssh_username . "\n";
 									echo "DEBUG - strpass: " . $details->ssh_password . "\n";
 								}
-								$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " uname ";
-								exec($command_string, $output, $return_var);
-								if ($display == 'y') {
-									echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-									echo 'DEBUG - Return Value: ' . $return_var . "\n";
-									echo "DEBUG - Command Output:\n";
-									print_r($output);
-								}
-								if ($return_var != '0') {
+								$ssh_command = "sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " uname ";
+								$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+								if ($ssh_result['status'] != '0') {
 									$error = 'Audit routine for SSH audit on ' . $details->man_ip_address . ' failed to run uname on target'; 
 									$log_details->message = $error;
 									stdlog($log_details);
 									if ($display == 'y') {
 										echo "DEBUG - Running with 'ssh -v' for your inspection. Possible credential failure.\n";
-										$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -v -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " uname 2>&1";
-										exec($command_string, $output, $return_var);
-										echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-										echo 'DEBUG - Return Value: ' . $return_var . "\n";
-										echo "DEBUG - Command Output:\n";
-										print_r($output);
+										$ssh_command = "sshpass ssh -v -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " uname 2>&1";
+										$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
 									}
 								} else {
 
 									// Linux, Darwin, AIX, VMKernel
-									if (isset($output[0]) AND $output[0] > '') {
-										$remote_os = $output[0];
+									if (isset($ssh_result['output'][0]) AND $ssh_result['output'][0] > '') {
+										$remote_os = $ssh_result['output'][0];
 									} else {
 										$remote_os = "";
 									}
 									if ($display == 'y') {
 										echo "DEBUG - Remote OS: " . $remote_os . "\n";
 									}
-									$command_string = NULL;
-									$output = NULL;
-									$return_var = NULL;
+									unset($ssh_command);
+									unset($ssh_result);
 
 									if (strtolower($remote_os) === 'linux') { $audit_script = 'audit_linux.sh'; }
 									if (strtolower($remote_os) === 'darwin') { $audit_script = 'audit_osx.sh'; }
@@ -1510,72 +1491,50 @@ public function discover_list($ids = '')
 									if (strtolower($remote_os) === 'vmkernel') { $audit_script = 'audit_esxi.sh'; }
 
 									if ($error == '' and $audit_script != '') {
-										$error = '';
 										$log_details->message = 'Attempting SSH audit for discovery on ' . $details->man_ip_address . ' (' . $remote_os . ')'; 
 										stdlog($log_details);
 
 										// Attempt to copy the audit script
-										$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . $filepath . '/' . $audit_script . ' ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ':/tmp/ ';
-										exec($command_string, $output, $return_var);
-										if ($display == 'y') {
-											echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-											echo 'DEBUG - Return Value: ' . $return_var . "\n";
-											echo "DEBUG - Command Output:\n";
-											print_r($output);
-										}
-										if ($return_var != '0') {
+										$ssh_command = 'sshpass scp -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . $filepath . '/' . $audit_script . ' ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ':/tmp/ ';
+										$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+										if ($ssh_result['status'] != '0') {
 											$error = 'SSH copy of ' . $audit_script . ' to ' . $details->man_ip_address . ' has failed';
 											$log_details->message = $error;
 											stdlog($log_details);
 											exit();
 										}
-										$command_string = NULL;
-										$output = NULL;
-										$return_var = NULL;
+										unset($ssh_command);
+										unset($ssh_result);
 
 										// Attempt to chmod the script so it's executable
 										if ($error == '') {
-											$command_string = "sshpass -p " . escapeshellarg($details->ssh_password) . " ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " chmod 777 /tmp/" . $audit_script . ' ';
-											exec($command_string, $output, $return_var);
-											if ($display == 'y') {
-												echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-												echo 'DEBUG - Return Value: ' . $return_var . "\n";
-												echo "DEBUG - Command Output:\n";
-												print_r($output);
-											}
-											if ($return_var != '0') { 
+											$ssh_command = "sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " chmod 777 /tmp/" . $audit_script . ' ';
+											$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+											if ($ssh_result['status'] != '0') { 
 												$error = 'SSH chmod command for ' . $remote_os . 'audit script on ' . $details->man_ip_address . ' failed';
 												$log_details->message = $error;
 												stdlog($log_details);
 												exit();
 											}
-											$command_string = NULL;
-											$output = NULL;
-											$return_var = NULL;
+											unset($ssh_command);
+											unset($ssh_result);
 										}
 
 										// Attempt to determine if SUDO is present on target system
 										if ($error == '' AND strtolower($details->ssh_username) != 'root') {
-											$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' which sudo ';
-											exec($command_string, $output, $return_var);
-											if ($display == 'y') {
-												echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-												echo 'DEBUG - Return Value: ' . $return_var . "\n";
-												echo "DEBUG - Command Output:\n";
-												print_r($output);
-											}
-											if ($return_var != '0') {
+											$ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' which sudo ';
+											$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+											if ($ssh_result['status'] != '0') {
 												$log_details->message = 'SSH which sudo command for ' . $remote_os . ' audit script on ' . $details->man_ip_address . ' failed';
 												stdlog($log_details);
 											}
-											if (isset($output[0]) AND $output[0] != '') {
-												$sudo = $output[0];
+											if (isset($ssh_result['output'][0]) AND $ssh_result['output'][0] != '') {
+												$sudo = $ssh_result['output'][0];
 											} else {
 												$sudo = '';
 											}
-											$command_string = NULL;
-											$output = NULL;
-											$return_var = NULL;
+											unset($ssh_command);
+											unset($ssh_result);
 										} else {
 											$sudo = '';
 										}
@@ -1585,29 +1544,15 @@ public function discover_list($ids = '')
 											if (strtolower($remote_os) != 'vmkernel') {
 												// Exclude VMware ESX as it does not have a usable wget to send post-data back to Open-AudIT
 												if ($sudo != '' AND $details->ssh_username != 'root') {
-													$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "echo ' . escapeshellarg($details->ssh_password) . ' | ' . $sudo . ' -S /tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" ';
-													@exec($command_string, $output, $return_var);
-													if ($display == 'y') {
-														echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-														echo 'DEBUG - Return Value: ' . $return_var . "\n";
-														echo "DEBUG - Command Output:\n";
-														print_r($output);
-													}
-
-													if ($return_var != '0') {
+													$ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "echo ' . escapeshellarg($details->ssh_password) . ' | ' . $sudo . ' -S /tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" ';
+													$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+													if ($ssh_result['status'] != '0') {
 														$error = 'SSH audit command for ' . $remote_os . ' audit using sudo on ' . $details->man_ip_address . ' failed. Attempting to run without sudo.'; 
 														$log_details->message = $error;
 														stdlog($log_details);
-														$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=3 system_id=' . $details->system_id . '" ';
-														$return_var = '';
-														@exec($command_string, $output, $return_var);
-														if ($display == 'y') {
-															echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-															echo 'DEBUG - Return Value: ' . $return_var . "\n";
-															echo "DEBUG - Command Output:\n";
-															print_r($output);
-														}
-														if ($return_var != '0') {
+														$ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=3 system_id=' . $details->system_id . '" ';
+														$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+														if ($ssh_result['status'] != '0') {
 															$error = 'SSH audit command for ' . $remote_os . ' audit not using sudo on ' . $details->man_ip_address . ' failed';
 															$log_details->message = $error;
 															stdlog($log_details);
@@ -1616,19 +1561,12 @@ public function discover_list($ids = '')
 															$error = '';
 														}
 													}
-													$command_string = NULL;
-													$output = NULL;
-													$return_var = NULL;
+													unset($ssh_command);
+													unset($ssh_result);
 												} else {
-													$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" 2>/dev/null';
-													@exec($command_string, $output, $return_var);
-													if ($display == 'y') {
-														echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-														echo 'DEBUG - Return Value: ' . $return_var . "\n";
-														echo "DEBUG - Command Output:\n";
-														print_r($output);
-													}
-													if ($return_var != '0') {
+													$ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n url=' . $url . 'index.php/system/add_system debugging=1 system_id=' . $details->system_id . '" 2>/dev/null';
+													$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+													if ($ssh_result['status'] != '0') {
 														$error = 'SSH audit command for ' . $remote_os . ' audit script on ' . $details->man_ip_address . ' failed'; 
 														$log_details->message = $error;
 														stdlog($log_details);
@@ -1637,25 +1575,15 @@ public function discover_list($ids = '')
 											} else {
 
 												# ESXi
-												$command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
-												@exec($command_string, $output, $return_var);
-												if ($display == 'y') {
-													echo 'DEBUG - Command Executed: ' . $command_string . "\n";
-													echo 'DEBUG - Return Value: ' . $return_var . "\n";
-													if ($return_var != '0') {
-														echo "DEBUG - Command Output:\n";
-														$output_new = str_replace("<", "&lt;", $output);
-														print_r($output_new);
-													}
-												}
-
-												if ($return_var != '0') {
+												$ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
+												$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+												if ($ssh_result['status'] != '0') {
 													$error = 'SSH audit command for ESXi audit script on ' . $details->man_ip_address . ' failed'; 
 													$log_details->message = $error;
 													stdlog($log_details);
 												} else {
 													$script_result = '';
-													foreach ($output as $line) {
+													foreach ($ssh_result['output'] as $line) {
 														$script_result .= $line . "\n";
 													}
 													$script_result = preg_replace('/\s+/', ' ',$script_result);
@@ -2130,6 +2058,42 @@ public function discover_list($ids = '')
 			$ip_post = "000.000.000.000";
 		}
 		return $ip_post;
+	}
+
+	function run_ssh($ssh_command = '', $ssh_password = '', $ssh_display = 'n') {
+		// $ssh_command should be your SSHPASS command string, sans password
+		// ex: 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null user@target sleep 15'
+		// $ssh_password should be what you wish to pass to that command - the SSH password
+		// $ssh_display is usually whatever is set in the discovery function $display variable
+		$descriptorspec = array(
+			0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+			1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+			2 => array("file", "/dev/null", "a") // stderr is a file to write to
+		);
+		$cwd = '/tmp';
+		$env = array();
+		$return = array('output' => '', 'status' => '');
+		if ($ssh_command != '') {
+			$process = proc_open($ssh_command, $descriptorspec, $pipes, $cwd, $env);
+			if (is_resource($process)) {
+				fwrite($pipes[0], $ssh_password);
+				fclose($pipes[0]);
+				$temp = stream_get_contents($pipes[1]);
+				$return['output'] = explode("\n", $temp);
+				if (end($return['output']) == '') {
+					unset($return['output'][count($return['output'])-1]);
+				}
+				fclose($pipes[1]);
+				$return['status'] = proc_close($process);
+			}
+			if ($ssh_display == 'y') {
+				echo 'DEBUG - Command Executed: ' . $ssh_command . "\n";
+				echo 'DEBUG - Return Value: ' . $return['status'] . "\n";
+				echo "DEBUG - Command Output:\n";
+				print_r($return['output']);
+			}
+		}
+		return($return);
 	}
 
 }
