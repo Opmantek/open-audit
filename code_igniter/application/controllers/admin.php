@@ -3013,6 +3013,14 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "UPDATE system SET type = LOWER(type)";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE system SET man_type = LOWER(man_type)";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
 			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('log_style', 'syslog', 'y', 'Tells Open-AudIT which log format to use. Valid values are json and syslog.')";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
