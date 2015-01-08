@@ -1433,11 +1433,21 @@ public function discover_list($ids = '')
 							$details->model = $temp_array[1];
 							unset($temp_array);
 							$details->last_seen_by = 'audit';
-							$log_details->message = "DD-WRT audit update for $details->man_ip_address (System ID $details->system_id)"; 
+
+							$ssh_command = "sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($details->ssh_username) . "@" . escapeshellarg($details->man_ip_address) . " cat /etc/motd | grep DD-WRT";
+							$ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+							if ($ssh_result['status'] == 0) {
+								$details->os_name = trim(end($ssh_result['output']));
+							}
+
+							$details->os_group = 'linux';
+							$details->os_family = 'DD-WRT';
+
+							$log_details->message = "DD-WRT ssh audit update for $details->man_ip_address (System ID $details->system_id)"; 
 							stdlog($log_details);
 							$this->m_system->update_system($details);
 						} else {
-							$log_details->message = 'DD-WRT audit attempted but failed for ' . $details->man_ip_address;
+							$log_details->message = 'DD-WRT ssh audit attempted but failed for ' . $details->man_ip_address;
 							stdlog($log_details);
 						}
 					}
@@ -2090,7 +2100,12 @@ public function discover_list($ids = '')
 				echo 'DEBUG - Command Executed: ' . $ssh_command . "\n";
 				echo 'DEBUG - Return Value: ' . $return['status'] . "\n";
 				echo "DEBUG - Command Output:\n";
-				print_r($return['output']);
+				$formatted_output = htmlentities($temp);
+				$formatted_output = explode("\n", $formatted_output);
+				if (end($formatted_output) == '') {
+					unset($formatted_output[count($formatted_output)-1]);
+				}
+				print_r($formatted_output);
 			}
 		}
 		return($return);
