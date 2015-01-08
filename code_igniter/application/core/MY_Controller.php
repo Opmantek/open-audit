@@ -381,8 +381,11 @@ class MY_Controller extends CI_Controller {
 					}
 					else {
 						$value = str_replace ('"', '\"', $value);
-						if (is_numeric($value) ) {
-							// $output .= "\t\t\"" . $attribute . "\": " . json_encode($value, JSON_NUMERIC_CHECK) . ",\n";
+						// we have to filter out man_serial and serial because of a bug in PHP
+						// https://bugs.php.net/bug.php?id=64695
+						// I encountered a serial that was 1234E3456 - the E in the string of numbers breaks json_encode
+						if (is_numeric($value) AND $attribute != 'man_serial' AND $attribute != 'serial') {
+							 $output .= "\t\t\"" . $attribute . "\": " . json_encode($value, JSON_NUMERIC_CHECK) . ",\n";
 							// Windows does not like the above line
 							$output .= "\t\t\"" . $attribute . '": ' . $value . ",\n";
 						}
