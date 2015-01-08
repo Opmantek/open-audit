@@ -103,6 +103,7 @@
 	$device_types['storage misc'] = 'Storage Misc';
 	$device_types['switch'] = 'Switch';
 	$device_types['tablet'] = 'Tablet';
+	$device_types['tape library'] = 'Tape Library';
 	$device_types['telecom misc'] = 'Telecom Misc';
 	$device_types['terminal'] = 'Terminal';
 	$device_types['terminal server'] = 'Terminal Server';
