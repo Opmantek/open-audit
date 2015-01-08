@@ -858,7 +858,11 @@ class M_system extends MY_Model {
 		if (!isset($details->os_version)) { $details->os_version = ''; }
 		if (!isset($details->serial)) { $details->serial = ''; }
 		if (!isset($details->status)) { $details->status = 'production'; }
-		if (!isset($details->type) or $details->type == '') { $details->type = 'unknown'; }
+		if (!isset($details->type) or $details->type == '') {
+			$details->type = 'unknown'; 
+		} else {
+			$details->type = strtolower($details->type);
+		}
 		if (!isset($details->uuid)) { $details->uuid = ''; }
 		if (!isset($details->icon)) { $details->icon = ''; }
 
@@ -989,7 +993,11 @@ class M_system extends MY_Model {
 		$details->man_os_name = str_ireplace("(tm)", "", $details->man_os_name);
 		if (!isset($details->man_serial)) { $details->man_serial = $details->serial; }
 		if (!isset($details->man_status)) { $details->man_status = 'production'; }
-		if (!isset($details->man_type)) { $details->man_type = $details->type; }
+		if (!isset($details->man_type)) { 
+			$details->man_type = $details->type;
+		} else {
+			$details->man_type = strtolower($details->man_type);
+		}
 
 		# we now set a default location - 0 the location_id 
 		if (!isset($details->man_location_id)) { $details->man_location_id = '0'; }
@@ -1115,7 +1123,9 @@ class M_system extends MY_Model {
 			}
 		}
 
-		if (!isset($details->system_key_type)) {$details->system_key_type = '';}
+		if (!isset($details->system_key_type)) {
+			$details->system_key_type = '';
+		}
 
 		# we have to try to get the 'best' system key
 		# the key in the db may be better than what we have
@@ -1176,7 +1186,10 @@ class M_system extends MY_Model {
 		if (isset($details->last_seen_by) and $details->last_seen_by == 'nmap') {
 			unset ($details->type);
 			unset ($details->man_type);
-		}	
+		} else {
+			if(isset($details->type)) { $details->type = strtolower($details->type); }
+			if(isset($details->man_type)) { $details->man_type = strtolower($details->man_type); }
+		}
 
 		# for removing existing symbols
 		if (isset($details->os_name)) { 
@@ -1282,7 +1295,7 @@ class M_system extends MY_Model {
 				# if the database entry for man_type is not set or 'unknown', update it
 				if ($row->man_type == '' or $row->man_type == 'unknown') {
 					if (isset($details->type) and $details->type > '' and $details->type != 'unknown') {
-						$details->man_type = $details->type;
+						$details->man_type = strtolower($details->type);
 					}
 				}
 
