@@ -18475,6 +18475,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.19518') { $new->manufacturer = 'Technische Universit�t M�nchen'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.19519') { $new->manufacturer = 'E.Novation Portal Technology B.V.'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.19676') { $new->manufacturer = 'University of Houston'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.19746') { $new->manufacturer = 'Data Domain'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.20145') { $new->manufacturer = 'Synartra/Elvis-Plus'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.20155') { $new->manufacturer = 'Winterthur Ib�rica, AIE'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.20405') { $new->manufacturer = 'Omkhar Consulting'; }

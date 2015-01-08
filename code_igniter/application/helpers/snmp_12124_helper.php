@@ -33,12 +33,14 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-# Vendor Lexmark
+# Vendor Isilon
 
 $get_oid_details = function($details){
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.1') { $details->model = ''; $details->type = 'network printer'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106851') { $details->model = 'Lexmark E260dn'; $details->type = 'network printer'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106860') { $details->model = 'Lexmark T652'; $details->type = 'network printer'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71107113') { $details->model = 'Lexmark MS810'; $details->type = 'network printer'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.2.71107143') { $details->model = 'Lexmark XM3150'; $details->type = 'network printer'; }
+
+	if ($details->snmp_oid == '1.3.6.1.4.1.12124.1') { $details->type = 'storage misc'; }
+
+	if ($details->snmp_version == '2') {
+		$details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12124.2.51.1.3.1" ));
+		$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12124.2.51.1.4.1" ));
+	}
 };

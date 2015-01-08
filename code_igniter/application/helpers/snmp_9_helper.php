@@ -1409,6 +1409,8 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1683') { $details->model = 'Cisco Ucs C240'; $details->type = 'voip gateway'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1684') { $details->model = 'Cisco Ucs C22'; $details->type = 'voip gateway'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1685') { $details->model = 'Cisco Ucs C24'; $details->type = 'voip gateway'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1876') { $details->model = 'Cisco Prime Virtual Network Analysis Module (ESXi)'; $details->type = 'computer'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1877') { $details->model = 'Cisco Prime Virtual Network Analysis Module (ESXi)'; $details->type = 'computer'; }
 
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.5.5') { $details->model = 'Cisco Catalyst 1200'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.5.7') { $details->model = 'Cisco Catalyst 5000'; $details->type = 'switch'; }
@@ -2598,6 +2600,8 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.839') { $details->model = 'Cisco Chassis ASR9006AC'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.84') { $details->model = 'Cisco Chassis Fasthub100'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.840') { $details->model = 'Cisco Nexus 1000V'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.841') { $details->model = 'Cisco MDS 9148 Multilayer Fabric Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.843') { $details->model = 'Cisco MDS 9148 Multilayer Fabric Switch'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.847') { $details->model = 'Cisco UCS 6120XP'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.848') { $details->model = 'Cisco Chassis CDScde420'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.849') { $details->model = 'Cisco Chassis CDScde220'; $details->type = 'cisco module'; }
