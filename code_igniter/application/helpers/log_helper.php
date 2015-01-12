@@ -103,7 +103,7 @@ if ( ! function_exists('stdlog'))
 				$log->style = $CI->m_oa_config->get_config_item('log_style');
 			}
 			if (!isset($log->style) or $log->style == '' OR ($log->style != 'json' AND $log->style != 'syslog')) {
-				$log->style = 'json';
+				$log->style = 'syslog';
 			}
 		} else {
 			$log->style = $log_details->style;
