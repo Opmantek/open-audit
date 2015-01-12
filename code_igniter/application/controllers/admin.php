@@ -3121,7 +3121,7 @@ class Admin extends MY_Controller {
 			(NULL,$insert_id,8,'Last Audited','timestamp','timestamp','','','','left')";
 			$query = $this->db->query($sql);
 
-			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Group','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_group = ? AND man_status = \'production\'','','v_report','','',0)";
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Group','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_group = ? AND man_status = \'production\'','','v_help_oae','','',0)";
 			$query = $this->db->query($sql);
 			$insert_id = $this->db->insert_id();
 
@@ -3147,7 +3147,7 @@ class Admin extends MY_Controller {
 			(NULL,$insert_id,2,'Percent','y','text','','','','left')";
 			$query = $this->db->query($sql);
 
-			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Family','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_family = ? AND man_status = \'production\'','','v_report','','',0)";
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Family','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_family = ? AND man_status = \'production\'','','v_help_oae','','',0)";
 			$query = $this->db->query($sql);
 			$insert_id = $this->db->insert_id();
 
@@ -3163,7 +3163,7 @@ class Admin extends MY_Controller {
 			(NULL,$insert_id,8,'Location','location_name','text','','','','left')";
 			$query = $this->db->query($sql);
 
-			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Name','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_name = ? AND man_status = \'production\'','','v_report','','',0)";
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Name','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_name = ? AND man_status = \'production\'','','v_help_oae','','',0)";
 			$query = $this->db->query($sql);
 			$insert_id = $this->db->insert_id();
 
