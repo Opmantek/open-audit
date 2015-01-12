@@ -179,22 +179,30 @@ escape_xml ()
 	echo "$result"
 }
 
-cidr2mask () 
+# cidr2mask () 
+# {
+#   local i mask=""
+#   local full_octets=$(($1/8))
+#   local partial_octet=$(($1%8))
+#   for ((i=0;i<4;i+=1)); do
+#     if [ $i -lt $full_octets ]; then
+#       mask+=255
+#     elif [ $i -eq $full_octets ]; then
+#       mask+=$((256 - 2**(8-partial_octet)))
+#     else
+#       mask+=0
+#     fi  
+#     test $i -lt 3 && mask+=.
+#   done
+#   echo "$mask"
+# }
+
+cidr2mask ()
 {
-  local i mask=""
-  local full_octets=$(($1/8))
-  local partial_octet=$(($1%8))
-  for ((i=0;i<4;i+=1)); do
-    if [ $i -lt $full_octets ]; then
-      mask+=255
-    elif [ $i -eq $full_octets ]; then
-      mask+=$((256 - 2**(8-partial_octet)))
-    else
-      mask+=0
-    fi  
-    test $i -lt 3 && mask+=.
-  done
-  echo "$mask"
+   # Number of args to shift, 255..255, first non-255 byte, zeroes
+   set -- $(( 5 - ($1 / 8) )) 255 255 255 255 $(( (255 << (8 - ($1 % 8))) & 255 )) 0 0 0
+   [ $1 -gt 1 ] && shift $1 || shift
+   echo ${1-0}.${2-0}.${3-0}.${4-0}
 }
 
 between_output ()
@@ -211,7 +219,7 @@ between_output ()
 	# first get all lines between $start and $end (inclusive)
 	for line in $(eval $command); do
 		if [[ "$line" == *"$delimiter"* ]]; then
-			if [[ -n "$resultgroup" ]]; then
+			if [ -n "$resultgroup" ]; then
 				# resultgroup contains data, test it
 				if [[ $(echo -e "$resultgroup" | grep "$match" -c ) -ne 0 ]]; then
 					# our match is contained within the resultgroup
@@ -421,7 +429,7 @@ fi
 # Set the UUID
 system_uuid=""
 system_uuid=$(dmidecode -s system-uuid 2>/dev/null)
-if [ -z "$system_uuid" ] && [[ -n $(which lshal 2>/dev/null) ]]; then
+if [ -z "$system_uuid" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 	system_uuid=$(lshal | grep "system.hardware.uuid" | cut -d\' -f2)
 fi
 if [ -z "$system_uuid" ]; then
@@ -453,6 +461,16 @@ system_os_group="Linux"
 system_os_family=$(lsb_release -is 2>/dev/null | tr -d '"')
 system_os_name=$(lsb_release -ds 2>/dev/null | tr -d '"')
 system_os_version=$(lsb_release -rs 2>/dev/null | tr -d '"')
+
+# Some DD-WRT specials stuff
+if [ -z "$system_os_family" ] && [ -n "$(cat /etc/motd | grep DD-WRT)" ]; then
+	system_os_family="DD-WRT"
+	system_os_version=$(cat /etc/motd | grep DD-WRT | cut -dv -f2)
+	system_os_version="v$system_os_version"
+	system_os_name="DD-WRT $system_os_version"
+	#system_ip_address=$(ifconfig | grep UP | )
+fi
+
 
 for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 
@@ -511,7 +529,7 @@ system_os_icon=$(lcase $system_os_family)
 system_serial=""
 system_serial=$(dmidecode -s system-serial-number 2>/dev/null)
 if [ -z "$system_serial" ]; then
-	if [[ -n $(which lshal 2>/dev/null) ]]; then
+	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		system_serial=$(lshal | grep "system.hardware.serial" | cut -d\' -f2)
 	fi
 fi
@@ -522,7 +540,7 @@ fi
 # Get the System Model
 system_model=""
 system_model=$(dmidecode -s system-product-name 2>/dev/null)
-if [ -z "$system_model" ] && [[ -n $(which lshal 2>/dev/null) ]]; then
+if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 	system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
 fi
 if [ -z "$system_model" ]; then
@@ -533,7 +551,7 @@ fi
 system_manufacturer=""
 system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null)
 if [ -z "$system_manufacturer" ]; then
-	if [[ -n $(which lshal 2>/dev/null) ]]; then
+	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		system_manufacturer=$(lshal | grep "system.hardware.vendor" | cut -d\' -f2)
 	fi
 fi
@@ -547,10 +565,12 @@ if [ -z "$system_model" ] && [[ -e "/proc/user_beancounters" ]] && [[ "$(cat /pr
 	system_model="OpenVZ"
 	system_manufacturer="OpenVZ"
 fi
-if [ -z "$system_model" ] && [[ "$(dmidecode | egrep -i 'manufacturer')" == *"Microsoft"* ]]; then
-	# test for a Microsoft virtual machine
-	system_model="Virtual Machine"
-	system_manufacturer="Microsoft"
+if [ -z "$system_model" ] && [ -n "$(which dmidecode 2>/dev/null)" ]; then
+	if [[ "$(dmidecode | egrep -i 'manufacturer')" == *"Microsoft"* ]]; then
+		# test for a Microsoft virtual machine
+		system_model="Virtual Machine"
+		system_manufacturer="Microsoft"
+	fi
 fi
 
 # Get the System Uptime
@@ -568,7 +588,7 @@ else
 	system_form_factor=$(pcase $system_form_factor)
 fi
 if [ -z "$system_form_factor" ]; then
-	if [[ -n $(which lshal 2>/dev/null) ]]; then
+	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		system_form_factor=$(lshal | grep "system.chassis.type" | cut -d\' -f2)
 	fi
 fi
@@ -613,7 +633,7 @@ system_pc_total_threads=$(grep -c processor /proc/cpuinfo)
 system_pc_cores_x_processor=$(grep cores /proc/cpuinfo | head -n1 | cut -d: -f2)
 system_pc_cores_x_processor=$(trim "$system_pc_cores_x_processor")
 
-if [ -z "$system_pc_cores_x_processor" ] && [[ -n $(which lshal 2>/dev/null) ]]; then
+if [ -z "$system_pc_cores_x_processor" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 	system_pc_cores_x_processor=$(lshal | grep -c "processor.number")
 fi
 
@@ -639,8 +659,11 @@ fi
 # Guess the OS Instalation Date
 # There is no way to know for sure the install date. /etc/distro-release should give a clue, but it is not really accurate
 #
-
-system_pc_date_os_installation=$(stat "$system_release_file" | grep "^Modify:" | cut -d" " -f2)
+if [ -n "$(which stat 2>/dev/null)" ]; then
+	system_pc_date_os_installation=$(stat "$system_release_file" | grep "^Modify:" | cut -d" " -f2)
+else
+	system_pc_date_os_installation=""
+fi
 
 #'''''''''''''''''''''''''''''''''
 #' Write to the audit file       '
@@ -691,7 +714,7 @@ fi
 bios_manufacturer=""
 bios_manufacturer=$(dmidecode -s bios-vendor 2>/dev/null)
 if [ -z "$bios_manufacturer" ]; then
-	if [[ -n $(which lshal 2>/dev/null) ]]; then
+	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		bios_manufacturer=$(lshal | grep "smbios.bios.vendor" | cut -d\' -f2)
 		if [ -z "$bios_manufacturer" ]; then
 			bios_manufacturer=$(lshal | grep "system.firmware.vendor" | cut -d\' -f2)
@@ -707,7 +730,7 @@ bios_firm_rev=""
 bios_firm_rev=$(dmidecode 2>/dev/null | grep "Firmware Revision" | cut -d: -f2)
 bios_firm_rev=$(trim "$bios_firm_rev")
 if [ -z "$bios_firm_rev" ]; then
-	if [[ -n $(which lshal 2>/dev/null) ]]; then
+	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		bios_firm_rev=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
 		if [ -z "$bios_firm_rev" ]; then
 			bios_firm_rev=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
@@ -732,7 +755,7 @@ bios_serial="$system_serial"
 bios_smversion=""
 bios_smversion=$(dmidecode 2>/dev/null | grep -i SMBIOS | cut -d' ' -f2)
 if [ -z "$bios_smversion" ]; then
-	if [[ -n $(which lshal 2>/dev/null) ]]; then
+	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		bios_smversion=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
 		if [ -z "$bios_smversion" ]; then
 			bios_smversion=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
@@ -754,7 +777,7 @@ if [ -n "$bios_version_p1" ]; then
 	fi
 fi
 
-if [ -z "$bios_version" ] && [[ -n $(which lshal 2>/dev/null) ]]; then
+if [ -z "$bios_version" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 	bios_version=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
 	if [ -z "$bios_version" ]; then
 		bios_version=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
@@ -799,7 +822,7 @@ processor_manufacturer=$(grep vendor_id /proc/cpuinfo | head -n1 | cut -d: -f2)
 # Get processor power management support
 processor_power_management_supported=$(dmidecode -t processor 2>/dev/null | grep Thermal 2>/dev/null)
 if [ -z "$processor_power_management_supported" ]; then
-	if [[ -n $(which lshal 2>/dev/null) ]]; then
+	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		processor_power_management_supported=$(lshal | grep -m 1 "processor.can_throttle" | cut -d= -f2 | cut -d" " -f2)
 	fi
 fi
@@ -1335,7 +1358,7 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 		hard_drive_manufacturer=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_VENDOR= | cut -d= -f2)
 	fi
 
-	if [ -n $(which smartctl 2>/dev/null) ]; then
+	if [ -n "$(which smartctl 2>/dev/null)" ]; then
 		# use smart tools as they are installed
 		hard_drive_status=$(smartctl -H /dev/"$disk" 2>/dev/null | grep "SMART overall" | cut -d: -f2)
 		hard_drive_model_family=$(smartctl -i /dev/"$disk" 2>/dev/null | grep "Model Family" | cut -d: -f2)
