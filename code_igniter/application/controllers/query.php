@@ -132,7 +132,7 @@ class query extends MY_Controller
 			break;
 
 			case "new_devices":
-			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system WHERE DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' GROUP BY DATE(first_timestamp) ORDER BY DATE(first_timestamp) ";
+			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system WHERE man_status = 'production' AND DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' GROUP BY DATE(first_timestamp) ORDER BY DATE(first_timestamp) ";
 			$this->data['heading'] = "Devices Discovered 30";
 			$data = array($start_date, $end_date);
 			$json = 'y';
@@ -153,7 +153,7 @@ class query extends MY_Controller
 			break;
 
 			default:
-			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system WHERE DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' ";
+			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system WHERE man_status = 'production' AND DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' ";
 			$this->data['heading'] = "Devices Discovered 30";
 			$data = array($start_date, $end_date);
 			$json = 'y';
