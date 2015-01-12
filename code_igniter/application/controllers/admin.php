@@ -3008,6 +3008,11 @@ class Admin extends MY_Controller {
 
 		if (($db_internal_version < '20141225') AND ($this->db->platform() == 'mysql')) {
 			# upgrade for 1.5.3
+			
+			$log_details = new stdClass();
+			$log_details->file = 'system';
+			$log_details->message = 'Upgrade database to 1.5.3 commenced';
+			stdlog($log_details);
 
 			$sql = "ALTER TABLE sys_sw_windows ADD windows_workgroup varchar(255) NOT NULL default '' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
@@ -3246,6 +3251,10 @@ class Admin extends MY_Controller {
 			$sql = "UPDATE oa_config set config_value = '1.5.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
+
+			$log_details->message = 'Upgrade database to 1.5.3 completed';
+			stdlog($log_details);
+			unset($log_details);
 		}
 
 
