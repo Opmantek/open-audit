@@ -666,15 +666,32 @@ public function discover_list($ids = '')
 				$filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "\\open-audit\\other";
 			}
 
+
+			# if we are supplied a network address, use it
 			if (isset($_POST['network_address']) AND $_POST['network_address'] > '') {
-				$i = explode('/', base_url());
-				$url = str_replace($i[2], $_POST['network_address'], base_url());
+				if (strpos($_POST['network_address'], '/')) {
+					$i = explode('/', base_url());
+					$temp_network_address = $i[2];
+					$url = str_replace($temp_network_address, $_POST['network_address'], base_url());
+				} else {
+					$url = 'http://' . $_POST['network_address'] . '/open-audit/';
+				}
+			# if not, check if we have on in the config and use it
 			} elseif (isset($this->data['config']->default_network_address) AND $this->data['config']->default_network_address > '') {
-				$i = explode('/', base_url());
-				$url = str_replace($i[2], $this->data['config']->default_network_address, base_url());
+				if (strpos($this->data['config']->default_network_address, '/')) {
+					$i = explode('/', base_url());
+					$temp_network_address = $i[2];
+				} else {
+					$temp_network_address = $this->data['config']->default_network_address;
+				}
+				$url = str_replace($temp_network_address, $this->data['config']->default_network_address, base_url());
+			# if nothing, then just try the base_url - this will likely use 127.0.0.1 and fail...
+			# TODO - fix this
 			} else {
 				$url = base_url();
 			}
+			unset($temp_network_address);
+
 
 			if ((php_uname('s') == 'Linux') OR (php_uname('s') == 'Darwin')) {
 				if ($subnet_range > '') {
