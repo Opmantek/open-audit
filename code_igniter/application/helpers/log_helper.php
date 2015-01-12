@@ -163,15 +163,19 @@ if ( ! function_exists('stdlog'))
 			return;
 		}
 
-		$log_severity_text = 'unknown';
-		if ($log->severity == 7) { $log->severity_text = 'debug'; }
-		if ($log->severity == 6) { $log->severity_text = 'info'; }
-		if ($log->severity == 5) { $log->severity_text = 'notice'; }
-		if ($log->severity == 4) { $log->severity_text = 'warning'; }
-		if ($log->severity == 3) { $log->severity_text = 'error'; }
-		if ($log->severity == 2) { $log->severity_text = 'critical'; }
-		if ($log->severity == 1) { $log->severity_text = 'alert'; }
-		if ($log->severity == 0) { $log->severity_text = 'emergency'; }
+		if (!isset($log_details->severity_text) or $log_details->severity_text == '') {
+			$log->severity_text = 'unknown';
+			if ($log->severity == 7) { $log->severity_text = 'debug'; }
+			if ($log->severity == 6) { $log->severity_text = 'info'; }
+			if ($log->severity == 5) { $log->severity_text = 'notice'; }
+			if ($log->severity == 4) { $log->severity_text = 'warning'; }
+			if ($log->severity == 3) { $log->severity_text = 'error'; }
+			if ($log->severity == 2) { $log->severity_text = 'critical'; }
+			if ($log->severity == 1) { $log->severity_text = 'alert'; }
+			if ($log->severity == 0) { $log->severity_text = 'emergency'; }
+		} else {
+			$log->severity_text = $log_details->severity_text;
+		}
 
 
 		if (!isset($log_details->pid) or $log_details->pid == '') {
@@ -182,7 +186,6 @@ if ( ! function_exists('stdlog'))
 		if (!isset($log->pid) OR $log->pid == '') {
 			$log->pid = '-';
 		}
-
 
 		if (!isset($log_details->hostname) or $log_details->hostname == '') {
 			$log->hostname = php_uname('n');
@@ -204,6 +207,7 @@ if ( ! function_exists('stdlog'))
 			$log->function = $router->fetch_method();
 			unset($router);
 		}
+		
 		if (!isset($log->function) OR $log->function == '') {
 			$log->function = '-';
 		}
