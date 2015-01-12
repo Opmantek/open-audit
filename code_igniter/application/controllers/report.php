@@ -163,7 +163,7 @@ class report extends MY_Controller
 			}
 		}
 		# make sure we specify a report
-		if ($this->data['report_id'] == "0" or !is_numeric($this->data['report_id']) {
+		if ($this->data['report_id'] == "0" or !is_numeric($this->data['report_id'])) {
 			# no report specified - show error page
 			$this->data['error'] = "You attempted to run a Report that does not exist or has not been activated. <br />As an Admin Level user you can activate reports at Admin -> Reports -> Activate Report.";
 			$this->data['query'] = '';
