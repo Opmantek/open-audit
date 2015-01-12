@@ -45,7 +45,7 @@ class M_oa_report extends MY_Model {
 	}
 
 	function list_reports() {
-		$sql = "SELECT report_id, report_name FROM oa_report ORDER BY report_name";
+		$sql = "SELECT report_id, report_name FROM oa_report WHERE report_view_file != 'v_help_oae' ORDER BY report_name";
 		$query = $this->db->query($sql);
 		return($query->result());
 	}
@@ -145,10 +145,7 @@ class M_oa_report extends MY_Model {
 		$data = array($group_id);
 		$query = $this->db->query('SET @group = ?', $data);
 
-		$data = array($first_attribute);
-
-		#$sql = str_ireplace('WHERE ' , 'WHERE ' . $log_message, $sql);
-
+		$data = array($first_attribute, $second_attribute);
 		$query = $this->db->query($sql, $data);
 
 		return($query->result());
