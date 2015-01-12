@@ -3020,7 +3020,217 @@ class Admin extends MY_Controller {
 			$sql = "UPDATE system SET man_type = LOWER(man_type)";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
-			
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Discovered in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE system.man_status = \'production\' AND oa_group_sys.group_id = @group AND system.first_timestamp > (NOW() - INTERVAL ? DAY) AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,2,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,3,'OS','man_os_name','text','','','','left'),
+			(NULL,$insert_id,4,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,5,'Last Audited','timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,6,'Status','status','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Software Discovered in the Last Days','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, DATE(sys_sw_software.timestamp) AS first_attribute FROM sys_sw_software LEFT JOIN system ON sys_sw_software.system_id = system.system_id WHERE system.man_status = \'production\' AND sys_sw_software.first_timestamp != system.first_timestamp AND sys_sw_software.first_timestamp > (NOW() - INTERVAL ? DAY) GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Package Name','software_name','link','/omk/oae/show_report/specific software/','software_id','first_attribute','left'),
+			(NULL,$insert_id,1,'Type','software_comment','text','','','','center'),
+			(NULL,$insert_id,2,'Installs','software_count','text','','','','center'),
+			(NULL,$insert_id,3,'Contact','software_url','url','','','','center'),
+			(NULL,$insert_id,4,'Version','software_version','text','','','','left'),
+			(NULL,$insert_id,5,'Publisher','software_publisher','text','','','','left'),
+			(NULL,$insert_id,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Not Seen by Date','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location on system.man_location_id = oa_location.location_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL 30 day) AND oa_group_sys.group_id = @group AND man_status = \'production\' AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,2,'Location','location_name','text','','','','left'),
+			(NULL,$insert_id,3,'User','windows_user_name','text','','','','left'),
+			(NULL,$insert_id,4,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,5,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,6,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,7,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,8,'Last Audited','timestamp','timestamp','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Specific Software','','n','SELECT system.system_id, system.hostname, sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_installed_by, date(sys_sw_software.software_installed_on) as software_installed_on, sys_sw_software.software_version, date(sys_sw_software.first_timestamp) as first_timestamp FROM system LEFT JOIN sys_sw_software ON (system.system_id = sys_sw_software.system_id and system.first_timestamp < sys_sw_software.first_timestamp) WHERE system.man_status = \'production\' AND sys_sw_software.software_name = (SELECT software_name FROM sys_sw_software WHERE software_id = ? LIMIT 1) AND date(sys_sw_software.first_timestamp) = date(?) GROUP BY system.system_id','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Software Name','software_name','link','/omk/oae/show_report/Specific Software/','software_id','','left'),
+			(NULL,$insert_id,1,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,2,'Software Version','software_version','text','','','','left'),
+			(NULL,$insert_id,3,'Detected On','first_timestamp','timestamp','','','','center'),
+			(NULL,$insert_id,4,'Installed By','software_installed_by','text','','','','left'),
+			(NULL,$insert_id,5,'Installed On','software_installed_on','timestamp','','','','center')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Software Discovered by Date','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, date(sys_sw_software.first_timestamp) as first_attribute FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE system.man_status = \'production\' AND oa_group_sys.group_id = @group AND date(sys_sw_software.first_timestamp) = ? GROUP BY sys_sw_software.software_name ORDER BY sys_sw_software.software_name','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Package Name','software_name','link','/omk/oae/show_report/Enterprise - Specific Software/','software_id','first_attribute','left'),
+			(NULL,$insert_id,1,'Type','software_comment','text','','','','center'),
+			(NULL,$insert_id,2,'Installs','software_count','text','','','','center'),
+			(NULL,$insert_id,3,'Contact','software_url','url','','','','center'),
+			(NULL,$insert_id,4,'Version','software_version','text','','','','left'),
+			(NULL,$insert_id,5,'Publisher','software_publisher','text','','','','left'),
+			(NULL,$insert_id,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Discovered by Date','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, man_status AS status, last_seen_by FROM system WHERE system.man_status = \'production\' AND date(system.first_timestamp) = ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,2,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,3,'OS','man_os_name','text','','','','left'),
+			(NULL,$insert_id,5,'Last Seen By','last_seen_by','text','','','','left'),
+			(NULL,$insert_id,6,'Status','status','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Not Seen in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location on system.man_location_id = oa_location.location_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(NOW(), INTERVAL ? day) AND oa_group_sys.group_id = @group AND man_status = \'production\' AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,2,'Location','location_name','text','','','','left'),
+			(NULL,$insert_id,3,'User','windows_user_name','text','','','','left'),
+			(NULL,$insert_id,4,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,5,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,6,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,7,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,8,'Last Audited','timestamp','timestamp','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Group','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_group = ? AND man_status = \'production\'','','v_report','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Icon','man_icon','image','','man_os_family','','center'),
+			(NULL,$insert_id,1,'OS Family','man_os_family','link','/omk/oae/show_report/Enterprise - OS Family/','man_os_family','','left'),
+			(NULL,$insert_id,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,3,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,4,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,5,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,6,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,7,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,8,'Location','location_name','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Types','','n','SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = \'production\')) * 100) AS y, IF(CHAR_LENGTH(man_os_group)=0,\'Other\', man_os_group) AS name, count(*) as count FROM system WHERE man_status = \'production\' GROUP BY name;','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Type','name','link','/omk/oae/show_report/Enterprise - OS Group/','name','','left'),
+			(NULL,$insert_id,1,'Count','count','text','','','','left'),
+			(NULL,$insert_id,2,'Percent','y','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Family','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_family = ? AND man_status = \'production\'','','v_report','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Icon','man_icon','image','','man_os_family','','center'),
+			(NULL,$insert_id,1,'OS Name','man_os_name','link','/omk/oae/show_report/Enterprise - OS Name/','man_os_name','','left'),
+			(NULL,$insert_id,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,3,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,4,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,5,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,6,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,7,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,8,'Location','location_name','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Name','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_name = ? AND man_status = \'production\'','','v_report','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Icon','man_icon','image','','man_os_family','','center'),
+			(NULL,$insert_id,1,'OS Name','man_os_name','text','','','','left'),
+			(NULL,$insert_id,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,3,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,4,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,5,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,6,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,7,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,8,'Location','location_name','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Device Types','','n','SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = \'production\')) * 100) AS y, man_type AS name, count(*) as count FROM system WHERE man_status = \'production\' GROUP BY name','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Type','name','link','/omk/oae/show_report/Enterprise - Device Type/','name','','left'),
+			(NULL,$insert_id,1,'Count','count','text','','','','left'),
+			(NULL,$insert_id,2,'Percent','y','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Device Type','','n','SELECT system.system_id, system.hostname, system.man_manufacturer, system.man_model, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system WHERE system.man_status = \'production\' AND man_type = ?','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,2,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,3,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,4,'OS','man_os_name','text','','','','left'),
+			(NULL,$insert_id,5,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,6,'Last Audited','timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,7,'Status','status','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Software Discovered Range','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE system.man_status = \'production\' AND oa_group_sys.group_id = @group AND date(sys_sw_software.first_timestamp) >= ? AND date(sys_sw_software.first_timestamp) <= ? GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Package Name','software_name','link','/omk/oae/report/SpecificSoftwareRange/','software_id','first_attribute','left'),
+			(NULL,$insert_id,1,'Type','software_comment','text','','','','center'),
+			(NULL,$insert_id,2,'Installs','software_count','text','','','','center'),
+			(NULL,$insert_id,3,'Contact','software_url','url','','','','center'),
+			(NULL,$insert_id,4,'Version','software_version','text','','','','left'),
+			(NULL,$insert_id,5,'Publisher','software_publisher','text','','','','left'),
+			(NULL,$insert_id,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Discovered Range','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group WHERE system.man_status = \'production\' AND date(system.first_timestamp) >= ? AND date(system.first_timestamp) <= ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,2,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,3,'OS','man_os_name','text','','','','left'),
+			(NULL,$insert_id,4,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,5,'Last Audited','timestamp','timestamp','','','','left')";
+			$query = $this->db->query($sql);
+
 			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('log_style', 'syslog', 'y', 'Tells Open-AudIT which log format to use. Valid values are json and syslog.')";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
