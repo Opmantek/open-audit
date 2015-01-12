@@ -385,9 +385,13 @@ class MY_Controller extends CI_Controller {
 						// https://bugs.php.net/bug.php?id=64695
 						// I encountered a serial that was 1234E3456 - the E in the string of numbers breaks json_encode
 						if (is_numeric($value) AND $attribute != 'man_serial' AND $attribute != 'serial') {
-							 $output .= "\t\t\"" . $attribute . "\": " . json_encode($value, JSON_NUMERIC_CHECK) . ",\n";
-							// Windows does not like the above line
-							$output .= "\t\t\"" . $attribute . '": ' . $value . ",\n";
+							if (php_uname('s') != 'Windows NT') {
+								$output .= "\t\t\"" . $attribute . "\": " . json_encode($value, JSON_NUMERIC_CHECK) . ",\n";
+							} else {
+								// Windows does not like the above line (may be PHP version to old in shipped xampplite)
+								// Confirmed - we ship 5.3.1 with Xampplite but JSON_NUMERIC_CHECK was introduced in 5.3.3
+								$output .= "\t\t\"" . $attribute . '": ' . $value . ",\n";
+							}
 						}
 						else { 
 							$output .= "\t\t\"" . $attribute . '": '  . json_encode($value) . ",\n";
