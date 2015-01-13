@@ -162,9 +162,13 @@ class Admin extends MY_Controller {
 	function get_config()
 	{
 		$json = $this->data['config'];
-		# get all ip addresses of this machine
-		$this->load->model('m_oa_config');
-		$json->server_ip_addresses = $this->m_oa_config->get_server_ip_addresses();
+		if ($this->data['config']->default_network_address == '') {
+			# get all ip addresses of this machine
+			$this->load->model('m_oa_config');
+			$json->server_ip_addresses = $this->m_oa_config->get_server_ip_addresses();
+		} else {
+			$json->server_ip_addresses = array();
+		}
 		$json = json_encode($json);
 		print_r($json);
 	}
