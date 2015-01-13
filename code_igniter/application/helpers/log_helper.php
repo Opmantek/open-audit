@@ -95,6 +95,13 @@ if ( ! function_exists('stdlog'))
 
 		$CI->load->model('m_oa_config');
 
+		// set the line ending type
+		if (php_uname('s') == 'Windows NT') {
+			$line_end = "\r\n";
+		} else {
+			$line_end = "\n";
+		}
+
 		// get the log_style or default to json
 		if (!isset($log_details->style) OR $log_details->style == '' OR ($log_details->style != 'json' AND $log_details->style != 'syslog')) {
 			if (isset($CI->data['config']->log_style) AND $CI->data['config']->log_style !== '') {
@@ -278,9 +285,9 @@ if ( ! function_exists('stdlog'))
 			// ERROR cannot open either the requested or traditional log files.
 		} else {
 			if (isset($extra_log_line) AND $extra_log_line != '') {
-				fwrite($handle, $extra_log_line . "\n");
+				fwrite($handle, $extra_log_line . $line_end);
 			}
-			fwrite($handle, $log_line . "\n");
+			fwrite($handle, $log_line . $line_end);
 			fclose($handle);
 		}
 		unset($log);
