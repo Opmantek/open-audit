@@ -113,7 +113,7 @@ class Admin_location extends MY_Controller
                 #location does not exist - good
                 $details->location_id = $this->m_oa_location->add_location($details);
             } else {
-                $this->data['error_messageOMK-318'] = "Location Name already exists.";
+                $this->data['error_message'] = "Location Name already exists.";
                 $this->data['heading'] = 'Add Location';
                 $this->data['include'] = 'v_add_location';
                 $this->load->view('v_template', $this->data);
@@ -135,7 +135,6 @@ class Admin_location extends MY_Controller
         $location_id = $this->data['id'];
         $location_name = $this->m_oa_location->get_location_name($location_id);
         $location_group_id = $this->m_oa_location->get_group_id($location_id);
-
         $group = new stdClass();
         $group->group_id = '';
         $group->group_name = "Items in " . $location_name;
@@ -143,11 +142,10 @@ class Admin_location extends MY_Controller
         $group->group_description = "Items in " . $location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '" . $this->data['id'] . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '" . $this->data['id'] . "' OR LOWER(system.sysLocation) LIKE LOWER('%" . $location_name . "%')) AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
-
-        if (isset($location_group_id) AND $location_group_id != '') {
+        if (isset($location_group_id) AND $location_group_id != '' AND $location_group_id != '0') {
             # update an existing group
             $group->group_id = $location_group_id;
             $this->m_oa_group->update_group($group);
