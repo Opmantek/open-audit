@@ -3264,7 +3264,7 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "INSERT INTO oa_group_column VALUES (NULL 1, 3, 'Domain', 'domain', 'text', '', '', '', 'left')"; 
+			$sql = "INSERT INTO oa_group_column VALUES (NULL, 1, 3, 'Domain', 'domain', 'text', '', '', '', 'left')"; 
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
