@@ -139,6 +139,7 @@ class M_systems extends MY_Model {
 			$sql = "SELECT 
 					system.system_id, 
 					system.hostname, 
+					system.domain, 
 					system.man_description, 
 					system.man_ip_address, 
 					system.man_type, 
