@@ -68,6 +68,8 @@ foreach($system as $key) {
 	$location_level = $key->man_location_level;
 	$location_suite = $key->man_location_suite;
 	$location_room = $key->man_location_room;
+	$man_location_latitude = $key->man_location_latitude;
+	$man_location_longitude = $key->man_location_longitude;
 	$os_name = $key->man_os_name;
 	$serial = $key->serial;
 	$link_manufacturer = $key->manufacturer;

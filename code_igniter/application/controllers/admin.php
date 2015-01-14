@@ -3022,6 +3022,14 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
+			$sql = "ALTER TABLE system ADD man_location_latitude float(10,6) NOT NULL ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD man_location_longitude float(10,6) NOT NULL ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "ALTER TABLE system ADD man_purchase_service_contract_number varchar(255) NOT NULL default '' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);

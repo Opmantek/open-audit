@@ -131,6 +131,8 @@
 					<p><label for="man_location_room"><?php echo __('Device specific Room')?>: </label><span id="man_location_room" <?php echo $edit?>><?php echo print_something($location_room)?></span><?php echo $edit_icon; ?></p> 
 					<p><label for="man_location_rack"><?php echo __('Rack')?>: </label><span id="man_location_rack" <?php echo $edit?>><?php echo print_something($location_rack)?></span><?php echo $edit_icon; ?></p> 
 					<p><label for="man_location_rack_position"><?php echo __('Rack Position')?>: </label><span id="man_location_rack_position" <?php echo $edit?>><?php echo print_something($location_rack_position)?></span><?php echo $edit_icon; ?></p> 
+					<p><label for="man_location_latitude"><?php echo __('Device Specific Latitude')?>: </label><span id="man_location_latitude" <?php echo $edit?>><?php echo print_something($man_location_latitude)?></span><?php echo $edit_icon; ?></p> 
+					<p><label for="man_location_longitude"><?php echo __('Device Specific Longitude')?>: </label><span id="man_location_longitude" <?php echo $edit?>><?php echo print_something($man_location_longitude)?></span><?php echo $edit_icon; ?></p> 
 				</div>
 			</div>	
 			<div style="float:left; width:50%;">
