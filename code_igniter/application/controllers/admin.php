@@ -3268,31 +3268,31 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "update oa_group_column set column_order = 4 where group_id = 1 AND column_variable = 'man_ip_address' ";
+			$sql = "UPDATE oa_group_column SET column_order = 4 WHERE group_id = 1 AND column_variable = 'man_ip_address' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "update oa_group_column set column_order = 5 where group_id = 1 AND column_variable = 'man_type' ";
+			$sql = "UPDATE oa_group_column SET column_order = 5 WHERE group_id = 1 AND column_variable = 'man_type' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "update oa_group_column set column_order = 6 where group_id = 1 AND column_variable = 'man_description' ";
+			$sql = "UPDATE oa_group_column SET column_order = 6 WHERE group_id = 1 AND column_variable = 'man_description' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "update oa_group_column set column_order = 7 where group_id = 1 AND column_variable = 'man_os_name' ";
+			$sql = "UPDATE oa_group_column SET column_order = 7 WHERE group_id = 1 AND column_variable = 'man_os_name' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "update oa_group_column set column_order = 8 where group_id = 1 AND column_variable = 'tag' ";
+			$sql = "UPDATE oa_group_column SET column_order = 8 WHERE group_id = 1 AND column_variable = 'tag' ";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "UPDATE oa_config set config_value = '20141225', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$sql = "UPDATE oa_config SET config_value = '20141225', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 			
-			$sql = "UPDATE oa_config set config_value = '1.5.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$sql = "UPDATE oa_config SET config_value = '1.5.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
