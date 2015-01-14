@@ -74,11 +74,13 @@
 				<p><label for="man_asset_number"><?php echo __('Asset Number')?>: </label><span id="man_asset_number" <?php echo $edit?>><?php echo print_something($key->man_asset_number)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_purchase_vendor"><?php echo __('Vendor')?>: </label><span id="man_purchase_vendor" <?php echo $edit?>><?php echo print_something($key->man_purchase_vendor)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_purchase_order_number"><?php echo __('PO Number')?>: </label><span id="man_purchase_order_number" <?php echo $edit?>><?php echo print_something($key->man_purchase_order_number)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="man_purchase_service_contract_number"><?php echo __('Service Contract Number')?>: </label><span id="man_purchase_service_contract_number" <?php echo $edit?>><?php echo print_something($key->man_purchase_service_contract_number)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_purchase_invoice"><?php echo __('Invoice Number')?>: </label><span id="man_purchase_invoice" <?php echo $edit?>><?php echo print_something($key->man_purchase_invoice)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_purchase_date"><?php echo __('Purchase Date')?>: </label><span id="man_purchase_date" <?php echo $edit?>><?php echo print_something($key->man_purchase_date)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
 				<p><label for="man_purchase_amount"><?php echo __('Purchase Amount')?>: </label><span id="man_purchase_amount" <?php echo $edit?>><?php echo print_something($key->man_purchase_amount)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_warranty_duration"><?php echo __('Warranty Length')?>: </label><span id="man_warranty_duration" <?php echo $edit?>><?php echo print_something($key->man_warranty_duration)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_warranty_expires"><?php echo __('Warranty Expires')?>: </label><span id="man_warranty_expires" <?php echo $edit?>><?php echo print_something($key->man_warranty_expires)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
+				<p><label for="man_lease_expiry_date"><?php echo __('Lease Expiry Date')?>: </label><span id="man_lease_expiry_date" <?php echo $edit?>><?php echo print_something($key->man_lease_expiry_date)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
 			<?php 
 			endforeach;
 			echo display_custom_field('view_summary_purchase',  $additional_fields_data, $edit); ?>

@@ -1721,6 +1721,8 @@ CREATE TABLE `system` (
   `man_purchase_cost_center` varchar(50) NOT NULL default '',
   `man_purchase_vendor` varchar(100) NOT NULL default '',
   `man_purchase_date` date NOT NULL default '0000-00-00',
+  `man_purchase_service_contract_number` varchar(255) NOT NULL default '',
+  `man_lease_expiry_date` date NOT NULL default '0000-00-00',
   `man_purchase_amount` varchar(50) NOT NULL default '',
   `man_warranty_duration` int(5) unsigned NOT NULL default '0',
   `man_warranty_expires` date NOT NULL default '0000-00-00',
