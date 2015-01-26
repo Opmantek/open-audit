@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -62,7 +62,7 @@ class Admin_connection extends MY_Controller
 	{
 		parent::__construct();
 		// must be an admin to access this page
-		if ($this->session->userdata('user_admin') !== 'y') {
+		if ((string)$this->session->userdata('user_admin') !== 'y') {
 			$redirect_url = @$this->input->server('HTTP_REFERER');
 			if ($redirect_url > '') {
 				redirect($redirect_url);
@@ -71,7 +71,10 @@ class Admin_connection extends MY_Controller
 				redirect('login/index');
 			}
 		}
-		$this->log_event();
+
+		$log_details = new stdClass();
+		stdlog($log_details);
+        unset($log_details);
 	}
 
 	/**
@@ -124,13 +127,13 @@ class Admin_connection extends MY_Controller
 	 */
 	public function add_connections()
 	{
-		if ( ! isset($_POST['submit_xml']) AND ! isset($_POST['submit_file'])) {
+		if ( ! $this->input->post('submit_xml') AND ! $this->input->post('submit_file')) {
 			// nothing submitted - display the form
 			$this->data['heading'] = 'Add connections';
 			$this->data['include'] = 'v_add_connections';
 			$this->load->view('v_template', $this->data);
 		}
-		if (isset($_POST['submit_file'])) {
+		if ($this->input->post('submit_file')) {
 			// we have an uploaded file - store and process
 			$this->load->model('m_oa_connection');
 			$target_path = BASEPATH . '../application/uploads/' . basename($_FILES['upload_file']['name']);
@@ -142,97 +145,100 @@ class Admin_connection extends MY_Controller
 				exit();
 			}
 			require_once BASEPATH . '../application/libraries/phpexcel/PHPExcel/IOFactory.php';
-			if ( ! $objPHPExcel = PHPExcel_IOFactory::load($target_path)) {
+			if ( ! $php_excel = PHPExcel_IOFactory::load($target_path)) {
 				exit;
 			}
 			$attributes = array();
 			$details = array();
-			$object = new stdClass();
-			$objWorksheet = $objPHPExcel->getActiveSheet();
+			// $object = new stdClass();
+			$excel_worksheet = $php_excel->getActiveSheet();
 			$count = 0;
-			foreach ($objWorksheet->getRowIterator() as $row) {
-				$cellIterator = $row->getCellIterator();
-				$cellIterator->setIterateOnlyExistingCells(false);
+			foreach ($excel_worksheet->getRowIterator() as $excel_row) {
+				$excel_cell_iterator = $excel_row->getCellIterator();
+				$excel_cell_iterator->setIterateOnlyExistingCells(FALSE);
 				if ($count === 0) {
-					foreach ($cellIterator as $cell) {
-						$attributes[] = $cell->getValue();
+					foreach ($excel_cell_iterator as $excel_cell) {
+						$attributes[] = $excel_cell->getValue();
 					}
 				}
 				else {
 					$cell_number = 0;
-					foreach ($cellIterator as $cell) {
-						$details[$attributes[$cell_number]] = $cell->getValue();
+					foreach ($excel_cell_iterator as $excel_cell) {
+						$details[$attributes[$cell_number]] = $excel_cell->getValue();
 						$cell_number++;
 					}
-					if ($details['connection_name'] != '') {
+					if ((string)$details['connection_name'] !== '') {
 						if ($connection_id = $this->m_oa_connection->get_connection_id($details['connection_name'])) {
 							// we need to update an existing connection
-							$sql = "UPDATE oa_connection SET ";
+							$sql_query = 'UPDATE oa_connection SET ';
 							foreach ($details as $detail => $value) {
-								$sql .= $detail . " = '" . mysql_real_escape_string($value) . "', ";
+								$sql_query .= $detail . " = '" . mysql_real_escape_string($value) . "', ";
 							}
-							$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-							$sql .= " WHERE connection_name = '" . mysql_real_escape_string($details['connection_name']) . "'";
-						} else {
-							// this is a new connection (we don't have a name match)
-							$sql = "INSERT INTO oa_connection ( ";
-							foreach ($details as $detail => $value) {
-								$sql .= $detail . ", ";
-							}
-							$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-							$sql .= " ) VALUES ( ";
-							foreach ($details as $detail => $value) {
-								$sql .= "'" . mysql_real_escape_string(str_replace('"', '', $value)) . "', ";
-							}
-							$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-							$sql .= ")";
+							$sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
+							$sql_query .= " WHERE connection_name = '" . mysql_real_escape_string($details['connection_name']) . "'";
 						}
-						# run the query !!!
-						echo $sql . "<br />\n";
-						$query = $this->db->query($sql);
+						else {
+							// this is a new connection (we don't have a name match)
+							$sql_query = 'INSERT INTO oa_connection ( ';
+							foreach ($details as $detail => $value) {
+								$sql_query .= $detail . ', ';
+							}
+							$sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
+							$sql_query .= ' ) VALUES ( ';
+							foreach ($details as $detail => $value) {
+								$sql_query .= "'" . mysql_real_escape_string(str_replace('"', '', $value)) . "', ";
+							}
+							$sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
+							$sql_query .= ')';
+						}
+						// run the query !!!
+						echo $sql_query . "<br />\n";
+						$query = $this->db->query($sql_query);
 					}
 					else {
-						echo "no connection name provided";
+						echo 'no connection name provided';
 					}
 				}
 				$count++;
 			}
 			redirect('admin_connection/list_connections');
 		}
-		if (isset($_POST['submit_xml']) AND isset($_POST['form_systemXML']) AND $_POST['form_systemXML'] > '') {
+		if ($this->input->post('submit_xml') AND $this->input->post('form_systemXML')) {
 			// we have some XML text - process
 			echo "XML processing<br />\n";
 			$this->load->helper('xml');
 			$this->load->model('m_oa_connection');
-			$xml = new SimpleXMLElement(utf8_encode(str_replace('&', '&amp;', $this->input->post('form_systemXML'))));
-			foreach ($xml->children() as $child) {
+			$form_xml = new SimpleXMLElement(utf8_encode(str_replace('&', '&amp;', $this->input->post('form_systemXML'))));
+			foreach ($form_xml->children() as $child) {
 				if ($connection_id = $this->m_oa_connection->get_connection_id($child->connection_name)) {
-					# we need to update an existing connection
-					$sql = "UPDATE oa_connection SET ";
+					// we need to update an existing connection
+					$sql_query = 'UPDATE oa_connection SET ';
 					foreach ($child->children() as $detail) {
-						$sql .= $detail->getName() . " = '" . $detail . "', ";
+						$sql_query .= $detail->getName() . " = '" . $detail . "', ";
 					}
-					$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-					$sql .= " WHERE connection_name = '" . $child->connection_name . "'";
-				} else {
-					# this is a new connection (we don't have a name match)
-					$sql = "INSERT INTO oa_connection ( ";
-					foreach ($child->children() as $detail) {
-						$sql .= $detail->getName() . ", ";
-					}
-					$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-					$sql .= " ) VALUES ( ";
-					foreach ($child->children() as $detail) {
-						$sql .= "'" . $detail . "', ";
-					}
-					$sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-					$sql .= ")";
+					$sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
+					$sql_query .= " WHERE connection_name = '" . $child->connection_name . "'";
 				}
-				if ($child->connection_name != '') {
-					# run the query !!!
-					$query = $this->db->query($sql);
-				} else {
-					echo "no connection name provided";
+				else {
+					// this is a new connection (we don't have a name match)
+					$sql_query = 'INSERT INTO oa_connection ( ';
+					foreach ($child->children() as $detail) {
+						$sql_query .= $detail->getName() . ', ';
+					}
+					$sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
+					$sql_query .= ' ) VALUES ( ';
+					foreach ($child->children() as $detail) {
+						$sql_query .= "'" . $detail . "', ";
+					}
+					$sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
+					$sql_query .= ')';
+				}
+				if ((string)$child->connection_name !== '') {
+					// run the query !!!
+					$query = $this->db->query($sql_query);
+				}
+				else {
+					echo 'no connection name provided';
 				}
 			}
 		}
@@ -251,7 +257,7 @@ class Admin_connection extends MY_Controller
 	 */
 	public function add_connection()
 	{
-		if (!isset($_POST['AddConnection'])) {
+		if ( ! $this->input->post('AddConnection')) {
 			// load the initial form
 			$this->load->model('m_oa_location');
 			$this->load->model('m_oa_org');
@@ -263,8 +269,8 @@ class Admin_connection extends MY_Controller
 		}
 		else {
 			// process the form
-			foreach ($_POST as $key => $value) {
-				$details->$key = $value;
+			foreach ($this->input->post() as $this_key => $this_value) {
+				$details->$this_key = $this_value;
 			}
 			$this->load->model('m_oa_connection');
 			if (is_null($this->m_oa_connection->get_connection_id($details->connection_name))) {
@@ -295,29 +301,30 @@ class Admin_connection extends MY_Controller
 	public function edit_connection()
 	{
 		$this->load->model('m_oa_connection');
-		if (!isset($_POST['Editconnection'])) {
-			# load the initial form
+		if ( ! $this->input->post('Editconnection')) {
+			// load the initial form
 			$this->data['connection'] = $this->m_oa_connection->get_connection($this->data['id']);
 			$this->data['heading'] = 'Edit Connection';
 			$this->data['include'] = 'v_edit_connection';
 			$this->data['sortcolumn'] = '1';
 			$this->load->view('v_template', $this->data);
-		} else {
-			# process the form
+		}
+		else {
+			// process the form
 			$error = '0';
-			foreach ($_POST as $key => $value) {
-				$details->$key = $value;
+			foreach ($this->input->post() as $this_key => $this_value) {
+				$details->$this_key = $this_value;
 			}
-			if ($this->m_oa_connection->check_connection_name($details->connection_name, $details->connection_id) == false) {
+			if ((bool)$this->m_oa_connection->check_connection_name($details->connection_name, $details->connection_id) === FALSE) {
 				$error = '1';
-				$this->data['error_message'] = "connection name already exists.";
+				$this->data['error_message'] = 'connection name already exists.';
 				$this->data['connection'] = $this->m_oa_connection->get_connection($details->connection_id);
 				$this->data['heading'] = 'Edit Connection';
 				$this->data['include'] = 'v_edit_connection';
 				$this->load->view('v_template', $this->data);
 			}
 
-			if ($error == '0') {
+			if ((string)$error === '0') {
 				$this->m_oa_connection->edit_connection($details);
 				redirect('admin_connection/list_connections');
 			}
@@ -337,7 +344,7 @@ class Admin_connection extends MY_Controller
 	 */
 	public function delete_connection()
 	{
-		$this->load->model("m_oa_connection");
+		$this->load->model('m_oa_connection');
 		$this->m_oa_connection->delete_connection($this->data['id']);
 		redirect('admin_connection/list_connections');
 	}

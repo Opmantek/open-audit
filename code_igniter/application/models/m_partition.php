@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -41,6 +41,7 @@ class M_partition extends MY_Model {
 	function get_system_partition($system_id) {
 		$sql = "SELECT 
 				partition_id, 
+				partition_device_id, 
 				partition_mount_point, 
 				partition_name, 
 				partition_size, 
@@ -289,6 +290,8 @@ class M_partition extends MY_Model {
 				sys_hw_partition.partition_mount_point > '' AND 
 				sys_hw_partition.partition_mount_point <> 'Y:' AND 
 				sys_hw_partition.partition_mount_point not like ? 
+			GROUP BY
+				system.hostname, sys_hw_partition.partition_mount_point 
 			ORDER BY 
 				system.hostname, 
 				sys_hw_partition.partition_mount_point ";

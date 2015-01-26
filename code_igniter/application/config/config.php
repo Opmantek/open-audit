@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-$config['web_internal_version'] = '20140720';
-$config['web_display_version'] = '1.4';
+$config['web_internal_version'] = '20141225';
+$config['web_display_version'] = '1.5.3';
 # $config['debug'] = FALSE;
 /*
 |--------------------------------------------------------------------------
@@ -252,6 +252,7 @@ $config['encryption_key'] = "openaudit";
 |
 */
 $config['sess_cookie_name']		= 'ci_session';
+$config['sess_cookie_name']		= 'openaudit';
 $config['sess_expiration']		= 7200;
 $config['sess_expiration']		= 0;
 $config['sess_encrypt_cookie']	= TRUE;

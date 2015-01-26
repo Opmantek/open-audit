@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -46,7 +46,10 @@ class Admin_location extends MY_Controller
                 redirect('login/index');
             }
         }
-        $this->log_event();
+
+        $log_details = new stdClass();
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()
@@ -110,7 +113,7 @@ class Admin_location extends MY_Controller
                 #location does not exist - good
                 $details->location_id = $this->m_oa_location->add_location($details);
             } else {
-                $this->data['error_messageOMK-318'] = "Location Name already exists.";
+                $this->data['error_message'] = "Location Name already exists.";
                 $this->data['heading'] = 'Add Location';
                 $this->data['include'] = 'v_add_location';
                 $this->load->view('v_template', $this->data);
@@ -131,22 +134,31 @@ class Admin_location extends MY_Controller
         $this->load->model("m_oa_group");
         $location_id = $this->data['id'];
         $location_name = $this->m_oa_location->get_location_name($location_id);
+        $location_group_id = $this->m_oa_location->get_group_id($location_id);
         $group = new stdClass();
+        $group->group_id = '';
         $group->group_name = "Items in " . $location_name;
         $group->group_padded_name = '';
         $group->group_description = "Items in " . $location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE
-             system.man_location_id = '" . $this->data['id'] . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '" . $this->data['id'] . "' OR LOWER(system.sysLocation) LIKE LOWER('%" . $location_name . "%')) AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
-        $group_id = $this->m_oa_group->insert_group($group);
-        # update the oa_org with the correct group_id
-        $this->m_oa_location->set_group_id($location_id, $group_id);
+        if (isset($location_group_id) AND $location_group_id != '' AND $location_group_id != '0') {
+            # update an existing group
+            $group->group_id = $location_group_id;
+            $this->m_oa_group->update_group($group);
+        } else {
+            # insert a new group
+            $group->group_id = $this->m_oa_group->insert_group($group);
+            # update the oa_org with the correct group_id
+            $this->m_oa_location->set_group_id($location_id, $group->group_id);
+        }
+
         # and now update the group contents
-        $this->m_oa_group->update_specific_group($group_id);
-        # now send the user back to list_orgs
+        $this->m_oa_group->update_specific_group($group->group_id);
+        # now send the user back to list_locations
         redirect('admin_location/list_locations');
     }
 

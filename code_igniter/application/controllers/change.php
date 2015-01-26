@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -38,6 +38,11 @@ class change extends MY_Controller
     public function __construct()
     {
         parent::__construct();
+        // log the attempt
+        $log_details = new stdClass();
+        $log_details->severity = 6;
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()

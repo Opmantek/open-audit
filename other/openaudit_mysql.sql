@@ -24,6 +24,11 @@
 --
 -- *****************************************************************************
 
+-- @package Open-AudIT
+-- @author Mark Unwin <marku@opmantek.com>
+-- @version 1.5.2
+-- @copyright Copyright (c) 2014, Opmantek
+-- @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -464,7 +469,7 @@ CREATE TABLE `oa_report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Table structure for table `oa_group_column`
+-- Table structure for table `oa_report_column`
 --
 
 DROP TABLE IF EXISTS `oa_report_column`;
@@ -532,8 +537,8 @@ CREATE TABLE `oa_user` (
 DROP TABLE IF EXISTS `oa_user_sessions`;
 CREATE TABLE  `oa_user_sessions` (
   `session_id` varchar(40) NOT NULL default '0',
-  `ip_address` varchar(16) NOT NULL default '0',
-  `user_agent` varchar(50) NOT NULL,
+  `ip_address` varchar(45) NOT NULL default '0',
+  `user_agent` varchar(120) NOT NULL,
   `last_activity` int(10) unsigned NOT NULL default '0',
   `user_data` text NOT NULL,
   PRIMARY KEY  (`session_id`)
@@ -622,6 +627,7 @@ CREATE TABLE `sys_hw_hard_drive` (
   `hard_drive_device_id` varchar(200) NOT NULL default '',
   `hard_drive_status` varchar(100) NOT NULL default '',
   `hard_drive_firmware` varchar(100) NOT NULL default '',
+  `hard_drive_model_family` varchar(200) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`hard_drive_id`),
@@ -1636,6 +1642,7 @@ CREATE TABLE `sys_sw_windows` (
   `windows_version` varchar(20) NOT NULL default '',
   `windows_install_directory` varchar(20) NOT NULL default '',
   `windows_active_directory_ou` varchar(200) NOT NULL default '',
+  `windows_workgroup` varchar(255) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`windows_id`),
@@ -1655,7 +1662,7 @@ CREATE TABLE `system` (
   `hostname` varchar(100) NOT NULL default '',
   `domain` varchar(100) NOT NULL default '',
   `fqdn` text NOT NULL default '',
-  `description` varchar(250) NOT NULL default '',
+  `description` text NOT NULL default '',
   `type` varchar(50) NOT NULL default '',
   `icon` varchar(50) NOT NULL default '',
   `os_group` varchar(50) NOT NULL default '',
@@ -1685,7 +1692,7 @@ CREATE TABLE `system` (
   `man_environment` enum('production', 'dev', 'dr', 'eval', 'pre-prod', 'test', 'train', 'uat') NOT NULL default 'production',
   `man_criticality` enum('critical', 'normal', 'low') NOT NULL default 'normal', 
   `man_class` enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','','hypervisor') NOT NULL default '', 
-  `man_description` varchar(250) NOT NULL default '',
+  `man_description` text NOT NULL default '',
   `man_function` varchar(100) NOT NULL default '',
   `man_type` varchar(100) NOT NULL default '',
   `man_ip_address` varchar(30) NOT NULL default '',
@@ -1697,7 +1704,9 @@ CREATE TABLE `system` (
   `man_location_room` varchar(100) NOT NULL default '',
   `man_location_rack` varchar(100) NOT NULL default '',
   `man_location_rack_position` varchar(100) NOT NULL default '',
-  `man_location_rack_size` int(10) unsigned NOT NULL default '0', 
+  `man_location_rack_size` int(10) unsigned NOT NULL default '0',
+  `man_location_latitude` float(10,6) NOT NULL,
+  `man_location_longitude` float(10,6) NOT NULL,
   `man_serial` varchar(200) NOT NULL default '',
   `man_asset_number` varchar(50) NOT NULL default '',
   `man_model` varchar(50) NOT NULL default '',
@@ -1714,6 +1723,8 @@ CREATE TABLE `system` (
   `man_purchase_cost_center` varchar(50) NOT NULL default '',
   `man_purchase_vendor` varchar(100) NOT NULL default '',
   `man_purchase_date` date NOT NULL default '0000-00-00',
+  `man_purchase_service_contract_number` varchar(255) NOT NULL default '',
+  `man_lease_expiry_date` date NOT NULL default '0000-00-00',
   `man_purchase_amount` varchar(50) NOT NULL default '',
   `man_warranty_duration` int(5) unsigned NOT NULL default '0',
   `man_warranty_expires` date NOT NULL default '0000-00-00',
@@ -1744,7 +1755,14 @@ CREATE TABLE `system` (
   `nmis_group` varchar(50) NOT NULL default '',
   `nmis_name` varchar(50) NOT NULL default '',
   `nmis_role` varchar(50) NOT NULL default '',
+  `nmis_export` enum('true', 'false') NOT NULL default 'false',
   `system_key_type` varchar(4) NOT NULL default '',
+  `sysDescr` text NOT NULL default '',
+  `sysObjectID` varchar(255) NOT NULL default '',
+  `sysUpTime` varchar(255) NOT NULL default '',
+  `sysContact` varchar(255) NOT NULL default '',
+  `sysName` varchar(255) NOT NULL default '',
+  `sysLocation` varchar(255) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`system_id`),
@@ -1770,12 +1788,282 @@ INSERT INTO `oa_group` (`group_id`, `group_name`, `group_padded_name`, `group_dy
 (8, 'Computers', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and system.man_type = \'computer\'', 1, 'Any items that have their status attribute set to \'production\' and have their type attribute set to \'computer\'.', 'device', 'SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_description, system.man_os_name FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id', 'computer'),
 (9, 'Items in Default Location', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = \'0\' AND system.man_status = \'production\'', 1, 'Items in Default Location', 'location', '', 'location'),
 (10, 'Non Production Devices', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status != \'production\'', 1, 'Any items that have their status attribute not set to \'production\'.', 'device', 'SELECT system.man_icon, system.man_os_family, system.man_type, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, system.man_description, system.man_owner FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id', 'devices'),
-(11, 'Virtual Guests', '', 'SELECT distinct(system.system_id) FROM system WHERE (system.man_manufacturer LIKE \'VMware\%\' or system.man_manufacturer LIKE \'Parallels\%\') AND system.man_status = \'production\' and man_os_name NOT LIKE \'\%ESX\%\'', 1, 'Any items that have their status attribute set to \'production\' and their manufacturer attribute contains \'VMware\', \'Parallels\' or \'KVM\' and their OS Name does not contain ESX.', 'device', 'SELECT system.man_icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, man_os_family, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id', 'vmware');
-INSERT INTO `oa_group_column` (`column_id`, `group_id`, `column_order`, `column_name`, `column_variable`, `column_type`, `column_link`, `column_secondary`, `column_ternary`, `column_align`) VALUES (1, 1, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'), (2, 1, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), (3, 1, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), (4, 1, 4, 'Type', 'man_type', 'text', '', '', '', 'left'), (5, 1, 5, 'Description', 'man_description', 'text', '', '', '', 'left'), (6, 1, 6, 'OS / Device', 'man_os_name', 'text', '', '', '', 'left'), (7, 1, 7, 'Tags', 'tag', 'text', '', '', '', 'left'), (8, 2, 1, 'Name', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), (9, 2, 2, 'Description', 'man_description', 'text', '', '', '', 'left'), (10, 2, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), (11, 2, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), (12, 2, 4, 'Model', 'man_model', 'text', '', '', '', 'left'), (13, 2, 4, 'Serial', 'man_serial', 'text', '', '', '', 'left'), (14, 2, 6, 'Tags', 'tag', 'text', '', '', '', 'left'), (15, 3, 1, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), (16, 3, 2, 'Description', 'man_description', 'text', '', '', '', 'left'), (17, 3, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), (18, 3, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), (19, 3, 5, 'Model', 'man_model', 'text', '', '', '', 'left'), (20, 3, 5, 'OS Name', 'man_os_name', 'text', '', '', '', 'left'), (21, 3, 6, 'Tags', 'tag', 'text', '', '', '', 'left'), (22, 3, 7, '', 'man_os_family', '', '', '', '', 'left'), (23, 3, 8, '', 'system_id', '', '', '', '', 'left'), (24, 4, 1, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), (25, 4, 2, 'Description', 'man_description', 'text', '', '', '', 'left'), (26, 4, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), (27, 4, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), (28, 4, 5, 'Model', 'man_model', 'text', '', '', '', 'left'), (29, 4, 5, 'OS / Device', 'man_os_name', 'text', '', '', '', 'left'), (30, 4, 6, 'Tags', 'tag', 'text', '', '', '', 'left'), (31, 5, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'), (32, 5, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), (33, 5, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), (34, 5, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), (35, 5, 5, 'Model', 'man_model', 'text', '', '', '', 'left'), (36, 5, 6, 'Serial', 'man_serial', 'text', '', '', '', 'left'), (37, 5, 7, 'User', 'windows_user_name', 'text', '', '', '', 'left'), (38, 5, 8, 'Location', 'location_name', 'text', '', '', '', 'left'), (39, 5, 9, 'Tags', 'tag', 'text', '', '', '', 'left'), (40, 6, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'), (41, 6, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), (42, 6, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), (43, 6, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), (44, 6, 4, 'Model', 'man_model', 'text', '', '', '', 'left'), (45, 6, 5, 'Description', 'man_description', 'text', '', '', '', 'left'), (46, 6, 6, 'OS / Device', 'man_os_name', 'text', '', '', '', 'left'), (47, 6, 7, 'Tags', 'tag', 'text', '', '', '', 'left'), (48, 7, 0, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'), (49, 7, 1, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), (50, 7, 2, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), (51, 7, 3, 'Function', 'man_function', 'text', '', '', '', 'center'), (52, 7, 4, 'Environment', 'man_environment', 'text', '', '', '', 'center'), (53, 7, 5, 'Description', 'man_description', 'text', '', '', '', 'left'), (54, 7, 6, 'OS', 'man_os_name', 'text', '', '', '', 'left'), (55, 7, 7, 'VM Group', 'man_vm_group', 'text', '', '', '', 'left'), (56, 7, 8, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), (57, 7, 9, 'Location', 'location_name', 'text', '', '', '', 'left'), (58, 7, 10, 'Tags', 'tag', 'text', '', '', '', 'left'), (59, 8, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'), (60, 8, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), (61, 8, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), (62, 8, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), (63, 8, 4, 'Model', 'man_model', 'text', '', '', '', 'left'), (64, 8, 5, 'Description', 'man_description', 'text', '', '', '', 'left'), (65, 8, 6, 'OS Name', 'man_os_name', 'text', '', '', '', 'left'), (66, 8, 7, 'Tags', 'tag', 'text', '', '', '', 'left'), (67, 10, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'), (68, 10, 2, 'Type', 'man_type', 'text', '', '', '', 'left'), (69, 10, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), (70, 10, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), (71, 10, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), (72, 10, 4, 'Model', 'man_model', 'text', '', '', '', 'left'), (73, 10, 4, 'Serial', 'man_serial', 'text', '', '', '', 'left'), (74, 10, 5, 'Description', 'man_description', 'text', '', '', '', 'left'), (75, 10, 5, 'Assigned', 'man_owner', 'text', '', '', '', 'left'), (76, 10, 7, 'Tags', 'tag', 'text', '', '', '', 'left'); 
+(11, 'Virtual Guests', '', 'SELECT distinct(system.system_id) FROM system WHERE (system.man_manufacturer LIKE \'VMware\%\' or system.man_manufacturer LIKE \'Parallels\%\') AND system.man_status = \'production\' and man_os_name NOT LIKE \'\%ESX\%\'', 1, 'Any items that have their status attribute set to \'production\' and their manufacturer attribute contains \'VMware\', \'Parallels\' or \'KVM\' and their OS Name does not contain ESX.', 'device', 'SELECT system.man_icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, man_os_family, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id', 'vmware'),
+(12, 'Default Organisation owned items', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = \'0\' AND system.man_status = \'production\'', 1, 'Items in Default Organisation', 'location', '', 'location');
 
-INSERT INTO `oa_report` VALUES (1,'Device Details','','y','SELECT system.man_icon, system.man_type, system.system_id, system.hostname, date(system.first_timestamp) as first_seen, date(system.last_seen) as last_seen, system.last_seen_by, system.man_model, system.man_manufacturer, system.man_serial, system.man_owner, oa_location.location_name, system.os_family, oa_org.org_name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.hostname','','v_report','','',0),(2,'Device Hardware','','y','SELECT system.system_id, system.hostname, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, man_icon, man_os_family FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id','','v_report','','',0),(3,'Installed - Software','','y','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment FROM sys_sw_software, system, oa_group_sys WHERE sys_sw_software.timestamp = system.timestamp AND sys_sw_software.system_id = system.system_id AND system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_report','','',0),(4,'Specific Software','','n','SELECT system.system_id, system.hostname, sys_sw_software.software_name, sys_sw_software.software_installed_by, sys_sw_software.software_installed_on, sys_sw_software.software_version, sys_sw_windows.windows_user_name, oa_org.org_name, sys_sw_software.first_timestamp FROM system LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.system_id LEFT JOIN sys_sw_windows ON system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp LEFT JOIN sys_sw_software ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id INNER JOIN (SELECT sys_sw_software.software_name, sys_sw_software.software_version FROM sys_sw_software WHERE sys_sw_software.software_id = ?) software_version_temp ON sys_sw_software.software_name = software_version_temp.software_name AND sys_sw_software.software_version = software_version_temp.software_version WHERE oa_group_sys.group_id = @group','','v_report','','',0),(5,'Software Keys','','y','SELECT COUNT(key_text) as count, key_name, key_text, key_id FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN sys_sw_software_key ON (sys_sw_software_key.system_id = system.system_id and sys_sw_software_key.timestamp = system.timestamp) WHERE oa_group_sys.group_id = @group GROUP BY key_text ORDER BY key_name','','v_report','','',1),(6,'Specific Key Name','','n','SELECT system.system_id, system.hostname, sys_sw_software_key.key_name, sys_sw_software_key.key_text FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) LEFT JOIN sys_sw_software_key ON (system.system_id = sys_sw_software_key.system_id AND system.timestamp = sys_sw_software_key.timestamp) WHERE oa_group_sys.group_id = @group AND sys_sw_software_key.key_name = (SELECT key_name FROM sys_sw_software_key WHERE key_id = ? LIMIT 1)','','v_report','','',0),(7,'Specific Key Text','','n','SELECT system.system_id, system.hostname, sys_sw_software_key.key_name, sys_sw_software_key.key_text FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) LEFT JOIN sys_sw_software_key ON (system.system_id = sys_sw_software_key.system_id AND system.timestamp = sys_sw_software_key.timestamp) WHERE oa_group_sys.group_id = @group AND sys_sw_software_key.key_text = (SELECT key_text FROM sys_sw_software_key WHERE key_text = ? LIMIT 1)','','v_report','','',0),(8,'Alerts','','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ORDER BY oa_alert_log.timestamp DESC ','','v_report_alerts','','',0),(9,'Alerts - Software','','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.timestamp > DATE_SUB(NOW(),INTERVAL 100 DAY) AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_alert_log.alert_details LIKE \'software%\' AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ASC ','','v_report_alerts','','',0);
+INSERT INTO `oa_group_column` (`column_id`, `group_id`, `column_order`, `column_name`, `column_variable`, `column_type`, `column_link`, `column_secondary`, `column_ternary`, `column_align`) VALUES 
+(NULL, 1, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'), 
+(NULL, 1, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), 
+(NULL, 1, 3, 'Domain', 'domain', 'text', '', '', '', 'left'), 
+(NULL, 1, 4, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), 
+(NULL, 1, 5, 'Type', 'man_type', 'text', '', '', '', 'left'), 
+(NULL, 1, 6, 'Description', 'man_description', 'text', '', '', '', 'left'), 
+(NULL, 1, 7, 'OS / Device', 'man_os_name', 'text', '', '', '', 'left'), 
+(NULL, 1, 8, 'Tags', 'tag', 'text', '', '', '', 'left'), 
+(NULL, 2, 1, 'Name', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), 
+(NULL, 2, 2, 'Description', 'man_description', 'text', '', '', '', 'left'), 
+(NULL, 2, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), 
+(NULL, 2, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), 
+(NULL, 2, 5, 'Model', 'man_model', 'text', '', '', '', 'left'), 
+(NULL, 2, 6, 'Serial', 'man_serial', 'text', '', '', '', 'left'), 
+(NULL, 2, 7, 'Tags', 'tag', 'text', '', '', '', 'left'), 
+(NULL, 3, 1, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'), 
+(NULL, 3, 2, 'Description', 'man_description', 'text', '', '', '', 'left'), 
+(NULL, 3, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'), 
+(NULL, 3, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'), 
+(NULL, 3, 5, 'Model', 'man_model', 'text', '', '', '', 'left'), 
+(NULL, 3, 6, 'OS Name', 'man_os_name', 'text', '', '', '', 'left'),
+(NULL, 3, 7, 'Tags', 'tag', 'text', '', '', '', 'left'),
+(NULL, 3, 8, '', 'man_os_family', '', '', '', '', 'left'),
+(NULL, 3, 9, '', 'system_id', '', '', '', '', 'left'),
+(NULL, 4, 1, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'),
+(NULL, 4, 2, 'Description', 'man_description', 'text', '', '', '', 'left'),
+(NULL, 4, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'),
+(NULL, 4, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'),
+(NULL, 4, 5, 'Model', 'man_model', 'text', '', '', '', 'left'),
+(NULL, 4, 6, 'OS / Device', 'man_os_name', 'text', '', '', '', 'left'),
+(NULL, 4, 7, 'Tags', 'tag', 'text', '', '', '', 'left'),
+(NULL, 5, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'),
+(NULL, 5, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'),
+(NULL, 5, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'),
+(NULL, 5, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'),
+(NULL, 5, 5, 'Model', 'man_model', 'text', '', '', '', 'left'),
+(NULL, 5, 6, 'Serial', 'man_serial', 'text', '', '', '', 'left'),
+(NULL, 5, 7, 'User', 'windows_user_name', 'text', '', '', '', 'left'),
+(NULL, 5, 8, 'Location', 'location_name', 'text', '', '', '', 'left'),
+(NULL, 5, 9, 'Tags', 'tag', 'text', '', '', '', 'left'),
+(NULL, 6, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'),
+(NULL, 6, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'),
+(NULL, 6, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'),
+(NULL, 6, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'),
+(NULL, 6, 5, 'Model', 'man_model', 'text', '', '', '', 'left'),
+(NULL, 6, 6, 'Description', 'man_description', 'text', '', '', '', 'left'),
+(NULL, 6, 7, 'OS / Device', 'man_os_name', 'text', '', '', '', 'left'),
+(NULL, 6, 8, 'Tags', 'tag', 'text', '', '', '', 'left'),
+(NULL, 7, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'),
+(NULL, 7, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'),
+(NULL, 7, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'),
+(NULL, 7, 4, 'Function', 'man_function', 'text', '', '', '', 'center'),
+(NULL, 7, 5, 'Environment', 'man_environment', 'text', '', '', '', 'center'),
+(NULL, 7, 6, 'Description', 'man_description', 'text', '', '', '', 'left'),
+(NULL, 7, 7, 'OS', 'man_os_name', 'text', '', '', '', 'left'),
+(NULL, 7, 8, 'VM Group', 'man_vm_group', 'text', '', '', '', 'left'),
+(NULL, 7, 9, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'),
+(NULL, 7, 10, 'Location', 'location_name', 'text', '', '', '', 'left'),
+(NULL, 7, 11, 'Tags', 'tag', 'text', '', '', '', 'left'),
+(NULL, 8, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'),
+(NULL, 8, 2, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'),
+(NULL, 8, 3, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'),
+(NULL, 8, 4, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'),
+(NULL, 8, 5, 'Model', 'man_model', 'text', '', '', '', 'left'),
+(NULL, 8, 6, 'Description', 'man_description', 'text', '', '', '', 'left'),
+(NULL, 8, 7, 'OS Name', 'man_os_name', 'text', '', '', '', 'left'),
+(NULL, 8, 8, 'Tags', 'tag', 'text', '', '', '', 'left'),
+(NULL, 10, 1, 'Icon', 'man_icon', 'image', '', 'man_os_family', '', 'left'),
+(NULL, 10, 2, 'Type', 'man_type', 'text', '', '', '', 'left'),
+(NULL, 10, 3, 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left'),
+(NULL, 10, 4, 'IP Address', 'man_ip_address', 'ip_address', '', '', '', 'left'),
+(NULL, 10, 5, 'Manufacturer', 'man_manufacturer', 'text', '', '', '', 'left'),
+(NULL, 10, 6, 'Model', 'man_model', 'text', '', '', '', 'left'),
+(NULL, 10, 7, 'Serial', 'man_serial', 'text', '', '', '', 'left'),
+(NULL, 10, 8, 'Description', 'man_description', 'text', '', '', '', 'left'),
+(NULL, 10, 9, 'Assigned', 'man_owner', 'text', '', '', '', 'left'),
+(NULL, 10, 10, 'Tags', 'tag', 'text', '', '', '', 'left'); 
 
-INSERT INTO `oa_report_column` VALUES (1,1,0,'Icon','man_icon','image','','man_type','','center'),(2,1,1,'Type','man_type','text','','','',''),(3,1,2,'System Name','hostname','link','/main/system_display/','system_id','',''),(4,1,3,'First Seen','first_seen','timestamp','','','',''),(5,1,4,'Last Seen','last_seen','timestamp','','','',''),(6,1,5,'Last Seen By','last_seen_by','text','','','',''),(7,1,6,'Manufacturer','man_manufacturer','text','','','',''),(8,1,7,'Model','man_model','text','','','',''),(9,1,8,'Serial','man_serial','text','','','',''),(10,1,9,'Assigned To','man_owner','text','','','',''),(11,1,10,'Organisation','org_name','text','','','',''),(12,1,11,'Location','location_name','text','','','',''),(13,1,12,'OS','os_family','text','','','','left'),(14,1,13,'Tags','tag','text','','','','center'),(15,2,1,'Icon','man_icon','image','','man_os_family','','center'),(16,2,2,'System Name','hostname','link','/main/system_display/','system_id','','left'),(17,2,3,'IP Address','man_ip_address','ip_address','','','','left'),(18,2,4,'Manufacturer','man_manufacturer','text','','','','left'),(19,2,5,'Model','man_model','text','','','','left'),(20,2,6,'Serial','man_serial','text','','','','left'),(21,3,1,'Package Name','software_name','link','/report/specific_software/$group_id/','software_id','','left'),(22,3,2,'Version','software_version','text','','','','right'),(23,3,3,'Installs','software_count','text','','','','center'),(24,3,4,'Publisher','software_publisher','text','','','','left'),(25,3,5,'Type','software_comment','text','','','','left'),(26,3,6,'Contact','software_url','url','','','','left'),(27,3,7,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center'),(28,4,0,'System Name','hostname','link','/main/system_display/','system_id','','left'),(29,4,1,'User','windows_user_name','text','','','','left'),(30,4,2,'Organisation','org_name','text','','','','left'),(31,4,3,'Software Name','software_name','text','','','','left'),(32,4,4,'Software Version','software_version','text','','','','left'),(33,4,5,'Installed By','software_installed_by','text','','','','left'),(34,4,6,'Detected On','first_timestamp','timestamp','','','','left'),(35,4,7,'Installed On','software_installed_on','timestamp','','','','left'),(36,4,8,'Tags','tag','text','','','','center'),(37,5,0,'System Count','count','text','','','','center'),(38,5,0,'Key Name','key_name','link','/report/specific_key_name/$group_id/','key_id','','left'),(39,5,2,'Key Text','key_text','link','/report/specific_key_text/$group_id/','key_text','','left'),(40,6,0,'System Name','hostname','link','/main/system_display/','system_id','','left'),(41,6,2,'Key Name','key_name','text','','','','left'),(42,6,3,'Key Text','key_text','text','','','','left'),(43,6,7,'Tags','tag','text','','','','center'),(44,7,0,'System Name','hostname','link','/main/system_display/','system_id','','left'),(45,7,2,'Key Name','key_name','text','','','','left'),(46,7,3,'Key Text','key_text','text','','','','left'),(47,7,7,'Tags','tag','text','','','','center'),(48,8,0,'Timestamp','timestamp','text','','','','left'),(49,8,1,'IP Address','man_ip_address','ip_address','','','','left'),(50,8,2,'System Name','hostname','link','/main/system_display/','system_id','','left'),(51,8,3,'System Description','man_description','text','','','','left'),(52,8,4,'Details','alert_details','text','','','','left'),(53,8,5,'Tags','tag','text','','','','left'),(54,9,0,'Timestamp','timestamp','text','','','',''),(55,9,1,'IP Address','man_ip_address','ip_address','','','',''),(56,9,2,'System Name','hostname','link','/main/system_display/','system_id','',''),(57,9,3,'System Description','man_description','text','','','',''),(58,9,4,'Details','alert_details','text','','','',''),(59,9,5,'Tags','tag','text','','','','');
+
+INSERT INTO `oa_report` VALUES  (1,'Device Details','','y','SELECT system.man_icon, system.man_type, system.system_id, system.hostname, date(system.first_timestamp) as first_seen, date(system.last_seen) as last_seen, system.last_seen_by, system.man_model, system.man_manufacturer, system.man_serial, system.man_owner, oa_location.location_name, system.os_family, oa_org.org_name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.hostname','','v_report','','',0),
+(2,'Device Hardware','','y','SELECT system.system_id, system.hostname, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, man_icon, man_os_family FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id','','v_report','','',0),
+(3,'Installed - Software','','y','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment FROM sys_sw_software, system, oa_group_sys WHERE sys_sw_software.timestamp = system.timestamp AND sys_sw_software.system_id = system.system_id AND system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_report','','',0),
+(4,'Specific Software','','n','SELECT system.system_id, system.hostname, sys_sw_software.software_name, sys_sw_software.software_installed_by, sys_sw_software.software_installed_on, sys_sw_software.software_version, sys_sw_windows.windows_user_name, oa_org.org_name, sys_sw_software.first_timestamp FROM system LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.system_id LEFT JOIN sys_sw_windows ON system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp LEFT JOIN sys_sw_software ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id INNER JOIN (SELECT sys_sw_software.software_name, sys_sw_software.software_version FROM sys_sw_software WHERE sys_sw_software.software_id = ?) software_version_temp ON sys_sw_software.software_name = software_version_temp.software_name AND sys_sw_software.software_version = software_version_temp.software_version WHERE oa_group_sys.group_id = @group','','v_report','','',0),
+(5,'Software Keys','','y','SELECT COUNT(key_text) as count, key_name, key_text, key_id FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN sys_sw_software_key ON (sys_sw_software_key.system_id = system.system_id and sys_sw_software_key.timestamp = system.timestamp) WHERE oa_group_sys.group_id = @group GROUP BY key_text ORDER BY key_name','','v_report','','',1),
+(6,'Specific Key Name','','n','SELECT system.system_id, system.hostname, sys_sw_software_key.key_name, sys_sw_software_key.key_text FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) LEFT JOIN sys_sw_software_key ON (system.system_id = sys_sw_software_key.system_id AND system.timestamp = sys_sw_software_key.timestamp) WHERE oa_group_sys.group_id = @group AND sys_sw_software_key.key_name = (SELECT key_name FROM sys_sw_software_key WHERE key_id = ? LIMIT 1)','','v_report','','',0),
+(7,'Specific Key Text','','n','SELECT system.system_id, system.hostname, sys_sw_software_key.key_name, sys_sw_software_key.key_text FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) LEFT JOIN sys_sw_software_key ON (system.system_id = sys_sw_software_key.system_id AND system.timestamp = sys_sw_software_key.timestamp) WHERE oa_group_sys.group_id = @group AND sys_sw_software_key.key_text = (SELECT key_text FROM sys_sw_software_key WHERE key_text = ? LIMIT 1)','','v_report','','',0),
+(8,'Alerts','','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ORDER BY oa_alert_log.timestamp DESC ','','v_report_alerts','','',0),
+(9,'Alerts - Software','','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.timestamp > DATE_SUB(NOW(),INTERVAL 100 DAY) AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_alert_log.alert_details LIKE \'software%\' AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ASC ','','v_report_alerts','','',0);
+
+INSERT INTO `oa_report` VALUES (10,'Enterprise - Devices Discovered in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE system.man_status = \'production\' AND oa_group_sys.group_id = @group AND system.first_timestamp > (NOW() - INTERVAL ? DAY) AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0),
+(11,'Enterprise - Software Discovered in the Last Days','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, DATE(sys_sw_software.timestamp) AS first_attribute FROM sys_sw_software LEFT JOIN system ON sys_sw_software.system_id = system.system_id WHERE system.man_status = \'production\' AND sys_sw_software.first_timestamp != system.first_timestamp AND sys_sw_software.first_timestamp > (NOW() - INTERVAL ? DAY) GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_help_oae','','',0),
+(12,'Enterprise - Devices Not Seen by Date','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location on system.man_location_id = oa_location.location_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL 30 day) AND oa_group_sys.group_id = @group AND man_status = \'production\' AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0),
+(13,'Enterprise - Specific Software','','n','SELECT system.system_id, system.hostname, sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_installed_by, date(sys_sw_software.software_installed_on) as software_installed_on, sys_sw_software.software_version, date(sys_sw_software.first_timestamp) as first_timestamp FROM system LEFT JOIN sys_sw_software ON (system.system_id = sys_sw_software.system_id and system.first_timestamp < sys_sw_software.first_timestamp) WHERE system.man_status = \'production\' AND sys_sw_software.software_name = (SELECT software_name FROM sys_sw_software WHERE software_id = ? LIMIT 1) AND date(sys_sw_software.first_timestamp) = date(?) GROUP BY system.system_id','','v_help_oae','','',0),
+(14,'Enterprise - Software Discovered by Date','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, date(sys_sw_software.first_timestamp) as first_attribute FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE system.man_status = \'production\' AND oa_group_sys.group_id = @group AND date(sys_sw_software.first_timestamp) = ? GROUP BY sys_sw_software.software_name ORDER BY sys_sw_software.software_name','','v_help_oae','','',0),
+(15,'Enterprise - Devices Discovered by Date','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, man_status AS status, last_seen_by FROM system WHERE system.man_status = \'production\' AND date(system.first_timestamp) = ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0),
+(16,'Enterprise - Devices Not Seen in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location on system.man_location_id = oa_location.location_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(NOW(), INTERVAL ? day) AND oa_group_sys.group_id = @group AND man_status = \'production\' AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0),
+(17,'Enterprise - OS Group','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_group = ? AND man_status = \'production\'','','v_help_oae','','',0),
+(18,'Enterprise - OS Types','','n','SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = \'production\')) * 100) AS y, IF(CHAR_LENGTH(man_os_group)=0,\'Other\', man_os_group) AS name, count(*) as count FROM system WHERE man_status = \'production\' GROUP BY name;','','v_help_oae','','',0),
+(19,'Enterprise - OS Family','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_family = ? AND man_status = \'production\'','','v_help_oae','','',0),
+(20,'Enterprise - OS Name','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_name = ? AND man_status = \'production\'','','v_help_oae','','',0),
+(21,'Enterprise - Device Types','','n','SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = \'production\')) * 100) AS y, man_type AS name, count(*) as count FROM system WHERE man_status = \'production\' GROUP BY name','','v_help_oae','','',0),
+(22,'Enterprise - Device Type','','n','SELECT system.system_id, system.hostname, system.man_manufacturer, system.man_model, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system WHERE system.man_status = \'production\' AND man_type = ?','','v_help_oae','','',0),
+(23,'Enterprise - Software Discovered Range','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE system.man_status = \'production\' AND oa_group_sys.group_id = @group AND date(sys_sw_software.first_timestamp) >= ? AND date(sys_sw_software.first_timestamp) <= ? GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_help_oae','','',0),
+(24,'Enterprise - Devices Discovered Range','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group WHERE system.man_status = \'production\' AND date(system.first_timestamp) >= ? AND date(system.first_timestamp) <= ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
+
+
+INSERT INTO `oa_report_column` VALUES 
+(1,1,0,'Icon','man_icon','image','','man_type','','center'),
+(2,1,1,'Type','man_type','text','','','',''),
+(3,1,2,'System Name','hostname','link','/main/system_display/','system_id','',''),
+(4,1,3,'First Seen','first_seen','timestamp','','','',''),
+(5,1,4,'Last Seen','last_seen','timestamp','','','',''),
+(6,1,5,'Last Seen By','last_seen_by','text','','','',''),
+(7,1,6,'Manufacturer','man_manufacturer','text','','','',''),
+(8,1,7,'Model','man_model','text','','','',''),
+(9,1,8,'Serial','man_serial','text','','','',''),
+(10,1,9,'Assigned To','man_owner','text','','','',''),
+(11,1,10,'Organisation','org_name','text','','','',''),
+(12,1,11,'Location','location_name','text','','','',''),
+(13,1,12,'OS','os_family','text','','','','left'),
+(14,1,13,'Tags','tag','text','','','','center'),
+(15,2,1,'Icon','man_icon','image','','man_os_family','','center'),
+(16,2,2,'System Name','hostname','link','/main/system_display/','system_id','','left'),
+(17,2,3,'IP Address','man_ip_address','ip_address','','','','left'),
+(18,2,4,'Manufacturer','man_manufacturer','text','','','','left'),
+(19,2,5,'Model','man_model','text','','','','left'),
+(20,2,6,'Serial','man_serial','text','','','','left'),
+(21,3,1,'Package Name','software_name','link','/report/Specific Software/$group_id/','software_id','','left'),
+(22,3,2,'Version','software_version','text','','','','right'),
+(23,3,3,'Installs','software_count','text','','','','center'),
+(24,3,4,'Publisher','software_publisher','text','','','','left'),
+(25,3,5,'Type','software_comment','text','','','','left'),
+(26,3,6,'Contact','software_url','url','','','','left'),
+(27,3,7,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center'),
+(28,4,0,'System Name','hostname','link','/main/system_display/','system_id','','left'),
+(29,4,1,'User','windows_user_name','text','','','','left'),
+(30,4,2,'Organisation','org_name','text','','','','left'),
+(31,4,3,'Software Name','software_name','text','','','','left'),
+(32,4,4,'Software Version','software_version','text','','','','left'),
+(33,4,5,'Installed By','software_installed_by','text','','','','left'),
+(34,4,6,'Detected On','first_timestamp','timestamp','','','','left'),
+(35,4,7,'Installed On','software_installed_on','timestamp','','','','left'),
+(36,4,8,'Tags','tag','text','','','','center'),
+(37,5,0,'System Count','count','text','','','','center'),
+(38,5,0,'Key Name','key_name','link','/report/specific_key_name/$group_id/','key_id','','left'),
+(39,5,2,'Key Text','key_text','link','/report/specific_key_text/$group_id/','key_text','','left'),
+(40,6,0,'System Name','hostname','link','/main/system_display/','system_id','','left'),
+(41,6,2,'Key Name','key_name','text','','','','left'),
+(42,6,3,'Key Text','key_text','text','','','','left'),
+(43,6,7,'Tags','tag','text','','','','center'),
+(44,7,0,'System Name','hostname','link','/main/system_display/','system_id','','left'),
+(45,7,2,'Key Name','key_name','text','','','','left'),
+(46,7,3,'Key Text','key_text','text','','','','left'),
+(47,7,7,'Tags','tag','text','','','','center'),
+(48,8,0,'Timestamp','timestamp','text','','','','left'),
+(49,8,1,'IP Address','man_ip_address','ip_address','','','','left'),
+(50,8,2,'System Name','hostname','link','/main/system_display/','system_id','','left'),
+(51,8,3,'System Description','man_description','text','','','','left'),
+(52,8,4,'Details','alert_details','text','','','','left'),
+(53,8,5,'Tags','tag','text','','','','left'),
+(54,9,0,'Timestamp','timestamp','text','','','',''),
+(55,9,1,'IP Address','man_ip_address','ip_address','','','',''),
+(56,9,2,'System Name','hostname','link','/main/system_display/','system_id','',''),
+(57,9,3,'System Description','man_description','text','','','',''),
+(58,9,4,'Details','alert_details','text','','','',''),
+(59,9,5,'Tags','tag','text','','','','');
+
+INSERT INTO `oa_report_column` VALUES (NULL,10,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,10,1,'IP Address','man_ip_address','ip_address','','','','left'),
+(NULL,10,2,'Type','man_type','text','','','','left'),
+(NULL,10,3,'OS','man_os_name','text','','','','left'),
+(NULL,10,4,'First Audited','first_timestamp','timestamp','','','','left'),
+(NULL,10,5,'Last Audited','timestamp','timestamp','','','','left'),
+(NULL,10,6,'Status','status','text','','','','left'),
+(NULL,11,0,'Package Name','software_name','link','/omk/oae/show_report/specific software/','software_id','first_attribute','left'),
+(NULL,11,1,'Type','software_comment','text','','','','center'),
+(NULL,11,2,'Installs','software_count','text','','','','center'),
+(NULL,11,3,'Contact','software_url','url','','','','center'),
+(NULL,11,4,'Version','software_version','text','','','','left'),
+(NULL,11,5,'Publisher','software_publisher','text','','','','left'),
+(NULL,11,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center'),
+(NULL,12,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,12,1,'Type','man_type','text','','','','left'),
+(NULL,12,2,'Location','location_name','text','','','','left'),
+(NULL,12,3,'User','windows_user_name','text','','','','left'),
+(NULL,12,4,'Manufacturer','man_manufacturer','text','','','','left'),
+(NULL,12,5,'Model','man_model','text','','','','left'),
+(NULL,12,6,'Serial','man_serial','text','','','','left'),
+(NULL,12,7,'First Audited','first_timestamp','timestamp','','','','left'),
+(NULL,12,8,'Last Audited','timestamp','timestamp','','','','left'),
+(NULL,13,0,'Software Name','software_name','link','/omk/oae/show_report/Specific Software/','software_id','','left'),
+(NULL,13,1,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,13,2,'Software Version','software_version','text','','','','left'),
+(NULL,13,3,'Detected On','first_timestamp','timestamp','','','','center'),
+(NULL,13,4,'Installed By','software_installed_by','text','','','','left'),
+(NULL,13,5,'Installed On','software_installed_on','timestamp','','','','center'),
+(NULL,14,0,'Package Name','software_name','link','/omk/oae/show_report/Enterprise - Specific Software/','software_id','first_attribute','left'),
+(NULL,14,1,'Type','software_comment','text','','','','center'),
+(NULL,14,2,'Installs','software_count','text','','','','center'),
+(NULL,14,3,'Contact','software_url','url','','','','center'),
+(NULL,14,4,'Version','software_version','text','','','','left'),
+(NULL,14,5,'Publisher','software_publisher','text','','','','left'),
+(NULL,14,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center'),
+(NULL,15,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,15,1,'IP Address','man_ip_address','ip_address','','','','left'),
+(NULL,15,2,'Type','man_type','text','','','','left'),
+(NULL,15,3,'OS','man_os_name','text','','','','left'),
+(NULL,15,5,'Last Seen By','last_seen_by','text','','','','left'),
+(NULL,15,6,'Status','status','text','','','','left'),
+(NULL,16,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,16,1,'Type','man_type','text','','','','left'),
+(NULL,16,2,'Location','location_name','text','','','','left'),
+(NULL,16,3,'User','windows_user_name','text','','','','left'),
+(NULL,16,4,'Manufacturer','man_manufacturer','text','','','','left'),
+(NULL,16,5,'Model','man_model','text','','','','left'),
+(NULL,16,6,'Serial','man_serial','text','','','','left'),
+(NULL,16,7,'First Audited','first_timestamp','timestamp','','','','left'),
+(NULL,16,8,'Last Audited','timestamp','timestamp','','','','left'),
+(NULL,17,0,'Icon','man_icon','image','','man_os_family','','center'),
+(NULL,17,1,'OS Family','man_os_family','link','/omk/oae/show_report/Enterprise - OS Family/','man_os_family','','left'),
+(NULL,17,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,17,3,'IP Address','man_ip_address','ip_address','','','','left'),
+(NULL,17,4,'Type','man_type','text','','','','left'),
+(NULL,17,5,'Manufacturer','man_manufacturer','text','','','','left'),
+(NULL,17,6,'Model','man_model','text','','','','left'),
+(NULL,17,7,'Serial','man_serial','text','','','','left'),
+(NULL,17,8,'Location','location_name','text','','','','left'),
+(NULL,18,0,'Type','name','link','/omk/oae/show_report/Enterprise - OS Group/','name','','left'),
+(NULL,18,1,'Count','count','text','','','','left'),
+(NULL,18,2,'Percent','y','text','','','','left'),
+(NULL,19,0,'Icon','man_icon','image','','man_os_family','','center'),
+(NULL,19,1,'OS Name','man_os_name','link','/omk/oae/show_report/Enterprise - OS Name/','man_os_name','','left'),
+(NULL,19,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,19,3,'IP Address','man_ip_address','ip_address','','','','left'),
+(NULL,19,4,'Type','man_type','text','','','','left'),
+(NULL,19,5,'Manufacturer','man_manufacturer','text','','','','left'),
+(NULL,19,6,'Model','man_model','text','','','','left'),
+(NULL,19,7,'Serial','man_serial','text','','','','left'),
+(NULL,19,8,'Location','location_name','text','','','','left'),
+(NULL,20,0,'Icon','man_icon','image','','man_os_family','','center'),
+(NULL,20,1,'OS Name','man_os_name','text','','','','left'),
+(NULL,20,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,20,3,'IP Address','man_ip_address','ip_address','','','','left'),
+(NULL,20,4,'Type','man_type','text','','','','left'),
+(NULL,20,5,'Manufacturer','man_manufacturer','text','','','','left'),
+(NULL,20,6,'Model','man_model','text','','','','left'),
+(NULL,20,7,'Serial','man_serial','text','','','','left'),
+(NULL,20,8,'Location','location_name','text','','','','left'),
+(NULL,21,0,'Type','name','link','/omk/oae/show_report/Enterprise - Device Type/','name','','left'),
+(NULL,21,1,'Count','count','text','','','','left'),
+(NULL,21,2,'Percent','y','text','','','','left'),
+(NULL,22,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,22,1,'IP Address','man_ip_address','ip_address','','','','left'),
+(NULL,22,2,'Manufacturer','man_manufacturer','text','','','','left'),
+(NULL,22,3,'Model','man_model','text','','','','left'),
+(NULL,22,4,'OS','man_os_name','text','','','','left'),
+(NULL,22,5,'First Audited','first_timestamp','timestamp','','','','left'),
+(NULL,22,6,'Last Audited','timestamp','timestamp','','','','left'),
+(NULL,22,7,'Status','status','text','','','','left'),
+(NULL,23,0,'Package Name','software_name','link','/omk/oae/report/SpecificSoftwareRange/','software_id','first_attribute','left'),
+(NULL,23,1,'Type','software_comment','text','','','','center'),
+(NULL,23,2,'Installs','software_count','text','','','','center'),
+(NULL,23,3,'Contact','software_url','url','','','','center'),
+(NULL,23,4,'Version','software_version','text','','','','left'),
+(NULL,23,5,'Publisher','software_publisher','text','','','','left'),
+(NULL,23,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center'),
+(NULL,24,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+(NULL,24,1,'IP Address','man_ip_address','ip_address','','','','left'),
+(NULL,24,2,'Type','man_type','text','','','','left'),
+(NULL,24,3,'OS','man_os_name','text','','','','left'),
+(NULL,24,4,'First Audited','first_timestamp','timestamp','','','','left'),
+(NULL,24,5,'Last Audited','timestamp','timestamp','','','','left');
 
 INSERT INTO `oa_user` VALUES  (1, 'admin', '0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6', 'Administrator', 'admin@openaudit', 'en', '10', 'tango', 'y', 'y', '10', '3');
 INSERT INTO `oa_user` VALUES  (2, 'open-audit_enterprise', '43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e', 'Open-AudIT Enterprise', '', 'en', '10', 'tango', 'y', 'y', '1', '1');
@@ -1783,8 +2071,8 @@ INSERT INTO `oa_user` VALUES  (3, 'nmis', '5a7f9a638ea430196d765ef8d3875eafd64ee
 
 INSERT INTO `oa_group_user` (`group_user_id`,`user_id`,`group_id`,`group_user_access_level`) VALUES (2,1,1,10),(3,1,2,10),(4,1,8,10),(5,1,6,10),(6,1,3,10),(7,1,4,10),(8,1,7,10),(9,1,5,10),(10,3,1,10),(11,3,2,10),(12,3,8,10),(13,3,6,10),(14,3,3,10),(15,3,4,10),(16,3,7,10),(17,3,5,10),(18,1,9,10),(19,3,9,10),(20,1,10,10),(21,3,10,10),(23,2,1,3),(24,2,2,0),(25,2,8,0),(26,2,6,0),(27,2,9,0),(28,2,10,5),(29,2,3,0),(30,2,4,0),(31,2,7,0),(32,2,5,0); 
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20140720', 'n', 'The internal numerical version.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.4', 'n', 'The version shown on the web pages.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('internal_version', '20141225', 'n', 'The internal numerical version.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('display_version', '1.5.3', 'n', 'The version shown on the web pages.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('non_admin_search', 'y', 'y', 'Enable or disable search for non-Administrators');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate. EG - open-audit.org');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1');
@@ -1797,6 +2085,7 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('name_match', 'y', 'y', 'Should we match a device based only on its hostname as a last resort.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_snmp_community', 'public', 'y', 'The default community string Open-AudIT will use when connecting to a new device.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('distinct_groups', 'y', 'y', 'Display Groups on the homepage, separated into the type of each Group.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('download_reports', 'download', 'y', 'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ipmi_username', '', 'y', 'The default username used by Open-AudIT to audit devices via IPMI.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ipmi_password', '', 'y', 'The default password used by Open-AudIT to audit devices via IPMI.');
@@ -1818,9 +2107,12 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_url', 'https://community.opmantek.com/rss/OA.xml', 'y', 'The RSS feed URL.');
 
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('log_style', 'syslog', 'y', 'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('log_level', '5', 'y', 'Tells Open-AudIT which severity of event (at least) should be logged.');
+
 INSERT INTO oa_location (location_id, location_name, location_type, location_city, location_state, location_country, location_latitude, location_longitude, location_comments, location_icon, location_group_id) VALUES ('0', 'Default Location', 'Office', 'Gold Coast', 'Queensland', 'Australia', '-28.017260', '153.425705', 'Default location', 'office', '9');
 
-INSERT INTO oa_org (org_id, org_comments) VALUES ('', 'Default Organisation.');
+INSERT INTO oa_org (org_id, org_comments, org_group_id) VALUES ('', 'Default Organisation.', '12');
 
 INSERT INTO oa_change (user_id, change_short_desc ) VALUES ('1', 'Default Change.');
 

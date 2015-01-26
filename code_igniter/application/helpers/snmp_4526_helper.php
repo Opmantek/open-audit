@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -104,6 +104,7 @@ $get_oid_details = function($details){
 	if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.4.18') { $details->model = 'GS108Tv2 Smart Switch'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.4.19') { $details->model = 'GS110TP Smart Switch'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.4.20') { $details->model = 'FS728TPv2 Smart Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.4.32') { $details->model = 'GS724T Smart Switch'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.5.1') { $details->model = 'FVX538 Router'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.5.2') { $details->model = 'FVS338 Router'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.4526.100.5.3') { $details->model = 'FVG318 Router'; $details->type = 'router'; }

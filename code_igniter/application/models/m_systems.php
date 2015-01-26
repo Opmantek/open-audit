@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -139,6 +139,7 @@ class M_systems extends MY_Model {
 			$sql = "SELECT 
 					system.system_id, 
 					system.hostname, 
+					system.domain, 
 					system.man_description, 
 					system.man_ip_address, 
 					system.man_type, 

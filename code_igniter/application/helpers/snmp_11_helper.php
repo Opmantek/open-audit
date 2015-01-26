@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -160,6 +160,36 @@ $get_oid_details = function($details){
 	if ($details->snmp_oid == '1.3.6.1.4.1.11.2.51') { $details->model = 'StorageWorks SAN'; $details->type = 'san'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.11.5.7.1.2') { $details->model = 'BladeSystem OA'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.11.5.7.5.1') { $details->model = 'VirtualConnect Flex10'; $details->type = 'switch'; }
+
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.1') { $details->model = 'TapeLibrary C7200'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.2') { $details->model = 'TapeLibrary C7200iSCSI'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.3') { $details->model = 'TapeLibrary ESL9198'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.4') { $details->model = 'TapeLibrary ESL9322'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.5') { $details->model = 'TapeLibrary ESL9595'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.6') { $details->model = 'TapeLibrary ESL9326'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.7') { $details->model = 'TapeLibrary MSL5026'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.8') { $details->model = 'TapeLibrary MSL5030'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.9') { $details->model = 'TapeLibrary MSL5052'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.10') { $details->model = 'TapeLibrary MSL5060'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.11') { $details->model = 'TapeLibrary MSL6026'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.12') { $details->model = 'TapeLibrary MSL6030'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.13') { $details->model = 'TapeLibrary MSL6052'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.14') { $details->model = 'TapeLibrary MSL6060'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.15') { $details->model = 'TapeLibrary ESL630'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.16') { $details->model = 'TapeLibrary ESL712'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.17') { $details->model = 'TapeLibrary ESL322'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.18') { $details->model = 'TapeLibrary ESL286'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.19') { $details->model = 'TapeLibrary EML103e'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.20') { $details->model = 'TapeLibrary EML245e'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.21') { $details->model = 'TapeLibrary VLS6000'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.22') { $details->model = 'TapeLibrary VLSg'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.25') { $details->model = 'TapeLibrary MSLG3'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.26') { $details->model = 'TapeLibrary MSL4048'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.28') { $details->model = 'TapeLibrary ESLG3'; $details->type = 'tape library'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.29') { $details->model = 'TapeLibrary MSL6480'; $details->type = 'tape library'; }
+
+
+
 
 
 

@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.4
+# @version 1.5.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -257,7 +257,7 @@ for line in $(system_profiler SPMemoryDataType | grep "BANK" -A 8); do
 	fi
 
 	if [[ "$line" == *"Size"* ]]; then
-		memory_capacity=`echo "$line" | grep "Size:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1`
+		memory_capacity=`echo "$line" | grep "Size:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
 		memory_capacity=`echo "scale = 0; $memory_capacity * 1024" | bc`
 	fi
 
@@ -334,6 +334,9 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 
 				if [[ "$each" == *"Model"* ]]; then
 					hard_drive_model=`echo "$each" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+					if [[ "$hard_drive_model" == *"APPLE"* ]]; then
+						hard_drive_manufacturer="Apple"
+					fi
 				fi
 
 				if [[ "$each" == *"Serial Number"* ]]; then
@@ -366,7 +369,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 						fi
 
 						if [[ "$vol" == *"Capacity"* ]]; then
-							partition_size=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+							partition_size=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g' | sed 's/,/./g'`
 							if [[ "$vol" == *"GB"* ]]; then
 								partition_size=`echo "$partition_size * 1024" | bc | cut -d"." -f1`
 							fi
@@ -376,7 +379,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 						fi
 
 						if [[ "$vol" == *"Available"* ]]; then
-							partition_free_space=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+							partition_free_space=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g' | sed 's/,/./g'`
 							if [[ "$vol" == *"GB"* ]]; then
 								partition_free_space=`echo "$partition_free_space * 1024" | bc | cut -d"." -f1`
 							fi
@@ -514,7 +517,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 					partition_disk_index=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | cut -dk -f2 | cut -ds -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
 				fi
 				if [[ "$vol" == *"Capacity"* ]]; then
-					partition_size=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+					partition_size=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g' | sed 's/,/./g'`
 					if [[ "$vol" == *"GB"* ]]; then
 						partition_size=`echo "$partition_size * 1024" | bc | cut -d"." -f1`
 					fi
@@ -523,7 +526,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 					fi
 				fi
 				if [[ "$vol" == *"Available"* ]]; then
-					partition_free_space=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+					partition_free_space=`echo "$vol" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g' | sed 's/,/./g'`
 					if [[ "$vol" == *"GB"* ]]; then
 						partition_free_space=`echo "$partition_free_space * 1024" | bc | cut -d"." -f1`
 					fi
@@ -630,7 +633,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 
 
 	if [[ "$line" == *"Capacity"* ]]; then
-		hard_drive_size=`echo "$line" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
+		hard_drive_size=`echo "$line" | cut -d":" -f2 | cut -d" " -f2 | sed 's/^ *//g' | sed 's/ *$//g' | sed 's/,/./g'`
 		if [[ "$line" == *"GB"* ]]; then
 			hard_drive_size=`echo "$hard_drive_size * 1024" | bc | cut -d"." -f1`
 		fi

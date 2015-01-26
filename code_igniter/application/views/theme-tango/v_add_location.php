@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -138,27 +138,24 @@ echo form_open('admin_location/add_location') . "\n";
 </fieldset>
 <?php echo form_close(); ?>
 
-<script>
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+<script type="text/javascript">
 function getlatlong() {
 	if (document.getElementById("location_geo").value > "") {
 		var address = document.getElementById("location_geo").value;
 	} else {
-		var address = document.getElementById("location_address").value + ",%20" + document.getElementById("location_city").value + "%20" + document.getElementById("location_state").value + "%20" + document.getElementById("location_postcode").value + ",%20" + document.getElementById("location_country").value;
+		var address = document.getElementById("location_address").value + ", " + document.getElementById("location_city").value + ", " + document.getElementById("location_state").value + ", " + document.getElementById("location_postcode").value + ", " + document.getElementById("location_country").value;
 	}
-	$.ajax({
-		type: "GET",
-		dataType: "json",
-		url: "http://maps.googleapis.com/maps/api/geocode/json?sensor=false&address="+address,
-		success: function(msg){
-			var lat = msg.results[0].geometry.location.lat;
-			var lng = msg.results[0].geometry.location.lng;
-			document.getElementById("location_latitude").value = lat;
-			document.getElementById("location_longitude").value = lng;
-		},
-		error: function (e) {
-			alert(e.message);
-		}
-	});
+	var geocoder = new google.maps.Geocoder();
+	if (geocoder) {
+		geocoder.geocode({ 'address': address }, function (results, status) {
+			if (status == google.maps.GeocoderStatus.OK) {
+				document.getElementById("location_latitude").value = results[0].geometry.location.lat();
+				document.getElementById("location_longitude").value = results[0].geometry.location.lng();
+			}
+		});
+	}
 }
 
 function creategeo() {

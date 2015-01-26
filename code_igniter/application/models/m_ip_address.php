@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -76,7 +76,7 @@ class M_ip_address extends MY_Model {
 	}
 
 	function process_addresses($input, $details) {
-		
+
 		# As of 1.3.2 we grab the network card index using SNMP. Need to ensure we have a value here.
 		if (!isset($input->net_index)) { $input->net_index = ''; }
 
@@ -92,6 +92,9 @@ class M_ip_address extends MY_Model {
 			$input->net_mac_address = implode(":", $mymac);
 		}
 
+		# ensure we have the correctly padded ip v4 address
+		$input->ip_address_v4 = $this->ip_address_to_db($input->ip_address_v4);
+
 		$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
 			WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
 				system.system_id = ? AND 
@@ -105,6 +108,7 @@ class M_ip_address extends MY_Model {
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4), 
 				"$input->ip_address_v6", "$input->ip_subnet", "$details->original_timestamp", "$details->timestamp");
+
 		// note - removed the IPv6 address, below
 		$sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system 
 			WHERE sys_hw_network_card_ip.system_id = system.system_id AND 
@@ -116,6 +120,7 @@ class M_ip_address extends MY_Model {
 		$data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4), 
 				"$input->ip_subnet", "$details->original_timestamp", "$details->timestamp");
 		$query = $this->db->query($sql, $data);
+
 		if ($query->num_rows() > 0) {
 			$row = $query->row();
 			// the network_card_ip exists - need to update its timestamp

@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -51,6 +51,25 @@ class test extends MY_Controller
     public function index()
     {
         redirect('/');
+    }
+
+    public function log() {
+        $this->load->helper('log');
+        $log_details = new stdClass();
+        $log_details->file = 'access';
+        $log_details->severity = 5;
+        stdlog($log_details);
+    }
+
+    public function mark()
+    {
+        $this->load->helper('url');
+        echo "<pre>\n";
+        echo "BaseURL: " . base_url() . "\n";
+        echo "SiteURL: " . site_url() . "\n";
+        echo "URI String: " . uri_string() . "\n";
+        echo "Index Page: " . index_page() . "\n";
+        
     }
 
     public function test_date()

@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -1409,6 +1409,8 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1683') { $details->model = 'Cisco Ucs C240'; $details->type = 'voip gateway'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1684') { $details->model = 'Cisco Ucs C22'; $details->type = 'voip gateway'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1685') { $details->model = 'Cisco Ucs C24'; $details->type = 'voip gateway'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1876') { $details->model = 'Cisco Prime Virtual Network Analysis Module (ESXi)'; $details->type = 'computer'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1877') { $details->model = 'Cisco Prime Virtual Network Analysis Module (ESXi)'; $details->type = 'computer'; }
 
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.5.5') { $details->model = 'Cisco Catalyst 1200'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.5.7') { $details->model = 'Cisco Catalyst 5000'; $details->type = 'switch'; }
@@ -2598,6 +2600,8 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.839') { $details->model = 'Cisco Chassis ASR9006AC'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.84') { $details->model = 'Cisco Chassis Fasthub100'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.840') { $details->model = 'Cisco Nexus 1000V'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.841') { $details->model = 'Cisco MDS 9148 Multilayer Fabric Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.843') { $details->model = 'Cisco MDS 9148 Multilayer Fabric Switch'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.847') { $details->model = 'Cisco UCS 6120XP'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.848') { $details->model = 'Cisco Chassis CDScde420'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.849') { $details->model = 'Cisco Chassis CDScde220'; $details->type = 'cisco module'; }
@@ -6832,7 +6836,7 @@ $get_oid_details = function($details) {
 		$i = explode("$", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.5" ));
 		if (isset($i[1]) and $i[1] > '') { $details->os_version = trim($i[1]); }
 		$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.7" );
-		if (strpos($i, "IOS") !== FALSE) { 
+		if (stripos($i, "IOS") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco IOS'; 
@@ -6840,7 +6844,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco IOS version " . $details->os_version;
 			$details->man_os_name = "Cisco IOS version " . $details->os_version;
 		}
-		if (strpos($details->description, "Cisco IOS Software") !== FALSE) { 
+		if (stripos($details->description, "Cisco IOS Software") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco IOS'; 
@@ -6848,7 +6852,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco IOS version " . $details->os_version;
 			$details->man_os_name = "Cisco IOS version " . $details->os_version;
 		}
-		if (strpos($details->description, "Cisco Internetwork Operating System Software") !== FALSE) { 
+		if (stripos($details->description, "Cisco Internetwork Operating System Software") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco IOS'; 
@@ -6856,7 +6860,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco IOS version " . $details->os_version;
 			$details->man_os_name = "Cisco IOS version " . $details->os_version;
 		}
-		if (strpos($i, "Catalyst Operating") !== FALSE) { 
+		if (stripos($i, "Catalyst Operating") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco Catalyst OS';
@@ -6864,7 +6868,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
 			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
 		}
-		if (strpos($details->description, "Cisco Systems WS-C") !== FALSE) { 
+		if (stripos($details->description, "Cisco Systems WS-C") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco Catalyst OS';
@@ -6872,7 +6876,7 @@ $get_oid_details = function($details) {
 			$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
 			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
 		}
-		if (strpos($details->description, "Cisco Systems, Inc. WS-C") !== FALSE) { 
+		if (stripos($details->description, "Cisco Systems, Inc. WS-C") !== FALSE) { 
 			$details->os_group = 'Cisco';
 			$details->man_os_group = 'Cisco'; 
 			$details->os_family = 'Cisco Catalyst OS';
@@ -6881,7 +6885,7 @@ $get_oid_details = function($details) {
 			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
 		}
 		if (!isset($details->os_group) or $details->os_group == '') {
-			if (strpos($details->description, 'NX-OS')) {
+			if (stripos($details->description, 'NX-OS')) {
 				$details->os_group = 'Cisco';
 				$details->man_os_group = 'Cisco'; 
 				$details->os_family = 'Cisco Nexus OS';
@@ -6895,6 +6899,12 @@ $get_oid_details = function($details) {
 		if ($details->model == '') {
 			$details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1"));
 		}
+
+		# catch all for catalyst == switch
+		if (stripos($details->model, 'catalyst') !== FALSE OR stripos($details->os_family, 'cataylst') !== FALSE) {
+		   $details->type = 'switch';
+		   $details->man_type = 'switch';
+		} 
 
 		# Generic Cisco serial
 		if ($details->serial == '') {

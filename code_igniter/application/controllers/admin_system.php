@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -46,7 +46,10 @@ class Admin_system extends MY_Controller
                 redirect('login/index');
             }
         }
-        $this->log_event();
+
+        $log_details = new stdClass();
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()
@@ -347,13 +350,13 @@ class Admin_system extends MY_Controller
         unset($details->man_ip_address);
         echo "<pre>\n";
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
+            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
             $this->m_system->update_system($details);
             $this->m_sys_man_audits->insert_audit($details);
             
             # update any network interfaces and ip addresses retrieved by SNMP
             $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
             $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
-            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
             $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
             
             if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
@@ -575,6 +578,7 @@ class Admin_system extends MY_Controller
             $this->load->model("m_sys_man_audits");
             $this->load->model("m_oa_group");
             $this->load->model("m_oa_general");
+            $this->load->model("m_network_card");
             $this->load->helper('snmp');
             $this->load->helper('snmp_oid');
             $this->load->library('encrypt');
@@ -651,12 +655,9 @@ class Admin_system extends MY_Controller
                             $encoded = $this->encrypt->encode($encoded);
                             $details->access_details = $encoded;
                             if (extension_loaded('snmp')) {
-                                #get_snmp($details);
-                                
                                 $temp_array = get_snmp($details);
                                 $details = $temp_array['details'];
                                 $network_interfaces = $temp_array['interfaces'];
-                                
                                 $details->last_seen_by = 'snmp';
                             }
                         }
@@ -685,8 +686,6 @@ class Admin_system extends MY_Controller
                         $details->system_id = $this->m_system->find_system($details);
                     }
 
-
-                    error_log($details->system_id);
                     if ($error != '') {
                         $error = '';
                     } else {

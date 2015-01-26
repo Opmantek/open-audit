@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -167,7 +167,7 @@ if ($config->distinct_groups == 'y') {
 	echo __("Once that has been done, why not try running Discovery (Menu -> Admin -> Discovery) on your environment?") . "<br /><br />\n";
 	echo __("Don't forget you can activate extra Groups via the Menu -> Admin -> Groups -> Activate Group item.") . "<br />\n";
 	echo __("This will automatically Group items and allow you to set User Access on a per Group Basis.") . "<br /><br />\n";
-	echo __("Extra Reports are available at Menu -> Admin -> Reports -> Activate Report.<br />Take a look, you might find exactly the Report you need.") . "<br />\n";
+	echo __("Extra Queries are available at Menu -> Admin -> Queries -> Activate Query.<br />Take a look, you might find exactly the Query you need.") . "<br />\n";
 	echo "</div>\v";
 }
 ?>

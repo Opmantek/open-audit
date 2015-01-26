@@ -27,13 +27,13 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 $sortcolumn = 2; 
-if (count($query) > 1)
+if (count($query) > 0)
 {
 ?>		
 <table cellspacing="1" class="tablesorter">
@@ -52,7 +52,7 @@ if (count($query) > 1)
 	</thead>
 	<tbody>
 		<?php 
-		if (count($query) > 1)
+		if (count($query) > 0)
 		{
 			foreach($query as $key):
 
@@ -63,7 +63,7 @@ if (count($query) > 1)
 					$key->org_name = '(none)';
 				}
 
-				if ($key->org_group_id > '0') {
+				if ($key->org_group_id != '0') {
 					$show_pic = "<a href=\"../main/list_devices/" . $key->org_group_id . "\"><img src='" . $image_path . "16_device.png' alt='' title='' width='16'/></a>";
 					$deactivate_pic = "<a href=\"delete_group/" . $key->org_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
 					$activate_pic = '';
@@ -73,7 +73,6 @@ if (count($query) > 1)
 					$activate_pic = "<a href=\"activate_group/" . $key->org_id . "\"><img src='" . $image_path . "16_true.png' alt='' title='' width='16'/></a>";
 				}
 				
-				if ($key->org_id > '0') {
 				?>
 			<tr>
 				<td align="center"><?php echo $key->total?></td>
@@ -86,7 +85,6 @@ if (count($query) > 1)
 				<td align="center"><?php echo $edit_pic?></td>
 				<td align="center"><?php echo $delete_pic?></td>
 			</tr>
-			<?php } ?>
 			<?php endforeach; ?>
 		<?php } else { ?>
 		<tr>

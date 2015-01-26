@@ -24,8 +24,8 @@
 ' *****************************************************************************
 
 ' @package Open-AudIT
-' @author Mark Unwin <marku@opmantek.com>
-' @version 1.4
+' @author Mark Unwin <marku@opmantek.com> and others
+' @version 1.5.2
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -73,6 +73,11 @@ skip_printer = "n"
 
 ' audit installed software
 skip_software = "n"
+
+' use the win32_product WMI class (not recommended by Microsoft).
+' https://support.microsoft.com/kb/974524
+' added and set to disabled by default in 1.5.2
+win32_product = "n"
 
 ' retrieve all DNS names
 skip_dns = "n"
@@ -187,7 +192,10 @@ For Each strArg in objArgs
 				windows_user_work_1 = argvalue
 			
 			case "windows_user_work_2"
-				windows_user_work_2 = argvalue	
+				windows_user_work_2 = argvalue
+			
+			case "win32_product"
+				win32_product = argvalue
 			
 			case "details_to_lower"
 				details_to_lower = argvalue	
@@ -273,6 +281,10 @@ if (help = "y") then
 	wscript.echo ""
 	wscript.echo "  windows_user_work_2"
 	wscript.echo "      company - The Active Directory field to assign the computer to (second preference)."
+	wscript.echo ""
+	wscript.echo "  win32_product"
+	wscript.echo "      *n - Tells the audit script to NOT query the win32_product class. It is recommended by Microsoft not to use this class as is causes Windows to check the integrity of all installed packages (resulting in 1035 events in the log) and can cause performance issues."
+	wscript.echo "       y - Do query win32_product anyway and use the result to add to the list of installed software."
 	wscript.echo ""
 	wscript.echo "  details_to_lower"
 	wscript.echo "      *y - Convert the hostname to lower."
@@ -943,8 +955,16 @@ for each objItem in colItems
 	system_model = objItem.Model
 	windows_domain_role = objItem.DomainRole
 	' below only checks when OS is XP or later (not 2000 or NT)
-	windows_part_of_domain = FALSE
-	if (windows_build_number >= 2600) then windows_part_of_domain = objItem.PartOfDomain end if
+	windows_part_of_domain = False
+	if (windows_build_number >= 2600) then 
+		windows_part_of_domain = objItem.PartOfDomain
+	end if
+
+	' as at 1.5.3 do not store the workgroup in the domain field
+	if (windows_part_of_domain <> True) then
+		windows_workgroup = system_domain
+		system_domain = ""
+	end if
 next
 
 system_hostname = ""
@@ -1086,7 +1106,7 @@ if windows_domain_role = "4" then windows_domain_role = "Backup Domain Controlle
 if windows_domain_role = "5" then windows_domain_role = "Primary Domain Controller" end if
 
 error = 0
-	if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
+if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
 	' Get domain NetBIOS name from domain DNS name
 	domain_dn = "DC=" & Replace(system_domain,".",",DC=")
 	set oTranslate = CreateObject("NameTranslate")
@@ -1126,44 +1146,43 @@ error = 0
 			objrecordset.movenext
 		loop
 		on error goto 0
-			if error = 1 then
-			' we failed when using GC:// - try using LDAP://
-				error = 0
-				objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
-				set objrecordset = objcommand.execute
-				on error resume next
-					objrecordset.movefirst
-					if err.number <> 0 then error = 1 end if
-					do until objrecordset.eof
-						windows_active_directory_ou = objrecordset.fields("distinguishedName").value
-						objrecordset.movenext
-					loop
-				on error goto 0
-			end if
-
-			if error = 1 then
-				windows_active_directory_ou = full_ad_domain
-			else
-				stemp = split(replace(windows_active_directory_ou, "\,","X!X"), ",")
-				stemp(0) = ""
-				ttemp = join(stemp, ",")
-				ttemp = mid(ttemp, 2)
-				windows_active_directory_ou = replace(ttemp, "X!X",",")
-				erase stemp
-				ttemp = NULL
-			end if
+		if error = 1 then
+		' we failed when using GC:// - try using LDAP://
+			error = 0
+			objcommand.commandtext = "select distinguishedName, name from 'LDAP://" & full_ad_domain & "' where objectclass = 'computer' and Name = '" & system_hostname & "'"
+			set objrecordset = objcommand.execute
+			on error resume next
+				objrecordset.movefirst
+				if err.number <> 0 then error = 1 end if
+				do until objrecordset.eof
+					windows_active_directory_ou = objrecordset.fields("distinguishedName").value
+					objrecordset.movenext
+				loop
+			on error goto 0
 		end if
-	else
-		domain_nb = "workgroup"
-		windows_client_site_name = ""
-		windows_domain_controller_address = ""
-		windows_domain_controller_name = ""
-		windows_active_directory_ou = ""
+
+		if error = 1 then
+			windows_active_directory_ou = full_ad_domain
+		else
+			stemp = split(replace(windows_active_directory_ou, "\,","X!X"), ",")
+			stemp(0) = ""
+			ttemp = join(stemp, ",")
+			ttemp = mid(ttemp, 2)
+			windows_active_directory_ou = replace(ttemp, "X!X",",")
+			erase stemp
+			ttemp = NULL
+		end if
 	end if
+else
+	domain_nb = ""
+	windows_client_site_name = ""
+	windows_domain_controller_address = ""
+	windows_domain_controller_name = ""
+	windows_active_directory_ou = ""
+end if
 if details_to_lower = "y" then windows_active_directory_ou = lcase(windows_active_directory_ou) end if
 
 if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (windows_user_work_1 > "")) then
-
 	if (instr(windows_user_name, "@")) then
 		split_user = split(windows_user_name, "@")
 		sam_account_name = split_user(0)
@@ -1172,7 +1191,6 @@ if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (wind
 		sam_account_name = windows_user_name
 		windows_user_domain = ""
 	end if
-
 	struserDN = ""
 	if (windows_user_domain > "") then
 		on error resume next
@@ -1197,7 +1215,6 @@ if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (wind
 	else
 		struserDN = ""
 	end if
-		
 	if ((struserDN > "") and (struserDN <> " ")) then
 		windows_user_company = windows_user_get_attribute (struserDN, windows_user_work_1, sam_account_name)
 		if (isnull(windows_user_company) or windows_user_company = "") then
@@ -1294,6 +1311,7 @@ result.WriteText "		<windows_build_number>" & escape_xml(windows_build_number) &
 result.WriteText "		<windows_user_name>" & escape_xml(windows_user_name) & "</windows_user_name>" & vbcrlf
 result.WriteText "		<windows_client_site_name>" & escape_xml(windows_client_site_name) & "</windows_client_site_name>" & vbcrlf
 result.WriteText "		<windows_domain_short>" & escape_xml(domain_nb) & "</windows_domain_short>" & vbcrlf
+result.WriteText "		<windows_workgroup>" & escape_xml(windows_workgroup) & "</windows_workgroup>" & vbcrlf
 result.WriteText "		<windows_domain_controller_address>" & escape_xml(windows_domain_controller_address) & "</windows_domain_controller_address>" & vbcrlf
 result.WriteText "		<windows_domain_controller_name>" & escape_xml(windows_domain_controller_name) & "</windows_domain_controller_name>" & vbcrlf
 result.WriteText "		<windows_domain_role>" & escape_xml(windows_domain_role) & "</windows_domain_role>" & vbcrlf
@@ -2007,10 +2025,20 @@ for each objItem In colDiskDrives
 	hard_drive_interface_type = objItem.InterfaceType
 	hard_drive_scsi_logical_unit = objItem.SCSITargetId
 	hard_drive_model = objItem.Model
-	hard_drive_firmware = objItem.FirmwareRevision
+	if hard_drive_model = "VMware, VMware Virtual S SCSI Disk Device" then
+		hard_drive_model = "VMware Virtual Disk"
+	end if
 	hard_drive_serial = ""
 	hard_drive_pnp_id = lcase(objItem.PNPDeviceID & "_0")
-	
+
+	' Win 2k3 doesn't support this property
+	on error resume next
+		hard_drive_firmware = objItem.FirmwareRevision
+	on error goto 0 
+	if ((len(hard_drive_firmware) = 0) or (isnull(hard_drive_firmware))) then
+		hard_drive_firmware = ""
+	end if
+
 	on error resume next
 		hard_drive_serial = objItem.SerialNumber
 	on error goto 0 
@@ -2028,6 +2056,7 @@ for each objItem In colDiskDrives
 		if lcase(left(hard_drive_model, 2)) = "st"     	then hard_drive_manufacturer = "Seagate"         	end if
 		if lcase(left(hard_drive_model, 4)) = "wdc "   	then hard_drive_manufacturer = "Western Digital" 	end if
 		if lcase(left(hard_drive_model, 3)) = "wd "   		then hard_drive_manufacturer = "Western Digital" 	end if
+		if lcase(left(hard_drive_model, 6)) = "VMware"   		then hard_drive_manufacturer = "VMware" 	end if
 	end if
 	
 	hard_drive_status = "Not available"
@@ -3580,79 +3609,80 @@ if (skip_software = "n") then
 	end if
 
 
-
-	if (address_width = "64" and reg_node = "y") then
-		if debugging > "0" then wscript.echo "Software for 64bit" end if 
-		result.WriteText "		<!-- start of 64 #1 -->" & vbcrlf
-		' we enumerate this WMI, that we would not otherwise
-		
-		on error resume next
-			set colItems2 = objWMIService.ExecQuery("Select * from Win32_Product",,32)
-			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Product)" : audit_wmi_fails = audit_wmi_fails & "Win32_Product " : end if
-		on error goto 0
-		
-		if (error_returned <> 0) then 
-			' we had an error - skip the next part
-		else
-			on error resume next
-			for each objItem2 in colItems2
-				error_returned = Err.Number
-				error_message = Err.Message
+	if (win32_product = "y") then
+		if (address_width = "64" and reg_node = "y") then
+			if debugging > "0" then wscript.echo "Software for 64bit" end if 
+			result.WriteText "		<!-- start of 64 #1 -->" & vbcrlf
+			' we enumerate this WMI, that we would not otherwise
 			
-				package_name = objItem2.name
-				package_installed_by = ""
-				package_installed_on = ""
+			on error resume next
+				set colItems2 = objWMIService.ExecQuery("Select * from Win32_Product",,32)
+				error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Product)" : audit_wmi_fails = audit_wmi_fails & "Win32_Product " : end if
+			on error goto 0
+			
+			if (error_returned <> 0) then 
+				' we had an error - skip the next part
+			else
+				on error resume next
+				for each objItem2 in colItems2
+					error_returned = Err.Number
+					error_message = Err.Message
+				
+					package_name = objItem2.name
+					package_installed_by = ""
+					package_installed_on = ""
 
-				if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
-					software_url = objItem2.URLUpdateInfo
-					software_install_source = objItem2.InstallSource
-				else 
-					software_url = ""
-					software_install_source = ""
-				end if
+					if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
+						software_url = objItem2.URLUpdateInfo
+						software_install_source = objItem2.InstallSource
+					else 
+						software_url = ""
+						software_install_source = ""
+					end if
 
-				for each objItem in colItems
-					if objItem.Message <> "" then
-						colonPos = InStr(objItem.Message,":")
-						dashPos = InStr(objItem.Message,"--")
-						message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-						if (not isNull(message_retrieved)) then
-							if (InStr(message_retrieved, package_name) = 1) then
-								package_installed_by = objItem.User
-								if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-								package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-								package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-								exit for
-							else
-								package_installed_by = ""
-								package_installed_on = ""
+					for each objItem in colItems
+						if objItem.Message <> "" then
+							colonPos = InStr(objItem.Message,":")
+							dashPos = InStr(objItem.Message,"--")
+							message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+							if (not isNull(message_retrieved)) then
+								if (InStr(message_retrieved, package_name) = 1) then
+									package_installed_by = objItem.User
+									if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+									package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+									package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+									exit for
+								else
+									package_installed_by = ""
+									package_installed_on = ""
+								end if
 							end if
 						end if
-					end if
+					next
+						
+					result.WriteText "		<package>" & vbcrlf
+					result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
+					result.WriteText "			<software_version>" & escape_xml(objItem2.version) & "</software_version>" & vbcrlf
+					result.WriteText "			<software_location>" & escape_xml(objItem2.InstallLocation) & "</software_location>" & vbcrlf
+					result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
+					result.WriteText "			<software_install_date>" & escape_xml(objItem2.InstallDate) & "</software_install_date>" & vbcrlf
+					result.WriteText "			<software_publisher>" & escape_xml(objItem2.Vendor) & "</software_publisher>" & vbcrlf
+					result.WriteText "			<software_install_source>" & escape_xml(software_install_source) & "</software_install_source>" & vbcrlf
+					result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
+					result.WriteText "			<software_url>" & escape_xml(software_url) & "</software_url>" & vbcrlf
+					result.WriteText "			<software_email></software_email>" & vbcrlf
+					result.WriteText "			<software_comment></software_comment>" & vbcrlf
+					result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
+					result.WriteText "			<software_status></software_status>" & vbcrlf
+					result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
+					result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
+					result.WriteText "		</package>" & vbcrlf
 				next
-					
-				result.WriteText "		<package>" & vbcrlf
-				result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
-				result.WriteText "			<software_version>" & escape_xml(objItem2.version) & "</software_version>" & vbcrlf
-				result.WriteText "			<software_location>" & escape_xml(objItem2.InstallLocation) & "</software_location>" & vbcrlf
-				result.WriteText "			<software_uninstall></software_uninstall>" & vbcrlf
-				result.WriteText "			<software_install_date>" & escape_xml(objItem2.InstallDate) & "</software_install_date>" & vbcrlf
-				result.WriteText "			<software_publisher>" & escape_xml(objItem2.Vendor) & "</software_publisher>" & vbcrlf
-				result.WriteText "			<software_install_source>" & escape_xml(software_install_source) & "</software_install_source>" & vbcrlf
-				result.WriteText "			<software_system_component></software_system_component>" & vbcrlf
-				result.WriteText "			<software_url>" & escape_xml(software_url) & "</software_url>" & vbcrlf
-				result.WriteText "			<software_email></software_email>" & vbcrlf
-				result.WriteText "			<software_comment></software_comment>" & vbcrlf
-				result.WriteText "			<software_code_base></software_code_base>" & vbcrlf
-				result.WriteText "			<software_status></software_status>" & vbcrlf
-				result.WriteText "			<software_installed_by>" & escape_xml(package_installed_by) & "</software_installed_by>" & vbcrlf
-				result.WriteText "			<software_installed_on>" & escape_xml(package_installed_on) & "</software_installed_on>" & vbcrlf
-				result.WriteText "		</package>" & vbcrlf
-			next
-			on error goto 0
+				on error goto 0
+			end if
 		end if
+		result.WriteText "		<!-- end of 64 #1 -->" & vbcrlf
 	end if
-	result.WriteText "		<!-- end of 64 #1 -->" & vbcrlf
 
 
 	strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"

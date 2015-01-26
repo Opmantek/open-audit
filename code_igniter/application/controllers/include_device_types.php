@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -94,6 +94,7 @@
 	$device_types['router'] = 'Router';
 	$device_types['san'] = 'SAN (Storage Area Network)';
 	$device_types['satellite phone'] = 'Satellite Phone';
+	$device_types['satellite receiver'] = 'Satellite Receiver';
 	$device_types['scanner'] = 'Scanner';
 	$device_types['security camera'] = 'Security Camera';
 	$device_types['security misc'] = 'Security Misc';
@@ -102,6 +103,7 @@
 	$device_types['storage misc'] = 'Storage Misc';
 	$device_types['switch'] = 'Switch';
 	$device_types['tablet'] = 'Tablet';
+	$device_types['tape library'] = 'Tape Library';
 	$device_types['telecom misc'] = 'Telecom Misc';
 	$device_types['terminal'] = 'Terminal';
 	$device_types['terminal server'] = 'Terminal Server';

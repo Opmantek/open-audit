@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -93,7 +93,7 @@ function process_service($input, $details) {
 			}
 		} else {
 			// below are services that constantly change their start/stop/state type settings
-			$services_that_change = "AeLookupSvc AppMgmt BITS FLEXnet Licensing Service LiveUpdate MMCSS MSIServer NSClient ShellHWDetection swprv TrustedInstaller VSS WinHttpAutoProxySvc ";
+			$services_that_change = "AeLookupSvc AppMgmt BITS FLEXnet Licensing Service LiveUpdate MMCSS MSIServer NSClient ShellHWDetection swprv TrustedInstaller VSS WinHttpAutoProxySvc Winexe ";
 			
 	        // select all the current services from the DB
 	        $sql = "SELECT
@@ -122,7 +122,7 @@ function process_service($input, $details) {
 	                        ($service_db->timestamp == $details->original_timestamp)) ) {
 							// we match - need to check details
 							$change_comment = "";
-							if (mb_strpos($services_that_change, $service_db->service_name) === false) {
+							if (mb_strpos(strtolower($services_that_change), strtolower($service_db->service_name)) === false) {
 								// the service name is not in the list of services that constantly change
 								if ($service_db->service_started != $service_xml->service_started) {
 									$change_comment = "Service Started was " . $service_db->service_started . " but is now " . $service_xml->service_started;

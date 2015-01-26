@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -39,13 +39,13 @@ class M_oa_report extends MY_Model {
 	}
 
 	function list_reports_in_menu() {
-		$sql = "SELECT report_id, report_name FROM oa_report WHERE report_display_in_menu = 'y' ORDER BY report_name";
+		$sql = "SELECT report_id, report_name, '' as report_url FROM oa_report WHERE report_display_in_menu = 'y' and report_view_file != 'v_help_oae' ORDER BY report_name";
 		$query = $this->db->query($sql);
 		return($query->result());
 	}
 
 	function list_reports() {
-		$sql = "SELECT report_id, report_name FROM oa_report ORDER BY report_name";
+		$sql = "SELECT report_id, report_name FROM oa_report WHERE report_view_file != 'v_help_oae' ORDER BY report_name";
 		$query = $this->db->query($sql);
 		return($query->result());
 	}
@@ -139,20 +139,15 @@ class M_oa_report extends MY_Model {
 		$sql = "SELECT report_sql FROM oa_report WHERE report_id = ? LIMIT 1";
 		$data = array($report_id);
 		$query = $this->db->query($sql, $data);
-		#echo "<pre>\n";
-		#print_r($query);
 		foreach ($query->result() as $key) {
 			$sql = $key->report_sql;
-			#echo $sql;
 		}
 		$data = array($group_id);
 		$query = $this->db->query('SET @group = ?', $data);
-		#$data = array($group_id, $first_attribute);
-		$data = array($first_attribute);
-		#echo "ReportID: " . $report_id . "\nGroupID: " . $group_id . "\nFA: " . $first_attribute . "\n";
-		#print_r($sql);
-		#exit();
+
+		$data = array($first_attribute, $second_attribute);
 		$query = $this->db->query($sql, $data);
+
 		return($query->result());
 	}
 }

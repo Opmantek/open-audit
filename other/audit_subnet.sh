@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.4
+# @version 1.5.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -44,6 +44,9 @@ subnet=""
 syslog="y"
 url="http://localhost/open-audit/index.php/system/add_nmap"
 background_wget="n"
+
+user=$(whoami)
+system_hostname=$(hostname 2>/dev/null)
 
 
 local_hostname=`hostname 2>/dev/null`
@@ -141,20 +144,29 @@ if [ "$help" == "y" ]; then
 	exit
 fi
 
+# logging to a file
+function write_log()
+{
+	if [ "$syslog" == "y" ]; then
+		now=$(date "+%b %d %T")
+		if [[ $debugging -gt 1 ]]; then
+			echo "Logged: $1"
+		fi
+		echo "$now $system_hostname $$ 7 U:$user S:audit_subnet M:$1" >> /usr/local/open-audit/other/log_system.log
+	fi	
+}
+
 #if [[ $EUID -ne 0 ]]; then
 #   echo "This script must be run as root" 
 #   exit 1
 #fi
 
 if [ $debugging -gt 0 ]; then
-	echo "Scanning Subnet: $subnet"
+	echo "Scanning subnet starting: $subnet"
 fi
 
-if [ $syslog == "y" ]; then
-	now=`date "+%b %e %T"`
-	echo "$now $local_hostname $$ $process Job Starting" >> /usr/local/open-audit/other/open-audit.log
-	echo "$now $local_hostname $$ $process Scanning Subnet: $subnet" >> /usr/local/open-audit/other/open-audit.log
-fi
+log_entry="Job starting - scanning subnet $subnet"
+write_log "$log_entry"
 
 #hosts_in_subnet=`nmap -sP -PS135,139,445 -n $subnet | grep "scan report for" | cut -d" " -f5`
 # -PE == icmp echo
@@ -188,10 +200,8 @@ if [ "$hosts_in_subnet" != "" ]; then
 				echo "Scanning Host: $host"
 			fi
 
-			if [ $syslog == "y" ]; then
-				now=`date "+%b %e %T"`
-				echo "$now $local_hostname $$ $process $host being nmap scanned." >> /usr/local/open-audit/other/open-audit.log
-			fi
+			log_entry="$host being nmap scanned"
+			write_log "$log_entry"
 
 			# options
 			# -vv Very Verbose
@@ -279,6 +289,10 @@ if [ "$hosts_in_subnet" != "" ]; then
 			device="$device</devices>\n"
 
 			if [[ "$submit_online" == "y" ]]; then
+
+				log_entry="$host being submitted"
+				write_log "$log_entry"
+
 				if [ $debugging -gt 0 ]; then
 					echo "Submitting online."
 				fi
@@ -304,11 +318,6 @@ fi
 
 result="$result</devices>"
 
-if [ $syslog == "y" ]; then
-	now=`date "+%b %e %T"`
-	echo "$now $local_hostname $$ $process Scan completed." >> /usr/local/open-audit/other/open-audit.log
-fi
-
 if [[ "$create_file" == "y" ]]; then
 	if [ $debugging -gt 0 ]; then
 		echo "Creating file."
@@ -321,7 +330,7 @@ if [[ "$echo_output" == "y" ]]; then
 	echo -e "$result"
 fi
 
-if [ $syslog == "y" ]; then
-	now=`date "+%b %e %T"`
-	echo "$now $local_hostname $$ $process Job Complete." >> /usr/local/open-audit/other/open-audit.log
-fi
+log_entry="Job complete - scanning subnet $subnet"
+write_log "$log_entry"
+
+exit 0

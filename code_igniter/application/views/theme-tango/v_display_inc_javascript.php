@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -232,6 +232,58 @@ function receive_nmis_role() {
   }
 }
 
+function check_nmis_export() {
+	var state = document.getElementById("nmis_export").checked;
+	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_export/'+state);
+	//http.onreadystatechange = receive_nmis_export;
+	http.send(null);
+}
+
+function receive_nmis_export() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      document.getElementById("nmis_export_select").dataset.nmis = http.responseText;
+      update="<span onclick='display_nmis_export();'>"+http.responseText+"<\/span>";
+      document.getElementById("nmis_export_select").innerHTML = update;
+    }
+  }
+}
+
+function display_nmis_export2() {
+	var $state = document.getElementById("nmis_export_select").dataset.nmis;
+	var $select_true = "";
+	var $select_false = "";
+	if ($state == "true") { $select_true = "selected"; }
+	if ($state == "false") { $select_false = "selected"; }
+	status_text="<select id='nmis_export' onchange='send_nmis_export();'>\
+	<option value='true' "+$select_true+">true</option>\
+	<option value='false' "+$select_false+">false</option>\
+	</select>";
+	document.getElementById("nmis_export_select").innerHTML = status_text;
+}
+
+function send_nmis_export2()
+{
+	table_text=document.getElementById("nmis_export").value;
+	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_export/'+table_text);
+	http.onreadystatechange = receive_nmis_export;
+	http.send(null);
+}
+
+function receive_nmis_export2() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      document.getElementById("nmis_export_select").dataset.nmis = http.responseText;
+      update="<span onclick='display_nmis_export();'>"+http.responseText+"<\/span>";
+      document.getElementById("nmis_export_select").innerHTML = update;
+    }
+  }
+}
+
 function display_location() {
 	<?php
 	$location_form = "<option value=' '>" . __("Choose a Location") . "<\/option>";
@@ -243,7 +295,6 @@ function display_location() {
 	} else {
 		$location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>" . __("Choose a location") . "<\/option>" . $location_form . "<\/select>";
 	}
-		
 	?>
 	status_text="<?php echo $location_form;?>";
 	document.getElementById("man_location_id_select").innerHTML = status_text;

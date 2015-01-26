@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -50,8 +50,14 @@ class M_hard_drive extends MY_Model {
 	}
 
 	function process_hard_drive($input, $details) {
+		# A unique disk has the following:
+		# model, serial, index, size
+		
 		# introduced hard drive firmware in 1.4
 		if (!isset($input->hard_drive_firmware)) { $input->hard_drive_firmare = ''; }
+
+		# introduced hard drive model family in 1.5
+		if (!isset($input->hard_drive_model_family)) { $input->hard_drive_model_family = ''; }
 
 		if (((string)$details->first_timestamp == (string)$details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {
 			# we have only seen this system once, and not via an audit script
@@ -61,22 +67,36 @@ class M_hard_drive extends MY_Model {
 					hard_drive_index, hard_drive_interface_type, hard_drive_manufacturer, 
 					hard_drive_model, hard_drive_serial, hard_drive_size, 
 					hard_drive_device_id, hard_drive_scsi_logical_unit, hard_drive_status, hard_drive_firmware, 
-					timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+					hard_drive_model_family, timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", "$input->hard_drive_caption", "$input->hard_drive_index", 
 					mb_strtoupper($input->hard_drive_interface_type), "$input->hard_drive_manufacturer", 
 					"$input->hard_drive_model", "$input->hard_drive_serial", "$input->hard_drive_size", 
 					"$input->hard_drive_device_id", "$input->hard_drive_scsi_logical_unit", 
-					"$input->hard_drive_status", "$input->hard_drive_firmware", "$details->timestamp", "$details->first_timestamp");
+					"$input->hard_drive_status", "$input->hard_drive_firmware", 
+					"$input->hard_drive_model_family", "$details->timestamp", "$details->first_timestamp");
 			$query = $this->db->query($sql, $data);
 		} else {
 			// need to check for hard_drive changes
-			$sql = "SELECT sys_hw_hard_drive.hard_drive_id FROM sys_hw_hard_drive, system WHERE 
+			
+			// We altered the model result under Windows.
+			// What used to return "VMware, VMware Virtual S SCSI Disk Device" now
+			// returns "VMware Virtual Disk", hence when we check, we match on either string
+			if ($input->hard_drive_model == 'VMware Virtual Disk') {
+				$sql = "SELECT sys_hw_hard_drive.hard_drive_id FROM sys_hw_hard_drive, system WHERE 
+					sys_hw_hard_drive.system_id = system.system_id AND system.system_id = ? AND 
+					system.man_status = 'production' AND (hard_drive_model = ? or hard_drive_model = 'VMware, VMware Virtual S SCSI Disk Device') AND 
+					hard_drive_serial = ? AND hard_drive_index = ? AND 
+					hard_drive_size = ? AND ( sys_hw_hard_drive.timestamp = ? OR sys_hw_hard_drive.timestamp = ? ) 
+				LIMIT 1";
+			} else {
+				$sql = "SELECT sys_hw_hard_drive.hard_drive_id FROM sys_hw_hard_drive, system WHERE 
 					sys_hw_hard_drive.system_id = system.system_id AND system.system_id = ? AND 
 					system.man_status = 'production' AND hard_drive_model = ? AND 
 					hard_drive_serial = ? AND hard_drive_index = ? AND 
 					hard_drive_size = ? AND ( sys_hw_hard_drive.timestamp = ? OR sys_hw_hard_drive.timestamp = ? ) 
 				LIMIT 1";
+			}
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", "$input->hard_drive_model", "$input->hard_drive_serial", 
 					"$input->hard_drive_index", "$input->hard_drive_size", "$details->original_timestamp", 
@@ -85,9 +105,13 @@ class M_hard_drive extends MY_Model {
 			if ($query->num_rows() > 0) {
 				$row = $query->row();
 				// the hard_drive exists - need to update its timestamp
+				// we also update the - 
+				// model (as the VMware string changed, see above) and 
+				// manufacturer (as we altered the Windows audit, added VMware) 
+				// model family (introduced with linux disk auditing)
 				$start=explode(' ',microtime());
-				$sql = "UPDATE sys_hw_hard_drive SET timestamp = ?, hard_drive_status = ?, hard_drive_firmware = ? WHERE hard_drive_id = ?";
-				$data = array("$details->timestamp", "$input->hard_drive_status", "$input->hard_drive_firmware", "$row->hard_drive_id");
+				$sql = "UPDATE sys_hw_hard_drive SET timestamp = ?, hard_drive_status = ?, hard_drive_firmware = ?, hard_drive_model_family = ?, hard_drive_model = ?, hard_drive_manufacturer = ? WHERE hard_drive_id = ?";
+				$data = array("$details->timestamp", "$input->hard_drive_status", "$input->hard_drive_firmware", "$input->hard_drive_model_family", "$input->hard_drive_model", "$input->hard_drive_manufacturer", "$row->hard_drive_id");
 				$query = $this->db->query($sql, $data);
 			} else {
 				// the hard_drive does not exist - insert it
@@ -95,13 +119,14 @@ class M_hard_drive extends MY_Model {
 						hard_drive_index, hard_drive_interface_type, hard_drive_manufacturer, 
 						hard_drive_model, hard_drive_serial, hard_drive_size, 
 						hard_drive_device_id, hard_drive_scsi_logical_unit, hard_drive_status, hard_drive_firmware, 
-						timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+						hard_drive_model_family, timestamp, first_timestamp ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 				$sql = $this->clean_sql($sql);
 				$data = array("$details->system_id", "$input->hard_drive_caption", "$input->hard_drive_index", 
 						mb_strtoupper($input->hard_drive_interface_type), "$input->hard_drive_manufacturer", 
 						"$input->hard_drive_model", "$input->hard_drive_serial", "$input->hard_drive_size", 
 						"$input->hard_drive_device_id", "$input->hard_drive_scsi_logical_unit", 
-						"$input->hard_drive_status", "$input->hard_drive_firmware", "$details->timestamp", "$details->timestamp");
+						"$input->hard_drive_status", "$input->hard_drive_firmware", 
+						"$input->hard_drive_model_family", "$details->timestamp", "$details->timestamp");
 				$query = $this->db->query($sql, $data);
 			}
 		}

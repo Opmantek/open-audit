@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.4
+# @version 1.5.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -132,7 +132,7 @@ function write_log()
 		if [[ $debugging -gt 1 ]]; then
 			echo "Logged: $1"
 		fi
-		echo "$now $system_hostname $$ S:discover_subnet U:$user $1" >> /usr/local/open-audit/other/open-audit.log
+		echo "$now $system_hostname $$ 7 U:$user S:discover_subnet M:$1" >> /usr/local/open-audit/other/log_system.log
 	fi	
 }
 

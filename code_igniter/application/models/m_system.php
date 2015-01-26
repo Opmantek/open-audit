@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -46,12 +46,20 @@ class M_system extends MY_Model {
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
-		if (count($row) > 0) {return($row->access_details);} else {return;}
+		if (count($row) > 0) {
+			return($row->access_details);
+		} else {
+			return;
+		}
 	}
 
 	function create_system_key($details) {
 
-		$log = "M:system F:create_system_key System Key being generated for $details->hostname"; $this->log_event($log);
+		$log_details = new stdClass();
+		$log_details->message = 'System Key being generated for ' . $details->hostname;
+		$log_details->severity = 7;
+		$log_details->file = 'system';
+		stdlog($log_details);
 
 		$details = (object) $details;
 		if (!isset($details->system_key)) {
@@ -72,14 +80,16 @@ class M_system extends MY_Model {
 			isset($details->hostname) and $details->hostname != '') { 
 				$details->system_key = $details->uuid . "-" . $details->hostname; 
 				$details->system_key_type = 'uuho';
-				$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type uuho"; $this->log_event($log);
+				$log_details->message = "System Key is $details->system_key for $details->hostname type uuho";
+				stdlog($log_details);
 		}
 
 		# this is anything that has a FQDN
 		if  ((isset($details->fqdn) and $details->fqdn != '') and ($details->system_key_type != 'uuho')) {
 			$details->system_key = $details->fqdn;
 			$details->system_key_type = 'fqdn';
-			$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type fqdn"; $this->log_event($log);
+			$log_details->message = "System Key is $details->system_key for $details->hostname type fqdn";
+			stdlog($log_details);
 		}
 
 		# We might have only a serial number
@@ -95,7 +105,8 @@ class M_system extends MY_Model {
 				if ($details->system_key_type  != 'uuho' and $details->system_key_type != 'fqdn') {
 					$details->system_key = $details->type . "_" . $details->serial;
 					$details->system_key_type = 'tyse';
-					$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type tyse"; $this->log_event($log);
+					$log_details->message = "System Key is $details->system_key for $details->hostname type tyse";
+					stdlog($log_details);
 				}
 			}
 		}
@@ -107,12 +118,17 @@ class M_system extends MY_Model {
 
 			$details->system_key = $details->man_ip_address;
 			$details->system_key_type = 'ipad';
-			$log = "M:system F:create_system_key System Key is $details->system_key for $details->hostname type ipad"; $this->log_event($log);
+			$log_details->message = "System Key is $details->system_key for $details->hostname type ipad";
+			stdlog($log_details);
 		}
 
 		if ($details->system_key == '') {
-			$log = "M:system F:create_system_key System Key is blank for $details->hostname ERROR"; $this->log_event($log);
+			$log_details->message = "System Key is blank for $details->hostname ERROR";
+			$log_details->severity = 5;
+			stdlog($log_details);
 		}
+
+		unset($log_details);
 		return $details->system_key;
 	}
 
@@ -124,6 +140,10 @@ class M_system extends MY_Model {
 		$details = (object) $details;
 		$details->system_id = '';
 
+		$log_details = new stdClass();
+		$log_details->severity = 7;
+		$log_details->file = 'system';
+
 		# check system_key
 		if (isset($details->system_key) and $details->system_id == '') {
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
@@ -132,7 +152,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on system_key for $details->man_ip_address"; $this->log_event($log);
+				$log_details->message = 'HIT on system_key for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 
 		}
 
@@ -145,7 +166,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on truncated system_key for $details->man_ip_address"; $this->log_event($log);
+				$log_details->message = 'HIT on truncated system_key for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 
 		}
 
@@ -158,7 +180,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on hostname + uuid system_key for $details->man_ip_address"; $this->log_event($log);
+				$log_details->message = 'HIT on hostname + uuid system_key for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 
 		}
 
@@ -170,7 +193,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on fqdn for $details->man_ip_address"; $this->log_event($log);
+				$log_details->message = 'HIT on fqdn for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 
 		}
 
@@ -183,7 +207,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on host + domain for $details->man_ip_address"; $this->log_event($log);
+				$log_details->message = 'HIT on host + domain for ' . ip_address_from_db($details->man_ip_address) . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			} 			
 		}
 
@@ -204,7 +229,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0 ) { 
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on mac address for $details->man_ip_address"; $this->log_event($log);
+				$log_details->message = 'HIT on mac address for ' . $details->man_ip_address . ' (System ID ' . $details->system_id . ')';
+				stdlog($log_details);
 			}
 		}
 
@@ -225,7 +251,8 @@ class M_system extends MY_Model {
 						$row = $query->row();
 						if (count($row) > 0 ) { 
 							$details->system_id = $row->system_id;
-							$log = "M:system F:find_system HIT on mac address from audit result for " . strtolower($mac) . " (System ID " . $row->system_id . ")"; $this->log_event($log);
+							$log_details->message = 'HIT on mac address from audit result for ' . strtolower($mac) . ' (System ID ' . $row->system_id . ')';
+							stdlog($log_details);
 						}
 					}
 				}
@@ -237,6 +264,7 @@ class M_system extends MY_Model {
 				$details->man_ip_address > '' and 
 				$details->man_ip_address != '0.0.0.0' and 
 				$details->man_ip_address != '000.000.000.000' and 
+				filter_var($details->man_ip_address, FILTER_VALIDATE_IP) and 
 				$details->system_id == '') {
 
 			$sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
@@ -245,7 +273,8 @@ class M_system extends MY_Model {
 			$row = $query->row();
 			if (count($row) > 0) {  
 				$details->system_id = $row->system_id;
-				$log = "M:system F:find_system HIT on man_ip_address == system_key for $details->man_ip_address"; $this->log_event($log);
+				$log_details->message = 'HIT on man_ip_address == system_key for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+				stdlog($log_details);
 			}
 
 
@@ -256,7 +285,8 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) {  
 					$details->system_id = $row->system_id;
-					$log = "M:system F:find_system HIT on man_ip_address for $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on man_ip_address for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 
@@ -272,7 +302,8 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id;
-					$log = "M:system F:find_system HIT on ip_address in network table for $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on ip_address in network table for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 		}
@@ -299,7 +330,8 @@ class M_system extends MY_Model {
 					$row = $query->row();
 					if (count($row) > 0) { 
 						$details->system_id = $row->system_id;
-						$log = "M:system F:find_system HIT on serial for $details->man_ip_address"; $this->log_event($log);
+						$log_details->message = 'HIT on serial for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+						stdlog($log_details);
 					}
 				}
 			}
@@ -317,7 +349,8 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id;
-					$log = "M:system F:find_system HIT on man_serial for $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on man_serial for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 		}
@@ -341,7 +374,8 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id; 
-					$log = "M:system F:find_system HIT on hostname for $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on hostname for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 
@@ -359,7 +393,8 @@ class M_system extends MY_Model {
 						$row = $query->row();
 						if (count($row) > 0) { 
 							$details->system_id = $row->system_id;
-							$log = "M:system F:find_system HIT on hostname short for $details->man_ip_address"; $this->log_event($log);
+							$log_details->message = 'HIT on hostname short for ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+							stdlog($log_details);
 						}
 					}
 				}
@@ -376,17 +411,21 @@ class M_system extends MY_Model {
 				$row = $query->row();
 				if (count($row) > 0) { 
 					$details->system_id = $row->system_id; 
-					$log = "M:system F:find_system HIT on short hostname $details->man_ip_address"; $this->log_event($log);
+					$log_details->message = 'HIT on short hostname ' . $details->man_ip_address . ' (System ID ' . $row->system_id . ')';
+					stdlog($log_details);
 				}
 			}
 		}
 
-		$i = @(string)$details->system_id;
-		if (is_null($i) or $i == '') { 
-			$log = "M:system F:find_system Returning system id <none>"; $this->log_event($log);
+		$temp = @(string)$details->system_id;
+		if (is_null($temp) OR $temp == '') { 
+			$log_details->message = 'System ID not found for ' . $details->man_ip_address;
+			stdlog($log_details);
 		} else {
-			$log = "M:system F:find_system Returning system id $i"; $this->log_event($log);
+			$log_details->message = 'Returning System ID ' . $details->system_id . ' for ' . $details->man_ip_address;
+			stdlog($log_details);
 		}
+		unset($log_details);
 		return $details->system_id;
 	}
 
@@ -587,7 +626,7 @@ class M_system extends MY_Model {
 		$i->column_align = "left";
 		$i->column_secondary = "system_id";
 		$i->column_ternary = "";
-		$i->column_link = $this->data['config']->oae_url . "/system_summary/";
+		$i->column_link = $this->data['config']->oae_url . "/device_details/";
 		$result[2] = $i;
 		$i = new stdclass();
 		$i->column_order = '1';
@@ -793,6 +832,12 @@ class M_system extends MY_Model {
 		# this is an insert - we do NOT want a system_id
 		unset($details->system_id);
 
+		$log_details = new stdClass();
+		$log_details->message = 'System insert start for ' . ip_address_from_db($details->man_ip_address) . ' (' . $details->hostname . ')';
+		$log_details->severity = 7;
+		$log_details->file = 'system';
+		stdlog($log_details);
+
 		# ensure we have something not null for all the below
 		if (!isset($details->timestamp) or $details->timestamp == '') { $details->timestamp = date('Y-m-d H:i:s'); }
 		$details->first_timestamp = $details->timestamp;
@@ -813,7 +858,11 @@ class M_system extends MY_Model {
 		if (!isset($details->os_version)) { $details->os_version = ''; }
 		if (!isset($details->serial)) { $details->serial = ''; }
 		if (!isset($details->status)) { $details->status = 'production'; }
-		if (!isset($details->type) or $details->type == '') { $details->type = 'unknown'; }
+		if (!isset($details->type) or $details->type == '') {
+			$details->type = 'unknown'; 
+		} else {
+			$details->type = strtolower($details->type);
+		}
 		if (!isset($details->uuid)) { $details->uuid = ''; }
 		if (!isset($details->icon)) { $details->icon = ''; }
 
@@ -944,7 +993,11 @@ class M_system extends MY_Model {
 		$details->man_os_name = str_ireplace("(tm)", "", $details->man_os_name);
 		if (!isset($details->man_serial)) { $details->man_serial = $details->serial; }
 		if (!isset($details->man_status)) { $details->man_status = 'production'; }
-		if (!isset($details->man_type)) { $details->man_type = $details->type; }
+		if (!isset($details->man_type)) { 
+			$details->man_type = $details->type;
+		} else {
+			$details->man_type = strtolower($details->man_type);
+		}
 
 		# we now set a default location - 0 the location_id 
 		if (!isset($details->man_location_id)) { $details->man_location_id = '0'; }
@@ -1021,6 +1074,10 @@ class M_system extends MY_Model {
 				"$details->timestamp");
 			$query = $this->db->query($sql, $data);
 		}
+
+		$log_details->message = 'System insert end for ' . ip_address_from_db($details->man_ip_address) . ' (' . $details->hostname . ') (System ID ' . $details->system_id . ')';
+		stdlog($log_details);
+		unset($log_details);
 		return $details->system_id;
 	}
 
@@ -1039,6 +1096,20 @@ class M_system extends MY_Model {
 		$details = (array) $details;
 		$details = (object) $details;
 
+		if (isset($details->man_ip_address) and $details->man_ip_address != '') {
+			$temp_ip = $details->man_ip_address . ' ';
+		} else {
+			$temp_ip = '';
+		}
+
+		$log_details = new stdClass();
+		$log_details->message = 'System update start for ' . ip_address_from_db($temp_ip) . '(' . $details->hostname . ') (System ID ' . $details->system_id . ')';
+		$log_details->severity = 7;
+		$log_details->file = 'system';
+		stdlog($log_details);
+
+		unset($temp_ip);
+
 		# if we're updating and we don't have a real hostname, only the ip address
 		# stored in the hostname field, we shouldn't update it
 		if (isset($details->hostname) and strpos($details->hostname, ".")) {
@@ -1052,7 +1123,9 @@ class M_system extends MY_Model {
 			}
 		}
 
-		if (!isset($details->system_key_type)) {$details->system_key_type = '';}
+		if (!isset($details->system_key_type)) {
+			$details->system_key_type = '';
+		}
 
 		# we have to try to get the 'best' system key
 		# the key in the db may be better than what we have
@@ -1084,50 +1157,39 @@ class M_system extends MY_Model {
 
 			if ($details->system_key_type == 'uuho') {
 				# we already have a system key based on UUID . "_" . hostname
-				#echo "1\n";
 			} else {
 				# we need to check the existing key
 				if ($db_system_key_type == 'uuho') {
 					# the system key in the database is based on UUID . "_" . hostname
 					$details->system_key = $db_system_key;
 					$details->system_key_type = 'uuho';
-					#echo "2\n";
 
 				} elseif ($db_system_key_type == 'fqdn') {
 					# the system key in the database is based on the fqdn
 					$details->system_key = $db_system_key;
 					$details->system_key_type = 'fqdn';
-					#echo "3\n";
-
-				// } elseif ($db_system_key_type == 'hodo') {
-				// 	# the system key in the database is based on the fqdn
-				// 	$details->system_key = $db_system_key;
-				// 	$details->system_key_type = 'hodo';
-				// 	#echo "4\n";
 
 				} elseif (($db_system_key_type == 'tyse') and ($details->system_key_type == 'ipad')) {
 					# the system key in the database is based on the type and serial
 					$details->system_key = $db_system_key;
 					$details->system_key_type = 'tyse';
-					#echo "5\n";
 
 				} elseif (($db_system_key_type == 'ipad') and ($details->system_key_type == '')) {
 					# the system key in the database is based on the ip address
 					$details->system_key = $db_system_key;
 					$details->system_key_type = 'ipad';
-					#echo "6\n";
 				}
 			}
 		}
-
-		// echo "System Key: " . $details->system_key . "\n";
-		// echo "System Key Type: " . $details->system_key_type . "\n";
 
 		# if submitting an nmap scan, do not update the type or man_type
 		if (isset($details->last_seen_by) and $details->last_seen_by == 'nmap') {
 			unset ($details->type);
 			unset ($details->man_type);
-		}	
+		} else {
+			if(isset($details->type)) { $details->type = strtolower($details->type); }
+			if(isset($details->man_type)) { $details->man_type = strtolower($details->man_type); }
+		}
 
 		# for removing existing symbols
 		if (isset($details->os_name)) { 
@@ -1144,10 +1206,6 @@ class M_system extends MY_Model {
 			$query = $this->db->query($sql, $data);
 			$row = $query->row();
 
-			// echo $this->db->last_query() . "<br />\n";
-			// echo "Row: " . count($row) . "<br />\n";
-			// print_r($row);
-			
 			if (count($row) > 0) {
 
 				# if the database entry for man_manufacturer is empty but we have something from an audit, set it.
@@ -1156,7 +1214,6 @@ class M_system extends MY_Model {
 				} else {
 					unset($details->man_manufacturer);
 				}
-
 				# account for a manufacturer attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
 				if (($row->man_manufacturer == $row->manufacturer) and isset($details->manufacturer) and ($details->manufacturer <> $row->manufacturer)) {
 					$details->man_manufacturer = $details->manufacturer;
@@ -1169,7 +1226,6 @@ class M_system extends MY_Model {
 				} else {
 					unset($details->man_model);
 				}
-
 				# account for a model attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
 				if (($row->man_model == $row->model) and isset($details->model) and ($details->model <> $row->model)) {
 					$details->man_model = $details->model;
@@ -1182,7 +1238,6 @@ class M_system extends MY_Model {
 				} else {
 					unset($details->man_serial);
 				}
-
 				# account for a serial attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
 				if (($row->man_serial == $row->serial) and isset($details->serial) and ($details->serial <> $row->serial)) {
 					$details->man_serial = $details->serial;
@@ -1190,9 +1245,12 @@ class M_system extends MY_Model {
 
 
 				# if the database entry for man_description is empty but we have something from an audit, set it.
-				if ($row->man_description == '' and isset( $details->description)) {$details->man_description = $details->description;} else {unset($details->man_description);}
-
-				# account for a serial attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
+				if ($row->man_description == '' and isset( $details->description)) {
+					$details->man_description = $details->description;
+				} else {
+					unset($details->man_description);
+				}
+				# account for a description attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
 				if (($row->man_description == $row->description) and isset($details->description) and ($details->description <> $row->description)) {
 					$details->man_description = $details->description;
 				}
@@ -1204,7 +1262,6 @@ class M_system extends MY_Model {
 				} else {
 					unset($details->man_form_factor);
 				}
-
 				# account for a form_factor attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
 				if (($row->man_form_factor == $row->form_factor) and isset($details->form_factor) and ($details->form_factor <> $row->form_factor)) {
 					$details->man_form_factor = $details->form_factor;
@@ -1217,7 +1274,6 @@ class M_system extends MY_Model {
 				} else {
 					unset($details->man_os_group);
 				}
-
 				# account for a os_group attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
 				if (($row->man_os_group == $row->os_group) and isset($details->os_group) and ($details->os_group <> $row->os_group)) {
 					$details->man_os_group = $details->os_group;
@@ -1230,18 +1286,19 @@ class M_system extends MY_Model {
 				} else {
 					unset($details->man_os_family);
 				}
-
 				# account for a os_family attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
 				if (($row->man_os_family == $row->os_family) and isset($details->os_family) and ($details->os_family <> $row->os_family)) {
 					$details->man_os_family = $details->os_family;
 				}
 
+
 				# if the database entry for man_type is not set or 'unknown', update it
 				if ($row->man_type == '' or $row->man_type == 'unknown') {
 					if (isset($details->type) and $details->type > '' and $details->type != 'unknown') {
-						$details->man_type = $details->type;
+						$details->man_type = strtolower($details->type);
 					}
 				}
+
 
 				# if the database entry for man_os_name is empty but we have something from an audit, set it.
 				if ($row->man_os_name == '' and isset($details->os_name)) { 
@@ -1249,14 +1306,15 @@ class M_system extends MY_Model {
 				} else {
 					unset($details->man_os_name);
 				}
-
 				# account for a os_name attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
 				if (($row->man_os_name == $row->os_name) and isset($details->os_name) and ($details->os_name <> $row->os_name)) {
 					$details->man_os_name = $details->os_name;
 				}
 
 
-				if (strlen($row->hostname) > 15 and isset($details->hostname) and strlen($details->hostname) == 15) { unset($details->hostname); }
+				if (strlen($row->hostname) > 15 and isset($details->hostname) and strlen($details->hostname) == 15) {
+					unset($details->hostname);
+				}
 
 				if (isset($details->manufacturer) and (
 					(strripos($details->manufacturer, "vmware") !== false) or 
@@ -1266,7 +1324,7 @@ class M_system extends MY_Model {
 					$details->man_form_factor = 'Virtual';
 				}
 
-				if ($row->icon > '') {
+				if ($row->icon != '') {
 					if (isset($details->icon)) { 
 						unset($details->icon); 
 					}
@@ -1276,29 +1334,39 @@ class M_system extends MY_Model {
 					}
 				}
 				
-				if (isset($row->man_icon) and $row->man_icon > '' and $row->man_icon != 'unknown') {
+				if (isset($row->man_icon) and $row->man_icon != '' and $row->man_icon != 'unknown') {
 					if (isset($details->man_icon)) { 
 						unset($details->man_icon); 
 					}
 				} else {
 					if (!isset($details->man_icon) or $details->man_icon == '' or $details->man_icon == 'unknown') {
-						if (isset($details->icon) and $details->icon > "") {
+						if (isset($details->icon) and $details->icon != '') {
 							$details->man_icon = $details->icon;
 						} else {
-							$details->man_icon = $details->type;
+							$details->man_icon = str_replace(' ', '_', $details->type);
 						}
 					} 
 				}
 			} // end of row count > 0
 		}	
 
-		# only update system.timestamp if we have an audit result - not for nmap, snmp, etc
-		if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
-			# leave it alone
-		} else {
-			unset ($details->timestamp);
-			unset ($details->first_timestamp);
+		if (!isset($details->timestamp) or $details->timestamp == '') {
+			$details->timestamp = date('Y-m-d H:i:s');
 		}
+		
+		$sql_timestamp = "SELECT timestamp FROM system WHERE system_id = ?";
+		$sql_data = array("$details->system_id");
+		$query = $this->db->query($sql_timestamp, $sql_data);
+		$row = $query->row();
+		$details->original_timestamp = $row->timestamp;
+
+		// # only update system.timestamp if we have an audit result - not for nmap, snmp, etc
+		// if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
+		// 	# leave it alone
+		// } else {
+		// 	unset ($details->timestamp);
+		// 	unset ($details->first_timestamp);
+		// }
 
 		if (isset($details->man_ip_address)) {
 			$details->man_ip_address = ip_address_to_db($details->man_ip_address);
@@ -1365,10 +1433,6 @@ class M_system extends MY_Model {
 				$details->subnet = '0.0.0.0';
 			}
 
-			if (!isset($details->original_timestamp)) {
-				$details->original_timestamp = '';
-			}
-
 			# search for any entries in both sys_hw_network_card_ip
 			$sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
 			$data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
@@ -1388,7 +1452,39 @@ class M_system extends MY_Model {
 			}
 		}
 
+		# As at 1.5, update the timestamps in the linked tables
+		if ($details->last_seen_by != 'audit') {
+			if ($details->last_seen_by != 'snmp') {
+				$table_array = array('sys_hw_bios', 'sys_hw_hard_drive', 'sys_hw_memory', 'sys_hw_monitor', 'sys_hw_motherboard', 'sys_hw_network_card', 
+					'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 'sys_hw_sound', 'sys_hw_video', 'sys_hw_warranty', 
+					'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_log', 'sys_sw_netstat', 'sys_sw_pagefile', 'sys_sw_print_queue', 
+					'sys_sw_route', 'sys_sw_scheduled_task', 'sys_sw_service', 'sys_sw_share', 'sys_sw_share_perms', 'sys_sw_software', 'sys_sw_software_key', 
+					'sys_sw_user', 'sys_sw_variable', 'sys_sw_virtual_machine', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site', 
+					'sys_sw_web_site_header', 'sys_sw_web_site_virtual', 'sys_sw_windows');
+			} else {
+				$table_array = array('sys_hw_bios', 'sys_hw_hard_drive', 'sys_hw_memory', 'sys_hw_monitor', 'sys_hw_motherboard',                        
+					'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 'sys_hw_sound', 'sys_hw_video', 'sys_hw_warranty', 
+					'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_log', 'sys_sw_netstat', 'sys_sw_pagefile', 'sys_sw_print_queue', 
+					'sys_sw_route', 'sys_sw_scheduled_task', 'sys_sw_service', 'sys_sw_share', 'sys_sw_share_perms', 'sys_sw_software', 'sys_sw_software_key', 
+					'sys_sw_user', 'sys_sw_variable', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site', 
+					'sys_sw_web_site_header', 'sys_sw_web_site_virtual', 'sys_sw_windows');
+			}
+			foreach ($table_array as $key => $value) {
+				$update_sql = "UPDATE $value SET timestamp = ? WHERE timestamp = ? AND system_id = ?";
+				$update_data = array("$details->timestamp", "$details->original_timestamp", "$details->system_id");
+				$query = $this->db->query($update_sql, $update_data);
+			}
+		}
+		if (isset($details->man_ip_address) and $details->man_ip_address != '') {
+			$temp_ip = $details->man_ip_address . ' ';
+		} else {
+			$temp_ip = '';
+		}
 
+		$log_details->message = 'System update end for ' . ip_address_from_db($temp_ip) . '(' . $details->hostname . ') (System ID ' . $details->system_id . ')';
+		stdlog($log_details);
+		unset($log_details);
+		unset($temp_ip);
 	}
 
 
@@ -1510,15 +1606,17 @@ class M_system extends MY_Model {
 			}
 			if ($details->icon == '') { $details->icon = 'unknown'; }
 			$details->icon = str_replace(" ", "_", strtolower($details->icon));
-			if ($details->man_icon == "computer" or 
-				$details->man_icon == "unknown" or 
-				$details->man_icon == "general purpose" or 
-				$details->man_icon == "" ) {
-				$details->man_icon = $details->icon;
-			}
+			// if ($details->man_icon == "computer" or 
+			// 	$details->man_icon == "unknown" or 
+			// 	$details->man_icon == "general purpose" or 
+			// 	$details->man_icon == "" ) {
+			// 	$details->man_icon = $details->icon;
+			// }
+			$details->man_icon = $details->icon;
 			$sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
 			$data = array("$details->icon", "$details->man_icon", "$details->system_id");
 			$query = $this->db->query($sql, $data);
+
 		}
 		return ($count);
 	}
@@ -1570,49 +1668,49 @@ class M_system extends MY_Model {
 	        $decoded_access_details->windows_domain = "";
 	    }
 	    # we now have any existing credentials - compare and update if required
-	    if (isset($credentials->ip_address)) {
+	    if (isset($credentials->ip_address) AND $credentials->ip_address != '') {
 	    	$new_credentials['ip_address'] = (string)$credentials->ip_address;
 	    } else {
 	    	$new_credentials['ip_address'] = (string)$decoded_access_details->ip_address;
 	    }
 
-	    if (isset($credentials->snmp_community)) {
+	    if (isset($credentials->snmp_community) AND $credentials->snmp_community != '') {
 	    	$new_credentials['snmp_community'] = (string)$credentials->snmp_community;
 	    } else {
 	    	$new_credentials['snmp_community'] = $decoded_access_details->snmp_community;
 	    }
 
-	    if (isset($credentials->snmp_version)) {
+	    if (isset($credentials->snmp_version) AND $credentials->snmp_version != '') {
 	    	$new_credentials['snmp_version'] = (string)$credentials->snmp_version;
 	    } else {
 	    	$new_credentials['snmp_version'] = (string)$decoded_access_details->snmp_version;
 	    }
 
-	    if (isset($credentials->ssh_username)) {
+	    if (isset($credentials->ssh_username) AND $credentials->ssh_username != '') {
 	    	$new_credentials['ssh_username'] = (string)$credentials->ssh_username;
 	    } else {
 	    	$new_credentials['ssh_username'] = (string)$decoded_access_details->ssh_username;
 	    }
 
-	    if (isset($credentials->ssh_password)) {
+	    if (isset($credentials->ssh_password) AND $credentials->ssh_password != '') {
 	    	$new_credentials['ssh_password'] = (string)$credentials->ssh_password;
 	    } else {
 	    	$new_credentials['ssh_password'] = (string)$decoded_access_details->ssh_password;
 	    }
 	    
-	    if (isset($credentials->windows_username)) {
+	    if (isset($credentials->windows_username) AND $credentials->windows_username != '') {
 	    	$new_credentials['windows_username'] = (string)$credentials->windows_username;
 	    } else {
 	    	$new_credentials['windows_username'] = (string)$decoded_access_details->windows_username;
 	    }
 
-	    if (isset($credentials->windows_password)) {
+	    if (isset($credentials->windows_password) AND $credentials->windows_password != '') {
 	    	$new_credentials['windows_password'] = (string)$credentials->windows_password;
 	    } else {
 	    	$new_credentials['windows_password'] = (string)$decoded_access_details->windows_password;
 	    }
 
-	    if (isset($credentials->windows_domain)) {
+	    if (isset($credentials->windows_domain) AND $credentials->windows_domain != '') {
 	    	$new_credentials['windows_domain'] = (string)$credentials->windows_domain;
 	    } else {
 	    	$new_credentials['windows_domain'] = (string)$decoded_access_details->windows_domain;
@@ -1674,32 +1772,5 @@ class M_system extends MY_Model {
 	    }
 		return($decoded_access_details);
 	}
-
-
-    public function log_event($log_details, $display='y')
-    {
-        # setup the log file
-        if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
-            $file = "/usr/local/open-audit/other/open-audit.log";
-        } else {
-            $file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
-        }
-
-        $log_timestamp = date("M d H:i:s");
-        $log_hostname = php_uname('n');
-        $log_pid = getmypid();
-        $log_line = $log_timestamp . " " . $log_hostname . " " . $log_pid . " " . $log_details . "." . PHP_EOL;
-        $handle = fopen($file, "a");
-        fwrite($handle, $log_line);
-        fclose($handle);
-        if ($display != 'n') {
-            if (((isset($loggedin)) OR ($this->session->userdata('logged_in') == TRUE))) {
-                echo "LOG   - " . $log_line;
-            }
-        }
-    }
-
 }
-
-
 ?>

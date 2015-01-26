@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -66,6 +66,7 @@ class M_network_card extends MY_Model {
 		if ( (string)$details->first_timestamp == (string)$details->original_timestamp 
 			  and $details->original_last_seen_by != 'audit' 
 			  and $details->original_last_seen_by != 'snmp' ) {
+
 			# we have only seen this system once, and not via an audit script or snmp
 			# insert the row and set the first_timestamp == system.first_timestamp
 			# otherwise we cause alerts
@@ -116,6 +117,7 @@ class M_network_card extends MY_Model {
 					"$details->timestamp", 
 					"$details->first_timestamp");
 			$query = $this->db->query($sql, $data);
+
 		} else {
 
 
@@ -124,19 +126,19 @@ class M_network_card extends MY_Model {
 				$sql = "SELECT sys_hw_network_card.net_id 
 						FROM sys_hw_network_card
 						WHERE sys_hw_network_card.system_id = ? AND 
-							LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) ";
+							LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND 
+							( sys_hw_network_card.timestamp = ? OR sys_hw_network_card.timestamp = ? )";
 				$sql = $this->clean_sql($sql);
-				$data = array("$details->system_id", "$input->net_mac_address");
+				$data = array("$details->system_id", "$input->net_mac_address", "$details->timestamp", "$details->original_timestamp");
 			} else {
 				$sql = "SELECT sys_hw_network_card.net_id 
 						FROM sys_hw_network_card
 						WHERE sys_hw_network_card.system_id = ? AND 
 							LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND 
-							LOWER(sys_hw_network_card.net_index) = LOWER(?) ";
+							LOWER(sys_hw_network_card.net_index) = LOWER(?) AND 
+							( sys_hw_network_card.timestamp = ? OR sys_hw_network_card.timestamp = ? )";
 				$sql = $this->clean_sql($sql);
-				$data = array("$details->system_id", 
-							"$input->net_mac_address", 
-							"$input->net_index");
+				$data = array("$details->system_id", "$input->net_mac_address", "$input->net_index", "$details->timestamp", "$details->original_timestamp");
 			}
 			$query = $this->db->query($sql, $data);
 
@@ -190,6 +192,7 @@ class M_network_card extends MY_Model {
 						"$input->net_wins_lmhosts_enabled",
 						"$details->timestamp",
 						"$row->net_id");
+				$sql = $this->clean_sql($sql);
 				$query = $this->db->query($sql, $data);
 			} else {
 				// the network_card does not exist - insert it
@@ -240,6 +243,7 @@ class M_network_card extends MY_Model {
 						"$details->timestamp", 
 						"$details->timestamp");
 				$query = $this->db->query($sql, $data);
+
 			}
 		} // end of if first audit/snmp test
 	} // end of function

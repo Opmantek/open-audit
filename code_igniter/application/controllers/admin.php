@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -70,7 +70,10 @@ class Admin extends MY_Controller {
 				redirect('login/index');
 			}
 		}
-		$this->log_event();
+
+		$log_details = new stdClass();
+		stdlog($log_details);
+        unset($log_details);
 	}
 
 	/**
@@ -158,8 +161,62 @@ class Admin extends MY_Controller {
 	 */
 	function get_config()
 	{
-		$json = json_encode($this->data['config']);
+		$json = $this->data['config'];
+		if ($this->data['config']->default_network_address == '') {
+			# get all ip addresses of this machine
+			$this->load->model('m_oa_config');
+			$json->server_ip_addresses = $this->m_oa_config->get_server_ip_addresses();
+		} else {
+			$json->server_ip_addresses = array();
+		}
+		$json = json_encode($json);
 		print_r($json);
+	}
+
+	/**
+	 * The edit config page
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function get_config_all()
+	{
+		$this->load->model('m_oa_config');
+		$json = $this->m_oa_config->get_config();
+		$json = json_encode($json);
+		print_r($json);
+	}
+
+	/**
+	 * The set config api - esigned to take a JSON format of config_name: config_value from a POST
+	 *
+	 * @access	  public
+	 * @category  Function
+	 * @package   Open-AudIT
+	 * @author    Mark Unwin <marku@opmantek.com>
+	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+	 * @link      http://www.open-audit.org
+	 * @return	  NULL
+	 */
+	function set_config()
+	{
+		if (isset($_POST['config'])) {
+			if ($config = json_decode($_POST['config'])) {
+				$this->load->model('m_oa_config');
+				foreach ($config as $name => $value) {
+					$value = urldecode($value);
+					$this->m_oa_config->update_config($name, $value, $this->data['user_id'], date('Y-m-d H:i:s'));
+				}
+				header(' ', true, 200);
+			} else {
+				header(' ', true, 400);
+			}
+		}
 	}
 
 	/**
@@ -175,18 +232,26 @@ class Admin extends MY_Controller {
 	 */
 	function purge_log()
 	{
+		// default
+		$logfile = 'system';
+		$temp = @$this->uri->segment(3);
+		if ($temp != '') {
+			if ($temp == 'access' OR $temp == 'debug' OR $temp == 'system') {
+				$logfile = $temp;
+			}
+		}
+		unset($temp);
 		// full path to text file
 		if (php_uname('s') === 'Linux') {
-			$file = '/usr/local/open-audit/other/open-audit.log';
+			$file = '/usr/local/open-audit/other/log_' . $logfile . '.log';
 		} 
 		else {
-			$file = 'c:\\xampplite\\open-audit\\other\\open-audit.log';
+			$file = 'c:\\xampplite\\open-audit\\other\\log_' . $logfile . '.log';
 		}
 		$handle = fopen($file, 'w');
 		fwrite($handle, '');
 		fclose($handle);
-		redirect('admin/view_log');
-
+		redirect('admin/view_log/' . $logfile);
 	}
 
 	/**
@@ -208,7 +273,7 @@ class Admin extends MY_Controller {
 		if (php_uname('s') === 'Linux') {
 			switch ($file) {
 				case '1':
-					$complete_filename = '/usr/local/open-audit/other/open-audit.log';
+					$complete_filename = '/usr/local/open-audit/other/log_system.log';
 					break;
 
 				case '2':
@@ -239,7 +304,7 @@ class Admin extends MY_Controller {
 		if (php_uname('s') == 'Windows NT') {
 			switch ($file) {
 				case '1':
-					$complete_filename = 'c:\xampplite\open-audit\other\open-audit.log';
+					$complete_filename = 'c:\xampplite\open-audit\other\log_system.log';
 					break;
 
 				case '2':
@@ -280,15 +345,37 @@ class Admin extends MY_Controller {
 	}
 
 	function view_log() {		
-		// number of lines to read from the end of file
-		$lines = @intval($this->uri->segment(3,0));
-		if ($lines < 1) { $lines = 25; }
+
+		// defaults
+		$logfile = 'system';
+		$lines = 25;
+
+		// if present, read this specified log file
+		$temp = @$this->uri->segment(3);
+		if ($temp != '') {
+			if (is_numeric($temp)) {
+				$lines = intval($temp);
+			} else {
+				if ($temp == 'system' OR $temp == 'access' OR $temp == 'debug') {
+					$logfile = $temp;
+				}
+			}
+		}
+		$temp = @$this->uri->segment(4);
+		if ($temp != '') {
+			if (is_numeric($temp)) {
+				$lines = intval($this->uri->segment(4));
+			}
+		}
+		if ($lines < 1) { 
+			$lines = 25;
+		}
 
 		// full path to text file
 		if (php_uname('s') == 'Linux') {
-			$file = "/usr/local/open-audit/other/open-audit.log";
+			$file = "/usr/local/open-audit/other/log_" . $logfile . ".log";
 		} else {
-			$file = "c:\\xampplite\\open-audit\\other\\open-audit.log";
+			$file = "c:\\xampplite\\open-audit\\other\\log_" . $logfile . ".log";
 		}
 
 		$fsize = round(filesize($file)/1024/1024,2);
@@ -335,7 +422,7 @@ class Admin extends MY_Controller {
 			$this->data['sortcolumn'] = '1';
 			$this->load->view('v_template', $this->data);
 		} else {
-			$cmd = "php " . $_SERVER['SCRIPT_FILENAME'] . " admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+			$cmd = "php " . $_SERVER['SCRIPT_FILENAME'] . " admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/log_system.log 2>&1 &";
 			redirect('/admin/view_log');
 		}
 	}
@@ -350,7 +437,7 @@ class Admin extends MY_Controller {
 			$this->load->model("m_systems");
 			$data = array($this->data['id']);
 			$query = $this->db->query('SET @group = ?', $data);
-			$sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, access_details FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id"; 
+			$sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id"; 
 			$query = $this->db->query($sql);
 			$this->data['query'] = $query->result();
 			$this->load->library('encrypt');
@@ -361,14 +448,54 @@ class Admin extends MY_Controller {
 					$j = json_decode($j);
 				}
 
-				# nmis name
-				if ($this->data['query'][$i]->nmis_name == '' and $this->data['query'][$i]->hostname > '') {$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname; }
-				if (($this->data['query'][$i]->nmis_name == '' or $this->data['query'][$i]->nmis_name == $this->data['query'][$i]->hostname) and $this->data['query'][$i]->fqdn > '') { $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn; }
-				if ($this->data['query'][$i]->nmis_name == '') { $this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host); }
+				if ($this->data['query'][$i]->nmis_name == '') {
+					# need to create a nmis name
 
+					if ($this->data['query'][$i]->hostname != '') {
+						# hostname is our preferred choice
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname;
+
+					} elseif ($this->data['query'][$i]->fqdn != '') {
+						# second choice is to use the FQDN
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn;
+					
+					} elseif ($this->data['query'][$i]->hostname != '' AND $this->data['query'][$i]->domain != '') {
+						# third - create the FQDN from the hostname + domain
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
+					
+					} elseif ($this->data['query'][$i]->nmis_host != '') {
+						# lastly - use the ip address
+						$this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host);
+					}
+					# ensure we don't have a name ending in a .
+					if (strrpos($this->data['query'][$i]->nmis_name, '.') == strlen($this->data['query'][$i]->nmis_name)-1 ) {
+						$this->data['query'][$i]->nmis_name = substr($this->data['query'][$i]->nmis_name, 0, strlen($this->data['query'][$i]->nmis_name)-1);
+					}
+					$this->data['query'][$i]->nmis_name = "<span style=\"color: blue;\">" . $this->data['query'][$i]->nmis_name . "</span>";
+
+				}
+
+				
 				# nmis host
-				$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
-				if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+				#$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				#if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+				if ($this->data['query'][$i]->fqdn != '') {
+					# first choice is to use the FQDN
+					$this->data['query'][$i]->nmis_host = $this->data['query'][$i]->fqdn;
+				
+				} elseif ($this->data['query'][$i]->hostname != '' AND $this->data['query'][$i]->domain != '') {
+					# second - create the FQDN from the hostname + domain
+					$this->data['query'][$i]->nmis_host = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
+				
+				} elseif ($this->data['query'][$i]->nmis_host != '') {
+					# lastly - use the ip address
+					$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				}
+				# ensure we don't have a host ending in a .
+				if (strrpos($this->data['query'][$i]->nmis_host, '.') == strlen($this->data['query'][$i]->nmis_host)-1 ) {
+					$this->data['query'][$i]->nmis_host = substr($this->data['query'][$i]->nmis_host, 0, strlen($this->data['query'][$i]->nmis_host)-1);
+				}
+
 
 				# nmis group
 				if ($this->data['query'][$i]->nmis_group == '') { $this->data['query'][$i]->nmis_group = "<span style=\"color: blue;\">Open-AudIT</span>"; }
@@ -379,6 +506,15 @@ class Admin extends MY_Controller {
 				# snmp community
 				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
 				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">" . $this->data['config']->default_snmp_community . "</span>"; }
+
+				# snmp version
+				if (isset($j->snmp_version)) {
+					$this->data['query'][$i]->nmis_snmp_version = $j->snmp_version;
+				}
+				if (!isset($this->data['query'][$i]->nmis_snmp_version) or $this->data['query'][$i]->nmis_snmp_version == '') { 
+					$this->data['query'][$i]->nmis_snmp_version = "<span style=\"color: blue;\">2c</span>";
+				}
+
 
 				$j=null;
 			}
@@ -395,11 +531,12 @@ class Admin extends MY_Controller {
 			$this->load->model("m_system");
 			$this->load->model("m_oa_group");
 			$this->load->library('encrypt');
-			$csv = "name,host,group,role,community\n";
+			$csv = "name,host,group,role,community,version\n";
 			$query = array();
 			$i = 0; # I set $i = 0 so I could copy/paste the code from above :-)
 			foreach ($device_array as $key => $value) {
-				$sql = "SELECT system.nmis_name, system.man_ip_address as nmis_host, system.nmis_group, system.nmis_role, system.hostname, system.fqdn, '' as nmis_community, '' as nmis_version, 'true' as nmis_collect, '' as nmis_net, access_details FROM system WHERE system_id = ?"; 
+				#$sql = "SELECT system.nmis_name, system.man_ip_address as nmis_host, system.nmis_group, system.nmis_role, system.hostname, system.fqdn, '' as nmis_community, '' as nmis_version, 'true' as nmis_collect, '' as nmis_net, access_details FROM system WHERE system_id = ?"; 
+				$sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system WHERE system_id = ?"; 
 				$data = array($value);
 				$query = $this->db->query($sql, $data);
 				$this->data['query'] = $query->result();
@@ -409,14 +546,51 @@ class Admin extends MY_Controller {
 					$j = json_decode($j);
 				}
 
-				# nmis name
-				if ($this->data['query'][$i]->nmis_name == '' and $this->data['query'][$i]->hostname > '') {$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname; }
-				if (($this->data['query'][$i]->nmis_name == '' or $this->data['query'][$i]->nmis_name == $this->data['query'][$i]->hostname) and $this->data['query'][$i]->fqdn > '') { $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn; }
-				if ($this->data['query'][$i]->nmis_name == '') { $this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host); }
+				# blank nmis name and populated hostname
+				if ($this->data['query'][$i]->nmis_name == '') {
+					# need to create a nmis name
+					
+					if ($this->data['query'][$i]->hostname != '') {
+						# hostname is our preferred choice
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname;
+
+					} elseif ($this->data['query'][$i]->fqdn != '') {
+						# second choice is to use the FQDN
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn;
+					
+					} elseif ($this->data['query'][$i]->hostname != '' AND $this->data['query'][$i]->domain != '') {
+						# third - create the FQDN from the hostname + domain
+						$this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
+					
+					} elseif ($this->data['query'][$i]->nmis_host != '') {
+						# lastly - use the ip address
+						$this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host);
+					}
+				}
+				# ensure we don't have a name ending in a .
+				if (strrpos($this->data['query'][$i]->nmis_name, '.') == strlen($this->data['query'][$i]->nmis_name)-1 ) {
+					$this->data['query'][$i]->nmis_name = substr($this->data['query'][$i]->nmis_name, 0, strlen($this->data['query'][$i]->nmis_name)-1);
+				}
 
 				# nmis host
-				$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
-				if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+				#$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				#if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; } 
+				if ($this->data['query'][$i]->fqdn != '') {
+					# first choice is to use the FQDN
+					$this->data['query'][$i]->nmis_host = $this->data['query'][$i]->fqdn;
+				
+				} elseif ($this->data['query'][$i]->hostname != '' AND $this->data['query'][$i]->domain != '') {
+					# second - create the FQDN from the hostname + domain
+					$this->data['query'][$i]->nmis_host = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
+				
+				} elseif ($this->data['query'][$i]->nmis_host != '') {
+					# lastly - use the ip address
+					$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
+				}
+				# ensure we don't have a host ending in a .
+				if (strrpos($this->data['query'][$i]->nmis_host, '.') == strlen($this->data['query'][$i]->nmis_host)-1 ) {
+					$this->data['query'][$i]->nmis_host = substr($this->data['query'][$i]->nmis_host, 0, strlen($this->data['query'][$i]->nmis_host)-1);
+				}
 
 				# nmis group
 				if ($this->data['query'][$i]->nmis_group == '') { $this->data['query'][$i]->nmis_group = "Open-AudIT"; }
@@ -428,13 +602,22 @@ class Admin extends MY_Controller {
 				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
 				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = $this->data['config']->default_snmp_community; }
 
+				# snmp version
+				if (isset($j->snmp_version)) {
+					$this->data['query'][$i]->nmis_snmp_version = 'snmpv' . $j->snmp_version;
+				}
+				if (!isset($this->data['query'][$i]->nmis_snmp_version) or $this->data['query'][$i]->nmis_snmp_version == '') { 
+					$this->data['query'][$i]->nmis_snmp_version = "snmpv2c";
+				}
+
 				$j=null;
 
 				$csv .= $this->data['query'][$i]->nmis_name . "," . 
 						$this->data['query'][$i]->nmis_host . "," . 
 						$this->data['query'][$i]->nmis_group . "," . 
 						$this->data['query'][$i]->nmis_role . "," . 
-						$this->data['query'][$i]->nmis_community . "\n";
+						$this->data['query'][$i]->nmis_community . "," .
+						$this->data['query'][$i]->nmis_snmp_version . "\n";
 			}
 			if (!file_exists("/usr/local/nmis8/admin/import_nodes.pl")) {
 				echo $csv;
@@ -446,7 +629,7 @@ class Admin extends MY_Controller {
 				$handle = fopen($filename, "w");
 				fwrite($handle, $csv);
 				fclose($handle);
-				$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+				$cmd = "/usr/local/nmis8/admin/import_nodes.pl csv=$filename nodes=/usr/local/nmis8/conf/Nodes.nmis overwrite=true >> /usr/local/open-audit/other/log_system.log 2>&1 &";
 				exec($cmd);
 				redirect('/admin/view_log');	
 			}
@@ -514,16 +697,16 @@ class Admin extends MY_Controller {
 
 			if ($operating_system == 'Darwin') {
 				if ($subnet > '' ) {
-					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
-					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/log_debug.log 2>&1 &";
+					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/log_debug.log 2>&1 &";
 					exec($cmd);
 				}
 			}
 
 			if ($operating_system == 'Linux') {
 				if ($subnet > '' ) {
-					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
-					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/open-audit.log 2>&1 &";
+					#$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet >> /usr/local/open-audit/other/log_debug.log 2>&1 &";
+					$cmd = "/usr/local/open-audit/other/audit_subnet.sh subnet=$subnet url=" . base_url() . "index.php/system/add_nmap  submit_online=y create_file=n debugging=0 >> /usr/local/open-audit/other/log_debug.log 2>&1 &";
 					exec($cmd);
 				}
 			}
@@ -2661,11 +2844,11 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "UPDATE oa_config set config_value = '20140620', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$sql = "UPDATE oa_config SET config_value = '20140620', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 			
-			$sql = "UPDATE oa_config set config_value = '1.3.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$sql = "UPDATE oa_config SET config_value = '1.3.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);		
 		}
@@ -2693,14 +2876,431 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "UPDATE oa_config set config_value = '20140720', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$sql = "UPDATE oa_config SET config_value = '20140720', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 			
-			$sql = "UPDATE oa_config set config_value = '1.4', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$sql = "UPDATE oa_config SET config_value = '1.4', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);		
 		}
+
+		if (($db_internal_version < '20140827') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.4.1
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('download_reports', 'download', 'y', 'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config SET config_value = '20140827', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config SET config_value = '1.4.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);		
+		}	
+
+		if (($db_internal_version < '20141024') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.5
+
+			$sql = "ALTER TABLE oa_user_sessions CHANGE ip_address ip_address varchar(45) DEFAULT '0' NOT NULL";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE oa_user_sessions CHANGE user_agent user_agent varchar(120) NOT NULL";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$fields = $this->db->list_fields('sys_hw_hard_drive');
+			$temp_hit = 0;
+			foreach ($fields as $field) {
+			   if ($field == 'hard_drive_model_family') {
+					$temp_hit = 1;
+				}
+			}
+			if ($temp_hit == 0) {
+				$sql = "ALTER TABLE sys_hw_hard_drive ADD hard_drive_model_family varchar(200) NOT NULL default '' ";
+				$this->data['output'] .= $sql . "<br /><br />\n";
+				$query = $this->db->query($sql);
+			}
+
+			$sql = 'UPDATE oa_report_column SET column_link = "/report/Specific Software/$group_id/" WHERE column_link = "/report/specific_software/$group_id/"';
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = 'UPDATE oa_report_column SET column_link = "/report/Specific Key Name/$group_id/" WHERE column_link = "/report/specific_key_name/$group_id/"';
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = 'UPDATE oa_report_column SET column_link = "/report/Specific Key Text/$group_id/" WHERE column_link = "/report/specific_key_text/$group_id/"';
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20141024', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.5', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);		
+		}
+
+		if (($db_internal_version < '20141130') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.5.1
+
+			$sql = "ALTER TABLE system ADD sysDescr varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysObjectID varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysUpTime varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysContact varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysName varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD sysLocation varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20141130', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.5.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+		}
+
+		if (($db_internal_version < '20141208') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.5.2
+
+			$sql = "ALTER TABLE system ADD nmis_export enum('true', 'false') NOT NULL default 'false' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system CHANGE sysDescr sysDescr text NOT NULL";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system CHANGE description description text NOT NULL";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system CHANGE man_description man_description text NOT NULL";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config set config_value = '20141208', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config set config_value = '1.5.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+		}
+
+		if (($db_internal_version < '20141225') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.5.3
+			
+			$log_details = new stdClass();
+			$log_details->file = 'system';
+			$log_details->message = 'Upgrade database to 1.5.3 commenced';
+			stdlog($log_details);
+
+			$sql = "ALTER TABLE sys_sw_windows ADD windows_workgroup varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD man_location_latitude float(10,6) NOT NULL ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD man_location_longitude float(10,6) NOT NULL ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD man_purchase_service_contract_number varchar(255) NOT NULL default '' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE system ADD man_lease_expiry_date date NOT NULL default '0000-00-00' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE system SET type = LOWER(type)";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE system SET man_type = LOWER(man_type)";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Discovered in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE system.man_status = \'production\' AND oa_group_sys.group_id = @group AND system.first_timestamp > (NOW() - INTERVAL ? DAY) AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,2,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,3,'OS','man_os_name','text','','','','left'),
+			(NULL,$insert_id,4,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,5,'Last Audited','timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,6,'Status','status','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Software Discovered in the Last Days','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, DATE(sys_sw_software.timestamp) AS first_attribute FROM sys_sw_software LEFT JOIN system ON sys_sw_software.system_id = system.system_id WHERE system.man_status = \'production\' AND sys_sw_software.first_timestamp != system.first_timestamp AND sys_sw_software.first_timestamp > (NOW() - INTERVAL ? DAY) GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Package Name','software_name','link','/omk/oae/show_report/specific software/','software_id','first_attribute','left'),
+			(NULL,$insert_id,1,'Type','software_comment','text','','','','center'),
+			(NULL,$insert_id,2,'Installs','software_count','text','','','','center'),
+			(NULL,$insert_id,3,'Contact','software_url','url','','','','center'),
+			(NULL,$insert_id,4,'Version','software_version','text','','','','left'),
+			(NULL,$insert_id,5,'Publisher','software_publisher','text','','','','left'),
+			(NULL,$insert_id,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Not Seen by Date','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location on system.man_location_id = oa_location.location_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL 30 day) AND oa_group_sys.group_id = @group AND man_status = \'production\' AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,2,'Location','location_name','text','','','','left'),
+			(NULL,$insert_id,3,'User','windows_user_name','text','','','','left'),
+			(NULL,$insert_id,4,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,5,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,6,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,7,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,8,'Last Audited','timestamp','timestamp','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Specific Software','','n','SELECT system.system_id, system.hostname, sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_installed_by, date(sys_sw_software.software_installed_on) as software_installed_on, sys_sw_software.software_version, date(sys_sw_software.first_timestamp) as first_timestamp FROM system LEFT JOIN sys_sw_software ON (system.system_id = sys_sw_software.system_id and system.first_timestamp < sys_sw_software.first_timestamp) WHERE system.man_status = \'production\' AND sys_sw_software.software_name = (SELECT software_name FROM sys_sw_software WHERE software_id = ? LIMIT 1) AND date(sys_sw_software.first_timestamp) = date(?) GROUP BY system.system_id','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Software Name','software_name','link','/omk/oae/show_report/Specific Software/','software_id','','left'),
+			(NULL,$insert_id,1,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,2,'Software Version','software_version','text','','','','left'),
+			(NULL,$insert_id,3,'Detected On','first_timestamp','timestamp','','','','center'),
+			(NULL,$insert_id,4,'Installed By','software_installed_by','text','','','','left'),
+			(NULL,$insert_id,5,'Installed On','software_installed_on','timestamp','','','','center')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Software Discovered by Date','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, date(sys_sw_software.first_timestamp) as first_attribute FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE system.man_status = \'production\' AND oa_group_sys.group_id = @group AND date(sys_sw_software.first_timestamp) = ? GROUP BY sys_sw_software.software_name ORDER BY sys_sw_software.software_name','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Package Name','software_name','link','/omk/oae/show_report/Enterprise - Specific Software/','software_id','first_attribute','left'),
+			(NULL,$insert_id,1,'Type','software_comment','text','','','','center'),
+			(NULL,$insert_id,2,'Installs','software_count','text','','','','center'),
+			(NULL,$insert_id,3,'Contact','software_url','url','','','','center'),
+			(NULL,$insert_id,4,'Version','software_version','text','','','','left'),
+			(NULL,$insert_id,5,'Publisher','software_publisher','text','','','','left'),
+			(NULL,$insert_id,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Discovered by Date','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, man_status AS status, last_seen_by FROM system WHERE system.man_status = \'production\' AND date(system.first_timestamp) = ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,2,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,3,'OS','man_os_name','text','','','','left'),
+			(NULL,$insert_id,5,'Last Seen By','last_seen_by','text','','','','left'),
+			(NULL,$insert_id,6,'Status','status','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Not Seen in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location on system.man_location_id = oa_location.location_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(NOW(), INTERVAL ? day) AND oa_group_sys.group_id = @group AND man_status = \'production\' AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,2,'Location','location_name','text','','','','left'),
+			(NULL,$insert_id,3,'User','windows_user_name','text','','','','left'),
+			(NULL,$insert_id,4,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,5,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,6,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,7,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,8,'Last Audited','timestamp','timestamp','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Group','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_group = ? AND man_status = \'production\'','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Icon','man_icon','image','','man_os_family','','center'),
+			(NULL,$insert_id,1,'OS Family','man_os_family','link','/omk/oae/show_report/Enterprise - OS Family/','man_os_family','','left'),
+			(NULL,$insert_id,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,3,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,4,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,5,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,6,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,7,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,8,'Location','location_name','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Types','','n','SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = \'production\')) * 100) AS y, IF(CHAR_LENGTH(man_os_group)=0,\'Other\', man_os_group) AS name, count(*) as count FROM system WHERE man_status = \'production\' GROUP BY name;','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Type','name','link','/omk/oae/show_report/Enterprise - OS Group/','name','','left'),
+			(NULL,$insert_id,1,'Count','count','text','','','','left'),
+			(NULL,$insert_id,2,'Percent','y','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Family','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_family = ? AND man_status = \'production\'','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Icon','man_icon','image','','man_os_family','','center'),
+			(NULL,$insert_id,1,'OS Name','man_os_name','link','/omk/oae/show_report/Enterprise - OS Name/','man_os_name','','left'),
+			(NULL,$insert_id,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,3,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,4,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,5,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,6,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,7,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,8,'Location','location_name','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - OS Name','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE man_os_name = ? AND man_status = \'production\'','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Icon','man_icon','image','','man_os_family','','center'),
+			(NULL,$insert_id,1,'OS Name','man_os_name','text','','','','left'),
+			(NULL,$insert_id,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,3,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,4,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,5,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,6,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,7,'Serial','man_serial','text','','','','left'),
+			(NULL,$insert_id,8,'Location','location_name','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Device Types','','n','SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = \'production\')) * 100) AS y, man_type AS name, count(*) as count FROM system WHERE man_status = \'production\' GROUP BY name','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Type','name','link','/omk/oae/show_report/Enterprise - Device Type/','name','','left'),
+			(NULL,$insert_id,1,'Count','count','text','','','','left'),
+			(NULL,$insert_id,2,'Percent','y','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Device Type','','n','SELECT system.system_id, system.hostname, system.man_manufacturer, system.man_model, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system WHERE system.man_status = \'production\' AND man_type = ?','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,2,'Manufacturer','man_manufacturer','text','','','','left'),
+			(NULL,$insert_id,3,'Model','man_model','text','','','','left'),
+			(NULL,$insert_id,4,'OS','man_os_name','text','','','','left'),
+			(NULL,$insert_id,5,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,6,'Last Audited','timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,7,'Status','status','text','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Software Discovered Range','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE system.man_status = \'production\' AND oa_group_sys.group_id = @group AND date(sys_sw_software.first_timestamp) >= ? AND date(sys_sw_software.first_timestamp) <= ? GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'Package Name','software_name','link','/omk/oae/report/SpecificSoftwareRange/','software_id','first_attribute','left'),
+			(NULL,$insert_id,1,'Type','software_comment','text','','','','center'),
+			(NULL,$insert_id,2,'Installs','software_count','text','','','','center'),
+			(NULL,$insert_id,3,'Contact','software_url','url','','','','center'),
+			(NULL,$insert_id,4,'Version','software_version','text','','','','left'),
+			(NULL,$insert_id,5,'Publisher','software_publisher','text','','','','left'),
+			(NULL,$insert_id,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO `oa_report` VALUES (NULL,'Enterprise - Devices Discovered Range','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group WHERE system.man_status = \'production\' AND date(system.first_timestamp) >= ? AND date(system.first_timestamp) <= ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0)";
+			$query = $this->db->query($sql);
+			$insert_id = $this->db->insert_id();
+
+			$sql = "INSERT INTO `oa_report_column` VALUES 
+			(NULL,$insert_id,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left'),
+			(NULL,$insert_id,1,'IP Address','man_ip_address','ip_address','','','','left'),
+			(NULL,$insert_id,2,'Type','man_type','text','','','','left'),
+			(NULL,$insert_id,3,'OS','man_os_name','text','','','','left'),
+			(NULL,$insert_id,4,'First Audited','first_timestamp','timestamp','','','','left'),
+			(NULL,$insert_id,5,'Last Audited','timestamp','timestamp','','','','left')";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('log_style', 'syslog', 'y', 'Tells Open-AudIT which log format to use. Valid values are json and syslog.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('log_level', '5', 'y', 'Tells Open-AudIT which severity of event (at least) should be logged.')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "INSERT INTO oa_group_column VALUES (NULL, 1, 3, 'Domain', 'domain', 'text', '', '', '', 'left')"; 
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_group_column SET column_order = 4 WHERE group_id = 1 AND column_variable = 'man_ip_address' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_group_column SET column_order = 5 WHERE group_id = 1 AND column_variable = 'man_type' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_group_column SET column_order = 6 WHERE group_id = 1 AND column_variable = 'man_description' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_group_column SET column_order = 7 WHERE group_id = 1 AND column_variable = 'man_os_name' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_group_column SET column_order = 8 WHERE group_id = 1 AND column_variable = 'tag' ";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config SET config_value = '20141225', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			
+			$sql = "UPDATE oa_config SET config_value = '1.5.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$log_details->message = 'Upgrade database to 1.5.3 completed';
+			stdlog($log_details);
+			unset($log_details);
+		}
+
 
 		$config = $this->m_oa_config->get_config();
 		foreach ($config as $returned_result) {

@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -135,6 +135,17 @@ class M_software extends MY_Model {
 				$software_xml->software_description = trim($software_xml->software_description); 
 			}
 
+			// We have changed our version string detection on RH based systems.
+			// Previously we returned the VERSION, now we return the VERSION-RELEASE for a more complete string
+			// This would obviously case massive change alerting so we ALSO return orig_version and use that to compare
+			// this is a newly introduced field as at v 1.5
+			// test and set to minimise errors from using old audit scripts
+			if (!isset($software_xml->software_version_orig)) { 
+				$software_xml->software_version_orig = ''; 
+			} else {
+				$software_xml->software_version_orig = trim($software_xml->software_version_orig); 
+			}
+
 			$flag = 'insert';
 			// insert an 'update' tag where necessary
 			// note - CPSID_ is for Adobe updates
@@ -150,17 +161,23 @@ class M_software extends MY_Model {
 				$software_xml->software_comment = 'library';
 			}
 
-			foreach ($result as $id => $software_db) {
+			foreach ($result as $id => $software_db) 	{
 				// enumerate the array of retrieved packages, looking for a match
 				if (!isset($software_db->timestamp)){$software_db->timestamp = '';}
-				if 	((strval($software_db->software_name) == strval($software_xml->software_name)) AND 
-					(strval($software_db->software_version) == strval($software_xml->software_version)) AND 
-					((strval($software_db->timestamp) == strval($details->timestamp)) OR 
-						(strval($software_db->timestamp) == strval($details->original_timestamp)))) {
+
+				if 	(strval($software_db->software_name) == strval($software_xml->software_name) AND 
+					(strval($software_db->software_version) == strval($software_xml->software_version) OR strval($software_db->software_version) == strval($software_xml->software_version_orig)) AND  
+					(strval($software_db->timestamp) == strval($details->timestamp) OR strval($software_db->timestamp) == strval($details->original_timestamp) ) ) {
+
 					$software_db = & $result[$id];
 					// we have a match.
 					$flag = 'update';
-					
+
+					// special case to update the version if using the old style
+					if (($software_db->software_version == $software_xml->software_version_orig)) {
+							$software_db->software_version = "$software_xml->software_version";
+					} 
+
 					// update the fields if they are empty
 					if (($software_db->software_version == '') AND ($software_xml->software_version != '')) {
 							$software_db->software_version = "$software_xml->software_version";

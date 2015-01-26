@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -70,6 +70,7 @@ echo form_open('main/process_edit_systems') . "\n";
 	<label for="man_os_family"><?php echo __("OS Family"); ?>: </label><input type="text" name="man_os_family" style="width: 200px" /><br /><br />
 	<label for="man_os_group"><?php echo __("OS Group"); ?>: </label><input type="text" name="man_os_group" style="width: 200px" /><br /><br />
 	<label for="man_os_name"><?php echo __("OS Name"); ?>: </label><input type="text" name="man_os_name" style="width: 200px" /><br /><br />
+	<label for="run_discovery"><?php echo __("Run Discovery"); ?>: </label><input type="checkbox" id="run_discovery" name="run_discovery" value="yes"/> (Should I run Discovery on all devices listed below?)<br /><br />
 	</td>
 	<td width="50%">
 	<label for="man_owner"><?php echo __("Owner"); ?>: </label><input type="text" name="man_owner" style="width: 200px" /><br /><br />
@@ -85,6 +86,8 @@ echo form_open('main/process_edit_systems') . "\n";
 	<label for="snmp_community"><?php echo __("SNMP Community"); ?>: </label><input type="text" name="snmp_community" style="width: 200px" /><br /><br />
 	<label for="snmp_community"><?php echo __("SNMP Version"); ?>: </label><select name="snmp_version" style="width: 200px" />(<option value="">&nbsp;</option><option value="1">1</option><option value="2c">2c</option></select><br /><br />
 	<label for="man_status"><?php echo __("Status"); ?>: </label><select name="man_status" style="width: 200px"><option value="">&nbsp;</option><option value="production"><?php echo __("Production"); ?></option><option value="maintenance"><?php echo __("Maintenance"); ?></option><option value="retired"><?php echo __("Retired"); ?></option><option value="deleted"><?php echo __("Deleted"); ?></option></select><br /><br />
+	<label for="ssh_username"><?php echo __("SSH Username"); ?>: </label><input type="text" name="ssh_username" style="width: 200px" /><br /><br />
+	<label for="ssh_password"><?php echo __("SSH Password"); ?>: </label><input type="text" name="ssh_password" style="width: 200px" /><br /><br />
 	<label for="man_switch_id"><?php echo __("Switch System ID"); ?>: </label><input type="text" name="man_switch_id" style="width: 200px" /><br /><br />
 	<label for="man_switch_port"><?php echo __("Switch Port"); ?>: </label><input type="text" name="man_switch_port" style="width: 200px" /><br /><br />
 	<label for="man_terminal_number"><?php echo __("Terminal Number"); ?>: </label><input type="text" name="man_terminal_number" style="width: 200px" /><br /><br />
@@ -95,6 +98,9 @@ echo form_open('main/process_edit_systems') . "\n";
 	<label for="man_wall_port"><?php echo __("Wall Port"); ?>: </label><input type="text" name="man_wall_port" style="width: 200px" /><br /><br />
 	<label for="man_warranty_duration"><?php echo __("Warranty Duration"); ?>: </label><input type="text" name="man_warranty_duration" style="width: 200px" /><br /><br />
 	<label for="man_warranty_expires"><?php echo __("Warranty Expires"); ?>: </label><input type="text" name="man_warranty_expires" style="width: 200px" /><br /><br />
+	<label for="windows_username"><?php echo __("Windows Username"); ?>: </label><input type="text" name="windows_username" style="width: 200px" /><br /><br />
+	<label for="windows_password"><?php echo __("Windows Password"); ?>: </label><input type="text" name="windows_password" style="width: 200px" /><br /><br />
+	<label for="windows_domain"><?php echo __("Windows Domain"); ?>: </label><input type="text" name="windows_domain" style="width: 200px" /><br /><br />
 	</td>
 	</tr>
 	</table>

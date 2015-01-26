@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.3.3
+# @version 1.5.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -38,7 +38,7 @@ OPENAUDIT_URL="http://localhost/open-audit/index.php/discovery/discover_subnet"
 FORM_SUBNET=""
 FORM_LOCAL_ADDRESS=""
 DEBUGGING=1
-SYSLOG="/usr/local/open-audit/other/open-audit.log"
+SYSLOG="/usr/local/open-audit/other/log_system.log"
 HELP="n"
 # these are OPTIONAL and can be set on the command line
 FORM_SNMP_COMMUNITY="public"
@@ -187,7 +187,7 @@ Valid command line options are below (items containing * are the defaults) and s
        - The Windows credentials to be used in this discovery run.
 
   syslog
-     */usr/local/open-audit/other/open-audit.log - If set the script will log to this file.
+     */usr/local/open-audit/other/log_system.log - If set the script will log to this file.
 
   debugging
      *1 - If set to 1, will output details on the command line. If set to 0, no output will occur.

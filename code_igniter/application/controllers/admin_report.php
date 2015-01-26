@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -46,7 +46,10 @@ class Admin_report extends MY_Controller
                 redirect('login/index');
             }
         }
-        $this->log_event();
+
+        $log_details = new stdClass();
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()
@@ -65,7 +68,18 @@ class Admin_report extends MY_Controller
                     $report_description = '';
                     $file_handle = fopen(BASEPATH.'../application/controllers/reports/'.$file, "rb");
                     $contents = fread($file_handle, filesize(BASEPATH.'../application/controllers/reports/'.$file));
-                    $xml = new SimpleXMLElement($contents);
+					try {
+						$xml = new SimpleXMLElement($contents);
+					} catch (Exception $error) {
+						$errors = libxml_get_errors();
+						echo "Invalid XML.<br />\n<pre>\n";
+						print_r($errors);
+						// not a valid XML string
+						echo'Invalid XML input for: ' . $file;
+						echo "<pre>\n";
+						print_r($xml);
+						exit;
+					}
                     $report_name = $xml->details->report_name;
                     $report_description = $xml->details->report_description;
                     unset($xml);
@@ -80,7 +94,7 @@ class Admin_report extends MY_Controller
             }
             closedir($handle);
         }
-        $this->data['heading'] = 'Activate Reports';
+        $this->data['heading'] = 'Activate Queries';
         $this->data['include'] = 'v_add_reports';
         $this->data['sortcolumn'] = '0';
         $this->load->view('v_template', $this->data);
@@ -120,7 +134,7 @@ class Admin_report extends MY_Controller
     {
         $this->load->model("m_oa_report");
         $this->data['query'] = $this->m_oa_report->list_reports();
-        $this->data['heading'] = 'List Reports';
+        $this->data['heading'] = 'List Queries';
         $this->data['include'] = 'v_list_reports';
         $this->data['sortcolumn'] = '0';
         $this->load->view('v_template', $this->data);
@@ -179,7 +193,7 @@ class Admin_report extends MY_Controller
     {
         if (!isset($_POST['submit'])) {
             # nothing submitted - display the form
-            $this->data['heading'] = 'Import Report';
+            $this->data['heading'] = 'Import Query';
             $this->data['include'] = 'v_import_report';
             $this->load->view('v_template', $this->data);
         }

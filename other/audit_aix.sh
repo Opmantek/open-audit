@@ -33,6 +33,11 @@
 #   
 # *****************************************************************************
 
+# @package Open-AudIT
+# @author Mark Unwin <marku@opmantek.com>
+# @version 1.5.2
+# @copyright Copyright (c) 2014, Opmantek
+# @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 # Below are the default settings
 SECONDS=0
@@ -45,7 +50,7 @@ create_file="y"
 
 # the address of the OAv2 server "submit" page
 # url="http://localhost/index.php/system/add_system"
-url="http://58.173.160.195/open-audit/index.php/system/add_system"
+url="http://localhost/open-audit/index.php/system/add_system"
 
 # 0 = no debug
 # 1 = basic debug

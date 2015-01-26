@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -68,6 +68,8 @@ foreach($system as $key) {
 	$location_level = $key->man_location_level;
 	$location_suite = $key->man_location_suite;
 	$location_room = $key->man_location_room;
+	$man_location_latitude = $key->man_location_latitude;
+	$man_location_longitude = $key->man_location_longitude;
 	$os_name = $key->man_os_name;
 	$serial = $key->serial;
 	$link_manufacturer = $key->manufacturer;
@@ -108,8 +110,10 @@ if (isset($config->show_passwords) and $config->show_passwords != 'y') {
 		$windows_password = '';
 	}
 } else {
-	$ssh_password = $decoded_access_details->ssh_password;
-	$windows_password = $decoded_access_details->windows_password;
+	if (isset($decoded_access_details->ssh_password)) {
+		$ssh_password = $decoded_access_details->ssh_password;
+		$windows_password = $decoded_access_details->windows_password;
+	}
 }
 
 if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y') {

@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -74,11 +74,13 @@
 				<p><label for="man_asset_number"><?php echo __('Asset Number')?>: </label><span id="man_asset_number" <?php echo $edit?>><?php echo print_something($key->man_asset_number)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_purchase_vendor"><?php echo __('Vendor')?>: </label><span id="man_purchase_vendor" <?php echo $edit?>><?php echo print_something($key->man_purchase_vendor)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_purchase_order_number"><?php echo __('PO Number')?>: </label><span id="man_purchase_order_number" <?php echo $edit?>><?php echo print_something($key->man_purchase_order_number)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="man_purchase_service_contract_number"><?php echo __('Service Contract Number')?>: </label><span id="man_purchase_service_contract_number" <?php echo $edit?>><?php echo print_something($key->man_purchase_service_contract_number)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_purchase_invoice"><?php echo __('Invoice Number')?>: </label><span id="man_purchase_invoice" <?php echo $edit?>><?php echo print_something($key->man_purchase_invoice)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_purchase_date"><?php echo __('Purchase Date')?>: </label><span id="man_purchase_date" <?php echo $edit?>><?php echo print_something($key->man_purchase_date)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
 				<p><label for="man_purchase_amount"><?php echo __('Purchase Amount')?>: </label><span id="man_purchase_amount" <?php echo $edit?>><?php echo print_something($key->man_purchase_amount)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_warranty_duration"><?php echo __('Warranty Length')?>: </label><span id="man_warranty_duration" <?php echo $edit?>><?php echo print_something($key->man_warranty_duration)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_warranty_expires"><?php echo __('Warranty Expires')?>: </label><span id="man_warranty_expires" <?php echo $edit?>><?php echo print_something($key->man_warranty_expires)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
+				<p><label for="man_lease_expiry_date"><?php echo __('Lease Expiry Date')?>: </label><span id="man_lease_expiry_date" <?php echo $edit?>><?php echo print_something($key->man_lease_expiry_date)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
 			<?php 
 			endforeach;
 			echo display_custom_field('view_summary_purchase',  $additional_fields_data, $edit); ?>
@@ -129,6 +131,8 @@
 					<p><label for="man_location_room"><?php echo __('Device specific Room')?>: </label><span id="man_location_room" <?php echo $edit?>><?php echo print_something($location_room)?></span><?php echo $edit_icon; ?></p> 
 					<p><label for="man_location_rack"><?php echo __('Rack')?>: </label><span id="man_location_rack" <?php echo $edit?>><?php echo print_something($location_rack)?></span><?php echo $edit_icon; ?></p> 
 					<p><label for="man_location_rack_position"><?php echo __('Rack Position')?>: </label><span id="man_location_rack_position" <?php echo $edit?>><?php echo print_something($location_rack_position)?></span><?php echo $edit_icon; ?></p> 
+					<p><label for="man_location_latitude"><?php echo __('Device Specific Latitude')?>: </label><span id="man_location_latitude" <?php echo $edit?>><?php echo print_something($man_location_latitude)?></span><?php echo $edit_icon; ?></p> 
+					<p><label for="man_location_longitude"><?php echo __('Device Specific Longitude')?>: </label><span id="man_location_longitude" <?php echo $edit?>><?php echo print_something($man_location_longitude)?></span><?php echo $edit_icon; ?></p> 
 				</div>
 			</div>	
 			<div style="float:left; width:50%;">
@@ -427,6 +431,8 @@
 					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>
 					<p><label for="nmis_name"><?php echo __('NMIS Name')?>: </label><span id="nmis_name" <?php echo $edit?>><?php echo print_something($system[0]->nmis_name)?></span></p>
 					<p><label for="nmis_role_select"><?php echo __('NMIS Role')?>: </label><span id="nmis_role_select" style="color:blue;"><span onclick="display_nmis_role();"><?php echo print_something($system[0]->nmis_role)?></span></span></p>
+					<!-- <p><label for="nmis_export_select"><?php echo __('NMIS Export')?>: </label><span id="nmis_export_select" style="color:blue;" data-nmis="<?php echo $system[0]->nmis_export?>"><span onclick="display_nmis_export();"><?php echo print_something($system[0]->nmis_export)?></span></span></p> -->
+					<p><label for="nmis_export"><?php echo __('NMIS Export')?>: </label><input id="nmis_export" onClick="check_nmis_export();" type="checkbox"<?php if ($system[0]->nmis_export == 'true') { echo " checked"; } ?><?php if ($access_level != 10) { echo " disabled"; } ?> /></p>
 				</div>
 			</fieldset>
 		</form>

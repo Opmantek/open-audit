@@ -27,7 +27,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -256,8 +256,19 @@ class M_netstat extends MY_Model {
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'netstat removed - ' . $myrow->protocol . " " . $myrow->ip_address . ":" . $myrow->port . " (" . $myrow->program . ")";
-			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_netstat', $myrow->id, $alert_details, $details->timestamp);
+			if ($myrow->port <= '1024') {
+				$alert_details = 'netstat removed - ' . $myrow->protocol . " " . $myrow->ip_address . ":" . $myrow->port . " (" . $myrow->program . ")";
+				$this->m_alerts->generate_alert($details->system_id, 'sys_sw_netstat', $myrow->id, $alert_details, $details->timestamp);
+			} else {
+				// auto ack the change as this is a non priv port
+				$alert_details = 'netstat removed - ' . $myrow->protocol . " " . $myrow->ip_address . ":" . $myrow->port . " (" . $myrow->program . ")";
+				$sql = "INSERT INTO oa_alert_log ( system_id, alert_table, alert_foreign_row, alert_details, user_id, alert_ack_time, alert_note, timestamp ) 
+						VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+				$data = array("$details->system_id", "sys_sw_netstat", $myrow->id, "$alert_details", "1", 
+							  "$details->timestamp", "Auto acknowledged by system.", "$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
+
 		}
 
 		// new netstat
@@ -273,8 +284,18 @@ class M_netstat extends MY_Model {
 		$sql = $this->clean_sql($sql);
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
-			$alert_details = 'netstat added - ' . $myrow->protocol . " " . $myrow->ip_address . ":" . $myrow->port . " (" . $myrow->program . ")";
-			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_netstat', $myrow->id, $alert_details, $details->timestamp);
+			if ($myrow->port <= '1024') {
+				$alert_details = 'netstat added - ' . $myrow->protocol . " " . $myrow->ip_address . ":" . $myrow->port . " (" . $myrow->program . ")";
+				$this->m_alerts->generate_alert($details->system_id, 'sys_sw_netstat', $myrow->id, $alert_details, $details->timestamp);
+			} else {
+				// auto ack the change as this is a non priv port
+				$alert_details = 'netstat added - ' . $myrow->protocol . " " . $myrow->ip_address . ":" . $myrow->port . " (" . $myrow->program . ")";
+				$sql = "INSERT INTO oa_alert_log ( system_id, alert_table, alert_foreign_row, alert_details, user_id, alert_ack_time, alert_note, timestamp ) 
+						VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )";
+				$data = array("$details->system_id", "sys_sw_netstat", $myrow->id, "$alert_details", "1", 
+							  "$details->timestamp", "Auto acknowledged by system.", "$details->timestamp");
+				$query = $this->db->query($sql, $data);
+			}
 		}
 	}
 }

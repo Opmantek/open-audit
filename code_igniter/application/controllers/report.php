@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.4
+ * @version 1.5.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -38,6 +38,11 @@ class report extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		// log the attempt
+		$log_details = new stdClass();
+		$log_details->severity = 6;
+		stdlog($log_details);
+		unset($log_details);
 	}
 
 	public function index()
@@ -76,7 +81,7 @@ class report extends MY_Controller
 			if (in_array($method, $class_methods)) {
 				$this->$method();
 			} else {
-				$this->data['error'] = 'This Report does not exist.<br />You may need to activate the ' . ucwords(str_replace('_', ' ', $method)) . ' Report. <br />As an Admin level user go to Admin -> Reports -> Activate Report, find the correct Report and click the Activate Icon.<br />If you are an Admin level user, you can try to activate the report by clicking <a style="color: blue;" href="../../../admin_report/action_activate_report/' . str_replace(' ', '', ucwords(str_replace('_', ' ', $method))) . '.xml">here</a> (assuming it exists).';
+				$this->data['error'] = 'This Report does not exist.<br />You may need to activate the ' . ucwords(str_replace('_', ' ', $method)) . ' Query. <br />As an Admin level user go to Admin -> Queries -> Activate Query, find the correct Query and click the Activate Icon.<br />If you are an Admin level user, you can try to activate the report by clicking <a style="color: blue;" href="../../../admin_report/action_activate_report/' . str_replace(' ', '', ucwords(str_replace('_', ' ', $method))) . '.xml">here</a> (assuming it exists).';
 				$this->data['query'] = '';
 				$this->data['heading'] = 'Error';
 				$this->data['include'] = 'v_error';
@@ -90,43 +95,75 @@ class report extends MY_Controller
 
 	public function show_report()
 	{
+		$this->load->model("m_oa_report_column");
+		$this->load->model("m_oa_report");
+		# GET attributes
 		$this->data['report_id'] = $this->uri->segment(3, 0);
-		if (!is_numeric($this->data['report_id'])) {
-			# we have a non-numeric value, assuming it's a report name
-			$this->data['report_name'] = str_replace('%20', ' ', $this->data['report_id']);
-			$this->load->model("m_oa_report");
-			$this->data['report_id'] = $this->m_oa_report->get_report_id($this->data['report_name']);
-			if (!is_numeric($this->data['report_id'])) {
-				# we did not find a matching report id - this will fail to an error page
-			}
-		}
 		$this->data['group_id'] = $this->uri->segment(4, 0);
 		$this->data['first_attribute'] = urldecode($this->uri->segment(5, 0));
+		$this->data['format'] = $this->uri->segment($this->uri->total_rsegments());
+		# POST attributes
+		if (isset($_POST['report']) and $_POST['report'] != '') { $this->data['report_id'] = $_POST['report']; }
+		if (isset($_POST['group_id']) and $_POST['group_id'] != '') { $this->data['group_id'] = $_POST['group_id']; }
+		if (isset($_POST['first_attribute']) and $_POST['first_attribute'] != '') { $this->data['first_attribute'] = $_POST['first_attribute']; }
+		if (isset($_POST['second_attribute']) and $_POST['second_attribute'] != '') { $this->data['second_attribute'] = $_POST['second_attribute']; }
+		if (isset($_POST['format']) and $_POST['format'] != '') { $this->data['format'] = $_POST['format']; }
+		if (isset($_POST['filter']) and $_POST['filter'] != '') { $this->data['filter'] = $_POST['filter']; }
+		# Determine the report - we require a report id that is a number
+		if (!is_numeric($this->data['report_id'])) {
+			# we have a non-numeric value, assuming it's a report name
+			$this->data['report_name'] = str_replace('_', ' ', $this->data['report_id']);
+			$this->data['report_name'] = str_replace('%20', ' ', $this->data['report_name']);
+			$this->data['report_id'] = $this->m_oa_report->get_report_id($this->data['report_name']);
+		}
+		# We use a - to signify a blank
 		if ($this->data['first_attribute'] == '-') {
 			$this->data['first_attribute'] = '';
 		}
-		$segs = $this->uri->segment_array();
-		$this->load->model("m_oa_report_column");
-		$this->load->model("m_oa_report");
-
+		# The GET filter (populates $filter)
 		$i = 0;
 		$filter = array();
+		$segs = $this->uri->segment_array();
 		foreach ($segs as $segment) {
-			if (((strpos($segment, 'out') === 0) or (strpos($segment, 'only') === 0) ) and (strpos($segment, '___'))) {
+			if ((strpos($segment, 'out') === 0 or 
+				 strpos($segment, 'only') === 0 or 
+				 strpos($segment, 'like') === 0) and 
+				 strpos($segment, '___') !== FALSE) {
+
 				$filter_array = explode("___", $segment);
 				$filter[$i]['variable'] = $filter_array[1];
 				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
 				if ($filter_array[0] == 'only') {
 					$filter[$i]['condition'] = '=';
-				} else {
+				} elseif ($filter_array[0] == 'out') {
 					$filter[$i]['condition'] = '<>';
+				} elseif ($filter_array[0] == 'like') {
+					$filter[$i]['condition'] = 'LIKE';
 				}
 				$i++;
 			}
 		}
-
+		unset($i);
+		# The POST filter (populates $filter)
+		if (isset($this->data['filter']) and $this->data['filter'] != '') {
+			$temp_array = explode("|||", $this->data['filter']);
+			$i=0;
+			foreach ($temp_array as $value) {
+				$filter_array = explode("___", $value);
+				$filter[$i]['variable'] = $filter_array[1];
+				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+				if ($filter_array[0] == 'only') {
+					$filter[$i]['condition'] = '=';
+				} elseif ($filter_array[0] == 'out') {
+					$filter[$i]['condition'] = '<>';
+				} elseif ($filter_array[0] == 'like') {
+					$filter[$i]['condition'] = 'LIKE';
+				}
+				$i++;
+			}
+		}
 		# make sure we specify a report
-		if ($this->data['report_id'] == "0") {
+		if ($this->data['report_id'] == "0" or !is_numeric($this->data['report_id'])) {
 			# no report specified - show error page
 			$this->data['error'] = "You attempted to run a Report that does not exist or has not been activated. <br />As an Admin Level user you can activate reports at Admin -> Reports -> Activate Report.";
 			$this->data['query'] = '';
@@ -135,13 +172,10 @@ class report extends MY_Controller
 			$this->data['export_report'] = 'y';
 			$this->data['group_id'] = '0';
 			$this->load->view('v_template', $this->data);
-
 			return;
 		}
-
 		# check if the report_id actually exists
 		$report_test = $this->m_oa_report->get_report_details($this->data['report_id']);
-
 		if (count($report_test) == 0) {
 			# no details returned - show error page
 			$this->data['error'] = "You attempted to run a Report that does not exist or has not been activated. <br />As an Admin Level user you can activate reports at Admin -> Reports -> Activate Report.";
@@ -151,10 +185,8 @@ class report extends MY_Controller
 			$this->data['export_report'] = 'y';
 			$this->data['group_id'] = '0';
 			$this->load->view('v_template', $this->data);
-
 			return;
 		}
-
 		# make sure we specify a group
 		$this->load->model("m_oa_group");
 		if ($this->data['group_id'] == "0") {
@@ -166,7 +198,6 @@ class report extends MY_Controller
 			$this->data['export_report'] = 'y';
 			$this->data['group_id'] = '0';
 			$this->load->view('v_template', $this->data);
-
 			return;
 		} else {
 			// we must check to see if the user has at least VIEW permission on the group
@@ -180,52 +211,51 @@ class report extends MY_Controller
 				$this->data['export_report'] = 'y';
 				$this->data['group_id'] = '0';
 				$this->load->view('v_template', $this->data);
-
 				return;
 			} else {
-				// we can view the group
-				// get report name
+				// we can view the group so get group and report name and make a heading
 				$group_name = $this->m_oa_group->get_group_name($this->data['group_id']);
 				$report_name = $this->m_oa_report->get_report_name($this->data['report_id']);
 				$this->data['heading'] = $report_name . " (" . $group_name . ")";
 			}
 		}
-
-		$this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute']);
-
+		# get the actual data
+		$this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute'], $this->data['second_attribute']);
+		# get the report columns
 		$this->data['column'] = $this->m_oa_report_column->get_report_column($this->data['report_id']);
-
+		# filter the data (if required)
 		$remove = false;
 		$new_query = array();
 		if (count($filter) > 0) {
 			foreach ($this->data['query'] as $key) {
 				foreach ($filter as $enum_filter) {
 					if (property_exists($key, $enum_filter['variable'])) {
-						if (($key->$enum_filter['variable'] == $enum_filter['value']) and ($enum_filter['condition'] == '<>')) {
+						if ((strtolower($key->$enum_filter['variable']) == strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<>')) {
 							$remove = true;
 						}
-						if (($key->$enum_filter['variable'] != $enum_filter['value']) and ($enum_filter['condition'] == '=')) {
+						if ((strtolower($key->$enum_filter['variable']) != strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '=')) {
+							$remove = true;
+						}
+						if (strpos(strtolower($key->$enum_filter['variable']), strtolower($enum_filter['value'])) === FALSE and $enum_filter['condition'] == 'LIKE') {
 							$remove = true;
 						}
 					}
 				}
 				if ($remove == true) {
-					# do not push this object to the new array
+					# we don't want this element, so don't push this object to the new array
 				} else {
-					# we want to keep this element - no matches above.
-					# push this onto the new query array
+					# we want to keep this element (no matches above), so push this onto the new query array
 					$new_query[] = $key;
 				}
 				$remove = false;
 			}
 			$this->data['query'] = $new_query;
 		}
-
 		$this->data['count'] = count($this->data['query']);
 		$this->data['include'] = $this->m_oa_report->get_report_view($this->data['report_id']);
 		$this->data['sortcolumn'] = $this->m_oa_report->get_report_sort_column($this->data['report_id']);
 		$this->data['export_report'] = 'y';
-		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+		$this->determine_output($this->data['format']);
 	}
 
 	public function partition_alerts()
@@ -447,6 +477,78 @@ class report extends MY_Controller
 			$this->data['query'] = $query->result();
 		}
 
+		# new for 1.5 - ability to filter OAE based reports
+		$i = 0;
+		$filter = array();
+		// $segs = $this->uri->segment_array();
+		// foreach ($segs as $segment) {
+		// 	if ((strpos($segment, 'out') === 0 or 
+		// 		 strpos($segment, 'only') === 0 or 
+		// 		 strpos($segment, 'like') === 0) and 
+		// 		 strpos($segment, '___') !== FALSE) {
+
+		// 		$filter_array = explode("___", $segment);
+		// 		$filter[$i]['variable'] = $filter_array[1];
+		// 		$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+		// 		if ($filter_array[0] == 'only') {
+		// 			$filter[$i]['condition'] = '=';
+		// 		} elseif ($filter_array[0] == 'out') {
+		// 			$filter[$i]['condition'] = '<>';
+		// 		} elseif ($filter_array[0] == 'like') {
+		// 			$filter[$i]['condition'] = 'LIKE';
+		// 		}
+		// 		$i++;
+		// 	}
+		// }
+
+		$i=0;
+		if (isset($_POST['filter']) and $_POST['filter'] != '') {
+			$temp_array = explode("|||", $_POST['filter']);
+			foreach ($temp_array as $value) {
+				$filter_array = explode("___", $value);
+				$filter[$i]['variable'] = $filter_array[1];
+				$filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+				if ($filter_array[0] == 'only') {
+					$filter[$i]['condition'] = '=';
+				} elseif ($filter_array[0] == 'out') {
+					$filter[$i]['condition'] = '<>';
+				} elseif ($filter_array[0] == 'like') {
+					$filter[$i]['condition'] = 'LIKE';
+				}
+			}
+			$i++;
+		}
+		unset($i);
+
+		$remove = false;
+		$new_query = array();
+		if (count($filter) > 0) {
+			foreach ($this->data['query'] as $key) {
+				foreach ($filter as $enum_filter) {
+					if (property_exists($key, $enum_filter['variable'])) {
+						if ((strtolower($key->$enum_filter['variable']) == strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<>')) {
+							$remove = true;
+						}
+						if ((strtolower($key->$enum_filter['variable']) != strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '=')) {
+							$remove = true;
+						}
+						if (strpos(strtolower($key->$enum_filter['variable']), strtolower($enum_filter['value'])) === FALSE and $enum_filter['condition'] == 'LIKE') {
+							$remove = true;
+						}
+					}
+				}
+				if ($remove == true) {
+					# do not push this object to the new array
+				} else {
+					# we want to keep this element - no matches above.
+					# push this onto the new query array
+					$new_query[] = $key;
+				}
+				$remove = false;
+			}
+			$this->data['query'] = $new_query;
+		}
+
 		$this->data['count'] = count($this->data['query']);
 		$this->data['export_report'] = 'y';
 		$this->determine_output($this->data['format']);
@@ -469,136 +571,4 @@ class report extends MY_Controller
 		echo json_encode($this->m_oa_report->list_reports_in_menu());
 	}
 
-
-	/**
-	 * Index
-	 *
-	 * @access	public
-	 * @category  Function
-	 * @package   Open-AudIT
-	 * @author	Mark Unwin <marku@opmantek.com>
-	 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-	 * @link	  http://www.open-audit.org
-	 * @return	JSON
-	 */
-	public function json_dates() {
-		
-		# should be called like:
-		# index.php/report/json_dates/REPORT-NAME/START-DATE/END-DATE
-		# Returns a JSON document containing a unix timestamp and a count of items per row.
-
-		$debug = 'n';
-
-		
-
-		$start_date = date('Y-m-d', strtotime('-30 days'));
-		$end_date = date('Y-m-d');
-		$report = 'new devices';
-
-		# make a default start date of 30 days ago if none provided
-		# check if GET start date passed
-		$get_start_date = $this->uri->segment(4, 0);
-		if (isset($get_start_date) and date('Y-m-d', strtotime($get_start_date)) and $get_start_date != '0') {
-			$start_date = $get_start_date;
-		}
-		# check if POST start date passed
-		$post_start_date = @$_POST['start_date'];
-		if (isset($post_start_date) and date('Y-m-d', strtotime($post_start_date)) and $post_start_date != '0' and $post_start_date != '') {
-			$start_date = $post_start_date;
-		} 
-		
-		# make a default end dat of today if none provided
-		# check if GET end date passed
-		$get_end_date =  $this->uri->segment(5, 0);
-		if (isset($get_end_date) and date('Y-m-d', strtotime($get_end_date)) and $get_end_date != '0') {
-			$end_date = $get_end_date;
-		} 
-		# check if POST end date passed
-		$post_end_date = @$_POST['end_date'];
-		if (isset($post_end_date) and date('Y-m-d', strtotime($post_end_date)) and $post_end_date != '0' and $post_end_date != '') {
-			$end_date = $post_end_date;
-		}
-
-		# get the report name if provided
-		$post_report = @$_POST['report'];
-		if (isset($post_report) and $post_report != '') {
-			$report = $post_report;
-		} else if ($this->uri->segment(3, 0) != '0') {
-			$report = $this->uri->segment(3, 0);
-		}
-		$report = str_replace("%20", " ", $report);
-		$report = str_replace("+", " ", $report);
-
-		# define the SQL for the report
-		switch($report) {
-			case "missing_devices":
-			$sql = "SELECT COUNT(system_id) as count FROM system WHERE last_seen < DATE_SUB('?', INTERVAL 30 DAY) AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000'";
-			$this->data['heading'] = "Devices Not Seen 30";
-			break;
-
-			case "new_software":
-			$sql = "SELECT COUNT(DISTINCT(oa_alert_log.alert_details)) as count FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) WHERE alert_table = 'sys_sw_software' AND alert_details LIKE 'software installed - %' AND DATE(oa_alert_log.timestamp) = '?' AND system.man_status = 'production'";
-			$this->data['heading'] = "Software Discovered 30";
-			break;
-
-			case "new_devices":
-			$sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?' AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' ";
-			$this->data['heading'] = "Devices Discovered 30";
-			break;
-
-			default:
-			$sql = "SELECT COUNT(*) as count FROM system WHERE DATE(first_timestamp) = '?' AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000'";
-			$this->data['heading'] = "Devices Discovered 30";
-			break;
-		}
-
-		# debug output if required
-		if ($debug == 'y') {
-			echo "<pre>\n";
-			echo "GSD: " . $get_start_date . "\n";
-			echo "PSD: " . $post_start_date . "\n";
-			echo "GED: " . $get_end_date . "\n";
-			echo "PED: " . $post_end_date . "\n";
-			echo "Start Date: " . $start_date . "<br />\n";
-			echo "End Date: " . $end_date . "<br />\n";
-			echo "Report: " . $report . "\n";
-			echo "SQL: " . $sql . "\n";
-		}
-
-		$return_json = array();
-		$each_json = array();
-	 
-		while (strtotime($start_date) <= strtotime($end_date)) {
-			$each_sql = str_replace('?', $start_date, $sql);
-
-			# below uses PHP to create the timestamp
-			$mktime_array = explode('-', $start_date);
-			$timestamp = gmmktime(0, 12, 0, $mktime_array[1], $mktime_array[2], $mktime_array[0]);
-			# we could alternatively use MySQL to derive this by
-			# inserting UNIX_TIMESTAMP('?') as timestamp into the select
-
-			if ($debug == 'y') {
-				echo $each_sql . "<br />\n";
-			}
-			$query = $this->db->query($each_sql);
-			$result = $query->result();
-
-			foreach ($result as $key) {
-				$each_json = array('x' => intval($timestamp), 'y' => intval($key->count) );
-				$return_json[] = $each_json;
-			}
-			$start_date = date ("Y-m-d", strtotime("+1 day", strtotime($start_date)));
-		}
-
-		
-		$this->data['query'] = $return_json;
-		
-		if ($debug == 'y') {
-			print_r($return_json);
-		}
-
-		if ($debug != 'y') {
-			$this->determine_output('json');
-		}
-	}
 }
