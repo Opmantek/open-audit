@@ -266,12 +266,12 @@ if ( ! function_exists('stdlog'))
 				$message = 'File does not exist and cannot be created. Check the directory permissions are writable for the web server user. They are currently ' . substr(sprintf('%o', fileperms($directory)), -3);
 			}
 			$message = 'Could not open requested log file at ' . $file . ', opening traditional log file instead. ' . $message;
-			if ($style == 'json') {
+			if ($log->style == 'json') {
 				$extra_log_line = $log;
 				$extra_log_line->message = $message;
 				$extra_log_line = json_encode($extra_log_line);
 			}
-			if ($style == 'syslog') {
+			if ($log->style == 'syslog') {
 				$extra_log_line = $log->timestamp . ' ' . $log->hostname . ' ' . $log->severity . ' ' . $log->user . ' ' . $log->controller . ' ' . $log->function . ' ' . $message;
 			}
 			if ((string)php_uname('s') === 'Linux' OR (string)php_uname('s') === 'Darwin') {
