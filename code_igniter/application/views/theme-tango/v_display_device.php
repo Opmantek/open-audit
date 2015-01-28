@@ -232,14 +232,16 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 					}
 				}
 
-				if ($value == 'icon') {
-					if ($access_level > 7) { ?>
-						<p><label for="man_icon"><?php echo __('Icon')?>: </label>
+				if ($value == 'icon') { 
+					$icon = strtolower(str_replace(' ', '_', $system[0]->man_type)); ?>
+					<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $icon?>.png" /></span></p>
+					<?php if ($access_level > 7) { ?>
+						<!-- <p><label for="man_icon"><?php echo __('Icon')?>: </label>
 							<span id="man_icon">
 								<a href="#" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_icon/<?php echo $system_id; ?>', 'Icon Picker', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=yes,status=no,titlebar=no,toolbar=no,top=100,width=400');" alt="Click to edit">
-									<img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $system[0]->man_icon?>.png" /></a></span><?php echo $edit_icon; ?></p>
+									<img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $system[0]->man_icon?>.png" /></a></span><?php echo $edit_icon; ?></p> -->
 					<?php } else { ?>
-						<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $system[0]->man_icon?>.png" /></span></p>
+						<!-- <p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $system[0]->man_icon?>.png" /></span></p> -->
 					<?php }
 				}
 			}
