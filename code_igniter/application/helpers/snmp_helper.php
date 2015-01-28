@@ -292,6 +292,8 @@ if (!function_exists('get_snmp')) {
 				$details->type = 'router';
 				$details->man_type = 'router';
 
+				if (!isset($details->manufacturer)) { $details->manufacturer = ''; }
+
 				if (stripos($details->manufacturer, 'tplink') !== FALSE OR 
 					stripos($details->manufacturer, 'tp-link') !== FALSE ) {
 					$details->manufacturer = 'TP-Link Technology Co.,Ltd';
