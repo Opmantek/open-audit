@@ -39,13 +39,25 @@ class M_oa_config extends MY_Model {
 	}
 
 	function get_config() {
+		$this->load->library('encrypt');
 		$sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.config_edited_by = oa_user.user_id";
 		$query = $this->db->query($sql);
 		$result = $query->result();
+		foreach ($result as $key => $value) {
+			$config_item_name = $result[$key]->config_name;
+			if ($config_item_name == 'default_ipmi_password' OR 
+				$config_item_name == 'default_snmp_community' OR 
+				$config_item_name == 'default_ssh_password' OR 
+				$config_item_name == 'default_windows_password' ) {
+					# we need to decrypt
+					$result[$key]->config_value = $this->encrypt->decode($result[$key]->config_value);
+			}
+		}
 		return ($result);
 	}
 
 	function get_credentials() {
+		$this->load->library('encrypt');
 		$sql = "SELECT config_name, config_value FROM oa_config";
 		$query = $this->db->query($sql);
 		$result = $query->result();
@@ -57,23 +69,34 @@ class M_oa_config extends MY_Model {
 		$credentials->default_windows_password = '';
 		$credentials->default_windows_domain = '';
 		foreach ($result as $item) {
-			if ($item->config_name == 'default_snmp_community') { $credentials->default_snmp_community = $item->config_value; }
+			if ($item->config_name == 'default_snmp_community') { $credentials->default_snmp_community = $this->encrypt->decode($item->config_value); }
 			if ($item->config_name == 'default_ipmi_username') { $credentials->default_ipmi_username = $item->config_value; }
-			if ($item->config_name == 'default_ipmi_password') { $credentials->default_ipmi_password = $item->config_value; }
+			if ($item->config_name == 'default_ipmi_password') { $credentials->default_ipmi_password = $this->encrypt->decode($item->config_value); }
 			if ($item->config_name == 'default_ssh_username') { $credentials->default_ssh_username = $item->config_value; }
-			if ($item->config_name == 'default_ssh_password') { $credentials->default_ssh_password = $item->config_value; }
+			if ($item->config_name == 'default_ssh_password') { $credentials->default_ssh_password = $this->encrypt->decode($item->config_value); }
 			if ($item->config_name == 'default_windows_username') { $credentials->default_windows_username = $item->config_value; }
-			if ($item->config_name == 'default_windows_password') { $credentials->default_windows_password = $item->config_value; }
+			if ($item->config_name == 'default_windows_password') { $credentials->default_windows_password = $this->encrypt->decode($item->config_value); }
 			if ($item->config_name == 'default_windows_domain') { $credentials->default_windows_domain = $item->config_value; }
 		}
 		return ($credentials);
 	}
 
 	function get_config_item($config_name = "display_version") {
+		$this->load->library('encrypt');
 		$sql = "SELECT config_value FROM oa_config WHERE config_name = ? ";
 		$data = array("$config_name");
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
+
+		# decrypt any credentials if 1.5.4 or later
+		if ($this->data['config']->internal_version >= '20150126') {
+			if ($config_name == 'default_ipmi_password' OR 
+				$config_name == 'default_snmp_community' OR 
+				$config_name == 'default_ssh_password' OR 
+				$config_name == 'default_windows_password' ) {
+					$config_value = $this->encrypt->decode($config_value);
+			}
+		}
 		if (isset($row->config_value)) {
 			return ($row->config_value);
 		} else {
@@ -84,6 +107,14 @@ class M_oa_config extends MY_Model {
 	function update_config($config_name, $config_value, $user_id, $timestamp) {
 		$config_name = urldecode($config_name);
 		$config_value = urldecode($config_value);
+
+		# encrypt any credentials
+		if ($config_name == 'default_ipmi_password' OR 
+			$config_name == 'default_snmp_community' OR 
+			$config_name == 'default_ssh_password' OR 
+			$config_name == 'default_windows_password' ) {
+				$config_value = $this->encrypt->encode($config_value);
+		}
 		$sql = "UPDATE oa_config SET config_value = ?, config_edited_by = ?, config_edited_date = ? WHERE config_name = ?";
 		$data = array("$config_value", "$user_id", "$timestamp", "$config_name");
 		$query = $this->db->query($sql, $data); 

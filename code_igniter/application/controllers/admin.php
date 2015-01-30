@@ -3310,6 +3310,16 @@ class Admin extends MY_Controller {
 			$log_details->message = 'Upgrade database to 1.5.4 commenced';
 			stdlog($log_details);
 
+			$this->load->library('encrypt');
+			$configs = array('default_ipmi_password', 'default_ssh_password', 'default_snmp_community', 'default_windows_password');
+			$user_id = $this->data['user_id'];
+			$timestamp = date('Y-m-d H:i:s');
+			foreach ($configs as $config_name) {
+				$config_value = $this->m_oa_config->get_config_item($config_name);
+				$this->m_oa_config->update_config($config_name, $config_value, $user_id, $timestamp);
+			}
+			$this->data['output'] .= "Credentials encrypted in DB.<br /><br />\n";
+
 			$sql = "UPDATE oa_config SET config_value = '20150126' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
