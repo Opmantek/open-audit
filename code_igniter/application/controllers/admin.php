@@ -149,6 +149,7 @@ class Admin extends MY_Controller {
 	}
 
 	/**
+	 *
 	 * Get the config
 	 *
 	 * @access	  public
@@ -3297,6 +3298,27 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);
 
 			$log_details->message = 'Upgrade database to 1.5.3 completed';
+			stdlog($log_details);
+			unset($log_details);
+		}
+
+		if (($db_internal_version < '20150126') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.5.4
+
+			$log_details = new stdClass();
+			$log_details->file = 'system';
+			$log_details->message = 'Upgrade database to 1.5.4 commenced';
+			stdlog($log_details);
+
+			$sql = "UPDATE oa_config SET config_value = '20150126' WHERE config_name = 'internal_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_config SET config_value = '1.5.4' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$log_details->message = 'Upgrade database to 1.5.4 completed';
 			stdlog($log_details);
 			unset($log_details);
 		}
