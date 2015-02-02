@@ -221,6 +221,10 @@ class ajax extends MY_Controller
 							$this->m_oa_group->update_system_groups($details);
 						}
 
+						if ($this->data['field_name'] == 'man_type') {
+							$this->m_system->reset_icons($this->data['system_id']);
+						}
+
 						if (($this->data['field_name'] == 'man_status') and ($this->oa_urldecode($this->data['field_data']) == 'deleted')) {
 							# delete any "attached" devices (local printers for example)
 							$this->m_system->delete_linked_system($this->data['system_id']);
