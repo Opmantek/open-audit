@@ -7173,8 +7173,9 @@ end function
 function get_sku_2010(subkey)
 	vers = mid(subkey,11,4)
 	if vers = "0011" then vers_name = "Microsoft Office Professional Plus 2010" end if
+	if vers = "011D" then vers_name = "Microsoft Office Professional Plus Subscription 2010" end if
 	if vers = "0012" then vers_name = "Microsoft Office Standard 2010" end if
-	if vers = "0013" then vers_name = "Microsoft Office Basic 2010" end if
+	if vers = "0013" then vers_name = "Microsoft Office Home and Business 2010" end if
 	if vers = "0014" then vers_name = "Microsoft Office Professional 2010" end if
 	if vers = "0015" then vers_name = "Microsoft Office Access 2010" end if
 	if vers = "0016" then vers_name = "Microsoft Office Excel 2010" end if
@@ -7216,6 +7217,7 @@ function get_sku_2010(subkey)
 	if vers = "00E0" then vers_name = "Microsoft Office Outlook 2010" end if
 	if vers = "10D7" then vers_name = "Microsoft Office InfoPath Forms Services" end if
 	if vers = "110D" then vers_name = "Microsoft Office SharePoint Server 2010" end if
+	if vers = "110F" then vers_name = "Microsoft Project Server 2010" end if
 	get_sku_2010 = vers_name
 end function
 
