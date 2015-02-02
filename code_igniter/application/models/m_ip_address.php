@@ -242,26 +242,70 @@ class M_ip_address extends MY_Model {
 
 	}
 
-	function set_initial_address($details) {
-		$sql = "SELECT 	
-					sys_hw_network_card_ip.ip_address_v4, 
-					sys_hw_network_card_ip.ip_subnet 
-				FROM	
-					sys_hw_network_card_ip,
-					sys_hw_network_card
-				WHERE	
-					LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(sys_hw_network_card.net_mac_address) AND
-					sys_hw_network_card.system_id = ? AND
-					(sys_hw_network_card_ip.timestamp = ? OR
-					sys_hw_network_card_ip.timestamp = ?) 
-				ORDER BY 
-					sys_hw_network_card_ip.ip_address_v4 DESC
-				LIMIT 1";
-		$sql = $this->clean_sql($sql);
-		$data = array("$details->system_id", "$details->original_timestamp", "$details->timestamp");
+	function set_initial_address($system_id) {
+
+		# new logic
+		# only set an ip address if we do not already have an existing in system table
+		# no unset ('', '0.0.0.0', '000.000.000.000') addresses
+		# no localhost ('127.0.0.1', '127.000.000.001') addresses
+		# no 169.254.x.x addresses (RFC 3927)
+		# prefer non-DHCP address (ORDER BY sys_hw_network_card.net_dhcp_enabled ASC)
+		# secondary prefer private to public ip address (pubpriv)
+
+		#echo "<pre>\n";
+
+		# get the stored attribute for man_ip_address
+		$sql = "SELECT man_ip_address, timestamp FROM system WHERE system_id = ?";
+		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
-		foreach ($query->result() as $myrow) {
-			$this->m_system->update_system_man($details->system_id, 'man_ip_address', $myrow->ip_address_v4);
+		$result = $query->result();
+
+		#print_r($result);
+
+		if ($result[0]->man_ip_address == '') {
+			# we do not already have an ip address - attempt to set one
+			$sql = "SELECT 
+					sys_hw_network_card.net_dhcp_enabled, 
+					sys_hw_network_card_ip.ip_address_v4, 
+					if( (sys_hw_network_card_ip.ip_address_v4 >= '010.000.000.000' AND sys_hw_network_card_ip.ip_address_v4 <= '010.255.255.255') OR 
+						(sys_hw_network_card_ip.ip_address_v4 >= '172.016.000.000' AND sys_hw_network_card_ip.ip_address_v4 <= '172.031.255.255') OR 
+						(sys_hw_network_card_ip.ip_address_v4 >= '192.168.000.000' AND sys_hw_network_card_ip.ip_address_v4 <= '192.168.255.255'), 'prv', 'pub') as pubpriv
+					FROM 
+					sys_hw_network_card LEFT JOIN sys_hw_network_card_ip ON 
+						(sys_hw_network_card.system_id = sys_hw_network_card_ip.system_id AND 
+						sys_hw_network_card.timestamp = sys_hw_network_card_ip.timestamp AND 
+						LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(sys_hw_network_card.net_mac_address))
+					WHERE 
+					sys_hw_network_card.system_id = ? AND 
+					sys_hw_network_card_ip.timestamp = ? AND 
+					sys_hw_network_card_ip.ip_address_v4 != '' AND 
+					sys_hw_network_card_ip.ip_address_v4 != '0.0.0.0' AND 
+					sys_hw_network_card_ip.ip_address_v4 != '000.000.000.000' AND 
+					sys_hw_network_card_ip.ip_address_v4 != '127.0.0.1' AND 
+					sys_hw_network_card_ip.ip_address_v4 != '127.000.000.001' AND 
+					sys_hw_network_card_ip.ip_address_v4 != '127.0.1.1' AND 
+					sys_hw_network_card_ip.ip_address_v4 != '127.000.001.001' AND 
+					sys_hw_network_card_ip.ip_address_v4 NOT LIKE '169.254.%' 
+					ORDER BY 
+					sys_hw_network_card.net_dhcp_enabled ASC, 
+					pubpriv ASC 
+					LIMIT 1";
+			$sql = $this->clean_sql($sql);
+			$data = array("$system_id", $result[0]->timestamp);
+			$query = $this->db->query($sql, $data);
+			$result = $query->result();
+
+			#echo $this->db->last_query();
+			#print_r($result);
+
+			if (strtolower($result[0]->ip_address_v4) != '') {
+				$sql = "UPDATE system SET man_ip_address = ? WHERE system_id = ?";
+				$data = array($result[0]->ip_address_v4, "$system_id");
+				$query = $this->db->query($sql, $data);
+			} 
+
+		#print_r($data);
+
 		}
 	}
 }

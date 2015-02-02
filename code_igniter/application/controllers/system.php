@@ -748,31 +748,18 @@ class System extends CI_Controller {
 		$this->m_sys_man_audits->update_audit($details, 'finished xml processing');
 
 		// Now generate any needed alerts
-		$this->m_sys_man_audits->update_audit($details, 'generate initial audit alert');
 		if ($details->original_timestamp == '') {
+			$this->m_sys_man_audits->update_audit($details, 'generate initial audit alert');
 			// We have a new PC, so generate an alert
 			$this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', $details->timestamp);
-			// And also set it's IP Address in system.man_ip_address
-			$this->m_ip_address->set_initial_address($details);
 		}
 
-		// double check man_ip_address
-		$this->m_sys_man_audits->update_audit($details, 'check man_ip_address');
-		$dhcp = FALSE;
-		$network_details = $this->m_network_card->get_system_network($details->system_id);
-		foreach ($network_details as $card) {
-			if ($card->net_dhcp_enabled !== '') {
-				$dhcp = TRUE;
-			}
-		}
-		$this->m_sys_man_audits->update_audit($details, 'double check man_ip_address');
-		$man_ip_address = $this->m_system->check_man_ip_address($details->system_id);
-		if (($man_ip_address === '000.000.000.000') OR ($man_ip_address === '') OR ($dhcp === TRUE)) {
-			$this->m_ip_address->set_initial_address($details);
-		}
-
-		$this->m_sys_man_audits->update_audit($details, 'now generate any needed alerts');
+		// set the man_ip_address (if not already set)
+		$this->m_sys_man_audits->update_audit($details, 'check and set initial man_ip_address');
+		$this->m_ip_address->set_initial_address($details->system_id);
+		
 		if ($details->original_timestamp !== '') {
+			$this->m_sys_man_audits->update_audit($details, 'generate any required alerts');
 			$this->m_sys_man_audits->update_audit($details, 'alerts');
 			// We have to go through all tables, checking for
 			// entries with current_timestamp = first_timestamp
