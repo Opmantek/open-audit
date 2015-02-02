@@ -2099,8 +2099,9 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_network_address', '', 'y', 'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
 
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_snmp_community', 'n', 'y', 'Show the SNMP community string on forms.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('page_refresh', '300', 'y', 'Interval in seconds between auto-refreshing the page. Set to 0 to canel auto-refresh.');
 
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_snmp_community', 'n', 'y', 'Show the SNMP community string on forms.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('show_passwords', 'n', 'y', 'Show any passwords on forms.');
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_enable', 'y', 'y', 'Enable the RSS feed.');
