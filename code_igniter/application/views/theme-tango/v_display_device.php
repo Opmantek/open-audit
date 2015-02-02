@@ -233,7 +233,11 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 				}
 
 				if ($value == 'icon') { 
-					$icon = strtolower(str_replace(' ', '_', $system[0]->man_type)); ?>
+					if ($system[0]->icon == '') {
+						$icon = strtolower(str_replace(' ', '_', $system[0]->man_type)); 
+					} else {
+						$icon = $system[0]->icon;
+					} ?>
 					<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $icon?>.png" /></span></p>
 					<?php if ($access_level > 7) { ?>
 						<!-- <p><label for="man_icon"><?php echo __('Icon')?>: </label>
