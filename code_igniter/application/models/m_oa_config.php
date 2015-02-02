@@ -83,13 +83,21 @@ class M_oa_config extends MY_Model {
 
 	function get_config_item($config_name = "display_version") {
 		$this->load->library('encrypt');
+		$sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version' ";
+		$data = array("$config_name");
+		$query = $this->db->query($sql, $data);
+		$row = $query->row();
+		$internal_version = $row->config_value;
+
+
 		$sql = "SELECT config_value FROM oa_config WHERE config_name = ? ";
 		$data = array("$config_name");
 		$query = $this->db->query($sql, $data);
 		$row = $query->row();
 
+
 		# decrypt any credentials if 1.5.4 or later
-		if ($this->data['config']->internal_version >= '20150126') {
+		if ($internal_version >= '20150126') {
 			if ($config_name == 'default_ipmi_password' OR 
 				$config_name == 'default_snmp_community' OR 
 				$config_name == 'default_ssh_password' OR 
