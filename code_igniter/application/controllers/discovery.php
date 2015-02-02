@@ -692,7 +692,6 @@ public function discover_list($ids = '')
 			}
 			unset($temp_network_address);
 
-
 			if ((php_uname('s') == 'Linux') OR (php_uname('s') == 'Darwin')) {
 				if ($subnet_range > '') {
 					if ($display == 'y') {
@@ -803,7 +802,6 @@ public function discover_list($ids = '')
 		if ( ! isset($_POST['form_details'])) {
 			$this->load->view('v_process_subnet', $this->data);
 		} else {
-
 			$display = '';
 			if ($this->input->post('debug') AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE OR $this->session->userdata('logged_in') == 1))) {
 				$display = 'y';
@@ -983,12 +981,19 @@ public function discover_list($ids = '')
 					$log_details->user = $details->last_seen_user;
 
 					// create the URL for use by the audit scripts
+					# use $_POST if supplied
 					if (isset($_POST['network_address']) AND $_POST['network_address'] > '') {
 						$temp = explode('/', base_url());
 						$url = str_replace($temp[2], $_POST['network_address'], base_url());
+					# use $details->network_address if stored in DB
+					} elseif (isset($details->network_address) and $details->network_address != '') {
+						$temp = explode('/', base_url());
+						$url = str_replace($temp[2], $details->network_address, base_url());
+					# use the open-audit default config value
 					} elseif (isset($this->data['config']->default_network_address) AND $this->data['config']->default_network_address > '') {
 						$temp = explode('/', base_url());
 						$url = str_replace($temp[2], $this->data['config']->default_network_address, base_url());
+					# use the PHP function to guess as a last resort
 					} else {
 						$url = base_url();
 					}
