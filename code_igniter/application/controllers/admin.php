@@ -3311,6 +3311,8 @@ class Admin extends MY_Controller {
 			stdlog($log_details);
 
 			$this->load->library('encrypt');
+			$this->load->model('m_oa_group');
+
 			$configs = array('default_ipmi_password', 'default_ssh_password', 'default_snmp_community', 'default_windows_password');
 			$user_id = $this->data['user_id'];
 			$timestamp = date('Y-m-d H:i:s');
@@ -3327,6 +3329,25 @@ class Admin extends MY_Controller {
 			$sql = "ALTER TABLE system ADD man_oae_manage enum('y', 'n') NOT NULL default 'y'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
+
+			# insert the group definition
+			$sql = "INSERT INTO oa_group VALUES (8888, 'Open-AudIT Enterprise Managed Devices', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and man_oae_manage = \'y\'',1,'Any items that have their status attribute set to \'production\' and their oae_manage attribute set to \'y\'.', 'device', '', 'devices')";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			# update the device members of this group
+			$this->m_oa_group->update_specific_group('8888');
+
+			# allow OAE user to access as well as Admin level users
+			$sql = "SELECT user_id FROM oa_user WHERE user_name = 'open-audit_enterprise' OR user_admin = 'y'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+			$result = $query->result();
+			foreach ($result as $row) {
+				$sql = "INSERT INTO oa_group_user (group_user_id, user_id, group_id, group_user_access_level) VALUES (NULL," . $row->user_id . ",8888,10)";
+				$this->data['output'] .= $sql . "<br /><br />\n";
+				$query = $this->db->query($sql);
+			}
 
 			$sql = "UPDATE oa_config SET config_value = '20150228' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
