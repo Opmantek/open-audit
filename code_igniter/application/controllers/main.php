@@ -281,7 +281,24 @@ class main extends MY_Controller
 	public function get_count()
 	{
 		$this->load->model("m_systems");
-		$count = $this->m_systems->get_count();
+		$this->load->model("m_oa_group");
+		$group_id = '';
+		if (isset($_POST['group_id'])) {
+			$group_id = $_POST['group_id'];
+		}
+		if ($group_id == '') {
+			$group_id = $this->uri->segment(3, 0);
+		}
+		if (!is_numeric($group_id)) {
+			$group_id = '1';
+		}
+		// we must check to see if the user has at least VIEW permission on the group
+		$this->data['user_access_level'] = $this->m_oa_group->get_group_access($group_id, $this->data['user_id']);
+		if ($this->data['user_access_level'] < '10') {
+			// not enough permission - exit
+			exit();
+		}
+		$count = $this->m_systems->get_group_system_count($group_id);
 		echo $count;
 	}
 
