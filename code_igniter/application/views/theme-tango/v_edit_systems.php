@@ -67,6 +67,7 @@ echo form_open('main/process_edit_systems') . "\n";
 	<label for="nmis_group"><?php echo __("NMIS Group"); ?>: </label><input type="text" name="nmis_group" style="width: 200px" /><br /><br />
 	<label for="nmis_name"><?php echo __("NMIS Name"); ?>: </label><input type="text" name="nmis_name" style="width: 200px" /><br /><br />
 	<label for="nmis_role"><?php echo __("NMIS Role"); ?>: </label><select name="nmis_role" style="width: 200px"><option value="">&nbsp;</option><option value="access"><?php echo __("Access"); ?></option><option value="core"><?php echo __("Core"); ?></option><option value="distribution"><?php echo __("Distribution"); ?></option></select><br /><br />
+	<label for="man_oae_manage"><?php echo __("Open-AudIT Managed"); ?>: </label><select name="man_oae_manage" style="width: 200px"><option value="">&nbsp;</option><option value="y"><?php echo __("Yes"); ?></option><option value="n"><?php echo __("No"); ?></option></select><br /><br />
 	<label for="man_os_family"><?php echo __("OS Family"); ?>: </label><input type="text" name="man_os_family" style="width: 200px" /><br /><br />
 	<label for="man_os_group"><?php echo __("OS Group"); ?>: </label><input type="text" name="man_os_group" style="width: 200px" /><br /><br />
 	<label for="man_os_name"><?php echo __("OS Name"); ?>: </label><input type="text" name="man_os_name" style="width: 200px" /><br /><br />

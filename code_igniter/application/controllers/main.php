@@ -539,7 +539,7 @@ class main extends MY_Controller
 
 	public function search_device()
 	{
-		# search for a mcth on PRODUCTION devices only.
+		# search for a match on PRODUCTION devices only.
 		# search for name, ip
 		$this->data['search'] = urldecode($this->uri->segment(3, 0));
 		$this->data['search'] = html_entity_decode($this->data['search']);

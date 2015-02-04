@@ -114,6 +114,33 @@ function receive_environment() {
   }
 }
 
+function display_man_oae_manage() {
+	status_text="<select id='man_oae_manage' onchange='send_man_oae_manage();'>\
+	<option value=' '><?php echo __("Choose"); ?><\/option>\
+	<option value='y'><?php echo __("Yes"); ?><\/option>\
+	<option value='n'><?php echo __("No"); ?><\/option>\
+	<\/select>";
+	document.getElementById("man_oae_manage_select").innerHTML = status_text;
+}
+
+function send_man_oae_manage() {
+	table_text=document.getElementById("man_oae_manage").value;
+	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_oae_manage/'+table_text);
+	http.onreadystatechange = receive_man_oae_manage;
+	http.send(null);
+}
+
+function receive_man_oae_manage() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      update="<span onclick='display_man_oae_manage();'>"+http.responseText+"<\/span>";
+      document.getElementById("man_oae_manage_select").innerHTML = update;
+    }
+  }
+}
+
 function display_man_status() {
 	status_text="<select id='man_status' onchange='send_status();'>\
 	<option value=' '><?php echo __("Choose a status"); ?><\/option>\

@@ -3302,12 +3302,12 @@ class Admin extends MY_Controller {
 			unset($log_details);
 		}
 
-		if (($db_internal_version < '20150126') AND ($this->db->platform() == 'mysql')) {
-			# upgrade for 1.5.4
+		if (($db_internal_version < '20150228') AND ($this->db->platform() == 'mysql')) {
+			# upgrade for 1.5.6
 
 			$log_details = new stdClass();
 			$log_details->file = 'system';
-			$log_details->message = 'Upgrade database to 1.5.4 commenced';
+			$log_details->message = 'Upgrade database to 1.5.6 commenced';
 			stdlog($log_details);
 
 			$this->load->library('encrypt');
@@ -3324,15 +3324,19 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "UPDATE oa_config SET config_value = '20150126' WHERE config_name = 'internal_version'";
+			$sql = "ALTER TABLE system ADD man_oae_manage enum('y', 'n') NOT NULL default 'y'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$sql = "UPDATE oa_config SET config_value = '1.5.4' WHERE config_name = 'display_version'";
+			$sql = "UPDATE oa_config SET config_value = '20150228' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			$log_details->message = 'Upgrade database to 1.5.4 completed';
+			$sql = "UPDATE oa_config SET config_value = '1.5.6' WHERE config_name = 'display_version'";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$log_details->message = 'Upgrade database to 1.5.6 completed';
 			stdlog($log_details);
 			unset($log_details);
 		}

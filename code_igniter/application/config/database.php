@@ -38,9 +38,9 @@ $active_group = "default";
 $active_record = TRUE;
 
 $db['default']['hostname'] = "localhost";
-$db['default']['username'] = "openaudit";
-$db['default']['password'] = "openauditpassword";
-$db['default']['database'] = "openaudit";
+$db['default']['username'] = "root";
+$db['default']['password'] = "301170";
+$db['default']['database'] = "oa2";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
 $db['default']['pconnect'] = TRUE;
