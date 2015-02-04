@@ -566,16 +566,21 @@ class M_system extends MY_Model {
 		}
 		$search_ip = implode(".", $myip);
 		$sql = "SELECT 
+				system.man_type, 
+				system.man_ip_address, 
 				system.system_id, 
 				system.hostname, 
-				system.man_ip_address, 
-				system.man_type, 
-				system.icon 
+				system.domain, 
+				system.fqdn, 
+				system.icon, 
+				system.man_os_family 
 			FROM 
 				system LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
 			WHERE 
-				( system.man_ip_address LIKE '%" . $search_ip . "%' OR
+				( system.man_ip_address LIKE '%" . $search_ip . "%' OR 
 				system.hostname LIKE '%" . $search . "%' OR 
+				system.fqdn LIKE '%" . $search . "%' OR 
+				system.domain LIKE '%" . $search . "%' OR 
 				sys_hw_network_card_ip.ip_address_v4 LIKE '%" . $search_ip . "%' OR 
 				sys_hw_network_card_ip.ip_address_v6 LIKE '%" . $search . "%' ) AND 
 				system.man_status = 'production' 
@@ -619,16 +624,6 @@ class M_system extends MY_Model {
 		$i->column_link = "";
 		$result[1] = $i;
 		$i = new stdclass();
-		$i->column_order = '0';
-		$i->column_name = 'Name';
-		$i->column_variable = 'hostname';
-		$i->column_type = "link";
-		$i->column_align = "left";
-		$i->column_secondary = "system_id";
-		$i->column_ternary = "";
-		$i->column_link = $this->data['config']->oae_url . "/device_details/";
-		$result[2] = $i;
-		$i = new stdclass();
 		$i->column_order = '1';
 		$i->column_name = 'IP Address';
 		$i->column_variable = 'man_ip_address';
@@ -637,7 +632,47 @@ class M_system extends MY_Model {
 		$i->column_secondary = "";
 		$i->column_ternary = "";
 		$i->column_link = "";
+		$result[2] = $i;
+		$i = new stdclass();
+		$i->column_order = '0';
+		$i->column_name = 'Name';
+		$i->column_variable = 'hostname';
+		$i->column_type = "link";
+		$i->column_align = "left";
+		$i->column_secondary = "system_id";
+		$i->column_ternary = "";
+		$i->column_link = $this->data['config']->oae_url . "/device_details/";
 		$result[3] = $i;
+		$i = new stdclass();
+		$i->column_order = '0';
+		$i->column_name = 'Domain';
+		$i->column_variable = 'domain';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = '';
+		$result[4] = $i;
+		$i = new stdclass();
+		$i->column_order = '0';
+		$i->column_name = 'FQDN';
+		$i->column_variable = 'fqdn';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = '';
+		$result[5] = $i;
+		$i = new stdclass();
+		$i->column_order = '1';
+		$i->column_name = 'OS Family';
+		$i->column_variable = 'man_os_family';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = "";
+		$result[6] = $i;
 		$i = new stdclass();
 		return ($result);
 	}
