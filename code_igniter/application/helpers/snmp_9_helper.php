@@ -1436,6 +1436,25 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.5.58') { $details->model = 'Cisco Catalyst 4503'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.5.59') { $details->model = 'Cisco Catalyst 4506'; $details->type = 'switch'; }
 
+
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.2.1.1.1.1') { $details->model = 'Cisco MS200X-24 24-Port 10/100 Ethernet Access Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.2.1.1.1.2') { $details->model = 'Cisco MS200X-24P 24-Port 10/100 PoE Ethernet Access Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.2.1.1.1.3') { $details->model = 'Cisco MS200X-24S 24-Port 10/100 Ethernet Access Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.23.1.1.1.3') { $details->model = 'Cisco SPA122 VoIP Adapter'; $details->type = 'voip adapter'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.23.3.17') { $details->model = 'Cisco RV325 Dual Gigabit WAN VPN Router'; $details->type = 'router'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.84.24.1') { $details->model = 'Cisco SF220-24 24-Port 10/100 Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.84.24.2') { $details->model = 'Cisco SF220-24P 24-Port 10/100 PoE Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.84.48.1') { $details->model = 'Cisco SF220-48 48-Port 10/100 Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.84.48.2') { $details->model = 'Cisco SF220-48P 48-Port 10/100 PoE Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.89.26.1') { $details->model = 'Cisco SG220-26 26-Port Gigabit Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.89.26.2') { $details->model = 'Cisco SG220-26P 26-Port Gigabit PoE Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.89.28.3') { $details->model = 'Cisco SG220-28MP 28-Port Gigabit PoE Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.89.28.5') { $details->model = 'Cisco SG220-28 28-Port Gigabit Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.89.50.1') { $details->model = 'Cisco SG220-50 50-Port Gigabit Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.89.50.2') { $details->model = 'Cisco SG220-50P 50-Port Gigabit PoE Smart Plus Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.89.52.5') { $details->model = 'Cisco SG220-52 52-Port Gigabit Smart Plus Switch'; $details->type = 'switch'; }
+
+
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.1') { $details->model = 'Cisco Other'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.1.1') { $details->model = 'Cisco Other UnknownCard'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.1.2') { $details->model = 'Cisco Other MoH'; $details->type = 'cisco module'; }
