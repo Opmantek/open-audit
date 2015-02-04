@@ -214,6 +214,7 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 				if ($text == 'Snmp Oid') { $text = 'SNMP OID'; }
 				if ($text == 'Vm Group') { $text = 'VM Group'; }
 				if ($text == 'Vm Server Name') { $text = 'VM Server Name'; }
+				if ($text == 'Oae Manage') { $text = 'Manage in Open-AudIT Enterprise'; }
 				if (strpos($text, 'Os ') !== false) { $text = str_replace('Os ', 'OS ', $text); }
 
 				if ($value == '' and isset($system[0]->$key) and $system[0]->$key > '') {
