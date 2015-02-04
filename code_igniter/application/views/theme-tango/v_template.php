@@ -55,7 +55,7 @@ if ($function == "list_devices") {
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<?php if ($config->page_refresh != '0' and is_numeric($config->page_refresh)) { ?>
+	<?php if (isset($config->page_refresh) AND $config->page_refresh != '0' and is_numeric($config->page_refresh)) { ?>
 	<meta http-equiv="refresh" content="<?php echo $config->page_refresh; ?>" />
 	<?php } ?>
 	<link rel="shortcut icon" href="<?php echo base_url();?>favicon.png" type="image/x-icon" />
