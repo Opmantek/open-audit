@@ -566,14 +566,16 @@ class M_system extends MY_Model {
 		}
 		$search_ip = implode(".", $myip);
 		$sql = "SELECT 
+				system.icon, 
 				system.man_type, 
 				system.man_ip_address, 
 				system.system_id, 
 				system.hostname, 
 				system.domain, 
 				system.fqdn, 
-				system.icon, 
-				system.man_os_family 
+				system.man_description, 
+				system.man_os_family, 
+				sys_hw_network_card_ip.ip_address_v4 
 			FROM 
 				system LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
 			WHERE 
@@ -592,12 +594,17 @@ class M_system extends MY_Model {
 		$query = $this->db->query($sql);
 		$result = $query->result();
 		for ($i=0; $i<count($result); $i++) {
-			$result[$i]->man_ip_address = $this->ip_address_from_db($result[$i]->man_ip_address);
+			if ($result[$i]->ip_address_v4 != '') {
+				$result[$i]->ip_address  = $this->ip_address_from_db($result[$i]->ip_address_v4);
+			} else {
+				$result[$i]->ip_address = $this->ip_address_from_db($result[$i]->man_ip_address);
+			}
+			
 		}
-		#echo "<pre>\n";
-		#print_r($result);
-		#echo "</pre>\n";
-		#exit();
+		// echo "<pre>\n";
+		// print_r($result);
+		// echo "</pre>\n";
+		// exit();
 		return ($result);
 	}
 
@@ -626,7 +633,7 @@ class M_system extends MY_Model {
 		$i = new stdclass();
 		$i->column_order = '1';
 		$i->column_name = 'IP Address';
-		$i->column_variable = 'man_ip_address';
+		$i->column_variable = 'ip_address';
 		$i->column_type = "text";
 		$i->column_align = "left";
 		$i->column_secondary = "";
@@ -664,6 +671,16 @@ class M_system extends MY_Model {
 		$i->column_link = '';
 		$result[5] = $i;
 		$i = new stdclass();
+		$i->column_order = '0';
+		$i->column_name = 'Description';
+		$i->column_variable = 'man_description';
+		$i->column_type = "text";
+		$i->column_align = "left";
+		$i->column_secondary = "";
+		$i->column_ternary = "";
+		$i->column_link = '';
+		$result[6] = $i;
+		$i = new stdclass();
 		$i->column_order = '1';
 		$i->column_name = 'OS Family';
 		$i->column_variable = 'man_os_family';
@@ -672,7 +689,7 @@ class M_system extends MY_Model {
 		$i->column_secondary = "";
 		$i->column_ternary = "";
 		$i->column_link = "";
-		$result[6] = $i;
+		$result[7] = $i;
 		$i = new stdclass();
 		return ($result);
 	}
