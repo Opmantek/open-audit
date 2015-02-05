@@ -72,6 +72,7 @@ echo form_open('main/process_edit_systems') . "\n";
 	<label for="man_os_group"><?php echo __("OS Group"); ?>: </label><input type="text" name="man_os_group" style="width: 200px" /><br /><br />
 	<label for="man_os_name"><?php echo __("OS Name"); ?>: </label><input type="text" name="man_os_name" style="width: 200px" /><br /><br />
 	<label for="run_discovery"><?php echo __("Run Discovery"); ?>: </label><input type="checkbox" id="run_discovery" name="run_discovery" value="yes"/> (Should I run Discovery on all devices listed below?)<br /><br />
+	<label for="calculate_ip"><?php echo __("Recalculate IP Address"); ?>: </label><input type="checkbox" id="calculate_ip" name="calculate_ip" value="yes"/> (Should I recalculate the main ip address for the devices below?)<br /><br />
 	</td>
 	<td width="50%">
 	<label for="man_owner"><?php echo __("Owner"); ?>: </label><input type="text" name="man_owner" style="width: 200px" /><br /><br />

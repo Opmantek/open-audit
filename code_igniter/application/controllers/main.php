@@ -429,6 +429,15 @@ class main extends MY_Controller
 			$this->m_oa_group->update_system_groups($details);
 		}
 
+		$calculate_ip = $this->input->post('calculate_ip');
+		if (isset($calculate_ip) AND $calculate_ip == 'yes') {
+			$this->load->model('m_ip_address');
+			foreach ($data['systems'] as $system) {
+				$this->m_ip_address->set_initial_address($system[1], 'y');
+			}
+		}
+
+
 		$test = $this->input->post('run_discovery');
 		if (isset($test) AND $test == 'yes') {
 			$discover_ids = substr($discover_ids, 0, -1);

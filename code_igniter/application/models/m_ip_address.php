@@ -242,7 +242,7 @@ class M_ip_address extends MY_Model {
 
 	}
 
-	function set_initial_address($system_id) {
+	function set_initial_address($system_id, $force = 'n') {
 
 		# new logic
 		# only set an ip address if we do not already have an existing in system table
@@ -252,17 +252,13 @@ class M_ip_address extends MY_Model {
 		# prefer non-DHCP address (ORDER BY sys_hw_network_card.net_dhcp_enabled ASC)
 		# secondary prefer private to public ip address (pubpriv)
 
-		#echo "<pre>\n";
-
 		# get the stored attribute for man_ip_address
 		$sql = "SELECT man_ip_address, timestamp FROM system WHERE system_id = ?";
 		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 
-		#print_r($result);
-
-		if ($result[0]->man_ip_address == '') {
+		if ($force == 'y' OR $result[0]->man_ip_address == '') {
 			# we do not already have an ip address - attempt to set one
 			$sql = "SELECT 
 					sys_hw_network_card.net_dhcp_enabled, 
@@ -277,6 +273,7 @@ class M_ip_address extends MY_Model {
 						LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(sys_hw_network_card.net_mac_address))
 					WHERE 
 					sys_hw_network_card.system_id = ? AND 
+					LOWER(sys_hw_network_card.net_ip_enabled) != 'false' AND  
 					sys_hw_network_card_ip.timestamp = ? AND 
 					sys_hw_network_card_ip.ip_address_v4 != '' AND 
 					sys_hw_network_card_ip.ip_address_v4 != '0.0.0.0' AND 
@@ -288,24 +285,19 @@ class M_ip_address extends MY_Model {
 					sys_hw_network_card_ip.ip_address_v4 NOT LIKE '169.254.%' 
 					ORDER BY 
 					sys_hw_network_card.net_dhcp_enabled ASC, 
-					pubpriv ASC 
+					pubpriv ASC, 
+					sys_hw_network_card_ip.ip_address_v4 DESC 
 					LIMIT 1";
 			$sql = $this->clean_sql($sql);
 			$data = array("$system_id", $result[0]->timestamp);
 			$query = $this->db->query($sql, $data);
 			$result = $query->result();
 
-			#echo $this->db->last_query();
-			#print_r($result);
-
 			if (strtolower($result[0]->ip_address_v4) != '') {
 				$sql = "UPDATE system SET man_ip_address = ? WHERE system_id = ?";
 				$data = array($result[0]->ip_address_v4, "$system_id");
 				$query = $this->db->query($sql, $data);
 			} 
-
-		#print_r($data);
-
 		}
 	}
 }
