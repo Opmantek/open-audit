@@ -567,17 +567,33 @@ class main extends MY_Controller
 	{
 		# search for a match on PRODUCTION devices only.
 		# search for name, ip
-		$this->data['search'] = urldecode($this->uri->segment(3, 0));
+		if (isset($_POST['search'])) {
+			$this->data['search'] = urldecode($_POST['search']);
+		}
 		$this->data['search'] = html_entity_decode($this->data['search']);
+		if ($this->data['search'] == '') {
+			redirect('main/list_groups/');
+		}
+
+		if (isset($_POST['format'])) {
+			$format = $_POST['format'];
+		} else {
+			$format = $this->uri->segment($this->uri->total_rsegments());
+		}
+
 		$this->load->model("m_system");
 		$this->data['query'] = $this->m_system->search_device($this->data['search']);
 		$this->data['heading'] = 'Search Result (' . $this->data['search'] . ")";
 		$this->data['column'] = $this->m_system->search_device_columns();
 		$this->data['count'] = count($this->data['query']);
-		$this->data['include'] = 'v_dump';
+		$this->data['include'] = 'v_search_device';
 		$this->data['sortcolumn'] = '0';
 		$this->data['export_report'] = 'y';
-		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+		if (isset($_POST['format'])) {
+			$this->determine_output($format);
+		} else {
+			$this->load->view('v_template', $this->data);
+		}
 	}
 
 	public function disk_graph()

@@ -555,8 +555,10 @@ class M_system extends MY_Model {
 	}
 
 	function search_device($search) {
-		$search_ip = $search;
+
+
 		# remove a trailing "." if present because the ip padding will insert "000" and not match any ip
+		$search_ip = $search;
 		if (substr($search_ip, -1) == ".") {
 			$search_ip = substr($search_ip, 0, -1);
 		}
@@ -564,7 +566,9 @@ class M_system extends MY_Model {
 		foreach ($myip as $index => $data) {
 			$myip[$index] = mb_substr("000" . $myip[$index], -3);
 		}
-		$search_ip = implode(".", $myip);
+		$search_ip = "%" . implode(".", $myip) . "%";
+		$search = "%" . $search . "%";
+
 		$sql = "SELECT 
 				system.icon, 
 				system.man_type, 
@@ -579,19 +583,52 @@ class M_system extends MY_Model {
 			FROM 
 				system LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
 			WHERE 
-				( system.man_ip_address LIKE '%" . $search_ip . "%' OR 
-				system.hostname LIKE '%" . $search . "%' OR 
-				system.fqdn LIKE '%" . $search . "%' OR 
-				system.domain LIKE '%" . $search . "%' OR 
-				sys_hw_network_card_ip.ip_address_v4 LIKE '%" . $search_ip . "%' OR 
-				sys_hw_network_card_ip.ip_address_v6 LIKE '%" . $search . "%' ) AND 
+				( system.hostname LIKE ? OR 
+				system.fqdn LIKE ? OR 
+				system.domain LIKE ? OR 
+				system.man_ip_address LIKE ? OR
+				sys_hw_network_card_ip.ip_address_v4 LIKE ? OR 
+				sys_hw_network_card_ip.ip_address_v6 LIKE ? ) AND 
 				system.man_status = 'production' 
 			GROUP BY 
 				system.system_id 
 			ORDER BY 
 				system.hostname";
+		
+		$sql = "SELECT 
+				system.icon, 
+				system.man_type, 
+				system.man_ip_address, 
+				system.system_id, 
+				system.hostname, 
+				system.domain, 
+				system.fqdn, 
+				system.man_description, 
+				system.man_os_family, 
+				sys_hw_network_card_ip.ip_address_v4 
+			FROM 
+				system 
+			LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp) 
+			LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) 
+			LEFT JOIN oa_group ON (oa_group_sys.group_id = oa_group.group_id) 
+			LEFT JOIN oa_group_user ON  (oa_group_user.group_id = oa_group.group_id) 
+			WHERE 
+				( system.hostname LIKE ? OR 
+				system.fqdn LIKE ? OR 
+				system.domain LIKE ? OR 
+				system.man_ip_address LIKE ? OR
+				sys_hw_network_card_ip.ip_address_v4 LIKE ? OR 
+				sys_hw_network_card_ip.ip_address_v6 LIKE ? ) AND 
+				system.man_status = 'production' AND
+				oa_group_user.user_id = ? AND
+				oa_group_user.group_user_access_level > '0'
+			GROUP BY 
+				system.system_id 
+			ORDER BY 
+				system.hostname";
 		$sql = $this->clean_sql($sql);
-		$query = $this->db->query($sql);
+		$data = array("$search", "$search", "$search", "$search_ip", "$search_ip", "$search", $this->data['user_id']);
+		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		for ($i=0; $i<count($result); $i++) {
 			if ($result[$i]->ip_address_v4 != '') {
@@ -602,6 +639,8 @@ class M_system extends MY_Model {
 			
 		}
 		// echo "<pre>\n";
+		// echo $this->db->last_query();
+		// print_r($this->data);
 		// print_r($result);
 		// echo "</pre>\n";
 		// exit();

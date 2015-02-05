@@ -235,22 +235,37 @@
 			-->
 		</ul>
 	</li>
+
+	<?php if ($include == 'v_main') { ?>
+		<li style="float:right; position:relative; padding-right:4px;">
+			<form name="search_form" action="<?php echo base_url()?>index.php/main/search_device" method="post">
+				<table>
+					<tr>
+						<td><input type="text" name="search"/></td>
+						<td><input type="submit" value="Find Device" /></td>
+					</tr>
+				</table>
+			</form>
+		</li>
+	<?php } ?>
+
+
 	<?php if (isset($export_report)) { ?>
 		<?php if (isset($group_id)) { ?>
 			<?php if (($config->non_admin_search == 'y') or ($user_admin == 'y')) { ?>
-				<li style="float: right; position: relative; top:-4px; padding-right: 4px;">
+				<li style="float:right; position:relative; padding-right:4px;">
 					<form name="search_form" action="<?php echo base_url()?>index.php/main/search/<?php echo $group_id; ?>/" method="post">
 						<table>
 							<tr>
 								<td><input type="text" name="search"/></td>
-								<td><input type="submit" value="Search" /></td>
+								<td><input type="submit" value="Search Attributes" /></td>
 							</tr>
 						</table>
 					</form>
 				</li>
 			<?php } ?>
 		<?php } ?>
-	<?php
+		<?php
 		// see if this is a report with a timestamp column - if so, display an RSS icon 
 		if (isset($column)){
 			$hit = 'n';
