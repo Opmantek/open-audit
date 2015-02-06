@@ -35,8 +35,11 @@
 <div id="header" style='height: 70px; margin-left: auto; margin-right: auto; padding: 0px 0px 0px 0px; text-align: left;'>
 	<div style="width:260px; float: left; text-align: left;">
 		<a href="<?php echo base_url(); ?>index.php/main/list_groups">
-			<?php if (isset($config->logo)) { ?><img src='<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-banner-<?php echo $config->logo; ?>.png' alt='logo' style='border-width:0px;' />
-			<?php } else { ?><img src='<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-banner-oac-oae.png' alt='logo' style='border-width:0px;' /><?php } ?>
+			<?php if (isset($this->config->config['logo']) AND $this->config->config['logo'] != '') { ?>
+			<img src='<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-banner-<?php echo $this->config->item('logo'); ?>.png' alt='logo' style='border-width:0px;' />
+			<?php } else { ?>
+			<img src='<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-banner-oac-oae.png' alt='logo' style='border-width:0px;' />
+			<?php } ?>
 		</a>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
@@ -57,29 +60,28 @@
 		</div>
 	<?php } ?>
 	<div style="width:100px; float: right; text-align: center;">
-		<br />Version<br /><?php echo $config->display_version; ?>
-		<?php if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') == 'y')) {
+		<br />Version<br /><?php echo $this->config->item('display_version'); ?>
+		<?php if ($this->config->item('display_version') != $this->config->item('web_display_version') AND ($this->session->userdata('user_admin') == 'y')) {
 			echo '<br /><a href="' . base_url() . 'index.php/main/help_about" style="color: red;">upgrade</a>';
 		} ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-	<?php #if (isset($config->nmis_url) and filter_var($config->nmis_url, FILTER_VALIDATE_URL)) { ?>
-	<?php if (isset($config->nmis_url) and $config->nmis_url > "") { ?>
-		<br />NMIS<br /><a href="<?php echo $config->nmis_url; ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
+	<?php if (isset($this->config->config['mis_url']) AND $this->config->config['nmis_url'] > "") { ?>
+		<br />NMIS<br /><a href="<?php echo $this->config->item('nmis_url'); ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
 	<?php } else { ?>
 		<br />NMIS<br /><a href="https://opmantek.com" target="_blank"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-nmis.png" /></a>
 	<?php } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-	<?php if (isset($config->oae_url) and $config->oae_url > "") { ?>
-		<br />Dashboard<br /><a href="<?php echo $config->oae_url; ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
+	<?php if (isset($this->config->config['oae_url']) and $this->config->config['oae_url'] > "") { ?>
+		<br />Dashboard<br /><a href="<?php echo $this->config->config['oae_url']; ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
 	<?php } else { ?>
 		<br />Dashboard<br /><a href="<?php echo base_url(); ?>index.php/main/help_oae"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-oae.png" /></a>
 	<?php } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-	<?php if (isset($config->maps_url) and $config->maps_url > "") { ?>
-		<br />Map<br /><a href="<?php echo $config->maps_url; ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
+	<?php if (isset($this->config->config['maps_url']) and $this->config->config['maps_url'] > "") { ?>
+		<br />Map<br /><a href="<?php echo $this->config->item('maps_url'); ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
 	<?php } else { ?>
 		<br />Map<br /><a href="<?php echo base_url(); ?>index.php/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/logo-opmaps.png" /></a>
 	<?php } ?>

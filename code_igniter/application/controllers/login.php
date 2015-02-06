@@ -337,31 +337,14 @@ class login extends CI_Controller
 		$first_attribute = $this->input->post('first_attribute');
 		$this->load->model('m_userlogin');
 		$this->load->model('m_oa_config');
-		$this->data['config'] = $this->m_oa_config->get_config();
+		$this->m_oa_config->load_config();
 
-		foreach ($this->data['config'] as $returned_result) {
-			if (isset($returned_result->config_name)) {
-				if ($returned_result->config_name == 'ad_domain') {
-					$this->data['ad_domain'] = $returned_result->config_value;
-				}
-				if ($returned_result->config_name == 'ad_server') {
-					$this->data['ad_server'] = $returned_result->config_value;
-				}
-				if ($returned_result->config_name == 'internal_version') {
-					$this->data['db_version'] = $returned_result->config_value;
-				}
-			}
-		}
-		if (isset($this->data['ad_domain']) and
-			$this->data['ad_domain'] != '' and
-			isset($this->data['ad_server']) and
-			$this->data['ad_server'] != '' and
-			$password != '' and
-			$username != '' and
-			extension_loaded('ldap')) {
+		if (isset($this->config->config['ad_domain']) AND $this->config->config['ad_domain'] != '' AND
+			isset($this->config->config['ad_server']) AND $this->config->config['ad_server'] != '' AND
+			$password != '' AND $username != '' AND extension_loaded('ldap')) {
 			// using Active Directory to validate logon details
-			$ad_ldap_connect = 'ldap://' . $this->data['ad_server'];
-			$ad_user = $username . '@' . $this->data['ad_domain'];
+			$ad_ldap_connect = 'ldap://' . $this->config->item('ad_server');
+			$ad_user = $username . '@' . $this->config->item('ad_domain');
 			$ad_secret = $password;
 			$ad = ldap_connect($ad_ldap_connect);
 			if (!$ad) {
@@ -465,31 +448,14 @@ class login extends CI_Controller
 		$password  = urldecode($this->uri->segment(4));
 		$this->load->model('m_userlogin');
 		$this->load->model('m_oa_config');
-		$this->data['config'] = $this->m_oa_config->get_config();
+		$this->m_oa_config->load_config();
 
-		foreach ($this->data['config'] as $returned_result) {
-			if (isset($returned_result->config_name)) {
-				if ($returned_result->config_name == 'ad_domain') {
-					$this->data['ad_domain'] = $returned_result->config_value;
-				}
-				if ($returned_result->config_name == 'ad_server') {
-					$this->data['ad_server'] = $returned_result->config_value;
-				}
-				if ($returned_result->config_name == 'internal_version') {
-					$this->data['db_version'] = $returned_result->config_value;
-				}
-			}
-		}
-		if (isset($this->data['ad_domain']) and
-			$this->data['ad_domain'] != '' and
-			isset($this->data['ad_server']) and
-			$this->data['ad_server'] != '' and
-			$password != '' and
-			$username != '' and
-			extension_loaded('ldap')) {
+		if (isset($this->config->config['ad_domain']) AND $this->config->config['ad_domain'] != '' AND 
+			isset($this->config->config['ad_server']) AND $this->config->config['ad_server'] != '' and
+			$password != '' AND $username != '' AND extension_loaded('ldap')) {
 			// using Active Directory to validate logon details
-			$ad_ldap_connect = 'ldap://' . $this->data['ad_server'];
-			$ad_user = $username . '@' . $this->data['ad_domain'];
+			$ad_ldap_connect = 'ldap://' . $this->config->item('ad_server');
+			$ad_user = $username . '@' . $this->config->item('ad_domain');
 			$ad_secret = $password;
 			$ad = ldap_connect($ad_ldap_connect) or die('Couldn\'t connect to AD!');
 			ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);

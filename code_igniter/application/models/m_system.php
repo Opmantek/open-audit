@@ -687,7 +687,7 @@ class M_system extends MY_Model {
 		$i->column_align = "left";
 		$i->column_secondary = "system_id";
 		$i->column_ternary = "";
-		$i->column_link = $this->data['config']->oae_url . "/device_details/";
+		$i->column_link = $this->config->item('oae_url') . "/device_details/";
 		$result[3] = $i;
 		$i = new stdclass();
 		$i->column_order = '0';

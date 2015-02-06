@@ -53,32 +53,16 @@ class MY_Controller extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->library('session');
+
 		$this->benchmark->mark('code_start');
 		if ($this->config->item('debug')) {
 			$this->output->enable_profiler(TRUE);
 		}
 		$this->load->helper('url');
 		$loggedin = $this->session->userdata('logged_in');
-		
-		
+
 		$this->load->model('m_oa_config');
-		$conf = $this->m_oa_config->get_config();
-		$this->data['config'] = new stdclass();
-		foreach ($conf as $returned_result) {
-			$config_name = $returned_result->config_name;
-			$this->data['config']->$config_name = $returned_result->config_value;
-		}
-
-		// TODO: check this
-		$this->load->model('m_oa_user');
-		if ($this->m_oa_user->select_user('open-audit_enterprise')) {
-			$this->data['config']->oae = 'y';
-		}
-		else {
-			$this->data['config']->oae = 'n';
-		}
-
-
+		$this->m_oa_config->load_config();
 
 		// turn on/off debugging from GET string
 		if (((isset($loggedin)) OR ((bool)$this->session->userdata('logged_in') === TRUE)) AND ((string)$this->uri->segment($this->uri->total_rsegments()-1) === 'user_debug') ) {
@@ -144,6 +128,8 @@ class MY_Controller extends CI_Controller {
 				}
 			}
 		}
+
+		$this->user = $this->m_oa_user->get_user_details($this->session->userdata['user_id']);
 
 		$this->data['title'] = 'Open-AudIT';
 		$this->data['id'] = $this->uri->segment(3, 0);
@@ -298,7 +284,7 @@ class MY_Controller extends CI_Controller {
 			$output_csv .= "\n";
 		}
 		echo $output_csv;
-		if ((string)$this->data['config']->download_reports === 'download') {
+		if ((string)$this->config->item('download_reports') === 'download') {
 			header('Content-Type: text/csv');
 			header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.csv"');
 			header('Cache-Control: max-age=0');
@@ -330,7 +316,7 @@ class MY_Controller extends CI_Controller {
 		}
 		echo "</items>\n";
 		header('Content-Type: text/xml');
-		if ((string)$this->data['config']->download_reports === 'download') {
+		if ((string)$this->config->item('download_reports') === 'download') {
 			header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.xml"');
 			header('Cache-Control: max-age=0');
 		}
@@ -415,7 +401,7 @@ class MY_Controller extends CI_Controller {
 			}
 		}
 		header('Content-Type: application/json');
-		if ((string)$this->data['config']->download_reports === 'download') {
+		if ((string)$this->config->item('download_reports') === 'download') {
 			header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.json"');
 			header('Cache-Control: max-age=0');
 		}
@@ -491,7 +477,7 @@ class MY_Controller extends CI_Controller {
 			echo '</html>';
 		}
 		header('Content-Type: text/html');
-		if ((string)$this->data['config']->download_reports === 'download') {
+		if ((string)$this->config->item('download_reports') === 'download') {
 			header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.html"');
 			header('Cache-Control: max-age=0');
 		}
@@ -690,7 +676,7 @@ class MY_Controller extends CI_Controller {
 			echo '</html>';
 		}
 		header('Content-Type: text/html');
-		if ((string)$this->data['config']->download_reports === 'download') {
+		if ((string)$this->config->item('download_reports') === 'download') {
 			header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.html"');
 			header('Cache-Control: max-age=0');
 		}
@@ -836,7 +822,7 @@ class MY_Controller extends CI_Controller {
 		}
 		echo "  </channel>\n</rss>\n";
 		header('Content-Type: application/rss+xml');
-		if ((string)$this->data['config']->download_reports === 'download') {
+		if ((string)$this->config->item('download_reports') === 'download') {
 			header('Content-Disposition: attachment;filename="' . $this->data['heading'] . '.rss"');
 			header('Cache-Control: max-age=0');
 		}

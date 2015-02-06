@@ -47,7 +47,7 @@ if ( ! function_exists('stdlog'))
 	{
 		error_reporting(E_ALL);
 		$CI =& get_instance();
-		$config_log_level = 200;
+
 		// log_details:
 		// 	timestamp - default to current. Format is YYYY-MM-DD HH:II:SS
 		// 	severity - default to 5
@@ -104,11 +104,7 @@ if ( ! function_exists('stdlog'))
 
 		// get the log_style or default to json
 		if (!isset($log_details->style) OR $log_details->style == '' OR ($log_details->style != 'json' AND $log_details->style != 'syslog')) {
-			if (isset($CI->data['config']->log_style) AND $CI->data['config']->log_style !== '') {
-				$log->style = $CI->data['config']->log_style;
-			} else {
-				$log->style = $CI->m_oa_config->get_config_item('log_style');
-			}
+			$log->style = $this->config->item('log_style');
 			if (!isset($log->style) or $log->style == '' OR ($log->style != 'json' AND $log->style != 'syslog')) {
 				$log->style = 'syslog';
 			}
@@ -118,11 +114,7 @@ if ( ! function_exists('stdlog'))
 
 		// get the log level or default to 5.
 		if (!isset($log_details->log_level) OR $log_details->log_level == '') {
-			if (isset($CI->data['config']->log_level) AND $CI->data['config']->log_level !== '') {
-				$log->log_level = $CI->data['config']->log_level;
-			} else {
-				$log->log_level = intval($CI->m_oa_config->get_config_item('log_level'));
-			}
+			$log->level = $this->config->item('log_level');
 			if (!isset($log->log_level) or $log->log_level == '') {
 				$log->log_level = '5';
 			}

@@ -162,10 +162,10 @@ class Admin extends MY_Controller {
 	 */
 	function get_config()
 	{
-		$json = $this->data['config'];
-		if ($this->data['config']->default_network_address == '') {
+		$this->load->model('m_oa_config');
+		$json = (object)$this->m_oa_config->get_config();
+		if ($this->config->config['default_network_address'] == '') {
 			# get all ip addresses of this machine
-			$this->load->model('m_oa_config');
 			$json->server_ip_addresses = $this->m_oa_config->get_server_ip_addresses();
 		} else {
 			$json->server_ip_addresses = array();
@@ -506,7 +506,7 @@ class Admin extends MY_Controller {
 
 				# snmp community
 				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
-				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">" . $this->data['config']->default_snmp_community . "</span>"; }
+				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">" . $this->config->item('default_snmp_community') . "</span>"; }
 
 				# snmp version
 				if (isset($j->snmp_version)) {
@@ -601,7 +601,7 @@ class Admin extends MY_Controller {
 
 				# snmp community
 				if (isset($j->snmp_community)) { $this->data['query'][$i]->nmis_community = $j->snmp_community; }
-				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = $this->data['config']->default_snmp_community; }
+				if ($this->data['query'][$i]->nmis_community == '') { $this->data['query'][$i]->nmis_community = $this->config->item('default_snmp_community'); }
 
 				# snmp version
 				if (isset($j->snmp_version)) {
@@ -3331,7 +3331,7 @@ class Admin extends MY_Controller {
 			$query = $this->db->query($sql);
 
 			# insert the group definition
-			$sql = "INSERT INTO oa_group VALUES (8888, 'Open-AudIT Enterprise Managed Devices', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and man_oae_manage = \'y\'',1,'Any items that have their status attribute set to \'production\' and their oae_manage attribute set to \'y\'.', 'device', '', 'devices')";
+			$sql = "INSERT INTO oa_group VALUES (NULL, 'Open-AudIT Enterprise Managed Devices', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and man_oae_manage = \'y\'',1,'Any items that have their status attribute set to \'production\' and their oae_manage attribute set to \'y\'.', 'device', '', 'devices')";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
@@ -3371,7 +3371,7 @@ class Admin extends MY_Controller {
 				}
 				if ($returned_result->config_name == 'display_version') {
 					$db_display_version = $returned_result->config_value;
-					$this->data['config']->display_version = $returned_result->config_value;
+					$this->config->config['display_version'] = $returned_result->config_value;
 				}
 			}
 		}

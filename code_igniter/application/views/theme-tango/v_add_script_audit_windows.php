@@ -52,7 +52,7 @@ if ($result = @dns_get_record(php_uname('n'))) {
 	$dns_lookup = "<span style=\"color: red;\">Warning, could not resolve hostname.<br />Make sure an entry exists in DNS if you intend to use the audit script on another system.</span>";
 }
 
-$url[] = str_replace("localhost", $config->default_network_address, base_url());
+$url[] = str_replace("localhost", $this->config->item('default_network_address'), base_url());
 
 $file_exist = '';
 $filename = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/other/audit_windows.vbs";

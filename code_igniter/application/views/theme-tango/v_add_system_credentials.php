@@ -43,7 +43,7 @@ echo form_open('admin_system/system_add_credentials') . "\n";
 	<p><label for='snmp_version'><?php echo __("SNMP Version"); ?>: </label>
 		<input type='text' id='snmp_version' name='snmp_version' tabindex='1' title='SNMP Version' value="2c"/></p>
 	<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: </label>
-		<input type='text' id='snmp_community' name='snmp_community' tabindex='1' title='SNMP Community' value="<?php echo $config->default_snmp_community; ?>"/></p>
+		<input type='text' id='snmp_community' name='snmp_community' tabindex='1' title='SNMP Community' value="<?php echo $this->config->item('default_snmp_community'); ?>"/></p>
 
 
 

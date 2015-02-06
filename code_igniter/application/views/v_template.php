@@ -32,8 +32,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-#if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') == 'y')) {
-if ($config->display_version != $this->config->item('web_display_version')) {
+if ($this->config->config['display_version'] != $this->config->config['web_display_version']) {
     $include = "v_help_about";
     $heading = "You must upgrade";
 }

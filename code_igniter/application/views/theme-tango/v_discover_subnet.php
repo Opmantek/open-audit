@@ -120,12 +120,12 @@ switch ($type) {
 if (!isset($ip_address)) { $ip_address = ''; }
 if (!isset($system_id)) { $system_id = ''; }
 if (!isset($type)) { $type = ''; }
-if (isset($config->show_snmp_community) and $config->show_snmp_community == 'n') {
+if (isset($this->config->config['show_snmp_community']) and $this->config->config['show_snmp_community'] == 'n') {
 	$snmp_community_field = 'password';
 } else {
 	$snmp_community_field = 'text';
 }
-if (isset($config->show_passwords) and $config->show_passwords == 'n') {
+if (isset($this->config->config['show_passwords']) and $this->config->config['show_passwords'] == 'n') {
 	$password_field = 'password';
 } else {
 	$password_field = 'text';
@@ -141,14 +141,14 @@ if (isset($config->show_passwords) and $config->show_passwords == 'n') {
 				<p><label for='subnet_range'><?php echo __($scan_title); ?>: </label> <input type='text' id='subnet_range' name='subnet_range' tabindex='1' title='Subnet Range' value='<?php echo $ip_address; ?>' /></p>
 
 				<?php if ($type == "" or $type == "device" or $type == "linux" or (php_uname('s') == "Linux" and $type == "windows")) { ?>
-					<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $config->default_network_address; ?>' />*</p>
+					<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $this->config->item('default_network_address'); ?>' />*</p>
 				<?php } ?>
 
 				<?php if ($type == "" or $type == "snmp" or $type == "device") { ?>
 					<?php if (isset($credentials->snmp_community)) { 
 						$snmp_community = $credentials->snmp_community;
 					} else {
-						$snmp_community = $config->default_snmp_community;
+						$snmp_community = $this->config->item('default_snmp_community');
 					} ?>
 					<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: </label> <input type='<?php echo $snmp_community_field; ?>' id='snmp_community' name='snmp_community' tabindex='3' title='SNMP Community' value='<?php echo $snmp_community; ?>' /></p>
 				<?php } ?>
@@ -157,12 +157,12 @@ if (isset($config->show_passwords) and $config->show_passwords == 'n') {
 					<?php if (isset($credentials->ssh_username)) { 
 						$ssh_username = $credentials->ssh_username;
 					} else {
-						$ssh_username = $config->default_ssh_username;
+						$ssh_username = $this->config->item('default_ssh_username');
 					} ?>
 					<?php if (isset($credentials->ssh_password)) { 
 						$ssh_password = $credentials->ssh_password;
 					} else {
-						$ssh_password = $config->default_ssh_password;
+						$ssh_password = $this->config->item('default_ssh_password');
 					} ?>
 				<p><label for='ssh_username'><?php echo __("SSH User"); ?>: </label> <input type='text' id='ssh_username' name='ssh_username' tabindex='4' title='SSH User' value='<?php echo $ssh_username; ?>' /></p>
 				<p><label for='ssh_password'><?php echo __("SSH Password"); ?>: </label> <input type='<?php echo $password_field; ?>' id='ssh_password' name='ssh_password' tabindex='5' title='SSH Password' value='<?php echo $ssh_password; ?>' /></p>
@@ -172,17 +172,17 @@ if (isset($config->show_passwords) and $config->show_passwords == 'n') {
 				<?php if (isset($credentials->windows_username)) { 
 					$windows_username = $credentials->windows_username;
 				} else {
-					$windows_username = $config->default_windows_username;
+					$windows_username = $this->config->item('default_windows_username');
 				} ?>
 				<?php if (isset($credentials->windows_password)) { 
 					$windows_password = $credentials->windows_password;
 				} else {
-					$windows_password = $config->default_windows_password;
+					$windows_password = $this->config->item('default_windows_password');
 				} ?>
 				<?php if (isset($credentials->windows_domain)) { 
 					$windows_domain = $credentials->windows_domain;
 				} else {
-					$windows_domain = $config->default_windows_domain;
+					$windows_domain = $this->config->item('default_windows_domain');
 				} ?>
 				<p><label for='windows_username'><?php echo __("Windows User"); ?>: </label> <input type='text' id='windows_username' name='windows_username' tabindex='6' title='Windows User' value='<?php echo $windows_username; ?>' /></p>
 				<p><label for='windows_password'><?php echo __("Windows Password"); ?>: </label> <input type='<?php echo $password_field; ?>' id='windows_password' name='windows_password' tabindex='7' title='Windows Password' value='<?php echo $windows_password; ?>' /></p>
@@ -228,12 +228,12 @@ if (isset($config->show_passwords) and $config->show_passwords == 'n') {
 
 <?php
 if ($type == '') {
-	if ($config->default_snmp_community == '' or
-		$config->default_ssh_username == '' or 
-		$config->default_ssh_password == '' or 
-		$config->default_windows_username == '' or 
-		$config->default_windows_password == '' or 
-		$config->default_windows_domain == ''){
+	if ($this->config->config['default_snmp_community'] == '' or
+		$this->config->config['default_ssh_username'] == '' or 
+		$this->config->config['default_ssh_password'] == '' or 
+		$this->config->config['default_windows_username'] == '' or 
+		$this->config->config['default_windows_password'] == '' or 
+		$$this->config->config['default_windows_domain'] == ''){
 	?>
 	<p><h3 style="color: blue">Warning</h3>Please ensure you have default for ALL attributes. Defaults can be set on the Config page - click <a href="<?php echo base_url(); ?>index.php/admin/edit_config" style="color: red";>here</a>.<br />
 	<?php } ?>

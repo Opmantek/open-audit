@@ -98,7 +98,7 @@ if ($access_level > 7) {
 }
 
 # set the passwords to display or not
-if (isset($config->show_passwords) and $config->show_passwords != 'y') {
+if (isset($this->config->config['show_passwords']) and $this->config->config['show_passwords'] != 'y') {
 	if (isset($decoded_access_details->ssh_password)) {
 		$ssh_password = str_replace($decoded_access_details->ssh_password, str_repeat("*", strlen($decoded_access_details->ssh_password)), $decoded_access_details->ssh_password);
 	} else {
@@ -116,7 +116,7 @@ if (isset($config->show_passwords) and $config->show_passwords != 'y') {
 	}
 }
 
-if (isset($config->show_snmp_community) and $config->show_snmp_community != 'y') {
+if (isset($this->config->config['show_snmp_community']) and $this->config->config['show_snmp_community'] != 'y') {
 	if (isset($decoded_access_details->snmp_community)) {
 		$snmp_community = str_replace($decoded_access_details->snmp_community, str_repeat("*", strlen($decoded_access_details->snmp_community)), $decoded_access_details->snmp_community);
 	} else {

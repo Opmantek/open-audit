@@ -172,5 +172,54 @@ class M_oa_user extends MY_Model {
 		$query = $this->db->query($sql, $data);
 		return(TRUE);
 	}
+
+	// function validate_user() {
+
+	// 	if ((strpos(current_url(), '/username/') !== FALSE) AND (strpos(current_url(), '/password/') !== FALSE)) {
+	// 		$split_url = explode('/', current_url());
+	// 		for ($i=0; $i <= count($split_url)-1 ; $i++) {
+	// 			if (strpos($split_url[$i], 'username') !== FALSE) {
+	// 				$username = $split_url[$i+1];
+	// 			}
+	// 			if (strpos($split_url[$i], 'password') !== FALSE) {
+	// 				$password = $split_url[$i+1];
+	// 			}
+	// 		}
+	// 	}
+
+	// 	$user_data = $this->m_userlogin->validate_user($username, $password);
+	// 	if (isset($user_data) AND $user_data->)
+
+
+
+	// 		if ($this->input->post('username') AND $this->input->post('password')) {
+	// 			$username = $this->input->post('username');
+	// 			$password = $this->input->post('password');
+	// 		}
+	// 		if (isset($username) AND (string)$username !== '' AND isset($password) AND (string)$password !== '') {
+	// 			$this->load->model('m_userlogin');
+	// 			if ($data = $this->m_userlogin->validate_user($username, $password)) {
+	// 				if (is_array($data)) {
+	// 					$this->session->set_userdata($data);
+	// 					$this->data['user_full_name'] = $data['user_full_name'];
+	// 					$this->data['user_lang'] = $data['user_lang'];
+	// 					$this->data['user_theme'] = $data['user_theme'];
+	// 					$this->data['user_admin'] = $data['user_admin'];
+	// 					$this->data['user_id'] = $data['user_id'];
+	// 					$this->data['user_debug'] = 'n';
+	// 					$loggedin = TRUE;
+	// 				}
+	// 				else {
+	// 					// username and password are set but do not validate
+	// 					exit();       
+	// 				}
+	// 			}
+	// 			else {
+	// 				// username and password are set but validate_user fails for some reason
+	// 				exit();
+	// 			}
+	// 		}
+
+	// }
 }
 ?>

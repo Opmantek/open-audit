@@ -56,6 +56,27 @@ class M_oa_config extends MY_Model {
 		return ($result);
 	}
 
+	function load_config() {
+		$this->load->library('encrypt');
+		$sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.config_edited_by = oa_user.user_id";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		foreach ($result as $key => $value) {
+			$config_item_name = $result[$key]->config_name;
+			if ($config_item_name == 'default_ipmi_password' OR 
+				$config_item_name == 'default_snmp_community' OR 
+				$config_item_name == 'default_ssh_password' OR 
+				$config_item_name == 'default_windows_password' ) {
+					# we need to decrypt
+					$result[$key]->config_value = $this->encrypt->decode($result[$key]->config_value);
+			}
+		}
+		foreach ($result AS $config_item) {
+			$temp_name = $config_item->config_name;
+			$this->config->config[$temp_name] = $config_item->config_value;
+		}
+	}
+
 	function get_credentials() {
 		$this->load->library('encrypt');
 		$sql = "SELECT config_name, config_value FROM oa_config";

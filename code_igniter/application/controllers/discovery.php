@@ -45,18 +45,15 @@ class discovery extends CI_Controller
 		$this->load->library('session');
 		$loggedin = @$this->session->userdata('logged_in');
 		$this->load->model('m_oa_config');
-		$conf = $this->m_oa_config->get_config();
-		$this->data['config'] = new stdclass();
-		foreach ($conf as $returned_result) {
-			$config_name = $returned_result->config_name;
-			$this->data['config']->$config_name = $returned_result->config_value;
-		}
+		$this->m_oa_config->load_config();
+
 		// log the attempt
 		$this->load->helper('log');
 		$log_details = new stdClass();
 		$log_details->severity = 6;
 		stdlog($log_details);
 		unset($log_details);
+
 	}
 
 
@@ -148,7 +145,7 @@ public function discover_list($ids = '')
 			// set the URL to submit to
 			// TODO - check this on the form
 			$i = explode('/', base_url());
-			$url = str_replace($i[2], $this->data['config']->default_network_address, base_url());
+			$url = str_replace($i[2], $this->config->item('default_network_address'), base_url());
 			if ((php_uname('s') == 'Linux') OR (php_uname('s') == 'Darwin')) {
 				// run the script and continue (do not wait for result)
 				$command_string = "nohup $filepath/discover_subnet.sh subnet_range=$ip_address url=" . $url . "index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
@@ -194,12 +191,7 @@ public function discover_list($ids = '')
 		else {
 			$this->data['user_admin'] = 'y';
 			$this->load->model('m_oa_config');
-			$conf = $this->m_oa_config->get_config();
-			$this->data['config'] = new stdclass();
-			foreach ($conf as $returned_result) {
-				$config_name = $returned_result->config_name;
-				$this->data['config']->$config_name = $returned_result->config_value;
-			}
+			$this->m_oa_config->load_config();
 			$this->data['user_full_name'] = $this->session->userdata('user_full_name');
 			$this->data['user_theme'] = 'tango';
 		}
@@ -446,11 +438,7 @@ public function discover_list($ids = '')
 							// load the config
 							$this->load->model("m_oa_config");
 							$conf = $this->m_oa_config->get_config();
-							$this->data['config'] = new stdclass();
-							foreach ($conf as $returned_result) {
-								$config_name = $returned_result->config_name;
-								$this->data['config']->$config_name = $returned_result->config_value;
-							}
+							$this->m_oa_config->load_config();
 						} else {
 							// valid user, but user is not an admin OR OAE
 						}
@@ -677,14 +665,14 @@ public function discover_list($ids = '')
 					$url = 'http://' . $_POST['network_address'] . '/open-audit/';
 				}
 			# if not, check if we have on in the config and use it
-			} elseif (isset($this->data['config']->default_network_address) AND $this->data['config']->default_network_address > '') {
-				if (strpos($this->data['config']->default_network_address, '/')) {
+			} elseif (isset($this->config->config['default_network_address']) AND $this->config->config['default_network_address'] > '') {
+				if (strpos($this->config->config['default_network_address'], '/')) {
 					$i = explode('/', base_url());
 					$temp_network_address = $i[2];
 				} else {
-					$temp_network_address = $this->data['config']->default_network_address;
+					$temp_network_address = $this->config->item('default_network_address');
 				}
-				$url = str_replace($temp_network_address, $this->data['config']->default_network_address, base_url());
+				$url = str_replace($temp_network_address, $this->config->config['default_network_address'], base_url());
 			# if nothing, then just try the base_url - this will likely use 127.0.0.1 and fail...
 			# TODO - fix this
 			} else {
@@ -817,13 +805,7 @@ public function discover_list($ids = '')
 
 			$this->load->helper('url');
 			$this->load->model('m_oa_config');
-			$this->data['config'] = new stdclass();
-			//$conf = $this->m_oa_config->get_config();
-			//foreach ($conf as $returned_result) {
-			foreach ($this->m_oa_config->get_config() as $returned_result) {
-				$config_name = $returned_result->config_name;
-				$this->data['config']->$config_name = $returned_result->config_value;
-			}
+			$this->m_oa_config->load_config();
 
 			if ($display == 'y') {
 				echo 'DEBUG - <a href=\'' . base_url() . "index.php/discovery/discover_subnet'>Back to input page</a>\n";
@@ -990,9 +972,9 @@ public function discover_list($ids = '')
 						$temp = explode('/', base_url());
 						$url = str_replace($temp[2], $details->network_address, base_url());
 					# use the open-audit default config value
-					} elseif (isset($this->data['config']->default_network_address) AND $this->data['config']->default_network_address > '') {
+					} elseif (isset($this->config->config['default_network_address']) AND $this->config->config['default_network_address'] > '') {
 						$temp = explode('/', base_url());
-						$url = str_replace($temp[2], $this->data['config']->default_network_address, base_url());
+						$url = str_replace($temp[2], $this->config->config['default_network_address'], base_url());
 					# use the PHP function to guess as a last resort
 					} else {
 						$url = base_url();
