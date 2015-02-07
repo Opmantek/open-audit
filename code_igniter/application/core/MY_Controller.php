@@ -52,136 +52,57 @@ class MY_Controller extends CI_Controller {
 	function MY_Controller()
 	{
 		parent::__construct();
-		$this->load->library('session');
-
 		$this->benchmark->mark('code_start');
+		
+		$this->load->library('session');
+		$this->load->model('m_oa_config');
+		$this->m_oa_config->load_config();
+		$this->load->model('m_oa_user');
+
+		// set the 'admin' flag if required when testing
+		// any controllers named admin_* will require an Admin level of access
+		$router =& load_class('Router', 'core');
+		$controller = $router->fetch_class();
+		if (strpos($controller, 'admin_') !== FALSE) {
+			$this->m_oa_user->validate_user('y');
+		} else {
+			$this->m_oa_user->validate_user();
+		}
+		unset($router);
+		unset($controller);
+
+		
+		$this->load->helper('url');
+		
 		if ($this->config->item('debug')) {
 			$this->output->enable_profiler(TRUE);
 		}
-		$this->load->helper('url');
-		$loggedin = $this->session->userdata('logged_in');
-
-		$this->load->model('m_oa_config');
-		$this->m_oa_config->load_config();
 
 		// turn on/off debugging from GET string
-		if (((isset($loggedin)) OR ((bool)$this->session->userdata('logged_in') === TRUE)) AND ((string)$this->uri->segment($this->uri->total_rsegments()-1) === 'user_debug') ) {
-			if ((string)$this->session->userdata['user_admin'] === 'y') {
-				$array = array('user_debug' => $this->uri->segment($this->uri->total_rsegments()) );
-				$this->session->set_userdata($array);
-				$this->data['user_debug'] = $this->uri->segment($this->uri->total_rsegments());
-			}
+		if ( (string)$this->uri->segment($this->uri->total_rsegments()-1) === 'user_debug' AND $this->user->user_admin === 'y') {
+			$this->user->user_debug = $this->uri->segment($this->uri->total_rsegments());
 			$new_url = str_replace('/user_debug/y', '', $this->uri->uri_string());
 			$new_url = str_replace('/user_debug/n', '', $new_url);
 			redirect($new_url);
 		}
-		if ((isset($loggedin)) OR ((bool)$this->session->userdata('logged_in') === TRUE)) {
-			if (isset($this->session->userdata['user_debug'])) {
-				if ((string)$this->session->userdata['user_debug'] === 'y') {
-					$this->output->enable_profiler(TRUE);
-				}
-				else {
-					$this->output->enable_profiler(FALSE);
-				}
-			}
+
+		if (isset($this->user->user_debug) AND (string)$this->user->user_debug === 'y') {
+			$this->output->enable_profiler(TRUE);
+		} else {
+			$this->output->enable_profiler(FALSE);
 		}
-
-
-		// if GET or POST has username and password, use that to validate and deliver page and do NOT set a cookie
-		if (( ! isset($loggedin)) OR ((bool)$this->session->userdata('logged_in') !== TRUE)) {
-			if ((strpos(current_url(), 'username') !== FALSE) AND (strpos(current_url(), 'password') !== FALSE)) {
-				$split_url = explode('/', current_url());
-				for ($i=0; $i <= count($split_url)-1 ; $i++) {
-					if (strpos($split_url[$i], 'username') !== FALSE) {
-						$username = $split_url[$i+1];
-					}
-					if (strpos($split_url[$i], 'password') !== FALSE) {
-						$password = $split_url[$i+1];
-					}
-				}
-			}
-			if ($this->input->post('username') AND $this->input->post('password')) {
-				$username = $this->input->post('username');
-				$password = $this->input->post('password');
-			}
-			if (isset($username) AND (string)$username !== '' AND isset($password) AND (string)$password !== '') {
-				$this->load->model('m_userlogin');
-				if ($data = $this->m_userlogin->validate_user($username, $password)) {
-					if (is_array($data)) {
-						$this->session->set_userdata($data);
-						$this->data['user_full_name'] = $data['user_full_name'];
-						$this->data['user_lang'] = $data['user_lang'];
-						$this->data['user_theme'] = $data['user_theme'];
-						$this->data['user_admin'] = $data['user_admin'];
-						$this->data['user_id'] = $data['user_id'];
-						$this->data['user_debug'] = 'n';
-						$loggedin = TRUE;
-					}
-					else {
-						// username and password are set but do not validate
-						exit();       
-					}
-				}
-				else {
-					// username and password are set but validate_user fails for some reason
-					exit();
-				}
-			}
-		}
-
-		$this->user = $this->m_oa_user->get_user_details($this->session->userdata['user_id']);
 
 		$this->data['title'] = 'Open-AudIT';
 		$this->data['id'] = $this->uri->segment(3, 0);
 		$this->load->helper('log');
-		
-		if (((bool)$loggedin === TRUE) OR ((int)$loggedin === 1) OR ((bool)$this->session->userdata('logged_in') === TRUE)) {
-			// logged in
-			if ( ! isset($this->data['user_full_name']) OR (string)$this->data['user_full_name'] === '')
-			{ 
-				$this->data['user_full_name'] = $this->session->userdata('user_full_name');
-			}
-			if ( ! isset($this->data['user_lang']) OR (string)$this->data['user_lang'] === '')
-			{
-				$this->data['user_lang'] = $this->session->userdata('user_lang');
-			}
-			if ( ! isset($this->data['user_theme']) OR (string)$this->data['user_theme'] === '')
-			{
-				$this->data['user_theme'] = $this->session->userdata('user_theme');
-			}
-			if ( ! isset($this->data['user_admin']) OR (string)$this->data['user_admin'] === '')
-			{
-				$this->data['user_admin'] = $this->session->userdata('user_admin');
-			}
-			if ( ! isset($this->data['user_id']) OR (string)$this->data['user_id'] === '')
-			{
-				$this->data['user_id'] = $this->session->userdata('user_id');
-			}
-			if ( ! isset($this->data['user_debug']) OR (string)$this->data['user_debug'] === '')
-			{
-				$this->data['user_debug'] = $this->session->userdata('user_debug');
-			}
-			$this->load->helper('url');
-			$this->load->helper('network');
-			$this->data['apppath'] = APPPATH;
-			$this->data['image_path'] = base_url() . 'theme-' . $this->data['user_theme'] . '/' . $this->data['user_theme'] . '-images/';
-			$this->load->model('m_oa_report');
-			$this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
-			set_time_limit(600);
-		}
-		else {
-			// not logged in - redirect to login page.
-			// login page will present form, validate credentials and set session data
-			$this->data['page'] = $this->uri->segment(1, '');
-			$this->data['function'] = $this->uri->segment(2, '');
-			$this->data['first_attribute'] = $this->uri->segment(4, '');
-			if ((string)$this->data['page'] !== '' AND (string)$this->data['function'] !== '') {
-				redirect('login/index/' . $this->data['page'] . '/' . $this->data['function'] . '/' . $this->data['id'] . '/' . $this->data['first_attribute']);
-			}
-			else {
-				redirect('login/index');
-			}
-		}
+		$this->load->helper('url');
+		$this->load->helper('network');
+		$this->data['apppath'] = APPPATH;
+		$this->data['image_path'] = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/';
+		$this->load->model('m_oa_report');
+		$this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
+		set_time_limit(600);
+
 	}
 
 	/**
@@ -780,7 +701,7 @@ class MY_Controller extends CI_Controller {
 		echo "\t\t<title>Open-AudIT</title>\n";
 		echo "\t\t<link>" . current_url() . "</link>\n";
 		echo "\t\t<description>" . $this->data['heading'] . "</description>\n";
-		echo "\t\t<language>" . $this->session->userdata['user_lang'] . "</language>\n";
+		echo "\t\t<language>" . $this->user->user_lang . "</language>\n";
 
 		foreach ($query AS $details) {
 			$title = '';
@@ -842,7 +763,7 @@ class MY_Controller extends CI_Controller {
 			$col_link = substr($col_link, 1);
 		}
 		$temp_url = $this->relative_index . $col_link . $col_var_name_sec;
-		if ((string)$this->data['user_full_name'] === 'Open-AudIT Enterprise') {
+		if ((string)$this->user->user_full_name === 'Open-AudIT Enterprise') {
 			if (strpos($col_link, '/') === 0) {
 				$col_link = substr($col_link, 1);
 			}

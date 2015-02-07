@@ -75,7 +75,7 @@ if (isset($error_message))
 					</select></p>
 			<!-- 	<p><label for='user_display_number'><?php echo __("Display Systems")?>: </label><input type='text' id='user_display_number' name='user_display_number' tabindex='6' title='Display Systems' value='10' value="<?php echo $key->user_display_number; ?>"/></p> -->
 				<p><label for='user_theme'><?php echo __("Theme")?>: </label><input type='text' id='user_theme' name='user_theme' tabindex='7' title='Theme' value="<?php echo $key->user_theme; ?>"/></p>
-				<?php if ($this->session->userdata('user_admin') == 'y') { ?>
+				<?php if ($this->user->user_admin == 'y') { ?>
 					<p><label for='user_admin'><?php echo __("User is Admin")?>: </label><input type='checkbox' id='user_admin' name='user_admin' tabindex='8' title='Is Admin' <?php echo $value_admin?> /></p>
 				<?php } else { ?>
 					<p></p>
@@ -162,7 +162,7 @@ function group_dropdown ($group_id, $access_level)
 }
 ?>
 
-<?php if ($this->session->userdata('user_admin') == 'y') { ?>
+<?php if ($this->user->user_admin == 'y') { ?>
 <script type="text/javascript">
 function alter_all_groups() {
 	totalArray = new Array();

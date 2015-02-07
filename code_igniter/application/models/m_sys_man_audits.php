@@ -66,8 +66,8 @@ class M_sys_man_audits extends MY_Model {
 		
 		if (isset($details->last_seen_user) and $details->last_seen_user > '') { 
 			$inserted_user = $details->last_seen_user; 
-		} elseif (isset($this->data['user_full_name'])) {
-			$inserted_user = $this->data['user_full_name'];
+		} elseif (isset($this->user->user_full_name)) {
+			$inserted_user = $this->user->user_full_name;
 		} else {
 			$inserted_user = '';
 		}

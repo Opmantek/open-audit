@@ -34,7 +34,7 @@
 
 ?>
 <?php 
-$image_path = base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-images/';
+$image_path = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/';
 if (php_uname('s') != "Windows NT") { 
 	$ldap_server_addition = "This is the server which will run the audit scripts.";
 } else {

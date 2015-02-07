@@ -38,7 +38,7 @@ if (isset($error_message))
 } else {
 	$error_message = "";
 }
-$image_path = base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-images/'; 
+$image_path = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/'; 
 $attributes = array('name'=>'add_device_form', 'id'=>'add_device_form');
 echo form_open('admin_device/add_device', $attributes) . "\n"; 
 ?>

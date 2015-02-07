@@ -104,7 +104,7 @@ if ( ! function_exists('stdlog'))
 
 		// get the log_style or default to json
 		if (!isset($log_details->style) OR $log_details->style == '' OR ($log_details->style != 'json' AND $log_details->style != 'syslog')) {
-			$log->style = $this->config->item('log_style');
+			$log->style = $CI->config->item('log_style');
 			if (!isset($log->style) or $log->style == '' OR ($log->style != 'json' AND $log->style != 'syslog')) {
 				$log->style = 'syslog';
 			}
@@ -114,7 +114,7 @@ if ( ! function_exists('stdlog'))
 
 		// get the log level or default to 5.
 		if (!isset($log_details->log_level) OR $log_details->log_level == '') {
-			$log->level = $this->config->item('log_level');
+			$log->log_level = $CI->config->item('log_level');
 			if (!isset($log->log_level) or $log->log_level == '') {
 				$log->log_level = '5';
 			}
@@ -160,6 +160,7 @@ if ( ! function_exists('stdlog'))
 		if (intval($log->severity) > intval($log->log_level)) {
 			// log called but log severity level not met
 			return;
+			// $log->message .= ' Severity:' . $log->severity . ' Level:' . $log->log_level . ' ';
 		}
 
 		if (!isset($log_details->severity_text) or $log_details->severity_text == '') {
@@ -212,7 +213,7 @@ if ( ! function_exists('stdlog'))
 		}
 
 		if (!isset($log_details->user) or $log_details->user == '') {
-			$log->user = $CI->session->userdata('user_full_name');
+			$log->user = $CI->user->user_full_name;
 			if (!$log->user) {
 				$log->user = '-';
 			}

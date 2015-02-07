@@ -34,7 +34,7 @@
 
 ?>
 <!-- v_display_inc_common.php -->
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 $(function() {

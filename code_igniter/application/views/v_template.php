@@ -37,6 +37,8 @@ if ($this->config->config['display_version'] != $this->config->config['web_displ
     $heading = "You must upgrade";
 }
 
-if ( !isset($user_theme) or $user_theme == '' ) { $user_theme = 'tango'; }
-include "theme-" . $user_theme . "/v_template.php";
+if ( !isset($this->user->user_theme) or $this->user->user_theme == '' ) { 
+	$this->user->user_theme = 'tango';
+}
+include "theme-" . $this->user->user_theme . "/v_template.php";
 ?>

@@ -33,7 +33,7 @@
  */
 
 include "v_lang.php";
-$file_path = base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/';
+$file_path = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/';
 if (!isset($sortcolumn)) { $sortcolumn = '0';}
 
 if ($this->config->config['logo'] == 'oae') { $title = "Open-AudIT Enterprise"; } else { $title = "Open-AudIT"; }
@@ -192,7 +192,7 @@ if ($function == "list_devices") {
 	}
 </style>
 
-<?php if ($this->data['user_admin'] == 'y') { 
+<?php if ($this->user->user_admin == 'y') { 
 	echo "<script type=\"text/javascript\">\n";
 	echo "function createRequestObject() \n";
 	echo "{\n";
@@ -234,7 +234,7 @@ if ($function == "list_devices") {
 	} else {
 		echo "<h2>" . $heading . "</h2>\n";
 	}
-	$this->load->view("theme-" . $user_theme . "/" . $include); 
+	$this->load->view("theme-" . $this->user->user_theme . "/" . $include); 
 	?>
 	</div><!-- end of content_container -->
 </div>

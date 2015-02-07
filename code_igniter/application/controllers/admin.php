@@ -60,17 +60,6 @@ class Admin extends MY_Controller {
 	function __construct() 
 	{
 		parent::__construct();
-		// must be an admin to access this page
-		if ($this->session->userdata('user_admin') !== 'y') {
-			$referer = $this->input->server('HTTP_REFERER');
-			if ($referer > '') {
-				redirect($referer);
-			} 
-			else {
-				redirect('login/index');
-			}
-		}
-
 		$log_details = new stdClass();
 		stdlog($log_details);
         unset($log_details);
@@ -211,7 +200,7 @@ class Admin extends MY_Controller {
 				$this->load->model('m_oa_config');
 				foreach ($config as $name => $value) {
 					$value = urldecode($value);
-					$this->m_oa_config->update_config($name, $value, $this->data['user_id'], date('Y-m-d H:i:s'));
+					$this->m_oa_config->update_config($name, $value, $this->user->user_id, date('Y-m-d H:i:s'));
 				}
 				header(' ', true, 200);
 			} else {
@@ -796,7 +785,7 @@ class Admin extends MY_Controller {
 					$details->last_seen = date("Y-m-d H:i:s", $m); 
 					$details->last_seen_by = 'active directory';
 					$details->audits_ip = '127.0.0.1';
-					$details->last_user = $this->data['user_full_name'];
+					$details->last_user = $this->user->user_full_name;
 					#$details->location = @$info[$i]['location'][0];
 					$details->windows_active_directory_ou = '';
 					$j = explode(",", @strtolower($info[$i]['distinguishedname'][0]));
@@ -910,17 +899,17 @@ class Admin extends MY_Controller {
 	function list_devices_in_location() {
 		$this->load->model("m_oa_location");
 		$this->load->model("m_oa_group_column");
-		$this->data['query'] = $this->m_oa_location->list_devices_in_location($this->data['id'], $this->data['user_id']);
+		$this->data['query'] = $this->m_oa_location->list_devices_in_location($this->data['id'], $this->user->user_id);
 		$this->data['column'] = $this->m_oa_group_column->get_group_column();
 		$location_name = $this->m_oa_location->get_location_name($this->data['id']);
 		$this->data['heading'] = 'Systems in Location - ' . $location_name; 
 		$this->data['include'] = 'v_report'; 
 		$this->data['export_report'] = 'y';
 		$this->data['group_id'] = '0';
-		if ($this->data['user_admin'] == 'y') {
-			$this->data['user_access_level'] = '10';
+		if ($this->user->user_admin == 'y') {
+			$this->user->user_access_level = '10';
 		} else {
-			$this->data['user_access_level'] = '3';
+			$this->user->user_access_level = '3';
 		}
 		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
 	}
@@ -928,18 +917,18 @@ class Admin extends MY_Controller {
 	function list_devices_in_org() {
 		$this->load->model("m_oa_org");
 		$this->load->model("m_oa_group_column");
-		$this->data['user_access_level'] = '7';
-		$this->data['query'] = $this->m_oa_org->list_devices_in_org($this->data['id'], $this->data['user_id']);
+		$this->user->user_access_level = '7';
+		$this->data['query'] = $this->m_oa_org->list_devices_in_org($this->data['id'], $this->user->user_id);
 		$this->data['column'] = $this->m_oa_group_column->get_group_column();
 		$org_name = $this->m_oa_org->get_org_name($this->data['id']);
 		$this->data['heading'] = 'Systems in Org - ' . $org_name; 
 		$this->data['include'] = 'v_report'; 
 		$this->data['export_report'] = 'y';
 		$this->data['group_id'] = '0';
-		if ($this->data['user_admin'] == 'y') {
-			$this->data['user_access_level'] = '10';
+		if ($this->user->user_admin == 'y') {
+			$this->user->user_access_level = '10';
 		} else {
-			$this->data['user_access_level'] = '3';
+			$this->user->user_access_level = '3';
 		}
 		$this->determine_output($this->uri->segment($this->uri->total_rsegments()));
 	}
@@ -3314,7 +3303,7 @@ class Admin extends MY_Controller {
 			$this->load->model('m_oa_group');
 
 			$configs = array('default_ipmi_password', 'default_ssh_password', 'default_snmp_community', 'default_windows_password');
-			$user_id = $this->data['user_id'];
+			$user_id = $this->user->user_id;
 			$timestamp = date('Y-m-d H:i:s');
 			foreach ($configs as $config_name) {
 				$config_value = $this->m_oa_config->get_config_item($config_name);

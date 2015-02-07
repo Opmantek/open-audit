@@ -67,42 +67,42 @@
 	    
 	.filterPopupPopup .topLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topLeft.png) no-repeat;
 	}
 	    
 	.filterPopupPopup .bottomLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomLeft.png) no-repeat;
 	}
 	    
 	.filterPopupPopup .left 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_left.png) repeat-y;
 	}
 	    
 	.filterPopupPopup .right 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_right.png) repeat-y;
 	}
 	    
 	.filterPopupPopup .topRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topRight.png) no-repeat;
 	}
 	    
 	.filterPopupPopup .bottomRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomRight.png) no-repeat;
 	}
 	    
 	.filterPopupPopup .top 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_top.png) repeat-x;
 	}
 	    
 	.filterPopupPopup .bottom 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -145,42 +145,42 @@
 	    
 	.SystemPopupPopup .topLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topLeft.png) no-repeat;
 	}
 	    
 	.SystemPopupPopup .bottomLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomLeft.png) no-repeat;
 	}
 	    
 	.SystemPopupPopup .left 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_left.png) repeat-y;
 	}
 	    
 	.SystemPopupPopup .right 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_right.png) repeat-y;
 	}
 	    
 	.SystemPopupPopup .topRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topRight.png) no-repeat;
 	}
 	    
 	.SystemPopupPopup .bottomRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomRight.png) no-repeat;
 	}
 	    
 	.SystemPopupPopup .top 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_top.png) repeat-x;
 	}
 	    
 	.SystemPopupPopup .bottom 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -221,43 +221,43 @@
 	    
 	.TagPopupPopup .topLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topLeft.png) no-repeat;
 	}
 	    
 	.TagPopupPopup .bottomLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomLeft.png) no-repeat;
 	}
 	    
 	.TagPopupPopup .left 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_left.png) repeat-y;
 	}
 	    
 	.TagPopupPopup .right 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_right.png) repeat-y;
 	}
 	    
 	.TagPopupPopup .topRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topRight.png) no-repeat;
 	}
 	    
 	.TagPopupPopup .bottomRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomRight.png) no-repeat;
 	}
 	    
 
 	.TagPopupPopup .top 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_top.png) repeat-x;
 	}
 	    
 	.TagPopupPopup .bottom 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -298,43 +298,43 @@
 	    
 	.ModifierPopupPopup .topLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topLeft.png) no-repeat;
 	}
 	    
 	.ModifierPopupPopup .bottomLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomLeft.png) no-repeat;
 	}
 	    
 	.ModifierPopupPopup .left 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_left.png) repeat-y;
 	}
 	    
 	.ModifierPopupPopup .right 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_right.png) repeat-y;
 	}
 	    
 	.ModifierPopupPopup .topRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topRight.png) no-repeat;
 	}
 	    
 	.ModifierPopupPopup .bottomRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomRight.png) no-repeat;
 	}
 	    
 
 	.ModifierPopupPopup .top 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_top.png) repeat-x;
 	}
 	    
 	.ModifierPopupPopup .bottom 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -375,42 +375,42 @@
 	    
 	.SearchPopupPopup .topLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topLeft.png) no-repeat;
 	}
 	    
 	.SearchPopupPopup .bottomLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomLeft.png) no-repeat;
 	}
 	    
 	.SearchPopupPopup .left 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_left.png) repeat-y;
 	}
 	    
 	.SearchPopupPopup .right 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_right.png) repeat-y;
 	}
 	    
 	.SearchPopupPopup .topRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topRight.png) no-repeat;
 	}
 	    
 	.SearchPopupPopup .bottomRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomRight.png) no-repeat;
 	}
 	    
 	.SearchPopupPopup .top 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_top.png) repeat-x;
 	}
 	    
 	.SearchPopupPopup .bottom 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -451,42 +451,42 @@
 	    
 	.ReportPopupPopup .topLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topLeft.png) no-repeat;
 	}
 	    
 	.ReportPopupPopup .bottomLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomLeft.png) no-repeat;
 	}
 	    
 	.ReportPopupPopup .left 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_left.png) repeat-y;
 	}
 	    
 	.ReportPopupPopup .right 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_right.png) repeat-y;
 	}
 	    
 	.ReportPopupPopup .topRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topRight.png) no-repeat;
 	}
 	    
 	.ReportPopupPopup .bottomRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomRight.png) no-repeat;
 	}
 	    
 	.ReportPopupPopup .top 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_top.png) repeat-x;
 	}
 	    
 	.ReportPopupPopup .bottom 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -526,42 +526,42 @@
 	    
 	.AssetPopupPopup .topLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topLeft.png) no-repeat;
 	}
 	    
 	.AssetPopupPopup .bottomLeft 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomLeft.png) no-repeat;
 	}
 	    
 	.AssetPopupPopup .left 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_left.png) repeat-y;
 	}
 	    
 	.AssetPopupPopup .right 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_right.png) repeat-y;
 	}
 	    
 	.AssetPopupPopup .topRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_topRight.png) no-repeat;
 	}
 	    
 	.AssetPopupPopup .bottomRight 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottomRight.png) no-repeat;
 	}
 	    
 	.AssetPopupPopup .top 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_top.png) repeat-x;
 	}
 	    
 	.AssetPopupPopup .bottom 
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme?>-images/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>

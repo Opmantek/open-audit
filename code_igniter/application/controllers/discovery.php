@@ -38,22 +38,20 @@ class discovery extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('m_system');
-		// No need for "user" to be logged in
-		// Have to be able to submit systems via the discovery script
 		$this->data['title'] = 'Open-AudIT';
+		$this->load->helper('url');
+		$this->load->helper('network');
 		$this->load->library('session');
-		$loggedin = @$this->session->userdata('logged_in');
+		$this->load->model('m_system');
 		$this->load->model('m_oa_config');
 		$this->m_oa_config->load_config();
-
+		$timestamp = date('Y-m-d H:i:s');
 		// log the attempt
 		$this->load->helper('log');
 		$log_details = new stdClass();
 		$log_details->severity = 6;
 		stdlog($log_details);
 		unset($log_details);
-
 	}
 
 
@@ -66,7 +64,7 @@ class discovery extends CI_Controller
 
 
 
-public function discover_list($ids = '')
+	public function discover_list($ids = '')
 	{
 		// take a list of system_id's and run discovery on them
 		// do not wait for the return result, go back to the webpage ASAP
@@ -120,7 +118,12 @@ public function discover_list($ids = '')
 			$system_id = $value;
 			$ip_address = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $system_id));
 			$credentials = $this->m_system->get_credentials($system_id);
-			$credentials->last_user = $this->session->userdata('user_full_name');
+			if (isset($this->session->userdata('user_id') AND is_numeric($this->session->userdata('user_id')) {
+				$temp = $this->m_oa_user->get_user_details($this->session->userdata('user_id');
+				$credentials->last_user = $temp[0]->user_full_name;
+			} else {
+				$credentials->last_user = '';
+			}
 			$encoded = json_encode($credentials);
 			$credentials = $this->encrypt->encode($encoded);
 			// make sure we don't have any '/' characters as it breaks the SQL storage
@@ -177,27 +180,17 @@ public function discover_list($ids = '')
 
 	public function discover_active_directory()
 	{
-		$this->load->helper('url');
-		// only Admin users can access this function
-		// NOTE - because we're not using the My_Controller, we have to do a bit of manual setup
-		if ((string)$this->session->userdata('user_admin') !== 'y') {
-			if ($this->input->server('HTTP_REFERER')) {
-				redirect($this->input->server('HTTP_REFERER'));
-			}
-			else {
-				redirect('login/index');
-			}
-		}
-		else {
-			$this->data['user_admin'] = 'y';
-			$this->load->model('m_oa_config');
-			$this->m_oa_config->load_config();
-			$this->data['user_full_name'] = $this->session->userdata('user_full_name');
-			$this->data['user_theme'] = 'tango';
-		}
-		$timestamp = date('Y-m-d H:i:s');
-
 		if ( ! $this->input->post('submit')) {
+			// only Admin users can access this function
+			$this->m_oa_user->validate_login();
+			if ($this->user->user_admin !== 'y') {
+				if ($this->input->server('HTTP_REFERER')) {
+					redirect($this->input->server('HTTP_REFERER'));
+				}
+				else {
+					redirect('main/list_groups');
+				}
+			}
 			// show the form to accept scan details
 			$this->data['type'] = $this->uri->segment(3);
 			$this->data['warning'] = '';
@@ -205,10 +198,9 @@ public function discover_list($ids = '')
 			$this->data['sortcolumn'] = '1';
 			$this->data['heading'] = 'Active Directory Discovery';
 			$this->load->view('v_template', $this->data);
-		}
-		else {
+		} else {
 			$display = '';
-			if ($this->input->post('debug') AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE))) {
+			if ($this->input->post('debug') AND strpos($_SERVER['HTTP_ACCEPT'], 'html')) {
 				$display = 'y';
 				echo "<pre>\n";
 			}
@@ -397,90 +389,34 @@ public function discover_list($ids = '')
 
 	public function discover_subnet()
 	{
+		set_time_limit(600);
+		if (!isset($_POST['submit'])) {
+	        // must be an admin to access this page
+	        $this->m_oa_user->validate_user();
+	        if ($this->user->user_admin != 'y') {
+	            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
+	                redirect($_SERVER['HTTP_REFERER']);
+	            } else {
+	                redirect('main/list_groups');
+	            }
+	        }
 
-		$this->load->helper('url');
-
-		// if GET OR POST has username AND password, use that to validate AND deliver page AND do NOT set a cookie
-		if ((!isset($loggedin)) AND ($this->session->userdata('logged_in') != TRUE AND $this->session->userdata('user_admin') != 'y')) {
-
-			if ((strpos(current_url(), 'username') != FALSE) AND (strpos(current_url(), 'password') != FALSE)) {
-				$split_url = explode("/", current_url());
-				for ($i=0; $i <= count($split_url)-1 ; $i++) {
-					if (strpos($split_url[$i], 'username') != FALSE) {
-						$username = $split_url[$i+1];
-					}
-					if (strpos($split_url[$i], 'password') != FALSE) {
-						$password = $split_url[$i+1];
-					}
-				}
-			}
-
-			if (isset($_POST['username']) AND isset($_POST['password'])) {
-				$username = $_POST['username'];
-				$password = $_POST['password'];
-			}
-
-			if (isset($username) AND $username != "" AND isset($password) AND $password != "") {
-				$this->load->model("m_userlogin");
-				if ($data = $this->m_userlogin->validate_user($username, $password)) {
-					if ($data != 'fail') {
-						if ($data['user_admin'] == 'y' OR $data['user_full_name'] == 'Open-AudIT Enterprise') {
-							// setup the user details
-							$this->session->set_userdata($data);
-							$this->data['user_full_name'] = $data['user_full_name'];
-							$this->data['user_lang'] = $data['user_lang'];
-							$this->data['user_theme'] = $data['user_theme'];
-							$this->data['user_admin'] = $data['user_admin'];
-							$this->data['user_id'] = $data['user_id'];
-							$this->data['user_debug'] = 'n';
-							$loggedin = TRUE;
-
-							// load the config
-							$this->load->model("m_oa_config");
-							$conf = $this->m_oa_config->get_config();
-							$this->m_oa_config->load_config();
-						} else {
-							// valid user, but user is not an admin OR OAE
-						}
-					} else {
-						// username AND password are set but do not validate
-						exit();	   
-					}
-				} else {
-					// username AND password are set but validate_user fails for some reason
-					exit();
-				}
-			}
-		} else {
-			if (!isset($this->data['user_full_name']) OR $this->data['user_full_name'] == '') { $this->data['user_full_name'] = $this->session->userdata('user_full_name'); }
-			if (!isset($this->data['user_lang']) OR $this->data['user_lang'] == '') { $this->data['user_lang'] = $this->session->userdata('user_lang'); }
-			if (!isset($this->data['user_theme']) OR $this->data['user_theme'] == '') { $this->data['user_theme'] = $this->session->userdata('user_theme'); }
-			if (!isset($this->data['user_admin']) OR $this->data['user_admin'] == '') { $this->data['user_admin'] = $this->session->userdata('user_admin'); }
-			if (!isset($this->data['user_id']) OR $this->data['user_id'] == '') { $this->data['user_id'] = $this->session->userdata('user_id'); }
-			if (!isset($this->data['user_debug']) OR $this->data['user_debug'] == '') { $this->data['user_debug'] = $this->session->userdata('user_debug'); }
-			$this->load->helper('url');
-			$this->load->helper('network');
 			$this->data['apppath'] = APPPATH;
-			$this->data['image_path'] = base_url() . 'theme-' . $this->data['user_theme'] . '/' . $this->data['user_theme'] . '-images/';
+			$this->data['image_path'] = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/';
 			$this->load->model("m_oa_report");
 			$this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
-			set_time_limit(600);
-		}
 
-		$timestamp = date('Y-m-d H:i:s');
-		$this->load->model("m_system");
-		$this->load->model("m_oa_general");
-		if (!isset($_POST['submit'])) {
 			// show the form to accept scan details
 			$this->data['type'] = "";
 			$this->data['credentials'] = new stdClass();
-			if ($this->uri->segment(3)) { 
+			if ($this->uri->segment(3) AND $this->uri->segment(3)) { 
 				if (is_numeric($this->uri->segment(3))) {
 					$this->data['system_id'] = $this->uri->segment(3);
 					$this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
 					$this->data['ip_address'] = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $this->data['system_id']));
 					$this->data['type'] = 'device';
 				} else {
+					$this->data['system_id'] = "";
 					$this->data['ip_address'] = "";
 					$this->data['type'] = $this->uri->segment(3);
 				}
@@ -488,7 +424,7 @@ public function discover_list($ids = '')
 			if ($this->uri->segment(4) AND is_numeric($this->uri->segment(4))) {
 				$this->data['system_id'] = $this->uri->segment(4);
 				$this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
-					$this->data['ip_address'] = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $this->data['system_id']));
+				$this->data['ip_address'] = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $this->data['system_id']));
 			}
 			$this->data['warning'] = '';
 			$this->data['include'] = "v_discover_subnet";
@@ -502,7 +438,7 @@ public function discover_list($ids = '')
 			$output = "";
 			$display = '';
 
-			if ($this->input->post('debug') AND ((isset($loggedin)) OR ($this->session->userdata('logged_in')) )) {
+			if ($this->input->post('debug') AND strpos($_SERVER['HTTP_ACCEPT'], 'html')) {
 				$display = 'y';
 				echo "<pre>\n";
 			}
@@ -586,7 +522,7 @@ public function discover_list($ids = '')
 
 			}
 
-			$encode['last_user'] = $this->data['user_full_name'];
+			$encode['last_user'] = $this->user->user_full_name;
 			$encoded = json_encode($encode);
 			$credentials = $this->encrypt->encode($encoded);
 			$i = 0;
@@ -791,7 +727,7 @@ public function discover_list($ids = '')
 			$this->load->view('v_process_subnet', $this->data);
 		} else {
 			$display = '';
-			if ($this->input->post('debug') AND ((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE OR $this->session->userdata('logged_in') == 1))) {
+			if ($this->input->post('debug') AND strpos($_SERVER['HTTP_ACCEPT'], 'html')) {
 				$display = 'y';
 				echo "<pre>\n";
 				echo "DEBUG - Starting process_subnet.\n";

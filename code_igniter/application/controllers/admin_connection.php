@@ -61,17 +61,6 @@ class Admin_connection extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		// must be an admin to access this page
-		if ((string)$this->session->userdata('user_admin') !== 'y') {
-			$redirect_url = @$this->input->server('HTTP_REFERER');
-			if ($redirect_url > '') {
-				redirect($redirect_url);
-			}
-			else {
-				redirect('login/index');
-			}
-		}
-
 		$log_details = new stdClass();
 		stdlog($log_details);
         unset($log_details);

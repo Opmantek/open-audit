@@ -39,6 +39,7 @@ class M_userlogin extends CI_Model {
 	}
 
 	function validate_user($username, $password) {
+		$this->load->library('session');
 		
 		$sql = "SELECT user_id, user_name, user_email, user_full_name, user_lang, user_theme, user_admin, user_password, user_sam FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
 		$data = array("$username");

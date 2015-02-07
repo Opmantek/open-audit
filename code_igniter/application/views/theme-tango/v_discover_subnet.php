@@ -73,7 +73,7 @@ if ($nmap_installed == 'n') {
 }
 
 echo form_open('discovery/discover_subnet');
-$image_path = base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-images/';
+$image_path = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/';
 switch ($type) {
 	case '':
 		$title = 'Discover the devices on your network';

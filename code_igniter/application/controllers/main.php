@@ -293,8 +293,8 @@ class main extends MY_Controller
 			$group_id = '1';
 		}
 		// we must check to see if the user has at least VIEW permission on the group
-		$this->data['user_access_level'] = $this->m_oa_group->get_group_access($group_id, $this->data['user_id']);
-		if ($this->data['user_access_level'] < '10') {
+		$this->user->user_access_level = $this->m_oa_group->get_group_access($group_id, $this->user->user_id);
+		if ($this->user->user_access_level < '10') {
 			// not enough permission - exit
 			exit();
 		}
@@ -317,8 +317,8 @@ class main extends MY_Controller
 		$this->load->model("m_oa_group");
 		if (is_numeric($_POST['group_id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
-			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($_POST['group_id'], $this->data['user_id']);
-			if ($this->data['user_access_level'] < '10') {
+			$this->user->user_access_level = $this->m_oa_group->get_group_access($_POST['group_id'], $this->user->user_id);
+			if ($this->user->user_access_level < '10') {
 				// not enough permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -358,8 +358,8 @@ class main extends MY_Controller
 		$this->load->model("m_audit_log");
 		if (is_numeric($_POST['group_id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
-			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($_POST['group_id'], $this->data['user_id']);
-			if ($this->data['user_access_level'] < '10') {
+			$this->user->user_access_level = $this->m_oa_group->get_group_access($_POST['group_id'], $this->user->user_id);
+			if ($this->user->user_access_level < '10') {
 				// not enough permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -452,7 +452,7 @@ class main extends MY_Controller
 	public function list_groups()
 	{
 		$this->load->model("m_oa_group");
-		$this->data['query'] = $this->m_oa_group->get_user_groups($this->data['user_id']);
+		$this->data['query'] = $this->m_oa_group->get_user_groups($this->user->user_id);
 		$this->data['heading'] = 'Groups';
 		$this->data['include'] = 'v_main';
 		$this->data['sortcolumn'] = '2';
@@ -465,8 +465,8 @@ class main extends MY_Controller
 		$this->load->model("m_oa_group");
 		if (is_numeric($this->data['id'])) {
 			// we must check to see if the user has at least VIEW permission on the group
-			$this->data['user_access_level'] = $this->m_oa_group->get_group_access($this->data['id'], $this->data['user_id']);
-			if ($this->data['user_access_level'] < '3') {
+			$this->user->user_access_level = $this->m_oa_group->get_group_access($this->data['id'], $this->user->user_id);
+			if ($this->user->user_access_level < '3') {
 				// not even VIEW permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -542,7 +542,7 @@ class main extends MY_Controller
 		}
 		if (($this->data['id'] > '0') && (is_int($this->data['id']))) {
 			// we must check to see if the user has at least VIEW permission on the group
-			if ($this->m_oa_group->get_group_access($this->data['id'], $this->data['user_id']) < '3') {
+			if ($this->m_oa_group->get_group_access($this->data['id'], $this->user->user_id) < '3') {
 				// not even VIEW permission - redirect
 				redirect('main/list_groups/');
 			}
@@ -686,7 +686,7 @@ class main extends MY_Controller
 		$system_id = $this->m_system->get_system_id($this->data['id']);
 		if ($system_id > '0') {
 			// we must check to see if the user has at least VIEW permission on the system
-			$this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->data['user_id']);
+			$this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->user_id);
 			if ($this->data['access_level'] < '10') {
 				// no 'edit details' permission - redirect
 				redirect('main');
@@ -721,7 +721,7 @@ class main extends MY_Controller
 		$this->load->model("m_system");
 		if ($system_id > '0') {
 			// we must check to see if the user has at least VIEW permission on the system
-			$this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->data['user_id']);
+			$this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->user_id);
 			if ($this->data['access_level'] < '10') {
 				// no 'edit details' permission - redirect
 				redirect('main');
@@ -743,7 +743,7 @@ class main extends MY_Controller
 		$this->load->model("m_system");
 		if ($system_id > '0') {
 			// we must check to see if the user has at least VIEW permission on the system
-			$this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->data['user_id']);
+			$this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->user_id);
 			if ($this->data['access_level'] < '5') {
 				// not even view permission - redirect
 				redirect('main');
@@ -770,7 +770,7 @@ class main extends MY_Controller
 		$this->load->model("m_system");
 		if ($system_id > '0') {
 			// we must check to see if the user has at least VIEW permission on the system
-			$this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->data['user_id']);
+			$this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->user_id);
 			if ($this->data['access_level'] < '5') {
 				// not even view permission - redirect
 				redirect('main');
@@ -797,7 +797,7 @@ class main extends MY_Controller
 		$this->data['id'] = $this->m_system->get_system_id($this->data['id']);
 		if ($this->data['id'] > '0') {
 			// we must check to see if the user has at least VIEW permission on the system
-			$this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->data['user_id']);
+			$this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->user->user_id);
 			if ($this->data['access_level'] < '1') {
 				// not even VIEW BASIC permission - redirect
 				redirect('main');
@@ -819,7 +819,7 @@ class main extends MY_Controller
 		$this->data['id'] = $this->m_system->get_system_id($this->data['id']);
 		if ($this->data['id'] > '0') {
 			// we must check to see if the user has at least VIEW permission on the system
-			$this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->data['user_id']);
+			$this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->user->user_id);
 			if ($this->data['access_level'] < '5') {
 				// not even VIEW BASIC permission - redirect
 				redirect('main');
@@ -998,27 +998,6 @@ class main extends MY_Controller
 
 		}
 
-		// $this->data['include'] = "";
-		// $formatted_type = str_replace(" ", "_", trim($this->data['system'][0]->man_type));
-		// if ($formatted_type == 'network_printer') { $formatted_type = 'printer'; }
-
-		// if ($this->data['system'][0]->man_type == 'computer') {
-		//     if (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_computer_" . $this->data['system'][0]->man_os_group . ".php")) {
-		//         $this->data['include'] = "v_display_computer_" . $this->data['system'][0]->man_os_group;
-		//     } else {
-		//         $this->data['include'] = "v_display_computer";
-		//     }
-
-		// } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $this->data['system'][0]->man_type . ".php")) {
-		//     $this->data['include'] = "v_display_" . trim($this->data['system'][0]->man_type);
-
-		// } elseif (file_exists(APPPATH . "views/theme-" . $this->data['user_theme'] . "/v_display_" . $formatted_type . ".php")) {
-		//     $this->data['include'] = "v_display_" . $formatted_type;
-
-		// } else {
-		//     $this->data['include'] = "v_display_general";
-		// }
-
 		$this->data['include'] = "v_display_device";
 		
 		foreach ($this->data['system'] as $system) {
@@ -1071,9 +1050,9 @@ class main extends MY_Controller
 		$this->load->helper('url');
 		if (!isset($_POST['EditUser'])) {
 			# load the initial form
-			$this->data['user'] = $this->m_oa_user->get_user_details($this->data['user_id']);
-			if ($this->session->userdata('user_admin') == 'y') {
-				$this->data['user_group'] = $this->m_oa_group->get_all_user_groups($this->data['user_id']);
+			$this->data['user'][0] = $this->user;
+			if ($this->user->user_admin == 'y') {
+				$this->data['user_group'] = $this->m_oa_group->get_all_user_groups($this->user->user_id);
 			}
 			$this->data['heading'] = 'Edit User';
 			$this->data['include'] = 'v_edit_user';
@@ -1086,12 +1065,12 @@ class main extends MY_Controller
 			foreach ($_POST as $key => $value) {
 				$details->$key = $value;
 			}
-			$details->user_id = $this->data['user_id'];
+
 			if ($details->user_password != $details->user_password_confirm) {
 				$error = '1';
 				$this->data['error_message'] = "Passwords must match.";
-				$this->data['user'] = $this->m_oa_user->get_user_details($this->data['user_id']);
-				$this->data['user_group'] = $this->m_oa_group->get_all_user_groups($this->data['user_id']);
+				$this->data['user'] = $this->m_oa_user->get_user_details($details->user_id);
+				$this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->user_id);
 				$this->data['heading'] = 'Edit User';
 				$this->data['include'] = 'v_edit_user';
 				$this->data['url'] = current_url();
@@ -1101,8 +1080,8 @@ class main extends MY_Controller
 			if ($this->m_oa_user->check_user_name($details->user_name, $details->user_id) == false) {
 				$error = '1';
 				$this->data['error_message'] = "Username already exists.";
-				$this->data['user'] = $this->m_oa_user->get_user_details($this->data['user_id']);
-				$this->data['user_group'] = $this->m_oa_group->get_all_user_groups($this->data['user_id']);
+				$this->data['user'] = $this->m_oa_user->get_user_details($details->user_id);
+				$this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->user_id);
 				$this->data['heading'] = 'Edit User';
 				$this->data['include'] = 'v_edit_user';
 				$this->data['url'] = current_url();
@@ -1111,7 +1090,7 @@ class main extends MY_Controller
 
 			if ($error == '0') {
 				$this->m_oa_user->edit_user($details);
-				if ($this->session->userdata('user_admin') == 'y') {
+				if ($this->user->user_admin == 'y') {
 					$this->m_oa_group->edit_user_groups($details);
 				}
 				// Reset the admin user password in OAE
@@ -1144,7 +1123,12 @@ class main extends MY_Controller
 					$output = NULL;
 					$return_var = NULL;
 				}
-				redirect('admin_user/list_users');
+				redirect('main/edit_user/' . $this->user->user_id);
+			} else {
+				$log_details->severity = 5;
+				$log_details->message = 'Error on edit user details submission for ' . $details->user_name;
+				stdlog($log_details);
+				redirect('main/list_groups/');
 			}
 		}
 	}

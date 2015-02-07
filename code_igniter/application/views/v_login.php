@@ -67,7 +67,7 @@ if (!isset($logo)) {
     <div id="container">
     <div id="header" style='height: 200px; width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px;' align='left'>
         <?php $attributes = array ('name' => 'myform'); ?>
-        <?php echo form_open('login/process_login', $attributes, $hidden) . "\n"; ?>
+        <?php echo form_open('main/list_groups', $attributes, $hidden) . "\n"; ?>
                 <div align='left' style="height: 150px; width:60%; float: left; valign: center; text-align: center;">
                     <img src='<?php echo $image_path . $logo ;?>' alt='logo' border='0' /><br />
 <?php if ((file_exists($filename)) and $show == 'y') {

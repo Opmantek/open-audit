@@ -33,24 +33,42 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-class test extends MY_Controller
+class test extends CI_Controller
 {
     public function __construct()
     {
         parent::__construct();
         // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
+        $this->load->model('m_oa_user');
+        $this->m_oa_user->validate_user();
+        if ($this->user->user_admin != 'y') {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
-                redirect('login/index');
+                redirect('main/list_groups');
             }
         }
+ 
+        $this->load->helper('log');
+
+        // log the attempt
+        $log_details = new stdClass();
+        $log_details->severity = 6;
+        stdlog($log_details);
+        unset($log_details);
     }
 
     public function index()
     {
         redirect('/');
+    }
+
+    public function login() {
+        $this->load->model('m_oa_user');
+        $this->m_oa_user->validate_user();
+        echo "<pre>\n";
+        print_r($this->user);
+        print_r($this->session);
     }
 
     public function log() {

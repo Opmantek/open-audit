@@ -829,11 +829,11 @@
 							<?php
 							if (($key->software_url != '') AND ($key->software_url != ' '))
 							{
-								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . base_url() . $user_theme . "_images/browser.png\" alt=\"\" /></a>";
+								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . base_url() . $this->user->user_theme . "_images/browser.png\" alt=\"\" /></a>";
 							}
 							if (($key->software_email != '') AND ($key->software_email != ' '))
 							{
-								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . base_url() . $user_theme . "_images/email.png\" alt=\"\" /></a>";
+								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . base_url() . $this->user->user_theme . "_images/email.png\" alt=\"\" /></a>";
 							}
 							?>
 						</td>

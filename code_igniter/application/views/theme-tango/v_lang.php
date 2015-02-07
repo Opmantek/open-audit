@@ -33,10 +33,10 @@
  */
 
 
-if (!isset($this->session->userdata["user_lang"]) or $this->session->userdata["user_lang"] == "") {
+if (!isset($this->user->user_lang) or $this->user->user_lang == "") {
 	$GLOBALS["user_lang"] = 'en';
 } else {
-	$GLOBALS["user_lang"] = $this->session->userdata["user_lang"];
+	$GLOBALS["user_lang"] = $this->user->user_lang;
 }
 
 $language_file = APPPATH . "/views/lang/" . $GLOBALS["user_lang"] . ".inc";

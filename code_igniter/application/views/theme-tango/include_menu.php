@@ -45,7 +45,7 @@
 	$new_object->report_name = 'Partition Alerts';
 	$menu[] = $new_object;
 	
-	if ($this->session->userdata('user_sam') > '0') { 
+	if ($this->user->user_sam > '0') { 
 		$new_object = new stdClass();
 		$new_object->report_id = '';
 		$new_object->report_name = 'Software Licensing';
@@ -84,7 +84,7 @@
 	-->
 	<!--
 	<?php
-	if ($this->session->userdata('user_sam') > '2') { ?>
+	if ($this->user->user_sam > '2') { ?>
 		<li><a href='#'><?php echo mb_strtoupper(__('Licensing'))?></a>
 			<ul>
 				<li><a href='<?php echo base_url()?>index.php/admin_sam/add_software_definition'><?php echo __('Add a Package')?></a></li>
@@ -93,7 +93,7 @@
 	<?php } ?>
 	-->
 	<?php
-	if ($user_admin == 'y') { ?>
+	if ($this->user->user_admin == 'y') { ?>
 	<!-- // Only display the below code if the logged in user is an Admin -->
 	<li><a href='#'><?php echo mb_strtoupper(__('Admin'))?></a>
 		<ul>
@@ -209,7 +209,7 @@
 	?>
 
 	<?php
-	if (($user_admin == 'y') and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')){ ?>
+	if (($this->user->user_admin == 'y') and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')){ ?>
 	<!-- // Only display the below code if the logged in user is an Admin -->
 	<li><a href='#'><?php echo mb_strtoupper(__('NMIS'))?></a>
 		<ul>
@@ -252,7 +252,7 @@
 
 	<?php if (isset($export_report)) { ?>
 		<?php if (isset($group_id)) { ?>
-			<?php if (($this->config->config['non_admin_search'] == 'y') or ($user_admin == 'y')) { ?>
+			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
 				<li style="float:right; position:relative; padding-right:4px;">
 					<form name="search_form" action="<?php echo base_url()?>index.php/main/search/<?php echo $group_id; ?>/" method="post">
 						<table>
@@ -275,14 +275,14 @@
 				}
 			}
 			if ($hit == 'y'){ ?>
-				<li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/username/<?php echo $this->session->userdata['username']; ?>/password/YOUR_PASSWORD/rss"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme;?>-images/16_rss.png" alt="RSS Link" title="RSS Link"/></a></li>
+				<li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/username/<?php echo $this->user->user_name; ?>/password/YOUR_PASSWORD/rss"><img src="<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme;?>-images/16_rss.png" alt="RSS Link" title="RSS Link"/></a></li>
 			<?php } 
 		} ?>
-		<li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/xml"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme;?>-images/16_text-x-generic-template.png" alt="Export as XML" title="Export as XML"/></a></li>
-		<li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/html"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme;?>-images/16_web.png" alt="Export as HTML" title="Export as HTML"/></a></li>
-		<li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/csv"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme;?>-images/16_csv.png" alt="Export as CSV" title="Export as CSV"/></a></li>
-		<li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/json"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme;?>-images/16_json.png" alt="Export as JSON" title="Export as JSON"/></a></li>
-		<li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/excel"><img src="<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme;?>-images/16_excel.png" alt="Export as Excel" title="Export as Excel"/></a></li>
+		<li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/xml"><img src="<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme;?>-images/16_text-x-generic-template.png" alt="Export as XML" title="Export as XML"/></a></li>
+		<li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/html"><img src="<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme;?>-images/16_web.png" alt="Export as HTML" title="Export as HTML"/></a></li>
+		<li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/csv"><img src="<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme;?>-images/16_csv.png" alt="Export as CSV" title="Export as CSV"/></a></li>
+		<li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/json"><img src="<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme;?>-images/16_json.png" alt="Export as JSON" title="Export as JSON"/></a></li>
+		<li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo base_url() . 'index.php/' . uri_string(); ?>/excel"><img src="<?php echo base_url()?>theme-<?php echo $this->user->user_theme;?>/<?php echo $this->user->user_theme;?>-images/16_excel.png" alt="Export as Excel" title="Export as Excel"/></a></li>
 	<?php } ?>
 </ul>
 </div>

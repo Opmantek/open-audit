@@ -38,16 +38,7 @@ class Admin_db extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
         set_time_limit(240);
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);

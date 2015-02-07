@@ -59,7 +59,8 @@ class login extends CI_Controller
  */
 	public function index()
 	{
-		if ($this->session->userdata('logged_in') == TRUE) {
+		$temp = $this->session->userdata('user_id');
+		if (is_numeric($temp)) {
 			redirect(base_url());
 		}
 		$data['title'] = 'Open-AudIT';
@@ -321,113 +322,6 @@ class login extends CI_Controller
 					echo $value;
 				}
 			}
-		}
-	}
-
-/**
- * [process_login description]
- * @return [type] [description]
- */
-	public function process_login() {
-		$username = $this->input->post('username');
-		$password  = $this->input->post('password');
-		$page = $this->input->post('page');
-		$function = $this->input->post('function');
-		$id = $this->input->post('id');
-		$first_attribute = $this->input->post('first_attribute');
-		$this->load->model('m_userlogin');
-		$this->load->model('m_oa_config');
-		$this->m_oa_config->load_config();
-
-		if (isset($this->config->config['ad_domain']) AND $this->config->config['ad_domain'] != '' AND
-			isset($this->config->config['ad_server']) AND $this->config->config['ad_server'] != '' AND
-			$password != '' AND $username != '' AND extension_loaded('ldap')) {
-			// using Active Directory to validate logon details
-			$ad_ldap_connect = 'ldap://' . $this->config->item('ad_server');
-			$ad_user = $username . '@' . $this->config->item('ad_domain');
-			$ad_secret = $password;
-			$ad = ldap_connect($ad_ldap_connect);
-			if (!$ad) {
-				$log_details = new stdClass();
-				$log_details->severity = 5;
-				$log_details->file = 'system';
-				$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' error could not connect to Active Directory at ' . $ad_ldap_connect;
-				stdlog($log_details);
-				unset($log_details);
-				redirect('login/index');
-			}
-			ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
-			ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-			$bind = ldap_bind($ad, $ad_user, $ad_secret);
-			if ($bind) {
-				$data = $this->m_userlogin->get_user_details($username);
-				if ($data['user_active'] == 'y') {
-					$this->session->set_userdata($data);
-					$log_details = new stdClass();
-					$log_details->severity = 7;
-					$log_details->file = 'system';
-					$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' was verified by AD';
-					stdlog($log_details);
-					unset($log_details);
-					if ($page != '1') {
-						redirect($page . '/' . $function . '/' . $id . '/' . $first_attribute);
-					} else {
-						redirect('main/index');
-					}
-				} else {
-					// the user does not have their 'user_active' flag set to 'y'.
-					// don't log them in, redirect the to the login page.
-					$log_details = new stdClass();
-					$log_details->severity = 5;
-					$log_details->file = 'system';
-					$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' was verified by AD, but does not have their user_active attribute set in Open-AudIT';
-					stdlog($log_details);
-					unset($log_details);
-					redirect('login/index');
-				}
-			} else {
-				// failed Active Dirctory validation
-				// fall through this function and attempt to validate using local credentials
-				$log_details = new stdClass();
-				$log_details->severity = 5;
-				$log_details->file = 'system';
-				$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' could not be verified by Active Directory. AD Server ' . $ad_ldap_connect . ' AD User ' . $ad_user ;
-				stdlog($log_details);
-				unset($log_details);
-			}
-		}
-		// attempt use the internal database to validate user
-		if ($data = $this->m_userlogin->validate_user($username, $password)) {
-			if ($data != 'fail') {
-				$this->session->set_userdata($data);
-				$log_details = new stdClass();
-				$log_details->severity = 7;
-				$log_details->file = 'system';
-				$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' was verified by Open-AudIT';
-				stdlog($log_details);
-				unset($log_details);
-				if ($page != '') {
-					redirect($page . '/' . $function . '/' . $id . '/' . $first_attribute);
-				} else {
-					redirect('main/index');
-				}
-			} else {
-				$log_details = new stdClass();
-				$log_details->severity = 7;
-				$log_details->file = 'system';
-				$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' could not be verified by Open-AudIT';
-				stdlog($log_details);
-				unset($log_details);
-				redirect('login/index/main/list_groups');
-			}
-		} else {
-			$log_details = new stdClass();
-			$log_details->severity = 5;
-			$log_details->file = 'system';
-			$log_details->message = ' U:' . $username . ' at ' . $this->input->server('REMOTE_ADDR') . ' error attempting to validate credentials';
-			stdlog($log_details);
-			unset($log_details);
-			redirect('login/index/main/list_groups');
 		}
 	}
 

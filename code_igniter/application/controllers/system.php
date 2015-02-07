@@ -68,7 +68,6 @@ class System extends CI_Controller {
 		// Have to be able to submit systems via the audit script
 		$this->data['title'] = 'Open-AudIT';
 		$this->load->library('session');
-		$loggedin = @$this->session->userdata('logged_in');
 
 		// log the attempt
 		$this->load->helper('log');
@@ -171,7 +170,7 @@ class System extends CI_Controller {
 
 			foreach ($xml_post->children() as $details) {
 				$details = (object) $details;
-				if (((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE))) {
+				if (isset($this->session->userdata('user_id')) AND is_numeric($this->session->userdata('user_id'))) {
 					echo 'Device IP: ' . $details->man_ip_address . "\n";
 				}
 
@@ -294,7 +293,7 @@ class System extends CI_Controller {
 				$this->m_oa_group->update_system_groups($details);
 			}
 
-			if (((isset($loggedin)) OR ($this->session->userdata('logged_in') === TRUE))) {
+			if (isset($this->session->userdata('user_id')) AND is_numeric($this->session->userdata('user_id'))) {
 				echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
 				echo "<head>\n<title>Open-AudIT</title>\n</head>\n<body>\n<pre>\n";
 				echo $count . ' systems processed.<br />';

@@ -37,21 +37,21 @@
 <div class="jqplot" id="chart1"></div>
 
 <!--[if IE]>
-<script language="javascript" type="text/javascript" src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/'; ?>excanvas.js"></script>
+<script language="javascript" type="text/javascript" src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/'; ?>excanvas.js"></script>
 <![endif]--> 
 
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/jquery.jqplot.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.logAxisRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.canvasTextRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.canvasAxisTickRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.dateAxisRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.categoryAxisRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.barRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.trendline.min.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/jquery.jqplot.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.logAxisRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.canvasTextRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.canvasAxisTickRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.dateAxisRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.categoryAxisRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.barRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.trendline.min.js'; ?>" type="text/javascript"></script>
 
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.highlighter.min.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $user_theme . '/' . $user_theme . '-files/jquery/js/jqplot/plugins/jqplot.cursor.min.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.highlighter.min.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jquery/js/jqplot/plugins/jqplot.cursor.min.js'; ?>" type="text/javascript"></script>
 
 <?php
 

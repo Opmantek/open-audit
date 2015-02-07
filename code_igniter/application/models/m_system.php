@@ -627,7 +627,7 @@ class M_system extends MY_Model {
 			ORDER BY 
 				system.hostname";
 		$sql = $this->clean_sql($sql);
-		$data = array("$search", "$search", "$search", "$search_ip", "$search_ip", "$search", $this->data['user_id']);
+		$data = array("$search", "$search", "$search", "$search_ip", "$search_ip", "$search", $this->user->user_id);
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
 		for ($i=0; $i<count($result); $i++) {

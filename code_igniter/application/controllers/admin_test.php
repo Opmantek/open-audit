@@ -38,15 +38,6 @@ class Admin_test extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);
@@ -55,6 +46,10 @@ class Admin_test extends MY_Controller
     public function index()
     {
         redirect('/');
+    }
+
+    public function test() {
+        echo "test";
     }
 
     public function test_snmp()

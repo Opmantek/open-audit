@@ -118,7 +118,7 @@ class change extends MY_Controller
         }
 
         $details['alerts'] = $data['alerts'];
-        $details['user_id'] = $this->data['user_id'];
+        $details['user_id'] = $this->user->user_id;
         $details['alert_ack_time'] = date('Y-m-d H:i:s');
         $this->load->model("m_alerts");
         $result = $this->m_alerts->assign_change($details);

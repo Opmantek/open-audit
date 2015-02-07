@@ -38,15 +38,6 @@ class Admin_system extends MY_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		// must be an admin to access this page
-		if ($this->session->userdata('user_admin') != 'y') {
-			if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-				redirect($_SERVER['HTTP_REFERER']);
-			} else {
-				redirect('login/index');
-			}
-		}
-
 		$log_details = new stdClass();
 		stdlog($log_details);
 		unset($log_details);
@@ -344,7 +335,7 @@ class Admin_system extends MY_Controller
 		$details->last_seen_by = 'snmp';
 		$details->timestamp = date('Y-m-d G:i:s');
 		$details->last_seen = $details->timestamp;
-		$details->last_user = $this->data['user_full_name'];
+		$details->last_user = $this->user->user_full_name;
 		$details->audits_ip = '127.0.0.1';
 		unset($details->man_type);
 		unset($details->show_output);
@@ -432,7 +423,7 @@ class Admin_system extends MY_Controller
 			}
 			$details->last_seen_by = 'web form';
 			$details->last_seen = date('Y-m-d G:i:s');
-			$details->last_user = $this->data['user_full_name'];
+			$details->last_user = $this->user->user_full_name;
 
 			if (($details->man_type == 'access token' or
 				$details->man_type == 'cell phone' or
@@ -620,7 +611,7 @@ class Admin_system extends MY_Controller
 					$details = (object) $details;
 					$details->last_seen_by = "spreadsheet";
 					$details->last_seen = $timestamp;
-					$details->last_user = $this->data['user_full_name'];
+					$details->last_user = $this->user->user_full_name;
 					$details->timestamp = $timestamp;
 					$error = '';
 
