@@ -70,7 +70,7 @@ if (!function_exists('get_snmp')) {
 
 		if (!isset($CI->data['config']->default_snmp_community)) {
 			$CI->load->model("m_oa_config");
-			$default_snmp_community = $CI->m_oa_config->get_config_item('default_snmp_community');
+			$default_snmp_community = $this->config->item('default_snmp_community');
 		} else {
 			$default_snmp_community = $CI->data['config']->default_snmp_community;
 		}
