@@ -213,8 +213,9 @@ if ( ! function_exists('stdlog'))
 		}
 
 		if (!isset($log_details->user) or $log_details->user == '') {
-			$log->user = $CI->user->user_full_name;
-			if (!$log->user) {
+			if (isset($CI->user->user_full_name)) {
+				$log->user = $CI->user->user_full_name;
+			} else {
 				$log->user = '-';
 			}
 		}
