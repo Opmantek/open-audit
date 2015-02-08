@@ -98,6 +98,9 @@ class MY_Controller extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->helper('network');
 		$this->data['apppath'] = APPPATH;
+		if (!isset($this->user->user_theme)) {
+			$this->user->user_theme = 'tango';
+		}
 		$this->data['image_path'] = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/';
 		$this->load->model('m_oa_report');
 		$this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
