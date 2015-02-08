@@ -173,13 +173,6 @@ class M_oa_user extends MY_Model {
 		return(TRUE);
 	}
 
-
-
-
-
-
-
-
 	function validate_user($admin = 'n') {
 		$CI =& get_instance();
 		$CI->user = new stdClass();
@@ -220,13 +213,14 @@ class M_oa_user extends MY_Model {
 							$log_details->message = 'Admin credentials required (json request)';
 							stdlog($log_details);
 							// set json response
-							$response = stdClass();
+							$response = new stdClass();
 							$response->message = "Admin credentials required";
-							echo json_encode($json);
+							echo json_encode($response);
 							// set the headers
 							header('Content-Type: application/json');
 							header('Cache-Control: max-age=0');
 							header('HTTP/1.1 400 Bad Request');
+							exit();
 						} else {
 							// log the attempt
 							$log_details->severity = 5;
@@ -255,15 +249,15 @@ class M_oa_user extends MY_Model {
 					stdlog($log_details);
 					unset($log_details);
 					// reply with JSON
-					$response = stdClass();
+					$response = new stdClass();
 					$response->status = "fail";
 					$response->message = "Bad user_id in cookie";
-					$log_details->severity = 5;
-					echo json_encode($json);
+					echo json_encode($response);
 					// set the header
 					header('Content-Type: application/json');
 					header('Cache-Control: max-age=0');
 					header('HTTP/1.1 400 Bad Request');
+					exit();
 				} else {
 					// log the attempt
 					$log_details->severity = 5;
@@ -321,14 +315,15 @@ class M_oa_user extends MY_Model {
 				stdlog($log_details);
 				unset($log_details);
 				// reply with JSON
-				$response = stdClass();
+				$response = new stdClass();
 				$response->status = "fail";
 				$response->message = "Incomplete credentials supplied";
-				echo json_encode($json);
+				echo json_encode($response);
 				// set the header
 				header('Content-Type: application/json');
 				header('Cache-Control: max-age=0');
 				header('HTTP/1.1 400 Bad Request');
+				exit();
 			} else {
 				// log the attempt
 				$log_details->severity = 5;
@@ -361,13 +356,14 @@ class M_oa_user extends MY_Model {
 				$log_details->message = 'Invalid username of ' . $username . ' supplied or user not active (json request)';
 				stdlog($log_details);
 				unset($log_details);
-				$response = stdClass();
+				$response = new stdClass();
 				$response->status = "fail";
 				$response->message = "Invalid username";
-				echo json_encode($json);
+				echo json_encode($response);
 				header('Content-Type: application/json');
 				header('Cache-Control: max-age=0');
 				header('HTTP/1.1 400 Bad Request');
+				exit();
 			} else {
 				// redirect to the login page
 				$log_details->severity = 5;
@@ -415,13 +411,14 @@ class M_oa_user extends MY_Model {
 						if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
 							$log_details->message = $username . ' was verified by AD, but does not have their user_active attribute set in Open-AudIT (json request)';
 							stdlog($log_details);
-							$response = stdClass();
+							$response = new stdClass();
 							$response->status = "fail";
 							$response->message = "Username validated in AD, but not set to active in Open-AudIT";
-							echo json_encode($json);
+							echo json_encode($response);
 							header('Content-Type: application/json');
 							header('Cache-Control: max-age=0');
 							header('HTTP/1.1 400 Bad Request');
+							exit();
 						} else {
 							$log_details->message = $username . ' was verified by AD, but does not have their user_active attribute set in Open-AudIT (html request)';
 							stdlog($log_details);
@@ -488,14 +485,15 @@ class M_oa_user extends MY_Model {
 				$log_details->message = $username . ' attempted to logon with invalid credentials (json request)';
 				stdlog($log_details);
 				// create the json response
-				$response = stdClass();
+				$response = new stdClass();
 				$response->status = "fail";
 				$response->message = "Credentials not supplied or invalid";
-				echo json_encode($json);
+				echo json_encode($response);
 				// set the headers
 				header('Content-Type: application/json');
 				header('Cache-Control: max-age=0');
 				header('HTTP/1.1 400 Bad Request');
+				exit();
 			} else {
 				// log the attempt
 				$log_details->severity = 6;
@@ -521,13 +519,14 @@ class M_oa_user extends MY_Model {
 						$log_details->message = 'Admin credentials required (json request)';
 						stdlog($log_details);
 						// set json response
-						$response = stdClass();
+						$response = new stdClass();
 						$response->message = "Admin credentials required";
-						echo json_encode($json);
+						echo json_encode($response);
 						// set the headers
 						header('Content-Type: application/json');
 						header('Cache-Control: max-age=0');
 						header('HTTP/1.1 400 Bad Request');
+						exit();
 					} else {
 						// log the attempt
 						$log_details->severity = 5;
