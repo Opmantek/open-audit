@@ -47,7 +47,24 @@ class main extends MY_Controller
 
 	public function index()
 	{
-		redirect('main/list_groups/');
+		if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
+			// JSON request to the base URL
+			// return a document providing futher links
+			$response = new stdClass();
+			$response->status = 'success';
+			$response->self = current_url();
+			$response->links = array(
+				array('rel'=>'groups', 'href'=>'{self}/groups', 'description'=>'List the Groups'),  
+				array('rel'=>'devices', 'href'=>'{self}/devices', 'description'=>'List the Devices'),  
+				array('rel'=>'locations', 'href'=>'{self}/locations', 'description'=>'List the Locations'),  
+				array('rel'=>'reports', 'href'=>'{self}/reports', 'description'=>'List the Reports'));
+			echo json_encode($response);
+			header('Content-Type: application/json');
+			header('Cache-Control: max-age=0');
+			header('HTTP/1.1 200 OK');
+		} else {
+			redirect('main/list_groups/');
+		}
 	}
 
 	public function api_index()
@@ -66,8 +83,8 @@ class main extends MY_Controller
 		}
 		echo json_encode($result);
 		header('Content-Type: application/json');
-		//header('Content-Disposition: attachment;filename=api_index_' . $level . '.json');
 		header('Cache-Control: max-age=0');
+		header('HTTP/1.1 200 OK');
 	}
 
 	public function api_node_resource()
@@ -294,7 +311,7 @@ class main extends MY_Controller
 		}
 		// we must check to see if the user has at least VIEW permission on the group
 		$this->user->user_access_level = $this->m_oa_group->get_group_access($group_id, $this->user->user_id);
-		if ($this->user->user_access_level < '10') {
+		if ($this->user->user_access_level < '1') {
 			// not enough permission - exit
 			exit();
 		}
