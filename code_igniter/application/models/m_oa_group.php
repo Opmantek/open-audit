@@ -327,9 +327,11 @@ class M_oa_group extends MY_Model {
 		$sql = "SELECT 	
 					oa_group.group_id, 
 					oa_group.group_name, 
+					oa_group.group_padded_name, 
+					oa_group.group_icon, 
 					oa_group.group_description, 
-					count(oa_group_sys.system_id) AS total, 
-					'0' AS access_level
+					oa_group.group_category, 
+					count(oa_group_sys.system_id) AS total 
 				FROM 
 					oa_group 
 				LEFT JOIN 
