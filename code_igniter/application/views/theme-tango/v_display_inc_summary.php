@@ -40,7 +40,7 @@
 		<fieldset id="summary_credentials_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Credentials')?></span></legend>
 			<div style="float:right; width: 120px; text-align:center">
-				<img style='margin; 10px; ' src='<?php echo $image_path;?>48_credentials.png' alt='' title='' width='48'/>
+				<img style='margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_credentials.png' alt='' title='' width='48'/>
 				<?php if ($access_level > 7) { ?>
 					<br /><input type="button" onclick="display_credentials();" value='Edit' title='Edit' name='credentials_edit' alt='Edit' width='24' />
 				<?php } ?>
@@ -69,7 +69,7 @@
 	<form action="#" method="post" class="niceforms">
 		<fieldset id="summary_purchase_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Purchase Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_purchases.png' alt='' title='' width='48'/>
+			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_purchases.png' alt='' title='' width='48'/>
 			<?php foreach($system as $key): ?>
 				<p><label for="man_asset_number"><?php echo __('Asset Number')?>: </label><span id="man_asset_number" <?php echo $edit?>><?php echo print_something($key->man_asset_number)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_purchase_vendor"><?php echo __('Vendor')?>: </label><span id="man_purchase_vendor" <?php echo $edit?>><?php echo print_something($key->man_purchase_vendor)?></span><?php echo $edit_icon; ?></p>
@@ -159,7 +159,7 @@
 				</div>
 			</div>
 			<div style="float:right; width: 100px; margin-left: -80%;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 			</div>
 			<?php
 			echo display_custom_field('view_summary_location',  $additional_fields_data, $edit);
@@ -174,7 +174,7 @@
 	<form action="#" method="post" class="niceforms">
 		<fieldset id="summary_custom_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Custom Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_custom.png' alt='' title='' width='48'/>
+			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_custom.png' alt='' title='' width='48'/>
 			<?php 
 			echo display_custom_field('view_summary_custom', $additional_fields_data, $edit);
 			?>
@@ -189,7 +189,7 @@
 			<fieldset id="summary_audits">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Audits')?></span></legend>
 				<div style="min-width: 50px; float: right;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_search.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_search.png' alt='' title='' width='48'/>
 				</div>
 				<div style="width: 90%; float:left;">
 				<table cellspacing="1" class="tablesorter" width="100%">
@@ -234,7 +234,7 @@
 			<fieldset id="summary_audit_log">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Audit Log')?></span></legend>
 				<div style="min-width: 50px; float: right;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_audit_log.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_audit_log.png' alt='' title='' width='48'/>
 				</div>
 				<div style="width: 90%; float:left;">
 				<table cellspacing="1" class="tablesorter" width="100%">
@@ -270,7 +270,7 @@
 			<fieldset id="summary_alert_log">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Alert Log')?></span></legend>
 				<div style="min-width: 50px; float: right;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_alerts.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_alerts.png' alt='' title='' width='48'/>
 				</div>
 				<div style="width: 90%; float:left;">
 				<table cellspacing="1" class="tablesorter" width="100%">
@@ -325,7 +325,7 @@
 	<form action="#" method="post" class="niceforms">
 		<fieldset id="summary_network_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Network Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network_wireless.png' alt='' title='' width='48'/>
+			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_network_wireless.png' alt='' title='' width='48'/>
 			<?php foreach($system as $key): ?>
 				<p><label for="man_switch_id"><?php echo __('Switch ID')?>: </label><span id="man_switch_id" <?php echo $edit?>><?php echo print_something($key->man_switch_id)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_switch_port"><?php echo __('Switch Port')?>: </label><span id="man_switch_port" <?php echo $edit?>><?php echo print_something($key->man_switch_port)?></span><?php echo $edit_icon; ?></p>
@@ -346,7 +346,7 @@
 	<form action="#" method="post" class="niceforms">
 		<fieldset id="summary_phone_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Phone Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_phone.png' alt='' title='' width='48'/>
+			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_phone.png' alt='' title='' width='48'/>
 			<?php foreach($system as $key): ?>
 				<p><label for="man_service_number"><?php echo __('Phone Number')?>: </label><span id="man_service_number" <?php echo $edit?>><?php echo print_something($key->man_service_number)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="man_service_provider"><?php echo __('Provider')?>: </label><span id="man_service_provider" <?php echo $edit?>><?php echo print_something($key->man_service_provider)?></span><?php echo $edit_icon; ?></p>
@@ -381,7 +381,7 @@
 	<?php } ?>
 		<fieldset id="summary_attachment_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Attachment Details')?></span></legend>
-			<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_custom.png' alt='' title='' width='48'/><br />
+			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_custom.png' alt='' title='' width='48'/><br />
 			<?php if ($access_level > 7) { ?>
 			<input style='float: right; margin; 10px; ' type='button' value='Upload' onclick='upload_attachment()' alt='' title='' width='48'/>
 			<?php } ?>
@@ -403,10 +403,10 @@
 					<tr>
 						<td><?php echo print_something($key->att_title)?></td>
 						<td><?php echo print_something($key->timestamp)?></td>
-						<td align="center"><a href="<?php echo base_url();?>index.php/main/show_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $image_path;?>16_word.png' alt='' title='' /></a></td>
-						<td align="center"><a href="<?php echo base_url();?>index.php/main/download_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $image_path;?>16_link.png' alt='' title='' /></a></td>
+						<td align="center"><a href="<?php echo base_url();?>index.php/main/show_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $oa_theme_images;?>/16_word.png' alt='' title='' /></a></td>
+						<td align="center"><a href="<?php echo base_url();?>index.php/main/download_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $oa_theme_images;?>/16_link.png' alt='' title='' /></a></td>
 						<?php if ($access_level > 7) { ?>
-						<td align="center"><a href="<?php echo base_url();?>index.php/main/delete_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $image_path;?>16_delete.png' alt='' title='' /></a></td>
+						<td align="center"><a href="<?php echo base_url();?>index.php/main/delete_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $oa_theme_images;?>/16_delete.png' alt='' title='' /></a></td>
 						<?php } ?>
 					</tr>
 					<?php endforeach; ?>
@@ -425,7 +425,7 @@
 			<fieldset id="summary_nmis">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('NMIS Details')?></span></legend>
 				<div style="min-width: 50px; float: right;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_network.png' alt='' title='' width='48'/>
 				</div>
 				<div style="width: 90%; float:left;">
 					<p><label for="nmis_group"><?php echo __('NMIS Group')?>: </label><span id="nmis_group" <?php echo $edit?>><?php echo print_something($system[0]->nmis_group)?></span></p>

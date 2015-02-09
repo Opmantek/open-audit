@@ -34,7 +34,7 @@
 
 ?>
 <!-- v_display_inc_common.php -->
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/'; ?>jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jquery/js/jquery.plugin.menuTree.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 $(function() {
@@ -48,7 +48,6 @@ $(function() {
 </script>
 
 <?php
-$images_directory = str_replace("index.php", "", $_SERVER["SCRIPT_FILENAME"]) . "theme-tango/tango-images/";
 
 # grab some single attributes
 $location_name = '';
@@ -89,8 +88,8 @@ $edit = '';
 $edit_icon = '';
 if ($access_level > 7) {
 	$edit = 'class="editText" style="color:blue;"';
-	#$edit_icon = '<img src="' . $image_path . '10_edit.png" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
-	$edit_icon = '<img src="' . $image_path . '16_edit_out.png" onMouseOver="this.src=\'' . $image_path . '16_edit_hover.png\'" onMouseOut="this.src=\'' . $image_path . '16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
+	#$edit_icon = '<img src="' . $oa_theme_images . '/10_edit.png" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
+	$edit_icon = '<img src="' . $oa_theme_images . '/16_edit_out.png" onMouseOver="this.src=\'' . $oa_theme_images . '/16_edit_hover.png\'" onMouseOut="this.src=\'' . $oa_theme_images . '/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
 	$edit_custom = 'class="editCustom" style="color:blue;"';
 	$tabcustom = '<li><a href="#tabcustom"><span>' . __('Custom') . '</span></a></li>';
 } else {
@@ -140,9 +139,9 @@ $system[0]->dell_express_code_link = '';
 if (mb_strpos($system[0]->man_manufacturer,  "Dell") !== false)  {
 	if ($system[0]->man_serial != ""){
 
-	$system[0]->warranty_link = "<a href='http://www.dell.com/support/my-support/us/en/04/product-support/servicetag/" . $system[0]->man_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
+	$system[0]->warranty_link = "<a href='http://www.dell.com/support/my-support/us/en/04/product-support/servicetag/" . $system[0]->man_serial . "' onclick=\"this.target='_blank';\"><img src='" . $oa_theme_images . "/16_browser.png' alt='' title='' width='16'/></a>";
 
-	$system[0]->downloads_link = "<a href='http://www.dell.com/support/drivers/us/en/04/ServiceTag/" . $system[0]->man_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
+	$system[0]->downloads_link = "<a href='http://www.dell.com/support/drivers/us/en/04/ServiceTag/" . $system[0]->man_serial . "' onclick=\"this.target='_blank';\"><img src='" . $oa_theme_images . "/16_browser.png' alt='' title='' width='16'/></a>";
 
 	$system[0]->dell_express_code_link = base_convert($system[0]->man_serial,36,10);
 	$system[0]->dell_express_code_link = mb_substr($system[0]->dell_express_code_link, 0, 3) . "-" . 
@@ -158,10 +157,10 @@ if ( (mb_strpos($system[0]->man_manufacturer,  "Compaq") !== false) OR
 	(mb_strpos($link_manufacturer,  "Hewlett Packard") !== false) OR 
 	(mb_strpos($link_manufacturer,  "Hewlett-Packard") !== false) ) {
 	if ($system[0]->man_serial != ""){
-		$system[0]->warranty_link = "<a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $system[0]->man_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
+		$system[0]->warranty_link = "<a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=" . $system[0]->man_serial . "' onclick=\"this.target='_blank';\"><img src='" . $oa_theme_images . "/16_browser.png' alt='' title='' width='16'/></a>";
 	}
 	if ($system[0]->man_model != ""){
-		$system[0]->downloads_link = "<a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $system[0]->man_model . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
+		$system[0]->downloads_link = "<a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=" . $system[0]->man_model . "' onclick=\"this.target='_blank';\"><img src='" . $oa_theme_images . "/16_browser.png' alt='' title='' width='16'/></a>";
 	}
 }
 
@@ -173,15 +172,15 @@ if ( (mb_strpos($system[0]->man_manufacturer,  "IBM") !== false) OR
 		$system[0]->downloads_link = "<a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=" . $system[0]->man_model . "' onclick=\"this.target='_blank';\">".__("Product Page")."</a>";
 	}
 	if ( ($system[0]->man_model != '') and ($system[0]->man_serial != '') ) {
-		$system[0]->warranty_link = "<a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=" . mb_substr($system[0]->man_model,0,4) . "&amp;serial=" . $system[0]->man_serial . "&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
-		$system[0]->warranty_link .= " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=" . mb_substr($system[0]->man_model,-9,-5) . "&amp;serial=" . $system[0]->man_serial . "&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";   
+		$system[0]->warranty_link = "<a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=" . mb_substr($system[0]->man_model,0,4) . "&amp;serial=" . $system[0]->man_serial . "&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='" . $oa_theme_images . "/16_browser.png' alt='' title='' width='16'/></a>";
+		$system[0]->warranty_link .= " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=" . mb_substr($system[0]->man_model,-9,-5) . "&amp;serial=" . $system[0]->man_serial . "&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='" . $oa_theme_images . "/16_browser.png' alt='' title='' width='16'/></a>";   
 	}
 }
 
 # Gateway
 if (mb_strpos($system[0]->man_manufacturer,  "Gateway") !== false) {
 	if ($system[0]->man_serial != '' ) {
-		$system[0]->warranty_link = "<a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $system[0]->man_serial . "' onclick=\"this.target='_blank';\"><img src='" . $image_path . "16_browser.png' alt='' title='' width='16'/></a>";
+		$system[0]->warranty_link = "<a href='http://support.gateway.com/support/allsysteminfo.asp?sn=" . $system[0]->man_serial . "' onclick=\"this.target='_blank';\"><img src='" . $oa_theme_images . "/16_browser.png' alt='' title='' width='16'/></a>";
 	}
 }
 ?>
@@ -230,7 +229,7 @@ function display_custom_field($field_placement, $additional_fields, $edit) {
 			echo   "<span id=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" " . $edit . ">" . print_something($data_value) . "</span>";
 			if ($edit != '') { 
 				#echo '<img src="' . base_url() . 'theme-tango/tango-images/' . '10_edit.png" alt="Click the blue text to edit!" title="Click the blue text to edit!" />'; 
-				echo '<img src="' . base_url() . 'theme-tango/tango-images/16_edit_out.png" onMouseOver="this.src=\'' . base_url() . 'theme-tango/tango-images/16_edit_hover.png\'" onMouseOut="this.src=\'' . base_url() . 'theme-tango/tango-images/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
+				echo '<img src="' . $oa_theme_images . '/16_edit_out.png" onMouseOver="this.src=\'' . base_url() . 'theme-tango/tango-images/16_edit_hover.png\'" onMouseOut="this.src=\'' . base_url() . 'theme-tango/tango-images/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
 			}
 			echo "<br />&nbsp;\n";
 			echo "</div>\n";

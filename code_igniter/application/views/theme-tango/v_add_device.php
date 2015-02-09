@@ -38,17 +38,16 @@ if (isset($error_message))
 } else {
 	$error_message = "";
 }
-$image_path = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/'; 
 $attributes = array('name'=>'add_device_form', 'id'=>'add_device_form');
 echo form_open('admin_device/add_device', $attributes) . "\n"; 
 ?>
 <fieldset id="device_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Device Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_harddisk.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_harddisk.png' alt='' title='' width='48'/>
 	<p>
 		<label style='margin-top: 8px;' for='device_name' ><?php echo __("Name")?>: </label>
 		<input style='padding-top: -2px;' type='text' id='device_name' name='device_name' tabindex='1' title='Device Name' onchange='update_icon()'/>
-		<span>&nbsp;<img valign='middle' id="device_icon" src="<?php echo $image_path;?>16_router.png" /></span>
+		<span>&nbsp;<img valign='middle' id="device_icon" src="<?php echo $oa_theme_images;?>/16_router.png" /></span>
 	</p>
 </fieldset>
 <p><br /></p>
@@ -130,7 +129,7 @@ var order = 0;
 function retrieve_fields()
 {
 	tabletext=document.getElementById("dynamic_other_table").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/get_fields/'+tabletext);
+	http.open('get', '<?php echo $this->config->item('oa_web_index');?>/ajax/get_fields/'+tabletext);
 	http.onreadystatechange = handleResponseFields;
 	http.send(null);
 }
@@ -165,7 +164,7 @@ function add_new_column() {
 	var cell3 = row.insertCell(2);
 	cell1.innerHTML = document.getElementById("dynamic_other_table").value;
 	cell2.innerHTML = document.getElementById("dynamic_other_field").value;
-	cell3.innerHTML = "<span style='float: left; padding-left: 10px;'>" + order + "</span><span style='float: right; padding-right: 10px'><img src='<?php echo $image_path;?>16_go-up.png' onclick='move_up("+order+")' /><img src='<?php echo $image_path;?>16_go-down.png' onclick='move_down("+order+")' /><img src='<?php echo $image_path;?>16_no.png' onclick='remove_column("+order+")' /></span>";
+	cell3.innerHTML = "<span style='float: left; padding-left: 10px;'>" + order + "</span><span style='float: right; padding-right: 10px'><img src='<?php echo $oa_theme_images;?>/16_go-up.png' onclick='move_up("+order+")' /><img src='<?php echo $oa_theme_images;?>/16_go-down.png' onclick='move_down("+order+")' /><img src='<?php echo $oa_theme_images;?>/16_no.png' onclick='remove_column("+order+")' /></span>";
 	if (isInt(order/2)){
 		row.setAttribute("class", "even");
 	} else {
@@ -211,7 +210,7 @@ function remove_column(order) {
 		table.rows[i].setAttribute("class", "even");
 		table.rows[i].setAttribute("name", "row-"+i);
 		table.rows[i].setAttribute("id", "row-"+i);
-		table.rows[i].cells[2].innerHTML = "<span style='float: left; padding-left: 10px;'>" + i + "</span><span style='float: right; padding-right: 10px'><img src='<?php echo $image_path;?>16_go-up.png' onclick='move_up("+i+")' /><img src='<?php echo $image_path;?>16_go-down.png' onclick='move_down("+i+")' /><img src='<?php echo $image_path;?>16_no.png' onclick='remove_column("+i+")' /></span>";
+		table.rows[i].cells[2].innerHTML = "<span style='float: left; padding-left: 10px;'>" + i + "</span><span style='float: right; padding-right: 10px'><img src='<?php echo $oa_theme_images;?>/16_go-up.png' onclick='move_up("+i+")' /><img src='<?php echo $oa_theme_images;?>/16_go-down.png' onclick='move_down("+i+")' /><img src='<?php echo $oa_theme_images;?>/16_no.png' onclick='remove_column("+i+")' /></span>";
 
 		var field = document.createElement("input");
 		field.setAttribute("type","hidden");
@@ -276,7 +275,7 @@ function move_down(order) {
 function update_icon() {
 	fieldtext = document.getElementById("device_name").value;
 	<!-- document.getElementById("device_icon").value = fieldtext; -->
-	document.getElementById("device_icon").src = '<?php echo $image_path;?>16_'+fieldtext+'.png';
+	document.getElementById("device_icon").src = '<?php echo $oa_theme_images;?>/16_'+fieldtext+'.png';
 }
 
 function isInt(n) {

@@ -73,46 +73,46 @@ if ($nmap_installed == 'n') {
 }
 
 echo form_open('discovery/discover_subnet');
-$image_path = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/';
+
 switch ($type) {
 	case '':
 		$title = 'Discover the devices on your network';
-		$icon = $image_path . "48_network_wireless.png";
+		$icon = $oa_theme_images . "/48_network_wireless.png";
 		$scan_title = "Subnet";
 		$submit_text = "Discover";
 		break;
 
 	case 'windows':
 		$title = 'Audit a Windows computer';
-		$icon = $image_path . "48_windows.png";
+		$icon = $oa_theme_images . "/48_windows.png";
 		$scan_title = "Computer";
 		$submit_text = "Audit";
 		break;
 
 	case 'linux':
 		$title = 'Audit a Linux computer';
-		$icon = $image_path . "48_linux.png";
+		$icon = $oa_theme_images . "/48_linux.png";
 		$scan_title = "Computer";
 		$submit_text = "Audit";
 		break;
 
 	case 'snmp':
 		$title = 'Scan a device using SNMP';
-		$icon = $image_path . "48_network.png";
+		$icon = $oa_theme_images . "/48_network.png";
 		$scan_title = "Device";
 		$submit_text = "Scan";
 		break;
 
 	case 'device':
 		$title = 'Discover a device';
-		$icon = $image_path . "48_network.png";
+		$icon = $oa_theme_images . "/48_network.png";
 		$scan_title = "Device";
 		$submit_text = "Discover";
 		break;
 
 	default:
 		$title = 'Discover the devices on your network';
-		$icon = $image_path . "48_network_wireless.png";
+		$icon = $oa_theme_images . "/48_network_wireless.png";
 		$scan_title = "Subnet";
 		$submit_text = "Discover";
 		break;
@@ -235,7 +235,7 @@ if ($type == '') {
 		$this->config->config['default_windows_password'] == '' or 
 		$$this->config->config['default_windows_domain'] == ''){
 	?>
-	<p><h3 style="color: blue">Warning</h3>Please ensure you have default for ALL attributes. Defaults can be set on the Config page - click <a href="<?php echo base_url(); ?>index.php/admin/edit_config" style="color: red";>here</a>.<br />
+	<p><h3 style="color: blue">Warning</h3>Please ensure you have default for ALL attributes. Defaults can be set on the Config page - click <a href="<?php echo $oa_web_index; ?>/admin/edit_config" style="color: red";>here</a>.<br />
 	<?php } ?>
 	<h3>Subnet Examples</h3>The format of the subnet is specified in standard Nmap syntax. The following are valid examples:<br />
 		192.168.0.1 (a single address)<br />

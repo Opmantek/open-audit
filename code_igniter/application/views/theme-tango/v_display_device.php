@@ -60,29 +60,29 @@
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
 			<div id="menu1" class="menuTree">
 				<ul>
-					<li class="parent"><img alt="" src="<?php echo $image_path?>16_device.png" id="toggle_summary_all" /><a href="#">Summary</a>
+					<li class="parent"><img alt="" src="<?php echo $oa_theme_images; ?>/16_device.png" id="toggle_summary_all" /><a href="#">Summary</a>
 						<ul style="display: block;">
-							<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
-							<li class="child"><img alt="" src="<?php echo $image_path?>16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
+							<?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
+							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
 							
-							<?php if ($system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0' and $system[0]->man_ip_address > '') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_devices.png" /><a href="#" id="toggle_summary_network">Network</a></li><?php } ?>
+							<?php if ($system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0' and $system[0]->man_ip_address > '') { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_devices.png" /><a href="#" id="toggle_summary_network">Network</a></li><?php } ?>
 
-							<li class="child"><img alt="" src="<?php echo $image_path?>16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
-							<li class="child"><img alt="" src="<?php echo $image_path?>16_csv.png" /><a href="#" id="toggle_summary_custom">Custom</a></li>
-							<li class="child"><img alt="" src="<?php echo $image_path?>16_word.png" /><a href="#" id="toggle_summary_attachment">Attachments</a></li>
-							<li class="child"><img alt="" src="<?php echo $image_path?>16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
-							<li class="child"><img alt="" src="<?php echo $image_path?>16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
-							<li class="child"><img alt="" src="<?php echo $image_path?>16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
+							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
+							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_csv.png" /><a href="#" id="toggle_summary_custom">Custom</a></li>
+							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_word.png" /><a href="#" id="toggle_summary_attachment">Attachments</a></li>
+							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
+							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
+							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
 				 			
-				 			<?php if ($this->config->config['nmis'] == 'y') { ?><li class="child"><img alt="" src="<?php echo $image_path?>16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
+				 			<?php if ($this->config->config['nmis'] == 'y') { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
 				 			
-				 			<?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_network.png" /><a href="#" id="toggle_summary_network_interfaces">Network Interfaces</a></li> <?php } ?>
+				 			<?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_network.png" /><a href="#" id="toggle_summary_network_interfaces">Network Interfaces</a></li> <?php } ?>
 				 			
-				 			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_cell_phone.png" /><a href="#" id="toggle_summary_phone">Phone Details</a></li> <?php } ?>
+				 			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_cell_phone.png" /><a href="#" id="toggle_summary_phone">Phone Details</a></li> <?php } ?>
 						 	
-						 	<?php if (count($windows) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li><?php } ?>
+						 	<?php if (count($windows) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li><?php } ?>
 
-						 	<?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $image_path?>16_vmware.png" /><a href="#" id="toggle_summary_vms">VM Guest Details</a></li><?php } ?>
+						 	<?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_vmware.png" /><a href="#" id="toggle_summary_vms">VM Guest Details</a></li><?php } ?>
 						</ul>
 					</li>
 					<?php 

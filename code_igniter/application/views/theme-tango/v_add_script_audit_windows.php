@@ -64,7 +64,7 @@ echo form_open('admin/add_script_audit_windows') . "\n";
 ?>
 <fieldset id="org_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Script Options')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<table width="80%" cellpadding = "0" cellspacing="0" style=".label {width:200px;}">
 		<tr>
 			<td width='50%'>

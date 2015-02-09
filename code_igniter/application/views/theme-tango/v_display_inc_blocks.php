@@ -41,7 +41,7 @@
 		<fieldset id="summary_windows_details" class="niceforms">
 			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Windows Details')?></span></legend>
 			<div style="float:right; width: 100px;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_<?php echo $icon; ?>.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_<?php echo $icon; ?>.png' alt='' title='' width='48'/>
 			</div>
 			<?php foreach($windows as $key): ?>
 			<div>
@@ -98,14 +98,14 @@
 			<fieldset id="processor_details">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Processor Details')?></span></legend>
 				<?php foreach($processor as $key):
-					$image = $image_path . '48_component_cpu.png';
+					$image = $oa_theme_images . '/48_component_cpu.png';
 					if ((mb_substr_count($key->processor_manufacturer, 'GenuineIntel') > 0) and (substr_count($image, '48_component_cpu') > 0))
 					{
-						$image = $image_path . '48_intel.png';
+						$image = $oa_theme_images . '/48_intel.png';
 					}
 					if ((mb_substr_count($key->processor_manufacturer, 'AuthenticAMD') > 0) and (substr_count($image, '48_component_cpu') > 0))
 					{
-						$image = $image_path . '48_amd.png';
+						$image = $oa_theme_images . '/48_amd.png';
 					}
 					if (! isset($key->processor_count) or $key->processor_count == '' or $key->processor_count == '0') { $key->processor_count = '&nbsp;'; }
 					if (! isset($key->processor_logical) or $key->processor_logical == '' or $key->processor_logical == '0') { $key->processor_logical = '&nbsp;'; }
@@ -133,7 +133,7 @@
 			<fieldset id="memory_details">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Memory Details')?></span></legend>
 				<div style="min-width: 50px; float: right;">
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_component_cpu.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_component_cpu.png' alt='' title='' width='48'/>
 				</div>
 				<div style="width: 90%; float: left;">
 				<table cellspacing="1" class="tablesorter" width="100%">
@@ -176,7 +176,7 @@
 		<form action="#" method="post" class="niceforms">
 			<fieldset id="bios_details">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Bios Details')?></span></legend>
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_gnome-cpu.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_gnome-cpu.png' alt='' title='' width='48'/>
 				<?php foreach($bios as $key): ?>
 					<p><label for="bios_description"><?php echo __('Description')?>: </label><span id="bios_description"><?php echo print_something($key->bios_description); ?></span></p>
 					<p><label for="bios_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="bios_manufacturer"><?php echo print_something($key->bios_manufacturer); ?></span></p>
@@ -198,7 +198,7 @@
 		<form action="#" method="post" class="niceforms">
 			<fieldset id="motherboard_details">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Motherboard Details')?></span></legend>
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_gnome-cpu.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_gnome-cpu.png' alt='' title='' width='48'/>
 				<?php foreach($motherboard as $key): ?>
 					<p><label for="motherboard_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="motherboard_manufacturer"><?php echo print_something($key->manufacturer)?></span></p>
 					<p><label for="motherboard_model"><?php echo __('Model')?>: </label><span id="motherboard_model"><?php echo print_something($key->model)?></span></p>
@@ -265,7 +265,7 @@
 						$image = "48_" . strtolower($key->net_manufacturer);
 					}
 				?>	<div style="float:right; width: 100px; margin-left: -80%;">
-						<img style='float: right; margin; 10px; ' src='<?php echo $image_path . $image; ?>.png' alt='' title='' width='48'/>
+						<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images . '/' . $image; ?>.png' alt='' title='' width='48'/>
 					</div>						
 					<table cellspacing="1" class="tablesorter" width="100%">
 						<thead>
@@ -317,7 +317,7 @@
 				<?php foreach($scsi_controller as $key): ?>
 					<fieldset id="scsi_controller_details_<?php echo str_replace('/','-',$key->scsi_controller_id)?>">
 					<legend><span style="font-size: 10pt;">&nbsp;<?php echo $key->scsi_controller_name?> <?php echo __('Details')?></span></legend>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_hba.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_hba.png' alt='' title='' width='48'/>
 					<p><label for="scsi_controller_name<?php echo $key->scsi_controller_id?>"><?php echo __('Name')?>: </label><span id="scsi_controller_name_<?php echo $key->scsi_controller_id?>"><?php echo $key->scsi_controller_name?></span></p>
 					<p><label for="scsi_controller_manufacturer<?php echo $key->scsi_controller_id?>"><?php echo __('Manufacturer')?>: </label><span id="scsi_controller_manufacturer_<?php echo $key->scsi_controller_id?>"><?php echo $key->scsi_controller_manufacturer?></span></p>
 					<p><label for="scsi_controller_device_id<?php echo $key->scsi_controller_id?>"><?php echo __('Device ID')?>: </label><span id="scsi_controller_device_id_<?php echo $key->scsi_controller_id?>"><?php echo htmlentities($key->scsi_controller_device_id)?></span></p>
@@ -359,23 +359,23 @@
 							}
 							# Linux device with SmartMonTools installed, but no Model Family result
 							if ($system[0]->os_group == 'Linux' and $key->hard_drive_model_family == '' and $key->hard_drive_status != '') { 
-								$key->hard_drive_model_family = '<img src="' . $image_path . '16_question.png" alt="Model Family not in SmartMonTools DB" title="Model Family not in SmartMonTools DB" />';
+								$key->hard_drive_model_family = '<img src="' . $oa_theme_images . '/16_question.png" alt="Model Family not in SmartMonTools DB" title="Model Family not in SmartMonTools DB" />';
 							}
 							# Linux device without SmartMonTools installed
 							if ($system[0]->os_group == 'Linux' and $key->hard_drive_model_family == '' and $key->hard_drive_status == '') { 
-								$key->hard_drive_model_family = '<img src="' . $image_path . '16_question.png" alt="Install SmartMonTools for Model Family" title="Install SmartMonTools for Model Family" />';
+								$key->hard_drive_model_family = '<img src="' . $oa_theme_images . '/16_question.png" alt="Install SmartMonTools for Model Family" title="Install SmartMonTools for Model Family" />';
 							}
 							# Linux device without SmartMonTools installed
 							if ($system[0]->os_group == 'Linux' and $key->hard_drive_status == '') { 
-								$key->hard_drive_status = '<img src="' . $image_path . '16_question.png" alt="Install SmartMonTools for SMART status" title="Install SmartMonTools for SMART status" />';
+								$key->hard_drive_status = '<img src="' . $oa_theme_images . '/16_question.png" alt="Install SmartMonTools for SMART status" title="Install SmartMonTools for SMART status" />';
 							}
 							# VMware does not return a result for SMART status, regardless of OS
 							if ($key->hard_drive_manufacturer == 'VMware' or strpos($key->hard_drive_model, 'VMware') !== FALSE) { 
-								$key->hard_drive_status = '<img src="' . $image_path . '16_question.png" alt="SMART status not available under VMware" title="SMART status not available under VMware" />';
-								$key->hard_drive_serial = '<img src="' . $image_path . '16_question.png" alt="Serial not available under VMware" title="Serial not available under VMware" />';
+								$key->hard_drive_status = '<img src="' . $oa_theme_images . '/16_question.png" alt="SMART status not available under VMware" title="SMART status not available under VMware" />';
+								$key->hard_drive_serial = '<img src="' . $oa_theme_images . '/16_question.png" alt="Serial not available under VMware" title="Serial not available under VMware" />';
 							}
 						?>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?><?php echo $image?>.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/<?php echo $image?>.png' alt='' title='' width='48'/>
 					<div>
 						<div style="float:left; width:50%;">
 							<p><label for='hd_manufacturer_<?php echo str_replace('/','-',$key->hard_drive_index)?>'><?php echo __('Manufacturer')?>: </label><span id='hd_manufacturer_<?php echo str_replace('/','-',$key->hard_drive_index)?>' class="form_field"><?php echo $key->hard_drive_manufacturer?>&nbsp;</span></p>
@@ -415,7 +415,7 @@
 						<?php if ($key_partition->hard_drive_index == $key->hard_drive_index): ?>
 						<?php $partition_count++; ?>
 							<tr>
-								<td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo $system_id . "/" . $key_partition->partition_id?>"><img src='<?php echo $image_path;?>16_graph.png' alt='' title='' /></a></td>
+								<td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo $system_id . "/" . $key_partition->partition_id?>"><img src='<?php echo $oa_theme_images;?>/16_graph.png' alt='' title='' /></a></td>
 								<td><?php echo $key_partition->partition_device_id; ?></td>
 								<td><?php echo $key_partition->partition_mount_point; ?></td>
 								<td><?php echo $key_partition->partition_name?></td>
@@ -461,7 +461,7 @@
 						<?php foreach($partition as $key_partition): ?>
 							<?php if ($key_partition->hard_drive_index == ''): ?>
 								<tr>
-									<td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo $system_id . "/" . $key_partition->partition_id?>"><img src='<?php echo $image_path;?>16_graph.png' alt='' title='' /></a></td>
+									<td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo $system_id . "/" . $key_partition->partition_id?>"><img src='<?php echo $oa_theme_images;?>/16_graph.png' alt='' title='' /></a></td>
 									<td><?php echo $key_partition->partition_mount_point; ?></td>
 									<td><?php echo $key_partition->partition_name?></td>
 									<td><?php echo $key_partition->partition_format?></td>
@@ -489,7 +489,7 @@
 		<form action="#" method="post" class="niceforms">
 			<fieldset id="optical_details">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Optical Details')?></span></legend>
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_optical_drive.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_optical_drive.png' alt='' title='' width='48'/>
 				<?php foreach($optical as $key): ?>
 					<p><label for="optical_mount_point_<?php echo $key->optical_drive_id?>"><?php echo __('Mount Point')?>: </label><span id="optical_mount_point_<?php echo $key->optical_drive_id?>"><?php echo $key->optical_drive_mount_point?></span></p>
 					<p><label for="optical_caption_<?php echo $key->optical_drive_id?>"><?php echo __('Caption')?>: </label><span id="optical_caption_<?php echo $key->optical_drive_id?>"><?php echo $key->optical_drive_caption?></span></p>
@@ -524,7 +524,7 @@
 						$image = '48_intel';
 					}
 				?>	
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?><?php echo $image; ?>.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/<?php echo $image; ?>.png' alt='' title='' width='48'/>
 					<p><label for="video_description_<?php echo $key->video_id?>"><?php echo __('Description')?>: </label><span id="video_description_<?php echo $key->video_id?>"><?php echo $key->video_description?></span></p>
 					<p><label for="video_memory_<?php echo $key->video_id?>"><?php echo __('Memory')?>: </label><span id="video_memory_<?php echo $key->video_id?>"><?php echo number_format(floatval($key->video_memory))?> Mb</span></p>
 					<p><label for="video_manufacturer_<?php echo $key->video_id?>"><?php echo __('Manufacturer')?>: </label><span id="video_manufacturer_<?php echo $key->video_id?>"><?php echo $key->video_manufacturer?></span></p>
@@ -546,7 +546,7 @@
 				<?php
 				$image = '48_video';
 				if (count($monitor) < 2) { 
-				echo "<img style='float: right; margin; 10px; ' src='" . $image_path . $image . ".png' alt='' title='' width='48'/>\n";
+				echo "<img style='float: right; margin; 10px; ' src='" . $oa_theme_images . '/' . $image . ".png' alt='' title='' width='48'/>\n";
 				} 
 				?>
 				<?php foreach($monitor as $key): ?>
@@ -577,7 +577,7 @@
 					// }
 					?>
 <!-- 					<div style="float:right; width: 100px; margin-left: -80%;">
-						<img style='float: right; margin; 10px; ' src='<?php echo $image_path . $image; ?>.png' alt='' title='' width='48'/>
+						<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images . '/' . $image; ?>.png' alt='' title='' width='48'/>
 					</div>	 -->
 					<?php if (count($monitor) > 1) { ?>
 					</fieldset>
@@ -598,7 +598,7 @@
 		<form action="#" method="post" class="niceforms">
 			<fieldset id="sound_details">
 				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Sound Details')?></span></legend>
-				<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_component-headphones.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_component-headphones.png' alt='' title='' width='48'/>
 				<?php foreach($sound as $key): ?>
 					<p><label for="sound_description_<?php echo $key->sound_id; ?>"><?php echo __('Description')?>: </label><span id="sound_description_<?php echo $key->sound_id; ?>"><?php echo $key->sound_name?></span></p>
 					<p><label for="sound_manufacturer_<?php echo $key->sound_id; ?>"><?php echo __('Manufacturer')?>: </label><span id="sound_manufacturer_<?php echo $key->sound_id; ?>"><?php echo $key->sound_manufacturer?></span></p>
@@ -688,11 +688,11 @@
 						$software_link = '';
 						if (($key->software_url != '') AND ($key->software_url != ' '))
 						{
-							$software_link = "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_browser.png\" alt=\"\" /></a>";
+							$software_link = "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . $oa_theme_images . "/16_browser.png\" alt=\"\" /></a>";
 						}
 						if (($key->software_email != '') AND ($key->software_email != ' '))
 						{
-							$software_link = "<a href=\"mailto://" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_email.png\" alt=\"\" /></a>";
+							$software_link = "<a href=\"mailto://" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $oa_theme_images . "/16_email.png\" alt=\"\" /></a>";
 						}
 						if (isset($key->software_description) and $key->software_description > '') {
 							$software_name = $key->software_name . " (" . trim($key->software_description) . ")";
@@ -743,11 +743,11 @@
 							<?php
 							if (($key->software_url != '') AND ($key->software_url != ' '))
 							{
-								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_browser.png\" alt=\"\" /></a>";
+								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . $oa_theme_images . "/16_browser.png\" alt=\"\" /></a>";
 							}
 							if (($key->software_email != '') AND ($key->software_email != ' '))
 							{
-								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_email.png\" alt=\"\" /></a>";
+								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $oa_theme_images . "/16_email.png\" alt=\"\" /></a>";
 							}
 							?>
 						</td>
@@ -786,11 +786,11 @@
 							<?php
 							if (($key->software_url != '') AND ($key->software_url != ' '))
 							{
-								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_browser.png\" alt=\"\" /></a>";
+								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . $oa_theme_images . "/16_browser.png\" alt=\"\" /></a>";
 							}
 							if (($key->software_email != '') AND ($key->software_email != ' '))
 							{
-								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $image_path . "16_email.png\" alt=\"\" /></a>";
+								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $oa_theme_images . "/16_email.png\" alt=\"\" /></a>";
 							}
 							?>
 						</td>
@@ -829,11 +829,11 @@
 							<?php
 							if (($key->software_url != '') AND ($key->software_url != ' '))
 							{
-								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . base_url() . $this->user->user_theme . "_images/browser.png\" alt=\"\" /></a>";
+								echo "<a href=\"" . clean_url($key->software_url) . "\"><img style='border-width:0px;' src=\"" . $oa_theme_images . "/browser.png\" alt=\"\" /></a>";
 							}
 							if (($key->software_email != '') AND ($key->software_email != ' '))
 							{
-								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . base_url() . $this->user->user_theme . "_images/email.png\" alt=\"\" /></a>";
+								echo "<a href=\"" . $key->software_email . "\"><img style='border-width:0px;' src=\"" . $oa_theme_images . "/email.png\" alt=\"\" /></a>";
 							}
 							?>
 						</td>
@@ -1353,13 +1353,13 @@
 					<?php
 					$db_type = $key->db_type;
 					if ($key->db_type == 'SQL Server'){ ?>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_sql_server.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_sql_server.png' alt='' title='' width='48'/>
 					<?php } else if ($db_type == 'MySQL'){ ?>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_mysql_server.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_mysql_server.png' alt='' title='' width='48'/>
 					<?php } else if ($db_type == 'Postgres'){ ?>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_postgres_server.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_postgres_server.png' alt='' title='' width='48'/>
 					<?php } else if ($db_type == 'Oracle'){ ?>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_partition.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_partition.png' alt='' title='' width='48'/>
 					<?php } ?>
 					<p><label for="sw_db_type"><?php echo __('Type')?>: </label><span id="sw_db_type"><?php echo $key->db_type?>&nbsp;</span></p>
 					<p><label for="sw_db_version"><?php echo __('Version')?>: </label><span id="sw_db_version"><?php echo $key->db_version_string?>&nbsp;</span></p>
@@ -1423,13 +1423,13 @@
 				<?php foreach($webserver as $key): ?>
 					<?php
 					if ($key->webserver_type == 'IIS'){ ?>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_web.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_web.png' alt='' title='' width='48'/>
 					<?php } else if ($webserver_type == 'Apache'){ ?>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_web.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_web.png' alt='' title='' width='48'/>
 					<?php } else if ($webserver_type == 'Cherokee'){ ?>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_web.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_web.png' alt='' title='' width='48'/>
 					<?php } else if ($webserver_type == 'LightHTTPD'){ ?>
-					<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_web.png' alt='' title='' width='48'/>
+					<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_web.png' alt='' title='' width='48'/>
 					<?php } ?>
 					<p><label for="sw_webserver_type"><?php echo __('Type')?>: </label><span id="sw_webserver_type"><?php echo $key->webserver_type?>&nbsp;</span></p>
 					<p><label for="sw_webserver_version"><?php echo __('Version')?>: </label><span id="sw_webserver_version"><?php echo $key->webserver_version?>&nbsp;</span></p>

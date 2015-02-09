@@ -58,7 +58,7 @@ if ($this->config->config['distinct_groups'] == 'y') {
 		} 
 		$old_category = $key->group_category;
 		echo "		<tr>\n";
-		echo "			<td align=\"center\"><img src=\"" . $image_path . "16_" . $key->group_icon . ".png\" alt=\"" . $key->group_category . "\" title=\"" . $key->group_category . "\" style=\"border-width:0px;\" /></td>\n";
+		echo "			<td align=\"center\"><img src=\"" . $oa_theme_images . "/16_" . $key->group_icon . ".png\" alt=\"" . $key->group_category . "\" title=\"" . $key->group_category . "\" style=\"border-width:0px;\" /></td>\n";
 		echo "			<td align=\"center\">" . $key->total . "</td>\n";
 		if ($key->group_padded_name > "") {
 			echo "			<td><span style=\"display: none;\">" . $key->group_padded_name . "</span><a href=\"" . base_url() . "index.php/main/list_devices/" . $key->group_id . "\">" . $key->group_name . "</a></td>\n";
@@ -67,9 +67,9 @@ if ($this->config->config['distinct_groups'] == 'y') {
 		}
 		echo "			<td>" . $key->group_description . "</td>\n";
 		if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) {
-			echo "			<td align=\"center\"><a class=\"SearchPopupTrigger\" rel=\"" . $key->group_id . "\" href=\"#\" ><img src=\"" . $image_path . "16_find.png\" style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
+			echo "			<td align=\"center\"><a class=\"SearchPopupTrigger\" rel=\"" . $key->group_id . "\" href=\"#\" ><img src=\"" . $oa_theme_images . "/16_find.png\" style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
 		}
-		echo "			<td align=\"center\"><a class=\"ReportPopupTrigger\" rel=\"" . $key->group_id . "\" href=\"#\" ><img src=\"" . $image_path . "16_csv.png\"  style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
+		echo "			<td align=\"center\"><a class=\"ReportPopupTrigger\" rel=\"" . $key->group_id . "\" href=\"#\" ><img src=\"" . $oa_theme_images . "/16_csv.png\"  style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
 		echo "		</tr>\n";
 	}
 } else { ?>
@@ -90,7 +90,7 @@ if ($this->config->config['distinct_groups'] == 'y') {
 		<?php foreach($query as $key): ?>
 		<?php if ($key->group_category <> 'network') { ?>
 		<tr>
-			<td align="center"><img src="<?php echo $image_path;?>16_<?php echo $key->group_icon?>.png" alt="<?php echo $key->group_category?>" title="<?php echo $key->group_category?>" style='border-width:0px;' /></td>
+			<td align="center"><img src="<?php echo $oa_theme_images;?>/16_<?php echo $key->group_icon?>.png" alt="<?php echo $key->group_category?>" title="<?php echo $key->group_category?>" style='border-width:0px;' /></td>
 			<td align="center"><?php echo $key->total?></td>
 			<?php if ($key->group_padded_name > "") { ?>
 				<td><span style="display: none;"><?php echo $key->group_padded_name?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo $key->group_id?>"><?php echo $key->group_name?></a></td>
@@ -99,9 +99,9 @@ if ($this->config->config['distinct_groups'] == 'y') {
 			<?php } ?>
 			<td><?php echo $key->group_description?></td>
 			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
-			<td align="center"><a class="SearchPopupTrigger" rel="<?php echo $key->group_id?>" href="#" ><img src="<?php echo $image_path;?>16_find.png"  style="border-width:0px;" title="" alt="" /></a></td>
+			<td align="center"><a class="SearchPopupTrigger" rel="<?php echo $key->group_id?>" href="#" ><img src="<?php echo $oa_theme_images;?>/16_find.png"  style="border-width:0px;" title="" alt="" /></a></td>
 			<?php } ?>
-			<td align="center"><a class="ReportPopupTrigger" rel="<?php echo $key->group_id?>" href="#" ><img src="<?php echo $image_path;?>16_csv.png"  style="border-width:0px;" title="" alt="" /></a></td>
+			<td align="center"><a class="ReportPopupTrigger" rel="<?php echo $key->group_id?>" href="#" ><img src="<?php echo $oa_theme_images;?>/16_csv.png"  style="border-width:0px;" title="" alt="" /></a></td>
 		</tr>
 		<?php } ?>
 		<?php endforeach; ?>
@@ -126,7 +126,7 @@ if ($this->config->config['distinct_groups'] == 'y') {
 		<?php foreach($query as $key): ?>
 		<?php if ($key->group_category == 'network') { $i++;?>
 		<tr>
-			<td align="center"><img src="<?php echo $image_path;?>16_<?php echo $key->group_icon?>.png" alt="<?php echo $key->group_category?>" title="<?php echo $key->group_category?>" style='border-width:0px;' /></td>
+			<td align="center"><img src="<?php echo $oa_theme_images;?>/16_<?php echo $key->group_icon?>.png" alt="<?php echo $key->group_category?>" title="<?php echo $key->group_category?>" style='border-width:0px;' /></td>
 			<td align="center"><?php echo $key->total?></td>
 			<?php if ($key->group_padded_name > "") { ?>
 				<td><span style="display: none;"><?php echo $key->group_padded_name?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo $key->group_id?>"><?php echo $key->group_name?></a></td>
@@ -135,9 +135,9 @@ if ($this->config->config['distinct_groups'] == 'y') {
 			<?php } ?>
 			<td><?php echo $key->group_description?></td>
 			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
-			<td align="center"><a class="SearchPopupTrigger" rel="<?php echo $key->group_id?>" href="#" ><img src="<?php echo $image_path;?>16_find.png"  style="border-width:0px;" title="" alt="" /></a></td>
+			<td align="center"><a class="SearchPopupTrigger" rel="<?php echo $key->group_id?>" href="#" ><img src="<?php echo $oa_theme_images;?>/16_find.png"  style="border-width:0px;" title="" alt="" /></a></td>
 			<?php } ?>
-			<td align="center"><a class="ReportPopupTrigger" rel="<?php echo $key->group_id?>" href="#" ><img src="<?php echo $image_path;?>16_csv.png"  style="border-width:0px;" title="" alt="" /></a></td>
+			<td align="center"><a class="ReportPopupTrigger" rel="<?php echo $key->group_id?>" href="#" ><img src="<?php echo $oa_theme_images;?>/16_csv.png"  style="border-width:0px;" title="" alt="" /></a></td>
 		</tr>
 		<?php } ?>
 		<?php endforeach; ?>
@@ -187,7 +187,7 @@ li a {text-decoration: underline; color: #729FCF;}
 
 <table cellspacing="1" class="tablesorter">
 	<tr>
-		<td><ul class="fade" name="newsfeed" id="newsfeed" style="list-style-type: none;"><li>&nbsp;&nbsp;&nbsp;<img src="<?php echo $image_path;?>16_nmis.png" />&nbsp;&nbsp;Open-AudIT Community: from the <a target="_blank" href="https://community.opmantek.com/display/OA/Home">Open-AudIT wiki</a>.</li></ul></td>
+		<td><ul class="fade" name="newsfeed" id="newsfeed" style="list-style-type: none;"><li>&nbsp;&nbsp;&nbsp;<img src="<?php echo $oa_theme_images; ?>/16_nmis.png" />&nbsp;&nbsp;Open-AudIT Community: from the <a target="_blank" href="https://community.opmantek.com/display/OA/Home">Open-AudIT wiki</a>.</li></ul></td>
 	</tr>
 </table>
 
@@ -253,7 +253,7 @@ var rssfeed = $.ajax({
         var month = parseInt(updateDate.getMonth()) + 1;
         var updatedDate = updateDate.getFullYear() + "/" + month + "/" + updateDate.getDate(); 
         li.style.display="none";
-        li.innerHTML = "&nbsp;&nbsp;&nbsp;<img src=\"<?php echo $image_path;?>16_nmis.png\" />&nbsp;&nbsp;Open-AudIT Community: <a target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> by " + $this.find("author").text() + " on " + updatedDate + ".";
+        li.innerHTML = "&nbsp;&nbsp;&nbsp;<img src=\"<?php echo $oa_theme_images; ?>/16_nmis.png\" />&nbsp;&nbsp;Open-AudIT Community: <a target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> by " + $this.find("author").text() + " on " + updatedDate + ".";
         document.getElementById("newsfeed").appendChild(li);
     })
 });

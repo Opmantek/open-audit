@@ -34,7 +34,6 @@
 
 ?>
 <?php 
-$image_path = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/';
 if (php_uname('s') != "Windows NT") { 
 	$ldap_server_addition = "This is the server which will run the audit scripts.";
 } else {
@@ -48,7 +47,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 echo form_open('discovery/discover_active_directory') ?>
 <fieldset id="group_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Discover and Audit an Active Directory Domain')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_ldap.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_ldap.png' alt='' title='' width='48'/>
 	<table width="90%" cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='100%'>

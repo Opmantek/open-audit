@@ -43,7 +43,7 @@ echo form_open('admin_connection/add_connection') . "\n";
 ?>
 <fieldset id="connection_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Connection Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<table width="780" cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='100%'>

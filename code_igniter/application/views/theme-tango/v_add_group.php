@@ -338,7 +338,7 @@ var http = createRequestObject();
 function retrieve_fields()
 {
 	tabletext=document.getElementById("dynamic_other_table").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/get_fields/'+tabletext);
+	http.open('get', '<?php echo $this->config->item('oa_web_index'); ?>/ajax/get_fields/'+tabletext);
 	http.onreadystatechange = handleResponseFields;
 	http.send(null);
 }
@@ -358,7 +358,7 @@ function retrieve_field_values()
 {
 	tabletext=document.getElementById("dynamic_other_table").value;
 	fieldtext=document.getElementById("dynamic_other_field").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/get_field_values/'+tabletext+'/'+fieldtext);
+	http.open('get', '<?php echo $this->config->item('oa_web_index'); ?>/ajax/get_field_values/'+tabletext+'/'+fieldtext);
 	http.onreadystatechange = handleResponseValues;
 	http.send(null);
 }
@@ -377,6 +377,6 @@ function handleResponseValues() {
 function update_icon() {
 	fieldtext = document.getElementById("group_category").value;
 	document.getElementById("group_icon").value = fieldtext;
-	document.getElementById("icon_image").src = '<?php echo $image_path;?>16_'+fieldtext+'.png';
+	document.getElementById("icon_image").src = '<?php echo $oa_theme_images;?>/16_'+fieldtext+'.png';
 }
 </script>

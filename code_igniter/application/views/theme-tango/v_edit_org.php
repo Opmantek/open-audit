@@ -43,7 +43,7 @@ echo form_open('admin_org/edit_org') . "\n";
 ?>
 <fieldset id="org_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Organisation Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<?php #foreach ($org as $key) { ?>
 	<?php if ($org->org_parent_id == '0') { $org->org_parent_id = ''; } ?>
 	<table width="90%" cellpadding = "0" cellspacing="0">

@@ -36,7 +36,7 @@
 <form action="#" method="post" class="niceforms">
 	<fieldset id="org_details" class="niceforms">
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Organisation Details')?></span></legend>
-		<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+		<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 		<?php #if ($org->org_parent_id == '0') { $org->org_parent_id = ''; } ?>
 		<?php if ($org->org_parent_id == '0') { $org->org_parent_name = 'Default Organisation'; } ?>
 		<?php $org->org_picture = "<img id='org_picture' name='org_picture' title='Picture' src='<?php echo $org->org_picture?>' />"; ?>

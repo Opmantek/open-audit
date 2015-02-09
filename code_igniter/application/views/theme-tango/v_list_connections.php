@@ -57,8 +57,8 @@ if (count($query) > 0)
 			foreach($query as $key):
 				if ($key->connection_id > 0 )
 				{
-					$edit_pic = "<a href=\"edit_connection/" . $key->connection_id . "\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>"; 
-					$delete_pic = "<a href=\"delete_connection/" . $key->connection_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
+					$edit_pic = "<a href=\"edit_connection/" . $key->connection_id . "\"><img src='" . $oa_theme_images . "/16_edit.png' alt='' title='' width='16'/></a>"; 
+					$delete_pic = "<a href=\"delete_connection/" . $key->connection_id . "\"><img src='" . $oa_theme_images . "/16_delete.png' alt='' title='' width='16'/></a>";
 			 ?>
 			<tr>
 				<td><?php echo $key->name?></td>

@@ -43,7 +43,7 @@ echo form_open('admin_system/add_system_def') . "\n";
 ?>
 <fieldset id="standard_fields" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Standard Fields')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<p><?php echo $error_message; ?>&nbsp;</p>
 	<table width='700'><tr><td valign='top'>
 	<label for='name' style='width: 250px; padding: 3px 0px 0px 0px;'>Name:</label><input type='text' name='name' id='name' size='10' title='' onchange='update_man_type();' /><br />
@@ -117,7 +117,7 @@ echo form_open('admin_system/add_system_def') . "\n";
 <!--
 <fieldset id="custom_fields" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Custom Fields')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<table width='500' name='custom_fields_table' id='custom_fields_table'><tr><th>Name</th><th>Type</th><th>Use This?</th></tr>
 	<?php
 	foreach ($custom_fields as $custom_field) {

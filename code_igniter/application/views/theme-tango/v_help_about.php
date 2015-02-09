@@ -94,15 +94,15 @@ if (($this->config->item('display_version') != $this->config->item('web_display_
 </form>
 <table>
 	<tr style="height:200px;">
-		<td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?php echo $image_path;?>logo-agpl.png' width='120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $image_path;?>logo-php.png' width='120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $image_path;?>logo-code_igniter.png' width='120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $image_path;?>logo-jquery.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?php echo $oa_theme_images;?>/logo-agpl.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $oa_theme_images;?>/logo-php.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $oa_theme_images;?>/logo-code_igniter.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $oa_theme_images;?>/logo-jquery.png' width='120' alt=''/></a></td>
 		<!--
-		<td style="vertical-align: middle;"><a href="http://www.mysql.com/"><img src='<?php echo $image_path;?>logo-mysql.png' width='120' alt=''></a></td>
-		<td style="vertical-align: middle;"><a href="http://www.apache.org/"><img src='<?php echo $image_path;?>logo-apache.jpg' width='120' alt=''></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.mysql.com/"><img src='<?php echo $oa_theme_images;?>/logo-mysql.png' width='120' alt=''></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.apache.org/"><img src='<?php echo $oa_theme_images;?>/logo-apache.jpg' width='120' alt=''></a></td>
 		-->
-		<td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $image_path;?>logo-w3c.png' width='120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $image_path;?>logo-miclogo-88x31.gif' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $oa_theme_images;?>/logo-w3c.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $oa_theme_images;?>/logo-miclogo-88x31.gif' width='120' alt=''/></a></td>
 	</tr>
 </table>

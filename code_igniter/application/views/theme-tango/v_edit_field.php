@@ -35,7 +35,7 @@
 echo form_open('admin_field/edit_field') . "\n"; ?>
 <fieldset id="field_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Field Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_audit_log.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_audit_log.png' alt='' title='' width='48'/>
 	<?php foreach ($field as $key) { ?>
 	<table width="780" cellpadding = "0" cellspacing="0">
 		<tr>

@@ -36,7 +36,7 @@ echo form_open('admin_system/system_add_credentials') . "\n";
 ?>
 <fieldset id="credentials" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('SNMP Credentials')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<p><label for='ip_address'><?php echo __("IP Address")?>: </label>
 		<input type='text' id='ip_address' name='ip_address' tabindex='1' title='IP Address' value="<?php echo $ip_address; ?>"/></p>
 	<hr />

@@ -42,7 +42,7 @@ echo form_open('admin_user/add_user') . "\n";
 ?>
 <fieldset id="group_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('User Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_users.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_users.png' alt='' title='' width='48'/>
 	<table width="780" cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='50%'>
@@ -104,7 +104,7 @@ echo form_open('admin_user/add_user') . "\n";
 			echo "
 		<tr>
 			<td align=\"center\">" . $key->total . "</td>
-			<td><a href=\"" . base_url() . "index.php/main/list_devices/" . $key->group_id . "\">" . $key->group_name . "</a></td>
+			<td><a href=\"" . $this->config->item('oa_web_index') . "/main/list_devices/" . $key->group_id . "\">" . $key->group_name . "</a></td>
 			<td>" . $tag . "</td>
 			<td>" . $key->group_description . "</td>
 			<td align=\"center\">" . group_dropdown($key->group_id) . "</td>

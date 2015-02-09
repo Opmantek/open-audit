@@ -31,7 +31,6 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 ?>
 <table cellspacing="1" class="tablesorter">
 	<thead>
@@ -51,13 +50,13 @@
 		<?php 
 		foreach($query as $key):
 			$tag = 'User Defined'; 
-			$edit_pic = "<a href=\"edit_group/" . $key->group_id . "\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>"; 
-			$export_pic = "<a href=\"export_group/" . $key->group_id . "\"><img src='" . $image_path . "16_text-x-generic-template.png' alt='' title='' width='16'/></a>";
-			$delete_pic = "<a href=\"delete_group/" . $key->group_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
-			$update_pic = "<a href=\"update_group/" . $key->group_id . "\"><img src='" . $image_path . "16_update.png' alt='' title='' width='16'/></a>";
+			$edit_pic = "<a href=\"edit_group/" . $key->group_id . "\"><img src='" . $oa_theme_images . "/16_edit.png' alt='' title='' width='16'/></a>"; 
+			$export_pic = "<a href=\"export_group/" . $key->group_id . "\"><img src='" . $oa_theme_images . "/16_text-x-generic-template.png' alt='' title='' width='16'/></a>";
+			$delete_pic = "<a href=\"delete_group/" . $key->group_id . "\"><img src='" . $oa_theme_images . "/16_delete.png' alt='' title='' width='16'/></a>";
+			$update_pic = "<a href=\"update_group/" . $key->group_id . "\"><img src='" . $oa_theme_images . "/16_update.png' alt='' title='' width='16'/></a>";
 		 ?>
 		<tr>
-			<td align="center"><img src="<?php echo $image_path;?>16_<?php echo $key->group_icon;?>.png" border="0" title="<?php echo $key->group_icon;?>" alt="<?php echo $key->group_icon;?>" /></td>
+			<td align="center"><img src="<?php echo $oa_theme_images;?>/16_<?php echo $key->group_icon;?>.png" border="0" title="<?php echo $key->group_icon;?>" alt="<?php echo $key->group_icon;?>" /></td>
 			<td align="center"><?php echo $key->total?></td>
 			<?php if ($key->group_padded_name > "") { ?>
 				<td><span style="display: none;"><?php echo $key->group_padded_name?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo $key->group_id?>"><?php echo $key->group_name?></a></td>

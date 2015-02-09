@@ -41,7 +41,6 @@
 <body>
 <?php 
 $attributes = array('accept-charset'=>'UTF-8');
-#echo form_open('system/add_system', $attributes) . "\n";
 echo form_open_multipart('system/add_system', $attributes) . "\n";
 echo form_fieldset('Paste the XML') . "\n";
 echo '<p>' . form_textarea(array('name' => 'form_systemXML', 'id' => 'form_systemXML', 'rows' => '15', 'cols' => '100')) . "</p>\n";

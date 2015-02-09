@@ -34,18 +34,18 @@
 ?>
 
 
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/jquery.jqplot.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.logAxisRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.canvasTextRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.canvasAxisTickRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.dateAxisRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.categoryAxisRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.barRenderer.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.trendline.min.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/jquery.jqplot.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.logAxisRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.canvasTextRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.canvasAxisLabelRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.canvasAxisTickRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.dateAxisRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.categoryAxisRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.barRenderer.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.trendline.min.js'; ?>" type="text/javascript"></script>
 
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.highlighter.min.js'; ?>" type="text/javascript"></script>
-<script src="<?php echo base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/jqplot/plugins/jqplot.cursor.min.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.highlighter.min.js'; ?>" type="text/javascript"></script>
+<script src="<?php echo $oa_theme_files; ?>/jqplot/plugins/jqplot.cursor.min.js'; ?>" type="text/javascript"></script>
 
 <?php
 $line1 = "[";

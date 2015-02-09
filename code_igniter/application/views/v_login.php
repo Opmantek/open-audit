@@ -50,7 +50,6 @@
     </style>
 </head>
 <?php
-$image_path = base_url() . 'theme-tango/tango-images/';
 
 $file_exist = '';
 $filename = dirname(dirname(dirname(dirname(__FILE__)))) . "/other/audit_windows.vbs";
@@ -69,7 +68,7 @@ if (!isset($logo)) {
         <?php $attributes = array ('name' => 'myform'); ?>
         <?php echo form_open('main/list_groups', $attributes, $hidden) . "\n"; ?>
                 <div align='left' style="height: 150px; width:60%; float: left; valign: center; text-align: center;">
-                    <img src='<?php echo $image_path . $logo ;?>' alt='logo' border='0' /><br />
+                    <img src='<?php echo $this->config->item('oa_web_folder') . '/theme-tango/tango-images/' . $logo ;?>' alt='logo' border='0' /><br />
 <?php if ((file_exists($filename)) and $show == 'y') {
                     echo "<span align=\"center\"><br /><input type=\"button\" name=\"audit\" id=\"audit\" onClick=\"audit_my_pc()\" value=\"Audit My PC\" /></span><br />&nbsp;\n";
 } ?>

@@ -362,7 +362,7 @@ $(document).ready(function() {
 	<?php
 		$menu_items = "";
 		foreach ($menu as $report){ 
-			$menu_items .= "<a href=\"" . base_url() . "index.php/report/show_report/" . $report->report_id . "/'+groupID+'\">" .  $report->report_name . "<\/a><br />";
+			$menu_items .= "<a href=\"" . $this->config->item('oa_web_index') . "/report/show_report/" . $report->report_id . "/'+groupID+'\">" .  $report->report_name . "<\/a><br />";
 		} 
 	?>
 	$('.ReportPopupTrigger').live('mouseover', function() {	

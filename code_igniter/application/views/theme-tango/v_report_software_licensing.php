@@ -67,12 +67,12 @@
 			<td align="center"><?php echo $key->software_licenses ?></td>
 			<?php 
 			if ($this->user->user_sam > '1') {
-				echo "\t\t\t<td align=\"center\"><a class='AssetPopupTrigger' rel='" . htmlentities($key->software_name) . "' href='#' ><img src='" . $image_path . "16_edit.png' alt='' title='' width='16' /></a></td>\n";
+				echo "\t\t\t<td align=\"center\"><a class='AssetPopupTrigger' rel='" . htmlentities($key->software_name) . "' href='#' ><img src='" . $oa_theme_images . "/16_edit.png' alt='' title='' width='16' /></a></td>\n";
 			//} else if ($this->user->user_sam > '1') {
 				//if ($key->software_licenses == '') {
 					//echo "\t\t\t<td align=\"center\"></td>\n";
 				//} else {
-					//echo "\t\t\t<td align=\"center\"><a href='" . $key->software_licenses . "'><img src='" . $image_path . "16_edit.png' alt='' title='' width='16' /></a></td>\n";
+					//echo "\t\t\t<td align=\"center\"><a href='" . $key->software_licenses . "'><img src='" . $oa_theme_images . "/16_edit.png' alt='' title='' width='16' /></a></td>\n";
 				//} 
 			} 
 			?>

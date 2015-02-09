@@ -122,7 +122,7 @@ foreach($query as $row) {
 				switch($column_variable_name)
 				{
 				case "tag":
-					echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"" . $row->system_id . "\" href=\"#\"><img src=\"" . $image_path . "16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
+					echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"" . $row->system_id . "\" href=\"#\"><img src=\"" . $oa_theme_images . "/16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
 				break;
 
 				default:

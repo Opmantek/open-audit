@@ -31,9 +31,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 include "v_lang.php";
-$file_path = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files/';
 if (!isset($sortcolumn)) { $sortcolumn = '0';}
 
 if ($this->config->config['logo'] == 'oae') { $title = "Open-AudIT Enterprise"; } else { $title = "Open-AudIT"; }
@@ -59,17 +57,17 @@ if ($function == "list_devices") {
 	<?php } ?>
 	<link rel="shortcut icon" href="<?php echo base_url();?>favicon.png" type="image/x-icon" />
 	<title><?php echo $title?></title>
-	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/jquery-1.7.min.js"></script>
-	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/jquery.droppy.js"></script>
-	<link rel="stylesheet" type="text/css" href="<?php echo $file_path;?>jquery/css/humanity/jquery-ui-1.8.13.custom.css" />
-	<link rel="stylesheet" type="text/css" href="<?php echo $file_path;?>jquery/css/humanity/droppy.css" />
-	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/jquery.tablesorter.min.js"></script>
-	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/jquery.metadata.js"></script>
-	<link rel="stylesheet" type="text/css" href="<?php echo $file_path;?>jquery/css/humanity/tablesorter-style.css" />
-	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/nicejforms.js"></script>
-	<!-- <script type="text/javascript" src="<?php echo $file_path;?>jquery/js/nicejforms-interface.js" /> -->
-	<link rel="stylesheet" type="text/css" href="<?php echo $file_path;?>jquery/css/humanity/niceforms-default.css" />
-	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/jquery-ui-1.8.13.custom.min.js"></script>
+	<script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/jquery-1.7.min.js"></script>
+	<script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/jquery.droppy.js"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo $oa_theme_files; ?>/jquery/css/humanity/jquery-ui-1.8.13.custom.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo $oa_theme_files; ?>/jquery/css/humanity/droppy.css" />
+	<script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/jquery.tablesorter.min.js"></script>
+	<script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/jquery.metadata.js"></script>
+	<link rel="stylesheet" type="text/css" href="<?php echo $oa_theme_files; ?>/jquery/css/humanity/tablesorter-style.css" />
+	<script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/nicejforms.js"></script>
+	<!-- <script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/nicejforms-interface.js" /> -->
+	<link rel="stylesheet" type="text/css" href="<?php echo $oa_theme_files; ?>/jquery/css/humanity/niceforms-default.css" />
+	<script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/jquery-ui-1.8.13.custom.min.js"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function(){
@@ -112,7 +110,7 @@ if ($function == "list_devices") {
 	} ?>
 	</script>
 
-	<script type="text/javascript" src="<?php echo $file_path;?>jquery/js/instantedit.js"></script>
+	<script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/instantedit.js"></script>
 	<?php if (strpos($include, 'v_display_') == 0) {
 		if (isset($system_id)) {
 			echo "	<script type=\"text/javascript\">\n";
@@ -155,10 +153,10 @@ if ($function == "list_devices") {
 		font-size: 100%;
 	}
 	div.menuTree UL LI.parent {
-		background: url(<?php echo $file_path;?>images/collapsed_image.gif) left top no-repeat;
+		background: url(<?php echo $oa_theme_images; ?>/collapsed_image.gif) left top no-repeat;
 	}
 	div.menuTree UL LI.expanded {
-		background: url(<?php echo $file_path;?>images/expended_image.gif) left top no-repeat;
+		background: url(<?php echo $oa_theme_images; ?>/expended_image.gif) left top no-repeat;
 	}
 	</style>
 	<?php
@@ -234,7 +232,8 @@ if ($function == "list_devices") {
 	} else {
 		echo "<h2>" . $heading . "</h2>\n";
 	}
-	$this->load->view("theme-" . $this->user->user_theme . "/" . $include); 
+	#$this->load->view("theme-" . $this->user->user_theme . "/" . $include);
+	include($include . '.php')
 	?>
 	</div><!-- end of content_container -->
 </div>

@@ -43,7 +43,7 @@ echo form_open('admin_location/edit_location') . "\n";
 ?>
 <fieldset id="location_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Location Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<?php foreach ($location as $key) { ?>
 	<table cellpadding = "0" cellspacing="0">
 		<tr>

@@ -36,7 +36,7 @@
 <?php echo form_open('admin/scan_subnet_nmap') ?>
 <fieldset id="group_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Scanning A Subnet using Nmap')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_network_wireless.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_network_wireless.png' alt='' title='' width='48'/>
 	<table cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='100%'>
