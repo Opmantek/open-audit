@@ -57,7 +57,7 @@ class groups extends MY_Controller
 			$response = new stdClass();
 			$response->status = "success";
 			foreach ($this->data['query'] AS &$group) {
-				$group->links = array(array('rel'=>'group', 'href'=> $_SERVER['REQUEST_URI'] . $group->group_id, 'description'=>'The details of this group.'));
+				$group->links = array(array('rel'=>'group', 'href'=> $this->config->item('oa_web_index') . '/' . $group->group_id, 'description'=>'The details of this group.'));
 			}
 			$response->total = count($this->data['query']);
 			$response->groups = $this->data['query'];
@@ -82,7 +82,7 @@ class groups extends MY_Controller
 			$response->status = "success";
 			$response->total = count($this->data['query']);
 			$this->data['query'][0]->links = array(
-				array('rel'=>'devices', 'href'=> $_SERVER['REQUEST_URI'] . '/devices', 'description'=>'The devices in this group.'));
+				array('rel'=>'devices', 'href'=> $this->config->item('oa_web_index') . '/' . $this->group_id . '/devices', 'description'=>'The devices in this group.'));
 			$response->groups = $this->data['query'];
 			echo json_encode($response);
 			header('Content-Type: application/json');
@@ -104,7 +104,7 @@ class groups extends MY_Controller
 		$this->data['query'] = $this->m_systems->get_group_systems($this->group_id);
 		if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
 			foreach ($this->data['query'] AS &$device) {
-				$device->links = array(array('rel'=>'device', 'href'=> $this->config->item('basic_url') . '/devices/' . $device->system_id, 'description'=>'The details of this device.'));
+				$device->links = array(array('rel'=>'device', 'href'=> $this->config->item('oa_web_index') . '/devices/' . $device->system_id, 'description'=>'The details of this device.'));
 			}
 			$response = new stdClass();
 			$response->status = "success";

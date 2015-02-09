@@ -84,7 +84,8 @@ class M_oa_config extends MY_Model {
 				}
 			}
 		}
-		$this->config->config['basic_url'] = $basic_url;
+		$this->config->config['oa_web_index'] = $basic_url;
+		$this->config->config['oa_web_folder'] = $basic_url - '/index.php';
 		unset($i, $j, $temp, $basic_url);
 	}
 
