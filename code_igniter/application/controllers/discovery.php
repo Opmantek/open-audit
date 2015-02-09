@@ -77,6 +77,7 @@ class discovery extends CI_Controller
 
 		$this->load->model('m_oa_general');
 		$this->load->model('m_system');
+		$this->load->model('m_oa_user');
 		$this->load->library('encrypt');
 		$this->load->helper('url');
 		$system_ids = '';
@@ -118,8 +119,10 @@ class discovery extends CI_Controller
 			$system_id = $value;
 			$ip_address = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $system_id));
 			$credentials = $this->m_system->get_credentials($system_id);
-			if (isset($this->session->userdata('user_id') AND is_numeric($this->session->userdata('user_id')) {
-				$temp = $this->m_oa_user->get_user_details($this->session->userdata('user_id');
+			$temp = $this->session->userdata('user_id');
+			if (is_numeric($temp)) {
+				unset($temp);
+				$temp = $this->m_oa_user->get_user_details($this->session->userdata('user_id'));
 				$credentials->last_user = $temp[0]->user_full_name;
 			} else {
 				$credentials->last_user = '';
@@ -392,6 +395,7 @@ class discovery extends CI_Controller
 		set_time_limit(600);
 		if (!isset($_POST['submit'])) {
 	        // must be an admin to access this page
+	        $this->load->model('m_oa_user');
 	        $this->m_oa_user->validate_user();
 	        if ($this->user->user_admin != 'y') {
 	            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
@@ -433,10 +437,11 @@ class discovery extends CI_Controller
 			$this->load->view('v_template', $this->data);
 		} else {
 			// process the scan details and call the discovery script
-
+			
 			$return_var = "";
 			$output = "";
 			$display = '';
+			$timestamp = date('Y-m-d H:i:s');
 
 			if ($this->input->post('debug') AND strpos($_SERVER['HTTP_ACCEPT'], 'html')) {
 				$display = 'y';
@@ -521,8 +526,11 @@ class discovery extends CI_Controller
 				$this->m_system->update_credentials($credentials, $_POST['system_id']);
 
 			}
-
-			$encode['last_user'] = $this->user->user_full_name;
+			if (isset($this->user->user_full_name)) {
+				$encode['last_user'] = $this->user->user_full_name;
+			} else {
+				$encode['last_user'] = '';
+			}
 			$encoded = json_encode($encode);
 			$credentials = $this->encrypt->encode($encoded);
 			$i = 0;
@@ -731,6 +739,12 @@ class discovery extends CI_Controller
 				$display = 'y';
 				echo "<pre>\n";
 				echo "DEBUG - Starting process_subnet.\n";
+			}
+
+			$this->load->model('m_oa_user');
+
+			if (is_numeric($this->session->userdata('user_id'))) {
+				$this->user = $this->m_oa_user->get_user_details($this->session->userdata('user_id'));
 			}
 
 			// all logging will be as below, only the message will change
