@@ -52,12 +52,11 @@ class main extends MY_Controller
 			// return a document providing futher links
 			$response = new stdClass();
 			$response->status = 'success';
-			$response->self = current_url();
 			$response->links = array(
-				array('rel'=>'groups', 'href'=>'{self}/groups', 'description'=>'List the Groups'),  
-				array('rel'=>'devices', 'href'=>'{self}/devices', 'description'=>'List the Devices'),  
-				array('rel'=>'locations', 'href'=>'{self}/locations', 'description'=>'List the Locations'),  
-				array('rel'=>'reports', 'href'=>'{self}/reports', 'description'=>'List the Reports'));
+				array('rel'=>'groups', 'href'=>$this->config->item('basic_url').'/groups', 'description'=>'List the Groups'),  
+				array('rel'=>'devices', 'href'=>$this->config->item('basic_url').'/devices', 'description'=>'List the Devices'),  
+				array('rel'=>'locations', 'href'=>$this->config->item('basic_url').'/locations', 'description'=>'List the Locations'),  
+				array('rel'=>'reports', 'href'=>$this->config->item('basic_url').'/reports', 'description'=>'List the Reports'));
 			echo json_encode($response);
 			header('Content-Type: application/json');
 			header('Cache-Control: max-age=0');

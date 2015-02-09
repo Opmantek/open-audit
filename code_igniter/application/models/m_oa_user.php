@@ -317,7 +317,7 @@ class M_oa_user extends MY_Model {
 				// reply with JSON
 				$response = new stdClass();
 				$response->status = "fail";
-				$response->message = "Incomplete credentials supplied";
+				$response->message = "Incomplete credentials supplied. Please supply valid username and password fields in the request.";
 				echo json_encode($response);
 				// set the header
 				header('Content-Type: application/json');
@@ -358,7 +358,7 @@ class M_oa_user extends MY_Model {
 				unset($log_details);
 				$response = new stdClass();
 				$response->status = "fail";
-				$response->message = "Invalid username";
+				$response->message = "Invalid username or user not active. Please supply valid username and password fields in the request.";
 				echo json_encode($response);
 				header('Content-Type: application/json');
 				header('Cache-Control: max-age=0');
@@ -487,7 +487,7 @@ class M_oa_user extends MY_Model {
 				// create the json response
 				$response = new stdClass();
 				$response->status = "fail";
-				$response->message = "Credentials not supplied or invalid";
+				$response->message = "Credentials not supplied or invalid. Please supply valid username and password fields in the request.";
 				echo json_encode($response);
 				// set the headers
 				header('Content-Type: application/json');
@@ -520,7 +520,7 @@ class M_oa_user extends MY_Model {
 						stdlog($log_details);
 						// set json response
 						$response = new stdClass();
-						$response->message = "Admin credentials required";
+						$response->message = "Admin credentials required. Please supply valid username and password fields in the request.";
 						echo json_encode($response);
 						// set the headers
 						header('Content-Type: application/json');

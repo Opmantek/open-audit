@@ -75,6 +75,17 @@ class M_oa_config extends MY_Model {
 			$temp_name = $config_item->config_name;
 			$this->config->config[$temp_name] = $config_item->config_value;
 		}
+		$temp = explode('/', $_SERVER['REQUEST_URI']);
+		$basic_url = '';
+		for($i=0; $i<count($temp); $i++) {
+			if ($temp[$i] == 'index.php') {
+				for($j=1; $j<=$i; $j++){
+					$basic_url .= '/' . $temp[$j];
+				}
+			}
+		}
+		$this->config->config['basic_url'] = $basic_url;
+		unset($i, $j, $temp, $basic_url);
 	}
 
 	function get_credentials() {

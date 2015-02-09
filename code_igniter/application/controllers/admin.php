@@ -151,8 +151,9 @@ class Admin extends MY_Controller {
 	 */
 	function get_config()
 	{
-		$this->load->model('m_oa_config');
-		$json = (object)$this->m_oa_config->get_config();
+		#$this->load->model('m_oa_config');
+		#$json = (object)$this->m_oa_config->get_config();
+		$json = (object)$this->config->config;
 		if ($this->config->config['default_network_address'] == '') {
 			# get all ip addresses of this machine
 			$json->server_ip_addresses = $this->m_oa_config->get_server_ip_addresses();
@@ -412,7 +413,7 @@ class Admin extends MY_Controller {
 			$this->data['sortcolumn'] = '1';
 			$this->load->view('v_template', $this->data);
 		} else {
-			$cmd = "php " . $_SERVER['SCRIPT_FILENAME'] . " admin_cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/log_system.log 2>&1 &";
+			$cmd = "php " . $_SERVER['SCRIPT_FILENAME'] . " cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/log_system.log 2>&1 &";
 			redirect('/admin/view_log');
 		}
 	}
@@ -939,24 +940,9 @@ class Admin extends MY_Controller {
 		$web_internal_version = $this->config->item('web_internal_version');
 		$web_display_version = $this->config->item('web_display_version');
 		$this->data['message'] = '';
-		
-		$this->load->model("m_oa_config");
-		$config = $this->m_oa_config->get_config();
-		foreach ($config as $returned_result) {
-			if (isset($returned_result->config_name)) {
-				if ($returned_result->config_name == 'internal_version') {
-					$db_internal_version = $returned_result->config_value;
-				}
-				if ($returned_result->config_name == 'display_version') {
-					$db_display_version = $returned_result->config_value;
-				}
-			}
-		}
-		$this->data['output'] = "";
-		#$this->data['output'] =  "Current web version: "      . $web_display_version . " (" . $web_internal_version . ")<br />\n";
-		#$this->data['output'] .= "Current database version: " . $db_display_version . " (" . $db_internal_version . ")<br /><br />\n";
-		#$this->data['output'] .= "Database type: " . $this->db->platform() . "<br /><br />\n";
+		$db_internal_version = $this->config->item('internal_version');
 
+		$this->data['output'] = "";
 		
 		if (($db_internal_version < '20111001') AND ($this->db->platform() == 'mysql')) {
 			# upgrade for beta3
@@ -3352,21 +3338,8 @@ class Admin extends MY_Controller {
 		}
 
 
-		$config = $this->m_oa_config->get_config();
-		foreach ($config as $returned_result) {
-			if (isset($returned_result->config_name)) {
-				if ($returned_result->config_name == 'internal_version') {
-					$db_internal_version = $returned_result->config_value;
-				}
-				if ($returned_result->config_name == 'display_version') {
-					$db_display_version = $returned_result->config_value;
-					$this->config->config['display_version'] = $returned_result->config_value;
-				}
-			}
-		}
-		
-		$this->data['message'] .= "New (now current) database version: " . $db_display_version . " (" . $db_internal_version . ")<br />
-		Don't forget to use the new audit scripts!<br/>\n";
+		$this->m_oa_config->load_config();
+		$this->data['message'] .= "New (now current) database version: " . $this->config->item('display_version') . " (" . $this->config->item('internal_version') . ")<br />Don't forget to use the new audit scripts!<br/>\n";
 		$this->data['include'] = 'v_upgrade'; 
 		$this->data['heading'] = 'Upgrade';
 		$this->load->view('v_template', $this->data);

@@ -46,6 +46,82 @@ class groups extends MY_Controller
 		// $this->request['request_method'] = $_SERVER['REQUEST_METHOD'];
 		// $this->request['http_accept'] = $_SERVER['HTTP_ACCEPT'];
 
+		$this->load->model('m_oa_group');
+	}
+
+	# show a list of available groups
+	public function index()
+	{
+		$this->data['query'] = $this->m_oa_group->get_user_groups($this->user->user_id);
+		if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
+			$response = new stdClass();
+			$response->status = "success";
+			foreach ($this->data['query'] AS &$group) {
+				$group->links = array(array('rel'=>'group', 'href'=> $_SERVER['REQUEST_URI'] . $group->group_id, 'description'=>'The details of this group.'));
+			}
+			$response->total = count($this->data['query']);
+			$response->groups = $this->data['query'];
+			echo json_encode($response);
+			header('Content-Type: application/json');
+			header('Cache-Control: max-age=0');
+		} else {
+			$this->data['heading'] = 'Groups';
+			$this->data['include'] = 'v_main';
+			$this->data['sortcolumn'] = '2';
+			$this->data['export_report'] = 'y';
+			$this->load->view('v_template', $this->data);
+		}
+	}
+
+	public function group() {
+		// return the details of this group
+		$this->group_access();
+		$this->data['query'] = $this->m_oa_group->get_group($this->group_id);
+		if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
+			$response = new stdClass();
+			$response->status = "success";
+			$response->total = count($this->data['query']);
+			$this->data['query'][0]->links = array(
+				array('rel'=>'devices', 'href'=> $_SERVER['REQUEST_URI'] . '/devices', 'description'=>'The devices in this group.'));
+			$response->groups = $this->data['query'];
+			echo json_encode($response);
+			header('Content-Type: application/json');
+			header('Cache-Control: max-age=0');
+		} else {
+			$this->data['heading'] = 'Groups';
+			$this->data['total'] = count($this->data['query']);
+			$this->data['include'] = 'v_main';
+			$this->data['sortcolumn'] = '2';
+			$this->data['export_report'] = 'y';
+			$this->load->view('v_template', $this->data);
+		}
+	}
+
+	public function devices() {
+		// return the list of devices in this group
+		$this->group_access();
+		$this->load->model('m_systems');
+		$this->data['query'] = $this->m_systems->get_group_systems($this->group_id);
+		if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
+			foreach ($this->data['query'] AS &$device) {
+				$device->links = array(array('rel'=>'device', 'href'=> $this->config->item('basic_url') . '/devices/' . $device->system_id, 'description'=>'The details of this device.'));
+			}
+			$response = new stdClass();
+			$response->status = "success";
+			$response->total = count($result);
+			$response->devices = $this->data['query'];
+			echo json_encode($response);
+			header('Content-Type: application/json');
+			header('Cache-Control: max-age=0');
+		}
+		
+	}
+
+	public function reports() {
+		// return the list of reports
+	}
+
+	private function group_access() {
 		$this->group_id = $this->uri->segment(2);
 		if (isset($this->group_id) AND $this->group_id != '' AND is_numeric($this->group_id)) {
 			$this->load->model('m_oa_group');
@@ -64,85 +140,5 @@ class groups extends MY_Controller
 				}
 			}
 		}
-	}
-
-	# show a list of available groups
-	public function index()
-	{
-		$this->load->model('m_oa_group');
-		$result = $this->m_oa_group->get_user_groups($this->user->user_id);
-		if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
-			$response = new stdClass();
-			$response->status = "success";
-			$response->self = current_url();
-			$response->links = array(
-				array('rel'=>'group', 'href'=>'{self}/{group_id}/', 'description'=>'The group'));
-			// $response->links = array(
-			// 	array('rel'=>'group', 'href'=>'{self}/groups/{group_id}/', 'description'=>'The group'), 
-			// 	array('rel'=>'devices', 'href'=>'{self}/groups/{group_id}/devices', 'description'=>'The devices in this group'),
-			// 	array('rel'=>'reports', 'href'=>'{self}/groups/{group_id}/reports/{report_id}', 'description'=>'Run a report on the devices in the group'));
-			$response->total = count($result);
-			$response->groups = $result;
-			echo json_encode($response);
-			header('Content-Type: application/json');
-			header('Cache-Control: max-age=0');
-		} else {
-			$this->data['query'] = $result;
-			$this->data['heading'] = 'Groups';
-			$this->data['include'] = 'v_main';
-			$this->data['sortcolumn'] = '2';
-			$this->data['export_report'] = 'y';
-			$this->load->view('v_template', $this->data);
-		}
-	}
-
-	public function group() {
-		// return the details of this group
-		$this->data['query'] = $this->m_oa_group->get_group($this->group_id);
-		if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
-			$response = new stdClass();
-			$response->status = "success";
-			$response->self = current_url();
-			$response->links = array(
-				array('rel'=>'devices', 'href'=>'{self}/devices', 'description'=>'The devices in this group'),
-				array('rel'=>'reports', 'href'=>'{self}/reports', 'description'=>'The list of reports'));
-			$response->total = count($result);
-			$response->groups = $this->data['query'];
-			echo json_encode($response);
-			header('Content-Type: application/json');
-			header('Cache-Control: max-age=0');
-		} else {
-			$this->data['query'] = $result;
-			$this->data['heading'] = 'Groups';
-			$this->data['include'] = 'v_main';
-			$this->data['sortcolumn'] = '2';
-			$this->data['export_report'] = 'y';
-			$this->load->view('v_template', $this->data);
-		}
-	}
-
-	public function devices() {
-		// return the list of devices in this group
-		$this->load->model('m_systems');
-		$this->data['query'] = $this->m_systems->get_group_systems($this->group_id);
-		if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
-			$response = new stdClass();
-			$response->status = "success";
-			$response->self = current_url();
-			$response->links = array(
-				array('rel'=>'devices', 'href'=>'{self}/min', 'description'=>'The minimal information for devices in this group'),
-				array('rel'=>'devices', 'href'=>'{self}/max', 'description'=>'The maximum information for devices in this group')
-				);
-			$response->total = count($result);
-			$response->devices = $this->data['query'];
-			echo json_encode($response);
-			header('Content-Type: application/json');
-			header('Cache-Control: max-age=0');
-		}
-		
-	}
-
-	public function reports() {
-		// return the list of reports
 	}
 }

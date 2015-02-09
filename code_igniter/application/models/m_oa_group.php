@@ -62,7 +62,7 @@ class M_oa_group extends MY_Model {
 
 	function get_group($id = '0') {
 		if ($id == '0') { return '0'; }
-		$sql = "SELECT * FROM oa_group WHERE group_id = ?";
+		$sql = "SELECT oa_group.*, count(oa_group_sys.system_id) as total FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_id = ?";
 		$data = array("$id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();

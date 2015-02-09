@@ -66,8 +66,14 @@ class test extends CI_Controller
     public function login() {
         $this->load->model('m_oa_user');
         $this->m_oa_user->validate_user();
+        $this->load->model('m_oa_config');
+        $this->m_oa_config->load_config();
         echo "<pre>\n";
+        echo "CONFIG\n";
+        print_r($this->config);
+        echo "USER\n";
         print_r($this->user);
+        echo "SESSION\n";
         print_r($this->session);
     }
 
