@@ -1,0 +1,2 @@
+Feb 09 16:14:14 dev 5 Administrator admin_group list_groups Could not open requested log file at /usr/local/open-audit/other/log_access.log, opening traditional log file instead. File exists. Check it's permissions are OK for the web server user. Permissions are 644
+Feb 09 16:14:14 dev 5006 5 U:Administrator C:admin_group F:list_groups I:172.16.73.1 M:Access

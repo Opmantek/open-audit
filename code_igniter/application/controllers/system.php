@@ -12,7 +12,7 @@
  */
 
 /**
- * Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+ * Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
  * 
  * ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
  * 

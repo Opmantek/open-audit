@@ -1,4 +1,4 @@
-'  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+'  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 '
 '  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 '
@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.5.2
+' @version 1.5.6
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
