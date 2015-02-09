@@ -69,7 +69,7 @@ class Cli extends CI_Controller
 		$this->load->helper('log');
 		$log_details = new stdClass();
 		stdlog($log_details);
-		unset($log_details);
+		$log_details->file = 'system';
 	}
 
 	/**
@@ -105,11 +105,8 @@ class Cli extends CI_Controller
 		// in the variable passed via cli
 		$nodes_file = str_replace('/cli/import_nmis/', '', $this->uri->uri_string());
 
-		#$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' cli/import_nmis Starting Nodes.nmis import' . PHP_EOL;
-		#file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
-
-		$log_details->message = 'NMIS import, importing nodes from ' . $nodes_file;
 		$log_details->severity = 6;
+		$log_details->message = 'NMIS import, importing nodes from ' . $nodes_file;
 		stdlog($log_details);
 
 		$this->load->helper('snmp_oid');
@@ -117,10 +114,6 @@ class Cli extends CI_Controller
 		$this->load->library('encrypt');
 		$this->load->model('m_system');
 		$this->load->model('m_oa_group');
-
-		// read in the Nodes.nmis file
-		#$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' cli/import_nmis - importing nodes from ' . $nodes_file . PHP_EOL;
-		#file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 
 		$file_handle = fopen($nodes_file, 'r');
 		$string = fread($file_handle, filesize($nodes_file));
@@ -211,9 +204,6 @@ class Cli extends CI_Controller
 					}
 				}
 
-				#$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - scanning' . PHP_EOL;
-				#file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
-
 				$log_details->message = 'NMIS import, scanning ' . $device->ip_address . ' (' . $device->hostname . ')';
 				$log_details->severity = 7;
 				stdlog($log_details);
@@ -260,8 +250,6 @@ class Cli extends CI_Controller
 						// update an existing device with snmp
 						$device->last_seen_by = 'snmp nmis import';
 						$this->m_system->update_system($device);
-						#$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - update snmp result' . PHP_EOL;
-						#file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 						$log_details->message = 'NMIS import, update SNMP for ' . $device->ip_address . ' (' . $device->hostname . ')';
 						$log_details->severity = 7;
 						stdlog($log_details);
@@ -270,8 +258,6 @@ class Cli extends CI_Controller
 						// insert a new device
 						$device->last_seen_by = 'snmp nmis import';
 						$device->system_id = $this->m_system->insert_system($device);
-						#$log_stamp = date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - insert snmp result' . PHP_EOL;
-						#file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 						$log_details->message = 'NMIS import, insert SNMP for ' . $device->ip_address . ' (' . $device->hostname . ')';
 						$log_details->severity = 7;
 						stdlog($log_details);
@@ -299,8 +285,6 @@ class Cli extends CI_Controller
 						// update an existing device
 						$device->last_seen_by = 'nmis import';
 						$this->m_system->update_system($device);
-						#$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - update basic result' . PHP_EOL;
-						#file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 						$log_details->message = 'NMIS import, update basic result for ' . $device->ip_address . ' (' . $device->hostname . ')';
 						$log_details->severity = 7;
 						stdlog($log_details);
@@ -309,8 +293,6 @@ class Cli extends CI_Controller
 						// insert a new device
 						$device->last_seen_by = 'nmis import';
 						$device->system_id = $this->m_system->insert_system($device);
-						#$log_stamp =  date('M j H:i:s') . ' ' . gethostname() . ' ' . getmypid() . ' cli/import_nmis ' . $device->ip_address . ' (' . $device->hostname . ') - new basic result' . PHP_EOL;
-						#file_put_contents('/usr/local/open-audit/other/log_system.log', $log_stamp, FILE_APPEND | LOCK_EX);
 						$log_details->message = 'NMIS import, insert basic result for ' . $device->ip_address . ' (' . $device->hostname . ')';
 						$log_details->severity = 7;
 						stdlog($log_details);
@@ -321,6 +303,9 @@ class Cli extends CI_Controller
 				}
 			}
 		}
+		$log_details->severity = 6;
+		$log_details->message = 'NMIS import, finished importing nodes from ' . $nodes_file;
+		stdlog($log_details);
 	}
 }
 // End of file cli.php
