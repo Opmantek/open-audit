@@ -839,7 +839,7 @@ echo "</system>" >> $xml_file
 if [ "$submit_online" = "y" ]; then
 	echo "Submitting results to server"
 	#curl --data="$xml_file" $url 2>/dev/null
-	curl --data @"$xml_file" $url 1&2>dev/null
+	curl --data @"$xml_file" $url 1&2>/dev/null
 fi
 
 sed -i -e 's/form_systemXML=//g' $xml_file
