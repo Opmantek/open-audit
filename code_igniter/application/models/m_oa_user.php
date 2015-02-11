@@ -536,9 +536,9 @@ class M_oa_user extends MY_Model {
 				}
 			} else {
 				// log the log on details
-				$log_details->severity = 7;
-				$log_details->message = 'User logged on';
-				stdlog($log_details);
+				# $log_details->severity = 7;
+				# $log_details->message = 'User logged on';
+				# stdlog($log_details);
 				$userdata = array('user_id' => $CI->user->user_id);
 				$this->session->set_userdata($userdata);
 				return;
