@@ -74,6 +74,10 @@ foreach ($data as $key => $value) {
 		}
 		echo "<pre>\n\nDATA\n----\n";
 		print_r($data); 
+		echo "<pre>\n\nSESSION USERDATA\n----\n";
+		print_r($this->session->userdata);
+		echo "<pre>\n\nINTERNAL CONFIG\n----\n";
+		print_r($this->config->config);
 		?>
 		</pre>
 	</fieldset>
