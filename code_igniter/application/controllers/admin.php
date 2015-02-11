@@ -3324,6 +3324,19 @@ class Admin extends MY_Controller {
 				$query = $this->db->query($sql);
 			}
 
+			# need to alter the allowable length of a MAC Address to cope with created addresses for 'bond' adapters
+			$sql = "ALTER TABLE sys_hw_network_card CHANGE net_mac_address net_mac_address varchar(200) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE sys_hw_network_card_ip CHANGE net_mac_address net_mac_address varchar(200) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			$sql = "ALTER TABLE sys_hw_network_card ADD net_slaves varchar(100) NOT NULL default ''";
+			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
 			$sql = "UPDATE oa_config SET config_value = '20150228' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);

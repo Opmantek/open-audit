@@ -716,7 +716,7 @@ DROP TABLE IF EXISTS `sys_hw_network_card`;
 CREATE TABLE `sys_hw_network_card` (
   `net_id` int(10) unsigned NOT NULL auto_increment,
   `system_id` int(10) unsigned default NULL,
-  `net_mac_address` varchar(17) NOT NULL default '',
+  `net_mac_address` varchar(200) NOT NULL default '',
   `net_manufacturer` varchar(100) NOT NULL default '',
   `net_model` varchar(255) NOT NULL default '',
   `net_description` varchar(255) NOT NULL default '',
@@ -739,6 +739,7 @@ CREATE TABLE `sys_hw_network_card` (
   `net_connection_id` varchar(255) NOT NULL default '',
   `net_connection_status` varchar(30) NOT NULL default '',
   `net_speed` varchar(10) NOT NULL default '',
+  `net_slaves` varchar(100) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`net_id`),
@@ -754,7 +755,7 @@ CREATE TABLE `sys_hw_network_card` (
 DROP TABLE IF EXISTS `sys_hw_network_card_ip`;
 CREATE TABLE `sys_hw_network_card_ip` (
   `ip_id` int(10) unsigned NOT NULL auto_increment,
-  `net_mac_address` varchar(17) NOT NULL default '',
+  `net_mac_address` varchar(200) NOT NULL default '',
   `system_id` int(10) unsigned default NULL,
   `net_index` varchar(10) NOT NULL default '',
   `ip_address_v4` varchar(30) NOT NULL default '',

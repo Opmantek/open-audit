@@ -31,7 +31,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
+$images_directory = $_SERVER['DOCUMENT_ROOT'] . $oa_theme_images . '/';
 ?>
 <!-- v_display_computer -->
 	<?php if (count($windows) > 0) { ?>
@@ -243,6 +243,11 @@
 							<p><label for="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Speed')?>: </label><span id="network_speed_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo $speed; ?></span></p>
 							<p><label for="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Status')?>: </label><span id="network_connection_status_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_connection_status)?></span></p>
 							<p><label for="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Adapter Type')?>: </label><span id="network_adapter_type_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_adapter_type)?></span></p>
+							<?php
+								if (isset($key->net_slaves) and $key->net_slaves != '') { ?>
+								<p><label for="network_slaves_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('Slaves')?>: </label><span id="network_slaves_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_slaves)?></span></p>
+								<?php }
+							?>
 						</div>
 						<div style="float:left; width:50%;">
 							<p><label for="network_dhcp_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo __('DHCP Enabled')?>: </label><span id="network_dhcp_enabled_<?php echo str_replace('/','-',$key->net_id)?>"><?php echo print_something($key->net_dhcp_enabled)?></span></p>

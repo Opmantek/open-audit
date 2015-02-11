@@ -1128,6 +1128,154 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Network Cards Info"
 fi
 
+addr_info=""
+echo "	<network_cards>" >> "$xml_file";
+
+# first look for bonded network cards - new for 1.5.6
+for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print` | cut -d" " -f9 | cut -d/ -f5); do
+    #temp=`cat $test/uevent | grep DEVTYPE=bond`
+    #if [ -n "$temp" ]; then
+    if [ -f "/proc/net/bonding/$net_connection_id" ]; then
+        # we have a bonded nic
+        net_index=$(cat /sys/class/net/$net_connection_id/ifindex)
+        net_card_id="$net_connection_id"
+        net_card_mac="$system_hostname:$net_connection_id:$net_index"
+        net_card_manufacturer="Linux Kernel"
+        net_card_model="Virtual Bonded NIC"
+        net_card_description="Virtual Bonded NIC ($net_connection_id)"
+        net_card_enabled=""
+        net_card_status=$(cat /sys/class/net/$net_connection_id/operstate)
+        if [ "$net_card_status" = "up" ]; then
+                net_card_status="Connected" 
+        else
+                net_card_status="Disconnected"
+        fi
+        net_slaves=""
+        for slave in $(cat /proc/net/bonding/$net_connection_id | grep "Slave Interface" | cut -d" " -f3); do
+                if [ -n "$net_slaves" ]; then
+                        net_slaves="$net_slaves, $slave"
+                else
+                        net_slaves="$slave"
+                fi
+        done
+        net_active_slave=$(cat /proc/net/bonding/$net_connection_id | grep "Currently Active Slave" | cut -d" " -f4)
+        net_slaves="$net_slaves ($net_active_slave active)"
+        net_card_speed=""
+        if [ -n "$(which ethtool 2>/dev/null)" ]; then
+                net_card_speed=$(ethtool "$net_active_slave" 2>/dev/null | grep Speed | cut -d: -f2 | sed 's/[^0-9]//g')
+                if [ $net_card_speed ]; then
+                        net_card_speed=$((net_card_speed * 1000000))
+                fi
+        fi
+        net_card_type="Ethernet 802.3"
+        net_card_dhcp_enab=""
+        net_card_dhcp_server=""
+        net_card_dhcp_lease_obtained=""
+        net_card_dhcp_lease_expires=""
+        net_card_dns_domain=""
+        net_card_domain_reg=""
+        net_card_dns_server=""
+ 
+		# Check DHCP lease for this card
+		# Distros store the lease info in different files/locations, I'm getting the file from the running process
+		net_card_lease_file=$(ps -ef | grep dhclient | grep "$net_card_id" | sed -e 's/^.*-lf//' | cut -d" " -f2)
+		# below only works for Debian
+		# net_card_lease_file="/var/lib/dhcp/dhclient.$net_card_id.leases"
+		# below only works for RH
+		# net_card_lease_file="/var/lib/dhclient/dhclient-$net_card_id.leases"
+
+		if [ ! -e "$net_card_lease_file" ]; then
+			net_card_dhcp_enab="False"
+			net_card_dhcp_server=""
+			net_card_dhcp_lease_expire=""
+		else
+			net_card_dhcp_enab="True"
+			net_card_dhcp_server=$(grep dhcp-server "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5)
+			net_card_dhcp_lease_expire=$(grep expire "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5 | sed 's|/|-|g')
+			# To get the Obtained date we need to get lease time first
+			net_card_dhcp_lease_time=$(grep lease-time "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5)
+			net_card_dhcp_lease_days=$((net_card_dhcp_lease_time / 60 / 60 / 24))
+			net_card_dhcp_lease_obtained=$(date -d ''"$net_card_dhcp_lease_expire"' -'"$net_card_dhcp_lease_days"' days' +%F)
+		fi
+		
+		# TODO: Domain Registration & WINS Info (Samba)
+		net_card_domain_reg=""
+		net_card_dns_server=$(awk '/^name/{print $2}' /etc/resolv.conf | head -n1)
+		net_card_dns_domain=$(awk '/^domain/{print $2}' /etc/resolv.conf | head -n1)
+		if [ -z "$net_card_dns_domain" ]; then
+			net_card_dns_domain=$(awk '/^search/{print $2}' /etc/resolv.conf | head -n1)
+		fi
+
+		# Get Info on active IPV4 Addresses for this card
+		for net_card_enabled_ip4_addr in $(ip addr show "$net_connection_id" | grep 'inet ' | cut -dt -f2 | cut -db -f1 | cut -c2- | cut -d" " -f1); do
+			net_card_enabled="True"
+			net_card_enabled_ip6_addr=""
+			#echo "NCEIA: $net_card_enabled_ip4_addr"
+			temp=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f2)
+			net_card_enabled_ip_subnet=$(cidr2mask "$temp")
+			net_card_enabled_ip_version="4"
+			addr_info=$addr_info"\t\t<ip_address>\n"
+			addr_info=$addr_info"\t\t\t<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>\n"
+			addr_info=$addr_info"\t\t\t<net_index>$(escape_xml "$net_index")</net_index>\n"
+			temp=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f1)
+			addr_info=$addr_info"\t\t\t<ip_address_v4>$(escape_xml "$temp")</ip_address_v4>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_v6>$(escape_xml "$net_card_enabled_ip6_addr")</ip_address_v6>\n"
+			addr_info=$addr_info"\t\t\t<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_version>$(escape_xml "$net_card_enabled_ip_version")</ip_address_version>\n"
+			addr_info=$addr_info"\t\t\t<type>bonded</type>\n"
+			addr_info=$addr_info"\t\t</ip_address>\n"
+		done
+		# Get Info on active IPV6 Addresses for this card
+		for net_card_enabled_ip6_addr in $(ip addr show "$net_connection_id" | grep 'inet6' | cut -c11- | cut -ds -f1); do
+			net_card_enabled="True"
+			net_card_enabled_ip4_addr=""
+		 		net_card_enabled_ip_subnet=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f2)
+			net_card_enabled_ip_version="6"
+
+			addr_info=$addr_info"\t\t<ip_address>\n"
+			addr_info=$addr_info"\t\t\t<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>\n"
+			addr_info=$addr_info"\t\t\t<net_index>$(escape_xml "$net_index")</net_index>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_v4>$(escape_xml "$net_card_enabled_ip4_addr")</ip_address_v4>\n"
+			temp=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f1)
+			addr_info=$addr_info"\t\t\t<ip_address_v6>$(escape_xml "$temp")</ip_address_v6>\n"
+			addr_info=$addr_info"\t\t\t<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_version>$(escape_xml "$net_card_enabled_ip_version")</ip_address_version>\n"
+			addr_info=$addr_info"\t\t\t<type>bonded</type>\n"
+			addr_info=$addr_info"\t\t</ip_address>\n"
+		done
+
+		{
+		echo "		<network_card>"
+		echo "			<net_index>$(escape_xml "$net_index")</net_index>"
+		echo "			<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>"
+		echo "			<net_manufacturer>$(escape_xml "$net_card_manufacturer")</net_manufacturer>"
+		echo "			<net_model>$(escape_xml "$net_card_model")</net_model>"
+		echo "			<net_description>$(escape_xml "$net_card_description")</net_description>"
+		echo "			<net_ip_enabled>$(escape_xml "$net_card_enabled")</net_ip_enabled>"
+		echo "			<net_connection_id>$(escape_xml "$net_connection_id")</net_connection_id>"
+		echo "			<net_connection_status>$(escape_xml "$net_card_status")</net_connection_status>"
+		echo "			<net_speed>$(escape_xml "$net_card_speed")</net_speed>"
+		echo "			<net_adapter_type>$(escape_xml "$net_card_type")</net_adapter_type>"
+		echo "			<net_dhcp_enabled>$(escape_xml "$net_card_dhcp_enab")</net_dhcp_enabled>"
+		echo "			<net_dhcp_server>$(escape_xml "$net_card_dhcp_server")</net_dhcp_server>"
+		echo "			<net_dhcp_lease_obtained>$(escape_xml "$net_card_dhcp_lease_obtained")</net_dhcp_lease_obtained>"
+		echo "			<net_dhcp_lease_expires>$(escape_xml "$net_card_dhcp_lease_expire")</net_dhcp_lease_expires>"
+		echo "			<net_dns_host_name>$(escape_xml "$system_hostname")</net_dns_host_name>"
+		echo "			<net_dns_domain>$(escape_xml "$net_card_dns_domain")</net_dns_domain>"
+		echo "			<net_dns_domain_reg_enabled>$(escape_xml "$net_card_domain_reg")</net_dns_domain_reg_enabled>"
+		echo "			<net_dns_server>$(escape_xml "$net_card_dns_server")</net_dns_server>"
+		echo "			<net_wins_primary></net_wins_primary>"
+		echo "			<net_wins_secondary></net_wins_secondary>"
+		echo "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>"
+		echo "			<net_slaves>$(escape_xml "$net_slaves")</net_slaves>"
+		echo "		</network_card>"
+		} >> "$xml_file"
+
+	fi
+done
+
+
+
 net_cards=""
 temp=$(ls /sys/class/net/)
 for dir in $temp; do
@@ -1148,13 +1296,17 @@ temp=""
 
 if [ -n "$net_cards" ]; then
 	# Store the IP Addresses Information in a variable to write it later on the file
-	addr_info=""
-	echo "	<network_cards>" >> "$xml_file";
-
 	for net_card_connection_id in $net_cards; do 
 		net_card_id=$(echo "$net_card_connection_id" | cut -d/ -f2)
 		net_card_pci=$(echo "$net_card_connection_id" | cut -d/ -f1)
-		net_card_mac=$(cat /sys/class/net/"$net_card_id"/address)
+		
+		# determine the cards MAC Address
+		# first try ethtool as ifconfig can report duplicate MACs in the case of bonded NICs on CentOS
+		net_card_mac=$(ethtool -P "$net_card_id" 2>/dev/null | cut -d" " -f3)
+		if [ -z "$net_card_mac" ]; then
+			net_card_mac=$(cat /sys/class/net/"$net_card_id"/address)
+		fi
+
 		net_index=$(cat /sys/class/net/"$net_card_id"/ifindex)
 
 		if [ "$net_card_pci" = 'virtual' ]; then
@@ -1247,8 +1399,11 @@ if [ -n "$net_cards" ]; then
 
 		# Check DHCP lease for this card
 		# Distros store the lease info in different files/locations, I'm getting the file from the running process
-		#net_card_lease_file=$(ps -ef | grep dhclient | grep "$net_card_id" | sed -e 's/^.*-lf//' | cut -d" " -f2)
-		net_card_lease_file="/var/lib/dhcp/dhclient.$net_card_id.leases"
+		net_card_lease_file=$(ps -ef | grep dhclient | grep "$net_card_id" | sed -e 's/^.*-lf//' | cut -d" " -f2)
+		# below only works for Debian
+		# net_card_lease_file="/var/lib/dhcp/dhclient.$net_card_id.leases"
+		# below only works for RH
+		# net_card_lease_file="/var/lib/dhclient/dhclient-$net_card_id.leases"
 
 		if [ ! -e "$net_card_lease_file" ]; then
 			net_card_dhcp_enab="False"
@@ -1298,8 +1453,8 @@ if [ -n "$net_cards" ]; then
 		echo "		</network_card>"
 		} >> "$xml_file"
 	done
-	echo "	</network_cards>" >> "$xml_file"
 fi
+echo "	</network_cards>" >> "$xml_file"
 
 
 ##################################

@@ -80,16 +80,22 @@ class M_ip_address extends MY_Model {
 		# As of 1.3.2 we grab the network card index using SNMP. Need to ensure we have a value here.
 		if (!isset($input->net_index)) { $input->net_index = ''; }
 
+		# As at 1.5.6 we pass an additional attribute called 'type' for bonded adapters
+		# We use this to test and NOT padd the MAC address if set
+		if (!isset($input->type)) { $input->type = ''; }
+
 		# some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
 		$input->net_mac_address = strtolower($input->net_mac_address);
 
 		# ensure we have a fully padded mac address
-		if ($input->net_mac_address != '') {
-			$mymac = explode(":", $input->net_mac_address);
-			for($i=0; $i<count($mymac); $i++) {
-				$mymac[$i] = mb_substr("00" . $mymac[$i], -2);
+		if ($input->type != 'bonded') {
+			if ($input->net_mac_address != '') {
+				$mymac = explode(":", $input->net_mac_address);
+				for($i=0; $i<count($mymac); $i++) {
+					$mymac[$i] = mb_substr("00" . $mymac[$i], -2);
+				}
+				$input->net_mac_address = implode(":", $mymac);
 			}
-			$input->net_mac_address = implode(":", $mymac);
 		}
 
 		# ensure we have the correctly padded ip v4 address
@@ -212,7 +218,7 @@ class M_ip_address extends MY_Model {
 		$query = $this->db->query($sql, $data);
 		foreach ($query->result() as $myrow) {
 			$alert_details = 'ip address removed - ' . $myrow->ip_address_v4;
-			$this->m_alerts->generate_alert($details->system_id, 'sys_sw_database_details', $myrow->details_id, $alert_details, $details->timestamp);
+			$this->m_alerts->generate_alert($details->system_id, 'sys_hw_network_card_ip', $myrow->ip_id, $alert_details, $details->timestamp);
 		}
 
 		// new network_card_ip - ONLY for devices not using DHCP

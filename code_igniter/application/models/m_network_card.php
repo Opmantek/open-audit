@@ -41,7 +41,7 @@ class M_network_card extends MY_Model {
 	function get_system_network($system_id) {
 		$sql = "SELECT 	
 				sys_hw_network_card.*
-			FROM 	
+			FROM 
 				sys_hw_network_card,
 				system
 			WHERE 	
@@ -49,7 +49,7 @@ class M_network_card extends MY_Model {
 				sys_hw_network_card.timestamp = system.timestamp AND
 				system.system_id = ?
 			GROUP BY 
-				net_id";
+				net_connection_id";
 		$sql = $this->clean_sql($sql);
 		$data = array($system_id);
 		$query = $this->db->query($sql, $data);
@@ -61,6 +61,9 @@ class M_network_card extends MY_Model {
 
 		# added net_alias in 1.3.3
 		if (is_null($input->net_alias)) { $input->net_alias = ''; }
+
+		# added in 1.5.6
+		if (is_null($input->net_slaves)) { $input->net_slaves = ''; }
 
 
 		if ( (string)$details->first_timestamp == (string)$details->original_timestamp 
@@ -91,8 +94,9 @@ class M_network_card extends MY_Model {
 					net_dns_domain,
 					net_dns_domain_reg_enabled,
 					net_dns_server,
+					net_slaves, 
 					timestamp,
-					first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+					first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 			$sql = $this->clean_sql($sql);
 			$data = array("$details->system_id", 
 					"$input->net_mac_address", 
@@ -114,6 +118,7 @@ class M_network_card extends MY_Model {
 					"$input->net_dns_domain", 
 					"$input->net_dns_domain_reg_enabled", 
 					"$input->net_dns_server", 
+					"$input->net_slaves", 
 					"$details->timestamp", 
 					"$details->first_timestamp");
 			$query = $this->db->query($sql, $data);
@@ -167,6 +172,7 @@ class M_network_card extends MY_Model {
 						net_wins_primary = ?,
 						net_wins_secondary = ?,
 						net_wins_lmhosts_enabled = ?,
+						net_slaves = ?, 
 						timestamp = ?
 					WHERE net_id = ?";
 				$data = array("$input->net_description",
@@ -190,6 +196,7 @@ class M_network_card extends MY_Model {
 						"$input->net_wins_primary",
 						"$input->net_wins_secondary",
 						"$input->net_wins_lmhosts_enabled",
+						"$input->net_slaves",
 						"$details->timestamp",
 						"$row->net_id");
 				$sql = $this->clean_sql($sql);
@@ -217,8 +224,9 @@ class M_network_card extends MY_Model {
 						net_dns_domain,
 						net_dns_domain_reg_enabled,
 						net_dns_server,
+						net_slaves, 
 						timestamp,
-						first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+						first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 				$sql = $this->clean_sql($sql);
 				$data = array("$details->system_id", 
 						"$input->net_mac_address", 
@@ -240,6 +248,7 @@ class M_network_card extends MY_Model {
 						"$input->net_dns_domain", 
 						"$input->net_dns_domain_reg_enabled", 
 						"$input->net_dns_server", 
+						"$input->net_slaves", 
 						"$details->timestamp", 
 						"$details->timestamp");
 				$query = $this->db->query($sql, $data);
