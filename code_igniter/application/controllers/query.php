@@ -101,6 +101,11 @@ class query extends MY_Controller
 			$end_date = $post_end_date;
 		}
 
+		$group_id = @$_POST['group_id'];
+		if (!isset($group_id) OR $group_id == '') {
+			$group_id = '1';
+		}
+
 		// set the default repot name
 		$report = 'new_devices';
 		// get the report name if provided
@@ -117,45 +122,44 @@ class query extends MY_Controller
 		// define the SQL for the report
 		switch($report) {
 			case "missing_devices":
-			#$sql = "SELECT DATE_ADD(GREATEST(date(system.timestamp), date(system.last_seen)), INTERVAL 30 DAY) as 'date', count(system_id) as count FROM system WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL 30 day) GROUP BY GREATEST(date(system.timestamp), date(system.last_seen))";
-			$sql = "SELECT COUNT(ftd.system_id) AS count, DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date' FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM ( SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system_id, first_timestamp, timestamp, last_seen FROM system WHERE man_ip_address <> '' AND man_ip_address <> '0.0.0.0' AND man_ip_address <> '000.000.000.000' and man_status = 'production') ftd ON (DATE(ftd.timestamp) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc;";
+			$sql = "SELECT COUNT(ftd.system_id) AS count, DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date' FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM (SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system.system_id, first_timestamp, timestamp, last_seen FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND man_ip_address <> '' AND man_ip_address <> '0.0.0.0' AND man_ip_address <> '000.000.000.000' and man_status = 'production') ftd ON (DATE(ftd.timestamp) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc;";
 			$this->data['heading'] = "Devices Not Seen 30";
-			$data = array($end_date, $end_date);
+			$data = array($group_id, $end_date, $end_date);
 			$json = 'y';
 			break;
 
 			case "new_software":
-			$sql = "SELECT DATE(oa_alert_log.timestamp) AS 'date', COUNT(DISTINCT(oa_alert_log.alert_details)) as count FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) WHERE alert_table = 'sys_sw_software' AND alert_details LIKE 'software installed - %' AND DATE(oa_alert_log.timestamp) >= ? AND DATE(oa_alert_log.timestamp) <= ? AND system.man_status = 'production' GROUP BY DATE(oa_alert_log.timestamp)";
+			$sql = "SELECT DATE(oa_alert_log.timestamp) AS 'date', COUNT(DISTINCT(oa_alert_log.alert_details)) as count FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND alert_table = 'sys_sw_software' AND alert_details LIKE 'software installed - %' AND DATE(oa_alert_log.timestamp) >= ? AND DATE(oa_alert_log.timestamp) <= ? AND system.man_status = 'production' GROUP BY DATE(oa_alert_log.timestamp)";
 			$this->data['heading'] = "Software Discovered 30";
-			$data = array($start_date, $end_date);
+			$data = array($group_id, $start_date, $end_date);
 			$json = 'y';
 			break;
 
 			case "new_devices":
-			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system WHERE man_status = 'production' AND DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' GROUP BY DATE(first_timestamp) ORDER BY DATE(first_timestamp) ";
+			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND man_status = 'production' AND DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' GROUP BY DATE(first_timestamp) ORDER BY DATE(first_timestamp) ";
 			$this->data['heading'] = "Devices Discovered 30";
-			$data = array($start_date, $end_date);
+			$data = array($group_id, $start_date, $end_date);
 			$json = 'y';
 			break;
 
 			case "os_types":
-			$sql = "SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = 'production')) * 100) AS y, IF(CHAR_LENGTH(man_os_group)=0,'Other', man_os_group) AS name, count(*) as count FROM system WHERE man_status = 'production' GROUP BY name";
+			$sql = "SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = 'production')) * 100) AS y, IF(CHAR_LENGTH(man_os_group)=0,'Other', man_os_group) AS name, count(*) as count FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND man_status = 'production' GROUP BY name";
 			$this->data['heading'] = "Device Types";
-			$data = array();
+			$data = array($group_id);
 			$json = 'n';
 			break;
 
 			case "device_types":
-			$sql = "SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = 'production')) * 100) AS y, man_type AS name, count(*) as count FROM system WHERE man_status = 'production' GROUP BY name";
+			$sql = "SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE man_status = 'production')) * 100) AS y, man_type AS name, count(*) as count FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND man_status = 'production' GROUP BY name";
 			$this->data['heading'] = "Device Types";
-			$data = array();
+			$data = array($group_id);
 			$json = 'n';
 			break;
 
 			default:
-			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system WHERE man_status = 'production' AND DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' ";
+			$sql = "SELECT DATE(first_timestamp) AS 'date', COUNT(*) as count FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND man_status = 'production' AND DATE(first_timestamp) >= ? AND DATE(first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' ";
 			$this->data['heading'] = "Devices Discovered 30";
-			$data = array($start_date, $end_date);
+			$data = array($group_id, $start_date, $end_date);
 			$json = 'y';
 			break;
 		}
