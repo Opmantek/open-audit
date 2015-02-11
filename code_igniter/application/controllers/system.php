@@ -170,7 +170,8 @@ class System extends CI_Controller {
 
 			foreach ($xml_post->children() as $details) {
 				$details = (object) $details;
-				if (isset($this->session->userdata('user_id')) AND is_numeric($this->session->userdata('user_id'))) {
+				
+				if (isset($this->session->userdata['user_id']) AND is_numeric($this->session->userdata['user_id'])) {
 					echo 'Device IP: ' . $details->man_ip_address . "\n";
 				}
 
@@ -293,7 +294,7 @@ class System extends CI_Controller {
 				$this->m_oa_group->update_system_groups($details);
 			}
 
-			if (isset($this->session->userdata('user_id')) AND is_numeric($this->session->userdata('user_id'))) {
+			if (isset($this->session->userdata['user_id']) AND is_numeric($this->session->userdata['user_id'])) {
 				echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
 				echo "<head>\n<title>Open-AudIT</title>\n</head>\n<body>\n<pre>\n";
 				echo $count . ' systems processed.<br />';
@@ -756,6 +757,13 @@ class System extends CI_Controller {
 		// set the man_ip_address (if not already set)
 		$this->m_sys_man_audits->update_audit($details, 'check and set initial man_ip_address');
 		$this->m_ip_address->set_initial_address($details->system_id);
+		$dhcp = FALSE;
+		$network_details = $this->m_network_card->get_system_network($details->system_id);
+		foreach ($network_details as $card) {
+			if ($card->net_dhcp_enabled !== '') {
+				$dhcp = TRUE;
+			}
+		}
 		
 		if ($details->original_timestamp !== '') {
 			$this->m_sys_man_audits->update_audit($details, 'generate any required alerts');

@@ -46,6 +46,9 @@ class login extends CI_Controller
 		$this->load->helper('form');
 		$this->load->helper('log');
 
+		$this->load->model('m_oa_config');
+		$this->m_oa_config->load_config();
+
 		// log the attempt
 		$log_details = new stdClass();
 		$log_details->severity = 6;
@@ -59,10 +62,9 @@ class login extends CI_Controller
  */
 	public function index()
 	{
-		$temp = $this->session->userdata('user_id');
-		if (is_numeric($temp)) {
-			redirect(base_url());
-		}
+		#if (isset($this->session->userdata['user_id']) AND is_numeric($this->session->userdata['user_id'])) {
+		#	redirect('main/list_groups');
+		#}
 		$data['title'] = 'Open-AudIT';
 		$data['username'] = array('id' => 'username', 'name' => 'username');
 		$data['password'] = array('id' => 'password', 'name' => 'password');

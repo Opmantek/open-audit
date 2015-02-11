@@ -40,7 +40,7 @@ class M_attachment extends MY_Model {
 
 	function create_system_attachment($system_id, $attachment_title, $attachment_name) {
 		$sql = "INSERT INTO sys_man_attachment (att_id, system_id, user_id, att_title, att_filename, timestamp) VALUES (NULL, ?, ?, ?, ?, ?)";
-		$data = array("$system_id", $this->session->userdata('user_id'), "$attachment_title", "$attachment_name", date('Y-m-d H:i:s'));
+		$data = array("$system_id", $this->session->userdata['user_id'], "$attachment_title", "$attachment_name", date('Y-m-d H:i:s'));
 		$query = $this->db->query($sql, $data);
 		echo $this->db->last_query();
 		return;

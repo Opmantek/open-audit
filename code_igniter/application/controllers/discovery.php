@@ -119,10 +119,9 @@ class discovery extends CI_Controller
 			$system_id = $value;
 			$ip_address = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $system_id));
 			$credentials = $this->m_system->get_credentials($system_id);
-			$temp = $this->session->userdata('user_id');
-			if (is_numeric($temp)) {
+			if (isset($this->session->userdata['user_id']) AND is_numeric($this->session->userdata['user_id'])) {
 				unset($temp);
-				$temp = $this->m_oa_user->get_user_details($this->session->userdata('user_id'));
+				$temp = $this->m_oa_user->get_user_details($this->session->userdata['user_id']);
 				$credentials->last_user = $temp[0]->user_full_name;
 			} else {
 				$credentials->last_user = '';
@@ -743,8 +742,8 @@ class discovery extends CI_Controller
 
 			$this->load->model('m_oa_user');
 
-			if (is_numeric($this->session->userdata('user_id'))) {
-				$this->user = $this->m_oa_user->get_user_details($this->session->userdata('user_id'));
+			if (isset($this->session->userdata['user_id']) AND is_numeric($this->session->userdata['user_id'])) {
+				$this->user = $this->m_oa_user->get_user_details($this->session->userdata['user_id']);
 			}
 
 			// all logging will be as below, only the message will change

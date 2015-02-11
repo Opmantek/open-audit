@@ -186,12 +186,10 @@ class M_oa_user extends MY_Model {
 
 		$this->config = $CI->config;
 
-		$test = '';
-		$test = $this->session->userdata('user_id');
-		if (isset($test) AND is_numeric($test)) {
+		if (isset($this->session->userdata['user_id']) AND is_numeric($this->session->userdata['user_id'])) {
 			// user is logged in, return the $this->user object
 			$sql = "SELECT * FROM oa_user WHERE oa_user.user_id = ? LIMIT 1";
-			$data = array("$test");
+			$data = array($this->session->userdata['user_id']);
 			$query = $this->db->query($sql, $data);
 			if ($query->num_rows() > 0) {
 				$CI->user = $query->row();
@@ -269,7 +267,7 @@ class M_oa_user extends MY_Model {
 				}
 			}
 		}
-			
+
 		// user is not logged in as at here
 
 		// get $username from $_GET if supplied
