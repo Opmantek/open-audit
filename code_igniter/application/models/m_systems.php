@@ -216,6 +216,5 @@ class M_systems extends MY_Model {
 		$row = $query->row(); 
 		return $row->total;
 	}
-
 }
 ?>

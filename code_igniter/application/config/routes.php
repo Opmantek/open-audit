@@ -41,11 +41,5 @@
 $route['default_controller'] = "main";
 $route['404_override'] = '';
 
-$route['groups/(:num)/report/(:any)'] = "groups/report";
-$route['groups/(:num)/devices'] = "groups/devices";
-$route['groups/(:num)'] = "groups/group";
-
-
-
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
