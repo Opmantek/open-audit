@@ -3305,25 +3305,6 @@ class Admin extends MY_Controller {
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
 
-			# insert the group definition
-			$sql = "INSERT INTO oa_group VALUES (NULL, 'Open-AudIT Enterprise Managed Devices', '', 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and man_oae_manage = \'y\'',1,'Any items that have their status attribute set to \'production\' and their oae_manage attribute set to \'y\'.', 'device', '', 'devices')";
-			$this->data['output'] .= $sql . "<br /><br />\n";
-			$query = $this->db->query($sql);
-
-			# update the device members of this group
-			$this->m_oa_group->update_specific_group('8888');
-
-			# allow OAE user to access as well as Admin level users
-			$sql = "SELECT user_id FROM oa_user WHERE user_name = 'open-audit_enterprise' OR user_admin = 'y'";
-			$this->data['output'] .= $sql . "<br /><br />\n";
-			$query = $this->db->query($sql);
-			$result = $query->result();
-			foreach ($result as $row) {
-				$sql = "INSERT INTO oa_group_user (group_user_id, user_id, group_id, group_user_access_level) VALUES (NULL," . $row->user_id . ",8888,10)";
-				$this->data['output'] .= $sql . "<br /><br />\n";
-				$query = $this->db->query($sql);
-			}
-
 			# need to alter the allowable length of a MAC Address to cope with created addresses for 'bond' adapters
 			$sql = "ALTER TABLE sys_hw_network_card CHANGE net_mac_address net_mac_address varchar(200) NOT NULL default ''";
 			$this->data['output'] .= $sql . "<br /><br />\n";
@@ -3335,6 +3316,55 @@ class Admin extends MY_Controller {
 
 			$sql = "ALTER TABLE sys_hw_network_card ADD net_slaves varchar(100) NOT NULL default ''";
 			$this->data['output'] .= $sql . "<br /><br />\n";
+			$query = $this->db->query($sql);
+
+			# need to edit some Enterprise SQL
+			$sql = "UPDATE oa_report SET report_sql = 'SELECT system.system_id, system.hostname, system.man_manufacturer, system.man_model, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE man_type = ? AND oa_group_sys.group_id = @group' WHERE report_name = 'Enterprise - Device Type'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group)) * 100) AS y, man_type AS name, count(*) as count FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group GROUP BY name\" WHERE report_name = 'Enterprise - Device Types'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, man_status AS status, last_seen_by FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys = @group AND date(system.first_timestamp) = ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' GROUP BY system.system_id ORDER BY system.hostname\" WHERE report_name = 'Enterprise - Devices Discovered by Date'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND system.first_timestamp > (NOW() - INTERVAL ? DAY) AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' GROUP BY system.system_id ORDER BY system.hostname\" WHERE report_name = 'Enterprise - Devices Discovered in the Last Days'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND date(system.first_timestamp) >= ? AND date(system.first_timestamp) <= ? AND system.man_ip_address <> '' AND system.man_ip_address <> '0.0.0.0' AND system.man_ip_address <> '000.000.000.000' GROUP BY system.system_id ORDER BY system.hostname\" WHERE report_name = 'Enterprise - Devices Discovered Range'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL 30 day) AND oa_group_sys.group_id = @group AND (system.man_ip_address <> '' AND system.man_ip_address <> '000.000.000.000' AND system.man_ip_address <> '0.0.0.0') GROUP BY system.system_id ORDER BY system.hostname\" WHERE report_name = 'Enterprise - Devices Not Seen by Date'";
+			$query = $this->db->query($sql);
+
+			#$sql = "UPDATE oa_report SET report_sql = \"SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL ? day) AND oa_group_sys.group_id = @group AND (system.man_ip_address <> '' AND system.man_ip_address <> '000.000.000.000' AND system.man_ip_address <> '0.0.0.0') GROUP BY system.system_id ORDER BY system.hostname\" WHERE report_name = 'Enterprise - Devices Not Seen in the Last Days From'";
+			#$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(NOW(), INTERVAL ? day) AND oa_group_sys.group_id = @group AND (system.man_ip_address <> '' AND system.man_ip_address <> '000.000.000.000' AND system.man_ip_address <> '0.0.0.0') GROUP BY system.system_id ORDER BY system.hostname\" WHERE report_name = 'Enterprise - Devices Not Seen in the Last Days'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND man_os_family = ?\" WHERE report_name = 'Enterprise - OS Family'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND man_os_group = ?\" WHERE report_name = 'Enterprise - OS Group'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND man_os_name = ?\" WHERE report_name = 'Enterprise - OS Name'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group)) * 100) AS y, IF(CHAR_LENGTH(man_os_group)=0,'Other', man_os_group) AS name, count(*) as count FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group GROUP BY name\" WHERE report_name = 'Enterprise - OS Types'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, date(sys_sw_software.first_timestamp) as first_attribute FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND date(sys_sw_software.first_timestamp) = ? GROUP BY sys_sw_software.software_name ORDER BY sys_sw_software.software_name\" WHERE report_name = 'Enterprise - Software Discovered by Date'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, DATE(sys_sw_software.timestamp) AS first_attribute FROM sys_sw_software LEFT JOIN system ON sys_sw_software.system_id = system.system_id LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND sys_sw_software.first_timestamp != system.first_timestamp AND sys_sw_software.first_timestamp > (NOW() - INTERVAL ? DAY) GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name\" WHERE report_name = 'Enterprise - Software Discovered in the Last Days'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND date(sys_sw_software.first_timestamp) >= ? AND date(sys_sw_software.first_timestamp) <= ? GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name\" WHERE report_name = 'Enterprise - Software Discovered Range'";
+			$query = $this->db->query($sql);
+
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.system_id, system.hostname, sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_installed_by, date(sys_sw_software.software_installed_on) as software_installed_on, sys_sw_software.software_version, date(sys_sw_software.first_timestamp) as first_timestamp FROM system LEFT JOIN sys_sw_software ON (system.system_id = sys_sw_software.system_id and system.first_timestamp < sys_sw_software.first_timestamp) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND sys_sw_software.software_name = (SELECT software_name FROM sys_sw_software WHERE software_id = ? LIMIT 1) AND date(sys_sw_software.first_timestamp) = date(?) GROUP BY system.system_id\" WHERE report_name = 'Enterprise - Specific Software'";
 			$query = $this->db->query($sql);
 
 			$sql = "UPDATE oa_config SET config_value = '20150228' WHERE config_name = 'internal_version'";
