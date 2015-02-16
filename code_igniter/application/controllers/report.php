@@ -187,9 +187,24 @@ class report extends MY_Controller
 			$this->load->view('v_template', $this->data);
 			return;
 		}
-		# make sure we specify a group
+
 		$this->load->model("m_oa_group");
-		if ($this->data['group_id'] == "0") {
+
+		# check to make sure the group exists
+		$test = $this->m_oa_group->get_group_name($this->data['group_id']);
+		if ($test == '') {
+			// no or not valid group id
+			$this->data['error'] = "You attempted to run a Report on a Group that does not exist or has not been activated. <br />As an Admin Level user you can activate Groups at Admin -> Groups -> Activate Group.";
+			$this->data['query'] = '';
+			$this->data['heading'] = 'Error';
+			$this->data['include'] = 'v_error';
+			$this->data['export_report'] = 'y';
+			$this->data['group_id'] = '0';
+			$this->load->view('v_template', $this->data);
+			return;
+		}
+
+		if ($this->data['group_id'] == "0" OR $this->data['group_id'] == '' OR is_null($this->data['group_id'])) {
 			# no group specified - show error page
 			$this->data['error'] = "You attempted to run a Report without providing a Group.";
 			$this->data['query'] = '';

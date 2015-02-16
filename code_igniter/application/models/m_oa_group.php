@@ -51,12 +51,12 @@ class M_oa_group extends MY_Model {
 		$sql = "SELECT group_name from oa_group WHERE group_id = ? LIMIT 1";
 		$data = array("$group_id");
 		$query = $this->db->query($sql, $data);
-		$row = $query->row(); 
-		$group_name = $row->group_name;
+		$row = @$query->row();
+		$group_name = @$row->group_name;
 		if ($group_name != '') {
 			return $group_name;
 		} else {
-			return 'All Devices';
+			return '';
 		}
 	}
 
