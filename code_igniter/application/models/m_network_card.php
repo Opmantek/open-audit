@@ -63,7 +63,7 @@ class M_network_card extends MY_Model {
 		if (is_null($input->net_alias)) { $input->net_alias = ''; }
 
 		# added in 1.5.6
-		if (is_null($input->net_slaves)) { $input->net_slaves = ''; }
+		if ( ! isset($input->net_slaves) OR is_null($input->net_slaves)) { $input->net_slaves = ''; }
 
 
 		if ( (string)$details->first_timestamp == (string)$details->original_timestamp 

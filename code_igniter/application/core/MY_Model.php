@@ -50,7 +50,7 @@ class MY_Model extends CI_Model {
 			$myip[3] = mb_substr("000" . $myip[3], -3);
 			$ip_post = $myip[0] . "." . $myip[1] . "." . $myip[2] . "." . $myip[3];
 		} else {
-			$ip_post = "000.000.000.000";
+			$ip_post = "";
 		}
 		return $ip_post;
 	}
@@ -70,7 +70,7 @@ class MY_Model extends CI_Model {
 			if (!isset($myip[3]) OR $myip[3] == "") { $myip[3] = "0"; }
 			$ip = $myip[0] . "." . $myip[1] . "." . $myip[2] . "." . $myip[3];
 		} else {
-			$ip = " Not-Networked";
+			$ip = "";
 		}
 		return $ip;
 	}

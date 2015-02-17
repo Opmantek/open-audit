@@ -78,19 +78,18 @@ class MY_Controller extends CI_Controller {
 			$this->output->enable_profiler(TRUE);
 		}
 
-		// turn on/off debugging from GET string
-		if ( (string)$this->uri->segment($this->uri->total_rsegments()-1) === 'user_debug' AND $this->user->user_admin === 'y') {
-			$this->user->user_debug = $this->uri->segment($this->uri->total_rsegments());
+		if ( (string)$this->uri->segment($this->uri->total_rsegments()-1) === 'user_debug') {
 			$new_url = str_replace('/user_debug/y', '', $this->uri->uri_string());
 			$new_url = str_replace('/user_debug/n', '', $new_url);
 			redirect($new_url);
 		}
 
-		if (isset($this->user->user_debug) AND (string)$this->user->user_debug === 'y') {
+		if (isset($this->session->userdata['user_debug']) and (string)$this->session->userdata['user_debug'] === 'y') {
 			$this->output->enable_profiler(TRUE);
 		} else {
 			$this->output->enable_profiler(FALSE);
 		}
+
 
 		$this->data['title'] = 'Open-AudIT';
 		$this->data['id'] = $this->uri->segment(3, 0);

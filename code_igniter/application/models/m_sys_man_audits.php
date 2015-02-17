@@ -63,13 +63,13 @@ class M_sys_man_audits extends MY_Model {
 		} else {
 			$inserted_via = 'audit';
 		}
-		
-		if (isset($details->last_seen_user) and $details->last_seen_user > '') { 
-			$inserted_user = $details->last_seen_user; 
-		} elseif (isset($this->user->user_full_name)) {
-			$inserted_user = $this->user->user_full_name;
-		} else {
+
+		if (! isset($details->last_seen_user) or is_null($details->last_seen_user)) {
 			$inserted_user = '';
+		} elseif (isset($this->user->user_full_name)) {
+			$inserted_user = @$this->user->user_full_name;
+		} else {
+			$inserted_user = @$details->last_seen_user; 
 		}
 
 		$timestamp = date('Y-m-d H:i:s');

@@ -186,20 +186,36 @@ class M_oa_user extends MY_Model {
 
 		$this->config = $CI->config;
 
+		$temp_debug = @$this->session->userdata['user_debug'];
+		if ( (string)$this->uri->segment($this->uri->total_rsegments()-1) === 'user_debug') {
+			$temp_debug = @$this->uri->segment($this->uri->total_rsegments());
+			if ($temp_debug != 'y') {
+				$temp_debug = 'n';
+			}
+		}
+
 		if (isset($this->session->userdata['user_id']) AND is_numeric($this->session->userdata['user_id'])) {
 			// user is logged in, return the $this->user object
 			$sql = "SELECT * FROM oa_user WHERE oa_user.user_id = ? LIMIT 1";
 			$data = array($this->session->userdata['user_id']);
 			$query = $this->db->query($sql, $data);
 			if ($query->num_rows() > 0) {
+				// set the user object
 				$CI->user = $query->row();
+
+				if ($CI->user->user_admin == 'y') {
+					$CI->user->user_debug = $temp_debug;
+				} else {
+					$CI->user->user_debug = 'n';
+				}
+				
 				if ($admin == 'y') {
 					if ($CI->user->user_admin == 'y') {
 						$log_details->severity = 7;
 						$log_details->message = 'User validated as an admin';
 						stdlog($log_details);
 						unset($log_details);
-						$userdata = array('user_id' => $CI->user->user_id);
+						$userdata = array('user_id' => $CI->user->user_id, 'user_debug' => $CI->user->user_debug);
 						$this->session->set_userdata($userdata);
 						return;
 					} else {
@@ -229,11 +245,7 @@ class M_oa_user extends MY_Model {
 						}
 					}
 				} else {
-					$log_details->severity = 7;
-					$log_details->message = 'User validated by existing cookie';
-					stdlog($log_details);
-					unset($log_details);
-					$userdata = array('user_id' => $CI->user->user_id);
+					$userdata = array('user_id' => $CI->user->user_id, 'user_debug' => $CI->user->user_debug);
 					$this->session->set_userdata($userdata);
 					return;
 				}
@@ -535,7 +547,7 @@ class M_oa_user extends MY_Model {
 					}
 				}
 			} else {
-				// log the log on details
+				// log the log on attempt details
 				# $log_details->severity = 7;
 				# $log_details->message = 'User logged on';
 				# stdlog($log_details);

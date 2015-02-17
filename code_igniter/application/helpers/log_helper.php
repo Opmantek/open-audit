@@ -102,10 +102,10 @@ if ( ! function_exists('stdlog'))
 			$line_end = "\n";
 		}
 
-		// get the log_style or default to json
+		// get the log_style or default to syslog
 		if (!isset($log_details->style) OR $log_details->style == '' OR ($log_details->style != 'json' AND $log_details->style != 'syslog')) {
 			$log->style = $CI->config->item('log_style');
-			if (!isset($log->style) or $log->style == '' OR ($log->style != 'json' AND $log->style != 'syslog')) {
+			if (!isset($log->style) or $log->style != 'json') {
 				$log->style = 'syslog';
 			}
 		} else {
@@ -214,10 +214,12 @@ if ( ! function_exists('stdlog'))
 
 		if (!isset($log_details->user) or $log_details->user == '') {
 			if (isset($CI->user->user_full_name)) {
-				$log->user = $CI->user->user_full_name;
+				$log->user = @$CI->user->user_full_name;
 			} else {
 				$log->user = '-';
 			}
+		} else {
+			$log->user = $log_details->user;
 		}
 
 		if (isset($_SERVER['REMOTE_ADDR']) AND $_SERVER['REMOTE_ADDR'] != '') {

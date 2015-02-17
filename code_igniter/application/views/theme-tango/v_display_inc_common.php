@@ -185,6 +185,7 @@ if (mb_strpos($system[0]->man_manufacturer,  "Gateway") !== false) {
 }
 ?>
 <!-- end of v_display_inc_common.php prodecural -->
+<!-- v_display_inc_common.php functions -->
 <?php
 # end the prodecural stuff. Functions are below
 
@@ -228,8 +229,8 @@ function display_custom_field($field_placement, $additional_fields, $edit) {
 			echo "<label for=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" >" . __($field->field_name) . ": </label>";
 			echo   "<span id=\"custom_" . $field->field_type . "_" . $field->field_details_id . "_" . $field->field_id . "\" " . $edit . ">" . print_something($data_value) . "</span>";
 			if ($edit != '') { 
-				#echo '<img src="' . base_url() . 'theme-tango/tango-images/' . '10_edit.png" alt="Click the blue text to edit!" title="Click the blue text to edit!" />'; 
-				echo '<img src="' . $oa_theme_images . '/16_edit_out.png" onMouseOver="this.src=\'' . base_url() . 'theme-tango/tango-images/16_edit_hover.png\'" onMouseOut="this.src=\'' . base_url() . 'theme-tango/tango-images/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
+				# TODO - fix this hard coded path. Should be able to use global $oa_theme_images but it seems not to work :-(
+				echo '<img src="/open-audit/theme-tango/tango-images/16_edit_out.png" onMouseOver="this.src=\'/open-audit/theme-tango/tango-images/16_edit_hover.png\'" onMouseOut="this.src=\'/open-audit/theme-tango/tango-images/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
 			}
 			echo "<br />&nbsp;\n";
 			echo "</div>\n";
@@ -251,3 +252,5 @@ function strTime($s) {
 	if ($s) $str .= $s . 's';
 	return $str;
 }
+?>
+<!-- end of v_display_inc_common.php functions -->

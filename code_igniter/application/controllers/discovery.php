@@ -407,6 +407,7 @@ class discovery extends CI_Controller
 			$this->data['apppath'] = APPPATH;
 			$this->data['image_path'] = base_url() . 'theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images/';
 			$this->load->model("m_oa_report");
+			$this->load->model('m_oa_general');
 			$this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
 
 			// show the form to accept scan details
