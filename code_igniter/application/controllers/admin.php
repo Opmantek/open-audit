@@ -3367,6 +3367,9 @@ class Admin extends MY_Controller {
 			$sql = "UPDATE oa_report SET report_sql = \"SELECT system.system_id, system.hostname, sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_installed_by, date(sys_sw_software.software_installed_on) as software_installed_on, sys_sw_software.software_version, date(sys_sw_software.first_timestamp) as first_timestamp FROM system LEFT JOIN sys_sw_software ON (system.system_id = sys_sw_software.system_id and system.first_timestamp < sys_sw_software.first_timestamp) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND sys_sw_software.software_name = (SELECT software_name FROM sys_sw_software WHERE software_id = ? LIMIT 1) AND date(sys_sw_software.first_timestamp) = date(?) GROUP BY system.system_id\" WHERE report_name = 'Enterprise - Specific Software'";
 			$query = $this->db->query($sql);
 
+			$sql = "UPDATE oa_report SET report_sql = \"SELECT COUNT(key_text) as count, key_name, key_text, key_id FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN sys_sw_software_key ON (sys_sw_software_key.system_id = system.system_id and sys_sw_software_key.timestamp = system.timestamp) WHERE oa_group_sys.group_id = @group AND key_text IS NOT NULL GROUP BY key_name, key_text ORDER BY key_name\" WHERE report_name = 'Software Keys'";
+			$query = $this->db->query($sql);
+
 			$sql = "UPDATE oa_config SET config_value = '20150228' WHERE config_name = 'internal_version'";
 			$this->data['output'] .= $sql . "<br /><br />\n";
 			$query = $this->db->query($sql);
