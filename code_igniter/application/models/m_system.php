@@ -923,6 +923,11 @@ class M_system extends MY_Model {
 		# this is an insert - we do NOT want a system_id
 		unset($details->system_id);
 
+		// set a man_ip_address if not already 1.5.6
+		if (!isset($details->man_ip_address)) {
+			$details->man_ip_address = '';
+		}
+
 		$log_details = new stdClass();
 		$log_details->message = 'System insert start for ' . ip_address_from_db($details->man_ip_address) . ' (' . $details->hostname . ')';
 		$log_details->severity = 7;

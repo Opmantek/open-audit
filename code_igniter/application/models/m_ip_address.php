@@ -263,8 +263,8 @@ class M_ip_address extends MY_Model {
 		$data = array("$system_id");
 		$query = $this->db->query($sql, $data);
 		$result = $query->result();
-
-		if ($force == 'y' OR $result[0]->man_ip_address == '') {
+print_r($result);
+		if ($force == 'y' OR $result[0]->man_ip_address == ''  OR $result[0]->man_ip_address == '000.000.000.000'  OR $result[0]->man_ip_address == '0.0.0.0') {
 			# we do not already have an ip address - attempt to set one
 			$sql = "SELECT 
 					sys_hw_network_card.net_dhcp_enabled, 

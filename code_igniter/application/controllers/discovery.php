@@ -183,16 +183,18 @@ class discovery extends CI_Controller
 	public function discover_active_directory()
 	{
 		if ( ! $this->input->post('submit')) {
+
 			// only Admin users can access this function
-			$this->m_oa_user->validate_login();
-			if ($this->user->user_admin !== 'y') {
-				if ($this->input->server('HTTP_REFERER')) {
-					redirect($this->input->server('HTTP_REFERER'));
-				}
-				else {
-					redirect('main/list_groups');
-				}
-			}
+			$this->load->model('m_oa_user');
+			$this->m_oa_user->validate_user('y');
+			
+			// show the form
+			$log_details = new stdClass();
+			$log_details->severity = 6;
+			$log_details->message = "AD Discovery form page request";
+			$log_details->file = 'system';
+			stdlog($log_details);
+
 			// show the form to accept scan details
 			$this->data['type'] = $this->uri->segment(3);
 			$this->data['warning'] = '';
@@ -201,6 +203,10 @@ class discovery extends CI_Controller
 			$this->data['heading'] = 'Active Directory Discovery';
 			$this->load->view('v_template', $this->data);
 		} else {
+			// process the form submit
+			$this->load->model('m_oa_user');
+			$this->m_oa_user->validate_user('y');
+
 			$display = '';
 			if ($this->input->post('debug') AND strpos($_SERVER['HTTP_ACCEPT'], 'html')) {
 				$display = 'y';
@@ -224,7 +230,7 @@ class discovery extends CI_Controller
 				$i = explode('/', base_url());
 				$url = str_replace($i[2], $_POST['network_address'], base_url()) . 'index.php/system/add_system';
 			} else {
-				$error = 'Discovery AD incomplete credentials for ' . $_POST['windows_domain'];
+				$error = 'Discovery AD incomplete credentials for ' . $_POST['windows_domain'] . '(WinUser: ' . $_POST['windows_user'] . ', Server: ' . $_POST['server'] . ')';
 				$log_details->message = $error;
 				stdlog($log_details);
 				$url = '';
