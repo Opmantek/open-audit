@@ -274,8 +274,11 @@ class M_oa_user extends MY_Model {
 					$log_details->message = 'Bad user_id in cookie (html request)';
 					stdlog($log_details);
 					unset($log_details);
+					// set the original requested URL
+					$requested_url = array('url'  => current_url());
+					$this->session->set_userdata($requested_url);
 					// redirect to the login page
-					redirect('login/index/main/list_groups');
+					redirect('login/index');
 				}
 			}
 		}
@@ -312,10 +315,10 @@ class M_oa_user extends MY_Model {
 		}
 
 		// make sure we have a supplied username and password
-		if ($username == '' OR $password == '') {
+		if (@$username == '' OR @$password == '') {
 			// incomplete credentials supplied
 			$status = 'fail';
-			if ($username =='') {
+			if (@$username =='') {
 				$username = 'UNKNOWN USER';
 			}
 			if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
@@ -340,8 +343,11 @@ class M_oa_user extends MY_Model {
 				$log_details->message = 'Incomplete credentials supplied for ' . $username . ' (html request)';
 				stdlog($log_details);
 				unset($log_details);
+				// set the original requested URL
+				$requested_url = array('url'  => current_url());
+				$this->session->set_userdata($requested_url);
 				// redirect to the login page
-				redirect('login/index/main/list_groups');
+				redirect('login/index');
 			}
 		}
 
@@ -375,12 +381,16 @@ class M_oa_user extends MY_Model {
 				header('HTTP/1.1 400 Bad Request');
 				exit();
 			} else {
-				// redirect to the login page
+				// log the attempt
 				$log_details->severity = 5;
 				$log_details->message = 'Invalid username of ' . $username . ' supplied or user not active (html request)';
 				stdlog($log_details);
 				unset($log_details);
-				redirect('login/index/main/list_groups');
+				// set the original requested URL
+				$requested_url = array('url'  => current_url());
+				$this->session->set_userdata($requested_url);
+				// redirect to the login page
+				redirect('login/index');
 			}
 		}
 
@@ -417,8 +427,8 @@ class M_oa_user extends MY_Model {
 					} else {
 						// successful connect and bind but user not active - fail
 						$status = 'fail';
-						$log_details->severity = 5;
 						if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== FALSE) {
+							$log_details->severity = 5;
 							$log_details->message = $username . ' was verified by AD, but does not have their user_active attribute set in Open-AudIT (json request)';
 							stdlog($log_details);
 							$response = new stdClass();
@@ -430,9 +440,15 @@ class M_oa_user extends MY_Model {
 							header('HTTP/1.1 400 Bad Request');
 							exit();
 						} else {
+							// log the attempt
+							$log_details->severity = 5;
 							$log_details->message = $username . ' was verified by AD, but does not have their user_active attribute set in Open-AudIT (html request)';
 							stdlog($log_details);
-							redirect('login/index/main/list_groups');
+							// set the original requested URL
+							$requested_url = array('url'  => current_url());
+							$this->session->set_userdata($requested_url);
+							// redirect to the login page
+							redirect('login/index');
 						}
 					}
 				} else {
@@ -509,6 +525,9 @@ class M_oa_user extends MY_Model {
 				$log_details->severity = 6;
 				$log_details->message = $username . ' attempted to logon with invalid credentials (html request)';
 				stdlog($log_details);
+				// set the original requested URL
+				$requested_url = array('url'  => current_url());
+				$this->session->set_userdata($requested_url);
 				// redirect to the login page
 				redirect('login/index/main/list_groups');
 			}
@@ -553,6 +572,12 @@ class M_oa_user extends MY_Model {
 				# stdlog($log_details);
 				$userdata = array('user_id' => $CI->user->user_id);
 				$this->session->set_userdata($userdata);
+				$requested_url = @$this->session->userdata('url');
+				if ($requested_url != '') {
+					$requested_url = array('url'  => '');
+					$this->session->set_userdata($requested_url);
+					redirect($requested_url);
+				}
 				return;
 			}
 		}

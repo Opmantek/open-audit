@@ -62,17 +62,24 @@ class login extends CI_Controller
  */
 	public function index()
 	{
-		#if (isset($this->session->userdata['user_id']) AND is_numeric($this->session->userdata['user_id'])) {
-		#	redirect('main/list_groups');
-		#}
+
 		$data['title'] = 'Open-AudIT';
 		$data['username'] = array('id' => 'username', 'name' => 'username');
 		$data['password'] = array('id' => 'password', 'name' => 'password');
 		$data['oae_message'] = '';
-		$data['hidden'] = array('page' => $this->uri->segment(3),
-								'function' => $this->uri->segment(4),
-								'id' => $this->uri->segment(5),
-								'first_attribute' => $this->uri->segment(6));
+
+		// cater to an unauth page request
+		// get the requested page from the session
+		$form_url = @$this->session->userdata('url');
+		$this->session->set_userdata(array('url'  => ''));
+		$uri_string = uri_string();
+		// set the form url so if nothing in the session and requested special login page, it has a default
+		if ($form_url == '' and $uri_string == 'login/index/main/list_groups' ) {
+			$form_url = 'main/list_groups';
+		}
+
+		$data['form_url'] = $form_url;
+
 		$this->load->model('m_oa_admin_database');
 		$this->load->model('m_oa_config');
 		$data['systems'] = $this->m_oa_admin_database->count_systems();
@@ -82,7 +89,6 @@ class login extends CI_Controller
 
 		$this->load->model('m_oa_config');
 		$oae_url = $this->m_oa_config->get_config_item('oae_url');
-		// echo "<!-- 1 " . $oae_url . " -->\n";
 
 		if ($oae_url > '') {
 			if (substr($oae_url, -1, 1) != '/') {
@@ -140,7 +146,7 @@ class login extends CI_Controller
 			$this->load->view('v_login', $data);
 		}
 
-		if (($data['hidden']['page'] != '') and ($oae_url > '') and ($license == 'valid')) {
+		if (($data['form_url'] != '') and ($oae_url > '') and ($license == 'valid')) {
 			// user going to an internal page and OAE is installed with a valid license
 			// set the logo and show the logon page
 			$data['logo'] = 'logo-banner-oae.png';
@@ -149,8 +155,8 @@ class login extends CI_Controller
 			$this->load->view('v_login', $data);
 		}
 
-		if (($data['hidden']['page'] == '') and ($oae_url > '') and ($license == 'valid')) {
-			// user going to logon page and OAE is installed and licensed
+		if (($data['form_url'] == '') and ($oae_url > '') and ($license == 'valid')) {
+			// user going to logon page (not internal page) and OAE is installed and licensed
 			// redirect
 			$this->m_oa_config->update_config('logo', 'oae', '', date('Y-m-d H:i:s'));
 			redirect($oae_url);
