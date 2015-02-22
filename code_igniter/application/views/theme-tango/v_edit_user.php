@@ -118,6 +118,7 @@ if (isset($error_message))
 			<?php 
 			foreach($user_group as $key):
 				$tag = 'User Defined'; 
+				if (!isset($key->access_level) or is_null($key->access_level)) { $key->access_level = '0'; }
 				if ($key->group_id < '1000'){ $tag = 'Built-in'; } 
 				if ($key->group_id == '1'){ $tag = 'Built-in'; } 
 				if (mb_strpos($key->group_name, 'Network - ') !== false) { $tag = 'Auto Generated'; }
