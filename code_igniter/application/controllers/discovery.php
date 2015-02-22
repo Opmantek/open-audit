@@ -797,6 +797,7 @@ class discovery extends CI_Controller
 			$this->load->model('m_network_card');
 			$this->load->model('m_ip_address');
 			$this->load->model('m_virtual_machine');
+			$this->load->model('m_module');
 			$this->load->model('m_oa_group');
 			$this->load->model('m_oa_general');
 			$this->load->model('m_sys_man_audits');
@@ -1026,6 +1027,7 @@ class discovery extends CI_Controller
 						$temp_array = get_snmp($details);
 						$details = $temp_array['details'];
 						$network_interfaces = $temp_array['interfaces'];
+						$modules = $temp_array['modules'];
 						unset($guests);
 						if (isset($temp_array['guests']) AND count($temp_array['guests']) > 0) {
 							$guests = $temp_array['guests'];
@@ -1214,6 +1216,13 @@ class discovery extends CI_Controller
 							}
 							// finish off with updating any network IPs that don't have a matching interface
 							$this->m_ip_address->update_missing_interfaces($details->system_id);
+						}
+
+						// insert any modules
+						if (isset($modules) AND count($modules) > 0) {
+							foreach ($modules AS $input) {
+								$this->m_module->process_module($input, $details);
+							}
 						}
 
 						// insert any found virtual machines

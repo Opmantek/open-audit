@@ -83,6 +83,8 @@
 						 	<?php if (count($windows) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li><?php } ?>
 
 						 	<?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_vmware.png" /><a href="#" id="toggle_summary_vms">VM Guest Details</a></li><?php } ?>
+
+						 	<?php if (count($module) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_memory.png" /><a href="#" id="toggle_summary_module">Modules</a></li> <?php } ?>
 						</ul>
 					</li>
 					<?php 
@@ -262,7 +264,7 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 <!-- end of div Summary -->
 
 <?php 
-# include the common blocks of credentials, purchase, location / contact, custom, audits, audit log, alert log, nmis
+# include the common blocks of credentials, purchase, location / contact, custom, audits, audit log, alert log, nmis, VMs, modules
 include "v_display_inc_summary.php"; 
 
 # include the computer specific display blocks

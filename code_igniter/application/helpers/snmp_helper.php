@@ -601,6 +601,39 @@ if (!function_exists('get_snmp')) {
 				$details->subnet = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
 			}
 
+			// Cisco modules
+			$modules = array();
+			$modules_list = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.2");
+			foreach ($modules_list AS $key => $value) {
+				$module = new stdClass();
+				$module->description = $value;
+				$module->module_index = str_replace("1.3.6.1.2.1.47.1.1.1.1.2.", "", $key);
+				$module->object_id = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.3." . $module->module_index);
+				$module->contained_in = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.4." . $module->module_index);
+				$module->class = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.5." . $module->module_index);
+				$module->class_text = 'unknown';
+				if ($module->class == '1') { $module->class_text = 'other'; }
+				if ($module->class == '2') { $module->class_text = 'unknown'; }
+				if ($module->class == '3') { $module->class_text = 'chassis'; }
+				if ($module->class == '4') { $module->class_text = 'backplane'; }
+				if ($module->class == '5') { $module->class_text = 'container'; }
+				if ($module->class == '6') { $module->class_text = 'powerSupply'; }
+				if ($module->class == '7') { $module->class_text = 'fan'; }
+				if ($module->class == '8') { $module->class_text = 'sensor'; }
+				if ($module->class == '9') { $module->class_text = 'module'; }
+				if ($module->class == '10') { $module->class_text = 'port'; }
+				if ($module->class == '11') { $module->class_text = 'stack'; }
+				if ($module->class == '12') { $module->class_text = 'cpu'; }
+				$module->hardware_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.8." . $module->module_index);
+				$module->firmware_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.9." . $module->module_index);
+				$module->software_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.10." . $module->module_index);
+				$module->serial_number = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11." . $module->module_index);
+				$module->asset_id = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.15." . $module->module_index);
+				$module->manufacture_date = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.17." . $module->module_index);
+				$modules[] = $module;
+			}
+
+
 			// network intereface details
 			$interfaces = array();
 			$interfaces_filtered = array();
@@ -795,6 +828,8 @@ if (!function_exists('get_snmp')) {
 			$details->description = '';
 			$details->description = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
 
+			// Cisco modules
+			$modules = array();
 
 			// new for 1.2.2 - network details
 			$interfaces = array();
@@ -895,7 +930,7 @@ if (!function_exists('get_snmp')) {
 		if (!isset($guests)) { 
 			$guests = array(); 
 		}
-		$return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests);
+		$return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules);
 
 		unset($log_details);
 		if (isset($orig_log_details)) {

@@ -574,6 +574,50 @@
 	<?php } ?>
 	</div>
 
+	<div id="view_summary_module" style="float: left; width: 100%;">
+	<?php if (count($module) > 0) { ?>
+		<br />
+		<br />
+		<form action="#" method="post" class="niceforms">
+			<fieldset id="module_details">
+				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Module Details')?></span></legend>
+				<table cellspacing="1" class="tablesorter" width="100%">
+					<thead>
+						<tr>
+							<th><?php echo __('Index')?></th>
+							<th><?php echo __('Contained In')?></th>
+							<th><?php echo __('Type')?></th>
+							<th><?php echo __('Description')?></th>
+							<th><?php echo __('HW Revision')?></th>
+							<th><?php echo __('FW Revision')?></th>
+							<th><?php echo __('SW Revision')?></th>
+							<th><?php echo __('Serial')?></th>
+							<th><?php echo __('Asset ID')?></th>
+							<th><?php echo __('Manufacture Date')?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php foreach($module as $mod): ?>
+							<tr>
+								<td align="center"><?php echo $mod->module_index?></td>
+								<td align="center"><?php echo $mod->contained_in?></td>
+								<td><?php echo $mod->class_text?></td>
+								<td><?php echo $mod->description?></td>
+								<td align="center"><?php echo $mod->hardware_revision?></td>
+								<td><?php echo $mod->firmware_revision?></td>
+								<td><?php echo $mod->software_revision?></td>
+								<td><?php echo $mod->serial_number?></td>
+								<td><?php echo $mod->asset_id?></td>
+								<td><?php echo $mod->manufacture_date?></td>
+							</tr>
+					<?php endforeach; ?>
+					</tbody>
+					</table>
+					<?php echo display_custom_field('view_summary_module',  $additional_fields_data, $edit); ?>
+			</fieldset>
+		</form>
+	<?php } ?>
+	</div>
 
 
 

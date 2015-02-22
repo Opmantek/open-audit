@@ -411,6 +411,7 @@ $(document).ready(function(){
 	$('#view_summary_custom').hide();
 	$('#view_summary_attachment').hide();
 	$('#view_summary_nmis').hide();
+	$('#view_summary_module').hide();
 	<?php if ($system[0]->man_type == 'access point' or 
 		$system[0]->man_type == 'adsl modem' or
 		$system[0]->man_type == 'bdsl modem' or
@@ -501,6 +502,12 @@ $(document).ready(function(){
 	});
 	<?php } ?>
 
+	<?php if (count($module) > 0) { ?>
+	$('#toggle_summary_module').click(function(){
+		$('#view_summary_module').slideToggle("fast");
+	});
+	<?php } ?>
+
 	$('#toggle_summary_all').click(function(){
 		if (summary_toggle == 0)
 		{
@@ -518,6 +525,7 @@ $(document).ready(function(){
 			$('#view_summary_network_interfaces').show("fast");
 			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').show("fast");<?php } ?>
 			<?php if (count($vm) > 0) { ?>$('#view_summary_vms').show("fast");<?php } ?>
+			<?php if (count($module) > 0) { ?>$('#view_summary_module').show("fast");<?php } ?>
 			summary_toggle = 1;
 		}
 		else 
@@ -536,6 +544,7 @@ $(document).ready(function(){
 			$('#view_summary_network_interfaces').hide("fast");
 			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').hide("fast");<?php } ?>
 			<?php if (count($vm) > 0) { ?>$('#view_summary_vms').hide("fast");<?php } ?>
+			<?php if (count($module) > 0) { ?>$('#view_summary_module').hide("fast");<?php } ?>
 			summary_toggle = 0;
 		}
 	});

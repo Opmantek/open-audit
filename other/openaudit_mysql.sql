@@ -660,6 +660,32 @@ CREATE TABLE `sys_hw_memory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Table structure for table `sys_hw_module`
+--
+DROP TABLE IF EXISTS `sys_hw_module`;
+CREATE TABLE `sys_hw_module` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `system_id` int(10) unsigned default NULL,
+  `description` varchar(200) NOT NULL default '',
+  `module_index` varchar(100) NOT NULL default '',
+  `object_id` varchar(100) NOT NULL default '',
+  `contained_in` varchar(100) NOT NULL default '',
+  `class` varchar(10) NOT NULL default '',
+  `class_text` varchar(20) NOT NULL,
+  `hardware_revision` varchar(100) NOT NULL,
+  `firmware_revision` varchar(100) NOT NULL default '',
+  `software_revision` varchar(100) NOT NULL default '',
+  `serial_number` varchar(100) NOT NULL default '',
+  `asset_id` varchar(100) NOT NULL default '',
+  `manufacture_date` varchar(100) NOT NULL default '',
+  `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_hw_module_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
 -- Table structure for table `sys_hw_monitor`
 --
 

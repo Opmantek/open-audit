@@ -292,6 +292,7 @@ class Admin_system extends MY_Controller
 		$this->load->model("m_ip_address");
 		$this->load->model("m_oa_general");
 		$this->load->model("m_virtual_machine");
+		$this->load->model("m_module");
 		$this->load->library('encrypt');
 		$this->load->helper('snmp');
 		$this->load->helper('snmp_oid');
@@ -331,6 +332,7 @@ class Admin_system extends MY_Controller
 		if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
 			$guests = $temp_array['guests'];
 		}
+		$modules = $temp_array['modules'];
 
 		$details->last_seen_by = 'snmp';
 		$details->timestamp = date('Y-m-d G:i:s');
@@ -368,6 +370,13 @@ class Admin_system extends MY_Controller
 			if (isset($guests) and is_array($guests) and count($guests) > 0) {
 				foreach($guests as $guest) {
 					$this->m_virtual_machine->process_vm($guest, $details);
+				}
+			}
+
+			# insert any modules
+			if (isset($modules) and is_array($modules) and count($modules) > 0) {
+				foreach($modules as $input) {
+					$this->m_module->process_module($input, $details);
 				}
 			}
 

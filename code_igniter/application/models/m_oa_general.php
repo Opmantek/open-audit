@@ -160,6 +160,9 @@ class M_oa_general extends MY_Model {
 		} elseif ($table == 'sys_hw_motherboard') {
 			$sql = 'SELECT sys_hw_motherboard.* FROM sys_hw_motherboard LEFT JOIN system ON system.system_id = sys_hw_motherboard.system_id AND system.timestamp = sys_hw_motherboard.timestamp WHERE system.system_id = ?';
 
+		} elseif ($table == 'sys_hw_module') {
+			$sql = 'SELECT sys_hw_module.* FROM sys_hw_module WHERE system_id = ?';
+
 		} elseif ($table == 'sys_sw_group') {
 			$sql = 'SELECT group_name, group_description, group_sid, group_members FROM sys_sw_group LEFT JOIN system ON system.system_id = sys_sw_group.system_id AND system.timestamp = sys_sw_group.timestamp WHERE system.system_id = ?';
 
@@ -404,4 +407,146 @@ class M_oa_general extends MY_Model {
 		}
 		return($count);
 	}
+
+
+	function process_result($table = '', $match_columns = array(), $details) {
+		// update the audit log
+		$this->m_sys_man_audits->update_audit($details, "$table - start");
+
+		if ($table == '' OR count($match_columns == 0) OR ! isset($details->system_id) ) {
+			// TODO probably should log something here
+			$this->m_sys_man_audits->update_audit($details, "$table - failed 1");
+			return;
+		}
+		
+		// TODO - fix this. Just need to detect $table is a valid table name
+		$found = 0;
+		$result = $this->db->list_tables();
+		foreach ($result AS $key => $value) {
+			if (strpos($value, $table) !== FALSE) {
+				$found = 1;
+			}
+		}
+		if ($found == 0) {
+			// TODO probably should log something here
+			$this->m_sys_man_audits->update_audit($details, "$table - failed 2");
+			return;
+		}
+
+		$sql = 'SELECT * FROM ' . $table . ' WHERE ' . $table . '.current = "y" AND ' . $table . '.system_id = ?';
+		$data = array($details->system_id);
+		$query = $this->db->query($sql, $data);
+		$result = $query->result();
+		foreach ($data->item as $data_xml) {
+			$flag = 'insert';
+			$match_count = 0;
+			foreach ($result as $id => $data_db) {
+				for ($i=0; $i < count($match_columns); $i++) { 
+					if ((string)$data_xml->$column[$i] == (string)$data_db->$column[$i]) {
+						$match_count ++;
+					}
+				}
+				if ($match_count == count($match_columns)-1) {
+					// we have a match - update
+					$flag = 'update';
+					$fields = $this->db->list_fields('$table');
+					foreach ($fields as $field) {
+						if ($data_db->$field =='' AND $data_xml->$field != '') {
+							$data_db->$field = (string)$data_xml->$field;
+						}
+						$sql .= " $table.$field = ? , ";
+					}
+					$sql = substr($sql, 0, -2);
+					$data_db->timestamp = $details->timestamp;
+					$sql = "UPDATE $table SET $sql WHERE $table.id = '$data_db.id'";
+					$data = $this->db->list_fields('$table');
+					$query = $this->db->query($sql, $data);
+					unset($software_db);
+					// stop the loop
+					break;
+
+				} else {
+					// no match - insert
+					// $flag stays unchanged
+				}
+			}
+			if ($flag == 'insert') {
+				// we did not get any matches to the array
+				// insert a new row
+				$data_xml->system_id = $details->system_id;
+				$data_xml->first_timestamp = $details->timestamp;
+				$data_xml->timestamp = $details->timestamp;
+				$fields = get_object_vars($data_xml);
+				$data = array();
+				foreach ($field AS $field) {
+					$set_fields .= " $field, ";
+					$set_values .= ' ?, ';
+					$data = $data_xml->$field;
+				}
+				$set_fields = substr($set_fields, 0, -2);
+				$set_values = substr($set_values, 0, -2);
+				$sql = "INSERT INTO $table ( $set_fields ) VALUES ( $set_values ) ";
+				$query = $this->db->query($sql, $data);
+			}
+		}
+
+		// get the total rows in the table that are current for the system_id
+		unset($data);
+		$sql = "SELECT count(*) as total FROM $table WHERE system_id = ? AND $table.current = 'y'";
+		$data = array($details->system_id);
+		$query = $this->db->query($sql, $data);
+		$row = $query->row();
+		$total_current = $row->total;
+
+		// get the total rows for the device
+		unset($data);
+		$sql = "SELECT count(*) as total FROM $table WHERE system_id = ?";
+		$data = array($details->system_id);
+		$query = $this->db->query($sql, $data);
+		$row = $query->row();
+		$total_count = $row->total;
+
+		if ($total_current = $total_count) {
+			// we had no previous rows in this table - do not generate any alerts
+		} else {
+			// we had a count mismatch - totals not equal means not the first audit - generate alerts if required
+			// test for item no longer detected
+			$sql_select = "$table.id, ";
+			foreach ($columns AS $key => $value) {
+				$sql_select .= " $table.$value, ";
+			}
+			$sql_select = substr($sql_select, 0, -2);
+
+			$sql = "SELECT $sql_select FROM $table WHERE $table.system_id = ? and $table.timestamp = ?";
+			$data = array("$details->system_id", "$details->original_timestamp");
+			$sql = $this->clean_sql($sql);
+			$query = $this->db->query($sql, $data);
+			foreach ($query->result() as $myrow) { 
+				$alert_details =  'item removed from $table - ';
+				foreach ($columns AS $column) {
+					$alert_details .= $column . ' = ' . $myrow->$column . ', ';
+				}
+				$alert_details = substr($alert_details, 0, -2);
+				$this->m_alerts->generate_alert($details->system_id, $table, $myrow->id, $alert_details, $details->timestamp);
+			}
+			// test for new items
+			$sql = "SELECT $sql_select FROM $table WHERE $table.first_timestamp = $table.timestamp AND $table.system_id = ? AND $table.first_timestamp = ? ";
+			$data = array("$details->system_id", "$details->timestamp");
+			$sql = $this->clean_sql($sql);
+			$query = $this->db->query($sql, $data);
+			foreach ($query->result() as $myrow) {
+				$alert_details =  'item removed from $table - ';
+				foreach ($columns AS $column) {
+					$alert_details .= $column . ' = ' . $myrow->$column . ', ';
+				}
+				$alert_details = substr($alert_details, 0, -2);
+				$this->m_alerts->generate_alert($details->system_id, $table, $myrow->id, $alert_details, $details->timestamp);
+			}
+			// update the audit log
+			$this->m_sys_man_audits->update_audit($details, "$table - end");
+		}
+	}
+
+
+
 }

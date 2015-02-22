@@ -190,7 +190,7 @@ class main extends MY_Controller
 			$list = array(
 				'system', 
 				'oa_alert_log', 'oa_audit_log', 
-				'sys_hw_bios', 'sys_sw_group', 'sys_hw_hard_drive', 
+				'sys_hw_bios', 'sys_sw_group', 'sys_hw_hard_drive', 'sys_hw_module', 
 				'sys_hw_network_card_ip', 'sys_hw_memory', 'sys_hw_motherboard', 'sys_hw_network_card', 
 				'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 
 				'sys_hw_sound', 'sys_hw_video', 
@@ -858,6 +858,7 @@ class main extends MY_Controller
 		$this->load->model("m_ip_address");
 		$this->load->model("m_log");
 		$this->load->model("m_memory");
+		$this->load->model("m_module");
 		$this->load->model("m_monitor");
 		$this->load->model("m_motherboard");
 		$this->load->model("m_netstat");
@@ -906,6 +907,7 @@ class main extends MY_Controller
 		$this->data['library'] = $this->m_software->get_system_software($this->data['id'], 7);
 		$this->data['locations'] = $this->m_oa_location->get_location_names();
 		$this->data['memory'] = $this->m_memory->get_system_memory($this->data['id']);
+		$this->data['module'] = $this->m_module->get_system_module($this->data['id']);
 		$this->data['monitor'] = $this->m_monitor->get_system_monitor($this->data['id']);
 		$this->data['motherboard'] = $this->m_motherboard->get_system_motherboard($this->data['id']);
 		$this->data['netstat'] = $this->m_netstat->get_system_netstat($this->data['id']);
