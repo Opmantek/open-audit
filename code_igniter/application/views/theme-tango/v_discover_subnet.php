@@ -233,7 +233,7 @@ if ($type == '') {
 		$this->config->config['default_ssh_password'] == '' or 
 		$this->config->config['default_windows_username'] == '' or 
 		$this->config->config['default_windows_password'] == '' or 
-		$$this->config->config['default_windows_domain'] == ''){
+		$this->config->config['default_windows_domain'] == ''){
 	?>
 	<p><h3 style="color: blue">Warning</h3>Please ensure you have default for ALL attributes. Defaults can be set on the Config page - click <a href="<?php echo $oa_web_index; ?>/admin/edit_config" style="color: red";>here</a>.<br />
 	<?php } ?>
