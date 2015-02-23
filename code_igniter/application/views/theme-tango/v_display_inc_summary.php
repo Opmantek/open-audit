@@ -580,7 +580,7 @@
 		<br />
 		<form action="#" method="post" class="niceforms">
 			<fieldset id="module_details">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Module Details')?></span></legend>
+				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Entity Details')?></span></legend>
 				<table cellspacing="1" class="tablesorter" width="100%">
 					<thead>
 						<tr>
@@ -593,7 +593,7 @@
 							<th><?php echo __('SW Revision')?></th>
 							<th><?php echo __('Serial')?></th>
 							<th><?php echo __('Asset ID')?></th>
-							<th><?php echo __('Manufacture Date')?></th>
+							<th><?php echo __('Is FRU')?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -608,7 +608,7 @@
 								<td><?php echo $mod->software_revision?></td>
 								<td><?php echo $mod->serial_number?></td>
 								<td><?php echo $mod->asset_id?></td>
-								<td><?php echo $mod->manufacture_date?></td>
+								<td align="center"><?php echo $mod->is_fru?></td>
 							</tr>
 					<?php endforeach; ?>
 					</tbody>

@@ -677,7 +677,7 @@ CREATE TABLE `sys_hw_module` (
   `software_revision` varchar(100) NOT NULL default '',
   `serial_number` varchar(100) NOT NULL default '',
   `asset_id` varchar(100) NOT NULL default '',
-  `manufacture_date` varchar(100) NOT NULL default '',
+  `is_fru` varchar(100) NOT NULL default '',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`),

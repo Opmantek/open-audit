@@ -84,7 +84,7 @@
 
 						 	<?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_vmware.png" /><a href="#" id="toggle_summary_vms">VM Guest Details</a></li><?php } ?>
 
-						 	<?php if (count($module) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_memory.png" /><a href="#" id="toggle_summary_module">Modules</a></li> <?php } ?>
+						 	<?php if (count($module) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_memory.png" /><a href="#" id="toggle_summary_module">Entities</a></li> <?php } ?>
 						</ul>
 					</li>
 					<?php 

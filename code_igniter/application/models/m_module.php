@@ -55,7 +55,7 @@ class M_module extends MY_Model {
 		$query = $this->db->query($sql, $data);
 		// insert the modules
 		$sql = "INSERT INTO sys_hw_module (	system_id, description, module_index, object_id, contained_in, class, 
-			class_text, hardware_revision, firmware_revision, software_revision, serial_number, asset_id, manufacture_date, timestamp, first_timestamp ) 
+			class_text, hardware_revision, firmware_revision, software_revision, serial_number, asset_id, is_fru, timestamp, first_timestamp ) 
 			VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 		$sql = $this->clean_sql($sql);
 		$data = array("$details->system_id", 
@@ -70,7 +70,7 @@ class M_module extends MY_Model {
 				"$input->software_revision", 
 				"$input->serial_number", 
 				"$input->asset_id", 
-				"$input->manufacture_date", 
+				"$input->is_fru", 
 				"$details->timestamp", 
 				"$details->timestamp");
 		$query = $this->db->query($sql, $data);
