@@ -45,14 +45,21 @@ class M_oa_config extends MY_Model {
 		$result = $query->result();
 		foreach ($result as $key => $value) {
 			$config_item_name = $result[$key]->config_name;
-			if ($config_item_name == 'default_ipmi_password' OR 
+			if (($config_item_name == 'default_ipmi_password' OR 
 				$config_item_name == 'default_snmp_community' OR 
 				$config_item_name == 'default_ssh_password' OR 
-				$config_item_name == 'default_windows_password' ) {
+				$config_item_name == 'default_windows_password' ) AND 
+				($result[$key]->config_value != '')) {
 					# we need to decrypt
-					$result[$key]->config_value = $this->encrypt->decode($result[$key]->config_value);
+					$temp = $this->encrypt->decode($result[$key]->config_value);
+					if (!isset($temp) or is_null($temp)) {
+						$result[$key]->config_value = '';
+					} else {
+						$result[$key]->config_value = $temp;
+					}
+					unset($temp);
+				}
 			}
-		}
 		return ($result);
 	}
 
