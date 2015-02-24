@@ -286,7 +286,7 @@ class Admin extends MY_Controller
                 case '6':
                     $complete_filename = '/usr/local/omk/conf/opCommon.nmis';
                     break;
-               
+
                 default:
                     # code...
                     break;
@@ -317,7 +317,7 @@ class Admin extends MY_Controller
                 case '6':
                     $complete_filename = 'c:\omk\conf\opCommon.nmis';
                     break;
-               
+
                 default:
                     # code...
                     break;
@@ -417,6 +417,7 @@ class Admin extends MY_Controller
             $this->load->view('v_template', $this->data);
         } else {
             $cmd = "php " . $_SERVER['SCRIPT_FILENAME'] . " cli import_nmis " . $_POST['nodes_file'] . " >> /usr/local/open-audit/other/log_system.log 2>&1 &";
+            exec($cmd);
             redirect('/admin/view_log');
         }
     }
@@ -452,11 +453,11 @@ class Admin extends MY_Controller
                     } elseif ($this->data['query'][$i]->fqdn != '') {
                         # second choice is to use the FQDN
                         $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn;
-                   
+
                     } elseif ($this->data['query'][$i]->hostname != '' and $this->data['query'][$i]->domain != '') {
                         # third - create the FQDN from the hostname + domain
                         $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
-                   
+
                     } elseif ($this->data['query'][$i]->nmis_host != '') {
                         # lastly - use the ip address
                         $this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host);
@@ -469,18 +470,18 @@ class Admin extends MY_Controller
 
                 }
 
-               
+
                 # nmis host
                 #$this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
                 #if (isset($j->ip_address)) { $this->data['query'][$i]->nmis_host = $j->ip_address; }
                 if ($this->data['query'][$i]->fqdn != '') {
                     # first choice is to use the FQDN
                     $this->data['query'][$i]->nmis_host = $this->data['query'][$i]->fqdn;
-               
+
                 } elseif ($this->data['query'][$i]->hostname != '' and $this->data['query'][$i]->domain != '') {
                     # second - create the FQDN from the hostname + domain
                     $this->data['query'][$i]->nmis_host = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
-               
+
                 } elseif ($this->data['query'][$i]->nmis_host != '') {
                     # lastly - use the ip address
                     $this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
@@ -553,7 +554,7 @@ class Admin extends MY_Controller
                 # blank nmis name and populated hostname
                 if ($this->data['query'][$i]->nmis_name == '') {
                     # need to create a nmis name
-                   
+
                     if ($this->data['query'][$i]->hostname != '') {
                         # hostname is our preferred choice
                         $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname;
@@ -561,11 +562,11 @@ class Admin extends MY_Controller
                     } elseif ($this->data['query'][$i]->fqdn != '') {
                         # second choice is to use the FQDN
                         $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->fqdn;
-                   
+
                     } elseif ($this->data['query'][$i]->hostname != '' and $this->data['query'][$i]->domain != '') {
                         # third - create the FQDN from the hostname + domain
                         $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
-                   
+
                     } elseif ($this->data['query'][$i]->nmis_host != '') {
                         # lastly - use the ip address
                         $this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host);
@@ -582,11 +583,11 @@ class Admin extends MY_Controller
                 if ($this->data['query'][$i]->fqdn != '') {
                     # first choice is to use the FQDN
                     $this->data['query'][$i]->nmis_host = $this->data['query'][$i]->fqdn;
-               
+
                 } elseif ($this->data['query'][$i]->hostname != '' and $this->data['query'][$i]->domain != '') {
                     # second - create the FQDN from the hostname + domain
                     $this->data['query'][$i]->nmis_host = $this->data['query'][$i]->hostname . $this->data['query'][$i]->domain;
-               
+
                 } elseif ($this->data['query'][$i]->nmis_host != '') {
                     # lastly - use the ip address
                     $this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
@@ -1045,55 +1046,55 @@ class Admin extends MY_Controller
         $db_internal_version = $this->config->item('internal_version');
 
         $this->data['output'] = "";
-       
+
         if (($db_internal_version < '20111001') and ($this->db->platform() == 'mysql')) {
             # upgrade for beta3
             $this->db->trans_start();
 
             $this->data['output'] .= "Upgrading to beta3.<br />Transaction starting.<br /><br />\n";
-           
+
             $sql = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_status hard_drive_status varchar(100) NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE sys_hw_partition DROP FOREIGN KEY sys_hw_partition_hard_drive_index";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE sys_man_audits ADD audit_debug text NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE sys_sw_service MODIFY service_path_name text NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE sys_sw_software ADD software_installed_by varchar(100) NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE sys_sw_software ADD software_installed_on datetime NOT NULL default '0000-00-00 00:00:00'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE system ADD uptime varchar(50) NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE system ADD pc_os_bit varchar(3) NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_config (config_name, config_value) VALUES ('internal_version', '20111001')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_config (config_name, config_value) VALUES ('display_version', 'beta3')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
 
             $this->db->trans_complete();
-           
+
             if ($this->db->trans_status() === false) {
                 $this->data['output'] .= "ALERT - error encountered. Transactions rolled back.<br /><br />\n";
             } else {
@@ -1106,12 +1107,12 @@ class Admin extends MY_Controller
             $this->db->trans_start();
 
             $this->data['output'] .= "Upgrading to beta4.<br />Transaction starting.<br /><br />\n";
-           
+
             $sql = "UPDATE oa_group SET group_dynamic_select = 'SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\'' WHERE group_id = '1'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
-           
+
+
             $sql = "CREATE TABLE sys_hw_warranty ( warranty_id int(10) unsigned NOT NULL auto_increment, system_id int(10) unsigned default NULL, warranty_provider varchar(200) NOT NULL default '', warranty_type varchar(100) NOT NULL default '', warranty_start datetime NOT NULL default '0000-00-00 00:00:00', warranty_end datetime NOT NULL default '0000-00-00 00:00:00', timestamp datetime NOT NULL default '0000-00-00 00:00:00', first_timestamp datetime NOT NULL default '0000-00-00 00:00:00', PRIMARY KEY  (warranty_id), KEY system_id (system_id), CONSTRAINT sys_hw_warranty_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -1143,22 +1144,22 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20111010' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta4' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
 
             $this->db->trans_complete();
-           
+
             if ($this->db->trans_status() === false) {
                 $this->data['output'] .= "ALERT - error encountered. Transactions rolled back.<br /><br />\n";
             } else {
                 $this->data['output'] .= "Transaction committed.<br />beta4 upgrade successful.<br /><br />\n";
             }
         }
-       
-           
-           
+
+
+
         if (($db_internal_version < '20120317') and ($this->db->platform() == 'mysql')) {
             # upgrade for beta5
             $this->db->trans_start();
@@ -1176,7 +1177,7 @@ class Admin extends MY_Controller
             $sql = "ALTER TABLE system ADD man_class enum ('desktop', 'laptop', 'tablet', 'workstation', 'server', 'virtual server', 'virtual desktop', '') NOT NULL default '' ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE system ADD last_seen DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00' ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -1268,11 +1269,11 @@ class Admin extends MY_Controller
             $sql = "ALTER TABLE oa_group_column ADD CONSTRAINT oa_group_column_group_id FOREIGN KEY (group_id) REFERENCES oa_group (group_id) ON DELETE CASCADE";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE oa_group_sys DROP FOREIGN KEY oa_group_sys_group_id";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE oa_group_sys DROP FOREIGN KEY oa_group_sys_system_id";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -1500,7 +1501,7 @@ class Admin extends MY_Controller
             $sql = "ALTER TABLE sys_hw_video ADD CONSTRAINT sys_hw_video_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE sys_hw_warranty DROP FOREIGN KEY sys_hw_warranty_system_id";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -1808,13 +1809,13 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20120317' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta5' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
 
             $this->db->trans_complete();
-           
+
             if ($this->db->trans_status() === false) {
                 $this->data['output'] .= "ALERT - error encountered. Transactions rolled back.<br /><br />\n";
             } else {
@@ -1834,31 +1835,31 @@ class Admin extends MY_Controller
             $sql = "CREATE INDEX hostname ON system (hostname) ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "CREATE INDEX linked_sys ON system (linked_sys) ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "CREATE INDEX system_key ON system (system_key) ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "CREATE INDEX user_id_index ON oa_user (user_id) ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "CREATE INDEX user_id_index ON oa_group_user (user_id) ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "CREATE INDEX system_id_index ON oa_group_sys (system_id) ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "CREATE INDEX group_id_index ON oa_group (group_id) ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "DROP TABLE IF EXISTS sys_sw_dns";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -1870,7 +1871,7 @@ class Admin extends MY_Controller
             $sql = "ALTER TABLE sys_sw_database_details ADD system_id int(10) unsigned default NULL ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE sys_sw_database_log ADD system_id int(10) unsigned NOT NULL default '' ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -1962,7 +1963,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20120530' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta6' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -1979,7 +1980,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20120830' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta7' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2006,19 +2007,19 @@ class Admin extends MY_Controller
             $sql = "DROP TABLE IF EXISTS oa_device_col";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "DROP TABLE IF EXISTS oa_device";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "CREATE TABLE oa_device ( dev_id int(10) unsigned NOT NULL auto_increment, dev_name varchar(100) NOT NULL default '', dev_group_id int(10) unsigned NOT NULL default '0', PRIMARY KEY (dev_id) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "CREATE TABLE oa_device_col ( col_id int(10) unsigned NOT NULL auto_increment, dev_id int(10) unsigned default NULL, col_table varchar(100) NOT NULL default '', col_column varchar(100) NOT NULL default '', col_type varchar(100) NOT NULL default '', col_order int(10) unsigned default NULL, PRIMARY KEY (col_id), KEY dev_id (dev_id), CONSTRAINT oa_dev_col_dev_id FOREIGN KEY (dev_id) REFERENCES oa_device (dev_id) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE oa_config ADD config_editable varchar(1) NOT NULL default 'n'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2038,7 +2039,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20130126', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta8', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2053,7 +2054,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20130130', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta8.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2064,7 +2065,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20130131', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta8.4', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2075,12 +2076,12 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20130201', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta8.5', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
         }
-       
+
         if (($db_internal_version < '20130202') and ($this->db->platform() == 'mysql')) {
             # upgrade for beta9
 
@@ -2099,31 +2100,31 @@ class Admin extends MY_Controller
             $sql = "CREATE TABLE oa_asset_order ( order_id int(10) NOT NULL auto_increment, order_date datetime NOT NULL default '0000-00-00 00:00:00', order_po varchar(50) NOT NULL, order_vn varchar(50) NOT NULL, order_in varchar(50) NOT NULL, order_vendor varchar(50) NOT NULL, order_auth_officer varchar(100) NOT NULL, order_cost_code varchar(50) NOT NULL, order_notes text NOT NULL default '', PRIMARY KEY  (order_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "DROP TABLE IF EXISTS oa_asset_select";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "CREATE TABLE oa_asset_select (select_id int(10) NOT NULL auto_increment, select_name varchar(50) NOT NULL, select_type enum('', 'sw', 'hw', 'service', 'other') NOT NULL default '', select_sql varchar(250) NOT NULL, group_id int(10) unsigned default NULL, group_amount int(10) unsigned default '0', PRIMARY KEY (select_id) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE oa_asset_line CHANGE line_type line_type enum('', 'sw', 'hw', 'service', 'other') NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE oa_asset_line CHANGE allocate_type allocate_type enum('', 'group', 'location', 'org', 'person', 'item', 'other') NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE oa_asset_line CHANGE allocate_text allocate_text varchar(50) NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate. EG - open-audit.org') ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of your domain controller. EG - 192.168.0.1') ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2131,12 +2132,12 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20130202', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta 9', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
         }
-       
+
         if (($db_internal_version < '20130204') and ($this->db->platform() == 'mysql')) {
             # upgrade for beta 9.1
 
@@ -2163,7 +2164,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20130204', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta 9.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2194,7 +2195,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20130205', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = 'beta 9.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2203,7 +2204,7 @@ class Admin extends MY_Controller
         if (($db_internal_version < '20130512') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.0
             $this->data['output'] .= "New 'All Devices' Group created. Ensure you have access via Admin -> Users -> Edit User<br /><br />\n";
-       
+
             $sql = "ALTER TABLE system ADD nmap_type varchar(50) NOT NULL default ''";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2309,23 +2310,23 @@ class Admin extends MY_Controller
             $sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '2', 'Hostname', 'hostname', 'link', '/main/system_display/', 'system_id', '', 'left')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '3', 'IP Address', 'man_ip_address', 'ip_address', '',  '', '', 'left')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '4', 'Type', 'man_type', 'text', '',  '', '', 'left')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '5', 'Description', 'man_description', 'text', '',  '', '', 'left')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '6', 'OS / Device', 'man_os_name', 'text', '',  '', '', 'left')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_group_column VALUES (NULL, '1', '7', 'Tags', 'tag',  'text', '',  '', '', 'left')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2342,11 +2343,11 @@ class Admin extends MY_Controller
             $sql = "update oa_group_column set column_link = '/main/system_display/' where column_link = 'main/system_display/'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '20130512', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.0', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2459,7 +2460,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20130620', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.0.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2652,11 +2653,11 @@ class Admin extends MY_Controller
             $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('snmp_default_community', 'public', 'y', 'The default community string Open-AudIT will use when connecting to a new device.')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '20130810', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.0.4', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2668,11 +2669,11 @@ class Admin extends MY_Controller
             $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('distinct_groups', 'y', 'y', 'Display Groups on the homepage, separated into the type of each Group.')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '20131130', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.0.5', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2683,7 +2684,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20131211', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.0.6', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2694,7 +2695,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20131219', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2751,7 +2752,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20140126', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.1.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2827,7 +2828,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config SET config_value = '20140204', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config SET config_value = '1.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2839,7 +2840,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20140228', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.2.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2865,7 +2866,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20140403', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2877,7 +2878,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20140501', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.3.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2893,7 +2894,7 @@ class Admin extends MY_Controller
             $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_enable', 'y', 'y', 'Enable the RSS feed.')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_url', 'https://community.opmantek.com/rss/OA.xml', 'y', 'The RSS feed URL.')";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2909,7 +2910,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20140515', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.3.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2925,7 +2926,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config SET config_value = '20140620', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config SET config_value = '1.3.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2937,7 +2938,7 @@ class Admin extends MY_Controller
             $sql = "ALTER TABLE sys_hw_hard_drive ADD hard_drive_firmware varchar(100) NOT NULL default '' ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "ALTER TABLE sys_hw_processor ADD processor_architecture varchar(100) NOT NULL default '' ";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2957,7 +2958,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config SET config_value = '20140720', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config SET config_value = '1.4', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -2973,7 +2974,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config SET config_value = '20140827', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config SET config_value = '1.4.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -3018,7 +3019,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20141024', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.5', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -3054,7 +3055,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20141130', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.5.1', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -3082,7 +3083,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config set config_value = '20141208', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config set config_value = '1.5.2', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
@@ -3090,7 +3091,7 @@ class Admin extends MY_Controller
 
         if (($db_internal_version < '20141225') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.5.3
-           
+
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.5.3 commenced';
@@ -3369,7 +3370,7 @@ class Admin extends MY_Controller
             $sql = "UPDATE oa_config SET config_value = '20141225', config_editable = 'n', config_description = 'The internal numerical version.' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);
-           
+
             $sql = "UPDATE oa_config SET config_value = '1.5.3', config_editable = 'n', config_description = 'The version shown on the web pages.' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql . "<br /><br />\n";
             $query = $this->db->query($sql);

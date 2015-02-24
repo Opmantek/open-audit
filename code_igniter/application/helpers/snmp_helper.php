@@ -1,4 +1,4 @@
-<?php 
+<?php
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -7,7 +7,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -34,14 +34,16 @@
  */
 
 
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 if (!function_exists('get_snmp')) {
-
-    function get_snmp($details ) {
+    function get_snmp($details)
+    {
         error_reporting(E_ALL);
         $CI =& get_instance();
-        
+
         # new in 1.5 - remove the type from the returned SNMP query.
         # this affects the snmp_clean function in this file
         snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
@@ -116,14 +118,18 @@ if (!function_exists('get_snmp')) {
             $supplied->windows_domain = '';
         }
 
-        if (!isset($details->snmp_version) or $details->snmp_version == '') { $details->snmp_version = '2c'; }
-        if (!isset($details->snmp_port) or $details->snmp_port == '') { $details->snmp_port = '161'; }
-        if (!isset($details->type)) { $details->type = ''; }
+        if (!isset($details->snmp_version) or $details->snmp_version == '') {
+            $details->snmp_version = '2c';
+        }
+        if (!isset($details->snmp_port) or $details->snmp_port == '') {
+            $details->snmp_port = '161';
+        }
+        if (!isset($details->type)) {
+            $details->type = '';
+        }
 
         # we need at least an ip address or hostname
-        if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or 
-            $details->man_ip_address == '000.000.000.000' or $details->man_ip_address == '0.0.0.0') and 
-            (!isset($details->hostname) or $details->hostname == '')) {
+        if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or $details->man_ip_address == '000.000.000.000' or $details->man_ip_address == '0.0.0.0') and (!isset($details->hostname) or $details->hostname == '')) {
             unset($details->man_ip_address);
             $log_details->message = 'SNMP scan received no ip address or hostname (aborting attempted scan)';
             $log_details->severity = '5';
@@ -140,20 +146,21 @@ if (!function_exists('get_snmp')) {
             $details->man_ip_address = gethostbyname($details->hostname);
         }
 
-        if (!isset($details->hostname) or $details->hostname == '' or $details->hostname == $details->man_ip_address) {
+        if ((!isset($details->hostname) or $details->hostname == '' or $details->hostname == $details->man_ip_address) and (!isset($details->system_id) or $details->system_id == '')) {
             $details->hostname = gethostbyaddr(ip_address_from_db($details->man_ip_address));
         }
 
-        if (!isset($details->man_ip_address) or $details->man_ip_address == '' or 
-            $details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000') {
+        if (!isset($details->man_ip_address) or $details->man_ip_address == '' or $details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000') {
             $details->man_ip_address = gethostbyname($details->hostname);
         }
 
         if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
             # we have a name of some sort
-            if (strpos($details->hostname, ".") !== FALSE) {
+            if (strpos($details->hostname, ".") !== false) {
                 # fqdn - explode it
-                if (!isset($details->fqdn) or $details->fqdn == '') { $details->fqdn = $details->hostname; }
+                if (!isset($details->fqdn) or $details->fqdn == '') {
+                    $details->fqdn = $details->hostname;
+                }
                 $i = explode(".", $details->hostname);
                 $details->hostname = $i[0];
                 if (!isset($details->domain) or $details->domain == '') {
@@ -166,12 +173,12 @@ if (!function_exists('get_snmp')) {
         $timeout = '3000000';
         $retries = '2';
 
-        if (!extension_loaded('snmp')) { 
+        if (!extension_loaded('snmp')) {
             $log_details->message = 'SNMP extension for PHP is not present, aborting attempted scan on ' . $log_machine;
             $log_details->severity = '5';
             stdlog($log_details);
             unset($log_details);
-            return(array('details' => $details)); 
+            return(array('details' => $details));
         }
 
         # test for SNMP version
@@ -184,8 +191,8 @@ if (!function_exists('get_snmp')) {
         $log_pid = getmypid();
         $log_name = "H:snmp_helper F:get_snmp";
 
-        if (!isset($details->snmp_community) or $details->snmp_community == '') { 
-            $details->snmp_community = ''; 
+        if (!isset($details->snmp_community) or $details->snmp_community == '') {
+            $details->snmp_community = '';
         } else {
             if ($test_v2 = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
                 # v2 is contactable
@@ -207,7 +214,7 @@ if (!function_exists('get_snmp')) {
                 stdlog($log_details);
             }
         }
-        
+
         # test the supplied credentials
         if ($details->snmp_community == '' and isset($supplied->snmp_community) and $supplied->snmp_community > '') {
             if ($test_v2 = @snmp2_get($details->man_ip_address, $supplied->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
@@ -286,16 +293,17 @@ if (!function_exists('get_snmp')) {
             $details->sysName =     snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
             $details->sysLocation = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");
 
-            if (stripos($details->sysDescr, 'dd-wrt') !== FALSE) {
+            if (stripos($details->sysDescr, 'dd-wrt') !== false) {
                 $details->os_group = 'Linux';
                 $details->os_name = 'DD-WRT';
                 $details->type = 'router';
                 $details->man_type = 'router';
 
-                if (!isset($details->manufacturer)) { $details->manufacturer = ''; }
+                if (!isset($details->manufacturer)) {
+                    $details->manufacturer = '';
+                }
 
-                if (stripos($details->manufacturer, 'tplink') !== FALSE OR 
-                    stripos($details->manufacturer, 'tp-link') !== FALSE ) {
+                if (stripos($details->manufacturer, 'tplink') !== false or stripos($details->manufacturer, 'tp-link') !== false) {
                     $details->manufacturer = 'TP-Link Technology Co.,Ltd';
                 }
             }
@@ -312,12 +320,12 @@ if (!function_exists('get_snmp')) {
 
             // description
             $details->description = '';
-            $details->description = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
+            $details->description = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0"));
 
 
 
             // sysObjectID
-            $details->snmp_oid = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
+            $details->snmp_oid = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0"));
             $log_details->message = 'SNMPv2 SysObjectId for ' . $log_machine . ' is ' . $details->snmp_oid;
             stdlog($log_details);
 
@@ -329,11 +337,11 @@ if (!function_exists('get_snmp')) {
                 if (!isset($explode[6])) {
                     # for some reason we got an OID, but not enough to specify a manufacturer
                     $explode[6] = '';
-                    if (strpos($details->description, "ZyXEL") !== FALSE ) {
+                    if (strpos($details->description, "ZyXEL") !== false) {
                         # we have a Zyxel device
                         $explode[6] = '890';
                     }
-                } 
+                }
                 if (file_exists(BASEPATH . '../application/helpers/snmp_' . $explode[6] . '_helper.php')) {
                     $log_details->message = 'SNMPv2 is loading the snmp helper for ' . $explode[6] . ' when scanning ' . $log_machine;
                     stdlog($log_details);
@@ -363,16 +371,15 @@ if (!function_exists('get_snmp')) {
                 $log_details->message = 'SNMPv2 is deriving details from description for a Buffalo device for ' . $log_machine;
                 stdlog($log_details);
             }
-            if (stripos($details->description, 'synology') !== false or 
-                stripos($details->description, 'diskstation') !== false){
+            if (stripos($details->description, 'synology') !== false or stripos($details->description, 'diskstation') !== false) {
                 $details->manufacturer = 'Synology';
-                $temp = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.1.0" ));
+                $temp = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.1.0"));
                 $details->model = trim('DiskStation ' . $temp);
-                $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.2.0" ));
+                $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.2.0"));
                 $details->type = 'nas';
                 $details->os_group = 'Linux';
                 $details->os_family = 'Synology DSM';
-                $details->os_name = 'Synology ' . snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.3.0" ));
+                $details->os_name = 'Synology ' . snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.6574.1.5.3.0"));
                 $log_details->message = 'SNMPv2 is deriving details from description for a Synology device for ' . $log_machine;
                 stdlog($log_details);
             }
@@ -384,7 +391,7 @@ if (!function_exists('get_snmp')) {
                 $log_details->message = 'SNMPv2 manufacturer for ' . $log_machine . ' is: ' . $details->manufacturer . '(using Entity MIB)';
                 stdlog($log_details);
             }
-            
+
 
             // guess at model using entity mib
             if (!isset($details->model) or $details->model == '') {
@@ -395,19 +402,19 @@ if (!function_exists('get_snmp')) {
 
 
             // guess at model using host resources mib
-            if (!isset($details->model) or $details->model == '' ) {
+            if (!isset($details->model) or $details->model == '') {
                 $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.3.1"));
                 $log_details->message = 'SNMPv2 model for ' . $log_machine . ' is: ' . $details->model . '(using Resources MIB)';
                 stdlog($log_details);
             }
 
-            if (!isset($details->model) OR $details->model == '' OR $details->model == 'unknown') {
+            if (!isset($details->model) or $details->model == '' or $details->model == 'unknown') {
                 $log_details->message = 'SNMPv2 model for ' . $log_machine . ' is unknown';
                 stdlog($log_details);
             }
-            
 
-            // serial 
+
+            // serial
             if (!isset($details->serial) or $details->serial == '') {
                 $details->serial = '';
                 # the entity mib serial
@@ -430,7 +437,7 @@ if (!function_exists('get_snmp')) {
                 }
             }
 
-            if ($details->serial != "") { 
+            if ($details->serial != "") {
                 $log_details->message = 'SNMPv2 serial for ' . $log_machine . ' is: ' . $details->serial;
             } else {
                 $log_details->message = 'SNMPv2 serial for ' . $log_machine . ' is unknown';
@@ -440,7 +447,7 @@ if (!function_exists('get_snmp')) {
 
 
             // mac address
-            if (!isset($details->mac_address) or $details->mac_address == '' ) {
+            if (!isset($details->mac_address) or $details->mac_address == '') {
                 $interface_number = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2." . $details->man_ip_address));
                 snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
                 $details->mac_address = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface_number);
@@ -456,7 +463,7 @@ if (!function_exists('get_snmp')) {
             }
             $log_details->message = 'SNMPv2 MAC Address for ' . $log_machine . ' is ' . $details->mac_address;
             stdlog($log_details);
-                
+
             // type
             if (!isset($details->type) or $details->type == '' or $details->type == 'unknown' or $details->type == 'network printer') {
                 $h = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.2.1"));
@@ -466,8 +473,8 @@ if (!function_exists('get_snmp')) {
                     $i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
                     if (count($i) > 0) {
                         $details->printer_duplex = 'False';
-                        for ($k = 0; $k < count($i); $k++){
-                            if (mb_strpos($i[$k], "Duplex") !== FALSE) {
+                        for ($k = 0; $k < count($i); $k++) {
+                            if (mb_strpos($i[$k], "Duplex") !== false) {
                                 $details->printer_duplex = 'True';
                             }
                         }
@@ -476,10 +483,10 @@ if (!function_exists('get_snmp')) {
                         $hex = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.8.2.1.14.1");
                         if (count($hex) > 0) {
                             if (isset($hex[1])) {
-                                if (mb_strpos($hex[1], "Hex-STRING: ") !== FALSE) {
+                                if (mb_strpos($hex[1], "Hex-STRING: ") !== false) {
                                     $hex[1] = str_replace("Hex-STRING: ", "", $hex[1]);
                                     for ($i=0; $i<strlen($hex[1]); $i++) {
-                                        $details->manufacturer .= chr(hexdec(substr($hex[1],$i,2)));
+                                        $details->manufacturer .= chr(hexdec(substr($hex[1], $i, 2)));
                                     }
                                 } else {
                                     $details->manufacturer = str_replace("STRING: ", "", $hex[1]);
@@ -490,14 +497,12 @@ if (!function_exists('get_snmp')) {
                     }
                     $details->printer_color = 'False';
                     $i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.11.1.1.6.1.2");
-                    if (strpos(strtolower($i), "cartridge") !== FALSE) {
+                    if (strpos(strtolower($i), "cartridge") !== false) {
                         # it's likely this is a colour printer
                         $details->printer_color = 'True';
                     }
-
                 } else {
-
-                    # If the device is a Switch, the OID 1.3.6.1.2.1.17.1.2.0 is an integer and 
+                    # If the device is a Switch, the OID 1.3.6.1.2.1.17.1.2.0 is an integer and
                     #                                OID 1.3.6.1.2.1.4.1.0    should have a value of 2
                     $i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.17.1.2.0"));
                     $j = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.1.0"));
@@ -515,15 +520,15 @@ if (!function_exists('get_snmp')) {
                     # If the device is a Printer, the OID 1.3.6.1.2.1.43.5.1.1.1.1 should have a value
                     #if (!isset($details->type) or $details->type == '') {
                     $i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.1.1"));
-                    if (strpos(strtolower($i), "counter32") !== FALSE) {
+                    if (strpos(strtolower($i), "counter32") !== false) {
                         $details->type = 'network printer';
                         // printer duplex
                         $details->printer_duplex = '';
                         $i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
                         if (count($i) > 0) {
                             $details->printer_duplex = 'False';
-                            for ($k = 0; $k < count($i); $k++){
-                                if (mb_strpos($i[$k], "Duplex") !== FALSE) {
+                            for ($k = 0; $k < count($i); $k++) {
+                                if (mb_strpos($i[$k], "Duplex") !== false) {
                                     $details->printer_duplex = 'True';
                                 }
                             }
@@ -532,10 +537,10 @@ if (!function_exists('get_snmp')) {
                             $hex = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.8.2.1.14.1");
                             if (count($hex) > 0) {
                                 if (isset($hex[1])) {
-                                    if (mb_strpos($hex[1], "Hex-STRING: ") !== FALSE) {
+                                    if (mb_strpos($hex[1], "Hex-STRING: ") !== false) {
                                         $hex[1] = str_replace("Hex-STRING: ", "", $hex[1]);
                                         for ($i=0; $i<strlen($hex[1]); $i++) {
-                                            $details->manufacturer .= chr(hexdec(substr($hex[1],$i,2)));
+                                            $details->manufacturer .= chr(hexdec(substr($hex[1], $i, 2)));
                                         }
                                     } else {
                                         $details->manufacturer = str_replace("STRING: ", "", $hex[1]);
@@ -546,7 +551,7 @@ if (!function_exists('get_snmp')) {
                         }
                         $details->printer_color = 'False';
                         $i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.11.1.1.6.1.2");
-                        if (strpos(strtolower($i), "cartridge") !== FALSE) {
+                        if (strpos(strtolower($i), "cartridge") !== false) {
                             # it's likely this is a colour printer
                             $details->printer_color = 'True';
                         }
@@ -561,19 +566,19 @@ if (!function_exists('get_snmp')) {
                     stdlog($log_details);
                 }
             }
-            
+
 
 
             // name
-            if (!isset($details->sysname) or $details->sysname == '' ) {
+            if (!isset($details->sysname) or $details->sysname == '') {
                 $details->sysname = strtolower(snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0")));
             }
 
 
             // uptime
-            if (!isset($details->uptime) or $details->uptime == '' ) {
+            if (!isset($details->uptime) or $details->uptime == '') {
                 $i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.3.0"));
-                if (($i > '') and (strpos($i, ")") !== FALSE)){
+                if (($i > '') and (strpos($i, ")") !== false)) {
                     $j = explode(")", $i);
                     $details->uptime = intval(trim($j[1]) * 24 * 60 * 60);
                 } else {
@@ -583,30 +588,33 @@ if (!function_exists('get_snmp')) {
 
 
             // location
-            if (!isset($details->location) or $details->location == '' ) {
+            if (!isset($details->location) or $details->location == '') {
                 $details->location = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0"));
             }
-            if ($details->location > '') { $details->description = "Location: " . $details->location . ". " . $details->description; }
+            if ($details->location > '') {
+                $details->description = "Location: " . $details->location . ". " . $details->description;
+            }
 
 
             // contact
-            if (!isset($details->contact) or $details->contact == '' ) {
+            if (!isset($details->contact) or $details->contact == '') {
                 $details->contact = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.4.0"));
             }
-            if ($details->contact > '') { $details->description = "Contact: " . $details->contact . ". " . $details->description; }
+            if ($details->contact > '') {
+                $details->description = "Contact: " . $details->contact . ". " . $details->description;
+            }
 
 
             // subnet
-            if (!isset($details->subnet) or $details->subnet == '' ) {
+            if (!isset($details->subnet) or $details->subnet == '') {
                 $details->subnet = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3." . $details->man_ip_address));
             }
 
             // modules - NOTE, we call these 'entities' in the web interface
             $modules = array();
             $modules_list = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.2");
-            if (isset($modules_list) and is_array($modules_list) and count ($modules_list) > 0) {
-                foreach ($modules_list AS $key => $value) {
-
+            if (isset($modules_list) and is_array($modules_list) and count($modules_list) > 0) {
+                foreach ($modules_list as $key => $value) {
                     $module = new stdClass();
                     $module->description = $value;
                     $module->module_index = str_replace('.1.3.6.1.2.1.47.1.1.1.1.2.', '', $key);
@@ -617,18 +625,42 @@ if (!function_exists('get_snmp')) {
                     $module->class = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.5.' . $module->module_index);
 
                     $module->class_text = 'unknown';
-                    if ($module->class == '1') { $module->class_text = 'other'; }
-                    if ($module->class == '2') { $module->class_text = 'unknown'; }
-                    if ($module->class == '3') { $module->class_text = 'chassis'; }
-                    if ($module->class == '4') { $module->class_text = 'backplane'; }
-                    if ($module->class == '5') { $module->class_text = 'container'; }
-                    if ($module->class == '6') { $module->class_text = 'powerSupply'; }
-                    if ($module->class == '7') { $module->class_text = 'fan'; }
-                    if ($module->class == '8') { $module->class_text = 'sensor'; }
-                    if ($module->class == '9') { $module->class_text = 'module'; }
-                    if ($module->class == '10') { $module->class_text = 'port'; }
-                    if ($module->class == '11') { $module->class_text = 'stack'; }
-                    if ($module->class == '12') { $module->class_text = 'cpu'; }
+                    if ($module->class == '1') {
+                        $module->class_text = 'other';
+                    }
+                    if ($module->class == '2') {
+                        $module->class_text = 'unknown';
+                    }
+                    if ($module->class == '3') {
+                        $module->class_text = 'chassis';
+                    }
+                    if ($module->class == '4') {
+                        $module->class_text = 'backplane';
+                    }
+                    if ($module->class == '5') {
+                        $module->class_text = 'container';
+                    }
+                    if ($module->class == '6') {
+                        $module->class_text = 'powerSupply';
+                    }
+                    if ($module->class == '7') {
+                        $module->class_text = 'fan';
+                    }
+                    if ($module->class == '8') {
+                        $module->class_text = 'sensor';
+                    }
+                    if ($module->class == '9') {
+                        $module->class_text = 'module';
+                    }
+                    if ($module->class == '10') {
+                        $module->class_text = 'port';
+                    }
+                    if ($module->class == '11') {
+                        $module->class_text = 'stack';
+                    }
+                    if ($module->class == '12') {
+                        $module->class_text = 'cpu';
+                    }
 
                     $module->hardware_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.8.' . $module->module_index);
                     $module->firmware_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.9.' . $module->module_index);
@@ -636,7 +668,11 @@ if (!function_exists('get_snmp')) {
                     $module->serial_number = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.11.' . $module->module_index);
                     $module->asset_id = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.15.' . $module->module_index);
                     $temp_is_fru = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.16.' . $module->module_index);
-                    if ((string)$temp_is_fru == '1') { $module->is_fru = 'y'; } else { $module->is_fru = 'n'; }
+                    if ((string)$temp_is_fru == '1') {
+                        $module->is_fru = 'y';
+                    } else {
+                        $module->is_fru = 'n';
+                    }
                     unset($temp_is_fru);
                     $modules[] = $module;
                 }
@@ -646,15 +682,15 @@ if (!function_exists('get_snmp')) {
             // network intereface details
             $interfaces = array();
             $interfaces_filtered = array();
-            $interfaces = @snmp2_walk($details->man_ip_address, $details->snmp_community,          "1.3.6.1.2.1.2.2.1.1");
+            $interfaces = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.1");
             if (is_array($interfaces) and count($interfaces) > 0) {
-                $models = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.2");
-                $types = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,          "1.3.6.1.2.1.2.2.1.3");
-                $speeds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.5");
-                $mac_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6");
-                $ip_enableds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,    "1.3.6.1.2.1.2.2.1.8");
-                $ip_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,   "1.3.6.1.2.1.4.20.1.2");
-                $subnets = @snmp2_real_walk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.4.20.1.3");
+                $models = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.2");
+                $types = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.3");
+                $speeds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.5");
+                $mac_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6");
+                $ip_enableds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.8");
+                $ip_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2");
+                $subnets = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3");
                 $connection_ids = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
                 $aliases = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.18");
                 foreach ($interfaces as $key => $value) {
@@ -662,7 +698,7 @@ if (!function_exists('get_snmp')) {
                     $interface->net_index = snmp_clean($value);
 
                     snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-                    $interface->net_mac_address = format_mac(@snmp2_get($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6." . $interface->net_index ));
+                    $interface->net_mac_address = format_mac(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface->net_index));
                     snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
                     if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
@@ -706,13 +742,13 @@ if (!function_exists('get_snmp')) {
                                 $new_ip->ip_subnet = snmp_clean($subnets[".1.3.6.1.2.1.4.20.1.3." . $new_ip->ip_address_v4]);
                                 $new_ip->ip_address_version = '4';
                                 $interface->ip_addresses[] = $new_ip;
-                                $new_ip = NULL;
+                                $new_ip = null;
                             }
                         }
                     }
                     if (isset($details->os_group) and $details->os_group == 'windows') {
                         if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-                            if (strpos(strtolower($interface->net_adapter_type), 'loopback') === FALSE) {
+                            if (strpos(strtolower($interface->net_adapter_type), 'loopback') === false) {
                                 $interfaces_filtered[] = $interface;
                             }
                         }
@@ -729,7 +765,7 @@ if (!function_exists('get_snmp')) {
                     $log_details->message = 'SNMPv2 is loading the model helper for VMware virtual guests';
                     stdlog($log_details);
                     include('snmp_6876_2_helper.php');
-                } 
+                }
             }
 
         } // end of v2
@@ -743,7 +779,7 @@ if (!function_exists('get_snmp')) {
 
             $details->snmp_version = '1';
             $details->snmp_oid = '';
-            $details->snmp_oid = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0" ));
+            $details->snmp_oid = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0"));
             if ($details->snmp_oid > '') {
                 $details->manufacturer = get_oid($details->snmp_oid);
                 $explode = explode(".", $details->snmp_oid);
@@ -763,7 +799,7 @@ if (!function_exists('get_snmp')) {
             $details->sysLocation = @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");
 
             $h = @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.3.2.1.2.1");
-            if (strpos($h, "1.3.6.1.2.1.25.3.1") !== FALSE) {
+            if (strpos($h, "1.3.6.1.2.1.25.3.1") !== false) {
                 # we have a printer
                 $details->type = "network printer";
                 $details->printer_duplex = '';
@@ -771,8 +807,8 @@ if (!function_exists('get_snmp')) {
                 $i = @snmpwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.13.4.1.10.1");
                 if (count($i) > 0) {
                     $details->printer_duplex = 'False';
-                    for ($k = 0; $k < count($i); $k++){
-                        if (mb_strpos($i[$k], "Duplex") !== FALSE) {
+                    for ($k = 0; $k < count($i); $k++) {
+                        if (mb_strpos($i[$k], "Duplex") !== false) {
                             $details->printer_duplex = 'True';
                         }
                     }
@@ -781,7 +817,7 @@ if (!function_exists('get_snmp')) {
 
                 $details->printer_color = 'False';
                 $i = @snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.11.1.1.6.1.2");
-                if (strpos(strtolower($i), "cartridge") !== FALSE) {
+                if (strpos(strtolower($i), "cartridge") !== false) {
                     # it's likely this is a colour printer
                     $details->printer_color = 'True';
                 }
@@ -791,7 +827,7 @@ if (!function_exists('get_snmp')) {
                     $hex = @snmpwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.8.2.1.14.1");
                     if (count($hex) > 0) {
                         if (isset($hex[1])) {
-                            if (mb_strpos($hex[1], "Hex-STRING: ") !== FALSE) {
+                            if (mb_strpos($hex[1], "Hex-STRING: ") !== false) {
                                 $manufacturer = str_replace(" ", "", $manufacturer);
                                 $manufacturer = str_replace("\n", "", $manufacturer);
                                 if (function_exists('hex2bin')) {
@@ -808,17 +844,17 @@ if (!function_exists('get_snmp')) {
                     }
                 }
                 if (!isset($details->serial) or $details->serial == "") {
-                    $details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1" ));
+                    $details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.17.1"));
                 }
                 if (!isset($details->model) or $details->model == "") {
-                    $details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.16.1" ));
+                    $details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.43.5.1.1.16.1"));
                 }
             }
 
             if (isset($details->serial) and mb_detect_encoding($details->serial) == 'UTF-8') {
                 $details->serial = mb_convert_encoding($details->serial, 'UTF-8', 'ASCII');
             }
-            
+
             if (isset($details->model) and mb_detect_encoding($details->model) == 'UTF-8') {
                 $details->model = mb_convert_encoding($details->model, "UTF-8", "ASCII");
             }
@@ -835,30 +871,30 @@ if (!function_exists('get_snmp')) {
 
             // description
             $details->description = '';
-            $details->description = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0" ));
+            $details->description = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0"));
 
             // Cisco modules
             $modules = array();
 
             // new for 1.2.2 - network details
             $interfaces = array();
-            $interfaces = @snmpwalk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.1");
+            $interfaces = @snmpwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.1");
             if (is_array($interfaces) and count($interfaces) > 0) {
-                $models = @snmprealwalk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.2");
-                $types = @snmprealwalk($details->man_ip_address, $details->snmp_community,          "1.3.6.1.2.1.2.2.1.3");
-                $speeds = @snmprealwalk($details->man_ip_address, $details->snmp_community,         "1.3.6.1.2.1.2.2.1.5");
-                $mac_addresses = @snmprealwalk($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6");
-                $ip_enableds = @snmprealwalk($details->man_ip_address, $details->snmp_community,    "1.3.6.1.2.1.2.2.1.8");
-                $ip_addresses = @snmprealwalk($details->man_ip_address, $details->snmp_community,   "1.3.6.1.2.1.4.20.1.2");
-                $subnets = @snmprealwalk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.4.20.1.3");
+                $models = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.2");
+                $types = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.3");
+                $speeds = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.5");
+                $mac_addresses = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6");
+                $ip_enableds = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.8");
+                $ip_addresses = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2");
+                $subnets = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3");
                 $connection_ids = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
-                $aliases = @snmprealwalk($details->man_ip_address, $details->snmp_community,        "1.3.6.1.2.1.31.1.1.1.18");
+                $aliases = @snmprealwalk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.18");
                 foreach ($interfaces as $key => $value) {
                     $interface = new stdclass();
                     $interface->net_index = snmp_clean($value);
 
                     snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-                    $interface->net_mac_address = format_mac(@snmpget($details->man_ip_address, $details->snmp_community,  "1.3.6.1.2.1.2.2.1.6." . $interface->net_index ));
+                    $interface->net_mac_address = format_mac(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6." . $interface->net_index));
                     snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
                     if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
@@ -902,13 +938,13 @@ if (!function_exists('get_snmp')) {
                                 $new_ip->ip_subnet = snmp_clean($subnets[".1.3.6.1.2.1.4.20.1.3." . $new_ip->ip_address_v4]);
                                 $new_ip->ip_address_version = '4';
                                 $interface->ip_addresses[] = $new_ip;
-                                $new_ip = NULL;
+                                $new_ip = null;
                             }
                         }
                     }
                     if (isset($details->os_group) and $details->os_group == 'windows') {
                         if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-                            if ($interface->net_adapter_type != 'softwareLoopback' ) {
+                            if ($interface->net_adapter_type != 'softwareLoopback') {
                                 $interfaces_filtered[] = $interface;
                             }
                         }
@@ -920,7 +956,7 @@ if (!function_exists('get_snmp')) {
             }
         } // end of v1
 
-        
+
 
         if ($test_v1 > '' or $test_v2 > '') {
             if (isset($details->snmp_oid) and $details->snmp_oid > "") {
@@ -932,13 +968,21 @@ if (!function_exists('get_snmp')) {
             }
         }
 
-        if ($details->snmp_version == '2') { $details->snmp_version = '2c'; }
-        if ($details->show_output == FALSE) { unset($details->show_output); }
+        if ($details->snmp_version == '2') {
+            $details->snmp_version = '2c';
+        }
+        if (isset($details->show_output)) {
+            unset($details->show_output);
+        }
         $details->hostname = strtolower($details->hostname);
-        if (!isset($interfaces_filtered)) { $interfaces_filtered = array(); }
-        if (!isset($modules)) { $modules = array(); }
-        if (!isset($guests)) { 
-            $guests = array(); 
+        if (!isset($interfaces_filtered)) {
+            $interfaces_filtered = array();
+        }
+        if (!isset($modules)) {
+            $modules = array();
+        }
+        if (!isset($guests)) {
+            $guests = array();
         }
         $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules);
 
@@ -968,9 +1012,10 @@ if (!function_exists('get_snmp')) {
 
 
 
-    function snmp_clean($string) {
+    function snmp_clean($string)
+    {
         // make sure we have something in $string
-        if (!isset($string) OR is_null($string) ) {
+        if (!isset($string) or is_null($string)) {
             $string = '';
         }
 
@@ -986,15 +1031,19 @@ if (!function_exists('get_snmp')) {
         }
 
         // remove the first and last characters if they are "
-        if (substr($string, 0, 1) == "\"") { $string = substr($string, 1, strlen($string)); }
-        if (substr($string, -1, 1) == "\"") { $string = substr($string, 0, strlen($string)-1); }
+        if (substr($string, 0, 1) == "\"") {
+            $string = substr($string, 1, strlen($string));
+        }
+        if (substr($string, -1, 1) == "\"") {
+            $string = substr($string, 0, strlen($string)-1);
+        }
 
         // remove some return strings
-        if (strpos(strtolower($string), '/etc/snmp') !== FALSE OR 
-            strpos(strtolower($string), 'no such instance') !== FALSE OR
-            strpos(strtolower($string), 'no such object') !== FALSE OR
-            strpos(strtolower($string), 'not set') !== FALSE OR 
-            strpos(strtolower($string), 'unknown value type') !== FALSE ) {
+        if (strpos(strtolower($string), '/etc/snmp') !== false or
+            strpos(strtolower($string), 'no such instance') !== false or
+            strpos(strtolower($string), 'no such object') !== false or
+            strpos(strtolower($string), 'not set') !== false or
+            strpos(strtolower($string), 'unknown value type') !== false) {
             $string = '';
         }
 
@@ -1007,49 +1056,49 @@ if (!function_exists('get_snmp')) {
         return $string;
     }
 
-    function format_mac($mac_address) {
-            # set to lower case
-            $mac_address = strtolower($mac_address);
-            # remove any quotes
-            $mac_address = str_replace('"', ' ', $mac_address);
-            $mac_address = str_replace("'", " ", $mac_address);
-            # some strings are returned as 'hex-string' 
-            if (strrpos($mac_address, 'hex-string') !== FALSE) {
-                $mac_address = str_replace('hex-string: ', '', $mac_address);
+    function format_mac($mac_address)
+    {
+        # set to lower case
+        $mac_address = strtolower($mac_address);
+        # remove any quotes
+        $mac_address = str_replace('"', ' ', $mac_address);
+        $mac_address = str_replace("'", " ", $mac_address);
+        # some strings are returned as 'hex-string'
+        if (strrpos($mac_address, 'hex-string') !== false) {
+            $mac_address = str_replace('hex-string: ', '', $mac_address);
+        }
+        # some strings are returned as 'string'
+        if (strrpos($mac_address, 'string') !== false) {
+            $mac_address = str_replace('string: ', '', $mac_address);
+        }
+        # trim any unrequired beginning or ending spaces
+        $mac_address = trim($mac_address);
+        # check for a string thus "ab cd ef"
+        if (substr_count($mac_address, ' ') > 0) {
+            $mac_address = str_replace(' ', ':', $mac_address);
+        }
+        # check for a substring thus "abcdef"
+        if (substr_count($mac_address, ' ') == 0 and substr_count($mac_address, ':') == 0 and strlen($mac_address) == 12) {
+            $mac_address = substr($mac_address, 0, 2) . ':' . substr($mac_address, 2, 2) . ':' .
+                           substr($mac_address, 4, 2) . ':' . substr($mac_address, 6, 2) . ':' .
+                           substr($mac_address, 8, 2) . ':' . substr($mac_address, 10, 2);
+        }
+        if (substr_count($mac_address, ':') != 0) {
+            # split the string by :
+            $mymac = explode(":", $mac_address);
+            # for each section, make sure it's padded with a 0.
+            for ($i=0; $i<count($mymac); $i++) {
+                $mymac[$i] = mb_substr("00" . $mymac[$i], -2);
             }
-            # some strings are returned as 'string' 
-            if (strrpos($mac_address, 'string') !== FALSE) {
-                $mac_address = str_replace('string: ', '', $mac_address);
-            }
-            # trim any unrequired beginning or ending spaces
-            $mac_address = trim($mac_address);
-            # check for a string thus "ab cd ef"
-            if (substr_count($mac_address, ' ') > 0) {
-                $mac_address = str_replace(' ', ':', $mac_address);
-            }
-            # check for a substring thus "abcdef"
-            if (substr_count($mac_address, ' ') == 0 AND 
-                substr_count($mac_address, ':') == 0 AND 
-                strlen($mac_address) == 12) {
-                $mac_address = substr($mac_address, 0, 2) . ':' . substr($mac_address, 2, 2) . ':' . 
-                               substr($mac_address, 4, 2) . ':' . substr($mac_address, 6, 2) . ':' . 
-                               substr($mac_address, 8, 2) . ':' . substr($mac_address, 10, 2);
-            }
-            if (substr_count($mac_address, ':') != 0 ) {
-                # split the string by :
-                $mymac = explode(":",$mac_address);
-                # for each section, make sure it's padded with a 0.
-                for($i=0; $i<count($mymac); $i++) {
-                    $mymac[$i] = mb_substr("00" . $mymac[$i], -2);
-                }
-                # join it back together
-                $mac_address = implode(":", $mymac);
-            }
+            # join it back together
+            $mac_address = implode(":", $mymac);
+        }
         return($mac_address);
     }
 
 
-    function ip_enabled($ip_enabled){
+    function ip_enabled($ip_enabled)
+    {
         switch ($ip_enabled) {
             case '1':
                 $ip_enabled = "True";
@@ -1078,7 +1127,7 @@ if (!function_exists('get_snmp')) {
             case '7':
                 $ip_enabled = "LowerLayerDown";
                 break;
-            
+
             default:
                 $ip_enabled = "True";
                 break;
@@ -1086,9 +1135,10 @@ if (!function_exists('get_snmp')) {
         return $ip_enabled;
     }
 
-    function interface_type($int_type) {
+    function interface_type($int_type)
+    {
         $i = (string) intval($int_type);
-        if ($int_type != $i ) {
+        if ($int_type != $i) {
             $int_type = substr($int_type, strpos($int_type, "(")+1);
             $int_type = substr($int_type, 0, strpos($int_type, ")"));
         }
