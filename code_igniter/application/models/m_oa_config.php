@@ -159,10 +159,10 @@ class M_oa_config extends MY_Model
 
         # decrypt any credentials if 1.5.4 or later
         if ($internal_version >= '20150126') {
-            if ($row->config_name == 'default_ipmi_password' or
-                $row->config_name == 'default_snmp_community' or
-                $row->config_name == 'default_ssh_password' or
-                $row->config_name == 'default_windows_password') {
+            if ($config_name == 'default_ipmi_password' or
+                $config_name == 'default_snmp_community' or
+                $config_name == 'default_ssh_password' or
+                $config_name == 'default_windows_password') {
                 $row->config_value = $this->encrypt->decode($row->config_value);
             }
         }
