@@ -25,8 +25,8 @@
 			<column_order>1</column_order>
 			<column_name>Service Name</column_name>
 			<column_variable>service_name</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
+			<column_type>link</column_type>
+			<column_link>/report/Specific Service/$group_id/</column_link>
 			<column_secondary>service_id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
