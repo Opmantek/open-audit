@@ -110,7 +110,6 @@ class report extends MY_Controller
         }
         if (isset($_POST['first_attribute']) and $_POST['first_attribute'] != '') {
             $this->data['first_attribute'] = $_POST['first_attribute'];
-            print_r($this->data['first_attribute']);
         }
         if (isset($_POST['second_attribute']) and $_POST['second_attribute'] != '') {
             $this->data['second_attribute'] = $_POST['second_attribute'];
@@ -132,9 +131,7 @@ class report extends MY_Controller
         if ($this->data['first_attribute'] == '-') {
             $this->data['first_attribute'] = '';
         }
-        echo "final: ";
-        print_r($this->data['first_attribute']);
-        echo "\n";
+
         # The GET filter (populates $filter)
         $i = 0;
         $filter = array();
