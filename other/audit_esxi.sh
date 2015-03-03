@@ -758,19 +758,39 @@ fi
 # vmnic0  0000:01:00.00 e1000e      Up   1000Mbps  Full   68:05:ff:23:69:aa 1500   Intel Corporation 82574L Gigabit Network Connection
 addr_info=""
 echo "	<network_cards>" >> $xml_file
-for card in `esxcfg-nics -l | grep -v ^Name`; do
-#for card in `esxcli network nic list | grep -v ^Name | grep -v "\-\-\-\-\-"`; do
-	icard=$(echo "$card" | sed 's/ \+/ /g')
-	net_index=$(echo "$icard" | cut -d" " -f1)
-	net_mac_address=$(echo "$icard" | cut -d" " -f7)
-	net_ip_enabled=$(echo "$icard" | cut -d" " -f4)
-	net_connection_id=$(echo "$icard" | cut -d" " -f1)
-	net_connection_status=$(echo "$icard" | cut -d" " -f4)
+# for card in `esxcfg-nics -l | grep -v ^Name`; do
+	# icard=$(echo "$card" | sed 's/ \+/ /g')
+	# net_index=$(echo "$icard" | cut -d" " -f1)
+	# net_mac_address=$(echo "$icard" | cut -d" " -f7)
+	# net_ip_enabled=$(echo "$icard" | cut -d" " -f4)
+	# net_connection_id=$(echo "$icard" | cut -d" " -f1)
+	# net_connection_status=$(echo "$icard" | cut -d" " -f4)
+	# net_speed=$(echo "$icard" | cut -d" " -f5 | sed 's/Mbps//')
+	# net_speed=`expr $net_speed \* 1000 \* 1000`
+	# net_device_id=$(echo "$icard" | cut -d" " -f2 | cut -d: -f2- | sed -e 's/\.00/\.0/')
+	# net_manufacturer=$(hosthardware "$net_device_id" "vendorName")
+	# net_model=$(hosthardware "$net_device_id" "deviceName")
+
+for card in `esxcli network ip interface list | grep -v "^ " | grep .`; do
+	net_index="$card"
+	net_mac_address=`esxcli network ip interface list | grep "Name: $card" -A1 | grep "MAC Address: " | sed 's/ \+/ /g' | cut -d" " -f4`
+	net_ip_enabled=`esxcli network ip interface list | grep "Name: $card" -A2 | grep "Enabled: " | sed 's/ \+/ /g' | cut -d" " -f3`
+	net_connection_id="$card"
+	net_connection_status=`esxcli network ip interface list | grep "Name: $card" -A2 | grep "Enabled: " | sed 's/ \+/ /g' | cut -d" " -f3`
+	icard=`esxcfg-nics -l | grep -v ^Name | grep "$net_mac_address" | sed 's/ \+/ /g'`
 	net_speed=$(echo "$icard" | cut -d" " -f5 | sed 's/Mbps//')
-	net_speed=`expr $net_speed \* 1000 \* 1000`
+	net_speed=`expr $net_speed \* 1000 \* 1000 2>/dev/null`
 	net_device_id=$(echo "$icard" | cut -d" " -f2 | cut -d: -f2- | sed -e 's/\.00/\.0/')
 	net_manufacturer=$(hosthardware "$net_device_id" "vendorName")
 	net_model=$(hosthardware "$net_device_id" "deviceName")
+
+	if [ -z "$net_manufacturer" ]; then
+		net_manufacturer="VMware"
+	fi
+
+	if [ -z "$net_model" ]; then
+		net_model="VMware Virtual Adapter"
+	fi
 
 	net_description=$(esxcli network ip interface list | grep "$net_mac_address" -B1 | grep "Name: " | cut -d: -f2 | sed 's/ //')
 	for ip in $(esxcli network ip interface ipv4 get | grep "$net_description" | sed 's/ \+/ /g'); do
