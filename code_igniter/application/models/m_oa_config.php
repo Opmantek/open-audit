@@ -72,6 +72,8 @@ class M_oa_config extends MY_Model
         $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.config_edited_by = oa_user.user_id";
         $query = $this->db->query($sql);
         $result = $query->result();
+
+        # decrypt any encrypted values
         foreach ($result as $key => $value) {
             $config_item_name = $result[$key]->config_name;
             if (($config_item_name == 'default_ipmi_password' or
@@ -79,8 +81,7 @@ class M_oa_config extends MY_Model
                 $config_item_name == 'default_ssh_password' or
                 $config_item_name == 'default_windows_password') and
                 ($result[$key]->config_value != '')) {
-                # we need to decrypt
-                    $temp = $this->encrypt->decode($result[$key]->config_value);
+                $temp = $this->encrypt->decode($result[$key]->config_value);
                 if (!isset($temp) or is_null($temp) or $temp == false) {
                     $result[$key]->config_value = '';
                 } else {
@@ -89,9 +90,14 @@ class M_oa_config extends MY_Model
                 unset($temp);
             }
         }
+        # set all items to value or ''
         foreach ($result as $config_item) {
             $temp_name = $config_item->config_name;
-            $this->config->config[$temp_name] = $config_item->config_value;
+            if (!isset($config_item->config_value) or is_null($config_item->config_value) or $config_item->config_value == false) {
+                $this->config->config[$temp_name] = '';
+            } else {
+                $this->config->config[$temp_name] = $config_item->config_value;
+            }
         }
         $temp = explode('/', $_SERVER['REQUEST_URI']);
         $basic_url = '';
@@ -228,7 +234,7 @@ class M_oa_config extends MY_Model
             exec($command, $output, $return_var);
             if ($return_var == 0) {
                 # success
-                # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"}
+                # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"} or thus {"192.168.1.140"}
                 # there are multiple empty lines as well
                 foreach ($output as $line) {
                     $line = trim($line);
@@ -237,9 +243,13 @@ class M_oa_config extends MY_Model
                         $line = str_replace('}', '', $line);
                         $line = str_replace('"', '', $line);
                         $line = str_replace(',', '', $line);
-                        $line_array = explode(' ', $line);
-                        foreach ($line_array as $ip) {
-                            $ip_address_array[] = $ip;
+                        if (strpos($line, ' ') !== false) {
+                            $line_array = explode(' ', $line);
+                            foreach ($line_array as $ip) {
+                                $ip_address_array[] = $ip;
+                            }
+                        } else {
+                            $ip_address_array[] = $line;
                         }
                     }
                 }
