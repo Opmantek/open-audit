@@ -1,5 +1,7 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-$config['web_internal_version'] = '20150228';
+<?php  if (! defined('BASEPATH')) {
+     exit('No direct script access allowed');
+ }
+$config['web_internal_version'] = '20150303';
 $config['web_display_version'] = '1.5.6';
 # $config['debug'] = FALSE;
 /*
@@ -17,20 +19,16 @@ $config['web_display_version'] = '1.5.6';
 
 #$config['base_url'] = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on") ? "https" : "http");
 #$config['base_url'] .= "://".$_SERVER['HTTP_HOST'];
-#$config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']); 
+#$config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']),"",$_SERVER['SCRIPT_NAME']);
 
-if(isset($_SERVER['HTTP_HOST']))
-{
+if (isset($_SERVER['HTTP_HOST'])) {
     $config['base_url'] = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on' ? 'https' : 'http';
-    $config['base_url'] .= '://'. $_SERVER['HTTP_HOST'];
+    $config['base_url'] .= '://'.$_SERVER['HTTP_HOST'];
     #$config['base_url'] .= isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] != '80' ? ( ':'.$_SERVER['SERVER_PORT'] ) : '';
     $config['base_url'] .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-}
-else
-{
+} else {
     $config['base_url'] = 'http://localhost/';
 }
-
 
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +58,7 @@ $config['index_page'] = "index.php";
 | 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
 |
 */
-$config['uri_protocol']	= "AUTO";
+$config['uri_protocol']    = "AUTO";
 
 /*
 |--------------------------------------------------------------------------
@@ -85,7 +83,7 @@ $config['url_suffix'] = "";
 | than english.
 |
 */
-$config['language']	= "english";
+$config['language']    = "english";
 
 /*
 |--------------------------------------------------------------------------
@@ -107,8 +105,7 @@ $config['charset'] = "UTF-8";
 | setting this variable to TRUE (boolean).  See the user guide for details.
 |
 */
-$config['enable_hooks'] = FALSE;
-
+$config['enable_hooks'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,7 +120,6 @@ $config['enable_hooks'] = FALSE;
 |
 */
 $config['subclass_prefix'] = 'MY_';
-
 
 /*
 |--------------------------------------------------------------------------
@@ -144,7 +140,6 @@ $config['subclass_prefix'] = 'MY_';
 */
 # $config['permitted_uri_chars'] = 'a-z 0-9~%.:|(),_\-!=&[]@*';
 $config['permitted_uri_chars'] = '';
-
 
 /*
 |--------------------------------------------------------------------------
@@ -168,17 +163,17 @@ $config['permitted_uri_chars'] = '';
 | use segment based URLs.
 |
 */
-$config['enable_query_strings'] = FALSE;
-$config['controller_trigger'] 	= 'c';
-$config['function_trigger'] 	= 'm';
-$config['directory_trigger'] 	= 'd'; // experimental not currently in use
+$config['enable_query_strings'] = false;
+$config['controller_trigger']    = 'c';
+$config['function_trigger']    = 'm';
+$config['directory_trigger']    = 'd'; // experimental not currently in use
 
 /*
 |--------------------------------------------------------------------------
 | Error Logging Threshold
 |--------------------------------------------------------------------------
 |
-| If you have enabled error logging, you can set an error threshold to 
+| If you have enabled error logging, you can set an error threshold to
 | determine what gets logged. Threshold options are:
 | You can enable error logging by setting a threshold over zero. The
 | threshold determines what gets logged. Threshold options are:
@@ -251,16 +246,16 @@ $config['encryption_key'] = "openaudit";
 | 'time_to_update'		= how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_cookie_name']		= 'ci_session';
-$config['sess_cookie_name']		= 'openaudit';
-$config['sess_expiration']		= 7200;
-$config['sess_expiration']		= 0;
-$config['sess_encrypt_cookie']	= TRUE;
-$config['sess_use_database']	= TRUE;
-$config['sess_table_name']		= 'oa_user_sessions';
-$config['sess_match_ip']		= FALSE;
-$config['sess_match_useragent']	= TRUE;
-$config['sess_time_to_update'] 	= 300;
+$config['sess_cookie_name']        = 'ci_session';
+$config['sess_cookie_name']        = 'openaudit';
+$config['sess_expiration']        = 7200;
+$config['sess_expiration']        = 0;
+$config['sess_encrypt_cookie']    = true;
+$config['sess_use_database']    = true;
+$config['sess_table_name']        = 'oa_user_sessions';
+$config['sess_match_ip']        = false;
+$config['sess_match_useragent']    = true;
+$config['sess_time_to_update']    = 300;
 
 /*
 |--------------------------------------------------------------------------
@@ -274,12 +269,12 @@ $config['sess_time_to_update'] 	= 300;
 */
 
 #$base_url_parts             = parse_url($config['base_url']);
-$config['cookie_prefix']	= "";
+$config['cookie_prefix']    = "";
 #$config['cookie_domain']	= $base_url_parts['host'];
 #$config['cookie_path']		= $base_url_parts['path'];
-$config['cookie_domain']	= '';
-$config['cookie_path']		= '';
-#unset($base_url_parts); 
+$config['cookie_domain']    = '';
+$config['cookie_path']        = '';
+#unset($base_url_parts);
 
 
 /*
@@ -291,7 +286,7 @@ $config['cookie_path']		= '';
 | COOKIE data is encountered
 |
 */
-$config['global_xss_filtering'] = FALSE;
+$config['global_xss_filtering'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -310,7 +305,7 @@ $config['global_xss_filtering'] = FALSE;
 | by the output class.  Do not "echo" any values with compression enabled.
 |
 */
-$config['compress_output'] = FALSE;
+$config['compress_output'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -325,7 +320,6 @@ $config['compress_output'] = FALSE;
 */
 $config['time_reference'] = 'local';
 
-
 /*
 |--------------------------------------------------------------------------
 | Rewrite PHP Short Tags
@@ -336,8 +330,7 @@ $config['time_reference'] = 'local';
 | in your view files.  Options are TRUE or FALSE (boolean)
 |
 */
-$config['rewrite_short_tags'] = FALSE;
-
+$config['rewrite_short_tags'] = false;
 
 /*
 |--------------------------------------------------------------------------
@@ -351,7 +344,6 @@ $config['rewrite_short_tags'] = FALSE;
 |
 */
 $config['proxy_ips'] = '';
-
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
