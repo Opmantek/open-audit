@@ -7,7 +7,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -58,7 +58,7 @@ fi
 # import the command line arguements
 for arg in "$@"; do
 	parameter=${arg%%=*}
-	value=${arg##*=} 
+	value=${arg##*=}
 	if [ "$parameter" == "help" ]; then value="y"; fi
 	if [ "$parameter" == "--help" ]; then parameter="help"; value="y"; fi
 	if [ "$parameter" == "-h" ]; then parameter="help"; value="y"; fi
@@ -133,7 +133,7 @@ function write_log()
 			echo "Logged: $1"
 		fi
 		echo "$now $system_hostname $$ 7 U:$user S:discover_subnet M:$1" >> /usr/local/open-audit/other/log_system.log
-	fi	
+	fi
 }
 
 if [ "$debugging" -gt 0 ]; then
@@ -141,12 +141,12 @@ if [ "$debugging" -gt 0 ]; then
 fi
 
 i=$(which nmap 2>/dev/null)
-if [[ "$i" == *"nmap"* ]]; then 
-	if [ "$debugging" -gt 1 ]; then 
+if [[ "$i" == *"nmap"* ]]; then
+	if [ "$debugging" -gt 1 ]; then
 		echo "Using NMap."
 	fi
 else
-	if [ "$debugging" -gt 0 ]; then 
+	if [ "$debugging" -gt 0 ]; then
 		echo "Nmap path not found, aborting."
 	fi
 	log_entry="Nmap not found, aborting."
@@ -174,7 +174,7 @@ fi
 i=0
 j=0
 #for line in $(nmap -v -sP -PE -PP -n "$subnet_range" 2>/dev/null | grep "scan report for"); do
-for line in $(nmap -v -sn -n "$subnet_range" 2>/dev/null | grep "scan report for"); do
+for line in $(nmap -v -sn -n -T4 "$subnet_range" 2>/dev/null | grep "scan report for"); do
 	if [ "$debugging" -gt 0 ]; then
 		echo "$line"
 	fi
@@ -216,6 +216,12 @@ if [[ "$hosts" != "" ]]; then
 		os_family=""
 		os_name=""
 		type="unknown"
+		ssh_status="false"
+		wmi_status="false"
+		snmp_status="false"
+		p80_status="false"
+		p443_status="false"
+		tel_status="false"
 
 		# options
 		# -vv Very Verbose
@@ -224,7 +230,7 @@ if [[ "$hosts" != "" ]]; then
 		# --host-timeout set to a smaller than default number
 		# -PN treat host as online, skip discovery (we already know it is because of above)
 		#nmap_scan=`nmap -vv -n -O --host-timeout 20000ms -PN $host 2>/dev/null`
-		nmap_scan=$(nmap -vv -n -O -PN "$host" 2>/dev/null)
+		nmap_scan=$(nmap -vv -n -O -PN -T4 "$host" 2>/dev/null)
 		for line in $nmap_scan; do
 
 			NEEDLE="MAC Address:"
@@ -234,9 +240,9 @@ if [[ "$hosts" != "" ]]; then
 			fi
 
 			NEEDLE="Device type:"
-			if [[ "$line" == *"$NEEDLE"* ]]; then 
+			if [[ "$line" == *"$NEEDLE"* ]]; then
 				NEEDLE="|"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					# could be one of multiple
 					# just ignore setting type as it's already set to "unknown" above
 					description=$(echo "$line" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
@@ -247,11 +253,11 @@ if [[ "$hosts" != "" ]]; then
 			fi
 
 			NEEDLE="Running:"
-			if [[ "$line" == "$NEEDLE"* ]]; then 
+			if [[ "$line" == "$NEEDLE"* ]]; then
 				os_name=$(echo "$line" | cut -d":" -f2 | cut -d "," -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 
 				NEEDLE="Cisco IOS"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="Cisco"
 					os_family="Cisco IOS"
 				fi
@@ -285,48 +291,48 @@ if [[ "$hosts" != "" ]]; then
 					fi
 				fi
 				NEEDLE="IRIX"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="Irix"
 				fi
 				NEEDLE="OpenBSD"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="BSD"
 					os_family="Open BSD"
 				fi
 				NEEDLE="FreeBSD"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="BSD"
 					os_family="Free BSD"
 				fi
 				NEEDLE="NetBSD"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="BSD"
 					os_family="Net BSD"
 				fi
 				NEEDLE="SunOS"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="SunOS"
 				fi
 				NEEDLE="Solaris"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="Solaris"
 				fi
 				NEEDLE="Linux"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="Linux"
 				fi
 				NEEDLE="VMware"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="VMware"
 					os_family="VMware ESXi"
 				fi
 				NEEDLE="Apple Mac OS X"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="Apple"
 					os_family="Apple OSX"
 				fi
 				NEEDLE="Apple iOS"
-				if [[ "$line" == *"$NEEDLE"* ]]; then 
+				if [[ "$line" == *"$NEEDLE"* ]]; then
 					os_group="Apple"
 					os_family="Apple IOS"
 				fi
@@ -335,12 +341,12 @@ if [[ "$hosts" != "" ]]; then
 
 
 			NEEDLE="Running (JUST GUESSING):"
-			if [[ "$line" == *"$NEEDLE"* ]]; then 
+			if [[ "$line" == *"$NEEDLE"* ]]; then
 				os_name=$(echo "$line" | cut -d":" -f2 | cut -d "(" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 			fi
 
 			NEEDLE="Aggressive OS guesses:"
-			if [[ "$line" == *"$NEEDLE"* ]]; then 
+			if [[ "$line" == *"$NEEDLE"* ]]; then
 				os_name=$(echo "$line" | cut -d":" -f2 | cut -d "(" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 				if [[ "$description" == "" ]]; then
 					description=$(echo "$line" | cut -d":" -f2 | cut -d "," -f1 | sed 's/^ *//g' | sed 's/ *$//g')
@@ -348,9 +354,51 @@ if [[ "$hosts" != "" ]]; then
 			fi
 
 			NEEDLE="OS Details:"
-			if [[ "$line" == *"$NEEDLE"* ]]; then 
+			if [[ "$line" == *"$NEEDLE"* ]]; then
 				if [[ "$os_name" == "" ]]; then
 					os_name=$(echo "$line" | cut -d":" -f2 | cut -d "(" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+				fi
+			fi
+
+			# individual ports
+
+			NEEDLE="22/tcp"
+			if [[ "$line" == *"$NEEDLE"* ]]; then
+				NEEDLE="open"
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					ssh_status="true"
+				fi
+			fi
+
+			NEEDLE="23/tcp"
+			if [[ "$line" == *"$NEEDLE"* ]]; then
+				NEEDLE="open"
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					tel_status="true"
+				fi
+			fi
+
+			NEEDLE="80/tcp"
+			if [[ "$line" == *"$NEEDLE"* ]]; then
+				NEEDLE="open"
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					p80_status="true"
+				fi
+			fi
+
+			NEEDLE="135/tcp"
+			if [[ "$line" == *"$NEEDLE"* ]]; then
+				NEEDLE="open"
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					wmi_status="true"
+				fi
+			fi
+
+			NEEDLE="443/tcp"
+			if [[ "$line" == *"$NEEDLE"* ]]; then
+				NEEDLE="open"
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					p443_status="true"
 				fi
 			fi
 
@@ -358,45 +406,11 @@ if [[ "$hosts" != "" ]]; then
 
 		# test for SNMP
 		snmp_status="false"
-		command=$(nmap -n -sU -p161 "$host" 2>/dev/null | grep "161/udp open")
+		command=$(nmap -n -sU -p161 -T4 "$host" 2>/dev/null | grep "161/udp open")
 		if [[ "$command" == *"161/udp open"* ]]; then
 				snmp_status="true"
 		fi
 
-		# test for SSH
-		ssh_status="false"
-		command=$(nmap -n -p22 "$host" 2>/dev/null | grep "22/tcp open")
-		if [[ "$command" == *"22/tcp open"* ]]; then
-				ssh_status="true"
-		fi
-
-		# test for WMI
-		wmi_status="false"
-		command=$(nmap -n -p135 "$host" 2>/dev/null | grep "135/tcp open")
-		if [[ "$command" == *"135/tcp open"* ]]; then
-				wmi_status="true"
-		fi
-
-		# test for webserver on port 80
-		p80_status="false"
-		command=$(nmap -n -p80 "$host" 2>/dev/null | grep "80/tcp open")
-		if [[ "$command" == *"80/tcp open"* ]]; then
-				p80_status="true"
-		fi
-
-		# test for webserver on port 443
-		p443_status="false"
-		command=$(nmap -n -p443 "$host" 2>/dev/null | grep "443/tcp open")
-		if [[ "$command" == *"443/tcp open"* ]]; then
-				p443_status="true"
-		fi
-
-		# test for telnet
-		tel_status="false"
-		command=$(nmap -n -p23 "$host" 2>/dev/null | grep "23/tcp open")
-		if [[ "$command" == *"23/tcp open"* ]]; then
-				tel_status="true"
-		fi
 
 		result="	<device>"$'\n'
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
@@ -422,6 +436,9 @@ if [[ "$hosts" != "" ]]; then
 
 		result="<devices>"$'\n'"$result"$'\n'"</devices>"
 		#result="<devices>"$result"</devices>"
+
+		log_entry="Discovery for $subnet_range submitted at $subnet_timestamp finished scan"
+		write_log "$log_entry"
 
 		if [[ "$submit_online" == "y" ]]; then
 			if [ "$debugging" -gt 0 ]; then
