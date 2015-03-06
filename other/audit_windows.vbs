@@ -5,7 +5,7 @@
 '  This file is part of Open-AudIT.
 '
 '  Open-AudIT is free software: you can redistribute it and/or modify
-'  it under the terms of the GNU Affero General Public License as published 
+'  it under the terms of the GNU Affero General Public License as published
 '  by the Free Software Foundation, either version 3 of the License, or
 '  (at your option) any later version.
 '
@@ -130,79 +130,79 @@ For Each strArg in objArgs
 		argName = lcase(left(strArg,inStr(strArg,"=")-1))
 		argValue = mid(strArg,inStr(strArg,"=")+1)
 		select case argName
-			
+
 			case "create_file"
 				create_file = argValue
-			
+
 			case "debugging"
 				debugging = argValue
 
 			case "help"
 				help = argValue
-			
+
 			case "ldap"
 				ldap = argvalue
-			
+
 			case "org_id"
 				org_id = argValue
-			
+
 			case "ping_target"
 				ping_target = argValue
-			
+
 			case "run_netstat"
 				run_netstat = argValue
-			
+
 			case "self_delete"
 				self_delete = argvalue
-			
+
 			case "skip_printer"
 				skip_printer = argvalue
-			
+
 			case "skip_software"
 				skip_software = argvalue
-			
+
 			case "skip_dns"
 				skip_dns = argvalue
-			
+
 			case "skip_mount_point"
 				skip_mount_point = argvalue
-			
+
 			case "strcomputer"
 				strcomputer = argvalue
-			
+
 			case "struser"
 				struser = argvalue
-			
+
 			case "strpass"
 				strpass = argvalue
-			
+
 			case "submit_online"
 				submit_online = argValue
-			
+
 			case "system_id"
 				system_id = argValue
-			
+
 			case "url"
 				url = argValue
-			
+
 			case "use_proxy"
 				use_proxy = argValue
-			
+
 			case "windows_user_work_1"
 				windows_user_work_1 = argvalue
-			
+
 			case "windows_user_work_2"
 				windows_user_work_2 = argvalue
-			
+
 			case "win32_product"
 				win32_product = argvalue
-			
+
 			case "details_to_lower"
-				details_to_lower = argvalue	
-			
+				details_to_lower = argvalue
+
 			case "hide_audit_window"
 				hide_audit_window = argvalue
-				
+
 		end select
 	else
 		if (strArg = "/help") or (strArg = "/?") then
@@ -211,7 +211,7 @@ For Each strArg in objArgs
 			strcomputer = strArg
 		end if
 	end if
-next 
+next
 
 if (help = "y") then
 	wscript.echo "------------------------------"
@@ -317,32 +317,32 @@ if (right(url, 10) <> "add_system") then
 end if'
 
 ' start the script
-if debugging > "0" then wscript.echo "starting audit - " & strcomputer end if 
+if debugging > "0" then wscript.echo "starting audit - " & strcomputer end if
 
 if debugging > "2" then
 	wscript.echo "Argurments"
 	wscript.echo "-------------------"
-	wscript.echo "create_file: " & create_file 
-	wscript.echo "debugging: " & debugging 
-	wscript.echo "ldap: " & ldap 
-	wscript.echo "org_id: " & org_id 
-	wscript.echo "ping_target: " & ping_target 
-	wscript.echo "run_netstat: " & run_netstat 
-	wscript.echo "self_delete: " & self_delete 
-	wscript.echo "skip_printer: " & skip_printer 
-	wscript.echo "skip_software: " & skip_software 
-	wscript.echo "skip_dns: " & skip_dns 
-	wscript.echo "skip_mount_point: " & skip_mount_point 
-	wscript.echo "strcomputer: " & strcomputer 
-	wscript.echo "struser: " & struser 
-	wscript.echo "strpass: " & strpass 
-	wscript.echo "submit_online: " & submit_online 
-	wscript.echo "system_id: " & system_id 
-	wscript.echo "url: " & url 
-	wscript.echo "use_proxy: " & use_proxy 
-	wscript.echo "windows_user_work_1: " & windows_user_work_1 
-	wscript.echo "windows_user_work_2: " & windows_user_work_2 
-	wscript.echo "details_to_lower: " & details_to_lower 
+	wscript.echo "create_file: " & create_file
+	wscript.echo "debugging: " & debugging
+	wscript.echo "ldap: " & ldap
+	wscript.echo "org_id: " & org_id
+	wscript.echo "ping_target: " & ping_target
+	wscript.echo "run_netstat: " & run_netstat
+	wscript.echo "self_delete: " & self_delete
+	wscript.echo "skip_printer: " & skip_printer
+	wscript.echo "skip_software: " & skip_software
+	wscript.echo "skip_dns: " & skip_dns
+	wscript.echo "skip_mount_point: " & skip_mount_point
+	wscript.echo "strcomputer: " & strcomputer
+	wscript.echo "struser: " & struser
+	wscript.echo "strpass: " & strpass
+	wscript.echo "submit_online: " & submit_online
+	wscript.echo "system_id: " & system_id
+	wscript.echo "url: " & url
+	wscript.echo "use_proxy: " & use_proxy
+	wscript.echo "windows_user_work_1: " & windows_user_work_1
+	wscript.echo "windows_user_work_2: " & windows_user_work_2
+	wscript.echo "details_to_lower: " & details_to_lower
 	wscript.echo "hide_audit_window: " & hide_audit_window
 	wscript.echo "-------------------"
 end if
@@ -386,7 +386,7 @@ result.Position = 0
 result.Charset = "UTF-8"
 
 ' some local items
-set objWMIService = GetObject("winmgmts:\\.\root\cimv2") 
+set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
 set colItems = objWMIService.ExecQuery("Select * from Win32_OperatingSystem",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " local (Win32_OperatingSystem)" end if
 for each objItem in colItems
@@ -401,9 +401,9 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfig
 	& "AND ServiceName<>'NdisIP' AND Description<>'PPP Adapter.') " _
 	& "AND MACAddress is not NULL" ,,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " local (Win32_NetworkAdapterConfiguration) 1" end if
-local_dns_server = "" 
+local_dns_server = ""
 for each objItem in colItems
-	if (not isnull(objItem.DNSServerSearchOrder)) then 
+	if (not isnull(objItem.DNSServerSearchOrder)) then
 		local_dns_server = objItem.DNSServerSearchOrder(0)
 	end if
 next
@@ -421,8 +421,8 @@ for each objItem in colItems
 	end if
 next
 local_net = local_net & " " & local_hostname & " "
-if debugging > "1" then 
-	wscript.echo "LocalNet: " & local_net 
+if debugging > "1" then
+	wscript.echo "LocalNet: " & local_net
 	wscript.echo "Target: " & strcomputer
 	if (instr(lcase(local_net), lcase(strcomputer)) <> 0) then
 		wscript.echo "Match: Auditing localhost."
@@ -451,10 +451,10 @@ if ping_target = "y" then
 		pc_alive = 1
 		if debugging > "0" then wscript.echo "Disregarding ping_target because we're auditing localhost." end if
 	else
-		if (cint(local_windows_build_number) > 2222 and not local_windows_build_number = "3000") then 
+		if (cint(local_windows_build_number) > 2222 and not local_windows_build_number = "3000") then
 			On Error Resume Next
 			set ping = objWMIService.ExecQuery("SELECT * FROM Win32_PingStatus WHERE Timeout = 200 and Address = '" & strcomputer & "'")
-			on error goto 0	
+			on error goto 0
 			for each item in ping
 				if (IsNull(item.StatusCode) or (item.Statuscode <> 0)) then
 					' it is not switched on
@@ -491,11 +491,11 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 			error_returned = Err.Number
 			error_description = Err.Description
 			on error goto 0
-			if (error_returned <> 0) then 
+			if (error_returned <> 0) then
 				if debugging > "0" then wscript.echo "Problem creating WBEM object (0) to " &  strcomputer end if
 				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-			end if	
+			end if
 		end if
 
 		if (error_returned = 0) then
@@ -504,7 +504,7 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 			error_returned = Err.Number
 			error_description = Err.Description
 			on error goto 0
-			if (error_returned <> 0) then 
+			if (error_returned <> 0) then
 				if debugging > "0" then wscript.echo "Problem authenticating (1) to " &  strcomputer end if
 				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
@@ -517,7 +517,7 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 			error_returned = Err.Number
 			error_description = Err.Description
 			on error goto 0
-			if (error_returned <> 0) then 
+			if (error_returned <> 0) then
 				if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
 				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
@@ -531,7 +531,7 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 			error_returned = Err.Number
 			error_description = Err.Description
 			on error goto 0
-			if (error_returned <> 0) then 
+			if (error_returned <> 0) then
 				if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
 				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
@@ -544,7 +544,7 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 			error_returned = Err.Number
 			error_description = Err.Description
 			on error goto 0
-			if (error_returned <> 0) then 
+			if (error_returned <> 0) then
 				if debugging > "0" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
 				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
@@ -557,7 +557,7 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 			error_returned = Err.Number
 			error_description = Err.Description
 			on error goto 0
-			if (error_returned <> 0) then 
+			if (error_returned <> 0) then
 				if debugging > "0" then wscript.echo "Problem authenticating (5) to " &  strcomputer end if
 				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
@@ -570,7 +570,7 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 			error_returned = Err.Number
 			error_description = Err.Description
 			on error goto 0
-			if (error_returned <> 0) then 
+			if (error_returned <> 0) then
 				if debugging > "0" then wscript.echo "Problem authenticating (6) to " &  strcomputer end if
 				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
@@ -580,14 +580,14 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 else
 	' localhost or no credentials passed, therefore auditing as the user running this script
 	if ((pc_alive = 1) or (ping_target = "n")) then
-		
+
 		if (error_returned = 0) then
 			On Error Resume Next
-			set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2") 
+			set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2")
 			error_returned = Err.Number
 			error_description = Err.Description
 			on error goto 0
-			if (error_returned <> 0) then 
+			if (error_returned <> 0) then
 				if debugging > "0" then wscript.echo "Problem authenticating (7) to " &  strcomputer end if
 				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
@@ -600,7 +600,7 @@ else
 			error_returned = Err.Number
 			error_description = Err.Description
 			on error goto 0
-			if (error_returned <> 0) then 
+			if (error_returned <> 0) then
 				if debugging > "0" then wscript.echo "Problem authenticating (8) to " &  strcomputer end if
 				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
@@ -624,7 +624,7 @@ else
 end if
 
 
-if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then 
+if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 
 	if ((pc_alive = 0) and (ping_target = "y")) then
 		if debugging > "1" then wscript.echo "Computer " &  strcomputer & " is not responding to ping." end if
@@ -638,7 +638,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 
 	if ldap = "" then
 		if debugging > "1" then wscript.echo "No default LDAP provided, using local settings." end if
-		set objWMIService = GetObject("winmgmts:\\.\root\cimv2") 
+		set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
 		set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
 		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
 		for each objItem in colItems
@@ -654,7 +654,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 		objConnection.Provider = "ADsDSOObject"
 		objConnection.Open "Active Directory Provider"
 		Set objCOmmand.ActiveConnection = objConnection
-		objCommand.CommandText = "Select Name, pwdLastSet, lastlogon, dnshostname, distinguishedName, operatingsystem from '" & ldap & "' Where objectClass='computer' and name = '" & strcomputer & "'" 
+		objCommand.CommandText = "Select Name, pwdLastSet, lastlogon, dnshostname, distinguishedName, operatingsystem from '" & ldap & "' Where objectClass='computer' and name = '" & strcomputer & "'"
 		objCommand.Properties("Page Size") = 10000
 		objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE
 		Set objRecordSet = objCommand.Execute
@@ -675,7 +675,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				dns_hostname = ""
 				on error resume next
 				set objLastLogon = objRecordSet.Fields("lastlogon").Value
-				intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart 
+				intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
 				intLastLogonTime = intLastLogonTime / (60 * 10000000)
 				intLastLogonTime = intLastLogonTime / 1440
 				thistime = intLastLogonTime + #1/1/1601#
@@ -684,7 +684,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				last_pass = ""
 				on error resume next
 				set objLastLogon = objRecordSet.Fields("pwdLastSet").Value
-				intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart 
+				intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
 				intLastLogonTime = intLastLogonTime / (60 * 10000000)
 				intLastLogonTime = intLastLogonTime / 1440
 				thistime = intLastLogonTime + #1/1/1601#
@@ -706,7 +706,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				system_hostname = objRecordSet.Fields("Name").Value
 				dns_hostname = objRecordSet.Fields("dnshostname").Value
 
-				if details_to_lower = "y" then 
+				if details_to_lower = "y" then
 					system_hostname = lcase(system_hostname)
 					dns_hostname = lcase(dns_hostname)
 				end if
@@ -726,7 +726,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				Loop
 
 				if stradd = 1 then man_ip_address = "0.0.0.0" end if
-				
+
 				computer_ou = lcase(ou(objRecordSet.Fields("distinguishedName").Value))
 				i = split(computer_ou, ",")
 				for j = 1 to ubound(i)
@@ -741,7 +741,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				' for j = 1 to ubound(i)
 				' 	computer_dns = computer_dns & "." & i(j)
 				' next
-				
+
 				if details_to_lower = "y" then
 					computer_dns = lcase(computer_dns)
 				end if
@@ -771,7 +771,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 					objRecordSet.MoveNext
 			Loop
 			result.WriteText "</system>" & vbcrlf
-			if debugging > "1" then 
+			if debugging > "1" then
 				result.position = 0
 				result_text = result.readtext
 				wscript.echo result_text
@@ -795,7 +795,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 			end if
 
 			if (submit_online = "y" and hit = 1) then
-				if debugging > "0" then wscript.echo "Submitting audit online" end if 
+				if debugging > "0" then wscript.echo "Submitting audit online" end if
 				Err.clear
 				XmlObj = "ServerXMLHTTP"
 				Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
@@ -815,9 +815,9 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 						wscript.sleep 50000
 					end if
 				end if
-				if debugging > "0" then wscript.echo "Audit Submitted" end if 
+				if debugging > "0" then wscript.echo "Audit Submitted" end if
 			end if
-			
+
 			if (create_file = "y" and hit = 1) then
 				if debugging > "0" then wscript.echo "Creating output File" end if
 				' Write the results to a file
@@ -827,7 +827,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				Err.clear
 				on error resume next
 				result.position = 0
-				result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists 
+				result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists
 				error_returned = Err.Number
 				error_description = Err.Description
 				on error goto 0
@@ -840,7 +840,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				end if
 			end if
 		else ' count > 0
-			if debugging > "0" then 
+			if debugging > "0" then
 				wscript.echo "PC not able to be audited and not found in Active Directory."
 				wscript.echo "Active Directory used for search was: " & ldap
 				wscript.echo "No audit recorded."
@@ -880,8 +880,8 @@ end if
 
 if debugging > "0" then wscript.echo "My PID is : " & nPID end if
 if debugging > "0" then wscript.echo "Audit Start Time : " & system_timestamp end if
-if debugging > "0" then wscript.echo "Audit Location: " & audit_location end if 
-if debugging > "0" then wscript.echo "-------------------" end if 
+if debugging > "0" then wscript.echo "Audit Location: " & audit_location end if
+if debugging > "0" then wscript.echo "-------------------" end if
 
 if debugging > "0" then wscript.echo "system info" end if
 
@@ -956,7 +956,7 @@ for each objItem in colItems
 	windows_domain_role = objItem.DomainRole
 	' below only checks when OS is XP or later (not 2000 or NT)
 	windows_part_of_domain = False
-	if (windows_build_number >= 2600) then 
+	if (windows_build_number >= 2600) then
 		windows_part_of_domain = objItem.PartOfDomain
 	end if
 
@@ -990,7 +990,7 @@ if (cint(windows_build_number)) > 5000 then
 	if (instr(windows_user_name, "\")) then
 		split_user = split(windows_user_name, "\")
 		windows_user_name = split_user(1)
-		if split_user(0) > "" then 
+		if split_user(0) > "" then
 			windows_user_domain = "@" & split_user(0)
 		else
 			windows_user_domain = ""
@@ -1097,7 +1097,7 @@ result.WriteText "		<system_id>" & escape_xml(system_id) & "</system_id>" & vbcr
 result.WriteText "	</sys>" & vbcrlf
 
 
-if debugging > "0" then wscript.echo "windows info" end if 
+if debugging > "0" then wscript.echo "windows info" end if
 if windows_domain_role = "0" then windows_domain_role = "Standalone Workstation" end if
 if windows_domain_role = "1" then windows_domain_role = "Workstation" end if
 if windows_domain_role = "2" then windows_domain_role = "Standalone Server" end if
@@ -1206,7 +1206,7 @@ if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (wind
 			struserDN = ttemp
 			erase stemp
 			ttemp = NULL
-			' strip off any names before the initial OU 
+			' strip off any names before the initial OU
 			'find the displacement of the initial OU=
 			pos=InStr(struserDN,"OU=")
 			struserDN= " " & Right(struserDN,LEN(struserDN)-(pos-1))
@@ -1259,13 +1259,13 @@ function windows_user_get_attribute (full_ad_domain, attribute, sam_account_name
 			loop
 		end if
 		if ((windows_user_get_attribute = "") and (debugging > "1")) then
-			if debugging > "1" then 
+			if debugging > "1" then
 				wscript.echo "No user data for " & attribute
 			end if
 		 windows_user_get_attribute = ""
 		end if
 		if (isnull(windows_user_get_attribute) and (debugging > "1")) then
-			wscript.echo  "User data is null for " & attribute 
+			wscript.echo  "User data is null for " & attribute
 			windows_user_get_attribute = ""
 		end if
 		if ((windows_user_get_attribute > "") and (debugging > "1")) then
@@ -1332,7 +1332,7 @@ result.WriteText " 	</windows>" & vbcrlf
 
 
 
-if debugging > "0" then wscript.echo "bios info" end if 
+if debugging > "0" then wscript.echo "bios info" end if
 item = ""
 set colItems = objWMIService.ExecQuery("Select * FROM Win32_BIOS",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Bios)" : audit_wmi_fails = audit_wmi_fails & "Win32_Bios " : end if
@@ -1351,7 +1351,7 @@ if item > "" then
 end if
 
 
-if debugging > "0" then wscript.echo "scsi info" end if 
+if debugging > "0" then wscript.echo "scsi info" end if
 item = ""
 set colItems = objWMIService.ExecQuery("Select * from Win32_SCSIController",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_SCSIController)" : audit_wmi_fails = audit_wmi_fails & "Win32_SCSIController " : end if
@@ -1370,7 +1370,7 @@ if item > "" then
 end if
 
 
-if debugging > "0" then wscript.echo "processor info" end if 
+if debugging > "0" then wscript.echo "processor info" end if
 newpath = "HARDWARE\DESCRIPTION\System\CentralProcessor\0"
 newkey = "ProcessorNameString"
 oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
@@ -1389,13 +1389,13 @@ processor_description = replace(processor_description, "  ", " ")
 set colItems = objWMIService.ExecQuery("Select * from Win32_Processor",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Processor)" : audit_wmi_fails = audit_wmi_fails & "Win32_Processor " : end if
 for each objItem In colItems
-	' NOTE - processor_description taken from registry (above) 
+	' NOTE - processor_description taken from registry (above)
 	' WMI does not seem to update when the processor is changed
 	' think virtualising a physical machine
 	'processor_description = objItem.Name
 	processor_speed = objItem.MaxClockSpeed
 	processor_manufacturer = objItem.Manufacturer
-	processor_power_management_supported = objItem.PowerManagementSupported		
+	processor_power_management_supported = objItem.PowerManagementSupported
 	select case  objItem.UpgradeMethod
 		case "1"      cpu_socket = "Other"
 		case "2"      cpu_socket = "Unknown"
@@ -1564,7 +1564,7 @@ if memory > "" then
 	result.WriteText "	</memory>" & vbcrlf
 end if
 
-if debugging > "0" then wscript.echo "motherboard info" end if 
+if debugging > "0" then wscript.echo "motherboard info" end if
 set colItems = objWMIService.ExecQuery("Select * from Win32_BaseBoard",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_BaseBoard)" : audit_wmi_fails = audit_wmi_fails & "Win32_BaseBoard " : end if
 for each objItem in colItems
@@ -1572,7 +1572,7 @@ for each objItem in colItems
 	mb_model = objItem.Product
 	mb_serial = objItem.SerialNumber
 next
-' Counting CPU sockets 
+' Counting CPU sockets
 set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_Processor",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Processor)" : audit_wmi_fails = audit_wmi_fails & "Win32_Processor " : end if
 CpuSockets = 0
@@ -1598,7 +1598,7 @@ result.WriteText "	</motherboard>" & vbcrlf
 
 
 ' using "on error" because of a Windows bug - see http://support.microsoft.com/kb/823778
-if debugging > "0" then wscript.echo "optical info" end if 
+if debugging > "0" then wscript.echo "optical info" end if
 item = ""
 on error resume next
 	set colItems = objWMIService.ExecQuery("Select * from Win32_CDROMDrive",,32)
@@ -1620,7 +1620,7 @@ on error resume next
 on error goto 0
 
 
-if debugging > "0" then wscript.echo "modem info" end if 
+if debugging > "0" then wscript.echo "modem info" end if
 item = ""
 on error resume next
 	set colItems = objWMIService.ExecQuery("Select * from Win32_POTSModem where status='OK' ",,32)
@@ -1644,17 +1644,17 @@ on error goto 0
 
 
 
-if debugging > "0" then wscript.echo "video info" end if 
+if debugging > "0" then wscript.echo "video info" end if
 item = ""
 on error resume next
 	set colItems = objWMIService.ExecQuery("Select * from Win32_VideoController",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_VideoController)" : audit_wmi_fails = audit_wmi_fails & "Win32_VideoController " : end if
 	for each objItem in colItems
-		if (Instr(objItem.Caption, "vnc") = 0 AND _ 
-		Instr(objItem.Caption, "Microsoft Basic Render Driver") = 0 AND _ 
-		Instr(objItem.Caption, "DameWare") = 0 AND _ 
-		Instr(objItem.Caption, "Innobec SideWindow") = 0 AND _ 
-		Instr(objItem.Caption, "ConfigMgr Remote Control Driver") = 0 AND _ 
+		if (Instr(objItem.Caption, "vnc") = 0 AND _
+		Instr(objItem.Caption, "Microsoft Basic Render Driver") = 0 AND _
+		Instr(objItem.Caption, "DameWare") = 0 AND _
+		Instr(objItem.Caption, "Innobec SideWindow") = 0 AND _
+		Instr(objItem.Caption, "ConfigMgr Remote Control Driver") = 0 AND _
 		Instr(objItem.Caption, "Microsoft SMS Mirror Driver") = 0) then
 		item = item & "		<video_card>" & vbcrlf
 		item = item & "			<video_description>" & escape_xml(objItem.Name) & "</video_description>" & vbcrlf
@@ -1681,7 +1681,7 @@ on error resume next
 on error goto 0
 
 
-if debugging > "0" then wscript.echo "monitor info" end if 
+if debugging > "0" then wscript.echo "monitor info" end if
 ' note we exclude "monitors" that are plug'n'play types and have no real info
 item = ""
 dim strarrRawEDID(10)
@@ -1761,8 +1761,8 @@ else
 					intMdlFoundAt = findit
 				end if
 			next
-			
-			
+
+
 			' serial
 			serial = ""
 			tmp = ""
@@ -1778,9 +1778,9 @@ else
 				serial = "Serial Number Not Found in EDID data"
 			end if
 			if serial = "" then serial = "Serial Number Not Found in EDID data"
-			
-			
-			
+
+
+
 			' model
 			model = ""
 			tmp = ""
@@ -1804,8 +1804,8 @@ else
 			if (instr(model, "Generic PnP Monitor")) then
 				model = "Generic PNP Monitor"
 			end if
-			
-			
+
+
 			' manufacture date
 			tmpmfgweek = asc(mid(strarrRawEDID(tmpctr),&H10+1,1))
 			tmpmfgyear = (asc(mid(strarrRawEDID(tmpctr),&H11+1,1))) + 1990
@@ -1814,23 +1814,23 @@ else
 			temp_date = Split(manufacture_date, "/", -1, 1)
 			temp_date(0) = right("0" & temp_date(0),2)
 			manufacture_date = temp_date(0) & "/" & temp_date(1)
-			
-			
+
+
 			'edid version
 			tmpEDIDMajorVer = asc(mid(strarrRawEDID(tmpctr),&H12+1,1))
 			tmpEDIDRev = asc(mid(strarrRawEDID(tmpctr),&H13+1,1))
 			edid_version = chr(48+tmpEDIDMajorVer) & "." & chr(48+tmpEDIDRev)
-			
-			
+
+
 			'device id
 			tmpEDIDDev1 = hex(asc(mid(strarrRawEDID(tmpctr),&H0a+1,1)))
 			tmpEDIDDev2 = hex(asc(mid(strarrRawEDID(tmpctr),&H0b+1,1)))
 			if len(tmpEDIDDev1) = 1 then tmpEDIDDev1 = "0" & tmpEDIDDev1 end if
 			if len(tmpEDIDDev2) = 1 then tmpEDIDDev2 = "0" & tmpEDIDDev2 end if
 			device_id = tmpEDIDDev2 & tmpEDIDDev1
-			
-			
-			
+
+
+
 			' manufacturer
 			manufacturer = ""
 			tmpEDIDMfg = mid(strarrRawEDID(tmpctr),&H08+1,2)
@@ -1929,36 +1929,36 @@ else
 			if (man_id = "WTC") then manufacturer = "Wen Technology" end if
 			if (man_id = "ZCM") then manufacturer = "Zenith Data Systems" end if
 			if (man_id = "___") then manufacturer = "Targa"
-			
+
 			manufacturer = replace(manufacturer, "@", "")
 			manufacturer = replace(manufacturer, "%", "")
 			manufacturer = replace(manufacturer, ";", "")
-			
-			
 
-			
+
+
+
 			screen_size = round((sqr((asc(mid(strarrRawEDID(tmpctr),22,1)) * asc(mid(strarrRawEDID(tmpctr),22,1))) + (asc(mid(strarrRawEDID(tmpctr),23,1)) * asc(mid(strarrRawEDID(tmpctr),23,1)))) * 10 / 25.4), 1)
 			'for i = 35 to 37
 			'	wscript.echo "Ratio " & i & ": " & asc(mid(strarrRawEDID(tmpctr),i,1))
 			'next
-			
+
 
 			ratio = ""
 			if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 128) then ratio = "1:" else ratio = "0:"
 			if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 64) then ratio = ratio & "1" else ratio = ratio & "0"
-			
+
 			if ratio = "0:0" then ratio = "16:10"
 			if ratio = "0:1" then ratio = "4:3"
 			if ratio = "1:0" then ratio = "5:4"
 			if ratio = "1:1" then ratio = "16:9"
-			
-			
+
+
 			'if (instr(all_device_id, device_id) = 0) then
 			if (instr(all_device_serial, serial) = 0) then
 				' we don't have this device_id already, so output this entry
 				' note we exclude "monitors" that are plug'n'play types and have no real info
-				if (manufacturer <> "" and _ 
-					manufacture_date <> "01/1990" and _ 
+				if (manufacturer <> "" and _
+					manufacture_date <> "01/1990" and _
 					model <> "Model Descriptor Not Found in EDID data") then
 					item = item & "		<monitor>" & vbcrlf
 					item = item & "			<manufacturer>" & escape_xml(manufacturer) & "</manufacturer>" & vbcrlf
@@ -1974,14 +1974,14 @@ else
 				all_device_id = all_device_id & device_id & " "
 				all_device_serial = all_device_serial & serial & " "
 			end if
-			
+
 			manufacturer = ""
 			device_id = ""
 			manufacture_date = ""
 			serial = ""
 			model = ""
 			edid_version = ""
-			
+
 		end if
 	next
 
@@ -1994,7 +1994,7 @@ if item > "" then
 end if
 
 
-if debugging > "0" then wscript.echo "sound info" end if 
+if debugging > "0" then wscript.echo "sound info" end if
 item = ""
 set colItems = objWMIService.ExecQuery("Select * from Win32_SoundDevice",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_SoundDevice)" : audit_wmi_fails = audit_wmi_fails & "Win32_SoundDevice " : end if
@@ -2013,7 +2013,7 @@ end if
 
 
 
-if debugging > "0" then wscript.echo "disk info" end if 
+if debugging > "0" then wscript.echo "disk info" end if
 result_partition = ""
 result_mount_point = ""
 item = ""
@@ -2034,14 +2034,14 @@ for each objItem In colDiskDrives
 	' Win 2k3 doesn't support this property
 	on error resume next
 		hard_drive_firmware = objItem.FirmwareRevision
-	on error goto 0 
+	on error goto 0
 	if ((len(hard_drive_firmware) = 0) or (isnull(hard_drive_firmware))) then
 		hard_drive_firmware = ""
 	end if
 
 	on error resume next
 		hard_drive_serial = objItem.SerialNumber
-	on error goto 0 
+	on error goto 0
 	if ((len(hard_drive_serial) < 2) or (isnull(hard_drive_serial))) then
 		hard_drive_serial = ""
 	end if
@@ -2058,26 +2058,26 @@ for each objItem In colDiskDrives
 		if lcase(left(hard_drive_model, 3)) = "wd "   		then hard_drive_manufacturer = "Western Digital" 	end if
 		if lcase(left(hard_drive_model, 6)) = "VMware"   		then hard_drive_manufacturer = "VMware" 	end if
 	end if
-	
+
 	hard_drive_status = "Not available"
 	on error resume next
 	set DriveStatus = objWMIService2.ExecQuery("Select * FROM MSStorageDriver_FailurePredictStatus",,16)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MSStorageDriver_FailurePredictStatus)" : audit_wmi_fails = audit_wmi_fails & "MSStorageDriver_FailurePredictStatus " : end if
 	if isnull(DriveStatus) then
 		' do nothing - no return value
-	else 
+	else
 		for each objItem2 in DriveStatus
 			if (lcase(objItem2.InstanceName) = hard_drive_pnp_id) then
 				if (objItem2.PredictFailure <> False and objItem2.Active = True) then
 					hard_drive_status = objItem2.PredictFailure & " because of " & objItem2.Reason
-				else 
+				else
 					hard_drive_status = "OK"
 				end if
 			end if
 		next
 	end if
 	on error goto 0
-	
+
 	item = item & "		<hard_disk>" & vbcrlf
 	item = item & "			<hard_drive_caption>" & escape_xml(hard_drive_caption) & "</hard_drive_caption>" & vbcrlf
 	item = item & "			<hard_drive_index>" & escape_xml(hard_drive_index) & "</hard_drive_index>" & vbcrlf
@@ -2101,7 +2101,7 @@ if item > "" then
 end if
 
 
-if debugging > "0" then wscript.echo "partition info" end if 
+if debugging > "0" then wscript.echo "partition info" end if
 set colPartitions = objWMIService.ExecQuery("Select * FROM Win32_LogicalDisk where DriveType = '2' or DriveType = '3'",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_LogicalDisk)" : audit_wmi_fails = audit_wmi_fails & "Win32_LogicalDisk " : end if
 for each objPartition In colPartitions
@@ -2136,7 +2136,7 @@ for each objPartition In colPartitions
 			disk_index_new = ""
 		end if
 	next
-	
+
 
 	partition_mount_point 	= objPartition.Caption
 	partition_name 			= objPartition.VolumeName
@@ -2145,16 +2145,22 @@ for each objPartition In colPartitions
 	partition_format 		= objPartition.FileSystem
 	partition_caption 		= objPartition.Caption
 	partition_serial 		= objPartition.VolumeSerialNumber
-	
-	partition_type = "local hard disk"
-	
-	
+
+	if ( objPartition.DriveType = "2") then
+		partition_type = "Removable Disk"
+	end if
+	if ( objPartition.DriveType = "3") then
+		partition_type = "Local Disk"
+	end if
+	if ( objPartition.DriveType = "4") then
+		partition_type = "Network Drive"
+	end if
 
 	' below only checks when OS is XP or later (not 2000 or NT)
 	'if (windows_build_number > 2195) then
 	'	if isnull(objLogicalDisk.SupportsDiskQuotas) then
 	'		partition_quotas_supported = False
-	'	else 
+	'	else
 	'		partition_quotas_supported = True
 	'	end if
 	'else
@@ -2173,20 +2179,20 @@ for each objPartition In colPartitions
 		result_partition = result_partition & "			<partition_format>" & escape_xml(partition_format) & "</partition_format>" & vbcrlf
 		result_partition = result_partition & "			<partition_caption>" & escape_xml(partition_caption) & "</partition_caption>" & vbcrlf
 		result_partition = result_partition & "			<partition_device_id>" & escape_xml(partition_device_id) & "</partition_device_id>" & vbcrlf
-		result_partition = result_partition & "			<partition_disk_index></partition_disk_index>" & vbcrlf 
-		result_partition = result_partition & "			<partition_bootable></partition_bootable>" & vbcrlf 
+		result_partition = result_partition & "			<partition_disk_index></partition_disk_index>" & vbcrlf
+		result_partition = result_partition & "			<partition_bootable></partition_bootable>" & vbcrlf
 		result_partition = result_partition & "			<partition_type>" & escape_xml(partition_type) & "</partition_type>" & vbcrlf
-		result_partition = result_partition & "			<partition_quotas_supported></partition_quotas_supported>" & vbcrlf 
-		result_partition = result_partition & "			<partition_quotas_enabled></partition_quotas_enabled>" & vbcrlf 
+		result_partition = result_partition & "			<partition_quotas_supported></partition_quotas_supported>" & vbcrlf
+		result_partition = result_partition & "			<partition_quotas_enabled></partition_quotas_enabled>" & vbcrlf
 		result_partition = result_partition & "			<partition_serial>" & escape_xml(partition_serial) & "</partition_serial>" & vbcrlf
 		result_partition = result_partition & "		</partition>" & vbcrlf
-	end if 
-next 
+	end if
+next
 
 
 ' only Win2003 and above have win32_volume
 if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
-	if debugging > "0" then wscript.echo "mount point info" end if 
+	if debugging > "0" then wscript.echo "mount point info" end if
 	on error resume next
 		set colMounts = objWMIService.ExecQuery("Select * from Win32_Volume WHERE DriveLetter = NULL",,32)
 		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Volume)" : audit_wmi_fails = audit_wmi_fails & "Win32_Volume " : end if
@@ -2198,7 +2204,7 @@ if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
 			mount_used_space = int(mount_size - mount_free_space)
 			mount_format 	 = mount.FileSystem
 			mount_serial 	 = mount.SerialNumber
-			mount_type 	 	 = "volume"
+			mount_type 	 	 = "Volume"
 			if (mount_size > "") then
 				result_partition = result_partition & "		<partition>" & vbcrlf
 				result_partition = result_partition & "			<hard_drive_index></hard_drive_index>" & vbcrlf
@@ -2217,9 +2223,9 @@ if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
 				result_partition = result_partition & "			<partition_quotas_enabled></partition_quotas_enabled>" & vbcrlf
 				result_partition = result_partition & "			<partition_serial>" & escape_xml(mount_serial) & "</partition_serial>" & vbcrlf
 				result_partition = result_partition & "		</partition>" & vbcrlf
-			end if 
+			end if
 		next
-	On Error Goto 0 
+	On Error Goto 0
 end if
 
 if result_partition > "" then
@@ -2230,7 +2236,7 @@ end if
 
 
 
-if debugging > "0" then wscript.echo "shares info" end if 
+if debugging > "0" then wscript.echo "shares info" end if
 ' test to see if the share permissions .exe exists
 file_exists = False
 if audit_location = "local" then
@@ -2261,7 +2267,7 @@ for each objItem in colItems
 		on error resume next
 			Set objFolder = objFSO.GetFolder(objItem.Path)
 			folder_size = int(objFolder.size/1024/1024)
-		On Error Goto 0 
+		On Error Goto 0
 		' note - removed the below line from the conditions above
 		' right(objItem.Name, 1) <> "$" AND _
 	else
@@ -2317,9 +2323,9 @@ for each objItem in colItems
 		if share_users > "" then
 			share_users = left(share_users, len(share_users)-2)
 			result_share = result_share & "			<share_users>" & escape_xml(share_users) & "</share_users>" & vbcrlf
-		end if 
+		end if
 	end if
-	result_share = result_share & "		</share>" & vbcrlf	
+	result_share = result_share & "		</share>" & vbcrlf
 next
 if result_share > "" then
 	result.WriteText "	<shares>" & vbcrlf
@@ -2328,7 +2334,7 @@ if result_share > "" then
 end if
 
 
-if debugging > "0" then wscript.echo "network card info" end if 
+if debugging > "0" then wscript.echo "network card info" end if
 result.WriteText "	<network_cards>" & vbcrlf
 set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration " _
 	& "WHERE IPEnabled = True or (ServiceName<>'' AND ServiceName<>'AsyncMac' " _
@@ -2361,10 +2367,10 @@ for each objItem in colItems
 	else
 		net_dhcp_lease_expires = ""
 	end if
-	if (not isnull(objItem.DNSServerSearchOrder)) then 
-		net_dns_server = Join(objItem.DNSServerSearchOrder, ",") 
-	else 
-		net_dns_server = "" 
+	if (not isnull(objItem.DNSServerSearchOrder)) then
+		net_dns_server = Join(objItem.DNSServerSearchOrder, ",")
+	else
+		net_dns_server = ""
 	end if
 	net_dns_host_name = objItem.DNSHostName
 	net_dns_domain = objItem.DNSDomain
@@ -2430,7 +2436,7 @@ next
 result.WriteText "	</network_cards>" & vbcrlf
 on error goto 0
 
-if debugging > "0" then wscript.echo "network address info" end if 
+if debugging > "0" then wscript.echo "network address info" end if
 item = ""
 dim ip_address_array(100)
 count = 0
@@ -2443,12 +2449,12 @@ for each objItem in colItems
 		for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
 			ip_address = objItem.IPAddress(i)
 			ip_subnet = objItem.IPSubnet(i)
-			if len(ip_address) > 15 then 
-				ip_address_version = "6" 
+			if len(ip_address) > 15 then
+				ip_address_version = "6"
 				ip_address_v6 = ip_address
 				ip_address_v4 = ""
-			else 
-				ip_address_version = "4" 
+			else
+				ip_address_version = "4"
 				ip_address_v4 = ip_address
 				ip_address_v6 = ""
 			end if
@@ -2476,7 +2482,7 @@ if item > "" then
 end if
 
 if skip_dns = "n" then
-	if debugging > "0" then wscript.echo "DNS info" end if 
+	if debugging > "0" then wscript.echo "DNS info" end if
 	item = ""
 	on error resume next
 	set colItems = objWMIService.ExecQuery("Select * from Win32_NetworkAdapterConfiguration WHERE IPEnabled = True AND DHCPEnabled = False ",,32)
@@ -2486,14 +2492,14 @@ if skip_dns = "n" then
 		for i = LBound(objItem.IPAddress) to UBound(objItem.IPAddress)
 			ip_address = objItem.IPAddress(i)
 			ip_subnet = objItem.IPSubnet(i)
-			if ((len(ip_address) < 16) and (ip_address <> "0.0.0.0")) then 
+			if ((len(ip_address) < 16) and (ip_address <> "0.0.0.0")) then
 				Set objWMIService2 = GetObject("winmgmts:\\" & local_dns_server & "\root\MicrosoftDNS")
 				Set colItems2 = objWMIService2.ExecQuery("SELECT * FROM MicrosoftDNS_AType where recorddata = '" & ip_address & "' ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
 				for each objitem2 in colitems2
 					full_name = split(objItem2.OwnerName, ".")
 					hostname = full_name(0)
 					dns_full_name = objItem2.OwnerName
-					if details_to_lower = "y" then 
+					if details_to_lower = "y" then
 						hostname = lcase(hostname)
 						dns_full_name = lcase(dns_host_name)
 					end if
@@ -2514,7 +2520,7 @@ if skip_dns = "n" then
 	end if
 	item = ""
 end if
-Set StdOut = WScript.StdOut 
+Set StdOut = WScript.StdOut
 
 if (skip_printer = "n") then
 	' NOTE - we do not record devices we cannot detect (local USB) or ping (network)
@@ -2530,7 +2536,7 @@ if (skip_printer = "n") then
 
 	if IsEmpty(colItems) then
 		' do nothing with printers - some error occured trying to query win32_printer
-	else 
+	else
 		For Each objItem In colItems
 			connection_status = ""
 			printer_port = objItem.PortName
@@ -2579,17 +2585,17 @@ if (skip_printer = "n") then
 				or (InStr(lcase(objItem.PortName), "webex") = 1) _
 				or (InStr(lcase(objItem.PortName), "file") = 1) _
 				or (InStr(objItem.PortName, "\\") = 1) _
-				or (InStr(lcase(objItem.PortName), "oletoadi") = 1) _	
-				or (InStr(lcase(objItem.PortName), "client/") = 1) _	
-				or (InStr(lcase(objItem.PortName), "client:") = 1) _		
-				or (InStr(lcase(objItem.PortName), "lpt1:") = 1) _	
+				or (InStr(lcase(objItem.PortName), "oletoadi") = 1) _
+				or (InStr(lcase(objItem.PortName), "client/") = 1) _
+				or (InStr(lcase(objItem.PortName), "client:") = 1) _
+				or (InStr(lcase(objItem.PortName), "lpt1:") = 1) _
 				or (InStr(1, lcase(objItem.DeviceID), "(copy " , vbTextCompare)) _
 				) then
 				' software printer or some other non-local or non-network printer - do nothing for now
 				' LPT1: is being excluded because this appears when a USB multi-function printer is used.
-				' Most new PCs don't even have a printer port anymore. 
+				' Most new PCs don't even have a printer port anymore.
 				' Yes, it may not be 100% exact, but it's good enough for me :-)
-			else 
+			else
 				if debugging > "2" then
 					wscript.echo
 					wscript.echo "Port: " & objItem.PortName
@@ -2600,32 +2606,32 @@ if (skip_printer = "n") then
 				' first attempt - regular IP?
 				if ((printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then
 					if debugging > "1" then wscript.echo "First attempt to detect if PortName matches an IP address" end if
-					aTmp = split(objItem.PortName, ".") 
-					' There must be 4 fields in a valid IP 
-					if UBound(aTmp) = 3 then 
+					aTmp = split(objItem.PortName, ".")
+					' There must be 4 fields in a valid IP
+					if UBound(aTmp) = 3 then
 						valid = True
-						for each field in aTmp 
+						for each field in aTmp
 							if (isnumeric(field)) then
 								if (cint(field) > 255) then valid = False end if
 							else
 								valid = False
 							end if
-						next 
-					else 
+						next
+					else
 						valid = False
 					end if
 					if valid = True then printer_ip_address = objItem.PortName end if
 					if debugging > "2" then wscript.echo "0 Resulting IP is " & printer_ip_address end if
 				end if
-				
-				' second attempt - checking for 
+
+				' second attempt - checking for
 				' 123.123.123.123:something_else and also
 				' IP_123.123.123.123
 				valid = ""
 				if ((printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then
 					if debugging > "1" then wscript.echo "Not a valid IP address so far. Using PortName." end if
-					aTmp = split(objItem.PortName, ".") 
-					if ubound(aTmp) = 3 then 
+					aTmp = split(objItem.PortName, ".")
+					if ubound(aTmp) = 3 then
 						first_octet = aTmp(0)
 						if (instr(aTmp(0), "IP_") = 1) then
 							cTmp = split(aTmp(0), "_")
@@ -2635,10 +2641,10 @@ if (skip_printer = "n") then
 
 						second_octet = aTmp(1)
 						if (not(isnumeric(second_octet))) then valid = False end if
-						
+
 						third_octet = aTmp(2)
 						if (not(isnumeric(third_octet))) then valid = False end if
-						
+
 						last_octet = aTmp(3)
 						if (not(isnumeric(last_octet))) then
 							bTmp = split(aTmp(3), ":")
@@ -2657,26 +2663,26 @@ if (skip_printer = "n") then
 							end if
 						end if
 						if (not(isnumeric(last_octet))) then valid = False end if
-						
+
 						if valid <> False then printer_ip_address = first_octet & "." & second_octet & "." & third_octet & "." & last_octet
 					end if 'ubound(aTmp)
 					if debugging > "1" then wscript.echo "1 Resulting IP is " & printer_ip_address end if
 				end if ' printer_ip_address > ""
-				
-				if ((printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then 
+
+				if ((printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then
 					' going to assume the printer is attached via IP to a name, not an IP address
 					if debugging > "1" then wscript.echo "Assuming printer is attached by network to a hostname, not an IP" end if
 					printer_hostname = objItem.PortName
 				end if
 
-				if ((printer_hostname > "") and (printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then 
+				if ((printer_hostname > "") and (printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then
 					' this is a hostname
 					if debugging > "1" then wscript.echo "Printer has a hostname but no IP. Running NSLookup" end if
-					Set objExec = objShell.Exec( "nslookup " & printer_hostname ) 
-					Dim objStream 
+					Set objExec = objShell.Exec( "nslookup " & printer_hostname )
+					Dim objStream
 					k = ""
-					For Each objStream In Array( objExec.StdOut, objExec.StdErr ) 
-						Do Until objStream.AtEndOfStream 
+					For Each objStream In Array( objExec.StdOut, objExec.StdErr )
+						Do Until objStream.AtEndOfStream
 							line = objStream.ReadLine()
 							if (InStr(line, "Address") = 1) then
 								i = split(line, ":")
@@ -2685,11 +2691,11 @@ if (skip_printer = "n") then
 							if (InStr(line, "can't find") > 1) then
 								k = ""
 							end if
-						Loop 
+						Loop
 					Next
 					if (k <> "") then
 						printer_ip_address = k
-					end if 
+					end if
 					if debugging > "1" then wscript.echo "2 Resulting IP is " & printer_ip_address end if
 				end if
 
@@ -2702,49 +2708,49 @@ if (skip_printer = "n") then
 
 				if (printer_ip_address > "") then
 					' this is an IP Address
-					Set objExec = objShell.Exec( "nslookup " & printer_ip_address ) 
+					Set objExec = objShell.Exec( "nslookup " & printer_ip_address )
 					k = ""
-					For Each objStream In Array( objExec.StdOut, objExec.StdErr ) 
-						Do Until objStream.AtEndOfStream 
+					For Each objStream In Array( objExec.StdOut, objExec.StdErr )
+						Do Until objStream.AtEndOfStream
 							line = objStream.ReadLine()
 							if (InStr(line, "Name") = 1) then
 								i = split(line, ".")
 								k = mid(i(0), 6)
 								k = ltrim(k)
 							end if
-						Loop 
+						Loop
 					Next
 					if (k <> "") then
 						printer_hostname = k
-					else 
+					else
 						printer_hostname = printer_ip_address
-					end if 
+					end if
 				end if
-				
+
 				if (InStr(objItem.PortName, "IP_") = 1) then
 					printer_ip_address = mid(objItem.PortName, 4)
-					Set objExec = objShell.Exec( "nslookup " & printer_ip_address ) 
+					Set objExec = objShell.Exec( "nslookup " & printer_ip_address )
 					k = ""
-					For Each objStream In Array( objExec.StdOut, objExec.StdErr ) 
-						Do Until objStream.AtEndOfStream 
+					For Each objStream In Array( objExec.StdOut, objExec.StdErr )
+						Do Until objStream.AtEndOfStream
 							line = objStream.ReadLine()
 							if (InStr(line, "Name") = 1) then
 								i = split(line, ".")
 								k = mid(i(0), 6)
 								k = ltrim(k)
 							end if
-						Loop 
+						Loop
 					Next
 					if (k <> "") then
 						printer_hostname = k
-					else 
+					else
 						printer_hostname = printer_ip_address
-					end if 					
+					end if
 				end if
-				
+
 				if (printer_ip_address > "") then
 					' connected via network
-					' check win32_pingstatus to see if device is online		
+					' check win32_pingstatus to see if device is online
 					if (CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) then
 						on error resume next
 						Set colPingResults = objWMIService.ExecQuery("SELECT * FROM Win32_PingStatus WHERE Address = '" & printer_ip_address & "'",,32)
@@ -2762,7 +2768,7 @@ if (skip_printer = "n") then
 						on error goto 0
 					end if
 				end if
-				
+
 				if (InStr(objItem.PortName, "USB") = 1) then
 					' connected via USB
 					' check WIN32_USBDevice to see if actually connected
@@ -2779,27 +2785,27 @@ if (skip_printer = "n") then
 						connection_status = "OK"
 					end if
 				end if
-				
+
 				if (InStr(objItem.PortName, "DOT") = 1) then
 					connection_status = "OK"
 				end if
-				
+
 				if (InStr(objItem.PortName, "LPT1") = 1) then
 					connection_status = "OK"
 				end if
-				
+
 				if debugging > "2" then wscript.echo "Status: " & connection_status end if
-				
+
 				if (printer_ip_address > "") then
 					printer_system_key = printer_ip_address
 				else
 					printer_system_key = system_hostname & "_" & replace(objItem.DeviceID, " ", "_")
 				end if
-				
+
 				' using Device ID for the name because the WMI docs state this is unique
 				' this will only be used in the print_queue table
-				printer_name = objItem.DeviceID 
-				
+				printer_name = objItem.DeviceID
+
 				printer_model = replace(objItem.DriverName, " PCL 5e", "")
 				printer_model = replace(printer_model, " PCL 5", "")
 				printer_model = replace(printer_model, " PCL5", "")
@@ -2808,12 +2814,12 @@ if (skip_printer = "n") then
 				printer_model = replace(printer_model, " PCL6", "")
 				printer_model = replace(printer_model, " PCL", "")
 				printer_model = replace(printer_model, " PS", "")
-				
+
 				printer_reg_driver = "Software\Microsoft\Windows NT\CurrentVersion\Print\Printers\" & objItem.DeviceID & "\DsDriver\"
 				if debugging > "2" then wscript.echo "RegKey: " & printer_reg_driver end if
 				oReg.GetBinaryValue HKEY_LOCAL_MACHINE, printer_reg_driver, "printColor", print_color
 				oReg.GetBinaryValue HKEY_LOCAL_MACHINE, printer_reg_driver, "printDuplexSupported", print_duplex
-				
+
 				printer_color = False
 				if (isnull(print_color)) then
 					' do nothing
@@ -2824,7 +2830,7 @@ if (skip_printer = "n") then
 						if (print_color(i) = "1") then printer_color = True
 					next
 				end if
-				
+
 				printer_duplex = False
 				if (isnull(print_duplex)) then
 					' do nothing
@@ -2835,9 +2841,9 @@ if (skip_printer = "n") then
 						if (print_duplex(i) = "1") then printer_duplex = True
 					next
 				end if
-				
-				
-				
+
+
+
 				if (instr(1, printer_model, "Aficio", vbTextCompare) = 1) 		then printer_manufacturer = "Ricoh" end if
 				if (instr(1, printer_model, "AGFA", vbTextCompare) = 1) 		then printer_manufacturer = "Agfa" end if
 				if (instr(1, printer_model, "Apple Laser", vbTextCompare) = 1) 	then printer_manufacturer = "Apple" end if
@@ -2876,7 +2882,7 @@ if (skip_printer = "n") then
 				if (instr(1, printer_model, "Xerox", vbTextCompare) = 1) 		then printer_manufacturer = "Xerox" end if
 				if (instr(1, printer_model, "ZDesigner", vbTextCompare) = 1) 	then printer_manufacturer = "Zebra" end if
 				if (instr(1, printer_model, "Zebra", vbTextCompare) = 1) 		then printer_manufacturer = "Zebra" end if
-				
+
 				printer_comment = ""
 				if (CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) then
 					printer_comment = objItem.Comment
@@ -2888,18 +2894,18 @@ if (skip_printer = "n") then
 						printer_share_name = ""
 					end if
 				end if
-				
+
 				if printer_comment = "" then
 					printer_comment = printer_share_name
 				end if
-				
-				if debugging > "1" then 
-					wscript.echo "Printer: " & printer_model & " -- " & objItem.PortName & " -- " & printer_ip_address & " -- " & connection_status 
+
+				if debugging > "1" then
+					wscript.echo "Printer: " & printer_model & " -- " & objItem.PortName & " -- " & printer_ip_address & " -- " & connection_status
 				end if
-				
+
 				printer_uuid = replace(objItem.DeviceID, " ", "_")
 				printer_location = objItem.Location
-				
+
 				'if (connection_status = "OK") then
 					item = item & "		<printer>" & vbcrlf
 					on error resume next
@@ -2907,12 +2913,12 @@ if (skip_printer = "n") then
 					item = item & "			<hostname>" & escape_xml(printer_hostname) & "</hostname>" & vbcrlf
 					item = item & "			<system_key>" & escape_xml(printer_system_key) & "</system_key>" & vbcrlf
 					item = item & "			<uuid>" & escape_xml(printer_uuid) & "</uuid>" & vbcrlf
-					item = item & "			<description>" & escape_xml(printer_comment) & "</description>" & vbcrlf 
+					item = item & "			<description>" & escape_xml(printer_comment) & "</description>" & vbcrlf
 					item = item & "			<icon>printer</icon>" & vbcrlf
 					item = item & "			<model>" & escape_xml(printer_model) & "</model>" & vbcrlf
 					item = item & "			<manufacturer>" & escape_xml(printer_manufacturer) & "</manufacturer>" & vbcrlf
 					item = item & "			<printer_port_name>" & escape_xml(objItem.PortName) & "</printer_port_name>" & vbcrlf
-					item = item & "			<printer_shared>" & escape_xml(printer_shared) & "</printer_shared>" & vbcrlf 
+					item = item & "			<printer_shared>" & escape_xml(printer_shared) & "</printer_shared>" & vbcrlf
 					item = item & "			<printer_shared_name>" & escape_xml(printer_share_name) & "</printer_shared_name>" & vbcrlf
 					item = item & "			<printer_location>" & escape_xml(printer_location) & "</printer_location>" & vbcrlf
 					item = item & "			<printer_color>" & escape_xml(printer_color) & "</printer_color>" & vbcrlf
@@ -2920,7 +2926,7 @@ if (skip_printer = "n") then
 					item = item & "			<printer_type>physical</printer_type>" & vbcrlf
 					item = item & "			<printer_name>" & escape_xml(printer_name) & "</printer_name>" & vbcrlf
 					item = item & "			<printer_connection_status>" & escape_xml(connection_status) & "</printer_connection_status>" & vbcrlf
-					On Error Goto 0 
+					On Error Goto 0
 					item = item & "		</printer>" & vbcrlf
 				'end if
 			end if
@@ -2931,17 +2937,17 @@ if (skip_printer = "n") then
 			result.WriteText "	</printers>" & vbcrlf
 		end if
 	end if
-end if 
+end if
 
 
-if debugging > "0" then wscript.echo "scheduled tasks" end if 
+if debugging > "0" then wscript.echo "scheduled tasks" end if
 item = ""
 ' We rely on schtasks.exe so skipping if local system is older than WinXP
-' Check Build Number: Win2k-->2195, Win98-->2222, WinME-->3000, 
+' Check Build Number: Win2k-->2195, Win98-->2222, WinME-->3000,
 if ((CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) and audit_location = "local" ) then
    if windows_build_number = "2600" then
       intOffset = 0
-   else 
+   else
       intOffset = 1
    End if
    strCommand = "%ComSpec% /c schtasks.exe /query /v /nh /fo csv"
@@ -2979,7 +2985,7 @@ if item > "" then
    result.WriteText "   </tasks>" & vbcrlf
 end if
 
-if debugging > "0" then wscript.echo "environment variables" end if 
+if debugging > "0" then wscript.echo "environment variables" end if
 item = ""
 set colItems = objWMIService.ExecQuery("Select * from Win32_Environment where SystemVariable = True",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Environment)" : audit_wmi_fails = audit_wmi_fails & "Win32_Environment " : end if
@@ -3001,7 +3007,7 @@ if item > "" then
 end if
 
 
-if debugging > "0" then wscript.echo "logs" end if 
+if debugging > "0" then wscript.echo "logs" end if
 item = ""
 set colItems = objWMIService.ExecQuery("Select * from Win32_NTEventLogFile",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTEventLogFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTEventLogFile " : end if
@@ -3027,7 +3033,7 @@ end if
 
 
 
-if debugging > "0" then wscript.echo "pagefile" end if 
+if debugging > "0" then wscript.echo "pagefile" end if
 item = ""
 set colItems = objWMIService.ExecQuery("Select * from Win32_PageFile",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_PageFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_PageFile " : end if
@@ -3047,7 +3053,7 @@ end if
 
 
 
-if debugging > "0" then wscript.echo "local users info" end if 
+if debugging > "0" then wscript.echo "local users info" end if
 if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role <> "Primary Domain Controller")) then
 	result.WriteText "	<users>" & vbcrlf
 	set colItems = objWMIService.ExecQuery ("Select * from Win32_UserAccount Where Domain = '" & system_hostname & "'",,32)
@@ -3120,7 +3126,7 @@ end if
 
 if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role <> "Primary Domain Controller") and (windows_part_of_domain = True Or windows_part_of_domain = "True")) then
 	result.WriteText "	<groups>" & vbcrlf
-	if debugging > "0" then wscript.echo "local groups info" end if 
+	if debugging > "0" then wscript.echo "local groups info" end if
 
 	if struser = "" then
 		dim group_domain
@@ -3148,7 +3154,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 				result.WriteText "			<group_members>" & escape_xml(group_members) & "</group_members>" & vbcrlf
 				result.WriteText "		</group>" & vbcrlf
 			End If
-		Next 
+		Next
 	end if
 
 	if struser > "" then
@@ -3187,7 +3193,7 @@ if (skip_software = "n") then
 	result.WriteText "	<software>" & vbcrlf
 	' commenting out the below routine for now
 	function disable()
-		if debugging > "0" then wscript.echo "BHO info" end if 
+		if debugging > "0" then wscript.echo "BHO info" end if
 		if NOT InStr(system_os_full_name, "95") and NOT InStr(system_os_full_name, "98") and NOT InStr(system_os_full_name, "Vista") and NOT InStr(system_os_full_name, "Windows 7") and NOT InStr(system_os_full_name, "2008") then
 			set objWMIService_IE = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2\Applications\MicrosoftIE")
 			set colIESettings = objWMIService_IE.ExecQuery ("Select * from MicrosoftIE_Object",,32)
@@ -3213,7 +3219,7 @@ if (skip_software = "n") then
 	end function
 
 
-	if debugging > "0" then wscript.echo "Codec info" end if 
+	if debugging > "0" then wscript.echo "Codec info" end if
 	set colItems = objWMIService.ExecQuery("Select * FROM Win32_CodecFile", , 48)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_CodecFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_CodecFile " : end if
 	if (not isnull(colItems)) then
@@ -3240,7 +3246,7 @@ if (skip_software = "n") then
 
 
 
-	if debugging > "0" then wscript.echo "ODBC Driver info" end if 
+	if debugging > "0" then wscript.echo "ODBC Driver info" end if
 	strKeyPath = "SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers"
 	oReg.EnumValues HKEY_LOCAL_MACHINE, strKeyPath, arrValueNames, arrValueTypes
 	if (not isnull(arrValueNames)) then
@@ -3270,7 +3276,7 @@ if (skip_software = "n") then
 	end if
 
 
-	if debugging > "0" then wscript.echo "ODBC Driver info 64bit" end if 
+	if debugging > "0" then wscript.echo "ODBC Driver info 64bit" end if
 	strKeyPath = "SOFTWARE\Wow6432Node\ODBC\ODBCINST.INI\ODBC Drivers"
 	oReg.EnumValues HKEY_LOCAL_MACHINE, strKeyPath, arrValueNames, arrValueTypes
 
@@ -3301,7 +3307,7 @@ if (skip_software = "n") then
 	end if
 
 
-	if debugging > "0" then wscript.echo "MDAC info" end if 
+	if debugging > "0" then wscript.echo "MDAC info" end if
 	strKeyPath = "SOFTWARE\Microsoft\DataAccess"
 	strValueName = "Version"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dac_version
@@ -3330,7 +3336,7 @@ if (skip_software = "n") then
 
 
 
-	if debugging > "0" then wscript.echo "DirectX info" end if 
+	if debugging > "0" then wscript.echo "DirectX info" end if
 	strKeyPath = "SOFTWARE\Microsoft\DirectX"
 	strValueName = "Version"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,dx_version
@@ -3377,7 +3383,7 @@ if (skip_software = "n") then
 
 
 
-	if debugging > "0" then wscript.echo "Windows Media Player info" end if 
+	if debugging > "0" then wscript.echo "Windows Media Player info" end if
 	strKeyPath = "SOFTWARE\Microsoft\MediaPlayer\PlayerUpgrade"
 	strValueName = "PlayerVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,wmp_version
@@ -3400,7 +3406,7 @@ if (skip_software = "n") then
 	end if
 
 
-	if debugging > "0" then wscript.echo "Internet Explorer info" end if 
+	if debugging > "0" then wscript.echo "Internet Explorer info" end if
 	strKeyPath = "SOFTWARE\Microsoft\Internet Explorer"
 	strValueName = "Version"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ie_version
@@ -3423,7 +3429,7 @@ if (skip_software = "n") then
 	end if
 
 
-	if debugging > "0" then wscript.echo "Outlook Express info" end if 
+	if debugging > "0" then wscript.echo "Outlook Express info" end if
 	strKeyPath = "SOFTWARE\Microsoft\Outlook Express\Version info"
 	strValueName = "Current"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,oe_version
@@ -3478,7 +3484,7 @@ if (skip_software = "n") then
 	on error resume next
 	Set colItems = objWMIService.ExecQuery("Select Message, User, TimeGenerated FROM Win32_NTLogEvent where logfile = 'Application' and eventcode = '11707'",,0)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTLogEvent)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTLogEvent " : end if
-	On Error Goto 0 
+	On Error Goto 0
 
 	strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 	oReg.EnumKey HKEY_LOCAL_MACHINE,strKeyPath,arrSubKeys
@@ -3499,7 +3505,7 @@ if (skip_software = "n") then
 				install_location = ""
 				system_component = ""
 				package_name = strValue
-				
+
 				newkey = "DisplayVersion"
 				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
 				package_version = strValue
@@ -3569,7 +3575,7 @@ if (skip_software = "n") then
 					end if
 				next
 				on error goto 0
-				
+
 				result.WriteText "		<package>" & vbcrlf
 				result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
 				result.WriteText "			<software_version>" & escape_xml(package_version) & "</software_version>" & vbcrlf
@@ -3611,23 +3617,23 @@ if (skip_software = "n") then
 
 	if (win32_product = "y") then
 		if (address_width = "64" and reg_node = "y") then
-			if debugging > "0" then wscript.echo "Software for 64bit" end if 
+			if debugging > "0" then wscript.echo "Software for 64bit" end if
 			result.WriteText "		<!-- start of 64 #1 -->" & vbcrlf
 			' we enumerate this WMI, that we would not otherwise
-			
+
 			on error resume next
 				set colItems2 = objWMIService.ExecQuery("Select * from Win32_Product",,32)
 				error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Product)" : audit_wmi_fails = audit_wmi_fails & "Win32_Product " : end if
 			on error goto 0
-			
-			if (error_returned <> 0) then 
+
+			if (error_returned <> 0) then
 				' we had an error - skip the next part
 			else
 				on error resume next
 				for each objItem2 in colItems2
 					error_returned = Err.Number
 					error_message = Err.Message
-				
+
 					package_name = objItem2.name
 					package_installed_by = ""
 					package_installed_on = ""
@@ -3635,7 +3641,7 @@ if (skip_software = "n") then
 					if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
 						software_url = objItem2.URLUpdateInfo
 						software_install_source = objItem2.InstallSource
-					else 
+					else
 						software_url = ""
 						software_install_source = ""
 					end if
@@ -3659,7 +3665,7 @@ if (skip_software = "n") then
 							end if
 						end if
 					next
-						
+
 					result.WriteText "		<package>" & vbcrlf
 					result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
 					result.WriteText "			<software_version>" & escape_xml(objItem2.version) & "</software_version>" & vbcrlf
@@ -3692,9 +3698,9 @@ if (skip_software = "n") then
 	else
 		reg_node = "n"
 	end if
-	
-	
-	
+
+
+
 
 
 if (reg_node = "y") then
@@ -3705,7 +3711,7 @@ if (reg_node = "y") then
 	on error resume next
 	Set colItems = objWMIService.ExecQuery("Select Message, User, TimeGenerated FROM Win32_NTLogEvent where logfile = 'Application' and eventcode = '11707'",,0)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_NTLogEvent)" : audit_wmi_fails = audit_wmi_fails & "Win32_NTLogEvent " : end if
-	On Error Goto 0 
+	On Error Goto 0
 	if (not isnull(arrSubKeys)) then
 		for each subkey In arrSubKeys
 			newpath = strKeyPath & "\" & subkey
@@ -3720,7 +3726,7 @@ if (reg_node = "y") then
 				install_location = ""
 				system_component = ""
 				package_name = strValue
-				
+
 				newkey = "DisplayVersion"
 				oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
 				package_version = strValue
@@ -3789,8 +3795,8 @@ if (reg_node = "y") then
 						end if
 					end if
 				next
-				On Error Goto 0 
-				
+				On Error Goto 0
+
 				result.WriteText "		<package>" & vbcrlf
 				result.WriteText "			<software_name>" & escape_xml(package_name) & "</software_name>" & vbcrlf
 				result.WriteText "			<software_version>" & escape_xml(package_version) & "</software_version>" & vbcrlf
@@ -3836,12 +3842,12 @@ if address_width = "64" then
 		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
 	end if
 
-	Set o64reg = objServices.Get("StdRegProv") 
-	
+	Set o64reg = objServices.Get("StdRegProv")
+
 	'Set Inparams = o64reg.Methods_("GetStringValue").Inparameters
 	Set Inparams = o64reg.Methods_("EnumKey").Inparameters
 	Inparams.Hdefkey = HKEY_LOCAL_MACHINE
-	Inparams.Ssubkeyname = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" 
+	Inparams.Ssubkeyname = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
 	set Outparams = o64reg.ExecMethod_("EnumKey", Inparams,,objCtx)
 
 	if (not isnull(Outparams.Snames)) then
@@ -3999,7 +4005,7 @@ end if
 end if
 
 
-if debugging > "0" then wscript.echo "Services info" end if 
+if debugging > "0" then wscript.echo "Services info" end if
 en_sql_server = "n"
 en_sql_express = "n"
 result.WriteText "	<services>" & vbcrlf
@@ -4015,40 +4021,40 @@ for each objItem in colItems
 	result.WriteText "			<service_start_mode>" & escape_xml(objItem.StartMode) & "</service_start_mode>" & vbcrlf
 	result.WriteText "			<service_state>" & escape_xml(objItem.State) & "</service_state>" & vbcrlf
 	result.WriteText "		</service>" & vbcrlf
-	
+
 	service_name = objItem.Name
 	if details_to_lower = "y" then service_name = lcase(service_name) end if
-	
+
 	' to account for SQL server instances not named "sql server (mssqlserver)", named "sql server (something else)"
 	'if (instr(service_name, "mssql$" ) = 1) then service_name = "mssqlserver": wscript.echo "in" end if
-	
+
 	select case service_name
-	
-		case "iisadmin"   
+
+		case "iisadmin"
 			iis = True
-			
-		case "w3svc"      
+
+		case "w3svc"
 			iis_w3svc = True
-			
-		case "msftpsvc"   
+
+		case "msftpsvc"
 			iis_ftpsvc = True
-			
-		case "smtpsvc"    
+
+		case "smtpsvc"
 			iis_smtpsvc = True
-			
-		case "nntpsvc"    
+
+		case "nntpsvc"
 			iis_nntpsvc = True
-		
-		case "mssqlserver" 
+
+		case "mssqlserver"
 			en_sql_server = "y"
 			en_sql_server_state = objItem.State
 			if debugging > "1" then wscript.echo service_name end if
 
-		case "sql server (mssqlserver)" 
+		case "sql server (mssqlserver)"
 			en_sql_server = "y"
 			en_sql_server_state = objItem.State
 			if debugging > "1" then wscript.echo service_name end if
-		
+
 		case "mssql$sqlexpress"
 			en_sql_express = "y"
 			en_sql_server_state = objItem.State
@@ -4060,28 +4066,28 @@ for each objItem in colItems
 			if debugging > "1" then wscript.echo service_name end if
 
 	end select
-	
+
 	if lcase(objItem.DisplayName) = "sql server (sqlexpress)" then
 		en_sql_express = "y"
 		en_sql_server_state = objItem.State
-	end if 
+	end if
 
 	if lcase(objItem.DisplayName) = "sql server (mssqlserver)"  then
 		en_sql_server = "y"
 		en_sql_server_state = objItem.State
-	end if 
+	end if
 
 	if (instr(objItem.DisplayName, "SQL Server (") = 1)  then
 		en_sql_server = "y"
 		en_sql_server_state = objItem.State
-	end if 
+	end if
 
 next
 result.WriteText "	</services>" & vbcrlf
 item = ""
 
 if ((en_sql_server = "y") or (en_sql_express = "y")) then
-	if debugging > "0" then wscript.echo "SQL info" end if 
+	if debugging > "0" then wscript.echo "SQL info" end if
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,    "SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\","CSDVersion", db_version
 	If (IsNull(db_version)) Then
 		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\","CurrentVersion", db_version
@@ -4092,7 +4098,7 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 	If (IsNull(db_version) and en_sql_express = "y") Then
 		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\SQLEXPRESS\MSSQLSERVER\CurrentVersion","CurrentVersion", db_version
 	End If
-	
+
 	' attempt to determine the edition of SQL
 	db_edition = ""
 	' first try SQL 2008 r2
@@ -4113,24 +4119,24 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 		' SQL 2000
 		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\MSSQLServer\Setup","Edition", db_edition
 	end if
-	if (instr(lcase(db_edition), "express")) then 
-		en_sql_express = "y" 
+	if (instr(lcase(db_edition), "express")) then
+		en_sql_express = "y"
 		en_sql_server = "n"
 	end if
-	
+
 	if ((en_sql_express = "y") and (db_edition = "" or isnull(db_edition))) then
 		db_edition = "Express Edition"
 	end if
 
-	if debugging > "1" then wscript.echo "SQL Express: " & en_sql_express end if 
-	if debugging > "1" then wscript.echo "SQL Server: " & en_sql_server end if 
-	if debugging > "1" then wscript.echo "DB Version: " & db_version end if 
-	if debugging > "1" then wscript.echo "DB Edition: " & db_edition end if 
+	if debugging > "1" then wscript.echo "SQL Express: " & en_sql_express end if
+	if debugging > "1" then wscript.echo "SQL Server: " & en_sql_server end if
+	if debugging > "1" then wscript.echo "DB Version: " & db_version end if
+	if debugging > "1" then wscript.echo "DB Edition: " & db_edition end if
 
 	' enumerate the instances of SQL
 	strKeyPath = "SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL"
 	oReg.EnumValues HKEY_LOCAL_MACHINE, strKeyPath, sql_instances, arrValueTypes
-	
+
 	if isnull(sql_instances) then
 		' we did not return any instances - maybe SQL 2000 or SQL Express?
 		sql_instances = array("MSSQLSERVER")
@@ -4139,7 +4145,7 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 			if debugging > "1" then wscript.echo "Instance: " & value end if
 		next
 	end if
-	
+
 	i = ""
 	db_login_type = "Not in registry (possibly SQL Express)."
 	oReg.GetDWORDValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\","LoginMode", i
@@ -4174,11 +4180,11 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 			' this might occur if we connect to SQL 2000. TODO: check this.
 	End Select
 
-	if debugging > "1" then wscript.echo "DB Login Type: " & db_login_type end if 
+	if debugging > "1" then wscript.echo "DB Login Type: " & db_login_type end if
 
 	db_port = ""
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\SuperSocketNetLib\Tcp\","TcpPort", db_port
-	
+
 	if (isnull(db_port) or db_port = "") then
 		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\MSSQLServer\SuperSocketNetLib\Tcp\IPAll\","TcpPort", db_port
 	end if
@@ -4194,67 +4200,67 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 	if (IsNull(db_port) or db_port = "") then
 		db_port = "unknown"
 	end if
-	
-	if debugging > "1" then wscript.echo "DB Port: " & db_port end if 
+
+	if debugging > "1" then wscript.echo "DB Port: " & db_port end if
 
 	if en_sql_express = "y" then
 		db_type = "SQL Server Express"
 	else
 		db_type = "SQL Server"
 	end if
-	
-	if debugging > "1" then wscript.echo "DB Type: " & db_type end if 
-	if debugging > "1" then wscript.echo "SQL State: " & en_sql_server_state end if 
+
+	if debugging > "1" then wscript.echo "DB Type: " & db_type end if
+	if debugging > "1" then wscript.echo "SQL State: " & en_sql_server_state end if
 
 	if ( (en_sql_server_state = "Running") and (((i = 1) or (i = 2)) or db_type = "SQL Server Express")) then
 		which_instance = ""
 		for each instance in sql_instances
 			if instance = "MSSQLSERVER" then which_instance = "MSSQLSERVER" end if
 		next
-		
+
 		if ((which_instance = "") and (sql_instances(0) <> "")) then which_instance = sql_instances(0)
-		
+
 		if ((db_type = "SQL Server") and (which_instance = "MSSQLSERVER")) then
 			strBaseConnection ="Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & ";DATABASE=master"
 		end if
-		
+
 		if ((db_type = "SQL Server") and (which_instance <> "MSSQLSERVER")) then
 			strBaseConnection ="Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & "\" & which_instance & ";DATABASE=master"
 		end if
-		
+
 		if ((db_type = "SQL Server Express") and (which_instance = "MSSQLSERVER")) then
 			strBaseConnection = "Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & "\SQLEXPRESS;Initial Catalog=master;"
 		end if
-		
+
 		if ((db_type = "SQL Server Express") and (which_instance <> "MSSQLSERVER")) then
 			strBaseConnection = "Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;Data Source=" & system_hostname & "\" & which_instance & ";Initial Catalog=master;"
 		end if
-		
+
 		if debugging > "1" then wscript.echo "Which Instance: " & which_instance end if
 		if debugging > "1" then wscript.echo strBaseConnection end if
-		
+
 		Set objDBConnection = CreateObject("ADODB.Connection")
 		on error resume next
 		objDBConnection.Open(strBaseConnection)
 		error_returned = Err.Number
 		objDBConnection.Close
 		on error goto 0
-		if (error_returned <> 0) then 
-			if debugging > "1" then wscript.echo "Could not connect to SQL (possibly Express, SSRS, SSIS or SSAS)" end if 
-			if debugging > "1" then wscript.echo "Description: " & error_description end if 
+		if (error_returned <> 0) then
+			if debugging > "1" then wscript.echo "Could not connect to SQL (possibly Express, SSRS, SSIS or SSAS)" end if
+			if debugging > "1" then wscript.echo "Description: " & error_description end if
 		end if
 	end if
-	
+
 	result.WriteText "	<database>" & vbcrlf
 	result.WriteText "		<db_type>" & escape_xml(db_type) & "</db_type>" & vbcrlf
 	result.WriteText "		<db_version>" & escape_xml(db_version) & "</db_version>" & vbcrlf
 	result.WriteText "		<db_edition>" & escape_xml(db_edition) & "</db_edition>" & vbcrlf
-	result.WriteText "		<db_port>" & escape_xml(db_port) & "</db_port>" & vbcrlf 
+	result.WriteText "		<db_port>" & escape_xml(db_port) & "</db_port>" & vbcrlf
 	result.WriteText "		<db_login_type>" & escape_xml(db_login_type) & "</db_login_type>" & vbcrlf
 	result.WriteText "		<db_service_state>" & escape_xml(en_sql_server_state) & "</db_service_state>" & vbcrlf
 	result.WriteText "	</database>" & vbcrlf
 
-	
+
 
 
 	if ( (en_sql_server_state = "Running") and (((i = 1) or (i = 2)) or db_type = "SQL Server Express") and error_returned = 0) then
@@ -4262,27 +4268,27 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 		if ((db_type = "SQL Server") and (which_instance = "MSSQLSERVER")) then
 			strBaseConnection ="Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;DATA SOURCE=" & system_hostname & ";DATABASE=master"
 		end if
-		
+
 		if ((db_type = "SQL Server") and (which_instance <> "MSSQLSERVER")) then
 			strBaseConnection ="Provider=SQLOLEDB;Integrated Security=SSPI;Persist Security Info=False;DATA SOURCE=" & system_hostname & "\" & which_instance & ";DATABASE=master"
 		end if
-		
+
 		if ((db_type = "SQL Server Express") and (which_instance = "MSSQLSERVER")) then
 			strBaseConnection = "Provider=SQLOLEDB;Integrated Security=SSPI;Data Source=" & system_hostname & "\SQLEXPRESS;Initial Catalog=master;"
 		end if
-		
+
 		if ((db_type = "SQL Server Express") and (which_instance <> "MSSQLSERVER")) then
 			strBaseConnection = "Provider=SQLOLEDB;Integrated Security=SSPI;Data Source=" & system_hostname & "\" & which_instance & ";Initial Catalog=master;"
 		end if
 
-			if debugging > "1" then wscript.echo "DB Instance: " & instance end if 
+			if debugging > "1" then wscript.echo "DB Instance: " & instance end if
 			Set objDBConnection = CreateObject("ADODB.Connection")
 			Set objRS = CreateObject("ADODB.RecordSet")
 			objDBConnection.Open(strBaseConnection)
 			strQuery = "Select name, dbid, cmptlevel, filename, CONVERT(VARCHAR(19), crdate, 120) as crdate from sysdatabases order by name"
 			objRS.open strQuery, objDBConnection, 1
 			number_of_databases = cInt(objRS.RecordCount)
-			if debugging > "1" then wscript.echo "DB Count: " & number_of_databases end if 
+			if debugging > "1" then wscript.echo "DB Count: " & number_of_databases end if
 			if (number_of_databases > 0) then
 
 				Do Until objRS.Eof
@@ -4294,7 +4300,7 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 							filesize = int(objFile.FileSize / 1024 / 1024)
 						next
 						database_name = CStr(objRS("Name"))
-						if debugging > "1" then wscript.echo "DB Name: " & database_name end if 
+						if debugging > "1" then wscript.echo "DB Name: " & database_name end if
 						item = item &  "		<details>" & vbcrlf
 						item = item & "			<details_name>" & escape_xml(database_name) & "</details_name>" & vbcrlf
 						item = item & "			<details_internal_id>" & escape_xml(objRS("dbid")) & "</details_internal_id>" & vbcrlf
@@ -4308,7 +4314,7 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 					objRS.Movenext
 				Loop
 			end if
-			'On Error Goto 0 
+			'On Error Goto 0
 			objRS.Close
 			objDBConnection.Close
 		next
@@ -4316,7 +4322,7 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 end if
 if item > "" then
 	result.WriteText "	<database_details>" & vbcrlf
-	result.WriteText item 
+	result.WriteText item
 	result.WriteText "	</database_details>" & vbcrlf
 end if
 item = ""
@@ -4324,21 +4330,21 @@ item = ""
 
 if ((iis_w3svc = True) and (iis = True) and ((cint(windows_build_number) = 2195) or (cint(windows_build_number) = 2600)) ) then
 	' IIS 5 or 5.1
-	if debugging > "1" then wscript.echo "IIS 5 Installed" end if 
+	if debugging > "1" then wscript.echo "IIS 5 Installed" end if
 	result_webserver = result_webserver & "		<server>" & vbcrlf
 	result_webserver = result_webserver & "			<webserver_type>IIS</webserver_type>" & vbcrlf
 	result_webserver = result_webserver & "			<webserver_version>5</webserver_version>" & vbcrlf
 	result_webserver = result_webserver & "			<webserver_state>running</webserver_state>" & vbcrlf
 	result_webserver = result_webserver & "		</server>" & vbcrlf
-	
+
 	result_site = ""
 	if audit_location = "local" then iis_connect = "localhost" else iis_connect = strcomputer end if
 	on error resume next
 		set objWMIService_IIS = GetObject( "IIS://" & iis_connect & "/W3SVC" )
 		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (W3SVC)" : audit_wmi_fails = audit_wmi_fails & "W3SVC " : end if
-		if objWMIService_IIS.count = 0 then 
+		if objWMIService_IIS.count = 0 then
 		 ' do nothing
-		else 
+		else
 			for each objitem in objWMIService_IIS
 				if objitem.class = "IIsWebServer" then
 					result_site = result_site & "			<site>" & vbcrlf
@@ -4366,7 +4372,7 @@ if ((iis_w3svc = True) and (iis = True) and ((cint(windows_build_number) = 2195)
 							result_site = result_site & "				<site_log_rotation>Unlimited file size</site_log_rotation>" & vbcrlf
 							Else
 							result_site = result_site & "				<site_log_rotation>When file size reaches " & (objItem.LogFileTruncateSize/1048576) & " MB</site_log_rotation>" & vbcrlf
-							End If 
+							End If
 						Case 1:       result_site = result_site & "				<site_log_rotation>daily</site_log_rotation>" & vbcrlf
 						Case 2:       result_site = result_site & "				<site_log_rotation>weekly</site_log_rotation>" & vbcrlf
 						Case 3:       result_site = result_site & "				<site_log_rotation>monthly</site_log_rotation>" & vbcrlf
@@ -4426,7 +4432,7 @@ end if
 
 if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000)) then
 	' IIS 6 or greater
-	if debugging > "1" then wscript.echo "IIS 6 Installed" end if 
+	if debugging > "1" then wscript.echo "IIS 6 Installed" end if
 
 	iis_wmi = True
 
@@ -4441,10 +4447,10 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (MicrosoftIISv2)" : audit_wmi_fails = audit_wmi_fails & "MicrosoftIISv2 " : end if
 		end if
 	on error goto 0
-	
+
 	if isnull(objWMIService_IIS) then iis_wmi = False
 	if isempty(objWMIService_IIS) then iis_wmi = False
-	
+
 	if iis_wmi = True then
 		iis_version = ""
 		on error resume next
@@ -4466,7 +4472,7 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 		on error resume next
 			Set colItems = objWMIService_IIS.ExecQuery("SELECT * FROM IISWebServiceSetting",,32)
 			error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (IIsWebServiceSetting)" : audit_wmi_fails = audit_wmi_fails & "IISWebServiceSetting " : end if
-			For Each objItem in colItems 
+			For Each objItem in colItems
 				if (not isnull(objItem.WebSvcExtRestrictionList)) then
 					if (ubound(objItem.WebSvcExtRestrictionList) > 0) then
 						result_webserver = result_webserver & "		<webserver_extns>" & vbcrlf
@@ -4481,7 +4487,7 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 							Select Case iis_web_ext_path
 								Case "*.exe":  iis_web_ext_desc = "All unknown CGI extensions"
 								Case "*.dll":  iis_web_ext_desc = "All unknown ISAPI extensions"
-								Case Default:  
+								Case Default:
 							End Select
 							result_webserver = result_webserver & "			<webserver_extn>" & vbcrlf
 							result_webserver = result_webserver & "				<ext_name>" & escape_xml(objItem.WebSvcExtRestrictionList(i).Description) & "</ext_name>" & vbcrlf
@@ -4504,7 +4510,7 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 			ArgSiteIndex = objItem.Name
 			' Stripping out "w3svc/"
 			site_id = Mid(ArgSiteIndex, 7)
-			
+
 			result_site = result_site & "				<site_internal_id>" & site_id & "</site_internal_id>" & vbcrlf
 			result_site = result_site & "				<site_description>" & escape_xml(objItem.ServerComment) & "</site_description>" & vbcrlf
 
@@ -4522,18 +4528,18 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 					Case Default: result_site = result_site & "				<site_state>Unknown</site_state>" & vbcrlf
 				End Select
 			Next
-			
+
 
 			' Logging
 			strQuery = "SELECT * FROM IIsLogModuleSetting WHERE LogModuleId = '" & objItem.LogPluginClsid & "'"
-			Set colItems1 = objWMIService_IIS.ExecQuery(strQuery,,32) 		
+			Set colItems1 = objWMIService_IIS.ExecQuery(strQuery,,32)
 			Select Case objItem.LogType
 				Case 0:       result_site = result_site & "				<site_logging>disabled</site_logging>" & vbcrlf
 				Case 1:       result_site = result_site & "				<site_logging>enabled</site_logging>" & vbcrlf
 				Case Default: result_site = result_site & "				<site_logging>undefined</site_logging>" & vbcrlf
 			End Select
 
-			For Each objItem1 in colItems1 
+			For Each objItem1 in colItems1
 				LogFormat = Split(objItem1.Name, "/")
 				result_site = result_site & "				<site_log_format>" & escape_xml(LogFormat(1)) & "</site_log_format>" & vbcrlf
 				result_site = result_site & "				<site_log_directory>" & escape_xml(objItem.LogFileDirectory) & "</site_log_directory>" & vbcrlf
@@ -4544,7 +4550,7 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 					result_site = result_site & "				<site_log_rotation>Unlimited file size</site_log_rotation>" & vbcrlf
 					Else
 					result_site = result_site & "				<site_log_rotation>When file size reaches " & (objItem.LogFileTruncateSize/1048576) & " MB</site_log_rotation>" & vbcrlf
-					End If 
+					End If
 				Case 1:       result_site = result_site & "				<site_log_rotation>daily</site_log_rotation>" & vbcrlf
 				Case 2:       result_site = result_site & "				<site_log_rotation>weekly</site_log_rotation>" & vbcrlf
 				Case 3:       result_site = result_site & "				<site_log_rotation>monthly</site_log_rotation>" & vbcrlf
@@ -4581,7 +4587,7 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 
 					if (escape_xml(objItem.ServerBindings(i).Hostname) = "") then
 						site_url = site_url & system_hostname
-					else 
+					else
 						site_url = site_url & escape_xml(objItem.ServerBindings(i).Hostname)
 					end if
 					if (escape_xml(objItem.ServerBindings(i).Port) <> "80" and escape_xml(objItem.ServerBindings(i).Port) <> "443") then
@@ -4637,12 +4643,12 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 				if objFSO.FolderExists(iis_path) then
 					Set objFolder = objFSO.GetFolder(iis_path)
 					site_size = int(objFolder.size / 1024 / 1024) ' NOTE - only works when run locally. Returns in MB.
-				else 
+				else
 					site_size = ""
 				end if
 			end if
 			on error goto 0
-				
+
 
 			result_site = result_site & "				<site_path>" & escape_xml(iis_path) & "</site_path>" & vbcrlf
 			result_site = result_site & "				<site_size>" & escape_xml(site_size) & "</site_size>" & vbcrlf
@@ -4676,7 +4682,7 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 		Set colItems = objWMIService_IIS.ExecQuery("SELECT * FROM IIsApplicationPoolSetting",,32)
 		if (isnull(colItems)) then
 			' do nothing
-		else 
+		else
 			result_app_pool = result_app_pool & "		<app_pools>" & vbcrlf
 			For Each objItem in colItems
 				result_app_pool = result_app_pool & "			<app_pool>" & vbcrlf
@@ -4713,13 +4719,13 @@ end if
 
 result.WriteText "	<software_keys>" & vbcrlf
 
-if debugging > "0" then wscript.echo "CD Keys" end if 
+if debugging > "0" then wscript.echo "CD Keys" end if
 win_cd_key = "n"
 
 '''''''''''''''''''''''''''''''''''''''''''''''''
 '   MS CD Keys for Windows 2000 onwards         '
 '''''''''''''''''''''''''''''''''''''''''''''''''
-if debugging > "1" then wscript.echo "Win 2000 Key" end if 
+if debugging > "1" then wscript.echo "Win 2000 Key" end if
 path = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
 subKey = "DigitalProductId"
 oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
@@ -4747,9 +4753,9 @@ end if
 '''''''''''''''''''''''''''''''''''''''''''''''''
 '   MS CD Keys for Windows 64bit                '
 '''''''''''''''''''''''''''''''''''''''''''''''''
-if debugging > "1" then wscript.echo "Win 64bit Key" end if 
+if debugging > "1" then wscript.echo "Win 64bit Key" end if
 if address_width = "64" then
-	Subhive = "SOFTWARE\Microsoft\Windows NT\CurrentVersion" 
+	Subhive = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
 	Set objCtx = CreateObject("WbemScripting.SWbemNamedValueSet")
 	objCtx.Add "__ProviderArchitecture", 64
 	objCtx.Add "__RequiredArchitecture", True
@@ -4761,7 +4767,7 @@ if address_width = "64" then
 	else
 		Set objServices = objLocator.ConnectServer(strcomputer, "root\default", "", "", "", "", wbemConnectFlagUseMaxWait, objCtx)
 	end if
-	Set o64reg = objServices.Get("StdRegProv") 
+	Set o64reg = objServices.Get("StdRegProv")
 	key_text = null
 	Set Inparams = o64reg.Methods_("GetStringValue").Inparameters
 	Inparams.Hdefkey = HKEY_LOCAL_MACHINE
@@ -4788,7 +4794,7 @@ if address_width = "64" then
 		key_text = getkey(Outparams.uValue, 1)
 	end if
 	if (IsNull(key_text) or (win_cd_key = "y") or (key_text = "")) then
-		' do nothing 
+		' do nothing
 	else
 			win_cd_key = "y"
 			result.WriteText "		<key>" & vbcrlf
@@ -4797,7 +4803,7 @@ if address_width = "64" then
 			result.WriteText "			<key_release>" & escape_xml(windows_build_number) & "</key_release>" & vbcrlf
 			result.WriteText "			<key_edition>" & escape_xml(system_os_version) & "</key_edition>" & vbcrlf
 			result.WriteText "		</key>" & vbcrlf
-	end if	
+	end if
 end if
 
 
@@ -4809,7 +4815,7 @@ end if
 ''''''''''''''''''''''''''''''''
 '   MS CD Keys for Office XP   '
 ''''''''''''''''''''''''''''''''
-if debugging > "1" then wscript.echo "Office XP Key" end if 
+if debugging > "1" then wscript.echo "Office XP Key" end if
 strKeyPath = "SOFTWARE\Microsoft\Office\10.0\Registration"
 oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
 if (not isnull(arrSubKeys)) then
@@ -5300,17 +5306,17 @@ end if
 '''''''''''''''''''''''''
 ' Adobe keys            '
 '''''''''''''''''''''''''
-' this will extract all keys for  Adobe licensed products from the sqlite database, 
+' this will extract all keys for  Adobe licensed products from the sqlite database,
 ' which seems to be where the later versions store the keys
 ' Thanks to JBS in the Open-AudIT.org forums.
 ' http://www.open-audit.org/phpBB3/viewtopic.php?f=20&t=5993
 
 if objFSO.FileExists("sqlite3.Exe") then
 	if objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-		dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db" 
+		dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
 		db_present = 1
 	elseif objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-		dbfile = "\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db" 
+		dbfile = "\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
 		db_present = 1
 	end if
 
@@ -5329,7 +5335,7 @@ if objFSO.FileExists("sqlite3.Exe") then
 			ArryTxt = split(strtext,"|")
 
 			if (IsArray(ArryTxt)) then
-				Product = ArryTxt(0) 
+				Product = ArryTxt(0)
 				key_text = get_adobe(ArryTxt(1))
 			else
 				if (strtext > "") then
@@ -5345,7 +5351,7 @@ if objFSO.FileExists("sqlite3.Exe") then
 			if (instr(1,Product,"ADOBE",1) = 0) then
 				Product = "Adobe_" & Product
 			end if
-			
+
 			key_name = replace(Product,"_"," ")
 			key_release = ""
 			key_edition = "Licensed"
@@ -5360,12 +5366,12 @@ if objFSO.FileExists("sqlite3.Exe") then
 			key_text = ""
 			key_release = ""
 			key_edition = ""
-		loop 
+		loop
 	else
-		if debugging > "1" then wscript.echo "No Adobe license database found" end if 
+		if debugging > "1" then wscript.echo "No Adobe license database found" end if
 	end if
 else
-	if debugging > "1" then wscript.echo "sqlite3.exe not found" end if 
+	if debugging > "1" then wscript.echo "sqlite3.exe not found" end if
 end if
 
 
@@ -5988,7 +5994,7 @@ else
 		if IsNull(key_text) then
 			' do nothing
 		else
-			key_text = Mid(key_text,3,21) 
+			key_text = Mid(key_text,3,21)
 			result.WriteText "		<key>" & vbcrlf
 			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
 			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
@@ -6458,7 +6464,7 @@ end if
 result.WriteText "	</software_keys>" & vbcrlf
 
 if ((run_netstat = "y") or (run_netstat = "s" and instr(lcase(system_os_name), "server"))) then
-	if debugging > "0" then wscript.echo "netstat info" end if 
+	if debugging > "0" then wscript.echo "netstat info" end if
 	cmd = "netstat -abn"
 	on error resume next
 	set rexec = objShell.exec(cmd)
@@ -6480,7 +6486,7 @@ if ((run_netstat = "y") or (run_netstat = "s" and instr(lcase(system_os_name), "
 						result.WriteText old_line & vbcrlf
 					end if
 					old_line = strText
-				else 
+				else
 					' we have to add on to the previous line
 					old_line = old_line & " " & strText
 				end if
@@ -6492,13 +6498,13 @@ if ((run_netstat = "y") or (run_netstat = "s" and instr(lcase(system_os_name), "
 end if
 
 
-' NOTE - Have moved to end of audit incase processing fails. 
+' NOTE - Have moved to end of audit incase processing fails.
 '        The rest of the audit data should be processed fine.
 
 'function route()
 ' below only checks when OS is XP or later (not 2000 or NT)
 if (windows_build_number > 2195) then
-	if debugging > "0" then wscript.echo "network routing info" end if 
+	if debugging > "0" then wscript.echo "network routing info" end if
 	result.WriteText "	<routes>" & vbcrlf
 	set colItems = objWMIService.ExecQuery("Select * from Win32_IP4RouteTable",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_IP4RouteTable)" : audit_wmi_fails = audit_wmi_fails & "Win32_IP4RouteTable " : end if
@@ -6531,13 +6537,13 @@ if (windows_build_number > 2195) then
 		end select
 		ip_hit = "0"
 		for i = 1 to ubound(ip_address_array)
-			if (objItem.NextHop = ip_address_array(i))  then 
+			if (objItem.NextHop = ip_address_array(i))  then
 				ip_hit = "1"
 			end if
 		next
 		if ( (ip_hit = "1") or (objItem.NextHop = "127.0.0.1") ) then
 			' do nothing
-		else 
+		else
 		   result.WriteText "		<route>" & vbcrlf
 		   result.WriteText "			<destination>" & objItem.Destination & "</destination>" & vbcrlf
 		   result.WriteText "			<mask>" & objItem.Mask & "</mask>" & vbcrlf
@@ -6575,7 +6581,7 @@ end if
 result.WriteText "</system>"
 audit_time = Timer
 elapsed_time = audit_time - start_time
-if debugging > "0" then wscript.echo "Audit Generated in " & int(elapsed_time) & " seconds." end if 
+if debugging > "0" then wscript.echo "Audit Generated in " & int(elapsed_time) & " seconds." end if
 
 if create_file = "y" then
 	if debugging > "0" then wscript.echo "Creating output File" end if
@@ -6586,7 +6592,7 @@ if create_file = "y" then
 	Err.clear
 	on error resume next
 	result.position = 0
-	result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists 
+	result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists
 	error_returned = Err.Number
 	error_description = Err.Description
 	on error goto 0
@@ -6600,7 +6606,7 @@ if create_file = "y" then
 end if
 
 if submit_online = "y" then
-	if debugging > "0" then wscript.echo "Submitting audit online" end if 
+	if debugging > "0" then wscript.echo "Submitting audit online" end if
 	Err.clear
 	XmlObj = "ServerXMLHTTP"
 	Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
@@ -6611,11 +6617,11 @@ if submit_online = "y" then
 	result.position = 0
 	objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
 	if (Err.Number <> 0 or objHTTP.status <> 200) then
-		if debugging > "1" then 
+		if debugging > "1" then
 			wscript.echo "Error with http request"
-			wscript.echo "HTTP Error: " & Err.Number 
-			wscript.echo "HTTP Status: " &  objHTTP.status 
-			wscript.echo "HTTP Response: " & objHTTP.ResponseText 
+			wscript.echo "HTTP Error: " & Err.Number
+			wscript.echo "HTTP Status: " &  objHTTP.status
+			wscript.echo "HTTP Response: " & objHTTP.ResponseText
 		end if
 		'XmlObj = "XMLHTTP"
 		'Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
@@ -6625,7 +6631,7 @@ if submit_online = "y" then
 		'objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
 	end if
     Err.clear
-	if debugging > "0" then wscript.echo "Audit Submitted" end if 
+	if debugging > "0" then wscript.echo "Audit Submitted" end if
 
 	if (objHTTP.ResponseText > "" and debugging > "1") then
 		wscript.echo
@@ -6782,233 +6788,233 @@ end function
 
 
 function WMIOSLanguage(lang)
-	if lang = "1" then WMIOSLanguage = "Arabic" end if 
-	if lang = "4" then WMIOSLanguage = "Chinese (Simplified)– China" end if 
-	if lang = "9" then WMIOSLanguage = "English" end if 
-	if lang = "1025" then WMIOSLanguage = "Arabic - Saudi Arabia" end if 
-	if lang = "1026" then WMIOSLanguage = "Bulgarian" end if 
-	if lang = "1027" then WMIOSLanguage = "Catalan" end if 
-	if lang = "1028" then WMIOSLanguage = "Chinese (Traditional) - Taiwan" end if 
-	if lang = "1029" then WMIOSLanguage = "Czech" end if 
-	if lang = "1030" then WMIOSLanguage = "Danish" end if 
-	if lang = "1031" then WMIOSLanguage = "German – Germany" end if 
-	if lang = "1032" then WMIOSLanguage = "Greek" end if 
-	if lang = "1033" then WMIOSLanguage = "English - United States" end if 
-	if lang = "1034" then WMIOSLanguage = "Spanish - Traditional Sort" end if 
-	if lang = "1035" then WMIOSLanguage = "Finnish" end if 
-	if lang = "1036" then WMIOSLanguage = "French - France" end if 
-	if lang = "1037" then WMIOSLanguage = "Hebrew" end if 
-	if lang = "1038" then WMIOSLanguage = "Hungarian" end if 
-	if lang = "1039" then WMIOSLanguage = "Icelandic" end if 
-	if lang = "1040" then WMIOSLanguage = "Italian - Italy" end if 
-	if lang = "1041" then WMIOSLanguage = "Japanese" end if 
-	if lang = "1042" then WMIOSLanguage = "Korean" end if 
-	if lang = "1043" then WMIOSLanguage = "Dutch - Netherlands" end if 
-	if lang = "1044" then WMIOSLanguage = "Norwegian - Bokmal" end if 
-	if lang = "1045" then WMIOSLanguage = "Polish" end if 
-	if lang = "1046" then WMIOSLanguage = "Portuguese - Brazil" end if 
-	if lang = "1047" then WMIOSLanguage = "Rhaeto-Romanic" end if 
-	if lang = "1048" then WMIOSLanguage = "Romanian" end if 
-	if lang = "1049" then WMIOSLanguage = "Russian" end if 
-	if lang = "1050" then WMIOSLanguage = "Croatian" end if 
-	if lang = "1051" then WMIOSLanguage = "Slovak" end if 
-	if lang = "1052" then WMIOSLanguage = "Albanian" end if 
-	if lang = "1053" then WMIOSLanguage = "Swedish" end if 
-	if lang = "1054" then WMIOSLanguage = "Thai" end if 
-	if lang = "1055" then WMIOSLanguage = "Turkish" end if 
-	if lang = "1056" then WMIOSLanguage = "Urdu" end if 
-	if lang = "1057" then WMIOSLanguage = "Indonesian" end if 
-	if lang = "1058" then WMIOSLanguage = "Ukrainian" end if 
-	if lang = "1059" then WMIOSLanguage = "Belarusian" end if 
-	if lang = "1060" then WMIOSLanguage = "Slovenian" end if 
-	if lang = "1061" then WMIOSLanguage = "Estonian" end if 
-	if lang = "1062" then WMIOSLanguage = "Latvian" end if 
-	if lang = "1063" then WMIOSLanguage = "Lithuanian" end if 
-	if lang = "1065" then WMIOSLanguage = "Persian" end if 
-	if lang = "1066" then WMIOSLanguage = "Vietnamese" end if 
-	if lang = "1069" then WMIOSLanguage = "Basque" end if 
-	if lang = "1070" then WMIOSLanguage = "Serbian" end if 
-	if lang = "1071" then WMIOSLanguage = "Macedonian (FYROM)" end if 
-	if lang = "1072" then WMIOSLanguage = "Sutu" end if 
-	if lang = "1073" then WMIOSLanguage = "Tsonga" end if 
-	if lang = "1074" then WMIOSLanguage = "Tswana" end if 
-	if lang = "1076" then WMIOSLanguage = "Xhosa" end if 
-	if lang = "1077" then WMIOSLanguage = "Zulu" end if 
-	if lang = "1078" then WMIOSLanguage = "Afrikaans" end if 
-	if lang = "1080" then WMIOSLanguage = "Faeroese" end if 
-	if lang = "1081" then WMIOSLanguage = "Hindi" end if 
-	if lang = "1082" then WMIOSLanguage = "Maltese" end if 
-	if lang = "1084" then WMIOSLanguage = "Gaelic" end if 
-	if lang = "1085" then WMIOSLanguage = "Yiddish" end if 
-	if lang = "1086" then WMIOSLanguage = "Malay - Malaysia" end if 
-	if lang = "2049" then WMIOSLanguage = "Arabic - Iraq" end if 
-	if lang = "2052" then WMIOSLanguage = "Chinese (Simplified) – PRC" end if 
-	if lang = "2055" then WMIOSLanguage = "German - Switzerland" end if 
-	if lang = "2057" then WMIOSLanguage = "English - United Kingdom" end if 
-	if lang = "2058" then WMIOSLanguage = "Spanish - Mexico" end if 
-	if lang = "2060" then WMIOSLanguage = "French - Belgium" end if 
-	if lang = "2064" then WMIOSLanguage = "Italian - Switzerland" end if 
-	if lang = "2067" then WMIOSLanguage = "Dutch - Belgium" end if 
-	if lang = "2068" then WMIOSLanguage = "Norwegian - Nynorsk" end if 
-	if lang = "2070" then WMIOSLanguage = "Portuguese - Portugal" end if 
-	if lang = "2072" then WMIOSLanguage = "Romanian - Moldova" end if 
-	if lang = "2073" then WMIOSLanguage = "Russian - Moldova" end if 
-	if lang = "2074" then WMIOSLanguage = "Serbian - Latin" end if 
-	if lang = "2077" then WMIOSLanguage = "Swedish - Finland" end if 
-	if lang = "3073" then WMIOSLanguage = "Arabic - Egypt" end if 
-	if lang = "3076" then WMIOSLanguage = "Chinese (Traditional) Hong Kong SAR" end if 
-	if lang = "3079" then WMIOSLanguage = "German - Austria" end if 
-	if lang = "3081" then WMIOSLanguage = "English - Australia" end if 
-	if lang = "3082" then WMIOSLanguage = "Spanish - International Sort" end if 
-	if lang = "3084" then WMIOSLanguage = "French - Canada" end if 
-	if lang = "3098" then WMIOSLanguage = "Serbian - Cyrillic" end if 
-	if lang = "4097" then WMIOSLanguage = "Arabic - Libya" end if 
-	if lang = "4100" then WMIOSLanguage = "Chinese (Simplified) Singapore" end if 
-	if lang = "4103" then WMIOSLanguage = "German - Luxembourg" end if 
-	if lang = "4105" then WMIOSLanguage = "English - Canada" end if 
-	if lang = "4106" then WMIOSLanguage = "Spanish - Guatemala" end if 
-	if lang = "4108" then WMIOSLanguage = "French - Switzerland" end if 
-	if lang = "5121" then WMIOSLanguage = "Arabic - Algeria" end if 
-	if lang = "5127" then WMIOSLanguage = "German - Liechtenstein" end if 
-	if lang = "5129" then WMIOSLanguage = "English - New Zealand" end if 
-	if lang = "5130" then WMIOSLanguage = "Spanish - Costa Rica" end if 
-	if lang = "5132" then WMIOSLanguage = "French - Luxembourg" end if 
-	if lang = "6145" then WMIOSLanguage = "Arabic - Morocco" end if 
-	if lang = "6153" then WMIOSLanguage = "English - Ireland" end if 
-	if lang = "6154" then WMIOSLanguage = "Spanish - Panama" end if 
-	if lang = "7169" then WMIOSLanguage = "Arabic - Tunisia" end if 
-	if lang = "7177" then WMIOSLanguage = "English - South Africa" end if 
-	if lang = "7178" then WMIOSLanguage = "Spanish - Dominican Republic" end if 
-	if lang = "8193" then WMIOSLanguage = "Arabic - Oman" end if 
-	if lang = "8201" then WMIOSLanguage = "English - Jamaica" end if 
-	if lang = "8202" then WMIOSLanguage = "Spanish - Venezuela" end if 
-	if lang = "9217" then WMIOSLanguage = "Arabic - Yemen" end if 
-	if lang = "9226" then WMIOSLanguage = "Spanish - Colombia" end if 
-	if lang = "10241" then WMIOSLanguage = "Arabic - Syria" end if 
-	if lang = "10249" then WMIOSLanguage = "English - Belize" end if 
-	if lang = "10250" then WMIOSLanguage = "Spanish - Peru" end if 
-	if lang = "11265" then WMIOSLanguage = "Arabic - Jordan" end if 
-	if lang = "11273" then WMIOSLanguage = "English - Trinidad" end if 
-	if lang = "11274" then WMIOSLanguage = "Spanish - Argentina" end if 
-	if lang = "12289" then WMIOSLanguage = "Arabic - Lebanon" end if 
-	if lang = "12298" then WMIOSLanguage = "Spanish - Ecuador" end if 
-	if lang = "13313" then WMIOSLanguage = "Arabic - Kuwait" end if 
-	if lang = "13322" then WMIOSLanguage = "Spanish - Chile" end if 
-	if lang = "14337" then WMIOSLanguage = "Arabic - U.A.E." end if 
-	if lang = "14346" then WMIOSLanguage = "Spanish - Uruguay" end if 
-	if lang = "15361" then WMIOSLanguage = "Arabic - Bahrain" end if 
-	if lang = "15370" then WMIOSLanguage = "Spanish - Paraguay" end if 
-	if lang = "16385" then WMIOSLanguage = "Arabic - Qatar" end if 
-	if lang = "16394" then WMIOSLanguage = "Spanish - Bolivia" end if 
-	if lang = "17418" then WMIOSLanguage = "Spanish - El Salvador" end if 
-	if lang = "18442" then WMIOSLanguage = "Spanish - Honduras" end if 
-	if lang = "19466" then WMIOSLanguage = "Spanish - Nicaragua" end if 
-	if lang = "20490" then WMIOSLanguage = "Spanish - Puerto Rico" end if 
+	if lang = "1" then WMIOSLanguage = "Arabic" end if
+	if lang = "4" then WMIOSLanguage = "Chinese (Simplified)– China" end if
+	if lang = "9" then WMIOSLanguage = "English" end if
+	if lang = "1025" then WMIOSLanguage = "Arabic - Saudi Arabia" end if
+	if lang = "1026" then WMIOSLanguage = "Bulgarian" end if
+	if lang = "1027" then WMIOSLanguage = "Catalan" end if
+	if lang = "1028" then WMIOSLanguage = "Chinese (Traditional) - Taiwan" end if
+	if lang = "1029" then WMIOSLanguage = "Czech" end if
+	if lang = "1030" then WMIOSLanguage = "Danish" end if
+	if lang = "1031" then WMIOSLanguage = "German – Germany" end if
+	if lang = "1032" then WMIOSLanguage = "Greek" end if
+	if lang = "1033" then WMIOSLanguage = "English - United States" end if
+	if lang = "1034" then WMIOSLanguage = "Spanish - Traditional Sort" end if
+	if lang = "1035" then WMIOSLanguage = "Finnish" end if
+	if lang = "1036" then WMIOSLanguage = "French - France" end if
+	if lang = "1037" then WMIOSLanguage = "Hebrew" end if
+	if lang = "1038" then WMIOSLanguage = "Hungarian" end if
+	if lang = "1039" then WMIOSLanguage = "Icelandic" end if
+	if lang = "1040" then WMIOSLanguage = "Italian - Italy" end if
+	if lang = "1041" then WMIOSLanguage = "Japanese" end if
+	if lang = "1042" then WMIOSLanguage = "Korean" end if
+	if lang = "1043" then WMIOSLanguage = "Dutch - Netherlands" end if
+	if lang = "1044" then WMIOSLanguage = "Norwegian - Bokmal" end if
+	if lang = "1045" then WMIOSLanguage = "Polish" end if
+	if lang = "1046" then WMIOSLanguage = "Portuguese - Brazil" end if
+	if lang = "1047" then WMIOSLanguage = "Rhaeto-Romanic" end if
+	if lang = "1048" then WMIOSLanguage = "Romanian" end if
+	if lang = "1049" then WMIOSLanguage = "Russian" end if
+	if lang = "1050" then WMIOSLanguage = "Croatian" end if
+	if lang = "1051" then WMIOSLanguage = "Slovak" end if
+	if lang = "1052" then WMIOSLanguage = "Albanian" end if
+	if lang = "1053" then WMIOSLanguage = "Swedish" end if
+	if lang = "1054" then WMIOSLanguage = "Thai" end if
+	if lang = "1055" then WMIOSLanguage = "Turkish" end if
+	if lang = "1056" then WMIOSLanguage = "Urdu" end if
+	if lang = "1057" then WMIOSLanguage = "Indonesian" end if
+	if lang = "1058" then WMIOSLanguage = "Ukrainian" end if
+	if lang = "1059" then WMIOSLanguage = "Belarusian" end if
+	if lang = "1060" then WMIOSLanguage = "Slovenian" end if
+	if lang = "1061" then WMIOSLanguage = "Estonian" end if
+	if lang = "1062" then WMIOSLanguage = "Latvian" end if
+	if lang = "1063" then WMIOSLanguage = "Lithuanian" end if
+	if lang = "1065" then WMIOSLanguage = "Persian" end if
+	if lang = "1066" then WMIOSLanguage = "Vietnamese" end if
+	if lang = "1069" then WMIOSLanguage = "Basque" end if
+	if lang = "1070" then WMIOSLanguage = "Serbian" end if
+	if lang = "1071" then WMIOSLanguage = "Macedonian (FYROM)" end if
+	if lang = "1072" then WMIOSLanguage = "Sutu" end if
+	if lang = "1073" then WMIOSLanguage = "Tsonga" end if
+	if lang = "1074" then WMIOSLanguage = "Tswana" end if
+	if lang = "1076" then WMIOSLanguage = "Xhosa" end if
+	if lang = "1077" then WMIOSLanguage = "Zulu" end if
+	if lang = "1078" then WMIOSLanguage = "Afrikaans" end if
+	if lang = "1080" then WMIOSLanguage = "Faeroese" end if
+	if lang = "1081" then WMIOSLanguage = "Hindi" end if
+	if lang = "1082" then WMIOSLanguage = "Maltese" end if
+	if lang = "1084" then WMIOSLanguage = "Gaelic" end if
+	if lang = "1085" then WMIOSLanguage = "Yiddish" end if
+	if lang = "1086" then WMIOSLanguage = "Malay - Malaysia" end if
+	if lang = "2049" then WMIOSLanguage = "Arabic - Iraq" end if
+	if lang = "2052" then WMIOSLanguage = "Chinese (Simplified) – PRC" end if
+	if lang = "2055" then WMIOSLanguage = "German - Switzerland" end if
+	if lang = "2057" then WMIOSLanguage = "English - United Kingdom" end if
+	if lang = "2058" then WMIOSLanguage = "Spanish - Mexico" end if
+	if lang = "2060" then WMIOSLanguage = "French - Belgium" end if
+	if lang = "2064" then WMIOSLanguage = "Italian - Switzerland" end if
+	if lang = "2067" then WMIOSLanguage = "Dutch - Belgium" end if
+	if lang = "2068" then WMIOSLanguage = "Norwegian - Nynorsk" end if
+	if lang = "2070" then WMIOSLanguage = "Portuguese - Portugal" end if
+	if lang = "2072" then WMIOSLanguage = "Romanian - Moldova" end if
+	if lang = "2073" then WMIOSLanguage = "Russian - Moldova" end if
+	if lang = "2074" then WMIOSLanguage = "Serbian - Latin" end if
+	if lang = "2077" then WMIOSLanguage = "Swedish - Finland" end if
+	if lang = "3073" then WMIOSLanguage = "Arabic - Egypt" end if
+	if lang = "3076" then WMIOSLanguage = "Chinese (Traditional) Hong Kong SAR" end if
+	if lang = "3079" then WMIOSLanguage = "German - Austria" end if
+	if lang = "3081" then WMIOSLanguage = "English - Australia" end if
+	if lang = "3082" then WMIOSLanguage = "Spanish - International Sort" end if
+	if lang = "3084" then WMIOSLanguage = "French - Canada" end if
+	if lang = "3098" then WMIOSLanguage = "Serbian - Cyrillic" end if
+	if lang = "4097" then WMIOSLanguage = "Arabic - Libya" end if
+	if lang = "4100" then WMIOSLanguage = "Chinese (Simplified) Singapore" end if
+	if lang = "4103" then WMIOSLanguage = "German - Luxembourg" end if
+	if lang = "4105" then WMIOSLanguage = "English - Canada" end if
+	if lang = "4106" then WMIOSLanguage = "Spanish - Guatemala" end if
+	if lang = "4108" then WMIOSLanguage = "French - Switzerland" end if
+	if lang = "5121" then WMIOSLanguage = "Arabic - Algeria" end if
+	if lang = "5127" then WMIOSLanguage = "German - Liechtenstein" end if
+	if lang = "5129" then WMIOSLanguage = "English - New Zealand" end if
+	if lang = "5130" then WMIOSLanguage = "Spanish - Costa Rica" end if
+	if lang = "5132" then WMIOSLanguage = "French - Luxembourg" end if
+	if lang = "6145" then WMIOSLanguage = "Arabic - Morocco" end if
+	if lang = "6153" then WMIOSLanguage = "English - Ireland" end if
+	if lang = "6154" then WMIOSLanguage = "Spanish - Panama" end if
+	if lang = "7169" then WMIOSLanguage = "Arabic - Tunisia" end if
+	if lang = "7177" then WMIOSLanguage = "English - South Africa" end if
+	if lang = "7178" then WMIOSLanguage = "Spanish - Dominican Republic" end if
+	if lang = "8193" then WMIOSLanguage = "Arabic - Oman" end if
+	if lang = "8201" then WMIOSLanguage = "English - Jamaica" end if
+	if lang = "8202" then WMIOSLanguage = "Spanish - Venezuela" end if
+	if lang = "9217" then WMIOSLanguage = "Arabic - Yemen" end if
+	if lang = "9226" then WMIOSLanguage = "Spanish - Colombia" end if
+	if lang = "10241" then WMIOSLanguage = "Arabic - Syria" end if
+	if lang = "10249" then WMIOSLanguage = "English - Belize" end if
+	if lang = "10250" then WMIOSLanguage = "Spanish - Peru" end if
+	if lang = "11265" then WMIOSLanguage = "Arabic - Jordan" end if
+	if lang = "11273" then WMIOSLanguage = "English - Trinidad" end if
+	if lang = "11274" then WMIOSLanguage = "Spanish - Argentina" end if
+	if lang = "12289" then WMIOSLanguage = "Arabic - Lebanon" end if
+	if lang = "12298" then WMIOSLanguage = "Spanish - Ecuador" end if
+	if lang = "13313" then WMIOSLanguage = "Arabic - Kuwait" end if
+	if lang = "13322" then WMIOSLanguage = "Spanish - Chile" end if
+	if lang = "14337" then WMIOSLanguage = "Arabic - U.A.E." end if
+	if lang = "14346" then WMIOSLanguage = "Spanish - Uruguay" end if
+	if lang = "15361" then WMIOSLanguage = "Arabic - Bahrain" end if
+	if lang = "15370" then WMIOSLanguage = "Spanish - Paraguay" end if
+	if lang = "16385" then WMIOSLanguage = "Arabic - Qatar" end if
+	if lang = "16394" then WMIOSLanguage = "Spanish - Bolivia" end if
+	if lang = "17418" then WMIOSLanguage = "Spanish - El Salvador" end if
+	if lang = "18442" then WMIOSLanguage = "Spanish - Honduras" end if
+	if lang = "19466" then WMIOSLanguage = "Spanish - Nicaragua" end if
+	if lang = "20490" then WMIOSLanguage = "Spanish - Puerto Rico" end if
 end function
 
 
 function WMIOSCountry(country)
-	if country = "1" then WMIOSCountry = "UNITED STATES" end if 
-	if country = "2" then WMIOSCountry = "CANADA" end if 
-	if country = "7" then WMIOSCountry = "RUSSIAN FEDERATION" end if 
-	if country = "20" then WMIOSCountry = "EGYPT" end if 
-	if country = "27" then WMIOSCountry = "SOUTH AFRICA" end if 
-	if country = "30" then WMIOSCountry = "GREECE" end if 
-	if country = "31" then WMIOSCountry = "NETHERLANDS" end if 
-	if country = "32" then WMIOSCountry = "BELGIUM" end if 
-	if country = "33" then WMIOSCountry = "FRANCE" end if 
-	if country = "34" then WMIOSCountry = "SPAIN" end if 
-	if country = "36" then WMIOSCountry = "HUNGARY" end if 
-	if country = "39" then WMIOSCountry = "ITALY" end if 
-	if country = "40" then WMIOSCountry = "ROMANIA" end if 
-	if country = "41" then WMIOSCountry = "SWITZERLAND" end if 
-	if country = "43" then WMIOSCountry = "AUSTRIA" end if 
-	if country = "44" then WMIOSCountry = "UNITED KINGDOM" end if 
-	if country = "45" then WMIOSCountry = "DENMARK" end if 
-	if country = "46" then WMIOSCountry = "SWEDEN" end if 
-	if country = "47" then WMIOSCountry = "NORWAY" end if 
-	if country = "48" then WMIOSCountry = "POLAND" end if 
-	if country = "49" then WMIOSCountry = "GERMANY" end if 
-	if country = "51" then WMIOSCountry = "PERU" end if 
-	if country = "52" then WMIOSCountry = "MEXICO" end if 
-	if country = "54" then WMIOSCountry = "ARGENTINA" end if 
-	if country = "55" then WMIOSCountry = "BRAZIL" end if 
-	if country = "56" then WMIOSCountry = "CHILE" end if 
-	if country = "57" then WMIOSCountry = "COLOMBIA" end if 
-	if country = "58" then WMIOSCountry = "VENEZUELA" end if 
-	if country = "60" then WMIOSCountry = "MALAYSIA" end if 
-	if country = "61" then WMIOSCountry = "AUSTRALIA" end if 
-	if country = "62" then WMIOSCountry = "INDONESIA" end if 
-	if country = "63" then WMIOSCountry = "PHILIPPINES" end if 
-	if country = "64" then WMIOSCountry = "NEW ZEALAND" end if 
-	if country = "65" then WMIOSCountry = "SINGAPORE" end if 
-	if country = "81" then WMIOSCountry = "JAPAN" end if 
-	if country = "82" then WMIOSCountry = "KOREA, REPUBLIC OF" end if 
-	if country = "84" then WMIOSCountry = "VIET NAM" end if 
-	if country = "86" then WMIOSCountry = "CHINA" end if 
-	if country = "90" then WMIOSCountry = "TURKEY" end if 
-	if country = "91" then WMIOSCountry = "INDIA" end if 
-	if country = "92" then WMIOSCountry = "PAKISTAN" end if 
-	if country = "212" then WMIOSCountry = "MOROCCO" end if 
-	if country = "213" then WMIOSCountry = "ALGERIA" end if 
-	if country = "216" then WMIOSCountry = "TUNISIA" end if 
-	if country = "218" then WMIOSCountry = "LIBYAN ARAB JAMAHIRIYA" end if 
-	if country = "254" then WMIOSCountry = "KENYA" end if 
-	if country = "263" then WMIOSCountry = "ZIMBABWE" end if 
-	if country = "298" then WMIOSCountry = "FAROE ISLANDS" end if 
-	if country = "351" then WMIOSCountry = "PORTUGAL" end if 
-	if country = "352" then WMIOSCountry = "LUXEMBOURG" end if 
-	if country = "353" then WMIOSCountry = "IRELAND" end if 
-	if country = "354" then WMIOSCountry = "ICELAND" end if 
-	if country = "355" then WMIOSCountry = "ALBANIA" end if 
-	if country = "358" then WMIOSCountry = "FINLAND" end if 
-	if country = "359" then WMIOSCountry = "BULGARIA" end if 
-	if country = "370" then WMIOSCountry = "LITHUANIA" end if 
-	if country = "371" then WMIOSCountry = "LATVIA" end if 
-	if country = "372" then WMIOSCountry = "ESTONIA" end if 
-	if country = "374" then WMIOSCountry = "ARMENIA" end if 
-	if country = "375" then WMIOSCountry = "BELARUS" end if 
-	if country = "380" then WMIOSCountry = "UKRAINE" end if 
-	if country = "381" then WMIOSCountry = "SERBIA" end if 
-	if country = "385" then WMIOSCountry = "CROATIA" end if 
-	if country = "386" then WMIOSCountry = "SLOVENIA" end if 
-	if country = "389" then WMIOSCountry = "MACEDONIA" end if 
-	if country = "420" then WMIOSCountry = "CZECH REPUBLIC" end if 
-	if country = "421" then WMIOSCountry = "SLOVAKIA (Slovak Republic)" end if 
-	if country = "501" then WMIOSCountry = "BELIZE" end if 
-	if country = "502" then WMIOSCountry = "GUATEMALA" end if 
-	if country = "503" then WMIOSCountry = "EL SALVADOR" end if 
-	if country = "504" then WMIOSCountry = "HONDURAS" end if 
-	if country = "505" then WMIOSCountry = "NICARAGUA" end if 
-	if country = "506" then WMIOSCountry = "COSTA RICA" end if 
-	if country = "507" then WMIOSCountry = "PANAMA" end if 
-	if country = "591" then WMIOSCountry = "BOLIVIA" end if 
-	if country = "593" then WMIOSCountry = "ECUADOR" end if 
-	if country = "595" then WMIOSCountry = "PARAGUAY" end if 
-	if country = "598" then WMIOSCountry = "URUGUAY" end if 
-	if country = "673" then WMIOSCountry = "BRUNEI DARUSSALAM" end if 
-	if country = "852" then WMIOSCountry = "HONG KONG" end if 
-	if country = "853" then WMIOSCountry = "MACAU" end if 
-	if country = "874" then WMIOSCountry = "THAILAND" end if 
-	if country = "886" then WMIOSCountry = "TAIWAN" end if 
-	if country = "960" then WMIOSCountry = "MALDIVES" end if 
-	if country = "961" then WMIOSCountry = "LEBANON" end if 
-	if country = "962" then WMIOSCountry = "JORDAN" end if 
-	if country = "963" then WMIOSCountry = "SYRIAN ARAB REPUBLIC" end if 
-	if country = "964" then WMIOSCountry = "IRAQ" end if 
-	if country = "965" then WMIOSCountry = "KUWAIT" end if 
-	if country = "966" then WMIOSCountry = "SAUDI ARABIA" end if 
-	if country = "967" then WMIOSCountry = "YEMEN" end if 
-	if country = "968" then WMIOSCountry = "OMAN" end if 
-	if country = "971" then WMIOSCountry = "UNITED ARAB EMIRATES" end if 
-	if country = "972" then WMIOSCountry = "ISRAEL" end if 
-	if country = "973" then WMIOSCountry = "BAHRAIN" end if 
-	if country = "974" then WMIOSCountry = "QATAR" end if 
-	if country = "976" then WMIOSCountry = "MONGOLIA" end if 
-	if country = "981" then WMIOSCountry = "IRAN" end if 
-	if country = "994" then WMIOSCountry = "AZERBAIJAN" end if 
-	if country = "995" then WMIOSCountry = "GEORGIA" end if 
-	if country = "996" then WMIOSCountry = "KYRGYZSTAN" end if 
+	if country = "1" then WMIOSCountry = "UNITED STATES" end if
+	if country = "2" then WMIOSCountry = "CANADA" end if
+	if country = "7" then WMIOSCountry = "RUSSIAN FEDERATION" end if
+	if country = "20" then WMIOSCountry = "EGYPT" end if
+	if country = "27" then WMIOSCountry = "SOUTH AFRICA" end if
+	if country = "30" then WMIOSCountry = "GREECE" end if
+	if country = "31" then WMIOSCountry = "NETHERLANDS" end if
+	if country = "32" then WMIOSCountry = "BELGIUM" end if
+	if country = "33" then WMIOSCountry = "FRANCE" end if
+	if country = "34" then WMIOSCountry = "SPAIN" end if
+	if country = "36" then WMIOSCountry = "HUNGARY" end if
+	if country = "39" then WMIOSCountry = "ITALY" end if
+	if country = "40" then WMIOSCountry = "ROMANIA" end if
+	if country = "41" then WMIOSCountry = "SWITZERLAND" end if
+	if country = "43" then WMIOSCountry = "AUSTRIA" end if
+	if country = "44" then WMIOSCountry = "UNITED KINGDOM" end if
+	if country = "45" then WMIOSCountry = "DENMARK" end if
+	if country = "46" then WMIOSCountry = "SWEDEN" end if
+	if country = "47" then WMIOSCountry = "NORWAY" end if
+	if country = "48" then WMIOSCountry = "POLAND" end if
+	if country = "49" then WMIOSCountry = "GERMANY" end if
+	if country = "51" then WMIOSCountry = "PERU" end if
+	if country = "52" then WMIOSCountry = "MEXICO" end if
+	if country = "54" then WMIOSCountry = "ARGENTINA" end if
+	if country = "55" then WMIOSCountry = "BRAZIL" end if
+	if country = "56" then WMIOSCountry = "CHILE" end if
+	if country = "57" then WMIOSCountry = "COLOMBIA" end if
+	if country = "58" then WMIOSCountry = "VENEZUELA" end if
+	if country = "60" then WMIOSCountry = "MALAYSIA" end if
+	if country = "61" then WMIOSCountry = "AUSTRALIA" end if
+	if country = "62" then WMIOSCountry = "INDONESIA" end if
+	if country = "63" then WMIOSCountry = "PHILIPPINES" end if
+	if country = "64" then WMIOSCountry = "NEW ZEALAND" end if
+	if country = "65" then WMIOSCountry = "SINGAPORE" end if
+	if country = "81" then WMIOSCountry = "JAPAN" end if
+	if country = "82" then WMIOSCountry = "KOREA, REPUBLIC OF" end if
+	if country = "84" then WMIOSCountry = "VIET NAM" end if
+	if country = "86" then WMIOSCountry = "CHINA" end if
+	if country = "90" then WMIOSCountry = "TURKEY" end if
+	if country = "91" then WMIOSCountry = "INDIA" end if
+	if country = "92" then WMIOSCountry = "PAKISTAN" end if
+	if country = "212" then WMIOSCountry = "MOROCCO" end if
+	if country = "213" then WMIOSCountry = "ALGERIA" end if
+	if country = "216" then WMIOSCountry = "TUNISIA" end if
+	if country = "218" then WMIOSCountry = "LIBYAN ARAB JAMAHIRIYA" end if
+	if country = "254" then WMIOSCountry = "KENYA" end if
+	if country = "263" then WMIOSCountry = "ZIMBABWE" end if
+	if country = "298" then WMIOSCountry = "FAROE ISLANDS" end if
+	if country = "351" then WMIOSCountry = "PORTUGAL" end if
+	if country = "352" then WMIOSCountry = "LUXEMBOURG" end if
+	if country = "353" then WMIOSCountry = "IRELAND" end if
+	if country = "354" then WMIOSCountry = "ICELAND" end if
+	if country = "355" then WMIOSCountry = "ALBANIA" end if
+	if country = "358" then WMIOSCountry = "FINLAND" end if
+	if country = "359" then WMIOSCountry = "BULGARIA" end if
+	if country = "370" then WMIOSCountry = "LITHUANIA" end if
+	if country = "371" then WMIOSCountry = "LATVIA" end if
+	if country = "372" then WMIOSCountry = "ESTONIA" end if
+	if country = "374" then WMIOSCountry = "ARMENIA" end if
+	if country = "375" then WMIOSCountry = "BELARUS" end if
+	if country = "380" then WMIOSCountry = "UKRAINE" end if
+	if country = "381" then WMIOSCountry = "SERBIA" end if
+	if country = "385" then WMIOSCountry = "CROATIA" end if
+	if country = "386" then WMIOSCountry = "SLOVENIA" end if
+	if country = "389" then WMIOSCountry = "MACEDONIA" end if
+	if country = "420" then WMIOSCountry = "CZECH REPUBLIC" end if
+	if country = "421" then WMIOSCountry = "SLOVAKIA (Slovak Republic)" end if
+	if country = "501" then WMIOSCountry = "BELIZE" end if
+	if country = "502" then WMIOSCountry = "GUATEMALA" end if
+	if country = "503" then WMIOSCountry = "EL SALVADOR" end if
+	if country = "504" then WMIOSCountry = "HONDURAS" end if
+	if country = "505" then WMIOSCountry = "NICARAGUA" end if
+	if country = "506" then WMIOSCountry = "COSTA RICA" end if
+	if country = "507" then WMIOSCountry = "PANAMA" end if
+	if country = "591" then WMIOSCountry = "BOLIVIA" end if
+	if country = "593" then WMIOSCountry = "ECUADOR" end if
+	if country = "595" then WMIOSCountry = "PARAGUAY" end if
+	if country = "598" then WMIOSCountry = "URUGUAY" end if
+	if country = "673" then WMIOSCountry = "BRUNEI DARUSSALAM" end if
+	if country = "852" then WMIOSCountry = "HONG KONG" end if
+	if country = "853" then WMIOSCountry = "MACAU" end if
+	if country = "874" then WMIOSCountry = "THAILAND" end if
+	if country = "886" then WMIOSCountry = "TAIWAN" end if
+	if country = "960" then WMIOSCountry = "MALDIVES" end if
+	if country = "961" then WMIOSCountry = "LEBANON" end if
+	if country = "962" then WMIOSCountry = "JORDAN" end if
+	if country = "963" then WMIOSCountry = "SYRIAN ARAB REPUBLIC" end if
+	if country = "964" then WMIOSCountry = "IRAQ" end if
+	if country = "965" then WMIOSCountry = "KUWAIT" end if
+	if country = "966" then WMIOSCountry = "SAUDI ARABIA" end if
+	if country = "967" then WMIOSCountry = "YEMEN" end if
+	if country = "968" then WMIOSCountry = "OMAN" end if
+	if country = "971" then WMIOSCountry = "UNITED ARAB EMIRATES" end if
+	if country = "972" then WMIOSCountry = "ISRAEL" end if
+	if country = "973" then WMIOSCountry = "BAHRAIN" end if
+	if country = "974" then WMIOSCountry = "QATAR" end if
+	if country = "976" then WMIOSCountry = "MONGOLIA" end if
+	if country = "981" then WMIOSCountry = "IRAN" end if
+	if country = "994" then WMIOSCountry = "AZERBAIJAN" end if
+	if country = "995" then WMIOSCountry = "GEORGIA" end if
+	if country = "996" then WMIOSCountry = "KYRGYZSTAN" end if
 end function
 
 ' http://support.microsoft.com/kb/302663
@@ -7269,7 +7275,7 @@ function get_sku_2013(subkey)
 	if vers = "10D7" then vers_name = "Microsoft Office InfoPath Forms Services" end if
 	if vers = "110D" then vers_name = "Microsoft Office SharePoint Server 2013" end if
 	if vers = "110F" then vers_name = "Microsoft Office Project Server 2013" end if
-	if vers = "012B" then vers_name = "Microsoft Office Lync 2013" end if	
+	if vers = "012B" then vers_name = "Microsoft Office Lync 2013" end if
 get_sku_2013 = vers_name
 end function
 
