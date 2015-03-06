@@ -48,6 +48,7 @@ syslog="y"
 url="http://localhost/open-audit/index.php/discovery/process_subnet"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
+timing="-T4"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -113,6 +114,10 @@ if [ "$help" == "y" ]; then
 	echo "     *y - Log entries to the Open-AudIT log file."
 	echo "      n - Do not log entries."
 	echo ""
+	echo "  timing"
+	echo "   *-T4 - Nmap timing see this page for details"
+	echo "        - https://nmap.org/book/man-performance.html"
+	echo ""
 	echo "  url"
 	echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
 	echo ""
@@ -174,7 +179,7 @@ fi
 i=0
 j=0
 #for line in $(nmap -v -sP -PE -PP -n "$subnet_range" 2>/dev/null | grep "scan report for"); do
-for line in $(nmap -v -sn -n -T4 "$subnet_range" 2>/dev/null | grep "scan report for"); do
+for line in $(nmap -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
 	if [ "$debugging" -gt 0 ]; then
 		echo "$line"
 	fi
@@ -230,7 +235,7 @@ if [[ "$hosts" != "" ]]; then
 		# --host-timeout set to a smaller than default number
 		# -PN treat host as online, skip discovery (we already know it is because of above)
 		#nmap_scan=`nmap -vv -n -O --host-timeout 20000ms -PN $host 2>/dev/null`
-		nmap_scan=$(nmap -vv -n -O -PN -T4 "$host" 2>/dev/null)
+		nmap_scan=$(nmap -vv -n -O -PN "$timing" "$host" 2>/dev/null)
 		for line in $nmap_scan; do
 
 			NEEDLE="MAC Address:"
@@ -404,9 +409,9 @@ if [[ "$hosts" != "" ]]; then
 
 		done
 
-		# test for SNMP
+		# test for SNMP (separate scan as it's UDP)
 		snmp_status="false"
-		command=$(nmap -n -sU -p161 -T4 "$host" 2>/dev/null | grep "161/udp open")
+		command=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp open")
 		if [[ "$command" == *"161/udp open"* ]]; then
 				snmp_status="true"
 		fi
@@ -435,10 +440,6 @@ if [[ "$hosts" != "" ]]; then
 		result_file="$result_file"$'\n'"$result"
 
 		result="<devices>"$'\n'"$result"$'\n'"</devices>"
-		#result="<devices>"$result"</devices>"
-
-		log_entry="Discovery for $subnet_range submitted at $subnet_timestamp finished scan"
-		write_log "$log_entry"
 
 		if [[ "$submit_online" == "y" ]]; then
 			if [ "$debugging" -gt 0 ]; then
@@ -450,11 +451,7 @@ if [[ "$hosts" != "" ]]; then
 				# -b   = background the wget command
 				# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 				# -q   = quiet (no output)
-				#if [ "$debugging" -gt 0 ]; then
-				#	wget -O "$url" --post-data=form_details="$result" 1>/dev/null
-				#else
-					wget -b -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
-				#fi
+				wget -b -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
 			fi
 			if [[ $(uname) == "Darwin" ]]; then
 				curl --data "form_details=$result" "$url"
@@ -466,7 +463,6 @@ if [[ "$hosts" != "" ]]; then
 	done
 fi
 
-#resultcomplete="<devices>$result_file<device><subnet_range>$subnet_range</subnet_range><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
 resultcomplete="<devices><device><subnet_range>$subnet_range</subnet_range><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
 
 if [[ "$submit_online" == "y" ]]; then
@@ -474,7 +470,6 @@ if [[ "$submit_online" == "y" ]]; then
 		# -b   = background the wget command
 		# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 		# -q   = quiet (no output)
-		#wget -b -O - -q --no-check-certificate ${url} --post-data=form_details="$resultcomplete" 1>/dev/null
 		wget -b -O - -q --no-check-certificate "$url" --post-data=form_details="$resultcomplete" 1>/dev/null
 	fi
 
