@@ -3492,28 +3492,28 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $log_details->message = 'Upgrade database to 1.5.6 completed';
+            $log_details->message = 'Upgrade database to 1.5.5 completed';
             stdlog($log_details);
             unset($log_details);
         }
 
         if (($db_internal_version < '20150303') and ($this->db->platform() == 'mysql')) {
-            # upgrade for 1.5.6
+            # upgrade for 1.6
 
             $log_details = new stdClass();
             $log_details->file = 'system';
-            $log_details->message = 'Upgrade database to 1.5.6 commenced';
+            $log_details->message = 'Upgrade database to 1.6 commenced';
             stdlog($log_details);
 
             $sql = "UPDATE oa_config SET config_value = '20150303' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "UPDATE oa_config SET config_value = '1.5.6' WHERE config_name = 'display_version'";
+            $sql = "UPDATE oa_config SET config_value = '1.6' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $log_details->message = 'Upgrade database to 1.5.6 completed';
+            $log_details->message = 'Upgrade database to 1.6 completed';
             stdlog($log_details);
             unset($log_details);
         }
