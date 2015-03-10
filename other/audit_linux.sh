@@ -1636,8 +1636,45 @@ echo "	</hard_disks>" >> "$xml_file"
 
 
 ##################################
-# PARTITION SECTION              #
+# NFS MOUNTS SECTION             #
 ##################################
+for mount in $(mount -l -t nfs,nfs2,nfs3,nfs4); do
+	partition_mount_point=$(echo "$mount" | cut -d" " -f3)
+	partition_name=$(echo "$mount" | cut -d" " -f1)
+	partition_free_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $4}')
+	partition_used_space=$(df -m --total "$partition_mount_point" | grep ^total | awk '{print $3}')
+	partition_size=$((partition_free_space + partition_used_space))
+	partition_format=""
+	partition_caption=""
+	partition_device_id=""
+	partition_device_id=""
+	partition_disk_index=""
+	partition_type="NFS Mount"
+	partition_serial=""
+	partition_result=$partition_result"		<partition>\n"
+	partition_result=$partition_result"			<hard_drive_index></hard_drive_index>\n"
+	partition_result=$partition_result"			<partition_mount_type>NFS Mount</partition_mount_type>\n"
+	partition_result=$partition_result"			<partition_mount_point>$(escape_xml "$partition_mount_point")</partition_mount_point>\n"
+	partition_result=$partition_result"			<partition_name>$(escape_xml "$partition_name")</partition_name>\n"
+	partition_result=$partition_result"			<partition_size>$(escape_xml "$partition_size")</partition_size>\n"
+	partition_result=$partition_result"			<partition_free_space>$(escape_xml "$partition_free_space")</partition_free_space>\n"
+	partition_result=$partition_result"			<partition_used_space>$(escape_xml "$partition_used_space")</partition_used_space>\n"
+	partition_result=$partition_result"			<partition_format>$(escape_xml "$partition_format")</partition_format>\n"
+	partition_result=$partition_result"			<partition_caption>$(escape_xml "$partition_caption")</partition_caption>\n"
+	partition_result=$partition_result"			<partition_device_id>$(escape_xml "$partition_device_id")</partition_device_id>\n"
+	partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n"
+	partition_result=$partition_result"			<partition_bootable></partition_bootable>\n"
+	partition_result=$partition_result"			<partition_type>$(escape_xml "$partition_type")</partition_type>\n"
+	partition_result=$partition_result"			<partition_quotas_supported></partition_quotas_supported>\n"
+	partition_result=$partition_result"			<partition_quotas_enabled></partition_quotas_enabled>\n"
+	partition_result=$partition_result"			<partition_serial>$(escape_xml "$partition_serial")</partition_serial>\n"
+	partition_result=$partition_result"		</partition>"
+done
+
+
+#####################################
+# PARTITION  AND NFS MOUNTS SECTION #
+#####################################
 
 if [ -n "$partition_result" ]; then
 	{
