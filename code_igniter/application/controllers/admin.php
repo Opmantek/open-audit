@@ -3505,6 +3505,18 @@ class admin extends MY_Controller
             $log_details->message = 'Upgrade database to 1.6 commenced';
             stdlog($log_details);
 
+            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_license_status', '', 'n', 'License status of Open-AudIT Enterprise.')";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config SET config_value = CONCAT('logo-banner-', config_value) WHERE config_name = 'logo'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config SET config_editable = 'y' WHERE config_name = 'logo'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
             $sql = "UPDATE oa_config SET config_value = '20150303' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);

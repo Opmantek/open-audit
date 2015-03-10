@@ -139,26 +139,32 @@ class login extends CI_Controller
         if ($oae_url == '') {
             // OAE is not installed
             // set the logo and show the logon page
-            // echo "<!-- OAE not installed -->\n";
-            $data['logo'] = 'logo-banner-oac.png';
             $data['oae_message'] = 'Please try Open-AudIT Enterprise. Contact <a href="https://opmantek.com/contact-us/" style="color: blue;">Opmantek</a> for a license today.';
-            $this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s'));
+            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
+                $this->m_oa_config->update_config('logo', 'logo-banner-oac', '', date('Y-m-d H:i:s'));
+            }
+            $this->m_oa_config->update_config('oae_license_status', 'not installed', '', date('Y-m-d H:i:s'));
             $this->load->view('v_login', $data);
         }
 
         if (($data['form_url'] != '') and ($oae_url > '') and ($license == 'valid')) {
             // user going to an internal page and OAE is installed with a valid license
             // set the logo and show the logon page
-            $data['logo'] = 'logo-banner-oae.png';
             $data['oae_message'] = ' ';
-            $this->m_oa_config->update_config('logo', 'oae', '', date('Y-m-d H:i:s'));
+            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oac' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oac' or $this->config->config['logo'] == 'oac-oae')) {
+                $this->m_oa_config->update_config('logo', 'logo-banner-oae', '', date('Y-m-d H:i:s'));
+            }
+            $this->m_oa_config->update_config('oae_license_status', 'valid', '', date('Y-m-d H:i:s'));
             $this->load->view('v_login', $data);
         }
 
         if (($data['form_url'] == '') and ($oae_url > '') and ($license == 'valid')) {
             // user going to logon page (not internal page) and OAE is installed and licensed
             // redirect
-            $this->m_oa_config->update_config('logo', 'oae', '', date('Y-m-d H:i:s'));
+            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oac' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oac' or $this->config->config['logo'] == 'oac-oae')) {
+                $this->m_oa_config->update_config('logo', 'logo-banner-oae', '', date('Y-m-d H:i:s'));
+            }
+            $this->m_oa_config->update_config('oae_license_status', 'valid', '', date('Y-m-d H:i:s'));
             redirect($oae_url);
         }
 
@@ -166,7 +172,10 @@ class login extends CI_Controller
             // OAE is installed but has an invalid license
             // show the logon page
             $data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;' style='color: blue;'>Opmantek</a> for a valid license<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";
-            $this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s'));
+            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
+                $this->m_oa_config->update_config('logo', 'logo-banner-oac-oae', '', date('Y-m-d H:i:s'));
+            }
+            $this->m_oa_config->update_config('oae_license_status', 'invalid', '', date('Y-m-d H:i:s'));
             $this->load->view('v_login', $data);
         }
 
@@ -174,7 +183,10 @@ class login extends CI_Controller
             // OAE is installed but the license has expired
             // show the logon page
             $data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";
-            $this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s'));
+            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
+                $this->m_oa_config->update_config('logo', 'logo-banner-oac-oae', '', date('Y-m-d H:i:s'));
+            }
+            $this->m_oa_config->update_config('oae_license_status', 'expired', '', date('Y-m-d H:i:s'));
             $this->load->view('v_login', $data);
         }
 
@@ -182,7 +194,10 @@ class login extends CI_Controller
             // OAE is installed but not licensed
             // show the logon page
             $data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";
-            $this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s'));
+            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
+                $this->m_oa_config->update_config('logo', 'logo-banner-oac-oae', '', date('Y-m-d H:i:s'));
+            }
+            $this->m_oa_config->update_config('oae_license_status', 'none', '', date('Y-m-d H:i:s'));
             $this->load->view('v_login', $data);
         }
 
@@ -190,7 +205,10 @@ class login extends CI_Controller
             // catch all default
             // show the logon page
             $data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
-            $this->m_oa_config->update_config('logo', 'oac-oae', '', date('Y-m-d H:i:s'));
+            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
+                $this->m_oa_config->update_config('logo', 'logo-banner-oac-oae', '', date('Y-m-d H:i:s'));
+            }
+            $this->m_oa_config->update_config('oae_license_status', '', '', date('Y-m-d H:i:s'));
             $this->load->view('v_login', $data);
         }
     }

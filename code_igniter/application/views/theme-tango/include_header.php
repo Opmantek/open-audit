@@ -38,15 +38,14 @@
 		<a href="<?php echo $this->config->item('oa_web_index'); ?>/main/list_groups">
 			<?php if (isset($this->config->config['logo']) and $this->config->config['logo'] != '') {
     ?>
-			<img src='<?php echo $oa_theme_images;
-    ?>/logo-banner-<?php echo $this->config->item('logo');
-    ?>.png' alt='logo' style='border-width:0px;' />
-			<?php 
+			<img src='<?php echo $oa_theme_images?>/<?php echo $this->config->item('logo')?>.png' alt='logo' style='border-width:0px;' />
+			<?php
+
 } else {
     ?>
-			<img src='<?php echo $oa_theme_images;
-    ?>/logo-banner-oac-oae.png' alt='logo' style='border-width:0px;' />
-			<?php 
+			<img src='<?php echo $oa_theme_images?>/logo-banner-oac-oae.png' alt='logo' style='border-width:0px;' />
+			<?php
+
 } ?>
 		</a>
 	</div>
@@ -67,7 +66,8 @@
 			<br />Debug<br /><?php echo $image;
     ?><br />
 		</div>
-	<?php 
+	<?php
+
 } ?>
 	<div style="width:100px; float: right; text-align: center;">
 		<br />Version<br /><?php echo $this->config->item('display_version'); ?>
@@ -81,28 +81,30 @@
 		<br />NMIS<br /><a href="<?php echo $this->config->item('nmis_url');
     ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $oa_theme_images;
     ?>/logo-nmis.png" /></a>
-	<?php 
+	<?php
+
 } else {
     ?>
 		<br />NMIS<br /><a href="https://opmantek.com" target="_blank"><img alt="" style="height:30px" src="<?php echo $oa_theme_images;
     ?>/logo-nmis.png" /></a>
-	<?php 
+	<?php
+
 } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-	<?php if (isset($this->config->config['oae_url']) and $this->config->config['oae_url'] > "") {
-    ?>
-		<br />Dashboard<br /><a href="<?php echo $this->config->config['oae_url'];
-    ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $oa_theme_images;
-    ?>/logo-oae.png" /></a>
-	<?php 
-} else {
-    ?>
-		<br />Dashboard<br /><a href="<?php echo $oa_web_index;
-    ?>/main/help_oae"><img alt="" style="height:30px" src="<?php echo $oa_theme_images;
-    ?>/logo-oae.png" /></a>
-	<?php 
-} ?>
+	<?php
+    if (isset($this->config->config['oae_url']) and $this->config->config['oae_url'] > '' and isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'valid') {
+        ?>
+		<br />Dashboard<br /><a href="<?php echo $this->config->config['oae_url']?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $oa_theme_images?>/logo-oae.png" /></a>
+    <?php
+
+    } else {
+        ?>
+		<br />Dashboard<br /><a href="<?php echo $oa_web_index?>/main/help_oae"><img alt="" style="height:30px" src="<?php echo $oa_theme_images?>/logo-oae.png" /></a>
+    <?php
+
+    }?>
+
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
 	<?php if (isset($this->config->config['maps_url']) and $this->config->config['maps_url'] > "") {
@@ -110,13 +112,15 @@
 		<br />Map<br /><a href="<?php echo $this->config->item('maps_url');
     ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo $oa_theme_images;
     ?>/logo-opmaps.png" /></a>
-	<?php 
+	<?php
+
 } else {
     ?>
 		<br />Map<br /><a href="<?php echo $oa_web_index;
     ?>/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo $oa_theme_images;
     ?>/logo-opmaps.png" /></a>
-	<?php 
+	<?php
+
 } ?>
 	</div>
 </div>

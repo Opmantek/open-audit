@@ -60,8 +60,8 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "Windows NT") === false) {
     $show = "y";
 }
 
-if (!isset($logo)) {
-    $logo = "logo.png";
+if (! isset($this->config->config['logo']) or $this->config->config['logo'] == '') {
+    $this->config->config['logo'] = 'logo-banner-oac-oae';
 }
 
 if (isset($form_url) and $form_url != '') {
@@ -76,16 +76,23 @@ if (isset($form_url) and $form_url != '') {
         <?php $attributes = array('name' => 'myform'); ?>
         <?php echo form_open($form_url, $attributes)."\n"; ?>
                 <div align='left' style="height: 150px; width:60%; float: left; valign: center; text-align: center;">
-                    <img src='<?php echo $this->config->item('oa_web_folder').'/theme-tango/tango-images/'.$logo;?>' alt='logo' border='0' /><br />
-<?php if ((file_exists($filename)) and $show == 'y') {
-    echo "<span align=\"center\"><br /><input type=\"button\" name=\"audit\" id=\"audit\" onClick=\"audit_my_pc()\" value=\"Audit My PC\" /></span><br />&nbsp;\n";
-} ?>
+                    <img src='<?php echo $this->config->item('oa_web_folder').'/theme-tango/tango-images/'.$this->config->config['logo']?>' alt='logo' border='0' /><br />
+                    <?php
+                    if ((file_exists($filename)) and $show == 'y') {
+                        ?>
+                        <span align="center"><br /><input type="button" name="audit" id="audit" onClick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
+                        <?php
+
+                    }
+                    ?>
                 </div>
                 <div align='right' style="height: 150px; width:40%; float: right; text-align: center;">
                     <p><label for="username">Username: </label><input type="text" name="username" id="username" size="20" /></p>
                     <p><label for="password">Password: </label><input type="password" name="password" id="password" size="20" /></p>
-                    <p><?php echo form_submit('login', 'Login'); ?>
-<?php echo $this->session->flashdata('message'); ?>
+                    <p><?php
+                    echo form_submit('login', 'Login');
+                    echo $this->session->flashdata('message');
+                    ?>
                     <br />&nbsp;</p>
                 </div>
 <?php echo form_close(); ?>
