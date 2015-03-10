@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,36 +25,36 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 ?>
 <br /><br /><br /><br /><br />
 <?php $sortcolumn = 3; ?>
 <table cellspacing="1" class="tablesorter">
 <?php
 // table headers
-foreach ($query AS $details) {
-	echo "<thead><tr>\n\t";
-	foreach ($details as $attribute=>$value) {
-		echo "<th>" . $attribute . "</th>";
-	}
-	echo "</tr></thead>\n";
-	break;
+foreach ($query as $details) {
+    echo "<thead><tr>\n\t";
+    foreach ($details as $attribute => $value) {
+        echo "<th>".$attribute."</th>";
+    }
+    echo "</tr></thead>\n";
+    break;
 }
 ?>
 
 <?php
 // data
-foreach ($query AS $details) {
-	echo "<tr>\n\t";
-	foreach ($details as $attribute=>$value) {
-		echo "<td>" . $value . "</td>";
-	}
-	echo "</tr>\n";
+foreach ($query as $details) {
+    echo "<tr>\n\t";
+    foreach ($details as $attribute => $value) {
+        echo "<td>".$value."</td>";
+    }
+    echo "</tr>\n";
 }
 ?>

@@ -26,37 +26,43 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 /**
- * Base Object Admin_connection
+ * Base Object Admin_connection.
  *
  * @access   public
+ *
  * @category Object
- * @package  Open-AudIT
+ *
  * @author   Mark Unwin <marku@opmantek.com>
  * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+ *
  * @link     http://www.open-audit.org
+ *
  * @return   Admin_connection
  */
 class Admin_connection extends MY_Controller
 {
-
     /**
-     * Constructor
+     * Constructor.
      *
      * @access   public
+     *
      * @category Constructor
-     * @package  Open-AudIT
+     *
      * @author   Mark Unwin <marku@opmantek.com>
      * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link     http://www.open-audit.org
-     * @return   Admin
+     *
+     * @return Admin
      */
     public function __construct()
     {
@@ -67,15 +73,18 @@ class Admin_connection extends MY_Controller
     }
 
     /**
-     * Index
+     * Index.
      *
      * @access   public
+     *
      * @category Function
-     * @package  Open-AudIT
+     *
      * @author   Mark Unwin <marku@opmantek.com>
      * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link     http://www.open-audit.org
-     * @return   NULL
+     *
+     * @return NULL
      */
     public function index()
     {
@@ -83,15 +92,18 @@ class Admin_connection extends MY_Controller
     }
 
     /**
-     * List all our network connections
+     * List all our network connections.
      *
      * @access   public
+     *
      * @category Function
-     * @package  Open-AudIT
+     *
      * @author   Mark Unwin <marku@opmantek.com>
      * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link     http://www.open-audit.org
-     * @return   NULL
+     *
+     * @return NULL
      */
     public function list_connections()
     {
@@ -104,15 +116,18 @@ class Admin_connection extends MY_Controller
     }
 
     /**
-     * Add multiple network connections
+     * Add multiple network connections.
      *
      * @access   public
+     *
      * @category Function
-     * @package  Open-AudIT
+     *
      * @author   Mark Unwin <marku@opmantek.com>
      * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link     http://www.open-audit.org
-     * @return   NULL
+     *
+     * @return NULL
      */
     public function add_connections()
     {
@@ -125,14 +140,14 @@ class Admin_connection extends MY_Controller
         if ($this->input->post('submit_file')) {
             // we have an uploaded file - store and process
             $this->load->model('m_oa_connection');
-            $target_path = BASEPATH . '../application/uploads/' . basename($_FILES['upload_file']['name']);
+            $target_path = BASEPATH.'../application/uploads/'.basename($_FILES['upload_file']['name']);
             if (move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path)) {
                 // echo "The file ".  basename( $_FILES['upload_file']['name']). " has been uploaded.<br />\n";
             } else {
                 echo "There was an error uploading the file, please try again!<br />\n";
                 exit();
             }
-            require_once BASEPATH . '../application/libraries/phpexcel/PHPExcel/IOFactory.php';
+            require_once BASEPATH.'../application/libraries/phpexcel/PHPExcel/IOFactory.php';
             if (! $php_excel = PHPExcel_IOFactory::load($target_path)) {
                 exit;
             }
@@ -154,31 +169,31 @@ class Admin_connection extends MY_Controller
                         $details[$attributes[$cell_number]] = $excel_cell->getValue();
                         $cell_number++;
                     }
-                    if ((string)$details['connection_name'] !== '') {
+                    if ((string) $details['connection_name'] !== '') {
                         if ($connection_id = $this->m_oa_connection->get_connection_id($details['connection_name'])) {
                             // we need to update an existing connection
                             $sql_query = 'UPDATE oa_connection SET ';
                             foreach ($details as $detail => $value) {
-                                $sql_query .= $detail . " = '" . mysql_real_escape_string($value) . "', ";
+                                $sql_query .= $detail." = '".mysql_real_escape_string($value)."', ";
                             }
                             $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
-                            $sql_query .= " WHERE connection_name = '" . mysql_real_escape_string($details['connection_name']) . "'";
+                            $sql_query .= " WHERE connection_name = '".mysql_real_escape_string($details['connection_name'])."'";
                         } else {
                             // this is a new connection (we don't have a name match)
                             $sql_query = 'INSERT INTO oa_connection ( ';
                             foreach ($details as $detail => $value) {
-                                $sql_query .= $detail . ', ';
+                                $sql_query .= $detail.', ';
                             }
                             $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
                             $sql_query .= ' ) VALUES ( ';
                             foreach ($details as $detail => $value) {
-                                $sql_query .= "'" . mysql_real_escape_string(str_replace('"', '', $value)) . "', ";
+                                $sql_query .= "'".mysql_real_escape_string(str_replace('"', '', $value))."', ";
                             }
                             $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
                             $sql_query .= ')';
                         }
                         // run the query !!!
-                        echo $sql_query . "<br />\n";
+                        echo $sql_query."<br />\n";
                         $query = $this->db->query($sql_query);
                     } else {
                         echo 'no connection name provided';
@@ -199,30 +214,28 @@ class Admin_connection extends MY_Controller
                     // we need to update an existing connection
                     $sql_query = 'UPDATE oa_connection SET ';
                     foreach ($child->children() as $detail) {
-                        $sql_query .= $detail->getName() . " = '" . $detail . "', ";
+                        $sql_query .= $detail->getName()." = '".$detail."', ";
                     }
                     $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
-                    $sql_query .= " WHERE connection_name = '" . $child->connection_name . "'";
-                }
-                else {
+                    $sql_query .= " WHERE connection_name = '".$child->connection_name."'";
+                } else {
                     // this is a new connection (we don't have a name match)
                     $sql_query = 'INSERT INTO oa_connection ( ';
                     foreach ($child->children() as $detail) {
-                        $sql_query .= $detail->getName() . ', ';
+                        $sql_query .= $detail->getName().', ';
                     }
                     $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
                     $sql_query .= ' ) VALUES ( ';
                     foreach ($child->children() as $detail) {
-                        $sql_query .= "'" . $detail . "', ";
+                        $sql_query .= "'".$detail."', ";
                     }
                     $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
                     $sql_query .= ')';
                 }
-                if ((string)$child->connection_name !== '') {
+                if ((string) $child->connection_name !== '') {
                     // run the query !!!
                     $query = $this->db->query($sql_query);
-                }
-                else {
+                } else {
                     echo 'no connection name provided';
                 }
             }
@@ -230,19 +243,22 @@ class Admin_connection extends MY_Controller
     }
 
     /**
-     * Add a single network connection
+     * Add a single network connection.
      *
      * @access   public
+     *
      * @category Function
-     * @package  Open-AudIT
+     *
      * @author   Mark Unwin <marku@opmantek.com>
      * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link     http://www.open-audit.org
-     * @return   NULL
+     *
+     * @return NULL
      */
     public function add_connection()
     {
-        if ( ! $this->input->post('AddConnection')) {
+        if (! $this->input->post('AddConnection')) {
             // load the initial form
             $this->load->model('m_oa_location');
             $this->load->model('m_oa_org');
@@ -251,8 +267,7 @@ class Admin_connection extends MY_Controller
             $this->data['heading'] = 'Add Connection';
             $this->data['include'] = 'v_add_connection';
             $this->load->view('v_template', $this->data);
-        }
-        else {
+        } else {
             // process the form
             foreach ($this->input->post() as $this_key => $this_value) {
                 $details->$this_key = $this_value;
@@ -261,8 +276,7 @@ class Admin_connection extends MY_Controller
             if (is_null($this->m_oa_connection->get_connection_id($details->connection_name))) {
                 // connection does not exist - good
                 $details->connection_id = $this->m_oa_connection->add_connection($details);
-            }
-            else {
+            } else {
                 $this->data['error_message'] = 'A Connection with that name already exists.';
                 $this->data['heading'] = 'Add Connection';
                 $this->data['include'] = 'v_add_connection';
@@ -273,34 +287,36 @@ class Admin_connection extends MY_Controller
     }
 
     /**
-     * Edit a single network connection
+     * Edit a single network connection.
      *
      * @access   public
+     *
      * @category Function
-     * @package  Open-AudIT
+     *
      * @author   Mark Unwin <marku@opmantek.com>
      * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link     http://www.open-audit.org
-     * @return   NULL
+     *
+     * @return NULL
      */
     public function edit_connection()
     {
         $this->load->model('m_oa_connection');
-        if ( ! $this->input->post('Editconnection')) {
+        if (! $this->input->post('Editconnection')) {
             // load the initial form
             $this->data['connection'] = $this->m_oa_connection->get_connection($this->data['id']);
             $this->data['heading'] = 'Edit Connection';
             $this->data['include'] = 'v_edit_connection';
             $this->data['sortcolumn'] = '1';
             $this->load->view('v_template', $this->data);
-        }
-        else {
+        } else {
             // process the form
             $error = '0';
             foreach ($this->input->post() as $this_key => $this_value) {
                 $details->$this_key = $this_value;
             }
-            if ((bool)$this->m_oa_connection->check_connection_name($details->connection_name, $details->connection_id) === FALSE) {
+            if ((bool) $this->m_oa_connection->check_connection_name($details->connection_name, $details->connection_id) === false) {
                 $error = '1';
                 $this->data['error_message'] = 'connection name already exists.';
                 $this->data['connection'] = $this->m_oa_connection->get_connection($details->connection_id);
@@ -309,7 +325,7 @@ class Admin_connection extends MY_Controller
                 $this->load->view('v_template', $this->data);
             }
 
-            if ((string)$error === '0') {
+            if ((string) $error === '0') {
                 $this->m_oa_connection->edit_connection($details);
                 redirect('admin_connection/list_connections');
             }
@@ -317,15 +333,18 @@ class Admin_connection extends MY_Controller
     }
 
     /**
-     * Delete a single network connection
+     * Delete a single network connection.
      *
      * @access   public
+     *
      * @category Function
-     * @package  Open-AudIT
+     *
      * @author   Mark Unwin <marku@opmantek.com>
      * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link     http://www.open-audit.org
-     * @return   NULL
+     *
+     * @return NULL
      */
     public function delete_connection()
     {

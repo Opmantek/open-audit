@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,13 +25,13 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 $sortcolumn = 0;
 ?>
 <table cellspacing="1" class="tablesorter" width="900">
@@ -51,31 +51,36 @@ $sortcolumn = 0;
 		</tr>
 	</thead>
 	<tbody>
-	<?php foreach($query as $key): 
-	if ($key["partition_free_space"] == 0)
-	{
-		$percent_free = "0";
-	} else {
-		$percent_free = round((($key["partition_free_space"] / $key["partition_size"]) * 100), 2); 
-	}
-	if ( ($key["days_until_used"] < $days) && ($key["days_until_used"] != 'unknown') )
-	{
-	?>
+	<?php foreach ($query as $key):
+    if ($key["partition_free_space"] == 0) {
+        $percent_free = "0";
+    } else {
+        $percent_free = round((($key["partition_free_space"] / $key["partition_size"]) * 100), 2);
+    }
+    if (($key["days_until_used"] < $days) && ($key["days_until_used"] != 'unknown')) {
+        ?>
 		<tr>
 			<td><a href="<?php echo base_url()?>index.php/main/system_display/<?php echo $key["system_id"]?>"><?php echo $key["hostname"]?></a></td>
 			<td align="left"><?php echo $key["partition_name"]?></td>
-			<td align="center"><a href="<?php echo base_url()?>index.php/main/disk_graph/<?php echo $key["system_id"] . "/" . $key["partition_id"]?>"><?php echo $key["partition_mount_point"] ?></a></td>
+			<td align="center"><a href="<?php echo base_url()?>index.php/main/disk_graph/<?php echo $key["system_id"]."/".$key["partition_id"]?>"><?php echo $key["partition_mount_point"] ?></a></td>
 			<td align="center"><?php echo $key["man_environment"]?></td>
 			<td align="center"><?php echo $key["man_function"]?></td>
-			<td align="center"><span style="display: none;"><?php echo ($key["partition_size"] )?></span><?php echo number_format($key["partition_size"])?></td>
-			<td align="center"><span style="display: none;"><?php echo ($key["partition_used_space"] )?></span><?php echo number_format($key["partition_used_space"])?></td>
-			<td align="center"><span style="display: none;"><?php echo ($key["partition_free_space"])?></span><?php echo number_format($key["partition_free_space"])?></td>
-			<td align="center"><?php echo $percent_free;?></td>
-			<td align="center"><?php echo "<span style=\"display: none;\">" . $key["change_per_day"] . "</span>" . number_format(round($key["change_per_day"],0));?></td>
-			<td align="center"><?php echo $key["days_until_used"];?></td>
+			<td align="center"><span style="display: none;"><?php echo($key["partition_size"])?></span><?php echo number_format($key["partition_size"])?></td>
+			<td align="center"><span style="display: none;"><?php echo($key["partition_used_space"])?></span><?php echo number_format($key["partition_used_space"])?></td>
+			<td align="center"><span style="display: none;"><?php echo($key["partition_free_space"])?></span><?php echo number_format($key["partition_free_space"])?></td>
+			<td align="center"><?php echo $percent_free;
+        ?></td>
+			<td align="center"><?php echo "<span style=\"display: none;\">".$key["change_per_day"]."</span>".number_format(round($key["change_per_day"], 0));
+        ?></td>
+			<td align="center"><?php echo $key["days_until_used"];
+        ?></td>
 		</tr>
-	<?php } else {} ?>
+	<?php 
+    } else {
+    } ?>
 	<?php endforeach; ?>
-	<?php if (count($query) == 0) { echo "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n"; } ?>
+	<?php if (count($query) == 0) {
+    echo "<tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>\n";
+} ?>
 	</tbody>
 </table>

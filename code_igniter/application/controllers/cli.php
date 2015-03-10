@@ -26,37 +26,43 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 /**
- * Base Object Cli
+ * Base Object Cli.
  *
  * @access   public
+ *
  * @category Object
- * @package  Open-AudIT
+ *
  * @author   Mark Unwin <marku@opmantek.com>
  * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+ *
  * @link     http://www.open-audit.org
+ *
  * @return   Admin
  */
-class Cli extends CI_Controller
+class cli extends CI_Controller
 {
-
     /**
-     * Constructor
+     * Constructor.
      *
      * @access    public
+     *
      * @category  Constructor
-     * @package   Open-AudIT
+     *
      * @author    Mark Unwin <marku@opmantek.com>
      * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link      http://www.open-audit.org
-     * @return    Admin
+     *
+     * @return Admin
      */
     public function __construct()
     {
@@ -70,19 +76,21 @@ class Cli extends CI_Controller
         if (! $this->input->is_cli_request()) {
             exit();
         }
-
     }
 
     /**
-     * Index
+     * Index.
      *
      * @access    public
+     *
      * @category  Function
-     * @package   Open-AudIT
+     *
      * @author    Mark Unwin <marku@opmantek.com>
      * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link      http://www.open-audit.org
-     * @return    NULL
+     *
+     * @return NULL
      */
     public function index()
     {
@@ -90,15 +98,18 @@ class Cli extends CI_Controller
     }
 
     /**
-     * Import all nodes from NMIS
+     * Import all nodes from NMIS.
      *
      * @access    public
+     *
      * @category  Function
-     * @package   Open-AudIT
+     *
      * @author    Mark Unwin <marku@opmantek.com>
      * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+     *
      * @link      http://www.open-audit.org
-     * @return    NULL
+     *
+     * @return NULL
      */
     public function import_nmis()
     {
@@ -108,7 +119,7 @@ class Cli extends CI_Controller
         $this->load->helper('log');
         $log_details = new stdClass();
         $log_details->severity = 6;
-        $log_details->message = 'NMIS import, importing nodes from ' . $nodes_file;
+        $log_details->message = 'NMIS import, importing nodes from '.$nodes_file;
         stdlog($log_details);
         $this->load->helper('snmp_oid');
         $this->load->helper('snmp');
@@ -174,9 +185,9 @@ class Cli extends CI_Controller
             $device->hostname = '';
             $device->fqdn = '';
 
-            if ((string)$device->collect == 'true') {
+            if ((string) $device->collect == 'true') {
                 // only import where collect == true
-                if ((string)$device->host !== '127.0.0.1') {
+                if ((string) $device->host !== '127.0.0.1') {
                     if (filter_var($device->host, FILTER_VALIDATE_IP)) {
                         // we have an ip address as opposed to a name or fqdn
                         $device->man_ip_address = $device->host;
@@ -193,7 +204,7 @@ class Cli extends CI_Controller
                             $device->hostname = $device->host;
                         }
                     }
-                    if ((string)$device->man_ip_address !== '') {
+                    if ((string) $device->man_ip_address !== '') {
                         // lookup the name
                         $device->hostname = gethostbyaddr($device->man_ip_address);
                         if (filter_var($device->host, FILTER_VALIDATE_IP)) {
@@ -209,17 +220,17 @@ class Cli extends CI_Controller
                         }
                     } else {
                         // lookup the ip
-                        if ((string)$device->fqdn !== '') {
+                        if ((string) $device->fqdn !== '') {
                             $device->man_ip_address = gethostbyname($device->fqdn);
                         } else {
                             $device->man_ip_address = gethostbyname($device->host);
                         }
                     }
-                    if ((string)$device->version === 'snmpv2c') {
+                    if ((string) $device->version === 'snmpv2c') {
                         $device->version = '2c';
                     }
 
-                    if (((string)$device->community !== '') and ((string)$device->version === '2c') and ((string)$device->man_ip_address !== '')) {
+                    if (((string) $device->community !== '') and ((string) $device->version === '2c') and ((string) $device->man_ip_address !== '')) {
                         $encode['ip_address'] = $device->man_ip_address;
                         $encode['fqdn'] = $device->fqdn;
                         $encode['hostname'] = $device->hostname;
@@ -259,15 +270,15 @@ class Cli extends CI_Controller
                     $device->system_id = '';
                     $device->system_id = $this->m_system->find_system($device);
 
-                    if ((isset($device->sysObjectID)) and ((string)$device->sysObjectID !== '')) {
+                    if ((isset($device->sysObjectID)) and ((string) $device->sysObjectID !== '')) {
                         // we received a result from snmp, use this data to update or insert
-                        if (isset($device->system_id) and (string)$device->system_id !== '') {
+                        if (isset($device->system_id) and (string) $device->system_id !== '') {
                             // update an existing device with snmp
                             $device->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $device->system_id);
                             $device->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $device->system_id);
                             $device->last_seen_by = 'snmp nmis import';
                             $this->m_system->update_system($device);
-                            $log_details->message = 'NMIS import, update SNMP for ' . $device->man_ip_address . ' (' . $device->hostname . ')';
+                            $log_details->message = 'NMIS import, update SNMP for '.$device->man_ip_address.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         } else {
@@ -276,7 +287,7 @@ class Cli extends CI_Controller
                             $device->original_last_seen_by = 'snmp nmis import';
                             $device->system_id = $this->m_system->insert_system($device);
                             $device->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $device->system_id);
-                            $log_details->message = 'NMIS import, insert SNMP for ' . $device->man_ip_address . ' (' . $device->hostname . ')';
+                            $log_details->message = 'NMIS import, insert SNMP for '.$device->man_ip_address.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         }
@@ -288,7 +299,7 @@ class Cli extends CI_Controller
                                 $this->m_network_card->process_network_cards($input, $device);
                                 if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
                                     foreach ($input->ip_addresses as $ip_input) {
-                                        $ip_input = (object)$ip_input;
+                                        $ip_input = (object) $ip_input;
                                         $this->m_ip_address->process_addresses($ip_input, $device);
                                     }
                                 }
@@ -298,11 +309,11 @@ class Cli extends CI_Controller
                         $this->m_oa_group->update_system_groups($device);
                     } else {
                         // just use hat we have from the nodes.nmis file
-                        if (isset($device->system_id) and (string)$device->system_id !== '') {
+                        if (isset($device->system_id) and (string) $device->system_id !== '') {
                             // update an existing device
                             $device->last_seen_by = 'nmis import';
                             $this->m_system->update_system($device);
-                            $log_details->message = 'NMIS import, update basic result for ' . $device->man_ip_address . ' (' . $device->hostname . ')';
+                            $log_details->message = 'NMIS import, update basic result for '.$device->man_ip_address.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         } else {
@@ -310,19 +321,19 @@ class Cli extends CI_Controller
                             $device->description = 'NMIS Imported, but not seen using SNMP';
                             $device->last_seen_by = 'nmis import';
                             $device->system_id = $this->m_system->insert_system($device);
-                            $log_details->message = 'NMIS import, insert basic result for ' . $device->man_ip_address . ' (' . $device->hostname . ')';
+                            $log_details->message = 'NMIS import, insert basic result for '.$device->man_ip_address.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         }
                     }
-                    if (isset($device->system_id) and (string)$device->system_id !== '') {
+                    if (isset($device->system_id) and (string) $device->system_id !== '') {
                         $this->m_oa_group->update_system_groups($device);
                     }
                 }
             }
         }
         $log_details->severity = 6;
-        $log_details->message = 'NMIS import, finished importing nodes from ' . $nodes_file;
+        $log_details->message = 'NMIS import, finished importing nodes from '.$nodes_file;
         stdlog($log_details);
     }
 }

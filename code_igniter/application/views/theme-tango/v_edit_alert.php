@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,17 +25,17 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 ?>
 <br />&nbsp;
 <?php
-echo form_open('change/process_edit_alert') . "\n"; 
+echo form_open('change/process_edit_alert')."\n";
 ?>
 <input type="hidden" name="group_id" value="<?php echo $group_id; ?>" />
 <fieldset id="change_details" class="niceforms">
@@ -65,14 +65,13 @@ echo form_open('change/process_edit_alert') . "\n";
 	<input type="text" name="external_change_link" style="width: 300px" />
 	<br /><br />
 	<label for="alert_note">Note: </label>
-	<textarea name="alert_note" rows="4" cols="56" ></textarea> 
+	<textarea name="alert_note" rows="4" cols="56" ></textarea>
 	<br /><br />
 	<?php
-	foreach ($query as $key)
-	{
-		echo "<input type=\"hidden\" name=\"alert_id_" . $key->alert_id . "\" value=\"" . $key->alert_id . "\" />\n";
-	}
-	?>
+    foreach ($query as $key) {
+        echo "<input type=\"hidden\" name=\"alert_id_".$key->alert_id."\" value=\"".$key->alert_id."\" />\n";
+    }
+    ?>
 	<label for="submit">&nbsp;</label>
 	<input type="submit" name="submit" id="submit" value="Submit" />
 </fieldset>
@@ -91,7 +90,7 @@ echo form_open('change/process_edit_alert') . "\n";
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach($query as $key): ?>
+			<?php foreach ($query as $key): ?>
 			<tr>
 				<td><?php echo $key->timestamp?></td>
 				<td><span style="display: none;"><?php echo $key->man_ip_address?></span><?php echo ip_address_from_db($key->man_ip_address)?></td>

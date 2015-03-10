@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,9 +25,10 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -36,7 +37,7 @@
 
 $(document).ready(function() {
 	$(function() {
-		var hideDelay = 500;  
+		var hideDelay = 500;
 		var currentID;
 		var hideTimer = null;
 
@@ -189,7 +190,7 @@ $(document).ready(function() {
 			});
 
 			$('#SystemPopupContent').html('&nbsp;');
-	
+
 			$.ajax({
 				type: 'GET',
 				url: baseUrl+'index.php/ajax/system_popup/' + pageID,
@@ -209,10 +210,10 @@ $(document).ready(function() {
 					}
 				}
 			});
-	
+
 			container.css('display', 'block');
 		});
-	
+
 	$('.SystemPopupTrigger').live('mouseout', function() {
 		if (hideTimer)
 		clearTimeout(hideTimer);
@@ -221,13 +222,13 @@ $(document).ready(function() {
 		container.css('display', 'none');
 		}, hideDelay);
 	});
-	
+
 	// Allow mouse over of details without hiding details
 	$('#SystemPopupContainer').mouseover(function() {
 		if (hideTimer)
 		clearTimeout(hideTimer);
 	});
-	
+
 	// Hide after mouseout
 	$('#SystemPopupContainer').mouseout(function() {
 		if (hideTimer)
@@ -242,7 +243,7 @@ $(document).ready(function() {
 
 
 
-	$('.TagPopupTrigger').live('mouseover', function() {		  
+	$('.TagPopupTrigger').live('mouseover', function() {
 		// format of 'rel' tag: pageid,personguid
 		var settings = $(this).attr('rel').split(',');
 		var pageID = settings[0];
@@ -257,9 +258,9 @@ $(document).ready(function() {
 			left: (pos.left - 200 + width) + 'px',
 			top: pos.top - 5 + 'px'
 		});
-	
+
 		$('#TagPopupContent').html('&nbsp;');
-	
+
 		$.ajax({
 			type: 'GET',
 			url: baseUrl+'index.php/ajax/system_tags/' + pageID,
@@ -281,7 +282,7 @@ $(document).ready(function() {
 		});
 		container2.css('display', 'block');
 	});
-	
+
 	$('.TagPopupTrigger').live('mouseout', function() {
 		if (hideTimer)
 		clearTimeout(hideTimer);
@@ -289,13 +290,13 @@ $(document).ready(function() {
 			container2.css('display', 'none');
 		}, hideDelay);
 	});
-		
+
 	// Allow mouse over of details without hiding details
 	$('#TagPopupContainer').mouseover(function() {
 		if (hideTimer)
 		clearTimeout(hideTimer);
 	});
-		
+
 	// Hide after mouseout
 	$('#TagPopupContainer').mouseout(function() {
 		if (hideTimer)
@@ -310,7 +311,7 @@ $(document).ready(function() {
 
 
 
-	$('.ModifierPopupTrigger').live('mouseover', function() {	
+	$('.ModifierPopupTrigger').live('mouseover', function() {
 		// format of 'rel' tag: pageid,personguid
 		var settings = $(this).attr('rel').split(',');
 		var pageID = settings[0];
@@ -325,7 +326,7 @@ $(document).ready(function() {
 		$('#ModifierPopupContent').html('<div class="ModifierPopupResult"><a href="' + document.URL + '/out___' + $(this).attr('rel') + '">Filter Out<\/a><br /><a href="' + document.URL + '/only___' + $(this).attr('rel') + '">Filter Only<\/a><\/div>');
 		container4.css('display', 'block');
 	});
-	
+
 	$('.ModifierPopupTrigger').live('mouseout', function() {
 		if (hideTimer)
 			clearTimeout(hideTimer);
@@ -335,13 +336,13 @@ $(document).ready(function() {
 		document.getElementById(oa_cell_id).innerHTML = oa_cell_value;
 		cell_id = "";
 	});
-	
+
 	// Allow mouse over of details without hiding details
 	$('#ModifierPopupContainer').mouseover(function() {
 		if (hideTimer)
 			clearTimeout(hideTimer);
 	});
-	
+
 	// Hide after mouseout
 	$('#ModifierPopupContainer').mouseout(function() {
 		if (hideTimer)
@@ -360,12 +361,12 @@ $(document).ready(function() {
 
 
 	<?php
-		$menu_items = "";
-		foreach ($menu as $report){ 
-			$menu_items .= "<a href=\"" . $this->config->item('oa_web_index') . "/report/show_report/" . $report->report_id . "/'+groupID+'\">" .  $report->report_name . "<\/a><br />";
-		} 
-	?>
-	$('.ReportPopupTrigger').live('mouseover', function() {	
+        $menu_items = "";
+        foreach ($menu as $report) {
+            $menu_items .= "<a href=\"".$this->config->item('oa_web_index')."/report/show_report/".$report->report_id."/'+groupID+'\">".$report->report_name."<\/a><br />";
+        }
+    ?>
+	$('.ReportPopupTrigger').live('mouseover', function() {
 		// format of 'rel' tag: pageid,personguid
 		var settings = $(this).attr('rel').split(',');
 		var groupID = settings[0];
@@ -380,7 +381,7 @@ $(document).ready(function() {
 		$('#ReportPopupContent').html('<div class="ReportPopupResult"><table border="0" style="font-size: 8pt; color:#3D3D3D; "><tr><td><?php echo $menu_items; ?><\/td><\/tr><\/div>');
 		container5.css('display', 'block');
 	});
-	
+
 	$('.ReportPopupTrigger').live('mouseout', function() {
 		if (hideTimer)
 			clearTimeout(hideTimer);
@@ -388,13 +389,13 @@ $(document).ready(function() {
 			container5.css('display', 'none');
 		}, hideDelay);
 	});
-	
+
 	// Allow mouse over of details without hiding details
 	$('#ReportPopupContainer').mouseover(function() {
 		if (hideTimer)
 			clearTimeout(hideTimer);
 	});
-	
+
 	// Hide after mouseout
 	$('#ReportPopupContainer').mouseout(function() {
 		if (hideTimer)
@@ -423,7 +424,7 @@ $(document).ready(function() {
 		$('#SearchPopupContent').html('<div class="SearchPopupResult"><table border="0" style="font-size: 8pt; color:#3D3D3D; "><tr><td style="text-align: center;"><input type="text" name="search_term" id="search_term" /><br /><input type="submit" name="submit" id="submit" value="Search" onclick="return(dynamic_search(\''+pageID+'\'))" /><\/td><\/tr><\/table><\/div>');
 		container3.css('display', 'block');
 	});
-	
+
 	$('.SearchPopupTrigger').live('mouseout', function() {
 		if (hideTimer)
 			clearTimeout(hideTimer);
@@ -431,13 +432,13 @@ $(document).ready(function() {
 			container3.css('display', 'none');
 		}, hideDelay);
 	});
-	
+
 	// Allow mouse over of details without hiding details
 	$('#SearchPopupContainer').mouseover(function() {
 		if (hideTimer)
 			clearTimeout(hideTimer);
 	});
-	
+
 	// Hide after mouseout
 	$('#SearchPopupContainer').mouseout(function() {
 		if (hideTimer)
@@ -463,7 +464,7 @@ $(document).ready(function() {
 		$('#AssetPopupContent').html('<div class="AssetPopupResult"><table border="0" style="font-size: 8pt; color:#3D3D3D; "><tr><td style="text-align: center;">Licenses Purchased<input type="text" name="licenses" id="licenses" /><input type="submit" name="submit" id="submit" value="Go" onclick="return(dynamic_asset(\''+software_name+'\'))" /><\/td><\/tr><\/table><\/div>');
 		container6.css('display', 'block');
 	});
-	
+
 	$('.AssetPopupTrigger').live('mouseout', function() {
 		if (hideTimer)
 			clearTimeout(hideTimer);
@@ -471,13 +472,13 @@ $(document).ready(function() {
 			container6.css('display', 'none');
 		}, hideDelay);
 	});
-	
+
 	// Allow mouse over of details without hiding details
 	$('#AssetPopupContainer').mouseover(function() {
 		if (hideTimer)
 			clearTimeout(hideTimer);
 	});
-	
+
 	// Hide after mouseout
 	$('#AssetPopupContainer').mouseout(function() {
 		if (hideTimer)

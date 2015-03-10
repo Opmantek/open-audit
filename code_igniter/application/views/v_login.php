@@ -25,9 +25,10 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -52,7 +53,7 @@
 <?php
 
 $file_exist = '';
-$filename = dirname(dirname(dirname(dirname(__FILE__)))) . "/other/audit_windows.vbs";
+$filename = dirname(dirname(dirname(dirname(__FILE__))))."/other/audit_windows.vbs";
 if (strpos($_SERVER['HTTP_USER_AGENT'], "Windows NT") === false) {
     $show = "n";
 } else {
@@ -61,9 +62,9 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "Windows NT") === false) {
 
 if (!isset($logo)) {
     $logo = "logo.png";
-} 
+}
 
-if (isset($form_url) AND $form_url != '') {
+if (isset($form_url) and $form_url != '') {
     // this is the session requested url
 } else {
     $form_url = 'main/list_groups';
@@ -72,12 +73,12 @@ if (isset($form_url) AND $form_url != '') {
 <body onload="document.myform.username.focus();">
     <div id="container">
     <div id="header" style='height: 200px; width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px;' align='left'>
-        <?php $attributes = array ('name' => 'myform'); ?>
-        <?php echo form_open($form_url, $attributes) . "\n"; ?>
+        <?php $attributes = array('name' => 'myform'); ?>
+        <?php echo form_open($form_url, $attributes)."\n"; ?>
                 <div align='left' style="height: 150px; width:60%; float: left; valign: center; text-align: center;">
-                    <img src='<?php echo $this->config->item('oa_web_folder') . '/theme-tango/tango-images/' . $logo ;?>' alt='logo' border='0' /><br />
+                    <img src='<?php echo $this->config->item('oa_web_folder').'/theme-tango/tango-images/'.$logo;?>' alt='logo' border='0' /><br />
 <?php if ((file_exists($filename)) and $show == 'y') {
-                    echo "<span align=\"center\"><br /><input type=\"button\" name=\"audit\" id=\"audit\" onClick=\"audit_my_pc()\" value=\"Audit My PC\" /></span><br />&nbsp;\n";
+    echo "<span align=\"center\"><br /><input type=\"button\" name=\"audit\" id=\"audit\" onClick=\"audit_my_pc()\" value=\"Audit My PC\" /></span><br />&nbsp;\n";
 } ?>
                 </div>
                 <div align='right' style="height: 150px; width:40%; float: right; text-align: center;">
@@ -89,7 +90,7 @@ if (isset($form_url) AND $form_url != '') {
                 </div>
 <?php echo form_close(); ?>
 <?php if ($systems == '0') {
-                echo "<div style='width: 100%; text-align: center;'><br />&nbsp;<br />
+    echo "<div style='width: 100%; text-align: center;'><br />&nbsp;<br />
                 <span style='font-size: 10pt; font-style: italic; color: blue;' >No devices are in the database.</span><br />
                 <span style='font-size: 10pt; font-style: italic; color: green;'>Initial login credentials are admin / password.</span><br />
                 <span style='font-size: 10pt; font-style: italic; color: red;'  >Please log in and change these ASAP.</span><br />
@@ -98,7 +99,7 @@ if (isset($form_url) AND $form_url != '') {
     </div>
 <?php if (isset($oae_message)) {
     echo "<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>\n";
-    echo "\t\t<span style='font-size: 12pt;'>" . $oae_message . "<br /><br /></span>\n";
+    echo "\t\t<span style='font-size: 12pt;'>".$oae_message."<br /><br /></span>\n";
     echo "</div>\n";
 }
 ?>
@@ -108,10 +109,12 @@ if (isset($form_url) AND $form_url != '') {
     {
         location.href = "/open-audit/index.php/login/audit_my_pc";
     }
-<?php if ($systems == '0') { ?>
+<?php if ($systems == '0') {
+    ?>
     document.getElementById("username").value = "admin";
     document.getElementById("password").value = "password";
-    <?php 
+    <?php
+
 } ?>
 </script>
 </body>

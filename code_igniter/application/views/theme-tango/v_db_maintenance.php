@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,20 +25,22 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 ?>
 <form class="niceforms" onsubmit="return newdays();">
-<div style="float:left;"><?php echo __("Days"); ?> 
-	<input id="days" name="days" type="text" value="<?php echo $days; ?>" /> 
+<div style="float:left;"><?php echo __("Days"); ?>
+	<input id="days" name="days" type="text" value="<?php echo $days; ?>" />
 	<input type="submit" value="Go" name="Go" id="Go" /></div>
 <div style="float: right;">
-	<?php if (isset($flashdata)) { echo $flashdata; } ?>
+	<?php if (isset($flashdata)) {
+    echo $flashdata;
+} ?>
 </div>
 <br />&nbsp;
 <br />&nbsp;
@@ -76,17 +78,17 @@
 				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_all_alerts/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
 			</tr>
 			<tr>
-				<td><?php echo __("Alerts older than") . " " . $days . " " . __("Days"); ?></td>
+				<td><?php echo __("Alerts older than")." ".$days." ".__("Days"); ?></td>
 				<td style="text-align: center;"><?php echo $count_alerts_days; ?></td>
 				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_alerts_days/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
 			</tr>
 			<tr>
-				<td><?php echo __("Non Current Attributes older than") . " " . $days . " " . __("Days"); ?></td>
+				<td><?php echo __("Non Current Attributes older than")." ".$days." ".__("Days"); ?></td>
 				<td style="text-align: center;"><?php echo $count_non_current_attributes; ?></td>
 				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_all_non_current_attributes/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
 			</tr>
 			<tr>
-				<td><?php echo __("Devices Not Seen For") . " " . $days . " " . __("Days"); ?></td>
+				<td><?php echo __("Devices Not Seen For")." ".$days." ".__("Days"); ?></td>
 				<td style="text-align: center;"><?php echo $count_not_seen_days; ?></td>
 				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_systems_not_seen_days/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
 			</tr>
@@ -110,11 +112,19 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($non_current_attributes as $attribute) { ?><tr>
-				<td><?php echo $attribute->table; ?></td>
-				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
-				<td style="text-align: center;"><a href="<?php echo base_url(); ?>index.php/admin_db/delete_table_non_current_attributes/<?php echo $attribute->table; ?>/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
-			</tr><?php } ?>
+			<?php foreach ($non_current_attributes as $attribute) {
+    ?><tr>
+				<td><?php echo $attribute->table;
+    ?></td>
+				<td style="text-align: center;"><?php echo $attribute->count;
+    ?></td>
+				<td style="text-align: center;"><a href="<?php echo base_url();
+    ?>index.php/admin_db/delete_table_non_current_attributes/<?php echo $attribute->table;
+    ?>/<?php echo $days;
+    ?>"><img src='<?php echo $oa_theme_images;
+    ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+			</tr><?php 
+} ?>
 		</tbody>
 	</table>
 </fieldset>
@@ -129,14 +139,22 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($all_hw_attributes as $attribute) { ?><tr>
-				<td><?php echo $attribute->table; ?></td>
-				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
-			</tr><?php } ?>
-			<?php foreach ($all_sw_attributes as $attribute) { ?><tr>
-				<td><?php echo $attribute->table; ?></td>
-				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
-			</tr><?php } ?>
+			<?php foreach ($all_hw_attributes as $attribute) {
+    ?><tr>
+				<td><?php echo $attribute->table;
+    ?></td>
+				<td style="text-align: center;"><?php echo $attribute->count;
+    ?></td>
+			</tr><?php 
+} ?>
+			<?php foreach ($all_sw_attributes as $attribute) {
+    ?><tr>
+				<td><?php echo $attribute->table;
+    ?></td>
+				<td style="text-align: center;"><?php echo $attribute->count;
+    ?></td>
+			</tr><?php 
+} ?>
 		</tbody>
 	</table>
 </fieldset>

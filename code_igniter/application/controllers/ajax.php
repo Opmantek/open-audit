@@ -26,13 +26,13 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class ajax extends MY_Controller
 {
     public function __construct()
@@ -43,14 +43,14 @@ class ajax extends MY_Controller
         $this->data['field_data'] = $this->uri->segment(5, '');
         $this->data['title'] = 'Open-AudIT';
 
-        if (!isset($this->user->user_lang) or $this->user->user_lang=="") {
+        if (!isset($this->user->user_lang) or $this->user->user_lang == "") {
             $user_lang = "en";
         } else {
             $user_lang = $this->user->user_lang;
         }
 
-        $language_file = APPPATH . "/views/lang/" . $user_lang . ".inc";
-        include($language_file);
+        $language_file = APPPATH."/views/lang/".$user_lang.".inc";
+        include $language_file;
 
         function __($word)
         {
@@ -60,8 +60,8 @@ class ajax extends MY_Controller
             $language_learning_mode = 0;
 
             if ($language_learning_mode == 1) {
-                $language_file = APPPATH . "views/lang/" . $user_lang . ".inc";
-                include($language_file);
+                $language_file = APPPATH."views/lang/".$user_lang.".inc";
+                include $language_file;
             }
             if (isset($GLOBALS["lang"][$word])) {
                 return $GLOBALS["lang"][$word];
@@ -125,7 +125,7 @@ class ajax extends MY_Controller
             # get the new config value
             $config_value = urldecode(str_replace('value=', '', $i[1]));
         } else {
-            for ($i=0; $i<count($url_array); $i++) {
+            for ($i = 0; $i<count($url_array); $i++) {
                 if ($url_array[$i] == "update_config") {
                     $config_name = $url_array[$i+1];
                 }
@@ -144,10 +144,18 @@ class ajax extends MY_Controller
         }
         $this->m_oa_config->update_config($config_name, $config_value, $this->user->user_id, date('Y-m-d H:i:s'));
         $masked = str_pad('', strlen($config_value), '*');
-        if ($config_name == 'default_windows_password' and $this->config->config['show_passwords'] == 'n') { $config_value = $masked; }
-        if ($config_name == 'default_ssh_password' and $this->config->config['show_passwords'] == 'n') { $config_value = $masked; }
-        if ($config_name == 'default_ipmi_password' and $this->config->config['show_passwords'] == 'n') { $config_value = $masked; }
-        if ($config_name == 'default_snmp_community' and $this->config->config['show_snmp_community'] == 'n') { $config_value = $masked; }
+        if ($config_name == 'default_windows_password' and $this->config->config['show_passwords'] == 'n') {
+            $config_value = $masked;
+        }
+        if ($config_name == 'default_ssh_password' and $this->config->config['show_passwords'] == 'n') {
+            $config_value = $masked;
+        }
+        if ($config_name == 'default_ipmi_password' and $this->config->config['show_passwords'] == 'n') {
+            $config_value = $masked;
+        }
+        if ($config_name == 'default_snmp_community' and $this->config->config['show_snmp_community'] == 'n') {
+            $config_value = $masked;
+        }
         echo $config_value;
     }
 
@@ -179,13 +187,13 @@ class ajax extends MY_Controller
                 if ($query->num_rows() > 0) {
                     # we are updating an existing value
                     $row = $query->row();
-                    $sql = "UPDATE sys_man_additional_fields_data SET field_" . $data[1] . " = '" . $this->oa_urldecode($this->data['field_data']) . "' WHERE field_details_id = '" . $row->field_details_id . "'";
+                    $sql = "UPDATE sys_man_additional_fields_data SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
                     $query = $this->db->query($sql);
                     $this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
                     echo $this->oa_urldecode($this->data['field_data']);
                 } else {
                     # we have to insert a new record for a custom data value for this system
-                    $sql = "INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_" . $data[1] . ") VALUES ( NULL, '" . $this->data['system_id'] . "', '" . $data[3] . "', '" . $this->oa_urldecode($this->data['field_data']) . "')";
+                    $sql = "INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
                     $query = $this->db->query($sql);
                     $this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
                     echo $this->oa_urldecode($this->data['field_data']);
@@ -225,7 +233,6 @@ class ajax extends MY_Controller
                         } else {
                             echo $this->oa_urldecode($this->data['field_data']);
                         }
-
                     } else {
                         # echo "error with update";
                     }
@@ -234,12 +241,12 @@ class ajax extends MY_Controller
             if (mb_substr_count($this->data['field_name'], 'man_location_id') > 0) {
                 # we need to return data for the entire location div (excepting the rack details)
                 if ($this->data['field_data'] == '0') {
-                    echo "<p><label for='location_id_select'>" . __('Location Name') . ": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>-</span></span></p>\n";
-                    echo "<p><label for='location_full_address'>" . __('Full Location') . ": </label><span id='location_full_address'></span></p>\n";
-                    echo "<p><label for='location_address'>" . __('Building Address') . ": </label><span id='location_address'></span></p>\n";
-                    echo "<p><label for='location_city'>" . __('City') . ": </label><span id='location_city'></span></p>\n";
-                    echo "<p><label for='location_state'>" . __('State') . ": </label><span id='location_state'></span></p>\n";
-                    echo "<p><label for='location_country'>" . __('Country') . ": </label><span id='location_country'></span></p>\n";
+                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>-</span></span></p>\n";
+                    echo "<p><label for='location_full_address'>".__('Full Location').": </label><span id='location_full_address'></span></p>\n";
+                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'></span></p>\n";
+                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'></span></p>\n";
+                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'></span></p>\n";
+                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'></span></p>\n";
                     #echo "<p><label for='location_room'>" . __('Room') . ": </label><span id='location_room'></span></p>\n";
                 } else {
                     $this->load->model("m_oa_location");
@@ -247,21 +254,21 @@ class ajax extends MY_Controller
                     foreach ($data as $key) {
                         $full_location = '';
                         if ($key->location_room > '') {
-                            $full_location = __('Room') . $key->location_room . ', ';
+                            $full_location = __('Room').$key->location_room.', ';
                         }
                         if ($key->location_suite > '') {
-                            $full_location .= __('Suite') . $key->location_suite . ', ';
+                            $full_location .= __('Suite').$key->location_suite.', ';
                         }
                         if ($key->location_level > '') {
-                            $full_location .= __('Level') . $key->location_level . ', ';
+                            $full_location .= __('Level').$key->location_level.', ';
                         }
                         $full_location .= $key->location_address;
-                        echo "<p><label for='location_id_select'>" . __('Location Name') . ": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>" . $key->location_name . "</span></span></p>\n";
-                        echo "<p><label for='location_full_address'>" . __('Full Location') . ": </label><span id='location_full_address'>" . $full_location . "</span></p>\n";
-                        echo "<p><label for='location_address'>" . __('Building Address') . ": </label><span id='location_address'>" . $key->location_address . "</span></p>\n";
-                        echo "<p><label for='location_city'>" . __('City') . ": </label><span id='location_city'>" . $key->location_city . "</span></p>\n";
-                        echo "<p><label for='location_state'>" . __('State') . ": </label><span id='location_state'>" . $key->location_state . "</span></p>\n";
-                        echo "<p><label for='location_country'>" . __('Country') . ": </label><span id='location_country'>" . $key->location_country . "</span></p>\n";
+                        echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".$key->location_name."</span></span></p>\n";
+                        echo "<p><label for='location_full_address'>".__('Full Location').": </label><span id='location_full_address'>".$full_location."</span></p>\n";
+                        echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".$key->location_address."</span></p>\n";
+                        echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".$key->location_city."</span></p>\n";
+                        echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".$key->location_state."</span></p>\n";
+                        echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".$key->location_country."</span></p>\n";
                         #echo "<p><label for='location_room'>" . __('Room') . ": </label><span id='location_room'>" . $key->location_room . "</span></p>\n";
                     }
                 }
@@ -269,27 +276,27 @@ class ajax extends MY_Controller
             if (mb_substr_count($this->data['field_name'], 'man_org_id') > 0) {
                 # we need to return data for the entire org div
                 if ($this->data['field_data'] == '0') {
-                    echo "<p><label for='org_id_select'>" . __('Org Name') . ": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>-</span></span></p>\n";
+                    echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>-</span></span></p>\n";
                 } else {
                     $this->load->model("m_oa_org");
                     $key = $this->m_oa_org->get_org_details($this->data['field_data']);
-                    echo "<p><label for='org_id_select'>" . __('Org Name') . ": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>" . $key->org_name . "</span></span></p>\n";
+                    echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->org_name."</span></span></p>\n";
                     if ($key->contact_id == '') {
                         $key->contact_id = '-';
                     }
-                    echo "<p><label for='org_contact'>" . __('Org Contact') . ": </label><span id='org_contact'> " . $key->contact_id . "</span></p>\n";
-                    echo "<p><label for='org_parent'>" . __('Parent Org') . ": </label><span id='org_parent'>" . $key->org_parent_name . "</span></p>\n";
-                    echo "<p><label for='org_comments'>" . __('Comments') . ": </label><span id='org_comments'>" . $key->org_comments . "</span></p>\n";
+                    echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'> ".$key->contact_id."</span></p>\n";
+                    echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".$key->org_parent_name."</span></p>\n";
+                    echo "<p><label for='org_comments'>".__('Comments').": </label><span id='org_comments'>".$key->org_comments."</span></p>\n";
                     ##echo "<p><label for='org_picture'>" . __('Picture') . ": </label><span id='org_picture'>" . $key->org_picture . "</span></p>\n";
                 }
             }
             #if (mb_substr_count($this->data['field_name'], 'man_status') > 0) {
                 $details = new stdClass();
-                $details->system_id = $this->data['system_id'];
-                $this->load->model('m_system');
-                $details->type = $this->m_system->get_system_type($this->data['system_id']);
-                $this->load->model("m_oa_group");
-                $this->m_oa_group->update_system_groups($details);
+            $details->system_id = $this->data['system_id'];
+            $this->load->model('m_system');
+            $details->type = $this->m_system->get_system_type($this->data['system_id']);
+            $this->load->model("m_oa_group");
+            $this->m_oa_group->update_system_groups($details);
             #}
         }
     }
@@ -301,7 +308,7 @@ class ajax extends MY_Controller
         $log_details->severity = 7;
         stdlog($log_details);
         unset($log_details);
-        
+
         if ($this->user->user_admin == 'y') {
             $this->load->model("m_oa_group");
             $fields = $this->m_oa_group->get_fields($this->uri->segment(3, ''));
@@ -310,7 +317,7 @@ class ajax extends MY_Controller
             foreach ($fields as $field) {
                 $column = str_replace('_', ' ', $field);
                 $column = ucwords($column);
-                echo "<option value=\"" . $field . "\">" . $column . "</option>\n";
+                echo "<option value=\"".$field."\">".$column."</option>\n";
             }
             echo "</select>\n";
         }
@@ -331,7 +338,7 @@ class ajax extends MY_Controller
             $values = $this->m_oa_group->get_field_values($table, $field);
             echo "<select id='dynamic_field_value' name='dynamic_field_value' style='width:250px;'>\n";
             foreach ($values as $value) {
-                echo "<option value=\"" . $value->value . "\">" . $value->value . "</option>\n";
+                echo "<option value=\"".$value->value."\">".$value->value."</option>\n";
             }
             echo "</select>\n";
         }
@@ -351,29 +358,29 @@ class ajax extends MY_Controller
             foreach ($result as $system) {
                 $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
                 $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
-                $default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $system->man_picture . '.jpg';
-                $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $model_formatted . '.jpg';
-                $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/' . $type_formatted . '.png';
-                $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]) . 'device_images/custom/' . $system->system_id . '.jpg';
+                $default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->man_picture.'.jpg';
+                $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$model_formatted.'.jpg';
+                $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$type_formatted.'.png';
+                $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->system_id.'.jpg';
 
                 # check if the man_picture field from the database is populated and a matching image exists
                 if (($system->man_picture > '') and (file_exists($default_file_exists))) {
-                    $system->man_picture = $system->man_picture . '.jpg';
+                    $system->man_picture = $system->man_picture.'.jpg';
                 }
 
                 # check if a custom images exists and overwrite
                 if (file_exists($custom_file_exists)) {
-                    $system->man_picture = 'custom/' . $system->system_id . '.jpg';
+                    $system->man_picture = 'custom/'.$system->system_id.'.jpg';
                 }
 
                 # check if an image matching the model exists
                 if (($system->man_picture == '') and (file_exists($model_file_exists))) {
-                    $system->man_picture = '' . $model_formatted . '.jpg';
+                    $system->man_picture = ''.$model_formatted.'.jpg';
                 }
 
                 # check if an image matching the type exists
                 if (($system->man_picture == '') and (file_exists($type_file_exists))) {
-                    $system->man_picture = '' . $type_formatted . '.png';
+                    $system->man_picture = ''.$type_formatted.'.png';
                 }
 
                 # no matching images, assign the unknown image
@@ -384,21 +391,21 @@ class ajax extends MY_Controller
                 echo "<div class=\"SystemPopupResult\">\n";
                 echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
                 echo "<tr>\n";
-                echo "  <td width=\"100\"><img src=\"" . base_url() . "device_images/" . $system->man_picture . "\" width=\"100\"/></td>\n";
+                echo "  <td width=\"100\"><img src=\"".base_url()."device_images/".$system->man_picture."\" width=\"100\"/></td>\n";
                 echo "  <td valign=\"top\" align=\"right\"><b>Status</b> <br /><b>Manufacturer</b> <br /><b>Model</b> <br /><b>Serial</b> <br /><b>Form Factor</b> </td>\n";
-                echo "  <td valign=\"top\" >" . $system->man_status . "<br />" . $system->man_manufacturer . "<br />" . $system->man_model . "<br />" . $system->man_serial . "<br />" . $system->man_form_factor . "</td>\n";
+                echo "  <td valign=\"top\" >".$system->man_status."<br />".$system->man_manufacturer."<br />".$system->man_model."<br />".$system->man_serial."<br />".$system->man_form_factor."</td>\n";
                 echo "</tr>\n";
                 echo "</table>\n";
                 echo "</div>";
             }
         } else {
-                echo "<div class=\"SystemPopupResult\">\n";
-                echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
-                echo "<tr>\n";
-                echo "  <td>Not Authorised.</td>\n";
-                echo "</tr>\n";
-                echo "</table>\n";
-                echo "</div>";
+            echo "<div class=\"SystemPopupResult\">\n";
+            echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
+            echo "<tr>\n";
+            echo "  <td>Not Authorised.</td>\n";
+            echo "</tr>\n";
+            echo "</table>\n";
+            echo "</div>";
         }
     }
 
@@ -428,14 +435,13 @@ class ajax extends MY_Controller
             echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
             foreach ($query as $group) {
                 echo "<tr>\n";
-                echo "  <td><a href=\"" . site_url() . "/main/list_devices/" . $group->group_id . "\">" . $group->group_name . "</a></td>\n";
+                echo "  <td><a href=\"".site_url()."/main/list_devices/".$group->group_id."\">".$group->group_name."</a></td>\n";
                 echo "</tr>\n";
             }
             echo "</table>\n";
             echo "</div>";
         }
     }
-
 
     public function export_report()
     {

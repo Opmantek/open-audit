@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,14 +25,14 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-$sortcolumn = 2; 
+$sortcolumn = 2;
 ?>
 <a href="#faq-1" ><?php echo __('How Does Open-AudIT store it\'s data ?')?></a><br />
 <a href="#faq-2" ><?php echo __('How do Users, Groups &amp; Systems work ?')?></a><br />
@@ -254,7 +254,7 @@ If a printer has an IP address, it is a network printer.<br />
 <br />
 Local Printers<br />
 If a printer does not have an IP address, it is a local printer.<br />
-If we have a local printer, the PHP processing associates it in the system table with the system_id of the computer. 
+If we have a local printer, the PHP processing associates it in the system table with the system_id of the computer.
 This is stored in the 'linked_sys' colmun.<br />
 <br />
 The system_key<br />

@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,149 +25,177 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+class M_additional_fields extends MY_Model
+{
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-class M_additional_fields extends MY_Model {
+    /**
+     * Read the names of all additional fields.
+     *
+     * @access	public
+     *
+     * @return array
+     */
+    public function get_additional_fields_names()
+    {
+        $sql = "SELECT lower(field_name), field_name, field_id FROM sys_man_additional_fields ORDER BY field_name";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
 
-	function __construct() {
-		parent::__construct();
-	}
+        return ($result);
+    }
 
+    /**
+     * Delete the field.
+     *
+     * @param string $field_id
+     * @access	public
+     *
+     * @return array
+     */
+    public function delete_field($field_id)
+    {
+        $sql = "DELETE FROM sys_man_additional_fields WHERE field_id = ? ";
+        $sql = $this->clean_sql($sql);
+        $data = array("$field_id");
+        $query = $this->db->query($sql, $data);
 
-	/**
-	 * Read the names of all additional fields
-	 *
-	 * @access	public
-	 * @return	array
-	 */
-	function get_additional_fields_names() {
-		$sql = "SELECT lower(field_name), field_name, field_id FROM sys_man_additional_fields ORDER BY field_name";
-		$sql = $this->clean_sql($sql);
-		$query = $this->db->query($sql);
-		$result = $query->result();
-		return ($result);
-	}	
+        return;
+    }
 
-	/**
-	 * Delete the field
-	 *
-	 * @param	string $field_id 
-	 * @access	public
-	 * @return	array
-	 */
-	function delete_field($field_id) {
-		$sql = "DELETE FROM sys_man_additional_fields WHERE field_id = ? ";
-		$sql = $this->clean_sql($sql);
-		$data = array("$field_id");
-		$query = $this->db->query($sql, $data);
-		return;
-	}
+    /**
+     * Check the name of the edited field does not already exist.
+     *
+     * @access	public
+     *
+     * @return array
+     */
+    public function check_additional_fields_name($field_name, $field_id)
+    {
+        $sql = "SELECT field_id FROM sys_man_additional_fields WHERE field_name = ? AND field_id <> ? ";
+        $sql = $this->clean_sql($sql);
+        $data = array("$field_name", "$field_id");
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
 
-	/**
-	 * Check the name of the edited field does not already exist
-	 *
-	 * @access	public
-	 * @return	array
-	 */
-	function check_additional_fields_name($field_name, $field_id) {
-		$sql = "SELECT field_id FROM sys_man_additional_fields WHERE field_name = ? AND field_id <> ? ";
-		$sql = $this->clean_sql($sql);
-		$data = array("$field_name", "$field_id");
-		$query = $this->db->query($sql, $data);
-		$result = $query->result();
-		return ($result);
-	}
-	
-	/**
-	 * Edit an existing additional field
-	 *
-	 * @access	public
-	 * @param	details -> field data
-	 * @return	array
-	 */
-	function edit_additional_field($details) {
-		$sql = "UPDATE sys_man_additional_fields SET field_name = ?, field_type = ?, field_placement = ?, group_id = ? WHERE field_id = ?";
-		$data = array("$details->field_name", "$details->field_type", "$details->field_placement", "$details->group_id", "$details->field_id");
-		$sql = $this->clean_sql($sql);
-		$query = $this->db->query($sql, $data);
-		return;
-	}
+        return ($result);
+    }
 
+    /**
+     * Edit an existing additional field.
+     *
+     * @access	public
+     *
+     * @param	details -> field data
+     *
+     * @return array
+     */
+    public function edit_additional_field($details)
+    {
+        $sql = "UPDATE sys_man_additional_fields SET field_name = ?, field_type = ?, field_placement = ?, group_id = ? WHERE field_id = ?";
+        $data = array("$details->field_name", "$details->field_type", "$details->field_placement", "$details->group_id", "$details->field_id");
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql, $data);
 
+        return;
+    }
 
-	/**
-	 * Add an additional field
-	 *
-	 * @access	public
-	 * @param	details -> field data
-	 * @return	array
-	 */
-	function add_additional_field($details) {
-		$sql = "INSERT INTO sys_man_additional_fields (field_name, field_type, field_placement, group_id) VALUES (?, ?, ?, ?)";
-		$data=array("$details->field_name", "$details->field_type", "$details->field_placement", "$details->group_id");
-		$query = $this->db->query($sql, $data);
-		return;
-	}	
+    /**
+     * Add an additional field.
+     *
+     * @access	public
+     *
+     * @param	details -> field data
+     *
+     * @return array
+     */
+    public function add_additional_field($details)
+    {
+        $sql = "INSERT INTO sys_man_additional_fields (field_name, field_type, field_placement, group_id) VALUES (?, ?, ?, ?)";
+        $data = array("$details->field_name", "$details->field_type", "$details->field_placement", "$details->group_id");
+        $query = $this->db->query($sql, $data);
 
-	/**
-	 * Read the id additional field
-	 *
-	 * @access	public
-	 * @param	field_name
-	 * @return	array
-	 */
-	function get_additional_field_id($field_name) {
-		$sql = "SELECT field_id FROM sys_man_additional_fields WHERE field_name = ?";
-		$sql = $this->clean_sql($sql);
-		$data=array("$field_name");
-		$query = $this->db->query($sql, $data);
-		$result = $query->result();
-		return ($result);
-	}	
+        return;
+    }
 
-	/**
-	 * Read the additional fields definitions
-	 *
-	 * @access	public
-	 * @return	array
-	 */
-	function get_all_additional_fields() {
-		$sql = "SELECT * FROM sys_man_additional_fields ORDER BY field_name";
-		$sql = $this->clean_sql($sql);
-		$query = $this->db->query($sql);
-		$result = $query->result();
-		return ($result);
-	}	
+    /**
+     * Read the id additional field.
+     *
+     * @access	public
+     *
+     * @param	field_name
+     *
+     * @return array
+     */
+    public function get_additional_field_id($field_name)
+    {
+        $sql = "SELECT field_id FROM sys_man_additional_fields WHERE field_name = ?";
+        $sql = $this->clean_sql($sql);
+        $data = array("$field_name");
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
 
-	/**
-	 * Read the additional field definitions
-	 *
-	 * @access	public
-	 * @return	array
-	 */
-	function get_additional_field($field_id) {
-		$sql = "SELECT * FROM sys_man_additional_fields WHERE field_id = ?";
-		$sql = $this->clean_sql($sql);
-		$data = array("$field_id");
-		$query = $this->db->query($sql, $data);
-		$result = $query->result();
-		return ($result);
-	}
-	
-	/**
-	 * Read the additional fields belonging to a given system
-	 *
-	 * @access	public
-	 * @param	system_id
-	 * @return	array
-	 */
-	function get_additional_fields($system_id) {
-		$sql = "SELECT 
+        return ($result);
+    }
+
+    /**
+     * Read the additional fields definitions.
+     *
+     * @access	public
+     *
+     * @return array
+     */
+    public function get_all_additional_fields()
+    {
+        $sql = "SELECT * FROM sys_man_additional_fields ORDER BY field_name";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+
+        return ($result);
+    }
+
+    /**
+     * Read the additional field definitions.
+     *
+     * @access	public
+     *
+     * @return array
+     */
+    public function get_additional_field($field_id)
+    {
+        $sql = "SELECT * FROM sys_man_additional_fields WHERE field_id = ?";
+        $sql = $this->clean_sql($sql);
+        $data = array("$field_id");
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+
+        return ($result);
+    }
+
+    /**
+     * Read the additional fields belonging to a given system.
+     *
+     * @access	public
+     *
+     * @param	system_id
+     *
+     * @return array
+     */
+    public function get_additional_fields($system_id)
+    {
+        $sql = "SELECT
 				lower(sys_man_additional_fields.field_name) as field_lower_name,
 				sys_man_additional_fields.field_id,
 				sys_man_additional_fields.field_name,
@@ -176,37 +204,40 @@ class M_additional_fields extends MY_Model {
 				sys_man_additional_fields_data.field_datetime,
 				sys_man_additional_fields_data.field_varchar,
 				sys_man_additional_fields_data.field_int,
-				sys_man_additional_fields_data.field_memo			
+				sys_man_additional_fields_data.field_memo
 			FROM
 				sys_man_additional_fields,
 				sys_man_additional_fields_data
 			WHERE
 				sys_man_additional_fields.field_id = sys_man_additional_fields_data.field_id AND
 				sys_man_additional_fields_data.system_id = ? ";
-		$sql = $this->clean_sql($sql);
-		$data = array("$system_id");
-		$query = $this->db->query($sql, $data);
-		$result = $query->result();
-		return ($result);
-	}	
-	
-	
-	/**
-	 * Read the additional fields belonging to a given system
-	 *
-	 * @access	public
-	 * @param	system_id
-	 * @return	array
-	 */
-	function get_additional_fields_data($system_id) {
-		# NOTE - TODO: remove the user_id stuff in this SQL
-		#$sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id WHERE sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL";
-		$sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON (sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id AND (sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL))";
-		$sql = $this->clean_sql($sql);
-		$data = array("$system_id");
-		$query = $this->db->query($sql, $data);
-		$result = $query->result();
-		return ($result);
-	}
+        $sql = $this->clean_sql($sql);
+        $data = array("$system_id");
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+
+        return ($result);
+    }
+
+    /**
+     * Read the additional fields belonging to a given system.
+     *
+     * @access	public
+     *
+     * @param	system_id
+     *
+     * @return array
+     */
+    public function get_additional_fields_data($system_id)
+    {
+        # NOTE - TODO: remove the user_id stuff in this SQL
+        #$sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id WHERE sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL";
+        $sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON (sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id AND (sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL))";
+        $sql = $this->clean_sql($sql);
+        $data = array("$system_id");
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+
+        return ($result);
+    }
 }
-?>

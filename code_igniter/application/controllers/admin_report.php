@@ -26,13 +26,13 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class Admin_report extends MY_Controller
 {
     public function __construct()
@@ -59,18 +59,18 @@ class Admin_report extends MY_Controller
                     $report_description = '';
                     $file_handle = fopen(BASEPATH.'../application/controllers/reports/'.$file, "rb");
                     $contents = fread($file_handle, filesize(BASEPATH.'../application/controllers/reports/'.$file));
-					try {
-						$xml = new SimpleXMLElement($contents);
-					} catch (Exception $error) {
-						$errors = libxml_get_errors();
-						echo "Invalid XML.<br />\n<pre>\n";
-						print_r($errors);
-						// not a valid XML string
-						echo'Invalid XML input for: ' . $file;
-						echo "<pre>\n";
-						print_r($xml);
-						exit;
-					}
+                    try {
+                        $xml = new SimpleXMLElement($contents);
+                    } catch (Exception $error) {
+                        $errors = libxml_get_errors();
+                        echo "Invalid XML.<br />\n<pre>\n";
+                        print_r($errors);
+                        // not a valid XML string
+                        echo'Invalid XML input for: '.$file;
+                        echo "<pre>\n";
+                        print_r($xml);
+                        exit;
+                    }
                     $report_name = $xml->details->report_name;
                     $report_description = $xml->details->report_description;
                     unset($xml);
@@ -94,7 +94,7 @@ class Admin_report extends MY_Controller
     public function action_activate_report()
     {
         $this->load->library('user_agent');
-        $file = BASEPATH.'../application/controllers/reports/' . $this->data['id'];
+        $file = BASEPATH.'../application/controllers/reports/'.$this->data['id'];
         $this->load->model("m_oa_report");
         $this->load->model("m_oa_report_column");
         $file_handle = fopen($file, "rb");
@@ -154,10 +154,10 @@ class Admin_report extends MY_Controller
             echo "\t<details>\n";
             foreach ($details as $attribute => $value) {
                 if (($attribute != 'report_id') and ($attribute != 'report_sql') and ($attribute != 'report_display_sql')) {
-                    echo "\t\t<" . $attribute . ">" . $value . "</" . $attribute . ">\n";
+                    echo "\t\t<".$attribute.">".$value."</".$attribute.">\n";
                 }
                 if ((($attribute == 'report_sql') or ($attribute == 'report_display_sql')) and ($value > '')) {
-                    echo "\t\t<" . $attribute . "><![CDATA[" . $value . "]]></" . $attribute . ">\n";
+                    echo "\t\t<".$attribute."><![CDATA[".$value."]]></".$attribute.">\n";
                 }
             }
             echo "\t</details>\n";
@@ -167,16 +167,16 @@ class Admin_report extends MY_Controller
             echo "\t\t<column>\n";
             foreach ($details as $attribute => $value) {
                 if (($attribute != 'column_id') && ($attribute != 'report_id')) {
-                    echo "\t\t\t<" . $attribute . ">" . $value . "</" . $attribute . ">\n";
+                    echo "\t\t\t<".$attribute.">".$value."</".$attribute.">\n";
                 }
             }
             echo "\t\t</column>\n";
         }
         echo "\t</columns>\n";
         echo "</report>";
-        $report_name = str_replace(" ", "", $report_name) . ".xml";
+        $report_name = str_replace(" ", "", $report_name).".xml";
         header('Content-Type: text/xml');
-        header('Content-Disposition: attachment;filename="' . $report_name . '"');
+        header('Content-Disposition: attachment;filename="'.$report_name.'"');
         header('Cache-Control: max-age=0');
     }
 

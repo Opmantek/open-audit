@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,15 +25,16 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-$sortcolumn = 1; 
-if (count($query) > 1) { ?>		
+$sortcolumn = 1;
+if (count($query) > 1) {
+    ?>
 <pre>
 <?php #print_r($query); ?>
 </pre>
@@ -47,21 +48,37 @@ if (count($query) > 1) { ?>
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach($query as $key): ?>
-			<?php if ($key['report_name'] > '') { ?>
+		<?php foreach ($query as $key): ?>
+			<?php if ($key['report_name'] > '') {
+    ?>
 				<tr>
-					<td><?php echo __($key['report_name']); ?></td>
-					<td><?php echo $key['report_description']; ?></td>
-					<?php if ($key['activated']) { ?>
-						<td align="center"><a href="action_deactivate_report/<?php echo $key['activated'];?>"><img src="<?php echo $oa_theme_images;?>/16_delete.png" alt="" title="" width="16"/></a></td>
+					<td><?php echo __($key['report_name']);
+    ?></td>
+					<td><?php echo $key['report_description'];
+    ?></td>
+					<?php if ($key['activated']) {
+    ?>
+						<td align="center"><a href="action_deactivate_report/<?php echo $key['activated'];
+    ?>"><img src="<?php echo $oa_theme_images;
+    ?>/16_delete.png" alt="" title="" width="16"/></a></td>
 						<td align="center"><?php echo __('yes')?></td>
-					<?php } else { ?>
-						<td align="center"><a href="action_activate_report/<?php echo $key['file']; ?>"><img src="<?php echo $oa_theme_images;?>/16_true.png"   alt="" title="" width="16"/></a></td>
+					<?php 
+} else {
+    ?>
+						<td align="center"><a href="action_activate_report/<?php echo $key['file'];
+    ?>"><img src="<?php echo $oa_theme_images;
+    ?>/16_true.png"   alt="" title="" width="16"/></a></td>
 						<td align="center"></td>
-					<?php } ?>
+					<?php 
+}
+    ?>
 				</tr>
-				<?php } ?>
-		<?php endforeach; ?>
+				<?php 
+}
+    ?>
+		<?php endforeach;
+    ?>
 	</tbody>
 </table>
-<?php } ?>
+<?php 
+} ?>

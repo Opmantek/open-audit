@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,16 +25,17 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
 
 <div id="groups" style="background: #FFFFFF; padding: 10px; display: block;">
-<?php echo form_open('admin_group/process_add_group') . "\n"; ?>
+<?php echo form_open('admin_group/process_add_group')."\n"; ?>
 <fieldset id="group_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Group Details')?></span></legend>
 	<p><label for='group_name'><?php echo __("Group Name")?>: </label><input type='text' id='group_name' name='group_name' tabindex='1' title='Group Name' /></p>
@@ -65,23 +66,21 @@
 			<label for='dynamic_other_table'>Selection: </label>
 			<select id='dynamic_other_table' name='dynamic_other_table' onchange='retrieve_fields();' style='width:250px;'>
 				<option value='' selected='selected'>Choose a table from the DB</option>
-				<?php 
-				$table_name = '';
-				foreach ($tables AS $table)
-				{
-					#$table_name = $table->table_name;
-					if (mb_strpos($table , "sys") === 0)
-					{
-						$table_name = str_replace('sys_','',$table_name);
-						$table_name = str_replace('hw_','',$table_name);
-						$table_name = str_replace('sw_','',$table_name);
-						$table_name = str_replace('_',' ',$table_name);
-						$table_name = ucwords($table_name);
-						echo "	<option value='" . $table . "'>" . $table . "</option>\n";
-					} else {
-						// Not a usable table name - skip it
-					}
-				} ?>
+				<?php
+                $table_name = '';
+                foreach ($tables as $table) {
+                    #$table_name = $table->table_name;
+                    if (mb_strpos($table, "sys") === 0) {
+                        $table_name = str_replace('sys_', '', $table_name);
+                        $table_name = str_replace('hw_', '', $table_name);
+                        $table_name = str_replace('sw_', '', $table_name);
+                        $table_name = str_replace('_', ' ', $table_name);
+                        $table_name = ucwords($table_name);
+                        echo "	<option value='".$table."'>".$table."</option>\n";
+                    } else {
+                        // Not a usable table name - skip it
+                    }
+                } ?>
 			</select>
 			<br />
 
@@ -112,7 +111,7 @@
 			</select>
 			&nbsp;&nbsp;&nbsp;NOTE - A typed value will over-rule a selected value.
 			</span>
-		</span>	
+		</span>
 	</span>
 	</fieldset>
 	<h2>OR</h2>
@@ -168,7 +167,7 @@
 				<option value='center' selected='selected'><?php echo __("Center")?></option>
 			</select></td>
 		</tr>
-		
+
 		<tr>
 			<td><input type='text' id='column_order_2' name='column_order_2' 		value='2' size='5' /></td>
 			<td><input type='text' id='column_name_2' name='column_name_2' 			value='Hostname' size='10' /></td>
@@ -191,7 +190,7 @@
 				<option value='center'><?php echo __("Center")?></option>
 			</select></td>
 		</tr>
-		
+
 		<tr>
 			<td><input type='text' id='column_order_3' name='column_order_3' 		value='3' size='5' /></td>
 			<td><input type='text' id='column_name_3' name='column_name_3' 			value='IP Address' size='10' /></td>
@@ -214,7 +213,7 @@
 				<option value='center'><?php echo __("Center")?></option>
 			</select></td>
 		</tr>
-		
+
 		<tr>
 			<td><input type='text' id='column_order_4' name='column_order_4' 		value='4' size='5' /></td>
 			<td><input type='text' id='column_name_4' name='column_name_4' 			value='Type' size='10' /></td>
@@ -237,7 +236,7 @@
 				<option value='center'><?php echo __("Center")?></option>
 			</select></td>
 		</tr>
-		
+
 		<tr>
 			<td><input type='text' id='column_order_5' name='column_order_5'		value='5' size='5' /></td>
 			<td><input type='text' id='column_name_5' name='column_name_5' 			value='Description' size='10' /></td>
@@ -260,7 +259,7 @@
 				<option value='center'><?php echo __("Center")?></option>
 			</select></td>
 		</tr>
-		
+
 		<tr>
 			<td><input type='text' id='column_order_6' name='column_order_6' 		value='6' size='5' /></td>
 			<td><input type='text' id='column_name_6' name='column_name_6' 			value='OS / Device' size='10' /></td>
@@ -283,7 +282,7 @@
 				<option value='center'><?php echo __("Center")?></option>
 			</select></td>
 		</tr>
-		
+
 		<tr>
 			<td><input type='text' id='column_order_7' name='column_order_7' 		value='7' size='5' /></td>
 			<td><input type='text' id='column_name_7' name='column_name_7' 			value='Tags' size='10' /></td>
@@ -306,7 +305,7 @@
 				<option value='center' selected='selected'><?php echo __("Center")?></option>
 			</select></td>
 		</tr>
-		
+
 		</tbody>
 	</table>
 </fieldset>
@@ -317,7 +316,7 @@
 </div>
 
 <script type='text/javascript'>
-function createRequestObject() 
+function createRequestObject()
 {
 	var req;
 	if(window.XMLHttpRequest){

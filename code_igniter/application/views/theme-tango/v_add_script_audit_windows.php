@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,42 +25,41 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-if (isset($error_message))
-{
-	$error_message = "<font color='red'>&nbsp;" . $error_message . "</font>";
+if (isset($error_message)) {
+    $error_message = "<font color='red'>&nbsp;".$error_message."</font>";
 } else {
-	$error_message = "";
+    $error_message = "";
 }
 
 $url = array();
 $url[] = base_url();
 if (strpos(base_url(), "http://localhost") === 0) {
-	$url[] = str_replace("localhost", php_uname('n'), base_url());
+    $url[] = str_replace("localhost", php_uname('n'), base_url());
 }
 
 if ($result = @dns_get_record(php_uname('n'))) {
-	$dns_lookup = '';
-	$url[] = str_replace("localhost", $result[0]["ip"], base_url());
+    $dns_lookup = '';
+    $url[] = str_replace("localhost", $result[0]["ip"], base_url());
 } else {
-	$dns_lookup = "<span style=\"color: red;\">Warning, could not resolve hostname.<br />Make sure an entry exists in DNS if you intend to use the audit script on another system.</span>";
+    $dns_lookup = "<span style=\"color: red;\">Warning, could not resolve hostname.<br />Make sure an entry exists in DNS if you intend to use the audit script on another system.</span>";
 }
 
 $url[] = str_replace("localhost", $this->config->item('default_network_address'), base_url());
 
 $file_exist = '';
-$filename = dirname(dirname(dirname(dirname(dirname(__FILE__))))) . "/other/audit_windows.vbs";
+$filename = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/other/audit_windows.vbs";
 if (!file_exists($filename)) {
-	$file_exist = "<span style=\"color: red;\">Please ensure $filename exists - it is not currently present.</span>";
+    $file_exist = "<span style=\"color: red;\">Please ensure $filename exists - it is not currently present.</span>";
 }
 
-echo form_open('admin/add_script_audit_windows') . "\n"; 
+echo form_open('admin/add_script_audit_windows')."\n";
 ?>
 <fieldset id="org_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Script Options')?></span></legend>
@@ -73,16 +72,16 @@ echo form_open('admin/add_script_audit_windows') . "\n";
 				<p><label for='create_file'><?php echo __("Create an XML file")?>: </label><input type='checkbox' id='create_file' name='create_file' tabindex='3' title='' /></p>
 				<p><label for='url'><?php echo __("Submit to URL")?>: </label><select name='url' id='url' tabindex='4' title=''>
 					<?php foreach ($url as $id => $value) {
-						echo "<option value='" . $value . "index.php/system'>" . $value . "index.php/system</option>";
-					} ?>
-				</select>				
+    echo "<option value='".$value."index.php/system'>".$value."index.php/system</option>";
+} ?>
+				</select>
 				<p><label for='use_proxy'><?php echo __("Use a Proxy to submit result")?>: </label><input type='checkbox' id='use_proxy' name='use_proxy' tabindex='5' title='' /></p>
 				<p><label for='struser'><?php echo __("Remote Username")?>: </label><input type='text' id='struser' name='struser' tabindex='6' title=''  value=""/></p>
 				<p><label for='strpass'><?php echo __("Remote User Password")?>: </label><input type='text' id='strpass' name='strpass' tabindex='7' title=''  value=""/></p>
 				<p><label for='org_id'><?php echo __("Organisation")?>: </label><select id='org_id' name='org_id' tabindex='8' title=''>
-					<?php foreach($org_names as $value) { 
-						echo "<option value='" . $value->org_id . "'>" . $value->org_name . "&nbsp;</option>\n";
-					} ?>
+					<?php foreach ($org_names as $value) {
+    echo "<option value='".$value->org_id."'>".$value->org_name."&nbsp;</option>\n";
+} ?>
 					</select>
 				</p>
 				<p><label for='windows_user_work_1'><?php echo __("Active Directory User Details")?> #1: </label><input type='text' id='windows_user_work_1' name='windows_user_work_1' tabindex='9' title=''  value="physicalDeliveryOfficeName"/></p>
@@ -112,7 +111,7 @@ echo form_open('admin/add_script_audit_windows') . "\n";
 			</td>
 		</tr>
 	</table>
-	<p><label for='AddScript'>&nbsp;</label><?php echo form_submit(array('id'=>'AddScript', 'name'=>'AddScript'), __("Create Script")); ?></p>
+	<p><label for='AddScript'>&nbsp;</label><?php echo form_submit(array('id' => 'AddScript', 'name' => 'AddScript'), __("Create Script")); ?></p>
 	<?php echo $file_exist; ?><br /><br />
 	<?php echo $dns_lookup; ?>
 	<p><?php echo $this->session->flashdata('message'); ?>&nbsp;</p>

@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,27 +25,30 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-$sortcolumn = 2; 
+$sortcolumn = 2;
 echo $comment;
 echo "<p>Refresh this page for updated logs.<br />Most recent entries are at the top.</p>\n";
-if (count($query) > 0) { ?>		
+if (count($query) > 0) {
+    ?>
 <table cellspacing="1" class="tablesorter">
 	<tbody>
 		<?php foreach ($query as $line) {
-		echo "\t\t<tr>\n";
-		echo "\t\t\t<td>" . $line . "</td>\n";
-		echo "</tr>\n";
-		} ?>
+    echo "\t\t<tr>\n";
+    echo "\t\t\t<td>".$line."</td>\n";
+    echo "</tr>\n";
+}
+    ?>
 	</tbody>
 </table>
-<?php } else {
-	echo "No Logs.";
+<?php 
+} else {
+    echo "No Logs.";
 }
 ?>

@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,25 +25,24 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 if ($this->config->config['display_version'] != $this->config->config['web_display_version']) {
     $include = "v_help_about";
     $heading = "You must upgrade";
 }
-if ( !isset($this->user->user_theme) or $this->user->user_theme == '' ) { 
-	$this->user->user_theme = 'tango';
+if (!isset($this->user->user_theme) or $this->user->user_theme == '') {
+    $this->user->user_theme = 'tango';
 }
 
 $oa_web_index    = $this->config->item('oa_web_index');
 $oa_web_folder   = $this->config->item('oa_web_folder');
-$oa_theme_images = $oa_web_folder . '/theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-images';
-$oa_theme_files  = $oa_web_folder . '/theme-' . $this->user->user_theme . '/' . $this->user->user_theme . '-files';
+$oa_theme_images = $oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images';
+$oa_theme_files  = $oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-files';
 
-include "theme-" . $this->user->user_theme . "/v_template.php";
-?>
+include "theme-".$this->user->user_theme."/v_template.php";

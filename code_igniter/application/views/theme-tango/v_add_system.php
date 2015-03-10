@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,21 +25,20 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-if (isset($error_message))
-{
-	$error_message = "<font color='red'>&nbsp;" . $error_message . "</font>";
+if (isset($error_message)) {
+    $error_message = "<font color='red'>&nbsp;".$error_message."</font>";
 } else {
-	$error_message = "";
+    $error_message = "";
 }
 
-echo form_open('admin_system/add_system') . "\n"; 
+echo form_open('admin_system/add_system')."\n";
 ?>
 <fieldset id="org_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
@@ -47,64 +46,70 @@ echo form_open('admin_system/add_system') . "\n";
 	<p><?php echo $error_message; ?>&nbsp;</p>
 	<p><label for='man_type'><?php echo __("Type")?>: </label>
 		<select id='man_type' name='man_type' tabindex='1' style='width: 135px' onchange='select_device();'>
-			<?php foreach($device_types as $key => $value) { echo "<option value='$key'>" . __("$value") . "</option>\n"; } ?>
+			<?php foreach ($device_types as $key => $value) {
+    echo "<option value='$key'>".__("$value")."</option>\n";
+} ?>
 		</select>
 	</p>
 	<p><label for='notes1'> </label><span id='notes1' style='color: blue;'>*</span> You must have at least one of the blue attributes.<br />
 	   <label for='notes2'> </label><span id='notes2' style='color: red;'>*</span> You must have a red attribute.</p>
 	<div id="details"></div>
-	
+
 </fieldset>
 <?php echo form_close(); ?>
 
 <?php
 $location_form = "";
 foreach ($locations as $location) {
-	$location_form .= "<option value='" . $location->location_id . "'>" . $location->location_name . "<\/option>";
+    $location_form .= "<option value='".$location->location_id."'>".$location->location_name."<\/option>";
 }
-$location_form = "<label for='man_location_id'>Location<\/label><select id='man_location_id' name='man_location_id' style='width: 250px'>" . $location_form . "<\/select><br />";	
+$location_form = "<label for='man_location_id'>Location<\/label><select id='man_location_id' name='man_location_id' style='width: 250px'>".$location_form."<\/select><br />";
 
 $org_form = "";
 foreach ($orgs as $org) {
-	$org_form .= "<option value='" . $org->org_id . "'>" . $org->org_name . "<\/option>";
+    $org_form .= "<option value='".$org->org_id."'>".$org->org_name."<\/option>";
 }
-$org_form = "<label for='man_org_id'>Organisation<\/label><select id='man_org_id' name='man_org_id' style='width: 250px'>" . $org_form . "<\/select><br />";
+$org_form = "<label for='man_org_id'>Organisation<\/label><select id='man_org_id' name='man_org_id' style='width: 250px'>".$org_form."<\/select><br />";
 
 $os_group_form = "";
 foreach ($os_group as $item) {
-	$os_group_form .= "<option value='" . $item->man_os_group . "'>" . $item->man_os_group . "<\/option>";
+    $os_group_form .= "<option value='".$item->man_os_group."'>".$item->man_os_group."<\/option>";
 }
-$os_group_form = "<label for='man_os_group_2'> <\/label><select id='man_os_group_2' name='man_os_group_2' style='width: 250px'>" . $os_group_form . "<\/select><br />";
+$os_group_form = "<label for='man_os_group_2'> <\/label><select id='man_os_group_2' name='man_os_group_2' style='width: 250px'>".$os_group_form."<\/select><br />";
 
 $os_family_form = "";
 foreach ($os_family as $item) {
-	$os_family_form .= "<option value='" . $item->man_os_family . "'>" . $item->man_os_family . "<\/option>";
+    $os_family_form .= "<option value='".$item->man_os_family."'>".$item->man_os_family."<\/option>";
 }
-$os_family_form = "<label for='man_os_family'> <\/label><select id='man_os_family' name='man_os_family' style='width: 250px' onchange='update_icon_from_os()'>" . $os_family_form . "<\/select><br />";
+$os_family_form = "<label for='man_os_family'> <\/label><select id='man_os_family' name='man_os_family' style='width: 250px' onchange='update_icon_from_os()'>".$os_family_form."<\/select><br />";
 
 $os_name_form = "";
 foreach ($os_name as $item) {
-	$os_name_form .= "<option value='" . $item->man_os_name . "'>" . $item->man_os_name . "<\/option>";
+    $os_name_form .= "<option value='".$item->man_os_name."'>".$item->man_os_name."<\/option>";
 }
-$os_name_form = "<label for='man_os_name_2'> <\/label><select id='man_os_name_2' name='man_os_name_2' style='width: 250px'>" . $os_name_form . "<\/select><br />";
-
-
+$os_name_form = "<label for='man_os_name_2'> <\/label><select id='man_os_name_2' name='man_os_name_2' style='width: 250px'>".$os_name_form."<\/select><br />";
 
 ?>
 <!-- TODO: validate the various attributes that MUST be submitted, are - client side -->
 
 <script type="text/javascript">
 <?php if (isset($error_message)) {
-	echo "error_message = \"" . $error_message . "\";\n";
+    echo "error_message = \"".$error_message."\";\n";
 } else {
-	echo "error_message = \"\";";
+    echo "error_message = \"\";";
 } ?>
 
 
-if (error_message > "") { 
-		document.getElementById("man_type").value = "<?php if (isset($form)) { echo $form['man_type']; } ?>";
+if (error_message > "") {
+		document.getElementById("man_type").value = "<?php if (isset($form)) {
+    echo $form['man_type'];
+} ?>";
 		select_device();
-		<?php if (isset($form)) { foreach ($form as $key => $value) { echo "\tdocument.getElementById(\"$key\").value = \"$value\"\n"; } }?>
+		<?php if (isset($form)) {
+    foreach ($form as $key => $value) {
+        echo "\tdocument.getElementById(\"$key\").value = \"$value\"\n";
+    }
+}?>
 	}
 
 function select_device()

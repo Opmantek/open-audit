@@ -26,13 +26,13 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class test extends CI_Controller
 {
     public function __construct()
@@ -48,7 +48,7 @@ class test extends CI_Controller
                 redirect('main/list_groups');
             }
         }
- 
+
         $this->load->helper('log');
 
         // log the attempt
@@ -63,7 +63,8 @@ class test extends CI_Controller
         redirect('/');
     }
 
-    public function login() {
+    public function login()
+    {
         $this->load->model('m_oa_user');
         $this->m_oa_user->validate_user();
         $this->load->model('m_oa_config');
@@ -77,7 +78,8 @@ class test extends CI_Controller
         print_r($this->session);
     }
 
-    public function log() {
+    public function log()
+    {
         $this->load->helper('log');
         $log_details = new stdClass();
         $log_details->file = 'access';
@@ -89,11 +91,10 @@ class test extends CI_Controller
     {
         $this->load->helper('url');
         echo "<pre>\n";
-        echo "BaseURL: " . base_url() . "\n";
-        echo "SiteURL: " . site_url() . "\n";
-        echo "URI String: " . uri_string() . "\n";
-        echo "Index Page: " . index_page() . "\n";
-        
+        echo "BaseURL: ".base_url()."\n";
+        echo "SiteURL: ".site_url()."\n";
+        echo "URI String: ".uri_string()."\n";
+        echo "Index Page: ".index_page()."\n";
     }
 
     public function test_date()
@@ -101,9 +102,9 @@ class test extends CI_Controller
         $date = date("Y-m-d");// current date
         $days_to_subtract = rand(0, 50);
         echo "<pre>\n";
-        echo "Current Date: " . $date . "\n";
-        echo "Days to subtract: " . $days_to_subtract . "\n";
-        echo "Date: " . date("Y-m-d", strtotime("-" . $days_to_subtract . " days")) . "\n";
+        echo "Current Date: ".$date."\n";
+        echo "Days to subtract: ".$days_to_subtract."\n";
+        echo "Date: ".date("Y-m-d", strtotime("-".$days_to_subtract." days"))."\n";
         echo strtotime("now"), "\n";
         echo strtotime("10 September 2000"), "\n";
         echo strtotime("+1 day"), "\n";
@@ -170,7 +171,7 @@ class test extends CI_Controller
             $details->duplex = 'False';
             for ($k = 0; $k < count($i); $k++) {
                 if (mb_strpos($i[$k], "Duplex") !== false) {
-                            $details->duplex = 'True';
+                    $details->duplex = 'True';
                 }
             }
         }
@@ -202,16 +203,16 @@ class test extends CI_Controller
             # grab some specific details for VMware ESX
             $model = str_replace("STRING: ", "", @$result["1.3.6.1.4.1.6876.1.1.0"]);
             $version = str_replace("STRING: ", "", @$result["1.3.6.1.4.1.6876.1.2.0"]);
-            $details->model = $model . " (" . $version . ")";
-            $details->model =str_replace("\"", "", $details->model);
+            $details->model = $model." (".$version.")";
+            $details->model = str_replace("\"", "", $details->model);
             $details->man_model = $details->model;
             $details->os_group = "VMware";
             $details->man_os_group = "VMware";
             $details->os_family = str_replace("STRING: ", "", @$result["1.3.6.1.4.1.6876.1.1.0"]);
-            $details->os_family =str_replace("\"", "", $details->os_family);
+            $details->os_family = str_replace("\"", "", $details->os_family);
             $details->man_os_family = $details->os_family;
             $details->os_name = str_replace("STRING: ", "", @$result["1.3.6.1.2.1.1.1.0"]);
-            $details->os_name =str_replace("\"", "", $details->os_name);
+            $details->os_name = str_replace("\"", "", $details->os_name);
             $details->man_os_name = $details->os_name;
             $details->type = 'hypervisor';
             $details->device_type = 'hypervisor';
@@ -226,16 +227,16 @@ class test extends CI_Controller
                 $details->man_os_group = 'Cisco';
                 $details->os_family = 'Cisco IOS';
                 $details->man_os_family = 'Cisco IOS';
-                $details->os_name = "Cisco IOS version " . $details->os_version;
-                $details->man_os_name = "Cisco IOS version " . $details->os_version;
+                $details->os_name = "Cisco IOS version ".$details->os_version;
+                $details->man_os_name = "Cisco IOS version ".$details->os_version;
             }
             if (strpos($i, "Catalyst Operating") !== false) {
                 $details->os_group = 'Cisco';
                 $details->man_os_group = 'Cisco';
                 $details->os_family = 'Cisco Catalyst OS';
                 $details->man_os_family = 'Cisco Catalyst OS';
-                $detail->os_name = "Cisco Catalyst OS version " . $details->os_version;
-                $detail->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
+                $detail->os_name = "Cisco Catalyst OS version ".$details->os_version;
+                $detail->man_os_name = "Cisco Catalyst OS version ".$details->os_version;
             }
         }
 
@@ -246,7 +247,7 @@ class test extends CI_Controller
                 if (isset($hex[1])) {
                     if (mb_strpos($hex[1], "Hex-STRING: ") !== false) {
                         $hex[1] = str_replace("Hex-STRING: ", "", $hex[1]);
-                        for ($i=0; $i<strlen($hex[1]); $i++) {
+                        for ($i = 0; $i<strlen($hex[1]); $i++) {
                             $details->manufacturer .= chr(hexdec(substr($hex[1], $i, 2)));
                         }
                     } else {
@@ -267,7 +268,7 @@ class test extends CI_Controller
         }
 
         // serial
-        echo "Serial: " . $result["1.3.6.1.2.1.47.1.1.1.1.11.1"] . "\n";
+        echo "Serial: ".$result["1.3.6.1.2.1.47.1.1.1.1.11.1"]."\n";
         $details->serial = str_replace('"', '', str_replace("STRING: ", "", @$result["1.3.6.1.2.1.43.5.1.1.17.1"]));
         if ((!isset($details->serial)) or ($details->serial == '') or ($details->serial == 'No Such Object available on this agent at this OID')) {
             if (strpos(strtolower($details->manufacturer), 'cisco') !== false) {
@@ -282,15 +283,15 @@ class test extends CI_Controller
         }
 
         // mac address
-        $interface_number = @str_replace("INTEGER: ", "", @$result["1.3.6.1.2.1.4.20.1.2."] . $details->man_ip_address);
-        $details->mac = @str_replace("STRING: ", "", @$result["1.3.6.1.2.1.2.2.1.6."] . $interface_number);
+        $interface_number = @str_replace("INTEGER: ", "", @$result["1.3.6.1.2.1.4.20.1.2."].$details->man_ip_address);
+        $details->mac = @str_replace("STRING: ", "", @$result["1.3.6.1.2.1.2.2.1.6."].$interface_number);
         $details->mac = @trim(str_replace("Hex-", "", $details->mac));
         $details->mac = @str_replace(" ", ":", $details->mac);
         # need to split and join because of the dropped 0's
         $i = explode(":", $details->mac);
-        for ($k=0; $k<count($i); $k++) {
+        for ($k = 0; $k<count($i); $k++) {
             if (strlen($i[$k]) == 1) {
-                $i[$k] = '0' . $i[$k];
+                $i[$k] = '0'.$i[$k];
             }
             if (strlen($i[$k]) == 0) {
                 $i[$k] = '00';
@@ -379,7 +380,7 @@ class test extends CI_Controller
             $details->description = str_replace("\r\n", " ", $details->description);
         }
         if (strtolower($details->description) == 'no such object available on this agent at this oid') {
-             $details->description = '';
+            $details->description = '';
         }
 
         // uptime
@@ -407,7 +408,7 @@ class test extends CI_Controller
             $details->location = '';
         }
         if ($details->location > '') {
-            $details->description = "Location: " . $details->location . ". " . $details->description;
+            $details->description = "Location: ".$details->location.". ".$details->description;
         }
 
         // contact
@@ -421,12 +422,12 @@ class test extends CI_Controller
             $details->contact = '';
         }
         if ($details->contact > '') {
-            $details->description = "Contact: " . $details->contact . ". " . $details->description;
+            $details->description = "Contact: ".$details->contact.". ".$details->description;
         }
 
         // subnet
         if ($details->subnet == '') {
-            $details->subnet = str_replace("IpAddress: ", "", @$result["1.3.6.1.2.1.4.20.1.3."] . $details->man_ip_address);
+            $details->subnet = str_replace("IpAddress: ", "", @$result["1.3.6.1.2.1.4.20.1.3."].$details->man_ip_address);
         }
         if ($details->subnet == 'No Such Instance currently exists at this OID') {
             $details->subnet = '';
@@ -444,10 +445,10 @@ class test extends CI_Controller
             }
             if (count($i) > 0) {
                 $count = 0;
-                for ($j=0; $j<count($i); $j++) {
+                for ($j = 0; $j<count($i); $j++) {
                     if ((mb_strpos($i[$j], $details->serial) === false) and ($i[$j] != "") and ($i[$j] != "\"\"")) {
                         $k = $j + 1;
-                        $k = "1.3.6.1.2.1.47.1.1.1.1.3." . $k;
+                        $k = "1.3.6.1.2.1.47.1.1.1.1.3.".$k;
                         $oid = $result[$k];
                         $oid = str_replace("OID: .", "", $oid);
                         $module->$count = get_oid($oid);

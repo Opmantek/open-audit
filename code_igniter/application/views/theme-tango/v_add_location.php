@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,21 +25,20 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-if (isset($error_message))
-{
-	$error_message = "<font color='red'>&nbsp;" . $error_message . "</font>";
+if (isset($error_message)) {
+    $error_message = "<font color='red'>&nbsp;".$error_message."</font>";
 } else {
-	$error_message = "";
+    $error_message = "";
 }
 
-echo form_open('admin_location/add_location') . "\n"; 
+echo form_open('admin_location/add_location')."\n";
 ?>
 <fieldset id="location_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Location Details')?></span></legend>
@@ -108,18 +107,18 @@ echo form_open('admin_location/add_location') . "\n";
 				<p><label for='location_city'><?php echo __("City")?>: </label><input type='text' id='location_city' name='location_city' tabindex='8' title='City' /></p>
 			</td>
 			<td valign="top">
-				<p><label for='location_postcode'><?php echo __("Postcode")?>: </label><input type='text' id='location_postcode' name='location_postcode' tabindex='9' title='Postcode' /></p>		
-				<p><label for='location_state'><?php echo __("State")?>: </label><input type='text' id='location_state' name='location_state' tabindex='10' title='State' /></p>		
-				<p><label for='location_country'><?php echo __("Country")?>: </label><input type='text' id='location_country' name='location_country' tabindex='11' title='Country' /></p>			
-				<p><label for='location_phone'><?php echo __("Phone")?>: </label><input type='text' id='location_phone' name='location_phone' tabindex='11' title='Phone' /></p>			
-				<p><label for='location_geo'><?php echo __("GeoCode")?>: </label><input type='text' id='location_geo' name='location_geo' tabindex='12' title='GeoCode' /></p>	
+				<p><label for='location_postcode'><?php echo __("Postcode")?>: </label><input type='text' id='location_postcode' name='location_postcode' tabindex='9' title='Postcode' /></p>
+				<p><label for='location_state'><?php echo __("State")?>: </label><input type='text' id='location_state' name='location_state' tabindex='10' title='State' /></p>
+				<p><label for='location_country'><?php echo __("Country")?>: </label><input type='text' id='location_country' name='location_country' tabindex='11' title='Country' /></p>
+				<p><label for='location_phone'><?php echo __("Phone")?>: </label><input type='text' id='location_phone' name='location_phone' tabindex='11' title='Phone' /></p>
+				<p><label for='location_geo'><?php echo __("GeoCode")?>: </label><input type='text' id='location_geo' name='location_geo' tabindex='12' title='GeoCode' /></p>
 				<!-- <p><label for='location_district'><?php echo __("District")?>: </label><input type='text' id='location_district' name='location_district' tabindex='11' title='District' /></p>	-->
 				<!-- <p><label for='location_region'><?php echo __("Region")?>: </label><input type='text' id='location_region' name='location_region' tabindex='11' title='Region' /></p>	-->
 				<!-- <p><label for='location_area'><?php echo __("Area")?>: </label><input type='text' id='location_area' name='location_area' tabindex='11' title='Area' /></p>	-->
 				<!-- <p><label for='location_tags'><?php echo __("Tags")?>: </label><input type='text' id='location_tags' name='location_tags' tabindex='11' title='Tags' /></p>	-->
 				<!-- <p><label for='location_picture'><?php echo __("Picture")?>: </label><input type='text' id='location_picture' name='location_picture' tabindex='11' title='Picture' /></p>	-->
-				<p><label for='location_latitude'><?php echo __("Latitude")?>: </label><input type='text' id='location_latitude' name='location_latitude' tabindex='13' title='Latitude' /></p>		
-				<p><label for='location_longitude'><?php echo __("Longitude")?>: </label><input type='text' id='location_longitude' name='location_longitude' tabindex='14' title='Longitude' /></p>	
+				<p><label for='location_latitude'><?php echo __("Latitude")?>: </label><input type='text' id='location_latitude' name='location_latitude' tabindex='13' title='Latitude' /></p>
+				<p><label for='location_longitude'><?php echo __("Longitude")?>: </label><input type='text' id='location_longitude' name='location_longitude' tabindex='14' title='Longitude' /></p>
 			</td>
 			<td valign="top">
 				<p> <br /></p>
@@ -130,7 +129,7 @@ echo form_open('admin_location/add_location') . "\n";
 				<p><label style="width: 30px;" for='location_create_geo'></label><input id="location_create_geo" type="button" name="location_create_geo" value="Create GeoCode" onclick="creategeo();" /></p>
 				<p><label style="width: 30px;" for='location_get_lat_long'></label><input id="location_get_lat_long" type="button" name="location_get_lat_long" value="Get Lat / Long" onclick="getlatlong();" /></p>
 				<p><label style="width: 30px;" for='location_group'></label><?php echo __("Activate Group")?>: <input type='checkbox' id='location_group' name='location_group' tabindex='14' title='Activate Group' checked /></p>
-				<p><label style="width: 30px;" for='location_addlocation'></label><?php echo form_submit(array('id'=>'AddLocation', 'name'=>'AddLocation'), 'Add Location'); ?></p>
+				<p><label style="width: 30px;" for='location_addlocation'></label><?php echo form_submit(array('id' => 'AddLocation', 'name' => 'AddLocation'), 'Add Location'); ?></p>
 			</td>
 		</tr>
 	</table>
@@ -159,10 +158,10 @@ function getlatlong() {
 }
 
 function creategeo() {
-	var geo = document.getElementById("location_address").value + ", " + 
-	document.getElementById("location_city").value + ", " + 
-	document.getElementById("location_state").value + ", " + 
-	document.getElementById("location_postcode").value + ", " + 
+	var geo = document.getElementById("location_address").value + ", " +
+	document.getElementById("location_city").value + ", " +
+	document.getElementById("location_state").value + ", " +
+	document.getElementById("location_postcode").value + ", " +
 	document.getElementById("location_country").value;
 	document.getElementById("location_geo").value = geo;
 }

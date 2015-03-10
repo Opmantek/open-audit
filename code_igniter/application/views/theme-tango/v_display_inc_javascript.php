@@ -1,4 +1,4 @@
-<?php 
+<?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -6,7 +6,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,16 +25,17 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.6
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
 <script type="text/javascript">
-$(document).ready( function() { 
-	$.NiceJForms.build(); 
+$(document).ready( function() {
+	$.NiceJForms.build();
 });
 
 function createRequestObject() {
@@ -56,26 +57,42 @@ function createRequestObject() {
 var http = createRequestObject();
 
 function display_credentials() {
-	<?php 
-	if (isset($this->config->config['show_passwords']) AND $this->config->config['show_passwords'] != 'y') {
-		$password_field = 'password';
-	} else {
-		$password_field = 'text';
-	}
-	if (isset($this->config->config['show_snmp_community']) AND $this->config->config['show_snmp_community'] != 'y') {
-		$snmp_community_field = 'password';
-	} else {
-		$snmp_community_field = 'text';
-	}
-	?>
-	status_text="<p><label for='ip_address'><?php echo __("IP Address"); ?>: <\/label><input type='text' id='ip_address' name='ip_address' value='<?php if (isset($decoded_access_details->ip_address) and $decoded_access_details->ip_address > '') { echo $decoded_access_details->ip_address; } elseif (isset($system[0]->man_ip_address) and $system[0]->man_ip_address != '' and $system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0') { echo ip_address_from_db($system[0]->man_ip_address); } ?>' \/><\/p> \
-	<p><label for='snmp_version'><?php echo __("SNMP Version"); ?>: <\/label><input type='text' id='snmp_version' name='snmp_version' value='<?php if (isset($decoded_access_details->snmp_version) and $decoded_access_details->snmp_version > '') { echo $decoded_access_details->snmp_version; } else { echo '2c'; } ?>' \/><\/p> \
-	<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: <\/label><input type='<?php echo $snmp_community_field; ?>' id='snmp_community' name='snmp_community' value='<?php if (isset($decoded_access_details->snmp_community) and $decoded_access_details->snmp_community > '') { echo $decoded_access_details->snmp_community; } else { echo $this->config->item('default_snmp_community'); } ?>' \/><\/p> \
+	<?php
+    if (isset($this->config->config['show_passwords']) and $this->config->config['show_passwords'] != 'y') {
+        $password_field = 'password';
+    } else {
+        $password_field = 'text';
+    }
+    if (isset($this->config->config['show_snmp_community']) and $this->config->config['show_snmp_community'] != 'y') {
+        $snmp_community_field = 'password';
+    } else {
+        $snmp_community_field = 'text';
+    }
+    ?>
+	status_text="<p><label for='ip_address'><?php echo __("IP Address"); ?>: <\/label><input type='text' id='ip_address' name='ip_address' value='<?php if (isset($decoded_access_details->ip_address) and $decoded_access_details->ip_address > '') {
+    echo $decoded_access_details->ip_address;
+} elseif (isset($system[0]->man_ip_address) and $system[0]->man_ip_address != '' and $system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0') {
+    echo ip_address_from_db($system[0]->man_ip_address);
+} ?>' \/><\/p> \
+	<p><label for='snmp_version'><?php echo __("SNMP Version"); ?>: <\/label><input type='text' id='snmp_version' name='snmp_version' value='<?php if (isset($decoded_access_details->snmp_version) and $decoded_access_details->snmp_version > '') {
+    echo $decoded_access_details->snmp_version;
+} else {
+    echo '2c';
+} ?>' \/><\/p> \
+	<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: <\/label><input type='<?php echo $snmp_community_field; ?>' id='snmp_community' name='snmp_community' value='<?php if (isset($decoded_access_details->snmp_community) and $decoded_access_details->snmp_community > '') {
+    echo $decoded_access_details->snmp_community;
+} else {
+    echo $this->config->item('default_snmp_community');
+} ?>' \/><\/p> \
 	<p><label for='ssh_username'><?php echo __("SSH Username"); ?>: <\/label><input type='text' id='ssh_username' name='ssh_username' value='<?php echo $decoded_access_details->ssh_username; ?>' \/><\/p> \
 	<p><label for='ssh_password'><?php echo __("SSH Password"); ?>: <\/label><input type='<?php echo $password_field; ?>' id='ssh_password' name='ssh_password' value='<?php echo $decoded_access_details->ssh_password; ?>'\ /><\/p> \
 	<p><label for='windows_username'><?php echo __("Windows Username"); ?>: <\/label><input type='text' id='windows_username' name='windows_username' value='<?php echo $decoded_access_details->windows_username; ?>' \/><\/p> \
 	<p><label for='windows_password'><?php echo __("Windows Password"); ?>: <\/label><input type='<?php echo $password_field; ?>' id='windows_password' name='windows_password' value='<?php echo $decoded_access_details->windows_password; ?>' \/><\/p> \
-	<p><label for='windows_domain'><?php echo __("Windows Domain"); ?>: <\/label><input type='text' id='windows_domain' name='windows_domain' value='<?php if (isset($decoded_access_details->windows_domain) and $decoded_access_details->windows_domain > '') { echo $decoded_access_details->windows_domain; } elseif (isset($windows[0]->windows_domain_short)) { echo $windows[0]->windows_domain_short; } ?>' \/><\/p> \
+	<p><label for='windows_domain'><?php echo __("Windows Domain"); ?>: <\/label><input type='text' id='windows_domain' name='windows_domain' value='<?php if (isset($decoded_access_details->windows_domain) and $decoded_access_details->windows_domain > '') {
+    echo $decoded_access_details->windows_domain;
+} elseif (isset($windows[0]->windows_domain_short)) {
+    echo $windows[0]->windows_domain_short;
+} ?>' \/><\/p> \
 	<p><label for='submit'><?php echo __("Update Credentials"); ?>: <\/label><input type='submit' id='submit' name='submit' value='Submit' \/><\/p> \
 	<input type='hidden' id='system_id' name='system_id' value='<?php echo $system[0]->system_id; ?>' \/>";
 	document.getElementById("credentials").innerHTML = status_text;
@@ -208,7 +225,9 @@ function receive_man_class() {
 function display_man_type() {
 	// we now pass the list of device types from the controller
 	// see the file controllers/include_device_types.php to edit
-	type_text = "<select id='man_type' onchange='send_type();'><?php foreach($device_types as $key => $value) { echo "<option value='$key'>" . __("$value") . "</option>"; } ?><\/select>";
+	type_text = "<select id='man_type' onchange='send_type();'><?php foreach ($device_types as $key => $value) {
+    echo "<option value='$key'>".__("$value")."</option>";
+} ?><\/select>";
 	document.getElementById("man_type_select").innerHTML = type_text;
 }
 
@@ -313,16 +332,16 @@ function receive_nmis_export2() {
 
 function display_location() {
 	<?php
-	$location_form = "<option value=' '>" . __("Choose a Location") . "<\/option>";
-	foreach ($locations as $location) {
-		$location_form .= "<option value='" . $location->location_id . "'>" . $location->location_name . "<\/option>";
-	}
-	if ($location_id <> "") {
-		$location_form = "<select id='man_location_id' onchange='send_location();'>" . $location_form . "<\/select>";
-	} else {
-		$location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>" . __("Choose a location") . "<\/option>" . $location_form . "<\/select>";
-	}
-	?>
+    $location_form = "<option value=' '>".__("Choose a Location")."<\/option>";
+    foreach ($locations as $location) {
+        $location_form .= "<option value='".$location->location_id."'>".$location->location_name."<\/option>";
+    }
+    if ($location_id != "") {
+        $location_form = "<select id='man_location_id' onchange='send_location();'>".$location_form."<\/select>";
+    } else {
+        $location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>".__("Choose a location")."<\/option>".$location_form."<\/select>";
+    }
+    ?>
 	status_text="<?php echo $location_form;?>";
 	document.getElementById("man_location_id_select").innerHTML = status_text;
 }
@@ -350,16 +369,16 @@ function receive_location() {
 
 function display_org() {
 	<?php
-	$org_form = "<option value=' '>" . __("Choose an Org") . "<\/option>";
-	foreach ($orgs as $org) {
-		$org_form .= "<option value='" . $org->org_id . "'>" . $org->org_name . "<\/option>";
-	}
-	if ($org_id <> "") {
-		$org_form = "<select id='man_org_id' onchange='send_org();'>" . $org_form . "<\/select>";
-	} else {
-		$org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>" . __("Choose an Org") . "<\/option>" . $org_form . "<\/select>";
-	}
-	?>
+    $org_form = "<option value=' '>".__("Choose an Org")."<\/option>";
+    foreach ($orgs as $org) {
+        $org_form .= "<option value='".$org->org_id."'>".$org->org_name."<\/option>";
+    }
+    if ($org_id != "") {
+        $org_form = "<select id='man_org_id' onchange='send_org();'>".$org_form."<\/select>";
+    } else {
+        $org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>".__("Choose an Org")."<\/option>".$org_form."<\/select>";
+    }
+    ?>
 	status_text="<?php echo $org_form;?>";
 	document.getElementById("man_org_id_select").innerHTML = status_text;
 }
@@ -399,7 +418,7 @@ var settings_toggle = 0;
 var server_toggle = 0;
 
 $(document).ready(function(){
-	
+
 	$('#view_summary_windows').hide();
 	$('#view_summary_credentials').hide();
 	$('#view_summary_purchase').hide();
@@ -412,31 +431,37 @@ $(document).ready(function(){
 	$('#view_summary_attachment').hide();
 	$('#view_summary_nmis').hide();
 	$('#view_summary_module').hide();
-	<?php if ($system[0]->man_type == 'access point' or 
-		$system[0]->man_type == 'adsl modem' or
-		$system[0]->man_type == 'bdsl modem' or
-		$system[0]->man_type == 'cable modem' or
-		$system[0]->man_type == 'dsl modem' or
-		$system[0]->man_type == 'firewall' or
-		$system[0]->man_type == 'gateway' or
-		$system[0]->man_type == 'load balancer' or
-		$system[0]->man_type == 'nas' or
-		$system[0]->man_type == 'network device' or
-		$system[0]->man_type == 'network ids' or
-		$system[0]->man_type == 'network printer' or
-		$system[0]->man_type == 'network scanner' or
-		$system[0]->man_type == 'router' or
-		$system[0]->man_type == 'san' or
-		$system[0]->man_type == 'switch' or
-		$system[0]->man_type == 'voip gateway' or
-		$system[0]->man_type == 'vpn terminator' or
-		$system[0]->man_type == 'wan accelerator' or
-		$system[0]->man_type == 'wap' or
-		$system[0]->man_type == 'wireless router' ) { ?>
+	<?php if ($system[0]->man_type == 'access point' or
+        $system[0]->man_type == 'adsl modem' or
+        $system[0]->man_type == 'bdsl modem' or
+        $system[0]->man_type == 'cable modem' or
+        $system[0]->man_type == 'dsl modem' or
+        $system[0]->man_type == 'firewall' or
+        $system[0]->man_type == 'gateway' or
+        $system[0]->man_type == 'load balancer' or
+        $system[0]->man_type == 'nas' or
+        $system[0]->man_type == 'network device' or
+        $system[0]->man_type == 'network ids' or
+        $system[0]->man_type == 'network printer' or
+        $system[0]->man_type == 'network scanner' or
+        $system[0]->man_type == 'router' or
+        $system[0]->man_type == 'san' or
+        $system[0]->man_type == 'switch' or
+        $system[0]->man_type == 'voip gateway' or
+        $system[0]->man_type == 'vpn terminator' or
+        $system[0]->man_type == 'wan accelerator' or
+        $system[0]->man_type == 'wap' or
+        $system[0]->man_type == 'wireless router') {
+    ?>
 	$('#view_summary_network_interfaces').show();
-	<?php } ?>
-	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').show();<?php } ?>
-	<?php if (count($vm) > 0) { ?>$('#view_summary_vms').show();<?php } ?>
+	<?php 
+} ?>
+	<?php if (strpos($system[0]->man_type, 'phone') !== false) {
+    ?>$('#view_summary_phone').show();<?php 
+} ?>
+	<?php if (count($vm) > 0) {
+    ?>$('#view_summary_vms').show();<?php 
+} ?>
 
 
 
@@ -490,23 +515,29 @@ $(document).ready(function(){
 		$('#view_summary_network_interfaces').slideToggle("fast");
 	});
 
-	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
+	<?php if (strpos($system[0]->man_type, 'phone') !== false) {
+    ?>
 	$('#toggle_summary_phone').click(function(){
 		$('#view_summary_phone').slideToggle("fast");
 	});
-	<?php } ?>
+	<?php 
+} ?>
 
-	<?php if (count($vm) > 0) { ?>
+	<?php if (count($vm) > 0) {
+    ?>
 	$('#toggle_summary_vms').click(function(){
 		$('#view_summary_vms').slideToggle("fast");
 	});
-	<?php } ?>
+	<?php 
+} ?>
 
-	<?php if (count($module) > 0) { ?>
+	<?php if (count($module) > 0) {
+    ?>
 	$('#toggle_summary_module').click(function(){
 		$('#view_summary_module').slideToggle("fast");
 	});
-	<?php } ?>
+	<?php 
+} ?>
 
 	$('#toggle_summary_all').click(function(){
 		if (summary_toggle == 0)
@@ -523,12 +554,18 @@ $(document).ready(function(){
 			$('#view_summary_attachment').show("fast");
 			$('#view_summary_nmis').show("fast");
 			$('#view_summary_network_interfaces').show("fast");
-			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').show("fast");<?php } ?>
-			<?php if (count($vm) > 0) { ?>$('#view_summary_vms').show("fast");<?php } ?>
-			<?php if (count($module) > 0) { ?>$('#view_summary_module').show("fast");<?php } ?>
+			<?php if (strpos($system[0]->man_type, 'phone') !== false) {
+    ?>$('#view_summary_phone').show("fast");<?php 
+} ?>
+			<?php if (count($vm) > 0) {
+    ?>$('#view_summary_vms').show("fast");<?php 
+} ?>
+			<?php if (count($module) > 0) {
+    ?>$('#view_summary_module').show("fast");<?php 
+} ?>
 			summary_toggle = 1;
 		}
-		else 
+		else
 		{
 			$('#view_summary_windows').hide("fast");
 			$('#view_summary_credentials').hide("fast");
@@ -542,9 +579,15 @@ $(document).ready(function(){
 			$('#view_summary_attachment').hide("fast");
 			$('#view_summary_nmis').hide("fast");
 			$('#view_summary_network_interfaces').hide("fast");
-			<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>$('#view_summary_phone').hide("fast");<?php } ?>
-			<?php if (count($vm) > 0) { ?>$('#view_summary_vms').hide("fast");<?php } ?>
-			<?php if (count($module) > 0) { ?>$('#view_summary_module').hide("fast");<?php } ?>
+			<?php if (strpos($system[0]->man_type, 'phone') !== false) {
+    ?>$('#view_summary_phone').hide("fast");<?php 
+} ?>
+			<?php if (count($vm) > 0) {
+    ?>$('#view_summary_vms').hide("fast");<?php 
+} ?>
+			<?php if (count($module) > 0) {
+    ?>$('#view_summary_module').hide("fast");<?php 
+} ?>
 			summary_toggle = 0;
 		}
 	});
@@ -562,7 +605,7 @@ $(document).ready(function(){
 	$('#view_hardware_monitor').hide();
 	$('#view_hardware_sound').hide();
 	$('#view_hardware_printer').hide();
-        
+
 
 	$('#toggle_hardware_processor').click(function(){
 		$('#view_hardware_processor').slideToggle("fast");
@@ -571,14 +614,14 @@ $(document).ready(function(){
 	$('#toggle_hardware_memory').click(function(){
 		$('#view_hardware_memory').slideToggle("fast");
 	});
- 
+
 	$('#toggle_hardware_bios').click(function(){
 		$('#view_hardware_bios').slideToggle("fast");
-	});   
+	});
 
 	$('#toggle_hardware_motherboard').click(function(){
 		$('#view_hardware_motherboard').slideToggle("fast");
-	});   
+	});
 
 	$('#toggle_hardware_scsi_controller').click(function(){
 		$('#view_hardware_scsi_controller').slideToggle("fast");
@@ -629,7 +672,7 @@ $(document).ready(function(){
 			$('#view_hardware_printer').show("fast");
 			hardware_toggle = 1;
 		}
-		else 
+		else
 		{
 			$('#view_hardware_processor').hide("fast");
 			$('#view_hardware_memory').hide("fast");
@@ -703,7 +746,7 @@ $(document).ready(function(){
 			$('#view_software_keys').show("fast");
 			software_toggle = 1;
 		}
-		else 
+		else
 		{
 			$('#view_software_installed').hide("fast");
 			$('#view_software_updates').hide("fast");
@@ -727,8 +770,8 @@ $(document).ready(function(){
 	$('#view_settings_netstat').hide();
 	$('#view_settings_logs').hide();
 	$('#view_settings_variables').hide();
-               
-	
+
+
 	$('#toggle_settings_pagefile').click(function(){
 		$('#view_settings_pagefile').slideToggle("fast");
 	});
@@ -736,7 +779,7 @@ $(document).ready(function(){
 	$('#toggle_settings_shares').click(function(){
 		$('#view_settings_shares').slideToggle("fast");
 	});
-		
+
 	$('#toggle_settings_routes').click(function(){
 		$('#view_settings_routes').slideToggle("fast");
 	});
@@ -784,7 +827,7 @@ $(document).ready(function(){
 			$('#view_settings_variables').show("fast");
 			settings_toggle = 1;
 		}
-		else 
+		else
 		{
 			$('#view_settings_pagefile').hide("fast");
 			$('#view_settings_shares').hide("fast");
@@ -819,7 +862,7 @@ $(document).ready(function(){
 			$('#view_server_web').show("fast");
 			server_toggle = 1;
 		}
-		else 
+		else
 		{
 			$('#view_server_database').hide("fast");
 			$('#view_server_web').hide("fast");
