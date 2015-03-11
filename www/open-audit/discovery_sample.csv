@@ -1,0 +1,1 @@
+type,name,hour,day,network_address,subnet_range,snmp_community,ssh_username,ssh_password,windows_username,windows_password,windows_domain
