@@ -3513,7 +3513,7 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "UPDATE oa_config SET config_editable = 'y' WHERE config_name = 'logo'";
+            $sql = "UPDATE oa_config SET config_editable = 'y', config_description = 'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.' WHERE config_name = 'logo'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
