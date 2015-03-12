@@ -76,7 +76,7 @@ if (isset($form_url) and $form_url != '') {
         <?php $attributes = array('name' => 'myform'); ?>
         <?php echo form_open($form_url, $attributes)."\n"; ?>
                 <div align='left' style="height: 150px; width:60%; float: left; valign: center; text-align: center;">
-                    <img src='<?php echo $this->config->item('oa_web_folder').'/theme-tango/tango-images/'.$this->config->config['logo']?>' alt='logo' border='0' /><br />
+                    <img src='<?php echo $this->config->item('oa_web_folder').'/theme-tango/tango-images/'.$this->config->config['logo']?>.png' alt='logo' border='0' /><br />
                     <?php
                     if ((file_exists($filename)) and $show == 'y') {
                         ?>
