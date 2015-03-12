@@ -93,17 +93,18 @@
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
 	<?php
-    if (isset($this->config->config['oae_url']) and $this->config->config['oae_url'] > '' and isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'valid') {
+    #if (isset($this->config->config['oae_url']) and $this->config->config['oae_url'] > '' and isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'valid') {
         ?>
 		<br />Dashboard<br /><a href="<?php echo $this->config->config['oae_url']?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $oa_theme_images?>/logo-oae.png" /></a>
     <?php
 
-    } else {
+    #} else {
         ?>
-		<br />Dashboard<br /><a href="<?php echo $oa_web_index?>/main/help_oae"><img alt="" style="height:30px" src="<?php echo $oa_theme_images?>/logo-oae.png" /></a>
+		<!-- <br />Dashboard<br /><a href="<?php echo $oa_web_index?>/main/help_oae"><img alt="" style="height:30px" src="<?php echo $oa_theme_images?>/logo-oae.png" /></a> -->
     <?php
 
-    }?>
+    #}
+    ?>
 
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
