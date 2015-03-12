@@ -1638,11 +1638,11 @@ echo "	</hard_disks>" >> "$xml_file"
 ##################################
 # NFS MOUNTS SECTION             #
 ##################################
-for mount in $(mount -l -t nfs,nfs2,nfs3,nfs4); do
+for mount in $(mount -l -t nfs,nfs2,nfs3,nfs4 2>/dev/null); do
 	partition_mount_point=$(echo "$mount" | cut -d" " -f3)
 	partition_name=$(echo "$mount" | cut -d" " -f1)
 	partition_free_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $4}')
-	partition_used_space=$(df -m --total "$partition_mount_point" | grep ^total | awk '{print $3}')
+	partition_used_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $3}')
 	partition_size=$((partition_free_space + partition_used_space))
 	partition_format=""
 	partition_caption=""

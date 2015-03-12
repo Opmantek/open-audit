@@ -1454,11 +1454,55 @@ class discovery extends CI_Controller
                                                 if ($sudo != '' and $details->ssh_username != 'root') {
                                                     $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "echo '.escapeshellarg($details->ssh_password).' | '.$sudo.' -S /tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.'" ';
                                                     $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
+
+                                                    #$ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "'.$sudo.' -S /tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.'" ';
+
+                                                    # for other items we call 'run_ssh', but for this one we need to pass the password through TWICE.
+                                                    # once for the SSH connection and once for the sudo call
+                                                    ############### START
+                                                    // $descriptorspec = array(
+                                                    //     0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+                                                    //     1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+                                                    //     2 => array("file", "/dev/null", "a"), // stderr is a file to write to
+                                                    // );
+                                                    // $cwd = '/tmp';
+                                                    // $env = array();
+                                                    // $return = array('output' => '', 'status' => '');
+                                                    // $process = proc_open($ssh_command, $descriptorspec, $pipes, $cwd, $env);
+                                                    // $ssh_result['status'] = '';
+                                                    // if (is_resource($process)) {
+                                                    //     fwrite($pipes[0], $details->ssh_password);
+                                                    //     # below is the second pipe of the password
+                                                    //     sleep(3);
+                                                    //     fwrite($pipes[0], $details->ssh_password);
+                                                    //     # and close...
+                                                    //     fclose($pipes[0]);
+                                                    //     $temp = stream_get_contents($pipes[1]);
+                                                    //     $return['output'] = explode("\n", $temp);
+                                                    //     if (end($return['output']) == '') {
+                                                    //         unset($return['output'][count($return['output'])-1]);
+                                                    //     }
+                                                    //     fclose($pipes[1]);
+                                                    //     $ssh_result['status'] = proc_close($process);
+                                                    // }
+                                                    // if ($display == 'y') {
+                                                    //     echo 'DEBUG - Command Executed: '.$ssh_command."\n";
+                                                    //     echo 'DEBUG - Return Value: '.$ssh_result['status']."\n";
+                                                    //     echo "DEBUG - Command Output:\n";
+                                                    //     $formatted_output = htmlentities($temp);
+                                                    //     $formatted_output = explode("\n", $formatted_output);
+                                                    //     if (end($formatted_output) == '') {
+                                                    //         unset($formatted_output[count($formatted_output)-1]);
+                                                    //     }
+                                                    //     print_r($formatted_output);
+                                                    // }
+                                                    ############### END
+
                                                     if ($ssh_result['status'] != '0') {
                                                         $error = 'SSH audit command for '.$remote_os.' audit using sudo on '.$details->man_ip_address.' failed. Attempting to run without sudo.';
                                                         $log_details->message = $error;
                                                         stdlog($log_details);
-                                                        $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "/tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=3 system_id='.$details->system_id.'" ';
+                                                        $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).'  /tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=3 system_id='.$details->system_id.'" ';
                                                         $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                         if ($ssh_result['status'] != '0') {
                                                             $error = 'SSH audit command for '.$remote_os.' audit not using sudo on '.$details->man_ip_address.' failed';
