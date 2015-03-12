@@ -11782,7 +11782,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11860') { $new->manufacturer = 'wossname.org.uk'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11861') { $new->manufacturer = 'Codenet'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11862') { $new->manufacturer = 'Columbia University in the City of New York'; }
-		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11863') { $new->manufacturer = 'TP-Link Technology Co.,Ltd'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11863') { $new->manufacturer = 'TP-Link Technology'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11864') { $new->manufacturer = 'Böke and Walterfang Electronic Systems Ltd'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11865') { $new->manufacturer = 'Explo-IT Research'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11866') { $new->manufacturer = 'GDTTI'; }

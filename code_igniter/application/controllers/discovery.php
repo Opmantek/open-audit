@@ -1324,6 +1324,9 @@ class discovery extends CI_Controller
                             # success
                             $temp_array = explode(' ', end($ssh_result['output']));
                             $details->manufacturer = $temp_array[0];
+                            if (trim($details->manufacturer) == 'TPLINK') {
+                                $details->manufacturer = "TP-Link Technology";
+                            }
                             $details->model = $temp_array[1];
                             unset($temp_array);
                             $details->last_seen_by = 'audit';
