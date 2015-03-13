@@ -37,6 +37,15 @@
 	<div style="width:260px; float: left; text-align: left;">
 		<a href="<?php echo $this->config->item('oa_web_index'); ?>/main/list_groups">
 			<?php if (isset($this->config->config['logo']) and $this->config->config['logo'] != '') {
+    if ($this->config->config['logo'] == 'oac') {
+        $this->config->config['logo'] = 'logo-banner-oac';
+    }
+    if ($this->config->config['logo'] == 'oae') {
+        $this->config->config['logo'] = 'logo-banner-oae';
+    }
+    if ($this->config->config['logo'] == 'oac-oae') {
+        $this->config->config['logo'] = 'logo-banner-oac-oae';
+    }
     ?>
 			<img src='<?php echo $oa_theme_images?>/<?php echo $this->config->item('logo')?>.png' alt='logo' style='border-width:0px;' />
 			<?php
