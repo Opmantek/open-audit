@@ -63,6 +63,15 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], "Windows NT") === false) {
 if (! isset($this->config->config['logo']) or $this->config->config['logo'] == '') {
     $this->config->config['logo'] = 'logo-banner-oac-oae';
 }
+if ($this->config->config['logo'] == 'oac') {
+    $this->config->config['logo'] = 'logo-banner-oac';
+}
+if ($this->config->config['logo'] == 'oae') {
+    $this->config->config['logo'] = 'logo-banner-oae';
+}
+if ($this->config->config['logo'] == 'oac-oae') {
+    $this->config->config['logo'] = 'logo-banner-oac-oae';
+}
 
 if (isset($form_url) and $form_url != '') {
     // this is the session requested url
