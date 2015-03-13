@@ -752,7 +752,7 @@ if (!function_exists('get_snmp')) {
                                 $interfaces_filtered[] = $interface;
                             }
                         }
-                    } elseif ($details->os_group == 'VMware') {
+                    } elseif (isset($details->os_group) and $details->os_group == 'VMware') {
                         if (strpos($interface->net_description, 'Virtual interface:')) {
                             $interfaces_filtered[] = $interface;
                         }
