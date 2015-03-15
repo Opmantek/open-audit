@@ -1,13 +1,15 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) {
+     exit('No direct script access allowed');
+ }
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,20 +27,35 @@
 #
 # *****************************************************************************
 
-/**
+/*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ * @version 1.6
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Lexmark
 
-$get_oid_details = function($details){
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.1') { $details->model = ''; $details->type = 'network printer'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106851') { $details->model = 'Lexmark E260dn'; $details->type = 'network printer'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106860') { $details->model = 'Lexmark T652'; $details->type = 'network printer'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71107113') { $details->model = 'Lexmark MS810'; $details->type = 'network printer'; }
-	if ($details->snmp_oid == '1.3.6.1.4.1.641.2.71107143') { $details->model = 'Lexmark XM3150'; $details->type = 'network printer'; }
+$get_oid_details = function ($details) {
+    if ($details->snmp_oid == '1.3.6.1.4.1.641.1') {
+        $details->model = '';
+        $details->type = 'network printer';
+    }
+    if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106851') {
+        $details->model = 'Lexmark E260dn';
+        $details->type = 'network printer';
+    }
+    if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106860') {
+        $details->model = 'Lexmark T652';
+        $details->type = 'network printer';
+    }
+    if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71107113') {
+        $details->model = 'Lexmark MS810';
+        $details->type = 'network printer';
+    }
+    if ($details->snmp_oid == '1.3.6.1.4.1.641.2.71107143') {
+        $details->model = 'Lexmark XM3150';
+        $details->type = 'network printer';
+    }
 };

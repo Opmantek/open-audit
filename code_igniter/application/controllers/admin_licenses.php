@@ -1,6 +1,6 @@
 <?php
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -26,27 +26,18 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class Admin_licenses extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);
@@ -65,6 +56,6 @@ class Admin_licenses extends MY_Controller
         $software_name = urldecode($this->uri->segment(5, 0));
         $software_name = html_entity_decode($software_name);
         $this->m_oa_licensing->change_license($group_id, $licenses, $software_name);
-        redirect('report/software_licensing/' . $group_id);
+        redirect('report/software_licensing/'.$group_id);
     }
 }

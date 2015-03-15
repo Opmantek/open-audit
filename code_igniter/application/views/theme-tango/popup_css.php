@@ -1,12 +1,12 @@
-<?php 
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+<?php
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,9 +25,10 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -41,68 +42,68 @@
 	    display:none;
 	    z-index: 20000;
 	}
-	
+
 	.filterPopupPopup
 	{
 	}
-	
+
 	#filterPopupContent
 	{
 	    background-color: #FFF;
 	    min-width: 175px;
 	    min-height: 50px;
 	}
-	
+
 	.SystemPopupPopup .SystemPopupImage
 	{
 	    margin: 5px;
 	    margin-right: 15px;
 	}
-	
-	.filterPopupPopup .corner 
+
+	.filterPopupPopup .corner
 	{
 	    width: 19px;
 	    height: 15px;
 	}
-	    
-	.filterPopupPopup .topLeft 
+
+	.filterPopupPopup .topLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topLeft.png) no-repeat;
 	}
-	    
-	.filterPopupPopup .bottomLeft 
+
+	.filterPopupPopup .bottomLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomLeft.png) no-repeat;
 	}
-	    
-	.filterPopupPopup .left 
+
+	.filterPopupPopup .left
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_left.png) repeat-y;
 	}
-	    
-	.filterPopupPopup .right 
+
+	.filterPopupPopup .right
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_right.png) repeat-y;
 	}
-	    
-	.filterPopupPopup .topRight 
+
+	.filterPopupPopup .topRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topRight.png) no-repeat;
 	}
-	    
-	.filterPopupPopup .bottomRight 
+
+	.filterPopupPopup .bottomRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomRight.png) no-repeat;
 	}
-	    
-	.filterPopupPopup .top 
+
+	.filterPopupPopup .top
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_top.png) repeat-x;
 	}
-	    
-	.filterPopupPopup .bottom 
+
+	.filterPopupPopup .bottom
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -119,68 +120,68 @@
 	    display:none;
 	    z-index: 20000;
 	}
-	
+
 	.SystemPopupPopup
 	{
 	}
-	
+
 	#SystemPopupContent
 	{
 	    background-color: #FFF;
 	    min-width: 175px;
 	    min-height: 50px;
 	}
-	
+
 	.SystemPopupPopup .SystemPopupImage
 	{
 	    margin: 5px;
 	    margin-right: 15px;
 	}
-	
-	.SystemPopupPopup .corner 
+
+	.SystemPopupPopup .corner
 	{
 	    width: 19px;
 	    height: 15px;
 	}
-	    
-	.SystemPopupPopup .topLeft 
+
+	.SystemPopupPopup .topLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topLeft.png) no-repeat;
 	}
-	    
-	.SystemPopupPopup .bottomLeft 
+
+	.SystemPopupPopup .bottomLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomLeft.png) no-repeat;
 	}
-	    
-	.SystemPopupPopup .left 
+
+	.SystemPopupPopup .left
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_left.png) repeat-y;
 	}
-	    
-	.SystemPopupPopup .right 
+
+	.SystemPopupPopup .right
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_right.png) repeat-y;
 	}
-	    
-	.SystemPopupPopup .topRight 
+
+	.SystemPopupPopup .topRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topRight.png) no-repeat;
 	}
-	    
-	.SystemPopupPopup .bottomRight 
+
+	.SystemPopupPopup .bottomRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomRight.png) no-repeat;
 	}
-	    
-	.SystemPopupPopup .top 
+
+	.SystemPopupPopup .top
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_top.png) repeat-x;
 	}
-	    
-	.SystemPopupPopup .bottom 
+
+	.SystemPopupPopup .bottom
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -195,69 +196,69 @@
 	    display:none;
 	    z-index: 20000;
 	}
-	
+
 	.TagPopupPopup
 	{
 	}
-	
+
 	#TagPopupContent
 	{
 	    background-color: #FFF;
 	    min-width: 175px;
 	    min-height: 50px;
 	}
-	
+
 	.TagPopupPopup .TagPopupImage
 	{
 	    margin: 5px;
 	    margin-right: 15px;
 	}
-	
-	.TagPopupPopup .corner 
+
+	.TagPopupPopup .corner
 	{
 	    width: 19px;
 	    height: 15px;
 	}
-	    
-	.TagPopupPopup .topLeft 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
-	}
-	    
-	.TagPopupPopup .bottomLeft 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
-	}
-	    
-	.TagPopupPopup .left 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
-	}
-	    
-	.TagPopupPopup .right 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
-	}
-	    
-	.TagPopupPopup .topRight 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
-	}
-	    
-	.TagPopupPopup .bottomRight 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
-	}
-	    
 
-	.TagPopupPopup .top 
+	.TagPopupPopup .topLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topLeft.png) no-repeat;
 	}
-	    
-	.TagPopupPopup .bottom 
+
+	.TagPopupPopup .bottomLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomLeft.png) no-repeat;
+	}
+
+	.TagPopupPopup .left
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_left.png) repeat-y;
+	}
+
+	.TagPopupPopup .right
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_right.png) repeat-y;
+	}
+
+	.TagPopupPopup .topRight
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topRight.png) no-repeat;
+	}
+
+	.TagPopupPopup .bottomRight
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomRight.png) no-repeat;
+	}
+
+
+	.TagPopupPopup .top
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_top.png) repeat-x;
+	}
+
+	.TagPopupPopup .bottom
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -272,69 +273,69 @@
 	    display:none;
 	    z-index: 20000;
 	}
-	
+
 	.ModifierPopupPopup
 	{
 	}
-	
+
 	#ModifierPopupContent
 	{
 	    background-color: #FFF;
 	    min-width: 80px;
 	    min-height: 50px;
 	}
-	
+
 	.ModifierPopupPopup .ModifierPopupImage
 	{
 	    margin: 5px;
 	    margin-right: 15px;
 	}
-	
-	.ModifierPopupPopup .corner 
+
+	.ModifierPopupPopup .corner
 	{
 	    width: 19px;
 	    height: 15px;
 	}
-	    
-	.ModifierPopupPopup .topLeft 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
-	}
-	    
-	.ModifierPopupPopup .bottomLeft 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
-	}
-	    
-	.ModifierPopupPopup .left 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
-	}
-	    
-	.ModifierPopupPopup .right 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
-	}
-	    
-	.ModifierPopupPopup .topRight 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
-	}
-	    
-	.ModifierPopupPopup .bottomRight 
-	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
-	}
-	    
 
-	.ModifierPopupPopup .top 
+	.ModifierPopupPopup .topLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topLeft.png) no-repeat;
 	}
-	    
-	.ModifierPopupPopup .bottom 
+
+	.ModifierPopupPopup .bottomLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomLeft.png) no-repeat;
+	}
+
+	.ModifierPopupPopup .left
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_left.png) repeat-y;
+	}
+
+	.ModifierPopupPopup .right
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_right.png) repeat-y;
+	}
+
+	.ModifierPopupPopup .topRight
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topRight.png) no-repeat;
+	}
+
+	.ModifierPopupPopup .bottomRight
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomRight.png) no-repeat;
+	}
+
+
+	.ModifierPopupPopup .top
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_top.png) repeat-x;
+	}
+
+	.ModifierPopupPopup .bottom
+	{
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -349,73 +350,73 @@
 	    display:none;
 	    z-index: 20000;
 	}
-	
+
 	.SearchPopupPopup
 	{
 	}
-	
+
 	#SearchPopupContent
 	{
 	    background-color: #FFF;
 	    min-width: 175px;
 	    min-height: 50px;
 	}
-	
+
 	.SearchPopupPopup .SearchPopupImage
 	{
 	    margin: 5px;
 	    margin-right: 15px;
 	}
-	
-	.SearchPopupPopup .corner 
+
+	.SearchPopupPopup .corner
 	{
 	    width: 19px;
 	    height: 15px;
 	}
-	    
-	.SearchPopupPopup .topLeft 
+
+	.SearchPopupPopup .topLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topLeft.png) no-repeat;
 	}
-	    
-	.SearchPopupPopup .bottomLeft 
+
+	.SearchPopupPopup .bottomLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomLeft.png) no-repeat;
 	}
-	    
-	.SearchPopupPopup .left 
+
+	.SearchPopupPopup .left
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_left.png) repeat-y;
 	}
-	    
-	.SearchPopupPopup .right 
+
+	.SearchPopupPopup .right
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_right.png) repeat-y;
 	}
-	    
-	.SearchPopupPopup .topRight 
+
+	.SearchPopupPopup .topRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topRight.png) no-repeat;
 	}
-	    
-	.SearchPopupPopup .bottomRight 
+
+	.SearchPopupPopup .bottomRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomRight.png) no-repeat;
 	}
-	    
-	.SearchPopupPopup .top 
+
+	.SearchPopupPopup .top
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_top.png) repeat-x;
 	}
-	    
-	.SearchPopupPopup .bottom 
+
+	.SearchPopupPopup .bottom
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
-	
-	
+
+
 	<style type="text/css">
 	#ReportPopupContainer
 	{
@@ -425,68 +426,68 @@
 	    display:none;
 	    z-index: 20000;
 	}
-	
+
 	.ReportPopupPopup
 	{
 	}
-	
+
 	#ReportPopupContent
 	{
 	    background-color: #FFF;
 	    min-width: 175px;
 	    min-height: 50px;
 	}
-	
+
 	.ReportPopupPopup .ReportPopupImage
 	{
 	    margin: 5px;
 	    margin-right: 15px;
 	}
-	
-	.ReportPopupPopup .corner 
+
+	.ReportPopupPopup .corner
 	{
 	    width: 19px;
 	    height: 15px;
 	}
-	    
-	.ReportPopupPopup .topLeft 
+
+	.ReportPopupPopup .topLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topLeft.png) no-repeat;
 	}
-	    
-	.ReportPopupPopup .bottomLeft 
+
+	.ReportPopupPopup .bottomLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomLeft.png) no-repeat;
 	}
-	    
-	.ReportPopupPopup .left 
+
+	.ReportPopupPopup .left
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_left.png) repeat-y;
 	}
-	    
-	.ReportPopupPopup .right 
+
+	.ReportPopupPopup .right
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_right.png) repeat-y;
 	}
-	    
-	.ReportPopupPopup .topRight 
+
+	.ReportPopupPopup .topRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topRight.png) no-repeat;
 	}
-	    
-	.ReportPopupPopup .bottomRight 
+
+	.ReportPopupPopup .bottomRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomRight.png) no-repeat;
 	}
-	    
-	.ReportPopupPopup .top 
+
+	.ReportPopupPopup .top
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_top.png) repeat-x;
 	}
-	    
-	.ReportPopupPopup .bottom 
+
+	.ReportPopupPopup .bottom
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>
@@ -500,68 +501,68 @@
 	    display:none;
 	    z-index: 20000;
 	}
-	
+
 	.AssetPopupPopup
 	{
 	}
-	
+
 	#AssetPopupContent
 	{
 	    background-color: #FFF;
 	    min-width: 175px;
 	    min-height: 50px;
 	}
-	
+
 	.AssetPopupPopup .AssetPopupImage
 	{
 	    margin: 5px;
 	    margin-right: 15px;
 	}
-	
-	.AssetPopupPopup .corner 
+
+	.AssetPopupPopup .corner
 	{
 	    width: 19px;
 	    height: 15px;
 	}
-	    
-	.AssetPopupPopup .topLeft 
+
+	.AssetPopupPopup .topLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topLeft.png) no-repeat;
 	}
-	    
-	.AssetPopupPopup .bottomLeft 
+
+	.AssetPopupPopup .bottomLeft
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomLeft.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomLeft.png) no-repeat;
 	}
-	    
-	.AssetPopupPopup .left 
+
+	.AssetPopupPopup .left
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_left.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_left.png) repeat-y;
 	}
-	    
-	.AssetPopupPopup .right 
+
+	.AssetPopupPopup .right
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_right.png) repeat-y;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_right.png) repeat-y;
 	}
-	    
-	.AssetPopupPopup .topRight 
+
+	.AssetPopupPopup .topRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_topRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_topRight.png) no-repeat;
 	}
-	    
-	.AssetPopupPopup .bottomRight 
+
+	.AssetPopupPopup .bottomRight
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottomRight.png) no-repeat;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottomRight.png) no-repeat;
 	}
-	    
-	.AssetPopupPopup .top 
+
+	.AssetPopupPopup .top
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_top.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_top.png) repeat-x;
 	}
-	    
-	.AssetPopupPopup .bottom 
+
+	.AssetPopupPopup .bottom
 	{
-	    background: url(<?php echo base_url()?>theme-<?php echo $user_theme;?>/<?php echo $user_theme?>-images/balloon_bottom.png) repeat-x;
+	    background: url(<?php echo $oa_theme_images; ?>/balloon_bottom.png) repeat-x;
 	    text-align: center;
 	}
 	</style>

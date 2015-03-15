@@ -1,12 +1,12 @@
-<?php 
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+<?php
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,21 +25,21 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 ?>
 
 <div style="float:left; width:100%;">
 <?php
-echo form_open('main/process_edit_systems') . "\n"; 
+echo form_open('main/process_edit_systems')."\n";
 ?>
 <input type="hidden" name="group_id" value="<?php echo $group_id; ?>" />
-	<fieldset id="change_details" class="niceforms"> 
+	<fieldset id="change_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
 	<table width="100%">
 	<tr>
@@ -56,21 +56,27 @@ echo form_open('main/process_edit_systems') . "\n";
 	<label for="man_icon"><?php echo __("Icon"); ?>: </label><input type="text" name="man_icon" style="width: 200px" /><br /><br />
 	<label for="man_ip_address"><?php echo __("IP Address"); ?>: </label><input type="text" name="man_ip_address" style="width: 200px" /><br /><br />
 	<label for="man_location_level"><?php echo __("Location Level"); ?>: </label><input type="text" name="man_location_level" style="width: 200px" /><br /><br />
-	<label for="man_location_id"><?php echo __("Location Name"); ?>: </label><select name="man_location_id" style="width: 200px"><option value="">&nbsp;</option><?php foreach ($locations as $location){ echo "<option value=\"" . $location->location_id . "\">" . $location->location_name . "</option>\n"; } ?></select><br /><br />
+	<label for="man_location_id"><?php echo __("Location Name"); ?>: </label><select name="man_location_id" style="width: 200px"><option value="">&nbsp;</option><?php foreach ($locations as $location) {
+    echo "<option value=\"".$location->location_id."\">".$location->location_name."</option>\n";
+} ?></select><br /><br />
 	<label for="man_location_rack"><?php echo __("Location Rack"); ?>: </label><input type="text" name="man_location_rack" style="width: 200px" /><br /><br />
 	<label for="man_location_rack_position"><?php echo __("Location Rack Position"); ?>: </label><input type="text" name="man_location_rack_position" style="width: 200px" /><br /><br />
 	<label for="man_location_room"><?php echo __("Location Room"); ?>: </label><input type="text" name="man_location_room" style="width: 200px" /><br /><br />
 	<label for="man_location_suite"><?php echo __("Location Suite"); ?>: </label><input type="text" name="man_location_suite" style="width: 200px" /><br /><br />
 	<label for="man_manufacturer"><?php echo __("Manufacturer"); ?>: </label><input type="text" name="man_manufacturer" style="width: 200px" /><br /><br />
 	<label for="man_model"><?php echo __("Model"); ?>: </label><input type="text" name="man_model" style="width: 200px" /><br /><br />
-	<label for="man_org_id"><?php echo __("Organisation Name"); ?>: </label><select name="man_org_id" style="width: 200px"><option value="">&nbsp;</option><?php foreach ($orgs as $org){ echo "<option value=\"" . $org->org_id . "\">" . $org->org_name . "</option>\n"; } ?></select><br /><br />
+	<label for="man_org_id"><?php echo __("Organisation Name"); ?>: </label><select name="man_org_id" style="width: 200px"><option value="">&nbsp;</option><?php foreach ($orgs as $org) {
+    echo "<option value=\"".$org->org_id."\">".$org->org_name."</option>\n";
+} ?></select><br /><br />
 	<label for="nmis_group"><?php echo __("NMIS Group"); ?>: </label><input type="text" name="nmis_group" style="width: 200px" /><br /><br />
 	<label for="nmis_name"><?php echo __("NMIS Name"); ?>: </label><input type="text" name="nmis_name" style="width: 200px" /><br /><br />
 	<label for="nmis_role"><?php echo __("NMIS Role"); ?>: </label><select name="nmis_role" style="width: 200px"><option value="">&nbsp;</option><option value="access"><?php echo __("Access"); ?></option><option value="core"><?php echo __("Core"); ?></option><option value="distribution"><?php echo __("Distribution"); ?></option></select><br /><br />
+	<label for="man_oae_manage"><?php echo __("Open-AudIT Managed"); ?>: </label><select name="man_oae_manage" style="width: 200px"><option value="">&nbsp;</option><option value="y"><?php echo __("Yes"); ?></option><option value="n"><?php echo __("No"); ?></option></select><br /><br />
 	<label for="man_os_family"><?php echo __("OS Family"); ?>: </label><input type="text" name="man_os_family" style="width: 200px" /><br /><br />
 	<label for="man_os_group"><?php echo __("OS Group"); ?>: </label><input type="text" name="man_os_group" style="width: 200px" /><br /><br />
 	<label for="man_os_name"><?php echo __("OS Name"); ?>: </label><input type="text" name="man_os_name" style="width: 200px" /><br /><br />
 	<label for="run_discovery"><?php echo __("Run Discovery"); ?>: </label><input type="checkbox" id="run_discovery" name="run_discovery" value="yes"/> (Should I run Discovery on all devices listed below?)<br /><br />
+	<label for="calculate_ip"><?php echo __("Recalculate IP Address"); ?>: </label><input type="checkbox" id="calculate_ip" name="calculate_ip" value="yes"/> (Should I recalculate the main ip address for the devices below?)<br /><br />
 	</td>
 	<td width="50%">
 	<label for="man_owner"><?php echo __("Owner"); ?>: </label><input type="text" name="man_owner" style="width: 200px" /><br /><br />
@@ -108,11 +114,10 @@ echo form_open('main/process_edit_systems') . "\n";
 
 
 	<?php
-	foreach ($query as $key)
-	{
-		echo "<input type=\"hidden\" name=\"system_id_" . $key->system_id . "\" value=\"" . $key->system_id . "\" />\n";
-	}
-	?>
+    foreach ($query as $key) {
+        echo "<input type=\"hidden\" name=\"system_id_".$key->system_id."\" value=\"".$key->system_id."\" />\n";
+    }
+    ?>
 	<label for="submit">&nbsp;</label>
 	<input type="submit" name="submit" id="submit" value="Submit" />
 </fieldset>
@@ -128,7 +133,7 @@ echo form_open('main/process_edit_systems') . "\n";
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach($query as $key): ?>
+			<?php foreach ($query as $key): ?>
 			<tr>
 				<td><span style="display: none;"><?php echo $key->man_ip_address?></span><?php echo ip_address_from_db($key->man_ip_address)?></td>
 				<td><a class="SystemPopupTrigger" rel="<?php echo $key->system_id;?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo $key->system_id?>"><?php echo $key->hostname?></a></td>

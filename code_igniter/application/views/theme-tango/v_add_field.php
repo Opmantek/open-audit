@@ -1,12 +1,12 @@
-<?php 
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+<?php
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,17 +25,17 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-echo form_open('admin_field/add_field') . "\n"; ?>
+echo form_open('admin_field/add_field')."\n"; ?>
 <fieldset id="field_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Field Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_audit_log.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_audit_log.png' alt='' title='' width='48'/>
 	<table width="780" cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='100%'>
@@ -76,9 +76,11 @@ echo form_open('admin_field/add_field') . "\n"; ?>
 					</select></p>
 				<p><label for='group_id'><?php echo __("Group")?>: </label>
 					<select id='group_id' name='group_id' tabindex='4' title='Group' >
-						<?php foreach ($groups as $group){ echo "<option value=\"" . $group->group_id . "\">" . $group->group_name . " (" . $group->total . " devices)</option>\n"; } ?>
+						<?php foreach ($groups as $group) {
+    echo "<option value=\"".$group->group_id."\">".$group->group_name." (".$group->total." devices)</option>\n";
+} ?>
 					<select></p>
-				<p><label for='AddField'>&nbsp;</label><?php echo form_submit(array('id'=>'AddField', 'name'=>'AddField'), 'Add Field'); ?></p>
+				<p><label for='AddField'>&nbsp;</label><?php echo form_submit(array('id' => 'AddField', 'name' => 'AddField'), 'Add Field'); ?></p>
 			</td>
 		</tr>
 	</table>

@@ -1,12 +1,12 @@
-<?php 
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+<?php
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,17 +25,16 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-$sortcolumn = 2; 
-if (count($query) > 0)
-{
-?>		
+$sortcolumn = 2;
+if (count($query) > 0) {
+    ?>
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
@@ -46,36 +45,42 @@ if (count($query) > 0)
 		</tr>
 	</thead>
 	<tbody>
-		<?php 
-		if (count($query) > 0)
-		{
-			foreach($query as $key):
-				if ($key->report_id > 0 )
-				{
-					$edit_pic = "<a href=\"edit_report/" . $key->report_id . "\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>"; 
-					$export_pic = "<a href=\"export_report/" . $key->report_id . "\"><img src='" . $image_path . "16_text-x-generic-template.png' alt='' title='' width='16'/></a>";
-					$delete_pic = "<a href=\"delete_report/" . $key->report_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
-			 ?>
+		<?php
+        if (count($query) > 0) {
+            foreach ($query as $key):
+                if ($key->report_id > 0) {
+                    $edit_pic = "<a href=\"edit_report/".$key->report_id."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
+                    $export_pic = "<a href=\"export_report/".$key->report_id."\"><img src='".$oa_theme_images."/16_text-x-generic-template.png' alt='' title='' width='16'/></a>";
+                    $delete_pic = "<a href=\"delete_report/".$key->report_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                    ?>
 			<tr>
 				<td><?php echo __($key->report_name)?></td>
 				<td align="center"><?php echo $edit_pic?></td>
 				<td align="center"><?php echo $export_pic?></td>
 				<td align="center"><?php echo $delete_pic?></td>
 			</tr>
-			<?php } ?>
-			<?php endforeach; ?>
-		<?php } else { ?>
+			<?php 
+                }
+            ?>
+			<?php endforeach;
+            ?>
+		<?php 
+        } else {
+            ?>
 		<tr>
 			<td>&nbsp;</td>
 			<td></td>
 			<td></td>
 			<td></td>
 		</tr>
-		<?php } ?>
+		<?php 
+        }
+    ?>
 	</tbody>
 </table>
 <?php
+
 } else {
-	echo "<br />" . __('There are no current reports') . ".<br />";
+    echo "<br />".__('There are no current reports').".<br />";
 }
 ?>

@@ -1,12 +1,12 @@
-<?php 
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+<?php
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,24 +25,23 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-if (isset($error_message))
-{
-	$error_message = "<font color='red'>&nbsp;" . $error_message . "</font>";
+if (isset($error_message)) {
+    $error_message = "<font color='red'>&nbsp;".$error_message."</font>";
 } else {
-	$error_message = "";
+    $error_message = "";
 }
-echo form_open('admin_user/add_user') . "\n"; 
+echo form_open('admin_user/add_user')."\n";
 ?>
 <fieldset id="group_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('User Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_users.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_users.png' alt='' title='' width='48'/>
 	<table width="780" cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='50%'>
@@ -71,7 +70,7 @@ echo form_open('admin_user/add_user') . "\n";
 						<option value="2">Update Counts</option>
 						<option value="3">Create Licenses</option>
 					</select></p>
-				<p><label for='AddUser'>&nbsp;</label><?php echo form_submit(array('id'=>'AddUser', 'name'=>'AddUser'), 'Add User'); ?></p>
+				<p><label for='AddUser'>&nbsp;</label><?php echo form_submit(array('id' => 'AddUser', 'name' => 'AddUser'), 'Add User'); ?></p>
 			</td>
 		</tr>
 	</table>
@@ -95,21 +94,27 @@ echo form_open('admin_user/add_user') . "\n";
 		</tr>
 	</thead>
 	<tbody>
-		<?php 
-		foreach($query as $key):
-			$tag = 'User Defined'; 
-			if ($key->group_id < '1000'){ $tag = 'Built-in'; } 
-			if ($key->group_id == '1'){ $tag = 'Built-in'; } 
-			if (mb_strpos($key->group_name, 'Network - ') !== false) { $tag = 'Auto Generated'; }
-			echo "
+		<?php
+        foreach ($query as $key):
+            $tag = 'User Defined';
+            if ($key->group_id < '1000') {
+                $tag = 'Built-in';
+            }
+            if ($key->group_id == '1') {
+                $tag = 'Built-in';
+            }
+            if (mb_strpos($key->group_name, 'Network - ') !== false) {
+                $tag = 'Auto Generated';
+            }
+            echo "
 		<tr>
-			<td align=\"center\">" . $key->total . "</td>
-			<td><a href=\"" . base_url() . "index.php/main/list_devices/" . $key->group_id . "\">" . $key->group_name . "</a></td>
-			<td>" . $tag . "</td>
-			<td>" . $key->group_description . "</td>
-			<td align=\"center\">" . group_dropdown($key->group_id) . "</td>
+			<td align=\"center\">".$key->total."</td>
+			<td><a href=\"".$this->config->item('oa_web_index')."/main/list_devices/".$key->group_id."\">".$key->group_name."</a></td>
+			<td>".$tag."</td>
+			<td>".$key->group_description."</td>
+			<td align=\"center\">".group_dropdown($key->group_id)."</td>
 		</tr>";
-		endforeach; ?>
+        endforeach; ?>
 	</tbody>
 </table>
 
@@ -125,24 +130,24 @@ echo form_open('admin_user/add_user') . "\n";
 
 
 <?php
-function group_dropdown ($id)
+function group_dropdown($id)
 {
-	if ($id == '0')
-	{
-		$js = "onchange='alter_all_groups();'";
-	} else {
-		$js = '';
-	}
-	$string = "<select id='group_id_$id' name='group_id_$id' title='' $js >
-		<option value='0' selected>" . __("No Access") . "</option>
-		<option value='3'>" . __("List View Only") . "</option>
-		<option value='5'>" . __("View Basic Details") . "</option>
-		<option value='7'>" . __("View Sensitive Details") . "</option>
-		<option value='10'>" . __("Edit Details") . "</option>
+    if ($id == '0') {
+        $js = "onchange='alter_all_groups();'";
+    } else {
+        $js = '';
+    }
+    $string = "<select id='group_id_$id' name='group_id_$id' title='' $js >
+		<option value='0' selected>".__("No Access")."</option>
+		<option value='3'>".__("List View Only")."</option>
+		<option value='5'>".__("View Basic Details")."</option>
+		<option value='7'>".__("View Sensitive Details")."</option>
+		<option value='10'>".__("Edit Details")."</option>
 	</select>\n";
-	$string = str_replace("\t", "", $string);
-	$string = str_replace("\n", "", $string);
-	return $string;
+    $string = str_replace("\t", "", $string);
+    $string = str_replace("\n", "", $string);
+
+    return $string;
 }
 ?>
 
@@ -152,12 +157,12 @@ function alter_all_groups()
 	totalArray = new Array();
 	var count = 0;
 	<?php
-	$count = 0;
-	foreach($query as $key):
-		$count++;
-		echo "	totalArray[$count] = " . $key->group_id . "\n";
-	endforeach;
-	?>
+    $count = 0;
+    foreach ($query as $key):
+        $count++;
+        echo "	totalArray[$count] = ".$key->group_id."\n";
+    endforeach;
+    ?>
 	var i=1;
 	for (i=1;i<=<?php echo $total_count;?>;i++)
 	{
@@ -169,7 +174,7 @@ function alter_all_groups()
 <?php echo form_close(); ?>
 
 <script type='text/javascript'>
-function createRequestObject() 
+function createRequestObject()
 {
 	var req;
 	if(window.XMLHttpRequest){

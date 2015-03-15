@@ -1,12 +1,12 @@
-<?php 
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+<?php
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,86 +25,91 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-if (isset($error_message))
-{
-	$error_message = "<font color='red'>&nbsp;" . $error_message . "</font>";
+if (isset($error_message)) {
+    $error_message = "<font color='red'>&nbsp;".$error_message."</font>";
 } else {
-	$error_message = "";
+    $error_message = "";
 }
 
-echo form_open('admin_system/add_system') . "\n"; 
+echo form_open('admin_system/add_system')."\n";
 ?>
 <fieldset id="org_details" class="niceforms">
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $image_path;?>48_home.png' alt='' title='' width='48'/>
+	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<p><?php echo $error_message; ?>&nbsp;</p>
 	<p><label for='man_type'><?php echo __("Type")?>: </label>
 		<select id='man_type' name='man_type' tabindex='1' style='width: 135px' onchange='select_device();'>
-			<?php foreach($device_types as $key => $value) { echo "<option value='$key'>" . __("$value") . "</option>\n"; } ?>
+			<?php foreach ($device_types as $key => $value) {
+    echo "<option value='$key'>".__("$value")."</option>\n";
+} ?>
 		</select>
 	</p>
 	<p><label for='notes1'> </label><span id='notes1' style='color: blue;'>*</span> You must have at least one of the blue attributes.<br />
 	   <label for='notes2'> </label><span id='notes2' style='color: red;'>*</span> You must have a red attribute.</p>
 	<div id="details"></div>
-	
+
 </fieldset>
 <?php echo form_close(); ?>
 
 <?php
 $location_form = "";
 foreach ($locations as $location) {
-	$location_form .= "<option value='" . $location->location_id . "'>" . $location->location_name . "<\/option>";
+    $location_form .= "<option value='".$location->location_id."'>".$location->location_name."<\/option>";
 }
-$location_form = "<label for='man_location_id'>Location<\/label><select id='man_location_id' name='man_location_id' style='width: 250px'>" . $location_form . "<\/select><br />";	
+$location_form = "<label for='man_location_id'>Location<\/label><select id='man_location_id' name='man_location_id' style='width: 250px'>".$location_form."<\/select><br />";
 
 $org_form = "";
 foreach ($orgs as $org) {
-	$org_form .= "<option value='" . $org->org_id . "'>" . $org->org_name . "<\/option>";
+    $org_form .= "<option value='".$org->org_id."'>".$org->org_name."<\/option>";
 }
-$org_form = "<label for='man_org_id'>Organisation<\/label><select id='man_org_id' name='man_org_id' style='width: 250px'>" . $org_form . "<\/select><br />";
+$org_form = "<label for='man_org_id'>Organisation<\/label><select id='man_org_id' name='man_org_id' style='width: 250px'>".$org_form."<\/select><br />";
 
 $os_group_form = "";
 foreach ($os_group as $item) {
-	$os_group_form .= "<option value='" . $item->man_os_group . "'>" . $item->man_os_group . "<\/option>";
+    $os_group_form .= "<option value='".$item->man_os_group."'>".$item->man_os_group."<\/option>";
 }
-$os_group_form = "<label for='man_os_group_2'> <\/label><select id='man_os_group_2' name='man_os_group_2' style='width: 250px'>" . $os_group_form . "<\/select><br />";
+$os_group_form = "<label for='man_os_group_2'> <\/label><select id='man_os_group_2' name='man_os_group_2' style='width: 250px'>".$os_group_form."<\/select><br />";
 
 $os_family_form = "";
 foreach ($os_family as $item) {
-	$os_family_form .= "<option value='" . $item->man_os_family . "'>" . $item->man_os_family . "<\/option>";
+    $os_family_form .= "<option value='".$item->man_os_family."'>".$item->man_os_family."<\/option>";
 }
-$os_family_form = "<label for='man_os_family'> <\/label><select id='man_os_family' name='man_os_family' style='width: 250px' onchange='update_icon_from_os()'>" . $os_family_form . "<\/select><br />";
+$os_family_form = "<label for='man_os_family'> <\/label><select id='man_os_family' name='man_os_family' style='width: 250px' onchange='update_icon_from_os()'>".$os_family_form."<\/select><br />";
 
 $os_name_form = "";
 foreach ($os_name as $item) {
-	$os_name_form .= "<option value='" . $item->man_os_name . "'>" . $item->man_os_name . "<\/option>";
+    $os_name_form .= "<option value='".$item->man_os_name."'>".$item->man_os_name."<\/option>";
 }
-$os_name_form = "<label for='man_os_name_2'> <\/label><select id='man_os_name_2' name='man_os_name_2' style='width: 250px'>" . $os_name_form . "<\/select><br />";
-
-
+$os_name_form = "<label for='man_os_name_2'> <\/label><select id='man_os_name_2' name='man_os_name_2' style='width: 250px'>".$os_name_form."<\/select><br />";
 
 ?>
 <!-- TODO: validate the various attributes that MUST be submitted, are - client side -->
 
 <script type="text/javascript">
 <?php if (isset($error_message)) {
-	echo "error_message = \"" . $error_message . "\";\n";
+    echo "error_message = \"".$error_message."\";\n";
 } else {
-	echo "error_message = \"\";";
+    echo "error_message = \"\";";
 } ?>
 
 
-if (error_message > "") { 
-		document.getElementById("man_type").value = "<?php if (isset($form)) { echo $form['man_type']; } ?>";
+if (error_message > "") {
+		document.getElementById("man_type").value = "<?php if (isset($form)) {
+    echo $form['man_type'];
+} ?>";
 		select_device();
-		<?php if (isset($form)) { foreach ($form as $key => $value) { echo "\tdocument.getElementById(\"$key\").value = \"$value\"\n"; } }?>
+		<?php if (isset($form)) {
+    foreach ($form as $key => $value) {
+        echo "\tdocument.getElementById(\"$key\").value = \"$value\"\n";
+    }
+}?>
 	}
 
 function select_device()
@@ -121,7 +126,7 @@ function select_device()
 		case "phone":
 			status_text = "<table><tr><td valign=\"top\">";
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_device.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
 			status_text = status_text + "<label for='man_owner'>Allocated To<\/label><input type='text' id='man_owner' name='man_owner' size='20' \/><br \/>";
@@ -155,7 +160,7 @@ function select_device()
 			status_text = "<table><tr><td valign=\"top\">";
 			status_text = status_text + "<label for='man_os_family'>OS Family<\/label><select id='man_os_family' name='man_os_family' style='width: 135px' onchange='update_icon_from_os()' ><option value=' '>&nbsp;<\/option><option value='android'>Android<\/option><option value='apple'>Apple<\/option><option value='blackberry'>Blackberry<\/option><option value='other'>Other<\/option><option value='windows phone'>Windows Phone<\/option><\/select><br \/>";
 			status_text = status_text + "<label for='man_os_name'>OS Name<\/label><input type='text' id='man_os_name' name='man_os_name' size='20' title='4' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_device.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
@@ -190,7 +195,7 @@ function select_device()
 			status_text = "<table><tr><td valign=\"top\">";
 			status_text = status_text + "<label for='hostname'>Hostname<\/label><input type='text' id='hostname' name='hostname' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_device.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<label for='man_ip_address'>IP Address<\/label><input type='text' id='man_ip_address' name='man_ip_address' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
@@ -224,7 +229,7 @@ function select_device()
 		case "access token":
 			status_text = "<table><tr><td valign=\"top\">";
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_device.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
 			status_text = status_text + "<label for='man_owner'>Allocated To<\/label><input type='text' id='man_owner' name='man_owner' size='20' \/><br \/>";
@@ -254,7 +259,7 @@ function select_device()
 			status_text = status_text + "<label for='man_os_family'>OS Family<\/label><select id='man_os_family' name='man_os_family' style='width: 135px' onchange='update_icon_from_os()' ><option value=' '>&nbsp;<\/option><option value='android'>Android<\/option><option value='blackberry'>Blackberry<\/option><option value='apple'>Apple<\/option><option value='windows'>Windows<\/option><\/select><br \/>";
 			status_text = status_text + "<label for='man_os_name'>OS Name<\/label><input type='text' id='man_os_name' name='man_os_name' size='20' title='Android 4.0 (Ice Cream Sandwitch), etc' \/><br \/>";
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_device.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
 			status_text = status_text + "<label for='man_owner'>Allocated To<\/label><input type='text' id='man_owner' name='man_owner' size='20' \/><br \/>";
@@ -296,7 +301,7 @@ function select_device()
 			status_text = status_text + "<label for='man_os_name'>OS Name<\/label><input type='text' id='man_os_name' name='man_os_name' size='20' title='Windows XP Professional, etc' \/> or <br \/>";
 			status_text = status_text + " <?php echo $os_name_form;?>";
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_device.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
 			status_text = status_text + "<label for='man_manufacturer'>Manufacturer<\/label><input type='text' id='man_manufacturer' name='man_manufacturer' size='20' \/><br \/>";
@@ -323,7 +328,7 @@ function select_device()
 			status_text = status_text + "<label for='man_owner'>Assigned To<\/label><input type='text' id='man_owner' name='man_owner' size='20' \/><br \/>";
 			status_text = status_text + "<label for='man_ip_address'>IP Address<\/label><input type='text' id='man_ip_address' name='man_ip_address' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_printer.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_printer.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
 			status_text = status_text + "<label for='man_manufacturer'>Manufacturer<\/label><input type='text' id='man_manufacturer' name='man_manufacturer' size='20' \/><br \/>";
@@ -350,7 +355,7 @@ function select_device()
 			status_text = status_text + "<label for='hostname'>Hostname<\/label><input type='text' id='hostname' name='hostname' size='20' \/><span style='color: red;'>*<\/span> (of the attached PC)<br \/>";
 			status_text = status_text + "<label for='man_owner'>Assigned To<\/label><input type='text' id='man_owner' name='man_owner' size='20' \/><br \/>";
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_printer.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_printer.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
 			status_text = status_text + "<label for='man_manufacturer'>Manufacturer<\/label><input type='text' id='man_manufacturer' name='man_manufacturer' size='20' \/><br \/>";
@@ -376,7 +381,7 @@ function select_device()
 			status_text = status_text + "<label for='man_ip_address'>IP Address<\/label><input type='text' id='man_ip_address' name='man_ip_address' size='20' \/><span style='color: blue;'>*<\/span><br \/>";
 			status_text = status_text + "<label for='man_os_group'>OS Group<\/label><input type='text' id='man_os_group' name='man_os_group' size='20' title='Xbox, Playstation, Wii, etc' \/><br \/>";
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_device.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
 			status_text = status_text + "<label for='man_manufacturer'>Manufacturer<\/label><input type='text' id='man_manufacturer' name='man_manufacturer' size='20' onChange='update_icon_from_manufacturer()' \/><br \/>";
@@ -404,7 +409,7 @@ function select_device()
 			status_text = status_text + "<label for='man_os_family'>OS Family<\/label><input type='text' id='man_os_family' name='man_os_family' size='20' title='Cisco IOS 14, etc' \/><br \/>";
 			status_text = status_text + "<label for='man_os_name'>OS Name<\/label><input type='text' id='man_os_name' name='man_os_name' size='20' title='Cisco IOS 14 v123, etc' \/><br \/>";;
 			status_text = status_text + "<label for='man_description'>Description<\/label><input type='text' id='man_description' name='man_description' size='20' \/><br \/>";
-			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $image_path;?>16_device.png' alt='' title='' /><br \/>";
+			status_text = status_text + "<label for='man_icon'>Icon<\/label><input type='text' id='man_icon' name='man_icon' size='15' title='4' onchange='update_icon()' value='"+icon+"' \/><img id='icon_image' src='<?php echo $oa_theme_images;?>/16_device.png' alt='' title='' /><br \/>";
 			status_text = status_text + "<?php echo $location_form;?>";
 			status_text = status_text + "<?php echo $org_form;?>";
 			status_text = status_text + "<label for='man_manufacturer'>Manufacturer<\/label><input type='text' id='man_manufacturer' name='man_manufacturer' size='20' onChange='update_icon_from_manufacturer()' \/><br \/>";
@@ -426,22 +431,22 @@ function select_device()
 
 	}
 	document.getElementById("details").innerHTML = status_text;
-	document.getElementById("icon_image").src = "<?php echo $image_path;?>16_"+icon+".png";
+	document.getElementById("icon_image").src = "<?php echo $oa_theme_images;?>/16_"+icon+".png";
 }
 function update_icon() {
 	fieldtext = document.getElementById("man_icon").value;
-	document.getElementById("icon_image").src = '<?php echo $image_path;?>16_'+fieldtext+'.png';
+	document.getElementById("icon_image").src = '<?php echo $oa_theme_images;?>/16_'+fieldtext+'.png';
 	document.getElementById("icon_display").style = 'display: block;';
 }
 function update_icon_from_os() {
 	os_family = document.getElementById("man_os_family").value.toLowerCase();
 	if (os_family == "windows phone") { os_family = "windows_phone"; }
 	os_family = os_family.replace(" ", "_");
-	if (os_family != "other") { document.getElementById("man_icon").value = os_family; document.getElementById("icon_image").src = '<?php echo $image_path;?>16_'+os_family+'.png'; }
+	if (os_family != "other") { document.getElementById("man_icon").value = os_family; document.getElementById("icon_image").src = '<?php echo $oa_theme_images;?>/16_'+os_family+'.png'; }
 }
 function update_icon_from_manufacturer() {
 	manufacturer = document.getElementById("man_manufacturer").value.toLowerCase();
 	document.getElementById("man_icon").value = manufacturer;
-	document.getElementById("icon_image").src = '<?php echo $image_path;?>16_'+manufacturer+'.png';
+	document.getElementById("icon_image").src = '<?php echo $oa_theme_images;?>/16_'+manufacturer+'.png';
 }
 </script>

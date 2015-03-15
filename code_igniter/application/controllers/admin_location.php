@@ -1,6 +1,6 @@
 <?php
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -26,27 +26,18 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class Admin_location extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);
@@ -120,7 +111,7 @@ class Admin_location extends MY_Controller
             }
             if ($details->location_group == 'on') {
                 # activate the group
-                redirect('admin_location/activate_group/' . $details->location_id);
+                redirect('admin_location/activate_group/'.$details->location_id);
             } else {
                 redirect('admin_location/list_locations');
             }
@@ -137,15 +128,15 @@ class Admin_location extends MY_Controller
         $location_group_id = $this->m_oa_location->get_group_id($location_id);
         $group = new stdClass();
         $group->group_id = '';
-        $group->group_name = "Items in " . $location_name;
+        $group->group_name = "Items in ".$location_name;
         $group->group_padded_name = '';
-        $group->group_description = "Items in " . $location_name;
+        $group->group_description = "Items in ".$location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '" . $this->data['id'] . "' OR LOWER(system.sysLocation) LIKE LOWER('%" . $location_name . "%')) AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '".$this->data['id']."' OR LOWER(system.sysLocation) LIKE LOWER('%".$location_name."%')) AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
-        if (isset($location_group_id) AND $location_group_id != '' AND $location_group_id != '0') {
+        if (isset($location_group_id) and $location_group_id != '' and $location_group_id != '0') {
             # update an existing group
             $group->group_id = $location_group_id;
             $this->m_oa_group->update_group($group);
@@ -173,7 +164,7 @@ class Admin_location extends MY_Controller
         if (isset($_POST['submit_file'])) {
             $this->load->model("m_oa_location");
             # we have an uploaded file - store and process
-            $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
+            $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);
             try {
                 move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
             } catch (Exception $e) {
@@ -182,7 +173,7 @@ class Admin_location extends MY_Controller
                 $this->data['include'] = 'v_error';
                 $this->load->view('v_template', $this->data);
             }
-            require_once BASEPATH . '../application/libraries/phpexcel/PHPExcel/IOFactory.php';
+            require_once BASEPATH.'../application/libraries/phpexcel/PHPExcel/IOFactory.php';
             if (!$objPHPExcel = PHPExcel_IOFactory::load($target_path)) {
                 exit;
             }
@@ -209,7 +200,7 @@ class Admin_location extends MY_Controller
                             // we need to update an existing location
                             $sql = "UPDATE oa_location SET ";
                             foreach ($details as $detail => $value) {
-                                $sql .= $detail . " = '" . mysql_real_escape_string($value) . "', ";
+                                $sql .= $detail." = '".mysql_real_escape_string($value)."', ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                             $sql .= " WHERE location_name = '".mysql_real_escape_string($details['location_name'])."'";
@@ -217,18 +208,18 @@ class Admin_location extends MY_Controller
                             // this is a new location (we don't have a name match)
                             $sql = "INSERT INTO oa_location ( ";
                             foreach ($details as $detail => $value) {
-                                $sql .= $detail . ", ";
+                                $sql .= $detail.", ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                             $sql .= " ) VALUES ( ";
                             foreach ($details as $detail => $value) {
-                                $sql .= "'" . mysql_real_escape_string(str_replace('"', '', $value)) . "', ";
+                                $sql .= "'".mysql_real_escape_string(str_replace('"', '', $value))."', ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                             $sql .= ")";
                         }
                         // run the query !!!
-                        echo $sql . "<br />\n";
+                        echo $sql."<br />\n";
                         $query = $this->db->query($sql);
                     } else {
                         echo "no location name provided";
@@ -249,20 +240,20 @@ class Admin_location extends MY_Controller
                     # we need to update an existing location
                     $sql = "UPDATE oa_location SET ";
                     foreach ($child->children() as $detail) {
-                        $sql .= $detail->getName() . " = '" . $detail . "', ";
+                        $sql .= $detail->getName()." = '".$detail."', ";
                     }
                     $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-                    $sql .= " WHERE location_name = '" . $child->location_name . "'";
+                    $sql .= " WHERE location_name = '".$child->location_name."'";
                 } else {
                     # this is a new location (we don't have a name match)
                     $sql = "INSERT INTO oa_location ( ";
                     foreach ($child->children() as $detail) {
-                        $sql .= $detail->getName() . ", ";
+                        $sql .= $detail->getName().", ";
                     }
                     $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                     $sql .= " ) VALUES ( ";
                     foreach ($child->children() as $detail) {
-                        $sql .= "'" . $detail . "', ";
+                        $sql .= "'".$detail."', ";
                     }
                     $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                     $sql .= ")";
@@ -308,7 +299,7 @@ class Admin_location extends MY_Controller
             if ($error == '0') {
                 $this->m_oa_location->edit_location($details);
                 if ($_POST['location_group'] == 'on') {
-                    redirect('admin_location/activate_group/' . $_POST['location_id']);
+                    redirect('admin_location/activate_group/'.$_POST['location_id']);
                 } else {
                     redirect('admin_location/list_locations');
                 }

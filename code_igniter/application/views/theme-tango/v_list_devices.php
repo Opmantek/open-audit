@@ -1,12 +1,12 @@
-<?php 
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+<?php
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,17 +25,16 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-$sortcolumn = 2; 
-if (count($query) > 1)
-{
-?>		
+$sortcolumn = 2;
+if (count($query) > 1) {
+    ?>
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
@@ -49,35 +48,33 @@ if (count($query) > 1)
 		</tr>
 	</thead>
 	<tbody>
-		<?php 
-		if (count($query) > 1)
-		{
-			foreach($query as $key):
-				if ($key->device_id > 0 )
-				{
-					$edit_pic = "<a href=\"edit_device/" . $key->device_id . "\"><img src='" . $image_path . "16_edit.png' alt='' title='' width='16'/></a>"; 
-					$delete_pic = "<a href=\"delete_device/" . $key->device_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
-				} else {
-			 		$edit_pic = "";
-			 		$delete_pic = "";
-				}
-				if ($key->device_name == '') {
-					$key->device_name = '(none)';
-				}
-				if ($key->device_group_id > '0') {
-					$show_pic = "<a href=\"../main/list_devices/" . $key->device_group_id . "\"><img src='" . $image_path . "16_device.png' alt='' title='' width='16'/></a>";
-					$deactivate_pic = "<a href=\"delete_group/" . $key->device_id . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";
-					$activate_pic = '';
-				} else {
-					$show_pic = '';
-					$deactivate_pic = '';
-					$activate_pic = "<a href=\"activate_group/" . $key->device_id . "\"><img src='" . $image_path . "16_true.png' alt='' title='' width='16'/></a>";
-				}
-				if ($key->device_id == 0 ) {
-					$deactivate_pic = "";
-					$activate_pic = "";
-				}
-			 ?>
+		<?php
+        if (count($query) > 1) {
+            foreach ($query as $key):
+                if ($key->device_id > 0) {
+                    $edit_pic = "<a href=\"edit_device/".$key->device_id."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
+                    $delete_pic = "<a href=\"delete_device/".$key->device_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                } else {
+                    $edit_pic = "";
+                    $delete_pic = "";
+                }
+            if ($key->device_name == '') {
+                $key->device_name = '(none)';
+            }
+            if ($key->device_group_id > '0') {
+                $show_pic = "<a href=\"../main/list_devices/".$key->device_group_id."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' width='16'/></a>";
+                $deactivate_pic = "<a href=\"delete_group/".$key->device_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                $activate_pic = '';
+            } else {
+                $show_pic = '';
+                $deactivate_pic = '';
+                $activate_pic = "<a href=\"activate_group/".$key->device_id."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
+            }
+            if ($key->device_id == 0) {
+                $deactivate_pic = "";
+                $activate_pic = "";
+            }
+            ?>
 			<tr>
 				<td align="center"><?php echo $key->total?></td>
 				<td><a href="../main/view_device/<?php echo $key->device_id?>"><?php echo $key->device_name?></a></td>
@@ -89,8 +86,11 @@ if (count($query) > 1)
 				<td align="center"><?php echo $edit_pic?></td>
 				<td align="center"><?php echo $delete_pic?></td>
 			</tr>
-			<?php endforeach; ?>
-		<?php } else { ?>
+			<?php endforeach;
+            ?>
+		<?php 
+        } else {
+            ?>
 		<tr>
 			<td>&nbsp;</td>
 			<td></td>
@@ -102,11 +102,14 @@ if (count($query) > 1)
 			<td></td>
 			<td></td>
 		</tr>
-		<?php } ?>
+		<?php 
+        }
+    ?>
 	</tbody>
 </table>
 <?php
+
 } else {
-	echo "<br />" . __('There are no current devices') . ".<br />";
+    echo "<br />".__('There are no current devices').".<br />";
 }
 ?>

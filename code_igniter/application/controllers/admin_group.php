@@ -1,6 +1,6 @@
 <?php
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -26,27 +26,18 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class Admin_group extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);
@@ -96,7 +87,7 @@ class Admin_group extends MY_Controller
 
     public function action_activate_group()
     {
-        $file = BASEPATH.'../application/controllers/groups/' . $this->data['id'];
+        $file = BASEPATH.'../application/controllers/groups/'.$this->data['id'];
         $this->load->model("m_oa_group");
         $this->load->model("m_oa_group_column");
         $file_handle = fopen($file, "rb");
@@ -153,16 +144,16 @@ class Admin_group extends MY_Controller
             echo "\t<details>\n";
             foreach ($details as $attribute => $value) {
                 if (($attribute != 'group_id') and ($attribute != 'group_dynamic_select') and ($attribute != 'group_display_sql')) {
-                    echo "\t\t<" . $attribute . ">" . $value . "</" . $attribute . ">\n";
+                    echo "\t\t<".$attribute.">".$value."</".$attribute.">\n";
                 }
                 if ((($attribute == 'group_dynamic_select') or ($attribute == 'group_display_sql')) and ($value > '')) {
                     if ($value > '') {
                         $value = str_replace("\t", " ", $value);
                         $value = str_replace("\n", " ", $value);
                         $value = preg_replace('!\s+!', ' ', $value);
-                        echo "\t\t<" . $attribute . "><![CDATA[" . $value . "]]></" . $attribute . ">\n";
+                        echo "\t\t<".$attribute."><![CDATA[".$value."]]></".$attribute.">\n";
                     } else {
-                        echo "\t\t<" . $attribute . ">" . $value . "</" . $attribute . ">\n";
+                        echo "\t\t<".$attribute.">".$value."</".$attribute.">\n";
                     }
                 }
             }
@@ -173,16 +164,16 @@ class Admin_group extends MY_Controller
             echo "\t\t<column>\n";
             foreach ($details as $attribute => $value) {
                 if (($attribute != 'column_id') && ($attribute != 'group_id')) {
-                    echo "\t\t\t<" . $attribute . ">" . $value . "</" . $attribute . ">\n";
+                    echo "\t\t\t<".$attribute.">".$value."</".$attribute.">\n";
                 }
             }
             echo "\t\t</column>\n";
         }
         echo "\t</columns>\n";
         echo "</group>";
-        $group_name = str_replace(" ", "", $group_name) . ".xml";
+        $group_name = str_replace(" ", "", $group_name).".xml";
         header('Content-Type: text/xml');
-        header('Content-Disposition: attachment;filename="' . $group_name . '"');
+        header('Content-Disposition: attachment;filename="'.$group_name.'"');
         header('Cache-Control: max-age=0');
     }
 
@@ -245,7 +236,6 @@ class Admin_group extends MY_Controller
         $this->data['heading'] = 'Edit Group';
         $this->data['include'] = 'v_edit_group';
         $this->load->view('v_template', $this->data);
-
     }
 
     public function process_edit_group()
@@ -320,7 +310,7 @@ class Admin_group extends MY_Controller
                 if (($details->dynamic_other_text == '') and ($details->dynamic_field_value != '')) {
                     $selection = $details->dynamic_field_value;
                 }
-                $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM " . $details->dynamic_other_table . $system_table . " WHERE " . $details->dynamic_other_table . ".system_id = system.system_id AND " . $details->dynamic_other_field . " " . $condition . " '" . $like_wildcard . $selection . $like_wildcard ."' AND system.man_status = 'production' AND " . $details->dynamic_other_table . ".timestamp = system.timestamp";
+                $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table.$system_table." WHERE ".$details->dynamic_other_table.".system_id = system.system_id AND ".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.man_status = 'production' AND ".$details->dynamic_other_table.".timestamp = system.timestamp";
             }
 
             # to do - decide on parent groups

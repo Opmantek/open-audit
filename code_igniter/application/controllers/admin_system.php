@@ -1,6 +1,6 @@
 <?php
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -26,27 +26,18 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class Admin_system extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);
@@ -84,31 +75,31 @@ class Admin_system extends MY_Controller
             $select_string = '';
             foreach ($_POST as $key => $value) {
                 if (($value == 'on') and (strpos($key, "man_") !== false)) {
-                    $select_string .= 'system.' . $key . ', ';
+                    $select_string .= 'system.'.$key.', ';
                 }
             }
             $select_string = substr($select_string, 0, strlen($select_string)-2);
 
-            echo "NAME: " . $_POST['name'] . "<br />\n";
-            echo "TYPE: " . $_POST['man_type'] . "<br />\n";
-            echo "SELECT: " . $select_string . "<br />\n";
+            echo "NAME: ".$_POST['name']."<br />\n";
+            echo "TYPE: ".$_POST['man_type']."<br />\n";
+            echo "SELECT: ".$select_string."<br />\n";
 
             $select_custom = '';
             foreach ($_POST as $key => $value) {
                 if (strpos($key, "custom_new_") !== false) {
-                    echo "CUSTOM: " . $key . " - " . $value . "<br />\n";
-                    $select_custom .= 'sys_man_additional_fields.' . $value . ', ';
+                    echo "CUSTOM: ".$key." - ".$value."<br />\n";
+                    $select_custom .= 'sys_man_additional_fields.'.$value.', ';
                 }
             }
             foreach ($_POST as $key => $value) {
                 if (($value == 'on') and (strpos($key, "custom_exist_") !== false)) {
-                    echo "Custom Existing: " . $key . " - " . $value . "<br />\n";
+                    echo "Custom Existing: ".$key." - ".$value."<br />\n";
                     $new_key = str_replace("custom_exist_", "", $key);
-                    $select_custom .= 'sys_man_additional_fields.' . $new_key . ', ';
+                    $select_custom .= 'sys_man_additional_fields.'.$new_key.', ';
                 }
             }
             $select_custom = substr($select_custom, 0, strlen($select_custom)-2);
-            echo "SELECT CUSTOM: " . $select_custom . "<br />\n";
+            echo "SELECT CUSTOM: ".$select_custom."<br />\n";
         }
     }
 
@@ -186,76 +177,74 @@ class Admin_system extends MY_Controller
         $this->m_system->update_system_man($system_id, 'access_details', $encoded);
 
         if ($_POST['snmp_scan'] == true) {
-            redirect('admin_system/system_snmp/' . $system_id);
+            redirect('admin_system/system_snmp/'.$system_id);
         } else {
-            redirect('main/system_display/' . $system_id);
+            redirect('main/system_display/'.$system_id);
         }
     }
-
 
     public function system_icon()
     {
         # TODO - move this to a view and check credentials
-        
+
         $system_id = intval($this->uri->segment(3, 0));
         $base_url = base_url();
         # set up the pop up page
         echo "<html>
-    <head>
-        <script type=\"text/javascript\">
-        
-        window.onunload = refreshParent;
-        
-        function refreshParent(){
-            window.opener.location.reload();
-        }
-        
-        function CloseMe(){
-            window.opener.location.reload();
-            window.close();
-        }
+	<head>
+		<script type=\"text/javascript\">
 
-        function createRequestObject() {
-            var req;
-            if(window.XMLHttpRequest){
-                // Firefox, Safari, Opera...
-                req = new XMLHttpRequest();
-            } else if(window.ActiveXObject) {
-                // Internet Explorer 5+
-                req = new ActiveXObject(\"Microsoft.XMLHTTP\");
-            } else {
-                // There is an error creating the object,
-                // just as an old browser is being used.
-                alert('Problem creating the XMLHttpRequest object');
-            }
-            return req;
-        }
+		window.onunload = refreshParent;
 
-        var http = createRequestObject();
+		function refreshParent(){
+			window.opener.location.reload();
+		}
 
-        function update(name) {
-            http.open('get', '" . $base_url . "index.php/ajax/update_system_man/" . $system_id . "/man_icon/'+name);
-            http.onreadystatechange = receive_update;
-            http.send(null);
-        }
+		function CloseMe(){
+			window.opener.location.reload();
+			window.close();
+		}
 
-        function receive_update() {
-            window.opener.location.reload();
-            window.close();
-        }
-        </script>
-    </head>
-    <body>
-        <h3 style='text-align: center; font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif;'>Icons</h3>
-        <p style='font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif; font-size: 10px;'>
-        Click an icon to set it for the device.<br /><br />
-        <table>\n";
+		function createRequestObject() {
+			var req;
+			if(window.XMLHttpRequest){
+				// Firefox, Safari, Opera...
+				req = new XMLHttpRequest();
+			} else if(window.ActiveXObject) {
+				// Internet Explorer 5+
+				req = new ActiveXObject(\"Microsoft.XMLHTTP\");
+			} else {
+				// There is an error creating the object,
+				// just as an old browser is being used.
+				alert('Problem creating the XMLHttpRequest object');
+			}
+			return req;
+		}
 
+		var http = createRequestObject();
 
-        $directory =  str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"] . 'theme-tango/tango-images');
+		function update(name) {
+			http.open('get', '".$base_url."index.php/ajax/update_system_man/".$system_id."/man_icon/'+name);
+			http.onreadystatechange = receive_update;
+			http.send(null);
+		}
+
+		function receive_update() {
+			window.opener.location.reload();
+			window.close();
+		}
+		</script>
+	</head>
+	<body>
+		<h3 style='text-align: center; font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif;'>Icons</h3>
+		<p style='font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif; font-size: 10px;'>
+		Click an icon to set it for the device.<br /><br />
+		<table>\n";
+
+        $directory =  str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"].'theme-tango/tango-images');
         if (is_dir($directory)) {
             if ($handle = opendir($directory)) {
-                while($file = readdir($handle)) {
+                while ($file = readdir($handle)) {
                     if (strpos($file, ".png") !== false and strpos($file, '16_') !== false) {
                         $files[] = $file;
                     }
@@ -276,7 +265,7 @@ class Admin_system extends MY_Controller
                 $name = str_replace('_', ' ', $db_store);
                 $name = ucwords($name);
                 $name = trim($name);
-                echo "<td><a style=\"text-decoration: none; font-size: 11px;\" href=\"#\" onclick=\"update('" . $db_store . "')\"><img src=\"/open-audit/theme-tango/tango-images/" . $file . "\" alt=\"\" /> " . $name . "</a></td>";
+                echo "<td><a style=\"text-decoration: none; font-size: 11px;\" href=\"#\" onclick=\"update('".$db_store."')\"><img src=\"/open-audit/theme-tango/tango-images/".$file."\" alt=\"\" /> ".$name."</a></td>";
                 if ($count == 2) {
                     $count = 0;
                     echo "</tr>\n";
@@ -286,7 +275,6 @@ class Admin_system extends MY_Controller
 
         echo "</table>\b</body>";
     }
-
 
     public function system_snmp()
     {
@@ -301,6 +289,7 @@ class Admin_system extends MY_Controller
         $this->load->model("m_ip_address");
         $this->load->model("m_oa_general");
         $this->load->model("m_virtual_machine");
+        $this->load->model("m_module");
         $this->load->library('encrypt');
         $this->load->helper('snmp');
         $this->load->helper('snmp_oid');
@@ -313,23 +302,24 @@ class Admin_system extends MY_Controller
 
         # set up the pop up page
         echo "<html>
-        <head>
-        <script type=\"text/javascript\">
-        window.onunload = refreshParent;
-        function refreshParent()
-        {
-            window.opener.location.reload();
-        }
-        function CloseMe()
-        {
-            window.opener.location.reload();
-            window.close();
-        }
-        </script>
-        </head>
-        <body>
-        <h3 style='text-align: center'>Open-AudIT SNMP Scan</h3>
-        <p style='font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif; font-size: 12px;'>";
+		<head>
+		<script type=\"text/javascript\">
+		window.onunload = refreshParent;
+		function refreshParent()
+		{
+			window.opener.location.reload();
+		}
+		function CloseMe()
+		{
+			window.opener.location.reload();
+			window.close();
+		}
+		</script>
+		</head>
+		<body>
+		<h3 style='text-align: center'>Open-AudIT SNMP Scan</h3>
+		<p style='font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif; font-size: 12px;'>
+		<pre>";
 
         # audit the device via snmp
         $temp_array = get_snmp($details);
@@ -339,11 +329,12 @@ class Admin_system extends MY_Controller
         if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
             $guests = $temp_array['guests'];
         }
+        $modules = $temp_array['modules'];
 
         $details->last_seen_by = 'snmp';
         $details->timestamp = date('Y-m-d G:i:s');
         $details->last_seen = $details->timestamp;
-        $details->last_user = $this->data['user_full_name'];
+        $details->last_user = $this->user->user_full_name;
         $details->audits_ip = '127.0.0.1';
         unset($details->man_type);
         unset($details->show_output);
@@ -353,12 +344,12 @@ class Admin_system extends MY_Controller
             $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
             $this->m_system->update_system($details);
             $this->m_sys_man_audits->insert_audit($details);
-            
+
             # update any network interfaces and ip addresses retrieved by SNMP
             $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
             $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
             $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
-            
+
             if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                 foreach ($network_interfaces as $input) {
                     $this->m_network_card->process_network_cards($input, $details);
@@ -374,11 +365,17 @@ class Admin_system extends MY_Controller
 
             # insert any found virtual machines
             if (isset($guests) and is_array($guests) and count($guests) > 0) {
-                foreach($guests as $guest) {
+                foreach ($guests as $guest) {
                     $this->m_virtual_machine->process_vm($guest, $details);
                 }
             }
 
+            # insert any modules
+            if (isset($modules) and is_array($modules) and count($modules) > 0) {
+                foreach ($modules as $input) {
+                    $this->m_module->process_module($input, $details);
+                }
+            }
         } else {
             echo "Audit NOT submitted.";
         }
@@ -398,7 +395,7 @@ class Admin_system extends MY_Controller
             $this->data['os_group'] = $this->m_systems->get_distinct_os_group();
             $this->data['os_family'] = $this->m_systems->get_distinct_os_family();
             $this->data['os_name'] = $this->m_systems->get_distinct_os_name();
-            include('include_device_types.php');
+            include 'include_device_types.php';
             $this->data['device_types'] = $device_types;
             $this->data['heading'] = 'Add Device';
             $this->data['include'] = 'v_add_system';
@@ -431,7 +428,7 @@ class Admin_system extends MY_Controller
             }
             $details->last_seen_by = 'web form';
             $details->last_seen = date('Y-m-d G:i:s');
-            $details->last_user = $this->data['user_full_name'];
+            $details->last_user = $this->user->user_full_name;
 
             if (($details->man_type == 'access token' or
                 $details->man_type == 'cell phone' or
@@ -439,7 +436,7 @@ class Admin_system extends MY_Controller
                 $details->man_type == 'phone' or
                 $details->man_type == 'satellite phone' or
                 $details->man_type == 'smart phone' or
-                $details->man_type == 'tablet' ) and
+                $details->man_type == 'tablet') and
                 (!isset($details->man_serial) or $details->man_serial == '')) {
                 $this->data['error'] = 'Serial number required.';
             }
@@ -451,10 +448,10 @@ class Admin_system extends MY_Controller
                 $details->man_type == 'ip phone' or
                 $details->man_type == 'network printer' or
                 $details->man_type == 'router' or
-                $details->man_type == 'switch' ) and
-                ( (!isset($details->hostname) or $details->hostname =='' ) and
+                $details->man_type == 'switch') and
+                ((!isset($details->hostname) or $details->hostname == '') and
                   (!isset($details->man_ip_address) or $details->man_ip_address == '') and
-                  (!isset($details->man_serial) or $details->man_serial == '' )) ) {
+                  (!isset($details->man_serial) or $details->man_serial == ''))) {
                 $this->data['error'] = 'Hostname, ip address or serial number required.';
             }
 
@@ -543,10 +540,10 @@ class Admin_system extends MY_Controller
         if (isset($_POST['submit_file'])) {
             # we have an uploaded file - store and process
             $timestamp = date("Y-m-d H:i:s");
-            $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
+            $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);
 
             if (!move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path)) {
-                $this->data['error'] = "The file ".  basename($_FILES['upload_file']['name']). " could not be uploaded.<br />";
+                $this->data['error'] = "The file ".basename($_FILES['upload_file']['name'])." could not be uploaded.<br />";
                 $this->data['query'] = $this->data['error'];
                 $this->data['heading'] = 'Error';
                 $this->data['include'] = 'v_error';
@@ -556,7 +553,7 @@ class Admin_system extends MY_Controller
                 exit();
             }
 
-            require_once BASEPATH . '../application/libraries/phpexcel/PHPExcel/IOFactory.php';
+            require_once BASEPATH.'../application/libraries/phpexcel/PHPExcel/IOFactory.php';
 
             if (!$objPHPExcel = PHPExcel_IOFactory::load($target_path)) {
                 $this->data['error'] = "Error creating the PHPExcel_IOFactory object.<br />";
@@ -594,7 +591,12 @@ class Admin_system extends MY_Controller
                 if ($count == 1) {
                     # grab the first row and use as column names
                     foreach ($cellIterator as $cell) {
-                        $attributes[] = $cell->getValue();
+                        $temp = $cell->getValue();
+                        $temp = trim($temp);
+                        if ($temp != '') {
+                            # $attributes[] = $cell->getValue();
+                            $attributes[] = $temp;
+                        }
                     }
                 } else {
                     # populate the array values
@@ -614,7 +616,7 @@ class Admin_system extends MY_Controller
                     $details = (object) $details;
                     $details->last_seen_by = "spreadsheet";
                     $details->last_seen = $timestamp;
-                    $details->last_user = $this->data['user_full_name'];
+                    $details->last_user = $this->user->user_full_name;
                     $details->timestamp = $timestamp;
                     $error = '';
 
@@ -663,16 +665,33 @@ class Admin_system extends MY_Controller
                         }
                     }
 
+                    # New for 1.5.6 - set any corresponding man_* items
+                    $this->load->model("m_oa_admin_database");
+                    $system_table_fields = $this->m_oa_admin_database->get_fields('system');
+                    foreach ($details as $key => $value) {
+                        if ($key > '') {
+                            # need to iterate through available columns and only insert where $key == valid column name
+                            foreach ($system_table_fields as $column) {
+                                if ($column == "man_".$key) {
+                                    $new_column = "man_".$key;
+                                    $details->$new_column = $value;
+                                    $new_column == '';
+                                }
+                            }
+                        }
+                    }
+
                     # first test to see if we have a system_id -
-                    # if so, just send the submitted details to the system_update function
+                    # if not, make a system key and find (or not) the device
                     if (!isset($details->system_id) or $details->system_id == '') {
 
+                        # make a system key
                         if (!isset($details->system_key) or $details->system_key == '') {
                             $details->system_key = $this->m_system->create_system_key($details);
                         }
                         # setting the system_key - we don't have the required info to create a unique key
                         if (!isset($details->system_key) or $details->system_key == '') {
-                            $error = "Error on row #" . $count . ". Insufficient details to create system key. Please supply (in order of preference) fqdn, hostname and domain, type and (unique) serial, ip address.<br />";
+                            $error = "Error on row #".$count.". Insufficient details to create system key. Please supply (in order of preference) fqdn, hostname and domain, type and (unique) serial, ip address.<br />";
                             $this->data['error'] .= $error;
                         }
                         # make sure we have a hostname variable
@@ -699,7 +718,7 @@ class Admin_system extends MY_Controller
                         }
                         // Insert an entry in to the audit log
                         $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
-                        if (!isset($details->type) or $details->type =='') {
+                        if (!isset($details->type) or $details->type == '') {
                             $details->type = $this->m_system->get_system_type($details->system_id);
                         }
                         $this->m_sys_man_audits->insert_audit($details);

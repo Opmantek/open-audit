@@ -1,12 +1,12 @@
-<?php 
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+<?php
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,52 +25,60 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 $sortcolumn = 2;
 
-
 if (php_uname('s') == "Windows NT") {
-	exec("echo. |WMIC OS Get Caption", $output);
-	if (isset($output[1])) {
-		$operating_system = $output[1];
-	} else {
-		$operating_system = "unknown (You must run XAMPPLite as an administrator on Windows to determine this)";
-	}
-	
+    exec("echo. |WMIC OS Get Caption", $output);
+    if (isset($output[1])) {
+        $operating_system = $output[1];
+    } else {
+        $operating_system = "unknown (You must run XAMPPLite as an administrator on Windows to determine this)";
+    }
 } else {
-	$operating_system = php_uname('s');
+    $operating_system = php_uname('s');
 }
 
 $upgrade_message = "";
-if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') == 'y')) {
-	$upgrade_message = "<span style='font-size:20px;'>Please <a style='color:red; text-decoration:underline;' href='" . site_url() . "/admin/upgrade'>click here</a> to upgrade your database.</span>";
+if ($this->config->item('display_version') != $this->config->item('web_display_version') and ($this->user->user_admin == 'y')) {
+    $upgrade_message = "<span style='font-size:20px;'>Please <a style='color:red; text-decoration:underline;' href='".site_url()."/admin/upgrade'>click here</a> to upgrade your database.</span>";
 }
-if (($config->display_version != $this->config->item('web_display_version')) AND ($this->session->userdata('user_admin') != 'y')) {
-	$upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>";
+if (($this->config->item('display_version') != $this->config->item('web_display_version')) and ($this->user->user_admin != 'y')) {
+    $upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>";
 }
 ?>
 <form action="vars.php" method="post" class="niceforms">
 	<fieldset id="about" class="niceforms">
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('About')?></span></legend>
-		You are running version <?php echo $config->display_version; ?> of Open-AudIT.<br />
-		<?php if ($this->session->userdata('user_admin') == 'y') { ?>
-		Your Host is: <?php echo php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br />
-		Your database platform is <?php echo $this->db->platform() . " (version " . $this->db->version() . ")"; ?>.<br />
-		Your web server is <?php echo getenv("SERVER_SOFTWARE"); ?> .<br />
-		Your PHP version is <?php echo phpversion(); ?> and it's running in timezone <?php echo date_default_timezone_get(); ?>.<br /><br />
-		<?php if (!extension_loaded('snmp')) { 
-			echo "<i>You do not have the PHP SNMP extension installed. This extension is highly recommended.</i><br />";
-		} ?>
-		<?php if (!extension_loaded('mbstring')) { 
-			echo "<i>You do not have the PHP MBString extension installed. This extension is required.</i><br />";
-		} ?>
-		<?php } ?>
+		You are running version <?php echo $this->config->item('display_version'); ?> of Open-AudIT.<br />
+		<?php if ($this->user->user_admin == 'y') {
+    ?>
+		Your Host is: <?php echo php_uname('n');
+    ?>, and it's OS is <?php echo $operating_system;
+    ?>.<br />
+		Your database platform is <?php echo $this->db->platform()." (version ".$this->db->version().")";
+    ?>.<br />
+		Your web server is <?php echo getenv("SERVER_SOFTWARE");
+    ?> .<br />
+		Your PHP version is <?php echo phpversion();
+    ?> and it's running in timezone <?php echo date_default_timezone_get();
+    ?>.<br /><br />
+		<?php if (!extension_loaded('snmp')) {
+    echo "<i>You do not have the PHP SNMP extension installed. This extension is highly recommended.</i><br />";
+}
+    ?>
+		<?php if (!extension_loaded('mbstring')) {
+    echo "<i>You do not have the PHP MBString extension installed. This extension is required.</i><br />";
+}
+    ?>
+		<?php 
+} ?>
 		<?php echo $upgrade_message; ?>
 		<br /><br />
 		Open-AudIT is :
@@ -94,15 +102,15 @@ if (($config->display_version != $this->config->item('web_display_version')) AND
 </form>
 <table>
 	<tr style="height:200px;">
-		<td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?php echo $image_path;?>logo-agpl.png' width='120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $image_path;?>logo-php.png' width='120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $image_path;?>logo-code_igniter.png' width='120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $image_path;?>logo-jquery.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?php echo $oa_theme_images;?>/logo-agpl.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $oa_theme_images;?>/logo-php.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $oa_theme_images;?>/logo-code_igniter.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $oa_theme_images;?>/logo-jquery.png' width='120' alt=''/></a></td>
 		<!--
-		<td style="vertical-align: middle;"><a href="http://www.mysql.com/"><img src='<?php echo $image_path;?>logo-mysql.png' width='120' alt=''></a></td>
-		<td style="vertical-align: middle;"><a href="http://www.apache.org/"><img src='<?php echo $image_path;?>logo-apache.jpg' width='120' alt=''></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.mysql.com/"><img src='<?php echo $oa_theme_images;?>/logo-mysql.png' width='120' alt=''></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.apache.org/"><img src='<?php echo $oa_theme_images;?>/logo-apache.jpg' width='120' alt=''></a></td>
 		-->
-		<td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $image_path;?>logo-w3c.png' width='120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $image_path;?>logo-miclogo-88x31.gif' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $oa_theme_images;?>/logo-w3c.png' width='120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $oa_theme_images;?>/logo-miclogo-88x31.gif' width='120' alt=''/></a></td>
 	</tr>
 </table>

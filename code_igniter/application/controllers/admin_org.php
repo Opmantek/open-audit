@@ -1,6 +1,6 @@
 <?php
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -26,27 +26,18 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class Admin_org extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);
@@ -78,14 +69,14 @@ class Admin_org extends MY_Controller
         if (isset($_POST['submit_file'])) {
             $this->load->model("m_oa_org");
             # we have an uploaded file - store and process
-            $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
+            $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);
             if (move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path)) {
                 #echo "The file ".  basename( $_FILES['upload_file']['name']). " has been uploaded.<br />\n";
             } else {
                 echo "There was an error uploading the file, please try again!<br />\n";
                 exit();
             }
-            require_once BASEPATH . '../application/libraries/phpexcel/PHPExcel/IOFactory.php';
+            require_once BASEPATH.'../application/libraries/phpexcel/PHPExcel/IOFactory.php';
             if (!$objPHPExcel = PHPExcel_IOFactory::load($target_path)) {
                 exit;
             }
@@ -113,20 +104,20 @@ class Admin_org extends MY_Controller
                             # we need to update an existing org
                             $sql = "UPDATE oa_org SET ";
                             foreach ($details as $detail => $value) {
-                                $sql .= $detail . " = '" . mysql_real_escape_string($value) . "', ";
+                                $sql .= $detail." = '".mysql_real_escape_string($value)."', ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-                            $sql .= " WHERE org_name = '" . mysql_real_escape_string($details['org_name']) . "'";
+                            $sql .= " WHERE org_name = '".mysql_real_escape_string($details['org_name'])."'";
                         } else {
                             # this is a new org (we don't have a name match)
                             $sql = "INSERT INTO oa_org ( ";
                             foreach ($details as $detail => $value) {
-                                $sql .= $detail . ", ";
+                                $sql .= $detail.", ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                             $sql .= " ) VALUES ( ";
                             foreach ($details as $detail => $value) {
-                                $sql .= "'" . mysql_real_escape_string(str_replace('"', '', $value)) . "', ";
+                                $sql .= "'".mysql_real_escape_string(str_replace('"', '', $value))."', ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                             $sql .= ")";
@@ -134,13 +125,13 @@ class Admin_org extends MY_Controller
                             # create Group details
                             foreach ($details as $detail => $value) {
                                 if ($detail == 'org_name') {
-                                    $group->group_name = $value . " owned systems";
-                                    $group->group_description = $value . " owned systems";
+                                    $group->group_name = $value." owned systems";
+                                    $group->group_description = $value." owned systems";
                                 }
                             }
                         }
                         # run the query !!!
-                        echo $sql . "<br />\n";
+                        echo $sql."<br />\n";
                         $query = $this->db->query($sql);
                         $group->org_id = $this->db->insert_id();
 
@@ -151,13 +142,12 @@ class Admin_org extends MY_Controller
                             $group->group_icon = 'contact-new';
                             $group->group_category = 'owner';
                             $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM
-                               system WHERE system.man_org_id = '" . $group->org_id . "'
+                               system WHERE system.man_org_id = '".$group->org_id."'
                                AND system.man_status = 'production'";
                             $group->group_parent = '';
                             $group->group_display_sql = '';
                             $this->m_oa_group->insert_group($group);
                         }
-
                     } else {
                         echo "no org name provided";
                     }
@@ -177,28 +167,28 @@ class Admin_org extends MY_Controller
                     # we need to update an existing org
                     $sql = "UPDATE oa_org SET ";
                     foreach ($child->children() as $detail) {
-                        $sql .= $detail->getName() . " = '" . $detail . "', ";
+                        $sql .= $detail->getName()." = '".$detail."', ";
                     }
                     $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-                    $sql .= " WHERE org_name = '" . $child->org_name . "'";
+                    $sql .= " WHERE org_name = '".$child->org_name."'";
                 } else {
                     # this is a new org (we don't have a name match)
                     $sql = "INSERT INTO oa_org ( ";
                     foreach ($child->children() as $detail) {
-                        $sql .= $detail->getName() . ", ";
+                        $sql .= $detail->getName().", ";
                     }
                     $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                     $sql .= " ) VALUES ( ";
                     foreach ($child->children() as $detail) {
-                        $sql .= "'" . $detail . "', ";
+                        $sql .= "'".$detail."', ";
                     }
                     $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                     $sql .= ")";
                     # create Group details
                     foreach ($child->children() as $detail) {
                         if ($detail->getName() == 'org_name') {
-                            $group->group_name = $details . " owned systems";
-                            $group->group_description = $detail . " owned systems";
+                            $group->group_name = $details." owned systems";
+                            $group->group_description = $detail." owned systems";
                         }
                     }
                 }
@@ -214,7 +204,7 @@ class Admin_org extends MY_Controller
                         $group->group_icon = 'contact-new';
                         $group->group_category = 'owner';
                         $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system
-                            WHERE system.man_org_id = '" . $details->org_id . "' AND system.man_status = 'production'";
+                            WHERE system.man_org_id = '".$details->org_id."' AND system.man_status = 'production'";
                         $group->group_parent = '';
                         $group->group_display_sql = '';
                         $this->m_oa_group->insert_group($group);
@@ -265,15 +255,15 @@ class Admin_org extends MY_Controller
         $org_group_id = $this->m_oa_org->get_group_id($org_id);
 
         $group = new stdClass();
-        $group->group_name = $org_name . " owned items";
+        $group->group_name = $org_name." owned items";
         $group->group_padded_name = '';
-        $group->group_description = $org_name . " owned items";
+        $group->group_description = $org_name." owned items";
         $group->group_icon = 'contact';
         $group->group_category = 'owner';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '" . $this->data['id'] . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$this->data['id']."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
-        if (isset($org_group_id) AND $org_group_id != '' AND $org_group_id != '0') {
+        if (isset($org_group_id) and $org_group_id != '' and $org_group_id != '0') {
             # update an existing group
             $group->group_id = $org_group_id;
             $this->m_oa_group->update_group($group);
@@ -314,7 +304,7 @@ class Admin_org extends MY_Controller
             }
             if ($details->org_group == 'on') {
                 # activate the group
-                redirect('admin_org/activate_group/' . $details->org_id);
+                redirect('admin_org/activate_group/'.$details->org_id);
             } else {
                 redirect('admin_org/list_orgs');
             }

@@ -1,6 +1,6 @@
 <?php
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -26,27 +26,18 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class Admin_test extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);
@@ -55,6 +46,11 @@ class Admin_test extends MY_Controller
     public function index()
     {
         redirect('/');
+    }
+
+    public function test()
+    {
+        echo "test";
     }
 
     public function test_snmp()
@@ -80,7 +76,6 @@ class Admin_test extends MY_Controller
         echo "-------------------\n";
         print_r($network_interfaces);
         echo "-------------------\n";
-
     }
 
     public function data()
@@ -112,12 +107,12 @@ class Admin_test extends MY_Controller
         $details->location_longitude = "153.030355";
         $details->location_id = $this->m_oa_location->add_location($details);
         $group = new stdClass();
-        $group->group_name = "Items in " . $details->location_name;
+        $group->group_name = "Items in ".$details->location_name;
         $group->group_padded_name = '';
-        $group->group_description = "Items in " . $details->location_name;
+        $group->group_description = "Items in ".$details->location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '" . $details->location_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '".$details->location_id."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -139,12 +134,12 @@ class Admin_test extends MY_Controller
         $details->location_longitude = "151.2024921";
         $details->location_id = $this->m_oa_location->add_location($details);
         $group = new stdClass();
-        $group->group_name = "Items in " . $details->location_name;
+        $group->group_name = "Items in ".$details->location_name;
         $group->group_padded_name = '';
-        $group->group_description = "Items in " . $details->location_name;
+        $group->group_description = "Items in ".$details->location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '" . $details->location_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '".$details->location_id."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -166,12 +161,12 @@ class Admin_test extends MY_Controller
         $details->location_longitude = "149.1280834";
         $details->location_id = $this->m_oa_location->add_location($details);
         $group = new stdClass();
-        $group->group_name = "Items in " . $details->location_name;
+        $group->group_name = "Items in ".$details->location_name;
         $group->group_padded_name = '';
-        $group->group_description = "Items in " . $details->location_name;
+        $group->group_description = "Items in ".$details->location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '" . $details->location_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '".$details->location_id."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -193,12 +188,12 @@ class Admin_test extends MY_Controller
         $details->location_longitude = "144.962095";
         $details->location_id = $this->m_oa_location->add_location($details);
         $group = new stdClass();
-        $group->group_name = "Items in " . $details->location_name;
+        $group->group_name = "Items in ".$details->location_name;
         $group->group_padded_name = '';
-        $group->group_description = "Items in " . $details->location_name;
+        $group->group_description = "Items in ".$details->location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '" . $details->location_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '".$details->location_id."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -220,12 +215,12 @@ class Admin_test extends MY_Controller
         $details->location_longitude = "115.864341";
         $details->location_id = $this->m_oa_location->add_location($details);
         $group = new stdClass();
-        $group->group_name = "Items in " . $details->location_name;
+        $group->group_name = "Items in ".$details->location_name;
         $group->group_padded_name = '';
-        $group->group_description = "Items in " . $details->location_name;
+        $group->group_description = "Items in ".$details->location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '" . $details->location_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '".$details->location_id."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -247,12 +242,12 @@ class Admin_test extends MY_Controller
         $details->location_longitude = "174.776258";
         $details->location_id = $this->m_oa_location->add_location($details);
         $group = new stdClass();
-        $group->group_name = "Items in " . $details->location_name;
+        $group->group_name = "Items in ".$details->location_name;
         $group->group_padded_name = '';
-        $group->group_description = "Items in " . $details->location_name;
+        $group->group_description = "Items in ".$details->location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '" . $details->location_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '".$details->location_id."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -274,12 +269,12 @@ class Admin_test extends MY_Controller
         $details->location_longitude = "153.0297626";
         $details->location_id = $this->m_oa_location->add_location($details);
         $group = new stdClass();
-        $group->group_name = "Items in " . $details->location_name;
+        $group->group_name = "Items in ".$details->location_name;
         $group->group_padded_name = '';
-        $group->group_description = "Items in " . $details->location_name;
+        $group->group_description = "Items in ".$details->location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '" . $details->location_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = '".$details->location_id."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -292,12 +287,12 @@ class Admin_test extends MY_Controller
         $details->org_picture = "";
         $details->org_id = $this->m_oa_org->add_org($details);
         $group = new stdClass();
-        $group->group_name = $details->org_name . " owned items";
+        $group->group_name = $details->org_name." owned items";
         $group->group_padded_name = '';
-        $group->group_description = $details->org_name . " owned items";
+        $group->group_description = $details->org_name." owned items";
         $group->group_icon = 'contact';
         $group->group_category = 'owner';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '" . $details->org_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$details->org_id."' AND system.man_status = 'production'";
         $group->group_parent = '0';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -310,12 +305,12 @@ class Admin_test extends MY_Controller
         $details->org_picture = "";
         $details->org_id = $this->m_oa_org->add_org($details);
         $group = new stdClass();
-        $group->group_name = $details->org_name . " owned items";
+        $group->group_name = $details->org_name." owned items";
         $group->group_padded_name = '';
-        $group->group_description = $details->org_name . " owned items";
+        $group->group_description = $details->org_name." owned items";
         $group->group_icon = 'contact';
         $group->group_category = 'owner';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '" . $details->org_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$details->org_id."' AND system.man_status = 'production'";
         $group->group_parent = '1';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -328,12 +323,12 @@ class Admin_test extends MY_Controller
         $details->org_picture = "";
         $details->org_id = $this->m_oa_org->add_org($details);
         $group = new stdClass();
-        $group->group_name = $details->org_name . " owned items";
+        $group->group_name = $details->org_name." owned items";
         $group->group_padded_name = '';
-        $group->group_description = $details->org_name . " owned items";
+        $group->group_description = $details->org_name." owned items";
         $group->group_icon = 'contact';
         $group->group_category = 'owner';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '" . $details->org_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$details->org_id."' AND system.man_status = 'production'";
         $group->group_parent = '1';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -346,12 +341,12 @@ class Admin_test extends MY_Controller
         $details->org_picture = "";
         $details->org_id = $this->m_oa_org->add_org($details);
         $group = new stdClass();
-        $group->group_name = $details->org_name . " owned items";
+        $group->group_name = $details->org_name." owned items";
         $group->group_padded_name = '';
-        $group->group_description = $details->org_name . " owned items";
+        $group->group_description = $details->org_name." owned items";
         $group->group_icon = 'contact';
         $group->group_category = 'owner';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '" . $details->org_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$details->org_id."' AND system.man_status = 'production'";
         $group->group_parent = '1';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -364,12 +359,12 @@ class Admin_test extends MY_Controller
         $details->org_picture = "";
         $details->org_id = $this->m_oa_org->add_org($details);
         $group = new stdClass();
-        $group->group_name = $details->org_name . " owned items";
+        $group->group_name = $details->org_name." owned items";
         $group->group_padded_name = '';
-        $group->group_description = $details->org_name . " owned items";
+        $group->group_description = $details->org_name." owned items";
         $group->group_icon = 'contact';
         $group->group_category = 'owner';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '" . $details->org_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$details->org_id."' AND system.man_status = 'production'";
         $group->group_parent = '1';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -382,12 +377,12 @@ class Admin_test extends MY_Controller
         $details->org_picture = "";
         $details->org_id = $this->m_oa_org->add_org($details);
         $group = new stdClass();
-        $group->group_name = $details->org_name . " owned items";
+        $group->group_name = $details->org_name." owned items";
         $group->group_padded_name = '';
-        $group->group_description = $details->org_name . " owned items";
+        $group->group_description = $details->org_name." owned items";
         $group->group_icon = 'contact';
         $group->group_category = 'owner';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '" . $details->org_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$details->org_id."' AND system.man_status = 'production'";
         $group->group_parent = '1';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -400,12 +395,12 @@ class Admin_test extends MY_Controller
         $details->org_picture = "";
         $details->org_id = $this->m_oa_org->add_org($details);
         $group = new stdClass();
-        $group->group_name = $details->org_name . " owned items";
+        $group->group_name = $details->org_name." owned items";
         $group->group_padded_name = '';
-        $group->group_description = $details->org_name . " owned items";
+        $group->group_description = $details->org_name." owned items";
         $group->group_icon = 'contact';
         $group->group_category = 'owner';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '" . $details->org_id . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$details->org_id."' AND system.man_status = 'production'";
         $group->group_parent = '1';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -415,30 +410,29 @@ class Admin_test extends MY_Controller
         $first_name = array("Fred", "Wilma", "Pebbles", "Barney", "Betty", "Benjamin", "Charles", "Frank", "Max", "Walter", "Sherman", "Margaret", "Francis", "Homer", "Bart", "Maggie", "Lisa", "Marge", "Greg", "Peter", "Bobby", "Marcia", "Jan", "Cindy", "Mark", "Ali", "Paige", "Toby");
         $last_name = array("Flintstone", "Rubble", "Pierce", "Winchester", "Burns", "Klinger", "OReilly", "Potter", "Houlihan", "Mulcahey", "Simpson", "Brady", "Unwin");
 
-        for ($i=1; $i<=intval($computers_to_add); $i++) {
-
+        for ($i = 1; $i <= intval($computers_to_add); $i++) {
             $details = new stdclass();
 
             $random = rand(1, 100);
 
             if ($i > 0 and $i <= 250) {
                 $ip = $i;
-                $details->man_ip_address = '192.168.0.' . $ip;
+                $details->man_ip_address = '192.168.0.'.$ip;
             }
             if ($i > 250 and $i <= 500) {
                 $ip = $i - 250;
-                $details->man_ip_address = '192.168.1.' . $ip;
+                $details->man_ip_address = '192.168.1.'.$ip;
             }
             if ($i > 500 and $i <= 750) {
                 $ip = $i - 500;
-                $details->man_ip_address = '192.168.2.' . $ip;
+                $details->man_ip_address = '192.168.2.'.$ip;
             }
             if ($i > 750 and $i <= 1000) {
                 $ip = $i - 750;
-                $details->man_ip_address = '192.168.3.' . $ip;
+                $details->man_ip_address = '192.168.3.'.$ip;
             }
 
-            $details->serial = substr("a1b2c3d4e50000" . $i, -14);
+            $details->serial = substr("a1b2c3d4e50000".$i, -14);
             $details->man_serial = $details->serial;
             $details->uuid = "";
             $details->status = 'production';
@@ -461,7 +455,7 @@ class Admin_test extends MY_Controller
 
             # create a random timestamp for the last 50 days.
             $random_days_to_subtract = rand(0, 50);
-            $details->last_seen = date("Y-m-d", strtotime("-" . $random_days_to_subtract . " days")) . " 10:00:00";
+            $details->last_seen = date("Y-m-d", strtotime("-".$random_days_to_subtract." days"))." 10:00:00";
 
 #			$details->last_seen = $year . "-" . $month . "-" . $day . " 10:00:00";
             $details->last_seen_by = "manual";
@@ -481,11 +475,11 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows XP Professional";
                 $details->type = "computer";
                 $details->icon = "windows_xp";
-                $details->hostname = "old_workstation_" . $i;
+                $details->hostname = "old_workstation_".$i;
                 $details->uuid = $details->man_serial;
                 $details->man_location_id = rand(2, 6);
                 $details->pc_date_os_installation = "2006-11-30";
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 $details->last_seen_by = "audit";
                 $j = rand(1, 2);
                 if ($j == 1) {
@@ -509,11 +503,11 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows 7 Enterprise";
                 $details->type = "computer";
                 $details->icon = "windows_7";
-                $details->hostname = "workstation_" . $i;
+                $details->hostname = "workstation_".$i;
                 $details->uuid = $details->man_serial;
                 $details->man_location_id = rand(2, 6);
                 $details->pc_date_os_installation = "2011-11-30";
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 $details->last_seen_by = "audit";
                 $j = rand(1, 2);
                 if ($j == 1) {
@@ -537,11 +531,11 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows 8 Enterprise";
                 $details->type = "computer";
                 $details->icon = "windows_8";
-                $details->hostname = "new_workstation_" . $i;
+                $details->hostname = "new_workstation_".$i;
                 $details->uuid = $details->man_serial;
                 $details->man_location_id = rand(2, 6);
                 $details->pc_date_os_installation = "2002-11-30";
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 $details->last_seen_by = "audit";
                 $j = rand(1, 2);
                 if ($j == 1) {
@@ -565,12 +559,12 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Ubuntu 12.04.2 LTS";
                 $details->type = "computer";
                 $details->icon = "ubuntu";
-                $details->hostname = "lin_" . $i;
+                $details->hostname = "lin_".$i;
                 $details->uuid = $details->man_serial;
                 $details->man_location_id = rand(1, 6);
                 $details->pc_date_os_installation = "2012-05-10";
                 $details->man_org_id = rand(2, 6);
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 $details->last_seen_by = "audit";
                 $j = rand(1, 2);
                 if ($j == 1) {
@@ -592,7 +586,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows Server 2003, Standard Edition";
                 $details->type = "computer";
                 $details->icon = "windows_2003";
-                $details->hostname = "old_server_" . $i;
+                $details->hostname = "old_server_".$i;
                 $details->uuid = $details->man_serial;
                 $details->manufacturer = "Dell";
                 $details->model = "Poweredge 2650";
@@ -624,7 +618,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows Server 2008 Standard";
                 $details->type = "computer";
                 $details->icon = "windows_2008";
-                $details->hostname = "server_" . $i;
+                $details->hostname = "server_".$i;
                 $details->uuid = $details->man_serial;
                 $details->manufacturer = "Hewlett Packard";
                 $details->model = "Proliant ML530 G2";
@@ -648,7 +642,6 @@ class Admin_test extends MY_Controller
                 } elseif ($j == 6) {
                     $details->man_function = "WEB";
                 }
-
             }
 
             if ($random > 55 and $random <= 60) {
@@ -657,7 +650,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Debian 6";
                 $details->type = "computer";
                 $details->icon = "debian";
-                $details->hostname = "lin_" . $i;
+                $details->hostname = "lin_".$i;
                 $details->uuid = $details->man_serial;
                 $details->manufacturer = "System 76";
                 $details->model = "Jackal Pro 2u";
@@ -683,7 +676,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "RedHat 6.3";
                 $details->type = "computer";
                 $details->icon = "redhat";
-                $details->hostname = "lin_" . $i;
+                $details->hostname = "lin_".$i;
                 $details->uuid = $details->man_serial;
                 $details->pc_date_os_installation = "2007-05-08";
                 $details->last_seen_by = "audit";
@@ -695,7 +688,7 @@ class Admin_test extends MY_Controller
                     $details->form_factor = 'laptop';
                     $details->man_location_id = rand(1, 6);
                     $details->man_org_id = "2";
-                    $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                    $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 } elseif ($j == 2) {
                     $details->manufacturer = "System 76";
                     $details->model = "Wild Dog Performance";
@@ -703,7 +696,7 @@ class Admin_test extends MY_Controller
                     $details->form_factor = 'tower';
                     $details->man_location_id = rand(1, 6);
                     $details->man_org_id = "2";
-                    $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                    $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 } else {
                     $details->manufacturer = "Hewlett Packard";
                     $details->model = "Proliant ML530 G2";
@@ -728,7 +721,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "IOS 12.4";
                 $details->type = "switch";
                 $details->icon = "switch";
-                $details->hostname = "cisco_switch_" . $i;
+                $details->hostname = "cisco_switch_".$i;
                 $details->manufacturer = "Cisco";
                 $details->model = "Cisco Catalyst 2960 24tt";
                 $details->form_factor = '';
@@ -743,7 +736,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "";
                 $details->type = "switch";
                 $details->icon = "switch";
-                $details->hostname = "netgear_switch_" . $i;
+                $details->hostname = "netgear_switch_".$i;
                 $details->manufacturer = "Netgear";
                 $details->model = "CG814WG";
                 $details->form_factor = '';
@@ -758,7 +751,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "IOS 12.2";
                 $details->type = "router";
                 $details->icon = "router";
-                $details->hostname = "cisco_router_" . $i;
+                $details->hostname = "cisco_router_".$i;
                 $details->manufacturer = "Cisco";
                 $details->model = "Cisco 887 g";
                 $details->form_factor = '';
@@ -778,8 +771,8 @@ class Admin_test extends MY_Controller
                 $details->model = "6610";
                 $details->form_factor = '';
                 $details->man_location_id = rand(1, 6);
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
-                $details->man_service_number = "01 2345 0" . $i;
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
+                $details->man_service_number = "01 2345 0".$i;
                 $details->man_service_provider = "Telstra";
                 $details->man_ip_address = "";
                 $details->man_org_id = rand(2, 6);
@@ -791,13 +784,13 @@ class Admin_test extends MY_Controller
                 $details->os_name = "IOS 5";
                 $details->type = "smart phone";
                 $details->icon = "apple";
-                $details->hostname = "iphone_" . $i;
+                $details->hostname = "iphone_".$i;
                 $details->manufacturer = "Apple";
                 $details->model = "iPhone 4";
                 $details->form_factor = '';
                 $details->man_location_id = rand(1, 6);
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
-                $details->man_service_number = "01 2345 0" . $i;
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
+                $details->man_service_number = "01 2345 0".$i;
                 $details->man_service_provider = "Telstra";
                 $details->man_ip_address = "";
                 $details->man_org_id = rand(2, 6);
@@ -809,13 +802,13 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Jelly Bean";
                 $details->type = "smart phone";
                 $details->icon = "android";
-                $details->hostname = "galaxy_nexus_" . $i;
+                $details->hostname = "galaxy_nexus_".$i;
                 $details->manufacturer = "Samsung";
                 $details->model = "Galaxy Nexus";
                 $details->form_factor = '';
                 $details->man_location_id = rand(1, 6);
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
-                $details->man_service_number = "01 2345 0" . $i;
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
+                $details->man_service_number = "01 2345 0".$i;
                 $details->man_service_provider = "Telstra";
                 $details->man_ip_address = "";
                 $details->man_org_id = rand(2, 6);
@@ -836,18 +829,18 @@ class Admin_test extends MY_Controller
                 if ($j == 1) {
                     $details->manufacturer = "Hewlett Packard";
                     $details->model = "HP Color Laserjet 4700";
-                    $details->hostname = "hp_laserjet_" . $i;
+                    $details->hostname = "hp_laserjet_".$i;
                 } elseif ($j == 2) {
                     $details->manufacturer = "Konica Minolta";
                     $details->model = "Konica Minolta C352 C300";
-                    $details->hostname = "konika_" . $i;
+                    $details->hostname = "konika_".$i;
                 } elseif ($j == 3) {
                     $details->manufacturer = "Brother";
                     $details->model = "Brother MFC-465CN Printer";
                     $details->man_ip_address = "";
                     $details->hostname = "";
                     $details->man_org_id = rand(2, 6);
-                    $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                    $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                     $details->last_seen_by = "manual";
                 }
             }
@@ -856,8 +849,8 @@ class Admin_test extends MY_Controller
             $details->man_os_family = $details->os_family;
             $details->man_os_name = $details->os_name;
             $details->man_type = $details->type;
-            $details->fqdn = $details->hostname . ".open-audit.local";
-            $details->description = ucfirst($details->type) . " " . $details->os_group . " " . $i;
+            $details->fqdn = $details->hostname.".open-audit.local";
+            $details->description = ucfirst($details->type)." ".$details->os_group." ".$i;
             $details->man_description = $details->description;
             $details->man_manufacturer = $details->manufacturer;
             $details->man_model = $details->model;
@@ -867,41 +860,41 @@ class Admin_test extends MY_Controller
             $j = $this->m_system->insert_system($details);
         }
 
-        for ($i=1; $i<=0; $i++) {
-                $details = null;
-                $details = new stdclass();
+        for ($i = 1; $i <= 0; $i++) {
+            $details = null;
+            $details = new stdclass();
 
-                $random_days_to_subtract = rand(0, 50);
-                $details->last_seen = date("Y-m-d", strtotime("-" . $random_days_to_subtract . " days")) . " 10:00:00";
-                $details->man_ip_address = "";
-                $details->last_seen_by = "manual";
-                $details->timestamp = $details->last_seen;
-                $details->os_group = "";
-                $details->os_family = "";
-                $details->os_name = "";
-                $details->man_os_group = "";
-                $details->man_os_family = "";
-                $details->man_os_name = "";
-                $details->type = "token";
-                $details->man_type = "token";
-                $details->icon = "access_token";
-                $details->hostname = "";
-                $details->uuid = $details->man_serial;
-                $details->man_location_id = rand(1, 6);
-                $details->manufacturer = "RSA";
-                $details->man_manufacturer = $details->manufacturer;
-                $details->model = "SecurID";
-                $details->man_model = $details->model;
-                $details->serial = substr("z6y5x4w3e5000" . $i, -14);
-                $details->man_serial = $details->serial;
-                $details->man_picture = strtolower($details->model);
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
-                $details->description = "Access Token for User " . $details->man_owner;
-                $details->man_description = $details->description;
-                $details->man_class = "";
-                $details->form_factor = "";
-                $details->man_org_id = rand(2, 5);
-                $j = $this->m_system->insert_system($details);
+            $random_days_to_subtract = rand(0, 50);
+            $details->last_seen = date("Y-m-d", strtotime("-".$random_days_to_subtract." days"))." 10:00:00";
+            $details->man_ip_address = "";
+            $details->last_seen_by = "manual";
+            $details->timestamp = $details->last_seen;
+            $details->os_group = "";
+            $details->os_family = "";
+            $details->os_name = "";
+            $details->man_os_group = "";
+            $details->man_os_family = "";
+            $details->man_os_name = "";
+            $details->type = "token";
+            $details->man_type = "token";
+            $details->icon = "access_token";
+            $details->hostname = "";
+            $details->uuid = $details->man_serial;
+            $details->man_location_id = rand(1, 6);
+            $details->manufacturer = "RSA";
+            $details->man_manufacturer = $details->manufacturer;
+            $details->model = "SecurID";
+            $details->man_model = $details->model;
+            $details->serial = substr("z6y5x4w3e5000".$i, -14);
+            $details->man_serial = $details->serial;
+            $details->man_picture = strtolower($details->model);
+            $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
+            $details->description = "Access Token for User ".$details->man_owner;
+            $details->man_description = $details->description;
+            $details->man_class = "";
+            $details->form_factor = "";
+            $details->man_org_id = rand(2, 5);
+            $j = $this->m_system->insert_system($details);
         }
 
         $file = BASEPATH.'../application/controllers/groups/AllPrinters.xml';
@@ -1052,15 +1045,15 @@ class Admin_test extends MY_Controller
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $system) {
-            for ($i=1; $i<11; $i++) {
+            for ($i = 1; $i<11; $i++) {
                 $day = substr($system->timestamp, 8, 2);
                 $i = rand($day, 31);
                 $i = $day + 1;
                 if ($i < 10) {
-                    $i = "0" . $i;
+                    $i = "0".$i;
                 }
                 $timestamp = $system->timestamp;
-                $first_timestamp = str_replace("-" . $day . " ", "-" . $i . " ", $system->timestamp);
+                $first_timestamp = str_replace("-".$day." ", "-".$i." ", $system->timestamp);
                 $system_id = $system->system_id;
                 $i = rand(1, 10);
                 switch ($i) {
@@ -1152,27 +1145,26 @@ class Admin_test extends MY_Controller
         $first_name = array("Fred", "Wilma", "Pebbles", "Barney", "Betty", "Benjamin", "Charles", "Frank", "Max", "Walter", "Sherman", "Margaret", "Francis", "Homer", "Bart", "Maggie", "Lisa", "Marge", "Greg", "Peter", "Bobby", "Marcia", "Jan", "Cindy", "Mark", "Ali", "Paige", "Toby");
         $last_name = array("Flintstone", "Rubble", "Pierce", "Winchester", "Burns", "Klinger", "OReilly", "Potter", "Houlihan", "Mulcahey", "Simpson", "Brady", "Unwin");
 
-        for ($i=1; $i<1001; $i++) {
-
+        for ($i = 1; $i<1001; $i++) {
             $details = new stdclass();
 
             $random = rand(1, 100);
 
             if ($i > 0 and $i <= 250) {
                 $ip = $i;
-                $details->man_ip_address = '192.168.40.' . $ip;
+                $details->man_ip_address = '192.168.40.'.$ip;
             }
             if ($i > 250 and $i <= 500) {
                 $ip = $i - 250;
-                $details->man_ip_address = '192.168.10.' . $ip;
+                $details->man_ip_address = '192.168.10.'.$ip;
             }
             if ($i > 500 and $i <= 750) {
                 $ip = $i - 500;
-                $details->man_ip_address = '192.168.20.' . $ip;
+                $details->man_ip_address = '192.168.20.'.$ip;
             }
             if ($i > 750 and $i <= 1000) {
                 $ip = $i - 750;
-                $details->man_ip_address = '192.168.30.' . $ip;
+                $details->man_ip_address = '192.168.30.'.$ip;
             }
 
             # generate a random serial
@@ -1211,13 +1203,13 @@ class Admin_test extends MY_Controller
                 $month = date('n');
             }
             if ($day < 10) {
-                $day = '0' . $day;
+                $day = '0'.$day;
             }
             if ($month < 10) {
-                $month = '0' . $month;
+                $month = '0'.$month;
             }
 
-            $details->last_seen = $year . "-" . $month . "-" . $day . " 10:00:00";
+            $details->last_seen = $year."-".$month."-".$day." 10:00:00";
             $details->last_seen_by = "manual";
             $details->timestamp = $details->last_seen;
             $details->domain = "open-audit.local";
@@ -1235,11 +1227,11 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows XP Professional";
                 $details->type = "computer";
                 $details->icon = "windows_xp";
-                $details->hostname = "old_workstation_" . $i;
+                $details->hostname = "old_workstation_".$i;
                 $details->uuid = $details->man_serial;
                 $details->man_location_id = rand(2, 6);
                 $details->pc_date_os_installation = "2006-11-30";
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 $details->last_seen_by = "audit";
                 $j = rand(1, 2);
                 if ($j == 1) {
@@ -1263,11 +1255,11 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows 7 Enterprise";
                 $details->type = "computer";
                 $details->icon = "windows_7";
-                $details->hostname = "workstation_" . $i;
+                $details->hostname = "workstation_".$i;
                 $details->uuid = $details->man_serial;
                 $details->man_location_id = rand(2, 6);
                 $details->pc_date_os_installation = "2011-11-30";
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 $details->last_seen_by = "audit";
                 $j = rand(1, 2);
                 if ($j == 1) {
@@ -1291,11 +1283,11 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows 8 Enterprise";
                 $details->type = "computer";
                 $details->icon = "windows_8";
-                $details->hostname = "new_workstation_" . $i;
+                $details->hostname = "new_workstation_".$i;
                 $details->uuid = $details->man_serial;
                 $details->man_location_id = rand(2, 6);
                 $details->pc_date_os_installation = "2002-11-30";
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 $details->last_seen_by = "audit";
                 $j = rand(1, 2);
                 if ($j == 1) {
@@ -1319,12 +1311,12 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Ubuntu 12.04.2 LTS";
                 $details->type = "computer";
                 $details->icon = "ubuntu";
-                $details->hostname = "lin_" . $i;
+                $details->hostname = "lin_".$i;
                 $details->uuid = $details->man_serial;
                 $details->man_location_id = rand(1, 6);
                 $details->pc_date_os_installation = "2012-05-10";
                 $details->man_org_id = rand(2, 6);
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 $details->last_seen_by = "audit";
                 $j = rand(1, 2);
                 if ($j == 1) {
@@ -1346,7 +1338,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows Server 2003, Standard Edition";
                 $details->type = "computer";
                 $details->icon = "windows_2003";
-                $details->hostname = "old_server_" . $i;
+                $details->hostname = "old_server_".$i;
                 $details->uuid = $details->man_serial;
                 $details->manufacturer = "Dell";
                 $details->model = "Poweredge 2650";
@@ -1378,7 +1370,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Microsoft Windows Server 2008 Standard";
                 $details->type = "computer";
                 $details->icon = "windows_2008";
-                $details->hostname = "server_" . $i;
+                $details->hostname = "server_".$i;
                 $details->uuid = $details->man_serial;
                 $details->manufacturer = "Hewlett Packard";
                 $details->model = "Proliant ML530 G2";
@@ -1402,7 +1394,6 @@ class Admin_test extends MY_Controller
                 } elseif ($j == 6) {
                     $details->man_function = "WEB";
                 }
-
             }
 
             if ($random > 55 and $random <= 60) {
@@ -1411,7 +1402,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Debian 6";
                 $details->type = "computer";
                 $details->icon = "debian";
-                $details->hostname = "lin_" . $i;
+                $details->hostname = "lin_".$i;
                 $details->uuid = $details->man_serial;
                 $details->manufacturer = "System 76";
                 $details->model = "Jackal Pro 2u";
@@ -1437,7 +1428,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "RedHat 6.3";
                 $details->type = "computer";
                 $details->icon = "redhat";
-                $details->hostname = "lin_" . $i;
+                $details->hostname = "lin_".$i;
                 $details->uuid = $details->man_serial;
                 $details->pc_date_os_installation = "2007-05-08";
                 $details->last_seen_by = "audit";
@@ -1449,7 +1440,7 @@ class Admin_test extends MY_Controller
                     $details->form_factor = 'laptop';
                     $details->man_location_id = rand(1, 6);
                     $details->man_org_id = "2";
-                    $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                    $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 } elseif ($j == 2) {
                     $details->manufacturer = "System 76";
                     $details->model = "Wild Dog Performance";
@@ -1457,7 +1448,7 @@ class Admin_test extends MY_Controller
                     $details->form_factor = 'tower';
                     $details->man_location_id = rand(1, 6);
                     $details->man_org_id = "2";
-                    $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                    $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                 } else {
                     $details->manufacturer = "Hewlett Packard";
                     $details->model = "Proliant ML530 G2";
@@ -1482,7 +1473,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "IOS 12.4";
                 $details->type = "switch";
                 $details->icon = "switch";
-                $details->hostname = "cisco_switch_" . $i;
+                $details->hostname = "cisco_switch_".$i;
                 $details->manufacturer = "Cisco";
                 $details->model = "Cisco Catalyst 2960 24tt";
                 $details->form_factor = '';
@@ -1497,7 +1488,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "";
                 $details->type = "switch";
                 $details->icon = "switch";
-                $details->hostname = "netgear_switch_" . $i;
+                $details->hostname = "netgear_switch_".$i;
                 $details->manufacturer = "Netgear";
                 $details->model = "CG814WG";
                 $details->form_factor = '';
@@ -1512,7 +1503,7 @@ class Admin_test extends MY_Controller
                 $details->os_name = "IOS 12.2";
                 $details->type = "router";
                 $details->icon = "router";
-                $details->hostname = "cisco_router_" . $i;
+                $details->hostname = "cisco_router_".$i;
                 $details->manufacturer = "Cisco";
                 $details->model = "Cisco 887 g";
                 $details->form_factor = '';
@@ -1532,8 +1523,8 @@ class Admin_test extends MY_Controller
                 $details->model = "6610";
                 $details->form_factor = '';
                 $details->man_location_id = rand(1, 6);
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
-                $details->man_service_number = "01 2345 0" . $i;
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
+                $details->man_service_number = "01 2345 0".$i;
                 $details->man_service_provider = "Telstra";
                 $details->man_ip_address = "";
                 $details->man_org_id = rand(2, 6);
@@ -1545,13 +1536,13 @@ class Admin_test extends MY_Controller
                 $details->os_name = "IOS 5";
                 $details->type = "smart phone";
                 $details->icon = "apple";
-                $details->hostname = "iphone_" . $i;
+                $details->hostname = "iphone_".$i;
                 $details->manufacturer = "Apple";
                 $details->model = "iPhone 4";
                 $details->form_factor = '';
                 $details->man_location_id = rand(1, 6);
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
-                $details->man_service_number = "01 2345 0" . $i;
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
+                $details->man_service_number = "01 2345 0".$i;
                 $details->man_service_provider = "Telstra";
                 $details->man_ip_address = "";
                 $details->man_org_id = rand(2, 6);
@@ -1563,13 +1554,13 @@ class Admin_test extends MY_Controller
                 $details->os_name = "Jelly Bean";
                 $details->type = "smart phone";
                 $details->icon = "android";
-                $details->hostname = "galaxy_nexus_" . $i;
+                $details->hostname = "galaxy_nexus_".$i;
                 $details->manufacturer = "Samsung";
                 $details->model = "Galaxy Nexus";
                 $details->form_factor = '';
                 $details->man_location_id = rand(1, 6);
-                $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
-                $details->man_service_number = "01 2345 0" . $i;
+                $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
+                $details->man_service_number = "01 2345 0".$i;
                 $details->man_service_provider = "Telstra";
                 $details->man_ip_address = "";
                 $details->man_org_id = rand(2, 6);
@@ -1590,30 +1581,30 @@ class Admin_test extends MY_Controller
                 if ($j == 1) {
                     $details->manufacturer = "Hewlett Packard";
                     $details->model = "HP Color Laserjet 4700";
-                    $details->hostname = "hp_laserjet_" . $i;
+                    $details->hostname = "hp_laserjet_".$i;
                 } elseif ($j == 2) {
                     $details->manufacturer = "Konica Minolta";
                     $details->model = "Konica Minolta C352 C300";
-                    $details->hostname = "konika_" . $i;
+                    $details->hostname = "konika_".$i;
                 } elseif ($j == 3) {
                     $details->manufacturer = "Brother";
                     $details->model = "Brother MFC-465CN Printer";
                     $details->man_ip_address = "";
                     $details->hostname = "";
                     $details->man_org_id = rand(2, 6);
-                    $details->man_owner = $first_name[rand(0, count($first_name)-1)] . " " . $last_name[rand(0, count($last_name)-1)];
+                    $details->man_owner = $first_name[rand(0, count($first_name)-1)]." ".$last_name[rand(0, count($last_name)-1)];
                     $details->last_seen_by = "manual";
                 }
             }
             $windows_user = strtolower($details->man_owner);
-            $windows_user = str_replace(" ", ".", $windows_user) . "@open-audit.com";
-            $details->hostname .= "_" . $hostname_extra;
+            $windows_user = str_replace(" ", ".", $windows_user)."@open-audit.com";
+            $details->hostname .= "_".$hostname_extra;
             $details->man_os_group = $details->os_group;
             $details->man_os_family = $details->os_family;
             $details->man_os_name = $details->os_name;
             $details->man_type = $details->type;
-            $details->fqdn = $details->hostname . ".open-audit.local";
-            $details->description = ucfirst($details->type) . " " . $details->os_group . " " . $i;
+            $details->fqdn = $details->hostname.".open-audit.local";
+            $details->description = ucfirst($details->type)." ".$details->os_group." ".$i;
             $details->man_description = $details->description;
             $details->man_manufacturer = $details->manufacturer;
             $details->man_model = $details->model;
@@ -1639,15 +1630,15 @@ class Admin_test extends MY_Controller
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $system) {
-            for ($i=1; $i<11; $i++) {
+            for ($i = 1; $i<11; $i++) {
                 $day = substr($system->timestamp, 8, 2);
                 $i = rand($day, 31);
                 $i = $day + 1;
                 if ($i < 10) {
-                    $i = "0" . $i;
+                    $i = "0".$i;
                 }
                 $timestamp = $system->timestamp;
-                $first_timestamp = str_replace("-" . $day . " ", "-" . $i . " ", $system->timestamp);
+                $first_timestamp = str_replace("-".$day." ", "-".$i." ", $system->timestamp);
                 $system_id = $system->system_id;
                 $i = rand(1, 18);
                 switch ($i) {

@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
-# @version 1.5.2
+# @version 1.6
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -40,8 +40,8 @@
 #
 # Contributors to this script
 # Open-AudIT forum users jpa, ihashacks, a.arenas, ginorh, RedDevils and others.
-# Open-AudIT users 
-#       Brandon Pierce brandon@ihashacks.com 
+# Open-AudIT users
+#       Brandon Pierce brandon@ihashacks.com
 #       Fábio Chicout fabio.chicout@ufpe.br
 #       Mark Unwin mark.unwin@gmail.com
 
@@ -168,7 +168,7 @@ escape_xml ()
 #   xml_version=$(escape_xml "$var")
 #
 {
-	# escape characters 
+	# escape characters
 	result="$1"
 	if echo "$result" | grep -Eq -e '[&<>"]' -e "'"; then
 		result="<![CDATA[$result]]>"
@@ -179,7 +179,7 @@ escape_xml ()
 	echo "$result"
 }
 
-# cidr2mask () 
+# cidr2mask ()
 # {
 #   local i mask=""
 #   local full_octets=$(($1/8))
@@ -191,7 +191,7 @@ escape_xml ()
 #       mask+=$((256 - 2**(8-partial_octet)))
 #     else
 #       mask+=0
-#     fi  
+#     fi
 #     test $i -lt 3 && mask+=.
 #   done
 #   echo "$mask"
@@ -223,7 +223,7 @@ between_output ()
 				# resultgroup contains data, test it
 				if [[ $(echo -e "$resultgroup" | grep "$match" -c ) -ne 0 ]]; then
 					# our match is contained within the resultgroup
-					result=$(echo -e "$resultgroup" | grep "vendor:")					
+					result=$(echo -e "$resultgroup" | grep "vendor:")
 					break
 				fi
 				resultgroup=""
@@ -411,11 +411,11 @@ system_timestamp=$(date +'%F %T')
 # Set the Process ID
 nPID="$BASHPID"
 
-if [ "$debugging" -gt 0 ]; then 
+if [ "$debugging" -gt 0 ]; then
 	echo "My PID is : $nPID"
 	echo "Audit Start Time : $system_timestamp"
-	echo "Audit Location: $audit_location" 
-	echo "-------------------" 
+	echo "Audit Location: $audit_location"
+	echo "-------------------"
 fi
 
 #========================
@@ -449,7 +449,7 @@ if [ -z "$system_hostname" ]; then
 	system_domain=""
 else
 	system_domain=$(hostname -d 2>/dev/null)
-fi 
+fi
 
 system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/' | head -n 1)
 
@@ -459,7 +459,7 @@ system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}'
 system_type="computer"
 system_os_group="Linux"
 system_os_family=$(lsb_release -is 2>/dev/null | tr -d '"')
-system_os_name=$(lsb_release -ds 2>/dev/null | tr -d '"')
+system_os_name=$(lsb_release -ds 2>/dev/null | tr -d '"' | head -n1)
 system_os_version=$(lsb_release -rs 2>/dev/null | tr -d '"')
 
 # Some DD-WRT specials stuff
@@ -478,7 +478,7 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 	[ "$system_release_file" = "/etc/os-release" ] && continue;
 
 	if [ -z "$system_os_name" ]; then
-		system_os_name=$(cat "$system_release_file")
+		system_os_name=$(cat "$system_release_file" | head -n1)
 	fi
 
 	# Suse Based
@@ -607,21 +607,21 @@ system_pc_memory=$(grep MemTotal /proc/meminfo | cut -d: -f2 | cut -dk -f1)
 system_pc_memory=$(trim "$system_pc_memory")
 
 # Get the Number of Physical Processors
-# 
+#
 #	Each Physical Processor have one or more Processor Cores.
 #	Each Processor Core have one or more Threads
 #	Each thread appears as one active processor to the OS
-# EX:	
+# EX:
 #   Two Dual Core Processors with Hyper-Threading enabled will show :
 #	system_pc_total_threads=8
 # 	system_pc_threads_x_processor=4
 #	system_pc_cores_x_processor=2
-#     
+#
 #	Two Dual Core Processors with Hyper-Threading disabled will show :
 # 	system_pc_total_threads=4
 # 	system_pc_threads_x_processor=2
 #	system_pc_cores_x_processor=2
-#     
+#
 #	One Quad Core Processor with Hyper-Threading disabled will show :
 #	system_pc_total_threads=4
 # 	system_pc_threads_x_processor=4
@@ -876,38 +876,38 @@ if [ "$memory_slots" != "0" ]; then
 			bank_info=$(dmidecode -t 17 2>/dev/null | sed -n '/^Handle '"$memory_handle"'/,/^$/p')
 
 			memory_bank=$(echo "$bank_info" | awk '/^[^B]+Locator:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | awk '{gsub(" ","");print}')
-			
+
 			memory_detail=$(echo "$bank_info" | awk '/Type:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | awk '{gsub(" ","");print}')
 
 			if [ "$memory_detail" = "<OUT OF SPEC>" ]; then
 				system_form_factor="Unknown"
 			fi
-			
+
 			memory_form_factor=$(echo "$bank_info" | awk '/Form Factor/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | cut -d" " -f1)
-			
+
 			memory_type=$(echo "$bank_info" | awk '/Type Detail:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' | cut -d" " -f1)
-			
+
 			memory_capacity=$(echo "$bank_info" | awk '/Size:/{print $2}' | sed 's/[^0-9]//g')
-			
+
 			if [ "$(echo "$bank_info" | awk '/Size:/{print $3}')" = "kB" ];then
 					memory_capacity=$((memory_capacity / 1024))
 			fi
-			
+
 			memory_speed=$(echo "$bank_info" |\
 				awk '/Speed:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 				sed 's/[[:space:]]MHz.*//g')
-			
+
 			memory_tag=$(echo "$bank_info" |\
 				awk '/Bank L.*:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}')
-			
+
 			memory_serial=$(echo "$bank_info" |\
 					awk '/Serial Number:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
 					cut -d" " -f1)
-			
+
 			if  [ "$memory_serial" = "Not" ] || [ "$memory_serial" = "Not " ] || [ "$memory_serial" = "Not Specified" ]; then
 				memory_serial=""
 			fi
-			
+
 			# Ignore empty slots
 			if [ -n "$memory_capacity" ]; then
 				{
@@ -961,7 +961,7 @@ if [ -n "$mobo_manufacturer" ] || [ -n "$mobo_model" ]; then
 	echo "		<processor_slots>$(escape_xml "$system_pc_physical_processors")</processor_slots>"
 	echo "		<processor_type>$(escape_xml "$processor_socket")</processor_type>"
 	echo "		<memory_slots>$(escape_xml "$memory_slots")</memory_slots>"
-	echo "	</motherboard>" 
+	echo "	</motherboard>"
 	} >> "$xml_file"
 fi
 
@@ -987,7 +987,7 @@ if [ "$optical_num_devices" != "0" ]; then
 	#'''''''''''''''''''''''''''''''''
 	#' Write to the audit file       '
 	#'''''''''''''''''''''''''''''''''
-	
+
 	echo "	<optical_drives>" >> "$xml_file"
 
 	for optical_device in $(cdrdao scanbus 2>&1 | grep '/dev'); do
@@ -1032,7 +1032,7 @@ video_pci_adapters=$(lspci 2>/dev/null | grep VGA | cut -d" " -f1)
 
 if [ -n "$video_pci_adapters" ]; then
 	echo "	<video_cards>" >> "$xml_file"
-	for video_adapter in $video_pci_adapters; do 
+	for video_adapter in $video_pci_adapters; do
 		video_device_name=$(lspci -vms "$video_adapter" | grep '^Device' | tail -n1  | cut -d: -f2 | cut -c2-)
 		video_revision=$(lspci -vms "$video_adapter" | grep '^Rev' | cut -d: -f2 | cut -c2-)
 		video_description="$video_device_name"
@@ -1067,7 +1067,7 @@ sound_pci_adapters=$(lspci 2>/dev/null | grep -Ei 'audio | multmedia' | cut -d" 
 
 if [ -n "$sound_pci_adapters" ]; then
 	echo "	<sound_cards>" >> "$xml_file"
-	for sound_adapter in $sound_pci_adapters; do 
+	for sound_adapter in $sound_pci_adapters; do
 		sound_device_name=$(lspci -vms "$sound_adapter" | grep '^Device' | tail -n1  | cut -d: -f2 | cut -c2-)
 		sound_revision=$(lspci -vms "$sound_adapter" | grep '^Rev' | cut -d: -f2 | cut -c2-)
 		sound_name="$sound_device_name"
@@ -1128,6 +1128,154 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Network Cards Info"
 fi
 
+addr_info=""
+echo "	<network_cards>" >> "$xml_file";
+
+# first look for bonded network cards - new for 1.5.6
+for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print` | cut -d" " -f9 | cut -d/ -f5); do
+    #temp=`cat $test/uevent | grep DEVTYPE=bond`
+    #if [ -n "$temp" ]; then
+    if [ -f "/proc/net/bonding/$net_connection_id" ]; then
+        # we have a bonded nic
+        net_index=$(cat /sys/class/net/$net_connection_id/ifindex)
+        net_card_id="$net_connection_id"
+        net_card_mac="$system_hostname:$net_connection_id:$net_index"
+        net_card_manufacturer="Linux Kernel"
+        net_card_model="Virtual Bonded NIC"
+        net_card_description="Virtual Bonded NIC ($net_connection_id)"
+        net_card_enabled=""
+        net_card_status=$(cat /sys/class/net/$net_connection_id/operstate)
+        if [ "$net_card_status" = "up" ]; then
+                net_card_status="Connected"
+        else
+                net_card_status="Disconnected"
+        fi
+        net_slaves=""
+        for slave in $(cat /proc/net/bonding/$net_connection_id | grep "Slave Interface" | cut -d" " -f3); do
+                if [ -n "$net_slaves" ]; then
+                        net_slaves="$net_slaves, $slave"
+                else
+                        net_slaves="$slave"
+                fi
+        done
+        net_active_slave=$(cat /proc/net/bonding/$net_connection_id | grep "Currently Active Slave" | cut -d" " -f4)
+        net_slaves="$net_slaves ($net_active_slave active)"
+        net_card_speed=""
+        if [ -n "$(which ethtool 2>/dev/null)" ]; then
+                net_card_speed=$(ethtool "$net_active_slave" 2>/dev/null | grep Speed | cut -d: -f2 | sed 's/[^0-9]//g')
+                if [ $net_card_speed ]; then
+                        net_card_speed=$((net_card_speed * 1000000))
+                fi
+        fi
+        net_card_type="Ethernet 802.3"
+        net_card_dhcp_enab=""
+        net_card_dhcp_server=""
+        net_card_dhcp_lease_obtained=""
+        net_card_dhcp_lease_expires=""
+        net_card_dns_domain=""
+        net_card_domain_reg=""
+        net_card_dns_server=""
+
+		# Check DHCP lease for this card
+		# Distros store the lease info in different files/locations, I'm getting the file from the running process
+		net_card_lease_file=$(ps -ef | grep dhclient | grep "$net_card_id" | sed -e 's/^.*-lf//' | cut -d" " -f2)
+		# below only works for Debian
+		# net_card_lease_file="/var/lib/dhcp/dhclient.$net_card_id.leases"
+		# below only works for RH
+		# net_card_lease_file="/var/lib/dhclient/dhclient-$net_card_id.leases"
+
+		if [ ! -e "$net_card_lease_file" ]; then
+			net_card_dhcp_enab="False"
+			net_card_dhcp_server=""
+			net_card_dhcp_lease_expire=""
+		else
+			net_card_dhcp_enab="True"
+			net_card_dhcp_server=$(grep dhcp-server "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5)
+			net_card_dhcp_lease_expire=$(grep expire "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5 | sed 's|/|-|g')
+			# To get the Obtained date we need to get lease time first
+			net_card_dhcp_lease_time=$(grep lease-time "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5)
+			net_card_dhcp_lease_days=$((net_card_dhcp_lease_time / 60 / 60 / 24))
+			net_card_dhcp_lease_obtained=$(date -d ''"$net_card_dhcp_lease_expire"' -'"$net_card_dhcp_lease_days"' days' +%F)
+		fi
+
+		# TODO: Domain Registration & WINS Info (Samba)
+		net_card_domain_reg=""
+		net_card_dns_server=$(awk '/^name/{print $2}' /etc/resolv.conf | head -n1)
+		net_card_dns_domain=$(awk '/^domain/{print $2}' /etc/resolv.conf | head -n1)
+		if [ -z "$net_card_dns_domain" ]; then
+			net_card_dns_domain=$(awk '/^search/{print $2}' /etc/resolv.conf | head -n1)
+		fi
+
+		# Get Info on active IPV4 Addresses for this card
+		for net_card_enabled_ip4_addr in $(ip addr show "$net_connection_id" | grep 'inet ' | cut -dt -f2 | cut -db -f1 | cut -c2- | cut -d" " -f1); do
+			net_card_enabled="True"
+			net_card_enabled_ip6_addr=""
+			#echo "NCEIA: $net_card_enabled_ip4_addr"
+			temp=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f2)
+			net_card_enabled_ip_subnet=$(cidr2mask "$temp")
+			net_card_enabled_ip_version="4"
+			addr_info=$addr_info"\t\t<ip_address>\n"
+			addr_info=$addr_info"\t\t\t<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>\n"
+			addr_info=$addr_info"\t\t\t<net_index>$(escape_xml "$net_index")</net_index>\n"
+			temp=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f1)
+			addr_info=$addr_info"\t\t\t<ip_address_v4>$(escape_xml "$temp")</ip_address_v4>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_v6>$(escape_xml "$net_card_enabled_ip6_addr")</ip_address_v6>\n"
+			addr_info=$addr_info"\t\t\t<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_version>$(escape_xml "$net_card_enabled_ip_version")</ip_address_version>\n"
+			addr_info=$addr_info"\t\t\t<type>bonded</type>\n"
+			addr_info=$addr_info"\t\t</ip_address>\n"
+		done
+		# Get Info on active IPV6 Addresses for this card
+		for net_card_enabled_ip6_addr in $(ip addr show "$net_connection_id" | grep 'inet6' | cut -c11- | cut -ds -f1); do
+			net_card_enabled="True"
+			net_card_enabled_ip4_addr=""
+		 		net_card_enabled_ip_subnet=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f2)
+			net_card_enabled_ip_version="6"
+
+			addr_info=$addr_info"\t\t<ip_address>\n"
+			addr_info=$addr_info"\t\t\t<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>\n"
+			addr_info=$addr_info"\t\t\t<net_index>$(escape_xml "$net_index")</net_index>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_v4>$(escape_xml "$net_card_enabled_ip4_addr")</ip_address_v4>\n"
+			temp=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f1)
+			addr_info=$addr_info"\t\t\t<ip_address_v6>$(escape_xml "$temp")</ip_address_v6>\n"
+			addr_info=$addr_info"\t\t\t<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>\n"
+			addr_info=$addr_info"\t\t\t<ip_address_version>$(escape_xml "$net_card_enabled_ip_version")</ip_address_version>\n"
+			addr_info=$addr_info"\t\t\t<type>bonded</type>\n"
+			addr_info=$addr_info"\t\t</ip_address>\n"
+		done
+
+		{
+		echo "		<network_card>"
+		echo "			<net_index>$(escape_xml "$net_index")</net_index>"
+		echo "			<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>"
+		echo "			<net_manufacturer>$(escape_xml "$net_card_manufacturer")</net_manufacturer>"
+		echo "			<net_model>$(escape_xml "$net_card_model")</net_model>"
+		echo "			<net_description>$(escape_xml "$net_card_description")</net_description>"
+		echo "			<net_ip_enabled>$(escape_xml "$net_card_enabled")</net_ip_enabled>"
+		echo "			<net_connection_id>$(escape_xml "$net_connection_id")</net_connection_id>"
+		echo "			<net_connection_status>$(escape_xml "$net_card_status")</net_connection_status>"
+		echo "			<net_speed>$(escape_xml "$net_card_speed")</net_speed>"
+		echo "			<net_adapter_type>$(escape_xml "$net_card_type")</net_adapter_type>"
+		echo "			<net_dhcp_enabled>$(escape_xml "$net_card_dhcp_enab")</net_dhcp_enabled>"
+		echo "			<net_dhcp_server>$(escape_xml "$net_card_dhcp_server")</net_dhcp_server>"
+		echo "			<net_dhcp_lease_obtained>$(escape_xml "$net_card_dhcp_lease_obtained")</net_dhcp_lease_obtained>"
+		echo "			<net_dhcp_lease_expires>$(escape_xml "$net_card_dhcp_lease_expire")</net_dhcp_lease_expires>"
+		echo "			<net_dns_host_name>$(escape_xml "$system_hostname")</net_dns_host_name>"
+		echo "			<net_dns_domain>$(escape_xml "$net_card_dns_domain")</net_dns_domain>"
+		echo "			<net_dns_domain_reg_enabled>$(escape_xml "$net_card_domain_reg")</net_dns_domain_reg_enabled>"
+		echo "			<net_dns_server>$(escape_xml "$net_card_dns_server")</net_dns_server>"
+		echo "			<net_wins_primary></net_wins_primary>"
+		echo "			<net_wins_secondary></net_wins_secondary>"
+		echo "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>"
+		echo "			<net_slaves>$(escape_xml "$net_slaves")</net_slaves>"
+		echo "		</network_card>"
+		} >> "$xml_file"
+
+	fi
+done
+
+
+
 net_cards=""
 temp=$(ls /sys/class/net/)
 for dir in $temp; do
@@ -1148,13 +1296,17 @@ temp=""
 
 if [ -n "$net_cards" ]; then
 	# Store the IP Addresses Information in a variable to write it later on the file
-	addr_info=""
-	echo "	<network_cards>" >> "$xml_file";
-
-	for net_card_connection_id in $net_cards; do 
+	for net_card_connection_id in $net_cards; do
 		net_card_id=$(echo "$net_card_connection_id" | cut -d/ -f2)
 		net_card_pci=$(echo "$net_card_connection_id" | cut -d/ -f1)
-		net_card_mac=$(cat /sys/class/net/"$net_card_id"/address)
+
+		# determine the cards MAC Address
+		# first try ethtool as ifconfig can report duplicate MACs in the case of bonded NICs on CentOS
+		net_card_mac=$(ethtool -P "$net_card_id" 2>/dev/null | cut -d" " -f3)
+		if [ -z "$net_card_mac" ]; then
+			net_card_mac=$(cat /sys/class/net/"$net_card_id"/address)
+		fi
+
 		net_index=$(cat /sys/class/net/"$net_card_id"/ifindex)
 
 		if [ "$net_card_pci" = 'virtual' ]; then
@@ -1201,7 +1353,7 @@ if [ -n "$net_cards" ]; then
 		temp=$(cat /sys/class/net/"$net_card_id"/operstate)
 		net_card_status=$(trim "$temp")
 		if [ "$net_card_status" = "up" ]; then
-			net_card_status="Connected" 
+			net_card_status="Connected"
 		else
 			net_card_status="Disconnected"
 		fi
@@ -1247,8 +1399,11 @@ if [ -n "$net_cards" ]; then
 
 		# Check DHCP lease for this card
 		# Distros store the lease info in different files/locations, I'm getting the file from the running process
-		#net_card_lease_file=$(ps -ef | grep dhclient | grep "$net_card_id" | sed -e 's/^.*-lf//' | cut -d" " -f2)
-		net_card_lease_file="/var/lib/dhcp/dhclient.$net_card_id.leases"
+		net_card_lease_file=$(ps -ef | grep dhclient | grep "$net_card_id" | sed -e 's/^.*-lf//' | cut -d" " -f2)
+		# below only works for Debian
+		# net_card_lease_file="/var/lib/dhcp/dhclient.$net_card_id.leases"
+		# below only works for RH
+		# net_card_lease_file="/var/lib/dhclient/dhclient-$net_card_id.leases"
 
 		if [ ! -e "$net_card_lease_file" ]; then
 			net_card_dhcp_enab="False"
@@ -1263,7 +1418,7 @@ if [ -n "$net_cards" ]; then
 			net_card_dhcp_lease_days=$((net_card_dhcp_lease_time / 60 / 60 / 24))
 			net_card_dhcp_lease_obtained=$(date -d ''"$net_card_dhcp_lease_expire"' -'"$net_card_dhcp_lease_days"' days' +%F)
 		fi
-		
+
 		# TODO: Domain Registration & WINS Info (Samba)
 		net_card_domain_reg=""
 		net_card_dns_server=$(awk '/^name/{print $2}' /etc/resolv.conf | head -n1)
@@ -1298,8 +1453,8 @@ if [ -n "$net_cards" ]; then
 		echo "		</network_card>"
 		} >> "$xml_file"
 	done
-	echo "	</network_cards>" >> "$xml_file"
 fi
+echo "	</network_cards>" >> "$xml_file"
 
 
 ##################################
@@ -1332,7 +1487,7 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 	if [ "$test" = "1" ]; then
 		hard_drive_interface_type="sata"
 	fi
-	
+
 	hard_drive_model=$(udevadm info -a -n /dev/"$disk" 2>/dev/null | grep "ATTRS{model}==" | head -n 1 | cut -d\" -f2)
 	if [ -z "$hard_drive_model" ]; then
 		hard_drive_model=$(lsblk -lbndo MODEL /dev/"$disk")
@@ -1466,11 +1621,11 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 			partition_result=$partition_result"			<partition_format>$(escape_xml "$partition_format")</partition_format>\n"
 			partition_result=$partition_result"			<partition_caption>$(escape_xml "$partition_caption")</partition_caption>\n"
 			partition_result=$partition_result"			<partition_device_id>$(escape_xml "$partition_device_id")</partition_device_id>\n"
-			partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n" 
-			partition_result=$partition_result"			<partition_bootable></partition_bootable>\n" 
+			partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n"
+			partition_result=$partition_result"			<partition_bootable></partition_bootable>\n"
 			partition_result=$partition_result"			<partition_type>$(escape_xml "$partition_type")</partition_type>\n"
-			partition_result=$partition_result"			<partition_quotas_supported></partition_quotas_supported>\n" 
-			partition_result=$partition_result"			<partition_quotas_enabled></partition_quotas_enabled>\n" 
+			partition_result=$partition_result"			<partition_quotas_supported></partition_quotas_supported>\n"
+			partition_result=$partition_result"			<partition_quotas_enabled></partition_quotas_enabled>\n"
 			partition_result=$partition_result"			<partition_serial>$(escape_xml "$partition_serial")</partition_serial>\n"
 			partition_result=$partition_result"		</partition>"
 
@@ -1481,8 +1636,45 @@ echo "	</hard_disks>" >> "$xml_file"
 
 
 ##################################
-# PARTITION SECTION              #
+# NFS MOUNTS SECTION             #
 ##################################
+for mount in $(mount -l -t nfs,nfs2,nfs3,nfs4 2>/dev/null); do
+	partition_mount_point=$(echo "$mount" | cut -d" " -f3)
+	partition_name=$(echo "$mount" | cut -d" " -f1)
+	partition_free_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $4}')
+	partition_used_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $3}')
+	partition_size=$((partition_free_space + partition_used_space))
+	partition_format=""
+	partition_caption=""
+	partition_device_id=""
+	partition_device_id=""
+	partition_disk_index=""
+	partition_type="NFS Mount"
+	partition_serial=""
+	partition_result=$partition_result"		<partition>\n"
+	partition_result=$partition_result"			<hard_drive_index></hard_drive_index>\n"
+	partition_result=$partition_result"			<partition_mount_type>NFS Mount</partition_mount_type>\n"
+	partition_result=$partition_result"			<partition_mount_point>$(escape_xml "$partition_mount_point")</partition_mount_point>\n"
+	partition_result=$partition_result"			<partition_name>$(escape_xml "$partition_name")</partition_name>\n"
+	partition_result=$partition_result"			<partition_size>$(escape_xml "$partition_size")</partition_size>\n"
+	partition_result=$partition_result"			<partition_free_space>$(escape_xml "$partition_free_space")</partition_free_space>\n"
+	partition_result=$partition_result"			<partition_used_space>$(escape_xml "$partition_used_space")</partition_used_space>\n"
+	partition_result=$partition_result"			<partition_format>$(escape_xml "$partition_format")</partition_format>\n"
+	partition_result=$partition_result"			<partition_caption>$(escape_xml "$partition_caption")</partition_caption>\n"
+	partition_result=$partition_result"			<partition_device_id>$(escape_xml "$partition_device_id")</partition_device_id>\n"
+	partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n"
+	partition_result=$partition_result"			<partition_bootable></partition_bootable>\n"
+	partition_result=$partition_result"			<partition_type>$(escape_xml "$partition_type")</partition_type>\n"
+	partition_result=$partition_result"			<partition_quotas_supported></partition_quotas_supported>\n"
+	partition_result=$partition_result"			<partition_quotas_enabled></partition_quotas_enabled>\n"
+	partition_result=$partition_result"			<partition_serial>$(escape_xml "$partition_serial")</partition_serial>\n"
+	partition_result=$partition_result"		</partition>"
+done
+
+
+#####################################
+# PARTITION  AND NFS MOUNTS SECTION #
+#####################################
 
 if [ -n "$partition_result" ]; then
 	{
@@ -1596,7 +1788,7 @@ case $system_os_family in
 					service_start_mode="Auto"
 				else
 					service_start_mode="Manual"
-				fi 
+				fi
 				service_name=$(escape_xml "$s")
 				echo -e "\t\t<service>\n\t\t\t<service_name>$service_name</service_name>\n\t\t\t<service_start_mode>$service_start_mode</service_start_mode>\n\t\t</service>" >> "$xml_file"
 			done
@@ -1638,7 +1830,7 @@ fi
 
 echo "	<routes>" >> "$xml_file"
 if [ -n "$(which route 2>/dev/null)" ]; then
-	for i in $(route -n | tail -n +3) ; do 
+	for i in $(route -n | tail -n +3) ; do
 		echo "$i" | awk ' { print "\t\t<route>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</route>" } ' >> "$xml_file"
 	done
 fi

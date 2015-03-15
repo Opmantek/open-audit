@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ * @version 1.6
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -11782,7 +11782,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11860') { $new->manufacturer = 'wossname.org.uk'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11861') { $new->manufacturer = 'Codenet'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11862') { $new->manufacturer = 'Columbia University in the City of New York'; }
-		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11863') { $new->manufacturer = 'TP-Link Technology Co.,Ltd'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11863') { $new->manufacturer = 'TP-Link Technology'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11864') { $new->manufacturer = 'Böke and Walterfang Electronic Systems Ltd'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11865') { $new->manufacturer = 'Explo-IT Research'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.11866') { $new->manufacturer = 'GDTTI'; }

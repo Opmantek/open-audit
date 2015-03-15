@@ -1,6 +1,6 @@
 <?php
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -26,28 +26,19 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class Admin_db extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
         set_time_limit(240);
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);
@@ -59,7 +50,8 @@ class Admin_db extends MY_Controller
     }
 
     /**
-     * [export_table description]
+     * [export_table description].
+     *
      * @return [type]
      */
     public function export_table()
@@ -73,7 +65,8 @@ class Admin_db extends MY_Controller
     }
 
     /**
-     * [backup description]
+     * [backup description].
+     *
      * @return [type]
      */
     public function backup()
@@ -87,7 +80,7 @@ class Admin_db extends MY_Controller
     {
         $this->load->model("m_oa_admin_database");
         $this->data['query'] = $this->m_oa_admin_database->export_table($this->data['id']);
-        $this->data['heading'] = $this->data['id'] . " table rows";
+        $this->data['heading'] = $this->data['id']." table rows";
         $this->excel_report($this->data['query']);
     }
 
@@ -95,7 +88,7 @@ class Admin_db extends MY_Controller
     {
         $this->load->model("m_oa_admin_database");
         $this->data['query'] = $this->m_oa_admin_database->export_table($this->data['id']);
-        $this->data['heading'] = $this->data['id'] . " table rows";
+        $this->data['heading'] = $this->data['id']." table rows";
         $this->data['include'] = 'v_export_table';
         $this->load->view('v_template', $this->data);
     }
@@ -104,7 +97,7 @@ class Admin_db extends MY_Controller
     {
         $this->load->model("m_oa_admin_database");
         $this->data['query'] = $this->m_oa_admin_database->export_table($this->data['id']);
-        $this->data['heading'] = $this->data['id'] . " table rows";
+        $this->data['heading'] = $this->data['id']." table rows";
         $this->csv_report($this->data['query']);
     }
 
@@ -116,7 +109,6 @@ class Admin_db extends MY_Controller
         $this->data['heading'] = "Get Non Production Systems";
         $this->data['include'] = 'v_export_table';
         $this->load->view('v_template', $this->data);
-
     }
 
     public function maintenance()
@@ -178,24 +170,24 @@ class Admin_db extends MY_Controller
         $days = $this->uri->segment(3, 365);
         $this->load->model("m_system");
         $this->data['count'] = $this->m_system->delete_non_production_systems('deleted');
-        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->session->set_flashdata('message', $this->data['count']." devices removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
     public function delete_status_retired()
     {
         $days = $this->uri->segment(3, 365);
         $this->load->model("m_system");
         $this->data['count'] = $this->m_system->delete_non_production_systems('retired');
-        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->session->set_flashdata('message', $this->data['count']." devices removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
     public function delete_status_maintenance()
     {
         $days = $this->uri->segment(3, 365);
         $this->load->model("m_system");
         $this->data['count'] = $this->m_system->delete_non_production_systems('maintenance');
-        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->session->set_flashdata('message', $this->data['count']." devices removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
 
     public function delete_non_production_systems()
@@ -203,18 +195,17 @@ class Admin_db extends MY_Controller
         $days = $this->uri->segment(3, 365);
         $this->load->model("m_system");
         $this->data['count'] = $this->m_system->delete_non_production_systems();
-        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->session->set_flashdata('message', $this->data['count']." devices removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
-
 
     public function delete_all_temp()
     {
         $days = $this->uri->segment(3, 365);
         $this->load->model("m_oa_admin_database");
         $this->data['count'] = $this->m_oa_admin_database->delete_all_rows('oa_temp');
-        $this->session->set_flashdata('message', $this->data['count'] . " temp rows removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->session->set_flashdata('message', $this->data['count']." temp rows removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
 
     public function delete_alerts_days()
@@ -222,8 +213,8 @@ class Admin_db extends MY_Controller
         $days = $this->uri->segment(3, 365);
         $this->load->model("m_alerts");
         $this->data['count'] = $this->m_alerts->delete_alerts_days($days);
-        $this->session->set_flashdata('message', $this->data['count'] . " alerts removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->session->set_flashdata('message', $this->data['count']." alerts removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
 
     public function delete_all_alerts()
@@ -231,9 +222,9 @@ class Admin_db extends MY_Controller
         $days = $this->uri->segment(3, 365);
         $this->load->model("m_alerts");
         $this->data['count'] = $this->m_alerts->delete_all_alerts();
-        $this->data['query'] = $this->data['count'] . " alerts removed from the database";
-        $this->session->set_flashdata('message', $this->data['count'] . " alerts removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->data['query'] = $this->data['count']." alerts removed from the database";
+        $this->session->set_flashdata('message', $this->data['count']." alerts removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
 
     public function delete_systems_not_seen_days()
@@ -241,8 +232,8 @@ class Admin_db extends MY_Controller
         $days = $this->uri->segment(3, 365);
         $this->load->model("m_system");
         $this->data['count'] = $this->m_system->delete_systems_not_seen_days($days);
-        $this->session->set_flashdata('message', $this->data['count'] . " devices removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->session->set_flashdata('message', $this->data['count']." devices removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
 
     public function delete_all_non_current_attributes()
@@ -250,8 +241,8 @@ class Admin_db extends MY_Controller
         $days = $this->uri->segment(3, 365);
         $this->load->model("m_oa_general");
         $this->data['count'] = $this->m_oa_general->delete_all_non_current_attributes($days);
-        $this->session->set_flashdata('message', $this->data['count'] . " attributes removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->session->set_flashdata('message', $this->data['count']." attributes removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
 
     public function delete_table_non_current_attributes()
@@ -260,7 +251,7 @@ class Admin_db extends MY_Controller
         $days = $this->uri->segment(4, 365);
         $this->load->model("m_oa_general");
         $this->data['count'] = $this->m_oa_general->delete_table_non_current_attributes($table, $days);
-        $this->session->set_flashdata('message', $this->data['count'] . " attributes removed from the database");
-        redirect("admin_db/maintenance/" . $days);
+        $this->session->set_flashdata('message', $this->data['count']." attributes removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -26,27 +26,18 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class Admin_device extends MY_Controller
 {
     public function __construct()
     {
         parent::__construct();
-        // must be an admin to access this page
-        if ($this->session->userdata('user_admin') != 'y') {
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('login/index');
-            }
-        }
-
         $log_details = new stdClass();
         stdlog($log_details);
         unset($log_details);
@@ -108,7 +99,7 @@ class Admin_device extends MY_Controller
             }
             if ($details->device_group == 'on') {
                 # activate the group
-                redirect('admin_device/activate_group/' . $details->device_id);
+                redirect('admin_device/activate_group/'.$details->device_id);
             } else {
                 redirect('admin_device/list_devices');
             }
@@ -155,12 +146,12 @@ class Admin_device extends MY_Controller
         $device_id = $this->data['id'];
         $device_name = $this->m_oa_devicen->get_device_name($device_id);
         $group = new stdClass();
-        $group->group_name = "Items that are " . $device_name . "s";
+        $group->group_name = "Items that are ".$device_name."s";
         $group->group_padded_name = '';
-        $group->group_description = "Items that are " . $device_name . "s";
+        $group->group_description = "Items that are ".$device_name."s";
         $group->group_icon = 'device';
         $group->group_category = 'device';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_type = '" . $device_namme . "' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_type = '".$device_namme."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         $group_id = $this->m_oa_group->insert_group($group);
@@ -185,5 +176,4 @@ class Admin_device extends MY_Controller
         $this->m_oa_device->set_group_id($device_id, '0');
         redirect('admin_device/list_devices');
     }
-
 }

@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.5.2
+# @version 1.6
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -46,11 +46,21 @@ debugging="3"
 # import the command line arguements
 for arg in "$@"; do
 	parameter=${arg%%=*}
-	value=${arg##*=} 
+	value=${arg##*=}
 	if [ "$parameter" == "--help" ]; then parameter="help"; value="y"; fi
 	if [ "$parameter" == "-h" ]; then parameter="help"; value="y"; fi
 	eval "$parameter"=\""$value\""
 done
+
+if [  "$debugging" -gt 0 ]; then
+	echo "OPTIONS"
+	echo "-------"
+	echo "url: $url"
+	echo "submit_online: $submit_online"
+	echo "create_file: $create_file"
+	echo "debugging: $debugging"
+	echo "-------"
+fi
 
 if [ "$help" = "y" ]; then
 	echo ""
@@ -99,7 +109,6 @@ system_timestamp=`date +'%F %T'`
 system_uuid=`system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g'`
 system_hostname=`networksetup -getcomputername`
 system_domain=`more /etc/resolv.conf | grep domain | cut -d" " -f2`
-#system_description=""
 system_os_version=`sw_vers | grep "ProductVersion:" | cut -f2`
 system_os_name="OSX $system_os_version"
 system_serial=`system_profiler SPHardwareDataType | grep "Serial Number (system):" | cut -d":" -f2 | sed 's/^ *//g'`
@@ -120,7 +129,7 @@ if [[ "$system_model" == *"MacBook"* ]]; then
 fi
 
 xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
-echo  "form_systemXML=<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
+echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
 echo  "	<sys>" >> $xml_file
 echo  "		<timestamp>$system_timestamp</timestamp>" >> $xml_file
@@ -290,7 +299,7 @@ echo "	</memory>" >> $xml_file
 if [ "$debugging" -gt "0" ]; then
 	echo "Hard Disks"
 fi
-# NOTES - 
+# NOTES -
 # manufacturer not available on SATA conntected disks
 # model not available on USB connected disks
 # partitions not available
@@ -358,7 +367,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 
 						partition_mount_type="mount point"
 
-						
+
 
 						if [[ "$vol" == *"Mount Point"* ]]; then
 							partition_mount_point=`echo "$vol" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g'`
@@ -435,7 +444,7 @@ for line in $(system_profiler SPStorageDataType | grep "Available" -B2 -A13); do
 									partition="$partition			<partition_serial>$partition_serial</partition_serial>"$'\n'
 									partition="$partition		</partition>"$'\n'
 									temp_partition="$temp_partition d$hard_drive_index p$partition_disk_index "
-									
+
 									partition_name=$(echo "$vol" | cut -d":" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 									partition_mount_point=""
 									partition_disk_index=""
@@ -838,11 +847,9 @@ echo "</system>" >> $xml_file
 
 if [ "$submit_online" = "y" ]; then
 	echo "Submitting results to server"
-	#curl --data="$xml_file" $url 2>/dev/null
-	curl --data @"$xml_file" $url 1&2>dev/null
+	curl --data-urlencode form_systemXML@"$xml_file" $url
 fi
 
-sed -i -e 's/form_systemXML=//g' $xml_file
 
 if [ "$terminal_print" = "y" ]; then
 	cat "$xml_file"
@@ -851,7 +858,7 @@ fi
 
 if [ "$create_file" != "y" ]; then
 	`rm -f $xml_file`
-fi 
+fi
 rm "$xml_file"-e
 
 IFS=$O

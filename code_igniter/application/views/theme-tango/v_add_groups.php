@@ -1,12 +1,12 @@
-<?php 
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+<?php
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,17 +25,16 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
-$sortcolumn = 3; 
-if (count($query) > 1)
-{
-?>
+$sortcolumn = 3;
+if (count($query) > 1) {
+    ?>
 
 
 		<?php #echo "<pre>"; print_r($query); echo "</pre>\n"; ?>
@@ -51,28 +50,48 @@ if (count($query) > 1)
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach($query as $key): ?>
-			<?php if ($key['group_name'] > '') { ?>
+		<?php foreach ($query as $key): ?>
+			<?php if ($key['group_name'] > '') {
+    ?>
 			<tr>
-				<td align="center" width="20"><img src="<?php echo $image_path . '16_' . $key['group_icon']; ?>.png"/></td>
-				<td><?php echo $key['group_name']; ?></td>
-				<td><?php echo preg_replace("/(\w+) attribute/", "<i>$1</i> attribute", $key['group_description']); ?></td>
-				
-				<?php if ($key['activated']) { ?>
-					<?php if ($key['activated'] != '1') { ?>
-						<td align="center"><?php echo "<a href=\"action_delete_group/" . $key['activated'] . "\"><img src='" . $image_path . "16_delete.png' alt='' title='' width='16'/></a>";?></td>
+				<td align="center" width="20"><img src="<?php echo $oa_theme_images.'/16_'.$key['group_icon'];
+    ?>.png"/></td>
+				<td><?php echo $key['group_name'];
+    ?></td>
+				<td><?php echo preg_replace("/(\w+) attribute/", "<i>$1</i> attribute", $key['group_description']);
+    ?></td>
+
+				<?php if ($key['activated']) {
+    ?>
+					<?php if ($key['activated'] != '1') {
+    ?>
+						<td align="center"><?php echo "<a href=\"action_delete_group/".$key['activated']."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+    ?></td>
 						<td align="center">yes</td>
-					<?php } else { ?>
+					<?php 
+} else {
+    ?>
 						<td align="center"></td>
 						<td align="center">yes</td>
-					<?php } ?>
-				<?php } else { ?>
-					<td align="center"><?php echo "<a href=\"action_activate_group/" . $key['file'] . "\"><img src='" . $image_path . "16_true.png' alt='' title='' width='16'/></a>";?></td>
+					<?php 
+}
+    ?>
+				<?php 
+} else {
+    ?>
+					<td align="center"><?php echo "<a href=\"action_activate_group/".$key['file']."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
+    ?></td>
 					<td align="center"></td>
-				<?php } ?>
+				<?php 
+}
+    ?>
 			</tr>
-			<?php } ?>
-			<?php endforeach; ?>
-		<?php } ?>
+			<?php 
+}
+    ?>
+			<?php endforeach;
+    ?>
+		<?php 
+} ?>
 	</tbody>
 </table>

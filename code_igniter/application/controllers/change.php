@@ -1,6 +1,6 @@
 <?php
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
@@ -26,13 +26,13 @@
 # *****************************************************************************
 
 /**
- * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ *
+ * @version 1.6
+ *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-
 class change extends MY_Controller
 {
     public function __construct()
@@ -118,7 +118,7 @@ class change extends MY_Controller
         }
 
         $details['alerts'] = $data['alerts'];
-        $details['user_id'] = $this->data['user_id'];
+        $details['user_id'] = $this->user->user_id;
         $details['alert_ack_time'] = date('Y-m-d H:i:s');
         $this->load->model("m_alerts");
         $result = $this->m_alerts->assign_change($details);

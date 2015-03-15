@@ -1,13 +1,15 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (!defined('BASEPATH')) {
+     exit('No direct script access allowed');
+ }
 #
-#  Copyright 2003-2014 Opmantek Limited (www.opmantek.com)
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -25,274 +27,287 @@
 #
 # *****************************************************************************
 
-/**
+/*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.5.2
+ * @version 1.6
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-if ( ! function_exists('stdlog'))
-{
-	/**
-	 * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
-	 *
-	 * @access	  public
-	 * @category  Function
-	 * @package   Open-AudIT
-	 * @author    Mark Unwin <marku@opmantek.com>
-	 * @param	  Object	log_details		An object containing details you wish to log
-	 * @return	  NULL		[logs the provided string to the log file]
-	 */
-	function stdlog($log_details)
-	{
-		error_reporting(E_ALL);
-		$CI =& get_instance();
-		$config_log_level = 200;
-		// log_details:
-		// 	timestamp - default to current. Format is YYYY-MM-DD HH:II:SS
-		// 	severity - default to 5
-		// 	log level - default to 5, default set in config, can be over written
-		// 	file - the log file to write to. Default to 'access'. 
-		// 	       this will log to /other/log_access.log Others used are system (which replaces open-audit.log) and debug.
-		// 	pid - default to PHP function to retrieve PHP script PID
-		// 	hostname - default to PHP function to retrieve hostname of current server
-		// 	user - default to user calling function
-		// 	style - json or syslog - default to json, default set in config, can be over written
-		// 	ip address - the address of the client calling the function
-		// 	display - echo the log entry $message to the screen - n is the default
-		// 	message
+if (! function_exists('stdlog')) {
+    /**
+     * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
+     *
+     * @access	  public
+     *
+     * @category  Function
+     *
+     * @author    Mark Unwin <marku@opmantek.com>
+     *
+     * @param	  Object	log_details		An object containing details you wish to log
+     *
+     * @return NULL [logs the provided string to the log file]
+     */
+    function stdlog($log_details)
+    {
+        error_reporting(E_ALL);
+        $CI = & get_instance();
 
-		// setup the default values
-		$log = new stdClass();
-		$log->timestamp = '';
-		$log->severity = '';
-		$log->severity_text = '';
-		$log->log_level = '';
-		$log->file = '';
-		$log->pid = '';
-		$log->hostname = '';
-		$log->user = '';
-		$log->style = '';
-		$log->controller = '';
-		$log->function = '';
-		$log->display = '';
-		$log->ip_address = '';
-		$log->message = '';
+        // log_details:
+        // 	timestamp - default to current. Format is YYYY-MM-DD HH:II:SS
+        // 	severity - default to 5
+        // 	log level - default to 5, default set in config, can be over written
+        // 	file - the log file to write to. Default to 'access'.
+        // 	       this will log to /other/log_access.log Others used are system (which replaces open-audit.log) and debug.
+        // 	pid - default to PHP function to retrieve PHP script PID
+        // 	hostname - default to PHP function to retrieve hostname of current server
+        // 	user - default to user calling function
+        // 	style - json or syslog - default to json, default set in config, can be over written
+        // 	ip address - the address of the client calling the function
+        // 	display - echo the log entry $message to the screen - n is the default
+        // 	message
 
-		// SEVERITY LEVELS
-		// The logging levels described by RFC 5424.
-		// DEBUG (7): Detailed debug information.
-		// INFO (6): Interesting events. Examples: User logs in, SQL logs.
-		// NOTICE (5): Normal but significant events.
-		// WARNING (4): Exceptional occurrences that are not errors. Examples: Use of deprecated APIs, poor use of an API, undesirable things that are not necessarily wrong.
-		// ERROR (3): Runtime errors that do not require immediate action but should typically be logged and monitored.
-		// CRITICAL (2): Critical conditions. Example: Application component unavailable, unexpected exception.
-		// ALERT (1): Action must be taken immediately. Example: Entire website down, database unavailable, etc. This should trigger the SMS alerts and wake you up.
-		// EMERGENCY (0): Emergency: system is unusable.
-		
-		// We create a new object instead of simply populating the existing with defaults so we can set the attribute order
-		// The original passed object is $log_details, the new object is $log
+        // setup the default values
+        $log = new stdClass();
+        $log->timestamp = '';
+        $log->severity = '';
+        $log->severity_text = '';
+        $log->log_level = '';
+        $log->file = '';
+        $log->pid = '';
+        $log->hostname = '';
+        $log->user = '';
+        $log->style = '';
+        $log->controller = '';
+        $log->function = '';
+        $log->display = '';
+        $log->ip_address = '';
+        $log->message = '';
 
-		$CI->load->model('m_oa_config');
+        // SEVERITY LEVELS
+        // The logging levels described by RFC 5424.
+        // DEBUG (7): Detailed debug information.
+        // INFO (6): Interesting events. Examples: User logs in, SQL logs.
+        // NOTICE (5): Normal but significant events.
+        // WARNING (4): Exceptional occurrences that are not errors. Examples: Use of deprecated APIs, poor use of an API, undesirable things that are not necessarily wrong.
+        // ERROR (3): Runtime errors that do not require immediate action but should typically be logged and monitored.
+        // CRITICAL (2): Critical conditions. Example: Application component unavailable, unexpected exception.
+        // ALERT (1): Action must be taken immediately. Example: Entire website down, database unavailable, etc. This should trigger the SMS alerts and wake you up.
+        // EMERGENCY (0): Emergency: system is unusable.
 
-		// set the line ending type
-		if (php_uname('s') == 'Windows NT') {
-			$line_end = "\r\n";
-		} else {
-			$line_end = "\n";
-		}
+        // We create a new object instead of simply populating the existing with defaults so we can set the attribute order
+        // The original passed object is $log_details, the new object is $log
 
-		// get the log_style or default to json
-		if (!isset($log_details->style) OR $log_details->style == '' OR ($log_details->style != 'json' AND $log_details->style != 'syslog')) {
-			if (isset($CI->data['config']->log_style) AND $CI->data['config']->log_style !== '') {
-				$log->style = $CI->data['config']->log_style;
-			} else {
-				$log->style = $CI->m_oa_config->get_config_item('log_style');
-			}
-			if (!isset($log->style) or $log->style == '' OR ($log->style != 'json' AND $log->style != 'syslog')) {
-				$log->style = 'syslog';
-			}
-		} else {
-			$log->style = $log_details->style;
-		}
+        $CI->load->model('m_oa_config');
 
-		// get the log level or default to 5.
-		if (!isset($log_details->log_level) OR $log_details->log_level == '') {
-			if (isset($CI->data['config']->log_level) AND $CI->data['config']->log_level !== '') {
-				$log->log_level = $CI->data['config']->log_level;
-			} else {
-				$log->log_level = intval($CI->m_oa_config->get_config_item('log_level'));
-			}
-			if (!isset($log->log_level) or $log->log_level == '') {
-				$log->log_level = '5';
-			}
-		} else {
-			$log->log_level = $log_details->log_level;
-		}
+        // set the line ending type
+        if (php_uname('s') == 'Windows NT') {
+            $line_end = "\r\n";
+        } else {
+            $line_end = "\n";
+        }
 
-		if (!isset($log_details->timestamp) or $log_details->timestamp == '') {
-			$log->timestamp = date('Y-m-d H:i:s');
-			if ($log->style == 'json') {
-				$log->timestamp = date('Y-m-d H:i:s');
-			}
-			if ($log->style == 'syslog') {
-				$log->timestamp = date('M d H:i:s');
-			}
-		} else {
-			$log->timestamp = $log_details->timestamp;
-		}
+        // get the log_style or default to syslog
+        if (!isset($log_details->style) or $log_details->style == '' or ($log_details->style != 'json' and $log_details->style != 'syslog')) {
+            $log->style = $CI->config->item('log_style');
+            if (!isset($log->style) or $log->style != 'json') {
+                $log->style = 'syslog';
+            }
+        } else {
+            $log->style = $log_details->style;
+        }
 
-		if (!isset($log_details->severity) or $log_details->severity == '') {
-			$log->severity = 5;
-		} else {
-			$log->severity = $log_details->severity;
-		}
+        // get the log level or default to 5.
+        if (!isset($log_details->log_level) or $log_details->log_level == '') {
+            $log->log_level = $CI->config->item('log_level');
+            if (!isset($log->log_level) or $log->log_level == '') {
+                $log->log_level = '5';
+            }
+        } else {
+            $log->log_level = $log_details->log_level;
+        }
 
-		if (!isset($log_details->message) or $log_details->message == '') {
-			$log->message = 'Access';
-		} else {
-			$log->message = $log_details->message;
-		}
+        if (!isset($log_details->timestamp) or $log_details->timestamp == '') {
+            $log->timestamp = date('Y-m-d H:i:s');
+            if ($log->style == 'json') {
+                $log->timestamp = date('Y-m-d H:i:s');
+            }
+            if ($log->style == 'syslog') {
+                $log->timestamp = date('M d H:i:s');
+            }
+        } else {
+            $log->timestamp = $log_details->timestamp;
+        }
 
-		if (!isset($log_details->display) OR $log_details->display == '' OR 
-		($log_details->display != 'y' AND $log_details->display != 'n')) {
-			$log->display = 'n';
-		} else {
-			$log->display = $log_details->display;
-		}
-		if ($log->display == 'y') {
-			echo "LOG   - " . $log->message . "\n";
-		}
+        if (!isset($log_details->severity) or $log_details->severity == '') {
+            $log->severity = 5;
+        } else {
+            $log->severity = $log_details->severity;
+        }
 
-		// check the requested logging level and if not met, exit
-		if (intval($log->severity) > intval($log->log_level)) {
-			// log called but log severity level not met
-			return;
-		}
+        if (!isset($log_details->message) or $log_details->message == '') {
+            $log->message = 'Access';
+        } else {
+            $log->message = $log_details->message;
+        }
 
-		if (!isset($log_details->severity_text) or $log_details->severity_text == '') {
-			$log->severity_text = 'unknown';
-			if ($log->severity == 7) { $log->severity_text = 'debug'; }
-			if ($log->severity == 6) { $log->severity_text = 'info'; }
-			if ($log->severity == 5) { $log->severity_text = 'notice'; }
-			if ($log->severity == 4) { $log->severity_text = 'warning'; }
-			if ($log->severity == 3) { $log->severity_text = 'error'; }
-			if ($log->severity == 2) { $log->severity_text = 'critical'; }
-			if ($log->severity == 1) { $log->severity_text = 'alert'; }
-			if ($log->severity == 0) { $log->severity_text = 'emergency'; }
-		} else {
-			$log->severity_text = $log_details->severity_text;
-		}
+        if (!isset($log_details->display) or $log_details->display == '' or
+        ($log_details->display != 'y' and $log_details->display != 'n')) {
+            $log->display = 'n';
+        } else {
+            $log->display = $log_details->display;
+        }
+        if ($log->display == 'y') {
+            echo "LOG   - ".$log->message."\n";
+        }
 
+        // check the requested logging level and if not met, exit
+        if (intval($log->severity) > intval($log->log_level)) {
+            // log called but log severity level not met
+            return;
+            // $log->message .= ' Severity:' . $log->severity . ' Level:' . $log->log_level . ' ';
+        }
 
-		if (!isset($log_details->pid) or $log_details->pid == '') {
-			$log->pid = getmypid();
-		} else {
-			$log->pid = $log_details->pid;
-		}
-		if (!isset($log->pid) OR $log->pid == '') {
-			$log->pid = '-';
-		}
+        if (!isset($log_details->severity_text) or $log_details->severity_text == '') {
+            $log->severity_text = 'unknown';
+            if ($log->severity == 7) {
+                $log->severity_text = 'debug';
+            }
+            if ($log->severity == 6) {
+                $log->severity_text = 'info';
+            }
+            if ($log->severity == 5) {
+                $log->severity_text = 'notice';
+            }
+            if ($log->severity == 4) {
+                $log->severity_text = 'warning';
+            }
+            if ($log->severity == 3) {
+                $log->severity_text = 'error';
+            }
+            if ($log->severity == 2) {
+                $log->severity_text = 'critical';
+            }
+            if ($log->severity == 1) {
+                $log->severity_text = 'alert';
+            }
+            if ($log->severity == 0) {
+                $log->severity_text = 'emergency';
+            }
+        } else {
+            $log->severity_text = $log_details->severity_text;
+        }
 
-		if (!isset($log_details->hostname) or $log_details->hostname == '') {
-			$log->hostname = php_uname('n');
-		} else {
-			$log->hostname = $log_details->hostname;
-		}
+        if (!isset($log_details->pid) or $log_details->pid == '') {
+            $log->pid = getmypid();
+        } else {
+            $log->pid = $log_details->pid;
+        }
+        if (!isset($log->pid) or $log->pid == '') {
+            $log->pid = '-';
+        }
 
-		if (!isset($log_details->controller) or $log_details->controller == '') {
-			$router =& load_class('Router', 'core');
-			$log->controller = $router->fetch_class();
-			unset($router);
-		}
-		if (!isset($log->controller) OR $log->controller == '') {
-			$log->controller = '-';
-		}
+        if (!isset($log_details->hostname) or $log_details->hostname == '') {
+            $log->hostname = php_uname('n');
+        } else {
+            $log->hostname = $log_details->hostname;
+        }
 
-		if (!isset($log_details->function) or $log_details->function == '') {
-			$router =& load_class('Router', 'core');
-			$log->function = $router->fetch_method();
-			unset($router);
-		}
-		
-		if (!isset($log->function) OR $log->function == '') {
-			$log->function = '-';
-		}
+        if (!isset($log_details->controller) or $log_details->controller == '') {
+            $router = & load_class('Router', 'core');
+            $log->controller = $router->fetch_class();
+            unset($router);
+        }
+        if (!isset($log->controller) or $log->controller == '') {
+            $log->controller = '-';
+        }
 
-		if (!isset($log_details->user) or $log_details->user == '') {
-			$log->user = $CI->session->userdata('user_full_name');
-			if (!$log->user) {
-				$log->user = '-';
-			}
-		}
+        if (!isset($log_details->function) or $log_details->function == '') {
+            $router = & load_class('Router', 'core');
+            $log->function = $router->fetch_method();
+            unset($router);
+        }
 
-		if (isset($_SERVER['REMOTE_ADDR']) AND $_SERVER['REMOTE_ADDR'] != '') {
-			$log->ip_address = $_SERVER['REMOTE_ADDR'];
-		} else {
-			$log->ip_address = '-';
-		}
+        if (!isset($log->function) or $log->function == '') {
+            $log->function = '-';
+        }
 
-		// create the log line depending on style
-		if ($log->style == 'json') {
-			$log_line = json_encode($log);
-		}
-		if ($log->style == 'syslog') {
-			$log_line = $log->timestamp . ' ' . $log->hostname . ' ' . $log->pid . ' ' . $log->severity . ' U:' . $log->user . ' C:' . $log->controller . ' F:' . $log->function . ' I:' . $log->ip_address . ' M:' . $log->message;
-		}
+        if (!isset($log_details->user) or $log_details->user == '') {
+            if (isset($CI->user->user_full_name)) {
+                $log->user = @$CI->user->user_full_name;
+            } else {
+                $log->user = '-';
+            }
+        } else {
+            $log->user = $log_details->user;
+        }
 
-		if (!isset($log_details->file) or $log_details->file == '') {
-			$log->file = 'access';
-		} else {
-			$log->file = $log_details->file;
-		}
+        if (isset($_SERVER['REMOTE_ADDR']) and $_SERVER['REMOTE_ADDR'] != '') {
+            $log->ip_address = $_SERVER['REMOTE_ADDR'];
+        } else {
+            $log->ip_address = '-';
+        }
 
-		if ((string)php_uname('s') === 'Linux' OR (string)php_uname('s') === 'Darwin') {
-			$file = '/usr/local/open-audit/other/log_' . $log->file . '.log';
-		} else {
-			$file = 'c:\xampplite\open-audit\other\log_' . $log->file . '.log';
-		}
+        // create the log line depending on style
+        if ($log->style == 'json') {
+            $log_line = json_encode($log);
+        }
+        if ($log->style == 'syslog') {
+            $log_line = $log->timestamp.' '.$log->hostname.' '.$log->pid.' '.$log->severity.' U:'.$log->user.' C:'.$log->controller.' F:'.$log->function.' I:'.$log->ip_address.' M:'.$log->message;
+        }
 
-		// log the page view
-		$handle = @fopen($file, 'a');
-		if (!$handle) {
-			// some error happend - could not open or create file
-			// 
-			// create an extra log line and attempt to open the traditional
-			// log file at open-audit.log
-			if (file_exists($file)) {
-				$message = 'File exists. Check it\'s permissions are OK for the web server user. Permissions are ' . substr(sprintf('%o', fileperms($file)), -3);
-			} else {
-				$directory = str_replace('log_' . $log->file . '.log', '', $file);
-				$message = 'File does not exist and cannot be created. Check the directory permissions are writable for the web server user. They are currently ' . substr(sprintf('%o', fileperms($directory)), -3);
-			}
-			$message = 'Could not open requested log file at ' . $file . ', opening traditional log file instead. ' . $message;
-			if ($style == 'json') {
-				$extra_log_line = $log;
-				$extra_log_line->message = $message;
-				$extra_log_line = json_encode($extra_log_line);
-			}
-			if ($style == 'syslog') {
-				$extra_log_line = $log->timestamp . ' ' . $log->hostname . ' ' . $log->severity . ' ' . $log->user . ' ' . $log->controller . ' ' . $log->function . ' ' . $message;
-			}
-			if ((string)php_uname('s') === 'Linux' OR (string)php_uname('s') === 'Darwin') {
-				$file = '/usr/local/open-audit/other/open-audit.log';
-			} else {
-				$file = 'c:\xampplite\open-audit\other\open-audit.log';
-			}
-			$handle = @fopen($file, 'a');
-		}
-		if (!$handle) {
-			// ERROR cannot open either the requested or traditional log files.
-		} else {
-			if (isset($extra_log_line) AND $extra_log_line != '') {
-				fwrite($handle, $extra_log_line . $line_end);
-			}
-			fwrite($handle, $log_line . $line_end);
-			fclose($handle);
-		}
-		unset($log);
-		unset($log_details);
-	}
+        if (!isset($log_details->file) or $log_details->file == '') {
+            $log->file = 'access';
+        } else {
+            $log->file = $log_details->file;
+        }
+
+        if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
+            $file = '/usr/local/open-audit/other/log_'.$log->file.'.log';
+        } else {
+            $file = 'c:\xampplite\open-audit\other\log_'.$log->file.'.log';
+        }
+
+        // log the page view
+        $handle = @fopen($file, 'a');
+        if (!$handle) {
+            // some error happend - could not open or create file
+            //
+            // create an extra log line and attempt to open the traditional
+            // log file at open-audit.log
+            if (file_exists($file)) {
+                $message = 'File exists. Check it\'s permissions are OK for the web server user. Permissions are '.substr(sprintf('%o', fileperms($file)), -3);
+            } else {
+                $directory = str_replace('log_'.$log->file.'.log', '', $file);
+                $message = 'File does not exist and cannot be created. Check the directory permissions are writable for the web server user. They are currently '.substr(sprintf('%o', fileperms($directory)), -3);
+            }
+            $message = 'Could not open requested log file at '.$file.', opening traditional log file instead. '.$message;
+            if ($log->style == 'json') {
+                $extra_log_line = $log;
+                $extra_log_line->message = $message;
+                $extra_log_line = json_encode($extra_log_line);
+            }
+            if ($log->style == 'syslog') {
+                $extra_log_line = $log->timestamp.' '.$log->hostname.' '.$log->severity.' '.$log->user.' '.$log->controller.' '.$log->function.' '.$message;
+            }
+            if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
+                $file = '/usr/local/open-audit/other/open-audit.log';
+            } else {
+                $file = 'c:\xampplite\open-audit\other\open-audit.log';
+            }
+            $handle = @fopen($file, 'a');
+        }
+        if (!$handle) {
+            // ERROR cannot open either the requested or traditional log files.
+        } else {
+            if (isset($extra_log_line) and $extra_log_line != '') {
+                fwrite($handle, $extra_log_line.$line_end);
+            }
+            fwrite($handle, $log_line.$line_end);
+            fclose($handle);
+        }
+        unset($log);
+        unset($log_details);
+    }
 
 /* End of file log_helper.php */
 /* Location: ./system/application/helpers/log_helper.php */
