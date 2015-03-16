@@ -51,7 +51,7 @@ class M_network_card extends MY_Model
 				sys_hw_network_card.timestamp = system.timestamp AND
 				system.system_id = ?
 			GROUP BY
-				net_connection_id";
+				net_index, net_connection_id";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
