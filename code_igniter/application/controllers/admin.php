@@ -3539,7 +3539,6 @@ class admin extends MY_Controller
             stdlog($log_details);
 
             $sql = "UPDATE oa_report SET report_sql = 'SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(NOW(), INTERVAL ? day) AND oa_group_sys.group_id = @group AND (system.man_ip_address <> \"\" AND system.man_ip_address <> \"000.000.000.000\" AND system.man_ip_address <> \"0.0.0.0\") GROUP BY system.system_id ORDER BY system.hostname' WHERE report_name = 'Enterprise - Devices Not Seen in the Last Days'";
-            $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
             $sql = "UPDATE oa_config SET config_value = '20150318' WHERE config_name = 'internal_version'";
