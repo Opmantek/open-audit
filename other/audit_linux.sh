@@ -1754,12 +1754,12 @@ case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' )
 			#dpkg-query --show --showformat="\t\t<package>\n\t\t\t<software_name><![CDATA[\${Package}]]></software_name>\n\t\t\t<software_version><![CDATA[\${Version}]]></software_version>\n\t\t\t<software_url><![CDATA[\${Homepage} ]]></software_url>\n\t\t</package>\n" |\
 			dpkg-query --show --showformat="\t\t<package>\n\t\t\t<software_name><![CDATA[\${Package}]]></software_name>\n\t\t\t<software_version><![CDATA[\${Version}]]></software_version>\n\t\t\t<software_url></software_url>\n\t\t</package>\n" |\
-				sed -e 's/\&.*</</' >> "$xml_file"
+				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 				#sed -e 's/url><.*><\/software/url><\/software/' >> "$xml_file"
 			;;
 		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
 			rpm -qa --queryformat="\t\t<package>\n\t\t\t<software_name><\!\[CDATA\[%{NAME}\]\]></software_name>\n\t\t\t<software_version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></software_version>\n\t\t\t<software_version_orig><\!\[CDATA\[%{VERSION}\]\]></software_version_orig>\n\t\t\t<software_url><\!\[CDATA\[%{URL}\]\]></software_url>\n\t\t</package>\n" |\
-				sed -e 's/\&.*</</' >> "$xml_file"
+				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			#sed -e 's/url><.*><\/software/url><\/software/' >> "$xml_file"
 			;;
 esac
