@@ -491,8 +491,8 @@ class MY_Controller extends CI_Controller
 
                             default:
                                 if (isset($query_row->$col_var_name)) {
-                                    $output = $query_row->$col_var_name;
-                                    echo '			<td style="text-align: '.$column->column_align.';">';
+                                    $output = htmlentities($query_row->$col_var_name);
+                                    echo '			<td style="text-align: '.htmlentities($column->column_align).';">';
                                     if (is_numeric($query_row->$col_var_name)) {
                                         if (strpos($column->column_variable, 'serial') === false and strpos($column->column_variable, 'model') === false) {
                                             $query_row->$col_var_name = number_format($query_row->$col_var_name);
@@ -522,33 +522,33 @@ class MY_Controller extends CI_Controller
                                 $col_align = 'center';
                             }
                             if ((string) $column->column_name === 'Icon') {
-                                echo '			<td style="text-align: '.$col_align.';"><img src="'.$this->relative_url.'theme-tango/tango-images/16_'.str_replace(' ', '_', $query_row->$col_var_name).'.png" style="border-width:0px;" title="'.$query_row->$col_var_name_sec.'" alt="'.$query_row->$col_var_name_sec."\" /></td>\n";
+                                echo '			<td style="text-align: '.htmlentities($col_align).';"><img src="'.$this->relative_url.'theme-tango/tango-images/16_'.htmlentities(str_replace(' ', '_', $query_row->$col_var_name)).'.png" style="border-width:0px;" title="'.htmlentities($query_row->$col_var_name_sec).'" alt="'.htmlentities($query_row->$col_var_name_sec)."\" /></td>\n";
                             }
                             if ((string) $column->column_name === 'Picture') {
-                                echo '			<td style="text-align: '.$col_align.';"><img src="'.$this->relative_url.'device_images/'.$query_row->$col_var_name.'.jpg" style="border-width:0px; height:100px" title="'.$query_row->$col_var_name_sec.'" alt="'.$query_row->$col_var_name_sec."\" /></td>\n";
+                                echo '			<td style="text-align: '.htmlentities($col_align).';"><img src="'.$this->relative_url.'device_images/'.htmlentities($query_row->$col_var_name).'.jpg" style="border-width:0px; height:100px" title="'.htmlentities($query_row->$col_var_name_sec).'" alt="'.htmlentities($query_row->$col_var_name_sec)."\" /></td>\n";
                             }
                                         break;
 
                         /////////////////////
                         case 'ip_address':
-                            echo '			<td style="text-align: '.$col_align.';"><span style="display: none;">'.$query_row->man_ip_address.'&nbsp;</span>'.ip_address_from_db($query_row->man_ip_address)."</td>\n";
+                            echo '			<td style="text-align: '.htmlentities($col_align).';"><span style="display: none;">'.htmlentities($query_row->man_ip_address).'&nbsp;</span>'.htmlentities(ip_address_from_db($query_row->man_ip_address))."</td>\n";
                                         break;
 
                         /////////////////////
                         case 'multi':
-                            echo '			<td style="text-align: '.$col_align.';">'.str_replace(',  ', ',<br />', $query_row->$col_var_name)."</td>\n";
+                            echo '			<td style="text-align: '.htmlentities($col_align).';">'.str_replace(',  ', ',<br />', htmlentities($query_row->$col_var_name))."</td>\n";
                                         break;
 
                         /////////////////////
                         case 'timestamp':
-                            echo '			<td style="text-align: '.$col_align.';">'.$query_row->$col_var_name."</td>\n";
+                            echo '			<td style="text-align: '.htmlentities($col_align).';">'.htmlentities($query_row->$col_var_name)."</td>\n";
                                         break;
 
                         /////////////////////
                         case 'url':
                             $href = '';
                             if ((string) $col_var_name_ter !== '') {
-                                $image = $this->relative_url.'theme-tango/tango-images/16_'.$col_var_name_ter.'.png';
+                                $image = $this->relative_url.'theme-tango/tango-images/16_'.htmlentities($col_var_name_ter).'.png';
                             } else {
                                 $image = $this->relative_url.'theme-tango/tango-images/16_browser.png';
                             }
@@ -564,15 +564,15 @@ class MY_Controller extends CI_Controller
                             }
                             $href = str_replace(' ', '%20', $href);
                             if ($href > '') {
-                                echo '			<td style="text-align: '.$col_align.';"><a href="'.$href.'"><img src="'.$image.'" border="0" title="" alt="" /></a></td>';
+                                echo '			<td style="text-align: '.htmlentities($col_align).';"><a href="'.$href.'"><img src="'.$image.'" border="0" title="" alt="" /></a></td>';
                             } else {
-                                echo '			<td style="text-align: '.$col_align.';"></td>';
+                                echo '			<td style="text-align: '.htmlentities($col_align).';"></td>';
                             }
                                         break;
 
                         /////////////////////
                         default:
-                            echo '			<td align="'.$col_align.'">'.$query_row->$col_var_name.'</td>';
+                            echo '			<td align="'.htmlentities($col_align).'">'.htmlentities($query_row->$col_var_name).'</td>';
                                         break;
                     }
                 }
