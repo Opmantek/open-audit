@@ -50,8 +50,8 @@ echo form_open('admin_org/add_org')."\n";
 				<p><label for='org_parent_id'><?php echo __("Parent")?>: </label>
 					<select id='org_parent_id' name='org_parent_id' tabindex='2' title='Parent'>
 					<?php foreach ($org_names as $value) {
-    echo "<option value='".$value->org_id."'>".$value->org_name."&nbsp;</option>\n";
-} ?>
+					    echo "<option value='".intval($value->org_id)."'>".htmlentities($value->org_name)."&nbsp;</option>\n";
+					} ?>
 					</select>
 				</p>
 				<!-- <p><label for='org_contact'><?php echo __("Contact")?>: </label><input type='text' id='org_contact' name='org_contact' tabindex='3' title='Contact'  value="<?php echo set_value('org_contact'); ?>"/></p> -->

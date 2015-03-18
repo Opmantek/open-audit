@@ -77,8 +77,8 @@ echo form_open('admin_field/add_field')."\n"; ?>
 				<p><label for='group_id'><?php echo __("Group")?>: </label>
 					<select id='group_id' name='group_id' tabindex='4' title='Group' >
 						<?php foreach ($groups as $group) {
-    echo "<option value=\"".$group->group_id."\">".$group->group_name." (".$group->total." devices)</option>\n";
-} ?>
+    						echo "<option value=\"".$group->group_id."\">".$group->group_name." (".$group->total." devices)</option>\n";
+						} ?>
 					<select></p>
 				<p><label for='AddField'>&nbsp;</label><?php echo form_submit(array('id' => 'AddField', 'name' => 'AddField'), 'Add Field'); ?></p>
 			</td>

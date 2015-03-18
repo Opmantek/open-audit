@@ -71,18 +71,18 @@ echo form_open('admin/add_script_audit_windows')."\n";
 				<p><label for='submit_online'><?php echo __("Submit Online")?>: </label><input type='checkbox' id='submit_online' name='submit_online' tabindex='2' title='' checked /></p>
 				<p><label for='create_file'><?php echo __("Create an XML file")?>: </label><input type='checkbox' id='create_file' name='create_file' tabindex='3' title='' /></p>
 				<p><label for='url'><?php echo __("Submit to URL")?>: </label><select name='url' id='url' tabindex='4' title=''>
-					<?php foreach ($url as $id => $value) {
-    echo "<option value='".$value."index.php/system'>".$value."index.php/system</option>";
-} ?>
+				<?php foreach ($url as $id => $value) {
+    				echo "<option value='".$value."index.php/system'>".htmlentities($value)."index.php/system</option>";
+				} ?>
 				</select>
 				<p><label for='use_proxy'><?php echo __("Use a Proxy to submit result")?>: </label><input type='checkbox' id='use_proxy' name='use_proxy' tabindex='5' title='' /></p>
 				<p><label for='struser'><?php echo __("Remote Username")?>: </label><input type='text' id='struser' name='struser' tabindex='6' title=''  value=""/></p>
 				<p><label for='strpass'><?php echo __("Remote User Password")?>: </label><input type='text' id='strpass' name='strpass' tabindex='7' title=''  value=""/></p>
 				<p><label for='org_id'><?php echo __("Organisation")?>: </label><select id='org_id' name='org_id' tabindex='8' title=''>
-					<?php foreach ($org_names as $value) {
-    echo "<option value='".$value->org_id."'>".$value->org_name."&nbsp;</option>\n";
-} ?>
-					</select>
+				<?php foreach ($org_names as $value) {
+    				echo "<option value='".intval($value->org_id)."'>".htmlentities($value->org_name)."&nbsp;</option>\n";
+				} ?>
+				</select>
 				</p>
 				<p><label for='windows_user_work_1'><?php echo __("Active Directory User Details")?> #1: </label><input type='text' id='windows_user_work_1' name='windows_user_work_1' tabindex='9' title=''  value="physicalDeliveryOfficeName"/></p>
 				<p><label for='windows_user_work_2'><?php echo __("Active Directory User Details")?> #2: </label><input type='text' id='windows_user_work_2' name='windows_user_work_2' tabindex='10' title=''  value="company"/></p>

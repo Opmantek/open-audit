@@ -56,12 +56,14 @@ echo form_open('admin_connection/add_connection')."\n";
 				<p><label for='connection_product_name'><?php echo __("Product Name")?>: </label><input type='text' id='connection_product_name' name='connection_product_name' tabindex='5' title='Level'  value="<?php echo set_value('connection_product_name'); ?>"/></p>
 				<p><label for='connection_service_identifier'><?php echo __("Service ID")?>: </label><input type='text' id='connection_service_identifier' name='connection_service_identifier' tabindex='6' title='Service ID'  value="<?php echo set_value('connection_service_identifier'); ?>"/></p>
 				<p><label for='connection_speed'><?php echo __("Speed")?>: </label><input type='text' id='connection_speed' name='connection_speed' tabindex='7' title='Speed'  value="<?php echo set_value('connection_speed'); ?>"/></p>
-				<p><label for="connection_location_id_a"><?php echo __("Location A"); ?>: </label><select id='connection_location_id_a' name='connection_location_id_a' tabindex='8' title='Location A' ><option value="">&nbsp;</option><?php foreach ($locations as $location) {
-    echo "<option value=\"".$location->location_id."\">".$location->location_name."</option>\n";
-} ?></select></p>
-				<p><label for="connection_location_id_b"><?php echo __("Location B"); ?>: </label><select id='connection_location_id_b' name='connection_location_id_b' tabindex='9' title='Location A' ><option value="">&nbsp;</option><?php foreach ($locations as $location) {
-    echo "<option value=\"".$location->location_id."\">".$location->location_name."</option>\n";
-} ?></select></p>
+				<p><label for="connection_location_id_a"><?php echo __("Location A"); ?>: </label><select id='connection_location_id_a' name='connection_location_id_a' tabindex='8' title='Location A' ><option value="">&nbsp;</option>
+				<?php foreach ($locations as $location) {
+    				echo "<option value=\"".intval($location->location_id)."\">".htmlentities($location->location_name)."</option>\n";
+				} ?></select></p>
+				<p><label for="connection_location_id_b"><?php echo __("Location B"); ?>: </label><select id='connection_location_id_b' name='connection_location_id_b' tabindex='9' title='Location A' ><option value="">&nbsp;</option>
+				<?php foreach ($locations as $location) {
+				    echo "<option value=\"".intval($location->location_id)."\">".htmlentities($location->location_name)."</option>\n";
+				} ?></select></p>
 				<p><label for='connection_system_id_a'><?php echo __("System A")?>: </label><input type='text' id='connection_system_id_a' name='connection_system_id_a' tabindex='10' title='System A'  value="<?php echo set_value('connection_system_id_a'); ?>"/></p>
 				<p><label for='connection_system_id_a'><?php echo __("System B")?>: </label><input type='text' id='connection_system_id_b' name='connection_system_id_b' tabindex='11' title='System B'  value="<?php echo set_value('connection_system_id_b'); ?>"/></p>
 				<p><label for='connection_line_number_a'><?php echo __("Line A")?>: </label><input type='text' id='connection_line_number_a' name='connection_line_number_a' tabindex='12' title='Longitude'  value="<?php echo set_value('connection_line_number_a'); ?>"/></p>

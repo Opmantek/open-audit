@@ -393,9 +393,7 @@
 	<br />
 	<?php if ($access_level > 7) {
     ?>
-	<form action="<?php echo base_url();
-    ?>index.php/main/add_attachment/<?php echo $system_id;
-    ?>" method="post" enctype="multipart/form-data" class="niceforms">
+	<form action="<?php echo base_url(); ?>index.php/main/add_attachment/<?php echo intval($system_id); ?>" method="post" enctype="multipart/form-data" class="niceforms">
 	<?php } else { ?>
 	<form action="#" method="post" class="niceforms">
 	<?php } ?>

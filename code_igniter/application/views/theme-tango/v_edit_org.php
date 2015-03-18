@@ -48,7 +48,7 @@ echo form_open('admin_org/edit_org')."\n";
 	<table width="90%" cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='50%'>
-				<p><label for='org_name'><?php echo __("Name")?>: </label><input type='text' id='org_name' name='org_name' tabindex='1' title='Organisation Name' value="<?php echo htmlentities($org->org_name); ?>"/><?php echo htmletities($error_message); ?></p>
+				<p><label for='org_name'><?php echo __("Name")?>: </label><input type='text' id='org_name' name='org_name' tabindex='1' title='Organisation Name' value="<?php echo htmlentities($org->org_name); ?>"/><?php echo htmlentities($error_message); ?></p>
 				<p><label for='org_parent_id'><?php echo __("Parent")?>: </label>
 					<select id='org_parent_id' name='org_parent_id' tabindex='2' title='Parent'/>
 					<?php

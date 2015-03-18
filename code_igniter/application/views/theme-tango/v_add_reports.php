@@ -49,36 +49,20 @@ if (count($query) > 1) {
 	</thead>
 	<tbody>
 		<?php foreach ($query as $key): ?>
-			<?php if ($key['report_name'] > '') {
-    ?>
+			<?php if ($key['report_name'] > '') { ?>
 				<tr>
-					<td><?php echo __($key['report_name']);
-    ?></td>
-					<td><?php echo $key['report_description'];
-    ?></td>
-					<?php if ($key['activated']) {
-    ?>
-						<td align="center"><a href="action_deactivate_report/<?php echo $key['activated'];
-    ?>"><img src="<?php echo $oa_theme_images;
-    ?>/16_delete.png" alt="" title="" width="16"/></a></td>
+					<td><?php echo __($key['report_name']); ?></td>
+					<td><?php echo $key['report_description']; ?></td>
+					<?php if ($key['activated']) { ?>
+						<td align="center"><a href="action_deactivate_report/<?php echo $key['activated']; ?>"><img src="<?php echo $oa_theme_images; ?>/16_delete.png" alt="" title="" width="16"/></a></td>
 						<td align="center"><?php echo __('yes')?></td>
-					<?php 
-} else {
-    ?>
-						<td align="center"><a href="action_activate_report/<?php echo $key['file'];
-    ?>"><img src="<?php echo $oa_theme_images;
-    ?>/16_true.png"   alt="" title="" width="16"/></a></td>
+					<?php } else { ?>
+						<td align="center"><a href="action_activate_report/<?php echo $key['file']; ?>"><img src="<?php echo $oa_theme_images; ?>/16_true.png"   alt="" title="" width="16"/></a></td>
 						<td align="center"></td>
-					<?php 
-}
-    ?>
+					<?php } ?>
 				</tr>
-				<?php 
-}
-    ?>
-		<?php endforeach;
-    ?>
+				<?php } ?>
+		<?php endforeach; ?>
 	</tbody>
 </table>
-<?php 
-} ?>
+<?php } ?>

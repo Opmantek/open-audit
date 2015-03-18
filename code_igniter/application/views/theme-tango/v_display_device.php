@@ -151,7 +151,7 @@ if ($system[0]->man_type == 'computer') {
     # vm_system_id is only settable in the edit multiple devices form.
     if (isset($system[0]->man_vm_server_name) and $system[0]->man_vm_server_name != '' and
         isset($system[0]->man_vm_system_id) and $system[0]->man_vm_system_id != '') {
-        $system[0]->man_vm_server_name = '<a style="text-decoration: underline; color:blue;" href="'.base_url().'index.php/main/system_display/'.$system[0]->man_vm_system_id.'">'.$system[0]->man_vm_server_name.'</a>';
+        $system[0]->man_vm_server_name = '<a style="text-decoration: underline; color:blue;" href="'.base_url().'index.php/main/system_display/'.intval($system[0]->man_vm_system_id).'">'.htmlentities($system[0]->man_vm_server_name).'</a>';
     }
 } else {
     $summary_attributes = array_slice($summary_attributes, 0, 6) +
@@ -222,7 +222,7 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
                 }
 
                 if ($value == '' and isset($system[0]->$key) and $system[0]->$key > '') {
-                    echo "<p><label for='$key'>".__($text).": </label><span id='$key'>".print_something($system[0]->$key)."</span></p>\n";
+                    echo "<p><label for='$key'>".__($text).": </label><span id='$key'>".$system[0]->$key."</span></p>\n";
                 }
 
                 if ($value == 'text') {

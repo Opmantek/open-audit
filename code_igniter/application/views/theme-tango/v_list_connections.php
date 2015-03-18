@@ -58,10 +58,10 @@ if (count($query) > 0) {
                     $delete_pic = "<a href=\"delete_connection/".intval($key->connection_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
                     ?>
 			<tr>
-				<td><?php echo $key->name?></td>
-				<td><a href="../main/view_org/<?php echo $key->org_id?>"><?php echo htmlentities($key->org_name)?></a></td>
-				<td><a href="../main/view_location/<?php echo $key->location_id_a?>"><?php echo htmlentities($key->location_a)?></a></td>
-				<td><a href="../main/view_location/<?php echo $key->location_id_a?>"><?php echo htmlentities($key->location_b)?></a></td>
+				<td><?php echo htmlentities($key->name)?></td>
+				<td><a href="../main/view_org/<?php echo intval($key->org_id)?>"><?php echo htmlentities($key->org_name)?></a></td>
+				<td><a href="../main/view_location/<?php echo htmlentities($key->location_id_a)?>"><?php echo htmlentities($key->location_a)?></a></td>
+				<td><a href="../main/view_location/<?php echo htmlentities($key->location_id_b)?>"><?php echo htmlentities($key->location_b)?></a></td>
 				<td><?php echo htmlentities($key->provider)?></td>
 				<td><?php echo htmlentities($key->service_type)?></td>
 				<td align="right"><?php echo htmlentities($key->speed)?></td>
