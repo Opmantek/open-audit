@@ -115,7 +115,7 @@ if (isset($form_url) and $form_url != '') {
     </div>
 <?php if (isset($oae_message)) {
     echo "<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>\n";
-    echo "\t\t<span style='font-size: 12pt;'>".htmlentities($oae_message)."<br /><br /></span>\n";
+    echo "\t\t<span style='font-size: 12pt;'>".$oae_message."<br /><br /></span>\n";
     echo "</div>\n";
 }
 ?>
