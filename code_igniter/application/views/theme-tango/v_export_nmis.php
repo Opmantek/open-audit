@@ -77,16 +77,16 @@ if (count($query) > 0) {
     $i = 0;
     foreach ($query as $key) {
         echo "\t\t<tr>\n";
-        echo "\t\t\t<td align=\"left\"><a class=\"SystemPopupTrigger\" rel=\"".$key->system_id."\" href=\"".site_url()."/main/system_display/".$key->system_id."\">".$key->nmis_name."</a></td>\n";
-        echo "\t\t\t<td align=\"left\">".$key->nmis_host."</td>\n";
-        echo "\t\t\t<td align=\"left\">".$key->nmis_group."</td>\n";
-        echo "\t\t\t<td align=\"left\">".$key->nmis_role."</td>\n";
-        echo "\t\t\t<td align=\"left\">".$key->nmis_community."</td>\n";
-        echo "\t\t\t<td align=\"left\">".$key->nmis_snmp_version."</td>\n";
+        echo "\t\t\t<td align=\"left\"><a class=\"SystemPopupTrigger\" rel=\"".intval($key->system_id)."\" href=\"".site_url()."/main/system_display/".intval($key->system_id)."\">".htmlentities($key->nmis_name)."</a></td>\n";
+        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_host)."</td>\n";
+        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_group)."</td>\n";
+        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_role)."</td>\n";
+        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_community)."</td>\n";
+        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_snmp_version)."</td>\n";
         if ($manual_edit == 'y') {
             echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_";
-            echo $key->system_id."\" name=\"system_id_".$key->system_id."\"";
-            if ($key->nmis_export == 'true') {
+            echo intval($key->system_id)."\" name=\"system_id_".intval($key->system_id)."\"";
+            if ((string)$key->nmis_export == 'true') {
                 echo "checked";
             }
             echo "/></td>\n";
@@ -111,7 +111,7 @@ function check_all_systems() {
 		<?php
         foreach ($query as $key):
             if (isset($key->system_id)) {
-                echo "\tdocument.getElementById(\"system_id_".$key->system_id."\").checked = true;\n";
+                echo "\tdocument.getElementById(\"system_id_".intval($key->system_id)."\").checked = true;\n";
             }
         endforeach;
         ?>
@@ -119,7 +119,7 @@ function check_all_systems() {
 		<?php
         foreach ($query as $key):
             if (isset($key->system_id)) {
-                echo "\tdocument.getElementById(\"system_id_".$key->system_id."\").checked = false;\n";
+                echo "\tdocument.getElementById(\"system_id_".intval($key->system_id)."\").checked = false;\n";
             }
         endforeach;
         ?>

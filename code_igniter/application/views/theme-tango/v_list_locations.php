@@ -55,21 +55,21 @@ if (count($query) > 0) {
         if (count($query) > 0) {
             foreach ($query as $key):
 
-                $edit_pic = "<a href=\"edit_location/".$key->location_id."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-            $delete_pic = "<a href=\"delete_location/".$key->location_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                $edit_pic = "<a href=\"edit_location/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
+            $delete_pic = "<a href=\"delete_location/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
 
             if ($key->location_name == '') {
                 $key->location_name = '(none)';
             }
 
             if ($key->location_group_id > '0') {
-                $show_pic = "<a href=\"../main/list_devices/".$key->location_group_id."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' width='16'/></a>";
-                $deactivate_pic = "<a href=\"delete_group/".$key->location_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                $show_pic = "<a href=\"../main/list_devices/".intval($key->location_group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' width='16'/></a>";
+                $deactivate_pic = "<a href=\"delete_group/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
                 $activate_pic = '';
             } else {
                 $show_pic = '';
                 $deactivate_pic = '';
-                $activate_pic = "<a href=\"activate_group/".$key->location_id."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
+                $activate_pic = "<a href=\"activate_group/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
             }
 
             if ($key->location_id == '0') {
@@ -79,10 +79,10 @@ if (count($query) > 0) {
             ?>
 			<tr>
 				<td align="center"><?php echo $key->total?></td>
-				<td><a href="../main/view_location/<?php echo $key->location_id?>"><?php echo $key->location_name?></a></td>
-				<td><?php echo $key->location_comments?></td>
-				<td><?php echo $key->location_address?></td>
-				<td><?php echo $key->location_type?></td>
+				<td><a href="../main/view_location/<?php echo $key->location_id?>"><?php echo htmlentities($key->location_name)?></a></td>
+				<td><?php echo htmlentities($key->location_comments)?></td>
+				<td><?php echo htmlentities($key->location_address)?></td>
+				<td><?php echo htmlentities($key->location_type)?></td>
 				<td align="center"><?php echo $activate_pic?></td>
 				<td align="center"><?php echo $deactivate_pic?></td>
 				<td align="center"><?php echo $show_pic?></td>

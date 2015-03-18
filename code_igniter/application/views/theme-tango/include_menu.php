@@ -63,14 +63,14 @@
     usort($menu, "cmp");
 
     if (isset($group_id)) {
-        echo "<li><a href='".$oa_web_index."/main/list_devices/".$group_id."'>".mb_strtoupper(__('Queries'))."</a>\n";
+        echo "<li><a href='".$oa_web_index."/main/list_devices/".intval($group_id)."'>".mb_strtoupper(__('Queries'))."</a>\n";
         echo "<ul>\n";
-        echo "<li style=\"width:200px;\"><a href='".$oa_web_index."/main/list_devices/".$group_id."'>List Items</a></li>\n";
+        echo "<li style=\"width:200px;\"><a href='".$oa_web_index."/main/list_devices/".intval($group_id)."'>List Items</a></li>\n";
         foreach ($menu as $report):
             if ($report->report_id > '') {
-                echo "<li style=\"width:200px;\"><a href='".$oa_web_index."/report/show_report/".$report->report_id."/".$group_id."'>".$report->report_name."</a></li>\n";
+                echo "<li style=\"width:200px;\"><a href='".$oa_web_index."/report/show_report/".intval($report->report_id)."/".intval($group_id)."'>".htmlentities($report->report_name)."</a></li>\n";
             } else {
-                echo "<li style=\"width:200px;\"><a href='".$oa_web_index."/report/".strtolower(str_replace(" ", "_", $report->report_name))."/".$group_id."'>".$report->report_name."</a></li>\n";
+                echo "<li style=\"width:200px;\"><a href='".$oa_web_index."/report/".strtolower(str_replace(" ", "_", htmlentities($report->report_name)))."/".intval($group_id)."'>".htmlentities($report->report_name)."</a></li>\n";
             }
         endforeach;
         echo "</ul>\n";
@@ -208,33 +208,20 @@
             </li>
         </ul>
     </li>
-    <?php
-
-    }
-    ?>
+    <?php } ?>
 
     <?php
-    if (($this->user->user_admin == 'y') and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')) {
-        ?>
+    if (($this->user->user_admin == 'y') and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')) { ?>
     <!-- // Only display the below code if the logged in user is an Admin -->
     <li><a href='#'><?php echo mb_strtoupper(__('NMIS'))?></a>
         <ul>
             <li><a href='<?php echo $oa_web_index?>/admin/import_nmis'><?php echo __('Import')?></a></li>
-            <?php if (isset($group_id)) {
-    ?>
-            <li><a href='<?php echo $oa_web_index;
-    ?>/admin/export_nmis/<?php echo $group_id;
-    ?>'><?php echo __('Export')?></a></li>
-            <?php
-
-}
-        ?>
+            <?php if (isset($group_id)) { ?>
+            <li><a href='<?php echo $oa_web_index; ?>/admin/export_nmis/<?php echo intval($group_id); ?>'><?php echo __('Export')?></a></li>
+            <?php } ?>
         </ul>
     </li>
-    <?php
-
-    }
-    ?>
+    <?php } ?>
 
     <li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Help'))?></a>
         <ul>
@@ -249,8 +236,7 @@
         </ul>
     </li>
 
-    <?php if ($include == 'v_main') {
-    ?>
+    <?php if ($include == 'v_main') { ?>
         <li style="float:right; position:relative; padding-right:4px;">
             <form name="search_form" action="<?php echo $oa_web_index?>/main/search_device" method="post">
                 <table>
@@ -261,19 +247,14 @@
                 </table>
             </form>
         </li>
-    <?php
-
-} ?>
+    <?php } ?>
 
 
-    <?php if (isset($export_report)) {
-    ?>
-        <?php if (isset($group_id)) {
-    ?>
-            <?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) {
-    ?>
+    <?php if (isset($export_report)) { ?>
+        <?php if (isset($group_id)) { ?>
+            <?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
                 <li style="float:right; position:relative; padding-right:4px;">
-                    <form name="search_form" action="<?php echo $oa_web_index?>/main/search/<?php echo $group_id?>/" method="post">
+                    <form name="search_form" action="<?php echo $oa_web_index?>/main/search/<?php echo intval($group_id);?>/" method="post">
                         <table>
                             <tr>
                                 <td><input type="text" name="search"/></td>
@@ -282,12 +263,8 @@
                         </table>
                     </form>
                 </li>
-            <?php 
-}
-    ?>
-        <?php 
-}
-    ?>
+            <?php } ?>
+        <?php } ?>
         <?php
         // see if this is a report with a timestamp column - if so, display an RSS icon
         if (isset($column)) {
@@ -300,10 +277,8 @@
             if ($hit == 'y') {
                 ?>
                 <li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo current_url().'/username/'.$this->user->user_name?>/password/YOUR_PASSWORD/rss"><img src="<?php echo $oa_theme_images?>/16_rss.png" alt="RSS Link" title="RSS Link"/></a></li>
-            <?php 
-            }
-        }
-    ?>
+            <?php }
+            } ?>
         <li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo current_url()?>/xml"><img src="<?php echo $oa_theme_images?>/16_text-x-generic-template.png" alt="Export as XML" title="Export as XML"/></a></li>
         <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/html"><img src="<?php echo $oa_theme_images?>/16_web.png" alt="Export as HTML" title="Export as HTML"/></a></li>
         <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/csv"><img src="<?php echo $oa_theme_images?>/16_csv.png" alt="Export as CSV" title="Export as CSV"/></a></li>

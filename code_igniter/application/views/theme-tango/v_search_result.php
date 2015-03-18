@@ -45,33 +45,29 @@ if ($query) {
 		</tr>
 	</thead>
 	<tbody>
-		<?php foreach ($query as $key): ?>
-		<?php
-            // format the table and field names
-            $key->table = str_replace("sys_hw_", "", $key->table);
-    $key->table = str_replace("sys_sw_", "", $key->table);
-    $key->table = str_replace("_", " ", $key->table);
-    $key->table = ucwords($key->table);
+	<?php foreach ($query as $key): ?>
+	<?php
+        // format the table and field names
+        $key->table = str_replace("sys_hw_", "", $key->table);
+        $key->table = str_replace("sys_sw_", "", $key->table);
+        $key->table = str_replace("_", " ", $key->table);
+        $key->table = ucwords($key->table);
 
-    $key->field = str_replace("sys_hw_", "", $key->field);
-    $key->field = str_replace("sys_sw_", "", $key->field);
-    $key->field = str_replace("_", " ", $key->field);
-    $key->field = ucwords($key->field);
+        $key->field = str_replace("sys_hw_", "", $key->field);
+        $key->field = str_replace("sys_sw_", "", $key->field);
+        $key->field = str_replace("_", " ", $key->field);
+        $key->field = ucwords($key->field);
 
-    if ($key->hostname == "") {
-        $key->hostname = "-";
-    }
+        if ($key->hostname == "") {
+            $key->hostname = "-";
+        }
     ?>
 
 		<tr>
-			<td align="center"><a class="SystemPopupTrigger" rel="<?php echo $key->system_id;
-    ?>" href="<?php echo site_url();
-    ?>/main/system_display/<?php echo $key->system_id;
-    ?>"><?php echo $key->hostname;
-    ?></a></td>
-			<td align="center"><?php echo $key->table?></td>
-			<td align="center"><?php echo $key->field?></td>
-			<td align="center"><?php echo $key->result?></td>
+			<td align="center"><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>"><?php echo htmlentities($key->hostname); ?></a></td>
+			<td align="center"><?php echo htmlentities($key->table)?></td>
+			<td align="center"><?php echo htmlentities($key->field)?></td>
+			<td align="center"><?php echo htmlentities($key->result)?></td>
 		</tr>
 		<?php endforeach;
     ?>

@@ -64,7 +64,7 @@ $(document).ready(function(){
 	$.jqplot.config.enablePlugins = true;
 	line1 = <?php echo $line1."\n"; ?>
 	plot1 = $.jqplot('chart1', [line1], {
-		title:'<?php echo $graph_title; ?>',
+		title:'<?php echo htmlentities($graph_title); ?>',
 		legend: {show:false},
 		axesDefaults: {
 			tickRenderer: $.jqplot.CanvasAxisTickRenderer ,

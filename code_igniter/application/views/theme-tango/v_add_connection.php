@@ -46,9 +46,10 @@ echo form_open('admin_connection/add_connection')."\n";
 	<table width="780" cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='100%'>
-				<p><label for="connection_org_id"><?php echo __("Organisation Name"); ?>: </label><select id="connection_org_id" name="connection_org_id" tabindex='1' title='Organisation Name'><option value="">&nbsp;</option><?php foreach ($orgs as $org) {
-    echo "<option value=\"".$org->org_id."\">".$org->org_name."</option>\n";
-} ?></select></p>
+				<p><label for="connection_org_id"><?php echo __("Organisation Name"); ?>: </label><select id="connection_org_id" name="connection_org_id" tabindex='1' title='Organisation Name'><option value="">&nbsp;</option>
+				<?php foreach ($orgs as $org) {
+    				echo "<option value=\"".intval($org->org_id)."\">".htmlentities($org->org_name)."</option>\n";
+				} ?></select></p>
 				<p><label for='connection_name'><?php echo __("Name")?>: </label><input type='text' id='connection_name' name='connection_name' tabindex='2' title='Connection Name' value="<?php echo set_value('connection_name'); ?>"/><?php echo $error_message; ?></p>
 				<p><label for='connection_provider'><?php echo __("Provider")?>: </label><input type='text' id='connection_provider' name='connection_provider' tabindex='3' title='Provider'  value="<?php echo set_value('connection_provider'); ?>"/></p>
 				<p><label for='connection_service_type'><?php echo __("Service Type")?>: </label><input type='text' id='connection_service_type' name='connection_service_type' tabindex='4' title='Service Type'  value="<?php echo set_value('connection_service_type'); ?>"/></p>

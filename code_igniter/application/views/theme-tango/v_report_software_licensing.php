@@ -42,11 +42,9 @@
 			<th><?php echo __('Publisher')?></th>
 			<th align="center"><?php echo __('Installs')?></th>
 			<th align="center"><?php echo __('Licenses')?></th>
-			<?php if ($this->user->user_sam > '1') {
-    ?>
+			<?php if ($this->user->user_sam > '1') { ?>
 			<th align="center"><?php echo __('Edit')?></th>
-			<?php 
-} ?>
+			<?php } ?>
 		</tr>
 	</thead>
 	<tbody>
@@ -56,22 +54,22 @@
             $key->software_licenses = '-';
         } else {
             if (($key->software_licenses > '0') and ($key->software_licenses > $key->software_count)) {
-                $key->software_licenses = '<font color="green">'.$key->software_licenses.'</font>';
+                $key->software_licenses = '<font color="green">'.intval($key->software_licenses).'</font>';
             }
             if (($key->software_licenses > '0') and ($key->software_licenses < $key->software_count)) {
-                $key->software_licenses = '<font color="red">'.$key->software_licenses.'</font>';
+                $key->software_licenses = '<font color="red">'.intval($key->software_licenses).'</font>';
             }
             if (($key->software_licenses > '0') and ($key->software_licenses == $key->software_count)) {
-                $key->software_licenses = '<font color="blue">'.$key->software_licenses.'</font>';
+                $key->software_licenses = '<font color="blue">'.intval($key->software_licenses).'</font>';
             }
         }
     ?>
 		<tr>
 			<td><a href="<?php echo base_url(); ?>index.php/report/specific_software/<?php echo $group_id; ?>/<?php echo $key->software_id; ?>"><?php echo $key->software_name; ?></a></td>
-			<td><?php echo $key->software_comment; ?></td>
-			<td><?php echo $key->software_version; ?></td>
-			<td><?php echo $key->software_publisher; ?></td>
-			<td align="center"><?php echo $key->software_count; ?></td>
+			<td><?php echo htmlentities($key->software_comment); ?></td>
+			<td><?php echo htmlentities($key->software_version); ?></td>
+			<td><?php echo htmlentities($key->software_publisher); ?></td>
+			<td align="center"><?php echo intval($key->software_count); ?></td>
 			<td align="center"><?php echo $key->software_licenses ?></td>
 			<?php
             if ($this->user->user_sam > '1') {
@@ -95,7 +93,7 @@
 function dynamic_asset( software_name )
 {
 	licenses = document.getElementById("licenses").value;
-	location.href = '<?php echo site_url(); ?>/admin_licenses/change_license/<?php echo $group_id; ?>/' + licenses + '/' + software_name;
+	location.href = '<?php echo site_url(); ?>/admin_licenses/change_license/<?php echo intval($group_id); ?>/' + licenses + '/' + software_name;
 	return false;
 }
 </script>

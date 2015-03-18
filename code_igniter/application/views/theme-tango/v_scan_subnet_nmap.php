@@ -43,9 +43,7 @@
 				<p><label for='subnet'><?php echo __("Subnet"); ?>: </label> <input type='text' id='subnet' name='subnet' tabindex='1' title='Subnet'  /></p>
 				<p><label for='example'><?php echo __("Example"); ?>: </label>A typical subnet is 192.168.1.0/24 or 192.168.0.1/32 for a single IP.</p>
 				<p><label for='ScanNmap'>&nbsp;</label><input type='submit' name='ScanNmap' id='ScanNmap' value='Scan' /></p>
-				<?php if ($warning > '') {
-    echo "<p><br /><br />$warning</p>\n";
-} ?>
+				<?php if ($warning > '') { echo "<p><br /><br />$warning</p>\n"; } ?>
 			</td>
 		</tr>
 	</table>

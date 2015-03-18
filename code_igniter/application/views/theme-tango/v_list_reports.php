@@ -49,38 +49,29 @@ if (count($query) > 0) {
         if (count($query) > 0) {
             foreach ($query as $key):
                 if ($key->report_id > 0) {
-                    $edit_pic = "<a href=\"edit_report/".$key->report_id."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-                    $export_pic = "<a href=\"export_report/".$key->report_id."\"><img src='".$oa_theme_images."/16_text-x-generic-template.png' alt='' title='' width='16'/></a>";
-                    $delete_pic = "<a href=\"delete_report/".$key->report_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                    $edit_pic = "<a href=\"edit_report/".intval($key->report_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
+                    $export_pic = "<a href=\"export_report/".intval($key->report_id)."\"><img src='".$oa_theme_images."/16_text-x-generic-template.png' alt='' title='' width='16'/></a>";
+                    $delete_pic = "<a href=\"delete_report/".intval($key->report_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
                     ?>
-			<tr>
-				<td><?php echo __($key->report_name)?></td>
-				<td align="center"><?php echo $edit_pic?></td>
-				<td align="center"><?php echo $export_pic?></td>
-				<td align="center"><?php echo $delete_pic?></td>
-			</tr>
-			<?php 
-                }
-            ?>
-			<?php endforeach;
-            ?>
-		<?php 
-        } else {
-            ?>
+        			<tr>
+        				<td><?php echo htmlentities(__($key->report_name))?></td>
+        				<td align="center"><?php echo $edit_pic?></td>
+        				<td align="center"><?php echo $export_pic?></td>
+        				<td align="center"><?php echo $delete_pic?></td>
+        			</tr>
+    			<?php } ?>
+			<?php endforeach; ?>
+		<?php } else { ?>
 		<tr>
 			<td>&nbsp;</td>
 			<td></td>
 			<td></td>
 			<td></td>
 		</tr>
-		<?php 
-        }
-    ?>
+		<?php } ?>
 	</tbody>
 </table>
-<?php
-
-} else {
+<?php } else {
     echo "<br />".__('There are no current reports').".<br />";
 }
 ?>

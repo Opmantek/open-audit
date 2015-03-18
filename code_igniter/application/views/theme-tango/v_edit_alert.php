@@ -69,7 +69,7 @@ echo form_open('change/process_edit_alert')."\n";
 	<br /><br />
 	<?php
     foreach ($query as $key) {
-        echo "<input type=\"hidden\" name=\"alert_id_".$key->alert_id."\" value=\"".$key->alert_id."\" />\n";
+        echo "<input type=\"hidden\" name=\"alert_id_".print_something($key->alert_id)."\" value=\"".print_something($key->alert_id)."\" />\n";
     }
     ?>
 	<label for="submit">&nbsp;</label>
@@ -93,10 +93,10 @@ echo form_open('change/process_edit_alert')."\n";
 			<?php foreach ($query as $key): ?>
 			<tr>
 				<td><?php echo $key->timestamp?></td>
-				<td><span style="display: none;"><?php echo $key->man_ip_address?></span><?php echo ip_address_from_db($key->man_ip_address)?></td>
-				<td><a class="SystemPopupTrigger" rel="<?php echo $key->system_id;?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo $key->system_id?>"><?php echo $key->hostname?></a></td>
-				<td><?php echo $key->man_description?></td>
-				<td><?php echo $key->alert_details?></td>
+				<td><span style="display: none;"><?php echo print_something($key->man_ip_address)?></span><?php echo ip_address_from_db(print_something($key->man_ip_address))?></td>
+				<td><a class="SystemPopupTrigger" rel="<?php echo $key->system_id;?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo $key->system_id?>"><?php echo print_something($key->hostname)?></a></td>
+				<td><?php echo print_something($key->man_description)?></td>
+				<td><?php echo print_something($key->alert_details)?></td>
 			</tr>
 			<?php endforeach; ?>
 		</tbody>

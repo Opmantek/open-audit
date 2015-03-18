@@ -100,7 +100,7 @@ if (isset($form_url) and $form_url != '') {
                     <p><label for="password">Password: </label><input type="password" name="password" id="password" size="20" /></p>
                     <p><?php
                     echo form_submit('login', 'Login');
-                    echo $this->session->flashdata('message');
+                    echo htmlentities($this->session->flashdata('message'));
                     ?>
                     <br />&nbsp;</p>
                 </div>
@@ -115,7 +115,7 @@ if (isset($form_url) and $form_url != '') {
     </div>
 <?php if (isset($oae_message)) {
     echo "<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>\n";
-    echo "\t\t<span style='font-size: 12pt;'>".$oae_message."<br /><br /></span>\n";
+    echo "\t\t<span style='font-size: 12pt;'>".htmlentities($oae_message)."<br /><br /></span>\n";
     echo "</div>\n";
 }
 ?>

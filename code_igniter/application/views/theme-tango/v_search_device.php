@@ -83,25 +83,25 @@ foreach ($query as $row) {
                     if ($row->$column_variable_name == '') {
                         $row->$column_variable_name = '-';
                     }
-                    echo "\t\t\t<td align=\"$column_align\"><a href=\"../main/system_display/".$row->system_id."\">".htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8")."</a></td>\n";
+                    echo "\t\t\t<td align=\"$column_align\"><a href=\"../main/system_display/".intval($row->system_id)."\">".htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8")."</a></td>\n";
                     break;
 
             case "text":
                 switch ($column_variable_name) {
                 case "tag":
-                    echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"".$row->system_id."\" href=\"#\"><img src=\"".$oa_theme_images."/16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
+                    echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"".intval($row->system_id)."\" href=\"#\"><img src=\"".$oa_theme_images."/16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
                 break;
 
                 default:
                     if (isset($row->$column_variable_name)) {
                         $output = $row->$column_variable_name;
                         if (is_numeric($output) and (strpos($column_variable_name, "serial") === false) and (strpos($column_variable_name, "model") === false)) {
-                            echo "\t\t\t<td align=\"right\"><span style=\"display: none;\">".mb_substr("0000000000".$output, -10)."</span><span id=\"".$column_variable_name."-".$i."\" onMouseOver=\"show_modifier('".$column_variable_name."','".$i."');\"  >".$output."</span><span id=\"".$row->$column_variable_name."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
+                            echo "\t\t\t<td align=\"right\"><span style=\"display: none;\">".mb_substr("0000000000".$output, -10)."</span><span id=\"".htmlentities($column_variable_name)."-".$i."\" onMouseOver=\"show_modifier('".htmlentities($column_variable_name)."','".$i."');\"  >".htmlentities($output)."</span><span id=\"".htmlentities($row->$column_variable_name)."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
                         } else {
                             if ($row->$column_variable_name == '') {
                                 $row->$column_variable_name = ' ';
                             }
-                            echo "\t\t\t<td align=\"$column_align\"><span id=\"".$column_variable_name."-".$i."\" onMouseOver=\"show_modifier('".$column_variable_name."','".$i."');\"  >".htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8")."</span><span id=\"".$row->$column_variable_name."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
+                            echo "\t\t\t<td align=\"$column_align\"><span id=\"".htmlentities($column_variable_name)."-".$i."\" onMouseOver=\"show_modifier('".htmlentities($column_variable_name)."','".$i."');\"  >".htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8")."</span><span id=\"".htmlentities($row->$column_variable_name)."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
                         }
                     } else {
                         echo "\t\t\t<td></td>\n";
@@ -121,26 +121,26 @@ foreach ($query as $row) {
                     echo "\t\t\t<td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."theme-tango/tango-images/16_".strtolower(str_replace(" ", "_", $row->$column_variable_name)).".png\" style='border-width:0px;' title=\"".$row->$column_variable_name_sec."\" alt=\"".$row->$column_variable_name_sec."\" /></td>\n";
                 }
                 if ($column->column_name == 'Picture') {
-                    echo "\t\t\t<td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".$row->$column_variable_name.".jpg\" style='border-width:0px; height:100px' title=\"".$row->$column_variable_name_sec."\" alt=\"".$row->$column_variable_name_sec."\" /></td>\n";
+                    echo "\t\t\t<td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".htmlentities($row->$column_variable_name).".jpg\" style='border-width:0px; height:100px' title=\"".$row->$column_variable_name_sec."\" alt=\"".$row->$column_variable_name_sec."\" /></td>\n";
                 }
                 break;
 
             case "ip_address":
-                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".$row->man_ip_address."&nbsp;</span>".ip_address_from_db($row->man_ip_address)."</td>\n";
+                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities($row->man_ip_address)."&nbsp;</span>".htmlentities(ip_address_from_db($row->man_ip_address))."</td>\n";
                 break;
 
             case "multi":
-                echo "\t\t\t<td style=\"text-align: $column_align;\">".str_replace(",  ", ",<br />", $row->$column_variable_name)."</td>\n";
+                echo "\t\t\t<td style=\"text-align: $column_align;\">".str_replace(",  ", ",<br />", htmlentities($row->$column_variable_name))."</td>\n";
                 break;
 
             case "timestamp":
-                echo "\t\t\t<td style=\"text-align: $column_align;\">".$row->$column_variable_name."</td>\n";
+                echo "\t\t\t<td style=\"text-align: $column_align;\">".htmlentities($row->$column_variable_name)."</td>\n";
                 break;
 
             case "url":
                 $href = '';
                 if ($column_variable_name_ter > '') {
-                    $image = base_url()."theme-tango/tango-images/16_".$column_variable_name_ter.".png";
+                    $image = base_url()."theme-tango/tango-images/16_".htmlentities($column_variable_name_ter).".png";
                 } else {
                     $image = base_url()."theme-tango/tango-images/16_browser.png";
                 }

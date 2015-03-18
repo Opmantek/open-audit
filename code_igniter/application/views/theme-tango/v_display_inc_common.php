@@ -135,7 +135,7 @@ $system[0]->downloads_link = '';
 $system[0]->dell_express_code_link = '';
 
 # Dell
-if (mb_strpos($system[0]->man_manufacturer,  "Dell") !== false) {
+if (mb_strpos($system[0]->man_manufacturer, "Dell") !== false) {
     if ($system[0]->man_serial != "") {
         $system[0]->warranty_link = "<a href='http://www.dell.com/support/my-support/us/en/04/product-support/servicetag/".$system[0]->man_serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' width='16'/></a>";
 
@@ -150,10 +150,10 @@ if (mb_strpos($system[0]->man_manufacturer,  "Dell") !== false) {
 }
 
 # HP / Compaq
-if ((mb_strpos($system[0]->man_manufacturer,  "Compaq") !== false) or
-    (mb_strpos($link_manufacturer,  "HP") !== false) or
-    (mb_strpos($link_manufacturer,  "Hewlett Packard") !== false) or
-    (mb_strpos($link_manufacturer,  "Hewlett-Packard") !== false)) {
+if ((mb_strpos($system[0]->man_manufacturer, "Compaq") !== false) or
+    (mb_strpos($link_manufacturer, "HP") !== false) or
+    (mb_strpos($link_manufacturer, "Hewlett Packard") !== false) or
+    (mb_strpos($link_manufacturer, "Hewlett-Packard") !== false)) {
     if ($system[0]->man_serial != "") {
         $system[0]->warranty_link = "<a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=".$system[0]->man_serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' width='16'/></a>";
     }
@@ -163,8 +163,8 @@ if ((mb_strpos($system[0]->man_manufacturer,  "Compaq") !== false) or
 }
 
 # Lenovo / IBM
-if ((mb_strpos($system[0]->man_manufacturer,  "IBM") !== false) or
-    (mb_strpos($system[0]->man_manufacturer,  "Lenovo") !== false)) {
+if ((mb_strpos($system[0]->man_manufacturer, "IBM") !== false) or
+    (mb_strpos($system[0]->man_manufacturer, "Lenovo") !== false)) {
     if ($system[0]->man_model != "") {
         $system[0]->downloads_link = "<a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=".$system[0]->man_model."' onclick=\"this.target='_blank';\">".__("Product Page")."</a>";
     }
@@ -175,7 +175,7 @@ if ((mb_strpos($system[0]->man_manufacturer,  "IBM") !== false) or
 }
 
 # Gateway
-if (mb_strpos($system[0]->man_manufacturer,  "Gateway") !== false) {
+if (mb_strpos($system[0]->man_manufacturer, "Gateway") !== false) {
     if ($system[0]->man_serial != '') {
         $system[0]->warranty_link = "<a href='http://support.gateway.com/support/allsysteminfo.asp?sn=".$system[0]->man_serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' width='16'/></a>";
     }
@@ -200,7 +200,7 @@ function print_something($string)
     if ((mb_strlen($string) == 0) or ($string == '0000-00-00')) {
         return '-';
     } else {
-        return $string;
+        return htmlentities($string);
     }
 }
 

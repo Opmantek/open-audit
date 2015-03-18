@@ -48,12 +48,12 @@ $sortcolumn = 2;
 			</thead>
 			<tbody>
 				<?php foreach ($stats as $stat) {
-    echo "<tr>\n";
-    echo "<td>".$stat->type."</td>\n";
-    echo "<td>".$stat->os_family."</td>\n";
-    echo "<td>".$stat->count."</td>\n";
-    echo "</tr>\n";
-} ?>
+                    echo "<tr>\n";
+                    echo "<td>".htmlentities($stat->type)."</td>\n";
+                    echo "<td>".htmlentities($stat->os_family)."</td>\n";
+                    echo "<td>".htmlentities($stat->count)."</td>\n";
+                    echo "</tr>\n";
+                } ?>
 			</tbody>
 		</table>
 		<?php

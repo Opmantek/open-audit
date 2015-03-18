@@ -34,71 +34,58 @@
  */
 ?>
 <div id="view_summary_alerts" style="float: left; width: 100%;">
-	<br />
-	<form action="#" method="post" class="niceforms">
-	<fieldset id="config_details">
-		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Config')?></span></legend>
-		<div style="min-width: 50px; float: right;">
-		</div>
-		<div style="width: 100%; float:left;">
-		<br /><span style="color: red;">NOTE</span>- To remove the value for a config item, insert a - (a dash or minus) into the field. Removing the value and not inputting anything will not actually remove the value.<br />
-		<table cellspacing="1" class="tablesorter" width="100%">
-			<thead>
-				<tr>
-					<th width="20%"><?php echo __('Config Name')?></th>
-					<th width="20%"><?php echo __('Config Value')?></th>
-					<th width="20%"><?php echo __('Description')?></th>
-					<th width="20%"><?php echo __('Last Editied By')?></th>
-					<th width="20%"><?php echo __('Last Edited On')?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php foreach ($query as $item) {
-    ?>
-				<tr>
-					<td align="left"><br /><?php echo $item->config_name ?> </td>
-					<td align='left'><br />
-						<?php if ($item->config_editable == "y") {
-    if ($item->config_value == '') {
-        $item->config_value = '-';
-    }
-    $type = 'text';
-    if ($item->config_name === 'default_snmp_community' and $this->config->item('show_snmp_community') != 'y') {
-        $item->config_value = str_replace($item->config_value, str_repeat("*", strlen($item->config_value)), $item->config_value);
-        $type = 'password';
-    }
-
-    if (($item->config_name === 'default_ssh_password' or $item->config_name === 'default_windows_password' or $item->config_name === 'default_ipmi_password') and
-                                ($this->config->item('show_passwords') != 'y')) {
-        $item->config_value = str_replace($item->config_value, str_repeat("*", strlen($item->config_value)), $item->config_value);
-        $type = 'password';
-    }
-    ?>
-							<span id='<?php echo $item->config_name ?>' name='<?php echo$item->config_name ?>' class="editText" data-type="<?php echo $type;
-    ?>" style="color:blue;"><?php echo $item->config_value;
-    ?></span>
-						<?php 
-} else {
-    ?>
-							<span id='<?php echo $item->config_name ?>' name='<?php echo$item->config_name ?>'><?php echo $item->config_value;
-    ?></span>
-						<?php 
-}
-    ?>
-					</td>
-					<td><br /><?php echo $item->config_description;
-    ?></td>
-					<td><br /><?php echo $item->user_full_name;
-    ?></td>
-					<td><br /><?php echo $item->config_edited_date;
-    ?></td>
-				</tr>
-			<?php 
-} ?>
-			</tbody>
-		</table>
-	<br /><span style="color: red;">NOTE</span>- To remove the value for a config item, insert a - (a dash or minus) into the field. Removing the value and not inputting anything will not actually remove the value.<br />
-	</fieldset>
+    <br />
+    <form action="#" method="post" class="niceforms">
+    <fieldset id="config_details">
+        <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Config')?></span></legend>
+        <div style="min-width: 50px; float: right;">
+        </div>
+        <div style="width: 100%; float:left;">
+        <br /><span style="color: red;">NOTE</span>- To remove the value for a config item, insert a - (a dash or minus) into the field. Removing the value and not inputting anything will not actually remove the value.<br />
+        <table cellspacing="1" class="tablesorter" width="100%">
+            <thead>
+                <tr>
+                    <th width="20%"><?php echo __('Config Name')?></th>
+                    <th width="20%"><?php echo __('Config Value')?></th>
+                    <th width="20%"><?php echo __('Description')?></th>
+                    <th width="20%"><?php echo __('Last Editied By')?></th>
+                    <th width="20%"><?php echo __('Last Edited On')?></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($query as $item) { ?>
+                <tr>
+                    <td align="left"><br /><?php echo htmlentities($item->config_name) ?> </td>
+                    <td align='left'><br />
+                    <?php if ($item->config_editable == "y") {
+                        if ($item->config_value == '') {
+                                $item->config_value = '-';
+                        }
+                        $type = 'text';
+                        if ($item->config_name === 'default_snmp_community' and $this->config->item('show_snmp_community') != 'y') {
+                            $item->config_value = str_replace($item->config_value, str_repeat("*", strlen($item->config_value)), $item->config_value);
+                            $type = 'password';
+                        }
+                        if (($item->config_name === 'default_ssh_password' or $item->config_name === 'default_windows_password' or $item->config_name === 'default_ipmi_password') and
+                                                    ($this->config->item('show_passwords') != 'y')) {
+                            $item->config_value = str_replace($item->config_value, str_repeat("*", strlen($item->config_value)), $item->config_value);
+                            $type = 'password';
+                        }
+                        ?>
+                       <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>' class="editText" data-type="<?php echo htmlentities($type); ?>" style="color:blue;"><?php echo htmlentities($item->config_value); ?></span>
+                    <?php } else { ?>
+                           <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>'><?php echo htmlentities($item->config_value); ?></span>
+                    <?php } ?>
+                    </td>
+                    <td><br /><?php echo htmlentities($item->config_description); ?></td>
+                    <td><br /><?php echo htmlentities($item->user_full_name); ?></td>
+                    <td><br /><?php echo htmlentities($item->config_edited_date); ?></td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    <br /><span style="color: red;">NOTE</span>- To remove the value for a config item, insert a - (a dash or minus) into the field. Removing the value and not inputting anything will not actually remove the value.<br />
+    </fieldset>
 </div>
 </div>
 </div>

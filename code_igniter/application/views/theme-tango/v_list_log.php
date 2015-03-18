@@ -41,7 +41,7 @@ if (count($query) > 0) {
 	<tbody>
 		<?php foreach ($query as $line) {
     echo "\t\t<tr>\n";
-    echo "\t\t\t<td>".$line."</td>\n";
+    echo "\t\t\t<td>".htmlentities($line)."</td>\n";
     echo "</tr>\n";
 }
     ?>

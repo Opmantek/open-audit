@@ -55,73 +55,41 @@
 ?>
 <!-- below is the menu div that sits on the left -->
 <div style="float: left; width: 180px; margin-left: 0%; vertical-align: top; position: fixed;" >
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="system_menu" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
-			<div id="menu1" class="menuTree">
-				<ul>
-					<li class="parent"><img alt="" src="<?php echo $oa_theme_images; ?>/16_device.png" id="toggle_summary_all" /><a href="#">Summary</a>
-						<ul style="display: block;">
-							<?php if (isset($decoded_access_details) and ($access_level >= 7)) {
-    ?><li class="child"><img alt="" src="<?php echo $oa_theme_images;
-    ?>/16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php 
-} ?>
-							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
-
-							<?php if ($system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0' and $system[0]->man_ip_address > '') {
-    ?><li class="child"><img alt="" src="<?php echo $oa_theme_images;
-    ?>/16_devices.png" /><a href="#" id="toggle_summary_network">Network</a></li><?php 
-} ?>
-
-							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
-							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_csv.png" /><a href="#" id="toggle_summary_custom">Custom</a></li>
-							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_word.png" /><a href="#" id="toggle_summary_attachment">Attachments</a></li>
-							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
-							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
-							<li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
-
-				 			<?php if ($this->config->config['nmis'] == 'y') {
-    ?><li class="child"><img alt="" src="<?php echo $oa_theme_images;
-    ?>/16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php 
-} ?>
-
-				 			<?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) {
-    ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images;
-    ?>/16_network.png" /><a href="#" id="toggle_summary_network_interfaces">Network Interfaces</a></li> <?php 
-} ?>
-
-				 			<?php if (strpos($system[0]->man_type, 'phone') !== false) {
-    ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images;
-    ?>/16_cell_phone.png" /><a href="#" id="toggle_summary_phone">Phone Details</a></li> <?php 
-} ?>
-
-						 	<?php if (count($windows) > 0) {
-    ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images;
-    ?>/16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li><?php 
-} ?>
-
-						 	<?php if (count($vm) > 0) {
-    ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images;
-    ?>/16_vmware.png" /><a href="#" id="toggle_summary_vms">VM Guest Details</a></li><?php 
-} ?>
-
-						 	<?php if (count($module) > 0) {
-    ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images;
-    ?>/16_memory.png" /><a href="#" id="toggle_summary_module">Entities</a></li> <?php 
-} ?>
-						</ul>
-					</li>
-					<?php
+    <form action="#" method="post" class="niceforms">
+        <fieldset id="system_menu" class="niceforms">
+            <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
+            <div id="menu1" class="menuTree">
+                <ul>
+                    <li class="parent"><img alt="" src="<?php echo $oa_theme_images; ?>/16_device.png" id="toggle_summary_all" /><a href="#">Summary</a>
+                        <ul style="display: block;">
+                            <?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
+                            <?php if ($system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0' and $system[0]->man_ip_address > '') { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_devices.png" /><a href="#" id="toggle_summary_network">Network</a></li><?php } ?>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_csv.png" /><a href="#" id="toggle_summary_custom">Custom</a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_word.png" /><a href="#" id="toggle_summary_attachment">Attachments</a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
+                            <?php if ($this->config->config['nmis'] == 'y') { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
+                            <?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_network.png" /><a href="#" id="toggle_summary_network_interfaces">Network Interfaces</a></li> <?php } ?>
+                            <?php if (strpos($system[0]->man_type, 'phone') !== false) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_cell_phone.png" /><a href="#" id="toggle_summary_phone">Phone Details</a></li> <?php } ?>
+                            <?php if (count($windows) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li><?php } ?>
+                            <?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_vmware.png" /><a href="#" id="toggle_summary_vms">VM Guest Details</a></li><?php } ?>
+                            <?php if (count($module) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_memory.png" /><a href="#" id="toggle_summary_module">Entities</a></li> <?php } ?>
+                        </ul>
+                    </li>
+                    <?php
                     # the computer device type specific menu items are in the below file
                     #if ($system[0]->man_type == 'computer' and $system[0]->man_class != 'hypervisor') {
                     if ($system[0]->man_type == 'computer') {
                         include "v_display_inc_menu.php";
                     }
                     ?>
-				</ul>
-			</div>
-		</fieldset>
-	</form>
+                </ul>
+            </div>
+        </fieldset>
+    </form>
 </div>
 
 
@@ -208,39 +176,25 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 
 <div id="summary" style="float: left; width: 100%;" >
 <form action="#" method="post" class="niceforms">
-	<fieldset id="system_details" class="niceforms">
-		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Device Details')?></span></legend>
-		<div style="float:right; width: 120px; text-align:center">
-			<img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $system[0]->man_picture?>" style="border: 1px solid rgb(219, 217, 197);"/>
+    <fieldset id="system_details" class="niceforms">
+        <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Device Details')?></span></legend>
+        <div style="float:right; width: 120px; text-align:center">
+            <img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo htmlentities($system[0]->man_picture); ?>" style="border: 1px solid rgb(219, 217, 197);"/>
+            <?php if (($access_level > 7) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
+                <input type="button" onclick="window.location.href='<?php echo base_url(); ?>index.php/discovery/discover_subnet/device/<?php echo intval($system_id); ?>'" value='Discover Device' title='Discover Device' name='Discover Device' alt='Discover Device' width='24' />
+            <?php } ?>
+            <?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
+                <input type="button" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo intval($system_id); ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');" value='SNMP Scan' title='SNMP Scan' name='SNMP Scan' alt='SNMP Scan' width='24' />
+            <?php } ?>
+            <?php if ($system[0]->snmp_oid != '') { ?>
+                <?php $email_body = "The following attributes have been incorrectly detected: %0A&lt;PLEASE INSERT THE CORRECT DETAILS BELOW&gt;%0AType: %0AManufacturer: %0AsysDescr: %0AModel: %0APrinter Duplex: %0APrinter Color: %0A%0AThe following attributes were automatically detected:%0ASNMP OID: ".htmlentities($system[0]->snmp_oid)."%0AType: ".htmlentities($system[0]->man_type)."%0AManufacturer: ".htmlentities($system[0]->manufacturer)."%0ASysDescr: ".htmlentities($system[0]->sysDescr)."%0AModel: ".htmlentities($system[0]->model)."%0APrinter Duplex: ".htmlentities($system[0]->printer_duplex)."%0APrinter Color: ".htmlentities($system[0]->printer_color); ?>
+                <br /><br /><br /><br /><a href="mailto:open-audit@opmantek.com?subject=Device Attributes Correction for Open-AudIT&body=<?php echo $email_body; ?>" ><img src="<?php echo base_url(); ?>theme-tango/tango-images/16_question.png" alt="If the device details are incorrect and this device has been scanned via SNMP, please email which details and the following attributes to open-audit@opmantek.com - manufacturer, model, type, snmp oid and if possible an snmp walk. We can then insert the code to account for this and everyone will benefit." title="If the device details are incorrect and this device has been scanned via SNMP, please email which details and the following attributes to open-audit@opmantek.com - manufacturer, model, type, snmp oid and if possible an snmp walk. We can then insert the code to account for this and everyone will benefit. CLICK THE QUESTION ICON to create an email." /></a>
+            <?php } ?>
+        </div>
 
-		<?php if (($access_level > 7) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) {
-    ?>
-		<input type="button" onclick="window.location.href='<?php echo base_url();
-    ?>index.php/discovery/discover_subnet/device/<?php echo $system_id;
-    ?>'" value='Discover Device' title='Discover Device' name='Discover Device' alt='Discover Device' width='24' />
-		<?php 
-} ?>
-		<?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) {
-    ?>
-			<input type="button" onclick="window.open('<?php echo base_url();
-    ?>index.php/admin_system/system_snmp/<?php echo $system_id;
-    ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');" value='SNMP Scan' title='SNMP Scan' name='SNMP Scan' alt='SNMP Scan' width='24' />
-		<?php 
-}
-        if ($system[0]->snmp_oid != '') {
-            $email_body = "The following attributes have been incorrectly detected: %0A&lt;PLEASE INSERT THE CORRECT DETAILS BELOW&gt;%0AType: %0AManufacturer: %0AsysDescr: %0AModel: %0APrinter Duplex: %0APrinter Color: %0A%0AThe following attributes were automatically detected:%0ASNMP OID: ".$system[0]->snmp_oid."%0AType: ".$system[0]->man_type."%0AManufacturer: ".$system[0]->manufacturer."%0ASysDescr: ".$system[0]->sysDescr."%0AModel: ".$system[0]->model."%0APrinter Duplex: ".$system[0]->printer_duplex."%0APrinter Color: ".$system[0]->printer_color;
-            ?>
-		<br /><br /><br /><br /><a href="mailto:open-audit@opmantek.com?subject=Device Attributes Correction for Open-AudIT&body=<?php echo $email_body;
-            ?>" ><img src="<?php echo base_url();
-            ?>theme-tango/tango-images/16_question.png" alt="If the device details are incorrect and this device has been scanned via SNMP, please email which details and the following attributes to open-audit@opmantek.com - manufacturer, model, type, snmp oid and if possible an snmp walk. We can then insert the code to account for this and everyone will benefit." title="If the device details are incorrect and this device has been scanned via SNMP, please email which details and the following attributes to open-audit@opmantek.com - manufacturer, model, type, snmp oid and if possible an snmp walk. We can then insert the code to account for this and everyone will benefit.
-
-		CLICK THE QUESTION ICON to create an email." /></a><?php 
-        } ?>
-		</div>
-
-		<div style="float: left; width:75%; margin-right: 120px;">
-			<div style="float:left; width:50%;">
-			<?php
+        <div style="float: left; width:75%; margin-right: 120px;">
+            <div style="float:left; width:50%;">
+            <?php
             foreach ($summary_attributes as $key => $value) {
                 if ($key == '----') {
                     echo "</div>\n<div style=\"float:right; width:50%;\">\n";
@@ -284,37 +238,16 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
                     }
                 }
 
-                if ($value == 'icon') {
-                    if ($system[0]->icon == '') {
-                        $icon = strtolower(str_replace(' ', '_', $system[0]->man_type));
-                    } else {
-                        $icon = $system[0]->icon;
-                    }
-                    ?>
-					<p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $icon?>.png" /></span></p>
-					<?php if ($access_level > 7) {
-    ?>
-						<!-- <p><label for="man_icon"><?php echo __('Icon')?>: </label>
-							<span id="man_icon">
-								<a href="#" onclick="window.open('<?php echo base_url();
-    ?>index.php/admin_system/system_icon/<?php echo $system_id;
-    ?>', 'Icon Picker', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=yes,status=no,titlebar=no,toolbar=no,top=100,width=400');" alt="Click to edit">
-									<img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $system[0]->man_icon?>.png" /></a></span><?php echo $edit_icon;
-    ?></p> -->
-					<?php 
-} else {
-    ?>
-						<!-- <p><label for="man_icon"><?php echo __('Icon')?>: </label><span id="man_icon"><img src="<?php echo base_url()?>theme-tango/tango-images/16_<?php echo $system[0]->man_icon?>.png" /></span></p> -->
-					<?php 
-}
+                if ((string)$value == 'icon') {
+                    $icon = htmlentities($system[0]->icon);
+                    echo "<p><label for='man_icon'>" . __('Icon') . ": </label><span id='man_icon'><img src='" . base_url() . "theme-tango/tango-images/16_" . $icon . ".png' /></span></p>";
                 }
             }
             echo "</div>\n";
             ?>
-		</div>
-
-		<?php echo display_custom_field('system_details', $additional_fields_data, $edit); ?>
-	</fieldset>
+        </div>
+        <?php echo display_custom_field('system_details', $additional_fields_data, $edit); ?>
+    </fieldset>
 </form>
 </div>
 <!-- end of div Summary -->

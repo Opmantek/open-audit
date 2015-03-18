@@ -60,19 +60,19 @@ $sortcolumn = 0;
     if (($key["days_until_used"] < $days) && ($key["days_until_used"] != 'unknown')) {
         ?>
 		<tr>
-			<td><a href="<?php echo base_url()?>index.php/main/system_display/<?php echo $key["system_id"]?>"><?php echo $key["hostname"]?></a></td>
-			<td align="left"><?php echo $key["partition_name"]?></td>
-			<td align="center"><a href="<?php echo base_url()?>index.php/main/disk_graph/<?php echo $key["system_id"]."/".$key["partition_id"]?>"><?php echo $key["partition_mount_point"] ?></a></td>
-			<td align="center"><?php echo $key["man_environment"]?></td>
-			<td align="center"><?php echo $key["man_function"]?></td>
-			<td align="center"><span style="display: none;"><?php echo($key["partition_size"])?></span><?php echo number_format($key["partition_size"])?></td>
-			<td align="center"><span style="display: none;"><?php echo($key["partition_used_space"])?></span><?php echo number_format($key["partition_used_space"])?></td>
-			<td align="center"><span style="display: none;"><?php echo($key["partition_free_space"])?></span><?php echo number_format($key["partition_free_space"])?></td>
+			<td><a href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key["system_id"])?>"><?php echo htmlentities($key["hostname"])?></a></td>
+			<td align="left"><?php echo htmlentities($key["partition_name"])?></td>
+			<td align="center"><a href="<?php echo base_url()?>index.php/main/disk_graph/<?php echo intval($key["system_id"])."/".intval($key["partition_id"])?>"><?php echo htmlentities($key["partition_mount_point"]) ?></a></td>
+			<td align="center"><?php echo htmlentities($key["man_environment"])?></td>
+			<td align="center"><?php echo htmlentities($key["man_function"])?></td>
+			<td align="center"><span style="display: none;"><?php echo htmlentities($key["partition_size"])?></span><?php echo number_format($key["partition_size"])?></td>
+			<td align="center"><span style="display: none;"><?php echo htmlentities($key["partition_used_space"])?></span><?php echo number_format($key["partition_used_space"])?></td>
+			<td align="center"><span style="display: none;"><?php echo htmlentities($key["partition_free_space"])?></span><?php echo number_format($key["partition_free_space"])?></td>
 			<td align="center"><?php echo $percent_free;
         ?></td>
-			<td align="center"><?php echo "<span style=\"display: none;\">".$key["change_per_day"]."</span>".number_format(round($key["change_per_day"], 0));
+			<td align="center"><?php echo "<span style=\"display: none;\">".htmlentities($key["change_per_day"])."</span>".number_format(round($key["change_per_day"], 0));
         ?></td>
-			<td align="center"><?php echo $key["days_until_used"];
+			<td align="center"><?php echo htmlentities($key["days_until_used"]);
         ?></td>
 		</tr>
 	<?php 

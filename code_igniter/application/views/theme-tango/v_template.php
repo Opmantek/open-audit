@@ -109,6 +109,7 @@ if ($function == "list_devices") {
 			$("table").tablesorter({cancelSelection: false, widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
 		});
 	});
+
 	// note - the below variable would normally be set in instantedit.js
 	// I set it here so I can use PHP to allow for site location changes
 	<?php if ($include != "v_edit_config") {
