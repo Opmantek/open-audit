@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -100,7 +100,7 @@ if (isset($form_url) and $form_url != '') {
                     <p><label for="password">Password: </label><input type="password" name="password" id="password" size="20" /></p>
                     <p><?php
                     echo form_submit('login', 'Login');
-                    echo $this->session->flashdata('message');
+                    echo htmlentities($this->session->flashdata('message'));
                     ?>
                     <br />&nbsp;</p>
                 </div>

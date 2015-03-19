@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -41,7 +41,7 @@ if (count($query) > 0) {
 	<tbody>
 		<?php foreach ($query as $line) {
     echo "\t\t<tr>\n";
-    echo "\t\t\t<td>".$line."</td>\n";
+    echo "\t\t\t<td>".htmlentities($line)."</td>\n";
     echo "</tr>\n";
 }
     ?>

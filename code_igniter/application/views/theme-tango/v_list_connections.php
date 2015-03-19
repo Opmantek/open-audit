@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -54,28 +54,23 @@ if (count($query) > 0) {
         if (count($query) > 0) {
             foreach ($query as $key):
                 if ($key->connection_id > 0) {
-                    $edit_pic = "<a href=\"edit_connection/".$key->connection_id."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-                    $delete_pic = "<a href=\"delete_connection/".$key->connection_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                    $edit_pic = "<a href=\"edit_connection/".intval($key->connection_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
+                    $delete_pic = "<a href=\"delete_connection/".intval($key->connection_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
                     ?>
 			<tr>
-				<td><?php echo $key->name?></td>
-				<td><a href="../main/view_org/<?php echo $key->org_id?>"><?php echo $key->org_name?></a></td>
-				<td><a href="../main/view_location/<?php echo $key->location_id_a?>"><?php echo $key->location_a?></a></td>
-				<td><a href="../main/view_location/<?php echo $key->location_id_a?>"><?php echo $key->location_b?></a></td>
-				<td><?php echo $key->provider?></td>
-				<td><?php echo $key->service_type?></td>
-				<td align="right"><?php echo $key->speed?></td>
+				<td><?php echo htmlentities($key->name)?></td>
+				<td><a href="../main/view_org/<?php echo intval($key->org_id)?>"><?php echo htmlentities($key->org_name)?></a></td>
+				<td><a href="../main/view_location/<?php echo htmlentities($key->location_id_a)?>"><?php echo htmlentities($key->location_a)?></a></td>
+				<td><a href="../main/view_location/<?php echo htmlentities($key->location_id_b)?>"><?php echo htmlentities($key->location_b)?></a></td>
+				<td><?php echo htmlentities($key->provider)?></td>
+				<td><?php echo htmlentities($key->service_type)?></td>
+				<td align="right"><?php echo htmlentities($key->speed)?></td>
 				<td align="center"><?php echo $edit_pic?></td>
 				<td align="center"><?php echo $delete_pic?></td>
 			</tr>
-			<?php 
-                }
-            ?>
-			<?php endforeach;
-            ?>
-		<?php 
-        } else {
-            ?>
+			<?php } ?>
+			<?php endforeach; ?>
+		<?php } else { ?>
 		<tr>
 			<td>&nbsp;</td>
 			<td></td>
@@ -83,14 +78,9 @@ if (count($query) > 0) {
 			<td></td>
 			<td></td>
 		</tr>
-		<?php 
-        }
-    ?>
+		<?php } ?>
 	</tbody>
 </table>
-<?php
-
-} else {
+<?php } else {
     echo "<br />".__('There are no current connections.').".<br />";
-}
-?>
+} ?>

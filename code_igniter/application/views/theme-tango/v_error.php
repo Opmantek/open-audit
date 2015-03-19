@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -35,15 +35,10 @@
 ?>
 <form action="#" method="post" class="niceforms">
 	<fieldset id="org_details" class="niceforms">
-		<!-- <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Error')?></span></legend> -->
 		<legend><span style="font-size: 12pt;">&nbsp;Error</span></legend>
-		<?php if (isset($error)) {
-    echo $error."<br />\n";
-} ?>
+		<?php if (isset($error)) { echo $error."<br />\n"; } ?>
 		<br /><a href="javascript:history.back();" style="color:blue;">Go back</a> and try again.<br />
-		<pre><?php if (isset($query)) {
-    print_r($query);
-} ?></pre>
+		<pre><?php if (isset($query)) { print_r($query); } ?></pre>
 	</fieldset>
 </form>
 </div>

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -64,7 +64,7 @@ $(document).ready(function(){
 	$.jqplot.config.enablePlugins = true;
 	line1 = <?php echo $line1."\n"; ?>
 	plot1 = $.jqplot('chart1', [line1], {
-		title:'<?php echo $graph_title; ?>',
+		title:'<?php echo htmlentities($graph_title); ?>',
 		legend: {show:false},
 		axesDefaults: {
 			tickRenderer: $.jqplot.CanvasAxisTickRenderer ,

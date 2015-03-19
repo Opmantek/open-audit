@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -51,14 +51,14 @@ if (count($query) > 0) {
         if (count($query) > 0) {
             foreach ($query as $key):
                 if ($key->field_id > 0) {
-                    $edit_pic = "<a href=\"edit_field/".$key->field_id."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-                    $delete_pic = "<a href=\"delete_field/".$key->field_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                    $edit_pic = "<a href=\"edit_field/".intval($key->field_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
+                    $delete_pic = "<a href=\"delete_field/".intval($key->field_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
                     ?>
 			<tr>
-				<td><a href="../admin_field/edit_field/<?php echo $key->field_id?>"><?php echo $key->field_name?></a></td>
-				<td><?php echo $key->field_type?></a></td>
-				<td><?php echo $key->field_placement?></a></td>
-				<td><?php echo $key->group_id?></a></td>
+				<td><a href="../admin_field/edit_field/<?php echo $key->field_id?>"><?php echo htmlentities($key->field_name)?></a></td>
+				<td><?php echo htmlentities($key->field_type)?></a></td>
+				<td><?php echo htmlentities($key->field_placement)?></a></td>
+				<td><?php echo htmlentities($key->group_id)?></a></td>
 				<td align="center"><?php echo $edit_pic?></td>
 				<td align="center"><?php echo $delete_pic?></td>
 			</tr>

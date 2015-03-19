@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -41,7 +41,7 @@
 foreach ($query as $details) {
     echo "<thead><tr>\n\t";
     foreach ($details as $attribute => $value) {
-        echo "<th>".$attribute."</th>";
+        echo "<th>".htmlentities($attribute)."</th>";
     }
     echo "</tr></thead>\n";
     break;
@@ -53,7 +53,7 @@ foreach ($query as $details) {
 foreach ($query as $details) {
     echo "<tr>\n\t";
     foreach ($details as $attribute => $value) {
-        echo "<td>".$value."</td>";
+        echo "<td>".htmlentities($value)."</td>";
     }
     echo "</tr>\n";
 }

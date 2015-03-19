@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -57,28 +57,18 @@ if (($this->config->item('display_version') != $this->config->item('web_display_
 	<fieldset id="about" class="niceforms">
 		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('About')?></span></legend>
 		You are running version <?php echo $this->config->item('display_version'); ?> of Open-AudIT.<br />
-		<?php if ($this->user->user_admin == 'y') {
-    ?>
-		Your Host is: <?php echo php_uname('n');
-    ?>, and it's OS is <?php echo $operating_system;
-    ?>.<br />
-		Your database platform is <?php echo $this->db->platform()." (version ".$this->db->version().")";
-    ?>.<br />
-		Your web server is <?php echo getenv("SERVER_SOFTWARE");
-    ?> .<br />
-		Your PHP version is <?php echo phpversion();
-    ?> and it's running in timezone <?php echo date_default_timezone_get();
-    ?>.<br /><br />
+		<?php if ($this->user->user_admin == 'y') { ?>
+		Your Host is: <?php echo php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br />
+		Your database platform is <?php echo $this->db->platform()." (version ".$this->db->version().")"; ?>.<br />
+		Your web server is <?php echo getenv("SERVER_SOFTWARE"); ?> .<br />
+		Your PHP version is <?php echo phpversion(); ?> and it's running in timezone <?php echo date_default_timezone_get(); ?>.<br /><br />
 		<?php if (!extension_loaded('snmp')) {
-    echo "<i>You do not have the PHP SNMP extension installed. This extension is highly recommended.</i><br />";
-}
-    ?>
+        echo "<i>You do not have the PHP SNMP extension installed. This extension is highly recommended.</i><br />";
+        } ?>
 		<?php if (!extension_loaded('mbstring')) {
-    echo "<i>You do not have the PHP MBString extension installed. This extension is required.</i><br />";
-}
-    ?>
-		<?php 
-} ?>
+        echo "<i>You do not have the PHP MBString extension installed. This extension is required.</i><br />";
+        } ?>
+		<?php } ?>
 		<?php echo $upgrade_message; ?>
 		<br /><br />
 		Open-AudIT is :
@@ -106,10 +96,6 @@ if (($this->config->item('display_version') != $this->config->item('web_display_
 		<td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $oa_theme_images;?>/logo-php.png' width='120' alt=''/></a></td>
 		<td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $oa_theme_images;?>/logo-code_igniter.png' width='120' alt=''/></a></td>
 		<td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $oa_theme_images;?>/logo-jquery.png' width='120' alt=''/></a></td>
-		<!--
-		<td style="vertical-align: middle;"><a href="http://www.mysql.com/"><img src='<?php echo $oa_theme_images;?>/logo-mysql.png' width='120' alt=''></a></td>
-		<td style="vertical-align: middle;"><a href="http://www.apache.org/"><img src='<?php echo $oa_theme_images;?>/logo-apache.jpg' width='120' alt=''></a></td>
-		-->
 		<td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $oa_theme_images;?>/logo-w3c.png' width='120' alt=''/></a></td>
 		<td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $oa_theme_images;?>/logo-miclogo-88x31.gif' width='120' alt=''/></a></td>
 	</tr>

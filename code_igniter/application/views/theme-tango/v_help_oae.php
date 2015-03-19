@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -57,7 +57,7 @@ $sortcolumn = 2;
         if (isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == '') {
             $message = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today or click <a href='".$this->config->config['oae_url']."' style='color: blue;'>here</a> to enter your license details.";
         }
-        echo $message?>
+        echo "<br /><br /><span style=\"font-size: 16px\">" . $message . "</span>";?>
 
 
 		<br /><br /><br /><br />

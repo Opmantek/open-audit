@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,9 +40,9 @@ if (!isset($this->user->user_theme) or $this->user->user_theme == '') {
     $this->user->user_theme = 'tango';
 }
 
-$oa_web_index    = $this->config->item('oa_web_index');
-$oa_web_folder   = $this->config->item('oa_web_folder');
-$oa_theme_images = $oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images';
-$oa_theme_files  = $oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-files';
+$oa_web_index    = htmlentities($this->config->item('oa_web_index'));
+$oa_web_folder   = htmlentities($this->config->item('oa_web_folder'));
+$oa_theme_images = htmlentities($oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images');
+$oa_theme_files  = htmlentities($oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-files');
 
 include "theme-".$this->user->user_theme."/v_template.php";

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -54,11 +54,6 @@
 <script src="<?php echo $oa_theme_files.'/jquery/js/jqplot/plugins/jqplot.cursor.min.js'; ?>" type="text/javascript"></script>
 
 <?php
-
-#echo "<pre>\n";
-#print_r($query);
-#echo "</pre>\n";
-
 $line1 = "[";
 foreach ($query as $partition) {
     $line1 .= "['".$partition->timestamp."', ".$partition->percent_used."], ";

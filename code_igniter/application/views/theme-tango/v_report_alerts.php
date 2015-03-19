@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -59,11 +59,10 @@ if ($query) {
 			<tr>
 				<td><?php echo $key->timestamp?></td>
 				<td><span style="display: none;"><?php echo $key->man_ip_address?></span><?php echo ip_address_from_db($key->man_ip_address)?></td>
-				<td><a class="SystemPopupTrigger" rel="<?php echo $key->system_id;
-    ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo $key->system_id?>"><?php echo $key->hostname?></a></td>
-				<td><?php echo $key->man_description?></td>
-				<td><?php echo $key->alert_details?></td>
-				<td align="center"><input type="checkbox" id="alert_id_<?php echo $key->alert_id?>" name="alert_id_<?php echo $key->alert_id?>" /></td>
+				<td><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->system_id)?>"><?php echo htmlentities($key->hostname)?></a></td>
+				<td><?php echo htmlentities($key->man_description)?></td>
+				<td><?php echo htmlentities($key->alert_details)?></td>
+				<td align="center"><input type="checkbox" id="alert_id_<?php echo intval($key->alert_id)?>" name="alert_id_<?php echo intval($key->alert_id)?>" /></td>
 			</tr>
 	<?php endforeach;
     ?>

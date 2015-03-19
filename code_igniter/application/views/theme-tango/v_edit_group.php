@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -68,30 +68,14 @@ foreach ($group as $group_data):
 	</p>
 	<label for='group_category'><?php echo __("Group Category")?>: </label>
 	<select id='group_category' name='group_category' title='Group Category' >
-		<option value='application' <?php if ($group_data->group_category == 'application') {
-    echo "selected";
-} ?>><?php echo __("Application")?></option>
-		<option value='device' <?php if ($group_data->group_category == 'device') {
-    echo "selected";
-} ?>><?php echo __("Device")?></option>
-		<option value='general' <?php if ($group_data->group_category == 'general') {
-    echo "selected";
-} ?>><?php echo __("General")?></option>
-		<option value='location' <?php if ($group_data->group_category == 'location') {
-    echo "selected";
-} ?>><?php echo __("Location")?></option>
-		<option value='network' <?php if ($group_data->group_category == 'network') {
-    echo "selected";
-} ?>><?php echo __("Network")?></option>
-		<option value='org' <?php if ($group_data->group_category == 'org') {
-    echo "selected";
-} ?>><?php echo __("Organisation")?></option>
-		<option value='os' <?php if ($group_data->group_category == 'os') {
-    echo "selected";
-} ?>><?php echo __("Operating System")?></option>
-		<option value='owner' <?php if ($group_data->group_category == 'owner') {
-    echo "selected";
-} ?>><?php echo __("Owner")?></option>
+		<option value='application' <?php if ($group_data->group_category == 'application') { echo "selected";} ?>><?php echo __("Application")?></option>
+		<option value='device' <?php if ($group_data->group_category == 'device') { echo "selected";} ?>><?php echo __("Device")?></option>
+		<option value='general' <?php if ($group_data->group_category == 'general') { echo "selected";} ?>><?php echo __("General")?></option>
+		<option value='location' <?php if ($group_data->group_category == 'location') { echo "selected";} ?>><?php echo __("Location")?></option>
+		<option value='network' <?php if ($group_data->group_category == 'network') { echo "selected";} ?>><?php echo __("Network")?></option>
+		<option value='org' <?php if ($group_data->group_category == 'org') { echo "selected";} ?>><?php echo __("Organisation")?></option>
+		<option value='os' <?php if ($group_data->group_category == 'os') { echo "selected";} ?>><?php echo __("Operating System")?></option>
+		<option value='owner' <?php if ($group_data->group_category == 'owner') { echo "selected";} ?>><?php echo __("Owner")?></option>
 	</select>
 	<p><label for='group_dynamic_select'><?php echo __("Select SQL")?>: </label><textarea name='group_dynamic_select' id='group_dynamic_select' rows='12' cols='120'><?php echo $group_sql?></textarea></p>
 	<p><label for='group_display_sql'><?php echo __("Display SQL")?>: </label><textarea name='group_display_sql' id='group_display_sql' rows='12' cols='120'><?php echo $group_display_sql?></textarea></p>

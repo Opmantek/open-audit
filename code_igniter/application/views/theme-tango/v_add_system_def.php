@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -128,7 +128,7 @@ echo form_open('admin_system/add_system_def')."\n";
 	<table width='500' name='custom_fields_table' id='custom_fields_table'><tr><th>Name</th><th>Type</th><th>Use This?</th></tr>
 	<?php
     foreach ($custom_fields as $custom_field) {
-        echo "<tr><td align='center' width='200'>".$custom_field->field_name."</td><td align='center' width='200'>".$custom_field->field_type."</td><td align='center' width='100'><input type='checkbox' id='custom_exist_".$custom_field->field_name."' name='custom_exist_".$custom_field->field_name."' size='20' title='custom_exist_".$custom_field->field_name."' /></td></tr>\n";
+        echo "<tr><td align='center' width='200'>".htmlentities($custom_field->field_name)."</td><td align='center' width='200'>".htmlentities($custom_field->field_type)."</td><td align='center' width='100'><input type='checkbox' id='custom_exist_".htmlentities($custom_field->field_name)."' name='custom_exist_".htmlentities($custom_field->field_name)."' size='20' title='custom_exist_".htmlentities($custom_field->field_name)."' /></td></tr>\n";
     }
     ?>
 	</table>

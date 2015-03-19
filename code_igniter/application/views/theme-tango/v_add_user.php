@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -108,10 +108,10 @@ echo form_open('admin_user/add_user')."\n";
             }
             echo "
 		<tr>
-			<td align=\"center\">".$key->total."</td>
-			<td><a href=\"".$this->config->item('oa_web_index')."/main/list_devices/".$key->group_id."\">".$key->group_name."</a></td>
-			<td>".$tag."</td>
-			<td>".$key->group_description."</td>
+			<td align=\"center\">".intval($key->total)."</td>
+			<td><a href=\"".$this->config->item('oa_web_index')."/main/list_devices/".intval($key->group_id)."\">".htmlentities($key->group_name)."</a></td>
+			<td>".htmlentities($tag)."</td>
+			<td>".htmlentities($key->group_description)."</td>
 			<td align=\"center\">".group_dropdown($key->group_id)."</td>
 		</tr>";
         endforeach; ?>

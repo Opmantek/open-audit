@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -53,41 +53,35 @@ if (count($query) > 0) {
 		<?php
         if (count($query) > 0) {
             foreach ($query as $key):
-
-                $edit_pic = "<a href=\"edit_org/".$key->org_id."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-            $delete_pic = "<a href=\"delete_org/".$key->org_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
-
-            if ($key->org_name == '') {
-                $key->org_name = '(none)';
-            }
-
-            if ($key->org_group_id != '0') {
-                $show_pic = "<a href=\"../main/list_devices/".$key->org_group_id."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' width='16'/></a>";
-                $deactivate_pic = "<a href=\"delete_group/".$key->org_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
-                $activate_pic = '';
-            } else {
-                $show_pic = '';
-                $deactivate_pic = '';
-                $activate_pic = "<a href=\"activate_group/".$key->org_id."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
-            }
-
-            ?>
-			<tr>
-				<td align="center"><?php echo $key->total?></td>
-				<td><a href="../main/view_org/<?php echo $key->org_id?>"><?php echo $key->org_name?></a></td>
-				<td><?php echo $key->org_comments?></td>
-				<td><?php echo $key->org_parent_name?></td>
-				<td align="center"><?php echo $activate_pic?></td>
-				<td align="center"><?php echo $deactivate_pic?></td>
-				<td align="center"><?php echo $show_pic?></td>
-				<td align="center"><?php echo $edit_pic?></td>
-				<td align="center"><?php echo $delete_pic?></td>
-			</tr>
+                $edit_pic = "<a href=\"edit_org/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
+                $delete_pic = "<a href=\"delete_org/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                if ($key->org_name == '') {
+                    $key->org_name = '(none)';
+                }
+                if ($key->org_group_id != '0') {
+                    $show_pic = "<a href=\"../main/list_devices/".intval($key->org_group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' width='16'/></a>";
+                    $deactivate_pic = "<a href=\"delete_group/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                    $activate_pic = '';
+                } else {
+                    $show_pic = '';
+                    $deactivate_pic = '';
+                    $activate_pic = "<a href=\"activate_group/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
+                }
+                ?>
+    			<tr>
+    				<td align="center"><?php echo $key->total?></td>
+    				<td><a href="../main/view_org/<?php echo $key->org_id?>"><?php echo htmlentities($key->org_name)?></a></td>
+    				<td><?php echo htmlentities($key->org_comments)?></td>
+    				<td><?php echo htmlentities($key->org_parent_name)?></td>
+    				<td align="center"><?php echo $activate_pic?></td>
+    				<td align="center"><?php echo $deactivate_pic?></td>
+    				<td align="center"><?php echo $show_pic?></td>
+    				<td align="center"><?php echo $edit_pic?></td>
+    				<td align="center"><?php echo $delete_pic?></td>
+    			</tr>
 			<?php endforeach;
             ?>
-		<?php 
-        } else {
-            ?>
+		<?php } else { ?>
 		<tr>
 			<td>&nbsp;</td>
 			<td></td>
@@ -95,9 +89,7 @@ if (count($query) > 0) {
 			<td></td>
 			<td></td>
 		</tr>
-		<?php 
-        }
-    ?>
+		<?php } ?>
 	</tbody>
 </table>
 <?php

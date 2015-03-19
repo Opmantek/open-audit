@@ -1,4 +1,6 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if (! defined('BASEPATH')) {
+     exit('No direct script access allowed');
+ }
 /*
 | -------------------------------------------------------------------
 | DATABASE CONNECTIVITY SETTINGS
@@ -17,7 +19,7 @@
 |	['password'] The password used to connect to the database
 |	['database'] The name of the database you want to connect to
 |	['dbdriver'] The database type. ie: mysql.  Currently supported:
-				 mysql, mysqli, postgre, odbc, mssql, sqlite, oci8
+                 mysql, mysqli, postgre, odbc, mssql, sqlite, oci8
 |	['dbprefix'] You can add an optional prefix, which will be added
 |				 to the table name when using the  Active Record class
 |	['pconnect'] TRUE/FALSE - Whether to use a persistent connection
@@ -35,7 +37,7 @@
 */
 
 $active_group = "default";
-$active_record = TRUE;
+$active_record = true;
 
 $db['default']['hostname'] = "localhost";
 $db['default']['username'] = "openaudit";
@@ -43,13 +45,13 @@ $db['default']['password'] = "openauditpassword";
 $db['default']['database'] = "openaudit";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "";
-$db['default']['pconnect'] = TRUE;
-$db['default']['db_debug'] = TRUE;
-$db['default']['cache_on'] = FALSE;
+$db['default']['pconnect'] = true;
+$db['default']['db_debug'] = true;
+$db['default']['cache_on'] = false;
 $db['default']['cachedir'] = "";
 $db['default']['char_set'] = "utf8";
 $db['default']['dbcollat'] = "utf8_general_ci";
-$db['default']['stricton'] = FALSE;
+$db['default']['stricton'] = false;
 
 /* End of file database.php */
 /* Location: ./system/application/config/database.php */

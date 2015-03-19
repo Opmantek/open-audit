@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,9 +38,7 @@
 <form action="#" method="post" class="niceforms">
 	<fieldset id="details" class="niceforms">
 		<legend><span style="font-size: 12pt;">&nbsp;Dump</span></legend>
-		<pre><?php if (isset($query)) {
-    print_r($query);
-} ?></pre>
+		<pre><?php if (isset($query)) { print_r($query); } ?></pre>
 	</fieldset>
 </form>
 </div>

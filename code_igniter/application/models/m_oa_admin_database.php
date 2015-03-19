@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -117,7 +117,7 @@ class M_oa_admin_database extends MY_Model
         exec($dump_command);
         $this->load->helper('download');
         $data = file_get_contents($file);
-        $name = "OAv2_database_backup_".date("Y_m_d_H_i_s").".sql";
+        $name = "Open-AudIT_database_backup_".date("Y_m_d_H_i_s").".sql";
         force_download($name, $data);
         unlink($file);
     }

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -109,6 +109,7 @@ if ($function == "list_devices") {
 			$("table").tablesorter({cancelSelection: false, widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
 		});
 	});
+
 	// note - the below variable would normally be set in instantedit.js
 	// I set it here so I can use PHP to allow for site location changes
 	<?php if ($include != "v_edit_config") {

@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.6
+# @version 1.6.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -510,11 +510,19 @@ system_manufacturer=$(trim `echo "$smbiosDump" | sed -n '/^  System Info:/,/^  [
 system_uptime=$(trim `echo "$quickstats" | grep uptime | cut -d= -f2 | sed 's/,//g' | sed 's/\"//g'`)
 system_form_factor=$(trim `echo "$smbiosDump" | sed -n '/^  Chassis Info:/,/^  [A-Za-z]/p' | grep '    Type' | cut -d":" -f2 | cut -d" " -f3 | sed 's/"//g' | sed 's/(//g' | sed 's/)//g'`)
 system_pc_os_bit=`uname -m | grep x86_64 | cut -d_ -f2`
-system_pc_memory=$(trim `echo "$smbiosDump" | sed -n '/^  Physical Memory Array:/,/^  [A-Za-z]/p' | grep '    Max. Size' | cut -d":" -f2 | cut -d" " -f2`)
-system_memory_size=$(trim `echo "$smbiosDump" | sed -n '/^  Physical Memory Array:/,/^  [A-Za-z]/p' | grep '    Max. Size' | cut -d":" -f2 | cut -d" " -f3`)
-if [ "$system_memory_size" = "GB" ]; then
-	system_pc_memory=`expr $system_pc_memory \* 1024`
-fi
+
+system_pc_memory=0
+for temp in $(cim-diagnostic.sh 2>/dev/null | grep "OMC_PhysicalMemory" -A21 | grep Capacity |  sed 's/^ *//g' | sed 's/ *$//g' | cut -d" " -f3); do
+	temp=`expr $temp / 1024 / 1024`
+	system_pc_memory=`expr $system_pc_memory + $temp`
+done
+
+#system_pc_memory=$(trim `echo "$smbiosDump" | sed -n '/^  Physical Memory Array:/,/^  [A-Za-z]/p' | grep '    Max. Size' | cut -d":" -f2 | cut -d" " -f2`)
+#system_memory_size=$(trim `echo "$smbiosDump" | sed -n '/^  Physical Memory Array:/,/^  [A-Za-z]/p' | grep '    Max. Size' | cut -d":" -f2 | cut -d" " -f3`)
+#if [ "$system_memory_size" = "GB" ]; then
+#	system_pc_memory=`expr $system_pc_memory \* 1024`
+#fi
+
 system_pc_threads=$(trim `echo "$hostsummaryHardware" | grep numCpuThreads | cut -d= -f2 | sed 's/,//g'`)
 system_pc_cores=$(trim `echo "$hostsummaryHardware" | grep numCpuCores | cut -d= -f2 | sed 's/,//g'`)
 system_pc_processors=$(trim `echo "$hostsummaryHardware" | grep numCpuPkgs | cut -d= -f2 | sed 's/,//g'`)

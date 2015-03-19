@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -57,83 +57,41 @@ if (isset($error_message)) {
 	<table width="100%">
 		<tr>
 			<td style="width:50%;">
-				<p><label for='user_name'><?php echo __("User Name")?>: </label><input type='text' id='user_name' name='user_name' tabindex='1' title='User Name' value="<?php echo $key->user_name;
-        ?>"/></p>
-				<p><label for='user_full_name'><?php echo __("Full Name")?>: </label><input type='text' id='user_full_name' name='user_full_name' tabindex='2' title='Full Name'  value="<?php echo $key->user_full_name;
-        ?>"/></p>
-				<p><label for='user_password'><?php echo __("Password")?>: </label><input type='password' id='user_password' name='user_password' tabindex='3' title='Password'  value="<?php echo set_value('user_password');
-        ?>"/></p>
-				<p><label for='user_password_confirm'><?php echo __("Confirm Password")?>: </label><input type='password' id='user_password_confirm' name='user_password_confirm' tabindex='3' title='Password'  value="<?php echo set_value('user_password_confirm');
-        ?>"/></p>
-				<p><label for='user_email'><?php echo __("Email Address")?>: </label><input type='text' id='user_email' name='user_email' tabindex='4' title='Email Address'  value="<?php echo $key->user_email;
-        ?>"/></p>
+				<p><label for='user_name'><?php echo __("User Name")?>: </label><input type='text' id='user_name' name='user_name' tabindex='1' title='User Name' value="<?php echo htmlentities($key->user_name); ?>"/></p>
+				<p><label for='user_full_name'><?php echo __("Full Name")?>: </label><input type='text' id='user_full_name' name='user_full_name' tabindex='2' title='Full Name'  value="<?php echo htmlentities($key->user_full_name); ?>"/></p>
+				<p><label for='user_password'><?php echo __("Password")?>: </label><input type='password' id='user_password' name='user_password' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('user_password')); ?>"/></p>
+				<p><label for='user_password_confirm'><?php echo __("Confirm Password")?>: </label><input type='password' id='user_password_confirm' name='user_password_confirm' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('user_password_confirm')); ?>"/></p>
+				<p><label for='user_email'><?php echo __("Email Address")?>: </label><input type='text' id='user_email' name='user_email' tabindex='4' title='Email Address'  value="<?php echo htmlentities($key->user_email); ?>"/></p>
 			</td>
 			<td style="width:50%;">
 				<p><label for='user_lang'><?php echo __("Language")?>: </label>
 					<select id='user_lang' name='user_lang' tabindex='5' title='Is Admin' />
-						<option value="en"<?php if ($key->user_lang == 'en') {
-    echo ' selected';
-}
-        ?>>English</option>
-						<option value="pt-br"<?php if ($key->user_lang == 'pt-br') {
-    echo ' selected';
-}
-        ?>>Brazilian Portuguese</option>
-						<option value="fr"<?php if ($key->user_lang == 'fr') {
-    echo ' selected';
-}
-        ?>>French</option>
-						<option value="de"<?php if ($key->user_lang == 'de') {
-    echo ' selected';
-}
-        ?>>German</option>
-						<option value="es"<?php if ($key->user_lang == 'es') {
-    echo ' selected';
-}
-        ?>>Spanish</option>
+						<option value="en"<?php if ($key->user_lang == 'en') { echo ' selected'; } ?>>English</option>
+						<option value="pt-br"<?php if ($key->user_lang == 'pt-br') { echo ' selected'; } ?>>Brazilian Portuguese</option>
+						<option value="fr"<?php if ($key->user_lang == 'fr') { echo ' selected'; } ?>>French</option>
+						<option value="de"<?php if ($key->user_lang == 'de') { echo ' selected'; } ?>>German</option>
+						<option value="es"<?php if ($key->user_lang == 'es') { echo ' selected'; } ?>>Spanish</option>
 					</select></p>
-			<!-- 	<p><label for='user_display_number'><?php echo __("Display Systems")?>: </label><input type='text' id='user_display_number' name='user_display_number' tabindex='6' title='Display Systems' value='10' value="<?php echo $key->user_display_number;
-        ?>"/></p> -->
-				<p><label for='user_theme'><?php echo __("Theme")?>: </label><input type='text' id='user_theme' name='user_theme' tabindex='7' title='Theme' value="<?php echo $key->user_theme;
-        ?>"/></p>
-				<?php if ($this->user->user_admin == 'y') {
-    ?>
-					<p><label for='user_admin'><?php echo __("User is Admin")?>: </label><input type='checkbox' id='user_admin' name='user_admin' tabindex='8' title='Is Admin' <?php echo $value_admin?> /></p>
-				<?php 
-} else {
-    ?>
+				<p><label for='user_theme'><?php echo __("Theme")?>: </label><input type='text' id='user_theme' name='user_theme' tabindex='7' title='Theme' value="<?php echo htmlentities($key->user_theme); ?>"/></p>
+				<?php if ($this->user->user_admin == 'y') { ?>
+					<p><label for='user_admin'><?php echo __("User is Admin")?>: </label><input type='checkbox' id='user_admin' name='user_admin' tabindex='8' title='Is Admin' <?php echo htmlentities($value_admin)?> /></p>
+				<?php } else { ?>
 					<p></p>
-				<?php 
-}
-        ?>
+				<?php } ?>
 				<p><label for='user_sam'><?php echo __("User SAM Access Level")?>: </label>
 					<select id='user_sam' name='user_sam' tabindex='8' title='Is Admin'>
-						<option value="0"<?php if ($key->user_sam == '0') {
-    echo " selected=\"selected\"";
-}
-        ?>>No Access</option>
-						<option value="1"<?php if ($key->user_sam == '1') {
-    echo " selected=\"selected\"";
-}
-        ?>>View Reports Only</option>
-						<option value="2"<?php if ($key->user_sam == '2') {
-    echo " selected=\"selected\"";
-}
-        ?>>Update Counts</option>
-						<option value="3"<?php if ($key->user_sam == '3') {
-    echo " selected=\"selected\"";
-}
-        ?>>Create Licenses</option>
+						<option value="0"<?php if ($key->user_sam == '0') { echo " selected=\"selected\""; } ?>>No Access</option>
+						<option value="1"<?php if ($key->user_sam == '1') { echo " selected=\"selected\""; } ?>>View Reports Only</option>
+						<option value="2"<?php if ($key->user_sam == '2') { echo " selected=\"selected\""; } ?>>Update Counts</option>
+						<option value="3"<?php if ($key->user_sam == '3') { echo " selected=\"selected\""; } ?>>Create Licenses</option>
 					</select></p>
-				<p><label for='EditUser'>&nbsp;</label><?php echo form_submit(array('id' => 'EditUser', 'name' => 'EditUser'), 'Submit');
-        ?></p>
+				<p><label for='EditUser'>&nbsp;</label><?php echo form_submit(array('id' => 'EditUser', 'name' => 'EditUser'), 'Submit'); ?></p>
 			</td>
 		</tr>
 	</table>
 	<input type="hidden" value="<?php echo $key->user_id;
         ?>" name="user_id" id="user_id" />
-	<?php 
-    } ?>
+	<?php } ?>
 	<p><?php echo $error_message; ?>&nbsp;</p>
 	<p><?php echo $this->session->flashdata('message'); ?>&nbsp;</p>
 	<br />
@@ -160,33 +118,32 @@ if (isset($error_message)) {
 			<?php
             foreach ($user_group as $key):
                 $tag = 'User Defined';
-    if (!isset($key->access_level) or is_null($key->access_level)) {
-        $key->access_level = '0';
-    }
-    if ($key->group_id < '1000') {
-        $tag = 'Built-in';
-    }
-    if ($key->group_id == '1') {
-        $tag = 'Built-in';
-    }
-    if (mb_strpos($key->group_name, 'Network - ') !== false) {
-        $tag = 'Auto Generated';
-    }
-    echo "
-			<tr>
-				<td align=\"center\">".$key->total."</td>
-				<td><a href=\"".base_url()."index.php/main/list_devices/".$key->group_id."\">".$key->group_name."</a></td>
-				<td>".$tag."</td>
-				<td>".$key->group_description."</td>
-				<td align=\"center\">".group_dropdown($key->group_id, $key->access_level)."</td>
-			</tr>";
-    endforeach;
-    ?>
+                if (!isset($key->access_level) or is_null($key->access_level)) {
+                    $key->access_level = '0';
+                }
+                if ($key->group_id < '1000') {
+                    $tag = 'Built-in';
+                }
+                if ($key->group_id == '1') {
+                    $tag = 'Built-in';
+                }
+                if (mb_strpos($key->group_name, 'Network - ') !== false) {
+                    $tag = 'Auto Generated';
+                }
+                echo "
+            			<tr>
+            				<td align=\"center\">".$key->total."</td>
+            				<td><a href=\"".base_url()."index.php/main/list_devices/".$key->group_id."\">".htmlentities($key->group_name)."</a></td>
+            				<td>".$tag."</td>
+            				<td>".htmlentities($key->group_description)."</td>
+            				<td align=\"center\">".group_dropdown(intval($key->group_id), intval($key->access_level))."</td>
+            			</tr>";
+            endforeach;
+            ?>
 		</tbody>
 	</table>
 </fieldset>
-<?php 
-} ?>
+<?php } ?>
 
 <?php
 function group_dropdown($group_id, $access_level)

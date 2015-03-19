@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -52,9 +52,9 @@ if (count($query) > 0) {
             $i = $value->column_variable;
             if (property_exists($key, $i)) {
                 if (is_numeric($key->$i)) {
-                    echo "\t\t\t<td align='center'>".$key->$i."</td>\n";
+                    echo "\t\t\t<td align='center'>".htmlentities($key->$i)."</td>\n";
                 } else {
-                    echo "\t\t\t<td>".$key->$i."</td>\n";
+                    echo "\t\t\t<td>".htmlentities($key->$i)."</td>\n";
                 }
             } else {
                 echo "\t\t\t<td></td>\n";

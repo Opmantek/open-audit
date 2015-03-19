@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6
+ * @version 1.6.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -52,8 +52,8 @@ if (count($query) > 1) {
         if (count($query) > 1) {
             foreach ($query as $key):
                 if ($key->device_id > 0) {
-                    $edit_pic = "<a href=\"edit_device/".$key->device_id."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-                    $delete_pic = "<a href=\"delete_device/".$key->device_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                    $edit_pic = "<a href=\"edit_device/".intval($key->device_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
+                    $delete_pic = "<a href=\"delete_device/".intval($key->device_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
                 } else {
                     $edit_pic = "";
                     $delete_pic = "";
@@ -62,13 +62,13 @@ if (count($query) > 1) {
                 $key->device_name = '(none)';
             }
             if ($key->device_group_id > '0') {
-                $show_pic = "<a href=\"../main/list_devices/".$key->device_group_id."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' width='16'/></a>";
-                $deactivate_pic = "<a href=\"delete_group/".$key->device_id."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                $show_pic = "<a href=\"../main/list_devices/".intval($key->device_group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' width='16'/></a>";
+                $deactivate_pic = "<a href=\"delete_group/".intval($key->device_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
                 $activate_pic = '';
             } else {
                 $show_pic = '';
                 $deactivate_pic = '';
-                $activate_pic = "<a href=\"activate_group/".$key->device_id."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
+                $activate_pic = "<a href=\"activate_group/".intval($key->device_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
             }
             if ($key->device_id == 0) {
                 $deactivate_pic = "";
@@ -76,10 +76,10 @@ if (count($query) > 1) {
             }
             ?>
 			<tr>
-				<td align="center"><?php echo $key->total?></td>
-				<td><a href="../main/view_device/<?php echo $key->device_id?>"><?php echo $key->device_name?></a></td>
-				<td><?php echo $key->device_address?></td>
-				<td><?php echo $key->device_type?></td>
+				<td align="center"><?php echo number_format($key->total)?></td>
+				<td><a href="../main/view_device/<?php echo $key->device_id?>"><?php echo htmlentities($key->device_name)?></a></td>
+				<td><?php echo htmlentities($key->device_address)?></td>
+				<td><?php echo htmlentities($key->device_type)?></td>
 				<td align="center"><?php echo $activate_pic?></td>
 				<td align="center"><?php echo $deactivate_pic?></td>
 				<td align="center"><?php echo $show_pic?></td>
