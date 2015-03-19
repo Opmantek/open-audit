@@ -432,7 +432,7 @@ class M_oa_user extends MY_Model
                 // successful connect to AD, now try to bind using the credentials
                 ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
                 ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-                $bind = ldap_bind($ad, $ad_user, $ad_secret);
+                $bind = @ldap_bind($ad, $ad_user, $ad_secret);
                 if ($bind) {
                     // successful connect and bind, now check if user is active in Open-AudIT
                     if ($CI->user->user_active == 'y') {
