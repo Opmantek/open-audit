@@ -115,8 +115,7 @@ class ajax extends MY_Controller
         $url = str_replace("%3A", ":", current_url());
         $url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
         $url_array = explode('/', $url);
-        #echo $url . "<br />";
-        #echo $_SERVER['QUERY_STRING'] . "<br />\n";
+
         if (strpos($_SERVER['QUERY_STRING'], "name=") !== false) {
             # we have a GET style request from the Bootstrap theme.
             $i = explode('&', $_SERVER['QUERY_STRING']);
@@ -131,12 +130,14 @@ class ajax extends MY_Controller
                 }
             }
             $config_name = str_replace("%5E%5E%5E", "/", $config_name);
+            if ($config_name == 'default_ad_server') { $config_name = 'ad_server'; }
             $location = strpos($url, $config_name);
             $config_value = substr($url, $location);
             $location = strpos($config_value, "/");
             $config_value = substr($config_value, $location);
             $config_value = substr($config_value, 1);
         }
+
         $config_value = str_replace("%5E%5E%5E", "/", $config_value);
         $this->load->model("m_oa_config");
         if ($config_value == '-') {
@@ -144,6 +145,7 @@ class ajax extends MY_Controller
         }
 
         $this->m_oa_config->update_config($config_name, $config_value, $this->user->user_id, date('Y-m-d H:i:s'));
+
         $masked = str_pad('', strlen($config_value), '*');
         if ($config_name == 'default_windows_password' and $this->config->config['show_passwords'] == 'n') {
             $config_value = $masked;

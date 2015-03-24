@@ -54,8 +54,15 @@
             </thead>
             <tbody>
             <?php foreach ($query as $item) { ?>
+            <?php
+                $item->config_show_name = $item->config_name;
+                if ($item->config_name == 'ad_server') {
+                    $item->config_name = 'default_ad_server';
+                    $item->config_show_name = 'ad_server';
+                }
+            ?>
                 <tr>
-                    <td align="left"><br /><?php echo htmlentities($item->config_name) ?> </td>
+                    <td align="left"><br /><?php echo htmlentities($item->config_show_name) ?> </td>
                     <td align='left'><br />
                     <?php if ($item->config_editable == "y") {
                         if ($item->config_value == '') {
