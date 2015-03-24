@@ -165,17 +165,14 @@ if ($function == "list_devices") {
 		font-size: 100%;
 	}
 	div.menuTree UL LI.parent {
-		background: url(<?php echo $oa_theme_images;
-    ?>/collapsed_image.gif) left top no-repeat;
+		background: url(<?php echo $oa_theme_images;?>/collapsed_image.gif) left top no-repeat;
 	}
 	div.menuTree UL LI.expanded {
-		background: url(<?php echo $oa_theme_images;
-    ?>/expended_image.gif) left top no-repeat;
+		background: url(<?php echo $oa_theme_images;?>/expended_image.gif) left top no-repeat;
 	}
 	</style>
 	<?php
-
-}
+    }
     ?>
 
 

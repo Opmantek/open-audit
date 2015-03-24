@@ -60,7 +60,7 @@
             <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
             <div id="menu1" class="menuTree">
                 <ul>
-                    <li class="parent"><img alt="" src="<?php echo $oa_theme_images; ?>/16_device.png" id="toggle_summary_all" /><a href="#">Summary</a>
+                    <li class="parent expanded"><a href="#">&nbsp;&nbsp;&nbsp;Summary</a>
                         <ul style="display: block;">
                             <?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
                             <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
