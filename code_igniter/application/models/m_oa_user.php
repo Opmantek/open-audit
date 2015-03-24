@@ -422,7 +422,7 @@ class M_oa_user extends MY_Model
             $ad_ldap_connect = 'ldap://'.$CI->config->item('ad_server');
             $ad_user = $username.'@'.$CI->config->item('ad_domain');
             $ad_secret = $password;
-            $ad = ldap_connect($ad_ldap_connect);
+            $ad = @ldap_connect($ad_ldap_connect);
             if (!$ad) {
                 // log the failed attempt to connect to AD and fall through for local validation by Open-AudIT
                 $log_details->severity = 5;
