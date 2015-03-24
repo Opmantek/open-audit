@@ -422,7 +422,11 @@ class M_oa_user extends MY_Model
             $ad_ldap_connect = 'ldap://'.$CI->config->item('ad_server');
             $ad_user = $username.'@'.$CI->config->item('ad_domain');
             $ad_secret = $password;
-            $ad = ldap_connect($ad_ldap_connect);
+            $error_reporting = error_reporting();
+            error_reporting(0);
+            $ad = @ldap_connect($ad_ldap_connect);
+            error_reporting($error_reporting);
+            unset($error_reporting);
             if (!$ad) {
                 // log the failed attempt to connect to AD and fall through for local validation by Open-AudIT
                 $log_details->severity = 5;
@@ -432,7 +436,7 @@ class M_oa_user extends MY_Model
                 // successful connect to AD, now try to bind using the credentials
                 ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
                 ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-                $bind = ldap_bind($ad, $ad_user, $ad_secret);
+                $bind = @ldap_bind($ad, $ad_user, $ad_secret);
                 if ($bind) {
                     // successful connect and bind, now check if user is active in Open-AudIT
                     if ($CI->user->user_active == 'y') {

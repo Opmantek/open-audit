@@ -42,7 +42,7 @@ if (count($processor) > 0 or count($memory) > 0 or count($bios) > 0 or
     count($monitor) > 0 or count($sound) > 0 or count($printer) > 0) {
     ?>
 
-<li class="parent"><img alt="" src="<?php echo $oa_theme_images; ?>/16_router.png" id="toggle_hardware_all"/><a href="#">Hardware</a>
+<li class="parent"><a href="#">&nbsp;&nbsp;&nbsp;Hardware</a>
 	<ul>
 		<?php if (count($processor) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images;?>/16_processor.png" /><a href="#" id="toggle_hardware_processor">Processor</a></li> <?php } ?>
 	 	<?php if (count($memory) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_memory.png" /><a href="#" id="toggle_hardware_memory">Memory</a></li> <?php } ?>
@@ -63,7 +63,7 @@ if (count($software) > 0 or count($updates) > 0 or count($codecs) > 0 or
     count($odbc) > 0 or count($assembly) > 0 or count($service) > 0 or
     count($software_key) > 0) {
     ?>
-    <li class="parent"><img alt="" src="<?php echo $oa_theme_images; ?>/16_archive.png" id="toggle_software_all"/><a href="#">Software</a>
+    <li class="parent"><a href="#">&nbsp;&nbsp;&nbsp;Software</a>
 	<ul>
 	 	<?php if (count($software) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_installer.png" /><a href="#" id="toggle_software_installed">Installed</a></li> <?php } ?>
 	 	<?php if (count($updates) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_update.png" /><a href="#" id="toggle_software_updates">Updates</a></li> <?php } ?>
@@ -80,7 +80,7 @@ if (count($share) > 0 or count($route) > 0 or count($system_user) > 0 or
     count($system_group) > 0 or count($dns) > 0 or count($system_log) > 0 or
     count($system_variable) > 0 or count($netstat) > 0) {
     ?>
-    <li class="parent"><img alt="" src="<?php echo $oa_theme_images; ?>/16_settings.png" id="toggle_settings_all"/><a href="#">Settings</a>
+    <li class="parent"><a href="#">&nbsp;&nbsp;&nbsp;Settings</a>
 	<ul>
 	 	<?php if (count($share) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_share.png" /><a href="#" id="toggle_settings_shares">Shares</a></li> <?php } ?>
 	 	<?php if (count($pagefile) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_general.png" /><a href="#" id="toggle_settings_pagefile">Pagefiles</a></li> <?php } ?>
@@ -96,7 +96,7 @@ if (count($share) > 0 or count($route) > 0 or count($system_user) > 0 or
 </li>
 <?php }
 if ((count($database) > 0) or (count($webserver) > 0)) { ?>
-<li class="parent"><img alt="" src="<?php echo $oa_theme_images; ?>/16_devices.png" id="toggle_server_all" /><a href="#">Servers</a>
+<li class="parent"><a href="#">&nbsp;&nbsp;&nbsp;Servers</a>
 	<ul>
 	<?php if (count($database) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_database.png" /><a href="#" id="toggle_server_database">Database</a></li><?php } ?>
 	<?php if (count($webserver) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_web.png" /><a href="#" id="toggle_server_web">WebServer</a></li><?php } ?>

@@ -98,6 +98,7 @@ class Admin_user extends MY_Controller
         } else {
             # process the form
             $error = '0';
+            $details = new stdClass();
             foreach ($_POST as $key => $value) {
                 $details->$key = $value;
             }

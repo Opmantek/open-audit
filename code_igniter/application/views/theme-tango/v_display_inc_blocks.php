@@ -1069,9 +1069,9 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <?php foreach ($share as $key_share): ?>
                     <?php
                     if ((!$key_share->share_size == '') or ($key_share->share_size == '0') or (is_null($key_share->share_size))) {
-                        $size = number_format($key_share->share_size).' Mb';
+                        $size = number_format(intval($key_share->share_size)).' Mb';
                     } else {
-                        $size = number_format($key_share->share_size);
+                        $size = number_format(intval($key_share->share_size));
                     }
                     ?>
                         <tr>

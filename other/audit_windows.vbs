@@ -2152,20 +2152,6 @@ for each objPartition In colPartitions
 	if ( objPartition.DriveType = "3") then
 		partition_type = "Local Disk"
 	end if
-	if ( objPartition.DriveType = "4") then
-		partition_type = "Network Drive"
-	end if
-
-	' below only checks when OS is XP or later (not 2000 or NT)
-	'if (windows_build_number > 2195) then
-	'	if isnull(objLogicalDisk.SupportsDiskQuotas) then
-	'		partition_quotas_supported = False
-	'	else
-	'		partition_quotas_supported = True
-	'	end if
-	'else
-	'	partition_quotas_supported = False
-	'end if
 
 	if (partition_size > "") then
 		result_partition = result_partition & "		<partition>" & vbcrlf
@@ -2188,6 +2174,58 @@ for each objPartition In colPartitions
 		result_partition = result_partition & "		</partition>" & vbcrlf
 	end if
 next
+
+' only Win2003 and above have Win32_MappedLogicalDisk
+if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
+	if debugging > "0" then wscript.echo "mapped disks info" end if
+	on error resume next
+	set colPartitions = objWMIService.ExecQuery("Select * FROM Win32_MappedLogicalDisk",,32)
+	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_MappedLogicalDisk)" : audit_wmi_fails = audit_wmi_fails & "Win32_MappedLogicalDisk " : end if
+	for each objPartition In colPartitions
+
+		partition_mount_point 	= objPartition.Caption
+		partition_device_id		= objPartition.DeviceId
+		partition_name 			= objPartition.VolumeName
+		partition_free_space 	= int(objPartition.FreeSpace /1024 /1024)
+		partition_size 			= int(objPartition.Size /1024 /1024)
+		partition_used_space 	= int(partition_size - partition_free_space)
+		partition_format 		= objPartition.FileSystem
+		partition_caption 		= objPartition.Caption
+		partition_serial 		= objPartition.VolumeSerialNumber
+		partition_provider_name = objPartition.ProviderName
+		partition_type 			= "Network Drive"
+
+		if (isnull(partition_name)) then
+			temp = split(partition_provider_name, "\")
+			partition_name = temp(uBound(temp))
+		end if
+
+		if (partition_provider_name <> "") then
+			partition_name = partition_name & " at " & partition_provider_name
+		end if
+
+		if (partition_size > "") then
+			result_partition = result_partition & "		<partition>" & vbcrlf
+			result_partition = result_partition & "			<hard_drive_index></hard_drive_index>" & vbcrlf
+			result_partition = result_partition & "			<partition_mount_type>partition</partition_mount_type>" & vbcrlf
+			result_partition = result_partition & "			<partition_mount_point>" & escape_xml(partition_mount_point) & "</partition_mount_point>" & vbcrlf
+			result_partition = result_partition & "			<partition_name>" & escape_xml(partition_name) & "</partition_name>" & vbcrlf
+			result_partition = result_partition & "			<partition_size>" & escape_xml(partition_size) & "</partition_size>" & vbcrlf
+			result_partition = result_partition & "			<partition_free_space>" & escape_xml(partition_free_space) & "</partition_free_space>" & vbcrlf
+			result_partition = result_partition & "			<partition_used_space>" & escape_xml(partition_used_space) & "</partition_used_space>" & vbcrlf
+			result_partition = result_partition & "			<partition_format>" & escape_xml(partition_format) & "</partition_format>" & vbcrlf
+			result_partition = result_partition & "			<partition_caption>" & escape_xml(partition_caption) & "</partition_caption>" & vbcrlf
+			result_partition = result_partition & "			<partition_device_id>" & escape_xml(partition_device_id) & "</partition_device_id>" & vbcrlf
+			result_partition = result_partition & "			<partition_disk_index></partition_disk_index>" & vbcrlf
+			result_partition = result_partition & "			<partition_bootable></partition_bootable>" & vbcrlf
+			result_partition = result_partition & "			<partition_type>" & escape_xml(partition_type) & "</partition_type>" & vbcrlf
+			result_partition = result_partition & "			<partition_quotas_supported></partition_quotas_supported>" & vbcrlf
+			result_partition = result_partition & "			<partition_quotas_enabled></partition_quotas_enabled>" & vbcrlf
+			result_partition = result_partition & "			<partition_serial>" & escape_xml(partition_serial) & "</partition_serial>" & vbcrlf
+			result_partition = result_partition & "		</partition>" & vbcrlf
+		end if
+	next
+end if
 
 
 ' only Win2003 and above have win32_volume
