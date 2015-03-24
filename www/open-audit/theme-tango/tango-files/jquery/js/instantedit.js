@@ -1,6 +1,7 @@
 /*
  *
  * Script by http://www.yvoschaap.com
+ * http://www.yvoschaap.com/instantedit/
  * 
  */
 
