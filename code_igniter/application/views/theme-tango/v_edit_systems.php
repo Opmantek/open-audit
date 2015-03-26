@@ -59,7 +59,7 @@ echo form_open('main/process_edit_systems')."\n";
     <label for="man_location_id"><?php echo __("Location Name"); ?>: </label><select name="man_location_id" style="width: 200px"><option value="">&nbsp;</option>
     <?php
     foreach ($locations as $location) {
-        echo "<option value=\"".$location->location_id."\">".$location->location_name."</option>\n";
+        echo "<option value=\"".intval($location->location_id)."\">".htmlentities($location->location_name)."</option>\n";
     } ?>
     </select><br /><br />
     <label for="man_location_rack"><?php echo __("Location Rack"); ?>: </label><input type="text" name="man_location_rack" style="width: 200px" /><br /><br />
@@ -71,7 +71,7 @@ echo form_open('main/process_edit_systems')."\n";
     <label for="man_org_id"><?php echo __("Organisation Name"); ?>: </label><select name="man_org_id" style="width: 200px"><option value="">&nbsp;</option>
     <?php
     foreach ($orgs as $org) {
-        echo "<option value=\"".$org->org_id."\">".$org->org_name."</option>\n";
+        echo "<option value=\"".intval($org->org_id)."\">".htmlentities($org->org_name)."</option>\n";
     } ?>
     </select><br /><br />
     <label for="nmis_group"><?php echo __("NMIS Group"); ?>: </label><input type="text" name="nmis_group" style="width: 200px" /><br /><br />
