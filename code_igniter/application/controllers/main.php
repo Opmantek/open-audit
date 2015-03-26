@@ -431,6 +431,9 @@ class main extends MY_Controller
             if (((mb_strpos($field_name, 'man_') !== false) or
                 (mb_strpos($field_name, 'nmis_') !== false)) && ($field_data != '')) {
                 foreach ($data['systems'] as $system) {
+                    if ($field_data == '-') {
+                        $field_data = '';
+                    }
                     $this->m_system->update_system_man($system[1], $field_name, $field_data);
                     $this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
                 }

@@ -1759,43 +1759,78 @@ class M_system extends MY_Model
             $new_credentials['ip_address'] = (string) $decoded_access_details->ip_address;
         }
 
+
+
         if (isset($credentials->snmp_community) and $credentials->snmp_community != '') {
+            if ($credentials->snmp_community == '-') {
+                $credentials->snmp_community = '';
+            }
             $new_credentials['snmp_community'] = (string) $credentials->snmp_community;
         } else {
             $new_credentials['snmp_community'] = $decoded_access_details->snmp_community;
         }
 
+
+
         if (isset($credentials->snmp_version) and $credentials->snmp_version != '') {
+            if ($credentials->snmp_version == '-') {
+                $credentials->snmp_version = '';
+            }
             $new_credentials['snmp_version'] = (string) $credentials->snmp_version;
         } else {
             $new_credentials['snmp_version'] = (string) $decoded_access_details->snmp_version;
         }
 
+
+
         if (isset($credentials->ssh_username) and $credentials->ssh_username != '') {
+            if ($credentials->ssh_username == '-') {
+                $credentials->ssh_username = '';
+            }
             $new_credentials['ssh_username'] = (string) $credentials->ssh_username;
         } else {
             $new_credentials['ssh_username'] = (string) $decoded_access_details->ssh_username;
         }
 
+
+
         if (isset($credentials->ssh_password) and $credentials->ssh_password != '') {
+            if ($credentials->ssh_password == '-') {
+                $credentials->ssh_password = '';
+            }
             $new_credentials['ssh_password'] = (string) $credentials->ssh_password;
         } else {
             $new_credentials['ssh_password'] = (string) $decoded_access_details->ssh_password;
         }
 
+
+
         if (isset($credentials->windows_username) and $credentials->windows_username != '') {
+            if ($credentials->windows_username == '-') {
+                $credentials->windows_username = '';
+            }
             $new_credentials['windows_username'] = (string) $credentials->windows_username;
         } else {
             $new_credentials['windows_username'] = (string) $decoded_access_details->windows_username;
         }
 
+
+
         if (isset($credentials->windows_password) and $credentials->windows_password != '') {
+            if ($credentials->windows_password == '-') {
+                $credentials->windows_password = '';
+            }
             $new_credentials['windows_password'] = (string) $credentials->windows_password;
         } else {
             $new_credentials['windows_password'] = (string) $decoded_access_details->windows_password;
         }
 
+
+
         if (isset($credentials->windows_domain) and $credentials->windows_domain != '') {
+            if ($credentials->windows_domain == '-') {
+                $credentials->windows_domain = '';
+            }
             $new_credentials['windows_domain'] = (string) $credentials->windows_domain;
         } else {
             $new_credentials['windows_domain'] = (string) $decoded_access_details->windows_domain;

@@ -81,8 +81,8 @@ echo form_open('main/process_edit_systems')."\n";
     <label for="man_os_family"><?php echo __("OS Family"); ?>: </label><input type="text" name="man_os_family" style="width: 200px" /><br /><br />
     <label for="man_os_group"><?php echo __("OS Group"); ?>: </label><input type="text" name="man_os_group" style="width: 200px" /><br /><br />
     <label for="man_os_name"><?php echo __("OS Name"); ?>: </label><input type="text" name="man_os_name" style="width: 200px" /><br /><br />
-    <label for="run_discovery"><?php echo __("Run Discovery"); ?>: </label><input type="checkbox" id="run_discovery" name="run_discovery" value="yes"/> (Should I run Discovery on all devices listed below?)<br /><br />
-    <label for="calculate_ip"><?php echo __("Recalculate IP Address"); ?>: </label><input type="checkbox" id="calculate_ip" name="calculate_ip" value="yes"/> (Should I recalculate the main ip address for the devices below?)<br /><br />
+    <label for="run_discovery"><?php echo __("Run Discovery"); ?>: </label><input type="checkbox" id="run_discovery" name="run_discovery" value="yes"/> (<?php echo __("Should I run Discovery on all devices listed below?"); ?>)<br /><br />
+    <label for="calculate_ip"><?php echo __("Recalculate IP Address"); ?>: </label><input type="checkbox" id="calculate_ip" name="calculate_ip" value="yes"/> (<?php echo __("Should I recalculate the main ip address for the devices below?"); ?>)<br /><br />
     </td>
     <td width="50%">
     <label for="man_owner"><?php echo __("Owner"); ?>: </label><input type="text" name="man_owner" style="width: 200px" /><br /><br />
@@ -117,8 +117,6 @@ echo form_open('main/process_edit_systems')."\n";
     </tr>
     </table>
 
-
-
     <?php
     foreach ($query as $key) {
         echo "<input type=\"hidden\" name=\"system_id_".$key->system_id."\" value=\"".$key->system_id."\" />\n";
@@ -126,6 +124,7 @@ echo form_open('main/process_edit_systems')."\n";
     ?>
     <label for="submit">&nbsp;</label>
     <input type="submit" name="submit" id="submit" value="Submit" />
+    <br /><br /><label for="note">&nbsp;</label><?php echo __("NOTE - To remove the contents of a field, insert a '-' (a dash or minus) into the field. Each device will have that fields contents set to an empty string."); ?>
 </fieldset>
 <br /><br />
 <fieldset id="system_details" class="niceforms">
@@ -143,12 +142,12 @@ echo form_open('main/process_edit_systems')."\n";
                 ?>
             <tr>
                 <td><span style="display: none;"><?php echo htmlentities($key->man_ip_address)?></span><?php echo htmlentities(ip_address_from_db($key->man_ip_address))?></td>
-                <td><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id);?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->system_id)?>"><?php echo htmlentities($key->hostname)?></a></td>
+                <td><a href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->system_id)?>"><?php echo htmlentities($key->hostname)?></a></td>
                 <td><?php echo htmlentities($key->man_description)?></td>
             </tr>
             <?php } ?>
         </tbody>
     </table>
-</fieldset>
+    </fieldset>
 </form>
 </div>
