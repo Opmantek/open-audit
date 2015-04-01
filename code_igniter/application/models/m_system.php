@@ -438,10 +438,10 @@ class M_system extends MY_Model
 
         $temp = @(string) $details->system_id;
         if (is_null($temp) or $temp == '') {
-            $log_details->message = 'System ID not found for '.$details->man_ip_address;
+            $log_details->message = 'System ID not found.';
             stdlog($log_details);
         } else {
-            $log_details->message = 'Returning System ID '.$details->system_id.' for '.$details->man_ip_address;
+            $log_details->message = 'Returning System ID '.$details->system_id.' for '.@$details->man_ip_address;
             stdlog($log_details);
         }
         unset($log_details);
