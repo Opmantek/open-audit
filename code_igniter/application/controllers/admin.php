@@ -3565,6 +3565,15 @@ class admin extends MY_Controller
             $sql = "UPDATE oa_config SET config_value = 'logo-banner-oac-oae' WHERE config_name = 'logo'";
             $query = $this->db->query($sql);
 
+            $sql = "SELECT report_id FROM oa_report WHERE report_name = 'Enterprise - Software Discovered Range'";
+            $query = $this->db->query($sql);
+            $row = $query->row();
+
+            if ($row->report_id != '' and $row->report_id != '0') {
+                $sql = "UPDATE oa_report_column SET column_link = '/omk/oae/show_report/Specific Software/' WHERE column_order = 0 AND report_id = " . $row->report_id;
+                $query = $this->db->query($sql);
+            }
+
             $sql = "UPDATE oa_config SET config_value = '20150404' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
