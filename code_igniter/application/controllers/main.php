@@ -234,8 +234,12 @@ class main extends MY_Controller
         $credentials = $this->m_system->get_access_details($system_id);
         $creds = $this->encrypt->decode($credentials);
         $creds = json_decode($creds);
-        $document['credentials'][0] = $creds;
-        echo json_encode($document);
+        if ($creds) {
+            $document['credentials'][0] = $creds;
+        }
+        if (count($document) != 0) {
+            echo json_encode($document);
+        }
         header('Content-Type: application/json');
         header('Cache-Control: max-age=0');
     }
