@@ -664,7 +664,7 @@ class M_system extends MY_Model
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         for ($i = 0; $i<count($result); $i++) {
-            if ($result[$i]->ip_address_v4 != '') {
+            if (strrpos($result[$i]->ip_address_v4, $search_ip) !== false) {
                 $result[$i]->ip_address  = $this->ip_address_from_db($result[$i]->ip_address_v4);
             } else {
                 $result[$i]->ip_address = $this->ip_address_from_db($result[$i]->man_ip_address);
