@@ -79,6 +79,11 @@ foreach ($system as $key) {
     $type = $key->man_type;
 }
 
+# this also occurs in v_template, but $system_id is not set at that stage
+echo "  <script type=\"text/javascript\">\n";
+echo "      setVarsForm(\"$system_id\");\n";
+echo "  </script>\n";
+
 foreach ($system_location as $key) {
     $location_name = $key->location_name;
 }

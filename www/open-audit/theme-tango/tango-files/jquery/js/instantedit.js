@@ -76,7 +76,7 @@ function fieldEnter(campo,evt,idfld) {
         elem = document.getElementById( idfld );
         remote = new xhr;
         //nt = remote.send(urlBase + "?fieldname=" +encodeURIComponent(elem.id)+ "&content="+encodeURIComponent(campo.value)+"&"+formVars,"");
-        nt = remote.send(urlBase+"/"+encodeURIComponent(elem.id)+"/"+encodeURIComponent(campo.value), encodeURIComponent(campo.value));
+        nt = remote.send(urlBase+"/"+formVars+"/"+encodeURIComponent(elem.id)+"/"+encodeURIComponent(campo.value), encodeURIComponent(campo.value));
         //remove glow
         noLight(elem);
         elem.innerHTML = nt;
@@ -94,7 +94,7 @@ function fieldBlur(campo,idfld) {
         elem = document.getElementById( idfld );
         remote = new xhr;
         //nt = remote.send(urlBase + "?fieldname=" +encodeURIComponent(elem.id)+ "&content="+encodeURIComponent(campo.value)+"&"+formVars,"");
-        nt = remote.send(urlBase+"/"+encodeURIComponent(elem.id)+"/"+encodeURIComponent(campo.value), encodeURIComponent(campo.value));
+        nt = remote.send(urlBase+"/"+formVars+"/"+encodeURIComponent(elem.id)+"/"+encodeURIComponent(campo.value), encodeURIComponent(campo.value));
         elem.innerHTML = nt;
         changing = false;
         return false;
