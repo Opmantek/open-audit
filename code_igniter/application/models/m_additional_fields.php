@@ -230,14 +230,30 @@ class M_additional_fields extends MY_Model
      */
     public function get_additional_fields_data($system_id)
     {
-        # NOTE - TODO: remove the user_id stuff in this SQL
-        #$sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id WHERE sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL";
-        $sql = "SELECT sys_man_additional_fields.field_id, sys_man_additional_fields.field_name, sys_man_additional_fields.field_type, sys_man_additional_fields.field_placement, sys_man_additional_fields_data.field_details_id, sys_man_additional_fields_data.system_id, sys_man_additional_fields_data.field_datetime, sys_man_additional_fields_data.field_varchar, sys_man_additional_fields_data.field_int, sys_man_additional_fields_data.field_memo FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON (sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id AND (sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL))";
+        # TODO - return an result set containing only fields where system is in group that field is allowed for
+        $sql = "SELECT sys_man_additional_fields.field_id, 
+                sys_man_additional_fields.field_name, 
+                sys_man_additional_fields.field_type, 
+                sys_man_additional_fields.field_placement, 
+                sys_man_additional_fields_data.field_details_id, 
+                sys_man_additional_fields_data.system_id, 
+                sys_man_additional_fields_data.field_datetime, 
+                sys_man_additional_fields_data.field_varchar, 
+                sys_man_additional_fields_data.field_int, 
+                sys_man_additional_fields_data.field_memo 
+                FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON 
+                    (sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id AND 
+                        (sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL))";
+
+        #$sql = "SELECT sys_man_additional_fields.*, sys_man_additional_fields_data.* 
+        #        FROM sys_man_additional_fields 
+        #        LEFT JOIN oa_group_sys on sys_man_additional_fields.group_id = oa_group_sys.group_id 
+        #        LEFT JOIN sys_man_additional_fields_data ON sys_man_additional_fields.field_id = sys_man_additional_fields_data.field_id 
+        #        WHERE oa_group_sys.system_id = ? AND sys_man_additional_fields_data.system_id = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-
         return ($result);
     }
 }
