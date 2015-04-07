@@ -1571,7 +1571,7 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 			partition_name=$(trim "$partition_name")
 
 			#partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
-			partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition" | sed -e "s/$partition//" )
+			partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//" )
 			partition_size=$(trim "$partition_size")
 			partition_size=$((partition_size /1024 / 1024))
 
