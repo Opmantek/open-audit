@@ -53,6 +53,16 @@ if ($function == "list_devices") {
 } else {
     $title .= " - ".ucwords(str_replace("_", " ", $function));
 }
+
+function print_something($string)
+{
+    if ((mb_strlen($string) == 0) or ($string == '0000-00-00')) {
+        return '-';
+    } else {
+        return htmlentities($string);
+    }
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

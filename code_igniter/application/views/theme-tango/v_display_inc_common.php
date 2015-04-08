@@ -200,15 +200,6 @@ function clean_url($url)
     return $url;
 }
 
-function print_something($string)
-{
-    if ((mb_strlen($string) == 0) or ($string == '0000-00-00')) {
-        return '-';
-    } else {
-        return htmlentities($string);
-    }
-}
-
 function display_custom_field($field_placement, $additional_fields, $edit)
 {
     foreach ($additional_fields as $field) {
