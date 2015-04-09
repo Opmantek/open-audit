@@ -313,4 +313,15 @@ class M_oa_config extends MY_Model
 
         return ($ip_address_array);
     }
+
+    public function get_server_domain()
+    {
+        $result = '';
+        if (php_uname('s') == 'Windows NT') {
+            $command = "wmic computersystem get domain";
+            exec($command, $output, $return_var);
+            $result = $output[1];
+        }
+        return($result);
+    }
 }
