@@ -34,9 +34,9 @@
  */
 $sortcolumn = 2;
 ?>
-<form action="#" method="post" class="niceforms">
-	<fieldset id="stats" class="niceforms">
-		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Statistics')?></span></legend>
+<form action="#" method="post" class='niceforms'>
+	<fieldset id="stats" class='niceforms'>
+		<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Statistics')?></span></legend>
 		<?php echo __('Your Open-AudIT database contains the following devices in a production state:')?>
 		<table class="tablesorter">
 			<thead>

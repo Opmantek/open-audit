@@ -33,8 +33,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 echo form_open('admin_report/import_report')."\n";
-echo form_fieldset('Insert XML Below')."\n";
-echo "<p>".form_submit('submit', 'Submit')."</p>\n";
+echo form_fieldset( __('Insert XML Below') )."\n";
+echo "<p>".form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') )."</p>\n";
 $textarea_data = array('name' => 'form_reportXML', 'rows' => '20', 'cols' => '150');
 echo "<p>".form_textarea($textarea_data)."</p>\n";
 echo form_fieldset_close();

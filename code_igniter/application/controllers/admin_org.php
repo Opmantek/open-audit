@@ -60,7 +60,7 @@ class Admin_org extends MY_Controller
 
     public function add_orgs()
     {
-        if (!isset($_POST['submit_xml']) and !isset($_POST['submit_file'])) {
+        if (!isset($_POST['submit']) and !isset($_POST['submit_file'])) {
             # nothing submitted - display the form
             $this->data['heading'] = 'Add Organisations';
             $this->data['include'] = 'v_add_orgs';
@@ -156,7 +156,7 @@ class Admin_org extends MY_Controller
             }
             redirect('admin_org/list_orgs');
         }
-        if (isset($_POST['submit_xml']) and isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
+        if (isset($_POST['submit']) and isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
             # we have XML text - process
             echo "XML processing<br />\n";
             $this->load->helper('xml');
@@ -282,7 +282,7 @@ class Admin_org extends MY_Controller
     public function add_org()
     {
         $this->load->model("m_oa_org");
-        if (!isset($_POST['AddOrganisation'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['org_names'] = $this->m_oa_org->get_org_names();
             $this->data['heading'] = 'Add Organisation';
@@ -314,7 +314,7 @@ class Admin_org extends MY_Controller
     public function edit_org()
     {
         $this->load->model("m_oa_org");
-        if (!isset($_POST['EditOrganisation'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['org'] = $this->m_oa_org->get_org_details($this->data['id']);
             $this->data['org_names'] = $this->m_oa_org->get_org_names();

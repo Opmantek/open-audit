@@ -45,8 +45,8 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
     $password_field = 'text';
 }
 echo form_open('discovery/discover_active_directory') ?>
-<fieldset id="group_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Discover and Audit an Active Directory Domain')?></span></legend>
+<fieldset id="group_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Discover and Audit an Active Directory Domain')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_ldap.png' alt='' title='' width='48'/>
 	<table width="90%" cellpadding = "0" cellspacing="0">
 		<tr>
@@ -65,7 +65,7 @@ echo form_open('discovery/discover_active_directory') ?>
 
 				<p><label for='debug'><?php echo __("Debug"); ?>: </label> <input type='checkbox' id='debug' name='debug' tabindex='9' title='Debug' />Do not set this in normal use.</p>
 
-				<p><label for='ScanAD'>&nbsp;</label><input type='submit' name='submit' id='submit' value='Scan Active Directory' /></p>
+				<p><label for='submit'>&nbsp;</label><input type='submit' name='submit' id='submit' value='<?php echo __('Submit'); ?>' /></p>
 			</td>
 		</tr>
 	</table>

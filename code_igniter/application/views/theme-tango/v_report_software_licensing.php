@@ -33,17 +33,17 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<table cellspacing="1" class="tablesorter" width="900">
+<table cellspacing='1' class='tablesorter' width='900'>
 	<thead>
 		<tr>
 			<th><?php echo __('Package Name')?></th>
 			<th><?php echo __('Type')?></th>
 			<th><?php echo __('Version')?></th>
 			<th><?php echo __('Publisher')?></th>
-			<th align="center"><?php echo __('Installs')?></th>
-			<th align="center"><?php echo __('Licenses')?></th>
+			<th align='center'><?php echo __('Installs')?></th>
+			<th align='center'><?php echo __('Licenses')?></th>
 			<?php if ($this->user->user_sam > '1') { ?>
-			<th align="center"><?php echo __('Edit')?></th>
+			<th align='center'><?php echo __('Edit')?></th>
 			<?php } ?>
 		</tr>
 	</thead>
@@ -69,8 +69,8 @@
 			<td><?php echo htmlentities($key->software_comment); ?></td>
 			<td><?php echo htmlentities($key->software_version); ?></td>
 			<td><?php echo htmlentities($key->software_publisher); ?></td>
-			<td align="center"><?php echo intval($key->software_count); ?></td>
-			<td align="center"><?php echo $key->software_licenses ?></td>
+			<td align='center'><?php echo intval($key->software_count); ?></td>
+			<td align='center'><?php echo $key->software_licenses ?></td>
 			<?php
             if ($this->user->user_sam > '1') {
                 echo "\t\t\t<td align=\"center\"><a class='AssetPopupTrigger' rel='".htmlentities($key->software_name)."' href='#' ><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16' /></a></td>\n";

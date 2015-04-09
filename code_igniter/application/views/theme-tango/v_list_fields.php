@@ -42,8 +42,8 @@ if (count($query) > 0) {
 			<th><?php echo __('Type')?></th>
 			<th><?php echo __('Placement')?></th>
 			<th><?php echo __('Group')?></th>
-			<th align="center"><?php echo __('Edit')?></th>
-			<th align="center"><?php echo __('Delete')?></th>
+			<th align='center'><?php echo __('Edit')?></th>
+			<th align='center'><?php echo __('Delete')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -59,8 +59,8 @@ if (count($query) > 0) {
 				<td><?php echo htmlentities($key->field_type)?></a></td>
 				<td><?php echo htmlentities($key->field_placement)?></a></td>
 				<td><?php echo htmlentities($key->group_id)?></a></td>
-				<td align="center"><?php echo $edit_pic?></td>
-				<td align="center"><?php echo $delete_pic?></td>
+				<td align='center'><?php echo $edit_pic?></td>
+				<td align='center'><?php echo $delete_pic?></td>
 			</tr>
 			<?php 
                 }

@@ -35,9 +35,9 @@
 ?>
 <div id="view_summary_alerts" style="float: left; width: 100%;">
     <br />
-    <form action="#" method="post" class="niceforms">
+    <form action="#" method="post" class='niceforms'>
     <fieldset id="config_details">
-        <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Config')?></span></legend>
+        <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Config')?></span></legend>
         <div style="min-width: 50px; float: right;">
         </div>
         <div style="width: 100%; float:left;">

@@ -34,26 +34,26 @@
  */
 ?>
 <?php echo form_open('admin/scan_ad') ?>
-<fieldset id="group_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Scanning An Active Directory Domain')?></span></legend>
+<fieldset id="group_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Scanning An Active Directory Domain')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
-	<table width="780" cellpadding = "0" cellspacing="0">
+	<table width='780' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td width='100%'>
-				<p><label for="ad_ldap_server"><?php echo __("Active Directory Server"); ?>: </label><input type='text' id="ad_ldap_server" name="ad_ldap_server" tabindex='1' title='Active Directory Server'> ex: 192.168.61.200 (IP Address is best).</p>
+				<p><label for='ad_ldap_server'><?php echo __("Active Directory Server"); ?>: </label><input type='text' id="ad_ldap_server" name="ad_ldap_server" tabindex='1' title='Active Directory Server'> ex: 192.168.61.200 (IP Address is best).</p>
 				<p><label for='ad_user'><?php echo __("User")?>: </label><input type='text' id='ad_user' name='ad_user' tabindex='2' title='User' /> ex: open-audit\administrator</p>
 				<p><label for='ad_secret'><?php echo __("Password")?>: </label><input type='password' id='ad_secret' name='ad_secret' tabindex='3' title='Password' /></p>
 				<p><label for='ad_domain_name'><?php echo __("Domain Name")?>: </label><input type='text' id='ad_domain_name' name='ad_domain_name' tabindex='4' title='Domain Name'  /> ex: open-audit.local</p>
-				<p><label for='ScanAD'>&nbsp;</label><input type='submit' name='ScanAD' id='ScanAD' value='Scan' /></p>
+				<p><label for='submit'>&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
 	</table>
-	<p>NOTE - <span style="font-weight:bold; color: red;">You probably don't want to do this.</span>This utility will ask Active Directory for a list of Windows computers in the domain. It will then inset what little information Active Directory can provide into the Open-AudIT database.<br /><br />
+	<p><?php echo __('NOTE'); ?> - <span style='font-weight:bold; color: red;'><?php echo __('You probably don\'t want to do this'); ?>.</span><?php echo __('This utility will ask Active Directory for a list of Windows computers in the domain. It will then inset what little information Active Directory can provide into the Open-AudIT database'); ?>.<br /><br />
 
-	It's likely you really want to <span style="font-weight: bold;">audit</span>all the computers in Active Directory. To do that, run Menu -> Admin -> Discovery -> Discover Active Directory (or click <a href="../discovery/discover_active_directory" style="color: blue;">here</a>).<br /><br />
+	<?php echo __('It\'s likely you really want to'); ?> <span style='font-weight: bold;'><?php echo __('audit'); ?></span><?php echo __('all the computers in Active Directory. To do that, run Menu -> Admin -> Discovery -> Discover Active Directory (or click'); ?> <a href="../discovery/discover_active_directory" style="color: blue;"><?php echo __('here'); ?></a>).<br /><br />
 
-	The attributes retrieved from Active Directory are: Hostname, Operating System, Last Logged On (date) - as you can see, not much.<br /><br />
+	<?php echo __('The attributes retrieved from Active Directory are: Hostname, Operating System, Last Logged On (date) - as you can see, not much'); ?>.<br /><br />
 
-	It will retrieve <span style="font-weight: bold;">all</span>computers in the domain regardless of status.
+	<?php echo __('It will retrieve'); ?> <span style="font-weight: bold;"><?php echo __('all'); ?></span><?php echo __('computers in the domain regardless of status'); ?>.
 </fieldset>
 </form>

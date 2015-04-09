@@ -34,6 +34,6 @@
  */
 echo form_open_multipart('admin_org/add_orgs')."\n";
 echo form_fieldset('Select File')."\n";
-echo form_upload('upload_file').form_submit('submit_file', 'Submit File');
+echo form_upload('upload_file').form_submit('submit', 'Submit');
 echo form_fieldset_close();
 echo form_close();

@@ -34,20 +34,20 @@
  */
 $sortcolumn = 0;
 ?>
-<table cellspacing="1" class="tablesorter" width="900">
+<table cellspacing='1' class='tablesorter' width='900'>
 	<thead>
 		<tr>
 			<th><?php echo __('System Name')?></th>
 			<th><?php echo __('Partition Name')?></th>
-			<th align="center"><?php echo __('Mount Point')?></th>
-			<th align="center"><?php echo __('Environment')?></th>
-			<th align="center"><?php echo __('Function')?></th>
-			<th align="center"><?php echo __('Size - MiB')?></th>
-			<th align="center"><?php echo __('Used - MiB')?></th>
-			<th align="center"><?php echo __('Free - MiB')?></th>
-			<th align="center"><?php echo __('Free - %')?></th>
-			<th align="center"><?php echo __('Change per Day (MiB)')?></th>
-			<th align="center"><?php echo __('Days until 100%')?></th>
+			<th align='center'><?php echo __('Mount Point')?></th>
+			<th align='center'><?php echo __('Environment')?></th>
+			<th align='center'><?php echo __('Function')?></th>
+			<th align='center'><?php echo __('Size - MiB')?></th>
+			<th align='center'><?php echo __('Used - MiB')?></th>
+			<th align='center'><?php echo __('Free - MiB')?></th>
+			<th align='center'><?php echo __('Free - %')?></th>
+			<th align='center'><?php echo __('Change per Day (MiB)')?></th>
+			<th align='center'><?php echo __('Days until 100%')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -62,17 +62,17 @@ $sortcolumn = 0;
 		<tr>
 			<td><a href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key["system_id"])?>"><?php echo htmlentities($key["hostname"])?></a></td>
 			<td align="left"><?php echo htmlentities($key["partition_name"])?></td>
-			<td align="center"><a href="<?php echo base_url()?>index.php/main/disk_graph/<?php echo intval($key["system_id"])."/".intval($key["partition_id"])?>"><?php echo htmlentities($key["partition_mount_point"]) ?></a></td>
-			<td align="center"><?php echo htmlentities($key["man_environment"])?></td>
-			<td align="center"><?php echo htmlentities($key["man_function"])?></td>
-			<td align="center"><span style="display: none;"><?php echo htmlentities($key["partition_size"])?></span><?php echo number_format($key["partition_size"])?></td>
-			<td align="center"><span style="display: none;"><?php echo htmlentities($key["partition_used_space"])?></span><?php echo number_format($key["partition_used_space"])?></td>
-			<td align="center"><span style="display: none;"><?php echo htmlentities($key["partition_free_space"])?></span><?php echo number_format($key["partition_free_space"])?></td>
-			<td align="center"><?php echo $percent_free;
+			<td align='center'><a href="<?php echo base_url()?>index.php/main/disk_graph/<?php echo intval($key["system_id"])."/".intval($key["partition_id"])?>"><?php echo htmlentities($key["partition_mount_point"]) ?></a></td>
+			<td align='center'><?php echo htmlentities($key["man_environment"])?></td>
+			<td align='center'><?php echo htmlentities($key["man_function"])?></td>
+			<td align='center'><span style="display: none;"><?php echo htmlentities($key["partition_size"])?></span><?php echo number_format($key["partition_size"])?></td>
+			<td align='center'><span style="display: none;"><?php echo htmlentities($key["partition_used_space"])?></span><?php echo number_format($key["partition_used_space"])?></td>
+			<td align='center'><span style="display: none;"><?php echo htmlentities($key["partition_free_space"])?></span><?php echo number_format($key["partition_free_space"])?></td>
+			<td align='center'><?php echo $percent_free;
         ?></td>
-			<td align="center"><?php echo "<span style=\"display: none;\">".htmlentities($key["change_per_day"])."</span>".number_format(round($key["change_per_day"], 0));
+			<td align='center'><?php echo "<span style=\"display: none;\">".htmlentities($key["change_per_day"])."</span>".number_format(round($key["change_per_day"], 0));
         ?></td>
-			<td align="center"><?php echo htmlentities($key["days_until_used"]);
+			<td align='center'><?php echo htmlentities($key["days_until_used"]);
         ?></td>
 		</tr>
 	<?php 

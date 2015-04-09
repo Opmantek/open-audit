@@ -41,10 +41,10 @@ if ($query) {
 			<th><?php echo __('User Name')?></th>
 			<th><?php echo __('User Full Name')?></th>
 			<th><?php echo __('User Email')?></th>
-			<th align="center"><?php echo __('User Admin')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Edit')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Deactivate')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Activate')?></th>
+			<th align='center'><?php echo __('User Admin')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Edit')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Deactivate')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Activate')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -70,10 +70,10 @@ if ($query) {
 				<td><?php echo htmlentities($key->user_name)?></td>
 				<td><?php echo htmlentities($key->user_full_name)?></td>
 				<td><?php echo htmlentities($key->user_email)?></td>
-				<td align="center"><?php echo $admin_pic?></td>
-				<td align="center"><?php echo $edit_pic?></td>
-				<td align="center"><?php echo $deactivate_pic?></td>
-				<td align="center"><?php echo $activate_pic?></td>
+				<td align='center'><?php echo $admin_pic?></td>
+				<td align='center'><?php echo $edit_pic?></td>
+				<td align='center'><?php echo $deactivate_pic?></td>
+				<td align='center'><?php echo $activate_pic?></td>
 			</tr>
 		<?php endforeach;
     ?>

@@ -34,8 +34,8 @@
  */
 echo form_open('admin_system/system_add_credentials')."\n";
 ?>
-<fieldset id="credentials" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('SNMP Credentials')?></span></legend>
+<fieldset id="credentials" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('SNMP Credentials')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<p>
 		<label for='ip_address'><?php echo __("IP Address")?>: </label>
@@ -51,7 +51,7 @@ echo form_open('admin_system/system_add_credentials')."\n";
 		<input type='text' id='snmp_community' name='snmp_community' tabindex='1' title='SNMP Community' value="<?php echo htmlentities($this->config->item('default_snmp_community')); ?>"/>
 	</p>
 	<p>
-		<label for='snmp_scan'><?php echo "Scan SNMP upon Submit?"; ?></label>
+		<label for='snmp_scan'><?php echo __("Scan SNMP upon Submit") . "?"; ?></label>
 		<input type='checkbox' id='snmp_scan' name='snmp_scan' tabindex='4' title='Scan SNMP' checked />
 	</p>
 	<hr />

@@ -34,7 +34,7 @@
  */
 $sortcolumn = 2;
 echo $comment;
-echo "<p>Refresh this page for updated logs.<br />Most recent entries are at the top.</p>\n";
+echo "<p>" . __('Refresh this page for updated logs') . ".<br />" . __('Most recent entries are at the top') . ".</p>\n";
 if (count($query) > 0) {
     ?>
 <table cellspacing="1" class="tablesorter">

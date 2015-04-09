@@ -38,13 +38,13 @@ if (count($query) > 1) {
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
-			<th align="center" width="120"><?php echo __('Systems')?></th>
+			<th align='center' width="120"><?php echo __('Systems')?></th>
 			<th><?php echo __('Name')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Activate Group')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Remove Group')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Show Devices')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Edit Device')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Delete Device')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Activate Group')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Remove Group')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Show Devices')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Edit Device')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Delete Device')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -76,15 +76,15 @@ if (count($query) > 1) {
             }
             ?>
 			<tr>
-				<td align="center"><?php echo number_format($key->total)?></td>
+				<td align='center'><?php echo number_format($key->total)?></td>
 				<td><a href="../main/view_device/<?php echo $key->device_id?>"><?php echo htmlentities($key->device_name)?></a></td>
 				<td><?php echo htmlentities($key->device_address)?></td>
 				<td><?php echo htmlentities($key->device_type)?></td>
-				<td align="center"><?php echo $activate_pic?></td>
-				<td align="center"><?php echo $deactivate_pic?></td>
-				<td align="center"><?php echo $show_pic?></td>
-				<td align="center"><?php echo $edit_pic?></td>
-				<td align="center"><?php echo $delete_pic?></td>
+				<td align='center'><?php echo $activate_pic?></td>
+				<td align='center'><?php echo $deactivate_pic?></td>
+				<td align='center'><?php echo $show_pic?></td>
+				<td align='center'><?php echo $edit_pic?></td>
+				<td align='center'><?php echo $delete_pic?></td>
 			</tr>
 			<?php endforeach;
             ?>

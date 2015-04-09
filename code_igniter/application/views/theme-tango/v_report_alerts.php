@@ -48,7 +48,7 @@ if ($query) {
 				<th width="110"><?php echo __('System Name')?></th>
 				<th width="140"><?php echo __('System Description')?></th>
 				<th><?php echo __('Details')?></th>
-				<th  width="150" align="middle" class="{sorter: false}">
+				<th  width="150" align="middle" class='{sorter: false}'>
 					<button onClick="document.alertform.submit();"><?php echo __('Acknowledge') ?></button>
 					<input type="checkbox" valign="absmiddle" id="alert_id_0" name="alert_id_0" onchange="alter_all_alerts();"/>
 				</th>
@@ -62,7 +62,7 @@ if ($query) {
 				<td><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->system_id)?>"><?php echo htmlentities($key->hostname)?></a></td>
 				<td><?php echo htmlentities($key->man_description)?></td>
 				<td><?php echo htmlentities($key->alert_details)?></td>
-				<td align="center"><input type="checkbox" id="alert_id_<?php echo intval($key->alert_id)?>" name="alert_id_<?php echo intval($key->alert_id)?>" /></td>
+				<td align='center'><input type="checkbox" id="alert_id_<?php echo intval($key->alert_id)?>" name="alert_id_<?php echo intval($key->alert_id)?>" /></td>
 			</tr>
 	<?php endforeach;
     ?>

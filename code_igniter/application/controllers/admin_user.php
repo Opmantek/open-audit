@@ -87,7 +87,7 @@ class Admin_user extends MY_Controller
         $this->load->model("m_oa_group");
         $this->load->helper('url');
         $this->data['url'] = current_url();
-        if (!isset($_POST['EditUser'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['user'] = $this->m_oa_user->get_user_details($this->data['id']);
             $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($this->data['id']);
@@ -161,7 +161,7 @@ class Admin_user extends MY_Controller
 
     public function add_user()
     {
-        if (!isset($_POST['AddUser'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->load->model("m_oa_group");
             $this->data['query'] = $this->m_oa_group->get_all_groups();

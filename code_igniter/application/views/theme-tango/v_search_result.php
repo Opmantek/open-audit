@@ -38,10 +38,10 @@ if ($query) {
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
-			<th align="center" style="width:120px;"><?php echo __('Hostname')?></th>
-			<th align="center" style="width:120px;"><?php echo __('Table')?></th>
-			<th align="center" style="width:120px;"><?php echo __('Attribute')?></th>
-			<th align="center" style="width:120px;"><?php echo __('Result')?></th>
+			<th align='center' style='width:120px;'><?php echo __('Hostname')?></th>
+			<th align='center' style='width:120px;'><?php echo __('Table')?></th>
+			<th align='center' style='width:120px;'><?php echo __('Attribute')?></th>
+			<th align='center' style='width:120px;'><?php echo __('Result')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -64,10 +64,10 @@ if ($query) {
     ?>
 
 		<tr>
-			<td align="center"><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>"><?php echo htmlentities($key->hostname); ?></a></td>
-			<td align="center"><?php echo htmlentities($key->table)?></td>
-			<td align="center"><?php echo htmlentities($key->field)?></td>
-			<td align="center"><?php echo htmlentities($key->result)?></td>
+			<td align='center'><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>"><?php echo htmlentities($key->hostname); ?></a></td>
+			<td align='center'><?php echo htmlentities($key->table)?></td>
+			<td align='center'><?php echo htmlentities($key->field)?></td>
+			<td align='center'><?php echo htmlentities($key->result)?></td>
 		</tr>
 		<?php endforeach;
     ?>

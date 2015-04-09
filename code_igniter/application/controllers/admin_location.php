@@ -87,7 +87,7 @@ class Admin_location extends MY_Controller
 
     public function add_location()
     {
-        if (!isset($_POST['AddLocation'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['heading'] = 'Add Location';
             $this->data['include'] = 'v_add_location';
@@ -155,13 +155,14 @@ class Admin_location extends MY_Controller
 
     public function add_locations()
     {
-        if (!isset($_POST['submit_xml']) and !isset($_POST['submit_file'])) {
+        if (!isset($_POST['submit']) and !isset($_POST['upload_file'])) {
             # nothing submitted - display the form
             $this->data['heading'] = 'Add Locations';
             $this->data['include'] = 'v_add_locations';
             $this->load->view('v_template', $this->data);
         }
-        if (isset($_POST['submit_file'])) {
+        if (isset($_POST['submit']) and isset($_POST['upload_file'])) {
+echo "<pre>1\n";
             $this->load->model("m_oa_location");
             # we have an uploaded file - store and process
             $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);
@@ -173,6 +174,7 @@ class Admin_location extends MY_Controller
                 $this->data['include'] = 'v_error';
                 $this->load->view('v_template', $this->data);
             }
+echo "2\n";
             require_once BASEPATH.'../application/libraries/phpexcel/PHPExcel/IOFactory.php';
             if (!$objPHPExcel = PHPExcel_IOFactory::load($target_path)) {
                 exit;
@@ -229,7 +231,7 @@ class Admin_location extends MY_Controller
             }
             redirect('admin_location/list_locations');
         }
-        if (isset($_POST['submit_xml']) and isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
+        if (isset($_POST['submit']) and isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
             // we have XML text - process
             echo "XML processing<br />\n";
             $this->load->helper('xml');
@@ -273,7 +275,7 @@ class Admin_location extends MY_Controller
     public function edit_location()
     {
         $this->load->model("m_oa_location");
-        if (!isset($_POST['EditLocation'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['location'] = $this->m_oa_location->get_location($this->data['id']);
             $this->data['heading'] = 'Edit Location';

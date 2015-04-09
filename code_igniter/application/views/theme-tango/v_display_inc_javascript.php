@@ -403,7 +403,7 @@ function receive_org() {
 function upload_attachment()
 {
 	status_text=document.getElementById("attachment_listing").innerHTML;
-	status_text=status_text+"<input type='hidden' id='system_id' name='system_id' value='"+formVars+"' /><input type='file' name='attachment' id='attachment' size='20' /><br /><?php echo __("Attachment Title"); ?>: <input type='text' name='title' id='title' size='20' /><br /><input type='submit' name='submit' id='submit' value='Submit' />";
+	status_text=status_text+"<input type='hidden' id='system_id' name='system_id' value='"+formVars+"' /><input type='file' name='attachment' id='attachment' size='20' /><br /><?php echo __("Attachment Title"); ?>: <input type='text' name='title' id='title' size='20' /><br /><input type='submit' name='submit' value='Submit' id='submit'  />";
 	document.getElementById("attachment_listing").innerHTML = status_text;
 }
 

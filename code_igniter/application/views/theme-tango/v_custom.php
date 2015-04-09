@@ -38,7 +38,7 @@
 if ($heading = 'Import Active Directory Export 2') {
     echo form_open_multipart('custom/ad_extract_2')."\n";
     echo form_fieldset('Select File')."\n";
-    echo form_upload('upload_file')."<br />\n".form_submit('submit_file', 'Submit File');
+    echo form_upload('upload_file')."<br />\n".form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') );
     echo form_fieldset_close();
     echo form_close();
 }

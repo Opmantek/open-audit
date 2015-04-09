@@ -50,7 +50,7 @@ echo "<br /><br />or<br /><br />\n";
 echo form_fieldset('Select a File')."\n";
 echo form_upload('upload_file');
 echo form_fieldset_close();
-echo '<p>'.form_submit('submit', 'Submit')."</p>\n";
+echo '<p>'.form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit' )."</p>\n";
 echo form_close();
 ?>
 </body>

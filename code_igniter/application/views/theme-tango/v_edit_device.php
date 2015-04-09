@@ -40,12 +40,12 @@ if (isset($error_message)) {
 
 echo form_open('admin_location/edit_location')."\n";
 ?>
-<fieldset id="location_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Location Details')?></span></legend>
+<fieldset id="location_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Location Details')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<?php foreach ($location as $key) {
     ?>
-	<table width="780" cellpadding = "0" cellspacing="0">
+	<table width='780' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td width='50%'>
 				<p><label for='location_name'><?php echo __("Name")?>: </label><input type='text' id='location_name' name='location_name' tabindex='1' title='Location Name' value="<?php echo print_something($key->location_name); ?>"/><?php echo $error_message; ?></p>
@@ -62,8 +62,7 @@ echo form_open('admin_location/edit_location')."\n";
 				<!-- <p><label for='location_picture'><?php echo __("Picture")?>: </label><input type='text' id='location_picture' name='location_picture' tabindex='9' title='Picture'  value="<?php echo print_something($key->location_picture); ?>"/></p> -->
 				<p><label for='location_latitude'><?php echo __("Latitude")?>: </label><input type='text' id='location_latitude' name='location_latitude' tabindex='10' title='Latitude'  value="<?php echo print_something($key->location_latitude); ?>"/></p>
 				<p><label for='location_longitude'><?php echo __("Longitude")?>: </label><input type='text' id='location_longitude' name='location_longitude' tabindex='11' title='Longitude'  value="<?php echo print_something($key->location_longitude); ?>"/></p>
-				<p><label for='EditLocation'>&nbsp;</label><?php echo form_submit('EditLocation', 'Edit Location');
-    ?></p>
+				<p><label for='submit'>&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
 	</table>

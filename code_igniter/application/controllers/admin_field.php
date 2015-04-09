@@ -60,7 +60,7 @@ class Admin_field extends MY_Controller
 
     public function add_field()
     {
-        if (!isset($_POST['AddField'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->load->model("m_oa_group");
             $this->data['groups'] = $this->m_oa_group->get_all_groups();
@@ -92,7 +92,7 @@ class Admin_field extends MY_Controller
     public function edit_field()
     {
         $this->load->model("m_additional_fields");
-        if (!isset($_POST['EditField'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $field_id = $this->uri->segment(3, '');
             $this->load->model("m_oa_group");

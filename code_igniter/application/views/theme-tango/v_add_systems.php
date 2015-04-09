@@ -34,6 +34,6 @@
  */
 echo form_open_multipart('admin_system/add_systems')."\n";
 echo form_fieldset('Select File')."\n";
-echo form_upload('upload_file').form_submit('submit_file', 'Submit File');
+echo form_upload('upload_file').form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') );
 echo form_fieldset_close();
 echo form_close();

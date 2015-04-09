@@ -60,9 +60,9 @@ foreach ($data as $key => $value) {
 ?>
 
 
-<form action="vars.php" method="post" class="niceforms">
-	<fieldset id="about" class="niceforms">
-		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Support Data')?></span></legend>
+<form action="vars.php" method="post" class='niceforms'>
+	<fieldset id="about" class='niceforms'>
+		<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Support Data')?></span></legend>
 		To email this data to Opmantek for assistance, <a href='<?php echo $email; ?>' style='color:red; text-decoration:underline;'>CLICK HERE</a>. This will open an email in your mail client and will not automatically send the data to opmantek. You should review the data and add your issue to the email.<br /><br />
 
 		If you are emailing this result to Opmantek, please download the files below and add them as attachments to the email (NOTE: you need to be an Admin level user in Open-AudIT to download these files): <a style="color:blue; text-decoration:underline;" href="../admin/download_file/1">log_system.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/2">oae.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/3">opCommon.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/4">opDaemon.log</a>, <a style="color:blue; text-decoration:underline;" href="../admin/download_file/5">performance.log</a>, 		<a style="color:blue; text-decoration:underline;" href="../admin/download_file/6">opCommon.nmis</a>.<br /><br />

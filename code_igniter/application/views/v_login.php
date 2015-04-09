@@ -89,7 +89,7 @@ if (isset($form_url) and $form_url != '') {
                     <?php
                     if ((file_exists($filename)) and $show == 'y') {
                         ?>
-                        <span align="center"><br /><input type="button" name="audit" id="audit" onClick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
+                        <span align='center'><br /><input type="button" name="audit" id="audit" onClick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
                         <?php
 
                     }
@@ -98,8 +98,7 @@ if (isset($form_url) and $form_url != '') {
                 <div align='right' style="height: 150px; width:40%; float: right; text-align: center;">
                     <p><label for="username">Username: </label><input type="text" name="username" id="username" size="20" /></p>
                     <p><label for="password">Password: </label><input type="password" name="password" id="password" size="20" /></p>
-                    <p><?php
-                    echo form_submit('login', 'Login');
+                    <p><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit' );
                     echo htmlentities($this->session->flashdata('message'));
                     ?>
                     <br />&nbsp;</p>

@@ -43,7 +43,7 @@
 <?php echo form_open('system/add_nmap', $attributes)."\n"; ?>
     <?php echo form_fieldset('Add an Nmap audit')."\n"; ?>
         <label for="form_nmap">Details: </label><p><?php echo form_textarea(array('name' => 'form_nmap', 'id' => 'form_nmap', 'rows' => '15', 'cols' => '100')); ?></p>
-        <p><?php echo form_submit('submit', 'Submit'); ?></p>
+        <p><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
     <?php echo form_fieldset_close(); ?>
 <?php echo form_close(); ?>
 </body>

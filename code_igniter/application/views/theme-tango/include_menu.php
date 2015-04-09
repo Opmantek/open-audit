@@ -242,7 +242,7 @@
                 <table>
                     <tr>
                         <td><input type="text" name="search"/></td>
-                        <td><input type="submit" value="Find Device" /></td>
+                        <td><input type="submit" value="<?php echo __('Find Device'); ?>" /></td>
                     </tr>
                 </table>
             </form>
@@ -258,7 +258,7 @@
                         <table>
                             <tr>
                                 <td><input type="text" name="search"/></td>
-                                <td><input type="submit" value="Search Attributes" /></td>
+                                <td><input type="submit" value="<?php echo __('Search Attributes'); ?>" /></td>
                             </tr>
                         </table>
                     </form>
@@ -279,11 +279,11 @@
                 <li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo current_url().'/username/'.$this->user->user_name?>/password/YOUR_PASSWORD/rss"><img src="<?php echo $oa_theme_images?>/16_rss.png" alt="RSS Link" title="RSS Link"/></a></li>
             <?php }
             } ?>
-        <li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo current_url()?>/xml"><img src="<?php echo $oa_theme_images?>/16_text-x-generic-template.png" alt="Export as XML" title="Export as XML"/></a></li>
-        <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/html"><img src="<?php echo $oa_theme_images?>/16_web.png" alt="Export as HTML" title="Export as HTML"/></a></li>
-        <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/csv"><img src="<?php echo $oa_theme_images?>/16_csv.png" alt="Export as CSV" title="Export as CSV"/></a></li>
-        <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/json"><img src="<?php echo $oa_theme_images?>/16_json.png" alt="Export as JSON" title="Export as JSON"/></a></li>
-        <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/excel"><img src="<?php echo $oa_theme_images?>/16_excel.png" alt="Export as Excel" title="Export as Excel"/></a></li>
+        <li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo current_url()?>/xml"><img src="<?php echo $oa_theme_images?>/16_text-x-generic-template.png" alt="<?php echo __('Export as XML')?>" title="<?php echo __('Export as XML')?>"/></a></li>
+        <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/html"><img src="<?php echo $oa_theme_images?>/16_web.png" alt="<?php echo __('Export as HTML')?>" title="<?php echo __('Export as HTML')?>"/></a></li>
+        <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/csv"><img src="<?php echo $oa_theme_images?>/16_csv.png" alt="<?php echo __('Export as CSV')?>" title="<?php echo __('Export as CSV')?>"/></a></li>
+        <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/json"><img src="<?php echo $oa_theme_images?>/16_json.png" alt="<?php echo __('Export as JSON')?>" title="<?php echo __('Export as JSON')?>"/></a></li>
+        <li style="float: right; position: relative; top:-1px; padding-right: 3px;"><a href="<?php echo current_url()?>/excel"><img src="<?php echo $oa_theme_images?>/16_excel.png" alt="<?php echo __('Export as Excel')?>" title="<?php echo __('Export as Excel')?>"/></a></li>
     <?php
 
 } ?>

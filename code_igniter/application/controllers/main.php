@@ -1066,7 +1066,7 @@ class main extends MY_Controller
         $this->load->model("m_oa_user");
         $this->load->model("m_oa_group");
         $this->load->helper('url');
-        if (!isset($_POST['EditUser'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['user'][0] = $this->user;
             if ($this->user->user_admin == 'y') {

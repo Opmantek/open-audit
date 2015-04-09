@@ -37,9 +37,9 @@
 	<?php if (isset($decoded_access_details) and ($access_level >= 7)) {
     ?>
 	<br />
-	<form action="../../admin_system/system_add_credentials" method="post" class="niceforms">
-		<fieldset id="summary_credentials_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Credentials')?></span></legend>
+	<form action="../../admin_system/system_add_credentials" method="post" class='niceforms'>
+		<fieldset id="summary_credentials_details" class='niceforms'>
+			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Credentials')?></span></legend>
 			<div style="float:right; width: 120px; text-align:center">
 				<img style='margin; 10px; ' src='<?php echo $oa_theme_images; ?>/48_credentials.png' alt='' title='' width='48'/>
 				<?php if ($access_level > 7) { ?>
@@ -47,14 +47,14 @@
 				<?php } ?>
 			</div>
 			<div id="credentials">
-				<p><label for='credentials_ip_address'>IP Address: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
-				<p><label for='credentials_ip_address'>SNMP Version: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
-				<p><label for='credentials_ip_address'>SNMP Community: </label><span id='credentials_snmp_community'><?php echo print_something($snmp_community); ?></span></p>
-				<p><label for='credentials_ssh_username'>SSH Username: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
-				<p><label for='credentials_ssh_password'>SSH Password: </label><span id='credentials_ssh_password'><?php echo print_something($ssh_password); ?></span></p>
-				<p><label for='credentials_windows_username'>Windows Username: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
-				<p><label for='credentials_windows_password'>Windows Password: </label><span id='credentials_windows_password'><?php echo print_something($windows_password); ?></span></p>
-				<p><label for='credentials_windows_domain'>Windows Domain: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
+				<p><label for='credentials_ip_address'><?php echo __('IP Address'); ?>: </label><span id='credentials_ip_address'><?php echo print_something($decoded_access_details->ip_address); ?></span></p>
+				<p><label for='credentials_ip_address'><?php echo __('SNMP Version'); ?>: </label><span id='credentials_snmp_version'><?php echo print_something($decoded_access_details->snmp_version); ?></span></p>
+				<p><label for='credentials_ip_address'><?php echo __('SNMP Community'); ?>: </label><span id='credentials_snmp_community'><?php echo print_something($snmp_community); ?></span></p>
+				<p><label for='credentials_ssh_username'><?php echo __('SSH Username'); ?>: </label><span id='credentials_ssh_username'><?php echo print_something($decoded_access_details->ssh_username); ?></span></p>
+				<p><label for='credentials_ssh_password'><?php echo __('SSH Password'); ?>: </label><span id='credentials_ssh_password'><?php echo print_something($ssh_password); ?></span></p>
+				<p><label for='credentials_windows_username'><?php echo __('Windows Username'); ?>: </label><span id='credentials_windows_username'><?php echo print_something($decoded_access_details->windows_username); ?></span></p>
+				<p><label for='credentials_windows_password'><?php echo __('Windows Password'); ?>: </label><span id='credentials_windows_password'><?php echo print_something($windows_password); ?></span></p>
+				<p><label for='credentials_windows_domain'><?php echo __('Windows Domain'); ?>: </label><span id='credentials_windows_domain'><?php echo print_something($decoded_access_details->windows_domain); ?></span></p>
 			</div>
 
 		</fieldset>
@@ -64,9 +64,9 @@
 
 	<div id="view_summary_purchase" style="float: left; width: 100%;">
 	<br />
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="summary_purchase_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Purchase Details')?></span></legend>
+	<form action="#" method="post" class='niceforms'>
+		<fieldset id="summary_purchase_details" class='niceforms'>
+			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Purchase Details')?></span></legend>
 			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_purchases.png' alt='' title='' width='48'/>
 			<?php foreach ($system as $key): ?>
 				<p><label for="man_asset_number"><?php echo __('Asset Number')?>: </label><span id="man_asset_number" <?php echo $edit?>><?php echo print_something($key->man_asset_number)?></span><?php echo $edit_icon; ?></p>
@@ -89,9 +89,9 @@
 
 	<div id="view_summary_location" style="float: left; width: 100%;">
 	<br />
-	<form action="#" method="post" class="niceforms">
+	<form action="#" method="post" class='niceforms'>
 		<fieldset id="summary_location_details">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Location / Owner Details')?></span></legend>
+			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Location / Owner Details')?></span></legend>
 			<div style="float:left; width:50%;">
 				<div id="location_container">
 					<?php if (count($system_location) > 0) {
@@ -147,23 +147,23 @@
 				<?php endforeach; ?>
 				<div id="org_container">
 				<?php if (count($system_org) > 0) {
-    foreach ($system_org as $key):
+                    foreach ($system_org as $key):
                         echo "<p><label for='man_org_id_select'>".__('Org Name').": </label>";
-    if ($access_level > 7) {
-        echo "<span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".print_something($key->org_name)."</span></span>$edit_icon</p>\n";
-    } else {
-        echo "<span id='org_name'>".print_something($key->org_name)."</span></p>\n";
-    }
-    if ($key->org_name > "") {
-        if ($key->org_parent_id == '0') {
-            $key->org_parent_id = '';
-        }
-        echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'>".print_something($key->contact_id)."</span></p>\n";
-        echo "<p><label for='parent_org'>".__('Parent Org').": </label><span id='parent_org'>".print_something($key->org_parent_name)."</span></p>\n";
-        echo "<p><label for='org_comments'>".__('Comments').": </label><span id='org_comments'>".print_something($key->org_comments)."</span></p>\n";
-    }
-    endforeach;
-} ?>
+                        if ($access_level > 7) {
+                            echo "<span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".print_something($key->org_name)."</span></span>$edit_icon</p>\n";
+                        } else {
+                            echo "<span id='org_name'>".print_something($key->org_name)."</span></p>\n";
+                        }
+                        if ($key->org_name > "") {
+                            if ($key->org_parent_id == '0') {
+                                $key->org_parent_id = '';
+                            }
+                            echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'>".print_something($key->contact_id)."</span></p>\n";
+                            echo "<p><label for='parent_org'>".__('Parent Org').": </label><span id='parent_org'>".print_something($key->org_parent_name)."</span></p>\n";
+                            echo "<p><label for='org_comments'>".__('Comments').": </label><span id='org_comments'>".print_something($key->org_comments)."</span></p>\n";
+                        }
+                    endforeach;
+                    } ?>
 				</div>
 			</div>
 			<div style="float:right; width: 100px; margin-left: -80%;">
@@ -179,9 +179,9 @@
 	<div id="view_summary_custom" style="float: left; width: 100%;">
 	<br />
 	<br />
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="summary_custom_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Custom Details')?></span></legend>
+	<form action="#" method="post" class='niceforms'>
+		<fieldset id="summary_custom_details" class='niceforms'>
+			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Custom Details')?></span></legend>
 			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_custom.png' alt='' title='' width='48'/>
 			<?php
             echo display_custom_field('view_summary_custom', $additional_fields_data, $edit);
@@ -191,15 +191,13 @@
 	</div>
 
 	<div id="view_summary_audits" style="float: left; width: 100%;">
-	<?php if (count($audits) > 0) {
-    ?>
+	<?php if (count($audits) > 0) { ?>
 		<br />
-		<form action="#" method="post" class="niceforms">
+		<form action="#" method="post" class='niceforms'>
 			<fieldset id="summary_audits">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Audits')?></span></legend>
+				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('System Audits')?></span></legend>
 				<div style="min-width: 50px; float: right;">
-				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;
-    ?>/48_search.png' alt='' title='' width='48'/>
+				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images; ?>/48_search.png' alt='' title='' width='48'/>
 				</div>
 				<div style="width: 90%; float:left;">
 				<table cellspacing="1" class="tablesorter" width="100%">
@@ -243,9 +241,9 @@
 	<div id="view_summary_audit_log" style="float: left; width: 100%;">
 	<?php if (count($audit_log) > 0) { ?>
 		<br />
-		<form action="#" method="post" class="niceforms">
+		<form action="#" method="post" class='niceforms'>
 			<fieldset id="summary_audit_log">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Audit Log')?></span></legend>
+				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('System Audit Log')?></span></legend>
 				<div style="min-width: 50px; float: right;">
 				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images; ?>/48_audit_log.png' alt='' title='' width='48'/>
 				</div>
@@ -279,9 +277,9 @@
 	<div id="view_summary_alerts" style="float: left; width: 100%;">
 	<?php if (count($alerts) > 0) { ?>
 		<br />
-		<form action="#" method="post" class="niceforms">
+		<form action="#" method="post" class='niceforms'>
 			<fieldset id="summary_alert_log">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('System Alert Log')?></span></legend>
+				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('System Alert Log')?></span></legend>
 				<div style="min-width: 50px; float: right;">
 				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images; ?>/48_alerts.png' alt='' title='' width='48'/>
 				</div>
@@ -335,9 +333,9 @@
 	<div id="view_summary_network" style="float: left; width: 100%;">
 	<?php if ($system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0' and $system[0]->man_ip_address > '') { ?>
 	<br />
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="summary_network_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Network Details')?></span></legend>
+	<form action="#" method="post" class='niceforms'>
+		<fieldset id="summary_network_details" class='niceforms'>
+			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Network Details')?></span></legend>
 			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images; ?>/48_network_wireless.png' alt='' title='' width='48'/>
 			<?php foreach ($system as $key): ?>
 				<p><label for="man_switch_id"><?php echo __('Switch ID')?>: </label><span id="man_switch_id" <?php echo $edit?>><?php echo print_something($key->man_switch_id)?></span><?php echo $edit_icon; ?></p>
@@ -356,9 +354,9 @@
 	<?php if (strpos($system[0]->man_type, 'phone') !== false) {
     ?>
 	<br />
-	<form action="#" method="post" class="niceforms">
-		<fieldset id="summary_phone_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Phone Details')?></span></legend>
+	<form action="#" method="post" class='niceforms'>
+		<fieldset id="summary_phone_details" class='niceforms'>
+			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Phone Details')?></span></legend>
 			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images; ?>/48_phone.png' alt='' title='' width='48'/>
 			<?php foreach ($system as $key): ?>
 				<p><label for="man_service_number"><?php echo __('Phone Number')?>: </label><span id="man_service_number" <?php echo $edit?>><?php echo print_something($key->man_service_number)?></span><?php echo $edit_icon; ?></p>
@@ -393,12 +391,12 @@
 	<br />
 	<?php if ($access_level > 7) {
     ?>
-	<form action="<?php echo base_url(); ?>index.php/main/add_attachment/<?php echo intval($system_id); ?>" method="post" enctype="multipart/form-data" class="niceforms">
+	<form action="<?php echo base_url(); ?>index.php/main/add_attachment/<?php echo intval($system_id); ?>" method="post" enctype="multipart/form-data" class='niceforms'>
 	<?php } else { ?>
-	<form action="#" method="post" class="niceforms">
+	<form action="#" method="post" class='niceforms'>
 	<?php } ?>
-		<fieldset id="summary_attachment_details" class="niceforms">
-			<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Attachment Details')?></span></legend>
+		<fieldset id="summary_attachment_details" class='niceforms'>
+			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Attachment Details')?></span></legend>
 			<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_custom.png' alt='' title='' width='48'/><br />
 			<?php if ($access_level > 7) { ?>
 			<input style='float: right; margin; 10px; ' type='button' value='Upload' onclick='upload_attachment()' alt='' title='' width='48'/>
@@ -409,10 +407,10 @@
 					<tr>
 						<th><?php echo __('Name')?></th>
 						<th><?php echo __('Uploaded On')?></th>
-						<th align="center"><?php echo __('View')?></th>
-						<th align="center"><?php echo __('Download')?></th>
+						<th align='center'><?php echo __('View')?></th>
+						<th align='center'><?php echo __('Download')?></th>
 						<?php if ($access_level > 7) { ?>
-						<th align="center"><?php echo __('Delete')?></th>
+						<th align='center'><?php echo __('Delete')?></th>
 						<?php } ?>
 					</tr>
 				</thead>
@@ -421,10 +419,10 @@
 					<tr>
 						<td><?php echo print_something($key->att_title)?></td>
 						<td><?php echo print_something($key->timestamp)?></td>
-						<td align="center"><a href="<?php echo base_url(); ?>index.php/main/show_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $oa_theme_images; ?>/16_word.png' alt='' title='' /></a></td>
-						<td align="center"><a href="<?php echo base_url(); ?>index.php/main/download_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $oa_theme_images; ?>/16_link.png' alt='' title='' /></a></td>
+						<td align='center'><a href="<?php echo base_url(); ?>index.php/main/show_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $oa_theme_images; ?>/16_word.png' alt='' title='' /></a></td>
+						<td align='center'><a href="<?php echo base_url(); ?>index.php/main/download_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $oa_theme_images; ?>/16_link.png' alt='' title='' /></a></td>
 						<?php if ($access_level > 7) { ?>
-						<td align="center"><a href="<?php echo base_url(); ?>index.php/main/delete_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' /></a></td>
+						<td align='center'><a href="<?php echo base_url(); ?>index.php/main/delete_attachment/<?php echo print_something($key->att_id)?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' /></a></td>
 						<?php } ?>
 					</tr>
 					<?php endforeach; ?>
@@ -439,9 +437,9 @@
 
 	<div id="view_summary_nmis" style="float: left; width: 100%;">
 		<br />
-		<form action="#" method="post" class="niceforms">
+		<form action="#" method="post" class='niceforms'>
 			<fieldset id="summary_nmis">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('NMIS Details')?></span></legend>
+				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('NMIS Details')?></span></legend>
 				<div style="min-width: 50px; float: right;">
 				<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_network.png' alt='' title='' width='48'/>
 				</div>
@@ -459,46 +457,46 @@
 	<?php if (count($vm) > 0) { ?>
 		<br />
 		<br />
-		<form action="#" method="post" class="niceforms">
+		<form action="#" method="post" class='niceforms'>
 			<fieldset id="vm_details">
 				<legend><span style="font-size: 10pt;">&nbsp;<?php echo __('Virtual Machine Details')?></span></legend>
 				<table cellspacing="1" class="tablesorter" width="100%">
 					<thead>
 						<tr>
-							<th align="center">Icon</th>
+							<th align='center'><?php echo __('Icon')?></th>
 							<th>Name</th>
 							<!-- <th>Group</th> -->
-							<th align="center">Memory</th>
-							<th align="center">CPU</th>
-							<th align="center">Status</th>
-							<th>UUID</th>
-							<th>Config File</th>
+							<th align='center'><?php echo __('Memory')?></th>
+							<th align='center'><?php echo __('CPU')?></th>
+							<th align='center'><?php echo __('Status')?></th>
+							<th><?php echo __('UUID')?></th>
+							<th><?php echo __('Config File')?></th>
 						</td>
 					</thead>
 					<tbody>
 					<?php foreach ($vm as $key) {
-                    if ($key->man_icon == 'unknown' or $key->man_icon == '') {
-                        $icon = '';
-                    } else {
-                        $icon = "<a href=\"".base_url()."index.php/main/system_display/".$key->guest_system_id."\"><img src=\"".base_url()."theme-tango/tango-images/16_".$key->man_icon.".png\" /></a>\n";
-                    }
-                    if (trim($key->status) == 'powered off' or trim($key->status) == 'poweredOff') {
-                        $status = '<span style="color: red;">'.print_something($key->status).'</span>';
-                    } else {
-                        $status = '<span style="color: green;">'.print_something($key->status).'</span>';
-                    }
-                    if ($key->guest_system_id != '' and $key->guest_system_id != '0') {
-                        $link = "<a href=\"".base_url()."index.php/main/system_display/".intval($key->guest_system_id)."\">".print_something($key->name)."</a>\n";
-                    } else {
-                        $link = print_something($key->name);
-                    }
+                        if ($key->man_icon == 'unknown' or $key->man_icon == '') {
+                            $icon = '';
+                        } else {
+                            $icon = "<a href=\"".base_url()."index.php/main/system_display/".$key->guest_system_id."\"><img src=\"".base_url()."theme-tango/tango-images/16_".$key->man_icon.".png\" /></a>\n";
+                        }
+                        if (trim($key->status) == 'powered off' or trim($key->status) == 'poweredOff') {
+                            $status = '<span style="color: red;">'.print_something($key->status).'</span>';
+                        } else {
+                            $status = '<span style="color: green;">'.print_something($key->status).'</span>';
+                        }
+                        if ($key->guest_system_id != '' and $key->guest_system_id != '0') {
+                            $link = "<a href=\"".base_url()."index.php/main/system_display/".intval($key->guest_system_id)."\">".print_something($key->name)."</a>\n";
+                        } else {
+                            $link = print_something($key->name);
+                        }
                     ?><tr>
-                    <td align="center"><?php echo $icon; ?></td>
+                    <td align='center'><?php echo $icon; ?></td>
                     <td><?php echo $link; ?></td>
                     <!-- <td><?php echo $key->vm_group; ?></td> -->
-                    <td align="center"><?php echo print_something($key->memory); ?></td>
-                    <td align="center"><?php echo print_something($key->cpu); ?></td>
-                    <td align="center"><?php echo $status; ?></td>
+                    <td align='center'><?php echo print_something($key->memory); ?></td>
+                    <td align='center'><?php echo print_something($key->cpu); ?></td>
+                    <td align='center'><?php echo $status; ?></td>
                     <td><?php echo print_something($key->uuid); ?></td>
                     <td><?php echo print_something($key->config_file); ?></td>
                     </tr>
@@ -516,22 +514,22 @@
 	<?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?>
 		<br />
 		<br />
-		<form action="#" method="post" class="niceforms">
+		<form action="#" method="post" class='niceforms'>
 			<fieldset id="network_details">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Network Details')?></span></legend>
+				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Network Details')?></span></legend>
 				<fieldset id="network_hardware_details">
 					<legend><span style="font-size: 10pt;">&nbsp;<?php echo __('Hardware Interface Details')?></span></legend>
 					<table cellspacing="1" class="tablesorter" width="100%">
 						<thead>
 							<tr>
-								<th>Index</th>
-								<th>MAC Address</th>
-								<th>Connection ID</th>
-								<th>Description</th>
-								<th>Alias</th>
-								<th>Type</th>
-								<th>Enabled</th>
-								<th>Speed</th>
+								<th><?php echo __('Index')?></th>
+								<th><?php echo __('MAC Address')?></th>
+								<th><?php echo __('Connection ID')?></th>
+								<th><?php echo __('Description')?></th>
+								<th><?php echo __('Alias')?></th>
+								<th><?php echo __('Type')?></th>
+								<th><?php echo __('Enabled')?></th>
+								<th><?php echo __('Speed')?></th>
 							</td>
 						</thead>
 						<tbody>
@@ -595,9 +593,9 @@
 	<?php if (count($module) > 0) { ?>
 		<br />
 		<br />
-		<form action="#" method="post" class="niceforms">
+		<form action="#" method="post" class='niceforms'>
 			<fieldset id="module_details">
-				<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Entity Details')?></span></legend>
+				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Entity Details')?></span></legend>
 				<table cellspacing="1" class="tablesorter" width="100%">
 					<thead>
 						<tr>
@@ -616,16 +614,16 @@
 					<tbody>
 					<?php foreach ($module as $mod): ?>
 							<tr>
-								<td align="center"><?php echo print_something($mod->module_index)?></td>
-								<td align="center"><?php echo print_something($mod->contained_in)?></td>
+								<td align='center'><?php echo print_something($mod->module_index)?></td>
+								<td align='center'><?php echo print_something($mod->contained_in)?></td>
 								<td><?php echo print_something($mod->class_text)?></td>
 								<td><?php echo print_something($mod->description)?></td>
-								<td align="center"><?php echo print_something($mod->hardware_revision)?></td>
+								<td align='center'><?php echo print_something($mod->hardware_revision)?></td>
 								<td><?php echo print_something($mod->firmware_revision)?></td>
 								<td><?php echo print_something($mod->software_revision)?></td>
 								<td><?php echo print_something($mod->serial_number)?></td>
 								<td><?php echo print_something($mod->asset_id)?></td>
-								<td align="center"><?php echo print_something($mod->is_fru)?></td>
+								<td align='center'><?php echo print_something($mod->is_fru)?></td>
 							</tr>
 					<?php endforeach; ?>
 					</tbody>

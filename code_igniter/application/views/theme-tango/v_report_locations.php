@@ -38,10 +38,7 @@ if (count($query) > 0) {
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
-			<?php foreach ($column as $value) {
-    echo "\t\t\t<th>".$value->column_name."</th>\n";
-}
-    ?>
+			<?php foreach ($column as $value) { echo "\t\t\t<th>".$value->column_name."</th>\n"; } ?>
 		</tr>
 	</thead>
 	<tbody>

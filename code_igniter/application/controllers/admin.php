@@ -438,7 +438,7 @@ class admin extends MY_Controller
 
     public function import_nmis()
     {
-        if (!isset($_POST['import'])) {
+        if (!isset($_POST['submit'])) {
             # show the form
             $this->data['heading'] = 'Import from NMIS';
             $this->data['include'] = 'v_import_nmis';
@@ -453,7 +453,7 @@ class admin extends MY_Controller
 
     public function export_nmis()
     {
-        if (!isset($_POST['export'])) {
+        if (!isset($_POST['submit'])) {
             # show the list
             $this->data['heading'] = 'Export to NMIS';
             $this->data['include'] = 'v_export_nmis';
@@ -492,7 +492,7 @@ class admin extends MY_Controller
                     if (strrpos($this->data['query'][$i]->nmis_name, '.') == strlen($this->data['query'][$i]->nmis_name)-1) {
                         $this->data['query'][$i]->nmis_name = substr($this->data['query'][$i]->nmis_name, 0, strlen($this->data['query'][$i]->nmis_name)-1);
                     }
-                    $this->data['query'][$i]->nmis_name = "<span style=\"color: blue;\">".$this->data['query'][$i]->nmis_name."</span>";
+                    $this->data['query'][$i]->nmis_name = "<span style=\"color: blue;\">".htmlentities($this->data['query'][$i]->nmis_name)."</span>";
                 }
 
                 # nmis host
@@ -529,7 +529,7 @@ class admin extends MY_Controller
                 }
 
                 if ($this->data['query'][$i]->nmis_community == '') {
-                    $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">".$this->config->item('default_snmp_community')."</span>";
+                    $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">".htmlentities($this->config->item('default_snmp_community'))."</span>";
                 }
 
                 # snmp version
@@ -673,7 +673,7 @@ class admin extends MY_Controller
             $operating_system = php_uname('s');
         }
 
-        if (isset($_POST['ScanNmap'])) {
+        if (isset($_POST['submit'])) {
             # test if we have a subnet or only an IP
             if (isset($_POST['subnet'])) {
                 $subnet = $_POST['subnet'];
@@ -758,7 +758,7 @@ class admin extends MY_Controller
 
     public function scan_ad()
     {
-        if (isset($_POST['ScanAD'])) {
+        if (isset($_POST['submit'])) {
             $this->load->model("m_system");
             $this->load->model("m_oa_group");
             $this->load->model("m_sys_man_audits");
@@ -906,7 +906,7 @@ class admin extends MY_Controller
 
     public function add_script_audit_windows()
     {
-        if (!isset($_POST['AddScript'])) {
+        if (!isset($_POST['submit'])) {
             # display the form
             $this->load->model("m_oa_org");
             $this->data['org_names'] = $this->m_oa_org->get_org_names();
