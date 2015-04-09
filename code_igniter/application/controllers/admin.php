@@ -176,6 +176,7 @@ class admin extends MY_Controller
         #$json = (object)$this->m_oa_config->get_config();
         $json = (object) $this->config->config;
         $json->server_ip_addresses = $this->m_oa_config->get_server_ip_addresses();
+        $json->server_subnets = $this->m_oa_config->get_server_subnets();
         $json = json_encode($json);
         print_r($json);
     }

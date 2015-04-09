@@ -258,4 +258,59 @@ class M_oa_config extends MY_Model
 
         return ($ip_address_array);
     }
+
+    public function get_server_subnets()
+    {
+        $this->load->helper('network');
+        $ip_address_array = array();
+        # osx
+        // if (php_uname('s') == 'Darwin') {
+        //     $command = "ifconfig | grep inet | grep -v inet6 | grep broadcast | awk '{print $2}'";
+        //     exec($command, $output, $return_var);
+        //     if ($return_var == 0) {
+        //         foreach ($output as $line) {
+        //             $ip_address_array[] = trim($line);
+        //         }
+        //     }
+        // }
+        # linux
+        if (php_uname('s') == 'Linux') {
+            $command = "ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}'";
+            exec($command, $output, $return_var);
+            if ($return_var == 0) {
+                foreach ($output as $line) {
+                    $ip_address_array[] = trim($line);
+                }
+            }
+        }
+        # windows
+        if (php_uname('s') == 'Windows NT') {
+            $command = "wmic nicconfig get ipaddress,ipsubnet | findstr /B {";
+            exec($command, $output, $return_var);
+            if ($return_var == 0) {
+                # success
+                # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"} {"255.255.255.0"} or thus {"192.168.1.140"} {"255.255.255.0"}
+                # there are multiple empty lines as well
+                foreach ($output as $line) {
+                    $line = trim($line);
+                    if ($line != '') {
+                        $line = str_replace('{', '', $line);
+                        $line = str_replace('}', '', $line);
+                        $line = str_replace('"', '', $line);
+                        $line = str_replace(',', '', $line);
+                        $line = str_replace('  ', ' ', $line);
+                        if (strpos($line, ' ') !== false) {
+                            $line_array = explode(' ', $line);
+                            $ip = $line_array[0];
+                            $subnet = $line_array[count($line_array)-1];
+                            $new = network_details($ip . ' ' . $subnet);
+                            $ip_address_array[] = $new->network . '/' . $new->network_slash;
+                        }
+                    }
+                }
+            }
+        }
+
+        return ($ip_address_array);
+    }
 }
