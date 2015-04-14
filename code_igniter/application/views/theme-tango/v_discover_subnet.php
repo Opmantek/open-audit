@@ -63,7 +63,6 @@ if ($nmap_installed == 'n') {
     } elseif (php_uname('s') == "Linux" or php_uname('s') == "Darwin") {
         echo __("Command run was") . ": \"which nmap\" " . __('which resulted in') . " \"".$output[0]."\"<br />\n";
     }
-    echo __("If you have modified your discovery script or have Nmap installed on the path, you are likely fine to run Discovery and ignore this warning.") . "<br /><br />\n";
 }
 
 echo form_open('discovery/discover_subnet');
@@ -140,11 +139,8 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 			<td width='30%' style="vertical-align: top;">
 				<p><label for='subnet_range'><?php echo __($scan_title); ?>: </label> <input type='text' id='subnet_range' name='subnet_range' tabindex='1' title='Subnet Range' value='<?php echo $ip_address; ?>' /></p>
 
-				<?php if ($type == "" or $type == "device" or $type == "linux" or (php_uname('s') == "Linux" and $type == "windows")) {
-    ?>
-					<p><label for='network_address'><?php echo __("Local Network Address");
-    ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $this->config->item('default_network_address');
-    ?>' />*</p>
+				<?php if ($type == "" or $type == "device" or $type == "linux" or (php_uname('s') == "Linux" and $type == "windows")) { ?>
+					<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $this->config->item('default_network_address'); ?>' />*</p>
 				<?php } ?>
 				<?php if ($type == "" or $type == "snmp" or $type == "device") { ?>
 					<?php if (isset($credentials->snmp_community)) {
@@ -152,10 +148,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                     } else {
                         $snmp_community = $this->config->item('default_snmp_community');
                     } ?>
-					<p><label for='snmp_community'><?php echo __("SNMP Community");
-    ?>: </label> <input type='<?php echo $snmp_community_field;
-    ?>' id='snmp_community' name='snmp_community' tabindex='3' title='SNMP Community' value='<?php echo $snmp_community;
-    ?>' /></p>
+					<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: </label> <input type='<?php echo $snmp_community_field; ?>' id='snmp_community' name='snmp_community' tabindex='3' title='SNMP Community' value='<?php echo $snmp_community; ?>' /></p>
 				<?php } ?>
 				<?php if ($type == "" or $type == "linux" or $type == "device") { ?>
 					<?php if (isset($credentials->ssh_username)) {
@@ -201,7 +194,12 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 				<?php #} ?>
 				<input type="hidden" id="type" name="type" value="<?php echo $type; ?>" />
 				<input type="hidden" id="system_id" name="system_id" value="<?php echo $system_id; ?>" />
-				<p><label for='submit'>&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit'); ?></p>
+
+                <?php if ($nmap_installed == 'n') { ?>
+                <p><label for='submit'>&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit', 'disabled' => ''), 'Submit'); ?></p>
+                <?php } else { ?>
+                <p><label for='submit'>&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit'); ?></p>
+                <?php } ?>
 
 				<?php if ($type == "" or $type == "device" or $type == "linux" or (php_uname('s') == "Linux" and $type == "windows")) { ?>
                 * The ip address or resolvable hostname used by external devices to talk to Open-AudIT (This should be the real IP Address of this Open-AudIT server).<br />
