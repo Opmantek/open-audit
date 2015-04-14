@@ -119,6 +119,7 @@ $summary_attributes = array('hostname' => 'text' ,
                             'warranty_link' => '',
                             'downloads_link' => '',
                             'dell_express_code_link' => '',
+                            'man_cluster_name' => 'text',
                             'man_oae_manage' => 'select', );
 
 # specific entries (usually based on man_type).
