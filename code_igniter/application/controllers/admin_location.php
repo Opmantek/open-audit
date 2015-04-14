@@ -155,14 +155,13 @@ class Admin_location extends MY_Controller
 
     public function add_locations()
     {
-        if (!isset($_POST['submit']) and !isset($_POST['upload_file'])) {
+        if (!isset($_POST['submit'])) {
             # nothing submitted - display the form
             $this->data['heading'] = 'Add Locations';
             $this->data['include'] = 'v_add_locations';
             $this->load->view('v_template', $this->data);
-        }
-        if (isset($_POST['submit']) and isset($_POST['upload_file'])) {
-echo "<pre>1\n";
+        } else {
+
             $this->load->model("m_oa_location");
             # we have an uploaded file - store and process
             $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);
@@ -174,7 +173,6 @@ echo "<pre>1\n";
                 $this->data['include'] = 'v_error';
                 $this->load->view('v_template', $this->data);
             }
-echo "2\n";
             require_once BASEPATH.'../application/libraries/phpexcel/PHPExcel/IOFactory.php';
             if (!$objPHPExcel = PHPExcel_IOFactory::load($target_path)) {
                 exit;

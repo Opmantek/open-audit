@@ -89,8 +89,7 @@ if (isset($error_message)) {
 			</td>
 		</tr>
 	</table>
-	<input type="hidden" value="<?php echo $key->user_id;
-        ?>" name="user_id" id="user_id" />
+	<input type="hidden" value="<?php echo $key->user_id; ?>" name="user_id" id="user_id" />
 	<?php } ?>
 	<p><?php echo $error_message; ?>&nbsp;</p>
 	<p><?php echo $this->session->flashdata('message'); ?>&nbsp;</p>
@@ -180,10 +179,10 @@ function group_dropdown($group_id, $access_level)
     }
     $string = "<select class=\"{sorter: false}\" id=\"group_id_$group_id\" name=\"group_id_$group_id\" $js >
 		".$option_0."&nbsp;</option>
-		".$option_3.__('List View Only")."</option>
-		".$option_5.__('View Basic Details")."</option>
-		".$option_7.__('View Sensitive Details")."</option>
-		".$option_10.__('Edit Details")."</option>
+		".$option_3.__('List View Only')."</option>
+		".$option_5.__('View Basic Details')."</option>
+		".$option_7.__('View Sensitive Details')."</option>
+		".$option_10.__('Edit Details')."</option>
 	</select>\n";
     $string = str_replace("\t", "", $string);
     $string = str_replace("\n", "", $string);

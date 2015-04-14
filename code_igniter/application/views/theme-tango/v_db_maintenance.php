@@ -37,11 +37,7 @@
 <div style="float:left;"><?php echo __("Days"); ?>
 	<input id="days" name="days" type="text" value="<?php echo $days; ?>" />
 	<input type="submit" value="Go" name="Go" id="Go" /></div>
-<div style="float: right;">
-	<?php if (isset($flashdata)) {
-    echo $flashdata;
-} ?>
-</div>
+	<?php if (isset($flashdata)) { echo '<div style="float: right;">' . $flashdata . '</div>'; } ?>
 <br />&nbsp;
 <br />&nbsp;
 <br />&nbsp;

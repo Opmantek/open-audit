@@ -73,7 +73,7 @@ class Admin_device extends MY_Controller
 
     public function add_device()
     {
-        if (!isset($_POST['AddDevice'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->load->model("m_oa_group");
             $this->data['tables'] = $this->m_oa_group->get_tables();
@@ -109,7 +109,7 @@ class Admin_device extends MY_Controller
     public function edit_devices()
     {
         $this->load->model("m_oa_device");
-        if (!isset($_POST['EditDevice'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['device'] = $this->m_oa_device->get_device($this->data['id']);
             $this->data['heading'] = 'Edit Device';

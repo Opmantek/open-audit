@@ -42,7 +42,8 @@
 <?php $attributes = array('accept-charset' => 'UTF-8'); ?>
 <?php echo form_open('discovery/process_subnet', $attributes)."\n"; ?>
     <?php echo form_fieldset('Add an Nmap audit')."\n"; ?>
-        <label for="form_details">Details: </label><p><?php echo form_textarea(array('name' => 'form_details', 'id' => 'form_details', 'rows' => '15', 'cols' => '100')); ?></p>
+        <label for="form_details">Details: </label>
+        <p><?php echo form_textarea(array('name' => 'form_details', 'id' => 'form_details', 'rows' => '15', 'cols' => '100')); ?></p>
         <p><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
     <?php echo form_fieldset_close(); ?>
 <?php echo form_close(); ?>
