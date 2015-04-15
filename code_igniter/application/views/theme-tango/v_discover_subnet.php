@@ -57,12 +57,13 @@ if (php_uname('s') == "Windows NT") {
 }
 
 if ($nmap_installed == 'n') {
-    echo "<span style=\"color:red; font-size:14pt; \">" . __('NMap not detected') . "</span> - " . __('please install Nmap before running Discovery') . ".<br />\n";
+    echo "<span style=\"color:red; font-size:14pt; \">" . __('Nmap not detected') . "</span> - " . __('please install Nmap before running Discovery') . ".<br />\n";
     if (php_uname('s') == "Windows NT") {
         echo __("Locations checked were") . ": \"c:\Program Files\Nmap\Nmap.exe\" and \"c:\Program Files (x86)\Nmap\Nmap.exe\".<br />\n";
     } elseif (php_uname('s') == "Linux" or php_uname('s') == "Darwin") {
         echo __("Command run was") . ": \"which nmap\" " . __('which resulted in') . " \"".$output[0]."\"<br />\n";
     }
+    echo "Please see <a style='color:blue;' target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.<br /><br /><br />";
 }
 
 echo form_open('discovery/discover_subnet');
