@@ -118,6 +118,9 @@ if (isset($form_url) and $form_url != '') {
     echo "</div>\n";
 }
 ?>
+<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>
+<span style='font-size: 12pt;'>Don't forget about the Open-AudIT wiki for all your documentation.<br /><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a><br /><br /></span>
+</div>
 </div>
 <script type="text/javascript">
     function audit_my_pc()
