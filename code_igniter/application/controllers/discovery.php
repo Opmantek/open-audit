@@ -521,7 +521,7 @@ class discovery extends CI_Controller
                             // group exists - no need to do anything
                         } else {
                             // group does not exist - insert
-                            $log_details->message = 'Creating Group for $subnet_range';
+                            $log_details->message = "Creating Group for $subnet_range";
                             stdlog($log_details);
                             $sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (null, ?, ?, ?, '1', ?, 'network', 'switch')";
                             $group_name = "Network - ".$subnet_details->network.' / '.$subnet_details->network_slash;
