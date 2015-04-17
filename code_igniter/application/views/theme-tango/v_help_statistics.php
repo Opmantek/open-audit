@@ -27,16 +27,16 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $sortcolumn = 2;
 ?>
-<form action="#" method="post" class="niceforms">
-	<fieldset id="stats" class="niceforms">
-		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Statistics')?></span></legend>
+<form action="#" method="post" class='niceforms'>
+	<fieldset id="stats" class='niceforms'>
+		<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Statistics')?></span></legend>
 		<?php echo __('Your Open-AudIT database contains the following devices in a production state:')?>
 		<table class="tablesorter">
 			<thead>

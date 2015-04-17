@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -199,7 +199,7 @@ $(document).ready(function() {
 				success: function(data) {
 					// Verify that we're pointed to a page that returned the expected results.
 					if (data.indexOf('SystemPopupResult') < 0) {
-						$('#SystemPopupContent').html('<span >Page ' + pageID + ' did not return a valid result for system ' + currentID + '.	Please have your administrator check the error log.<\/span>');
+						$('#SystemPopupContent').html('<span ><?php echo __('Page'); ?> ' + pageID + ' <?php echo __('did not return a valid result for system'); ?> ' + currentID + '.	<?php echo __('Please have your administrator check the error log'); ?>.<\/span>');
 					}
 					// Verify requested System is this system since we could have multiple ajax
 					// requests out if the server is taking a while.
@@ -269,7 +269,7 @@ $(document).ready(function() {
 			success: function(data) {
 				// Verify that we're pointed to a page that returned the expected results.
 				if (data.indexOf('TagPopupResult') < 0) {
-					$('#TagPopupContent').html('<span >Page ' + pageID + ' did not return a valid result for system ' + currentID + '.	Please have your administrator check the error log.<\/span>');
+					$('#TagPopupContent').html('<span ><?php echo __('Page'); ?> ' + pageID + ' <?php echo __('did not return a valid result for system'); ?> ' + currentID + '.	<?php echo __('Please have your administrator check the error log'); ?>.<\/span>');
 				}
 				// Verify requested person is this person since we could have multiple ajax
 				// requests out if the server is taking a while.
@@ -323,7 +323,7 @@ $(document).ready(function() {
 			left: (pos.left - 130 + width) + 'px',
 			top: pos.top - 5 + 'px'
 		});
-		$('#ModifierPopupContent').html('<div class="ModifierPopupResult"><a href="' + document.URL + '/out___' + $(this).attr('rel') + '">Filter Out<\/a><br /><a href="' + document.URL + '/only___' + $(this).attr('rel') + '">Filter Only<\/a><\/div>');
+		$('#ModifierPopupContent').html('<div class="ModifierPopupResult"><a href="' + document.URL + '/out___' + $(this).attr('rel') + '"><?php echo __('Filter Out'); ?><\/a><br /><a href="' + document.URL + '/only___' + $(this).attr('rel') + '"><?php echo __('Filter Only'); ?><\/a><\/div>');
 		container4.css('display', 'block');
 	});
 
@@ -421,7 +421,7 @@ $(document).ready(function() {
 			left: (pos.left - 200 + width) + 'px',
 			top: pos.top - 5 + 'px'
 		});
-		$('#SearchPopupContent').html('<div class="SearchPopupResult"><table border="0" style="font-size: 8pt; color:#3D3D3D; "><tr><td style="text-align: center;"><input type="text" name="search_term" id="search_term" /><br /><input type="submit" name="submit" id="submit" value="Search" onclick="return(dynamic_search(\''+pageID+'\'))" /><\/td><\/tr><\/table><\/div>');
+		$('#SearchPopupContent').html('<div class="SearchPopupResult"><table border="0" style="font-size: 8pt; color:#3D3D3D; "><tr><td style="text-align: center;"><input type="text" name="search_term" id="search_term" /><br /><input type="submit" name="submit" id="submit" value="<?php echo __('Search'); ?>" onclick="return(dynamic_search(\''+pageID+'\'))" /><\/td><\/tr><\/table><\/div>');
 		container3.css('display', 'block');
 	});
 
@@ -461,7 +461,7 @@ $(document).ready(function() {
 			left: (pos.left - 200 + width) + 'px',
 			top: pos.top - 5 + 'px'
 		});
-		$('#AssetPopupContent').html('<div class="AssetPopupResult"><table border="0" style="font-size: 8pt; color:#3D3D3D; "><tr><td style="text-align: center;">Licenses Purchased<input type="text" name="licenses" id="licenses" /><input type="submit" name="submit" id="submit" value="Go" onclick="return(dynamic_asset(\''+software_name+'\'))" /><\/td><\/tr><\/table><\/div>');
+		$('#AssetPopupContent').html('<div class="AssetPopupResult"><table border="0" style="font-size: 8pt; color:#3D3D3D; "><tr><td style="text-align: center;"><?php echo __('Licenses Purchased'); ?><input type="text" name="licenses" id="licenses" /><input type="submit" name="submit" id="submit" value="<?php echo __('Go'); ?>" onclick="return(dynamic_asset(\''+software_name+'\'))" /><\/td><\/tr><\/table><\/div>');
 		container6.css('display', 'block');
 	});
 

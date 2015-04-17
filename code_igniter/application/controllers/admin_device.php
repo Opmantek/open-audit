@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -73,7 +73,7 @@ class Admin_device extends MY_Controller
 
     public function add_device()
     {
-        if (!isset($_POST['AddDevice'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->load->model("m_oa_group");
             $this->data['tables'] = $this->m_oa_group->get_tables();
@@ -109,7 +109,7 @@ class Admin_device extends MY_Controller
     public function edit_devices()
     {
         $this->load->model("m_oa_device");
-        if (!isset($_POST['EditDevice'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['device'] = $this->m_oa_device->get_device($this->data['id']);
             $this->data['heading'] = 'Edit Device';

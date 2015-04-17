@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,15 +40,15 @@ if (isset($error_message)) {
 
 echo form_open('admin_org/edit_org')."\n";
 ?>
-<fieldset id="org_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Organisation Details')?></span></legend>
+<fieldset id="org_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Organisation Details')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<?php
     if ($org->org_parent_id == '0') { $org->org_parent_id = ''; } ?>
 	<table width="90%" cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='50%'>
-				<p><label for='org_name'><?php echo __("Name")?>: </label><input type='text' id='org_name' name='org_name' tabindex='1' title='Organisation Name' value="<?php echo htmlentities($org->org_name); ?>"/><?php echo htmlentities($error_message); ?></p>
+				<p><label for='org_name'><?php echo __("Name")?>: </label><input type='text' id='org_name' name='org_name' tabindex='1' title='<?php echo __('Organisation Name'); ?>' value="<?php echo htmlentities($org->org_name); ?>"/><?php echo htmlentities($error_message); ?></p>
 				<p><label for='org_parent_id'><?php echo __("Parent")?>: </label>
 					<select id='org_parent_id' name='org_parent_id' tabindex='2' title='Parent'/>
 					<?php
@@ -66,9 +66,9 @@ echo form_open('admin_org/edit_org')."\n";
                     } ?>
 					</select>
 				</p>
-				<p><label for='org_picture'><?php echo __("Picture")?>: </label><input type='text' id='org_picture' name='org_picture' tabindex='3' title='Picture'  value="<?php echo htmlentities($org->org_picture); ?>"/></p>
-				<p><label for='org_comments'><?php echo __("Comments")?>: </label><input type='text' id='org_comments' name='org_comments' tabindex='4' title='Comments'  value="<?php echo htmlentities($org->org_comments); ?>"/></p>
-				<p><label for='EditOrganisation'>&nbsp;</label><?php echo form_submit('EditOrganisation', 'Edit Organisation'); ?></p>
+				<p><label for='org_picture'><?php echo __('Picture')?>: </label><input type='text' id='org_picture' name='org_picture' tabindex='3' title='<?php echo __('Picture'); ?>'  value="<?php echo htmlentities($org->org_picture); ?>"/></p>
+				<p><label for='org_comments'><?php echo __('Comments')?>: </label><input type='text' id='org_comments' name='org_comments' tabindex='4' title='<?php echo __('Comments'); ?>'  value="<?php echo htmlentities($org->org_comments); ?>"/></p>
+				<p><label for='submit'></label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
 	</table>

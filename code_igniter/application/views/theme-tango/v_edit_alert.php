@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,16 +38,16 @@
 echo form_open('change/process_edit_alert')."\n";
 ?>
 <input type="hidden" name="group_id" value="<?php echo $group_id; ?>" />
-<fieldset id="change_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Change Details')?></span></legend>
+<fieldset id="change_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Change Details')?></span></legend>
 	<br />
-	<label for="change_type">Change Types: </label>
+	<label for="change_type"><?php echo __('Change Types')?>: </label>
 	<select name="change_type" style="width: 300px">
 		<option value="">&nbsp;</option>
-		<option value="standard">Standard Change</option>
-		<option value="normal">Normal Change</option>
-		<option value="emergency">Emergency Change</option>
-		<option value="unauthorised">Unauthorised Change</option>
+		<option value="standard"><?php echo __('Standard Change')?></option>
+		<option value="normal"><?php echo __('Normal Change')?></option>
+		<option value="emergency"><?php echo __('Emergency Change')?></option>
+		<option value="unauthorised"><?php echo __('Unauthorised Change')?></option>
 	</select>
 	<!--
 	<br /><br />
@@ -58,13 +58,13 @@ echo form_open('change/process_edit_alert')."\n";
 	</select>
 	-->
 	<br /><br />
-	<label for="external_change_id">External Change ID: </label>
+	<label for="external_change_id"><?php echo __('External Change ID')?>: </label>
 	<input type="text" name="external_change_id" style="width: 300px" />
 	<br /><br />
-	<label for="external_change_link">External Change Link: </label>
+	<label for="external_change_link"><?php echo __('External Change Link')?>: </label>
 	<input type="text" name="external_change_link" style="width: 300px" />
 	<br /><br />
-	<label for="alert_note">Note: </label>
+	<label for="alert_note"><?php echo __('Note'); ?>: </label>
 	<textarea name="alert_note" rows="4" cols="56" ></textarea>
 	<br /><br />
 	<?php
@@ -72,13 +72,12 @@ echo form_open('change/process_edit_alert')."\n";
         echo "<input type=\"hidden\" name=\"alert_id_".print_something($key->alert_id)."\" value=\"".print_something($key->alert_id)."\" />\n";
     }
     ?>
-	<label for="submit">&nbsp;</label>
-	<input type="submit" name="submit" id="submit" value="Submit" />
+	<label for="submit">&nbsp;</label><input type="submit" name="submit" id="submit" value="<?php echo __('Submit'); ?>" />
 </fieldset>
 </form>
 <br /><br />
-<fieldset id="alert_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Alert Details')?></span></legend>
+<fieldset id="alert_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Alert Details')?></span></legend>
 	<table cellspacing="1" class="tablesorter">
 		<thead>
 			<tr>

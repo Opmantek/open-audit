@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -39,10 +39,10 @@ if (isset($error_message)) {
 }
 echo form_open('admin_user/add_user')."\n";
 ?>
-<fieldset id="group_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('User Details')?></span></legend>
+<fieldset id="group_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('User Details')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_users.png' alt='' title='' width='48'/>
-	<table width="780" cellpadding = "0" cellspacing="0">
+	<table width='780' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td width='50%'>
 				<p><label for='user_name'><?php echo __("User Name")?>: </label><input type='text' id='user_name' name='user_name' tabindex='1' title='User Name' value="<?php echo set_value('user_name'); ?>"/><?php echo $error_message; ?></p>
@@ -64,13 +64,13 @@ echo form_open('admin_user/add_user')."\n";
 				<p><label for='user_theme'><?php echo __("Theme")?>: </label><input type='text' id='user_theme' name='user_theme' tabindex='7' title='Theme' value="<?php echo set_value('user_theme', 'tango'); ?>"/></p>
 				<p><label for='user_admin'><?php echo __("User is Admin")?>: </label><input type='checkbox' id='user_admin' name='user_admin' tabindex='8' title='Is Admin' /></p>
 				<p><label for='user_sam'><?php echo __("User SAM Access Level")?>: </label>
-					<select id='user_sam' name='user_sam' tabindex='8' title='Is Admin' />
-						<option value="0">No Access</option>
-						<option value="1" selected>View Reports Only</option>
-						<option value="2">Update Counts</option>
-						<option value="3">Create Licenses</option>
+					<select id='user_sam' name='user_sam' tabindex='8' title='<?php echo __('Is Admin'); ?>' />
+						<option value="0"><?php echo __('No Access'); ?></option>
+						<option value="1" selected><?php echo __('View Reports Only'); ?></option>
+						<option value="2"><?php echo __('Update Counts'); ?></option>
+						<option value="3"><?php echo __('Create Licenses'); ?></option>
 					</select></p>
-				<p><label for='AddUser'>&nbsp;</label><?php echo form_submit(array('id' => 'AddUser', 'name' => 'AddUser'), 'Add User'); ?></p>
+				<p><label for='submit'>&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
 	</table>
@@ -81,16 +81,16 @@ echo form_open('admin_user/add_user')."\n";
 <br />
 
 <fieldset class="niceform">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __("Group Access Details")?></span></legend>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __("Group Access Details")?></span></legend>
 
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
-			<th align="center" width="120"><?php echo __('Systems')?></th>
+			<th align='center' width="120"><?php echo __('Systems')?></th>
 			<th><?php echo __('Group Name')?></th>
 			<th><?php echo __('Group Type')?></th>
 			<th><?php echo __('Group Description')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Access Level')?> - <?php echo group_dropdown(0)?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Access Level')?> - <?php echo group_dropdown(0)?></th>
 		</tr>
 	</thead>
 	<tbody>

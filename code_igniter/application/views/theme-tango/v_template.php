@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -53,18 +53,25 @@ if ($function == "list_devices") {
 } else {
     $title .= " - ".ucwords(str_replace("_", " ", $function));
 }
+
+function print_something($string)
+{
+    if ((mb_strlen($string) == 0) or ($string == '0000-00-00')) {
+        return '-';
+    } else {
+        return htmlentities($string);
+    }
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<?php if (isset($this->config->config['page_refresh']) and $this->config->config['page_refresh'] != '0' and is_numeric($this->config->config['page_refresh'])) {
-    ?>
-	<meta http-equiv="refresh" content="<?php echo $this->config->item('page_refresh');
-    ?>" />
-	<?php 
-} ?>
+	<?php if (isset($this->config->config['page_refresh']) and $this->config->config['page_refresh'] != '0' and is_numeric($this->config->config['page_refresh'])) { ?>
+	   <meta http-equiv="refresh" content="<?php echo $this->config->item('page_refresh'); ?>" />
+	<?php } ?>
 	<link rel="shortcut icon" href="<?php echo base_url();?>favicon.png" type="image/x-icon" />
 	<title><?php echo $title?></title>
 	<script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/jquery-1.7.min.js"></script>
@@ -240,9 +247,9 @@ if ($function == "list_devices") {
 	<div id="content_container" style="float: left; width: 100%">
 	<?php
     if (isset($query) and $include != 'v_add_user') {
-        echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>".$heading."</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>".count($query)." ".__("results")."</h2></div>\n\t\t</div>\n";
+        echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>".__($heading)."</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>".count($query)." ".__("results")."</h2></div>\n\t\t</div>\n";
     } else {
-        echo "<h2>".$heading."</h2>\n";
+        echo "<h2>".htmlentities(__($heading))."</h2>\n";
     }
     #$this->load->view("theme-" . $this->user->user_theme . "/" . $include);
     include($include.'.php')

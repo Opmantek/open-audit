@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -44,8 +44,8 @@ if (isset($error_message)) {
 
 <?php echo form_open($url)."\n"; ?>
 
-<fieldset id="group_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('User Details')?></span></legend>
+<fieldset id="group_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('User Details')?></span></legend>
 	<?php
     foreach ($user as $key) {
         if ($key->user_admin == 'y') {
@@ -57,14 +57,14 @@ if (isset($error_message)) {
 	<table width="100%">
 		<tr>
 			<td style="width:50%;">
-				<p><label for='user_name'><?php echo __("User Name")?>: </label><input type='text' id='user_name' name='user_name' tabindex='1' title='User Name' value="<?php echo htmlentities($key->user_name); ?>"/></p>
-				<p><label for='user_full_name'><?php echo __("Full Name")?>: </label><input type='text' id='user_full_name' name='user_full_name' tabindex='2' title='Full Name'  value="<?php echo htmlentities($key->user_full_name); ?>"/></p>
-				<p><label for='user_password'><?php echo __("Password")?>: </label><input type='password' id='user_password' name='user_password' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('user_password')); ?>"/></p>
-				<p><label for='user_password_confirm'><?php echo __("Confirm Password")?>: </label><input type='password' id='user_password_confirm' name='user_password_confirm' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('user_password_confirm')); ?>"/></p>
-				<p><label for='user_email'><?php echo __("Email Address")?>: </label><input type='text' id='user_email' name='user_email' tabindex='4' title='Email Address'  value="<?php echo htmlentities($key->user_email); ?>"/></p>
+				<p><label for='user_name'><?php echo __('User Name'); ?>: </label><input type='text' id='user_name' name='user_name' tabindex='1' title='User Name' value="<?php echo htmlentities($key->user_name); ?>"/></p>
+				<p><label for='user_full_name'><?php echo __('Full Name'); ?>: </label><input type='text' id='user_full_name' name='user_full_name' tabindex='2' title='Full Name'  value="<?php echo htmlentities($key->user_full_name); ?>"/></p>
+				<p><label for='user_password'><?php echo __('Password'); ?>: </label><input type='password' id='user_password' name='user_password' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('user_password')); ?>"/></p>
+				<p><label for='user_password_confirm'><?php echo __('Confirm Password'); ?>: </label><input type='password' id='user_password_confirm' name='user_password_confirm' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('user_password_confirm')); ?>"/></p>
+				<p><label for='user_email'><?php echo __('Email Address'); ?>: </label><input type='text' id='user_email' name='user_email' tabindex='4' title='Email Address'  value="<?php echo htmlentities($key->user_email); ?>"/></p>
 			</td>
 			<td style="width:50%;">
-				<p><label for='user_lang'><?php echo __("Language")?>: </label>
+				<p><label for='user_lang'><?php echo __('Language'); ?>: </label>
 					<select id='user_lang' name='user_lang' tabindex='5' title='Is Admin' />
 						<option value="en"<?php if ($key->user_lang == 'en') { echo ' selected'; } ?>>English</option>
 						<option value="pt-br"<?php if ($key->user_lang == 'pt-br') { echo ' selected'; } ?>>Brazilian Portuguese</option>
@@ -72,25 +72,24 @@ if (isset($error_message)) {
 						<option value="de"<?php if ($key->user_lang == 'de') { echo ' selected'; } ?>>German</option>
 						<option value="es"<?php if ($key->user_lang == 'es') { echo ' selected'; } ?>>Spanish</option>
 					</select></p>
-				<p><label for='user_theme'><?php echo __("Theme")?>: </label><input type='text' id='user_theme' name='user_theme' tabindex='7' title='Theme' value="<?php echo htmlentities($key->user_theme); ?>"/></p>
+				<p><label for='user_theme'><?php echo __('Theme'); ?>: </label><input type='text' id='user_theme' name='user_theme' tabindex='7' title='Theme' value="<?php echo htmlentities($key->user_theme); ?>"/></p>
 				<?php if ($this->user->user_admin == 'y') { ?>
-					<p><label for='user_admin'><?php echo __("User is Admin")?>: </label><input type='checkbox' id='user_admin' name='user_admin' tabindex='8' title='Is Admin' <?php echo htmlentities($value_admin)?> /></p>
+					<p><label for='user_admin'><?php echo __('User is Admin'); ?>: </label><input type='checkbox' id='user_admin' name='user_admin' tabindex='8' title='Is Admin' <?php echo htmlentities($value_admin)?> /></p>
 				<?php } else { ?>
 					<p></p>
 				<?php } ?>
-				<p><label for='user_sam'><?php echo __("User SAM Access Level")?>: </label>
+				<p><label for='user_sam'><?php echo __('User SAM Access Level'); ?>: </label>
 					<select id='user_sam' name='user_sam' tabindex='8' title='Is Admin'>
 						<option value="0"<?php if ($key->user_sam == '0') { echo " selected=\"selected\""; } ?>>No Access</option>
 						<option value="1"<?php if ($key->user_sam == '1') { echo " selected=\"selected\""; } ?>>View Reports Only</option>
 						<option value="2"<?php if ($key->user_sam == '2') { echo " selected=\"selected\""; } ?>>Update Counts</option>
 						<option value="3"<?php if ($key->user_sam == '3') { echo " selected=\"selected\""; } ?>>Create Licenses</option>
 					</select></p>
-				<p><label for='EditUser'>&nbsp;</label><?php echo form_submit(array('id' => 'EditUser', 'name' => 'EditUser'), 'Submit'); ?></p>
+				<p><label for='submit'></label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
 	</table>
-	<input type="hidden" value="<?php echo $key->user_id;
-        ?>" name="user_id" id="user_id" />
+	<input type="hidden" value="<?php echo $key->user_id; ?>" name="user_id" id="user_id" />
 	<?php } ?>
 	<p><?php echo $error_message; ?>&nbsp;</p>
 	<p><?php echo $this->session->flashdata('message'); ?>&nbsp;</p>
@@ -103,15 +102,15 @@ if (isset($error_message)) {
 <fieldset class="niceform">
 	<br />
 	<br />
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __("Group Access Details")?></span></legend>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Group Access Details'); ?></span></legend>
 	<table cellspacing="1" class="tablesorter">
 		<thead>
 			<tr>
-				<th align="center" style="width:120px;"><?php echo __('Systems')?></th>
+				<th align='center' style='width:120px;'><?php echo __('Systems')?></th>
 				<th><?php echo __('Group Name')?></th>
 				<th><?php echo __('Group Type')?></th>
 				<th><?php echo __('Group Description')?></th>
-				<th align="center" class="{sorter: false}"><?php echo __('Access Level')?> - <?php echo group_dropdown(0, 0)?></th>
+				<th align='center' class='{sorter: false}'><?php echo __('Access Level')?> - <?php echo group_dropdown(0, 0)?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -180,10 +179,10 @@ function group_dropdown($group_id, $access_level)
     }
     $string = "<select class=\"{sorter: false}\" id=\"group_id_$group_id\" name=\"group_id_$group_id\" $js >
 		".$option_0."&nbsp;</option>
-		".$option_3.__("List View Only")."</option>
-		".$option_5.__("View Basic Details")."</option>
-		".$option_7.__("View Sensitive Details")."</option>
-		".$option_10.__("Edit Details")."</option>
+		".$option_3.__('List View Only')."</option>
+		".$option_5.__('View Basic Details')."</option>
+		".$option_7.__('View Sensitive Details')."</option>
+		".$option_10.__('Edit Details')."</option>
 	</select>\n";
     $string = str_replace("\t", "", $string);
     $string = str_replace("\n", "", $string);

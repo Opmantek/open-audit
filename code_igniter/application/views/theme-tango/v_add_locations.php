@@ -27,13 +27,15 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 echo form_open_multipart('admin_location/add_locations')."\n";
 echo form_fieldset('Select File')."\n";
-echo form_upload('upload_file').form_submit('submit_file', 'Submit File');
+#echo form_upload('upload_file')."\n";
+echo '<input type="file" name="upload_file" value="" id="upload_file">';
+echo form_submit('submit', __('Submit') ) . "\n";
 echo form_fieldset_close();
 echo form_close();

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -234,8 +234,12 @@ class main extends MY_Controller
         $credentials = $this->m_system->get_access_details($system_id);
         $creds = $this->encrypt->decode($credentials);
         $creds = json_decode($creds);
-        $document['credentials'][0] = $creds;
-        echo json_encode($document);
+        if ($creds) {
+            $document['credentials'][0] = $creds;
+        }
+        if (count($document) != 0) {
+            echo json_encode($document);
+        }
         header('Content-Type: application/json');
         header('Cache-Control: max-age=0');
     }
@@ -431,6 +435,9 @@ class main extends MY_Controller
             if (((mb_strpos($field_name, 'man_') !== false) or
                 (mb_strpos($field_name, 'nmis_') !== false)) && ($field_data != '')) {
                 foreach ($data['systems'] as $system) {
+                    if ($field_data == '-') {
+                        $field_data = '';
+                    }
                     $this->m_system->update_system_man($system[1], $field_name, $field_data);
                     $this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
                 }
@@ -1059,7 +1066,7 @@ class main extends MY_Controller
         $this->load->model("m_oa_user");
         $this->load->model("m_oa_group");
         $this->load->helper('url');
-        if (!isset($_POST['EditUser'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['user'][0] = $this->user;
             if ($this->user->user_admin == 'y') {

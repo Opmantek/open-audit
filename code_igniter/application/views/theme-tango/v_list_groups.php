@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -36,15 +36,15 @@
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
-			<th align="center" class="{sorter: false}">Icon</th>
-			<th align="center" style="width:100px;"><?php echo __('Systems')?></th>
+			<th align='center' class='{sorter: false}'>Icon</th>
+			<th align='center' style="width:100px;"><?php echo __('Systems')?></th>
 			<th><?php echo __('Name')?></th>
 			<th><?php echo __('Category')?></th>
 			<th><?php echo __('Description')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Edit')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Export')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Update')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Delete')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Edit')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Export')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Update')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Delete')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -57,19 +57,19 @@
             $update_pic = "<a href=\"update_group/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_update.png' alt='' title='' width='16'/></a>";
          ?>
 		<tr>
-			<td align="center"><img src="<?php echo $oa_theme_images;?>/16_<?php echo htmlentities($key->group_icon);?>.png" border="0" title="<?php echo htmlentities($key->group_icon);?>" alt="<?php echo htmlentities($key->group_icon);?>" /></td>
-			<td align="center"><?php echo intval($key->total)?></td>
+			<td align='center'><img src="<?php echo $oa_theme_images;?>/16_<?php echo htmlentities($key->group_icon);?>.png" border="0" title="<?php echo htmlentities($key->group_icon);?>" alt="<?php echo htmlentities($key->group_icon);?>" /></td>
+			<td align='center'><?php echo intval($key->total)?></td>
 			<?php if ($key->group_padded_name > "") { ?>
 				<td><span style="display: none;"><?php echo htmlentities($key->group_padded_name)?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
 			<?php } else { ?>
 				<td><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
 			<?php } ?>
-			<td align="center"><?php echo htmlentities($key->group_category)?></td>
+			<td align='center'><?php echo htmlentities($key->group_category)?></td>
 			<td><?php echo htmlentities($key->group_description)?></td>
-			<td align="center"><?php if ($key->group_id != '1') { echo $edit_pic; } ?> </td>
-			<td align="center"><?php echo $export_pic?></td>
-			<td align="center"><?php echo $update_pic?></td>
-			<td align="center"><?php if ($key->group_id != '1') { echo $delete_pic; } ?> </td>
+			<td align='center'><?php if ($key->group_id != '1') { echo $edit_pic; } ?> </td>
+			<td align='center'><?php echo $export_pic?></td>
+			<td align='center'><?php echo $update_pic?></td>
+			<td align='center'><?php if ($key->group_id != '1') { echo $delete_pic; } ?> </td>
 		</tr>
 		<?php endforeach; ?>
 	</tbody>

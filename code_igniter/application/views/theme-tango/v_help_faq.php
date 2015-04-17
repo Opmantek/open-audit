@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -41,11 +41,11 @@ $sortcolumn = 2;
 <br />
 <br />
 <br />
-<form action="vars.php" method="post" class="niceforms">
+<form action="vars.php" method="post" class='niceforms'>
 <div id="faq-1" >
 <br />
-<fieldset class="niceforms">
-<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('How Does Open-AudIT store it\'s data ?')?></span></legend>
+<fieldset class='niceforms'>
+<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('How Does Open-AudIT store it\'s data ?')?></span></legend>
 Each system (computer, network device, printer, et al) has an entry in the "system" table.<br />
 Each system (from the "system" table) has a "system_id" column.<br />
 This value is unique - it's an auto incrementing id.<br />
@@ -137,8 +137,8 @@ Where possible, the first option will be chosen and where possible on subsequent
 <br />
 <div id="faq-2" >
 <br />
-<fieldset class="niceforms">
-<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('How do Users, Groups &amp; Systems work ?')?></span></legend>
+<fieldset class='niceforms'>
+<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('How do Users, Groups &amp; Systems work ?')?></span></legend>
 Each User has an entry in the oa_user table.<br />
 Each Group has an entry in the oa_group table.<br />
 Each System has an entry in the system table.<br />
@@ -175,8 +175,8 @@ Thus, if a system belongs to more than one group, but a user has differing level
 <br />
 <div id="faq-3" >
 <br />
-<fieldset class="niceforms">
-<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Columns in Reports &amp; Groups')?></span></legend>
+<fieldset class='niceforms'>
+<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Columns in Reports &amp; Groups')?></span></legend>
 The oa_group_column and the oa_report_column tables operate the same. They are used to create a table style output of the report or group contents.<br /><br />
 The oa_group_column table contents are optional for a Group. If they are not present, the report defaults to using the group_id = 0 rows.<br /><br />
 The oa_report_column table does need to be populated for each report - there are no defaults.<br /><br />
@@ -244,8 +244,8 @@ The columns for the "Installed Software" report are below:<br />
 <br />
 <div id="faq-4" >
 <br />
-<fieldset class="niceforms">
-<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Printer Logic')?></span></legend>
+<fieldset class='niceforms'>
+<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Printer Logic')?></span></legend>
 We attempt to record only actual hardware printers. <br />
 We try to filter out such things as "PDF Printers", "XPS Document Writers", etc, etc (these may be stored in the software table at a later stage).<br />
 <br />

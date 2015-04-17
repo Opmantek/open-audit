@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -60,7 +60,7 @@ class Admin_field extends MY_Controller
 
     public function add_field()
     {
-        if (!isset($_POST['AddField'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->load->model("m_oa_group");
             $this->data['groups'] = $this->m_oa_group->get_all_groups();
@@ -92,7 +92,7 @@ class Admin_field extends MY_Controller
     public function edit_field()
     {
         $this->load->model("m_additional_fields");
-        if (!isset($_POST['EditField'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $field_id = $this->uri->segment(3, '');
             $this->load->model("m_oa_group");

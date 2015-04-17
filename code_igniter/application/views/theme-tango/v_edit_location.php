@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,8 +40,8 @@ if (isset($error_message)) {
 
 echo form_open('admin_location/edit_location')."\n";
 ?>
-<fieldset id="location_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Location Details')?></span></legend>
+<fieldset id="location_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Location Details')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<?php foreach ($location as $key) {
     ?>
@@ -52,54 +52,54 @@ echo form_open('admin_location/edit_location')."\n";
 				<!-- <p><label for='location_type'><?php echo __("Type")?>: </label><input type='text' id='location_type' name='location_type' tabindex='2' title='Type'  value="<?php echo $key->location_type; ?>"/></p> -->
 				<p><label for='location_type' title="Server Room, Office, etc"><?php echo __("Type")?>: </label><select id='location_type' name='location_type' tabindex='2' title='Type' />
 					<option <?php if ($key->location_type == "") { echo "selected ";} ?>value=''></option>
-					<option <?php if ($key->location_type == "Airforce") { echo "selected ";} ?>value='Airforce'>Airforce</option>
-					<option <?php if ($key->location_type == "Airport") { echo "selected ";} ?>value='Airport'>Airport</option>
-					<option <?php if ($key->location_type == "Ambulance Station") { echo "selected ";} ?>value='Ambulance Station'>Ambulance Station</option>
-					<option <?php if ($key->location_type == "Army") { echo "selected ";} ?>value='Army'>Army</option>
-					<option <?php if ($key->location_type == "Cloud") { echo "selected ";} ?>value='Cloud'>Cloud</option>
-					<option <?php if ($key->location_type == "Conference Center") { echo "selected ";} ?>value='Conference Center'>Conference Center</option>
-					<option <?php if ($key->location_type == "Court House") { echo "selected ";} ?>value='Court House'>Court House</option>
-					<option <?php if ($key->location_type == "Data Center") { echo "selected ";} ?>value='Data Center'>Data Center</option>
-					<option <?php if ($key->location_type == "Depot") { echo "selected ";} ?>value='Depot'>Depot</option>
-					<option <?php if ($key->location_type == "District") { echo "selected ";} ?>value='District'>District</option>
-					<option <?php if ($key->location_type == "Doctors Office") { echo "selected ";} ?>value='Doctors Office'>Doctors Office</option>
-					<option <?php if ($key->location_type == "Embassy") { echo "selected ";} ?>value='Embassy'>Embassy</option>
-					<option <?php if ($key->location_type == "Factory") { echo "selected ";} ?>value='Factory'>Factory</option>
-					<option <?php if ($key->location_type == "Fire Station") { echo "selected ";} ?>value='Fire Station'>Fire Station</option>
-					<option <?php if ($key->location_type == "Guard") { echo "selected ";} ?>value='Guard'>Guard</option>
-					<option <?php if ($key->location_type == "Head Office") { echo "selected ";} ?>value='Head Office'>Head Office</option>
-					<option <?php if ($key->location_type == "High School") { echo "selected ";} ?>value='High School'>High School</option>
-					<option <?php if ($key->location_type == "Hospital") { echo "selected ";} ?>value='Hospital'>Hospital</option>
-					<option <?php if ($key->location_type == "Hotel") { echo "selected ";} ?>value='Hotel'>Hotel</option>
-					<option <?php if ($key->location_type == "House") { echo "selected ";} ?>value='House'>House</option>
-					<option <?php if ($key->location_type == "Library") { echo "selected ";} ?>value='Library'>Library</option>
-					<option <?php if ($key->location_type == "Light House") { echo "selected ";} ?>value='Light House'>Light House</option>
-					<option <?php if ($key->location_type == "Marina") { echo "selected ";} ?>value='Marina'>Marina</option>
-					<option <?php if ($key->location_type == "Mobile Phone Tower") { echo "selected ";} ?>value='Mobile Phone Tower'>Mobile Phone Tower</option>
-					<option <?php if ($key->location_type == "Motel") { echo "selected ";} ?>value='Motel'>Motel</option>
-					<option <?php if ($key->location_type == "Navy") { echo "selected ";} ?>value='Navy'>Navy</option>
-					<option <?php if ($key->location_type == "Newsagent") { echo "selected ";} ?>value='Newsagent'>Newsagent</option>
-					<option <?php if ($key->location_type == "Nursing Home") { echo "selected ";} ?>value='Nursing Home'>Nursing Home</option>
-					<option <?php if ($key->location_type == "Observatory") { echo "selected ";} ?>value='Observatory'>Observatory</option>
-					<option <?php if ($key->location_type == "Office") { echo "selected ";} ?>value='Office'>Office</option>
-					<option <?php if ($key->location_type == "Oil Rig") { echo "selected ";} ?>value='Oil Rig'>Oil Rig</option>
-					<option <?php if ($key->location_type == "Police") { echo "selected ";} ?>value='Police'>Police</option>
-					<option <?php if ($key->location_type == "Power Plant") { echo "selected ";} ?>value='Power Plant'>Power Plant</option>
-					<option <?php if ($key->location_type == "Power Substation") { echo "selected ";} ?>value='Power Substation'>Power Substation</option>
-					<option <?php if ($key->location_type == "Prison") { echo "selected ";} ?>value='Prison'>Prison</option>
-					<option <?php if ($key->location_type == "Radio Station") { echo "selected ";} ?>value='Radio Station'>Radio Station</option>
-					<option <?php if ($key->location_type == "Regional") { echo "selected ";} ?>value='Regional'>Regional</option>
-					<option <?php if ($key->location_type == "Resort") { echo "selected ";} ?>value='Resort'>Resort</option>
-					<option <?php if ($key->location_type == "Retail") { echo "selected ";} ?>value='Retail'>Retail</option>
-					<option <?php if ($key->location_type == "School") { echo "selected ";} ?>value='School'>School</option>
-					<option <?php if ($key->location_type == "Security") { echo "selected ";} ?>value='Security'>Security</option>
-					<option <?php if ($key->location_type == "Stadium") { echo "selected ";} ?>value='Stadium'>Stadium</option>
-					<option <?php if ($key->location_type == "Train Station") { echo "selected ";} ?>value='Train Station'>Train Station</option>
-					<option <?php if ($key->location_type == "Travel Agency") { echo "selected ";} ?>value='Travel Agency'>Travel Agency</option>
-					<option <?php if ($key->location_type == "TV Station") { echo "selected ";} ?>value='TV Station'>TV Station</option>
-					<option <?php if ($key->location_type == "University") { echo "selected ";} ?>value='University'>University</option>
-					<option <?php if ($key->location_type == "Warehouse") { echo "selected ";} ?>value='Warehouse'>Warehouse</option>
-					<option <?php if ($key->location_type == "Workshop") { echo "selected ";} ?>value='Workshop'>Workshop</option>
+					<option <?php if ($key->location_type == "Airforce") { echo "selected ";} ?>value='Airforce'><?php echo __('Airforce'); ?></option>
+					<option <?php if ($key->location_type == "Airport") { echo "selected ";} ?>value='Airport'><?php echo __('Airport'); ?></option>
+					<option <?php if ($key->location_type == "Ambulance Station") { echo "selected ";} ?>value='Ambulance Station'><?php echo __('Ambulance Station'); ?></option>
+					<option <?php if ($key->location_type == "Army") { echo "selected ";} ?>value='Army'><?php echo __('Army'); ?></option>
+					<option <?php if ($key->location_type == "Cloud") { echo "selected ";} ?>value='Cloud'><?php echo __('Cloud'); ?></option>
+					<option <?php if ($key->location_type == "Conference Center") { echo "selected ";} ?>value='Conference Center'><?php echo __('Conference Center'); ?></option>
+					<option <?php if ($key->location_type == "Court House") { echo "selected ";} ?>value='Court House'><?php echo __('Court House'); ?></option>
+					<option <?php if ($key->location_type == "Data Center") { echo "selected ";} ?>value='Data Center'><?php echo __('Data Center'); ?></option>
+					<option <?php if ($key->location_type == "Depot") { echo "selected ";} ?>value='Depot'><?php echo __('Depot'); ?></option>
+					<option <?php if ($key->location_type == "District") { echo "selected ";} ?>value='District'><?php echo __('District'); ?></option>
+					<option <?php if ($key->location_type == "Doctors Office") { echo "selected ";} ?>value='Doctors Office'><?php echo __('Doctors Office'); ?></option>
+					<option <?php if ($key->location_type == "Embassy") { echo "selected ";} ?>value='Embassy'><?php echo __('Embassy'); ?></option>
+					<option <?php if ($key->location_type == "Factory") { echo "selected ";} ?>value='Factory'><?php echo __('Factory'); ?></option>
+					<option <?php if ($key->location_type == "Fire Station") { echo "selected ";} ?>value='Fire Station'><?php echo __('Fire Station'); ?></option>
+					<option <?php if ($key->location_type == "Guard") { echo "selected ";} ?>value='Guard'><?php echo __('Guard'); ?></option>
+					<option <?php if ($key->location_type == "Head Office") { echo "selected ";} ?>value='Head Office'><?php echo __('Head Office'); ?></option>
+					<option <?php if ($key->location_type == "High School") { echo "selected ";} ?>value='High School'><?php echo __('High School'); ?></option>
+					<option <?php if ($key->location_type == "Hospital") { echo "selected ";} ?>value='Hospital'><?php echo __('Hospital'); ?></option>
+					<option <?php if ($key->location_type == "Hotel") { echo "selected ";} ?>value='Hotel'><?php echo __('Hotel'); ?></option>
+					<option <?php if ($key->location_type == "House") { echo "selected ";} ?>value='House'><?php echo __('House'); ?></option>
+					<option <?php if ($key->location_type == "Library") { echo "selected ";} ?>value='Library'><?php echo __('Library'); ?></option>
+					<option <?php if ($key->location_type == "Light House") { echo "selected ";} ?>value='Light House'><?php echo __('Light House'); ?></option>
+					<option <?php if ($key->location_type == "Marina") { echo "selected ";} ?>value='Marina'><?php echo __('Marina'); ?></option>
+					<option <?php if ($key->location_type == "Mobile Phone Tower") { echo "selected ";} ?>value='Mobile Phone Tower'><?php echo __('Mobile Phone Tower'); ?></option>
+					<option <?php if ($key->location_type == "Motel") { echo "selected ";} ?>value='Motel'><?php echo __('Motel'); ?></option>
+					<option <?php if ($key->location_type == "Navy") { echo "selected ";} ?>value='Navy'><?php echo __('Navy'); ?></option>
+					<option <?php if ($key->location_type == "Newsagent") { echo "selected ";} ?>value='Newsagent'><?php echo __('Newsagent'); ?></option>
+					<option <?php if ($key->location_type == "Nursing Home") { echo "selected ";} ?>value='Nursing Home'><?php echo __('Nursing Home'); ?></option>
+					<option <?php if ($key->location_type == "Observatory") { echo "selected ";} ?>value='Observatory'><?php echo __('Observatory'); ?></option>
+					<option <?php if ($key->location_type == "Office") { echo "selected ";} ?>value='Office'><?php echo __('Office'); ?></option>
+					<option <?php if ($key->location_type == "Oil Rig") { echo "selected ";} ?>value='Oil Rig'><?php echo __('Oil Rig'); ?></option>
+					<option <?php if ($key->location_type == "Police") { echo "selected ";} ?>value='Police'><?php echo __('Police'); ?></option>
+					<option <?php if ($key->location_type == "Power Plant") { echo "selected ";} ?>value='Power Plant'><?php echo __('Power Plant'); ?></option>
+					<option <?php if ($key->location_type == "Power Substation") { echo "selected ";} ?>value='Power Substation'><?php echo __('Power Substation'); ?></option>
+					<option <?php if ($key->location_type == "Prison") { echo "selected ";} ?>value='Prison'><?php echo __('Prison'); ?></option>
+					<option <?php if ($key->location_type == "Radio Station") { echo "selected ";} ?>value='Radio Station'><?php echo __('Radio Station'); ?></option>
+					<option <?php if ($key->location_type == "Regional") { echo "selected ";} ?>value='Regional'><?php echo __('Regional'); ?></option>
+					<option <?php if ($key->location_type == "Resort") { echo "selected ";} ?>value='Resort'><?php echo __('Resort'); ?></option>
+					<option <?php if ($key->location_type == "Retail") { echo "selected ";} ?>value='Retail'><?php echo __('Retail'); ?></option>
+					<option <?php if ($key->location_type == "School") { echo "selected ";} ?>value='School'><?php echo __('School'); ?></option>
+					<option <?php if ($key->location_type == "Security") { echo "selected ";} ?>value='Security'><?php echo __('Security'); ?></option>
+					<option <?php if ($key->location_type == "Stadium") { echo "selected ";} ?>value='Stadium'><?php echo __('Stadium'); ?></option>
+					<option <?php if ($key->location_type == "Train Station") { echo "selected ";} ?>value='Train Station'><?php echo __('Train Station'); ?></option>
+					<option <?php if ($key->location_type == "Travel Agency") { echo "selected ";} ?>value='Travel Agency'><?php echo __('Travel Agency'); ?></option>
+					<option <?php if ($key->location_type == "TV Station") { echo "selected ";} ?>value='TV Station'><?php echo __('TV Station'); ?></option>
+					<option <?php if ($key->location_type == "University") { echo "selected ";} ?>value='University'><?php echo __('University'); ?></option>
+					<option <?php if ($key->location_type == "Warehouse") { echo "selected ";} ?>value='Warehouse'><?php echo __('Warehouse'); ?></option>
+					<option <?php if ($key->location_type == "Workshop") { echo "selected ";} ?>value='Workshop'><?php echo __('Workshop'); ?></option>
 				</select></p>
 
 				<p><label for='location_level'><?php echo __("Level")?>: </label><input type='text' id='location_level' name='location_level' tabindex='3' title='Level'  value="<?php echo $key->location_level; ?>"/></p>
@@ -127,7 +127,7 @@ echo form_open('admin_location/edit_location')."\n";
 				<p><label style="width: 30px;" for='location_create_geo'></label><input id="location_create_geo" type="button" name="location_create_geo" value="Create GeoCode" onclick="creategeo();" /></p>
 				<p><label style="width: 30px;" for='location_get_lat_long'></label><input id="location_get_lat_long" type="button" name="location_get_lat_long" value="Get Lat / Long" onclick="getlatlong();" /></p>
 				<p><label style="width: 30px;" for='location_group'></label><?php echo __("Activate Group")?>: <input type='checkbox' id='location_group' name='location_group' tabindex='14' title='Activate Group' checked /></p>
-				<p><label style="width: 30px;" for='location_addlocation'></label><?php echo form_submit(array('id' => 'EditLocation', 'name' => 'EditLocation'), 'Update Location'); ?></p>
+				<p><label style="width: 30px;" for='submit'></label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
 	</table>

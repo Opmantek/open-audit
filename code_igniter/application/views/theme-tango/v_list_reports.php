@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -39,9 +39,9 @@ if (count($query) > 0) {
 	<thead>
 		<tr>
 			<th><?php echo __('Name')?></th>
-			<th align="center" width="120" class="{sorter: false}"><?php echo __('Edit Report')?></th>
-			<th align="center" width="120" class="{sorter: false}"><?php echo __('Export Report')?></th>
-			<th align="center" width="120" class="{sorter: false}"><?php echo __('Delete Report')?></th>
+			<th align='center' width="120" class='{sorter: false}'><?php echo __('Edit Report')?></th>
+			<th align='center' width="120" class='{sorter: false}'><?php echo __('Export Report')?></th>
+			<th align='center' width="120" class='{sorter: false}'><?php echo __('Delete Report')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -55,9 +55,9 @@ if (count($query) > 0) {
                     ?>
         			<tr>
         				<td><?php echo htmlentities(__($key->report_name))?></td>
-        				<td align="center"><?php echo $edit_pic?></td>
-        				<td align="center"><?php echo $export_pic?></td>
-        				<td align="center"><?php echo $delete_pic?></td>
+        				<td align='center'><?php echo $edit_pic?></td>
+        				<td align='center'><?php echo $export_pic?></td>
+        				<td align='center'><?php echo $delete_pic?></td>
         			</tr>
     			<?php } ?>
 			<?php endforeach; ?>

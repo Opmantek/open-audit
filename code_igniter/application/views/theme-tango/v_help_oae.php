@@ -27,16 +27,16 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $sortcolumn = 2;
 ?>
-<form action="vars.php" method="post" class="niceforms">
-	<fieldset id="about" class="niceforms">
-		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Open-AudIT Enterprise')?></span></legend>
+<form action="vars.php" method="post" class='niceforms'>
+	<fieldset id="about" class='niceforms'>
+		<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Open-AudIT Enterprise')?></span></legend>
         <?php
         $message = "Open-AudIT Enterprise is now available.<br /> Scheduled Reports, Interactive Dashboards and Maps and more.<br /> All purchases go to further Open-AudIT for all of us. Contact <a href='https://opmantek.com' style='color: blue'>Opmantek</a> todayor click <a href='".$this->config->config['oae_url']."' style='color: blue;'>here</a> to enter your license details.";
         if (isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'not installed') {

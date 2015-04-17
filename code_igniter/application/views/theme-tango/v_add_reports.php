@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -43,8 +43,8 @@ if (count($query) > 1) {
 		<tr>
 			<th><?php echo __('Name')?></th>
 			<th><?php echo __('Description')?></th>
-			<th align="center" width="120" class="{sorter: false}"><?php echo __('Activate Report')?></th>
-			<th align="center" width="120" ><?php echo __('Already Active')?></th>
+			<th align='center' width="120" class='{sorter: false}'><?php echo __('Activate Report')?></th>
+			<th align='center' width="120" ><?php echo __('Already Active')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -54,11 +54,11 @@ if (count($query) > 1) {
 					<td><?php echo __($key['report_name']); ?></td>
 					<td><?php echo $key['report_description']; ?></td>
 					<?php if ($key['activated']) { ?>
-						<td align="center"><a href="action_deactivate_report/<?php echo $key['activated']; ?>"><img src="<?php echo $oa_theme_images; ?>/16_delete.png" alt="" title="" width="16"/></a></td>
-						<td align="center"><?php echo __('yes')?></td>
+						<td align='center'><a href="action_deactivate_report/<?php echo $key['activated']; ?>"><img src="<?php echo $oa_theme_images; ?>/16_delete.png" alt="" title="" width="16"/></a></td>
+						<td align='center'><?php echo __('yes')?></td>
 					<?php } else { ?>
-						<td align="center"><a href="action_activate_report/<?php echo $key['file']; ?>"><img src="<?php echo $oa_theme_images; ?>/16_true.png"   alt="" title="" width="16"/></a></td>
-						<td align="center"></td>
+						<td align='center'><a href="action_activate_report/<?php echo $key['file']; ?>"><img src="<?php echo $oa_theme_images; ?>/16_true.png"   alt="" title="" width="16"/></a></td>
+						<td align='center'></td>
 					<?php } ?>
 				</tr>
 				<?php } ?>

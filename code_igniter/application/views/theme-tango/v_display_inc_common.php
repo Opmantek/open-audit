@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -78,6 +78,11 @@ foreach ($system as $key) {
     $icon = $key->man_icon;
     $type = $key->man_type;
 }
+
+# this also occurs in v_template, but $system_id is not set at that stage
+echo "  <script type=\"text/javascript\">\n";
+echo "      setVarsForm(\"$system_id\");\n";
+echo "  </script>\n";
 
 foreach ($system_location as $key) {
     $location_name = $key->location_name;
@@ -193,15 +198,6 @@ function clean_url($url)
     $url = str_replace("\\", '/', $url);
 
     return $url;
-}
-
-function print_something($string)
-{
-    if ((mb_strlen($string) == 0) or ($string == '0000-00-00')) {
-        return '-';
-    } else {
-        return htmlentities($string);
-    }
 }
 
 function display_custom_field($field_placement, $additional_fields, $edit)

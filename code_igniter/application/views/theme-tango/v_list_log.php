@@ -27,14 +27,14 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $sortcolumn = 2;
 echo $comment;
-echo "<p>Refresh this page for updated logs.<br />Most recent entries are at the top.</p>\n";
+echo "<p>" . __('Refresh this page for updated logs') . ".<br />" . __('Most recent entries are at the top') . ".</p>\n";
 if (count($query) > 0) {
     ?>
 <table cellspacing="1" class="tablesorter">

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -87,7 +87,7 @@ class Admin_location extends MY_Controller
 
     public function add_location()
     {
-        if (!isset($_POST['AddLocation'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['heading'] = 'Add Location';
             $this->data['include'] = 'v_add_location';
@@ -155,13 +155,13 @@ class Admin_location extends MY_Controller
 
     public function add_locations()
     {
-        if (!isset($_POST['submit_xml']) and !isset($_POST['submit_file'])) {
+        if (!isset($_POST['submit'])) {
             # nothing submitted - display the form
             $this->data['heading'] = 'Add Locations';
             $this->data['include'] = 'v_add_locations';
             $this->load->view('v_template', $this->data);
-        }
-        if (isset($_POST['submit_file'])) {
+        } else {
+
             $this->load->model("m_oa_location");
             # we have an uploaded file - store and process
             $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);
@@ -229,7 +229,7 @@ class Admin_location extends MY_Controller
             }
             redirect('admin_location/list_locations');
         }
-        if (isset($_POST['submit_xml']) and isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
+        if (isset($_POST['submit']) and isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
             // we have XML text - process
             echo "XML processing<br />\n";
             $this->load->helper('xml');
@@ -273,7 +273,7 @@ class Admin_location extends MY_Controller
     public function edit_location()
     {
         $this->load->model("m_oa_location");
-        if (!isset($_POST['EditLocation'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['location'] = $this->m_oa_location->get_location($this->data['id']);
             $this->data['heading'] = 'Edit Location';

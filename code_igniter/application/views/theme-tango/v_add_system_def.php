@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,8 +40,8 @@ if (isset($error_message)) {
 
 echo form_open('admin_system/add_system_def')."\n";
 ?>
-<fieldset id="standard_fields" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Standard Fields')?></span></legend>
+<fieldset id="standard_fields" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Standard Fields')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<p><?php echo $error_message; ?>&nbsp;</p>
 	<table width='700'><tr><td valign='top'>
@@ -122,8 +122,8 @@ echo form_open('admin_system/add_system_def')."\n";
 </fieldset>
 <br />
 <!--
-<fieldset id="custom_fields" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Custom Fields')?></span></legend>
+<fieldset id="custom_fields" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Custom Fields')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
 	<table width='500' name='custom_fields_table' id='custom_fields_table'><tr><th>Name</th><th>Type</th><th>Use This?</th></tr>
 	<?php
@@ -140,7 +140,7 @@ echo form_open('admin_system/add_system_def')."\n";
 	<span id='custom'>&nbsp;</span>
 -->
 </fieldset>
-	<p><input type='submit' name='AddSystemDef' value='Add System Definition' id='AddSystemDef' \/></p>
+	<p><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 </form>
 <script type="text/javascript">
 count_custom = 0;

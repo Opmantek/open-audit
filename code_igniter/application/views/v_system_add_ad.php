@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -43,7 +43,7 @@
 <?php echo form_open('system/add_system_ad', $attributes)."\n"; ?>
     <?php echo form_fieldset('Add an AD audit')."\n"; ?>
         <label for="form_systemXML">Details: </label><p><?php echo form_textarea(array('name' => 'form_systemXML', 'id' => 'form_systemXML', 'rows' => '15', 'cols' => '100')); ?></p>
-        <p><?php echo form_submit('submit', 'Submit'); ?></p>
+        <p><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
     <?php echo form_fieldset_close(); ?>
 <?php echo form_close(); ?>
 </body>

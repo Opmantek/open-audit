@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -55,28 +55,28 @@
 ?>
 <!-- below is the menu div that sits on the left -->
 <div style="float: left; width: 180px; margin-left: 0%; vertical-align: top; position: fixed;" >
-    <form action="#" method="post" class="niceforms">
-        <fieldset id="system_menu" class="niceforms">
-            <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Menu')?></span></legend>
+    <form action="#" method="post" class='niceforms'>
+        <fieldset id="system_menu" class='niceforms'>
+            <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Menu')?></span></legend>
             <div id="menu1" class="menuTree">
                 <ul>
-                    <li class="parent expanded"><a href="#">&nbsp;&nbsp;&nbsp;Summary</a>
+                    <li class="parent expanded"><a href="#">&nbsp;&nbsp;&nbsp;<?php echo __('Summary'); ?></a>
                         <ul style="display: block;">
-                            <?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_credentials.png" /><a href="#" id="toggle_summary_credentials">Credentials</a></li><?php } ?>
+                            <?php if (isset($decoded_access_details) and ($access_level >= 7)) { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_credentials.png" /><a href="#" id="toggle_summary_credentials"><?php echo __('Credentials'); ?></a></li><?php } ?>
                             <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_right.png" /><a href="#" id="toggle_summary_purchase">Purchase</a></li>
-                            <?php if ($system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0' and $system[0]->man_ip_address > '') { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_devices.png" /><a href="#" id="toggle_summary_network">Network</a></li><?php } ?>
-                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_home.png" /><a href="#" id="toggle_summary_location">Location / Contact</a></li>
-                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_csv.png" /><a href="#" id="toggle_summary_custom">Custom</a></li>
-                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_word.png" /><a href="#" id="toggle_summary_attachment">Attachments</a></li>
-                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_find.png" /><a href="#" id="toggle_summary_audits">Audits</a></li>
-                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_edit.png" /><a href="#" id="toggle_summary_audit_log">Audit Log</a></li>
-                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_warning.png" /><a href="#" id="toggle_summary_alert_log">Alert Log</a></li>
-                            <?php if ($this->config->config['nmis'] == 'y') { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_nmis.png" /><a href="#" id="toggle_summary_nmis">NMIS Details</a></li><?php } ?>
-                            <?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_network.png" /><a href="#" id="toggle_summary_network_interfaces">Network Interfaces</a></li> <?php } ?>
-                            <?php if (strpos($system[0]->man_type, 'phone') !== false) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_cell_phone.png" /><a href="#" id="toggle_summary_phone">Phone Details</a></li> <?php } ?>
-                            <?php if (count($windows) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_windows.png" /><a href="#" id="toggle_summary_windows">Windows Details</a></li><?php } ?>
-                            <?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_vmware.png" /><a href="#" id="toggle_summary_vms">VM Guest Details</a></li><?php } ?>
-                            <?php if (count($module) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_memory.png" /><a href="#" id="toggle_summary_module">Entities</a></li> <?php } ?>
+                            <?php if ($system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0' and $system[0]->man_ip_address > '') { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_devices.png" /><a href="#" id="toggle_summary_network"><?php echo __('Network'); ?></a></li><?php } ?>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_home.png" /><a href="#" id="toggle_summary_location"><?php echo __('Location / Contact'); ?></a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_csv.png" /><a href="#" id="toggle_summary_custom"><?php echo __('Custom'); ?></a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_word.png" /><a href="#" id="toggle_summary_attachment"><?php echo __('Attachments'); ?></a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_find.png" /><a href="#" id="toggle_summary_audits"><?php echo __('Audits'); ?></a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_edit.png" /><a href="#" id="toggle_summary_audit_log"><?php echo __('Audit Log'); ?></a></li>
+                            <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_warning.png" /><a href="#" id="toggle_summary_alert_log"><?php echo __('Alert Log'); ?></a></li>
+                            <?php if ($this->config->config['nmis'] == 'y') { ?><li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_nmis.png" /><a href="#" id="toggle_summary_nmis"><?php echo __('NMIS Details'); ?></a></li><?php } ?>
+                            <?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_network.png" /><a href="#" id="toggle_summary_network_interfaces"><?php echo __('Network Interfaces'); ?></a></li> <?php } ?>
+                            <?php if (strpos($system[0]->man_type, 'phone') !== false) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_cell_phone.png" /><a href="#" id="toggle_summary_phone"><?php echo __('Phone Details'); ?></a></li> <?php } ?>
+                            <?php if (count($windows) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_windows.png" /><a href="#" id="toggle_summary_windows"><?php echo __('Windows Details'); ?></a></li><?php } ?>
+                            <?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_vmware.png" /><a href="#" id="toggle_summary_vms"><?php echo __('VM Guest Details'); ?></a></li><?php } ?>
+                            <?php if (count($module) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_memory.png" /><a href="#" id="toggle_summary_module"><?php echo __('Entities'); ?></a></li> <?php } ?>
                         </ul>
                     </li>
                     <?php
@@ -119,6 +119,7 @@ $summary_attributes = array('hostname' => 'text' ,
                             'warranty_link' => '',
                             'downloads_link' => '',
                             'dell_express_code_link' => '',
+                            'man_cluster_name' => 'text',
                             'man_oae_manage' => 'select', );
 
 # specific entries (usually based on man_type).
@@ -175,9 +176,9 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 <!-- below are the main content blocks -->
 
 <div id="summary" style="float: left; width: 100%;" >
-<form action="#" method="post" class="niceforms">
-    <fieldset id="system_details" class="niceforms">
-        <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Device Details')?></span></legend>
+<form action="#" method="post" class='niceforms'>
+    <fieldset id="system_details" class='niceforms'>
+        <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Device Details')?></span></legend>
         <div style="float:right; width: 120px; text-align:center">
             <img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo htmlentities($system[0]->man_picture); ?>" style="border: 1px solid rgb(219, 217, 197);"/>
             <?php if (($access_level > 7) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
@@ -203,19 +204,19 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
                 $text = str_replace('_', ' ', $text);
                 $text = ucwords($text);
                 if ($text == 'Ip Address') {
-                    $text = 'IP Address';
+                    $text = __('IP Address');
                 }
                 if ($text == 'Snmp Oid') {
-                    $text = 'SNMP OID';
+                    $text = __('SNMP OID');
                 }
                 if ($text == 'Vm Group') {
-                    $text = 'VM Group';
+                    $text = __('VM Group');
                 }
                 if ($text == 'Vm Server Name') {
-                    $text = 'VM Server Name';
+                    $text = __('VM Server Name');
                 }
                 if ($text == 'Oae Manage') {
-                    $text = 'Manage in Open-AudIT Enterprise';
+                    $text = __('Manage in Open-AudIT Enterprise');
                 }
                 if (strpos($text, 'Os ') !== false) {
                     $text = str_replace('Os ', 'OS ', $text);

@@ -27,15 +27,15 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<form action="#" method="post" class="niceforms">
-<fieldset id="a1" class="niceforms">
-<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Page Incomplete')?></span></legend>
-Place holder for an incomplete page.
+<form action="#" method="post" class='niceforms'>
+<fieldset id="a1" class='niceforms'>
+<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Page Incomplete')?></span></legend>
+<?php echo __('Place holder for an incomplete page'); ?>.
 </fieldset>
 </form>

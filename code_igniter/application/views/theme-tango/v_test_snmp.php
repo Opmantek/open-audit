@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -35,6 +35,6 @@
 echo form_open_multipart('test/test_snmp')."\n";
 echo form_fieldset('SNMP Text')."\n";
 echo "<textarea id=\"snmp\" name=\"snmp\" width=\"100\"></textarea>\n";
-echo form_submit('submit', 'Submit');
+echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') );
 echo form_fieldset_close();
 echo form_close();

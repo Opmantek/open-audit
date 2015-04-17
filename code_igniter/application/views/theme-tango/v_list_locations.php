@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,16 +38,16 @@ if (count($query) > 0) {
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
-			<th align="center" width="120"><?php echo __('Systems')?></th>
+			<th align='center' width="120"><?php echo __('Systems')?></th>
 			<th><?php echo __('Name')?></th>
 			<th><?php echo __('Comments')?></th>
 			<th><?php echo __('Address')?></th>
 			<th><?php echo __('Type')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Activate Group')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Remove Group')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Show Devices')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Edit Location')?></th>
-			<th align="center" width="80" class="{sorter: false}"><?php echo __('Delete Location')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Activate Group')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Remove Group')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Show Devices')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Edit Location')?></th>
+			<th align='center' width="80" class='{sorter: false}'><?php echo __('Delete Location')?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -78,16 +78,16 @@ if (count($query) > 0) {
 
             ?>
 			<tr>
-				<td align="center"><?php echo $key->total?></td>
+				<td align='center'><?php echo $key->total?></td>
 				<td><a href="../main/view_location/<?php echo $key->location_id?>"><?php echo htmlentities($key->location_name)?></a></td>
 				<td><?php echo htmlentities($key->location_comments)?></td>
 				<td><?php echo htmlentities($key->location_address)?></td>
 				<td><?php echo htmlentities($key->location_type)?></td>
-				<td align="center"><?php echo $activate_pic?></td>
-				<td align="center"><?php echo $deactivate_pic?></td>
-				<td align="center"><?php echo $show_pic?></td>
-				<td align="center"><?php echo $edit_pic?></td>
-				<td align="center"><?php echo $delete_pic?></td>
+				<td align='center'><?php echo $activate_pic?></td>
+				<td align='center'><?php echo $deactivate_pic?></td>
+				<td align='center'><?php echo $show_pic?></td>
+				<td align='center'><?php echo $edit_pic?></td>
+				<td align='center'><?php echo $delete_pic?></td>
 			</tr>
 			<?php endforeach;
             ?>

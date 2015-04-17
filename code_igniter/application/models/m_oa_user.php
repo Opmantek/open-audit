@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -200,6 +200,10 @@ class M_oa_user extends MY_Model
         $status = '';
 
         $this->config = $CI->config;
+
+        if (!isset($_SERVER['HTTP_ACCEPT'])) {
+            $_SERVER['HTTP_ACCEPT'] = '';
+        }
 
         $temp_debug = @$this->session->userdata['user_debug'];
         if ((string) $this->uri->segment($this->uri->total_rsegments()-1) === 'user_debug') {
@@ -476,7 +480,7 @@ class M_oa_user extends MY_Model
                     // successful connect, but no bind - invalid credentials
                     // log attempt and fall through for local validation in Open-AudIT
                     $log_details->severity = 5;
-                    if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
+                    if (strpos(@$_SERVER['HTTP_ACCEPT'], 'json') !== false) {
                         $log_details->message = $username.' Active Directory failed verification (json request)';
                     } else {
                         $log_details->message = $username.' Active Directory failed verification (html request)';

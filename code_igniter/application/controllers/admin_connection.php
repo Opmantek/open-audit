@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -131,7 +131,7 @@ class Admin_connection extends MY_Controller
      */
     public function add_connections()
     {
-        if (! $this->input->post('submit_xml') and ! $this->input->post('submit_file')) {
+        if (! $this->input->post('submit') and ! $this->input->post('submit_file')) {
             // nothing submitted - display the form
             $this->data['heading'] = 'Add connections';
             $this->data['include'] = 'v_add_connections';
@@ -258,7 +258,7 @@ class Admin_connection extends MY_Controller
      */
     public function add_connection()
     {
-        if (! $this->input->post('AddConnection')) {
+        if (! $this->input->post('submit')) {
             // load the initial form
             $this->load->model('m_oa_location');
             $this->load->model('m_oa_org');
@@ -303,7 +303,7 @@ class Admin_connection extends MY_Controller
     public function edit_connection()
     {
         $this->load->model('m_oa_connection');
-        if (! $this->input->post('Editconnection')) {
+        if (! $this->input->post('submit')) {
             // load the initial form
             $this->data['connection'] = $this->m_oa_connection->get_connection($this->data['id']);
             $this->data['heading'] = 'Edit Connection';

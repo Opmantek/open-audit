@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -184,22 +184,44 @@ class ajax extends MY_Controller
                 # 1 - sys_man_additional_fields.field_type
                 # 2 - sys_man_additional_fields_data.field_details_id
                 # 3 - sys_man_additional_fields.field_id
-                $sql = "SELECT * FROM sys_man_additional_fields_data WHERE field_id = ? AND system_id = ?";
-                $data_array = array($data[3], $this->data['system_id']);
+
+                # TODO - should test if system_id is part of sys_man_additional_fields.group_id
+                # The code below assumes the view has done this (and it has), but it doesn't verify it.
+                # Could call this directly using a URL and set a custom field on a device that is not supposed to have it
+
+                $sql = "SELECT group_id FROM sys_man_additional_fields WHERE field_id = ?";
+                $data_array = array($data[3]);
                 $query = $this->db->query($sql, $data_array);
-                if ($query->num_rows() > 0) {
-                    # we are updating an existing value
-                    $row = $query->row();
-                    $sql = "UPDATE sys_man_additional_fields_data SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
-                    $query = $this->db->query($sql);
-                    $this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
-                    echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                $row = $query->row();
+                $group_id = $row->group_id;
+                $group_result = $this->m_system->get_system_groups($this->data['system_id'], $this->user->user_id);
+                $group_allowed = 'n';
+                foreach ($group_result as $row) {
+                    if ($row->group_id == $group_id) {
+                        $group_allowed = 'y';
+                    }
+                }
+
+                if ($group_allowed == 'y') {
+                    $sql = "SELECT * FROM sys_man_additional_fields_data WHERE field_id = ? AND system_id = ?";
+                    $data_array = array($data[3], $this->data['system_id']);
+                    $query = $this->db->query($sql, $data_array);
+                    if ($query->num_rows() > 0) {
+                        # we are updating an existing value
+                        $row = $query->row();
+                        $sql = "UPDATE sys_man_additional_fields_data SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
+                        $query = $this->db->query($sql);
+                        $this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
+                        echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                    } else {
+                        # we have to insert a new record for a custom data value for this system
+                        $sql = "INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
+                        $query = $this->db->query($sql);
+                        $this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
+                        echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                    }
                 } else {
-                    # we have to insert a new record for a custom data value for this system
-                    $sql = "INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
-                    $query = $this->db->query($sql);
-                    $this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
-                    echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                    echo "This field not allowed for this device (see field groups).";
                 }
             } else {
                 if (($this->data['system_id'] == '') || ($this->data['field_name'] == '')) {

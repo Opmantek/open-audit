@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -37,7 +37,7 @@ $sortcolumn = 3;
 
 
 if (!file_exists("/usr/local/nmis8/admin/import_nodes.pl")) {
-    $warning = "<span style='color: red;'>NOTE</span> - You do not have nmis installed on this system. A file will be provided that you can copy to the nmis server and run with the nmis8/admin/import_nodes.pl script.<br /><span style='color: red;'>NOTE</span> - Any attributes that are blank have had default values substituted in <span style='color: blue;'>blue</span>.";
+    $warning = "<span style='color: red;'>" . __('NOTE') . "</span> - " . __('You do not have nmis installed on this system. A file will be provided that you can copy to the nmis server and run with the nmis8/admin/import_nodes.pl script.') . "<br /><span style='color: red;'>" . __('NOTE') . "</span> - " . __('Any attributes that are blank have had default values substituted in') . " <span style='color: blue;'>" . __('blue') . "</span>.";
 } else {
     $warning = "";
 }
@@ -53,12 +53,12 @@ echo "<span id=\"warning\">".$warning."</span>\n";
 echo "<table cellspacing=\"1\" class=\"tablesorter\">\n";
 echo "\t<thead>\n";
 echo "\t\t<tr>\n";
-echo "<th width=\"30%\" align=\"left\">Name</th>";
-echo "<th width=\"20%\" align=\"left\">Host</th>";
-echo "<th width=\"20%\" align=\"left\">Group</th>";
-echo "<th width=\"10%\" align=\"left\">Role</th>";
-echo "<th width=\"10%\" align=\"left\">SNMP Community</th>";
-echo "<th width=\"10%\" align=\"left\">SNMP Version</th>";
+echo "<th width=\"30%\" align=\"left\">" . __('Name') . "</th>";
+echo "<th width=\"20%\" align=\"left\">" . __('Host') . "</th>";
+echo "<th width=\"20%\" align=\"left\">" . __('Group') . "</th>";
+echo "<th width=\"10%\" align=\"left\">" . __('Role') . "</th>";
+echo "<th width=\"10%\" align=\"left\">" . __('SNMP Community') . "</th>";
+echo "<th width=\"10%\" align=\"left\">" . __('SNMP Version') . "</th>";
 
 # edit column
 #echo "<th align=\"center\" class=\"{sorter: false}\"><button onClick=\"document.change_form.submit();\">Edit</button>";
@@ -77,12 +77,12 @@ if (count($query) > 0) {
     $i = 0;
     foreach ($query as $key) {
         echo "\t\t<tr>\n";
-        echo "\t\t\t<td align=\"left\"><a class=\"SystemPopupTrigger\" rel=\"".intval($key->system_id)."\" href=\"".site_url()."/main/system_display/".intval($key->system_id)."\">".htmlentities($key->nmis_name)."</a></td>\n";
-        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_host)."</td>\n";
-        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_group)."</td>\n";
-        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_role)."</td>\n";
-        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_community)."</td>\n";
-        echo "\t\t\t<td align=\"left\">".htmlentities($key->nmis_snmp_version)."</td>\n";
+        echo "\t\t\t<td align=\"left\"><a class=\"SystemPopupTrigger\" rel=\"".intval($key->system_id)."\" href=\"".site_url()."/main/system_display/".intval($key->system_id)."\">".$key->nmis_name."</a></td>\n";
+        echo "\t\t\t<td align=\"left\">".$key->nmis_host."</td>\n";
+        echo "\t\t\t<td align=\"left\">".$key->nmis_group."</td>\n";
+        echo "\t\t\t<td align=\"left\">".$key->nmis_role."</td>\n";
+        echo "\t\t\t<td align=\"left\">".$key->nmis_community."</td>\n";
+        echo "\t\t\t<td align=\"left\">".$key->nmis_snmp_version."</td>\n";
         if ($manual_edit == 'y') {
             echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_";
             echo intval($key->system_id)."\" name=\"system_id_".intval($key->system_id)."\"";

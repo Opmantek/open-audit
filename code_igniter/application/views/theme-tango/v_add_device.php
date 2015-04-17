@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,11 +40,11 @@ if (isset($error_message)) {
 $attributes = array('name' => 'add_device_form', 'id' => 'add_device_form');
 echo form_open('admin_device/add_device', $attributes)."\n";
 ?>
-<fieldset id="device_details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Device Details')?></span></legend>
+<fieldset id="device_details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Device Details')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_harddisk.png' alt='' title='' width='48'/>
 	<p>
-		<label style='margin-top: 8px;' for='device_name' ><?php echo __("Name")?>: </label>
+		<label style='margin-top: 8px;' for='device_name' ><?php echo __('Name'); ?>: </label>
 		<input style='padding-top: -2px;' type='text' id='device_name' name='device_name' tabindex='1' title='Device Name' onchange='update_icon()'/>
 		<span>&nbsp;<img valign='middle' id="device_icon" src="<?php echo $oa_theme_images;?>/16_router.png" /></span>
 	</p>
@@ -52,7 +52,7 @@ echo form_open('admin_device/add_device', $attributes)."\n";
 <p><br /></p>
 <p><br /></p>
 <fieldset style="background: #ffffff;">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __("Device Column Details")?></span></legend>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Device Column Details'); ?></span></legend>
 	<span>
 		<select id='dynamic_other_table' name='dynamic_other_table' onchange='retrieve_fields();' style='width:250px;'>
 			<option value='' selected='selected'>Choose a table from the DB</option>
@@ -98,7 +98,7 @@ echo form_open('admin_device/add_device', $attributes)."\n";
 </fieldset>
 <span id='data' name='data'></span>
 <input type='hidden' value='system.system_id.1' name='field-1' id='field-1' />
-<input type="submit" name="AddDevice" value="Submit" />
+<?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?>
 <?php echo form_close(); ?>
 
 <script type='text/javascript'>

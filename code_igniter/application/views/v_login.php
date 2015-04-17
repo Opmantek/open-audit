@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -89,7 +89,7 @@ if (isset($form_url) and $form_url != '') {
                     <?php
                     if ((file_exists($filename)) and $show == 'y') {
                         ?>
-                        <span align="center"><br /><input type="button" name="audit" id="audit" onClick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
+                        <span align='center'><br /><input type="button" name="audit" id="audit" onClick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
                         <?php
 
                     }
@@ -98,8 +98,7 @@ if (isset($form_url) and $form_url != '') {
                 <div align='right' style="height: 150px; width:40%; float: right; text-align: center;">
                     <p><label for="username">Username: </label><input type="text" name="username" id="username" size="20" /></p>
                     <p><label for="password">Password: </label><input type="password" name="password" id="password" size="20" /></p>
-                    <p><?php
-                    echo form_submit('login', 'Login');
+                    <p><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit' );
                     echo htmlentities($this->session->flashdata('message'));
                     ?>
                     <br />&nbsp;</p>
@@ -119,6 +118,9 @@ if (isset($form_url) and $form_url != '') {
     echo "</div>\n";
 }
 ?>
+<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>
+<span style='font-size: 12pt;'>Don't forget about the Open-AudIT wiki for all your documentation.<br /><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a><br /><br /></span>
+</div>
 </div>
 <script type="text/javascript">
     function audit_my_pc()

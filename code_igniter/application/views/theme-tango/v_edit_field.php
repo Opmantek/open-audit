@@ -27,22 +27,22 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 echo form_open('admin_field/edit_field')."\n"; ?>
-<fieldset id="field_details" class="niceforms">
-    <legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Field Details')?></span></legend>
+<fieldset id="field_details" class='niceforms'>
+    <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Field Details')?></span></legend>
     <img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_audit_log.png' alt='' title='' width='48'/>
     <?php foreach ($field as $key) {
     ?>
-    <table width="780" cellpadding = "0" cellspacing="0">
+    <table width='780' cellpadding='0' cellspacing='0'>
         <tr>
             <td width='100%'>
-                <p><label for='field_name'><?php echo __("Name")?>: </label><input type='text' id='field_name' name='field_name' tabindex='1' title='Field Name' value='<?php echo $key->field_name; ?>' /></p>
-                <p><label for='field_type'><?php echo __("Type")?>: </label>
+                <p><label for='field_name'><?php echo __('Name')?>: </label><input type='text' id='field_name' name='field_name' tabindex='1' title='<?php echo __('Field Name'); ?>' value='<?php echo $key->field_name; ?>' /></p>
+                <p><label for='field_type'><?php echo __('Type')?>: </label>
                     <select id='field_type' name='field_type' tabindex='2' title='Field Type' >
                         <option value="varchar" <?php if ($key->field_type == 'varchar') { echo " selected";} ?> ><?php echo __("VarChar")?></option>
                         <!--
@@ -55,8 +55,8 @@ echo form_open('admin_field/edit_field')."\n"; ?>
                         -->
                     </select>
                 </p>
-                <p><label for='field_placement'><?php echo __("Placement")?>: </label>
-                    <select id='field_placement' name='field_placement' tabindex='3' title='Field Placement' >
+                <p><label for='field_placement'><?php echo __('Placement')?>: </label>
+                    <select id='field_placement' name='field_placement' tabindex='3' title='<?php echo __('Placement'); ?>' >
                         <option value="system_details" <?php if ($key->field_placement == 'system_details') { echo " selected";} ?> ><?php echo __("System Details")?></option>
                         <option value="view_summary_windows" <?php if ($key->field_placement == 'view_summary_windows') { echo " selected";} ?> ><?php echo __("Windows Details")?></option>
                         <option value="view_summary_purchase" <?php if ($key->field_placement == 'view_summary_purchase') { echo " selected";} ?> ><?php echo __("Purchase")?></option>
@@ -85,13 +85,13 @@ echo form_open('admin_field/edit_field')."\n"; ?>
                             if ($group->group_id == $key->group_id) {
                                 echo " selected ";
                             }
-                            echo ">".$group->group_name." (".$group->total." devices)</option>\n";
+                            echo ">".$group->group_name." (".$group->total." " . __('devices') . "</option>\n";
                         } ?>
                     <select>
                 </p>
                 <p>
-                    <input type="hidden" name="field_id" id="field_id" value="<?php echo $key->field_id; ?>" />
-                    <label for='EditField'>&nbsp;</label><?php echo form_submit(array('id' => 'EditField', 'name' => 'EditField'), 'Edit Field'); ?>
+                    <input type='hidden' name='field_id' id='field_id' value='<?php echo $key->field_id; ?>' />
+                    <label for='submit'>&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?>
                 </p>
             </td>
         </tr>

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -35,9 +35,9 @@
 
 # dumps out various variables - used in debugging / creating controller functions
 ?>
-<form action="#" method="post" class="niceforms">
-	<fieldset id="details" class="niceforms">
-		<legend><span style="font-size: 12pt;">&nbsp;Dump</span></legend>
+<form action="#" method="post" class='niceforms'>
+	<fieldset id="details" class='niceforms'>
+		<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Dump'); ?></span></legend>
 		<pre><?php if (isset($query)) { print_r($query); } ?></pre>
 	</fieldset>
 </form>

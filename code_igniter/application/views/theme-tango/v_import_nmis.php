@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,7 +40,7 @@ if (file_exists('/usr/local/nmis8/conf/Nodes.nmis')) {
 } else {
     echo "<input id='nodes_file' name='nodes_file' type='text' value='' size='50' />\n";
 }
-echo form_submit('import', 'Import');
+echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') );
 echo "<br />eg: /usr/local/nmis8/conf/Nodes.nmis";
 echo form_fieldset_close();
 

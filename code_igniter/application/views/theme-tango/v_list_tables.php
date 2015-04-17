@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -37,28 +37,21 @@
 	<thead>
 		<tr>
 			<th><?php echo __('Table')?></th>
-			<th align="center"><?php echo __('Rows')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Excel')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('Web')?></th>
-			<th align="center" class="{sorter: false}"><?php echo __('CSV')?></th>
+			<th align='center'><?php echo __('Rows')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Excel')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('Web')?></th>
+			<th align='center' class='{sorter: false}'><?php echo __('CSV')?></th>
 		</tr>
 	</thead>
 	<tbody>
-		<?php
-        foreach ($query as $key) {
-            ?>
+		<?php foreach ($query as $key) { ?>
 			<tr>
-			<td><?php echo $key['table'];
-            ?></td>
-			<td align="center"><?php echo $key['rows'];
-            ?></td>
-			<td align="center"><a href="<?php echo base_url()?>index.php/admin_db/export_table_to_excel/<?php echo htmlentities($key['table']); ?>" ><img src="<?php echo $oa_theme_images; ?>/16_excel.png" alt="" title="" width="16"/></a></td>
-			<td align="center"><a href="<?php echo base_url()?>index.php/admin_db/export_table_to_html/<?php echo htmlentities($key['table']); ?>" ><img src="<?php echo $oa_theme_images; ?>/16_browser.png" alt="" title="" width="16"/></a></td>
-			<td align="center"><a href="<?php echo base_url()?>index.php/admin_db/export_table_to_csv/<?php echo htmlentities($key['table']);  ?>" ><img src="<?php echo $oa_theme_images; ?>/16_csv.png" alt="" title="" width="16"/></a></td>
+			<td><?php echo $key['table']; ?></td>
+			<td align='center'><?php echo $key['rows']; ?></td>
+			<td align='center'><a href="<?php echo base_url()?>index.php/admin_db/export_table_to_excel/<?php echo htmlentities($key['table']); ?>" ><img src="<?php echo $oa_theme_images; ?>/16_excel.png" alt="" title="" width="16"/></a></td>
+			<td align='center'><a href="<?php echo base_url()?>index.php/admin_db/export_table_to_html/<?php echo htmlentities($key['table']); ?>" ><img src="<?php echo $oa_theme_images; ?>/16_browser.png" alt="" title="" width="16"/></a></td>
+			<td align='center'><a href="<?php echo base_url()?>index.php/admin_db/export_table_to_csv/<?php echo htmlentities($key['table']);  ?>" ><img src="<?php echo $oa_theme_images; ?>/16_csv.png" alt="" title="" width="16"/></a></td>
 			</tr>
-		<?php
-
-        }
-        ?>
+		<?php } ?>
 	</tbody>
 </table>

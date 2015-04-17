@@ -27,33 +27,29 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<form class="niceforms" onsubmit="return newdays();">
+<form class='niceforms' onsubmit="return newdays();">
 <div style="float:left;"><?php echo __("Days"); ?>
 	<input id="days" name="days" type="text" value="<?php echo $days; ?>" />
 	<input type="submit" value="Go" name="Go" id="Go" /></div>
-<div style="float: right;">
-	<?php if (isset($flashdata)) {
-    echo $flashdata;
-} ?>
-</div>
+	<?php if (isset($flashdata)) { echo '<div style="float: right;">' . $flashdata . '</div>'; } ?>
 <br />&nbsp;
 <br />&nbsp;
 <br />&nbsp;
 <div id="test"></div>
-<fieldset id="details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Maintenance')?></span></legend>
+<fieldset id="details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Maintenance')?></span></legend>
 	<table cellspacing="1" class="tablesorter">
 		<thead>
 			<tr>
-				<th>Item</th>
-				<th style="text-align: center;" width="10%">Count</th>
-				<th style="text-align: center;" width="10%">Delete</th>
+				<th><?php echo __('Item')?></th>
+				<th style="text-align: center;" width="10%"><?php echo __('Count')?></th>
+				<th style="text-align: center;" width="10%"><?php echo __('Delete')?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -101,36 +97,30 @@
 	</table>
 </fieldset>
 <br />
-<fieldset id="details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;Attributes that are not current and are older than <?php echo $days ?> days.</span></legend>
+<fieldset id="details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;Attributes that are not current and are older than <?php echo $days ?> days.</span></legend>
 	<table cellspacing="1" class="tablesorter">
 		<thead>
 			<tr>
-				<th>Table</th>
-				<th style="text-align: center;" width="10%">Count</th>
-				<th style="text-align: center;" width="10%">Delete</th>
+				<th><?php echo __('Table'); ?></th>
+				<th style="text-align: center;" width="10%"><?php echo __('Count')?></th>
+				<th style="text-align: center;" width="10%"><?php echo __('Delete')?></th>
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($non_current_attributes as $attribute) {
-    ?><tr>
-				<td><?php echo $attribute->table;
-    ?></td>
-				<td style="text-align: center;"><?php echo $attribute->count;
-    ?></td>
-				<td style="text-align: center;"><a href="<?php echo base_url();
-    ?>index.php/admin_db/delete_table_non_current_attributes/<?php echo $attribute->table;
-    ?>/<?php echo $days;
-    ?>"><img src='<?php echo $oa_theme_images;
-    ?>/16_delete.png' alt='' title='' width='16'/></a></td>
-			</tr><?php 
-} ?>
+			<?php foreach ($non_current_attributes as $attribute) { ?>
+			<tr>
+				<td><?php echo $attribute->table; ?></td>
+				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
+				<td style="text-align: center;"><a href="<?php echo base_url(); ?>index.php/admin_db/delete_table_non_current_attributes/<?php echo $attribute->table; ?>/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+			</tr>
+			<?php } ?>
 		</tbody>
 	</table>
 </fieldset>
 <br />
-<fieldset id="details" class="niceforms">
-	<legend><span style="font-size: 12pt;">&nbsp;All Attributes</span></legend>
+<fieldset id="details" class='niceforms'>
+	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('All Attributes'); ?></span></legend>
 	<table cellspacing="1" class="tablesorter">
 		<thead>
 			<tr>
@@ -139,22 +129,18 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php foreach ($all_hw_attributes as $attribute) {
-    ?><tr>
-				<td><?php echo $attribute->table;
-    ?></td>
-				<td style="text-align: center;"><?php echo $attribute->count;
-    ?></td>
-			</tr><?php 
-} ?>
-			<?php foreach ($all_sw_attributes as $attribute) {
-    ?><tr>
-				<td><?php echo $attribute->table;
-    ?></td>
-				<td style="text-align: center;"><?php echo $attribute->count;
-    ?></td>
-			</tr><?php 
-} ?>
+			<?php foreach ($all_hw_attributes as $attribute) { ?>
+			<tr>
+				<td><?php echo $attribute->table; ?></td>
+				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
+			</tr>
+			<?php } ?>
+			<?php foreach ($all_sw_attributes as $attribute) { ?>
+			<tr>
+				<td><?php echo $attribute->table; ?></td>
+				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
+			</tr>
+			<?php } ?>
 		</tbody>
 	</table>
 </fieldset>

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -176,6 +176,8 @@ class admin extends MY_Controller
         #$json = (object)$this->m_oa_config->get_config();
         $json = (object) $this->config->config;
         $json->server_ip_addresses = $this->m_oa_config->get_server_ip_addresses();
+        $json->server_subnets = $this->m_oa_config->get_server_subnets();
+        $json->server_domain = $this->m_oa_config->get_server_domain();
         $json = json_encode($json);
         print_r($json);
     }
@@ -436,7 +438,7 @@ class admin extends MY_Controller
 
     public function import_nmis()
     {
-        if (!isset($_POST['import'])) {
+        if (!isset($_POST['submit'])) {
             # show the form
             $this->data['heading'] = 'Import from NMIS';
             $this->data['include'] = 'v_import_nmis';
@@ -451,7 +453,7 @@ class admin extends MY_Controller
 
     public function export_nmis()
     {
-        if (!isset($_POST['export'])) {
+        if (!isset($_POST['submit'])) {
             # show the list
             $this->data['heading'] = 'Export to NMIS';
             $this->data['include'] = 'v_export_nmis';
@@ -490,7 +492,7 @@ class admin extends MY_Controller
                     if (strrpos($this->data['query'][$i]->nmis_name, '.') == strlen($this->data['query'][$i]->nmis_name)-1) {
                         $this->data['query'][$i]->nmis_name = substr($this->data['query'][$i]->nmis_name, 0, strlen($this->data['query'][$i]->nmis_name)-1);
                     }
-                    $this->data['query'][$i]->nmis_name = "<span style=\"color: blue;\">".$this->data['query'][$i]->nmis_name."</span>";
+                    $this->data['query'][$i]->nmis_name = "<span style=\"color: blue;\">".htmlentities($this->data['query'][$i]->nmis_name)."</span>";
                 }
 
                 # nmis host
@@ -527,7 +529,7 @@ class admin extends MY_Controller
                 }
 
                 if ($this->data['query'][$i]->nmis_community == '') {
-                    $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">".$this->config->item('default_snmp_community')."</span>";
+                    $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">".htmlentities($this->config->item('default_snmp_community'))."</span>";
                 }
 
                 # snmp version
@@ -671,7 +673,7 @@ class admin extends MY_Controller
             $operating_system = php_uname('s');
         }
 
-        if (isset($_POST['ScanNmap'])) {
+        if (isset($_POST['submit'])) {
             # test if we have a subnet or only an IP
             if (isset($_POST['subnet'])) {
                 $subnet = $_POST['subnet'];
@@ -756,7 +758,7 @@ class admin extends MY_Controller
 
     public function scan_ad()
     {
-        if (isset($_POST['ScanAD'])) {
+        if (isset($_POST['submit'])) {
             $this->load->model("m_system");
             $this->load->model("m_oa_group");
             $this->load->model("m_sys_man_audits");
@@ -904,7 +906,7 @@ class admin extends MY_Controller
 
     public function add_script_audit_windows()
     {
-        if (!isset($_POST['AddScript'])) {
+        if (!isset($_POST['submit'])) {
             # display the form
             $this->load->model("m_oa_org");
             $this->data['org_names'] = $this->m_oa_org->get_org_names();
@@ -3564,6 +3566,15 @@ class admin extends MY_Controller
 
             $sql = "UPDATE oa_config SET config_value = 'logo-banner-oac-oae' WHERE config_name = 'logo'";
             $query = $this->db->query($sql);
+
+            $sql = "SELECT report_id FROM oa_report WHERE report_name = 'Enterprise - Software Discovered Range'";
+            $query = $this->db->query($sql);
+            $row = $query->row();
+
+            if ($row->report_id != '' and $row->report_id != '0') {
+                $sql = "UPDATE oa_report_column SET column_link = '/omk/oae/show_report/Specific Software/' WHERE column_order = 0 AND report_id = " . $row->report_id;
+                $query = $this->db->query($sql);
+            }
 
             $sql = "UPDATE oa_config SET config_value = '20150404' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql."<br /><br />\n";

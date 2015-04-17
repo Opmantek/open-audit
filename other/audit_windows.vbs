@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
-' @version 1.6.2
+' @version 1.6.4
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -1069,6 +1069,17 @@ for each objItem In colItems
 	address_width = objItem.AddressWidth
 next
 
+on error resume next
+	strKeyPath = "Cluster"
+	strKey = "ClusterName"
+	oReg.GetStringValue HKEY_LOCAL_MACHINE, strKeyPath, strKey, strValue
+	if (not isnull(strValue)) then
+	    man_cluster_name = strValue
+	else
+	    man_cluster_name = ""
+	end if
+on error goto 0
+
 result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 result.WriteText "<system>" & vbcrlf
 result.WriteText "	<sys>" & vbcrlf
@@ -1094,6 +1105,7 @@ result.WriteText "		<pc_num_processor>" & escape_xml(system_pc_num_processor) & 
 result.WriteText "		<pc_date_os_installation>" & escape_xml(system_pc_date_os_installation) & "</pc_date_os_installation>" & vbcrlf
 result.WriteText "		<man_org_id>" & escape_xml(org_id) & "</man_org_id>" & vbcrlf
 result.WriteText "		<system_id>" & escape_xml(system_id) & "</system_id>" & vbcrlf
+result.WriteText "		<man_cluster_name>" & escape_xml(man_cluster_name) & "</man_cluster_name>" & vbcrlf
 result.WriteText "	</sys>" & vbcrlf
 
 

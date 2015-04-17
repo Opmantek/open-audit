@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -50,7 +50,7 @@ class Admin_system extends MY_Controller
 
     public function add_system_def()
     {
-        if (!isset($_POST['AddSystemDef'])) {
+        if (!isset($_POST['submit'])) {
             $this->load->model("m_oa_admin_database");
             $this->data['fields'] = $this->m_oa_admin_database->get_fields('system');
             $this->data['custom_fields'] = $this->m_oa_admin_database->export_table('sys_man_additional_fields');
@@ -384,7 +384,7 @@ class Admin_system extends MY_Controller
 
     public function add_system()
     {
-        if (!isset($_POST['AddSystem'])) {
+        if (!isset($_POST['submit'])) {
             # load the initial form
             $this->load->model("m_oa_org");
             $this->data['orgs'] = $this->m_oa_org->get_org_names();
@@ -531,13 +531,13 @@ class Admin_system extends MY_Controller
 
     public function add_systems()
     {
-        if (!isset($_POST['submit_file'])) {
+        if (!isset($_POST['submit'])) {
             # nothing submitted - display the form
             $this->data['heading'] = 'Add Devices';
             $this->data['include'] = 'v_add_systems';
             $this->load->view('v_template', $this->data);
         }
-        if (isset($_POST['submit_file'])) {
+        if (isset($_POST['submit'])) {
             # we have an uploaded file - store and process
             $timestamp = date("Y-m-d H:i:s");
             $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);

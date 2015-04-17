@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.2
+ * @version 1.6.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -53,9 +53,9 @@ if (($this->config->item('display_version') != $this->config->item('web_display_
     $upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>";
 }
 ?>
-<form action="vars.php" method="post" class="niceforms">
-	<fieldset id="about" class="niceforms">
-		<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('About')?></span></legend>
+<form action="vars.php" method="post" class='niceforms'>
+	<fieldset id="about" class='niceforms'>
+		<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('About')?></span></legend>
 		You are running version <?php echo $this->config->item('display_version'); ?> of Open-AudIT.<br />
 		<?php if ($this->user->user_admin == 'y') { ?>
 		Your Host is: <?php echo php_uname('n'); ?>, and it's OS is <?php echo $operating_system; ?>.<br />
