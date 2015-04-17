@@ -1254,7 +1254,8 @@ function windows_user_get_attribute (full_ad_domain, attribute, sam_account_name
 		objconnection.provider = "adsdsoobject"
 		objconnection.open "active directory provider"
 		set objcommand.activeconnection = objconnection
-		objcommand.commandtext = "select name, " & attribute & " from 'GC://" & full_ad_domain & "' where objectCategory = 'person' and sAMAccountName = '" & sam_account_name & "'"
+		' objcommand.commandtext = "select name, " & attribute & " from 'GC://" & full_ad_domain & "' where objectCategory = 'person' and sAMAccountName = '" & sam_account_name & "'"
+		objcommand.commandtext = "select name, " & attribute & " from 'GC://" & full_ad_domain & "' where objectCategory = 'person' and sAMAccountName = '" & replace(sam_account_name, "'", "''") & "'"
 		if debugging > "2" then wscript.echo objcommand.commandtext end if
 		objcommand.properties("page size") = 1000
 		objcommand.properties("searchscope") = ads_scope_subtree
