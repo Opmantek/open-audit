@@ -32,6 +32,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+$files = '';
 if (php_uname('s') == 'Windows NT') {
     $files = 'c:%5Cxampplite%5Copen-audit%5Cother%5Clog_system.log,%0A
 c:%5Comk%5Clog%5Coae.log,%0A

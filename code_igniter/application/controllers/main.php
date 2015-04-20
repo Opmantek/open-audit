@@ -1179,6 +1179,7 @@ class main extends MY_Controller
         $data['application_timezone'] = date_default_timezone_get();
 
         $data['os_platform'] = 'unknown';
+        $data['os_php_uname'] = php_uname('s');
         $data['os_version'] = '';
         $data['os_database'] = $this->db->platform()." (version ".$this->db->version().")";
         $data['os_webserver'] = getenv("SERVER_SOFTWARE");
@@ -1217,6 +1218,7 @@ class main extends MY_Controller
         $data['oae_link'] = '';
         $data['oae_server'] = '';
         $data['oae_username'] = '';
+        $phpini = '';
 
         if (php_uname('s') == 'Windows NT') {
             $data['os_platform'] = 'Windows';
