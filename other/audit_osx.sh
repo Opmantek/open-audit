@@ -859,7 +859,6 @@ fi
 if [ "$create_file" != "y" ]; then
 	`rm -f $xml_file`
 fi
-rm "$xml_file"-e
 
 IFS=$O
 
