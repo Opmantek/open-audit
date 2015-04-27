@@ -263,7 +263,7 @@ function ip_address_from_db($ip)
         }
         $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
     } else {
-        $ip = " Not-Networked";
+        $ip = "";
     }
 
     return $ip;
