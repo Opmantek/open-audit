@@ -674,9 +674,6 @@ if (!function_exists('get_snmp')) {
                 $ip_enableds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.8");
                 $ip_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2");
                 $ip_addresses_2 = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.34.1.3.1.4");
-print_r($ip_addresses);
-echo "==============\n";
-print_r($ip_addresses_2);
                 $subnets = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3");
                 $connection_ids = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
                 $aliases = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.18");
@@ -733,7 +730,7 @@ print_r($ip_addresses_2);
                             }
                         }
                     }
-                    if (!is_array($ip_addresses) and is_array($ip_addresses_2) and $details->os_group == "VMware") {
+                    if (is_array($ip_addresses_2) and $details->os_group == "VMware") {
                         // likely we have a VMware ESX box - get what we can
                         foreach ($ip_addresses_2 as $each_key => $each_value) {
                             $new_ip = new stdClass();
