@@ -674,6 +674,9 @@ if (!function_exists('get_snmp')) {
                 $ip_enableds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.8");
                 $ip_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2");
                 $ip_addresses_2 = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.34.1.3.1.4");
+print_r($ip_addresses);
+echo "==============\n";
+print_r($ip_addresses_2);
                 $subnets = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3");
                 $connection_ids = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
                 $aliases = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.18");
@@ -737,7 +740,7 @@ if (!function_exists('get_snmp')) {
                             $new_ip->net_index = snmp_clean($each_value);
                             $new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.34.1.3.1.4.", "", $each_key);
                             $new_ip->ip_address_v6 = '';
-                            $new_ip->ip_subnet = '0.0.0.0';
+                            $new_ip->ip_subnet = '';
                             $new_ip->ip_address_version = '4';
                             if ($new_ip->net_index == $interface->net_index) {
                                 $new_ip->net_mac_address = $interface->net_mac_address;
@@ -752,10 +755,10 @@ if (!function_exists('get_snmp')) {
                                 $interfaces_filtered[] = $interface;
                             }
                         }
-                    } elseif (isset($details->os_group) and $details->os_group == 'VMware') {
-                        if (strpos($interface->net_description, 'Virtual interface:')) {
-                            $interfaces_filtered[] = $interface;
-                        }
+                    // } elseif (isset($details->os_group) and $details->os_group == 'VMware') {
+                    //     if (strpos($interface->net_description, 'Virtual interface:')) {
+                    //         $interfaces_filtered[] = $interface;
+                    //     }
                     } else {
                         $interfaces_filtered[] = $interface;
                     }
