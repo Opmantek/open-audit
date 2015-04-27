@@ -1302,7 +1302,7 @@ if [ -n "$net_cards" ]; then
 
 		# determine the cards MAC Address
 		# first try ethtool as ifconfig can report duplicate MACs in the case of bonded NICs on CentOS
-		net_card_mac=$(ethtool -P "$net_card_id" 2>/dev/null | cut -d" " -f3)
+		net_card_mac=$(ethtool -P "$net_card_id" 2>/dev/null | grep -F "Permanent" | cut -d" " -f3)
 		if [ -z "$net_card_mac" ]; then
 			net_card_mac=$(cat /sys/class/net/"$net_card_id"/address)
 		fi
