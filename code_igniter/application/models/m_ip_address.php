@@ -272,7 +272,6 @@ class M_ip_address extends MY_Model
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-        print_r($result);
         if ($force == 'y' or $result[0]->man_ip_address == ''  or $result[0]->man_ip_address == '000.000.000.000'  or $result[0]->man_ip_address == '0.0.0.0') {
             # we do not already have an ip address - attempt to set one
             $sql = "SELECT
