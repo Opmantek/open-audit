@@ -6657,43 +6657,61 @@ if create_file = "y" then
 end if
 
 if submit_online = "y" then
-	if debugging > "0" then wscript.echo "Submitting audit online" end if
-	Err.clear
-	XmlObj = "ServerXMLHTTP"
-	Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
-	objHTTP.setTimeouts 5000, 5000, 5000, 480000
-	objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-	objHTTP.Open "POST", url, False
-	objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-	result.position = 0
-	objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
-	if (Err.Number <> 0 or objHTTP.status <> 200) then
-		if debugging > "1" then
-			wscript.echo "Error with http request"
-			wscript.echo "HTTP Error: " & Err.Number
-			wscript.echo "HTTP Status: " &  objHTTP.status
-			wscript.echo "HTTP Response: " & objHTTP.ResponseText
-		end if
-		'XmlObj = "XMLHTTP"
-		'Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
-		'objHTTP.Open "POST", url, False
-		'objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-		'result.position = 0
-		'objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
-	end if
-    Err.clear
-	if debugging > "0" then wscript.echo "Audit Submitted" end if
+   if debugging > "0" then wscript.echo "Submitting audit online" end if
+   Err.clear
+   Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+   objHTTP.setTimeouts 5000, 5000, 5000, 480000
+   objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+   On Error Resume Next
+   objHTTP.Open "POST", url, False
+   aErr = Array(Err.Number, Err.Description)
+   On Error GoTo 0
+    If 0 = aErr(0) Then
+      result.position = 0
+      On Error Resume Next
+      objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+      objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
+      aErr = Array(Err.Number, Err.Description)
+      On Error GoTo 0
+      Select Case True
+      Case 0 <> aErr(0)
+         if debugging > "0" then
+            wscript.echo "Error with http request. Audit not submitted."
+         end if
+         if debugging > "1" then
+            wscript.echo "HTTP Error: " & aErr(0)
+            wscript.echo "HTTP Status: " &  aErr(1)
+         end if
+         responseAvailable = False
+      Case 200 = objHTTP.status
+         if debugging > "0" then wscript.echo "Audit Submitted" end if
+         responseAvailable = True
+      Case Else
+         if debugging > "0" then wscript.echo "Error with http request(2). Audit not submitted." end if
+         responseAvailable = True
+      End Select
 
-	if (objHTTP.ResponseText > "" and debugging > "1") then
-		wscript.echo
-		wscript.echo
-		wscript.echo "Response"
-		wscript.echo "--------"
-		wscript.echo objHTTP.ResponseText
-		if (inStr(objHTTP.ResponseText, "error")) then
-			wscript.sleep 50000
-		end if
-	end if
+      if responseAvailable = True then
+         if (objHTTP.ResponseText > "" and debugging > "1") then
+            wscript.echo
+            wscript.echo
+            wscript.echo "Response"
+            wscript.echo "--------"
+            wscript.echo objHTTP.ResponseText
+            if (inStr(objHTTP.ResponseText, "error")) then
+               wscript.sleep 50000
+            end if
+         end if
+      end if
+   else
+      if debugging > "0" then
+         wscript.echo "Error opening http url. Audit not submitted."
+      end if
+      if debugging > "1" then
+         wscript.echo "HTTP Error: " & aErr(0)
+         wscript.echo "HTTP Description: " &  aErr(1)
+      end if
+   end if
 end if
 
 end_time = Timer
