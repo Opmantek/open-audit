@@ -78,7 +78,7 @@ for arg in "$@"; do
 			OPENAUDIT_PASS=${value}
 			;;
 		openaudit_url)
-			OPENAUDIT_PASS=${value}
+			OPENAUDIT_URL=${value}
 			;;
 		subnet)
 			FORM_SUBNET=${value}
