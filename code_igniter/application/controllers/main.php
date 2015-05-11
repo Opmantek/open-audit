@@ -350,6 +350,8 @@ class main extends MY_Controller
         $this->load->model("m_oa_org");
         $this->data['locations'] = $this->m_oa_location->get_all_locations();
         $this->data['orgs'] = $this->m_oa_org->get_org_names();
+        include 'include_device_types.php';
+        $this->data['device_types'] = $device_types;
         $data['query'] = array();
         foreach ($_POST as $key => $value) {
             if (mb_strpos($key, 'system_id_') !== false) {
