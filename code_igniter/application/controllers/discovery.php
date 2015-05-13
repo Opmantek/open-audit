@@ -778,6 +778,7 @@ class discovery extends CI_Controller
                             $details->man_ip_address = '0.0.0.0';
                         }
                     } else {
+                        # TODO - check if we're lower casing hostnames in the config
                         $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
                     }
 
