@@ -416,7 +416,7 @@ if [[ "$hosts" != "" ]]; then
 				snmp_status="true"
 		fi
 
-
+		result=""
 		result="	<device>"$'\n'
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
 		result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
@@ -437,8 +437,10 @@ if [[ "$hosts" != "" ]]; then
 		result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
 		result="$result	</device>"
 
+		# add the result for this device to the result_file var for display or file output later on
 		result_file="$result_file"$'\n'"$result"
 
+		# wrap this device in xml tags for submission individually
 		result="<devices>"$'\n'"$result"$'\n'"</devices>"
 
 		if [[ "$submit_online" == "y" ]]; then
