@@ -650,7 +650,7 @@ if (!function_exists('get_snmp')) {
                 $temp_is_fru = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.16');
 
                 foreach ($modules_list as $key => $value) {
-                    $log_details->message = 'SNMPv2 processing module '. $key .' for '.$log_machine.' starting';
+                    $log_details->message = 'SNMPv2 processing module '. $value .' for '.$log_machine.' starting';
                     stdlog($log_details);
 
                     $module = new stdClass();
