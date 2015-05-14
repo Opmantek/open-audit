@@ -692,12 +692,12 @@ class admin extends MY_Controller
             if (strpos($subnet, "/")) {
                 $subnet_split = explode("/", $subnet);
                 $subnet_details = network_details($subnet);
-                if (! isset($this->config['network_group_subnet']) or $this->config['network_group_subnet'] == '') {
+                if (! isset($this->config->config['network_group_subnet']) or $this->config->config['network_group_subnet'] == '') {
                     $net_group_subnet = '30';
                 } else {
-                    $net_group_subnet = $this->config['network_group_subnet'];
+                    $net_group_subnet = $this->config->config['network_group_subnet'];
                 }
-                if (isset($this->config['network_group_auto_create']) and $this->config['network_group_auto_create'] != 'n' and $subnet_split[1] < $net_group_subnet) {
+                if (isset($this->config->config['network_group_auto_create']) and $this->config->config['network_group_auto_create'] != 'n' and $subnet_split[1] < $net_group_subnet) {
                     # we want to auto create network groups
                     $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '".ip_address_to_db($subnet_details->host_min)."' and sys_hw_network_card_ip.ip_address_v4 <= '".ip_address_to_db($subnet_details->host_max)."' and sys_hw_network_card_ip.ip_subnet = '".$subnet_details->netmask."' and sys_hw_network_card_ip.system_id = system.system_id and sys_hw_network_card_ip.timestamp = system.timestamp and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
                     $start = explode(' ', microtime());
