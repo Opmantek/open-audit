@@ -1082,6 +1082,7 @@ class main extends MY_Controller
         } else {
             # process the form
             $error = '0';
+            $details = new stdClass();
             foreach ($_POST as $key => $value) {
                 $details->$key = $value;
             }
@@ -1113,8 +1114,12 @@ class main extends MY_Controller
                 if ($this->user->user_admin == 'y') {
                     $this->m_oa_group->edit_user_groups($details);
                 }
-                // Reset the admin user password in OAE
-                if ($details->user_name == 'admin') {
+                if ($details->user_name == 'admin' and
+                    isset($details->user_password) and
+                    isset($details->user_password_confirm) and
+                    $details->user_password == $details->user_password_confirm and
+                    $details->user_password != '') {
+                    // Reset the admin user password in OAE
                     $server_os = php_uname('s');
                     if ($server_os == 'Windows NT') {
                         $command_string = 'c:\xampplite\apache\bin\htpasswd.exe -mb c:\omk\conf\users.dat admin '.$details->user_password.' 2>&1';

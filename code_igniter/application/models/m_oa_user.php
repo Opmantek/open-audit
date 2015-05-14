@@ -156,7 +156,9 @@ class M_oa_user extends MY_Model
             $details->user_admin = 'n';
         }
 
-        if ($details->user_password != '') {
+        if (isset($details->user_password) and isset($details->user_password_confirm) and
+            $details->user_password == $details->user_password_confirm and $details->password != '') {
+
             # password has a value so salt + sha256 it, then insert it into the db.
             # create the password
             $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
@@ -173,7 +175,7 @@ class M_oa_user extends MY_Model
                         "$encrypted_password", "$details->user_theme", "$details->user_lang",
                         "$details->user_admin", "$details->user_sam", "$details->user_id", );
         } else {
-            // do not set the password
+            // do not update the password
             $sql = "UPDATE oa_user SET user_name = ?, user_full_name = ?,
 					user_email = ?, user_theme = ?, user_lang = ?,
 					user_admin = ?, user_sam = ? WHERE user_id = ?";
