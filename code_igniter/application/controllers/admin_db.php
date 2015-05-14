@@ -119,6 +119,7 @@ class Admin_db extends MY_Controller
         $this->load->model("m_system");
         $this->load->model("m_alerts");
         $this->load->model("m_oa_general");
+        $this->load->model("m_oa_group");
         $this->load->model("m_oa_admin_database");
         $this->data['query'] = '';
 
@@ -133,6 +134,10 @@ class Admin_db extends MY_Controller
         # alerts
         $this->data['count_alerts'] = $this->m_alerts->count_alerts();
         $this->data['count_alerts_days'] = $this->m_alerts->count_alerts_days($this->data['days']);
+
+        # network groups with $subnet higher than $config
+        $this->data['network_group_subnet'] = $this->m_oa_group->get_network_group_subnet($this->config->config['network_group_subnet']);
+        $this->data['network_group_count_zero'] = $this->m_oa_group->get_network_group_count_zero();
 
         # old attributes
         $this->data['non_current_attributes'] = $this->m_oa_general->count_old_attributes($this->data['days']);
@@ -163,6 +168,26 @@ class Admin_db extends MY_Controller
         $this->data['heading'] = "Database Maintenance";
         $this->data['include'] = 'v_db_maintenance';
         $this->load->view('v_template', $this->data);
+    }
+
+    public function delete_network_group_subnet()
+    {
+        $days = $this->uri->segment(3, 365);
+        $this->load->model("m_oa_group");
+        $this->data['count'] = $this->m_oa_group->delete_network_group_subnet($this->config->config['network_group_subnet']);
+        $this->data['query'] = $this->data['count']." groups removed from the database";
+        $this->session->set_flashdata('message', $this->data['count']." groups removed from the database");
+        redirect("admin_db/maintenance/".$days);
+    }
+
+    public function delete_network_group_count_zero()
+    {
+        $days = $this->uri->segment(3, 365);
+        $this->load->model("m_oa_group");
+        $this->data['count'] = $this->m_oa_group->delete_network_group_count_zero();
+        $this->data['query'] = $this->data['count']." groups removed from the database";
+        $this->session->set_flashdata('message', $this->data['count']." groups removed from the database");
+        redirect("admin_db/maintenance/".$days);
     }
 
     public function delete_status_deleted()

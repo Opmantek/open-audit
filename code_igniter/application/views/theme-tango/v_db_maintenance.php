@@ -93,6 +93,23 @@
 				<td style="text-align: center;"><?php echo $count_temp; ?></td>
 				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_all_temp/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
 			</tr>
+
+
+
+			<tr>
+				<td><?php echo __("Network Groups with subnets above ") . $this->config->config['network_group_subnet']; ?></td>
+				<td style="text-align: center;"><?php echo $network_group_subnet; ?></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_network_group_subnet"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+			</tr>
+
+			<tr>
+				<td><?php echo __("Network Groups with 0 devices") ?></td>
+				<td style="text-align: center;"><?php echo $network_group_count_zero; ?></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_network_group_count_zero"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+			</tr>
+
+
+
 		</tbody>
 	</table>
 </fieldset>
