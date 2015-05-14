@@ -135,6 +135,12 @@ $get_oid_details = function ($details) {
         $details->model = 'PowerConnect 3048';
         $details->type = 'switch';
     }
+    if ($details->snmp_oid == '1.3.6.1.4.1.674.10899.100.1.1') {
+        $details->model = 'Dell 5100MP Projector';
+        $details->type = 'projector';
+    }
+
+
 
     if ($details->snmp_version == '2') {
         # model

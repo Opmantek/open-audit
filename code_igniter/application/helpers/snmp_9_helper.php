@@ -1961,6 +1961,7 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.147') { $details->model = 'Cisco Chassis 12008'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.148') { $details->model = 'Cisco Chassis 12012'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.149') { $details->model = 'Cisco Chassis Mc3810V3'; $details->type = 'cisco module'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.1491') { $details->model = 'Cisco Chassis DSC9148SK9'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.15') { $details->model = 'Cisco Chassis 2512'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.151') { $details->model = 'Cisco Chassis 7507z'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.3.152') { $details->model = 'Cisco Chassis 7513z'; $details->type = 'cisco module'; }

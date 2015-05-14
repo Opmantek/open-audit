@@ -78,4 +78,8 @@ $get_oid_details = function ($details) {
         $details->model = '8271 Nways 712';
         $details->type = 'unknown';
     }
+    if ($details->snmp_oid == '1.3.6.1.4.1.2.6.158.4') {
+        $details->model = 'IBM Remote Supervisor Adapter II';
+        $details->type = 'remote access controller';
+    }
 };

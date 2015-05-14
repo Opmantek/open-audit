@@ -39,7 +39,7 @@
 
 $get_oid_details = function ($details) {
     if ($details->snmp_oid == '1.3.6.1.4.1.641.1') {
-        $details->model = '';
+        $details->model = 'ADP LaserStation 2000';
         $details->type = 'network printer';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106851') {
