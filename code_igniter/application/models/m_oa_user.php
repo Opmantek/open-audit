@@ -157,8 +157,7 @@ class M_oa_user extends MY_Model
         }
 
         if (isset($details->user_password) and isset($details->user_password_confirm) and
-            $details->user_password == $details->user_password_confirm and $details->password != '') {
-
+            $details->user_password == $details->user_password_confirm and $details->user_password != '') {
             # password has a value so salt + sha256 it, then insert it into the db.
             # create the password
             $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex

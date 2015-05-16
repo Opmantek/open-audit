@@ -359,9 +359,9 @@ class login extends CI_Controller
      *
      * @return [type] [description]
      */
-    public function process_login_get()
+    public function login_auth()
     {
-        // this uses the GET variables to log the user in and set a cookie.
+        // this uses the GET/POST variables to log the user in and set a cookie.
         // it does not redirect.
         // it is designed to be used from the OAE logon page.
         // the OAE login page will call this with the supplied user/pass and if
@@ -373,6 +373,11 @@ class login extends CI_Controller
         $this->load->model('m_userlogin');
         $this->load->model('m_oa_config');
         $this->m_oa_config->load_config();
+
+        if (isset($_POST['username']) and isset($_POST['password']) and $_POST['username'] != '' and $_POST['password'] != '') {
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+        }
 
         if (isset($this->config->config['ad_domain']) and $this->config->config['ad_domain'] != '' and
             isset($this->config->config['ad_server']) and $this->config->config['ad_server'] != '' and
@@ -389,11 +394,16 @@ class login extends CI_Controller
                 $data = $this->m_userlogin->get_user_details($username);
                 if ($data['user_active'] == 'y') {
                     $this->session->set_userdata($data);
-                    echo 'true';
+                    header('Content-Type: application/json');
+                    header('HTTP/1.1 200 OK');
+                    echo '[{"valid": "true", "role": ""}]';
+
                 } else {
                     // the user does not have their 'user_active' flag set to 'y'.
                     // don't log them in, redirect the to the login page.
-                    echo 'false';
+                    header('Content-Type: application/json');
+                    header('HTTP/1.1 401 Not Authorised');
+                    echo '[{"valid": "false", "role": ""}]';
                 }
             } else {
                 // failed Active Dirctory validation
@@ -404,12 +414,18 @@ class login extends CI_Controller
         if ($data = $this->m_userlogin->validate_user($username, $password)) {
             if ($data != 'fail') {
                 $this->session->set_userdata($data);
-                echo 'true';
+                header('Content-Type: application/json');
+                header('HTTP/1.1 200 OK');
+                echo '[{"valid": "true", "role": ""}]';
             } else {
-                echo 'false';
+                header('Content-Type: application/json');
+                header('HTTP/1.1 401 Not Authorised');
+                echo '[{"valid": "false", "role": ""}]';
             }
         } else {
-            echo 'false';
+            header('Content-Type: application/json');
+            header('HTTP/1.1 401 Not Authorised');
+            echo '[{"valid": "false", "role": ""}]';
         }
     }
 
