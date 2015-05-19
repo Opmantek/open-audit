@@ -272,7 +272,7 @@ class M_ip_address extends MY_Model
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-        if ($force == 'y' or $result[0]->man_ip_address == ''  or $result[0]->man_ip_address == '000.000.000.000'  or $result[0]->man_ip_address == '0.0.0.0') {
+        if ($force == 'y' or (isset($result) and is_array($result) and ($result[0]->man_ip_address == ''  or $result[0]->man_ip_address == '000.000.000.000'  or $result[0]->man_ip_address == '0.0.0.0'))) {
             # we do not already have an ip address - attempt to set one
             $sql = "SELECT
 					sys_hw_network_card.net_dhcp_enabled,
@@ -307,7 +307,7 @@ class M_ip_address extends MY_Model
             $query = $this->db->query($sql, $data);
             $result = $query->result();
 
-            if (strtolower($result[0]->ip_address_v4) != '') {
+            if (isset($result[0]->ip_address_v4) and strtolower($result[0]->ip_address_v4) != '') {
                 $sql = "UPDATE system SET man_ip_address = ? WHERE system_id = ?";
                 $data = array($result[0]->ip_address_v4, "$system_id");
                 $query = $this->db->query($sql, $data);
