@@ -5363,16 +5363,26 @@ end if
 ' http://www.open-audit.org/phpBB3/viewtopic.php?f=20&t=5993
 
 if objFSO.FileExists("sqlite3.Exe") then
-	if objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-		dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
-		db_present = 1
-	elseif objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-		dbfile = "\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
-		db_present = 1
+
+	if (strComputer = ".") then
+		if objFSO.FileExists ("c:\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+			dbfile = "c:\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
+			db_present = 1
+		elseif objFSO.FileExists ("c:\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+			dbfile = "c:\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
+			db_present = 1
+		end if
+	else
+		if objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+			dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
+			db_present = 1
+		elseif objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+			dbfile = "\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
+			db_present = 1
+		end if
 	end if
 
 	if db_present then
-		'cmd = chr(34) & sScriptPath & "sqlite3.exe" & chr(34) & " "   & chr(34) & dbfile & chr(34) & " " & chr(34) & "select T1.key,T2.value from domain_data AS T1 JOIN domain_data AS T2 on T1.Subdomain=T2.subdomain where T1.value='licensed' and (T2.Key='EPIC_SERIAL' OR T2.KEY='SN' OR T2.KEY='SERIAL')" & chr(34)
 
 		cmd = chr(34) & "sqlite3.exe" & chr(34) & " "   & chr(34) & dbfile & chr(34) & " " & chr(34) & "select T1.key,T2.value from domain_data AS T1 JOIN domain_data AS T2 on T1.Subdomain=T2.subdomain where T1.value='licensed' and (T2.Key='EPIC_SERIAL' OR T2.KEY='SN' OR T2.KEY='SERIAL')" & chr(34)
 
