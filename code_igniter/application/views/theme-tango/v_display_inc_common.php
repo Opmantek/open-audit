@@ -204,6 +204,38 @@ function display_custom_field($field_placement, $additional_fields, $edit)
 {
     foreach ($additional_fields as $field) {
         if ($field->field_placement == $field_placement) {
+            $width = "120";
+            if ($field_placement == 'view_summary_windows') {
+                $width = '160';
+            }
+
+            # TODO: fix this string output hack with real html entities
+            echo "<div style=\"float: left; width: 90%; \">\n";
+            echo "<label for=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_outer\" >".htmlentities(__($field->field_name)).": </label>";
+
+            if ($field->field_type == 'list') {
+                echo "<span id=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_outer\">";
+                    echo "<span id=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_inner\" onClick=\"display_additional_" . str_replace(' ', '_', $field->field_name) . "();\" >";
+                        echo print_something($field->data_value);
+                    echo "</span>";
+                echo "</span>";
+            } else {
+                echo "<span id=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."\" ".$edit.">".print_something($field->data_value)."</span>";
+            }
+            if ($edit != '') {
+                # TODO - fix this hard coded path. Should be able to use global $oa_theme_images but it seems not to work :-(
+                echo '<img src="/open-audit/theme-tango/tango-images/16_edit_out.png" onMouseOver="this.src=\'/open-audit/theme-tango/tango-images/16_edit_hover.png\'" onMouseOut="this.src=\'/open-audit/theme-tango/tango-images/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
+            }
+            echo "<br />&nbsp;\n";
+            echo "</div>\n";
+        }
+    }
+}
+
+function display_custom_field_old($field_placement, $additional_fields, $edit)
+{
+    foreach ($additional_fields as $field) {
+        if ($field->field_placement == $field_placement) {
             $data_id = "";
             $data_value = "";
 

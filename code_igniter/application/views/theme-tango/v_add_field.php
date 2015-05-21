@@ -41,13 +41,13 @@ echo form_open('admin_field/add_field')."\n"; ?>
 			<td width='100%'>
 				<p><label for='field_name'><?php echo __('Name'); ?>: </label><input type='text' id='field_name' name='field_name' tabindex='1' title='Field Name' /></p>
 				<p><label for='field_type'><?php echo __('Type'); ?>: </label>
-					<select id='field_type' name='field_type' tabindex='2' title='Field Type' >
+					<select id='field_type' name='field_type' tabindex='2' title='Field Type' onChange='toggleValues()'>
 						<option value="varchar"><?php echo __('VarChar'); ?></option>
+						<option value="list"><?php echo __('List'); ?></option>
 						<!--
 						<option value="bool"><?php echo __('Boolean'); ?></option>
 						<option value="int"><?php echo __('Integer'); ?></option>
 						<option value="memo"><?php echo __('Memo'); ?></option>
-						<option value="list"><?php echo __('List'); ?></option>
 						<option value="datetime"><?php echo __('DateTime'); ?></option>
 						<option value="timestamp"><?php echo __('Timestamp'); ?></option>
 					-->
@@ -80,9 +80,21 @@ echo form_open('admin_field/add_field')."\n"; ?>
     						echo "<option value=\"".$group->group_id."\">".$group->group_name." (".$group->total." devices)</option>\n";
 						} ?>
 					<select></p>
+				<p id="field_values_p" name="field_values_p" style="display:none;"><label for='field_values'><?php echo __('Values'); ?>: </label><input type='text' id='field_values' name='field_values' tabindex='1' title='Field Values' /> NOTE: Values should be a comma separated list.</p>
 				<p><label for='submit'>&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
 	</table>
 </fieldset>
 <?php echo form_close(); ?>
+
+<script>
+function toggleValues() {
+	if (document.getElementById("field_type").value == "list") {
+		document.getElementById("field_values_p").style.display = "block";
+	} else {
+		document.getElementById("field_values_p").style.display = "none";
+	}
+	return false;
+}
+</script>

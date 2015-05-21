@@ -162,6 +162,7 @@ class ajax extends MY_Controller
         echo htmlentities($config_value);
     }
 
+    # /index.php/ajax/update_system_man/[system_id]/[field_name]/[field_value]
     public function update_system_man()
     {
 
@@ -180,6 +181,7 @@ class ajax extends MY_Controller
             $columns = $this->m_system->get_columns();
             if ((mb_substr_count($this->data['field_name'], 'custom_') > 0) && ($access_level >= 7)) {
                 $data = explode("_", $this->data['field_name']);
+                # index.php/ajax/update_system_man/[system_id]/custom_[field_type]_[data_id]_[field_id]/[value]
                 # 0 - custom
                 # 1 - sys_man_additional_fields.field_type
                 # 2 - sys_man_additional_fields_data.field_details_id

@@ -144,6 +144,33 @@ echo form_open('main/process_edit_systems')."\n";
         echo "<input type=\"hidden\" name=\"system_id_".$key->system_id."\" value=\"".$key->system_id."\" />\n";
     }
     ?>
+
+    <?php if (isset($additional_fields) and is_array($additional_fields) and count($additional_fields) > 0) {
+        echo "<fieldset>\n";
+        echo "<legend><span style='font-size: 12pt;'>&nbsp;" . __('Additional Fields') . "</span></legend>";
+        echo "<table><tr><td>\n";
+        foreach ($additional_fields as $field) {
+            echo "<label for=\"" . $field->field_name . "\">" . $field->field_name . "</label>";
+            if ($field->field_type == 'varchar') {
+                echo "<input type=\"text\" id=\"additional_" . $field->field_name . "\" name =\"additional_" . $field->field_name . "\" />";
+            } elseif ($field->field_type == 'list') {
+                echo "<select id=\"additional_" . $field->field_name . "\" name =\"additional_" . $field->field_name . "\" />";
+                echo "<option value=\"\" selected></option>\n";
+                echo "<option value=\"-\">Remove Value</option>\n";
+                $values = explode(',', $field->field_values);
+                foreach ($values as $value) {
+                    echo "<option value=\"" . $value . "\">" . $value . "</option>\n";
+                }
+                echo "</select>\n";
+            }
+            echo "<br /><br />\n";
+        }
+        echo "</td></tr></table>\n";
+        echo "</fieldset>\n";
+    } ?>
+
+        <tr>
+        <br />
     <label for="submit">&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?>
     <br /><br /><label for="note">&nbsp;</label><?php echo __('NOTE - To remove the contents of a field, insert a \'-\' (a dash or minus) into the field. Each device will have that fields contents set to an empty string.'); ?>
 </fieldset>
