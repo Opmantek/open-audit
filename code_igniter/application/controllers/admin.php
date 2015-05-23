@@ -107,17 +107,48 @@ class admin extends MY_Controller
      */
     public function test()
     {
+        $system_id = 1;
+        $table_name = 'system';
+        $extended = 'y';
         echo "<pre>\n";
-        $ip = '192.168.1.0/24';
-        $echo = network_details($ip);
-        print_r($echo);
-        echo "--------\n";
-        print_r($this->config->config['network_group_subnet']);
-        echo "--------\n";
-        print_r($this->config);
-        echo "--------\n";
+
+        $sql = "SELECT * FROM $table_name WHERE system_id = 29 or system_id = 26";
+        $data = array($system_id);
+        $query = $this->db->query($sql, $data);
+        $devices = $query->result();
+        $result = array();
+
+        if ($extended == 'y') {
+            $sql= "SELECT COLUMN_NAME as name, DATA_TYPE as type, COLUMN_TYPE as extended_type, CHARACTER_MAXIMUM_LENGTH as length, COLUMN_DEFAULT as `default` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? and table_name = ?";
+            $data = array($this->db->database, $table_name);
+            $query = $this->db->query($sql, $data);
+            $table = $query->result();
+
+            $count = 0;
+            foreach ($devices as $device) {
+                foreach ($device as $key => $value) {
+                    foreach ($table as $column) {
+                        if ($column->name == $key) {
+                            $result[$count][$key]['name'] = $key;
+                            $result[$count][$key]['value'] = $value;
+                            $result[$count][$key]['type'] = $column->type;
+                            $result[$count][$key]['extended_type'] = $column->extended_type;
+                            $result[$count][$key]['length'] = $column->length;
+                            $result[$count][$key]['default'] = $column->default;
+                        }
+                    }
+                }
+                $count++;
+            }
+        } else {
+            foreach ($devices as $device) {
+                $result[] = (array)$device;
+            }
+        }
+        print_r($result);
         exit();
     }
+
 
     /**
      * Reset the device icons in the database.
@@ -3625,6 +3656,14 @@ class admin extends MY_Controller
             $query = $this->db->query($sql);
 
             $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('network_group_homepage_limit', '20', 'y', 'The number of network groups to display on the homepage.')";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "ALTER TABLE sys_hw_network_card ADD ifadminstatus varchar(100) NOT NULL default ''";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "ALTER TABLE sys_hw_network_card ADD iflastchange int(10) unsigned NOT NULL default '0'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
