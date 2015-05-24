@@ -164,6 +164,7 @@ class M_oa_group extends MY_Model
         $delete = $this->db->query($sql_delete, $data) or die("Error with delete from oa_group_sys");
         # update the group with all systems that match
         $sql_insert = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id, group_sys_type) ", 0, 0);
+        #$sql_insert = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$group_id."', 'system'", $sql_insert);
         $sql_insert = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$group_id."', 'system'", $sql_insert);
         $insert = $this->db->query($sql_insert);
     }
@@ -322,6 +323,7 @@ class M_oa_group extends MY_Model
         $query = $this->db->query($sql);
         $result = $query->result();
         $row = $query->row();
+
         return ($row->total);
     }
 

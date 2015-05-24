@@ -42,6 +42,7 @@ class M_processor extends MY_Model
     public function get_system_processor($system_id)
     {
         $sql = "SELECT * FROM sys_hw_processor, system WHERE sys_hw_processor.system_id = system.system_id AND sys_hw_processor.timestamp = system.timestamp AND system.system_id = ? LIMIT 1";
+        #$sql = "SELECT id AS processor_id, count AS processor_count, cores AS processor_cores, logical AS processor_logical, description AS processor_description, manufacturer AS processor_manufacturer, speed AS processor_speed, architecture AS processor_architecture FROM sys_hw_processor WHERE system_id = ? AND current = 'y' LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
