@@ -264,7 +264,7 @@ class M_network_card extends MY_Model
                         ifadminstatus,
                         iflastchange,
 						timestamp,
-						first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+						first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id",
                         "$input->net_mac_address",
