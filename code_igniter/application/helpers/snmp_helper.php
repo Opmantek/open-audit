@@ -669,16 +669,16 @@ if (!function_exists('get_snmp')) {
                     // $module->asset_id = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.15.'.$module->module_index);
                     // $temp_is_fru = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.16.'.$module->module_index);
 
-                    unset($temp_is_fru);
-                    $module->object_id = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.3'.$key]);
-                    $module->contained_in = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.4'.$key]);
-                    $module->class = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.4'.$key]);
-                    $module->hardware_revision = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.8'.$key]);
-                    $module->firmware_revision = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.9'.$key]);
-                    $module->software_revision = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.10'.$key]);
-                    $module->serial_number = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.11'.$key]);
-                    $module->asset_id = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.15'.$key]);
-                    $module->is_fru = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.16'.$key]);
+                    #unset($temp_is_fru);
+                    $module->object_id = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.3.'.$module->module_index]);
+                    $module->contained_in = snmp_clean($temp_contained_in['.1.3.6.1.2.1.47.1.1.1.1.4.'.$module->module_index]);
+                    $module->class = snmp_clean($temp_class['.1.3.6.1.2.1.47.1.1.1.1.5.'.$module->module_index]);
+                    $module->hardware_revision = snmp_clean($temp_hardware_revision['.1.3.6.1.2.1.47.1.1.1.1.8.'.$module->module_index]);
+                    $module->firmware_revision = snmp_clean($temp_firmware_revision['.1.3.6.1.2.1.47.1.1.1.1.9.'.$module->module_index]);
+                    $module->software_revision = snmp_clean($temp_software_revision['.1.3.6.1.2.1.47.1.1.1.1.10.'.$module->module_index]);
+                    $module->serial_number = snmp_clean($temp_serial_number['.1.3.6.1.2.1.47.1.1.1.1.11.'.$module->module_index]);
+                    $module->asset_id = snmp_clean($temp_asset_id['.1.3.6.1.2.1.47.1.1.1.1.15.'.$module->module_index]);
+                    $module->is_fru = snmp_clean($temp_is_fru['.1.3.6.1.2.1.47.1.1.1.1.16.'.$module->module_index]);
 
 
                     if ((string) $module->is_fru == '1') {
@@ -762,6 +762,14 @@ if (!function_exists('get_snmp')) {
                 stdlog($log_details);
                 $ip_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2");
 
+                $log_details->message = 'SNMPv2 ifAdminStatus retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $ifAdminStatus = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.7");
+
+                $log_details->message = 'SNMPv2 ifLastChange retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $ifLastChange = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.9");
+
                 if ($details->os_group == "VMware") {
                     $log_details->message = 'SNMPv2 ip_addresses_2 retrieval for '.$log_machine.' starting';
                     stdlog($log_details);
@@ -809,6 +817,8 @@ if (!function_exists('get_snmp')) {
                     $interface->net_alias = @snmp_clean($aliases[".1.3.6.1.2.1.31.1.1.1.18.".$interface->net_index]);
                     $interface->net_adapter_type = @interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
                     $interface->net_ip_enabled = @ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
+                    $interface->ifadminstatus = @if_admin_status(snmp_clean($ifAdminStatus[".1.3.6.1.2.1.2.2.1.7.".$interface->net_index]));
+                    $interface->iflastchange = @snmp_clean($ifLastChange[".1.3.6.1.2.1.2.2.1.9.".$interface->net_index]);
                     $interface->net_speed = @snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
                     $interface->net_manufacturer = '';
                     $interface->net_connection_status = '';
@@ -1190,39 +1200,62 @@ if (!function_exists('get_snmp')) {
     {
         switch ($ip_enabled) {
             case '1':
-                $ip_enabled = "True";
+                $ip_enabled = "up";
                 break;
 
             case '2':
-                $ip_enabled = "False";
+                $ip_enabled = "down";
                 break;
 
             case '3':
-                $ip_enabled = "Testing";
+                $ip_enabled = "testing";
                 break;
 
             case '4':
-                $ip_enabled = "Unknown";
+                $ip_enabled = "unknown";
                 break;
 
             case '5':
-                $ip_enabled = "Dormant";
+                $ip_enabled = "dormant";
                 break;
 
             case '6':
-                $ip_enabled = "NotPresent";
+                $ip_enabled = "notpresent";
                 break;
 
             case '7':
-                $ip_enabled = "LowerLayerDown";
+                $ip_enabled = "lowerlayerdown";
                 break;
 
             default:
-                $ip_enabled = "True";
+                $ip_enabled = "up";
                 break;
         }
 
         return $ip_enabled;
+    }
+
+    function if_admin_status($ifadminstatus)
+    {
+        switch ($ifadminstatus) {
+            case '1':
+                $ifadminstatus = "up";
+                break;
+
+            case '2':
+                $ifadminstatus = "down";
+                break;
+
+            case '3':
+                $ifadminstatus = "testing";
+                break;
+
+            default:
+                $ifadminstatus = "up";
+                break;
+        }
+
+        return $ifadminstatus;
     }
 
     function interface_type($int_type)

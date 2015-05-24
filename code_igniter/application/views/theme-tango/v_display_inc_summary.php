@@ -528,7 +528,8 @@
 								<th><?php echo __('Description')?></th>
 								<th><?php echo __('Alias')?></th>
 								<th><?php echo __('Type')?></th>
-								<th><?php echo __('Enabled')?></th>
+                                <th><?php echo __('Operational Status')?></th>
+                                <th><?php echo __('Admin Status')?></th>
 								<th><?php echo __('Speed')?></th>
 							</td>
 						</thead>
@@ -540,7 +541,8 @@
 								<td><?php echo print_something($key->net_description); ?></td>
 								<td><?php echo print_something($key->net_alias); ?></td>
 								<td><?php echo print_something($key->net_adapter_type); ?></td>
-								<td><?php echo print_something($key->net_ip_enabled); ?></td>
+                                <td><?php echo print_something($key->net_ip_enabled); ?></td>
+                                <td><?php echo print_something($key->ifadminstatus); ?></td>
 								<?php if (intval($key->net_speed) < 1000) {
                                     $speed = number_format(intval($key->net_speed))." b/s";
                                 }

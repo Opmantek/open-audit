@@ -63,8 +63,17 @@ class M_network_card extends MY_Model
     public function process_network_cards($input, $details)
     {
 
+        # added ifadminstatus in 1.6.6
+        if (!isset($input->ifadminstatus) or is_null($input->ifadminstatus)) {
+            $input->ifadminstatus = '';
+        }
+        # added iflastchange in 1.6.6
+        if (!isset($input->iflastchange) or is_null($input->iflastchange)) {
+            $input->iflastchange = '';
+        }
+
         # added net_alias in 1.3.3
-        if (is_null($input->net_alias)) {
+        if (!isset($input->net_alias) or is_null($input->net_alias)) {
             $input->net_alias = '';
         }
 
@@ -102,8 +111,10 @@ class M_network_card extends MY_Model
 					net_dns_domain_reg_enabled,
 					net_dns_server,
 					net_slaves,
+                    ifadminstatus,
+                    iflastchange,
 					timestamp,
-					first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+					first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
             $sql = $this->clean_sql($sql);
             $data = array("$details->system_id",
                     "$input->net_mac_address",
@@ -126,6 +137,8 @@ class M_network_card extends MY_Model
                     "$input->net_dns_domain_reg_enabled",
                     "$input->net_dns_server",
                     "$input->net_slaves",
+                    "$input->ifadminstatus",
+                    "$input->iflastchange",
                     "$details->timestamp",
                     "$details->first_timestamp", );
             $query = $this->db->query($sql, $data);
@@ -192,6 +205,8 @@ class M_network_card extends MY_Model
 						net_wins_secondary = ?,
 						net_wins_lmhosts_enabled = ?,
 						net_slaves = ?,
+                        ifadminstatus = ?,
+                        iflastchange = ?,
 						timestamp = ?
 					WHERE net_id = ?";
                 $data = array("$input->net_description",
@@ -216,6 +231,8 @@ class M_network_card extends MY_Model
                         "$input->net_wins_secondary",
                         "$input->net_wins_lmhosts_enabled",
                         "$input->net_slaves",
+                        "$input->ifadminstatus",
+                        "$input->iflastchange",
                         "$details->timestamp",
                         "$row->net_id", );
                 $sql = $this->clean_sql($sql);
@@ -244,6 +261,8 @@ class M_network_card extends MY_Model
 						net_dns_domain_reg_enabled,
 						net_dns_server,
 						net_slaves,
+                        ifadminstatus,
+                        iflastchange,
 						timestamp,
 						first_timestamp ) VALUES ( ?, LOWER(?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
                 $sql = $this->clean_sql($sql);
@@ -268,6 +287,8 @@ class M_network_card extends MY_Model
                         "$input->net_dns_domain_reg_enabled",
                         "$input->net_dns_server",
                         "$input->net_slaves",
+                        "$input->ifadminstatus",
+                        "$input->iflastchange",
                         "$details->timestamp",
                         "$details->timestamp", );
                 $query = $this->db->query($sql, $data);
