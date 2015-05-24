@@ -183,7 +183,7 @@ class M_ip_address extends MY_Model
                 // do nothing - we don't have a valid IP
             } else {
                 if (isset($this->config->config['network_group_auto_create']) and $this->config->config['network_group_auto_create'] != 'n' and
-                    isset($ipdetails->network_slash) and $ipdetails->network_slash < $this->config->config['network_groups_subnet']) {
+                    isset($ipdetails->network_slash) and $ipdetails->network_slash < $this->config->config['network_group_subnet']) {
                     $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '".$start_ip."' AND sys_hw_network_card_ip.ip_address_v4 <= '".$finish_ip."' AND sys_hw_network_card_ip.ip_subnet = '".$input->ip_subnet."' AND sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp AND system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".$start_ip."' AND system.man_ip_address <= '".$finish_ip."' AND system.man_status = 'production')";
                     $start = explode(' ', microtime());
                     $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
