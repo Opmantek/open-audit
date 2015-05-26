@@ -74,7 +74,7 @@
 		</column>
 		<column>
 			<column_order>6</column_order>
-			<column_name>Days Since Used</column_name>
+			<column_name>Days Since Changed</column_name>
 			<column_variable>diff_days</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
