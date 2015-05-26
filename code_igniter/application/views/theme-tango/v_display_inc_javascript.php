@@ -439,12 +439,16 @@ $(document).ready(function(){
         $system[0]->man_type == 'wap' or
         $system[0]->man_type == 'wireless router') {
     ?>
-	$('#view_summary_network_interfaces').show();
+    $('#view_summary_network_interfaces').show();
+    toggleBold("toggle_summary_network_interfaces");
 	<?php } ?>
-	<?php if (strpos($system[0]->man_type, 'phone') !== false) {
-    ?>$('#view_summary_phone').show();<?php } ?>
-	<?php if (count($vm) > 0) {
-    ?>$('#view_summary_vms').show();<?php } ?>
+	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
+        $('#view_summary_phone').show();
+        toggleBold("toggle_summary_phone");<?php } ?>
+	<?php if (count($vm) > 0) { ?>
+        $('#view_summary_vms').show();
+        toggleBold("toggle_summary_vms");
+    <?php } ?>
 
     $( "#foo" ).trigger( "click" );
 
