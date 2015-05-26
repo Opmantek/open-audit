@@ -158,7 +158,7 @@ class M_additional_fields extends MY_Model
      */
     public function get_all_additional_fields()
     {
-        $sql = "SELECT * FROM sys_man_additional_fields ORDER BY field_name";
+        $sql = "SELECT sys_man_additional_fields.*, group_name FROM sys_man_additional_fields LEFT JOIN oa_group on sys_man_additional_fields.group_id = oa_group.group_id ORDER BY field_name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
