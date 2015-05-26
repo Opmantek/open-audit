@@ -288,7 +288,13 @@ if (!function_exists('get_snmp')) {
             // new for 1.5.1 - store variables in corresponding SNMP nonclemanture
             $details->sysDescr =    @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0");
             $details->sysObjectID = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0"));
-            $details->sysUpTime =   snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.3.0"));
+
+            // new for 1.6.6 use snmpEngineTime if available in preference to sysUpTime
+            $details->sysUpTime = intval(snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.6.3.10.2.1.3.0"))) * 100;
+            if (!isset($details->sysUpTime) or $details->sysUpTime == '' or $details->sysUpTime == 0) {
+                $details->sysUpTime =   snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.3.0"));
+            }
+
             $details->sysContact =  @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.4.0");
             $details->sysName =     snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
             $details->sysLocation = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");

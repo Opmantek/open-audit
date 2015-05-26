@@ -767,7 +767,7 @@ CREATE TABLE `sys_hw_network_card` (
   `net_speed` varchar(10) NOT NULL default '',
   `net_slaves` varchar(100) NOT NULL default '',
   `ifadminstatus` varchar(100) NOT NULL default '',
-  `iflastchange` int(10) unsigned NOT NULL default '0',
+  `iflastchange` bigint NOT NULL default '0',
   `timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   `first_timestamp` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`net_id`),

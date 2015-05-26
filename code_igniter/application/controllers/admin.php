@@ -3663,7 +3663,7 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_hw_network_card ADD iflastchange int(10) unsigned NOT NULL default '0'";
+            $sql = "ALTER TABLE sys_hw_network_card ADD iflastchange bigint NOT NULL default '0'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 

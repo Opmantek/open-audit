@@ -169,6 +169,10 @@ class report extends MY_Controller
                     $filter[$i]['condition'] = '<>';
                 } elseif ($filter_array[0] == 'like') {
                     $filter[$i]['condition'] = 'LIKE';
+                } elseif ($filter_array[0] == 'greater') {
+                    $filter[$i]['condition'] = '>';
+                } elseif ($filter_array[0] == 'less') {
+                    $filter[$i]['condition'] = '<';
                 }
                 $i++;
             }
@@ -268,6 +272,12 @@ class report extends MY_Controller
                             $remove = true;
                         }
                         if (strpos(strtolower($key->$enum_filter['variable']), strtolower($enum_filter['value'])) === false and $enum_filter['condition'] == 'LIKE') {
+                            $remove = true;
+                        }
+                        if ((strtolower($key->$enum_filter['variable']) < strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '>')) {
+                            $remove = true;
+                        }
+                        if ((strtolower($key->$enum_filter['variable']) > strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<')) {
                             $remove = true;
                         }
                     }
