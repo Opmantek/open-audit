@@ -397,13 +397,14 @@ class login extends CI_Controller
                     header('Content-Type: application/json');
                     header('HTTP/1.1 200 OK');
                     echo '{"valid": true, "role": ""}';
+                    exit();
 
                 } else {
                     // the user does not have their 'user_active' flag set to 'y'.
                     // don't log them in, redirect the to the login page.
-                    header('Content-Type: application/json');
-                    header('HTTP/1.1 401 Not Authorised');
-                    echo '{"valid": true, "role": ""}';
+                    #header('Content-Type: application/json');
+                    #header('HTTP/1.1 401 Not Authorised');
+                    #echo '{"valid": false, "role": ""}';
                 }
             } else {
                 // failed Active Dirctory validation
@@ -419,12 +420,12 @@ class login extends CI_Controller
                 echo '{"valid": true, "role": ""}';
             } else {
                 header('Content-Type: application/json');
-                header('HTTP/1.1 401 Not Authorised');
+                header('HTTP/1.1 403 Not Authorised');
                 echo '{"valid": false, "role": ""}';
             }
         } else {
             header('Content-Type: application/json');
-            header('HTTP/1.1 401 Not Authorised');
+            header('HTTP/1.1 403 Not Authorised');
             echo '{"valid": false, "role": ""}';
         }
     }
