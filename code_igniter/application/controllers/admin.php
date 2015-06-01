@@ -3628,11 +3628,11 @@ class admin extends MY_Controller
 
 
         if (($db_internal_version < '20150512') and ($this->db->platform() == 'mysql')) {
-            # upgrade for 1.6.6
+            # upgrade for 1.8
 
             $log_details = new stdClass();
             $log_details->file = 'system';
-            $log_details->message = 'Upgrade database to 1.6.6 commenced';
+            $log_details->message = 'Upgrade database to 1.8 commenced';
             stdlog($log_details);
 
             $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('network_group_subnet', '30', 'y', 'If the netmask is equal to or greater than this number, do not create a network group.')";
@@ -3671,11 +3671,11 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "UPDATE oa_config SET config_value = '1.6.6' WHERE config_name = 'display_version'";
+            $sql = "UPDATE oa_config SET config_value = '1.8' WHERE config_name = 'display_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $log_details->message = 'Upgrade database to 1.6.6 completed';
+            $log_details->message = 'Upgrade database to 1.8 completed';
             stdlog($log_details);
             unset($log_details);
         }
