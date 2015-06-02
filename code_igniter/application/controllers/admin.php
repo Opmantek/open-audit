@@ -3608,7 +3608,7 @@ class admin extends MY_Controller
             $query = $this->db->query($sql);
             $row = $query->row();
 
-            if ($row->report_id != '' and $row->report_id != '0') {
+            if (isset($row->report_id) and $row->report_id != '' and $row->report_id != '0') {
                 $sql = "UPDATE oa_report_column SET column_link = '/omk/oae/show_report/Specific Software/' WHERE column_order = 0 AND report_id = " . $row->report_id;
                 $query = $this->db->query($sql);
             }
