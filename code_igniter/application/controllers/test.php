@@ -78,6 +78,33 @@ class test extends CI_Controller
         print_r($this->session);
     }
 
+    public function rows()
+    {
+        #echo "<pre>\n";
+        $sql = "SELECT * FROM sys_hw_processor limit 100";
+        #$sql = "SELECT * FROM sys_hw_hard_drive limit 100";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        #print_r($result);
+        #echo "=========JSON ENCODED 1========\n";
+        #$json_1 = json_encode($result);
+        #print_r($json_1);
+        #echo "\n";
+        foreach ($result as &$row) {
+            foreach ($row as $key => $value) {
+                if ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed') {
+                    $row->$key = (int) intval($value);
+                }
+                if ((strrpos($key, '_id') == strlen($key)-3) or (strrpos($key, '_count') == strlen($key)-6) or (strrpos($key, '_percent') == strlen($key)-8) or (strrpos($key, '_size') == strlen($key)-5)){
+                    $row->$key = (int) intval($value);
+                }
+            }
+        }
+        #echo "=========JSON ENCODED 2========\n";
+        $json_2 = json_encode($result);
+        print_r($json_2);
+    }
+
     public function log()
     {
         $this->load->helper('log');
