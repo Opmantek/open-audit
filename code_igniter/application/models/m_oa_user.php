@@ -374,7 +374,7 @@ class M_oa_user extends MY_Model
         }
 
         // get the user object from the supplied user name
-        if ($CI->config->config['internal_version'] < '20130512') {
+        if (isset($CI->config->config['internal_version']) and $CI->config->config['internal_version'] < '20130512') {
             $sql = "SELECT * FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
         } else {
             $sql = "SELECT * FROM oa_user WHERE oa_user.user_name = ? AND user_active = 'y' LIMIT 1";
@@ -383,7 +383,7 @@ class M_oa_user extends MY_Model
         $query = $this->db->query($sql, $data);
         if ($query->num_rows() > 0) {
             $CI->user = $query->row();
-            if ($CI->config->config['internal_version'] < '20130512') {
+            if (!isset($CI->config->config['internal_version']) or $CI->config->config['internal_version'] < '20130512') {
                 $CI->user->user_active = 'y';
             }
         } else {
