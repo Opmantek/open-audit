@@ -134,6 +134,7 @@ class Admin_user extends MY_Controller
                     }
                     if (php_uname('s') == 'Linux' or php_uname('s') == "Darwin") {
                         $command_string = 'htpasswd -mb /usr/local/opmojo/conf/users.dat admin '.$details->user_password.' 2>&1';
+                        $command_string = 'htpasswd -mb /usr/local/omk/conf/users.dat admin '.$details->user_password.' 2>&1';
                     }
                     exec($command_string, $output, $return_var);
                     if ($return_var != '0') {
