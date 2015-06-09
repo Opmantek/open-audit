@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.6.4
+ * @version 1.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -491,11 +491,11 @@ $get_oid_details = function ($details) {
         $details->type = 'switch';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.9.1') {
-        $details->model = '';
+        $details->model = 'Jet Direct Print Server';
         $details->type = 'network printer';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.11.2.3.9.2') {
-        $details->model = '';
+        $details->model = 'Jet Direct Print Server';
         $details->type = 'network printer';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.11.2.14.11.6.4.1.1') {
@@ -638,6 +638,10 @@ $get_oid_details = function ($details) {
     if ($details->snmp_oid == '1.3.6.1.4.1.11.10.2.1.3.29') {
         $details->model = 'TapeLibrary MSL6480';
         $details->type = 'tape library';
+    }
+    if ($details->snmp_oid == '1.3.6.1.4.1.11.10.3.1.3.27') {
+        $details->model = 'HP StorageWorks D2D';
+        $details->type = 'storage misc';
     }
 
     if ($details->snmp_version == '2') {

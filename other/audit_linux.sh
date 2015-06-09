@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
-# @version 1.6.4
+# @version 1.8
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -1302,8 +1302,10 @@ if [ -n "$net_cards" ]; then
 
 		# determine the cards MAC Address
 		# first try ethtool as ifconfig can report duplicate MACs in the case of bonded NICs on CentOS
-		net_card_mac=$(ethtool -P "$net_card_id" 2>/dev/null | cut -d" " -f3)
-		if [ -z "$net_card_mac" ]; then
+		if [ -n "$(which ethtool 2>/dev/null)" ]; then
+			net_card_mac=$(ethtool -P "$net_card_id" 2>/dev/null | grep -F "Permanent" | cut -d" " -f3)
+		fi
+		if [ -z "$net_card_mac" ] || [ "$net_card_mac" == "00:00:00:00:00:00" ]; then
 			net_card_mac=$(cat /sys/class/net/"$net_card_id"/address)
 		fi
 

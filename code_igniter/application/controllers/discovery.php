@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -392,6 +392,9 @@ class discovery extends CI_Controller
         } else {
             // process the scan details and call the discovery script
 
+            $this->load->model('m_oa_config');
+            $this->m_oa_config->load_config();
+
             $return_var = "";
             $output = "";
             $display = '';
@@ -409,8 +412,6 @@ class discovery extends CI_Controller
             $log_details->file = 'system';
             $log_details->display = $display;
 
-            // create a network group if provided a subnet that includes a slash in the string and
-            // auto create network is set in the config to 'y'
             if (isset($_POST['subnet_range']) and $_POST['subnet_range'] > '') {
                 $subnet_range = $_POST['subnet_range'];
                 $credentials->man_ip_address = $_POST['subnet_range'];
@@ -500,48 +501,50 @@ class discovery extends CI_Controller
             $query = $this->db->query($sql);
             $credentials = "";
 
+            // create a network group if provided a subnet that includes a slash in the string and
+            // auto create network is set in the config to 'y'
             if (strpos($subnet_range, "/")) {
                 // we have a subnet_range - if it's not a /32, then test for a group
                 $subnet_split = explode("/", $subnet_range);
-                if ($subnet_split[1] != "32") {
-                    // we have a real subnet_range
-                    $subnet_details = network_details($subnet_range);
-                    $sql = "SELECT config_value FROM oa_config WHERE config_name = 'auto_create_network_groups' ";
-                    $query = $this->db->query($sql);
-                    $row = $query->row();
-                    if ($row->config_value != 'n') {
-                        // we do want to auto create network groups
-                        // test if a network group exists with the matching definition
-                        $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '".ip_address_to_db($subnet_details->host_min)."' and sys_hw_network_card_ip.ip_address_v4 <= '".ip_address_to_db($subnet_details->host_max)."' and sys_hw_network_card_ip.ip_subnet = '".$subnet_details->netmask."' and sys_hw_network_card_ip.system_id = system.system_id and sys_hw_network_card_ip.timestamp = system.timestamp and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
-                        $start = explode(' ', microtime());
-                        $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
-                        $data = array($group_dynamic_select);
+                $subnet_details = network_details($subnet_range);
+                if (! isset($this->config->config['network_group_subnet']) or $this->config->config['network_group_subnet'] == '') {
+                    $net_group_subnet = '30';
+                } else {
+                    $net_group_subnet = $this->config->config['network_group_subnet'];
+                }
+                if (isset($this->config->config['network_group_auto_create']) and $this->config->config['network_group_auto_create'] != 'n' and $subnet_split[1] < $net_group_subnet) {
+                    // we want to auto create network groups
+                    // test if a network group exists with the matching definition
+                    $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '".ip_address_to_db($subnet_details->host_min)."' and sys_hw_network_card_ip.ip_address_v4 <= '".ip_address_to_db($subnet_details->host_max)."' and sys_hw_network_card_ip.ip_subnet = '".$subnet_details->netmask."' and sys_hw_network_card_ip.system_id = system.system_id and sys_hw_network_card_ip.timestamp = system.timestamp and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
+                    $start = explode(' ', microtime());
+                    $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
+                    $data = array($group_dynamic_select);
+                    $query = $this->db->query($sql, $data);
+                    if ($query->num_rows() > 0) {
+                        // group exists - no need to do anything
+                    } else {
+                        // group does not exist - insert
+                        $log_details->message = "Creating Group for $subnet_range";
+                        stdlog($log_details);
+                        $sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (null, ?, ?, ?, '1', ?, 'network', 'switch')";
+                        $group_name = "Network - ".$subnet_details->network.' / '.$subnet_details->network_slash;
+                        $group_padded_name = "Network - ".ip_address_to_db($subnet_details->network);
+                        $data = array("$group_name", "$group_padded_name", "$group_dynamic_select", $subnet_details->network);
                         $query = $this->db->query($sql, $data);
-                        if ($query->num_rows() > 0) {
-                            // group exists - no need to do anything
-                        } else {
-                            // group does not exist - insert
-                            $log_details->message = 'Creating Group for $subnet_range';
-                            stdlog($log_details);
-                            $sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (null, ?, ?, ?, '1', ?, 'network', 'switch')";
-                            $group_name = "Network - ".$subnet_details->network.' / '.$subnet_details->network_slash;
-                            $group_padded_name = "Network - ".ip_address_to_db($subnet_details->network);
-                            $data = array("$group_name", "$group_padded_name", "$group_dynamic_select", $subnet_details->network);
-                            $query = $this->db->query($sql, $data);
-                            $insert_id = $this->db->insert_id();
-                            // We need to insert an entry into oa_group_user for any Admin level user
-                            $sql = "INSERT INTO oa_group_user (SELECT null, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
-                            $data = array( $insert_id );
-                            $result = $this->db->query($sql, $data);
-                            // now we update this specific group
-                            // this accounts for if another system has a IP that would fall in this group, but was submitted
-                            // without a subnet_range and no matching network group was previously created.
-                            // update the group with all systems that match
-                            $this->load->model('m_oa_group');
-                            $this->m_oa_group->update_specific_group($insert_id);
-                        }
+                        $insert_id = $this->db->insert_id();
+                        // We need to insert an entry into oa_group_user for any Admin level user
+                        $sql = "INSERT INTO oa_group_user (SELECT null, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+                        $data = array( $insert_id );
+                        $result = $this->db->query($sql, $data);
+                        // now we update this specific group
+                        // this accounts for if another system has a IP that would fall in this group, but was submitted
+                        // without a subnet_range and no matching network group was previously created.
+                        // update the group with all systems that match
+                        $this->load->model('m_oa_group');
+                        $this->m_oa_group->update_specific_group($insert_id);
                     }
                 }
+
             }
 
             if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
@@ -778,6 +781,7 @@ class discovery extends CI_Controller
                             $details->man_ip_address = '0.0.0.0';
                         }
                     } else {
+                        # TODO - check if we're lower casing hostnames in the config
                         $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
                     }
 
@@ -2018,7 +2022,7 @@ class discovery extends CI_Controller
             }
             $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
         } else {
-            $ip = " Not-Networked";
+            $ip = "";
         }
 
         return $ip;

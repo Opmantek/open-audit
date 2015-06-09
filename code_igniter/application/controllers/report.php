@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -169,6 +169,10 @@ class report extends MY_Controller
                     $filter[$i]['condition'] = '<>';
                 } elseif ($filter_array[0] == 'like') {
                     $filter[$i]['condition'] = 'LIKE';
+                } elseif ($filter_array[0] == 'greater') {
+                    $filter[$i]['condition'] = '>';
+                } elseif ($filter_array[0] == 'less') {
+                    $filter[$i]['condition'] = '<';
                 }
                 $i++;
             }
@@ -268,6 +272,12 @@ class report extends MY_Controller
                             $remove = true;
                         }
                         if (strpos(strtolower($key->$enum_filter['variable']), strtolower($enum_filter['value'])) === false and $enum_filter['condition'] == 'LIKE') {
+                            $remove = true;
+                        }
+                        if ((strtolower($key->$enum_filter['variable']) < strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '>')) {
+                            $remove = true;
+                        }
+                        if ((strtolower($key->$enum_filter['variable']) > strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<')) {
                             $remove = true;
                         }
                     }

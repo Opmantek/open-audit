@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -164,6 +164,7 @@ class M_oa_group extends MY_Model
         $delete = $this->db->query($sql_delete, $data) or die("Error with delete from oa_group_sys");
         # update the group with all systems that match
         $sql_insert = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id, group_sys_type) ", 0, 0);
+        #$sql_insert = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$group_id."', 'system'", $sql_insert);
         $sql_insert = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$group_id."', 'system'", $sql_insert);
         $insert = $this->db->query($sql_insert);
     }
@@ -325,6 +326,71 @@ class M_oa_group extends MY_Model
 
         return ($row->total);
     }
+
+    public function get_network_group_subnet($subnet = '30') {
+        $sql = "SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "'";
+        $query = $this->db->query($sql);
+        // echo $this->db->last_query();
+        // echo "<br /><br />\n";
+        // echo "Rows: " . $query->num_rows();
+        // $result = $query->result();
+        // echo "Rows: " . $query->num_rows();
+        // echo "Count: " . count($result);
+        // exit();
+        return ($query->num_rows());
+    }
+
+    public function delete_network_group_subnet($subnet = '30') {
+        $sql = "DELETE FROM oa_group_user WHERE group_id IN (SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "')";
+        $query = $this->db->query($sql);
+
+        $sql = "DELETE FROM oa_group_sys WHERE group_id IN (SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "')";
+        $query = $this->db->query($sql);
+
+        $sql = "DELETE FROM oa_group_column WHERE group_id IN (SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "')";
+        $query = $this->db->query($sql);
+
+        $sql = "DELETE FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "'";
+        $query = $this->db->query($sql);
+
+        return($this->db->affected_rows());
+    }
+
+    public function get_network_group_count_zero() {
+        #$sql = "SELECT oa_group.group_id, oa_group.group_name, COUNT(oa_group_sys.system_id) AS system_total FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING system_total = 0 LIMIT 20";
+        #$sql = "SELECT oa_group.group_id AS total, COUNT(oa_group_sys.system_id) AS system_total FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING system_total = 0";
+        $sql = "SELECT oa_group.group_id FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING COUNT(oa_group_sys.system_id) = 0";
+        $query = $this->db->query($sql);
+        return ($query->num_rows());
+    }
+
+    public function delete_network_group_count_zero() {
+        $sql = "SELECT oa_group.group_id FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING COUNT(oa_group_sys.system_id) = 0";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $count = 0;
+        foreach ($result as $row) {
+            $sql = "DELETE FROM oa_group_user WHERE group_id = ?";
+            $data = array ($row->group_id);
+            $query = $this->db->query($sql, $data);
+
+            $sql = "DELETE FROM oa_group_sys WHERE group_id = ?";
+            $data = array ($row->group_id);
+            $query = $this->db->query($sql, $data);
+
+            $sql = "DELETE FROM oa_group_column WHERE group_id = ?";
+            $data = array ($row->group_id);
+            $query = $this->db->query($sql, $data);
+
+            $sql = "DELETE FROM oa_group WHERE group_id = ?";
+            $data = array ($row->group_id);
+            $query = $this->db->query($sql, $data);
+            $count = $count + $this->db->affected_rows();
+        }
+
+        return($count);
+    }
+
 
     public function get_user_groups($user_id = '0')
     {

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -76,6 +76,31 @@ class test extends CI_Controller
         print_r($this->user);
         echo "SESSION\n";
         print_r($this->session);
+    }
+
+    public function json_rows()
+    {
+        $table = $this->uri->segment(3, 0);
+        if (!isset($table) or $table == '') {
+            $table = 'sys_hw_processor';
+        }
+        $sql = "SELECT * FROM $table limit 20";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        foreach ($result as &$row) {
+            foreach ($row as $key => $value) {
+                if ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed') {
+                    $row->$key = (int) intval($value);
+                } elseif ((strrpos($key, '_id') === strlen($key)-3) or
+                          (strrpos($key, '_count') === strlen($key)-6) or
+                          (strrpos($key, '_percent') === strlen($key)-8) or
+                          (strrpos($key, '_size') === strlen($key)-5)) {
+                    $row->$key = (int) intval($value);
+                }
+            }
+        }
+        $json = json_encode($result);
+        print_r($json);
     }
 
     public function log()

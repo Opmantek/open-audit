@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -206,9 +206,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                 * The ip address or resolvable hostname used by external devices to talk to Open-AudIT (This should be the real IP Address of this Open-AudIT server).<br />
                 <?php } ?>
 
-				<?php if ($type > "") { ?>
                 <p>** Do not set "debug" in normal use. Doing so may take a while for the page to return - please be patient.</p>
-                <?php } ?>
 
 				<?php if ($warning > '') {
                     echo "<p><br /><br />$warning</p>\n";
@@ -258,7 +256,7 @@ if ($type == '') {
 		<?php echo __('198.168.0-255.1-127 (a range of ip addresses)'); ?><br />
 	<br />
 	<h3><?php echo __('Network Group Creation'); ?></h3>
-        <?php echo __('At present Network Groups will be created is a subnet is supplied using a slash (ie - 192.168.1.0/24) and you have the config option to auto create network groups set to "y". Network Groups will NOT be created if a range of ip addresses, a /32 subnet or a single ip address is supplied.'); ?></p>
+        <?php echo __('At present Network Groups will be created if a subnet is supplied using a slash (ie - 192.168.1.0/24) and you have the config option to auto create network groups set to "y". Network Groups will NOT be created if a range of ip addresses, a /32 subnet or a single ip address is supplied.'); ?></p>
 	<br />
     <?php } else { ?>
     <?php } ?>

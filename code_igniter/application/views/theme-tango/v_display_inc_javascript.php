@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -439,12 +439,16 @@ $(document).ready(function(){
         $system[0]->man_type == 'wap' or
         $system[0]->man_type == 'wireless router') {
     ?>
-	$('#view_summary_network_interfaces').show();
+    $('#view_summary_network_interfaces').show();
+    toggleBold("toggle_summary_network_interfaces");
 	<?php } ?>
-	<?php if (strpos($system[0]->man_type, 'phone') !== false) {
-    ?>$('#view_summary_phone').show();<?php } ?>
-	<?php if (count($vm) > 0) {
-    ?>$('#view_summary_vms').show();<?php } ?>
+	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
+        $('#view_summary_phone').show();
+        toggleBold("toggle_summary_phone");<?php } ?>
+	<?php if (count($vm) > 0) { ?>
+        $('#view_summary_vms').show();
+        toggleBold("toggle_summary_vms");
+    <?php } ?>
 
     $( "#foo" ).trigger( "click" );
 
@@ -738,4 +742,59 @@ $(document).ready(function(){
 	});
 
 });
+</script>
+
+
+
+
+
+
+
+
+
+
+<script>
+<?php
+foreach ($additional_fields_data as $field) {
+    if ($field->field_type == 'list') {
+
+        $field_id = "custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id);
+        $field_contents = "<select id='" . $field_id . "' onchange='send_additional_" . str_replace(' ', '_', $field->field_name) . "();' >";
+        $values = explode(',', $field->field_values);
+        $field_contents .= "<option></option>";
+        $field_contents .= "<option value='-'>Remove Value</option>";
+        foreach ($values as $value) {
+            if ($field->data_value == $value) {
+                $selected = ' selected ';
+            } else {
+                $selected = ' ';
+            }
+            $field_contents .= "<option value='" . $value . "'" . $selected . ">" . $value . "</option>";
+        }
+        $field_contents .= "</select>";
+        ?>
+
+
+        function display_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
+            document.getElementById("<?php echo $field_id; ?>_outer").innerHTML = "<span id='custom_<?php echo htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id); ?>_inner'><?php echo $field_contents; ?></span>";
+        }
+
+        function send_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
+            submitted_value=document.getElementById("<?php echo $field_id; ?>").value;
+            http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/<?php echo "custom_varchar_" . htmlentities($field->data_id) . "_" . $field->field_id; ?>/'+submitted_value);
+            http.onreadystatechange = receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>;
+            http.send(null);
+        }
+
+        function receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
+          if(http.readyState == 4 && http.status == 200){
+            // Text returned FROM the PHP script
+            if(http.responseText) {
+              update = "<span id='custom_<?php echo htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_inner"; ?>' onClick='display_additional_<?php echo str_replace(' ', '_', $field->field_name);?>();' >"+http.responseText+"</span>";
+              document.getElementById("<?php echo $field_id; ?>_outer").innerHTML = update;
+            }
+          }
+        }
+        <?php } ?>
+    <?php } ?>
 </script>

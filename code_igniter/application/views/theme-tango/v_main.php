@@ -27,14 +27,23 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if ($query) {
+
+    # new for 1.6.6
+    if (!isset($this->config->config['network_group_homepage_limit']) or $this->config->config['network_group_homepage_limit'] == '') {
+        $group_limit = 20;
+    } else {
+        $group_limit = intval($this->config->config['network_group_homepage_limit']);
+    }
+
     if ($this->config->config['distinct_groups'] == 'y') {
         $old_category = '';
+        $i = 0;
         foreach ($query as $key) {
             if ($key->group_category != $old_category) {
                 if ($old_category != '') {
@@ -61,20 +70,27 @@ if ($query) {
                 echo "	<tbody>\n";
             }
             $old_category = $key->group_category;
-            echo "		<tr>\n";
-            echo "			<td align=\"center\"><img src=\"".$oa_theme_images."/16_".htmlentities($key->group_icon).".png\" alt=\"".htmlentities($key->group_category)."\" title=\"".htmlentities($key->group_category)."\" style=\"border-width:0px;\" /></td>\n";
-            echo "			<td align=\"center\">".$key->total."</td>\n";
-            if ($key->group_padded_name > "") {
-                echo "			<td><span style=\"display: none;\">".htmlentities($key->group_padded_name)."</span><a href=\"".base_url()."index.php/main/list_devices/".intval($key->group_id)."\">".htmlentities($key->group_name)."</a></td>\n";
+            if ($key->group_category == 'network') {
+                $i++;
+            }
+            if ($key->group_category == 'network' and $i > $group_limit) {
+                # do not print the group details
             } else {
-                echo "			<td><a href=\"".base_url()."index.php/main/list_devices/".intval($key->group_id)."\">".htmlentities($key->group_name)."</a></td>\n";
+                echo "		<tr>\n";
+                echo "			<td align=\"center\"><img src=\"".$oa_theme_images."/16_".htmlentities($key->group_icon).".png\" alt=\"".htmlentities($key->group_category)."\" title=\"".htmlentities($key->group_category)."\" style=\"border-width:0px;\" /></td>\n";
+                echo "			<td align=\"center\">".$key->total."</td>\n";
+                if ($key->group_padded_name > "") {
+                    echo "			<td><span style=\"display: none;\">".htmlentities($key->group_padded_name)."</span><a href=\"".base_url()."index.php/main/list_devices/".intval($key->group_id)."\">".htmlentities($key->group_name)."</a></td>\n";
+                } else {
+                    echo "			<td><a href=\"".base_url()."index.php/main/list_devices/".intval($key->group_id)."\">".htmlentities($key->group_name)."</a></td>\n";
+                }
+                echo "			<td>".htmlentities($key->group_description)."</td>\n";
+                if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) {
+                    echo "			<td align=\"center\"><a class=\"SearchPopupTrigger\" rel=\"".intval($key->group_id)."\" href=\"#\" ><img src=\"".$oa_theme_images."/16_find.png\" style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
+                }
+                echo "			<td align=\"center\"><a class=\"ReportPopupTrigger\" rel=\"".intval($key->group_id)."\" href=\"#\" ><img src=\"".$oa_theme_images."/16_csv.png\"  style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
+                echo "		</tr>\n";
             }
-            echo "			<td>".htmlentities($key->group_description)."</td>\n";
-            if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) {
-                echo "			<td align=\"center\"><a class=\"SearchPopupTrigger\" rel=\"".intval($key->group_id)."\" href=\"#\" ><img src=\"".$oa_theme_images."/16_find.png\" style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
-            }
-            echo "			<td align=\"center\"><a class=\"ReportPopupTrigger\" rel=\"".intval($key->group_id)."\" href=\"#\" ><img src=\"".$oa_theme_images."/16_csv.png\"  style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
-            echo "		</tr>\n";
         }
     } else {
         ?>
@@ -131,24 +147,24 @@ if ($query) {
 		<?php $i = 0; ?>
 		<?php foreach ($query as $key): ?>
 		<?php if ($key->group_category == 'network') {
-            $i++;
-        ?>
-		<tr>
-			<td align='center'><img src="<?php echo $oa_theme_images; ?>/16_<?php echo htmlentities($key->group_icon)?>.png" alt="<?php echo htmlentities($key->group_category)?>" title="<?php echo htmlentities($key->group_category)?>" style='border-width:0px;' /></td>
-			<td align='center'><?php echo intval($key->total)?></td>
-			<?php if ($key->group_padded_name > "") { ?>
-				<td><span style="display: none;"><?php echo htmlentities($key->group_padded_name)?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
-			<?php } else { ?>
-				<td><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
-			<?php } ?>
-			<td><?php echo htmlentities($key->group_description)?></td>
-			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
-			<td align='center'><a class="SearchPopupTrigger" rel="<?php echo intval($key->group_id)?>" href="#" ><img src="<?php echo $oa_theme_images; ?>/16_find.png"  style="border-width:0px;" title="" alt="" /></a></td>
-			<?php } ?>
-			<td align='center'><a class="ReportPopupTrigger" rel="<?php echo intval($key->group_id)?>" href="#" ><img src="<?php echo $oa_theme_images; ?>/16_csv.png"  style="border-width:0px;" title="" alt="" /></a></td>
-		</tr>
-		<?php } ?>
-		<?php endforeach; ?>
+            if ($i < $group_limit) { $i++; ?>
+        		<tr>
+        			<td align='center'><img src="<?php echo $oa_theme_images; ?>/16_<?php echo htmlentities($key->group_icon)?>.png" alt="<?php echo htmlentities($key->group_category)?>" title="<?php echo htmlentities($key->group_category)?>" style='border-width:0px;' /></td>
+        			<td align='center'><?php echo intval($key->total)?></td>
+        			<?php if ($key->group_padded_name > "") { ?>
+        				<td><span style="display: none;"><?php echo htmlentities($key->group_padded_name)?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
+        			<?php } else { ?>
+        				<td><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
+        			<?php } ?>
+        			<td><?php echo htmlentities($key->group_description)?></td>
+        			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
+        			<td align='center'><a class="SearchPopupTrigger" rel="<?php echo intval($key->group_id)?>" href="#" ><img src="<?php echo $oa_theme_images; ?>/16_find.png"  style="border-width:0px;" title="" alt="" /></a></td>
+        			<?php } ?>
+        			<td align='center'><a class="ReportPopupTrigger" rel="<?php echo intval($key->group_id)?>" href="#" ><img src="<?php echo $oa_theme_images; ?>/16_csv.png"  style="border-width:0px;" title="" alt="" /></a></td>
+        		</tr>
+            <?php } // end of group_limit ?>
+        <?php } // end of network group category ?>
+		<?php endforeach; // end of all groups loop ?>
 		<?php if ($i == 0) { ?>
     		<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
     		<tr>

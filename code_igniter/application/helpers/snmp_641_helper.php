@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.6.4
+ * @version 1.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -39,7 +39,7 @@
 
 $get_oid_details = function ($details) {
     if ($details->snmp_oid == '1.3.6.1.4.1.641.1') {
-        $details->model = '';
+        $details->model = 'ADP LaserStation 2000';
         $details->type = 'network printer';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106851') {

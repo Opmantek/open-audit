@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.6.4
+ * @version 1.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -39,8 +39,8 @@
 
 $get_oid_details = function ($details) {
     $details->type = 'computer';
-    $details->model = 'unknown';
-    $details->os_group = 'windows';
+    $details->model = '';
+    $details->os_group = 'Windows';
     $details->os_family = '';
     $details->os_name = '';
     $details->icon = 'computer';

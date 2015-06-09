@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -191,49 +191,25 @@ function group_dropdown($group_id, $access_level)
 }
 ?>
 
-<?php if ($this->user->user_admin == 'y') {
-    ?>
-<script type="text/javascript">
-function alter_all_groups() {
-	totalArray = new Array();
-	var count = 0;
-	<?php $count = 0;
-    echo "\n";
-    foreach ($user_group as $key) {
-        $count++;
-        echo "	totalArray[$count] = ".$key->group_id."\n";
+<?php if ($this->user->user_admin == 'y') { ?>
+    <script type="text/javascript">
+    function alter_all_groups() {
+    	totalArray = new Array();
+    	var count = 0;
+    	<?php $count = 0;
+        echo "\n";
+        foreach ($user_group as $key) {
+            $count++;
+            echo "	totalArray[$count] = ".$key->group_id."\n";
+        }
+        ?>
+    	var i=1;
+    	for (i=1;i<=<?php echo $count;
+        ?>;i++) {
+    		document.getElementById("group_id_"+totalArray[i]).value = document.getElementById("group_id_0").value;
+    	}
     }
-    ?>
-	var i=1;
-	for (i=1;i<=<?php echo $count;
-    ?>;i++) {
-		document.getElementById("group_id_"+totalArray[i]).value = document.getElementById("group_id_0").value;
-	}
-}
-</script>
-<?php 
-} ?>
-<?php echo form_close(); ?>
+    </script>
+<?php } ?>
+</form>
 </div>
-
-
-
-<script type='text/javascript'>
-function createRequestObject()
-{
-	var req;
-	if(window.XMLHttpRequest){
-		// Firefox, Safari, Opera...
-		req = new XMLHttpRequest();
-	} else if(window.ActiveXObject) {
-		// Internet Explorer 5+
-		req = new ActiveXObject("Microsoft.XMLHTTP");
-	} else {
-		// There is an error creating the object,
-		// just as an old browser is being used.
-		alert('Problem creating the XMLHttpRequest object');
-	}
-	return req;
-}
-var http = createRequestObject();
-</script>

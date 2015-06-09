@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -58,6 +58,9 @@ class M_database extends MY_Model
         $version_string = "unknown";
 
         // SQL 2014
+        if (mb_strpos($input->db_version, "12.00.4050") === 0 or mb_strpos($input->db_version, "12.0.4050") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1";
+        }
         if (mb_strpos($input->db_version, "12.00.2000") === 0 or mb_strpos($input->db_version, "12.0.2000") === 0) {
             $version_string = "SQL Server 2014 RTM";
         }
@@ -128,7 +131,7 @@ class M_database extends MY_Model
         }
 
         // SQL 2000
-        if (mb_strpos($input->db_version, "8.00.2039") === 0) {
+        if (mb_strpos($input->db_version, "8.00.2039") === 0 or mb_strpos($input->db_version, "8.00.2305") === 0) {
             $version_string = "SQL Server 2000 Service Pack 4";
         }
         if (mb_strpos($input->db_version, "8.00.761") === 0) {
@@ -137,7 +140,7 @@ class M_database extends MY_Model
         if (mb_strpos($input->db_version, "8.00.760") === 0) {
             $version_string = "SQL Server 2000 Service Pack 3";
         }
-        if (mb_strpos($input->db_version, "8.00.534") === 0) {
+        if (mb_strpos($input->db_version, "8.00.534") === 0 or mb_strpos($input->db_version, "8.00.532") === 0) {
             $version_string = "SQL Server 2000 Service Pack 2";
         }
         if (mb_strpos($input->db_version, "8.00.384") === 0) {
@@ -148,7 +151,7 @@ class M_database extends MY_Model
         }
 
         // SQL 7
-        if (mb_strpos($input->db_version, "7.00.10") === 0) {
+        if (mb_strpos($input->db_version, "7.00.1063") === 0 or mb_strpos($input->db_version, "7.00.1152") === 0) {
             $version_string = "SQL Server 7 Service Pack 4";
         }
         if (mb_strpos($input->db_version, "7.00.961") === 0) {

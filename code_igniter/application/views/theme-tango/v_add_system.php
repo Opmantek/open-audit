@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -433,7 +433,7 @@ function select_device()
 function update_icon() {
     fieldtext = document.getElementById("man_icon").value;
     document.getElementById("icon_image").src = '<?php echo $oa_theme_images;?>/16_'+fieldtext+'.png';
-    document.getElementById("icon_display").style = 'display: block;';
+    document.getElementById("icon_display").style.display = "block";
 }
 function update_icon_from_os() {
     os_family = document.getElementById("man_os_family").value.toLowerCase();

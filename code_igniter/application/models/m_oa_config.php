@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -289,23 +289,33 @@ class M_oa_config extends MY_Model
             exec($command, $output, $return_var);
             if ($return_var == 0) {
                 # success
-                # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"} {"255.255.255.0"} or thus {"192.168.1.140"} {"255.255.255.0"}
+                # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"} {"255.255.255.0"}
+                # or thus {"192.168.1.146", "fe80::e9e2:5fe6:e05a:d393"}  {"255.255.255.0", "64"}
+                # or thus {"192.168.1.140"} {"255.255.255.0"}
                 # there are multiple empty lines as well
                 foreach ($output as $line) {
                     $line = trim($line);
                     if ($line != '') {
-                        $line = str_replace('{', '', $line);
-                        $line = str_replace('}', '', $line);
-                        $line = str_replace('"', '', $line);
-                        $line = str_replace(',', '', $line);
-                        $line = str_replace('  ', ' ', $line);
-                        if (strpos($line, ' ') !== false) {
-                            $line_array = explode(' ', $line);
-                            $ip = $line_array[0];
-                            $subnet = $line_array[count($line_array)-1];
+                        $line = str_replace(' ', '', $line);
+                        $temp_line = explode('}{', $line);
+                        $temp_ip = str_replace('{', '', $temp_line[0]);
+                        $temp_ip_line = explode('"', $temp_ip);
+                        $ip = $temp_ip_line[1];
+                        $temp_sub = str_replace('}', '', $temp_line[1]);
+                        $temp_sub_line = explode('"', $temp_sub);
+                        $subnet = $temp_sub_line[1];
+                        if (isset($ip) and isset($subnet)) {
                             $new = network_details($ip . ' ' . $subnet);
                             $ip_address_array[] = $new->network . '/' . $new->network_slash;
                         }
+                        unset($line);
+                        unset($temp_line);
+                        unset($temp_ip);
+                        unset($temp_ip_line);
+                        unset($temp_sub);
+                        unset($temp_sub_line);
+                        unset($ip);
+                        unset($subnet);
                     }
                 }
             }

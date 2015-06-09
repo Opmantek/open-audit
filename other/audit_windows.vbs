@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
-' @version 1.6.4
+' @version 1.8
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -1254,7 +1254,8 @@ function windows_user_get_attribute (full_ad_domain, attribute, sam_account_name
 		objconnection.provider = "adsdsoobject"
 		objconnection.open "active directory provider"
 		set objcommand.activeconnection = objconnection
-		objcommand.commandtext = "select name, " & attribute & " from 'GC://" & full_ad_domain & "' where objectCategory = 'person' and sAMAccountName = '" & sam_account_name & "'"
+		' objcommand.commandtext = "select name, " & attribute & " from 'GC://" & full_ad_domain & "' where objectCategory = 'person' and sAMAccountName = '" & sam_account_name & "'"
+		objcommand.commandtext = "select name, " & attribute & " from 'GC://" & full_ad_domain & "' where objectCategory = 'person' and sAMAccountName = '" & replace(sam_account_name, "'", "''") & "'"
 		if debugging > "2" then wscript.echo objcommand.commandtext end if
 		objcommand.properties("page size") = 1000
 		objcommand.properties("searchscope") = ads_scope_subtree
@@ -5362,16 +5363,26 @@ end if
 ' http://www.open-audit.org/phpBB3/viewtopic.php?f=20&t=5993
 
 if objFSO.FileExists("sqlite3.Exe") then
-	if objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-		dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
-		db_present = 1
-	elseif objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
-		dbfile = "\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
-		db_present = 1
+
+	if (strComputer = ".") then
+		if objFSO.FileExists ("c:\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+			dbfile = "c:\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
+			db_present = 1
+		elseif objFSO.FileExists ("c:\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+			dbfile = "c:\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
+			db_present = 1
+		end if
+	else
+		if objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+			dbfile = "\\" & strcomputer & "\c$\Program Files\Common Files\Adobe\Adobe PCD\cache\cache.db"
+			db_present = 1
+		elseif objFSO.FileExists ("\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db") then
+			dbfile = "\\" & strcomputer & "\c$\Program Files (x86)\Common Files\Adobe\Adobe PCD\cache\cache.db"
+			db_present = 1
+		end if
 	end if
 
 	if db_present then
-		'cmd = chr(34) & sScriptPath & "sqlite3.exe" & chr(34) & " "   & chr(34) & dbfile & chr(34) & " " & chr(34) & "select T1.key,T2.value from domain_data AS T1 JOIN domain_data AS T2 on T1.Subdomain=T2.subdomain where T1.value='licensed' and (T2.Key='EPIC_SERIAL' OR T2.KEY='SN' OR T2.KEY='SERIAL')" & chr(34)
 
 		cmd = chr(34) & "sqlite3.exe" & chr(34) & " "   & chr(34) & dbfile & chr(34) & " " & chr(34) & "select T1.key,T2.value from domain_data AS T1 JOIN domain_data AS T2 on T1.Subdomain=T2.subdomain where T1.value='licensed' and (T2.Key='EPIC_SERIAL' OR T2.KEY='SN' OR T2.KEY='SERIAL')" & chr(34)
 
@@ -6656,43 +6667,61 @@ if create_file = "y" then
 end if
 
 if submit_online = "y" then
-	if debugging > "0" then wscript.echo "Submitting audit online" end if
-	Err.clear
-	XmlObj = "ServerXMLHTTP"
-	Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
-	objHTTP.setTimeouts 5000, 5000, 5000, 480000
-	objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-	objHTTP.Open "POST", url, False
-	objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-	result.position = 0
-	objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
-	if (Err.Number <> 0 or objHTTP.status <> 200) then
-		if debugging > "1" then
-			wscript.echo "Error with http request"
-			wscript.echo "HTTP Error: " & Err.Number
-			wscript.echo "HTTP Status: " &  objHTTP.status
-			wscript.echo "HTTP Response: " & objHTTP.ResponseText
-		end if
-		'XmlObj = "XMLHTTP"
-		'Set objHTTP = WScript.CreateObject("MSXML2.XMLHTTP")
-		'objHTTP.Open "POST", url, False
-		'objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-		'result.position = 0
-		'objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
-	end if
-    Err.clear
-	if debugging > "0" then wscript.echo "Audit Submitted" end if
+   if debugging > "0" then wscript.echo "Submitting audit online" end if
+   Err.clear
+   Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+   objHTTP.setTimeouts 5000, 5000, 5000, 480000
+   objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+   On Error Resume Next
+   objHTTP.Open "POST", url, False
+   aErr = Array(Err.Number, Err.Description)
+   On Error GoTo 0
+    If 0 = aErr(0) Then
+      result.position = 0
+      On Error Resume Next
+      objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+      objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
+      aErr = Array(Err.Number, Err.Description)
+      On Error GoTo 0
+      Select Case True
+      Case 0 <> aErr(0)
+         if debugging > "0" then
+            wscript.echo "Error with http request. Audit not submitted."
+         end if
+         if debugging > "1" then
+            wscript.echo "HTTP Error: " & aErr(0)
+            wscript.echo "HTTP Status: " &  aErr(1)
+         end if
+         responseAvailable = False
+      Case 200 = objHTTP.status
+         if debugging > "0" then wscript.echo "Audit Submitted" end if
+         responseAvailable = True
+      Case Else
+         if debugging > "0" then wscript.echo "Error with http request(2). Audit not submitted." end if
+         responseAvailable = True
+      End Select
 
-	if (objHTTP.ResponseText > "" and debugging > "1") then
-		wscript.echo
-		wscript.echo
-		wscript.echo "Response"
-		wscript.echo "--------"
-		wscript.echo objHTTP.ResponseText
-		if (inStr(objHTTP.ResponseText, "error")) then
-			wscript.sleep 50000
-		end if
-	end if
+      if responseAvailable = True then
+         if (objHTTP.ResponseText > "" and debugging > "1") then
+            wscript.echo
+            wscript.echo
+            wscript.echo "Response"
+            wscript.echo "--------"
+            wscript.echo objHTTP.ResponseText
+            if (inStr(objHTTP.ResponseText, "error")) then
+               wscript.sleep 50000
+            end if
+         end if
+      end if
+   else
+      if debugging > "0" then
+         wscript.echo "Error opening http url. Audit not submitted."
+      end if
+      if debugging > "1" then
+         wscript.echo "HTTP Error: " & aErr(0)
+         wscript.echo "HTTP Description: " &  aErr(1)
+      end if
+   end if
 end if
 
 end_time = Timer

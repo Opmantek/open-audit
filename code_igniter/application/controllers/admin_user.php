@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -134,6 +134,7 @@ class Admin_user extends MY_Controller
                     }
                     if (php_uname('s') == 'Linux' or php_uname('s') == "Darwin") {
                         $command_string = 'htpasswd -mb /usr/local/opmojo/conf/users.dat admin '.$details->user_password.' 2>&1';
+                        $command_string = 'htpasswd -mb /usr/local/omk/conf/users.dat admin '.$details->user_password.' 2>&1';
                     }
                     exec($command_string, $output, $return_var);
                     if ($return_var != '0') {

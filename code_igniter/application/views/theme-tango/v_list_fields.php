@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -58,7 +58,7 @@ if (count($query) > 0) {
 				<td><a href="../admin_field/edit_field/<?php echo $key->field_id?>"><?php echo htmlentities($key->field_name)?></a></td>
 				<td><?php echo htmlentities($key->field_type)?></a></td>
 				<td><?php echo htmlentities($key->field_placement)?></a></td>
-				<td><?php echo htmlentities($key->group_id)?></a></td>
+				<td><?php echo htmlentities($key->group_name)?></a></td>
 				<td align='center'><?php echo $edit_pic?></td>
 				<td align='center'><?php echo $delete_pic?></td>
 			</tr>

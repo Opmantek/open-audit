@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -45,7 +45,18 @@ echo form_open('main/process_edit_systems')."\n";
     <tr>
     <td width="50%">
     <label for="man_asset_number"><?php echo __('Asset Number'); ?>: </label><input type="text" name="man_asset_number" style="width: 200px" /><br /><br />
-    <label for="man_class"><?php echo __('Class'); ?>: </label><input type="text" name="man_class" style="width: 200px" /><br /><br />
+    <label for="man_class"><?php echo __('Class'); ?>: </label><select name="man_class" style="width: 200px">
+        <option value="">&nbsp;</option>
+        <option value="-"><?php echo __('REMOVE THE CLASS'); ?></option>
+        <option value="desktop"><?php echo __('desktop'); ?></option>
+        <option value="hypervisor"><?php echo __('hypervisor'); ?></option>
+        <option value="laptop"><?php echo __('laptop'); ?></option>
+        <option value="server"><?php echo __('server'); ?></option>
+        <option value="tablet"><?php echo __('tablet'); ?></option>
+        <option value="virtual server"><?php echo __('virtual server'); ?></option>
+        <option value="virtual desktop"><?php echo __('virtual desktop'); ?></option>
+        <option value="workstation"><?php echo __('workstation'); ?></option>
+    </select><br /><br />
     <label for="man_cluster_name"><?php echo __('Cluster Name'); ?>: </label><input type="text" name="man_cluster_name" style="width: 200px" /><br /><br />
     <label for="man_criticaliy"><?php echo __('Criticality'); ?>: </label><select name="man_criticality" style="width: 200px"><option value="">&nbsp;</option><option value="critical"><?php echo __('Critical'); ?></option><option value="normal"><?php echo __('Normal'); ?></option><option value="low"><?php echo __('Low'); ?></option></select><br /><br />
     <label for="man_description"><?php echo __('Description'); ?>: </label><input type="text" name="man_description" style="width: 200px" /><br /><br />
@@ -53,7 +64,7 @@ echo form_open('main/process_edit_systems')."\n";
     <label for="man_environment"><?php echo __('Environment'); ?>: </label><select name="man_environment" style="width: 200px"><option value="">&nbsp;</option><option value="dev"><?php echo __('Development'); ?></option><option value="dr"><?php echo __('Disaster Recovery'); ?></option><option value="eval"><?php echo __('Evaluation'); ?></option><option value="pre-prod"><?php echo __('PreProduction'); ?></option><option value="production"><?php echo __('Production'); ?></option><option value="test"><?php echo __('Testing'); ?></option><option value="train"><?php echo __('Training'); ?></option><option value="uat"><?php echo __('User Acceptance testing'); ?></option></select><br /><br />
     <label for="man_form_factor"><?php echo __('Form Factor'); ?>: </label><input type="text" name="man_form_factor" style="width: 200px" /><br /><br />
     <label for="man_function"><?php echo __('Function'); ?>: </label><input type="text" name="man_function" style="width: 200px" /><br /><br />
-    <label for="man_icon"><?php echo __('Icon'); ?>: </label><input type="text" name="man_icon" style="width: 200px" /><br /><br />
+    <!-- <label for="man_icon"><?php echo __('Icon'); ?>: </label><input type="text" name="man_icon" style="width: 200px" /><br /><br /> -->
     <label for="man_ip_address"><?php echo __('IP Address'); ?>: </label><input type="text" name="man_ip_address" style="width: 200px" /><br /><br />
     <label for="man_location_level"><?php echo __('Location Level'); ?>: </label><input type="text" name="man_location_level" style="width: 200px" /><br /><br />
     <label for="man_location_id"><?php echo __('Location Name'); ?>: </label><select name="man_location_id" style="width: 200px"><option value="">&nbsp;</option>
@@ -103,7 +114,18 @@ echo form_open('main/process_edit_systems')."\n";
     <label for="man_switch_id"><?php echo __('Switch System ID'); ?>: </label><input type="text" name="man_switch_id" style="width: 200px" /><br /><br />
     <label for="man_switch_port"><?php echo __('Switch Port'); ?>: </label><input type="text" name="man_switch_port" style="width: 200px" /><br /><br />
     <label for="man_terminal_number"><?php echo __('Terminal Number'); ?>: </label><input type="text" name="man_terminal_number" style="width: 200px" /><br /><br />
-    <label for="man_type"><?php echo __('Type'); ?>: </label><input type="text" name="man_type" style="width: 200px" /><br /><br />
+    <label for="man_type"><?php echo __('Type'); ?>: </label><select name="man_type" style="width: 200px">
+        <option value="">&nbsp;</option>
+    <?php
+    foreach ($device_types as $key => $value) {
+        if ($value != '&nbsp;') {
+            echo "<option value=\"".$key."\">".__($value)."</option>\n";
+        }
+    } ?>
+    </select><br /><br />
+
+
+
     <label for="man_vm_group"><?php echo __('VM Group'); ?>: </label><input type="text" name="man_vm_group" style="width: 200px" /><br /><br />
     <label for="man_vm_server_name"><?php echo __('VM Server Name'); ?>: </label><input type="text" name="man_vm_server_name" style="width: 200px" /><br /><br />
     <label for="man_vm_system_id"><?php echo __('VM Server system ID'); ?>: </label><input type="text" name="man_vm_system_id" style="width: 200px" /><br /><br />
@@ -122,8 +144,35 @@ echo form_open('main/process_edit_systems')."\n";
         echo "<input type=\"hidden\" name=\"system_id_".$key->system_id."\" value=\"".$key->system_id."\" />\n";
     }
     ?>
+
+    <?php if (isset($additional_fields) and is_array($additional_fields) and count($additional_fields) > 0) {
+        echo "<fieldset>\n";
+        echo "<legend><span style='font-size: 12pt;'>&nbsp;" . __('Additional Fields') . "</span></legend>";
+        echo "<table><tr><td>\n";
+        foreach ($additional_fields as $field) {
+            echo "<label for=\"" . $field->field_name . "\">" . $field->field_name . "</label>";
+            if ($field->field_type == 'varchar') {
+                echo "<input type=\"text\" id=\"additional_" . $field->field_name . "\" name =\"additional_" . $field->field_name . "\" />";
+            } elseif ($field->field_type == 'list') {
+                echo "<select id=\"additional_" . $field->field_name . "\" name =\"additional_" . $field->field_name . "\" />";
+                echo "<option value=\"\" selected></option>\n";
+                echo "<option value=\"-\">Remove Value</option>\n";
+                $values = explode(',', $field->field_values);
+                foreach ($values as $value) {
+                    echo "<option value=\"" . $value . "\">" . $value . "</option>\n";
+                }
+                echo "</select>\n";
+            }
+            echo "<br /><br />\n";
+        }
+        echo "</td></tr></table>\n";
+        echo "</fieldset>\n";
+    } ?>
+
+        <tr>
+        <br />
     <label for="submit">&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?>
-    <br /><br /><label for="note">&nbsp;</label><?php echo __('NOTE - To remove the contents of a field, insert a '-' (a dash or minus) into the field. Each device will have that fields contents set to an empty string.'); ?>
+    <br /><br /><label for="note">&nbsp;</label><?php echo __('NOTE - To remove the contents of a field, insert a \'-\' (a dash or minus) into the field. Each device will have that fields contents set to an empty string.'); ?>
 </fieldset>
 <br /><br />
 <fieldset id="system_details" class='niceforms'>

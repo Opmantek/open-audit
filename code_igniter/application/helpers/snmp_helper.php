@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -288,7 +288,13 @@ if (!function_exists('get_snmp')) {
             // new for 1.5.1 - store variables in corresponding SNMP nonclemanture
             $details->sysDescr =    @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0");
             $details->sysObjectID = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0"));
-            $details->sysUpTime =   snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.3.0"));
+
+            // new for 1.6.6 use snmpEngineTime if available in preference to sysUpTime
+            $details->sysUpTime = intval(snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.6.3.10.2.1.3.0"))) * 100;
+            if (!isset($details->sysUpTime) or $details->sysUpTime == '' or $details->sysUpTime == 0) {
+                $details->sysUpTime =   snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.3.0"));
+            }
+
             $details->sysContact =  @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.4.0");
             $details->sysName =     snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
             $details->sysLocation = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");
@@ -561,6 +567,8 @@ if (!function_exists('get_snmp')) {
             if (!isset($details->sysname) or $details->sysname == '') {
                 $details->sysname = strtolower(snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0")));
             }
+            $log_details->message = 'SNMPv2 sysname for '.$log_machine.' is '.$details->sysname;
+            stdlog($log_details);
 
             // uptime
             if (!isset($details->uptime) or $details->uptime == '') {
@@ -572,6 +580,8 @@ if (!function_exists('get_snmp')) {
                     $details->uptime = '';
                 }
             }
+            $log_details->message = 'SNMPv2 uptime for '.$log_machine.' is '.$details->uptime;
+            stdlog($log_details);
 
             // location
             if (!isset($details->location) or $details->location == '') {
@@ -580,6 +590,8 @@ if (!function_exists('get_snmp')) {
             if ($details->location > '') {
                 $details->description = "Location: ".$details->location.". ".$details->description;
             }
+            $log_details->message = 'SNMPv2 location for '.$log_machine.' is '.$details->location;
+            stdlog($log_details);
 
             // contact
             if (!isset($details->contact) or $details->contact == '') {
@@ -588,25 +600,98 @@ if (!function_exists('get_snmp')) {
             if ($details->contact > '') {
                 $details->description = "Contact: ".$details->contact.". ".$details->description;
             }
+            $log_details->message = 'SNMPv2 contact for '.$log_machine.' is '.$details->contact;
+            stdlog($log_details);
 
             // subnet
             if (!isset($details->subnet) or $details->subnet == '') {
                 $details->subnet = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3.".$details->man_ip_address));
             }
+            $log_details->message = 'SNMPv2 subnet for '.$log_machine.' is '.$details->subnet;
+            stdlog($log_details);
 
             // modules - NOTE, we call these 'entities' in the web interface
+            $log_details->message = 'SNMPv2 module retrieval for '.$log_machine.' starting';
+            stdlog($log_details);
             $modules = array();
             $modules_list = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.2");
             if (isset($modules_list) and is_array($modules_list) and count($modules_list) > 0) {
+                $log_details->message = 'SNMPv2 module count for '.$log_machine.' is '.count($modules_list);
+                stdlog($log_details);
+
+                $log_details->message = 'SNMPv2 object_id retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $temp_object_id = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.3');
+
+                $log_details->message = 'SNMPv2 contained_in retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $temp_contained_in = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.4');
+
+                $log_details->message = 'SNMPv2 class retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $temp_class = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.5');
+
+                $log_details->message = 'SNMPv2 hardware_revision retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $temp_hardware_revision = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.8');
+
+                $log_details->message = 'SNMPv2 firmware_revision retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $temp_firmware_revision = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.9');
+
+                $log_details->message = 'SNMPv2 software_revision retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $temp_software_revision = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.10');
+
+                $log_details->message = 'SNMPv2 serial_number retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $temp_serial_number = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.11');
+
+                $log_details->message = 'SNMPv2 asset_id retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $temp_asset_id = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.15');
+
+                $log_details->message = 'SNMPv2 is_fru retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $temp_is_fru = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.16');
+
                 foreach ($modules_list as $key => $value) {
+                    $log_details->message = 'SNMPv2 processing module '. $value .' for '.$log_machine.' starting';
+                    stdlog($log_details);
+
                     $module = new stdClass();
                     $module->description = $value;
                     $module->module_index = str_replace('.1.3.6.1.2.1.47.1.1.1.1.2.', '', $key);
 
-                    $module->object_id = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.3.'.$module->module_index);
 
-                    $module->contained_in = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.4.'.$module->module_index);
-                    $module->class = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.5.'.$module->module_index);
+
+                    // $module->object_id = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.3.'.$module->module_index);
+                    // $module->contained_in = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.4.'.$module->module_index);
+                    // $module->class = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.5.'.$module->module_index);
+                    // $module->hardware_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.8.'.$module->module_index);
+                    // $module->firmware_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.9.'.$module->module_index);
+                    // $module->software_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.10.'.$module->module_index);
+                    // $module->serial_number = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.11.'.$module->module_index);
+                    // $module->asset_id = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.15.'.$module->module_index);
+                    // $temp_is_fru = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.16.'.$module->module_index);
+
+                    #unset($temp_is_fru);
+                    $module->object_id = snmp_clean($temp_object_id['.1.3.6.1.2.1.47.1.1.1.1.3.'.$module->module_index]);
+                    $module->contained_in = snmp_clean($temp_contained_in['.1.3.6.1.2.1.47.1.1.1.1.4.'.$module->module_index]);
+                    $module->class = snmp_clean($temp_class['.1.3.6.1.2.1.47.1.1.1.1.5.'.$module->module_index]);
+                    $module->hardware_revision = snmp_clean($temp_hardware_revision['.1.3.6.1.2.1.47.1.1.1.1.8.'.$module->module_index]);
+                    $module->firmware_revision = snmp_clean($temp_firmware_revision['.1.3.6.1.2.1.47.1.1.1.1.9.'.$module->module_index]);
+                    $module->software_revision = snmp_clean($temp_software_revision['.1.3.6.1.2.1.47.1.1.1.1.10.'.$module->module_index]);
+                    $module->serial_number = snmp_clean($temp_serial_number['.1.3.6.1.2.1.47.1.1.1.1.11.'.$module->module_index]);
+                    $module->asset_id = snmp_clean($temp_asset_id['.1.3.6.1.2.1.47.1.1.1.1.15.'.$module->module_index]);
+                    $module->is_fru = snmp_clean($temp_is_fru['.1.3.6.1.2.1.47.1.1.1.1.16.'.$module->module_index]);
+
+
+                    if ((string) $module->is_fru == '1') {
+                        $module->is_fru = 'y';
+                    } else {
+                        $module->is_fru = 'n';
+                    }
 
                     $module->class_text = 'unknown';
                     if ($module->class == '1') {
@@ -646,38 +731,72 @@ if (!function_exists('get_snmp')) {
                         $module->class_text = 'cpu';
                     }
 
-                    $module->hardware_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.8.'.$module->module_index);
-                    $module->firmware_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.9.'.$module->module_index);
-                    $module->software_revision = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.10.'.$module->module_index);
-                    $module->serial_number = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.11.'.$module->module_index);
-                    $module->asset_id = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.15.'.$module->module_index);
-                    $temp_is_fru = @snmp2_get($details->man_ip_address, $details->snmp_community, '1.3.6.1.2.1.47.1.1.1.1.16.'.$module->module_index);
-                    if ((string) $temp_is_fru == '1') {
-                        $module->is_fru = 'y';
-                    } else {
-                        $module->is_fru = 'n';
-                    }
-                    unset($temp_is_fru);
                     $modules[] = $module;
                 }
             }
+            $log_details->message = 'SNMPv2 module retrieval for '.$log_machine.' complete';
+            stdlog($log_details);
 
             // network intereface details
             $interfaces = array();
             $interfaces_filtered = array();
             $interfaces = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.1");
+            $log_details->message = 'SNMPv2 interface count for '.$log_machine.' is '.count($interfaces);
+            stdlog($log_details);
             if (is_array($interfaces) and count($interfaces) > 0) {
+                $log_details->message = 'SNMPv2 models retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
                 $models = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.2");
+
+                $log_details->message = 'SNMPv2 types retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
                 $types = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.3");
+
+                $log_details->message = 'SNMPv2 speeds retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
                 $speeds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.5");
+
+                $log_details->message = 'SNMPv2 mac_addresses retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
                 $mac_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6");
+
+                $log_details->message = 'SNMPv2 ip_enableds retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
                 $ip_enableds = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.8");
+
+                $log_details->message = 'SNMPv2 ip_addresses retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
                 $ip_addresses = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.2");
-                $ip_addresses_2 = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.34.1.3.1.4");
+
+                $log_details->message = 'SNMPv2 ifAdminStatus retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $ifAdminStatus = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.7");
+
+                $log_details->message = 'SNMPv2 ifLastChange retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
+                $ifLastChange = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.9");
+
+                if ($details->os_group == "VMware") {
+                    $log_details->message = 'SNMPv2 ip_addresses_2 retrieval for '.$log_machine.' starting';
+                    stdlog($log_details);
+                    $ip_addresses_2 = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.34.1.3.1.4");
+                }
+
+                $log_details->message = 'SNMPv2 subnets retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
                 $subnets = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.20.1.3");
+
+                $log_details->message = 'SNMPv2 connection_ids retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
                 $connection_ids = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.1");
+
+                $log_details->message = 'SNMPv2 aliases retrieval for '.$log_machine.' starting';
+                stdlog($log_details);
                 $aliases = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.31.1.1.1.18");
+
                 foreach ($interfaces as $key => $value) {
+                    $log_details->message = 'SNMPv2 processing interface '. $value .' for '.$log_machine.' starting';
+                    stdlog($log_details);
                     $interface = new stdclass();
                     $interface->net_index = snmp_clean($value);
 
@@ -685,13 +804,17 @@ if (!function_exists('get_snmp')) {
                     $interface->net_mac_address = format_mac(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6.".$interface->net_index));
                     snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
-                    if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
-                        snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-                        $test_mac = @snmp2_walk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2.".$interface->net_index);
-                        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-                        if (is_array($test_mac) and count($test_mac) > 0) {
-                            $interface->net_mac_address = format_mac($test_mac[0]);
-                        }
+                    // if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
+                    //     snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+                    //     $test_mac = @snmp2_walk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2.".$interface->net_index);
+                    //     snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+                    //     if (is_array($test_mac) and count($test_mac) > 0) {
+                    //         $interface->net_mac_address = format_mac($test_mac[0]);
+                    //     }
+                    // }
+
+                    if (!isset($interface->net_mac_address)) {
+                        $interface->net_mac_address = '';
                     }
 
                     $interface->net_model = @snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
@@ -700,6 +823,8 @@ if (!function_exists('get_snmp')) {
                     $interface->net_alias = @snmp_clean($aliases[".1.3.6.1.2.1.31.1.1.1.18.".$interface->net_index]);
                     $interface->net_adapter_type = @interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
                     $interface->net_ip_enabled = @ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
+                    $interface->ifadminstatus = @if_admin_status(snmp_clean($ifAdminStatus[".1.3.6.1.2.1.2.2.1.7.".$interface->net_index]));
+                    $interface->iflastchange = @snmp_clean($ifLastChange[".1.3.6.1.2.1.2.2.1.9.".$interface->net_index]);
                     $interface->net_speed = @snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
                     $interface->net_manufacturer = '';
                     $interface->net_connection_status = '';
@@ -730,14 +855,14 @@ if (!function_exists('get_snmp')) {
                             }
                         }
                     }
-                    if (!is_array($ip_addresses) and is_array($ip_addresses_2) and $details->os_group == "VMware") {
+                    if (isset($ip_addresses_2) and is_array($ip_addresses_2) and isset($details->os_group) and $details->os_group == "VMware") {
                         // likely we have a VMware ESX box - get what we can
                         foreach ($ip_addresses_2 as $each_key => $each_value) {
                             $new_ip = new stdClass();
                             $new_ip->net_index = snmp_clean($each_value);
                             $new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.34.1.3.1.4.", "", $each_key);
                             $new_ip->ip_address_v6 = '';
-                            $new_ip->ip_subnet = '0.0.0.0';
+                            $new_ip->ip_subnet = '';
                             $new_ip->ip_address_version = '4';
                             if ($new_ip->net_index == $interface->net_index) {
                                 $new_ip->net_mac_address = $interface->net_mac_address;
@@ -752,10 +877,10 @@ if (!function_exists('get_snmp')) {
                                 $interfaces_filtered[] = $interface;
                             }
                         }
-                    } elseif (isset($details->os_group) and $details->os_group == 'VMware') {
-                        if (strpos($interface->net_description, 'Virtual interface:')) {
-                            $interfaces_filtered[] = $interface;
-                        }
+                    // } elseif (isset($details->os_group) and $details->os_group == 'VMware') {
+                    //     if (strpos($interface->net_description, 'Virtual interface:')) {
+                    //         $interfaces_filtered[] = $interface;
+                    //     }
                     } else {
                         $interfaces_filtered[] = $interface;
                     }
@@ -1081,39 +1206,62 @@ if (!function_exists('get_snmp')) {
     {
         switch ($ip_enabled) {
             case '1':
-                $ip_enabled = "True";
+                $ip_enabled = "up";
                 break;
 
             case '2':
-                $ip_enabled = "False";
+                $ip_enabled = "down";
                 break;
 
             case '3':
-                $ip_enabled = "Testing";
+                $ip_enabled = "testing";
                 break;
 
             case '4':
-                $ip_enabled = "Unknown";
+                $ip_enabled = "unknown";
                 break;
 
             case '5':
-                $ip_enabled = "Dormant";
+                $ip_enabled = "dormant";
                 break;
 
             case '6':
-                $ip_enabled = "NotPresent";
+                $ip_enabled = "notpresent";
                 break;
 
             case '7':
-                $ip_enabled = "LowerLayerDown";
+                $ip_enabled = "lowerlayerdown";
                 break;
 
             default:
-                $ip_enabled = "True";
+                $ip_enabled = "up";
                 break;
         }
 
         return $ip_enabled;
+    }
+
+    function if_admin_status($ifadminstatus)
+    {
+        switch ($ifadminstatus) {
+            case '1':
+                $ifadminstatus = "up";
+                break;
+
+            case '2':
+                $ifadminstatus = "down";
+                break;
+
+            case '3':
+                $ifadminstatus = "testing";
+                break;
+
+            default:
+                $ifadminstatus = "up";
+                break;
+        }
+
+        return $ifadminstatus;
     }
 
     function interface_type($int_type)

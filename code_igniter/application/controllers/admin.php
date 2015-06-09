@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -107,9 +107,48 @@ class admin extends MY_Controller
      */
     public function test()
     {
+        $system_id = 1;
+        $table_name = 'system';
+        $extended = 'y';
         echo "<pre>\n";
+
+        $sql = "SELECT * FROM $table_name WHERE system_id = 29 or system_id = 26";
+        $data = array($system_id);
+        $query = $this->db->query($sql, $data);
+        $devices = $query->result();
+        $result = array();
+
+        if ($extended == 'y') {
+            $sql= "SELECT COLUMN_NAME as name, DATA_TYPE as type, COLUMN_TYPE as extended_type, CHARACTER_MAXIMUM_LENGTH as length, COLUMN_DEFAULT as `default` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? and table_name = ?";
+            $data = array($this->db->database, $table_name);
+            $query = $this->db->query($sql, $data);
+            $table = $query->result();
+
+            $count = 0;
+            foreach ($devices as $device) {
+                foreach ($device as $key => $value) {
+                    foreach ($table as $column) {
+                        if ($column->name == $key) {
+                            $result[$count][$key]['name'] = $key;
+                            $result[$count][$key]['value'] = $value;
+                            $result[$count][$key]['type'] = $column->type;
+                            $result[$count][$key]['extended_type'] = $column->extended_type;
+                            $result[$count][$key]['length'] = $column->length;
+                            $result[$count][$key]['default'] = $column->default;
+                        }
+                    }
+                }
+                $count++;
+            }
+        } else {
+            foreach ($devices as $device) {
+                $result[] = (array)$device;
+            }
+        }
+        print_r($result);
         exit();
     }
+
 
     /**
      * Reset the device icons in the database.
@@ -682,46 +721,44 @@ class admin extends MY_Controller
             }
 
             if (strpos($subnet, "/")) {
-                # we have a subnet - if it's not a /32, then test for a group
                 $subnet_split = explode("/", $subnet);
-                if ($subnet_split[1] != "32") {
-                    # we have a real subnet
-                    $subnet_details = network_details($subnet);
-                    $sql = "SELECT config_value FROM oa_config WHERE config_name = 'auto_create_network_groups' ";
-                    $query = $this->db->query($sql);
-                    $row = $query->row();
-                    if ($row->config_value != 'n') {
-                        echo "Yes, create network groups.\n";
-                        # we do want to auto create network groups
-                        $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '".ip_address_to_db($subnet_details->host_min)."' and sys_hw_network_card_ip.ip_address_v4 <= '".ip_address_to_db($subnet_details->host_max)."' and sys_hw_network_card_ip.ip_subnet = '".$subnet_details->netmask."' and sys_hw_network_card_ip.system_id = system.system_id and sys_hw_network_card_ip.timestamp = system.timestamp and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
-                        $start = explode(' ', microtime());
-                        $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
-                        $data = array($group_dynamic_select);
+                $subnet_details = network_details($subnet);
+                if (! isset($this->config->config['network_group_subnet']) or $this->config->config['network_group_subnet'] == '') {
+                    $net_group_subnet = '30';
+                } else {
+                    $net_group_subnet = $this->config->config['network_group_subnet'];
+                }
+                if (isset($this->config->config['network_group_auto_create']) and $this->config->config['network_group_auto_create'] != 'n' and $subnet_split[1] < $net_group_subnet) {
+                    # we want to auto create network groups
+                    $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '".ip_address_to_db($subnet_details->host_min)."' and sys_hw_network_card_ip.ip_address_v4 <= '".ip_address_to_db($subnet_details->host_max)."' and sys_hw_network_card_ip.ip_subnet = '".$subnet_details->netmask."' and sys_hw_network_card_ip.system_id = system.system_id and sys_hw_network_card_ip.timestamp = system.timestamp and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
+                    $start = explode(' ', microtime());
+                    $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
+                    $data = array($group_dynamic_select);
+                    $query = $this->db->query($sql, $data);
+                    if ($query->num_rows() > 0) {
+                        // group exists - no need to do anything
+                    } else {
+                        // insert new group
+                        $sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (NULL, ?, ?, ?, '1', ?, 'network', 'switch')";
+                        #$sql = $this->clean_sql($sql);
+                        $group_name = "Network - ".$subnet_details->network.' / '.$subnet_details->network_slash;
+                        $group_padded_name = "Network - ".ip_address_to_db($subnet_details->network);
+                        $data = array("$group_name", "$group_padded_name", "$group_dynamic_select", $subnet_details->network);
                         $query = $this->db->query($sql, $data);
-                        if ($query->num_rows() > 0) {
-                            // group exists - no need to do anything
-                        } else {
-                            // insert new group
-                            $sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (NULL, ?, ?, ?, '1', ?, 'network', 'switch')";
-                            #$sql = $this->clean_sql($sql);
-                            $group_name = "Network - ".$subnet_details->network.' / '.$subnet_details->network_slash;
-                            $group_padded_name = "Network - ".ip_address_to_db($subnet_details->network);
-                            $data = array("$group_name", "$group_padded_name", "$group_dynamic_select", $subnet_details->network);
-                            $query = $this->db->query($sql, $data);
-                            $insert_id = $this->db->insert_id();
-                            // We need to insert an entry into oa_group_user for any Admin level user
-                            $sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
-                            $data = array( $insert_id );
-                            $result = $this->db->query($sql, $data);
-                            # now we update this specific group
-                            # this accounts for if another system has a IP that would fall in this group, but was submitted
-                            # without a subnet and no matching network group was previously created.
-                            # update the group with all systems that match
-                            $this->load->model('m_oa_group');
-                            $this->m_oa_group->update_specific_group($insert_id);
-                        }
+                        $insert_id = $this->db->insert_id();
+                        // We need to insert an entry into oa_group_user for any Admin level user
+                        $sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+                        $data = array( $insert_id );
+                        $result = $this->db->query($sql, $data);
+                        # now we update this specific group
+                        # this accounts for if another system has a IP that would fall in this group, but was submitted
+                        # without a subnet and no matching network group was previously created.
+                        # update the group with all systems that match
+                        $this->load->model('m_oa_group');
+                        $this->m_oa_group->update_specific_group($insert_id);
                     }
                 }
+
             }
 
             if ($operating_system == 'Darwin') {
@@ -3571,7 +3608,7 @@ class admin extends MY_Controller
             $query = $this->db->query($sql);
             $row = $query->row();
 
-            if ($row->report_id != '' and $row->report_id != '0') {
+            if (isset($row->report_id) and $row->report_id != '' and $row->report_id != '0') {
                 $sql = "UPDATE oa_report_column SET column_link = '/omk/oae/show_report/Specific Software/' WHERE column_order = 0 AND report_id = " . $row->report_id;
                 $query = $this->db->query($sql);
             }
@@ -3588,6 +3625,64 @@ class admin extends MY_Controller
             stdlog($log_details);
             unset($log_details);
         }
+
+
+        if (($db_internal_version < '20150512') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.8
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.8 commenced';
+            stdlog($log_details);
+
+            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('network_group_subnet', '30', 'y', 'If the netmask is equal to or greater than this number, do not create a network group.')";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config set config_name = 'network_group_auto_create' WHERE config_name = 'auto_create_network_groups'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config set config_description = 'The domain name against which your users will validate to log on to Open-AudIT. EG - open-audit.org' WHERE config_name = 'ad_domain'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config set config_description = 'The IP Address of the domain controller your users will validate to log to Open-AudIT. EG - 192.168.0.1' WHERE config_name = 'ad_server'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config set config_description = 'Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.' WHERE config_name = 'page_refresh'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('network_group_homepage_limit', '20', 'y', 'The number of network groups to display on the homepage.')";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "ALTER TABLE sys_hw_network_card ADD ifadminstatus varchar(100) NOT NULL default ''";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "ALTER TABLE sys_hw_network_card ADD iflastchange bigint NOT NULL default '0'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config SET config_value = '20150512' WHERE config_name = 'internal_version'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config SET config_value = '1.8' WHERE config_name = 'display_version'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $log_details->message = 'Upgrade database to 1.8 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
+
+
+
+
 
         $this->m_oa_config->load_config();
         $this->data['message'] .= "New (now current) database version: ".$this->config->item('display_version')." (".$this->config->item('internal_version').")<br />Don't forget to use the new audit scripts!<br/>\n";

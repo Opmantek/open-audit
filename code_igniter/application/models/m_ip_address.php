@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -81,6 +81,9 @@ class M_ip_address extends MY_Model
 
     public function process_addresses($input, $details)
     {
+
+        $this->load->model('m_oa_config');
+        $this->m_oa_config->load_config();
 
         # As of 1.3.2 we grab the network card index using SNMP. Need to ensure we have a value here.
         if (!isset($input->net_index)) {
@@ -161,7 +164,6 @@ class M_ip_address extends MY_Model
             $ipdetails = network_details($myip);
             # NOTE - below is a hack because a 255.255.255.254 subnet mask produces an error in the network_helper -> network_details function
             # enable the below to see the error (with a 255.255.255.254 mask)
-            # print_r($ipdetails);
             if ($input->ip_subnet == "255.255.255.254") {
                 $start_ip = $this->ip_address_to_db($ipdetails->network);
                 $finish_ip = $this->ip_address_to_db($input->ip_address_v4);
@@ -180,10 +182,8 @@ class M_ip_address extends MY_Model
             if ($start_ip == "0.0.0.0") {
                 // do nothing - we don't have a valid IP
             } else {
-                $sql = "SELECT config_value FROM oa_config WHERE config_name = 'auto_create_network_groups' ";
-                $query = $this->db->query($sql);
-                $row = $query->row();
-                if ($row->config_value != 'n') {
+                if (isset($this->config->config['network_group_auto_create']) and $this->config->config['network_group_auto_create'] != 'n' and
+                    isset($ipdetails->network_slash) and $ipdetails->network_slash < $this->config->config['network_group_subnet']) {
                     $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '".$start_ip."' AND sys_hw_network_card_ip.ip_address_v4 <= '".$finish_ip."' AND sys_hw_network_card_ip.ip_subnet = '".$input->ip_subnet."' AND sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp AND system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".$start_ip."' AND system.man_ip_address <= '".$finish_ip."' AND system.man_status = 'production')";
                     $start = explode(' ', microtime());
                     $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
@@ -194,8 +194,8 @@ class M_ip_address extends MY_Model
                     } else {
                         // insert new group
                         $sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select,
-								group_parent, group_description, group_category, group_icon) VALUES
-								(NULL, ?, ?, ?, '1', ?, 'network', 'switch')";
+    							group_parent, group_description, group_category, group_icon) VALUES
+    							(NULL, ?, ?, ?, '1', ?, 'network', 'switch')";
                         $sql = $this->clean_sql($sql);
                         $group_name = "Network - ".$ipdetails->network.' / '.$ipdetails->network_slash;
                         $group_padded_name = "Network - ".$this->ip_address_to_db($ipdetails->network);
@@ -272,8 +272,7 @@ class M_ip_address extends MY_Model
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-        print_r($result);
-        if ($force == 'y' or $result[0]->man_ip_address == ''  or $result[0]->man_ip_address == '000.000.000.000'  or $result[0]->man_ip_address == '0.0.0.0') {
+        if ($force == 'y' or (isset($result) and is_array($result) and ($result[0]->man_ip_address == ''  or $result[0]->man_ip_address == '000.000.000.000'  or $result[0]->man_ip_address == '0.0.0.0'))) {
             # we do not already have an ip address - attempt to set one
             $sql = "SELECT
 					sys_hw_network_card.net_dhcp_enabled,
@@ -308,7 +307,7 @@ class M_ip_address extends MY_Model
             $query = $this->db->query($sql, $data);
             $result = $query->result();
 
-            if (strtolower($result[0]->ip_address_v4) != '') {
+            if (isset($result[0]->ip_address_v4) and strtolower($result[0]->ip_address_v4) != '') {
                 $sql = "UPDATE system SET man_ip_address = ? WHERE system_id = ?";
                 $data = array($result[0]->ip_address_v4, "$system_id");
                 $query = $this->db->query($sql, $data);

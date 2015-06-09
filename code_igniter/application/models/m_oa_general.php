@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -111,7 +111,7 @@ class M_oa_general extends MY_Model
         } elseif ($table == 'sys_sw_software') {
             $sql = 'SELECT software_name, software_url, software_email, software_version, software_publisher, date(software_installed_on) as software_installed_on, software_installed_by FROM sys_sw_software LEFT JOIN system ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp WHERE system.system_id = ? ';
         } elseif ($table == 'sys_hw_network_card_ip') {
-            $sql = 'SELECT ip_address_v4, ip_address_v6, ip_subnet, ip_address_version, sys_hw_network_card_ip.net_mac_address, net_connection_id FROM sys_hw_network_card_ip LEFT JOIN system ON system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_index = sys_hw_network_card.net_index WHERE system.system_id = ? GROUP BY sys_hw_network_card_ip.ip_id';
+            $sql = 'SELECT ip_address_v4, ip_address_v6, ip_subnet, ip_address_version, sys_hw_network_card_ip.net_mac_address, net_connection_id FROM sys_hw_network_card_ip LEFT JOIN system ON system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_index = sys_hw_network_card.net_index AND sys_hw_network_card_ip.system_id = sys_hw_network_card.system_id WHERE system.system_id = ? GROUP BY sys_hw_network_card_ip.ip_id';
         } elseif ($table == 'sys_hw_memory') {
             $sql = 'SELECT memory_bank, memory_type, memory_form_factor, memory_detail, memory_capacity, memory_speed, memory_tag, memory_serial FROM sys_hw_memory LEFT JOIN system ON system.system_id = sys_hw_memory.system_id AND system.timestamp = sys_hw_memory.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_hw_motherboard') {
@@ -119,11 +119,12 @@ class M_oa_general extends MY_Model
         } elseif ($table == 'sys_sw_netstat') {
             $sql = 'SELECT protocol, ip_address, port, program FROM sys_sw_netstat LEFT JOIN system ON system.system_id = sys_sw_netstat.system_id AND system.timestamp = sys_sw_netstat.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_hw_network_card') {
-            $sql = 'SELECT net_connection_id, net_mac_address, net_model, man_manufacturer, net_speed, net_connection_status, net_adapter_type, net_dhcp_enabled, net_dhcp_server, net_dhcp_lease_obtained, net_dhcp_lease_expires, net_dns_domain, net_dns_server, net_dns_domain_reg_enabled FROM sys_hw_network_card LEFT JOIN system ON system.system_id = sys_hw_network_card.system_id AND system.timestamp = sys_hw_network_card.timestamp WHERE system.system_id = ?';
+            $sql = 'SELECT net_connection_id, net_mac_address, CASE WHEN net_index IS NULL OR net_index = "" THEN net_connection_id ELSE net_index END AS net_index, net_model, net_description, man_manufacturer, net_speed, net_connection_status, net_adapter_type, net_dhcp_enabled, net_dhcp_server, net_dhcp_lease_obtained, net_dhcp_lease_expires, net_dns_domain, net_dns_server, net_dns_domain_reg_enabled FROM sys_hw_network_card LEFT JOIN system ON system.system_id = sys_hw_network_card.system_id AND system.timestamp = sys_hw_network_card.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_hw_partition') {
             $sql = 'SELECT hard_drive_index, partition_mount_type, partition_mount_point, partition_name, partition_size, partition_free_space, partition_used_space, partition_format, partition_caption, partition_disk_index, partition_bootable, partition_type, partition_quotas_supported, partition_quotas_enabled, partition_serial FROM sys_hw_partition LEFT JOIN system ON system.system_id = sys_hw_partition.system_id AND system.timestamp = sys_hw_partition.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_hw_processor') {
             $sql = 'SELECT processor_description, processor_speed, processor_count, processor_cores, processor_logical, processor_manufacturer FROM sys_hw_processor LEFT JOIN system ON system.system_id = sys_hw_processor.system_id AND system.timestamp = sys_hw_processor.timestamp WHERE system.system_id = ?';
+            #$sql = 'SELECT description AS processor_description, speed AS processor_speed, count AS processor_count, cores AS processor_cores, logical AS processor_logical, manufacturer AS processor_manufacturer FROM sys_hw_processor WHERE current = "y" AND system_id = ?';
         } elseif ($table == 'sys_sw_route') {
             $sql = 'SELECT destination, next_hop, mask, metric, protocol, sys_sw_route.type FROM sys_sw_route LEFT JOIN system ON system.system_id = sys_sw_route.system_id AND system.timestamp = sys_sw_route.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_sw_service') {
@@ -183,13 +184,14 @@ class M_oa_general extends MY_Model
         } elseif ($table == 'sys_sw_netstat_history_full') {
             $sql = 'SELECT sys_sw_netstat.protocol, sys_sw_netstat.port, sys_sw_netstat.ip_address, sys_sw_netstat.program, sys_sw_netstat.first_timestamp, sys_sw_netstat.timestamp, IF(sys_sw_netstat.first_timestamp = system.first_timestamp, "y", "n") as original_install, IF(sys_sw_netstat.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_netstat LEFT JOIN system ON (sys_sw_netstat.system_id = system.system_id) WHERE system.system_id = ? AND (system.first_timestamp = sys_sw_netstat.first_timestamp OR system.timestamp = sys_sw_netstat.timestamp)';
         } elseif ($table == 'sys_hw_network_card') {
-            $sql = 'SELECT sys_hw_network_card.* FROM sys_hw_network_card LEFT JOIN system ON system.system_id = sys_hw_network_card.system_id AND system.timestamp = sys_hw_network_card.timestamp WHERE system.system_id = ?';
+            $sql = 'SELECT sys_hw_network_card.*, CASE WHEN net_index IS NULL OR net_index = "" THEN net_connection_id ELSE net_index END AS net_index FROM sys_hw_network_card LEFT JOIN system ON system.system_id = sys_hw_network_card.system_id AND system.timestamp = sys_hw_network_card.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_hw_optical_drive') {
             $sql = 'SELECT sys_hw_optical_drive.* FROM sys_hw_optical_drive LEFT JOIN system ON system.system_id = sys_hw_optical_drive.system_id AND system.timestamp = sys_hw_optical_drive.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_hw_partition') {
             $sql = 'SELECT hard_drive_index, partition_device_id, partition_mount_type, partition_mount_point, partition_name, partition_size, partition_free_space, partition_used_space, partition_format, partition_caption, partition_disk_index, partition_bootable, partition_type, partition_quotas_supported, partition_quotas_enabled, partition_serial FROM sys_hw_partition LEFT JOIN system ON system.system_id = sys_hw_partition.system_id AND system.timestamp = sys_hw_partition.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_hw_processor') {
             $sql = 'SELECT processor_description, processor_speed, processor_count, processor_cores, processor_logical, processor_manufacturer FROM sys_hw_processor LEFT JOIN system ON system.system_id = sys_hw_processor.system_id AND system.timestamp = sys_hw_processor.timestamp WHERE system.system_id = ?';
+            #$sql = 'SELECT description AS processor_description, speed AS processor_speed, count AS processor_count, cores AS processor_cores,logical AS  processor_logical, manufacturer AS processor_manufacturer FROM sys_hw_processor WHERE current = "y" AND system_id = ?';
         } elseif ($table == 'sys_hw_scsi_controller') {
             $sql = 'SELECT sys_hw_scsi_controller.* FROM sys_hw_scsi_controller LEFT JOIN system ON system.system_id = sys_hw_scsi_controller.system_id AND system.timestamp = sys_hw_scsi_controller.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_hw_sound') {
@@ -277,7 +279,8 @@ class M_oa_general extends MY_Model
             $limit = "LIMIT 1";
         }
         $sql = "SELECT $table.$attribute FROM $table LEFT JOIN system ON ($table.system_id = system.system_id AND
-			$table.timestamp = system.timestamp) WHERE system.system_id = ? ".$limit;
+            $table.timestamp = system.timestamp) WHERE system.system_id = ? ".$limit;
+        #$sql = "SELECT $table.$attribute FROM $table WHERE system_id = ? AND current = 'y' ".$limit;
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         if ((strpos($attribute, ",") !== false) or ($attribute == "*")) {
@@ -302,7 +305,8 @@ class M_oa_general extends MY_Model
                 $object->table = '';
                 $object->count = '';
                 $sql = "SELECT COUNT(*) as count FROM $table LEFT JOIN system ON (system.system_id = $table.system_id)
-				WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
+                WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
+                #$sql = "SELECT COUNT(*) as count FROM $table WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day);";
                 $query = $this->db->query($sql);
                 $row = $query->row();
                 $object->count = $row->count;
@@ -365,6 +369,7 @@ class M_oa_general extends MY_Model
         foreach ($tables as $table) {
             if (((strpos($table, 'sys_hw_') !== false) or (strpos($table, 'sys_sw_') !== false)) and (strpos($table, "sys_hw_warranty") === false)) {
                 $sql = "DELETE $table FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
+                #$sql = "DELETE $table FROM $table WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
                 $query = $this->db->query($sql);
                 $count = $count + $this->db->affected_rows();
             }
@@ -377,6 +382,7 @@ class M_oa_general extends MY_Model
     {
         if (((strpos($table, 'sys_hw_') !== false) or (strpos($table, 'sys_sw_') !== false)) and (strpos($table, "sys_hw_warranty") === false)) {
             $sql = "DELETE $table FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day);";
+            #$sql = "DELETE $table FROM $table WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
             $query = $this->db->query($sql);
             $count = $this->db->affected_rows();
         }

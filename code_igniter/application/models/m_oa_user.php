@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -156,7 +156,8 @@ class M_oa_user extends MY_Model
             $details->user_admin = 'n';
         }
 
-        if ($details->user_password != '') {
+        if (isset($details->user_password) and isset($details->user_password_confirm) and
+            $details->user_password == $details->user_password_confirm and $details->user_password != '') {
             # password has a value so salt + sha256 it, then insert it into the db.
             # create the password
             $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
@@ -173,7 +174,7 @@ class M_oa_user extends MY_Model
                         "$encrypted_password", "$details->user_theme", "$details->user_lang",
                         "$details->user_admin", "$details->user_sam", "$details->user_id", );
         } else {
-            // do not set the password
+            // do not update the password
             $sql = "UPDATE oa_user SET user_name = ?, user_full_name = ?,
 					user_email = ?, user_theme = ?, user_lang = ?,
 					user_admin = ?, user_sam = ? WHERE user_id = ?";
@@ -373,7 +374,7 @@ class M_oa_user extends MY_Model
         }
 
         // get the user object from the supplied user name
-        if ($CI->config->config['internal_version'] < '20130512') {
+        if (isset($CI->config->config['internal_version']) and $CI->config->config['internal_version'] < '20130512') {
             $sql = "SELECT * FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
         } else {
             $sql = "SELECT * FROM oa_user WHERE oa_user.user_name = ? AND user_active = 'y' LIMIT 1";
@@ -382,7 +383,7 @@ class M_oa_user extends MY_Model
         $query = $this->db->query($sql, $data);
         if ($query->num_rows() > 0) {
             $CI->user = $query->row();
-            if ($CI->config->config['internal_version'] < '20130512') {
+            if (!isset($CI->config->config['internal_version']) or $CI->config->config['internal_version'] < '20130512') {
                 $CI->user->user_active = 'y';
             }
         } else {

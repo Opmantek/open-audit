@@ -28,7 +28,7 @@
     /**
      * @author Mark Unwin <marku@opmantek.com>
      *
-     * @version 1.6.4
+     * @version 1.8
      *
      * @copyright Copyright (c) 2014, Opmantek
      * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -66,6 +66,7 @@
     $device_types['chassis'] = 'Chassis';
     $device_types['dsl modem'] = 'DSL Modem';
     $device_types['dslam'] = 'DSLAM';
+    $device_types['environment monitor'] = 'Environment Monitor';
     $device_types['firewall'] = 'Firewall';
     $device_types['game console'] = 'Game Console';
     $device_types['gateway'] = 'Gateway';
@@ -101,6 +102,7 @@
     $device_types['scanner'] = 'Scanner';
     $device_types['security camera'] = 'Security Camera';
     $device_types['security misc'] = 'Security Misc';
+    $device_types['serial to ethernet'] = 'Serial to Ethernet Adapter';
     $device_types['smart phone'] = 'Smart Phone';
     $device_types['specialized'] = 'Specialized';
     $device_types['storage misc'] = 'Storage Misc';
@@ -111,6 +113,7 @@
     $device_types['terminal'] = 'Terminal';
     $device_types['terminal server'] = 'Terminal Server';
     $device_types['ups'] = 'UPS (Uninterruptible Power Supply)';
+    $device_types['video conference'] = 'Video Conference';
     $device_types['voip adapter'] = 'VoIP Adapter';
     $device_types['voip gateway'] = 'VoIP Gateway';
     $device_types['voip phone'] = 'VoIP Phone';

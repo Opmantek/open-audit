@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -348,8 +348,11 @@ class main extends MY_Controller
         $this->load->model("m_system");
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
+        $this->load->model("m_additional_fields");
         $this->data['locations'] = $this->m_oa_location->get_all_locations();
         $this->data['orgs'] = $this->m_oa_org->get_org_names();
+        include 'include_device_types.php';
+        $this->data['device_types'] = $device_types;
         $data['query'] = array();
         foreach ($_POST as $key => $value) {
             if (mb_strpos($key, 'system_id_') !== false) {
@@ -362,6 +365,7 @@ class main extends MY_Controller
                 $this->data['group_id'] = $value;
             }
         }
+        $this->data['additional_fields'] = $this->m_additional_fields->get_additional_fields_for_group($this->data['group_id']);
         $this->data['query'] = $data['query'];
         $this->data['include'] = 'v_edit_systems';
         $this->data['sortcolumn'] = '1';
@@ -376,6 +380,7 @@ class main extends MY_Controller
         }
         $this->load->model("m_oa_group");
         $this->load->model("m_audit_log");
+        $this->load->model("m_additional_fields");
         if (is_numeric($_POST['group_id'])) {
             // we must check to see if the user has at least VIEW permission on the group
             $this->user->user_access_level = $this->m_oa_group->get_group_access($_POST['group_id'], $this->user->user_id);
@@ -403,6 +408,28 @@ class main extends MY_Controller
                 $item = array($key, $value);
                 array_push($data['systems'], ($item));
                 $item = null;
+            }
+        }
+        $data['additional_fields'] = array();
+        foreach ($_POST as $key => $value) {
+            if ((mb_strpos($key, 'additional_') === 0) and ($value != '')) {
+                $field_name = str_replace('additional_', '', $key);
+                $field_name = str_replace('_', ' ', $field_name);
+                $item = array($field_name, $value);
+                array_push($data['additional_fields'], ($item));
+                $item = null;
+            }
+        }
+
+        # set any additional fields
+        if (count($data['additional_fields']) > 0) {
+            foreach ($data['systems'] as $system) {
+                foreach ($data['additional_fields'] as $field) {
+                    $field_name = $field[0];
+                    $field_data = $field[1];
+                    $this->m_additional_fields->set_system_field($system[1], $field_name, $field_data);
+                    $this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
+                }
             }
         }
 
@@ -889,14 +916,15 @@ class main extends MY_Controller
         $this->load->model("m_video");
         $this->load->model("m_webserver");
         $this->load->model("m_windows");
-        $this->data['additional_fields_data'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
+        // $this->data['additional_fields_data'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
+        // $sorted_names = $this->m_additional_fields->get_additional_fields_names();
+        // sort($sorted_names);
+        // $this->data['additional_fields_names'] = $sorted_names;
+        // $sort = $this->m_additional_fields->get_additional_fields($this->data['id']);
+        // sort($sort);
+        // $this->data['additional_fields'] = $sort;
 
-        $sorted_names = $this->m_additional_fields->get_additional_fields_names();
-        sort($sorted_names);
-        $this->data['additional_fields_names'] = $sorted_names;
-        $sort = $this->m_additional_fields->get_additional_fields($this->data['id']);
-        sort($sort);
-        $this->data['additional_fields'] = $sort;
+        $this->data['additional_fields_data'] = $this->m_additional_fields->get_system_fields($this->data['id']);
         $this->data['alerts'] = $this->m_alerts->get_system_alerts($this->data['id']);
         $this->data['assembly'] = $this->m_software->get_system_software($this->data['id'], 6);
         $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
@@ -1080,6 +1108,7 @@ class main extends MY_Controller
         } else {
             # process the form
             $error = '0';
+            $details = new stdClass();
             foreach ($_POST as $key => $value) {
                 $details->$key = $value;
             }
@@ -1111,8 +1140,12 @@ class main extends MY_Controller
                 if ($this->user->user_admin == 'y') {
                     $this->m_oa_group->edit_user_groups($details);
                 }
-                // Reset the admin user password in OAE
-                if ($details->user_name == 'admin') {
+                if ($details->user_name == 'admin' and
+                    isset($details->user_password) and
+                    isset($details->user_password_confirm) and
+                    $details->user_password == $details->user_password_confirm and
+                    $details->user_password != '') {
+                    // Reset the admin user password in OAE
                     $server_os = php_uname('s');
                     if ($server_os == 'Windows NT') {
                         $command_string = 'c:\xampplite\apache\bin\htpasswd.exe -mb c:\omk\conf\users.dat admin '.$details->user_password.' 2>&1';
@@ -1179,6 +1212,7 @@ class main extends MY_Controller
         $data['application_timezone'] = date_default_timezone_get();
 
         $data['os_platform'] = 'unknown';
+        $data['os_php_uname'] = php_uname('s');
         $data['os_version'] = '';
         $data['os_database'] = $this->db->platform()." (version ".$this->db->version().")";
         $data['os_webserver'] = getenv("SERVER_SOFTWARE");
@@ -1217,6 +1251,7 @@ class main extends MY_Controller
         $data['oae_link'] = '';
         $data['oae_server'] = '';
         $data['oae_username'] = '';
+        $phpini = '';
 
         if (php_uname('s') == 'Windows NT') {
             $data['os_platform'] = 'Windows';
