@@ -120,6 +120,7 @@
     $device_types['vpn terminator'] = 'VPN Terminator';
     $device_types['wan accelerator'] = 'WAN Accelerator';
     $device_types['wap'] = 'WAP (Wireless Access Point)';
+    $device_types['wdm'] = 'WDM (Wavelength Division Multiplexer)';
     $device_types['web cache'] = 'Web Cache';
     $device_types['webcam'] = 'Web Camera';
     $device_types['wireless router'] = 'Wireless Router';
