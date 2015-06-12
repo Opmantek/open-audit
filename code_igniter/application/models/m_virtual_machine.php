@@ -70,7 +70,7 @@ class M_virtual_machine extends MY_Model
 
         # attempt to match system_id
         if ($input->guest_system_id == '') {
-            $sql = "SELECT system_id FROM system WHERE uuid = LOWER(?) and man_status = 'production'";
+            $sql = "SELECT system_id FROM system WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
             $data = array(strtolower("$input->uuid"));
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
@@ -87,31 +87,28 @@ class M_virtual_machine extends MY_Model
         }
 
         # check for virtual machine changes
-        $sql = "SELECT
-				sys_sw_virtual_machine.id
-			FROM
-				sys_sw_virtual_machine LEFT JOIN system ON
-					(sys_sw_virtual_machine.system_id = system.system_id AND
-						sys_sw_virtual_machine.timestamp = system.timestamp)
-			WHERE
-				system.system_id = ? AND
-				sys_sw_virtual_machine.uuid = ? AND
-				( sys_sw_virtual_machine.timestamp = ? OR sys_sw_virtual_machine.timestamp = ? )
-			LIMIT 1";
-        $sql = $this->clean_sql($sql);
-        $data = array(    "$details->system_id",
-                "$input->uuid",
-                "$details->original_timestamp",
-                "$details->timestamp",    );
-        $query = $this->db->query($sql, $data);
-        if ($query->num_rows() > 0) {
-            $row = $query->row();
-            // the vm exists - need to update it
-            $sql = "UPDATE sys_sw_virtual_machine SET guest_system_id = ?, status = ?, timestamp = ? WHERE id = ? ";
-            $data = array("$input->guest_system_id", "$input->status", "$details->timestamp", "$row->id");
-            $query = $this->db->query($sql, $data);
-        } else {
+        // $sql = "SELECT id FROM sys_sw_virtual_machine WHERE sys_sw_virtual_machine.system_id = ? AND
+        // LOWER(sys_sw_virtual_machine.uuid) = LOWER(?) AND ( sys_sw_virtual_machine.timestamp = ? OR sys_sw_virtual_machine.timestamp = ? ) LIMIT 1";
+        // $sql = $this->clean_sql($sql);
+        // $data = array("$details->system_id", "$input->uuid", "$details->original_timestamp", "$details->timestamp");
+        // $query = $this->db->query($sql, $data);
+        // if ($query->num_rows() > 0) {
+        //     $row = $query->row();
+        //     // the vm exists - need to update it
+        //     $sql = "UPDATE sys_sw_virtual_machine SET guest_system_id = ?, status = ?, timestamp = ? WHERE id = ? ";
+        //     $data = array("$input->guest_system_id", "$input->status", "$details->timestamp", "$row->id");
+        //     $query = $this->db->query($sql, $data);
+        // } else {
             // the vm does not exist - insert it
+
+        // commented the above because it wasn't working correctly (an insert was occurring for every audit) and doesn't account for guest VMs moving from host to host.
+
+        // this will remove all UUIDs and insert a new entry for the currently found guest
+        // TODO - work through some better logic here - this is a bit of a sledgehammer approach
+        $sql = "DELETE sys_sw_virtual_machine FROM sys_sw_virtual_machine WHERE LOWER(uuid) = LOWER(?)";
+        $data = array("$input->uuid");
+        $query = $this->db->query($sql, $data);
+
             $sql = "INSERT INTO sys_sw_virtual_machine
 				( 	system_id,
 					guest_system_id,
@@ -125,7 +122,7 @@ class M_virtual_machine extends MY_Model
 					status,
 					timestamp,
 					first_timestamp )
-				VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+				VALUES ( ?, ?, ?, ?, LOWER(?), ?, ?, ?, ?, ?, ?, ? )";
             $sql = $this->clean_sql($sql);
             $data = array("$details->system_id",
                     "$input->guest_system_id",
@@ -140,7 +137,7 @@ class M_virtual_machine extends MY_Model
                     "$details->timestamp",
                     "$details->timestamp",    );
             $query = $this->db->query($sql, $data);
-        }
+        // }
     } // end of function
 
     public function alert_vm($details)
