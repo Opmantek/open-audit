@@ -86,29 +86,41 @@ class M_virtual_machine extends MY_Model
             $query = $this->db->query($sql, $data);
         }
 
-        # check for virtual machine changes
-        // $sql = "SELECT id FROM sys_sw_virtual_machine WHERE sys_sw_virtual_machine.system_id = ? AND
-        // LOWER(sys_sw_virtual_machine.uuid) = LOWER(?) AND ( sys_sw_virtual_machine.timestamp = ? OR sys_sw_virtual_machine.timestamp = ? ) LIMIT 1";
-        // $sql = $this->clean_sql($sql);
-        // $data = array("$details->system_id", "$input->uuid", "$details->original_timestamp", "$details->timestamp");
-        // $query = $this->db->query($sql, $data);
-        // if ($query->num_rows() > 0) {
-        //     $row = $query->row();
-        //     // the vm exists - need to update it
-        //     $sql = "UPDATE sys_sw_virtual_machine SET guest_system_id = ?, status = ?, timestamp = ? WHERE id = ? ";
-        //     $data = array("$input->guest_system_id", "$input->status", "$details->timestamp", "$row->id");
-        //     $query = $this->db->query($sql, $data);
-        // } else {
-            // the vm does not exist - insert it
-
-        // commented the above because it wasn't working correctly (an insert was occurring for every audit) and doesn't account for guest VMs moving from host to host.
-
-        // this will remove all UUIDs and insert a new entry for the currently found guest
-        // TODO - work through some better logic here - this is a bit of a sledgehammer approach
-        $sql = "DELETE sys_sw_virtual_machine FROM sys_sw_virtual_machine WHERE LOWER(uuid) = LOWER(?)";
+        $sql = "SELECT id FROM sys_sw_virtual_machine WHERE uuid = ?";
         $data = array("$input->uuid");
         $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        $count = count($result);
 
+        if ($count > 1) {
+            // delete all entries and set count = 0 to insert one further down
+            // TOTO - fix this for v2 and allow multiple entries, but flag the other entries as current = n
+            $sql = "DELETE sys_sw_virtual_machine FROM sys_sw_virtual_machine WHERE LOWER(uuid) = LOWER(?)";
+            $data = array("$input->uuid");
+            $query = $this->db->query($sql, $data);
+            $count = 0;
+        }
+        if ($count == 1) {
+            // update this specific entry as we only have one entry
+            $sql = "UPDATE sys_sw_virtual_machine SET system_id = ?, guest_system_id = ?, name = ?, vm_id = ?, uuid = ?,
+                    vm_group = ?, config_file = ?, memory = ?, cpu = ?, status = ?, timestamp = ?, first_timestamp = ? WHERE id = ?";
+            $data = array("$details->system_id",
+                    "$input->guest_system_id",
+                    "$input->name",
+                    "$input->vm_id",
+                    "$input->uuid",
+                    "$input->vm_group",
+                    "$input->config_file",
+                    "$input->memory",
+                    "$input->cpu",
+                    "$input->status",
+                    "$details->timestamp",
+                    "$details->timestamp",
+                    $result[0]->id);
+            $query = $this->db->query($sql, $data);
+        }
+        if ($count == 0) {
+            // insert a new entry
             $sql = "INSERT INTO sys_sw_virtual_machine
 				( 	system_id,
 					guest_system_id,
@@ -135,9 +147,9 @@ class M_virtual_machine extends MY_Model
                     "$input->cpu",
                     "$input->status",
                     "$details->timestamp",
-                    "$details->timestamp",    );
+                    "$details->timestamp");
             $query = $this->db->query($sql, $data);
-        // }
+        }
     } // end of function
 
     public function alert_vm($details)
