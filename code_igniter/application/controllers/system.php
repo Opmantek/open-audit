@@ -727,6 +727,9 @@ class System extends CI_Controller
         }
         $this->m_sys_man_audits->update_audit($details, 'finished xml processing');
 
+        // Generate any DNS entries required
+        $this->m_dns->create_dns_entries((int)$details->system_id);
+
         // Now generate any needed alerts
         if ($details->original_timestamp == '') {
             $this->m_sys_man_audits->update_audit($details, 'generate initial audit alert');

@@ -51,6 +51,119 @@ class M_dns extends MY_Model
         return ($result);
     }
 
+    public function create_dns_entries($id = 0)
+    {
+
+        $this->load->helper('log');
+        $log_details = new stdClass();
+        $log_details->file = 'system';
+        $log_details->severity = 7;
+        
+
+        $sql = "SELECT ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN system ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) WHERE system.system_id = ?";
+$details_log->message = $sql;
+stdlog($log_details);
+        $data = array($id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        $dns_entries = array();
+        foreach ($result as $row) {
+            $ip = $this->ip_address_from_db($row->ip_address_v4);
+            if (isset($ip) and $ip != '0.0.0.0' and $ip != '000.000.000.000' and $ip != '' and $ip != '127.0.0.1' and filter_var($ip, FILTER_VALIDATE_IP) !== false) {
+                $dns_entry = new stdClass();
+                $dns_entry->ip = $ip;
+                $dns_entry->fqdn = '';
+                $dns_entry->name = '';
+                $dns_entry->fqdn = gethostbyaddr($ip);
+                if ($dns_entry->fqdn == $dns_entry->ip) {
+                    $dns_entry->fqdn = '';
+                } else {
+                    if (strrpos($dns_entry->fqdn, '.')) {
+                        $temp = explode('.', $dns_entry->fqdn);
+                        $dns_entry->name = $temp[0];
+                        unset($temp);
+                    } else {
+                        $dns_entry->name = $dns_entry->fqdn;
+                        $dns_entry->fqdn = '';
+                    }
+                }
+                $dns_entries[] = $dns_entry;
+                unset($dns_entry);
+            }
+        }
+        foreach ($dns_entries as $dns_entry) {
+            if ($dns_entry->name != '') {
+                $ip = gethostbyname($dns_entry->name);
+                if ($ip != $dns_entry->ip and $ip != $dns_entry->name) {
+                    foreach ($dns_entries as $dns) {
+                        if ($dns->ip == $ip) {
+                            $ip = '';
+                        }
+                        unset($dns);
+                    }
+                    if ($ip != '') {
+                        $new = new stdClass();
+                        $new->ip = $ip;
+                        $new->name = $dns_entry->name;
+                        $new->fqdn = $dns_entry->fqdn;
+                        $dns_entries[] = $new;
+                    }
+                }
+            }
+        }
+        $sql = "SELECT system_audits_time FROM sys_man_audits WHERE system_id = ? ORDER BY system_audits_time DESC LIMIT 2";
+        $data = array("$id");
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+$details_log->message = $this->db->last_query();
+stdlog($log_details);
+        if (isset($result)) {
+            if (isset($result[0]->system_audits_time)) {
+                $timestamp = $result[0]->system_audits_time;
+            }
+            if (isset($result[1]->system_audits_time)) {
+                $last_timestamp = $result[1]->system_audits_time;
+            }
+        }
+
+
+        $sql = "DELETE FROM sys_sw_dns WHERE system_id = ?";
+        $data = array($id);
+        $query = $this->db->query($sql, $data);
+
+        foreach ($dns_entries as $dns_entry) {
+
+            $sql = "INSERT INTO sys_sw_dns VALUES (NULL, ?, ?, ?, ?, ?, ?)";
+            $data = array("$id", "$dns_entry->name", "$dns_entry->fqdn", $this->ip_address_to_db("$dns_entry->ip"), "$timestamp", "$timestamp");
+            $query = $this->db->query($sql, $data);
+
+            // TODO - fix this for v2 as per the virtual machines.
+
+            // $sql = "SELECT * FROM sys_sw_dns WHERE dns_ip_address = ? AND dns_name = ? AND system_id = ? AND timestamp = ? OR timestamp = ?";
+            // $data = array("$dns_entry->ip", "$dns_entry->name", "$id", "$timestamp", "$last_timestamp");
+            // $query = $this->db->query($sql, $data);
+            // $result = $query->result();
+            // if (count($result) > 1) {
+            //     $sql = "DELETE FROM sys_sw_dns WHERE dns_ip_address = ? AND dns_name = ? AND system_id = ? AND timestamp = ? OR timestamp = ?";
+            //     $data = array("$dns_entry->ip", "$dns_entry->name", "$id", "$timestamp", "$last_timestamp");
+            //     $query = $this->db->query($sql, $data);
+            //     $sql = "INSERT INTO sys_sw_dns VALUES (NULL, ?, ?, ?, ?, ?, ?)";
+            //     $data = array("$id", "$dns_entry->name", "$dns_entry->fqdn", "$dns_entry->ip", "$timestamp", "$timestamp");
+            //     $query = $this->db->query($sql, $data);
+            // }
+            // if (count($result) == 0) {
+            //     $sql = "INSERT INTO sys_sw_dns VALUES (NULL, ?, ?, ?, ?, ?, ?)";
+            //     $data = array("$id", "$dns_entry->name", "$dns_entry->fqdn", "$dns_entry->ip", "$timestamp", "$timestamp");
+            //     $query = $this->db->query($sql, $data);
+            // }
+            // if (count($result) == 1) {
+            //     $sql = "UPDATE sys_sw_dns SET timestamp = ? WHERE dns_id = ?";
+            //     $data = array("$timestamp", $result[0]->dns_id);
+            //     $query = $this->db->query($sql, $data);
+            // }
+        }
+    }
+
     public function process_dns($input, $details)
     {
         if (((string) $details->first_timestamp == (string) $details->original_timestamp) and ($details->original_last_seen_by != 'audit')) {

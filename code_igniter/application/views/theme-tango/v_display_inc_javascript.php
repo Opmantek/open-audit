@@ -416,7 +416,8 @@ $(document).ready(function(){
 	$('#view_summary_custom').hide();
 	$('#view_summary_attachment').hide();
 	$('#view_summary_nmis').hide();
-	$('#view_summary_module').hide();
+    $('#view_summary_module').hide();
+    $('#view_summary_dns').hide();
 	<?php if ($system[0]->man_type == 'access point' or
         $system[0]->man_type == 'adsl modem' or
         $system[0]->man_type == 'bdsl modem' or
@@ -539,6 +540,14 @@ $(document).ready(function(){
         toggleBold("toggle_summary_module");
 	});
 	<?php } ?>
+
+    <?php if (count($dns) > 0) {
+    ?>
+    $('#toggle_summary_dns').click(function(){
+        $('#view_summary_dns').slideToggle("fast");
+        toggleBold("toggle_summary_dns");
+    });
+    <?php } ?>
 
 	$('#view_hardware_processor').hide();
 	$('#view_hardware_memory').hide();

@@ -376,6 +376,11 @@ class Admin_system extends MY_Controller
                     $this->m_module->process_module($input, $details);
                 }
             }
+
+            // Generate any DNS entries required
+            $this->load->model('m_dns');
+            $this->m_dns->create_dns_entries((int)$details->system_id);
+
         } else {
             echo "Audit NOT submitted.";
         }

@@ -77,6 +77,7 @@
                             <?php if (count($windows) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_windows.png" /><a href="#" id="toggle_summary_windows"><?php echo __('Windows Details'); ?></a></li><?php } ?>
                             <?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_vmware.png" /><a href="#" id="toggle_summary_vms"><?php echo __('VM Guest Details'); ?></a></li><?php } ?>
                             <?php if (count($module) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_memory.png" /><a href="#" id="toggle_summary_module"><?php echo __('Entities'); ?></a></li> <?php } ?>
+                            <?php if (count($dns) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_wireless_router.png" /><a href="#" id="toggle_summary_dns"><?php echo __('DNS'); ?></a></li> <?php } ?>
                         </ul>
                     </li>
                     <?php
