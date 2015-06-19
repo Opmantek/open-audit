@@ -445,4 +445,82 @@ class login extends CI_Controller
         $this->session->sess_destroy();
         redirect('login/index/main/list_groups');
     }
+
+    public function modal()
+    {
+        $file = @json_decode(file_get_contents('/usr/local/opmojo/conf/modal_oae.json'));
+        if (!$file) {
+            $file = @json_decode(file_get_contents('/usr/local/open-audit/other/modal_oae.json'));
+        }
+        if (!$file) {
+            $file = @json_decode(file_get_contents('c:\\omk\\conf\\modal_oae.json'));
+        }
+        if (!$file) {
+            $file = @json_decode(file_get_contents('c:\\xampplite\\open-audit\\other\\modal_oae.json'));
+        }
+        if (!$file) {
+            $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+            header($protocol . ' 500 Cannot open json file.');
+            exit();
+        }
+
+        # add the stylesheet
+        $output = "<link href=\"/open-audit/css/bootstrap.min.css\" rel=\"stylesheet\" />";
+
+        # enclose the content
+        $output .= "<div>\n";
+
+        # add the header
+        if ($file->header[0]->text and $file->header[0]->text != "") {
+            $output .= "<h2>" . $file->header[0]->text . "</h2>";
+        }
+
+        # add top message
+        if ($file->top_message and $file->top_message != "") {
+            $output .= "<span>" . $file->top_message . "</span><br />\n";
+        }
+
+        # add the table
+        if ($file->table) {
+            $output .= "<table class=\"table table-striped table-bordered\" width=\"100%\">";
+            if ($file->table->header) {
+            $output .= "<tr>\n";
+                foreach ($file->table->header as $header) {
+                    $output .= "<th class=\"" . $header->class . "\">" . $header->text . "</th>";
+                }
+                $output .= "</tr>\n";
+            }
+            if ($file->table->rows) {
+                foreach ($file->table->rows as $row) {
+                    $output .= "<tr>\n";
+                    foreach ($row as $cell) {
+                        if (isset($cell->button)) {
+                            $output .= "<td class=\"" . $cell->class . "\">" . $cell->text . "<br /><button type=\"button\" class=\"btn btn-success btn-sm\"><a style=\"color:white;\" href=\"" . $cell->button_link . "\">" . $cell->button . "</a></button></td>";
+                        } else {
+                            $output .= "<td class=\"" . $cell->class . "\">" . $cell->text . "</td>";
+                        }
+                    }
+                    $output .= "</tr>\n";
+                }
+            }
+            $output .= "</table>\n";
+        }
+
+        # add bottom message
+        if ($file->bottom_message and $file->bottom_message != "") {
+            $output .= "<span>" . $file->bottom_message . "</span><br />\n";
+        }
+
+        # add the footer
+        if ($file->footer) {
+            foreach ($file->footer as $footer) {
+                $output .= "<span style=\"" . $footer->button_parent_style . "\"><button type=\"button\" class=\"btn btn-default btn-sm\"><a href=\"" . $footer->button_link . "\">" . $footer->button . "</a></button></span>";
+            }
+        }
+        # enclose the content
+        $output .= "<br /></div>\n";
+
+        # echo the result
+        echo $output;
+    }
 }
