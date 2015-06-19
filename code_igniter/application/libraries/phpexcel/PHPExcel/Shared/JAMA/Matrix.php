@@ -38,7 +38,7 @@ require_once PHPEXCEL_ROOT . 'PHPExcel/Calculation/Functions.php';
  *	@author Michael Bommarito
  *	@author Lukasz Karapuda
  *	@author Bartek Matosiuk
- *	@version 1.8
+ *	@version 1.8.2
  *	@license PHP v3.0
  *	@see http://math.nist.gov/javanumerics/jama/
  */
