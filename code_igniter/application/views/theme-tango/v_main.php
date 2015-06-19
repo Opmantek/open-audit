@@ -303,8 +303,8 @@ $(document).ready(function() {
 } ?>
 
 <?php
-$show_modal = true;
-if ($show_modal) {
+
+if ($this->config->config['oae_prompt'] != 'n' and $this->config->config['oae_license_status'] != 'valid') {
 ?>
 <style>
     * {
