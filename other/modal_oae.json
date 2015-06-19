@@ -1,9 +1,9 @@
 {
-    "timestamp": "2015/05/01",
+    "timestamp": "2015-06-01",
 
     "header": [{"text": "Open-AudIT Community and Enterprise", "class": ""}],
 
-    "top_message": "This is the message that should go into the top div, above the table.",
+    "top_message": "",
 
     "table": {
         "header": [
@@ -106,11 +106,11 @@
         ]
     },
 
-    "bottom_message": "Any text for the bottom message should go below the table.",
+    "bottom_message": "",
 
     "footer": [
-        {"button": "Do not show me again", "button-style": "", "button_parent_style": "float:left;"},
-        {"button": "Ask me later", "button-style": "", "button_parent_style": "float:right;"}
+        {"button": "Do not show me again", "button-style": "", "button_parent_style": "float:left;", "button_link": "https://opmantek.com"},
+        {"button": "Ask me later", "button-style": "", "button_parent_style": "float:right;", "button_link": "https://opmantek.com"}
     ]
 
 }

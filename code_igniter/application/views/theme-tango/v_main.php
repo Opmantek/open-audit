@@ -363,6 +363,7 @@ if ($this->config->config['oae_prompt'] != 'n' and $this->config->config['oae_li
             var top, left;
 
             top = Math.max($(window).height() - $modal.outerHeight(), 0) / 3;
+            top = 30;
             left = Math.max($(window).width() - $modal.outerWidth(), 0) / 2;
 
             $modal.css({
