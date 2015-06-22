@@ -2128,7 +2128,7 @@ INSERT INTO oa_config (config_name, config_value, config_editable, config_descri
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('nmis_url', '', 'y', 'The web server address of NMIS.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('non_admin_search', 'y', 'y', 'Enable or disable search for non-Administrators');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_license_status', '', 'n', 'License status of Open-AudIT Enterprise.');
-INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_prompt', 'y', 'n', 'Prompt to activate a license for Open-AudIT Enterprise.');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_prompt', '2015-06-01', 'n', 'Prompt to activate a license for Open-AudIT Enterprise.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_url', '/omk/oae', 'y', 'The web server address of Open-AudIT Enterprise.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('page_refresh', '300', 'y', 'Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('rss_enable', 'y', 'y', 'Enable the RSS feed.');

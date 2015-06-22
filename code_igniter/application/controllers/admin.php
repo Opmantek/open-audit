@@ -3688,7 +3688,7 @@ class admin extends MY_Controller
             $log_details->message = 'Upgrade database to 1.8.2 commenced';
             stdlog($log_details);
 
-            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_prompt', 'y', 'n', 'Prompt to activate a license for Open-AudIT Enterprise.')";
+            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_prompt', '2015-06-01', 'n', 'Prompt to activate a license for Open-AudIT Enterprise.')";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
