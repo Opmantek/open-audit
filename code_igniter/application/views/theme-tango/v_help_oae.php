@@ -61,7 +61,7 @@ $sortcolumn = 2;
 
 
 		<br /><br /><br /><br />
-		<img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_dashboard.png" /><br /><br />
-		<img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_report.png" /><br />
+		<img src="<?php echo $this->config->config['oa_web_folder']; ?>/images/sample_dashboard.png" /><br /><br />
+		<img src="<?php echo $this->config->config['oa_web_folder']; ?>/images/sample_report.png" /><br />
 	</fieldset>
 </form>
