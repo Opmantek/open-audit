@@ -227,7 +227,7 @@ class M_system extends MY_Model
             # check the sys_hw_network_card_ip table
             $sql = "SELECT system.system_id FROM system
 					LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
-					WHERE LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(?)
+					WHERE sys_hw_network_card_ip.net_mac_address = ?
 					AND system.man_status = 'production' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->mac_address");
@@ -249,7 +249,7 @@ class M_system extends MY_Model
                         $sql = "SELECT system.system_id FROM system
 								LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND
 									system.timestamp = sys_hw_network_card_ip.timestamp)
-								WHERE LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(?)
+								WHERE sys_hw_network_card_ip.net_mac_address = ?
 								AND system.man_status = 'production' LIMIT 1";
                         $sql = $this->clean_sql($sql);
                         $data = array("$mac");
@@ -1519,7 +1519,7 @@ class M_system extends MY_Model
             }
 
             # search for any entries in both sys_hw_network_card_ip
-            $sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
+            $sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
             $data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
             $query = $this->db->query($sql, $data);
             $result = $query->result();
@@ -1531,7 +1531,7 @@ class M_system extends MY_Model
                 $query = $this->db->query($sql, $data);
             } else {
                 # match - update timestamp only
-                $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
+                $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
                 $data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
                 $query = $this->db->query($sql, $data);
             }

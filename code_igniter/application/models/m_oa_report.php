@@ -115,7 +115,7 @@ class M_oa_report extends MY_Model
 
     public function get_report_id($report_name)
     {
-        $sql = "SELECT report_id FROM oa_report WHERE LOWER(report_name) = LOWER(?) LIMIT 1";
+        $sql = "SELECT report_id FROM oa_report WHERE report_name = ? LIMIT 1";
         $data = array("$report_name");
         $query = $this->db->query($sql, $data);
         $result = $query->result();

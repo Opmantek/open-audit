@@ -70,7 +70,7 @@ class M_virtual_machine extends MY_Model
 
         # attempt to match system_id
         if ($input->guest_system_id == '') {
-            $sql = "SELECT system_id FROM system WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
+            $sql = "SELECT system_id FROM system WHERE uuid = ? and man_status = 'production'";
             $data = array(strtolower("$input->uuid"));
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
@@ -95,7 +95,7 @@ class M_virtual_machine extends MY_Model
         if (isset($count) and $count > 1) {
             // delete all entries and set count = 0 to insert one further down
             // TOTO - fix this for v2 and allow multiple entries, but flag the other entries as current = n
-            $sql = "DELETE sys_sw_virtual_machine FROM sys_sw_virtual_machine WHERE LOWER(uuid) = LOWER(?)";
+            $sql = "DELETE sys_sw_virtual_machine FROM sys_sw_virtual_machine WHERE uuid = ?";
             $data = array("$input->uuid");
             $query = $this->db->query($sql, $data);
             $count = 0;
