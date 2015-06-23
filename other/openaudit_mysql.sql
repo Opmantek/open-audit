@@ -773,6 +773,8 @@ CREATE TABLE `sys_hw_network_card` (
   PRIMARY KEY  (`net_id`),
   KEY `net_mac_address` (`net_mac_address`),
   KEY `system_id` (`system_id`),
+  KEY `net_index` (`net_index`),
+  KEY `timestamp` (`timestamp`),
   CONSTRAINT `sys_hw_network_card_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

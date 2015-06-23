@@ -3692,6 +3692,14 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
+            $sql = "CREATE INDEX net_index ON sys_hw_network_card (net_index) ";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "CREATE INDEX `timestamp` ON sys_hw_network_card (`timestamp`) ";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
             $sql = "UPDATE oa_config SET config_value = '20150620' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
