@@ -79,6 +79,10 @@ foreach ($data as $key => $value) {
         echo "<pre>\n\nSESSION USERDATA\n----\n";
         print_r($this->session->userdata);
         echo "<pre>\n\nINTERNAL CONFIG\n----\n";
+        $this->config->config['default_snmp_community'] = '******';
+        $this->config->config['default_ssh_password'] = '******';
+        $this->config->config['default_windows_password'] = '******';
+        $this->config->config['default_ipmi_password'] = '******';
         print_r($this->config->config);
         ?>
 		</pre>
