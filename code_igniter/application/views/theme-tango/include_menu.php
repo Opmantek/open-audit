@@ -230,9 +230,15 @@
             <li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
             <li><a href='<?php echo $oa_web_index; ?>/main/help_statistics'><?php echo __('Statistics')?></a></li>
             <li><a href='<?php echo $oa_web_index; ?>/main/help_support'><?php echo __('Support')?></a></li>
-            <!--
-            <li><a href='javascript:void(0)'><?php echo __('Support')?></a></li>
-            -->
+        </ul>
+    </li>
+
+    <li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Licenses'))?></a>
+        <ul>
+            <li><a href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
+            <li><a href='#'><?php echo __('Buy More Licenses')?></a></li>
+            <li><a href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
+            <li><a href='/omk/oae/license_restore'><?php echo __('Restore Licenses')?></a></li>
         </ul>
     </li>
 

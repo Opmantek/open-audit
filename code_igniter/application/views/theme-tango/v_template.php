@@ -188,7 +188,7 @@ function print_something($string)
 	<style type="text/css">
 	a { color: #101010; text-decoration: none }
 	a:hover { color: #729FCF; }
-	body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #FBFAF9; font-size:12px; color:#111;}
+	body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #FBFAF9; font-size:12px; color:#111; margin:8px;}
 	h2 { border-color:#FFF; border-style:solid; border-width:0pt 0pt 1px; color:#555555; font-size:22px; font-weight:bold; padding:0px 0px 1px; }
 	img {border:0;}
 	</style>
