@@ -2105,6 +2105,7 @@ INSERT INTO `oa_group_user` (`group_user_id`,`user_id`,`group_id`,`group_user_ac
 
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_domain', '', 'y', 'The domain name against which your users will validate to log on to Open-AudIT. EG - open-audit.org');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('ad_server', '', 'y', 'The IP Address of the domain controller your users will validate to log to Open-AudIT. EG - 192.168.0.1');
+INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('create_alerts', 'y', 'y', 'Should Open-AudIT create an entry in the alert table if a change is detected.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ipmi_password', '', 'y', 'The default password used by Open-AudIT to audit devices via IPMI.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_ipmi_username', '', 'y', 'The default username used by Open-AudIT to audit devices via IPMI.');
 INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('default_network_address', '', 'y', 'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');

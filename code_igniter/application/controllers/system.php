@@ -340,6 +340,7 @@ class System extends CI_Controller
     public function add_system()
     {
         $this->benchmark->mark('code_start');
+        $this->load->model('m_oa_config');
         $this->load->helper('url');
         set_time_limit(600);
         $this->load->helper('html');
@@ -748,7 +749,9 @@ class System extends CI_Controller
             }
         }
 
-        if ($details->original_timestamp !== '') {
+        $create_alerts = $this->m_oa_config->get_config_item('create_alerts');
+
+        if ($details->original_timestamp !== '' and $create_alerts == 'y') {
             $this->m_sys_man_audits->update_audit($details, 'generate any required alerts');
             $this->m_sys_man_audits->update_audit($details, 'alerts');
             // We have to go through all tables, checking for

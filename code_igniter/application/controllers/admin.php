@@ -3692,6 +3692,10 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
+            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('create_alerts', 'y', 'y', 'Should Open-AudIT create an entry in the alert table if a change is detected.')";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
             $sql = "CREATE INDEX net_index ON sys_hw_network_card (net_index) ";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
