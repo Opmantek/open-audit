@@ -352,7 +352,6 @@ fi
 # CREATE THE AUDIT FILE                                #
 ########################################################
 
-
 start_time=$(timer)
 
 if [ "$debugging" -gt 0 ]; then
@@ -404,19 +403,27 @@ fi
 
 # Set the TimeSamp
 system_timestamp=$(date +'%F %T')
-
-# Get the script name
-#sScriptName=$(echo "$0" | rev | cut -d/ -f1 | rev)
-
-# Set the Process ID
-nPID="$BASHPID"
+script_pid="$BASHPID"
+script_name=$(basename $0)
 
 if [ "$debugging" -gt 0 ]; then
-	echo "My PID is : $nPID"
+	echo "My PID is : $script_pid"
 	echo "Audit Start Time : $system_timestamp"
 	echo "Audit Location: $audit_location"
 	echo "-------------------"
 fi
+
+IFS=ORIGIFS;
+if [ $(pidof -x "$script_name") != "$script_pid" ]; then
+	if [ "$debugging" -gt 0 ]; then
+		echo "Exiting as other audits are currently running."
+		for pid in $(pidof -x "$script_name"); do
+			echo $(ps -p "$pid");
+		done
+	fi
+	exit 0
+fi
+IFS=$'\n';
 
 #========================
 #  SYSTEM INFO          #
