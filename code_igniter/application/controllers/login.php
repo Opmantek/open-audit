@@ -122,19 +122,25 @@ class login extends CI_Controller
             // license status are: valid, invalid, expired, none
             $license = @file_get_contents($oae_license_url, false);
             if ($license !== false) {
-                // remove the unneeded html tags
-                $license = str_replace('<pre>', '', $license);
-                $license = str_replace('</pre>', '', $license);
+                // remove the unneeded escaping
+                if (strpos($license, '"') === 0) {
+                    $license = substr($license, 1, -1);
+                    $license = str_replace('\"', '"', $license);
+                }
+                $license = json_decode($license);
             } else {
-                $license = 'none';
+                $license = new stdClass();
+                $license->status = 'none';
+                $license->type = '';
             }
         }
 
-        // echo "<!-- " . $license . " -->\n";
+        // echo "<!-- " . $license->status . " -->\n";
         // echo "<!-- " . $oae_url . " -->\n";
         // echo "<!-- " . $oae_license_url . " -->\n";
         $data['logo'] = 'logo-banner-oac-oae.png';
         $data['oae_message'] = '';
+        $this->m_oa_config->update_config('oae_license_type', $license->type, '', date('Y-m-d H:i:s'));
 
         if ($oae_url == '') {
             // OAE is not installed
@@ -147,7 +153,7 @@ class login extends CI_Controller
             $this->load->view('v_login', $data);
         }
 
-        if (($data['form_url'] != '') and ($oae_url > '') and ($license == 'valid')) {
+        if (($data['form_url'] != '') and ($oae_url > '') and ($license->status == 'valid')) {
             // user going to an internal page and OAE is installed with a valid license
             // set the logo and show the logon page
             $data['oae_message'] = ' ';
@@ -158,7 +164,7 @@ class login extends CI_Controller
             $this->load->view('v_login', $data);
         }
 
-        if (($data['form_url'] == '') and ($oae_url > '') and ($license == 'valid')) {
+        if (($data['form_url'] == '') and ($oae_url > '') and ($license->status == 'valid')) {
             // user going to logon page (not internal page) and OAE is installed and licensed
             // redirect
             if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oac' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oac' or $this->config->config['logo'] == 'oac-oae')) {
@@ -168,7 +174,7 @@ class login extends CI_Controller
             redirect($oae_url);
         }
 
-        if ($license == 'invalid') {
+        if ($license->status == 'invalid') {
             // OAE is installed but has an invalid license
             // show the logon page
             $data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;' style='color: blue;'>Opmantek</a> for a valid license<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";
@@ -179,7 +185,7 @@ class login extends CI_Controller
             $this->load->view('v_login', $data);
         }
 
-        if ($license == 'expired') {
+        if ($license->status == 'expired') {
             // OAE is installed but the license has expired
             // show the logon page
             $data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";
@@ -190,7 +196,7 @@ class login extends CI_Controller
             $this->load->view('v_login', $data);
         }
 
-        if ($license == 'none') {
+        if ($license->status == 'none') {
             // OAE is installed but not licensed
             // show the logon page
             $data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";

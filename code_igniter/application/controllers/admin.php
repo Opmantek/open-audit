@@ -3696,6 +3696,10 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
+            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('oae_license_type', '', 'n', 'The type of license you have for Enterprise.')";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
             $sql = "CREATE INDEX net_index ON sys_hw_network_card (net_index) ";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);

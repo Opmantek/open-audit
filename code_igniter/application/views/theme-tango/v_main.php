@@ -294,7 +294,7 @@ $(document).ready(function() {
 } ?>
 
 <?php
-if ($this->config->config['oae_prompt'] <= date('Y-m-d') and $this->config->config['oae_license_status'] != 'valid') {
+if ($this->config->config['oae_prompt'] <= date('Y-m-d') and $this->config->config['oae_license_type'] == 'Free') {
 ?>
 <style>
     * {
@@ -363,10 +363,80 @@ if ($this->config->config['oae_prompt'] <= date('Y-m-d') and $this->config->conf
         };
 
         // Open the modal
-        method.open = function (settings) {
+       method.open = function (settings) {
 
-            // insert the attributes
-            $content.empty().append(settings.content);
+            // css from OAE / Bootstrap
+            $content.empty().append("<link href=\"/omk/css/bootstrap.min.css\" rel=\"stylesheet\" />");
+
+            // header
+            if (settings.content["header"][0]["text"] != "") {
+                var header = "<h2>"+settings.content["header"][0]["text"]+"</h2>";
+                $content.append(header);
+            }
+
+            // top message
+            if (settings.content["top_message"] != "") {
+                var topMessage = "<span>"+settings.content["top_message"]+"</span><br />\n";
+                $content.append(topMessage);
+            }
+
+            // table
+            var table = "<table class=\"table table-striped table-bordered\" width=\"100%\">";
+
+            // table header
+            var tableHeaderJson = settings.content["table"]["header"];
+            var tableHeader = "";
+            for (var i = 0; i < tableHeaderJson.length; i++) {
+                tableHeader += "<th style=\"vertical-align:middle;\" class=\""+tableHeaderJson[i]["class"]+"\">"+tableHeaderJson[i]["text"]+"</th>";
+            }
+            tableHeader = "<tr>"+tableHeader+"</tr>";
+            table += tableHeader;
+
+            // table rows
+            var tableDataJsonRows = settings.content["table"]["rows"];
+            var rowData = "";
+            for (var i = 0; i < tableDataJsonRows.length; i++) {
+                var row = tableDataJsonRows[i];
+                rowData = "<tr>";
+                for (var j = 0; j < row.length; j++) {
+                    if (row[j].hasOwnProperty("button")) {
+                        rowData += "<td class=\""+row[j]["class"]+"\">";
+                        rowData +=      row[j]["text"];
+                        rowData += "    <br /><button type=\"button\" class=\"btn btn-success btn-sm\">";
+                        rowData += "        <a style=\"color:white;\" href=\""+row[j]["button_link"]+"\">"
+                        rowData +=              row[j]["button"];
+                        rowData += "        </a>";
+                        rowData += "    </button>";
+                        rowData += "</td>";
+                    } else {
+                       rowData += "<td class=\""+row[j]["class"]+"\">"+row[j]["text"]+"</td>";
+                    }
+                }
+                rowData += "</tr>";
+                table += rowData;
+            }
+
+            // end of table
+            table += "</table>";
+            $content.append(table);
+
+            // bottom message
+            if (settings.content["bottom_message"] != "") {
+                var bottomMessage = "<span>"+settings.content["bottom_message"]+"</span><br />\n";
+                $content.append(bottomMessage);
+            }
+
+            // footer
+            var footer = settings.content["footer"];
+            var output = "";
+            for (var i = 0; i < footer.length; i++) {
+                output += "<span style=\""+footer[i]["button_parent_style"]+"\"><button type=\"button\" class=\"btn btn-default btn-sm\"><a href=\""+footer[i]["button_link"]+"\">"+footer[i]["button"]+"</a></button></span>\n";
+            }
+            $content.append(output);
+
+            output = "<br /></dv>\n";
+            $content.append(output);
+
 
             $modal.css({
                 width: settings.width || 'auto',
@@ -411,25 +481,19 @@ if ($this->config->config['oae_prompt'] <= date('Y-m-d') and $this->config->conf
 
     // Wait until the DOM has loaded before querying the document
     $(document).ready(function(){
-        // get from OAE
-        $.get('<?php echo $this->config->config['oae_url']; ?>/modal', function(data){
-                modal.open({content: data});
-             })
+        // get from opmantek.com
+        $.get('https://opmantek.com/product_data/oae.json', function(data){
+            modal.open({content: data});
+        })
         .fail(function() {
-            // get from opmantek.com
-            $.get('http://www.open-audit.org/modal.php', function(data){
+            // get from OAE forcefully
+            $.get('<?php echo $this->config->config['oae_url']; ?>/modal/force', function(data){
                 modal.open({content: data});
             })
             .fail(function() {
-                // get from OAE forcefully
-                $.get('<?php echo $this->config->config['oae_url']; ?>/modal/force', function(data){
+                // get from OAC
+                $.get('/open-audit/index.php/login/modal', function(data){
                     modal.open({content: data});
-                })
-                .fail(function() {
-                    // get from OAC
-                    $.get('/open-audit/index.php/login/modal', function(data){
-                        modal.open({content: data});
-                    })
                 })
             })
         });

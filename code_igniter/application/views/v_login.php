@@ -103,19 +103,19 @@ if (isset($form_url) and $form_url != '') {
                     ?>
                     <br />&nbsp;</p>
                 </div>
-<?php echo form_close(); ?>
-<?php if ($systems == '0') {
-    echo "<div style='width: 100%; text-align: center;'><br />&nbsp;<br />
-                <span style='font-size: 10pt; font-style: italic; color: blue;' >No devices are in the database.</span><br />
-                <span style='font-size: 10pt; font-style: italic; color: green;'>Initial login credentials are admin / password.</span><br />
-                <span style='font-size: 10pt; font-style: italic; color: red;'  >Please log in and change these ASAP.</span><br />
-                <br /></div>\n";
-} ?>
+            <?php echo form_close(); ?>
+            <?php if ($systems == '0') {
+            echo "<div style='width: 100%; text-align: center;'><br />&nbsp;<br />
+            <span style='font-size: 10pt; font-style: italic; color: blue;' >No devices are in the database.</span><br />
+            <span style='font-size: 10pt; font-style: italic; color: green;'>Initial login credentials are admin / password.</span><br />
+            <span style='font-size: 10pt; font-style: italic; color: red;'  >Please log in and change these ASAP.</span><br />
+            <br /></div>\n";
+            } ?>
     </div>
 <?php if (isset($oae_message)) {
-    echo "<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>\n";
-    echo "\t\t<span style='font-size: 12pt;'>".$oae_message."<br /><br /></span>\n";
-    echo "</div>\n";
+echo "<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>\n";
+echo "\t\t<span style='font-size: 12pt;'>".$oae_message."<br /><br /></span>\n";
+echo "</div>\n";
 }
 ?>
 <div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>
