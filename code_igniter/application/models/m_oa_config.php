@@ -45,17 +45,16 @@ class M_oa_config extends MY_Model
 
         // need to account for v2 having different column names
         $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version' ";
-        $data = array("$config_name");
-        $query = $this->db->query($sql, $data);
+        $query = $this->db->query($sql);
         $row = $query->row();
         $internal_version = $row->config_value;
-
         if (isset($internal_version) and $internal_version > '20151230') {
-            $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.config_edited_by_user_id = oa_user.user_id";
+            $edited_by = 'config_edited_by_user_id';
         } else {
-            $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.config_edited_by = oa_user.user_id";
+            $edited_by = 'config_edited_by';
         }
 
+        $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.user_id";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $key => $value) {
@@ -82,7 +81,19 @@ class M_oa_config extends MY_Model
     public function load_config()
     {
         $this->load->library('encrypt');
-        $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.config_edited_by = oa_user.user_id";
+
+        // need to account for v2 having different column names
+        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version' ";
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        $internal_version = $row->config_value;
+        if (isset($internal_version) and $internal_version > '20151230') {
+            $edited_by = 'config_edited_by_user_id';
+        } else {
+            $edited_by = 'config_edited_by';
+        }
+
+        $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.user_id";
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -204,6 +215,17 @@ class M_oa_config extends MY_Model
         $config_name = urldecode($config_name);
         $config_value = urldecode($config_value);
 
+        // need to account for v2 having different column names
+        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version' ";
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        $internal_version = $row->config_value;
+        if (isset($internal_version) and $internal_version > '20151230') {
+            $edited_by = 'config_edited_by_user_id';
+        } else {
+            $edited_by = 'config_edited_by';
+        }
+
         # encrypt any credentials
         if ($config_name == 'default_ipmi_password' or
             $config_name == 'default_snmp_community' or
@@ -211,7 +233,7 @@ class M_oa_config extends MY_Model
             $config_name == 'default_windows_password') {
             $config_value = $this->encrypt->encode($config_value);
         }
-        $sql = "UPDATE oa_config SET config_value = ?, config_edited_by = ?, config_edited_date = ? WHERE config_name = ?";
+        $sql = "UPDATE oa_config SET config_value = ?, $edited_by = ?, config_edited_date = ? WHERE config_name = ?";
         $data = array("$config_value", "$user_id", "$timestamp", "$config_name");
         $query = $this->db->query($sql, $data);
 
