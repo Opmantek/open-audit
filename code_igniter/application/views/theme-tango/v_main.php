@@ -294,7 +294,7 @@ $(document).ready(function() {
 } ?>
 
 <?php
-if ($this->config->config['oae_prompt'] <= date('Y-m-d') and $this->config->config['oae_license_type'] == 'Free') {
+if ($this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license_type'] == 'Free' or $this->config->config['oae_license_status'] == 'invalid')) {
 ?>
 <style>
     * {
@@ -366,7 +366,7 @@ if ($this->config->config['oae_prompt'] <= date('Y-m-d') and $this->config->conf
        method.open = function (settings) {
 
             // css from OAE / Bootstrap
-            $content.empty().append("<link href=\"/omk/css/bootstrap.min.css\" rel=\"stylesheet\" />");
+            $content.empty().append("<link href=\"/open-audit/css/bootstrap.min.css\" rel=\"stylesheet\" />");
 
             // header
             if (settings.content["header"][0]["text"] != "") {
@@ -400,14 +400,27 @@ if ($this->config->config['oae_prompt'] <= date('Y-m-d') and $this->config->conf
                 rowData = "<tr>";
                 for (var j = 0; j < row.length; j++) {
                     if (row[j].hasOwnProperty("button")) {
-                        rowData += "<td class=\""+row[j]["class"]+"\">";
-                        rowData +=      row[j]["text"];
-                        rowData += "    <br /><button type=\"button\" class=\"btn btn-success btn-sm\">";
-                        rowData += "        <a style=\"color:white;\" href=\""+row[j]["button_link"]+"\">"
-                        rowData +=              row[j]["button"];
-                        rowData += "        </a>";
-                        rowData += "    </button>";
-                        rowData += "</td>";
+                        if (row[j]["button"] === "Activate" && "<?php echo $this->config->config['oae_license_type']; ?>" === "Free") {
+                            // don't display the button
+                            rowData += "<td class=\""+row[j]["class"]+"\">";
+                            rowData +=      row[j]["text"];
+                            rowData += "    <form action=\"/omk/opLicense/delete/Open-AudIT%20Enterprise\" method=\"POST\">";
+                            rowData += "    <button type=\"submit\" class=\"btn btn-success btn-sm\" data-title=\"Immediately removes this license.\">";
+                            //rowData += "           <span class=\"glyphicon glyphicon-exclamation-sign\">Deactivate</span>";
+                            rowData += "           Deactivate";
+                            rowData += "    </button>";
+                            rowData += "</td>";
+                        } else {
+                            // display the button
+                            rowData += "<td class=\""+row[j]["class"]+"\">";
+                            rowData +=      row[j]["text"];
+                            rowData += "    <br /><button type=\"button\" class=\"btn btn-success btn-sm\">";
+                            rowData += "        <a style=\"color:white;\" href=\""+row[j]["button_link"]+"\">"
+                            rowData +=              row[j]["button"];
+                            rowData += "        </a>";
+                            rowData += "    </button>";
+                            rowData += "</td>";
+                        }
                     } else {
                        rowData += "<td class=\""+row[j]["class"]+"\">"+row[j]["text"]+"</td>";
                     }
@@ -486,15 +499,9 @@ if ($this->config->config['oae_prompt'] <= date('Y-m-d') and $this->config->conf
             modal.open({content: data});
         })
         .fail(function() {
-            // get from OAE forcefully
-            $.get('<?php echo $this->config->config['oae_url']; ?>/modal/force', function(data){
+            // get from OAC
+                $.get('/open-audit/js/oae.json', function(data){
                 modal.open({content: data});
-            })
-            .fail(function() {
-                // get from OAC
-                $.get('/open-audit/index.php/login/modal', function(data){
-                    modal.open({content: data});
-                })
             })
         });
     });

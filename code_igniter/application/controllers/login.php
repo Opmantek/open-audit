@@ -122,12 +122,12 @@ class login extends CI_Controller
             // license status are: valid, invalid, expired, none
             $license = @file_get_contents($oae_license_url, false);
             if ($license !== false) {
-                // remove the unneeded escaping
-                if (strpos($license, '"') === 0) {
-                    $license = substr($license, 1, -1);
-                    $license = str_replace('\"', '"', $license);
-                }
                 $license = json_decode($license);
+                if (json_last_error()) {
+                    $license = new stdClass();
+                    $license->status = 'none';
+                    $license->type = '';
+                }
             } else {
                 $license = new stdClass();
                 $license->status = 'none';
