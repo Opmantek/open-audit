@@ -42,7 +42,20 @@ class M_oa_config extends MY_Model
     public function get_config()
     {
         $this->load->library('encrypt');
-        $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.config_edited_by = oa_user.user_id";
+
+        // need to account for v2 having different column names
+        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version' ";
+        $data = array("$config_name");
+        $query = $this->db->query($sql, $data);
+        $row = $query->row();
+        $internal_version = $row->config_value;
+
+        if (isset($internal_version) and $internal_version > '20151230') {
+            $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.config_edited_by_user_id = oa_user.user_id";
+        } else {
+            $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.config_edited_by = oa_user.user_id";
+        }
+
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $key => $value) {
