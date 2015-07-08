@@ -241,7 +241,11 @@ class M_oa_general extends MY_Model
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-        $first_audit_timestamp = $result[0]->system_audits_time;
+        if (isset($result[0]->system_audits_time) and $result[0]->system_audits_time != '') {
+            $first_audit_timestamp = $result[0]->system_audits_time;
+        } else {
+            return;
+        }
 
         $sql = 'SELECT system_audits_time FROM sys_man_audits WHERE system_id = ? ORDER BY system_audits_time LIMIT 1';
         $data = array("$system_id");
