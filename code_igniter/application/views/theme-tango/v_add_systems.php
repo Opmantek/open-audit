@@ -34,6 +34,13 @@
  */
 echo form_open_multipart('admin_system/add_systems')."\n";
 echo form_fieldset('Select File')."\n";
-echo form_upload('upload_file').form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') );
+echo form_upload('upload_file')."<br /><br />\n";
+echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') );
+?>
+<br /><br />
+<b>Note</b> - An example XLS file for use is available <a href="/open-audit/assets/import_networked_devices.xls" style="color:red; text-decoration:underline;">here</a>.<br />
+<?php
 echo form_fieldset_close();
 echo form_close();
+
+
