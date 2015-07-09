@@ -3708,6 +3708,56 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
+            # Activate a couple of reports
+            $this->load->model('m_oa_report');
+            $this->load->model('m_oa_report_column');
+
+            $sql = "SELECT report_name from oa_report";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $activate_disk = 'y';
+            $activate_interfaces = 'y';
+            foreach ($result as $key => $value) {
+                if ($value == 'Disk Partition Use') {
+                    $activate_disk = 'n';
+                }
+                if ($value == 'Interfaces Used - Available') {
+                    $activate_interfaces = 'n';
+                }
+            }
+
+            # The Disk Partition Use report
+            if ($activate_disk == 'y') {
+                $file_report = BASEPATH.'../application/controllers/reports/DiskPartitionUse.xml';
+                $file_handle = fopen($file_report, "rb");
+                $contents = fread($file_handle, filesize($file_report));
+                $xml = new SimpleXMLElement(utf8_encode($contents));
+                foreach ($xml->children() as $child) {
+                    if ($child->getName() == 'details') {
+                        $report_id = $this->m_oa_report->import_report($child);
+                    }
+                    if ($child->getName() == 'columns') {
+                        $this->m_oa_report_column->import_report($child, $report_id);
+                    }
+                }
+            }
+
+            # The Interfaces Used / Available report
+            if ($activate_interfaces == 'y') {
+                $file_report = BASEPATH.'../application/controllers/reports/InterfacesUsed-Available.xml';
+                $file_handle = fopen($file_report, "rb");
+                $contents = fread($file_handle, filesize($file_report));
+                $xml = new SimpleXMLElement(utf8_encode($contents));
+                foreach ($xml->children() as $child) {
+                    if ($child->getName() == 'details') {
+                        $report_id = $this->m_oa_report->import_report($child);
+                    }
+                    if ($child->getName() == 'columns') {
+                        $this->m_oa_report_column->import_report($child, $report_id);
+                    }
+                }
+            }
+
             $sql = "UPDATE oa_config SET config_value = '20150620' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
