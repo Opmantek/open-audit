@@ -70,7 +70,7 @@
 	<?php } ?>
 	<div style="width:100px; float: right; text-align: center;">
 		<br />Version<br /><?php echo htmlentities($this->config->item('display_version')); ?>
-		<?php if ($this->config->item('display_version') != $this->config->item('web_display_version') and ($this->user->user_admin == 'y')) {
+		<?php if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and ($this->user->user_admin == 'y')) {
         echo '<br /><a href="'.$oa_web_index.'/main/help_about" style="color: red;">upgrade</a>'; } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
