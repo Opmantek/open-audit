@@ -320,11 +320,16 @@
 </script>
 
 
-<style>
+<!--
+// supposed to go with the modal (below) but breaks pages (device details).
     * {
-        margin:0; 
+        margin:0;
         padding:0;
     }
+-->
+
+<style>
+
 
     #overlay {
         position:fixed; 
