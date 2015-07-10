@@ -443,11 +443,9 @@
                             // display the button
                             rowData += "<td class=\""+row[j]["class"]+"\">";
                             rowData +=      row[j]["text"];
-                            rowData += "    <br /><button type=\"button\" class=\"btn btn-success btn-sm\">";
-                            rowData += "        <a style=\"color:white;\" href=\""+row[j]["button_link"]+"\">"
-                            rowData +=              row[j]["button"];
-                            rowData += "        </a>";
-                            rowData += "    </button>";
+                            rowData += "    <br /><a class=\"btn btn-success btn-sm\" style=\"color:white;\" href=\""+row[j]["button_link"]+"\">"
+                            rowData +=      row[j]["button"];
+                            rowData += "    </a>";
                             rowData += "</td>";
                         }
                     } else {
