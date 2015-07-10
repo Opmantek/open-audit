@@ -117,9 +117,9 @@ class M_partition extends MY_Model
                     "$input->partition_mount_type",
                     "$input->partition_mount_point",
                     "$input->partition_name",
-                    "$input->partition_size",
-                    "$input->partition_free_space",
-                    "$input->partition_used_space",
+                    intval("$input->partition_size"),
+                    intval("$input->partition_free_space"),
+                    intval("$input->partition_used_space"),
                     "$input->partition_format",
                     "$input->partition_caption",
                     "$input->partition_device_id",
@@ -155,19 +155,20 @@ class M_partition extends MY_Model
             $data = array("$details->system_id",
                     "$input->hard_drive_index",
                     "$input->partition_mount_point",
-                    "$input->partition_size",
+                    intval("$input->partition_size"),
                     "$input->hard_drive_index",
                     "$input->partition_mount_point",
-                    "$input->partition_size",
+                    intval("$input->partition_size"),
                     "$input->partition_name",
                     "$details->original_timestamp",
                     "$details->timestamp", );
             $query = $this->db->query($sql, $data);
+
             if ($query->num_rows() > 0) {
                 $row = $query->row();
                 // the partition exists - need to update its timestamp, free and used space
                 $sql = "UPDATE sys_hw_partition SET partition_free_space = ?, partition_used_space = ?, timestamp = ? WHERE partition_id = ?";
-                $data = array("$input->partition_free_space", "$input->partition_used_space", "$details->timestamp", "$row->partition_id");
+                $data = array(intval("$input->partition_free_space"), intval("$input->partition_used_space"), "$details->timestamp", "$row->partition_id");
                 $partition_id = $row->partition_id;
                 $query = $this->db->query($sql, $data);
             } else {
@@ -184,7 +185,7 @@ class M_partition extends MY_Model
                         "$input->partition_mount_type",
                         "$input->partition_mount_point",
                         "$input->partition_name",
-                        "$input->partition_size",
+                        intval("$input->partition_size"),
                         "$input->partition_free_space",
                         "$input->partition_used_space",
                         "$input->partition_format",
@@ -233,7 +234,6 @@ class M_partition extends MY_Model
             $alert_details = 'partition removed - '.$myrow->partition_mount_point;
             $this->m_alerts->generate_alert($details->system_id, 'sys_hw_partition', $myrow->partition_id, $alert_details, $details->timestamp);
         }
-
         // new partition
         $sql = "SELECT partition_id, partition_mount_point
 			FROM
@@ -246,6 +246,7 @@ class M_partition extends MY_Model
         $data = array("$details->system_id", "$details->timestamp");
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
+        // print_r($query->result());
         foreach ($query->result() as $myrow) {
             $alert_details = 'partition installed - '.$myrow->partition_mount_point;
             $this->m_alerts->generate_alert($details->system_id, 'sys_hw_partition', $myrow->partition_id, $alert_details, $details->timestamp);
