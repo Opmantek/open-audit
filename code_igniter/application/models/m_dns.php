@@ -58,11 +58,10 @@ class M_dns extends MY_Model
         $log_details = new stdClass();
         $log_details->file = 'system';
         $log_details->severity = 7;
-        
 
         $sql = "SELECT ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN system ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) WHERE system.system_id = ?";
-$details_log->message = $sql;
-stdlog($log_details);
+        $log_details->message = $sql;
+        stdlog($log_details);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -115,8 +114,8 @@ stdlog($log_details);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-$details_log->message = $this->db->last_query();
-stdlog($log_details);
+        $log_details->message = $this->db->last_query();
+        stdlog($log_details);
         if (isset($result)) {
             if (isset($result[0]->system_audits_time)) {
                 $timestamp = $result[0]->system_audits_time;
