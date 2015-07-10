@@ -79,9 +79,9 @@
                             $type = 'password';
                         }
                         ?>
-                       <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>' class="editText" data-type="<?php echo htmlentities($type); ?>" style="color:blue;"><?php echo htmlentities($item->config_value); ?></span>
+                       <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>' class="editText" data-type="<?php echo htmlentities($type); ?>" style="color:blue;"><?php echo htmlentities(urldecode($item->config_value)); ?></span>
                     <?php } else { ?>
-                           <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>'><?php echo htmlentities($item->config_value); ?></span>
+                           <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>'><?php echo htmlentities(urldecode($item->config_value)); ?></span>
                     <?php } ?>
                     </td>
                     <td><br /><?php echo htmlentities($item->config_description); ?></td>

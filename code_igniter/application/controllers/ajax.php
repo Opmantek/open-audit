@@ -159,7 +159,7 @@ class ajax extends MY_Controller
         if ($config_name == 'default_snmp_community' and $this->config->config['show_snmp_community'] == 'n') {
             $config_value = $masked;
         }
-        echo htmlentities($config_value);
+        echo htmlentities(urldecode($config_value));
     }
 
     # /index.php/ajax/update_system_man/[system_id]/[field_name]/[field_value]
