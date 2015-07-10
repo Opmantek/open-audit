@@ -61,17 +61,8 @@ class report extends MY_Controller
         $this->load->model('m_oa_report');
         $this->data['report_id'] = $this->m_oa_report->get_report_id($this->data['report_name']);
 
-        $my_url = 'report/show_report/'.$this->data['report_id'].'/'.$this->data['group_id'];
-        if ($this->data['first_attribute'] !== '') {
-            $my_url .= '/'.$this->data['first_attribute'];
-        }
-        if ($this->data['second_attribute'] !== '') {
-            $my_url .= '/'.$this->data['second_attribute'];
-        }
-        if ($this->data['third_attribute'] !== '') {
-            $my_url .= '/'.$this->data['third_attribute'];
-        }
-        if (! is_null($this->data['report_id'])) {
+        if (! is_null($this->data['report_id']) and $this->data['report_id'] = intval($this->data['report_id'])) {
+            $my_url = 'report/show_report/'.$this->data['report_id'].'/'.$this->data['group_id'].'/'.$this->data['first_attribute'].'/'.$this->data['second_attribute'].'/'.$this->data['third_attribute'];
             redirect($my_url);
         } else {
             $class_methods = get_class_methods($this);
@@ -100,6 +91,7 @@ class report extends MY_Controller
         $this->data['report_id'] = $this->uri->segment(3, 0);
         $this->data['group_id'] = $this->uri->segment(4, 0);
         $this->data['first_attribute'] = urldecode($this->uri->segment(5, 0));
+        $this->data['second_attribute'] = urldecode($this->uri->segment(6, 0));
         $this->data['format'] = $this->uri->segment($this->uri->total_rsegments());
         # POST attributes
         if (isset($_POST['report']) and $_POST['report'] != '') {
