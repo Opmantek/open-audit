@@ -473,7 +473,7 @@ class System extends CI_Controller
         foreach ($xml->children() as $child) {
             if ($child->getName() === 'sys') {
                 $details = (object) $xml->sys;
-
+                $details->timestamp = date('Y-m-d H:i:s');
                 $received_system_id = '';
                 if (! isset($details->system_id)) {
                     $details->system_id = '';
@@ -515,9 +515,7 @@ class System extends CI_Controller
                 if ((string) $details->last_seen_by === '') {
                     $details->last_seen_by = 'audit';
                 }
-                if ((string) $details->timestamp === '') {
-                    $details->timestamp = date("M d H:i:s");
-                }
+
                 $details->last_user = '';
                 $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
                 $details->last_audit_date = "";
@@ -552,6 +550,8 @@ class System extends CI_Controller
                 $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
                 $this->m_sys_man_audits->insert_audit($details);
             }
+        }
+        foreach ($xml->children() as $child) {
             if ($child->getName() === 'addresses') {
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
                 foreach ($xml->addresses->ip_address as $input) {
