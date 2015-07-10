@@ -1439,11 +1439,13 @@ class M_system extends MY_Model
             $details->timestamp = date('Y-m-d H:i:s');
         }
 
-        $sql_timestamp = "SELECT timestamp FROM system WHERE system_id = ?";
-        $sql_data = array("$details->system_id");
-        $query = $this->db->query($sql_timestamp, $sql_data);
-        $row = $query->row();
-        $details->original_timestamp = $row->timestamp;
+        if (!isset($details->original_timestamp) or $details->original_timestamp == '') {
+            $sql_timestamp = "SELECT timestamp FROM system WHERE system_id = ?";
+            $sql_data = array("$details->system_id");
+            $query = $this->db->query($sql_timestamp, $sql_data);
+            $row = $query->row();
+            $details->original_timestamp = $row->timestamp;
+        }
 
         // # only update system.timestamp if we have an audit result - not for nmap, snmp, etc
         // if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
