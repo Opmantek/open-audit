@@ -74,7 +74,7 @@
         echo '<br /><a href="'.$oa_web_index.'/main/help_about" style="color: red;">upgrade</a>'; } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-	<?php if (isset($this->config->config['mis_url']) and $this->config->config['nmis_url'] > "") { ?>
+	<?php if (isset($this->config->config['nmis_url']) and $this->config->config['nmis_url'] > "") { ?>
 		<br />NMIS<br /><a href="<?php echo htmlentities($this->config->item('nmis_url')); ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" /></a>
 	<?php } else { ?>
 		<br />NMIS<br /><a href="https://opmantek.com" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" /></a>
