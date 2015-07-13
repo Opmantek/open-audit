@@ -166,12 +166,10 @@ class login extends CI_Controller
 
         if (($data['form_url'] == '') and ($oae_url > '') and ($license->status == 'valid')) {
             // user going to logon page (not internal page) and OAE is installed and licensed
-            // redirect
             if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oac' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oac' or $this->config->config['logo'] == 'oac-oae')) {
                 $this->m_oa_config->update_config('logo', 'logo-banner-oae', '', date('Y-m-d H:i:s'));
             }
             $this->m_oa_config->update_config('oae_license_status', 'valid', '', date('Y-m-d H:i:s'));
-            redirect($oae_url);
         }
 
         if ($license->status == 'invalid') {
