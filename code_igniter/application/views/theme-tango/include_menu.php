@@ -416,6 +416,8 @@
             if (settings.content["top_message"] != "") {
                 var topMessage = "<span>"+settings.content["top_message"]+"</span><br />\n";
                 $content.append(topMessage);
+            } else {
+                $content.append("<br />");
             }
 
             // table
@@ -550,7 +552,7 @@
     // Wait until the DOM has loaded before querying the document
     $(document).ready(function(){
         // get from opmantek.com
-        $.get('https://opmantek.com/product_data/oae.json', function(data){
+        $.get('https://opmantek.com/product_data/oae.json111', function(data){
             modal.open({content: data});
         })
         .fail(function() {

@@ -9,10 +9,10 @@
         "header": [
             {"text": "Features", "class": ""},
             {"text": "Community", "class": "text-center"},
-            {"text": "Enterprise <br />20 Nodes", "class": "text-center"},
-            {"text": "Enterprise <br />250 Nodes", "class": "text-center"},
-            {"text": "Enterprise <br />500 Nodes", "class": "text-center"},
-            {"text": "Enterprise <br />X Nodes", "class": "text-center"}
+            {"text": "Enterprise 20 Nodes", "class": "text-center"},
+            {"text": "Enterprise 250 Nodes", "class": "text-center"},
+            {"text": "Enterprise 500 Nodes", "class": "text-center"},
+            {"text": "Enterprise X Nodes", "class": "text-center"}
         ],
         "rows": [
             [
