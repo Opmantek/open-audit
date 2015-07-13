@@ -36,6 +36,25 @@
 <div id="menu" style="float: left; width: 100%; ">
 <ul id="nav">
     <li><a href='<?php echo $oa_web_index; ?>/'><?php echo mb_strtoupper(__('Home'))?></a></li>
+
+    <?php if ($this->config->config['oae_license_status'] == 'valid' and isset($this->config->config['oae_url']) and $this->config->config['oae_url'] != '') { ?>
+    <li><a href='#'><?php echo mb_strtoupper(__('Enterprise'))?></a>
+        <ul>
+            <li><a href='<?php echo $this->config->config['oae_url']; ?>'><?php echo __('Dashboard')?></a></li>
+            <li><a href='<?php echo $this->config->config['oae_url']; ?>/map'><?php echo __('Map')?></a></li>
+            <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks'><?php echo __('Scheduled Tasks')?></a></li>
+            <li><a href='#'><?php echo __('Reports')?></a>
+                <ul>
+                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Device%20Types'><?php echo __('Device Types')?></a>
+                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20OS%20Types'><?php echo __('OS Types')?></a>
+                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Devices%20Discovered%20by%20Date/'><?php echo __('Devices Discovered Today')?></a>
+                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Software%20Discovered%20by%20Date/'><?php echo __('Software Discovered Today')?></a>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <?php } ?>
+
     <?php
     # add any custom reports to the $menu array
     # leave the ID blank
@@ -319,17 +338,7 @@
     });
 </script>
 
-
-<!--
-// supposed to go with the modal (below) but breaks pages (device details).
-    * {
-        margin:0;
-        padding:0;
-    }
--->
-
 <style>
-
 
     #overlay {
         position:fixed; 
@@ -435,15 +444,26 @@
                             rowData +=      row[j]["text"];
                             rowData += "    <form action=\"/omk/opLicense/delete/Open-AudIT%20Enterprise\" method=\"POST\">";
                             rowData += "    <button type=\"submit\" class=\"btn btn-success btn-sm\" data-title=\"Immediately removes this license.\">";
-                            //rowData += "           <span class=\"glyphicon glyphicon-exclamation-sign\">Deactivate</span>";
                             rowData += "           Deactivate";
                             rowData += "    </button>";
                             rowData += "</td>";
+                        } else if (row[j]["button"] === "Activate" && "<%= $license_type %>" != "Free") {
+                            // Valid license, Don't display the Activate button
+                            rowData += "<td class=\""+row[j]["class"]+"\"><br />";
+                            rowData +=      row[j]["text"];
+                            rowData += "</td>";
                         } else {
                             // display the button
+                            var button_link = row[j]["button_link"];
+                            if (button_link == "buy_250") {
+                                button_link = "http://iwwww.opmantek.com/get_shopping_cart?act=get_cart&cart_id=open_audit_test&return_to_app_name=Open-AudIT&redirect_url="+window.location;
+                            }
+                            if (button_link == "buy_500") {
+                                button_link = "http://iwwww.opmantek.com/get_shopping_cart?act=get_cart&cart_id=open_audit_test&return_to_app_name=Open-AudIT&redirect_url="+window.location;
+                            }
                             rowData += "<td class=\""+row[j]["class"]+"\">";
                             rowData +=      row[j]["text"];
-                            rowData += "    <br /><a class=\"btn btn-success btn-sm\" style=\"color:white;\" href=\""+row[j]["button_link"]+"\">"
+                            rowData += "    <br /><a class=\"btn btn-success btn-sm\" style=\"color:white;\" href=\""+button_link+"\">"
                             rowData +=      row[j]["button"];
                             rowData += "    </a>";
                             rowData += "</td>";
@@ -470,7 +490,14 @@
             var footer = settings.content["footer"];
             var output = "";
             for (var i = 0; i < footer.length; i++) {
-                output += "<span style=\""+footer[i]["button_parent_style"]+"\"><button type=\"button\" class=\"btn btn-default btn-sm\"><a href=\""+footer[i]["button_link"]+"\">"+footer[i]["button"]+"</a></button></span>\n";
+                var button_link = footer[i]["button_link"];
+                if (button_link == "prompt_never") {
+                    button_link = "/open-audit/index.php/admin_config/update_config/oae_prompt/-";
+                }
+                if (button_link == "prompt_later") {
+                    button_link = "/open-audit/index.php/admin_config/update_config/oae_prompt/1";
+                }
+                output += "<span style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
             }
             $content.append(output);
 
