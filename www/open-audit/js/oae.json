@@ -91,8 +91,8 @@
                 {"text": "", "class": "text-center", "button": "Restore My Licenses", "button_link": "/omk/oae/license_restore" },
                 {"text": "<br />Free", "class": "text-center" },
                 {"text": "Free", "class": "text-center", "button": "Activate", "button_link": "/omk/oae/license_free" },
-                {"text": "$800", "class": "text-center", "button": "Buy", "button_link": "buy_250" },
-                {"text": "$1,500", "class": "text-center", "button": "Buy", "button_link": "buy_500" },
+                {"text": "", "class": "text-center", "button": "Buy", "button_link": "buy_250" },
+                {"text": "", "class": "text-center", "button": "Buy", "button_link": "buy_500" },
                 {"text": "Click to quote", "class": "text-center", "button": "Quote", "button_link": "https://opmantek.com/network-audit-software/" }
             ]
         ]

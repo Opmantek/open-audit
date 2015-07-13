@@ -552,7 +552,7 @@
     // Wait until the DOM has loaded before querying the document
     $(document).ready(function(){
         // get from opmantek.com
-        $.get('https://opmantek.com/product_data/oae.json111', function(data){
+        $.get('https://opmantek.com/product_data/oae.json', function(data){
             modal.open({content: data});
         })
         .fail(function() {
