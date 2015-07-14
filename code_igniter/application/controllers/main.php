@@ -307,7 +307,7 @@ class main extends MY_Controller
             $group_id = $_POST['group_id'];
         }
         if ($group_id == '') {
-            $group_id = $this->uri->segment(3, 0);
+            $group_id = $this->uri->segment(3, 1);
         }
         if (!is_numeric($group_id)) {
             $group_id = '1';

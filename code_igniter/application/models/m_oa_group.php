@@ -39,8 +39,11 @@ class M_oa_group extends MY_Model
         parent::__construct();
     }
 
-    public function get_group_access($group_id, $user_id = '0')
+    public function get_group_access($group_id = '1', $user_id = '0')
     {
+        if ($group_id == '0') {
+            $group_id = '1';
+        }
         $sql = "SELECT group_user_access_level FROM oa_group_user WHERE user_id = ? AND group_id = ? LIMIT 1";
         $data = array("$user_id", "$group_id");
         $query = $this->db->query($sql, $data);
