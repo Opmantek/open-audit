@@ -590,14 +590,13 @@ class report extends MY_Controller
     public function locations()
     {
         $this->load->model("m_oa_location");
+        $group_id = $this->uri->segment(3, 1);
+        $limit = $this->uri->segment(4, 1000000);
         $this->data['heading'] = "Locations";
-        $this->data['query'] = $this->m_oa_location->location_report();
-        $this->data['column'] = $this->m_oa_location->location_report_columns();
-        $this->data['count'] = count($this->data['query']);
-        $this->data['include'] = 'v_report';
-        $this->data['sortcolumn'] = '0';
-        $this->data['export_report'] = 'y';
-        $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+        $this->data['query'] = $this->m_oa_location->location_report($group_id, $limit);
+        echo "{\"locations\": ";
+        print_r(json_encode($this->data['query']));
+        echo "\n}";
     }
 
     public function list_reports()
