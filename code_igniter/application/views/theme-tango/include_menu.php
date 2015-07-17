@@ -252,7 +252,11 @@
         </ul>
     </li>
 
-    <li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Licenses'))?></a>
+    <?php if ($this->config->config['oae_license_type'] == 'Free' or $this->config->config['oae_license_status'] != 'valid') { ?>
+        <li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Upgrade Licenses'))?></a>
+    <?php } else { ?>
+        <li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Licenses'))?></a>
+    <?php } ?>
         <ul>
             <?php if ($this->config->config['oae_license_status'] != 'valid') { ?>
             <li><a href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
