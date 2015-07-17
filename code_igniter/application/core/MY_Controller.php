@@ -364,6 +364,9 @@ class MY_Controller extends CI_Controller
                 if (($column->column_type > '') and ((string) $column->column_name !== 'Tags')) {
                     $col_var_name = $column->column_variable;
 
+                    if ((string) $column->column_variable == 'man_ip_address') {
+                        $query_row->man_ip_address = ip_address_from_db($query_row->man_ip_address);
+                    }
                     if ((string) $column->column_align === '') {
                         (string) $column->column_align = 'left';
                     }
