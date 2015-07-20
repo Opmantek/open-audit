@@ -33,6 +33,23 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
+
+<?php
+if ($this->config->config['oae_license_type'] == 'Free') {
+    $license = 'free';
+} elseif ($this->config->config['oae_license_status'] == 'Valid') {
+    $license = 'commercial';
+} else{
+    $license = 'none';
+}
+?>
+
+<script>
+var license = "<?php echo $license; ?>";
+var modal_content_original = "";
+var modal_content_image = "";
+</script>
+
 <div id="menu" style="float: left; width: 100%; ">
 <ul id="nav">
     <li><a href='<?php echo $oa_web_index; ?>/'><?php echo mb_strtoupper(__('Home'))?></a></li>
@@ -331,12 +348,12 @@
     $('a#buy_more_licenses').click(function(e){
         // get from opmantek.com
         $.get('https://opmantek.com/product_data/oae.json', function(data){
-            modal.open({content: data});
+            modal.open({content: data, source: "online"});
         })
         .fail(function() {
             // get from OAC
                 $.get('/open-audit/js/oae.json', function(data){
-                modal.open({content: data});
+                modal.open({content: data, source: "offline"});
             })
         });
     });
@@ -361,6 +378,7 @@
         background:rgba(0,0,0,0.2);
         border-radius:14px;
         padding:8px;
+        width:1000px;
     }
 
     #content {
@@ -407,34 +425,26 @@
         // Open the modal
        method.open = function (settings) {
 
+            // our generic output container column_variable
+            var output = "";
+
             // css from OAE / Bootstrap
             $content.empty().append("<link href=\"/open-audit/css/bootstrap.min.css\" rel=\"stylesheet\" />");
 
-            // header
-            if (settings.content["header"][0]["text"] != "") {
-                var header = "<h2>"+settings.content["header"][0]["text"]+"</h2>";
-                $content.append(header);
-            }
-
-            // top message
-            if (settings.content["top_message"] != "") {
-                var topMessage = "<span>"+settings.content["top_message"]+"</span><br />\n";
-                $content.append(topMessage);
+            if (license == "none") {
+                $content.append('<h1>'+settings.content["header"][0]["text_nolicense"]+'</h1><span>'+settings.content["top_message_nolicense"]+'</span>');
             } else {
-                $content.append("<br />");
+                $content.append('<h1>'+settings.content["header"][0]["text"]+'</h1><span>'+settings.content["top_message"]+'</span>');
             }
+            $content.append('<br /><br />');
 
             // table
-            var table = "<table class=\"table table-striped table-bordered\" width=\"100%\">";
+            var table = '<div id="modal_content"><table class="table table-bordered" width="100%">';
 
             // table header
-            var tableHeaderJson = settings.content["table"]["header"];
-            var tableHeader = "";
-            for (var i = 0; i < tableHeaderJson.length; i++) {
-                tableHeader += "<th style=\"vertical-align:middle;\" class=\""+tableHeaderJson[i]["class"]+"\">"+tableHeaderJson[i]["text"]+"</th>";
+            for (var i = 0; i < settings.content["table"]["header"].length; i++) {
+                table += "<th style=\"vertical-align:middle;\" class=\""+settings.content["table"]["header"][i]["class"]+"\">"+settings.content["table"]["header"][i]["text"]+"</th>";
             }
-            tableHeader = "<tr>"+tableHeader+"</tr>";
-            table += tableHeader;
 
             // table rows
             var tableDataJsonRows = settings.content["table"]["rows"];
@@ -442,40 +452,44 @@
             for (var i = 0; i < tableDataJsonRows.length; i++) {
                 var row = tableDataJsonRows[i];
                 rowData = "<tr>";
+
                 for (var j = 0; j < row.length; j++) {
+
+                    if (license != "none") {
+                        classText = row[j]["class"];
+                        classText = classText.replace(" info", "");
+                    } else {
+                        classText = row[j]["class"];
+                    }
+
                     if (row[j].hasOwnProperty("button")) {
-                        if (row[j]["button"] === "Activate" && "<?php echo $this->config->config['oae_license_type']; ?>" === "Free") {
-                            // don't display the button
-                            rowData += "<td class=\""+row[j]["class"]+"\">";
-                            rowData +=      row[j]["text"];
-                            rowData += "    <form action=\"/omk/opLicense/delete/Open-AudIT%20Enterprise\" method=\"POST\">";
-                            rowData += "    <button type=\"submit\" class=\"btn btn-success btn-sm\" data-title=\"Immediately removes this license.\">";
-                            rowData += "           Deactivate";
-                            rowData += "    </button>";
-                            rowData += "</td>";
-                        } else if (row[j]["button"] === "Activate" && "<%= $license_type %>" != "Free") {
-                            // Valid license, Don't display the Activate button
-                            rowData += "<td class=\""+row[j]["class"]+"\"><br />";
-                            rowData +=      row[j]["text"];
-                            rowData += "</td>";
+                         if (row[j]["button"] === "Activate" && license === "free") {
+                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<form action="/omk/opLicense/delete/Open-AudIT%20Enterprise" method="POST">\
+                                <button type="submit" class="btn btn-success btn-sm" data-title="Immediately removes this license">Deactivate</button>\
+                            </form>\
+                            </td>';
+                        } else if (row[j]["button"] === "Activate" && license == "none") {
+                            rowData += '<td class="'+classText+'" style="background:#cbd9e1">'+row[j]["text"]+'<br /><a class="btn btn-success btn-sm" style="color:white;" href="/omk/oae/license_free">'+row[j]["button"]+'</a></td>';
+                        } else if (row[j]["button"] === "Activate" && license == "commercial") {
+                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'</td>';
                         } else {
-                            // display the button
-                            var button_link = row[j]["button_link"];
-                            if (button_link == "buy_250") {
-                                button_link = "http://iwwww.opmantek.com/get_shopping_cart?act=get_cart&cart_id=open_audit_test&return_to_app_name=Open-AudIT&redirect_url="+window.location;
+                            rowData += '<td class="'+classText+'">';
+                            if (settings.source == "online") {
+                                rowData += row[j]["text"];
                             }
-                            if (button_link == "buy_500") {
-                                button_link = "http://iwwww.opmantek.com/get_shopping_cart?act=get_cart&cart_id=open_audit_test&return_to_app_name=Open-AudIT&redirect_url="+window.location;
+                            if (row[j]["button_link"] == "/omk/opLicense/") {
+                                rowData += '<br /><a class="btn btn-success btn-sm" style="color:white;" href="'+row[j]["button_link"]+'">'+row[j]["button"]+'</a>';
+                            } else {
+                                rowData += '<br /><a class="btn btn-success btn-sm" style="color:white;" href="'+row[j]["button_link"]+'http://'+location.host+'<?php echo $this->config->config['oae_url']; ?>/purchase_complete">'+row[j]["button"]+'</a>';
                             }
-                            rowData += "<td class=\""+row[j]["class"]+"\">";
-                            rowData +=      row[j]["text"];
-                            rowData += "    <br /><a class=\"btn btn-success btn-sm\" style=\"color:white;\" href=\""+button_link+"\">"
-                            rowData +=      row[j]["button"];
-                            rowData += "    </a>";
-                            rowData += "</td>";
+                            rowData += '</td>';
                         }
                     } else {
-                       rowData += "<td class=\""+row[j]["class"]+"\">"+row[j]["text"]+"</td>";
+                        if (row[j].hasOwnProperty("image")) {
+                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<div class="pull-right"><span class="glyphicon glyphicon-camera" aria-hidden="true" onMouseOver="imageModal(\''+row[j]["text"]+'\',\''+row[j]["image"]+'\');"></span></div></td>';
+                        } else {
+                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'</td>';
+                        }
                     }
                 }
                 rowData += "</tr>";
@@ -483,13 +497,13 @@
             }
 
             // end of table
-            table += "</table>";
+            table += "</table></div>";
+
             $content.append(table);
 
             // bottom message
             if (settings.content["bottom_message"] != "") {
-                var bottomMessage = "<span>"+settings.content["bottom_message"]+"</span><br />\n";
-                $content.append(bottomMessage);
+                $content.append("<span>"+settings.content["bottom_message"]+"</span><br />\n");
             }
 
             // footer
@@ -499,11 +513,13 @@
                 var button_link = footer[i]["button_link"];
                 if (button_link == "prompt_never") {
                     button_link = "/open-audit/index.php/admin_config/update_config/oae_prompt/-";
+                    output += "<span id=\"button_prompt_never\" style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
                 }
                 if (button_link == "prompt_later") {
                     button_link = "/open-audit/index.php/admin_config/update_config/oae_prompt/1";
+                    output += "<span id=\"button_prompt_later\"style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
                 }
-                output += "<span style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
+                //output += "<span style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
             }
             $content.append(output);
 
@@ -512,7 +528,8 @@
 
 
             $modal.css({
-                width: settings.width || 'auto',
+                //width: settings.width || 'auto',
+                width: settings.width || '1000px',
                 height: settings.height || 'auto'
             });
 
@@ -557,12 +574,12 @@
     $(document).ready(function(){
         // get from opmantek.com
         $.get('https://opmantek.com/product_data/oae.json', function(data){
-            modal.open({content: data});
+            modal.open({content: data, source: "online"});
         })
         .fail(function() {
-            // get from OAC
-                $.get('/open-audit/js/oae.json', function(data){
-                modal.open({content: data});
+            // get from OAE
+                $.get('/omk/data/oae.json', function(data){
+                modal.open({content: data, source: "offline"});
             })
         });
     });
@@ -576,4 +593,24 @@
     });
 
 </script>
-<?php #} ?>
+
+
+<script>
+function imageModal(title, image) {
+    //document.getElementById("imageModalLabel").innerHTML = title;
+    modal_content_original = document.getElementById("modal_content").innerHTML;
+    modal_content_image = '<h3>'+title+'</h3><img id="modalImage" src="/omk/img/'+image+'" style="width: 800px;" />';
+    document.getElementById("modal_content").innerHTML = modal_content_image;
+    document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"#\" onclick=\"removeImageModal();\">Back</a>";
+    document.getElementById("button_prompt_never").innerHTML = "";
+}
+
+function removeImageModal() {
+    document.getElementById("modal_content").innerHTML = modal_content_original;
+    document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/1\">Ask me later</a>";
+    document.getElementById("button_prompt_never").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/-\">Do now show me again</a>";
+}
+</script>
+
+
+
