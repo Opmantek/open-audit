@@ -153,8 +153,51 @@ class M_oa_report extends MY_Model
         return($report_sort_column);
     }
 
-    public function get_report($report_id, $group_id, $first_attribute = '', $second_attribute = '')
+    public function get_report($data_array)
     {
+        if (!isset($data_array['report_id']) or !isset($data_array['group_id'])) {
+            return;
+        } else {
+            $report_id = $data_array['report_id'];
+            $group_id = $data_array['group_id'];
+        }
+
+        if (isset($data_array['limit']) and is_numeric($data_array['limit'])) {
+            $limit = (int)$data_array['limit'];
+        } else {
+            $limit = 10000000;
+        }
+
+        if (isset($data_array['offset']) and is_numeric($data_array['offset'])) {
+            $offset = (int)$data_array['offset'];
+        } else {
+            $offset = 0;
+        }
+
+        if (isset($data_array['first_attribute'])) {
+            $first_attribute = $data_array['first_attribute'];
+        } else {
+            $first_attribute = '';
+        }
+
+        if (isset($data_array['second_attribute'])) {
+            $second_attribute = $data_array['second_attribute'];
+        } else {
+            $second_attribute = '';
+        }
+
+        if (isset($data_array['third_attribute'])) {
+            $third_attribute = $data_array['third_attribute'];
+        } else {
+            $third_attribute = '';
+        }
+
+        if (isset($data_array['forth_attribute'])) {
+            $forth_attribute = $data_array['forth_attribute'];
+        } else {
+            $forth_attribute = '';
+        }
+
         $sql = "SELECT report_sql FROM oa_report WHERE report_id = ? LIMIT 1";
         $data = array($report_id);
         $query = $this->db->query($sql, $data);
@@ -164,7 +207,15 @@ class M_oa_report extends MY_Model
         $data = array($group_id);
         $query = $this->db->query('SET @group = ?', $data);
 
-        $data = array($first_attribute, $second_attribute);
+        if (stripos($sql, '@limit') !== false) {
+            if ($offset != 0) {
+                $sql = str_replace('@limit', $offset . ',' . $limit, $sql);
+            } else {
+                $sql = str_replace('@limit', $limit, $sql);
+            }
+        }
+
+        $data = array($first_attribute, $second_attribute, $third_attribute, $forth_attribute);
         $query = $this->db->query($sql, $data);
 
         return($query->result());

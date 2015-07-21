@@ -100,6 +100,16 @@ class report extends MY_Controller
         if (isset($_POST['group_id']) and $_POST['group_id'] != '') {
             $this->data['group_id'] = $_POST['group_id'];
         }
+        if (isset($_POST['limit']) and $_POST['limit'] != '' and is_numeric($_POST['limit'])) {
+            $this->data['limit'] = (int)$_POST['limit'];
+        } else {
+            $this->data['limit'] = 10000000;
+        }
+        if (isset($_POST['offset']) and $_POST['offset'] != '' and is_numeric($_POST['offset'])) {
+            $this->data['offset'] = (int)$_POST['offset'];
+        } else {
+            $this->data['offset'] = 0;
+        }
         if (isset($_POST['first_attribute']) and $_POST['first_attribute'] != '') {
             $this->data['first_attribute'] = $_POST['first_attribute'];
         }
@@ -247,7 +257,8 @@ class report extends MY_Controller
             }
         }
         # get the actual data
-        $this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute'], $this->data['second_attribute']);
+        #$this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute'], $this->data['second_attribute']);
+        $this->data['query'] = $this->m_oa_report->get_report($this->data);
         # get the report columns
         $this->data['column'] = $this->m_oa_report_column->get_report_column($this->data['report_id']);
         # filter the data (if required)
@@ -354,7 +365,16 @@ class report extends MY_Controller
         } else {
             $this->data['report_id'] = "";
         }
-
+        if (isset($_POST['limit']) and $_POST['limit'] != '' and is_numeric($_POST['limit'])) {
+            $this->data['limit'] = (int)$_POST['limit'];
+        } else {
+            $this->data['limit'] = 10000000;
+        }
+        if (isset($_POST['offset']) and $_POST['offset'] != '' and is_numeric($_POST['offset'])) {
+            $this->data['offset'] = (int)$_POST['offset'];
+        } else {
+            $this->data['offset'] = 0;
+        }
         if (isset($_POST['report_name'])) {
             $this->data['report_name'] = $_POST['report_name'];
             $this->data['heading'] = $_POST['report_name'];
@@ -409,7 +429,8 @@ class report extends MY_Controller
                 $this->data['report_id'] = $this->m_oa_report->get_report_id($this->data['report_name']);
             }
             if ($this->data['report_id'] != '') {
-                $this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute']);
+                #$this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute']);
+                $this->data['query'] = $this->m_oa_report->get_report($this->data);
                 $this->data['column'] = $this->m_oa_report_column->get_report_column($this->data['report_id']);
             } else {
                 exit();
