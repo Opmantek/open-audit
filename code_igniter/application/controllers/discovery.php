@@ -227,14 +227,20 @@ class discovery extends CI_Controller
                 $url = '';
             }
 
+            if (isset($_POST['limit']) and is_numeric($_POST['limit']) and $_POST['limit'] != 0) {
+                $limit = (int)$_POST['limit'];
+            } else {
+                $limit = 1000000;
+            }
+
             if ((php_uname('s') == 'Windows NT') and ($error == '')) {
                 // Windows host - start the script locally
                 $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\\open-audit\\other";
 
                 if ($display == 'y') {
-                    $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=$filepath\\audit_windows.vbs url=".$url." struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." debugging=1";
+                    $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=$filepath\\audit_windows.vbs url=".$url." struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." limit=" . $limit . " debugging=1";
                 } else {
-                    $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=$filepath\\audit_windows.vbs url=".$url." struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." debugging=0";
+                    $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=$filepath\\audit_windows.vbs url=".$url." struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." limit=". $limit ." debugging=0";
                 }
                 $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
 
@@ -313,7 +319,7 @@ class discovery extends CI_Controller
 
                 // start the domain audit
                 if ($error == '') {
-                    $command_string = "screen -D -m /usr/local/open-audit/other/winexe-static -U ".$_POST['windows_domain']."/".$_POST['windows_username']."%".$_POST['windows_password']." --uninstall //".$_POST['server']." \"cscript //nologo c:\windows\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=c:\windows\audit_windows.vbs url=".$url." debugging=0 struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." \" ";
+                    $command_string = "screen -D -m /usr/local/open-audit/other/winexe-static -U ".$_POST['windows_domain']."/".$_POST['windows_username']."%".$_POST['windows_password']." --uninstall //".$_POST['server']." \"cscript //nologo c:\windows\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=c:\windows\audit_windows.vbs url=".$url." limit=".$limit." debugging=0 struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." \" ";
                     exec($command_string, $output, $return_var);
                     if ($display == 'y') {
                         echo 'DEBUG - Command Executed: '.$command_string."\n";

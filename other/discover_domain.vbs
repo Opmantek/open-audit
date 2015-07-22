@@ -5,7 +5,7 @@
 '  This file is part of Open-AudIT.
 '
 '  Open-AudIT is free software: you can redistribute it and/or modify
-'  it under the terms of the GNU Affero General Public License as published 
+'  it under the terms of the GNU Affero General Public License as published
 '  by the Free Software Foundation, either version 3 of the License, or
 '  (at your option) any later version.
 '
@@ -34,10 +34,10 @@ forceCScriptExecution
 ' the number of audits to run concurrently
 number_of_audits = 25
 
-' this tells the script to run the audit from this PC or 
+' this tells the script to run the audit from this PC or
 ' to copy the files to the remote pc and run the script remotely using PSexec
 
-' NOTE - make sure if using the "remote" option that network comms are allowed 
+' NOTE - make sure if using the "remote" option that network comms are allowed
 ' to be initated at the remote PC, connecting to the Open-AudIT host
 audit_run_type = "remote"
 audit_run_type = "local"
@@ -59,7 +59,10 @@ domain_array = array("")
 
 debugging = 3
 
-' if operating_system has a value, 
+' the limit to the number of machines we want retrieved from AD
+limit = 1000000
+
+' if operating_system has a value,
 ' restricts the audit to only systems with the specified operating system
 
 operating_system = "Windows 2000 Professional"
@@ -119,13 +122,16 @@ For Each strArg in objArgs
 			case "url"
 				url = varArray(1)
 
+			case "limit"
+				limit = varArray(1)
+
 		end select
 	else
 		if (strArg = "/?" or strArg = "/help") then
 			help = "y"
 		end if
 	end if
-next 
+next
 
 if (help = "y") then
 	wscript.echo "------------------------------"
@@ -187,7 +193,7 @@ const HKEY_USERS         = &H80000003
 const FOR_APPENDING 	 = 8
 const ads_scope_subtree  = 2
 
-set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2") 
+set objWMIService = GetObject("winmgmts:\\" & strComputer & "\root\cimv2")
 set objWMIService2 = GetObject("winmgmts:\\" & strComputer & "\root\WMI")
 set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strComputer & "\root\default:StdRegProv")
 set objShell = CreateObject("WScript.Shell")
@@ -271,6 +277,9 @@ for l = 0 to ubound(domain_array)
 	if debugging > 0 then wscript.echo "number of filtered systems: " & count end if
 	if debugging > 0 then wscript.echo "--------------" end if
 	redim Preserve pc_array(count)
+	if count > limit then
+		redim Preserve pc_array(limit)
+	end if
 
 
 	' generates a text file of retrieved PCs
@@ -346,11 +355,11 @@ for l = 0 to ubound(domain_array)
 						strRemoteAuth = ""
 					end if
 					' Both of these work. The second requires the double cmd as only one doesn't expand %SYSTEMROOT%.
-					
+
 					'cmd = "psexec.exe \\" & pc_array(i) & strRemoteAuth & " -s cmd /c ""for /f ""TOKENS=2 DELIMS=="" %i in ('set ^| find /i ""systemroot""') do cscript.exe %i\audit_windows.vbs self_delete=y ldap="  & local_domain & """"
-					
+
 					cmd = "psexec.exe \\" & pc_array(i) & strRemoteAuth & " -s cmd /c ""cmd /c cscript.exe %SYSTEMROOT^%\audit_windows.vbs self_delete=y ldap=" & local_domain & """"
-					
+
 					if debugging > 2 then wscript.echo "Running command: " & cmd end if
 					on error resume next
 					Command.Run (cmd)
@@ -397,7 +406,7 @@ Sub CheckForHungWMI()
     dtmTarget.SetVarDate dtmNew, True
 
     Set objWMIService = GetObject("winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2")
-   
+
     ' Pull a list of all processes that are over (script_timeout) seconds old
     Set colProcesses = objWMIService.ExecQuery _
         ("Select * from Win32_Process WHERE CreationDate < '" & dtmTarget & "'")
@@ -405,7 +414,7 @@ Sub CheckForHungWMI()
     For each objProcess in colProcesses
         ' Look for cscript.exe processes only
         if objProcess.Name = "cscript.exe" then
-            ' Look for audit.vbs processes with the //Nologo cmd line option. 
+            ' Look for audit.vbs processes with the //Nologo cmd line option.
          ' ATTENTION: The //Nologo cmd line option should NOT be used to start the initial audit, or it will kill itself off after script_timeout seconds
             if InStr(objProcess.CommandLine, "//Nologo") and InStr(objProcess.CommandLine, "audit.vbs") then
             ' The command line looks something like this: "C:\WINDOWS\system32\cscript.exe" //Nologo audit.vbs COMPUTERNAME
@@ -448,7 +457,7 @@ Function LogKilledAudit(txt)
    fp.close
    set fp = nothing
    LogKilledAudit = true
-End Function 
+End Function
 
 Sub forceCScriptExecution
 	Dim Arg, Str
