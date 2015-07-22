@@ -104,6 +104,7 @@ $system[0]->uptime = strTime($system[0]->uptime);
 $summary_attributes = array('hostname' => 'text' ,
                             'man_ip_address' => 'text',
                             'man_type' => 'select',
+                            'man_criticality' => 'select',
                             'man_environment' => 'select',
                             'man_status' => 'select',
                             'man_description' => 'text',

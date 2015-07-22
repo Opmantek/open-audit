@@ -115,6 +115,34 @@ function receive_environment() {
   }
 }
 
+function display_man_criticality() {
+    status_text="<select id='man_criticality' onchange='send_criticality();'>\
+    <option value=' '><?php echo __("Choose a Criticality"); ?><\/option>\
+    <option value='critical'><?php echo __("Critical"); ?><\/option>\
+    <option value='normal'><?php echo __("Normal"); ?><\/option>\
+    <option value='low'><?php echo __("Low"); ?><\/option>\
+    <\/select>";
+    document.getElementById("man_criticality_select").innerHTML = status_text;
+}
+
+function send_criticality() {
+    table_text=document.getElementById("man_criticality").value;
+    http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_criticality/'+table_text);
+    http.onreadystatechange = receive_criticality;
+    http.send(null);
+}
+
+function receive_criticality() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      update="<span onclick='display_criticality();'>"+http.responseText+"<\/span>";
+      document.getElementById("man_criticality_select").innerHTML = update;
+    }
+  }
+}
+
 function display_man_oae_manage() {
 	status_text="<select id='man_oae_manage' onchange='send_man_oae_manage();'>\
 	<option value=' '><?php echo __("Choose"); ?><\/option>\
