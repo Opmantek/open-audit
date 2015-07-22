@@ -277,8 +277,8 @@ for l = 0 to ubound(domain_array)
 	if debugging > 0 then wscript.echo "number of filtered systems: " & count end if
 	if debugging > 0 then wscript.echo "--------------" end if
 	redim Preserve pc_array(count)
-	if count > limit then
-		redim Preserve pc_array(limit)
+	if (int(count) > int(limit)) then
+		redim Preserve pc_array(limit-1)
 	end if
 
 
