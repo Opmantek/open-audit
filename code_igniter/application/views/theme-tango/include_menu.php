@@ -35,9 +35,9 @@
 ?>
 
 <?php
-if ($this->config->config['oae_license_type'] == 'Free') {
+if (isset($this->config->config['oae_license_type']) and $this->config->config['oae_license_type'] == 'Free') {
     $license = 'free';
-} elseif ($this->config->config['oae_license_status'] == 'Valid') {
+} elseif (isset($this->config->config['oae_license_type']) and $this->config->config['oae_license_status'] == 'Valid') {
     $license = 'commercial';
 } else{
     $license = 'none';
@@ -269,13 +269,13 @@ var modal_content_image = "";
         </ul>
     </li>
 
-    <?php if ($this->config->config['oae_license_type'] == 'Free' or $this->config->config['oae_license_status'] != 'valid') { ?>
+    <?php if ($license != 'commercial') { ?>
         <li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Upgrade Licenses'))?></a>
     <?php } else { ?>
         <li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Licenses'))?></a>
     <?php } ?>
         <ul>
-            <?php if ($this->config->config['oae_license_status'] != 'valid') { ?>
+            <?php if ($license == 'none') { ?>
             <li><a href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
             <?php } ?>
 
