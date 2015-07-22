@@ -265,49 +265,59 @@ class M_system extends MY_Model
             }
         }
 
-        # check IP Address in system, then sys_hw_network_card_ip tables
-        if (isset($details->man_ip_address) and
-                $details->man_ip_address > '' and
-                $details->man_ip_address != '0.0.0.0' and
-                $details->man_ip_address != '000.000.000.000' and
-                filter_var($details->man_ip_address, FILTER_VALIDATE_IP) and
-                $details->system_id == '') {
-            $sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
-            $data = array(ip_address_to_db($details->man_ip_address));
-            $query = $this->db->query($sql, $data);
-            $row = $query->row();
-            if (count($row) > 0) {
-                $details->system_id = $row->system_id;
-                $log_details->message = 'HIT on man_ip_address == system_key for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
-                stdlog($log_details);
-            }
+        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_ip_match'";
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        $ip_match = @$row->config_value;
+        if (!isset($ip_match) or is_null($ip_match)) {
+            $ip_match = 'y';
+        }
 
-            if ($details->system_id == '') {
-                $sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
+        # check IP Address in system, then sys_hw_network_card_ip tables
+        if ($ip_match == 'y') {
+            if (isset($details->man_ip_address) and
+                    $details->man_ip_address > '' and
+                    $details->man_ip_address != '0.0.0.0' and
+                    $details->man_ip_address != '000.000.000.000' and
+                    filter_var($details->man_ip_address, FILTER_VALIDATE_IP) and
+                    $details->system_id == '') {
+                $sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
                 $data = array(ip_address_to_db($details->man_ip_address));
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
                 if (count($row) > 0) {
                     $details->system_id = $row->system_id;
-                    $log_details->message = 'HIT on man_ip_address for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
+                    $log_details->message = 'HIT on man_ip_address == system_key for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
                     stdlog($log_details);
                 }
-            }
 
-            if ($details->system_id == '') {
-                # we didn't get a hit from the system table - try the sys_hw_network_card_ip table
-                $sql = "SELECT system.system_id FROM system
-						LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
-						WHERE (sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ?)
-						AND system.man_status = 'production' LIMIT 1";
-                $sql = $this->clean_sql($sql);
-                $data = array(ip_address_to_db($details->man_ip_address), "$details->man_ip_address");
-                $query = $this->db->query($sql, $data);
-                $row = $query->row();
-                if (count($row) > 0) {
-                    $details->system_id = $row->system_id;
-                    $log_details->message = 'HIT on ip_address in network table for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
-                    stdlog($log_details);
+                if ($details->system_id == '') {
+                    $sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
+                    $data = array(ip_address_to_db($details->man_ip_address));
+                    $query = $this->db->query($sql, $data);
+                    $row = $query->row();
+                    if (count($row) > 0) {
+                        $details->system_id = $row->system_id;
+                        $log_details->message = 'HIT on man_ip_address for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
+                        stdlog($log_details);
+                    }
+                }
+
+                if ($details->system_id == '') {
+                    # we didn't get a hit from the system table - try the sys_hw_network_card_ip table
+                    $sql = "SELECT system.system_id FROM system
+    						LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
+    						WHERE (sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ?)
+    						AND system.man_status = 'production' LIMIT 1";
+                    $sql = $this->clean_sql($sql);
+                    $data = array(ip_address_to_db($details->man_ip_address), "$details->man_ip_address");
+                    $query = $this->db->query($sql, $data);
+                    $row = $query->row();
+                    if (count($row) > 0) {
+                        $details->system_id = $row->system_id;
+                        $log_details->message = 'HIT on ip_address in network table for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
+                        stdlog($log_details);
+                    }
                 }
             }
         }
@@ -366,7 +376,7 @@ class M_system extends MY_Model
             }
         }
 
-        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'name_match'";
+        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_name_match'";
         $query = $this->db->query($sql);
         $row = $query->row();
         $name_match = @$row->config_value;
@@ -1308,7 +1318,7 @@ class M_system extends MY_Model
         # we check a few man_ items when we are submitting an audit script result
         # if they are blank (previously submitted info is incomplete) we over write them
         # we would not normally over write man_ items
-        if (isset($details->last_seen_by) and ($details->last_seen_by == 'audit' or $details->last_seen_by == 'snmp')) {
+        if (isset($details->last_seen_by) and ($details->last_seen_by == 'audit' or $details->last_seen_by == 'snmp' or $details->last_seen_by == 'ipmi')) {
             $sql = "SELECT * FROM system WHERE system_id = ? LIMIT 1";
             $data = array("$details->system_id");
             $query = $this->db->query($sql, $data);

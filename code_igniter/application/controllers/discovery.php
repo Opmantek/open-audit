@@ -419,6 +419,14 @@ class discovery extends CI_Controller
                 $subnet_range = "";
             }
 
+            $encode = array();
+            if (isset($_POST['limit']) and $_POST['limit'] != '' and is_numeric($_POST['limit'])) {
+                $encode['limit'] = (int)$_POST['limit'];
+            } else {
+                $encode['limit'] = 1000000;
+            }
+            $encode['count'] = 0;
+
             $log_details->message = 'Discovery submitted for '.$subnet_range;
             stdlog($log_details);
 
@@ -770,6 +778,7 @@ class discovery extends CI_Controller
                     $details->timestamp = $timestamp;
                     $details->last_seen = $timestamp;
                     $details->last_user = '';
+                    $details->last_seen_by = 'nmap';
 
                     $details->domain = '';
                     $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
@@ -820,7 +829,7 @@ class discovery extends CI_Controller
                     $default = $this->m_oa_config->get_credentials();
 
                     // supplied credentials
-                    $sql = 'SELECT temp_value FROM oa_temp WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\' orDER BY temp_id DESC LIMIT 1';
+                    $sql = 'SELECT temp_value FROM oa_temp WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\' ORDER BY temp_id DESC LIMIT 1';
                     $query = $this->db->query($sql);
                     $row = $query->row();
                     $supplied_credentials = @$row->temp_value;
@@ -839,6 +848,8 @@ class discovery extends CI_Controller
                         $supplied->windows_domain =   @$supplied_credentials->windows_domain;
                         $details->last_seen_user =  @$supplied_credentials->last_user;
                         $details->network_address =   @$supplied_credentials->network_address;
+                        $details->limit = (int)@$supplied_credentials->limit;
+                        $details->count = (int)@$supplied_credentials->count;
                     } else {
                         $supplied->snmp_community = '';
                         $supplied->snmp_version = '';
@@ -850,7 +861,28 @@ class discovery extends CI_Controller
                         $supplied->windows_domain = '';
                         $details->last_seen_user = '';
                         $details->network_address = '';
+                        $details->limit = 1000000;
+                        $details->count = 0;
                     }
+
+                    #$log_details->message = 'Count from DB: ' . $supplied_credentials->count . ' Limit from DB: ' . $supplied_credentials->limit;
+                    #stdlog($log_details);
+                    #$log_details->message = 'Count from details: ' . $details->count . ' Limit from details: ' . $details->limit;
+                    #stdlog($log_details);
+                    if (intval($details->count) >= intval($details->limit)) {
+                        # we have discovered the requested number of devcies
+                        #$log_details->message = 'Count from DB is higher than requested limit, exiting. Count: ' . $details->count . ' Limit: ' . $details->limit;
+                        #stdlog($log_details);
+                        return;
+                    }
+                    $supplied_credentials->count++;
+                    #$log_details->message = 'Updating count to: ' . $supplied_credentials->count;
+                    #stdlog($log_details);
+                    $sql = 'UPDATE oa_temp SET temp_value = ? WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\'';
+                    $data_in = json_encode($supplied_credentials);
+                    $data_in = $this->encrypt->encode($data_in);
+                    $data = array("$data_in");
+                    $query = $this->db->query($sql, $data);
 
                     $details->last_user = $details->last_seen_user;
                     $log_details->user = $details->last_seen_user;
@@ -991,19 +1023,32 @@ class discovery extends CI_Controller
                             print_r($output);
                         }
                         if ($return_var != '0') {
-                            $error = 'Ipmitools not detected when discovering '.$details->man_ip_address;
-                            $log_details->message = $error;
+                            $impi_installed = 'n';
+                            $log_details->message = 'Ipmitools not detected when discovering '.$details->man_ip_address;
                             stdlog($log_details);
                         } else {
-                            $log_details->message = 'Ipmitools detected when discovering '.$details->man_ip_address;
-                            stdlog($log_details);
+                            $impi_installed = 'y';
                         }
+
                         $command_string = null;
                         $output = null;
                         $return_var = null;
 
-                        if ($error == '') {
+                        if (isset($this->config->config['discovery_use_ipmi']) and $this->config->config['discovery_use_ipmi'] == 'y') {
+                            $ipmi_use = 'y';
+                        } else {
+                            $ipmi_use = 'n';
+                        }
+
+                        if ($impi_installed == 'y' and $ipmi_use == 'n') {
+                            $log_details->message = 'Ipmitools detected but not used (as per config) when discovering '.$details->man_ip_address;
+                            stdlog($log_details);
+                        }
+
+                        if ($impi_installed == 'y' and $ipmi_use == 'y') {
                             // ipmitools are installed
+                            $log_details->message = 'Ipmitools detected and used (as per config) when discovering '.$details->man_ip_address;
+                            stdlog($log_details);
                             // Attempt to get MAC Address
                             $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.$default->default_ipmi_password.' lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2';
                             exec($command_string, $output, $return_var);
@@ -1026,6 +1071,7 @@ class discovery extends CI_Controller
                                 stdlog($log_details);
                                 // We have a response (containing a MAC Address) from the target
                                 $details->type = 'remote access controller';
+                                $details->last_seen_by = 'ipmi';
                                 if ($details->mac_address == '') {
                                     $details->mac_address = strtolower($output[0]);
                                 }
@@ -1102,6 +1148,8 @@ class discovery extends CI_Controller
                         $error = "";
                     }
 
+                    #print_r($details);
+
                     // remove all the null, false and Empty Strings but leaves 0 (zero) values
                     // $details = (object) array_filter((array) $details, 'strlen' );
 
@@ -1170,17 +1218,16 @@ class discovery extends CI_Controller
                         $log_details->message = 'SNMP credential update for '.$details->man_ip_address.' (System ID '.$details->system_id.')';
                         stdlog($log_details);
                     } else {
-                        // we received a result from nmap only, use this data to update or insert
-                        $details->last_seen_by = 'nmap';
+                        // we received a result from nmap or ipmi, use this data to update or insert
                         if (isset($details->system_id) and $details->system_id != '') {
                             // we have a system id and nmap details to update
                             $this->m_system->update_system($details);
-                            $log_details->message = "Nmap update for $details->man_ip_address (System ID $details->system_id)";
+                            $log_details->message = $details->last_seen_by . " update for $details->man_ip_address (System ID $details->system_id)";
                             stdlog($log_details);
                         } else {
                             // we have a new system
                             $details->system_id = $this->m_system->insert_system($details);
-                            $log_details->message = "Nmap insert for $details->man_ip_address (System ID ".$details->system_id.")";
+                            $log_details->message = $details->last_seen_by . " insert for $details->man_ip_address (System ID ".$details->system_id.")";
                             stdlog($log_details);
                             $this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', date('Y-m-d H:i:s'));
                         }

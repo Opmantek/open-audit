@@ -1200,7 +1200,9 @@ class main extends MY_Controller
         $data['application_nmis_enabled'] = $this->config->item('nmis');
         $data['application_nmis_url'] = $this->config->item('nmis_url');
         $data['application_oae_status'] = $this->config->item('logo');
-        $data['application_name_match'] = $this->config->item('name_match');
+        $data['application_name_match'] = $this->config->item('discovery_name_match');
+        $data['application_ip_match'] = $this->config->item('discovery_ip_match');
+        $data['application_use_ipmi'] = $this->config->item('discovery_use_ipmi');
         $data['application_ad_domain'] = $this->config->item('ad_domain');
         $data['application_ad_server'] = $this->config->item('ad_server');
         $data['application_permitted_uri_chars'] =  $this->config->item('permitted_uri_chars');
