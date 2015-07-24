@@ -1408,7 +1408,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         <td><?php echo print_something($key->details_instance)?></td>
                         <td><?php echo print_something($key->details_internal_id)?></td>
                         <td><?php echo print_something($key->details_name)?></td>
-                        <td align="right"><?php echo number_format($key->details_current_size)?> MB</td>
+                        <td align="right"><?php echo number_format(intval($key->details_current_size))?> MB</td>
                         <td align='center'><?php echo print_something($key->details_compatibility_mode)?></td>
                         <td><?php echo print_something($key->details_creation_date)?></td>
                         <td><?php echo print_something($key->details_filename)?></td>
