@@ -3680,7 +3680,7 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
-        if (($db_internal_version < '20150724') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20150610') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.8.1
 
             $log_details = new stdClass();
@@ -3692,7 +3692,7 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "UPDATE oa_config SET config_value = '20150724' WHERE config_name = 'internal_version'";
+            $sql = "UPDATE oa_config SET config_value = '20150610' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
