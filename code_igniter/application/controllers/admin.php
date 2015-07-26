@@ -3680,6 +3680,31 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
+        if (($db_internal_version < '20150724') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.8.1
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.8.1 commenced';
+            stdlog($log_details);
+
+            $sql = 'UPDATE oa_report_column SET column_link = "/report/specific_software/$group_id/" WHERE column_link = "/report/Specific Software/$group_id/"';
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config SET config_value = '20150724' WHERE config_name = 'internal_version'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "UPDATE oa_config SET config_value = '1.8.1' WHERE config_name = 'display_version'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $log_details->message = 'Upgrade database to 1.8.1 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
+
         if (($db_internal_version < '20150620') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.8.2
 

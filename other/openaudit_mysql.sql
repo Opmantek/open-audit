@@ -927,7 +927,7 @@ INSERT INTO `oa_report_column` VALUES (17,2,3,'IP Address','man_ip_address','ip_
 INSERT INTO `oa_report_column` VALUES (18,2,4,'Manufacturer','man_manufacturer','text','','','','left');
 INSERT INTO `oa_report_column` VALUES (19,2,5,'Model','man_model','text','','','','left');
 INSERT INTO `oa_report_column` VALUES (20,2,6,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (21,3,1,'Package Name','software_name','link','/report/Specific Software/$group_id/','software_id','','left');
+INSERT INTO `oa_report_column` VALUES (21,3,1,'Package Name','software_name','link','/report/specific_software/$group_id/','software_id','','left');
 INSERT INTO `oa_report_column` VALUES (22,3,2,'Version','software_version','text','','','','right');
 INSERT INTO `oa_report_column` VALUES (23,3,3,'Installs','software_count','text','','','','center');
 INSERT INTO `oa_report_column` VALUES (24,3,4,'Publisher','software_publisher','text','','','','left');
