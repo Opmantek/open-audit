@@ -135,6 +135,12 @@ class M_oa_config extends MY_Model
         $this->config->config['oa_web_index'] = $basic_url;
         $this->config->config['oa_web_folder'] = str_replace('/index.php', '', $basic_url);
         unset($i, $j, $temp, $basic_url);
+
+        # get the total number of devices
+        $sql = "SELECT count(system_id) as device_count FROM system WHERE man_status = 'production'";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $this->config->config['device_count'] = intval($result[0]->device_count);
     }
 
     public function get_credentials()
