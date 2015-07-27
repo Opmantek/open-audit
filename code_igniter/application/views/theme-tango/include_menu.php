@@ -344,16 +344,17 @@ var modal_content_image = "";
         $('#nav').droppy({speed: 60});
     });
 
-
     $('a#buy_more_licenses').click(function(e){
         // get from opmantek.com
         $.get('https://opmantek.com/product_data/oae.json', function(data){
             modal.open({content: data, source: "online"});
+            highlightColumn();
         })
         .fail(function() {
             // get from OAC
                 $.get('/open-audit/js/oae.json', function(data){
                 modal.open({content: data, source: "offline"});
+                highlightColumn();
             })
         });
     });
@@ -428,6 +429,14 @@ var modal_content_image = "";
             // our generic output container column_variable
             var output = "";
 
+            // setup our highlighting column
+            var highlight_column = "";
+            var device_count = <?php echo $this->config->config['device_count']; ?>;
+            if (device_count < 20) { highlight_column = "Enterprise 20 Nodes Free"; }
+            if (device_count > 20) { highlight_column = "Enterprise 100 Nodes"; }
+            if (device_count > 100) { highlight_column = "Enterprise 500 Nodes"; }
+            if (device_count > 500) { highlight_column = "Enterprise X Nodes"; }
+
             // css from OAE / Bootstrap
             $content.empty().append("<link href=\"/open-audit/css/bootstrap.min.css\" rel=\"stylesheet\" />");
 
@@ -439,11 +448,17 @@ var modal_content_image = "";
             $content.append('<br /><br />');
 
             // table
-            var table = '<div id="modal_content"><table class="table table-bordered" width="100%">';
+            var table = '<div id="modal_content"><table class="table table-bordered" id="nodeTable" width="100%">';
 
             // table header
+            var colCount = 0;
+            var count = 0;
             for (var i = 0; i < settings.content["table"]["header"].length; i++) {
                 table += "<th style=\"vertical-align:middle;\" class=\""+settings.content["table"]["header"][i]["class"]+"\">"+settings.content["table"]["header"][i]["text"]+"</th>";
+                if (settings.content["table"]["header"][i]["text"] == highlight_column) {
+                    count = colCount;
+                }
+                colCount++;
             }
 
             // table rows
@@ -460,6 +475,10 @@ var modal_content_image = "";
                         classText = classText.replace(" info", "");
                     } else {
                         classText = row[j]["class"];
+                    }
+
+                    if (j == count) {
+                        classText = classText + " info";
                     }
 
                     if (row[j].hasOwnProperty("button")) {
