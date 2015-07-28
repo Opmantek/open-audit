@@ -279,18 +279,27 @@ class M_system extends MY_Model
                     $details->man_ip_address > '' and
                     $details->man_ip_address != '0.0.0.0' and
                     $details->man_ip_address != '000.000.000.000' and
-                    filter_var($details->man_ip_address, FILTER_VALIDATE_IP) and
-                    $details->system_id == '') {
-                $sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
-                $data = array(ip_address_to_db($details->man_ip_address));
-                $query = $this->db->query($sql, $data);
-                $row = $query->row();
-                if (count($row) > 0) {
-                    $details->system_id = $row->system_id;
-                    $log_details->message = 'HIT on man_ip_address == system_key for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
-                    stdlog($log_details);
+                    filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
+
+                # first check the sys_hw_network_card_ip table as eny existing devices that have been seen
+                # by more than just Nmap will have an entry here
+                if ($details->system_id == '') {
+                    $sql = "SELECT system.system_id FROM system
+                            LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
+                            WHERE (sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ?)
+                            AND system.man_status = 'production' LIMIT 1";
+                    $sql = $this->clean_sql($sql);
+                    $data = array(ip_address_to_db($details->man_ip_address), "$details->man_ip_address");
+                    $query = $this->db->query($sql, $data);
+                    $row = $query->row();
+                    if (count($row) > 0) {
+                        $details->system_id = $row->system_id;
+                        $log_details->message = 'HIT on ip_address in network table for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
+                        stdlog($log_details);
+                    }
                 }
 
+                # next check the system table for a man_ip_address match
                 if ($details->system_id == '') {
                     $sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
                     $data = array(ip_address_to_db($details->man_ip_address));
@@ -303,19 +312,15 @@ class M_system extends MY_Model
                     }
                 }
 
+                # finally one last try - check for a minimal matching system_key
                 if ($details->system_id == '') {
-                    # we didn't get a hit from the system table - try the sys_hw_network_card_ip table
-                    $sql = "SELECT system.system_id FROM system
-    						LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
-    						WHERE (sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ?)
-    						AND system.man_status = 'production' LIMIT 1";
-                    $sql = $this->clean_sql($sql);
-                    $data = array(ip_address_to_db($details->man_ip_address), "$details->man_ip_address");
+                    $sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
+                    $data = array(ip_address_to_db($details->man_ip_address));
                     $query = $this->db->query($sql, $data);
                     $row = $query->row();
                     if (count($row) > 0) {
                         $details->system_id = $row->system_id;
-                        $log_details->message = 'HIT on ip_address in network table for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
+                        $log_details->message = 'HIT on man_ip_address == system_key for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
                         stdlog($log_details);
                     }
                 }
