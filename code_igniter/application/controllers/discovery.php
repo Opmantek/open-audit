@@ -1223,6 +1223,11 @@ class discovery extends CI_Controller
                         }
                         $log_details->message = 'SNMP credential update for '.$details->man_ip_address.' (System ID '.$details->system_id.')';
                         stdlog($log_details);
+
+                        // new for 1.8.2 - if we have a non-computer, do not attempt to connect using SSH
+                        if ($details->type != 'computer') {
+                            $details->ssh_status = 'false';
+                        }
                     } else {
                         // we received a result from nmap or ipmi, use this data to update or insert
                         if (isset($details->system_id) and $details->system_id != '') {
