@@ -33,20 +33,22 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $sortcolumn = 2;
-if ($query) {
-    ?>
+if ($query) { ?>
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
-			<th align='center' style='width:120px;'><?php echo __('Hostname')?></th>
-			<th align='center' style='width:120px;'><?php echo __('Table')?></th>
-			<th align='center' style='width:120px;'><?php echo __('Attribute')?></th>
-			<th align='center' style='width:120px;'><?php echo __('Result')?></th>
+            <th align='center'><?php echo __('Icon')?></th>
+            <th align='center'><?php echo __('Hostname')?></th>
+            <th align='center'><?php echo __('Domain')?></th>
+            <th align='center'><?php echo __('IP Address')?></th>
+            <th align='center'><?php echo __('Type')?></th>
+			<th align='center'><?php echo __('Table')?></th>
+			<th align='center'><?php echo __('Attribute')?></th>
+			<th align='center'><?php echo __('Result')?></th>
 		</tr>
 	</thead>
 	<tbody>
-	<?php foreach ($query as $key): ?>
-	<?php
+	<?php foreach ($query as $key):
         // format the table and field names
         $key->table = str_replace("sys_hw_", "", $key->table);
         $key->table = str_replace("sys_sw_", "", $key->table);
@@ -60,22 +62,20 @@ if ($query) {
 
         if ($key->hostname == "") {
             $key->hostname = "-";
-        }
-    ?>
-
+        } ?>
 		<tr>
-			<td align='center'><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>"><?php echo htmlentities($key->hostname); ?></a></td>
-			<td align='center'><?php echo htmlentities($key->table)?></td>
+			<td align='center'><img src="<?php echo str_replace("index.php", "", site_url()); ?>theme-tango/tango-images/16_<?php echo $key->icon; ?>.png" style='border-width:0px;' title="" alt="" /></td>
+            <td align='center'><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>"><?php echo htmlentities($key->hostname); ?></a></td>
+			<td align='center'><?php echo htmlentities($key->domain)?></td>
+            <td><span style="display:none;"><?php echo htmlentities($key->man_ip_address)?></span><?php echo htmlentities(ip_address_from_db($key->man_ip_address))?></td>
+            <td align='center'><?php echo htmlentities($key->man_type)?></td>
+            <td align='center'><?php echo htmlentities($key->table)?></td>
 			<td align='center'><?php echo htmlentities($key->field)?></td>
 			<td align='center'><?php echo htmlentities($key->result)?></td>
 		</tr>
-		<?php endforeach;
-    ?>
+		<?php endforeach; ?>
 	</tbody>
 </table>
-<?php
-
-} else {
+<?php } else {
     echo "<br />".__('There are no search results').".<br />";
-}
-?>
+} ?>

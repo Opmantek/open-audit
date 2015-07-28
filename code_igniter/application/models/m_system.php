@@ -614,12 +614,11 @@ class M_system extends MY_Model
 
         $sql = "SELECT
 				system.icon,
+                system.hostname,
+                system.system_id,
+                system.domain,
+                system.man_ip_address,
 				system.man_type,
-				system.man_ip_address,
-				system.system_id,
-				system.hostname,
-				system.domain,
-				system.fqdn,
 				system.man_description,
 				system.man_os_family,
 				sys_hw_network_card_ip.ip_address_v4
