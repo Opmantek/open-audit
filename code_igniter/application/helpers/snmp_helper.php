@@ -333,6 +333,9 @@ if (!function_exists('get_snmp')) {
 
             if ($details->snmp_oid > '') {
                 $details->manufacturer = get_oid($details->snmp_oid);
+                if ($details->manufacturer == 'net-snmp') {
+                    $details->manufacturer = '';
+                }
                 $log_details->message = 'SNMPv2 manufacturer for '.$log_machine.' is: '.$details->manufacturer;
                 stdlog($log_details);
                 $explode = explode(".", $details->snmp_oid);
@@ -587,18 +590,12 @@ if (!function_exists('get_snmp')) {
             if (!isset($details->location) or $details->location == '') {
                 $details->location = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0"));
             }
-            if ($details->location > '') {
-                $details->description = "Location: ".$details->location.". ".$details->description;
-            }
             $log_details->message = 'SNMPv2 location for '.$log_machine.' is '.$details->location;
             stdlog($log_details);
 
             // contact
             if (!isset($details->contact) or $details->contact == '') {
                 $details->contact = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.4.0"));
-            }
-            if ($details->contact > '') {
-                $details->description = "Contact: ".$details->contact.". ".$details->description;
             }
             $log_details->message = 'SNMPv2 contact for '.$log_machine.' is '.$details->contact;
             stdlog($log_details);

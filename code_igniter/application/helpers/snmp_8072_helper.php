@@ -39,7 +39,7 @@
 
 $get_oid_details = function ($details) {
     $details->type = 'computer';
-    $details->model = 'unknown';
+    $details->model = '';
     if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.1') {
         $details->os_group = 'unix';
         $details->os_family = 'HP UX 9';
@@ -107,8 +107,12 @@ $get_oid_details = function ($details) {
         $details->type = 'unknown';
     }
 
-    if (isset($details->description) and strpos($details->description, "Darwin Kernel Version 12") !== false) {
+    if (isset($details->description) and stripos($details->description, "Darwin Kernel Version 12") !== false) {
         $details->manufacturer = "Apple Inc";
+    }
+
+    if (isset($details->description) and stripos($details->description, "dd-wrt") !== false) {
+        $details->os_family = "DD-WRT";
     }
 
 };
