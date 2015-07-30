@@ -210,9 +210,9 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
 	line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
 	net_mac_address=`ifconfig $line 2>/dev/null | grep "ether" | awk '{print $2}'`
 	if [[ "$net_mac_address" > "" ]]; then
+		ip_address_v4=`ipconfig getifaddr $line`
 		if [[ "$ip_address_v4" > "" ]]; then
 			net_index="$line"
-			ip_address_v4=`ipconfig getifaddr $line`
 			ip_subnet=`ipconfig getpacket $line | grep "subnet_mask" | cut -d" " -f3`
 			echo "		<ip_address>" >> $xml_file
 			echo "			<net_index>$net_index</net_index>" >> $xml_file
