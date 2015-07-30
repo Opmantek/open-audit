@@ -1722,8 +1722,8 @@ else
 						sBaseKey3 = sBaseKey2 & sKey2 & "\"
 						iRC3 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey3, arSubKeys3)
 						for each sKey3 In arSubKeys3
+							strRawEDID = ""
 							if skey3="Control" then
-								strRawEDID = ""
 								oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "DeviceDesc", temp_model(intMonitorCount)
 								oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "Mfg", temp_manuf(intMonitorCount)
 								oReg.GetBinaryValue HKEY_LOCAL_MACHINE, sbasekey3 & "Device Parameters\", "EDID", arrintEDID
