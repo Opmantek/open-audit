@@ -698,9 +698,9 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				end if
 
 				if instr(lcase(objRecordSet.Fields("operatingsystem").Value), "windows") then
-					os_group = "windows"
+					os_group = "Windows"
 				else
-					os_group = "other"
+					os_group = ""
 				end if
 
 				system_hostname = objRecordSet.Fields("Name").Value
@@ -749,7 +749,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				os_name = "Microsoft " & objRecordSet.Fields("operatingsystem").Value
 				family = os_family(objRecordSet.Fields("operatingsystem").Value)
 				icon = lcase(replace(family, " ", "_"))
-				if os_group = "windows" then
+				if os_group = "Windows" then
 					result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 					result.WriteText "<system>" & vbcrlf
 					result.WriteText "	<sys>" & vbcrlf
