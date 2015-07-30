@@ -424,10 +424,13 @@ function upload_attachment()
 <script type="text/javascript">
 
 function toggleBold(id) {
-   if (document.getElementById(id).style.fontWeight == "bold") {
-        document.getElementById(id).style.fontWeight = "";
-    } else {
-        document.getElementById(id).style.fontWeight = "bold";
+    var obj_item = document.getElementById(id);
+    if (obj_item != null) {
+        if (obj_item.style.fontWeight == "bold") {
+            obj_item.style.fontWeight = "";
+        } else {
+            obj_item.style.fontWeight = "bold";
+        }
     }
 }
 
