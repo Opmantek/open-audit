@@ -107,7 +107,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 system_timestamp=`date +'%F %T'`
 system_uuid=`system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g'`
-system_hostname=`networksetup -getcomputername`
+system_hostname=`networksetup -getcomputername | cut -f1 -d.`
 system_domain=`more /etc/resolv.conf | grep domain | cut -d" " -f2`
 system_os_version=`sw_vers | grep "ProductVersion:" | cut -f2`
 system_os_name="OSX $system_os_version"
