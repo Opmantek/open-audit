@@ -103,8 +103,7 @@ $get_oid_details = function ($details) {
         $details->os_family = 'Apple OSX';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.8072.3.2.255') {
-        $details->os_group = 'unknown';
-        $details->type = 'unknown';
+        $details->os_group = '';
     }
 
     if (isset($details->description) and stripos($details->description, "Darwin Kernel Version 12") !== false) {
@@ -113,6 +112,7 @@ $get_oid_details = function ($details) {
 
     if (isset($details->description) and stripos($details->description, "dd-wrt") !== false) {
         $details->os_family = "DD-WRT";
+        $details->type = 'router';
     }
 
 };

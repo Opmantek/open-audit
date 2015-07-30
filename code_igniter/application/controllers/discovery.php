@@ -1225,7 +1225,9 @@ class discovery extends CI_Controller
                         stdlog($log_details);
 
                         // new for 1.8.2 - if we have a non-computer, do not attempt to connect using SSH
-                        if ($details->type != 'computer') {
+                        if ($details->type != 'computer' and $details->os_family != 'DD-WRT') {
+                            $log_details->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for '.$details->man_ip_address.' (System ID '.$details->system_id.')';
+                            stdlog($log_details);
                             $details->ssh_status = 'false';
                         }
                     } else {
@@ -1375,9 +1377,7 @@ class discovery extends CI_Controller
                         }
                     }
 
-                    if ($details->ssh_status == 'true' and
-                        isset($details->sysDescr) and
-                        stripos($details->sysDescr, 'dd-wrt') !== false) {
+                    if ($details->ssh_status == 'true' and isset($details->sysDescr) and stripos($details->sysDescr, 'dd-wrt') !== false) {
                         # we have a DD-WRT based system with SSH open
                         # run some DD-WRT specific commands
                         $ssh_command = "sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." nvram get DD_BOARD";
@@ -1410,9 +1410,12 @@ class discovery extends CI_Controller
                             stdlog($log_details);
                         }
                     }
+print_r($details);
 
                     // SSH based audit (usually Linux, Unix, OSX, AIX or ESX)
-                    if ($details->ssh_status == "true" and (!isset($details->sysDescr) or (isset($details->sysDescr) and stripos($details->sysDescr, 'dd-wrt') === false))) {
+                    if ($details->ssh_status == "true" and $details->os_family != 'DD-WRT') {
+                        $log_details->message = "Starting ssh audit for $details->man_ip_address (System ID $details->system_id)";
+                        stdlog($log_details);
                         $error = '';
                         if ($details->ssh_username == '' or $details->ssh_password == '') {
                             $script_string = "audit_linux.sh strcomputer=".$details->man_ip_address." submit_online=y create_file=n struser=".$details->ssh_username." strpass=".$details->ssh_password." debugging=0";
