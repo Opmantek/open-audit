@@ -1410,7 +1410,6 @@ class discovery extends CI_Controller
                             stdlog($log_details);
                         }
                     }
-print_r($details);
 
                     // SSH based audit (usually Linux, Unix, OSX, AIX or ESX)
                     if ($details->ssh_status == "true" and $details->os_family != 'DD-WRT') {
