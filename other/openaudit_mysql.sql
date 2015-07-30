@@ -307,8 +307,7 @@ INSERT INTO `oa_config` VALUES ('network_group_subnet','30','y','0000-00-00 00:0
 INSERT INTO `oa_config` VALUES ('nmis','n','y','0000-00-00 00:00:00',0,'Enable import / export to NMIS functions.');
 INSERT INTO `oa_config` VALUES ('nmis_url','','y','0000-00-00 00:00:00',0,'The web server address of NMIS.');
 INSERT INTO `oa_config` VALUES ('non_admin_search','y','y','0000-00-00 00:00:00',0,'Enable or disable search for non-Administrators');
-INSERT INTO `oa_config` VALUES ('oae_license_status','','n','0000-00-00 00:00:00',0,'License status of Open-AudIT Enterprise.');
-INSERT INTO `oa_config` VALUES ('oae_license_type','','n','0000-00-00 00:00:00',0,'The type of license you have for Enterprise.');
+INSERT INTO `oa_config` VALUES ('oae_license','','n','0000-00-00 00:00:00',0,'License status of Open-AudIT Enterprise.');
 INSERT INTO `oa_config` VALUES ('oae_prompt','2015-06-01','n','0000-00-00 00:00:00',0,'Prompt to activate a license for Open-AudIT Enterprise.');
 INSERT INTO `oa_config` VALUES ('oae_url','/omk/oae','y','0000-00-00 00:00:00',0,'The web server address of Open-AudIT Enterprise.');
 INSERT INTO `oa_config` VALUES ('page_refresh','300','y','0000-00-00 00:00:00',0,'Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.');

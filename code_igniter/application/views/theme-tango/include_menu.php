@@ -35,11 +35,8 @@
 ?>
 
 <?php
-if (isset($this->config->config['oae_license_type']) and $this->config->config['oae_license_type'] == 'Free') {
-    $license = 'free';
-} elseif (isset($this->config->config['oae_license_type']) and $this->config->config['oae_license_status'] == 'Valid') {
-    $license = 'commercial';
-} else{
+$license = $this->config->config['oae_license'];
+if ($license != 'none' and $license != 'commercial' and $license != 'free') {
     $license = 'none';
 }
 ?>
@@ -54,7 +51,7 @@ var modal_content_image = "";
 <ul id="nav">
     <li><a href='<?php echo $oa_web_index; ?>/'><?php echo mb_strtoupper(__('Home'))?></a></li>
 
-    <?php if ($this->config->config['oae_license_status'] == 'valid' and isset($this->config->config['oae_url']) and $this->config->config['oae_url'] != '') { ?>
+    <?php if ($license != 'none' and isset($this->config->config['oae_url']) and $this->config->config['oae_url'] != '') { ?>
     <li><a href='#'><?php echo mb_strtoupper(__('Enterprise'))?></a>
         <ul>
             <li><a href='<?php echo $this->config->config['oae_url']; ?>'><?php echo __('Dashboard')?></a></li>
@@ -588,7 +585,7 @@ var modal_content_image = "";
         return method;
     }());
 
-    <?php if ($include == 'v_main' and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license_type'] == 'Free' or $this->config->config['oae_license_status'] != 'valid')) { ?>
+    <?php if ($include == 'v_main' and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($license != 'commercial')) { ?>
     // Wait until the DOM has loaded before querying the document
     $(document).ready(function(){
         // get from opmantek.com
