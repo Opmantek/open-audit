@@ -1129,6 +1129,26 @@ class M_system extends MY_Model
             }
         }
 
+
+        # If we have an ip address in the hostname field - see if we have other attributes available
+        if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+            # try getting the dns hostname
+            $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
+            # make sure we use the hostname and not a fqdn if returned
+            if (strpos($details->hostname, ".") != false) {
+                $details->fqdn = strtolower($details->hostname);
+                $i = explode(".", $details->hostname);
+                $details->hostname = $i[0];
+                unset($i[0]);
+                $details->domain = implode(".", $i);
+                unset($i);
+            }
+        }
+        if (filter_var($details->hostname, FILTER_VALIDATE_IP) and isset($details->sysName) and $details->sysName != '') {
+            # use the sysName from SNMP if set
+            $details->hostname = $details->sysName;
+        }
+
         $details->man_ip_address = ip_address_to_db($details->man_ip_address);
 
         if ($details->hostname != '' and $details->domain != '' and $details->fqdn == '') {
@@ -1231,17 +1251,55 @@ class M_system extends MY_Model
 
         unset($temp_ip);
 
-        # if we're updating and we don't have a real hostname, only the ip address
-        # stored in the hostname field, we shouldn't update it
-        if (isset($details->hostname) and strpos($details->hostname, ".")) {
-            $sql = "SELECT hostname FROM system WHERE system_id = ?";
-            $data = array("$details->system_id");
-            $query = $this->db->query($sql, $data);
-            $result = $query->row();
-            $db_hostname = $result->hostname;
-            if (!strpos($db_hostname, ".")) {
-                $details->hostname = $db_hostname;
+        # If we have an ip address in the hostname field - see if we have other attributes available
+        if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+            # try getting the dns hostname
+            $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
+            # make sure we use the hostname and not a fqdn if returned
+            if (strpos($details->hostname, ".") != false) {
+                if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+                    # we got a FQDN back from DNS - split it up
+                    $details->fqdn = strtolower($details->hostname);
+                    $i = explode(".", $details->hostname);
+                    $details->hostname = $i[0];
+                    unset($i[0]);
+                    $details->domain = implode(".", $i);
+                    unset($i);
+                } else {
+                    # we got an ip address back from DNS which is now the hostname
+                }
+            } else {
+                # we should have a real hostname if we get to here
             }
+        }
+        if (filter_var($details->hostname, FILTER_VALIDATE_IP) and isset($details->sysName) and $details->sysName != '') {
+            # use the sysName from SNMP if set
+            $details->hostname = $details->sysName;
+        }
+
+        $sql = "SELECT hostname FROM system WHERE system_id = ?";
+        $data = array("$details->system_id");
+        $query = $this->db->query($sql, $data);
+        $result = $query->row();
+        $db_hostname = $result->hostname;
+
+        if (strpos($db_hostname, ".") !== false) {
+            # our DB hostname field contains a .
+            # If we don't have an actual ip address, replace it the audit hostname with the db hostname
+            if (!filter_var($db_hostname, FILTER_VALIDATE_IP)) {
+                # we have a FQDN - split it
+                $details->fqdn = strtolower($db_hostname);
+                $i = explode(".", $db_hostname);
+                $details->hostname = $i[0];
+                unset($i[0]);
+                $details->domain = implode(".", $i);
+                unset($i);
+            } else {
+                # we have an ip address in the DB, replace it with the audit data (ie, don't change the audit data)
+            }
+        } else {
+            # we have a real hostname in the database, replace our audit data with that
+            $details->hostname = $db_hostname;
         }
 
         if (!isset($details->system_key_type)) {
