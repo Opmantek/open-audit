@@ -636,7 +636,6 @@ CREATE TABLE `oa_group_sys` (
   `group_sys_id` int(10) NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
   `group_id` int(10) unsigned DEFAULT NULL,
-  `group_sys_type` varchar(20) NOT NULL,
   PRIMARY KEY (`group_sys_id`),
   KEY `system_id` (`system_id`),
   KEY `group_id` (`group_id`),

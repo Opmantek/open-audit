@@ -3855,6 +3855,10 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
+            $sql = "ALTER TABLE oa_group_sys DROP group_sys_type";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
             $sql = "UPDATE oa_config SET config_value = '20150620' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
