@@ -35,7 +35,7 @@
 ?>
 
 <?php
-$license = $this->config->config['oae_license'];
+$license = @$this->config->config['oae_license'];
 if ($license != 'none' and $license != 'commercial' and $license != 'free') {
     $license = 'none';
 }
