@@ -5,7 +5,7 @@
 '  This file is part of Open-AudIT.
 '
 '  Open-AudIT is free software: you can redistribute it and/or modify
-'  it under the terms of the GNU Affero General Public License as published 
+'  it under the terms of the GNU Affero General Public License as published
 '  by the Free Software Foundation, either version 3 of the License, or
 '  (at your option) any later version.
 '
@@ -38,7 +38,7 @@ dim log_entry, error_returned, error_description, exit_status, command, timestam
 
 ' debugging values
 ' 0 = no debug
-' 1 = basic debug 
+' 1 = basic debug
 ' 2 = verbose debug
 
 dim create_file : create_file = "y"
@@ -64,19 +64,19 @@ for each strArg in objArgs
 
 			case "create_file"
 				create_file = varArray(1)
-				
+
 			case "debugging"
 				debugging = varArray(1)
-				
+
 			case "echo_output"
 				echo_output = varArray(1)
 
 			case "help"
 				help = varArray(1)
-				
+
 			case "log_no_response"
 				log_no_response = varArray(1)
-				
+
 			case "org_id"
 				org_id = varArray(1)
 
@@ -170,7 +170,7 @@ dim count : count = 0
 
 dim system_timestamp : system_timestamp = Year(Now()) & "-" & Right("0" & Month(Now()),2) & "-" & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
 
-dim objWMIService : set objWMIService = GetObject("winmgmts:root\cimv2") 
+dim objWMIService : set objWMIService = GetObject("winmgmts:root\cimv2")
 dim objWMIService2 : set objWMIService2 = GetObject("winmgmts:root\WMI")
 dim objShell : set objShell = CreateObject("wscript.shell")
 dim objFSO : set objFSO = CreateObject("Scripting.FileSystemObject")
@@ -212,7 +212,7 @@ else
 	nmap_path = "c:\Program Files\Nmap\nmap.exe"
 	if (objFSO.FileExists(nmap_path)) then
 		' found it
-	else 
+	else
 		nmap_path = ""
 	end if
 	if (nmap_path = "") then
@@ -249,7 +249,7 @@ Do Until objExecObject.StdOut.AtEndOfStream
 	if (instr(lcase(line), "scan report for")) then
 		if (instr(lcase(line), "[host down]")) then
 			if (log_no_response = "y") then
-				log_entry = "Non responsive ip address " & line_split(4) 
+				log_entry = "Non responsive ip address " & line_split(4)
 				write_log
 			end if
 		else
@@ -277,7 +277,7 @@ for each host in hosts_in_subnet
 	dim i
 
 	exit_status = "y"
-	command = nmap_path & " -vv -n -O --host-timeout 90 -PN " & host 
+	command = nmap_path & " -vv -n -O --host-timeout 90 -PN " & host
 	execute_command()
 
 	Do Until objExecObject.Status = 0
@@ -394,7 +394,7 @@ for each host in hosts_in_subnet
 	' test for SNMP
 	dim snmp_status : snmp_status = "false"
 	exit_status = "n"
-	command = nmap_path & " -n -sU -p161 " & host 
+	command = nmap_path & " -n -sU -p161 " & host
 	execute_command
 	Do Until objExecObject.StdOut.AtEndOfStream
 		line = objExecObject.StdOut.ReadLine
@@ -406,7 +406,7 @@ for each host in hosts_in_subnet
 	' test for SSH
 	dim ssh_status : ssh_status = "false"
 	exit_status = "n"
-	command = nmap_path & " -n -p22 " & host 
+	command = nmap_path & " -n -p22 " & host
 	execute_command()
 	Do Until objExecObject.StdOut.AtEndOfStream
 		line = objExecObject.StdOut.ReadLine
@@ -418,7 +418,7 @@ for each host in hosts_in_subnet
 	' test for WMI
 	dim wmi_status : wmi_status = "false"
 	exit_status = "n"
-	command = nmap_path & " -n -p135 " & host 
+	command = nmap_path & " -n -p135 " & host
 	execute_command()
 	Do Until objExecObject.StdOut.AtEndOfStream
 		line = objExecObject.StdOut.ReadLine
@@ -430,7 +430,7 @@ for each host in hosts_in_subnet
 	' test for webserver on port 80
 	dim p80_status : p80_status = "false"
 	exit_status = "n"
-	command = nmap_path & " -n -p80 " & host 
+	command = nmap_path & " -n -p80 " & host
 	execute_command()
 	Do Until objExecObject.StdOut.AtEndOfStream
 		line = objExecObject.StdOut.ReadLine
@@ -442,7 +442,7 @@ for each host in hosts_in_subnet
 	' test for webserver on port 443
 	dim p443_status : p443_status = "false"
 	exit_status = "n"
-	command = nmap_path & " -n -p443 " & host 
+	command = nmap_path & " -n -p443 " & host
 	execute_command()
 	Do Until objExecObject.StdOut.AtEndOfStream
 		line = objExecObject.StdOut.ReadLine
@@ -454,7 +454,7 @@ for each host in hosts_in_subnet
 	' test for telnet
 	dim tel_status : tel_status = "false"
 	exit_status = "n"
-	command = nmap_path & " -n -p23 " & host 
+	command = nmap_path & " -n -p23 " & host
 	execute_command()
 	Do Until objExecObject.StdOut.AtEndOfStream
 		line = objExecObject.StdOut.ReadLine
@@ -469,7 +469,7 @@ for each host in hosts_in_subnet
 	end if
 
 	dim result
-	
+
 	result = "	<device>" & vbcrlf
 	result = result & "		<subnet_range>" & subnet_range & "</subnet_range>" & vbcrlf
 	result = result & "		<man_ip_address>" & host & "</man_ip_address>" & vbcrlf
@@ -492,7 +492,7 @@ for each host in hosts_in_subnet
 	result = "<devices>" & vbcrlf & result & "</devices>" & vbcrlf
 
 	if submit_online = "y" then
-		if debugging > "0" then wscript.echo "Submitting audit online" end if 
+		if debugging > "0" then wscript.echo "Submitting audit online" end if
 
 		log_entry = "Submitting online " & host
 		write_log()
@@ -563,11 +563,11 @@ if create_file = "y" then
 	if debugging > "0" then wscript.echo "Creating output File" end if
 	' Write the results to a file
 	dim file_timestamp
-	file_timestamp = Right("0" & Year(Now()),2) & _ 
-					Right("0" & Month(Now()),2) & _ 
-					Right("0" & Day(Now()),2) & _ 
-					Right("0" & Hour(Now()),2) & _ 
-					Right("0" & Minute(Now()),2) & _ 
+	file_timestamp = Right("0" & Year(Now()),2) & _
+					Right("0" & Month(Now()),2) & _
+					Right("0" & Day(Now()),2) & _
+					Right("0" & Hour(Now()),2) & _
+					Right("0" & Minute(Now()),2) & _
 					Right("0" & Second(Now()),2)
 	dim OutputFile : OutputFile = "subnet-" & subnet_range & "-" & file_timestamp & ".xml"
 	OutputFile = replace(OutputFile, "/", "-")
@@ -604,7 +604,7 @@ end function
 
 function write_log()
 	timestamp = get_timestamp()
-	if debugging > 1 then 
+	if debugging > 1 then
 		wscript.echo "Writing Log (if required): " & timestamp & " " & system_hostname & " " & current_pid & " S:discover_subnet U:" & user & " " & log_entry & vbcrlf
 	end if
 	if syslog = "y" then
@@ -614,13 +614,13 @@ function write_log()
 		error_returned = Err.Number
 		error_description = Err.Description
 		on error goto 0
-		if (error_returned <> 0) then 
+		if (error_returned <> 0) then
 			if debugging > "0" then wscript.echo "Problem opening log file." end if
 			if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
 			if debugging > "0" then wscript.echo "Error Description:" & error_description end if
 			Err.Clear
 		else
-			log_entry = timestamp & " " & system_hostname & " " & current_pid & " S:discover_subnet U:" & user & " " & log_entry & vbcrlf
+			log_entry = timestamp & " " & system_hostname & " " & current_pid & "U:" & user & " S:discover_subnet M:" & log_entry & vbcrlf
 			objTS.Write log_entry
 			objTS.Close
 			Set objTS = Nothing
@@ -639,12 +639,12 @@ function execute_command()
 		error_returned = Err.Number
 		error_description = Err.Description
 	on error goto 0
-	if (error_returned <> 0) then 
+	if (error_returned <> 0) then
 		if debugging > "0" then wscript.echo "Discovery command failed (" & command & "). Error Number: " & error_returned & " Error Description: " & error_description end if
 		'if syslog = "y" then
 			if exit_status = "y" then
 				exit_text = " Aborting script."
-			else 
+			else
 				exit_text = ""
 			end if
 			timestamp = get_timestamp()
