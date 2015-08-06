@@ -773,7 +773,7 @@ if (!function_exists('get_snmp')) {
                 stdlog($log_details);
                 $ifLastChange = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.9");
 
-                if ($details->os_group == "VMware") {
+                if (isset($details->os_group) and $details->os_group == "VMware") {
                     $log_details->message = 'SNMPv2 ip_addresses_2 retrieval for '.$log_machine.' starting';
                     stdlog($log_details);
                     $ip_addresses_2 = @snmp2_real_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.4.34.1.3.1.4");
