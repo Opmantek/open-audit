@@ -1135,7 +1135,7 @@ class M_system extends MY_Model
             # try getting the dns hostname
             $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
             # make sure we use the hostname and not a fqdn if returned
-            if (strpos($details->hostname, ".") != false) {
+            if (strpos($details->hostname, ".") != false and !filter_var($details->hostname, FILTER_VALIDATE_IP)) {
                 $details->fqdn = strtolower($details->hostname);
                 $i = explode(".", $details->hostname);
                 $details->hostname = $i[0];
