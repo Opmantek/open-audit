@@ -139,13 +139,15 @@ class M_oa_org extends MY_Model
 				(org_name,
 				org_parent_id,
 				contact_id,
-				org_picture)
-			VALUES (?, ?, ?, ?)";
+				org_picture,
+                org_comments)
+			VALUES (?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
         $data = array("$details->org_name",
             "$details->org_parent_id",
             "$details->contact_id",
-            "$details->org_picture", );
+            "$details->org_picture",
+            "$details->org_comments");
         $query = $this->db->query($sql, $data);
 
         return ($this->db->insert_id());
