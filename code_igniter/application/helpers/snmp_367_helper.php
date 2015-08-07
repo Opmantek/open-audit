@@ -42,10 +42,14 @@ $get_oid_details = function ($details) {
     if ($details->snmp_version == '2') {
         # serial
         $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.367.3.2.1.2.1.4.0"));
+        # hostname
+        $details->hostname = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.367.3.2.1.6.1.1.7.1"));
     }
 
     if ($details->snmp_version == '1') {
         # serial
         $details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.367.3.2.1.2.1.4.0"));
+        # hostname
+        $details->hostname = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.367.3.2.1.6.1.1.7.1"));
     }
 };
