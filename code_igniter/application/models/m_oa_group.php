@@ -140,11 +140,13 @@ class M_oa_group extends MY_Model
 
     public function update_groups()
     {
+        $sql = "DELETE FROM oa_group_sys";
+        $query = $this->db->query($sql) or die("Error with delete from oa_group_sys");
+        $sql = "ALTER TABLE oa_group_sys AUTO_INCREMENT = 1";
+        $query = $this->db->query($sql) or die("Error with auto increment reset from oa_group_sys");
         $sql = "SELECT group_id, group_dynamic_select, group_name FROM oa_group";
         $query = $this->db->query($sql);
         foreach ($query->result() as $myrow) {
-            $sql_delete = "DELETE FROM oa_group_sys WHERE group_id = '".$myrow->group_id."'";
-            $delete = $this->db->query($sql_delete) or die("Error with delete from oa_group_sys");
             $sql_select = $myrow->group_dynamic_select;
             # update the group with all systems that match
             $sql_insert = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);

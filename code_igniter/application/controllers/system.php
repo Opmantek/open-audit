@@ -749,9 +749,9 @@ class System extends CI_Controller
             }
         }
 
-        $create_alerts = $this->m_oa_config->get_config_item('create_alerts');
+        $discovery_create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
 
-        if ($details->original_timestamp !== '' and $create_alerts == 'y') {
+        if ($details->original_timestamp !== '' and $discovery_create_alerts == 'y') {
             $this->m_sys_man_audits->update_audit($details, 'generate any required alerts');
             $this->m_sys_man_audits->update_audit($details, 'alerts');
             // We have to go through all tables, checking for
@@ -794,9 +794,14 @@ class System extends CI_Controller
                 $this->m_oa_group->update_system_groups($printer);
             }
         }
-        // Finally, update any tags for this system
-        $this->m_sys_man_audits->update_audit($details, 'system groups');
-        $this->m_oa_group->update_system_groups($details);
+        // Finally, update any groups for this system if config item is set
+        $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
+        if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
+            # don't run the update group routine
+        } else {
+            $this->m_sys_man_audits->update_audit($details, 'system groups');
+            $this->m_oa_group->update_system_groups($details);
+        }
         $this->m_sys_man_audits->update_audit($details, '');
         $this->benchmark->mark('code_end');
         echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";

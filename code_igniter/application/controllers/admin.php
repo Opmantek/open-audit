@@ -3717,7 +3717,11 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('create_alerts', 'y', 'y', 'Should Open-AudIT create an entry in the alert table if a change is detected.')";
+            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('discovery_create_alerts', 'y', 'y', 'Should Open-AudIT create an entry in the alert table if a change is detected.')";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('discovery_update_groups', 'y', 'y', 'Should Open-AudIT update the device groups after discovering a device.')";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
