@@ -615,7 +615,9 @@ var modal_content_image = "";
 function imageModal(title, image) {
     //document.getElementById("imageModalLabel").innerHTML = title;
     modal_content_original = document.getElementById("modal_content").innerHTML;
-    modal_content_image = '<h3>'+title+'</h3><img id="modalImage" src="/omk/img/'+image+'" style="width: 800px;" />';
+    modal_content_image = '<div class="row"><div class="col-md-6"><h3>'+title+'</h3></div>';
+    modal_content_image = modal_content_image+'<div class="col-md-6 text-right"><br /><a class="btn btn-default btn-sm" href="#" onclick="removeImageModal();">Back</a></div></div>';
+    modal_content_image = modal_content_image+'<a href="#" onclick="removeImageModal();"><img id="modalImage" src="/omk/img/'+image+'" style="width: 800px;" /></a>';
     document.getElementById("modal_content").innerHTML = modal_content_image;
     document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"#\" onclick=\"removeImageModal();\">Back</a>";
     document.getElementById("button_prompt_never").innerHTML = "";
