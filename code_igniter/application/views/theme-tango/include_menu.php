@@ -429,7 +429,10 @@ var modal_content_image = "";
             // setup our highlighting column
             var highlight_column = "";
             var device_count = <?php echo $this->config->config['device_count']; ?>;
-            if (device_count < 20) { highlight_column = "Enterprise 20 Nodes Free"; }
+            license = "<?php echo $this->config->config['oae_license']; ?>";
+            if (device_count < 20 && license == "none") { highlight_column = "Enterprise 20 Nodes Free"; }
+            if (device_count < 20 && license == "free") { highlight_column = "Enterprise 100 Nodes"; }
+            if (device_count < 20 && license == "commercial") { highlight_column = "Enterprise 100 Nodes"; }
             if (device_count > 20) { highlight_column = "Enterprise 100 Nodes"; }
             if (device_count > 100) { highlight_column = "Enterprise 500 Nodes"; }
             if (device_count > 500) { highlight_column = "Enterprise X Nodes"; }
@@ -467,27 +470,22 @@ var modal_content_image = "";
 
                 for (var j = 0; j < row.length; j++) {
 
-                    if (license != "none") {
-                        classText = row[j]["class"];
-                        classText = classText.replace(" info", "");
-                    } else {
-                        classText = row[j]["class"];
-                    }
-
+                    classText = row[j]["class"];
+                    classText = classText.replace(" info", "");
                     if (j == count) {
                         classText = classText + " info";
                     }
 
                     if (row[j].hasOwnProperty("button")) {
-                         if (row[j]["button"] === "Activate" && license === "free") {
-                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<form action="/omk/opLicense/delete/Open-AudIT%20Enterprise" method="POST">\
-                                <button type="submit" class="btn btn-success btn-sm" data-title="Immediately removes this license">Deactivate</button>\
-                            </form>\
-                            </td>';
+                         if (row[j]["button"] === "Activate" && license == "free") {
+                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<form action="/omk/opLicense/delete/Open-AudIT%20Enterprise" method="POST"><button type="submit" class="btn btn-success btn-sm" data-title="Immediately removes this license">Deactivate</button></form></td>';
+
                         } else if (row[j]["button"] === "Activate" && license == "none") {
-                            rowData += '<td class="'+classText+'" style="background:#cbd9e1">'+row[j]["text"]+'<br /><a class="btn btn-success btn-sm" style="color:white;" href="/omk/oae/license_free">'+row[j]["button"]+'</a></td>';
+                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<br /><a class="btn btn-success btn-sm" style="color:white;" href="/omk/oae/license_free">'+row[j]["button"]+'</a></td>';
+
                         } else if (row[j]["button"] === "Activate" && license == "commercial") {
                             rowData += '<td class="'+classText+'">'+row[j]["text"]+'</td>';
+
                         } else {
                             rowData += '<td class="'+classText+'">';
                             if (settings.source == "online") {
