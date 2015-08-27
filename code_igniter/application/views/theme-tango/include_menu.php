@@ -430,7 +430,7 @@ var modal_content_image = "";
             var highlight_column = "";
             var device_count = <?php echo $this->config->config['device_count']; ?>;
             license = "<?php echo $this->config->config['oae_license']; ?>";
-            if (device_count < 20 && license == "none") { highlight_column = "Enterprise 20 Nodes Free"; }
+            if (device_count < 20 && (license == "none" || license == "")) { highlight_column = "Enterprise 20 Nodes Free"; }
             if (device_count < 20 && license == "free") { highlight_column = "Enterprise 100 Nodes"; }
             if (device_count < 20 && license == "commercial") { highlight_column = "Enterprise 100 Nodes"; }
             if (device_count > 20) { highlight_column = "Enterprise 100 Nodes"; }
