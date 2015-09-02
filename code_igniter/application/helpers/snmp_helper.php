@@ -227,36 +227,36 @@ if (!function_exists('get_snmp')) {
             }
         }
 
-        // if (empty($test_v2)) {
-        //     foreach ($credentials as $key => $value) {
-        //         if (empty($test_v1)) {
-        //             if (!empty($value)) {
-        //                 $log_details->message = 'SNMPv1 testing ' . $key . ' credentials for '.$log_machine;
-        //                 stdlog($log_details);
-        //                 try {
-        //                     $test_v1 = snmpget($details->man_ip_address, $value, "1.3.6.1.2.1.1.2.0", $timeout);
-        //                 } catch (Exception $e) {
-        //                     $log_details->message = 'SNMPv1 attempt using ' . $key . ' credentials ERROR: ' .$e . ' for ' . $log_machine;
-        //                     stdlog($log_details);
-        //                 }
-        //                 if (!empty($test_v1) and stripos($test_v1, '1.') !== false) {
-        //                     $details->snmp_version = '1';
-        //                     $details->snmp_community = $value;
-        //                     $log_details->message = 'SNMPv1 using ' . $key . ' credentials connected to ' . $log_machine;
-        //                     stdlog($log_details);
-        //                     break;
-        //                 } else {
-        //                     $test_v1 = '';
-        //                     $log_details->message = 'SNMPv1 using ' . $key . ' credentials not connected to ' . $log_machine;
-        //                     stdlog($log_details);
-        //                 }
-        //             } else {
-        //                 $log_details->message = 'SNMPv1 no ' . $key . ' credentials provided for '.$log_machine;
-        //                 stdlog($log_details);
-        //             }
-        //         }
-        //     }
-        // }
+        if (empty($test_v2)) {
+            foreach ($credentials as $key => $value) {
+                if (empty($test_v1)) {
+                    if (!empty($value)) {
+                        $log_details->message = 'SNMPv1 testing ' . $key . ' credentials for '.$log_machine;
+                        stdlog($log_details);
+                        try {
+                            $test_v1 = snmpget($details->man_ip_address, $value, "1.3.6.1.2.1.1.2.0", $timeout);
+                        } catch (Exception $e) {
+                            $log_details->message = 'SNMPv1 attempt using ' . $key . ' credentials ERROR: ' .$e . ' for ' . $log_machine;
+                            stdlog($log_details);
+                        }
+                        if (!empty($test_v1) and stripos($test_v1, '1.') !== false) {
+                            $details->snmp_version = '1';
+                            $details->snmp_community = $value;
+                            $log_details->message = 'SNMPv1 using ' . $key . ' credentials connected to ' . $log_machine;
+                            stdlog($log_details);
+                            break;
+                        } else {
+                            $test_v1 = '';
+                            $log_details->message = 'SNMPv1 using ' . $key . ' credentials not connected to ' . $log_machine;
+                            stdlog($log_details);
+                        }
+                    } else {
+                        $log_details->message = 'SNMPv1 no ' . $key . ' credentials provided for '.$log_machine;
+                        stdlog($log_details);
+                    }
+                }
+            }
+        }
 
         if (empty($test_v1) and empty($test_v2)) {
             $log_details->message = 'SNMP is unable to connect (bad credentials or device not responding) for '.$log_machine;
