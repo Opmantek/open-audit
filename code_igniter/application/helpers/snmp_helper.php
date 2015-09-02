@@ -71,13 +71,12 @@ if (!function_exists('get_snmp')) {
 
         if (!isset($CI->data['config']->default_snmp_community)) {
             $CI->load->model("m_oa_config");
-            $default_snmp_community = $CI->config->item('default_snmp_community');
+            $default = $CI->m_oa_config->get_credentials();
+            $default_snmp_community = $default->default_snmp_community;
         } else {
             $default_snmp_community = $CI->data['config']->default_snmp_community;
         }
-        if ($default_snmp_community == '') {
-            $default_snmp_community = 'public';
-        }
+        unset($default);
 
         # device specific credentials
         if (isset($details->system_id) and $details->system_id != '') {
@@ -88,9 +87,6 @@ if (!function_exists('get_snmp')) {
             $device_specific_credentials = '';
             $specific = '';
         }
-
-        # default Open-AudIT credentials
-        $default = $CI->m_oa_config->get_credentials();
 
         # decrypt any supplied credentials
         $supplied = new stdClass();
@@ -187,98 +183,89 @@ if (!function_exists('get_snmp')) {
         $test_v1 = '';
         $test_v2 = '';
 
-        $log_timestamp = date("M d H:i:s");
-        $log_hostname = php_uname('n');
-        $log_pid = getmypid();
-        $log_name = "H:snmp_helper F:get_snmp";
+        // $log_timestamp = date("M d H:i:s");
+        // $log_hostname = php_uname('n');
+        // $log_pid = getmypid();
+        // $log_name = "H:snmp_helper F:get_snmp";
 
-        if (!isset($details->snmp_community) or $details->snmp_community == '') {
+        if (!isset($details->snmp_community) or is_null($details->snmp_community)) {
             $details->snmp_community = '';
-        } else {
-            if ($test_v2 = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
-                # v2 is contactable
-                $details->snmp_version = '2c';
-                $log_details->message = 'SNMPv2 connected to '.$log_machine.' using supplied credentials';
-                stdlog($log_details);
-            } else {
-                $details->snmp_community = '';
+        }
+
+        $credentials = array();
+        $credentials['passed'] = @$details->snmp_community;
+        $credentials['specific'] = @$specific->snmp_community;
+        $credentials['supplied'] = @$supplied->snmp_community;
+        $credentials['default'] = @$default_snmp_community;
+        $credentials['public'] = 'public';
+        foreach ($credentials as $key => $value) {
+            if (empty($test_v2)) {
+                if (!empty($value)) {
+                    $log_details->message = 'SNMPv2 testing ' . $key . ' credentials (' . $value . ') for '.$log_machine;
+                    stdlog($log_details);
+                    try {
+                        $test_v2 = @snmp2_get($details->man_ip_address, $value, "1.3.6.1.2.1.1.2.0", $timeout);
+                    } catch (Exception $e) {
+                        $log_details->message = 'SNMPv2 attempt using ' . $key . ' credentials ERROR: ' .$e . ' for ' . $log_machine;
+                        stdlog($log_details);
+                    }
+                    if (!empty($test_v2) and stripos($test_v2, '1.') !== false) {
+                        $details->snmp_version = '2c';
+                        $details->snmp_community = $value;
+                        $log_details->message = 'SNMPv2 using ' . $key . ' credentials connected to ' . $log_machine;
+                        stdlog($log_details);
+                        break;
+                    } else {
+                        $test_v2 = '';
+                        $log_details->message = 'SNMPv2 using ' . $key . ' credentials not connected to ' . $log_machine;
+                        stdlog($log_details);
+                    }
+                } else {
+                    $log_details->message = 'SNMPv2 no ' . $key . ' credentials provided for '.$log_machine;
+                    stdlog($log_details);
+                }
             }
         }
 
-        # test the device specific credentials
-        if ($details->snmp_community == '' and isset($specific->snmp_community) and $specific->snmp_community > '') {
-            if ($test_v2 = @snmp2_get($details->man_ip_address, $specific->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
-                # v2 is contactable
-                $details->snmp_version = '2c';
-                $details->snmp_community = $specific->snmp_community;
-                $log_details->message = 'SNMPv2 connected to '.$log_machine.' using device specific credentials';
-                stdlog($log_details);
-            }
-        }
+        // if (empty($test_v2)) {
+        //     foreach ($credentials as $key => $value) {
+        //         if (empty($test_v1)) {
+        //             if (!empty($value)) {
+        //                 $log_details->message = 'SNMPv1 testing ' . $key . ' credentials for '.$log_machine;
+        //                 stdlog($log_details);
+        //                 try {
+        //                     $test_v1 = snmpget($details->man_ip_address, $value, "1.3.6.1.2.1.1.2.0", $timeout);
+        //                 } catch (Exception $e) {
+        //                     $log_details->message = 'SNMPv1 attempt using ' . $key . ' credentials ERROR: ' .$e . ' for ' . $log_machine;
+        //                     stdlog($log_details);
+        //                 }
+        //                 if (!empty($test_v1) and stripos($test_v1, '1.') !== false) {
+        //                     $details->snmp_version = '1';
+        //                     $details->snmp_community = $value;
+        //                     $log_details->message = 'SNMPv1 using ' . $key . ' credentials connected to ' . $log_machine;
+        //                     stdlog($log_details);
+        //                     break;
+        //                 } else {
+        //                     $test_v1 = '';
+        //                     $log_details->message = 'SNMPv1 using ' . $key . ' credentials not connected to ' . $log_machine;
+        //                     stdlog($log_details);
+        //                 }
+        //             } else {
+        //                 $log_details->message = 'SNMPv1 no ' . $key . ' credentials provided for '.$log_machine;
+        //                 stdlog($log_details);
+        //             }
+        //         }
+        //     }
+        // }
 
-        # test the supplied credentials
-        if ($details->snmp_community == '' and isset($supplied->snmp_community) and $supplied->snmp_community > '') {
-            if ($test_v2 = @snmp2_get($details->man_ip_address, $supplied->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
-                # v2 is contactable
-                $details->snmp_version = '2c';
-                $details->snmp_community = $supplied->snmp_community;
-                $log_details->message = 'SNMPv2 connected to '.$log_machine.' using supplied credentials';
-                stdlog($log_details);
-            }
-        }
-
-        # test the open-audit default credentials
-        if ($details->snmp_community == '' and isset($default->default_snmp_community) and $default->default_snmp_community > '') {
-            if ($test_v2 = @snmp2_get($details->man_ip_address, $default->default_snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
-                # v2 is contactable
-                $details->snmp_version = '2c';
-                $details->snmp_community = $default->default_snmp_community;
-                $log_details->message = 'SNMPv2 connected to '.$log_machine.' using Open-AudIT default credentials';
-                stdlog($log_details);
-            }
-        }
-
-        # test the device specific credentials
-        if ($details->snmp_community == '' and isset($specific->snmp_community) and $specific->snmp_community > '') {
-            if ($test_v1 = @snmpget($details->man_ip_address, $specific->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
-                # v1 is contactable
-                $details->snmp_version = '1';
-                $details->snmp_community = $specific->snmp_community;
-                $log_details->message = 'SNMPv1 connected to '.$log_machine.' using device specific credentials';
-                stdlog($log_details);
-            }
-        }
-
-        # test the supplied credentials
-        if ($details->snmp_community == '' and isset($supplied->snmp_community) and $supplied->snmp_community > '') {
-            if ($test_v1 = @snmpget($details->man_ip_address, $supplied->snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
-                # v1 is contactable
-                $details->snmp_version = '1';
-                $details->snmp_community = $supplied->snmp_community;
-                $log_details->message = 'SNMPv1 connected to '.$log_machine.' using supplied credentials';
-                stdlog($log_details);
-            }
-        }
-
-        # test the open-audit default credentials
-        if ($details->snmp_community == '' and isset($default->default_snmp_community) and $default->default_snmp_community > '') {
-            if ($test_v1 = @snmpget($details->man_ip_address, $default->default_snmp_community, "1.3.6.1.2.1.1.2.0", $timeout)) {
-                # v1 is contactable
-                $details->snmp_version = '1';
-                $details->snmp_community = $default->default_snmp_community;
-                $log_details->message = 'SNMPv1 connected to '.$log_machine.' using Open-AudIT default credentials';
-                stdlog($log_details);
-            }
-        }
-
-        if ($test_v1 == '' and $test_v2 == '') {
+        if (empty($test_v1) and empty($test_v2)) {
             $log_details->message = 'SNMP is unable to connect (bad credentials or device not responding) for '.$log_machine;
             $log_severity = 6;
             stdlog($log_details);
             $log_severity = 7;
         }
 
-        if ($test_v2 > '') {
+        if (!empty($test_v2)) {
             $details->snmp_version = '2';
 
             $details->serial = "";

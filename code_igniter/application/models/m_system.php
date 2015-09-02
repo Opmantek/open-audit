@@ -61,7 +61,7 @@ class M_system extends MY_Model
     public function create_system_key($details)
     {
         $log_details = new stdClass();
-        $log_details->message = 'System Key being generated for '.$details->hostname;
+        $log_details->message = 'System Key being generated for '.$details->hostname.' at '.$details->man_ip_address;
         $log_details->severity = 7;
         $log_details->file = 'system';
         stdlog($log_details);
@@ -85,7 +85,7 @@ class M_system extends MY_Model
             isset($details->hostname) and $details->hostname != '') {
             $details->system_key = $details->uuid."-".$details->hostname;
             $details->system_key_type = 'uuho';
-            $log_details->message = "System Key is $details->system_key for $details->hostname type uuho";
+            $log_details->message = "System Key is $details->system_key for $details->hostname type uuho at $details->man_ip_address";
             stdlog($log_details);
         }
 
@@ -93,7 +93,7 @@ class M_system extends MY_Model
         if ((isset($details->fqdn) and $details->fqdn != '') and ($details->system_key_type != 'uuho')) {
             $details->system_key = $details->fqdn;
             $details->system_key_type = 'fqdn';
-            $log_details->message = "System Key is $details->system_key for $details->hostname type fqdn";
+            $log_details->message = "System Key is $details->system_key for $details->hostname type fqdn at $details->man_ip_address";
             stdlog($log_details);
         }
 
@@ -110,7 +110,7 @@ class M_system extends MY_Model
                 if ($details->system_key_type  != 'uuho' and $details->system_key_type != 'fqdn') {
                     $details->system_key = $details->type."_".$details->serial;
                     $details->system_key_type = 'tyse';
-                    $log_details->message = "System Key is $details->system_key for $details->hostname type tyse";
+                    $log_details->message = "System Key is $details->system_key for $details->hostname type tyse at $details->man_ip_address";
                     stdlog($log_details);
                 }
             }
@@ -122,12 +122,12 @@ class M_system extends MY_Model
             $details->system_key_type != 'uuho' and $details->system_key_type  != 'fqdn' and $details->system_key_type != 'tyse') {
             $details->system_key = $details->man_ip_address;
             $details->system_key_type = 'ipad';
-            $log_details->message = "System Key is $details->system_key for $details->hostname type ipad";
+            $log_details->message = "System Key is $details->system_key for $details->hostname type ipad at $details->man_ip_address";
             stdlog($log_details);
         }
 
         if ($details->system_key == '') {
-            $log_details->message = "System Key is blank for $details->hostname ERROR";
+            $log_details->message = "System Key is blank for $details->hostname ERROR at $details->man_ip_address";
             $log_details->severity = 5;
             stdlog($log_details);
         }

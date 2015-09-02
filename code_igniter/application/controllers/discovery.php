@@ -877,8 +877,8 @@ class discovery extends CI_Controller
                     #stdlog($log_details);
                     if (intval($details->count) >= intval($details->limit)) {
                         # we have discovered the requested number of devcies
-                        #$log_details->message = 'Count from DB is higher than requested limit, exiting. Count: ' . $details->count . ' Limit: ' . $details->limit;
-                        #stdlog($log_details);
+                        $log_details->message = 'Count from DB is higher than requested limit, exiting. Count: ' . $details->count . ' Limit: ' . $details->limit;
+                        stdlog($log_details);
                         return;
                     }
                     $supplied_credentials->count++;
@@ -1694,8 +1694,11 @@ class discovery extends CI_Controller
                                     }
                                 }
                                 if ($return_var != '0') {
-                                    $error = 'Audit routine for SSH audit on '.$details->man_ip_address.' failed to store SSH sig';
+                                    $error = 'Audit routine for SSH audit failed to store SSH sig for '.$details->man_ip_address;
                                     $log_details->message = $error;
+                                    stdlog($log_details);
+                                } else {
+                                    $log_details->message = 'Audit routine for SSH audit stored SSH sig for '.$details->man_ip_address;
                                     stdlog($log_details);
                                 }
                                 $command_string = null;
@@ -1712,16 +1715,19 @@ class discovery extends CI_Controller
                                         echo "DEBUG - Command Output:\n";
                                         print_r($output);
                                     }
-                                    if ($return_var != '0') {
-                                        $error = 'Audit routine for SSH audit on '.$details->man_ip_address.' failed to run uname on target';
-                                        $log_details->message = $error;
-                                        stdlog($log_details);
-                                    }
                                     // Linux, Darwin, ESX, AIX
                                     if (isset($output[0]) and $output[0] > '') {
                                         $remote_os = $output[0];
                                     } else {
                                         $remote_os = "";
+                                    }
+                                    if ($return_var != '0') {
+                                        $error = 'Audit routine for SSH audit failed to run uname on '.$details->man_ip_address;
+                                        $log_details->message = $error;
+                                        stdlog($log_details);
+                                    } else {
+                                        $log_details->message = 'Audit routine for SSH audit ran uname (' . $remote_os . ') on '.$details->man_ip_address;
+                                        stdlog($log_details);
                                     }
                                     $command_string = null;
                                     $return_var = null;
@@ -1784,7 +1790,7 @@ class discovery extends CI_Controller
                                     $return_var = null;
                                 }
 
-                                if ($audit_script != 'audit_esxi.sh') {
+                                if ($error == '' and $audit_script != 'audit_esxi.sh') {
                                     $sudo = '';
                                     // Attempt to determine if SUDO is present on target system
                                     if ($error == '' and $audit_script != '' and $details->ssh_username != 'root') {
@@ -1863,7 +1869,8 @@ class discovery extends CI_Controller
                                             }
                                         } // end of use sudo / root
                                     }
-                                } else {
+                                }
+                                if ($error == '' and $audit_script == 'audit_esxi.sh') {
                                     // Audit ESXi
                                     $command_string = "$filepath\\plink.exe -pw ".$details->ssh_password." ".$details->ssh_username."@".$details->man_ip_address." \"/tmp/".$audit_script." submit_online=n create_file=n debugging=0 echo_output=y url=".$url."index.php/system/add_system system_id=".$details->system_id."\"";
                                     # this is the linux command # $command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
