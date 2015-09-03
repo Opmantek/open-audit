@@ -105,7 +105,7 @@ class login extends CI_Controller
                 // need to create a link to OAE on port 8042 to check the license
                 // we cannot detect and use the browser http[s] as it may being used in the client browser,
                 //     but stripped by a https offload or proxy
-                $oae_license_url = 'http://localhost:8042'.$oae_url.'license';
+                $oae_license_url = 'http://localhost'.$oae_url.'license';
                 // we create a link for the browser using the same address + the path & file in oae_url
                 if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
                     $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
