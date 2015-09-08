@@ -310,30 +310,34 @@ class Admin_group extends MY_Controller
                 if (($details->dynamic_other_text == '') and ($details->dynamic_field_value != '')) {
                     $selection = $details->dynamic_field_value;
                 }
-                $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table.$system_table." WHERE ".$details->dynamic_other_table.".system_id = system.system_id AND ".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.man_status = 'production' AND ".$details->dynamic_other_table.".timestamp = system.timestamp";
+                if ($details->dynamic_other_table == 'sys_man_additional_fields' or $details->dynamic_other_table == 'sys_man_additional_fields_data') {
+                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table.$system_table." WHERE ".$details->dynamic_other_table.".system_id = system.system_id AND ".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.man_status = 'production'";
+                } else {
+                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table.$system_table." WHERE ".$details->dynamic_other_table.".system_id = system.system_id AND ".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.man_status = 'production' AND ".$details->dynamic_other_table.".timestamp = system.timestamp";
+                }
             }
+        }
 
-            # to do - decide on parent groups
-            $details->group_parent = 1;
+        # to do - decide on parent groups
+        $details->group_parent = 1;
 
-            # create the group
-            $return = $this->m_oa_group->insert_group($details);
+        # create the group
+        $return = $this->m_oa_group->insert_group($details);
 
-            if (is_numeric($return)) {
-                $details->group_id = $return;
-                # populate the group columns
-                $this->load->model("m_oa_group_column");
-                $this->m_oa_group_column->insert_group_column($details);
-                # update group members
-                $this->m_oa_group->update_specific_group($return);
-                redirect('admin_group/list_groups');
-            } else {
-                $this->data['error'] = "Error inserting Group.";
-                $this->data['query'] = $this->data['error'];
-                $this->data['heading'] = 'Error';
-                $this->data['include'] = 'v_error';
-                $this->load->view('v_template', $this->data);
-            }
+        if (is_numeric($return)) {
+            $details->group_id = $return;
+            # populate the group columns
+            $this->load->model("m_oa_group_column");
+            $this->m_oa_group_column->insert_group_column($details);
+            # update group members
+            $this->m_oa_group->update_specific_group($return);
+            redirect('admin_group/list_groups');
+        } else {
+            $this->data['error'] = "Error inserting Group.";
+            $this->data['query'] = $this->data['error'];
+            $this->data['heading'] = 'Error';
+            $this->data['include'] = 'v_error';
+            $this->load->view('v_template', $this->data);
         }
     }
 }
