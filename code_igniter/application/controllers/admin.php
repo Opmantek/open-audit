@@ -3733,7 +3733,7 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "INSERT INTO oa_config VALUES ('discovery_ip_match','y','y','0000-00-00 00:00:00',0,'Should we match a device based only on its ip during discovery.')";
+            $sql = "INSERT INTO oa_config VALUES ('discovery_ip_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its ip during discovery.')";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
