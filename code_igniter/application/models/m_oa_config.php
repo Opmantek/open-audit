@@ -136,6 +136,9 @@ class M_oa_config extends MY_Model
         $this->config->config['oa_web_folder'] = str_replace('/index.php', '', $basic_url);
         unset($i, $j, $temp, $basic_url);
 
+        # get the server OS
+        $this->config->config['server_os'] = php_uname('s');
+
         # get the total number of devices
         $sql = "SELECT count(system_id) as device_count FROM system WHERE man_status = 'production'";
         $query = $this->db->query($sql);
