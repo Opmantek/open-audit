@@ -1794,49 +1794,81 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 echo "	<services>" >> "$xml_file"
-
-case $system_os_family in
-		'Ubuntu' | 'Debian' )
-			if [ -r /etc/inittab ]; then
-				INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
-			else
-				INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
-			fi
-			# upstart services
-			for s in $(q 2>/dev/null | awk ' { print $1 } ' | sort | uniq) ; do
-				if [ "$s" = "rc" ]; then
-					service_start_mode="Auto"
-				else
-					service_start_mode="Manual"
-				fi
-				service_name=$(escape_xml "$s")
-				echo -e "\t\t<service>\n\t\t\t<service_name>$service_name</service_name>\n\t\t\t<service_start_mode>$service_start_mode</service_start_mode>\n\t\t</service>" >> "$xml_file"
-			done
-			# SysV init services
-			for service_name in /etc/init.d/* ; do
-				[[ -e $service_name ]] || break
-				if [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]]; then
-					{
-					echo "		<service>"
-					echo "			<service_name>$(escape_xml "$service_name")</service_name>"
-					} >> "$xml_file"
-					temp=""
-					if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* &>/dev/null ; then
-						echo "			<service_start_mode>Manual</service_start_mode>" >> "$xml_file"
-					else
-						echo "			<service_start_mode>Auto</service_start_mode>" >> "$xml_file"
-					fi
-					echo "		</service>" >> "$xml_file"
-				fi
-			done
-			;;
-		'CentOS' | 'RedHat' | 'SUSE' )
-			INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
-			chkconfig --list |\
-				sed -e '/^$/d' -e '/xinetd based services:/d' |\
-				awk -v ID="$INITDEFAULT" ' { sub(/:/, "", $1); print "\t\t<service>\n\t\t\t<service_name>"$1"</service_name>"; if ($2 =="on" || $5 ==ID":on") print "\t\t\t<service_start_mode>Auto</service_start_mode>"; else if ($2 =="off" || $5 ==ID":off") print "\t\t\t<service_start_mode>Manual</service_start_mode>"; print "\t\t</service>" } ' >> "$xml_file"
-			;;
-esac
+if hash systemctl 2>/dev/null; then
+    # systemD services
+    for name in $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1); do
+        display_name=$(echo "$name" | cut -d. -f1)
+        description=$(systemctl show "$name" -p Description | cut -d= -f2)
+        binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
+        state=$(systemctl show "$name" -p ActiveState | cut -d= -f2)
+        user=$(systemctl show "$name" -p User | cut -d= -f2)
+        # start_mode order of attribute preference is WantedBy, Wants, After
+        start_mode=$(systemctl show "$name" -p WantedBy | cut -d= -f2)
+        if [ -z "$start_mode" ]; then
+            start_mode=$(systemctl show "$name" -p Wants | cut -d= -f2)
+        fi
+        if [ -z "$start_mode" ]; then
+            start_mode=$(systemctl show "$name" -p After | cut -d= -f2)
+        fi
+        {
+        echo "      <service>"
+        echo "          <service_display_name>$(escape_xml "$display_name")</service_display_name>"
+        echo "          <service_name>$(escape_xml "$name")</service_name>"
+        echo "          <service_start_mode>$(escape_xml "$start_mode")</service_start_mode>"
+        echo "          <service_path_name>$(escape_xml "$binary")</service_path_name>"
+        echo "          <service_state>$(escape_xml "$state")</service_state>"
+        echo "          <service_start_name>$(escape_xml "$user")</service_start_name>"
+        echo "          <service_started></service_started>"
+        echo "          <service_count></service_count>"
+        echo "      </service>"
+        } >> "$xml_file"
+    done
+else
+    case $system_os_family in
+            'Ubuntu' | 'Debian' )
+                if [ -r /etc/inittab ]; then
+                    INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
+                else
+                    if [ -r /etc/init/rc-sysinit.conf ]; then
+                        INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
+                    fi
+                fi
+                # upstart services
+                for s in $(initctl 2>/dev/null | awk ' { print $1 } ' | sort | uniq) ; do
+                    if [ "$s" = "rc" ]; then
+                        service_start_mode="Auto"
+                    else
+                        service_start_mode="Manual"
+                    fi
+                    service_name=$(escape_xml "$s")
+                    echo -e "\t\t<service>\n\t\t\t<service_name>$service_name</service_name>\n\t\t\t<service_start_mode>$service_start_mode</service_start_mode>\n\t\t</service>" >> "$xml_file"
+                done
+                # SysV init services
+                for service_name in /etc/init.d/* ; do
+                    [[ -e $service_name ]] || break
+                    if [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]]; then
+                        {
+                        echo "      <service>"
+                        echo "          <service_name>$(escape_xml "$service_name")</service_name>"
+                        } >> "$xml_file"
+                        temp=""
+                        if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* &>/dev/null ; then
+                            echo "          <service_start_mode>Manual</service_start_mode>" >> "$xml_file"
+                        else
+                            echo "          <service_start_mode>Auto</service_start_mode>" >> "$xml_file"
+                        fi
+                        echo "      </service>" >> "$xml_file"
+                    fi
+                done
+                ;;
+            'CentOS' | 'RedHat' | 'SUSE' )
+                INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
+                chkconfig --list |\
+                    sed -e '/^$/d' -e '/xinetd based services:/d' |\
+                    awk -v ID="$INITDEFAULT" ' { sub(/:/, "", $1); print "\t\t<service>\n\t\t\t<service_name>"$1"</service_name>"; if ($2 =="on" || $5 ==ID":on") print "\t\t\t<service_start_mode>Auto</service_start_mode>"; else if ($2 =="off" || $5 ==ID":off") print "\t\t\t<service_start_mode>Manual</service_start_mode>"; print "\t\t</service>" } ' >> "$xml_file"
+                ;;
+    esac
+fi
 
 echo "	</services>" >> "$xml_file"
 
