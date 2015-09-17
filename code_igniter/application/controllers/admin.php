@@ -431,17 +431,18 @@ class admin extends MY_Controller
         }
 
         // full path to text file
-        if (php_uname('s') == 'Linux') {
-            $file = "/usr/local/open-audit/other/log_".$logfile.".log";
-        } else {
-            $file = "c:\\xampplite\\open-audit\\other\\log_".$logfile.".log";
-        }
+        // if (php_uname('s') == 'Linux') {
+        //     $file = "/usr/local/open-audit/other/log_".$logfile.".log";
+        // } else {
+        //     $file = "c:\\xampplite\\open-audit\\other\\log_".$logfile.".log";
+        // }
+        $file = '../../other/log_'.$logfile.'.log';
 
         $fsize = round(filesize($file)/1024/1024, 2);
         $this->data['comment'] = "<strong>".$file."</strong><br />";
         $this->data['comment'] .= "File size is {$fsize} megabytes<br />";
         $this->data['comment'] .= "Last ".$lines." lines of the file:<br /><pre>";
-        $handle = fopen($file, "r");
+        $handle = fopen($file, "r") or die('Error opening file: ' . $file);
         $linecounter = $lines;
         $pos = -2;
         $beginning = false;
