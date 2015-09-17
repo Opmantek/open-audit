@@ -261,11 +261,12 @@ if (! function_exists('stdlog')) {
             $log->file = $log_details->file;
         }
 
-        if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
-            $file = '/usr/local/open-audit/other/log_'.$log->file.'.log';
-        } else {
-            $file = 'c:\xampplite\open-audit\other\log_'.$log->file.'.log';
-        }
+        // if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
+        //     $file = '../../other/log_'.$log->file.'.log';
+        // } else {
+        //     $file = 'c:\xampplite\open-audit\other\log_'.$log->file.'.log';
+        // }
+        $file = '../../other/log_'.$log->file.'.log';
 
         // log the page view
         $handle = @fopen($file, 'a');
