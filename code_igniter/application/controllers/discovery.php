@@ -1452,6 +1452,7 @@ class discovery extends CI_Controller
                                     unset($ssh_command);
                                     unset($ssh_result);
 
+                                    $audit_script = '';
                                     if (strtolower($remote_os) === 'linux') {
                                         $audit_script = 'audit_linux.sh';
                                     }
@@ -1463,6 +1464,9 @@ class discovery extends CI_Controller
                                     }
                                     if (strtolower($remote_os) === 'vmkernel') {
                                         $audit_script = 'audit_esxi.sh';
+                                    }
+                                    if (strtolower($remote_os) === 'WindowsNT') {
+                                        $audit_script = '';
                                     }
 
                                     if ($error == '' and $audit_script != '') {
