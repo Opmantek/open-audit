@@ -2879,31 +2879,35 @@ $get_oid_details = function ($details) {
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.3.51') {
-        $details->model = 'NetIron Cer 2000 Family';
+        $details->model = 'NetIron CER 2000 Family';
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.3.51.1') {
-        $details->model = 'NetIron Cer 2024F';
+        $details->model = 'NetIron CER 2024F';
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.3.51.2') {
-        $details->model = 'NetIron Cer 2024C';
+        $details->model = 'NetIron CER 2024C';
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.3.51.3') {
-        $details->model = 'NetIron Cer 2048F';
+        $details->model = 'NetIron CER 2048F';
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.3.51.4') {
-        $details->model = 'NetIron Cer 2048C';
+        $details->model = 'NetIron CER 2048C';
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.3.51.5') {
-        $details->model = 'NetIron Cer 2048FX';
+        $details->model = 'NetIron CER 2048FX';
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.3.51.6') {
-        $details->model = 'NetIron Cer 2048CX';
+        $details->model = 'NetIron CER 2048CX';
+        $details->type = 'router';
+    }
+    if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.3.51.7') {
+        $details->model = 'NetIron CER';
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.1991.1.3.52') {
