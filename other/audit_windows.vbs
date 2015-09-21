@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
-' @version 1.8
+' @version 1.10
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -698,9 +698,9 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				end if
 
 				if instr(lcase(objRecordSet.Fields("operatingsystem").Value), "windows") then
-					os_group = "windows"
+					os_group = "Windows"
 				else
-					os_group = "other"
+					os_group = ""
 				end if
 
 				system_hostname = objRecordSet.Fields("Name").Value
@@ -749,7 +749,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 				os_name = "Microsoft " & objRecordSet.Fields("operatingsystem").Value
 				family = os_family(objRecordSet.Fields("operatingsystem").Value)
 				icon = lcase(replace(family, " ", "_"))
-				if os_group = "windows" then
+				if os_group = "Windows" then
 					result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 					result.WriteText "<system>" & vbcrlf
 					result.WriteText "	<sys>" & vbcrlf
@@ -1080,6 +1080,44 @@ on error resume next
 	end if
 on error goto 0
 
+' ##################################
+' ## kolmann@zid.tuwien.ac.at 20150917: Get IP Adress of adapter with default route
+' ##################################
+man_ip_address = ""
+if debugging > "0" then wscript.echo "    Get IP Adress of adapter with default route" end if
+on error resume next
+strByteMatch = "(25[0-5]|2[0-4]\d|[01]?\d\d?)"
+strIpMatch = strByteMatch & "\." & strByteMatch & "\." & strByteMatch & "\.(" & strByteMatch & "|(" & strByteMatch & "-" & strByteMatch & "))"
+strPattern = "^" & strIpMatch & "(," & strIpMatch & ")*$"
+Set RegEx = New RegExp
+RegEx.IgnoreCase = True
+RegEx.Global=True
+RegEx.Pattern=strPattern
+Set objExecObj = objShell.exec("route print 0.0.0.0")
+Do While Not objExecObj.StdOut.AtEndOfStream
+	strText = objExecObj.StdOut.Readline()
+	Do
+		If InStr(1, strText, "  ") > 0 Then
+			strText = Replace(strText, "  ", " ")
+		Else
+			Exit Do
+		End If
+	Loop
+	splitLine = Split(strText, " ")
+	' IP address is in a row with 5 values, value1 and value2 equals 0.0.0.0 and value4 is a IP Address
+	if (ubound(splitLine) = 5) then
+		if (splitLine(1) = "0.0.0.0" and splitLine(2) = "0.0.0.0" and RegEx.Test(splitLine(4))) then
+			'result.WriteText "              <man_ip_address>" & escape_xml(splitLine(4)) & "</man_ip_address>" & vbcrlf
+			man_ip_address = splitLine(4)
+			exit do
+		end if
+	end if
+Loop
+on error goto 0
+' ##################################
+' ## kolmann@zid.tuwien.ac.at 20150917: Get IP Adress of adapter with default route
+' ##################################
+
 result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 result.WriteText "<system>" & vbcrlf
 result.WriteText "	<sys>" & vbcrlf
@@ -1087,6 +1125,7 @@ result.WriteText "		<timestamp>" & escape_xml(system_timestamp) & "</timestamp>"
 result.WriteText "		<uuid>" & escape_xml(system_uuid) & "</uuid>" & vbcrlf
 result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
 result.WriteText "		<domain>" & escape_xml(system_domain) & "</domain>" & vbcrlf
+result.WriteText "		<man_ip_address>" & escape_xml(man_ip_address) & "</man_ip_address>" & vbcrlf
 result.WriteText "		<description>" & escape_xml(system_description) & "</description>" & vbcrlf
 result.WriteText "		<type>computer</type>" & vbcrlf
 result.WriteText "		<icon>" & system_os_icon & "</icon>" & vbcrlf
@@ -1722,8 +1761,8 @@ else
 						sBaseKey3 = sBaseKey2 & sKey2 & "\"
 						iRC3 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey3, arSubKeys3)
 						for each sKey3 In arSubKeys3
+							strRawEDID = ""
 							if skey3="Control" then
-								strRawEDID = ""
 								oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "DeviceDesc", temp_model(intMonitorCount)
 								oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "Mfg", temp_manuf(intMonitorCount)
 								oReg.GetBinaryValue HKEY_LOCAL_MACHINE, sbasekey3 & "Device Parameters\", "EDID", arrintEDID

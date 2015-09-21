@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -340,6 +340,7 @@ class System extends CI_Controller
     public function add_system()
     {
         $this->benchmark->mark('code_start');
+        $this->load->model('m_oa_config');
         $this->load->helper('url');
         set_time_limit(600);
         $this->load->helper('html');
@@ -472,7 +473,7 @@ class System extends CI_Controller
         foreach ($xml->children() as $child) {
             if ($child->getName() === 'sys') {
                 $details = (object) $xml->sys;
-
+                $details->timestamp = date('Y-m-d H:i:s');
                 $received_system_id = '';
                 if (! isset($details->system_id)) {
                     $details->system_id = '';
@@ -514,9 +515,7 @@ class System extends CI_Controller
                 if ((string) $details->last_seen_by === '') {
                     $details->last_seen_by = 'audit';
                 }
-                if ((string) $details->timestamp === '') {
-                    $details->timestamp = date("M d H:i:s");
-                }
+
                 $details->last_user = '';
                 $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
                 $details->last_audit_date = "";
@@ -551,6 +550,8 @@ class System extends CI_Controller
                 $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
                 $this->m_sys_man_audits->insert_audit($details);
             }
+        }
+        foreach ($xml->children() as $child) {
             if ($child->getName() === 'addresses') {
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
                 foreach ($xml->addresses->ip_address as $input) {
@@ -727,6 +728,9 @@ class System extends CI_Controller
         }
         $this->m_sys_man_audits->update_audit($details, 'finished xml processing');
 
+        // Generate any DNS entries required
+        $this->m_dns->create_dns_entries((int)$details->system_id);
+
         // Now generate any needed alerts
         if ($details->original_timestamp == '') {
             $this->m_sys_man_audits->update_audit($details, 'generate initial audit alert');
@@ -745,7 +749,9 @@ class System extends CI_Controller
             }
         }
 
-        if ($details->original_timestamp !== '') {
+        $discovery_create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
+
+        if ($details->original_timestamp !== '' and $discovery_create_alerts == 'y') {
             $this->m_sys_man_audits->update_audit($details, 'generate any required alerts');
             $this->m_sys_man_audits->update_audit($details, 'alerts');
             // We have to go through all tables, checking for
@@ -788,9 +794,14 @@ class System extends CI_Controller
                 $this->m_oa_group->update_system_groups($printer);
             }
         }
-        // Finally, update any tags for this system
-        $this->m_sys_man_audits->update_audit($details, 'system groups');
-        $this->m_oa_group->update_system_groups($details);
+        // Finally, update any groups for this system if config item is set
+        $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
+        if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
+            # don't run the update group routine
+        } else {
+            $this->m_sys_man_audits->update_audit($details, 'system groups');
+            $this->m_oa_group->update_system_groups($details);
+        }
         $this->m_sys_man_audits->update_audit($details, '');
         $this->benchmark->mark('code_end');
         echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";

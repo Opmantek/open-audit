@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,30 +38,21 @@ $sortcolumn = 2;
 	<fieldset id="about" class='niceforms'>
 		<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Open-AudIT Enterprise')?></span></legend>
         <?php
+        $license = $this->config->config['oae_license'];
+        if ($license != 'none' and $license != 'commercial' and $license != 'free') {
+            $license = 'none';
+        }
         $message = "Open-AudIT Enterprise is now available.<br /> Scheduled Reports, Interactive Dashboards and Maps and more.<br /> All purchases go to further Open-AudIT for all of us. Contact <a href='https://opmantek.com' style='color: blue'>Opmantek</a> todayor click <a href='".$this->config->config['oae_url']."' style='color: blue;'>here</a> to enter your license details.";
-        if (isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'not installed') {
-            $message = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
-        }
-        if (isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'valid') {
+        if ($license == 'commercial' or $license == 'free') {
             $message = "Thank you for your interest in Open-AudIT Enterprise. Click <a href='".$this->config->config['oae_url']."' style='color: blue;'>here</a> to start using Open-AudIT Enterprise today.";
-        }
-        if (isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'invalid') {
-            $message = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;' style='color: blue;'>Opmantek</a> for a valid license or click <a href='".$this->config->config['oae_url']."' style='color: blue;'>here</a> to enter your license details.";
-        }
-        if (isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'expired') {
-            $message = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br /><br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal or click <a href='".$this->config->config['oae_url']."' style='color: blue;'>here</a> to enter your license details.";
-        }
-        if (isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'none') {
-            $message = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today or click <a href='".$this->config->config['oae_url']."' style='color: blue;'>here</a> to enter your license details.";
-        }
-        if (isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == '') {
+        } else {
             $message = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today or click <a href='".$this->config->config['oae_url']."' style='color: blue;'>here</a> to enter your license details.";
         }
         echo "<br /><br /><span style=\"font-size: 16px\">" . $message . "</span>";?>
 
 
 		<br /><br /><br /><br />
-		<img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_dashboard.png" /><br /><br />
-		<img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_report.png" /><br />
+		<img src="<?php echo $this->config->config['oa_web_folder']; ?>/images/sample_dashboard.png" /><br /><br />
+		<img src="<?php echo $this->config->config['oa_web_folder']; ?>/images/sample_report.png" /><br />
 	</fieldset>
 </form>

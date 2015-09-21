@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -46,9 +46,9 @@
             if ($this->config->config['logo'] == 'oac-oae') {
                 $this->config->config['logo'] = 'logo-banner-oac-oae';
             } ?>
-			<img src='<?php echo $oa_theme_images?>/<?php echo htmlentities($this->config->item('logo'))?>.png' alt='logo' style='border-width:0px;' />
+			<img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/<?php echo htmlentities($this->config->item('logo'))?>.png' alt='logo' style='border-width:0px;' />
 			<?php } else { ?>
-			<img src='<?php echo $oa_theme_images?>/logo-banner-oac-oae.png' alt='logo' style='border-width:0px;' />
+			<img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-banner-oac-oae.png' alt='logo' style='border-width:0px;' />
 			<?php } ?>
 		</a>
 	</div>
@@ -70,30 +70,24 @@
 	<?php } ?>
 	<div style="width:100px; float: right; text-align: center;">
 		<br />Version<br /><?php echo htmlentities($this->config->item('display_version')); ?>
-		<?php if ($this->config->item('display_version') != $this->config->item('web_display_version') and ($this->user->user_admin == 'y')) {
+		<?php if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and ($this->user->user_admin == 'y')) {
         echo '<br /><a href="'.$oa_web_index.'/main/help_about" style="color: red;">upgrade</a>'; } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-	<?php if (isset($this->config->config['mis_url']) and $this->config->config['nmis_url'] > "") { ?>
-		<br />NMIS<br /><a href="<?php echo htmlentities($this->config->item('nmis_url')); ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $oa_theme_images; ?>/logo-nmis.png" /></a>
+	<?php if (isset($this->config->config['nmis_url']) and $this->config->config['nmis_url'] > "") { ?>
+		<br />NMIS<br /><a href="<?php echo htmlentities($this->config->item('nmis_url')); ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" /></a>
 	<?php } else { ?>
-		<br />NMIS<br /><a href="https://opmantek.com" target="_blank"><img alt="" style="height:30px" src="<?php echo $oa_theme_images; ?>/logo-nmis.png" /></a>
+		<br />NMIS<br /><a href="https://opmantek.com" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" /></a>
 	<?php } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-	<?php #if (isset($this->config->config['oae_url']) and $this->config->config['oae_url'] > '' and isset($this->config->config['oae_license_status']) and $this->config->config['oae_license_status'] == 'valid') { ?>
-		<br />Dashboard<br /><a href="<?php echo htmlentities($this->config->config['oae_url']); ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $oa_theme_images?>/logo-oae.png" /></a>
-    <?php
-    #} else { ?>
-		<!-- <br />Dashboard<br /><a href="<?php echo $oa_web_index?>/main/help_oae"><img alt="" style="height:30px" src="<?php echo $oa_theme_images?>/logo-oae.png" /></a> -->
-    <?php #} ?>
-
+	   <br />Dashboard<br /><a href="<?php echo htmlentities($this->config->config['oae_url']); ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-oae.png" /></a>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
 	<?php if (isset($this->config->config['maps_url']) and $this->config->config['maps_url'] > "") { ?>
-		<br />Map<br /><a href="<?php echo htmlentities($this->config->item('maps_url')); ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo $oa_theme_images; ?>/logo-opmaps.png" /></a>
+		<br />Map<br /><a href="<?php echo htmlentities($this->config->item('maps_url')); ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
 	<?php } else { ?>
-		<br />Map<br /><a href="<?php echo $oa_web_index; ?>/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo $oa_theme_images; ?>/logo-opmaps.png" /></a>
+		<br />Map<br /><a href="<?php echo $oa_web_index; ?>/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
 	<?php } ?>
 	</div>
 </div>

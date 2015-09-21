@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.8
+ * @version 1.10
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('stdlog')) {
@@ -261,11 +261,12 @@ if (! function_exists('stdlog')) {
             $log->file = $log_details->file;
         }
 
-        if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
-            $file = '/usr/local/open-audit/other/log_'.$log->file.'.log';
-        } else {
-            $file = 'c:\xampplite\open-audit\other\log_'.$log->file.'.log';
-        }
+        // if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
+        //     $file = '../../other/log_'.$log->file.'.log';
+        // } else {
+        //     $file = 'c:\xampplite\open-audit\other\log_'.$log->file.'.log';
+        // }
+        $file = '../../other/log_'.$log->file.'.log';
 
         // log the page view
         $handle = @fopen($file, 'a');

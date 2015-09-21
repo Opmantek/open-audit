@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -105,7 +105,7 @@ class login extends CI_Controller
                 // need to create a link to OAE on port 8042 to check the license
                 // we cannot detect and use the browser http[s] as it may being used in the client browser,
                 //     but stripped by a https offload or proxy
-                $oae_license_url = 'http://localhost:8042'.$oae_url.'license';
+                $oae_license_url = 'http://localhost'.$oae_url.'license';
                 // we create a link for the browser using the same address + the path & file in oae_url
                 if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
                     $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
@@ -122,95 +122,48 @@ class login extends CI_Controller
             // license status are: valid, invalid, expired, none
             $license = @file_get_contents($oae_license_url, false);
             if ($license !== false) {
-                // remove the unneeded html tags
-                $license = str_replace('<pre>', '', $license);
-                $license = str_replace('</pre>', '', $license);
+                $license = json_decode($license);
+                if (json_last_error()) {
+                    $license = new stdClass();
+                    $license->license = 'none';
+                }
             } else {
-                $license = 'none';
+                $license = new stdClass();
+                $license->license = 'none';
             }
+        } else {
+            $license = new stdClass();
+            $license->license = 'none';
         }
 
-        // echo "<!-- " . $license . " -->\n";
+        if ($license->license != 'none' and $license->license != 'commercial' and $license->license != 'free') {
+            $license->license = 'none';
+        }
+
+        // echo "<!-- " . $license->license . " -->\n";
         // echo "<!-- " . $oae_url . " -->\n";
         // echo "<!-- " . $oae_license_url . " -->\n";
         $data['logo'] = 'logo-banner-oac-oae.png';
         $data['oae_message'] = '';
+        $this->m_oa_config->update_config('oae_license', $license->license, '', date('Y-m-d H:i:s'));
 
-        if ($oae_url == '') {
-            // OAE is not installed
-            // set the logo and show the logon page
-            $data['oae_message'] = 'Please try Open-AudIT Enterprise. Contact <a href="https://opmantek.com/contact-us/" style="color: blue;">Opmantek</a> for a license today.';
-            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
-                $this->m_oa_config->update_config('logo', 'logo-banner-oac', '', date('Y-m-d H:i:s'));
-            }
-            $this->m_oa_config->update_config('oae_license_status', 'not installed', '', date('Y-m-d H:i:s'));
-            $this->load->view('v_login', $data);
-        }
-
-        if (($data['form_url'] != '') and ($oae_url > '') and ($license == 'valid')) {
-            // user going to an internal page and OAE is installed with a valid license
-            // set the logo and show the logon page
+        if ($license->license == 'free' or $license->license == 'commercial') {
+            // user going to an internal page and OAE is installed with a valid license, set the logo and show the logon page
             $data['oae_message'] = ' ';
             if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oac' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oac' or $this->config->config['logo'] == 'oac-oae')) {
                 $this->m_oa_config->update_config('logo', 'logo-banner-oae', '', date('Y-m-d H:i:s'));
+                $data['logo'] = 'logo-banner-oae';
             }
-            $this->m_oa_config->update_config('oae_license_status', 'valid', '', date('Y-m-d H:i:s'));
-            $this->load->view('v_login', $data);
         }
-
-        if (($data['form_url'] == '') and ($oae_url > '') and ($license == 'valid')) {
-            // user going to logon page (not internal page) and OAE is installed and licensed
-            // redirect
-            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oac' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oac' or $this->config->config['logo'] == 'oac-oae')) {
-                $this->m_oa_config->update_config('logo', 'logo-banner-oae', '', date('Y-m-d H:i:s'));
-            }
-            $this->m_oa_config->update_config('oae_license_status', 'valid', '', date('Y-m-d H:i:s'));
-            redirect($oae_url);
-        }
-
-        if ($license == 'invalid') {
-            // OAE is installed but has an invalid license
-            // show the logon page
-            $data['oae_message'] = "Your license for Open-AudIT Enterprise is invalid. Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;' style='color: blue;'>Opmantek</a> for a valid license<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";
-            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
-                $this->m_oa_config->update_config('logo', 'logo-banner-oac-oae', '', date('Y-m-d H:i:s'));
-            }
-            $this->m_oa_config->update_config('oae_license_status', 'invalid', '', date('Y-m-d H:i:s'));
-            $this->load->view('v_login', $data);
-        }
-
-        if ($license == 'expired') {
-            // OAE is installed but the license has expired
-            // show the logon page
-            $data['oae_message'] = "Thanks for trying Open-AudIT Enterprise. Your license for Open-AudIT Enterprise has expired.<br />Please contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> today for a license renewal<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";
-            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
-                $this->m_oa_config->update_config('logo', 'logo-banner-oac-oae', '', date('Y-m-d H:i:s'));
-            }
-            $this->m_oa_config->update_config('oae_license_status', 'expired', '', date('Y-m-d H:i:s'));
-            $this->load->view('v_login', $data);
-        }
-
-        if ($license == 'none') {
-            // OAE is installed but not licensed
-            // show the logon page
+        if ($license->license == 'none') {
+            // OAE is installed but not licensed, show the logon page
             $data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";
             if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
                 $this->m_oa_config->update_config('logo', 'logo-banner-oac-oae', '', date('Y-m-d H:i:s'));
+                $data['logo'] = 'logo-banner-oac-oae';
             }
-            $this->m_oa_config->update_config('oae_license_status', 'none', '', date('Y-m-d H:i:s'));
-            $this->load->view('v_login', $data);
         }
-
-        if (($oae_url > '') and ($data['oae_message'] == '')) {
-            // catch all default
-            // show the logon page
-            $data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today.";
-            if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
-                $this->m_oa_config->update_config('logo', 'logo-banner-oac-oae', '', date('Y-m-d H:i:s'));
-            }
-            $this->m_oa_config->update_config('oae_license_status', '', '', date('Y-m-d H:i:s'));
-            $this->load->view('v_login', $data);
-        }
+        $this->load->view('v_login', $data);
     }
 
     /**
@@ -392,11 +345,16 @@ class login extends CI_Controller
             $bind = ldap_bind($ad, $ad_user, $ad_secret);
             if ($bind) {
                 $data = $this->m_userlogin->get_user_details($username);
-                if ($data['user_active'] == 'y') {
+                if (isset($data['user_active']) and $data['user_active'] == 'y') {
                     $this->session->set_userdata($data);
+                    if (isset($data['user_admin']) and $data['user_admin'] == 'y') {
+                        $is_admin = 'true';
+                    } else {
+                        $is_admin = 'false';
+                    }
                     header('Content-Type: application/json');
                     header('HTTP/1.1 200 OK');
-                    echo '{"valid": true, "role": ""}';
+                    echo '{"valid": true, "admin": ' . $is_admin . '}';
                     exit();
 
                 } else {
@@ -413,20 +371,25 @@ class login extends CI_Controller
         }
         // attempt use the internal database to validate user
         if ($data = $this->m_userlogin->validate_user($username, $password)) {
-            if ($data != 'fail') {
+            if (isset($data['user_admin']) and $data['user_admin'] == 'y') {
+                $is_admin = 'true';
+            } else {
+                $is_admin = 'false';
+            }
+            if (isset($data) and $data != 'fail') {
                 $this->session->set_userdata($data);
                 header('Content-Type: application/json');
                 header('HTTP/1.1 200 OK');
-                echo '{"valid": true, "role": ""}';
+                echo '{"valid": true, "admin": ' . $is_admin . '}';
             } else {
                 header('Content-Type: application/json');
                 header('HTTP/1.1 403 Not Authorised');
-                echo '{"valid": false, "role": ""}';
+                echo '{"valid": false, "admin": false}';
             }
         } else {
             header('Content-Type: application/json');
             header('HTTP/1.1 403 Not Authorised');
-            echo '{"valid": false, "role": ""}';
+            echo '{"valid": false, "admin": false}';
         }
     }
 
@@ -434,5 +397,83 @@ class login extends CI_Controller
     {
         $this->session->sess_destroy();
         redirect('login/index/main/list_groups');
+    }
+
+    public function modal()
+    {
+        $file = @json_decode(file_get_contents('/usr/local/opmojo/conf/modal_oae.json'));
+        if (!$file) {
+            $file = @json_decode(file_get_contents('/usr/local/open-audit/other/modal_oae.json'));
+        }
+        if (!$file) {
+            $file = @json_decode(file_get_contents('c:\\omk\\conf\\modal_oae.json'));
+        }
+        if (!$file) {
+            $file = @json_decode(file_get_contents('c:\\xampplite\\open-audit\\other\\modal_oae.json'));
+        }
+        if (!$file) {
+            $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+            header($protocol . ' 500 Cannot open json file.');
+            exit();
+        }
+
+        # add the stylesheet
+        $output = "<link href=\"/open-audit/css/bootstrap.min.css\" rel=\"stylesheet\" />";
+
+        # enclose the content
+        $output .= "<div>\n";
+
+        # add the header
+        if ($file->header[0]->text and $file->header[0]->text != "") {
+            $output .= "<h2>" . $file->header[0]->text . "</h2>";
+        }
+
+        # add top message
+        if ($file->top_message and $file->top_message != "") {
+            $output .= "<span>" . $file->top_message . "</span><br />\n";
+        }
+
+        # add the table
+        if ($file->table) {
+            $output .= "<table class=\"table table-striped table-bordered\" width=\"100%\">";
+            if ($file->table->header) {
+            $output .= "<tr>\n";
+                foreach ($file->table->header as $header) {
+                    $output .= "<th class=\"" . $header->class . "\">" . $header->text . "</th>";
+                }
+                $output .= "</tr>\n";
+            }
+            if ($file->table->rows) {
+                foreach ($file->table->rows as $row) {
+                    $output .= "<tr>\n";
+                    foreach ($row as $cell) {
+                        if (isset($cell->button)) {
+                            $output .= "<td class=\"" . $cell->class . "\">" . $cell->text . "<br /><button type=\"button\" class=\"btn btn-success btn-sm\"><a style=\"color:white;\" href=\"" . $cell->button_link . "\">" . $cell->button . "</a></button></td>";
+                        } else {
+                            $output .= "<td class=\"" . $cell->class . "\">" . $cell->text . "</td>";
+                        }
+                    }
+                    $output .= "</tr>\n";
+                }
+            }
+            $output .= "</table>\n";
+        }
+
+        # add bottom message
+        if ($file->bottom_message and $file->bottom_message != "") {
+            $output .= "<span>" . $file->bottom_message . "</span><br />\n";
+        }
+
+        # add the footer
+        if ($file->footer) {
+            foreach ($file->footer as $footer) {
+                $output .= "<span style=\"" . $footer->button_parent_style . "\"><button type=\"button\" class=\"btn btn-default btn-sm\"><a href=\"" . $footer->button_link . "\">" . $footer->button . "</a></button></span>";
+            }
+        }
+        # enclose the content
+        $output .= "<br /></div>\n";
+
+        # echo the result
+        echo $output;
     }
 }

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -103,8 +103,10 @@ class MY_Controller extends CI_Controller
             $this->user->user_theme = 'tango';
         }
         $this->data['image_path'] = base_url().'theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images/';
-        $this->load->model('m_oa_report');
-        $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
+        if (strpos($_SERVER['HTTP_ACCEPT'], 'json') === false) {
+            $this->load->model('m_oa_report');
+            $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
+        }
         set_time_limit(600);
     }
 
@@ -362,6 +364,9 @@ class MY_Controller extends CI_Controller
                 if (($column->column_type > '') and ((string) $column->column_name !== 'Tags')) {
                     $col_var_name = $column->column_variable;
 
+                    if ((string) $column->column_variable == 'man_ip_address') {
+                        $query_row->man_ip_address = ip_address_from_db($query_row->man_ip_address);
+                    }
                     if ((string) $column->column_align === '') {
                         (string) $column->column_align = 'left';
                     }

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -635,3 +635,37 @@
 		</form>
 	<?php } ?>
 	</div>
+
+    <div id="view_summary_dns" style="float: left; width: 100%;">
+    <?php if (count($dns) > 0) { ?>
+        <br />
+        <form action="#" method="post" class='niceforms'>
+            <fieldset id="summary_dns">
+                <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('System DNS')?></span></legend>
+                <div style="min-width: 50px; float: right;">
+                <img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images; ?>/48_network_wireless.png' alt='' title='' width='48'/>
+                </div>
+                <div style="width: 90%; float:left;">
+                <table cellspacing="1" class="tablesorter" width="100%">
+                    <thead>
+                        <tr>
+                            <th><?php echo __('IP')?></th>
+                            <th><?php echo __('Name')?></th>
+                            <th><?php echo __('FQDN')?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($dns as $key): ?>
+                        <tr>
+                            <td><?php echo print_something(ip_address_from_db($key->dns_ip_address))?>&nbsp;</td>
+                            <td><?php echo print_something($key->dns_name)?>&nbsp;</td>
+                            <td><?php echo print_something($key->dns_full_name)?>&nbsp;</td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                </div>
+            </fieldset>
+        </form>
+    <?php } ?>
+    </div>

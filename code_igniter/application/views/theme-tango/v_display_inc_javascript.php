@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -111,6 +111,34 @@ function receive_environment() {
       // UPDATE ajaxTest content
       update="<span onclick='display_environment();'>"+http.responseText+"<\/span>";
       document.getElementById("man_environment_select").innerHTML = update;
+    }
+  }
+}
+
+function display_man_criticality() {
+    status_text="<select id='man_criticality' onchange='send_criticality();'>\
+    <option value=' '><?php echo __("Choose a Criticality"); ?><\/option>\
+    <option value='critical'><?php echo __("Critical"); ?><\/option>\
+    <option value='normal'><?php echo __("Normal"); ?><\/option>\
+    <option value='low'><?php echo __("Low"); ?><\/option>\
+    <\/select>";
+    document.getElementById("man_criticality_select").innerHTML = status_text;
+}
+
+function send_criticality() {
+    table_text=document.getElementById("man_criticality").value;
+    http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_criticality/'+table_text);
+    http.onreadystatechange = receive_criticality;
+    http.send(null);
+}
+
+function receive_criticality() {
+  if(http.readyState == 4 && http.status == 200){
+    // Text returned FROM the PHP script
+    if(http.responseText) {
+      // UPDATE ajaxTest content
+      update="<span onclick='display_criticality();'>"+http.responseText+"<\/span>";
+      document.getElementById("man_criticality_select").innerHTML = update;
     }
   }
 }
@@ -396,10 +424,13 @@ function upload_attachment()
 <script type="text/javascript">
 
 function toggleBold(id) {
-   if (document.getElementById(id).style.fontWeight == "bold") {
-        document.getElementById(id).style.fontWeight = "";
-    } else {
-        document.getElementById(id).style.fontWeight = "bold";
+    var obj_item = document.getElementById(id);
+    if (obj_item != null) {
+        if (obj_item.style.fontWeight == "bold") {
+            obj_item.style.fontWeight = "";
+        } else {
+            obj_item.style.fontWeight = "bold";
+        }
     }
 }
 
@@ -416,7 +447,8 @@ $(document).ready(function(){
 	$('#view_summary_custom').hide();
 	$('#view_summary_attachment').hide();
 	$('#view_summary_nmis').hide();
-	$('#view_summary_module').hide();
+    $('#view_summary_module').hide();
+    $('#view_summary_dns').hide();
 	<?php if ($system[0]->man_type == 'access point' or
         $system[0]->man_type == 'adsl modem' or
         $system[0]->man_type == 'bdsl modem' or
@@ -539,6 +571,14 @@ $(document).ready(function(){
         toggleBold("toggle_summary_module");
 	});
 	<?php } ?>
+
+    <?php if (count($dns) > 0) {
+    ?>
+    $('#toggle_summary_dns').click(function(){
+        $('#view_summary_dns').slideToggle("fast");
+        toggleBold("toggle_summary_dns");
+    });
+    <?php } ?>
 
 	$('#view_hardware_processor').hide();
 	$('#view_hardware_memory').hide();

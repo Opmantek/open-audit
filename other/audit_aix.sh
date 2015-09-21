@@ -35,7 +35,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.8
+# @version 1.10
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -231,7 +231,7 @@ cat >"$xml_file" <<EndOfFile
 		<description></description>
 		<type>computer</type>
 		<icon>aix</icon>
-		<os_group>unix</os_group>
+		<os_group>Unix</os_group>
 		<os_family>IBM AIX</os_family>
 		<os_name>$(escape_xml "$system_os_name")</os_name>
 		<os_version>$(escape_xml "$system_os_version")</os_version>

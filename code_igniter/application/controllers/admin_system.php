@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -376,6 +376,11 @@ class Admin_system extends MY_Controller
                     $this->m_module->process_module($input, $details);
                 }
             }
+
+            // Generate any DNS entries required
+            $this->load->model('m_dns');
+            $this->m_dns->create_dns_entries((int)$details->system_id);
+
         } else {
             echo "Audit NOT submitted.";
         }

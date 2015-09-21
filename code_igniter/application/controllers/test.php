@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -487,5 +487,34 @@ class test extends CI_Controller
         }
 
         print_r($details);
+    }
+
+    function test_ssh()
+    {
+        $this->load->helper('ssh');
+        echo "<pre>\n";
+        $details = new stdClass();
+        $details->man_ip_address = '192.168.1.1';
+        #$details->system_id = 1;
+        $credentials = new stdClass();
+        $credentials->ssh_username = 'root';
+        $credentials->ssh_password = '301170';
+        #echo "===going to helper===\n";
+        if ($test = ssh_connect($details, $credentials)) {
+        #if ($test = ssh_connect($details)) {
+            echo "Successful connect\n";
+        } else {
+            echo "Failed connect\n";
+        }
+        #echo "===back from helper===\n";
+        #print_r($details);
+        #echo "\n";
+        if ($output = exec_ssh_command($details, 'uname', 'y')) {
+            echo "Successful uname\n";
+            echo "uname: " . $output[0] . "\n";
+        } else {
+            echo "Failed uname\n";
+        }
+        #print_r($output);
     }
 }

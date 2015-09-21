@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -77,6 +77,7 @@
                             <?php if (count($windows) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_windows.png" /><a href="#" id="toggle_summary_windows"><?php echo __('Windows Details'); ?></a></li><?php } ?>
                             <?php if (count($vm) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_vmware.png" /><a href="#" id="toggle_summary_vms"><?php echo __('VM Guest Details'); ?></a></li><?php } ?>
                             <?php if (count($module) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_memory.png" /><a href="#" id="toggle_summary_module"><?php echo __('Entities'); ?></a></li> <?php } ?>
+                            <?php if (count($dns) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_wireless_router.png" /><a href="#" id="toggle_summary_dns"><?php echo __('DNS'); ?></a></li> <?php } ?>
                         </ul>
                     </li>
                     <?php
@@ -103,6 +104,7 @@ $system[0]->uptime = strTime($system[0]->uptime);
 $summary_attributes = array('hostname' => 'text' ,
                             'man_ip_address' => 'text',
                             'man_type' => 'select',
+                            'man_criticality' => 'select',
                             'man_environment' => 'select',
                             'man_status' => 'select',
                             'man_description' => 'text',

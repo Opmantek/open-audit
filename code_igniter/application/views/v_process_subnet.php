@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -44,7 +44,7 @@
     <?php echo form_fieldset('Add an Nmap audit')."\n"; ?>
         <label for="form_details">Details: </label>
         <p><?php echo form_textarea(array('name' => 'form_details', 'id' => 'form_details', 'rows' => '15', 'cols' => '100')); ?></p>
-        <p><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
+        <p><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit' ); ?></p>
     <?php echo form_fieldset_close(); ?>
 <?php echo form_close(); ?>
 </body>

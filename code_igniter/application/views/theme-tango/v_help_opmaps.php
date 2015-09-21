@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -41,6 +41,6 @@ $sortcolumn = 2;
 		Scheduled Reports, Interactive Dashboards and Maps and more.<br />
 		All purchases go to further the development of Open-AudIT for all of us. Contact <a href="https://opmantek.com" style="color: green;">Opmantek</a>.<br />
 		<br /><br />
-		<img src="<?php echo base_url(); ?>theme-tango/tango-images/sample_opmaps.png" /><br />
+		<img src="<?php echo $this->config->config['oa_web_folder']; ?>/images/sample_opmaps.png" /><br />
 	</fieldset>
 </form>

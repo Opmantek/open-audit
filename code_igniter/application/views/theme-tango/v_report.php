@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -112,7 +112,9 @@ foreach ($query as $row) {
                         $column_link = str_replace('$group_id', $group_id, $column_link);
                         $url = site_url().$column_link.$row->$column_variable_name_sec;
                         if ($column->column_ternary > "") {
-                            $url .= "/".$row->$column_variable_name_ter;
+                            if (isset($row->$column_variable_name_ter)) {
+                                $url .= "/".$row->$column_variable_name_ter;
+                            }
                         }
                         echo "\t\t\t<td align=\"$column_align\"><a href=\"".$url."\">".htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8")."</a></td>\n";
                     }

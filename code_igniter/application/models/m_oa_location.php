@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -499,150 +499,81 @@ class M_oa_location extends MY_Model
         return ($result);
     }
 
-    public function location_report()
+    public function location_report($group_id = 1, $limit = 1000000)
     {
-        $sql = "SELECT DISTINCT(man_type) FROM system";
+        # make sure we have integers for outr passed attributes
+        $group_id = intval($group_id);
+        $limit = intval($limit);
+        # get the devices in the group, apply limit if requested
+        $sql = "SELECT man_type, man_location_id FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = $group_id LIMIT $limit";
         $query = $this->db->query($sql);
         $types = $query->result();
-
-        $sql = "SELECT oa_location.location_id, oa_location.location_name, oa_location.location_icon, oa_location.location_type,
-		oa_location.location_address, oa_location.location_city, oa_location.location_state, oa_location.location_group_id,
-		oa_location.location_postcode, oa_location.location_country, oa_location.location_geo,
-		system.man_type, count(system.system_id) as count, oa_location.location_latitude, oa_location.location_longitude
-		FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id
-		WHERE system.man_status = 'production' and
-		oa_location.location_latitude != '' and
-		oa_location.location_longitude != ''
-		GROUP BY system.man_location_id, system.man_type
-		ORDER BY location_name";
+        # get all the locations
+        $sql = "SELECT location_id as id, location_name as name, location_type as type, location_group_id as `group`, '' as address, location_latitude, location_longitude, location_address, location_city, location_postcode, location_country, CONCAT('{\"latitude\":\"', location_latitude, '\",\"longitude\":\"', location_longitude, '\"}') as geo, '' as icon FROM oa_location";
         $query = $this->db->query($sql);
-        $result = $query->result();
-        $table = array();
-        $current_location = "";
-        $count = -1;
-
-        if (count($result) > 0) {
-            foreach ($result as $row) {
-                if ($row->man_type == '') {
-                    $row->man_type = 'unknown';
-                }
-                if ($row->location_name != $current_location) {
-                    $count ++;
-                    $i = new stdclass();
-                    $i->id = $row->location_id;
-                    $i->name = $row->location_name;
-                    $i->type = $row->location_type;
-                    $i->group = $row->location_group_id;
-                    $type_icon = str_replace("index.php", "", $_SERVER['SCRIPT_FILENAME']).'theme-tango/tango-images/32_'.str_replace(" ", "_", strtolower($row->location_type)).'.png';
-                    if (is_null($row->location_icon) or $row->location_icon == '') {
-                        if (file_exists($type_icon)) {
-                            $row->location_icon = str_replace(" ", "_", strtolower($row->location_type));
-                        } else {
-                            $row->location_icon = 'office';
-                        }
-                    }
-
-                    $i->address = "";
-                    if ($row->location_address > "") {
-                        $i->address = $row->location_address;
-                    }
-                    if ($row->location_city > "") {
-                        if ($i->address > "") {
-                            $i->address .= ", ".$row->location_city;
-                        } else {
-                            $i->address = $row->location_city;
-                        }
-                    }
-                    if ($row->location_postcode > "") {
-                        if ($i->address > "") {
-                            $i->address .= ", ".$row->location_postcode;
-                        } else {
-                            $i->address = $row->location_postcode;
-                        }
-                    }
-                    if ($row->location_country > "") {
-                        if ($i->address > "") {
-                            $i->address .= ", ".$row->location_country;
-                        } else {
-                            $i->address = $row->location_country;
-                        }
-                    }
-
-                    $i->geo = "";
-
-                    if ($row->location_latitude != "" and $row->location_latitude != "0.000000" and
-                        $row->location_longitude != "" and $row->location_longitude != "0.000000" and
-                        $i->geo == "") {
-                        if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-                            $i->geo = '{"latitude":"'.$row->location_latitude.'","longitude":"'.$row->location_longitude.'"}';
-                        } else {
-                            $i->geo = "latitude: ".$row->location_latitude.", longitude: ".$row->location_longitude;
-                        }
-                    }
-
-                    if ($row->location_geo > "" and $i->geo == "") {
-                        if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-                            $i->geo = '{"geocode":"'.$row->location_geo.'"}';
-                        } else {
-                            $i->geo = $row->location_geo;
-                        }
-                    }
-
-                    if ($i->geo == "") {
-                        $i->geo = $i->address;
-                        if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-                            $i->geo = '{"geocode":"'.$i->geo.'"}';
-                        }
-                    }
-
-                    if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-                        $i->icon = base_url().'theme-tango/tango-images/32_'.$row->location_icon.'.png';
-                        $i->icon = str_replace("http://127.0.0.1", "", $i->icon);
-                        $i->infoDisplay = '"'.$row->man_type.'":"'.$row->count.'", ';
-                    } else {
-                        $i->icon = base_url().'theme-tango/tango-images/32_'.$row->location_icon.'.png';
-                        $i->icon = str_replace("http://127.0.0.1", "", $i->icon);
-                        $j = $row->man_type;
-                        $i->$j = $row->count;
-                    }
-                    $table[$count] = $i;
-                } else {
-                    if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-                        $i = $table[$count]->infoDisplay.'"'.$row->man_type.'":"'.$row->count.'", ';
-                    } else {
-                        $j = $row->man_type;
-                        $i->$j = $row->count;
-                    }
-                    $table[$count]->infoDisplay = $i;
-                }
-                $current_location = $row->location_name;
+        $locations = $query->result();
+        # for each retrieved location, format the required details and add it to the new_locations array
+        $new_locations = array();
+        foreach ($locations as $location) {
+            $location->infoDisplay = new stdClass();
+            # create the geo object
+            $location->geo = new stdClass();
+            if ($location->location_latitude == "") {
+                $location->location_latitude = "0.000000";
             }
-        } else {
-            # no devices in database - send empty dataset
-            $i = new stdclass();
-            $i->id = "1";
-            $i->name = "Default Location";
-            $i->type = "Office";
-            $i->group = "";
-            $i->address = "Gold Coast, Australia";
-            $i->icon = base_url().'theme-tango/tango-images/32_office.png';
-            $i->icon = str_replace("http://127.0.0.1", "", $i->icon);
-            $i->geo = '{"latitude":"-28.017260","longitude":"153.425705"}';
-            $table[0] = $i;
-            $table[0]->infoDisplay = '"Devices": "none"  ';
+            if ($location->location_longitude == "") {
+                $location->location_longitude = "0.000000";
+            }
+            $location->geo->latitude = $location->location_latitude;
+            $location->geo->longitude = $location->location_longitude;
+            # create the full location string
+            $location->address = $location->location_address;
+            if ($location->location_city != '' and $location->address != '') {
+                $location->address .= ', ' . $location->location_city;
+            } else {
+                $location->address = $location->location_city;
+            }
+            if ($location->location_postcode != '' and $location->address != '') {
+                $location->address .= ', ' . $location->location_postcode;
+            } else {
+                $location->address .= $location->location_postcode;
+            }
+            if ($location->location_country != '' and $location->address != '') {
+                $location->address .= ', ' . $location->location_country;
+            } else {
+                $location->address .= $location->location_country;
+            }
+            # build the path to the icon
+            $location->icon = base_url().'theme-tango/tango-images/32_'.str_replace(" ", "_", strtolower($location->type)).'.png';
+            $location->icon = str_replace("http://127.0.0.1", "", $location->icon);
+            #$location->icon = '/open-audit/theme-tango/tango-images/32_'.str_replace(" ", "_", strtolower($location->type)).'.png';
+            # make sure the id is an integer
+            $location->id = intval($location->id);
+            # make sure the group is an integer
+            $location->group = intval($location->group);
+            # we don't need the following, remove them
+            unset($location->location_latitude);
+            unset($location->location_longitude);
+            unset($location->location_address);
+            unset($location->location_city);
+            unset($location->location_postcode);
+            unset($location->location_country);
+            # add the location object to the new_locations array using the id for the index
+            $new_locations[$location->id] = $location;
         }
-
-        $count = 0;
-        if ($this->uri->segment($this->uri->total_rsegments()) == 'json') {
-            foreach ($table as $each) {
-                $i = $each->infoDisplay;
-                $i = substr($i, 0, -2);
-                $i = "{".$i."}";
-                $table[$count]->infoDisplay = $i;
-                $count++;
+        # add a count to the type in a location
+        foreach ($types as $type) {
+            $device_type = $type->man_type;
+            $location_id = $type->man_location_id;
+            $new_locations[$location_id]->infoDisplay->$device_type++;
+        }
+        # remove any locations without devices
+        foreach ($new_locations as $location) {
+            if (count(get_object_vars($location->infoDisplay)) == 0) {
+                unset($locations[$location->id]);
             }
         }
-
-        return ($table);
+        # return our dataset, ready to be converted to JSON
+        return($locations);
     }
 }

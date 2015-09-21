@@ -26,7 +26,7 @@
 			<column_name>Package Name</column_name>
 			<column_variable>software_name</column_variable>
 			<column_type>link</column_type>
-			<column_link>/report/Specific Software/$group_id/</column_link>
+			<column_link>/report/specific_software/$group_id/</column_link>
 			<column_secondary>software_id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>

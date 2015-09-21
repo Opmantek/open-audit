@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -159,7 +159,7 @@ class ajax extends MY_Controller
         if ($config_name == 'default_snmp_community' and $this->config->config['show_snmp_community'] == 'n') {
             $config_value = $masked;
         }
-        echo htmlentities($config_value);
+        echo htmlentities(urldecode($config_value));
     }
 
     # /index.php/ajax/update_system_man/[system_id]/[field_name]/[field_value]

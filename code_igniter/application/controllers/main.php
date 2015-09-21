@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -307,7 +307,7 @@ class main extends MY_Controller
             $group_id = $_POST['group_id'];
         }
         if ($group_id == '') {
-            $group_id = $this->uri->segment(3, 0);
+            $group_id = $this->uri->segment(3, 1);
         }
         if (!is_numeric($group_id)) {
             $group_id = '1';
@@ -1200,7 +1200,9 @@ class main extends MY_Controller
         $data['application_nmis_enabled'] = $this->config->item('nmis');
         $data['application_nmis_url'] = $this->config->item('nmis_url');
         $data['application_oae_status'] = $this->config->item('logo');
-        $data['application_name_match'] = $this->config->item('name_match');
+        $data['application_name_match'] = $this->config->item('discovery_name_match');
+        $data['application_ip_match'] = $this->config->item('discovery_ip_match');
+        $data['application_use_ipmi'] = $this->config->item('discovery_use_ipmi');
         $data['application_ad_domain'] = $this->config->item('ad_domain');
         $data['application_ad_server'] = $this->config->item('ad_server');
         $data['application_permitted_uri_chars'] =  $this->config->item('permitted_uri_chars');
@@ -1270,6 +1272,7 @@ class main extends MY_Controller
                 $i = file('/etc/issue.net');
                 $data['os_version'] = trim($i[0]);
             }
+            $opCommon = '';
             if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
                 $opCommon = '/usr/local/omk/conf/opCommon.nmis';
             } elseif (file_exists('/usr/local/opmojo/conf/opCommon.nmis')) {
@@ -1335,7 +1338,7 @@ class main extends MY_Controller
             #nmap
             $test_path = '/usr/local/bin/nmap';
             if (file_exists($test_path)) {
-                $data['prereq_nmap'] = 'y';
+                $data['prereq_nmap'] = '/usr/local/bin/nmap';
             }
         }
 
@@ -1343,7 +1346,7 @@ class main extends MY_Controller
             ### general items ###
 
             # log file perms
-            $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
+            $command_string = 'ls -l ../../other/log_system.log | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             if (isset($output[0])) {
                 $data['application_log_permission'] = $output[0];
@@ -1396,13 +1399,15 @@ class main extends MY_Controller
             unset($command_string);
 
             # nmap perms
-            $command_string = 'ls -l '.$data['prereq_nmap'].' | cut -d" " -f1';
-            exec($command_string, $output, $return_var);
-            if (isset($output[0])) {
-                $data['prereq_nmap_perms'] = $output[0];
+            if ($data['prereq_nmap'] != '' and $data['prereq_nmap'] != 'n') {
+                $command_string = 'ls -l '.$data['prereq_nmap'].' | cut -d" " -f1';
+                exec($command_string, $output, $return_var);
+                if (isset($output[0])) {
+                    $data['prereq_nmap_perms'] = $output[0];
+                }
+                unset($output);
+                unset($command_string);
             }
-            unset($output);
-            unset($command_string);
 
             # screen
             $command_string = "which screen 2>/dev/null";
@@ -1500,7 +1505,7 @@ class main extends MY_Controller
 
         # oae link
         if (stripos($data['os_platform'], 'linux') !== false) {
-            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_link';
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis 2>/dev/null | grep oae_link';
         } elseif ($data['os_platform'] == 'Windows') {
             $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_link"';
         }
@@ -1514,14 +1519,22 @@ class main extends MY_Controller
 
         # oae server
         if (stripos($data['os_platform'], 'linux') !== false) {
-            $command_string = 'cat '.$opCommon.' | grep oae_server';
+            if ($opCommon != '') {
+                $command_string = 'cat '.$opCommon.' 2>/dev/null | grep oae_server';
+            } else {
+                $command_string = '';
+            }
         } elseif ($data['os_platform'] == 'Windows') {
             $command_string = 'type '.$opCommon.' | find "oae_server"';
         }
-        exec($command_string, $output, $return_var);
-        if (isset($output[0])) {
-            $data['oae_server'] = @$output[0];
-            $data['oae_server'] = str_replace(",", "", str_replace("'", "", trim(str_replace("'oae_server' => '", '', @$output[0]))));
+        if ($command_string != '') {
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['oae_server'] = @$output[0];
+                $data['oae_server'] = str_replace(",", "", str_replace("'", "", trim(str_replace("'oae_server' => '", '', @$output[0]))));
+            }
+        } else {
+            $data['oae_server'] = '';
         }
         unset($output);
         unset($command_string);
@@ -1541,7 +1554,7 @@ class main extends MY_Controller
 
         # Intelligent hints about incorrect configuration
 
-        if ($data['oae_server'] != 'http://127.0.0.1/open-audit/') {
+        if ($data['oae_server'] != 'http://127.0.0.1/open-audit/' and $data['oae_server'] != '') {
             $hints['oae_server'] = 'You have Open-AudIT Enterprise installed on this server, but it is not pointing at the correct URL for Open-AudIT. It should be set to http://127.0.0.1/open-audit/ in the file '.$opCommon.', it is currently set to '.$data['oae_server'];
         }
 
@@ -1576,7 +1589,8 @@ class main extends MY_Controller
 
         if ($data['prereq_nmap_perms'] != '-rwsr-xr-x' and
             $data['prereq_nmap_perms'] != '-rwsr-xr-x.' and
-            stripos($data['os_platform'], 'linux') !== false) {
+            stripos($data['os_platform'], 'linux') !== false and
+            $data['prereq_nmap_perms'] != '') {
             $hints['prereq_nmap_perms'] = 'It appears that nmap has not had its SUID set. This can be fixed by "chmod u+s '.$data['prereq_nmap'].'" (sans quotes).';
         }
 
@@ -1595,7 +1609,7 @@ class main extends MY_Controller
             if ((strpos($key, 'php_ext_') !== false) and ($value == 'n' or $value == '')) {
                 $hints[$key] = 'The PHP module '.str_replace('php_ext_', '', $key).' is missing.';
                 if ($data['os_platform'] == 'Linux (Debian)') {
-                    $hints[$key] .= ' On Debian based Linux systems, if php-mcrypt is installed, you make need to activate it with "php5enmod '.str_replace('php_ext_', '', $key).'"
+                    $hints[$key] .= ' On Debian based Linux systems, if php-' . str_replace('php_ext_', '', $key) . ' is installed, you make need to activate it with "php5enmod '.str_replace('php_ext_', '', $key).'"
 					 and then restart Apache with "service apache2 restart" (both sans quotes).';
                 }
             }

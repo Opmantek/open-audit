@@ -7,7 +7,7 @@
 #  This file is part of Open-AudIT.
 #
 #  Open-AudIT is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as published 
+#  it under the terms of the GNU Affero General Public License as published
 #  by the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.8
+ * @version 1.10
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -1286,7 +1286,14 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1404') { $details->model = 'Cisco Catalyst 3750 x24s'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1405') { $details->model = 'Cisco Catalyst 3750 x12s'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1406') { $details->model = 'Cisco Nme'; $details->type = 'network device'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1407') { $details->model = 'Cisco ASA 5512-X Adaptive Security Appliance'; $details->type = 'firewall'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1408') { $details->model = 'Cisco ASA 5525'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1409') { $details->model = 'Cisco ASA 5545-X Adaptive Security Appliance'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1410') { $details->model = 'Cisco ASA 5555-X Adaptive Security Appliance'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1412') { $details->model = 'Cisco ASA 5525-X Adaptive Security Appliance'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1413') { $details->model = 'Cisco ASA 5555-X Adaptive Security Appliance'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1414') { $details->model = 'Cisco ASA 5555-X Adaptive Security Appliance'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1420') { $details->model = 'Cisco ASA 5515-X Adaptive Security Appliance'; $details->type = 'firewall'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1421') { $details->model = 'Cisco ASA 5515'; $details->type = 'firewall'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1422') { $details->model = 'Cisco PCM'; $details->type = 'network device'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1423') { $details->model = 'Cisco Ise 3315K9'; $details->type = 'network device'; }
@@ -1303,6 +1310,16 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1439') { $details->model = 'Cisco ASA 5585 SSP IPS 40Virtual'; $details->type = 'firewall'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1440') { $details->model = 'Cisco ASA 5585 SSP IPS 60Virtual'; $details->type = 'firewall'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1441') { $details->model = 'Cisco ASR 903'; $details->type = 'router'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1442') { $details->model = 'Cisco ASA 5512-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1443') { $details->model = 'Cisco ASA 5515-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1444') { $details->model = 'Cisco ASA 5525-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1445') { $details->model = 'Cisco ASA 5545-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1446') { $details->model = 'Cisco ASA 5555-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1447') { $details->model = 'Cisco ASA 5512-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1448') { $details->model = 'Cisco ASA 5515-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1449') { $details->model = 'Cisco ASA 5525-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1450') { $details->model = 'Cisco ASA 5545-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1451') { $details->model = 'Cisco ASA 5555-X Adaptive Security Appliance with No Payload Encryption'; $details->type = 'firewall'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1457') { $details->model = 'Cisco ASR 5500'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1462') { $details->model = 'Cisco Xfp10 Ger192IrL'; $details->type = 'unknown'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1463') { $details->model = 'Cisco Xfp10 Glr192SrL'; $details->type = 'unknown'; }
@@ -1336,8 +1353,10 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1491') { $details->model = 'Cisco RAIE1783BMS20CGL'; $details->type = 'unknown'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1492') { $details->model = 'Cisco RAIE1783BMS20CGP'; $details->type = 'unknown'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1493') { $details->model = 'Cisco RAIE1783BMS20CGPK'; $details->type = 'unknown'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1494') { $details->model = 'Cisco 819 Hardened Integrated Services Router'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1495') { $details->model = 'Cisco 819G 4GAK9'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1512') { $details->model = 'Cisco Ucs C200'; $details->type = 'voip gateway'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1496') { $details->model = 'Cisco 819 Non-Hardened Integrated Services Router'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1513') { $details->model = 'Cisco Ucs C210'; $details->type = 'voip gateway'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1514') { $details->model = 'Cisco Ucs C250'; $details->type = 'voip gateway'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1515') { $details->model = 'Cisco Ucs C260'; $details->type = 'voip gateway'; }
@@ -1387,10 +1406,12 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1601') { $details->model = 'Cisco 887 vaV'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1602') { $details->model = 'Cisco 887 vaVW'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1603') { $details->model = 'Cisco MDE 10XVB'; $details->type = 'network device'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1604') { $details->model = 'Cisco 5921 Embedded Services Router'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1605') { $details->model = 'Cisco Catalyst 4500 X16'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1606') { $details->model = 'Cisco Catalyst 4500 X32'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1607') { $details->model = 'Cisco CDS cde 2502 s9'; $details->type = 'network device'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1608') { $details->model = 'Cisco CDS cde 2502 s10'; $details->type = 'network device'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1609') { $details->model = 'Cisco 5930 Embedded Services Router'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1610') { $details->model = 'Cisco ASA 5585 Nm20x1GE'; $details->type = 'firewall'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1611') { $details->model = 'Cisco CDS cde Generic'; $details->type = 'network device'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1617') { $details->model = 'Cisco ASA 5585 Nm8x10GE'; $details->type = 'firewall'; }
@@ -1409,6 +1430,7 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1683') { $details->model = 'Cisco Ucs C240'; $details->type = 'voip gateway'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1684') { $details->model = 'Cisco Ucs C22'; $details->type = 'voip gateway'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1685') { $details->model = 'Cisco Ucs C24'; $details->type = 'voip gateway'; }
+
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1876') { $details->model = 'Cisco Prime Virtual Network Analysis Module (ESXi)'; $details->type = 'computer'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1877') { $details->model = 'Cisco Prime Virtual Network Analysis Module (ESXi)'; $details->type = 'computer'; }
 
@@ -1442,6 +1464,13 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.2.1.1.1.3') { $details->model = 'Cisco MS200X-24S 24-Port 10/100 Ethernet Access Switch'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.23.1.1.1.3') { $details->model = 'Cisco SPA122 VoIP Adapter'; $details->type = 'voip adapter'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.23.3.17') { $details->model = 'Cisco RV325 Dual Gigabit WAN VPN Router'; $details->type = 'router'; }
+
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.83.10.1') { $details->model = 'Cisco SG300-10 10-Port Gigabit Managed Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.83.10.3') { $details->model = 'Cisco SG300-10MP 10-Port Gigabit PoE Managed Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.83.20.1') { $details->model = 'Cisco SG300-20 20-Port Gigabit Managed Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.83.28.1') { $details->model = 'Cisco SG300-28 28-Port Gigabit Managed Switch'; $details->type = 'switch'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.83.28.2') { $details->model = 'Cisco SG300-28P 28-Port Gigabit PoE Managed Switch'; $details->type = 'switch'; }
+
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.84.24.1') { $details->model = 'Cisco SF220-24 24-Port 10/100 Smart Plus Switch'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.84.24.2') { $details->model = 'Cisco SF220-24P 24-Port 10/100 PoE Smart Plus Switch'; $details->type = 'switch'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.6.1.84.48.1') { $details->model = 'Cisco SF220-48 48-Port 10/100 Smart Plus Switch'; $details->type = 'switch'; }
@@ -6850,66 +6879,66 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.12') { $details->model = 'Cisco Midplane'; $details->type = 'cisco module'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.12.3.1.12.1') { $details->model = 'Cisco Midplane UMG 9820'; $details->type = 'cisco module'; }
 
-	if ($details->snmp_version == '2' ) {
+	if (isset($details->snmp_version) and $details->snmp_version == '2' ) {
 		# grab some Cisco specific details
 		$details->os_version = '';
 		$i = explode("$", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.5" ));
 		if (isset($i[1]) and $i[1] > '') { $details->os_version = trim($i[1]); }
 		$i = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.25.1.1.1.2.7" );
-		if (stripos($i, "IOS") !== FALSE) { 
+		if (stripos($i, "IOS") !== FALSE) {
 			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
-			$details->os_family = 'Cisco IOS'; 
-			$details->man_os_family = 'Cisco IOS'; 
+			$details->man_os_group = 'Cisco';
+			$details->os_family = 'Cisco IOS';
+			$details->man_os_family = 'Cisco IOS';
 			$details->os_name = "Cisco IOS version " . $details->os_version;
 			$details->man_os_name = "Cisco IOS version " . $details->os_version;
 		}
-		if (stripos($details->description, "Cisco IOS Software") !== FALSE) { 
+		if (stripos($details->description, "Cisco IOS Software") !== FALSE) {
 			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
-			$details->os_family = 'Cisco IOS'; 
-			$details->man_os_family = 'Cisco IOS'; 
+			$details->man_os_group = 'Cisco';
+			$details->os_family = 'Cisco IOS';
+			$details->man_os_family = 'Cisco IOS';
 			$details->os_name = "Cisco IOS version " . $details->os_version;
 			$details->man_os_name = "Cisco IOS version " . $details->os_version;
 		}
-		if (stripos($details->description, "Cisco Internetwork Operating System Software") !== FALSE) { 
+		if (stripos($details->description, "Cisco Internetwork Operating System Software") !== FALSE) {
 			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
-			$details->os_family = 'Cisco IOS'; 
-			$details->man_os_family = 'Cisco IOS'; 
+			$details->man_os_group = 'Cisco';
+			$details->os_family = 'Cisco IOS';
+			$details->man_os_family = 'Cisco IOS';
 			$details->os_name = "Cisco IOS version " . $details->os_version;
 			$details->man_os_name = "Cisco IOS version " . $details->os_version;
 		}
-		if (stripos($i, "Catalyst Operating") !== FALSE) { 
+		if (stripos($i, "Catalyst Operating") !== FALSE) {
 			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
+			$details->man_os_group = 'Cisco';
 			$details->os_family = 'Cisco Catalyst OS';
-			$details->man_os_family = 'Cisco Catalyst OS'; 
+			$details->man_os_family = 'Cisco Catalyst OS';
 			$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
 			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
 		}
-		if (stripos($details->description, "Cisco Systems WS-C") !== FALSE) { 
+		if (stripos($details->description, "Cisco Systems WS-C") !== FALSE) {
 			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
+			$details->man_os_group = 'Cisco';
 			$details->os_family = 'Cisco Catalyst OS';
-			$details->man_os_family = 'Cisco Catalyst OS'; 
+			$details->man_os_family = 'Cisco Catalyst OS';
 			$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
 			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
 		}
-		if (stripos($details->description, "Cisco Systems, Inc. WS-C") !== FALSE) { 
+		if (stripos($details->description, "Cisco Systems, Inc. WS-C") !== FALSE) {
 			$details->os_group = 'Cisco';
-			$details->man_os_group = 'Cisco'; 
+			$details->man_os_group = 'Cisco';
 			$details->os_family = 'Cisco Catalyst OS';
-			$details->man_os_family = 'Cisco Catalyst OS'; 
+			$details->man_os_family = 'Cisco Catalyst OS';
 			$details->os_name = "Cisco Catalyst OS version " . $details->os_version;
 			$details->man_os_name = "Cisco Catalyst OS version " . $details->os_version;
 		}
 		if (!isset($details->os_group) or $details->os_group == '') {
 			if (stripos($details->description, 'NX-OS')) {
 				$details->os_group = 'Cisco';
-				$details->man_os_group = 'Cisco'; 
+				$details->man_os_group = 'Cisco';
 				$details->os_family = 'Cisco Nexus OS';
-				$details->man_os_family = 'Cisco Nexus OS'; 
+				$details->man_os_family = 'Cisco Nexus OS';
 				$details->os_name = "Cisco Nexus OS version " . $details->os_version;
 				$details->man_os_name = "Cisco Nexus OS version " . $details->os_version;
 			}
@@ -6924,7 +6953,7 @@ $get_oid_details = function($details) {
 		if (stripos($details->model, 'catalyst') !== FALSE OR stripos($details->os_family, 'cataylst') !== FALSE) {
 		   $details->type = 'switch';
 		   $details->man_type = 'switch';
-		} 
+		}
 
 		# Generic Cisco serial
 		if ($details->serial == '') {

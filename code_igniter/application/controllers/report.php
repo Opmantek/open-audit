@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -61,17 +61,8 @@ class report extends MY_Controller
         $this->load->model('m_oa_report');
         $this->data['report_id'] = $this->m_oa_report->get_report_id($this->data['report_name']);
 
-        $my_url = 'report/show_report/'.$this->data['report_id'].'/'.$this->data['group_id'];
-        if ($this->data['first_attribute'] !== '') {
-            $my_url .= '/'.$this->data['first_attribute'];
-        }
-        if ($this->data['second_attribute'] !== '') {
-            $my_url .= '/'.$this->data['second_attribute'];
-        }
-        if ($this->data['third_attribute'] !== '') {
-            $my_url .= '/'.$this->data['third_attribute'];
-        }
-        if (! is_null($this->data['report_id'])) {
+        if (! is_null($this->data['report_id']) and $this->data['report_id'] = intval($this->data['report_id'])) {
+            $my_url = 'report/show_report/'.$this->data['report_id'].'/'.$this->data['group_id'].'/'.$this->data['first_attribute'].'/'.$this->data['second_attribute'].'/'.$this->data['third_attribute'];
             redirect($my_url);
         } else {
             $class_methods = get_class_methods($this);
@@ -100,6 +91,7 @@ class report extends MY_Controller
         $this->data['report_id'] = $this->uri->segment(3, 0);
         $this->data['group_id'] = $this->uri->segment(4, 0);
         $this->data['first_attribute'] = urldecode($this->uri->segment(5, 0));
+        $this->data['second_attribute'] = urldecode($this->uri->segment(6, 0));
         $this->data['format'] = $this->uri->segment($this->uri->total_rsegments());
         # POST attributes
         if (isset($_POST['report']) and $_POST['report'] != '') {
@@ -107,6 +99,16 @@ class report extends MY_Controller
         }
         if (isset($_POST['group_id']) and $_POST['group_id'] != '') {
             $this->data['group_id'] = $_POST['group_id'];
+        }
+        if (isset($_POST['limit']) and $_POST['limit'] != '' and is_numeric($_POST['limit'])) {
+            $this->data['limit'] = (int)$_POST['limit'];
+        } else {
+            $this->data['limit'] = 10000000;
+        }
+        if (isset($_POST['offset']) and $_POST['offset'] != '' and is_numeric($_POST['offset'])) {
+            $this->data['offset'] = (int)$_POST['offset'];
+        } else {
+            $this->data['offset'] = 0;
         }
         if (isset($_POST['first_attribute']) and $_POST['first_attribute'] != '') {
             $this->data['first_attribute'] = $_POST['first_attribute'];
@@ -255,7 +257,8 @@ class report extends MY_Controller
             }
         }
         # get the actual data
-        $this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute'], $this->data['second_attribute']);
+        #$this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute'], $this->data['second_attribute']);
+        $this->data['query'] = $this->m_oa_report->get_report($this->data);
         # get the report columns
         $this->data['column'] = $this->m_oa_report_column->get_report_column($this->data['report_id']);
         # filter the data (if required)
@@ -362,7 +365,16 @@ class report extends MY_Controller
         } else {
             $this->data['report_id'] = "";
         }
-
+        if (isset($_POST['limit']) and $_POST['limit'] != '' and is_numeric($_POST['limit'])) {
+            $this->data['limit'] = (int)$_POST['limit'];
+        } else {
+            $this->data['limit'] = 10000000;
+        }
+        if (isset($_POST['offset']) and $_POST['offset'] != '' and is_numeric($_POST['offset'])) {
+            $this->data['offset'] = (int)$_POST['offset'];
+        } else {
+            $this->data['offset'] = 0;
+        }
         if (isset($_POST['report_name'])) {
             $this->data['report_name'] = $_POST['report_name'];
             $this->data['heading'] = $_POST['report_name'];
@@ -417,7 +429,8 @@ class report extends MY_Controller
                 $this->data['report_id'] = $this->m_oa_report->get_report_id($this->data['report_name']);
             }
             if ($this->data['report_id'] != '') {
-                $this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute']);
+                #$this->data['query'] = $this->m_oa_report->get_report($this->data['report_id'], $this->data['group_id'], $this->data['first_attribute']);
+                $this->data['query'] = $this->m_oa_report->get_report($this->data);
                 $this->data['column'] = $this->m_oa_report_column->get_report_column($this->data['report_id']);
             } else {
                 exit();
@@ -598,14 +611,13 @@ class report extends MY_Controller
     public function locations()
     {
         $this->load->model("m_oa_location");
+        $group_id = $this->uri->segment(3, 1);
+        $limit = $this->uri->segment(4, 1000000);
         $this->data['heading'] = "Locations";
-        $this->data['query'] = $this->m_oa_location->location_report();
-        $this->data['column'] = $this->m_oa_location->location_report_columns();
-        $this->data['count'] = count($this->data['query']);
-        $this->data['include'] = 'v_report';
-        $this->data['sortcolumn'] = '0';
-        $this->data['export_report'] = 'y';
-        $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+        $this->data['query'] = $this->m_oa_location->location_report($group_id, $limit);
+        echo "{\"locations\": ";
+        print_r(json_encode($this->data['query']));
+        echo "\n}";
     }
 
     public function list_reports()

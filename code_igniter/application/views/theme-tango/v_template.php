@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -85,6 +85,9 @@ function print_something($string)
 	<!-- <script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/nicejforms-interface.js" /> -->
 	<link rel="stylesheet" type="text/css" href="<?php echo $oa_theme_files; ?>/jquery/css/humanity/niceforms-default.css" />
 	<script type="text/javascript" src="<?php echo $oa_theme_files; ?>/jquery/js/jquery-ui-1.8.13.custom.min.js"></script>
+
+
+    <script type="text/javascript" src="/open-audit/js/bootstrap.min.js"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function(){
@@ -188,7 +191,7 @@ function print_something($string)
 	<style type="text/css">
 	a { color: #101010; text-decoration: none }
 	a:hover { color: #729FCF; }
-	body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #FBFAF9; font-size:12px; color:#111;}
+	body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #FBFAF9; font-size:12px; color:#111; margin:8px;}
 	h2 { border-color:#FFF; border-style:solid; border-width:0pt 0pt 1px; color:#555555; font-size:22px; font-weight:bold; padding:0px 0px 1px; }
 	img {border:0;}
 	</style>

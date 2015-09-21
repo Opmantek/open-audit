@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -70,7 +70,7 @@ class M_virtual_machine extends MY_Model
 
         # attempt to match system_id
         if ($input->guest_system_id == '') {
-            $sql = "SELECT system_id FROM system WHERE uuid = LOWER(?) and man_status = 'production'";
+            $sql = "SELECT system_id FROM system WHERE uuid = ? and man_status = 'production'";
             $data = array(strtolower("$input->uuid"));
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
@@ -80,38 +80,47 @@ class M_virtual_machine extends MY_Model
         }
 
         # update the system table
-        if ($input->guest_system_id != '') {
+        if (isset($input->guest_system_id) and $input->guest_system_id != '') {
             $sql = "UPDATE system SET man_vm_server_name = ?, man_vm_system_id = ? WHERE system_id = ?";
             $data = array("$details->hostname", "$details->system_id", "$input->guest_system_id");
             $query = $this->db->query($sql, $data);
         }
 
-        # check for virtual machine changes
-        $sql = "SELECT
-				sys_sw_virtual_machine.id
-			FROM
-				sys_sw_virtual_machine LEFT JOIN system ON
-					(sys_sw_virtual_machine.system_id = system.system_id AND
-						sys_sw_virtual_machine.timestamp = system.timestamp)
-			WHERE
-				system.system_id = ? AND
-				sys_sw_virtual_machine.uuid = ? AND
-				( sys_sw_virtual_machine.timestamp = ? OR sys_sw_virtual_machine.timestamp = ? )
-			LIMIT 1";
-        $sql = $this->clean_sql($sql);
-        $data = array(    "$details->system_id",
-                "$input->uuid",
-                "$details->original_timestamp",
-                "$details->timestamp",    );
+        $sql = "SELECT id FROM sys_sw_virtual_machine WHERE uuid = ?";
+        $data = array("$input->uuid");
         $query = $this->db->query($sql, $data);
-        if ($query->num_rows() > 0) {
-            $row = $query->row();
-            // the vm exists - need to update it
-            $sql = "UPDATE sys_sw_virtual_machine SET guest_system_id = ?, status = ?, timestamp = ? WHERE id = ? ";
-            $data = array("$input->guest_system_id", "$input->status", "$details->timestamp", "$row->id");
+        $result = $query->result();
+        $count = count($result);
+
+        if (isset($count) and $count > 1) {
+            // delete all entries and set count = 0 to insert one further down
+            // TOTO - fix this for v2 and allow multiple entries, but flag the other entries as current = n
+            $sql = "DELETE sys_sw_virtual_machine FROM sys_sw_virtual_machine WHERE uuid = ?";
+            $data = array("$input->uuid");
             $query = $this->db->query($sql, $data);
-        } else {
-            // the vm does not exist - insert it
+            $count = 0;
+        }
+        if (isset($count) and $count == 1) {
+            // update this specific entry as we only have one entry
+            $sql = "UPDATE sys_sw_virtual_machine SET system_id = ?, guest_system_id = ?, name = ?, vm_id = ?, uuid = ?,
+                    vm_group = ?, config_file = ?, memory = ?, cpu = ?, status = ?, timestamp = ?, first_timestamp = ? WHERE id = ?";
+            $data = array("$details->system_id",
+                    "$input->guest_system_id",
+                    "$input->name",
+                    "$input->vm_id",
+                    "$input->uuid",
+                    "$input->vm_group",
+                    "$input->config_file",
+                    "$input->memory",
+                    "$input->cpu",
+                    "$input->status",
+                    "$details->timestamp",
+                    "$details->timestamp",
+                    $result[0]->id);
+            $query = $this->db->query($sql, $data);
+        }
+        if (!isset($count) or (isset($count) and $count == 0)) {
+            // insert a new entry
             $sql = "INSERT INTO sys_sw_virtual_machine
 				( 	system_id,
 					guest_system_id,
@@ -125,7 +134,7 @@ class M_virtual_machine extends MY_Model
 					status,
 					timestamp,
 					first_timestamp )
-				VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+				VALUES ( ?, ?, ?, ?, LOWER(?), ?, ?, ?, ?, ?, ?, ? )";
             $sql = $this->clean_sql($sql);
             $data = array("$details->system_id",
                     "$input->guest_system_id",
@@ -138,7 +147,7 @@ class M_virtual_machine extends MY_Model
                     "$input->cpu",
                     "$input->status",
                     "$details->timestamp",
-                    "$details->timestamp",    );
+                    "$details->timestamp");
             $query = $this->db->query($sql, $data);
         }
     } // end of function

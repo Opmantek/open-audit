@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -151,7 +151,7 @@ class M_network_card extends MY_Model
                 $sql = "SELECT sys_hw_network_card.net_id
             			FROM sys_hw_network_card
             			WHERE sys_hw_network_card.system_id = ? AND
-            				LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND
+            				sys_hw_network_card.net_mac_address = ? AND
             				( sys_hw_network_card.timestamp = ? OR sys_hw_network_card.timestamp = ? )";
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id", "$input->net_mac_address", "$details->timestamp", "$details->original_timestamp");
@@ -160,8 +160,8 @@ class M_network_card extends MY_Model
                 $sql = "SELECT sys_hw_network_card.net_id
 						FROM sys_hw_network_card
 						WHERE sys_hw_network_card.system_id = ? AND
-							LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND
-							( LOWER(sys_hw_network_card.net_index) = LOWER(?) OR LOWER(sys_hw_network_card.net_connection_id) = LOWER(?) ) AND
+							sys_hw_network_card.net_mac_address = ? AND
+							( sys_hw_network_card.net_index = ? OR sys_hw_network_card.net_connection_id = ? ) AND
 							( sys_hw_network_card.timestamp = ? OR sys_hw_network_card.timestamp = ? )";
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id", "$input->net_mac_address", "$input->net_index", "$input->net_connection_id", "$details->timestamp", "$details->original_timestamp");
@@ -170,8 +170,8 @@ class M_network_card extends MY_Model
                 $sql = "SELECT sys_hw_network_card.net_id
 						FROM sys_hw_network_card
 						WHERE sys_hw_network_card.system_id = ? AND
-							LOWER(sys_hw_network_card.net_mac_address) = LOWER(?) AND
-							LOWER(sys_hw_network_card.net_index) = LOWER(?) AND
+							sys_hw_network_card.net_mac_address = ? AND
+							sys_hw_network_card.net_index = ? AND
 							( sys_hw_network_card.timestamp = ? OR sys_hw_network_card.timestamp = ? )";
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id", "$input->net_mac_address", "$input->net_index", "$details->timestamp", "$details->original_timestamp");
@@ -299,7 +299,7 @@ class M_network_card extends MY_Model
     public function alert_network_card($details)
     {
         // network_card no longer detected
-        $sql = "SELECT net_id, net_model, LOWER(net_mac_address) as net_mac_address FROM sys_hw_network_card WHERE system_id = ? and timestamp = ?";
+        $sql = "SELECT net_id, net_model, net_mac_address as net_mac_address FROM sys_hw_network_card WHERE system_id = ? and timestamp = ?";
         $data = array("$details->system_id", "$details->original_timestamp");
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
@@ -309,7 +309,7 @@ class M_network_card extends MY_Model
         }
 
         // new network card
-        $sql = "SELECT net_id, net_model, LOWER(net_mac_address) as net_mac_address
+        $sql = "SELECT net_id, net_model, net_mac_address as net_mac_address
 			FROM
 				sys_hw_network_card LEFT JOIN system ON (sys_hw_network_card.system_id = system.system_id)
 			WHERE

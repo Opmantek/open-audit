@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -117,7 +117,7 @@ class M_ip_address extends MY_Model
 			WHERE sys_hw_network_card_ip.system_id = system.system_id AND
 				system.system_id = ? AND
 				system.man_status = 'production' AND
-				sys_hw_network_card_ip.net_mac_address = LOWER(?) AND
+				sys_hw_network_card_ip.net_mac_address = ? AND
 				(sys_hw_network_card_ip.ip_address_v4 = ? OR
 				sys_hw_network_card_ip.ip_address_v6 = ? ) AND
 				sys_hw_network_card_ip.ip_subnet = ? AND
@@ -131,7 +131,7 @@ class M_ip_address extends MY_Model
         $sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system
 			WHERE sys_hw_network_card_ip.system_id = system.system_id AND
 			system.system_id = ? AND system.man_status = 'production' AND
-			sys_hw_network_card_ip.net_mac_address = LOWER(?) AND sys_hw_network_card_ip.ip_address_v4 = ? AND
+			sys_hw_network_card_ip.net_mac_address = ? AND sys_hw_network_card_ip.ip_address_v4 = ? AND
 			sys_hw_network_card_ip.ip_subnet = ? AND ( sys_hw_network_card_ip.timestamp = ? OR
 			sys_hw_network_card_ip.timestamp = ? )";
         $sql = $this->clean_sql($sql);
@@ -222,7 +222,7 @@ class M_ip_address extends MY_Model
     public function alert_ip_address($details)
     {
         // ip no longer detected - ONLY for devices not using DHCP
-        $sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.timestamp = ? and LOWER(sys_hw_network_card.net_dhcp_enabled) = 'false'";
+        $sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.timestamp = ? and sys_hw_network_card.net_dhcp_enabled = 'false'";
         $data = array("$details->system_id", "$details->original_timestamp");
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
@@ -246,7 +246,7 @@ class M_ip_address extends MY_Model
 					sys_hw_network_card_ip.first_timestamp = ? AND
 					sys_hw_network_card_ip.first_timestamp = sys_hw_network_card_ip.timestamp AND
 					sys_hw_network_card_ip.first_timestamp != system.first_timestamp AND
-					LOWER(sys_hw_network_card.net_dhcp_enabled) = 'false'";
+					sys_hw_network_card.net_dhcp_enabled = 'false'";
         $data = array("$details->system_id", "$details->timestamp");
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
@@ -284,10 +284,10 @@ class M_ip_address extends MY_Model
 					sys_hw_network_card LEFT JOIN sys_hw_network_card_ip ON
 						(sys_hw_network_card.system_id = sys_hw_network_card_ip.system_id AND
 						sys_hw_network_card.timestamp = sys_hw_network_card_ip.timestamp AND
-						LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(sys_hw_network_card.net_mac_address))
+						sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address)
 					WHERE
 					sys_hw_network_card.system_id = ? AND
-					LOWER(sys_hw_network_card.net_ip_enabled) != 'false' AND
+					sys_hw_network_card.net_ip_enabled != 'false' AND
 					sys_hw_network_card_ip.timestamp = ? AND
 					sys_hw_network_card_ip.ip_address_v4 != '' AND
 					sys_hw_network_card_ip.ip_address_v4 != '0.0.0.0' AND

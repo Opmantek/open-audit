@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -162,6 +162,9 @@ if (defined('ENVIRONMENT')) {
     } else {
         // linux
         $system_path = '/usr/local/open-audit/code_igniter/system';
+        if ( file_exists('/home/vagrant/Code/open-audit')) {
+            $system_path = '/home/vagrant/Code/open-audit/code_igniter/system';
+        }
     }
 
 /*
@@ -184,8 +187,10 @@ if (defined('ENVIRONMENT')) {
     } else {
         // linux
         $application_folder = '/usr/local/open-audit/code_igniter/application';
+        if ( file_exists('/home/vagrant/Code/open-audit')) {
+            $application_folder = '/home/vagrant/Code/open-audit/code_igniter/application';
+        }
     }
-
 /*
  * --------------------------------------------------------------------
  * DEFAULT CONTROLLER

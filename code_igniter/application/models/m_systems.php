@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -84,7 +84,11 @@ class M_systems extends MY_Model
                 // now create the search statement
                 $sql = "SELECT
 					DISTINCT(a.system_id),
+                    a.icon,
 					a.hostname,
+                    a.domain,
+                    a.man_ip_address,
+                    a.man_type,
 					$select_string
 				FROM
 					system a,
@@ -109,7 +113,11 @@ class M_systems extends MY_Model
                             // for each field in this table, check to see if the result matches the search
                             $i = new stdClass();
                             $i->system_id = $row->system_id;
+                            $i->icon = $row->icon;
                             $i->hostname = $row->hostname;
+                            $i->domain = $row->domain;
+                            $i->man_ip_address = $row->man_ip_address;
+                            $i->man_type = $row->man_type;
                             $i->table = $table;
                             $i->field = '';
                             $i->result = '';

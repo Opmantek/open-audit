@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -61,7 +61,7 @@ class M_system extends MY_Model
     public function create_system_key($details)
     {
         $log_details = new stdClass();
-        $log_details->message = 'System Key being generated for '.$details->hostname;
+        $log_details->message = 'System Key being generated for '.$details->hostname.' at '.$details->man_ip_address;
         $log_details->severity = 7;
         $log_details->file = 'system';
         stdlog($log_details);
@@ -85,7 +85,7 @@ class M_system extends MY_Model
             isset($details->hostname) and $details->hostname != '') {
             $details->system_key = $details->uuid."-".$details->hostname;
             $details->system_key_type = 'uuho';
-            $log_details->message = "System Key is $details->system_key for $details->hostname type uuho";
+            $log_details->message = "System Key is $details->system_key for $details->hostname type uuho at $details->man_ip_address";
             stdlog($log_details);
         }
 
@@ -93,7 +93,7 @@ class M_system extends MY_Model
         if ((isset($details->fqdn) and $details->fqdn != '') and ($details->system_key_type != 'uuho')) {
             $details->system_key = $details->fqdn;
             $details->system_key_type = 'fqdn';
-            $log_details->message = "System Key is $details->system_key for $details->hostname type fqdn";
+            $log_details->message = "System Key is $details->system_key for $details->hostname type fqdn at $details->man_ip_address";
             stdlog($log_details);
         }
 
@@ -110,7 +110,7 @@ class M_system extends MY_Model
                 if ($details->system_key_type  != 'uuho' and $details->system_key_type != 'fqdn') {
                     $details->system_key = $details->type."_".$details->serial;
                     $details->system_key_type = 'tyse';
-                    $log_details->message = "System Key is $details->system_key for $details->hostname type tyse";
+                    $log_details->message = "System Key is $details->system_key for $details->hostname type tyse at $details->man_ip_address";
                     stdlog($log_details);
                 }
             }
@@ -122,12 +122,12 @@ class M_system extends MY_Model
             $details->system_key_type != 'uuho' and $details->system_key_type  != 'fqdn' and $details->system_key_type != 'tyse') {
             $details->system_key = $details->man_ip_address;
             $details->system_key_type = 'ipad';
-            $log_details->message = "System Key is $details->system_key for $details->hostname type ipad";
+            $log_details->message = "System Key is $details->system_key for $details->hostname type ipad at $details->man_ip_address";
             stdlog($log_details);
         }
 
         if ($details->system_key == '') {
-            $log_details->message = "System Key is blank for $details->hostname ERROR";
+            $log_details->message = "System Key is blank for $details->hostname ERROR at $details->man_ip_address";
             $log_details->severity = 5;
             stdlog($log_details);
         }
@@ -227,7 +227,7 @@ class M_system extends MY_Model
             # check the sys_hw_network_card_ip table
             $sql = "SELECT system.system_id FROM system
 					LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
-					WHERE LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(?)
+					WHERE sys_hw_network_card_ip.net_mac_address = ?
 					AND system.man_status = 'production' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->mac_address");
@@ -249,7 +249,7 @@ class M_system extends MY_Model
                         $sql = "SELECT system.system_id FROM system
 								LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND
 									system.timestamp = sys_hw_network_card_ip.timestamp)
-								WHERE LOWER(sys_hw_network_card_ip.net_mac_address) = LOWER(?)
+								WHERE sys_hw_network_card_ip.net_mac_address = ?
 								AND system.man_status = 'production' LIMIT 1";
                         $sql = $this->clean_sql($sql);
                         $data = array("$mac");
@@ -265,49 +265,64 @@ class M_system extends MY_Model
             }
         }
 
+        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_ip_match'";
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        $ip_match = @$row->config_value;
+        if (!isset($ip_match) or is_null($ip_match)) {
+            $ip_match = 'y';
+        }
+
         # check IP Address in system, then sys_hw_network_card_ip tables
-        if (isset($details->man_ip_address) and
-                $details->man_ip_address > '' and
-                $details->man_ip_address != '0.0.0.0' and
-                $details->man_ip_address != '000.000.000.000' and
-                filter_var($details->man_ip_address, FILTER_VALIDATE_IP) and
-                $details->system_id == '') {
-            $sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
-            $data = array(ip_address_to_db($details->man_ip_address));
-            $query = $this->db->query($sql, $data);
-            $row = $query->row();
-            if (count($row) > 0) {
-                $details->system_id = $row->system_id;
-                $log_details->message = 'HIT on man_ip_address == system_key for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
-                stdlog($log_details);
-            }
+        if ($ip_match == 'y') {
+            if (isset($details->man_ip_address) and
+                    $details->man_ip_address > '' and
+                    $details->man_ip_address != '0.0.0.0' and
+                    $details->man_ip_address != '000.000.000.000' and
+                    filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
 
-            if ($details->system_id == '') {
-                $sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
-                $data = array(ip_address_to_db($details->man_ip_address));
-                $query = $this->db->query($sql, $data);
-                $row = $query->row();
-                if (count($row) > 0) {
-                    $details->system_id = $row->system_id;
-                    $log_details->message = 'HIT on man_ip_address for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
-                    stdlog($log_details);
+                # first check the sys_hw_network_card_ip table as eny existing devices that have been seen
+                # by more than just Nmap will have an entry here
+                if ($details->system_id == '') {
+                    $sql = "SELECT system.system_id FROM system
+                            LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
+                            WHERE (sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ?)
+                            AND system.man_status = 'production' LIMIT 1";
+                    $sql = $this->clean_sql($sql);
+                    $data = array(ip_address_to_db($details->man_ip_address), "$details->man_ip_address");
+                    $query = $this->db->query($sql, $data);
+                    $row = $query->row();
+                    if (count($row) > 0) {
+                        $details->system_id = $row->system_id;
+                        $log_details->message = 'HIT on ip_address in network table for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
+                        stdlog($log_details);
+                    }
                 }
-            }
 
-            if ($details->system_id == '') {
-                # we didn't get a hit from the system table - try the sys_hw_network_card_ip table
-                $sql = "SELECT system.system_id FROM system
-						LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
-						WHERE (sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ?)
-						AND system.man_status = 'production' LIMIT 1";
-                $sql = $this->clean_sql($sql);
-                $data = array(ip_address_to_db($details->man_ip_address), "$details->man_ip_address");
-                $query = $this->db->query($sql, $data);
-                $row = $query->row();
-                if (count($row) > 0) {
-                    $details->system_id = $row->system_id;
-                    $log_details->message = 'HIT on ip_address in network table for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
-                    stdlog($log_details);
+                # next check the system table for a man_ip_address match
+                if ($details->system_id == '') {
+                    $sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
+                    $data = array(ip_address_to_db($details->man_ip_address));
+                    $query = $this->db->query($sql, $data);
+                    $row = $query->row();
+                    if (count($row) > 0) {
+                        $details->system_id = $row->system_id;
+                        $log_details->message = 'HIT on man_ip_address for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
+                        stdlog($log_details);
+                    }
+                }
+
+                # finally one last try - check for a minimal matching system_key
+                if ($details->system_id == '') {
+                    $sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
+                    $data = array(ip_address_to_db($details->man_ip_address));
+                    $query = $this->db->query($sql, $data);
+                    $row = $query->row();
+                    if (count($row) > 0) {
+                        $details->system_id = $row->system_id;
+                        $log_details->message = 'HIT on man_ip_address == system_key for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
+                        stdlog($log_details);
+                    }
                 }
             }
         }
@@ -366,7 +381,7 @@ class M_system extends MY_Model
             }
         }
 
-        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'name_match'";
+        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_name_match'";
         $query = $this->db->query($sql);
         $row = $query->row();
         $name_match = @$row->config_value;
@@ -604,12 +619,11 @@ class M_system extends MY_Model
 
         $sql = "SELECT
 				system.icon,
+                system.hostname,
+                system.system_id,
+                system.domain,
+                system.man_ip_address,
 				system.man_type,
-				system.man_ip_address,
-				system.system_id,
-				system.hostname,
-				system.domain,
-				system.fqdn,
 				system.man_description,
 				system.man_os_family,
 				sys_hw_network_card_ip.ip_address_v4
@@ -1115,6 +1129,26 @@ class M_system extends MY_Model
             }
         }
 
+
+        # If we have an ip address in the hostname field - see if we have other attributes available
+        if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+            # try getting the dns hostname
+            $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
+            # make sure we use the hostname and not a fqdn if returned
+            if (strpos($details->hostname, ".") != false and !filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+                $details->fqdn = strtolower($details->hostname);
+                $i = explode(".", $details->hostname);
+                $details->hostname = $i[0];
+                unset($i[0]);
+                $details->domain = implode(".", $i);
+                unset($i);
+            }
+        }
+        if (filter_var($details->hostname, FILTER_VALIDATE_IP) and isset($details->sysName) and $details->sysName != '') {
+            # use the sysName from SNMP if set
+            $details->hostname = $details->sysName;
+        }
+
         $details->man_ip_address = ip_address_to_db($details->man_ip_address);
 
         if ($details->hostname != '' and $details->domain != '' and $details->fqdn == '') {
@@ -1217,17 +1251,55 @@ class M_system extends MY_Model
 
         unset($temp_ip);
 
-        # if we're updating and we don't have a real hostname, only the ip address
-        # stored in the hostname field, we shouldn't update it
-        if (isset($details->hostname) and strpos($details->hostname, ".")) {
-            $sql = "SELECT hostname FROM system WHERE system_id = ?";
-            $data = array("$details->system_id");
-            $query = $this->db->query($sql, $data);
-            $result = $query->row();
-            $db_hostname = $result->hostname;
-            if (!strpos($db_hostname, ".")) {
-                $details->hostname = $db_hostname;
+        # If we have an ip address in the hostname field - see if we have other attributes available
+        if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+            # try getting the dns hostname
+            $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
+            # make sure we use the hostname and not a fqdn if returned
+            if (strpos($details->hostname, ".") != false) {
+                if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+                    # we got a FQDN back from DNS - split it up
+                    $details->fqdn = strtolower($details->hostname);
+                    $i = explode(".", $details->hostname);
+                    $details->hostname = $i[0];
+                    unset($i[0]);
+                    $details->domain = implode(".", $i);
+                    unset($i);
+                } else {
+                    # we got an ip address back from DNS which is now the hostname
+                }
+            } else {
+                # we should have a real hostname if we get to here
             }
+        }
+        if (filter_var($details->hostname, FILTER_VALIDATE_IP) and isset($details->sysName) and $details->sysName != '') {
+            # use the sysName from SNMP if set
+            $details->hostname = $details->sysName;
+        }
+
+        $sql = "SELECT hostname FROM system WHERE system_id = ?";
+        $data = array("$details->system_id");
+        $query = $this->db->query($sql, $data);
+        $result = $query->row();
+        $db_hostname = $result->hostname;
+
+        if (strpos($db_hostname, ".") !== false) {
+            # our DB hostname field contains a .
+            # If we don't have an actual ip address, replace it the audit hostname with the db hostname
+            if (!filter_var($db_hostname, FILTER_VALIDATE_IP)) {
+                # we have a FQDN - split it
+                $details->fqdn = strtolower($db_hostname);
+                $i = explode(".", $db_hostname);
+                $details->hostname = $i[0];
+                unset($i[0]);
+                $details->domain = implode(".", $i);
+                unset($i);
+            } else {
+                # we have an ip address in the DB, replace it with the audit data (ie, don't change the audit data)
+            }
+        } else {
+            # we have a real hostname in the database, replace our audit data with that
+            $details->hostname = $db_hostname;
         }
 
         if (!isset($details->system_key_type)) {
@@ -1308,7 +1380,7 @@ class M_system extends MY_Model
         # we check a few man_ items when we are submitting an audit script result
         # if they are blank (previously submitted info is incomplete) we over write them
         # we would not normally over write man_ items
-        if (isset($details->last_seen_by) and ($details->last_seen_by == 'audit' or $details->last_seen_by == 'snmp')) {
+        if (isset($details->last_seen_by) and ($details->last_seen_by == 'audit' or $details->last_seen_by == 'snmp' or $details->last_seen_by == 'ipmi')) {
             $sql = "SELECT * FROM system WHERE system_id = ? LIMIT 1";
             $data = array("$details->system_id");
             $query = $this->db->query($sql, $data);
@@ -1439,11 +1511,13 @@ class M_system extends MY_Model
             $details->timestamp = date('Y-m-d H:i:s');
         }
 
-        $sql_timestamp = "SELECT timestamp FROM system WHERE system_id = ?";
-        $sql_data = array("$details->system_id");
-        $query = $this->db->query($sql_timestamp, $sql_data);
-        $row = $query->row();
-        $details->original_timestamp = $row->timestamp;
+        if (!isset($details->original_timestamp) or $details->original_timestamp == '') {
+            $sql_timestamp = "SELECT timestamp FROM system WHERE system_id = ?";
+            $sql_data = array("$details->system_id");
+            $query = $this->db->query($sql_timestamp, $sql_data);
+            $row = $query->row();
+            $details->original_timestamp = $row->timestamp;
+        }
 
         // # only update system.timestamp if we have an audit result - not for nmap, snmp, etc
         // if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
@@ -1519,7 +1593,7 @@ class M_system extends MY_Model
             }
 
             # search for any entries in both sys_hw_network_card_ip
-            $sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
+            $sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
             $data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
             $query = $this->db->query($sql, $data);
             $result = $query->result();
@@ -1531,7 +1605,7 @@ class M_system extends MY_Model
                 $query = $this->db->query($sql, $data);
             } else {
                 # match - update timestamp only
-                $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = LOWER(?) AND (timestamp = ? OR timestamp = ?)";
+                $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
                 $data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
                 $query = $this->db->query($sql, $data);
             }

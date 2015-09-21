@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -79,9 +79,9 @@
                             $type = 'password';
                         }
                         ?>
-                       <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>' class="editText" data-type="<?php echo htmlentities($type); ?>" style="color:blue;"><?php echo htmlentities($item->config_value); ?></span>
+                       <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>' class="editText" data-type="<?php echo htmlentities($type); ?>" style="color:blue;"><?php echo htmlentities(urldecode($item->config_value)); ?></span>
                     <?php } else { ?>
-                           <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>'><?php echo htmlentities($item->config_value); ?></span>
+                           <span id='<?php echo htmlentities($item->config_name) ?>' name='<?php echo htmlentities($item->config_name) ?>'><?php echo htmlentities(urldecode($item->config_value)); ?></span>
                     <?php } ?>
                     </td>
                     <td><br /><?php echo htmlentities($item->config_description); ?></td>

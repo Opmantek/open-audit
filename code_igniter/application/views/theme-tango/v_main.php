@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -191,8 +191,7 @@ if ($query) {
     echo __("This will automatically Group items and allow you to set User Access on a per Group Basis.")."<br /><br />\n";
     echo __("Extra Queries are available at Menu -> Admin -> Queries -> Activate Query.<br />Take a look, you might find exactly the Query you need.")."<br />\n";
     echo "</div>\v";
-}
-?>
+} ?>
 <script type="text/javascript">
 function dynamic_search( group )
 {
@@ -202,16 +201,14 @@ function dynamic_search( group )
 }
 </script>
 
-<?php if ($this->config->config['rss_enable'] == 'y') {
-    ?>
+<?php if ($this->config->config['rss_enable'] == 'y') { ?>
 <style>
 li a {text-decoration: underline; color: #729FCF;}
 </style>
 
 <table cellspacing="1" class="tablesorter">
 	<tr>
-		<td><ul class="fade" name="newsfeed" id="newsfeed" style="list-style-type: none;"><li>&nbsp;&nbsp;&nbsp;<img src="<?php echo $oa_theme_images;
-    ?>/16_nmis.png" />&nbsp;&nbsp;Open-AudIT Community: from the <a target="_blank" href="https://community.opmantek.com/display/OA/Home">Open-AudIT wiki</a>.</li></ul></td>
+		<td><ul class="fade" name="newsfeed" id="newsfeed" style="list-style-type: none;"><li>&nbsp;&nbsp;&nbsp;<img src="<?php echo $oa_theme_images; ?>/16_nmis.png" />&nbsp;&nbsp;Open-AudIT Community: from the <a target="_blank" href="https://community.opmantek.com/display/OA/Home">Open-AudIT wiki</a>.</li></ul></td>
 	</tr>
 </table>
 
@@ -256,13 +253,8 @@ li a {text-decoration: none;}
         }
     })(jQuery)
 
-var rssurl = "<?php echo $this->config->item('rss_url');
-    ?>"
-var rssfeed = $.ajax({
-  url: "<?php echo $this->config->item('rss_url');
-    ?>",
-  ifModified: true
-})
+var rssurl = "<?php echo $this->config->item('rss_url'); ?>"
+var rssfeed = $.ajax({ url: "<?php echo $this->config->item('rss_url'); ?>", ifModified: true})
 .done(function(data) {
 	var $xml = $(data);
     $xml.find("entry").each(function() {
@@ -279,8 +271,7 @@ var rssfeed = $.ajax({
         var month = parseInt(updateDate.getMonth()) + 1;
         var updatedDate = updateDate.getFullYear() + "/" + month + "/" + updateDate.getDate();
         li.style.display="none";
-        li.innerHTML = "&nbsp;&nbsp;&nbsp;<img src=\"<?php echo $oa_theme_images;
-    ?>/16_nmis.png\" />&nbsp;&nbsp;Open-AudIT Community: <a target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> by " + $this.find("author").text() + " on " + updatedDate + ".";
+        li.innerHTML = "&nbsp;&nbsp;&nbsp;<img src=\"<?php echo $oa_theme_images; ?>/16_nmis.png\" />&nbsp;&nbsp;Open-AudIT Community: <a target='_blank' href='" + $this.find("link").attr("href") + "'>" + $this.find("title").text() + "</a> by " + $this.find("author").text() + " on " + updatedDate + ".";
         document.getElementById("newsfeed").appendChild(li);
     })
 });

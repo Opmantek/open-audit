@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -79,6 +79,10 @@ foreach ($data as $key => $value) {
         echo "<pre>\n\nSESSION USERDATA\n----\n";
         print_r($this->session->userdata);
         echo "<pre>\n\nINTERNAL CONFIG\n----\n";
+        $this->config->config['default_snmp_community'] = '******';
+        $this->config->config['default_ssh_password'] = '******';
+        $this->config->config['default_windows_password'] = '******';
+        $this->config->config['default_ipmi_password'] = '******';
         print_r($this->config->config);
         ?>
 		</pre>

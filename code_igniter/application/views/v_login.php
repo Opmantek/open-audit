@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8
+ * @version 1.10
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -85,7 +85,7 @@ if (isset($form_url) and $form_url != '') {
         <?php $attributes = array('name' => 'myform'); ?>
         <?php echo form_open($form_url, $attributes)."\n"; ?>
                 <div align='left' style="height: 150px; width:60%; float: left; valign: center; text-align: center;">
-                    <img src='<?php echo $this->config->item('oa_web_folder').'/theme-tango/tango-images/'.$this->config->config['logo']?>.png' alt='logo' border='0' /><br />
+                    <img src='<?php echo $this->config->config['oa_web_folder'] . '/images/'.$this->config->config['logo']; ?>.png' alt='logo' border='0' /><br />
                     <?php
                     if ((file_exists($filename)) and $show == 'y') {
                         ?>
@@ -103,19 +103,19 @@ if (isset($form_url) and $form_url != '') {
                     ?>
                     <br />&nbsp;</p>
                 </div>
-<?php echo form_close(); ?>
-<?php if ($systems == '0') {
-    echo "<div style='width: 100%; text-align: center;'><br />&nbsp;<br />
-                <span style='font-size: 10pt; font-style: italic; color: blue;' >No devices are in the database.</span><br />
-                <span style='font-size: 10pt; font-style: italic; color: green;'>Initial login credentials are admin / password.</span><br />
-                <span style='font-size: 10pt; font-style: italic; color: red;'  >Please log in and change these ASAP.</span><br />
-                <br /></div>\n";
-} ?>
+            <?php echo form_close(); ?>
+            <?php if ($systems == '0') {
+            echo "<div style='width: 100%; text-align: center;'><br />&nbsp;<br />
+            <span style='font-size: 10pt; font-style: italic; color: blue;' >No devices are in the database.</span><br />
+            <span style='font-size: 10pt; font-style: italic; color: green;'>Initial login credentials are admin / password.</span><br />
+            <span style='font-size: 10pt; font-style: italic; color: red;'  >Please log in and change these ASAP.</span><br />
+            <br /></div>\n";
+            } ?>
     </div>
 <?php if (isset($oae_message)) {
-    echo "<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>\n";
-    echo "\t\t<span style='font-size: 12pt;'>".$oae_message."<br /><br /></span>\n";
-    echo "</div>\n";
+echo "<div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>\n";
+echo "\t\t<span style='font-size: 12pt;'>".$oae_message."<br /><br /></span>\n";
+echo "</div>\n";
 }
 ?>
 <div style='width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px; text-align: center;' align='left'>
