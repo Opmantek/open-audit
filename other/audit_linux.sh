@@ -458,7 +458,10 @@ else
 	system_domain=$(hostname -d 2>/dev/null)
 fi
 
-system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/' | head -n 1)
+system_ip_address=$(ip route get $(ip route show 0.0.0.0/0 2>/dev/null | grep -oP 'via \K\S+') 2>/dev/null | grep -oP 'src \K\S+')
+if [ -z "$system_ip_address" ]; then
+	system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/' | head -n 1)
+fi
 
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
