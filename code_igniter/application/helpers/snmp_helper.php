@@ -234,7 +234,7 @@ if (!function_exists('get_snmp')) {
                         $log_details->message = 'SNMPv1 testing ' . $key . ' credentials for '.$log_machine;
                         stdlog($log_details);
                         try {
-                            $test_v1 = snmpget($details->man_ip_address, $value, "1.3.6.1.2.1.1.2.0", $timeout);
+                            $test_v1 = @snmpget($details->man_ip_address, $value, "1.3.6.1.2.1.1.2.0", $timeout);
                         } catch (Exception $e) {
                             $log_details->message = 'SNMPv1 attempt using ' . $key . ' credentials ERROR: ' .$e . ' for ' . $log_machine;
                             stdlog($log_details);
