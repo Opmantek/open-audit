@@ -432,8 +432,8 @@ class admin extends MY_Controller
 
         //full path to text file
         if (php_uname('s') == 'Linux') {
-            //$file = "/usr/local/open-audit/other/log_".$logfile.".log";
-            $file = '../../other/log_'.$logfile.'.log';
+            $file = "/usr/local/open-audit/other/log_".$logfile.".log";
+            //$file = '../../other/log_'.$logfile.'.log';
         } else {
             $file = "c:\\xampplite\\open-audit\\other\\log_".$logfile.".log";
         }
