@@ -2405,7 +2405,7 @@ CREATE TABLE `sys_sw_service` (
   `service_path_name` text NOT NULL,
   `service_started` varchar(10) NOT NULL DEFAULT '',
   `service_start_name` varchar(100) NOT NULL DEFAULT '',
-  `service_start_mode` varchar(10) NOT NULL DEFAULT '',
+  `service_start_mode` varchar(100) NOT NULL DEFAULT '',
   `service_state` varchar(20) NOT NULL DEFAULT '',
   `service_count` varchar(5) NOT NULL DEFAULT '',
   `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',

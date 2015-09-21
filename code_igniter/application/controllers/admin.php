@@ -3876,6 +3876,29 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
+
+
+        if (($db_internal_version < '20150810') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.10
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.10 commenced';
+            stdlog($log_details);
+
+            $sql = "ALTER TABLE sys_sw_service CHANGE service_start_mode service_start_mode varchar(100) NOT NULL DEFAULT ''";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $log_details->message = 'Upgrade database to 1.10 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
+
+
+
+
+
         $this->m_oa_config->load_config();
         $this->data['message'] .= "New (now current) database version: ".$this->config->item('display_version')." (".$this->config->item('internal_version').")<br />Don't forget to use the new audit scripts!<br/>\n";
         $this->data['include'] = 'v_upgrade';
