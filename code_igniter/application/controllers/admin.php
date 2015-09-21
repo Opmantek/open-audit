@@ -430,13 +430,13 @@ class admin extends MY_Controller
             $lines = 25;
         }
 
-        // full path to text file
-        // if (php_uname('s') == 'Linux') {
-        //     $file = "/usr/local/open-audit/other/log_".$logfile.".log";
-        // } else {
-        //     $file = "c:\\xampplite\\open-audit\\other\\log_".$logfile.".log";
-        // }
-        $file = '../../other/log_'.$logfile.'.log';
+        //full path to text file
+        if (php_uname('s') == 'Linux') {
+            //$file = "/usr/local/open-audit/other/log_".$logfile.".log";
+            $file = '../../other/log_'.$log->file.'.log';
+        } else {
+            $file = "c:\\xampplite\\open-audit\\other\\log_".$logfile.".log";
+        }
 
         $fsize = round(filesize($file)/1024/1024, 2);
         $this->data['comment'] = "<strong>".$file."</strong><br />";
