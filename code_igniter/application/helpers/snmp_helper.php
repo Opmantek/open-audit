@@ -286,6 +286,10 @@ if (!function_exists('get_snmp')) {
             $details->sysName =     snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
             $details->sysLocation = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");
 
+            if ($details->sysName != '') {
+                $details->hostname = $details->sysName;
+            }
+
             if (stripos($details->sysDescr, 'dd-wrt') !== false) {
                 $details->os_group = 'Linux';
                 $details->os_name = 'DD-WRT';
