@@ -403,7 +403,14 @@ fi
 
 # Set the TimeSamp
 system_timestamp=$(date +'%F %T')
-script_pid="$BASHPID"
+
+# contributed by Franz Xaver
+if [ -z "$BASHPID" ]; then
+	script_pid="$(sh -c 'echo $PPID')"
+else
+	script_pid="$BASHPID"
+fi
+
 script_name=$(basename $0)
 
 if [ "$debugging" -gt 0 ]; then
