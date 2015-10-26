@@ -397,7 +397,6 @@ class discovery extends CI_Controller
             $this->load->view('v_template', $this->data);
         } else {
             // process the scan details and call the discovery script
-
             $this->load->model('m_oa_config');
             $this->m_oa_config->load_config();
 
@@ -436,13 +435,14 @@ class discovery extends CI_Controller
             $log_details->message = 'Discovery submitted for '.$subnet_range;
             stdlog($log_details);
 
+
             // we encode the supplied credentials and store them in the database
             // the script will simply pass back the timestamp and the credentials will be retrieved and used
             $this->load->library('encrypt');
 
             if (isset($_POST['snmp_community']) and $_POST['snmp_community'] > '') {
-                $encode['snmp_community'] = $_POST['snmp_community'];
-                $credentials->snmp_community = $_POST['snmp_community'];
+                $encode['snmp_community'] = $this->input->post('snmp_community', false);
+                $credentials->snmp_community = $this->input->post('snmp_community', false);
             } else {
                 $encode['snmp_community'] = '';
             }
@@ -455,8 +455,8 @@ class discovery extends CI_Controller
             }
 
             if (isset($_POST['ssh_password']) and $_POST['ssh_password'] > '') {
-                $encode['ssh_password'] = $_POST['ssh_password'];
-                $credentials->ssh_password = $_POST['ssh_password'];
+                $encode['ssh_password'] = $this->input->post('ssh_password', false);
+                $credentials->ssh_password = $this->input->post('ssh_password', false);
             } else {
                 $encode['ssh_password'] = '';
             }
@@ -469,8 +469,8 @@ class discovery extends CI_Controller
             }
 
             if (isset($_POST['windows_password']) and $_POST['windows_password'] > '') {
-                $encode['windows_password'] = $_POST['windows_password'];
-                $credentials->windows_password = $_POST['windows_password'];
+                $encode['windows_password'] = $this->input->post('windows_password', false);
+                $credentials->windows_password = $this->input->post('windows_password', false);
             } else {
                 $encode['windows_password'] = '';
             }
@@ -843,7 +843,6 @@ class discovery extends CI_Controller
                     if (isset($supplied_credentials) and $supplied_credentials > '') {
                         $supplied_credentials = $this->encrypt->decode($supplied_credentials);
                         $supplied_credentials = json_decode($supplied_credentials);
-
                         $supplied->snmp_community =   @$supplied_credentials->snmp_community;
                         $supplied->snmp_version =    @$supplied_credentials->snmp_version;
                         $supplied->snmp_port =      @$supplied_credentials->snmp_port;
@@ -1417,7 +1416,7 @@ class discovery extends CI_Controller
                         stdlog($log_details);
                         $error = '';
                         if ($details->ssh_username == '' or $details->ssh_password == '') {
-                            $script_string = "audit_linux.sh strcomputer=".$details->man_ip_address." submit_online=y create_file=n struser=".$details->ssh_username." strpass=".$details->ssh_password." debugging=0";
+                            $script_string = "audit_linux.sh strcomputer=".$details->man_ip_address." submit_online=y create_file=n struser=".escapeshellarg($details->ssh_username)." strpass=".escapeshellarg($details->ssh_password)." debugging=0";
                             $log_details->message = "No credentials supplied for SSH audit for $details->man_ip_address (System ID $details->system_id)";
                             stdlog($log_details);
                         } else {
@@ -1685,9 +1684,14 @@ class discovery extends CI_Controller
 
                             if (php_uname('s') == 'Windows NT') {
                                 // Auditing a unix based target device from a Windows Open-AudIT Server
+                                if ($display == 'y') {
+                                    echo "DEBUG - Attempting SSH audit.\n";
+                                    echo "DEBUG - struser: ".$details->ssh_username."\n";
+                                    echo "DEBUG - strpass: ".$details->ssh_password."\n";
+                                }
                                 $error = '';
                                 $audit_script = '';
-                                $command_string = "echo y | $filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->man_ip_address." -pw ".$details->ssh_password." exit";
+                                $command_string = "echo y | $filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->man_ip_address." -pw ".$this->escape_plink_command($details->ssh_password)." exit";
                                 exec($command_string, $output, $return_var);
                                 if ($display == 'y') {
                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1711,7 +1715,7 @@ class discovery extends CI_Controller
                                 $remote_os = "";
 
                                 if ($error == '') {
-                                    $command_string = "$filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->man_ip_address." -pw ".$details->ssh_password." uname";
+                                    $command_string = "$filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->man_ip_address." -pw ".$this->escape_plink_command($details->ssh_password)." uname";
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1756,7 +1760,7 @@ class discovery extends CI_Controller
                                     $log_details->message = "Attempting SSH audit for discovery on $details->man_ip_address ($remote_os)";
                                     stdlog($log_details);
                                     // Attempt to copy the audit script
-                                    $command_string = "$filepath\\pscp.exe -pw ".$details->ssh_password." $filepath\\$audit_script ".$details->ssh_username."@".$details->man_ip_address.":/tmp/";
+                                    $command_string = "$filepath\\pscp.exe -pw ".$this->escape_plink_command($details->ssh_password)." $filepath\\$audit_script ".$details->ssh_username."@".$details->man_ip_address.":/tmp/";
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1776,7 +1780,7 @@ class discovery extends CI_Controller
 
                                 // Attempt to chmod the script so it's executable
                                 if ($error == '' and $audit_script != '') {
-                                    $command_string = "$filepath\\plink.exe -pw ".$details->ssh_password." ".$details->ssh_username."@".$details->man_ip_address." chmod 777 /tmp/$audit_script";
+                                    $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." chmod 777 /tmp/$audit_script";
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1788,6 +1792,10 @@ class discovery extends CI_Controller
                                         $error = 'SSH chmod command for /tmp/'.$audit_script.' audit script on '.$details->man_ip_address.' failed';
                                         $log_details->message = $error;
                                         stdlog($log_details);
+                                        # as at 1.8.4 DO NOT fail on this as an existing script may already be +x
+                                        # at least try running it anyway (below)
+                                        # TODO - fix this with a text for +x and make a decision to proceed based on that
+                                        $error = '';
                                     }
                                     $command_string = null;
                                     $output = null;
@@ -1798,7 +1806,7 @@ class discovery extends CI_Controller
                                     $sudo = '';
                                     // Attempt to determine if SUDO is present on target system
                                     if ($error == '' and $audit_script != '' and $details->ssh_username != 'root') {
-                                        $command_string = "$filepath\\plink.exe -pw ".$details->ssh_password." ".$details->ssh_username."@".$details->man_ip_address." which sudo";
+                                        $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." which sudo";
                                         exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
                                             echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1823,7 +1831,7 @@ class discovery extends CI_Controller
                                     // Attempt to run the audit script
                                     if ($error == '' and $audit_script != '') {
                                         if ($sudo > "" and $details->ssh_username != 'root') {
-                                            $command_string = "$filepath\\plink.exe -pw ".$details->ssh_password." ".$details->ssh_username."@".$details->man_ip_address." \"echo ".$details->ssh_password." | $sudo -S /tmp/".$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id."\"";
+                                            $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." \"echo ".$this->escape_plink_command($details->ssh_password)." | $sudo -S /tmp/".$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
                                             @exec($command_string, $output, $return_var);
                                             if ($display == 'y') {
                                                 echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1835,7 +1843,7 @@ class discovery extends CI_Controller
                                                 $error = 'SSH audit command for '.$audit_script.' audit script on '.$details->man_ip_address.' failed';
                                                 $log_details->message = $error;
                                                 stdlog($log_details);
-                                                $command_string = $filepath.'\\plink.exe -pw '.$details->ssh_password.' '.$details->ssh_username.'@'.$details->man_ip_address." \"/tmp/".$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id."\"";
+                                                $command_string = $filepath.'\\plink.exe -pw '.$this->escape_plink_command($details->ssh_password).' '.$details->ssh_username.'@'.$details->man_ip_address." \"/tmp/".$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
                                                 @exec($command_string, $output, $return_var);
                                                 if ($display == 'y') {
                                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1853,7 +1861,7 @@ class discovery extends CI_Controller
                                             $output = null;
                                             $return_var = null;
                                         } else {
-                                            $command_string = "$filepath\\plink.exe -pw ".$details->ssh_password." ".$details->ssh_username."@".$details->man_ip_address." \"/tmp/".$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id."\"";
+                                            $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." \"/tmp/".$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
                                             @exec($command_string, $output, $return_var);
                                             if ($display == 'y') {
                                                 echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1876,7 +1884,7 @@ class discovery extends CI_Controller
                                 }
                                 if ($error == '' and $audit_script == 'audit_esxi.sh') {
                                     // Audit ESXi
-                                    $command_string = "$filepath\\plink.exe -pw ".$details->ssh_password." ".$details->ssh_username."@".$details->man_ip_address." \"/tmp/".$audit_script." submit_online=n create_file=n debugging=0 echo_output=y url=".$url."index.php/system/add_system system_id=".$details->system_id."\"";
+                                    $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." \"/tmp/".$audit_script." submit_online=n create_file=n debugging=0 echo_output=y url=".$url."index.php/system/add_system system_id=".$details->system_id."\"";
                                     # this is the linux command # $command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
                                     @exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
@@ -2069,6 +2077,11 @@ class discovery extends CI_Controller
         }
 
         return $ip_post;
+    }
+
+    public function escape_plink_command($text) {
+        $text = str_replace('"', '\"', $text);
+        return($text);
     }
 
     public function run_ssh($ssh_command = '', $ssh_password = '', $ssh_display = 'n')
