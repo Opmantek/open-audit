@@ -113,27 +113,29 @@ class M_ip_address extends MY_Model
         # ensure we have the correctly padded ip v4 address
         $input->ip_address_v4 = $this->ip_address_to_db($input->ip_address_v4);
 
+        # NOTE - revised the SQL for 1.8.4 because we don't always have a value for subnet.
+        # Allow for blank value as well as a matching value
         $sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system
 			WHERE sys_hw_network_card_ip.system_id = system.system_id AND
 				system.system_id = ? AND
 				system.man_status = 'production' AND
 				sys_hw_network_card_ip.net_mac_address = ? AND
-				(sys_hw_network_card_ip.ip_address_v4 = ? OR
-				sys_hw_network_card_ip.ip_address_v6 = ? ) AND
-				sys_hw_network_card_ip.ip_subnet = ? AND
-				( sys_hw_network_card_ip.timestamp = ? OR
-				sys_hw_network_card_ip.timestamp = ? )";
+				(sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ? ) AND
+				(sys_hw_network_card_ip.ip_subnet = ? OR sys_hw_network_card_ip.ip_subnet = '' OR sys_hw_network_card_ip.ip_subnet = '0.0.0.0') AND
+				(sys_hw_network_card_ip.timestamp = ? OR sys_hw_network_card_ip.timestamp = ? )";
         $sql = $this->clean_sql($sql);
         $data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4),
                 "$input->ip_address_v6", "$input->ip_subnet", "$details->original_timestamp", "$details->timestamp", );
 
         // note - removed the IPv6 address, below
+        # NOTE - revised the SQL for 1.8.4 because we don't always have a value for subnet.
+        # Allow for blank value as well as a matching value
         $sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system
 			WHERE sys_hw_network_card_ip.system_id = system.system_id AND
 			system.system_id = ? AND system.man_status = 'production' AND
 			sys_hw_network_card_ip.net_mac_address = ? AND sys_hw_network_card_ip.ip_address_v4 = ? AND
-			sys_hw_network_card_ip.ip_subnet = ? AND ( sys_hw_network_card_ip.timestamp = ? OR
-			sys_hw_network_card_ip.timestamp = ? )";
+			(sys_hw_network_card_ip.ip_subnet = ? OR sys_hw_network_card_ip.ip_subnet = '' OR sys_hw_network_card_ip.ip_subnet = '0.0.0.0') AND
+            (sys_hw_network_card_ip.timestamp = ? OR sys_hw_network_card_ip.timestamp = ? )";
         $sql = $this->clean_sql($sql);
         $data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4),
                 "$input->ip_subnet", "$details->original_timestamp", "$details->timestamp", );
