@@ -1171,6 +1171,7 @@ class discovery extends CI_Controller
                             // we have a system_id and snmp details to update
                             $log_details->message = 'SNMP update for '.$details->man_ip_address.' (System ID '.$details->system_id.')';
                             stdlog($log_details);
+                            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
                             $this->m_system->update_system($details);
                         } else {
                             // we have a new system
