@@ -1055,7 +1055,7 @@ class discovery extends CI_Controller
                             $log_details->message = 'Ipmitools detected and used (as per config) when discovering '.$details->man_ip_address;
                             stdlog($log_details);
                             // Attempt to get MAC Address
-                            $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.$default->default_ipmi_password.' lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2';
+                            $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2';
                             exec($command_string, $output, $return_var);
                             if ($display == 'y') {
                                 echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1083,7 +1083,7 @@ class discovery extends CI_Controller
                                 $output = null;
 
                                 // attempt to retrieve the Subnet Mask
-                                $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.$default->default_ipmi_password.' lan print 2>/dev/null | grep "Subnet Mask" | cut -d":" -f2 ';
+                                $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' lan print 2>/dev/null | grep "Subnet Mask" | cut -d":" -f2 ';
                                 exec($command_string, $output, $return_var);
                                 if ($display == 'y') {
                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1099,7 +1099,7 @@ class discovery extends CI_Controller
                                 $return_var = null;
 
                                 // attempt to retrieve the Manufacturer
-                                $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.$default->default_ipmi_password.' fru list 2>/dev/null | grep "Product Manufacturer" | cut -d":" -f2 ';
+                                $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Manufacturer" | cut -d":" -f2 ';
                                 exec($command_string, $output, $return_var);
                                 if ($display == 'y') {
                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1115,7 +1115,7 @@ class discovery extends CI_Controller
                                 $return_var = null;
 
                                 // attempt to retrieve the Model
-                                $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.$default->default_ipmi_password.' fru list 2>/dev/null | grep "Product Name" | cut -d":" -f2 ';
+                                $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Name" | cut -d":" -f2 ';
                                 exec($command_string, $output, $return_var);
                                 if ($display == 'y') {
                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -1131,7 +1131,7 @@ class discovery extends CI_Controller
                                 $return_var = null;
 
                                 // attempt to retrieve the Serial
-                                $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.$default->default_ipmi_password.' fru list 2>/dev/null | grep "Product Serial" | cut -d":" -f2 ';
+                                $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Serial" | cut -d":" -f2 ';
                                 exec($command_string, $output, $return_var);
                                 if ($display == 'y') {
                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
