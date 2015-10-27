@@ -67,6 +67,10 @@ url="http://localhost/open-audit/index.php/system/add_system"
 # optional - assign any PCs audited to this Org - take the OrgId from OAv2 interface
 org_id=""
 
+# if set then delete the audit script upon completion
+# useful when starting the script on a remote machine and leaving no trace
+self_delete = "n"
+
 # 0 = no debug
 # 1 = basic debug
 # 2 = verbose debug
@@ -265,6 +269,8 @@ for arg in "$@"; do
 	case "$parameter" in
 		"create_file" )
 			create_file="$parameter_value" ;;
+		"self_delete" )
+			self_delete="$parameter_value" ;;
 		"debugging" )
 			debugging="$parameter_value" ;;
 		"help" )
@@ -308,6 +314,10 @@ if [ "$help" = "y" ]; then
 	echo "  create_file"
 	echo "     y - Create an XML file containing the audit result."
 	echo "    *n - Do not create an XML result file."
+	echo ""
+	echo "  self_delete"
+	echo "    *n - Do not delete the audit script after running"
+	echo "     y - Delete the audit script after running"
 	echo ""
 	echo "  debugging"
 	echo "     0 - No output."
@@ -405,7 +415,8 @@ fi
 system_timestamp=$(date +'%F %T')
 
 # contributed by Franz Xaver
-if [ -z "$BASHPID" ]; then
+#if [ -z "$BASHPID" ]; then # removed as RedHat 4 doesn't support this
+if [ -z "$$" ]; then
 	script_pid="$(sh -c 'echo $PPID')"
 else
 	script_pid="$BASHPID"
@@ -1856,26 +1867,58 @@ else
                 # SysV init services
                 for service_name in /etc/init.d/* ; do
                     [[ -e $service_name ]] || break
-                    if [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]]; then
+                    if [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]] && [[ "$service_name" != "skeleton" ]]; then
                         {
                         echo "      <service>"
+				        service_display_name=$(echo "$service_name" | cut -d/ -f4)
+				        echo "          <service_display_name>$(escape_xml "$service_display_name")</service_display_name>" >> "$xml_file"
                         echo "          <service_name>$(escape_xml "$service_name")</service_name>"
                         } >> "$xml_file"
-                        temp=""
                         if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* &>/dev/null ; then
                             echo "          <service_start_mode>Manual</service_start_mode>" >> "$xml_file"
                         else
                             echo "          <service_start_mode>Auto</service_start_mode>" >> "$xml_file"
                         fi
+				        service_name=$(echo "$service_name" | cut -d/ -f4)
+				        echo "          <service_display_name>$(escape_xml "$service_name")</service_display_name>" >> "$xml_file"
+				        if  [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]] && [[ "$service_name" != "skeleton" ]] && [[ "$service_name" != "rcS" ]]; then
+				            service_state=$(service "$service_display_name" status 2>/dev/null | grep running)
+				            echo "          <service_state>$(escape_xml "$service_state")</service_state>" >> "$xml_file"
+				            service_state=""
+				        fi
                         echo "      </service>" >> "$xml_file"
                     fi
                 done
                 ;;
             'CentOS' | 'RedHat' | 'SUSE' )
+                # INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
+                # chkconfig --list |\
+                #     sed -e '/^$/d' -e '/xinetd based services:/d' |\
+                #     awk -v ID="$INITDEFAULT" ' { sub(/:/, "", $1); print "\t\t<service>\n\t\t\t<service_name>"$1"</service_name>"; if ($2 =="on" || $5 ==ID":on") print "\t\t\t<service_start_mode>Auto</service_start_mode>"; else if ($2 =="off" || $5 ==ID":off") print "\t\t\t<service_start_mode>Manual</service_start_mode>"; print "\t\t</service>" } ' >> "$xml_file"
+                # ;;
                 INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
-                chkconfig --list |\
-                    sed -e '/^$/d' -e '/xinetd based services:/d' |\
-                    awk -v ID="$INITDEFAULT" ' { sub(/:/, "", $1); print "\t\t<service>\n\t\t\t<service_name>"$1"</service_name>"; if ($2 =="on" || $5 ==ID":on") print "\t\t\t<service_start_mode>Auto</service_start_mode>"; else if ($2 =="off" || $5 ==ID":off") print "\t\t\t<service_start_mode>Manual</service_start_mode>"; print "\t\t</service>" } ' >> "$xml_file"
+                for service_name in /etc/init.d/* ; do
+                    [[ -e $service_name ]] || break
+                    if [[ "$service_name" != "functions" ]] && [[ "$service_name" != "rcS" ]]; then
+                        {
+                        echo "      <service>"
+				        service_display_name=$(echo "$service_name" | cut -d/ -f4)
+				        echo "          <service_display_name>$(escape_xml "$service_display_name")</service_display_name>" >> "$xml_file"
+                        echo "          <service_name>$(escape_xml "$service_name")</service_name>"
+                        } >> "$xml_file"
+                        if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* &>/dev/null ; then
+                            echo "          <service_start_mode>Manual</service_start_mode>" >> "$xml_file"
+                        else
+                            echo "          <service_start_mode>Auto</service_start_mode>" >> "$xml_file"
+                        fi
+				        if  [[ "$service_name" != "functions" ]] && [[ "$service_name" != "rcS" ]]; then
+				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -E "running|stopped")
+				            echo "          <service_state>$(escape_xml "$service_state")</service_state>" >> "$xml_file"
+				            service_state=""
+				        fi
+                        echo "      </service>" >> "$xml_file"
+                    fi
+                done
                 ;;
     esac
 fi
@@ -1974,5 +2017,9 @@ fi
 
 
 IFS="$ORIGIFS"
+
+if [ "$self_delete" = "y" ]; then
+	rm /tmp/audit_linux.sh
+fi
 
 exit 0
