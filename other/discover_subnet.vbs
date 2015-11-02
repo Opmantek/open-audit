@@ -50,8 +50,9 @@ dim submit_online : submit_online = "n"
 dim subnet_range : subnet_range = ""
 dim subnet_timestamp : subnet_timestamp = ""
 dim syslog : syslog = "y"
-dim url : url = "http://localhost/open-audit/index.php/system/process_subnet"
+dim url : url = "http://localhost/open-audit/index.php/discovery/process_subnet"
 dim objHTTP
+dim sequential : sequential = "n"
 
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
@@ -96,6 +97,9 @@ for each strArg in objArgs
             case "url"
                 url = varArray(1)
 
+            case "sequential"
+                sequential = varArray(1)
+
         end select
     else
         if (strArg = "/?" or strArg = "/help") then
@@ -139,11 +143,15 @@ if (help = "y") then
     wscript.echo "  org_id"
     wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
     wscript.echo ""
+    wscript.echo "  sequential"
+    wscript.echo "      *n - When we run this script, post each device result and wait for a response before continuing to the next device."
+    wscript.echo "       Y - Post each device result and continue on processing the next device without waiting for a response from the Open-AudIT server."
+    wscript.echo ""
     wscript.echo "  submit_online"
     wscript.echo "      *y - Submit the audit result to the Open-AudIT server."
     wscript.echo "       n - Don't submit the audit result."
     wscript.echo ""
-    wscript.echo "  subnet"
+    wscript.echo "  subnet_range"
     wscript.echo "      - The subnet in to audit."
     wscript.echo ""
     wscript.echo "  subnet_timestamp"
@@ -269,7 +277,6 @@ for each host in hosts_in_subnet
 
     dim mac_address : mac_address = ""
     dim manufacturer : manufacturer = ""
-    dim system_type : system_type = "unknown"
     dim description : description = ""
     dim os_group : os_group = ""
     dim os_family : os_family = ""
@@ -301,11 +308,9 @@ for each host in hosts_in_subnet
         if instr(lcase(line), "device type:") then
             i = split(line, ":")
             if instr(line, "|") then
-                ' could be one of multiple
-                ' just ignore setting type as it's already set to "unknown" above
+                ' could be one of multiple - insert it as the description
                 description = trim(i(1))
             else
-                system_type = trim(i(1))
                 description = ""
             end if
         end if
@@ -430,39 +435,39 @@ for each host in hosts_in_subnet
 
     ' test for webserver on port 80
     dim p80_status : p80_status = "false"
-    ' exit_status = "n"
-    ' command = nmap_path & " -n -p80 " & host
-    ' execute_command()
-    ' Do Until objExecObject.StdOut.AtEndOfStream
-    '   line = objExecObject.StdOut.ReadLine
-    '   if instr(lcase(line), "80/tcp open") then
-    '       p80_status = "true"
-    '   end if
-    ' Loop
+    exit_status = "n"
+    command = nmap_path & " -n -p80 " & host
+    execute_command()
+    Do Until objExecObject.StdOut.AtEndOfStream
+      line = objExecObject.StdOut.ReadLine
+      if instr(lcase(line), "80/tcp open") then
+          p80_status = "true"
+      end if
+    Loop
 
     ' test for webserver on port 443
     dim p443_status : p443_status = "false"
-    ' exit_status = "n"
-    ' command = nmap_path & " -n -p443 " & host
-    ' execute_command()
-    ' Do Until objExecObject.StdOut.AtEndOfStream
-    '   line = objExecObject.StdOut.ReadLine
-    '   if instr(lcase(line), "443/tcp open") then
-    '       p443_status = "true"
-    '   end if
-    ' Loop
+    exit_status = "n"
+    command = nmap_path & " -n -p443 " & host
+    execute_command()
+    Do Until objExecObject.StdOut.AtEndOfStream
+      line = objExecObject.StdOut.ReadLine
+      if instr(lcase(line), "443/tcp open") then
+          p443_status = "true"
+      end if
+    Loop
 
     ' test for telnet
     dim tel_status : tel_status = "false"
-    ' exit_status = "n"
-    ' command = nmap_path & " -n -p23 " & host
-    ' execute_command()
-    ' Do Until objExecObject.StdOut.AtEndOfStream
-    '   line = objExecObject.StdOut.ReadLine
-    '   if instr(lcase(line), "23/tcp open") then
-    '       tel_status = "true"
-    '   end if
-    ' Loop
+    exit_status = "n"
+    command = nmap_path & " -n -p23 " & host
+    execute_command()
+    Do Until objExecObject.StdOut.AtEndOfStream
+      line = objExecObject.StdOut.ReadLine
+      if instr(lcase(line), "23/tcp open") then
+          tel_status = "true"
+      end if
+    Loop
 
     ' special case of determining WMI on localhost on Windows
     if (instr(local_net, host & " ") > 0) then
@@ -474,7 +479,7 @@ for each host in hosts_in_subnet
     result = result & "     <man_ip_address><![CDATA[" & host & "]]></man_ip_address>" & vbcrlf
     result = result & "     <mac_address><![CDATA[" & mac_address & "]]></mac_address>" & vbcrlf
     result = result & "     <manufacturer><![CDATA[" & manufacturer & "]]></manufacturer>" & vbcrlf
-    result = result & "     <type><![CDATA[" & system_type & "]]></type>" & vbcrlf
+    result = result & "     <type>unknown</type>" & vbcrlf
     result = result & "     <os_group><![CDATA[" & os_group & "]]></os_group>" & vbcrlf
     result = result & "     <os_family><![CDATA[" & os_family & "]]></os_family>" & vbcrlf
     result = result & "     <os_name><![CDATA[" & os_name & "]]></os_name>" & vbcrlf
@@ -488,6 +493,38 @@ for each host in hosts_in_subnet
     result = result & "     <subnet_timestamp><![CDATA[" & subnet_timestamp & "]]></subnet_timestamp>" & vbcrlf
     result = result & " </device>" & vbcrlf
     result_file = result_file & result
+
+    if submit_online = "y" then
+        log_entry = "Submitting discovery subnet scan result for " & host
+        write_log()
+        result = "<devices>" & vbcrlf & result & "</devices>"
+        Err.clear
+        on error resume next
+            Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+            objHTTP.setTimeouts 5000, 5000, 5000, 120000
+            objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+            if sequential = "n" then
+                objHTTP.Open "POST", url, False ' wait for a response before continuing
+            else
+                objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
+            end if
+            objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+            objHTTP.Send "form_details=" + result + vbcrlf
+        on error goto 0
+        if (error_returned <> 0) then
+            log_entry = "Result send for " & host & " failed"
+            write_log
+        else
+            log_entry = "Result send for " & host & " succeeded"
+            write_log
+        end if
+        if debugging > 1 and sequential = "n" then
+            wscript.echo
+            wscript.echo "Response"
+            wscript.echo "--------"
+            wscript.echo objHTTP.ResponseText
+        end if
+    end if
 next
 result =          " <device>" & vbcrlf
 result = result & "     <subnet_range><![CDATA[" & subnet_range & "]]></subnet_range>" & vbcrlf
@@ -496,7 +533,7 @@ result = result & "     <complete>y</complete>" & vbcrlf
 result = result & " </device>"
 
 result_file = result_file & result
-result_file = "<devices>" & vbcrlf & result_file & vbcrlf & "</devices>" & vbcrlf
+result_file = "<devices>" & vbcrlf & result_file & vbcrlf & "</devices>"
 
 
 if echo_output = "y" then
@@ -540,6 +577,7 @@ if create_file = "y" then
 end if
 
 if submit_online = "y" then
+    result = "<devices>" & vbcrlf & result & "</devices>"
     Err.clear
     on error resume next
         Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
@@ -548,21 +586,24 @@ if submit_online = "y" then
         objHTTP.Open "POST", url, FALSE ' as at 1.8.2, wait for the output
         'objHTTP.Open "POST", url, TRUE
         objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-        objHTTP.Send "form_details=" + result_file + vbcrlf
+        ' reverted the below (changed in 1/8/2 and back in 1.8.4) to send the final subnet
+        ' finished result instead of the entire result file
+        'objHTTP.Send "form_details=" + result_file + vbcrlf
+        objHTTP.Send "form_details=" + result + vbcrlf
     on error goto 0
     if (error_returned <> 0) then
         if debugging > "0" then wscript.echo "Result complete send failed for " & subnet_range & " submitted at " & subnet_timestamp end if
         log_entry = "Result send failed for " & subnet_range & " submitted at " & subnet_timestamp
         write_log
         if (not isempty(objHTTP.ResponseText) and objHTTP.ResponseText > "" and debugging > "1") then
-        	wscript.echo objHTTP.ResponseText
+            wscript.echo objHTTP.ResponseText
         end if
     else
         if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp end if
         log_entry = "Result send successful for " & subnet_range & " submitted at " & subnet_timestamp
         write_log
         if (not isempty(objHTTP.ResponseText) and objHTTP.ResponseText > "" and debugging > "2") then
-        	wscript.echo objHTTP.ResponseText
+            wscript.echo objHTTP.ResponseText
         end if
     end if
 end if
