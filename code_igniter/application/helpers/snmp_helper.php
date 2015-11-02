@@ -56,6 +56,8 @@ if (!function_exists('get_snmp')) {
         $log_details = new stdClass();
         $log_details->file = 'system';
         $log_details->severity = 7;
+        $log_details->message = 'SNMP PHP function loaded and running for ' . $details->man_ip_address;
+        stdlog($log_details);
 
         $log_details->display = 'n';
         if (isset($details->show_output)) {
@@ -198,61 +200,61 @@ if (!function_exists('get_snmp')) {
         $credentials['supplied'] = @$supplied->snmp_community;
         $credentials['default'] = @$default_snmp_community;
         $credentials['public'] = 'public';
+        $log_details->message = 'SNMPv2 testing credentials to connect to ' . $log_machine;
+        stdlog($log_details);
         foreach ($credentials as $key => $value) {
             if (empty($test_v2)) {
-                if (!empty($value)) {
-                    $log_details->message = 'SNMPv2 testing ' . $key . ' credentials (' . $value . ') for '.$log_machine;
-                    stdlog($log_details);
+                if (!empty($value) and $value != '') {
                     try {
                         $test_v2 = @snmp2_get($details->man_ip_address, $value, "1.3.6.1.2.1.1.2.0", $timeout);
                     } catch (Exception $e) {
-                        $log_details->message = 'SNMPv2 attempt using ' . $key . ' credentials ERROR: ' .$e . ' for ' . $log_machine;
+                        $log_details->message = 'SNMPv2 attempt using ' . $key . ' credentials ERROR: ' .$e . ' for ' . $log_machine . ' failed';
                         stdlog($log_details);
                     }
                     if (!empty($test_v2) and stripos($test_v2, '1.') !== false) {
                         $details->snmp_version = '2c';
                         $details->snmp_community = $value;
-                        $log_details->message = 'SNMPv2 using ' . $key . ' credentials connected to ' . $log_machine;
+                        $log_details->message = 'SNMPv2 using ' . $key . ' credentials to connect to ' . $log_machine . ' succeeded';
                         stdlog($log_details);
                         break;
                     } else {
                         $test_v2 = '';
-                        $log_details->message = 'SNMPv2 using ' . $key . ' credentials not connected to ' . $log_machine;
+                        $log_details->message = 'SNMPv2 using ' . $key . ' credentials to connect to ' . $log_machine . ' failed';
                         stdlog($log_details);
                     }
                 } else {
-                    $log_details->message = 'SNMPv2 no ' . $key . ' credentials provided for '.$log_machine;
-                    stdlog($log_details);
+                    //$log_details->message = 'SNMPv2 no ' . $key . ' credentials provided for '.$log_machine;
+                    //stdlog($log_details);
                 }
             }
         }
 
         if (empty($test_v2)) {
+            $log_details->message = 'SNMPv1 testing credentials to connect to ' . $log_machine;
+            stdlog($log_details);
             foreach ($credentials as $key => $value) {
                 if (empty($test_v1)) {
-                    if (!empty($value)) {
-                        $log_details->message = 'SNMPv1 testing ' . $key . ' credentials for '.$log_machine;
-                        stdlog($log_details);
+                    if (!empty($value) and $value != '') {
                         try {
                             $test_v1 = @snmpget($details->man_ip_address, $value, "1.3.6.1.2.1.1.2.0", $timeout);
                         } catch (Exception $e) {
-                            $log_details->message = 'SNMPv1 attempt using ' . $key . ' credentials ERROR: ' .$e . ' for ' . $log_machine;
+                            $log_details->message = 'SNMPv1 attempt using ' . $key . ' credentials ERROR: ' .$e . ' for ' . $log_machine . ' failed';
                             stdlog($log_details);
                         }
                         if (!empty($test_v1) and stripos($test_v1, '1.') !== false) {
                             $details->snmp_version = '1';
                             $details->snmp_community = $value;
-                            $log_details->message = 'SNMPv1 using ' . $key . ' credentials connected to ' . $log_machine;
+                            $log_details->message = 'SNMPv1 using ' . $key . ' credentials to connect to ' . $log_machine . ' succeeded';
                             stdlog($log_details);
                             break;
                         } else {
                             $test_v1 = '';
-                            $log_details->message = 'SNMPv1 using ' . $key . ' credentials not connected to ' . $log_machine;
+                            $log_details->message = 'SNMPv1 using ' . $key . ' credentials to connect to ' . $log_machine . ' failed';
                             stdlog($log_details);
                         }
                     } else {
-                        $log_details->message = 'SNMPv1 no ' . $key . ' credentials provided for '.$log_machine;
-                        stdlog($log_details);
+                        //$log_details->message = 'SNMPv1 no ' . $key . ' credentials provided for '.$log_machine;
+                        //stdlog($log_details);
                     }
                 }
             }
@@ -360,6 +362,9 @@ if (!function_exists('get_snmp')) {
             }
 
             // some generic guesses for 'computer' devices
+            if (stripos($details->description, 'dd-wrt') !== false) {
+                $details->os_family = 'DD-WRT';
+            }
             if (stripos($details->description, 'buffalo terastation') !== false) {
                 $details->manufacturer = 'Buffalo';
                 $details->model = 'TeraStation';
