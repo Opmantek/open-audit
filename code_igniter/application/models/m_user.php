@@ -130,6 +130,7 @@ class M_user extends MY_Model
         $data = array("$details->system_id", "$details->original_timestamp");
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
+        $result = $query->result();
         foreach ($result as $myrow) {
             $alert_details = 'user removed - '.$myrow->user_name;
             $this->m_alerts->generate_alert($details->system_id, 'sys_sw_user', $myrow->processor_id, $alert_details, $details->timestamp);
