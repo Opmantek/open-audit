@@ -780,6 +780,7 @@ class System extends CI_Controller
             $this->m_software->alert_software($details);
             $this->m_software_key->alert_software_key($details);
             $this->m_sound->alert_sound($details);
+            $this->m_user->alert_user($details);
             $this->m_variable->alert_variable($details);
             $this->m_video->alert_video($details);
             #$this->m_database_details->alert_db_details($details);  // TODO: check if this is complete
