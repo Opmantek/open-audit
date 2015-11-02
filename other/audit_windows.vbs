@@ -6867,17 +6867,18 @@ end function
 
 function os_family(os)
 	os = replace(os, chr(160), " ")
-	if InStr(os, " 95")       then os_family="Windows 95"
-	if InStr(os, " 98")       then os_family="Windows 98"
-	if InStr(os, " NT")       then os_family="Windows NT"
-	if InStr(os, "2000")      then os_family="Windows 2000"
-	if InStr(os, " XP")       then os_family="Windows XP"
-	if InStr(os, "2003")      then os_family="Windows 2003"
-	if InStr(os, "Vista")     then os_family="Windows Vista"
-	if InStr(os, "2008")      then os_family="Windows 2008"
-	if InStr(os, "Windows 7") then os_family="Windows 7"
-	if InStr(os, "Windows 8") then os_family="Windows 8"
-	if InStr(os, "2012")      then os_family="Windows 2012"
+	if InStr(os, " 95")        then os_family="Windows 95"
+	if InStr(os, " 98")        then os_family="Windows 98"
+	if InStr(os, " NT")        then os_family="Windows NT"
+	if InStr(os, "2000")       then os_family="Windows 2000"
+	if InStr(os, " XP")        then os_family="Windows XP"
+	if InStr(os, "2003")       then os_family="Windows 2003"
+	if InStr(os, "Vista")      then os_family="Windows Vista"
+	if InStr(os, "2008")       then os_family="Windows 2008"
+	if InStr(os, "Windows 7")  then os_family="Windows 7"
+	if InStr(os, "Windows 8")  then os_family="Windows 8"
+	if InStr(os, "2012")       then os_family="Windows 2012"
+	if InStr(os, "Windows 10") then os_family="Windows 10"
 end function
 
 
