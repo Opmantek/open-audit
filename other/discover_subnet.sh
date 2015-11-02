@@ -220,7 +220,6 @@ if [[ "$hosts" != "" ]]; then
 		os_group=""
 		os_family=""
 		os_name=""
-		type="unknown"
 		ssh_status="false"
 		wmi_status="false"
 		snmp_status="false"
@@ -249,10 +248,8 @@ if [[ "$hosts" != "" ]]; then
 				NEEDLE="|"
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					# could be one of multiple
-					# just ignore setting type as it's already set to "unknown" above
 					description=$(echo "$line" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
 				else
-					type=$(echo "$line" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
 					description=""
 				fi
 			fi
@@ -422,7 +419,7 @@ if [[ "$hosts" != "" ]]; then
 		result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
 		result="$result		<mac_address>$mac_address</mac_address>"$'\n'
 		result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
-		result="$result		<type><![CDATA[$type]]></type>"$'\n'
+		result="$result		<type>unknown</type>"$'\n'
 		result="$result		<os_group><![CDATA[$os_group]]></os_group>"$'\n'
 		result="$result		<os_family><![CDATA[$os_family]]></os_family>"$'\n'
 		result="$result		<os_name><![CDATA[$os_name]]></os_name>"$'\n'
