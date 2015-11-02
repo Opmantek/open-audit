@@ -69,7 +69,7 @@ org_id=""
 
 # if set then delete the audit script upon completion
 # useful when starting the script on a remote machine and leaving no trace
-self_delete = "n"
+self_delete="n"
 
 # 0 = no debug
 # 1 = basic debug
@@ -413,15 +413,7 @@ fi
 
 # Set the TimeSamp
 system_timestamp=$(date +'%F %T')
-
-# contributed by Franz Xaver
-#if [ -z "$BASHPID" ]; then # removed as RedHat 4 doesn't support this
-if [ -z "$$" ]; then
-	script_pid="$(sh -c 'echo $PPID')"
-else
-	script_pid="$BASHPID"
-fi
-
+script_pid="$$"
 script_name=$(basename $0)
 
 if [ "$debugging" -gt 0 ]; then
