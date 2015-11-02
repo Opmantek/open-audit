@@ -117,21 +117,6 @@ class M_ip_address extends MY_Model
         # Allow for blank value as well as a matching value
         $sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system
 			WHERE sys_hw_network_card_ip.system_id = system.system_id AND
-				system.system_id = ? AND
-				system.man_status = 'production' AND
-				sys_hw_network_card_ip.net_mac_address = ? AND
-				(sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ? ) AND
-				(sys_hw_network_card_ip.ip_subnet = ? OR sys_hw_network_card_ip.ip_subnet = '' OR sys_hw_network_card_ip.ip_subnet = '0.0.0.0') AND
-				(sys_hw_network_card_ip.timestamp = ? OR sys_hw_network_card_ip.timestamp = ? )";
-        $sql = $this->clean_sql($sql);
-        $data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4),
-                "$input->ip_address_v6", "$input->ip_subnet", "$details->original_timestamp", "$details->timestamp", );
-
-        // note - removed the IPv6 address, below
-        # NOTE - revised the SQL for 1.8.4 because we don't always have a value for subnet.
-        # Allow for blank value as well as a matching value
-        $sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system
-			WHERE sys_hw_network_card_ip.system_id = system.system_id AND
 			system.system_id = ? AND system.man_status = 'production' AND
 			sys_hw_network_card_ip.net_mac_address = ? AND sys_hw_network_card_ip.ip_address_v4 = ? AND
 			(sys_hw_network_card_ip.ip_subnet = ? OR sys_hw_network_card_ip.ip_subnet = '' OR sys_hw_network_card_ip.ip_subnet = '0.0.0.0') AND
@@ -143,9 +128,15 @@ class M_ip_address extends MY_Model
 
         if ($query->num_rows() > 0) {
             $row = $query->row();
-            // the network_card_ip exists - need to update its timestamp
-            $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ?, net_index = ? WHERE ip_id = ?";
-            $data = array("$details->timestamp", "$input->net_index", "$row->ip_id");
+            // the network_card_ip exists - need to update
+            // As at 1.8.4, update the subnet as well if we have a value
+            if ($input->ip_subnet != '' AND $input->ip_subnet != '0.0.0.0') {
+                $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ?, net_index = ?, ip_subnet = ? WHERE ip_id = ?";
+                $data = array("$details->timestamp", "$input->net_index", "$input->ip_subnet", "$row->ip_id");
+            } else {
+                $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ?, net_index = ? WHERE ip_id = ?";
+                $data = array("$details->timestamp", "$input->net_index", "$row->ip_id");
+            }
             $query = $this->db->query($sql, $data);
         } else {
             // the network_card_ip does not exist - insert it
