@@ -1168,7 +1168,7 @@ class discovery extends CI_Controller
                                 $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'hostname -s', $details->ssh_password, $display);
                                 if ($ssh_result['status'] == 0) {
                                     $details->hostname = $ssh_result['output'][0];
-                                    $details->last_seen_by = 'discovery';
+                                    $details->last_seen_by = 'audit';
                                 }
                             } else {
                                 // Windows SSH not supported yet
@@ -1183,7 +1183,7 @@ class discovery extends CI_Controller
                                 $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'hostname -f | grep -F .', $details->ssh_password, $display);
                                 if ($ssh_result['status'] == 0) {
                                     $details->fqdn = $ssh_result['output'][0];
-                                    $details->last_seen_by = 'discovery';
+                                    $details->last_seen_by = 'audit';
                                 }
                             } else {
                                 // Windows SSH not supported yet
@@ -1198,12 +1198,12 @@ class discovery extends CI_Controller
                                 $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'dmidecode -s system-uuid', $details->ssh_password, $display);
                                 if ($ssh_result['status'] == 0) {
                                     $details->uuid = $ssh_result['output'][0];
-                                    $details->last_seen_by = 'discovery';
+                                    $details->last_seen_by = 'audit';
                                 } else {
                                     $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'cat /sys/class/dmi/id/product_uuid', $details->ssh_password, $display);
                                     if ($ssh_result['status'] == 0) {
                                         $details->uuid = $ssh_result['output'][0];
-                                        $details->last_seen_by = 'discovery';
+                                        $details->last_seen_by = 'audit';
                                     }
                                 }
                             }
@@ -1218,7 +1218,7 @@ class discovery extends CI_Controller
                                 $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'system_profiler SPHardwareDataType | grep UUID | cut -d: -f2', $details->ssh_password, $display);
                                 if ($ssh_result['status'] == 0) {
                                     $details->uuid = $ssh_result['output'][0];
-                                    $details->last_seen_by = 'discovery';
+                                    $details->last_seen_by = 'audit';
                                 }
                             }
                             # DD-WRT related items
@@ -1230,7 +1230,7 @@ class discovery extends CI_Controller
                                         $details->os_name = trim($ssh_result['output'][0]);
                                         $details->type = 'router';
                                         $details->ssh_status = 'false';
-                                        $details->last_seen_by = 'discovery';
+                                        $details->last_seen_by = 'audit';
                                     }
                                 }
                                 if ($details->os_family == 'DD-WRT') {
@@ -1286,27 +1286,27 @@ class discovery extends CI_Controller
                             if ($wmi_result['status'] == 0) {
                                 # the command ran successfully, insert the correct line into the appropriate attribute
                                 $details->uuid = $wmi_result['output'][1];
-                                $details->last_seen_by = 'discovery';
+                                $details->last_seen_by = 'audit';
                             }
                             # get the hostname
                             $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'computersystem get name', $details->windows_password, $details->windows_domain, $display);
                             if ($wmi_result['status'] == 0) {
                                 # the command ran successfully, insert the correct line into the appropriate attribute
                                 $details->hostname = strtolower($wmi_result['output'][1]);
-                                $details->last_seen_by = 'discovery';
+                                $details->last_seen_by = 'audit';
                             }
                             # get the domain
                             $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'computersystem get domain', $details->windows_password, $details->windows_domain, $display);
                             if ($wmi_result['status'] == 0) {
                                 # the command ran successfully, insert the correct line into the appropriate attribute
                                 $details->domain = strtolower($wmi_result['output'][1]);
-                                $details->last_seen_by = 'discovery';
+                                $details->last_seen_by = 'audit';
                             }
                             # get the os name
                             $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'os get name', $details->windows_password, $details->windows_domain, $display);
                             if ($wmi_result['status'] == 0) {
                                 # the command ran successfully, insert the correct line into the appropriate attribute
-                                $details->last_seen_by = 'discovery';
+                                $details->last_seen_by = 'audit';
                                 $details->os_name = $wmi_result['output'][1];
                                 $details->os_name = trim(substr($details->os_name, 0, stripos($details->os_name, '|')));
                                 if (stripos($details->os_name, " 95") !== false) {
@@ -1351,14 +1351,14 @@ class discovery extends CI_Controller
                             if ($wmi_result['status'] == 0) {
                                 # the command ran successfully, insert the correct line into the appropriate attribute
                                 $details->manufacturer = $wmi_result['output'][1];
-                                $details->last_seen_by = 'discovery';
+                                $details->last_seen_by = 'audit';
                             }
                             # get the description
                             $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'os get description', $details->windows_password, $details->windows_domain, $display);
                             if ($wmi_result['status'] == 0) {
                                 # the command ran successfully, insert the correct line into the appropriate attribute
                                 $details->description = $wmi_result['output'][1];
-                                $details->last_seen_by = 'discovery';
+                                $details->last_seen_by = 'audit';
                             }
                         }
                     }
