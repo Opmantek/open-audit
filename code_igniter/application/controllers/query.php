@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -192,10 +192,14 @@ class query extends MY_Controller
             }
             ksort($dataset);
             // convert the dates in the dataset to timestamps
+            #date_default_timezone_set('Australia/Brisbane');
             foreach ($dataset as $key => $value) {
                 if (isset($key) and $key != '') {
+                    #$date = new DateTime($key);
+                    #$offset = $date->getOffset();
                     $mktime_array = explode('-', $key);
                     $timestamp = gmmktime(0, 12, 0, intval($mktime_array[1]), intval($mktime_array[2]), intval($mktime_array[0]));
+                    #$timestamp = mktime(0, 12, 0, intval($mktime_array[1]), intval($mktime_array[2]), intval($mktime_array[0])) + $offset;
                     $each_json = array('x' => intval($timestamp), 'y' => intval($value) );
                     $return_json[] = $each_json;
                 }
