@@ -1015,6 +1015,7 @@ class discovery extends CI_Controller
                                 // We have a response (containing a MAC Address) from the target
                                 $details->type = 'remote access controller';
                                 $details->last_seen_by = 'ipmi';
+                                $details->description = '';
                                 if ($details->mac_address == '') {
                                     $details->mac_address = strtolower($output[0]);
                                 }
@@ -1128,6 +1129,7 @@ class discovery extends CI_Controller
                                 if ($ssh_result['status'] == 0) {
                                     $details->ssh_username = $cred_set['user'];
                                     $details->ssh_password = $cred_set['pass'];
+                                    $details->description = '';
                                     $log_details->message = 'SSH ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' succeeded';
                                     stdlog($log_details);
                                     break;
@@ -1270,6 +1272,7 @@ class discovery extends CI_Controller
                                 $details->windows_username = $cred_set['user'];
                                 $details->windows_password = $cred_set['pass'];
                                 $details->windows_domain = $cred_set['domain'];
+                                $details->description = '';
                                 $log_details->message = 'WMI ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' succeeded';
                                 stdlog($log_details);
                                 break;
