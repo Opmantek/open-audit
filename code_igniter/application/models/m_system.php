@@ -223,7 +223,7 @@ class M_system extends MY_Model
         }
 
         # check MAC Address - this caters for a single mac address, usually from a nmap result
-        if (isset($details->mac_address) and $details->mac_address > '' and $details->system_id == '') {
+        if (isset($details->mac_address) and $details->mac_address > '' and $details->mac_address != '00:00:00:00:00:00' and $details->system_id == '') {
             # check the sys_hw_network_card_ip table
             $sql = "SELECT system.system_id FROM system
 					LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
@@ -244,7 +244,7 @@ class M_system extends MY_Model
         if (isset($details->mac_addresses) and count($details->mac_addresses) > 0 and $details->system_id == '') {
             foreach ($details->mac_addresses as $mac_address) {
                 foreach ($mac_address as $mac) {
-                    if ($mac != '') {
+                    if ($mac != '' and $mac != '00:00:00:00:00:00') {
                         # check the sys_hw_network_card_ip table
                         $sql = "SELECT system.system_id FROM system
 								LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND
