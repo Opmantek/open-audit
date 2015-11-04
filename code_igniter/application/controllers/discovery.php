@@ -1129,9 +1129,11 @@ class discovery extends CI_Controller
                                 if ($ssh_result['status'] == 0) {
                                     $details->ssh_username = $cred_set['user'];
                                     $details->ssh_password = $cred_set['pass'];
-                                    $details->description = '';
                                     $log_details->message = 'SSH ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' succeeded';
                                     stdlog($log_details);
+                                    if ((!isset($details->snmp_oid)) or ($details->snmp_oid == '')) {
+                                        $details->description = '';
+                                    }
                                     break;
                                 } else {
                                     $log_details->message = 'SSH ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' failed';
@@ -1272,9 +1274,11 @@ class discovery extends CI_Controller
                                 $details->windows_username = $cred_set['user'];
                                 $details->windows_password = $cred_set['pass'];
                                 $details->windows_domain = $cred_set['domain'];
-                                $details->description = '';
                                 $log_details->message = 'WMI ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' succeeded';
                                 stdlog($log_details);
+                                if ((!isset($details->snmp_oid)) or ($details->snmp_oid == '')) {
+                                    $details->description = '';
+                                }
                                 break;
                             } else {
                                 $log_details->message = 'WMI ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' failed';
