@@ -103,7 +103,7 @@ $get_oid_details = function ($details) {
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.2352.1.17') {
-        $details->model = '';
+        $details->model = 'SSR 8020';
         $details->type = 'router';
     }
     if ($details->snmp_oid == '1.3.6.1.4.1.2352.1.18') {
