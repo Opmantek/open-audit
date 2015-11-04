@@ -3897,6 +3897,14 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
+            $sql = "DELETE FROM oa_config WHERE config_name = 'discovery_ip_exclude'";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
+            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('discovery_ip_exclude', '', 'y', 'Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.')";
+            $this->data['output'] .= $sql."<br /><br />\n";
+            $query = $this->db->query($sql);
+
             $sql = "UPDATE oa_config SET config_value = '20151112' WHERE config_name = 'internal_version'";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
