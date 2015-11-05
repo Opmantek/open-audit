@@ -52,7 +52,7 @@ dim subnet_timestamp : subnet_timestamp = ""
 dim syslog : syslog = "y"
 dim url : url = "http://localhost/open-audit/index.php/discovery/process_subnet"
 dim objHTTP
-dim sequential : sequential = "n"
+dim sequential : sequential = "y"
 
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
@@ -503,7 +503,7 @@ for each host in hosts_in_subnet
             Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
             objHTTP.setTimeouts 5000, 5000, 5000, 120000
             objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-            if sequential = "n" then
+            if sequential = "y" then
                 objHTTP.Open "POST", url, False ' wait for a response before continuing
             else
                 objHTTP.Open "POST", url, True ' do not wait for a respone before continuing

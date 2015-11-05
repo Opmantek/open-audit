@@ -49,6 +49,7 @@ url="http://localhost/open-audit/index.php/discovery/process_subnet"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
+sequential="n"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -110,6 +111,9 @@ if [ "$help" == "y" ]; then
 	echo "  subnet_timestamp"
 	echo "       - Set by the web GUI. Not used on the command line."
 	echo ""
+	echo "  sequential"
+	echo "     *n - Set to n to NOT wait for each result from the server before continuing to scan the next ip in the list."
+	echo "      y - Set to y to wait for a result from the server before continuing on to the next ip to scan. Will extend discovery times."
 	echo "  syslog"
 	echo "     *y - Log entries to the Open-AudIT log file."
 	echo "      n - Do not log entries."
@@ -128,6 +132,11 @@ if [ "$help" == "y" ]; then
 	exit
 fi
 
+if [ "$sequential" == "n" ]; then
+	sequential="-b"
+else
+	sequential=""
+fi
 
 # logging to a file
 function write_log()
@@ -450,8 +459,8 @@ if [[ "$hosts" != "" ]]; then
 				# -b   = background the wget command
 				# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 				# -q   = quiet (no output)
-				wget -b -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
-			fi
+				wget "$sequential" -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
+							fi
 			if [[ $(uname) == "Darwin" ]]; then
 				curl --data "form_details=$result" "$url"
 			fi
