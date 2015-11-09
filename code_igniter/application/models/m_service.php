@@ -137,7 +137,7 @@ class M_service extends MY_Model
                                         $change_comment = "Service Start Mode = was ".$service_db->service_start_mode." but is now ".$service_xml->service_start_mode;
                                     }
                                 }
-                                if ($service_db->service_state != $service_xml->service_state) {
+                                if ($service_db->service_state != $service_xml->service_state and $details->os_group == 'Windows') {
                                     if ($change_comment > "") {
                                         $change_comment .= ", Service State was ".$service_db->service_state." but is now ".$service_xml->service_state;
                                     } else {
