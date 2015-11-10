@@ -72,23 +72,25 @@ class M_network_card extends MY_Model
             $input->iflastchange = '';
         }
 
-        # added net_alias in 1.3.3
-        if (!isset($input->net_alias) or is_null($input->net_alias)) {
-            $input->net_alias = '';
-        }
-
         # added in 1.5.6
         if (! isset($input->net_slaves) or is_null($input->net_slaves)) {
             $input->net_slaves = '';
         }
 
-        if ((string) $details->first_timestamp == (string) $details->original_timestamp
-              and $details->original_last_seen_by != 'audit'
-              and $details->original_last_seen_by != 'snmp') {
+        # added net_alias in 1.3.3
+        if (!isset($input->net_alias) or is_null($input->net_alias)) {
+            $input->net_alias = '';
+        }
+
+        if (((string) $details->first_timestamp == (string) $details->original_timestamp and
+            $details->original_last_seen_by != 'audit' and
+            $details->original_last_seen_by != 'snmp') or
+            ((string)$details->first_timestamp == (string)$details->timestamp)) {
 
             # we have only seen this system once, and not via an audit script or snmp
             # insert the row and set the first_timestamp == system.first_timestamp
             # otherwise we cause alerts
+            # OR - this is the first time we have seen this device
             $sql = "INSERT INTO sys_hw_network_card (
 					system_id,
 					net_mac_address,

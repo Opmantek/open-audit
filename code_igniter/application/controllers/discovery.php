@@ -695,6 +695,11 @@ class discovery extends CI_Controller
                 $display = 'y';
                 echo "<pre>\n";
                 echo "DEBUG - Starting process_subnet.\n";
+                echo "***********************************************************************************\n";
+                echo "* NOTE - THIS PAGE WILL CONTINUOUSLY RENDER UNTIL THE DISCOVERY HAS FINISHED      *\n";
+                echo "* WATCH YOUR BROSWER TO SEE WHEN THE PAGE FINISHES RENDERING                      *\n";
+                echo "* DO NOT REFRESH THIS PAGE OR ATTEMPT TO GO 'back' UNITL THE PAGE HAS COMPLETED   *\n";
+                echo "***********************************************************************************\n";
             }
 
             $this->load->model('m_oa_user');
@@ -1215,6 +1220,13 @@ class discovery extends CI_Controller
                                         }
                                     }
                                 }
+                                if ($details->os_group == 'VMkernel') {
+                                    $command = "vim-cmd hostsvc/hostsummary | sed -n '/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p' | grep uuid | cut -d= -f2 | sed 's/,//g' | sed 's/\\\"//g'";
+                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, $command, $details->ssh_password, $display);
+                                    if ($ssh_result['status'] == 0) {
+                                        $details->uuid = $ssh_result['output'][0];
+                                    }
+                                }
                                 if ($details->os_group == 'Windows') {
                                     // Windows SSH not supported yet
                                     // $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'wmic csproduct get uuid', $details->ssh_password, $display);
@@ -1276,14 +1288,14 @@ class discovery extends CI_Controller
                                     $details->windows_username = $cred_set['user'];
                                     $details->windows_password = $cred_set['pass'];
                                     $details->windows_domain = $cred_set['domain'];
-                                    $log_details->message = 'WMI ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' succeeded';
+                                    $log_details->message = 'WMIC ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' succeeded';
                                     stdlog($log_details);
                                     if ((!isset($details->snmp_oid)) or ($details->snmp_oid == '')) {
                                         $details->description = '';
                                     }
                                     break;
                                 } else {
-                                    $log_details->message = 'WMI ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' failed';
+                                    $log_details->message = 'WMIC ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' failed';
                                     stdlog($log_details);
                                 }
                             }
@@ -1370,26 +1382,17 @@ class discovery extends CI_Controller
                         $details->system_key = $this->m_system->create_system_key($details);
                         $details->system_id = $this->m_system->find_system($details);
 
-                        if ($display == 'y') {
-                            $details->show_output = true;
-                            echo "DEBUG - ----------------------------------------------------\n";
-                            // remove all the null, false and Empty Strings but leaves 0 (zero) values
-                            $filtered_details = (object) array_filter((array) $details, 'strlen' );
-                            print_r($filtered_details);
-                            unset($filtered_details);
-                            echo "DEBUG - ----------------------------------------------------\n";
-                        }
-
                         // insert or update the device
                         if (isset($details->system_id) and $details->system_id != '') {
                             // we have a system id - UPDATE
-                            $log_details->message = $details->last_seen_by . " update for $details->man_ip_address (System ID $details->system_id)";
+                            $log_details->message = strtoupper($details->last_seen_by) . " update for $details->man_ip_address (System ID $details->system_id)";
                             stdlog($log_details);
                             $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+                            $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
                             $this->m_system->update_system($details);
                         } else {
                             // we have a new system - INSERT
-                            $log_details->message = $details->last_seen_by . " insert for $details->man_ip_address";
+                            $log_details->message = strtoupper($details->last_seen_by) . " insert for $details->man_ip_address";
                             stdlog($log_details);
                             $details->system_id = $this->m_system->insert_system($details);
                             $this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', date('Y-m-d H:i:s'));
@@ -1401,6 +1404,16 @@ class discovery extends CI_Controller
                         $this->m_sys_man_audits->insert_audit($details);
                         // Update the groups
                         $this->m_oa_group->update_system_groups($details);
+
+                        if ($display == 'y') {
+                            $details->show_output = true;
+                            echo "DEBUG ---------------\n";
+                            // remove all the null, false and Empty Strings but leaves 0 (zero) values
+                            $filtered_details = (object) array_filter((array) $details, 'strlen' );
+                            print_r($filtered_details);
+                            unset($filtered_details);
+                            echo "DEBUG ---------------\n";
+                        }
 
                         // update any network interfaces and ip addresses retrieved by SNMP
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
