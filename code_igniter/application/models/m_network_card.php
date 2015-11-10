@@ -286,31 +286,44 @@ class M_network_card extends MY_Model
 
     public function alert_network_card($details)
     {
-        // network_card no longer detected
-        $sql = "SELECT net_id, net_model, net_mac_address as net_mac_address FROM sys_hw_network_card WHERE system_id = ? and timestamp = ?";
-        $data = array("$details->system_id", "$details->original_timestamp");
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql, $data);
-        foreach ($query->result() as $myrow) {
-            $alert_details = 'network card removed - '.$myrow->net_model.' ('.$myrow->net_mac_address.')';
-            $this->m_alerts->generate_alert($details->system_id, 'sys_hw_network_card', $myrow->net_id, $alert_details, $details->timestamp);
-        }
+        # As at 1.8.4 we no longer alert on network cards
+        # We also remove any old cards that are not current
+        # This will be addressed in a future version as the current version CANNOT cope with SNMP and AUDIT types when combined
 
-        // new network card
-        $sql = "SELECT net_id, net_model, net_mac_address as net_mac_address
-			FROM
-				sys_hw_network_card LEFT JOIN system ON (sys_hw_network_card.system_id = system.system_id)
-			WHERE
-				sys_hw_network_card.system_id = ? AND
-				sys_hw_network_card.first_timestamp = ? AND
-				sys_hw_network_card.first_timestamp = sys_hw_network_card.timestamp AND
-				sys_hw_network_card.first_timestamp != system.first_timestamp";
-        $data = array("$details->system_id", "$details->timestamp");
-        $sql = $this->clean_sql($sql);
+        $sql = "DELETE sys_hw_network_card FROM sys_hw_network_card LEFT JOIN system ON (sys_hw_network_card.system_id = system.system_id) WHERE system.system_id = ? AND sys_hw_network_card.timestamp != system.timestamp";
+        $data = array($details->system_id);
         $query = $this->db->query($sql, $data);
-        foreach ($query->result() as $myrow) {
-            $alert_details = 'network card installed - '.$myrow->net_model.' ('.$myrow->net_mac_address.')';
-            $this->m_alerts->generate_alert($details->system_id, 'sys_hw_network_card', $myrow->net_id, $alert_details, $details->timestamp);
-        }
+
+       //  // network_card no longer detected
+       //  $sql = "SELECT net_id, net_model, net_mac_address FROM sys_hw_network_card WHERE system_id = ? and timestamp = ?";
+       //  $data = array("$details->system_id", "$details->original_timestamp");
+       //  $sql = $this->clean_sql($sql);
+       //  $query = $this->db->query($sql, $data);
+       //  foreach ($query->result() as $myrow) {
+       //      $alert_details = 'network card removed - '.$myrow->net_model.' ('.$myrow->net_mac_address.')';
+       //      $this->m_alerts->generate_alert($details->system_id, 'sys_hw_network_card', $myrow->net_id, $alert_details, $details->timestamp);
+       //  }
+
+       //  // new network card
+       //  $sql = "SELECT sys_man_audits.* FROM sys_man_audits LEFT JOIN system ON sys_man_audits.system_id = system.system_id WHERE system.system_id = ? AND ((system_audits_type = 'audit' and system.type = 'computer') or (system_audits_type = 'snmp' and system.type != 'computer')) AND system_audits_time != system.timestamp";
+       //  $data = array("$details->system_id");
+       //  $query = $this->db->query($sql, $data);
+       //  if ($query->num_rows() > 0) {
+       //      $sql = "SELECT net_id, net_model, net_mac_address
+    			// FROM
+    			// 	sys_hw_network_card LEFT JOIN system ON (sys_hw_network_card.system_id = system.system_id)
+    			// WHERE
+    			// 	sys_hw_network_card.system_id = ? AND
+    			// 	sys_hw_network_card.first_timestamp = ? AND
+    			// 	sys_hw_network_card.first_timestamp = sys_hw_network_card.timestamp AND
+    			// 	sys_hw_network_card.first_timestamp != system.first_timestamp";
+       //      $data = array("$details->system_id", "$details->timestamp");
+       //      $sql = $this->clean_sql($sql);
+       //      $query = $this->db->query($sql, $data);
+       //      foreach ($query->result() as $myrow) {
+       //          $alert_details = 'network card installed - '.$myrow->net_model.' ('.$myrow->net_mac_address.')';
+       //          $this->m_alerts->generate_alert($details->system_id, 'sys_hw_network_card', $myrow->net_id, $alert_details, $details->timestamp);
+       //      }
+       //  }
     }
 }
