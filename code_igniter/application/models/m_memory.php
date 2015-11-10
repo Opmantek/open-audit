@@ -85,23 +85,9 @@ class M_memory extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for memory changes
-            $sql = "SELECT sys_hw_memory.memory_id FROM sys_hw_memory, system WHERE
-					sys_hw_memory.system_id 	= system.system_id AND
-					system.system_id		= ? AND
-					system.man_status 		= 'production' AND
-					memory_bank 			= ? AND
-					memory_capacity 		= ? AND
-					memory_speed 			= ? AND
-					memory_serial 			= ? AND
-					( sys_hw_memory.timestamp = ? OR sys_hw_memory.timestamp = ? )";
+            $sql = "SELECT memory_id FROM sys_hw_memory WHERE system_id = ? AND memory_bank = ? AND memory_capacity = ? AND memory_speed = ? AND memory_serial = ? AND (`timestamp` = ? OR `timestamp` = ?)";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->bank",
-                    "$input->capacity",
-                    "$input->speed",
-                    "$input->serial",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->bank", "$input->capacity", "$input->speed", "$input->serial", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

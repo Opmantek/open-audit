@@ -89,14 +89,7 @@ class M_processor extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // check for processor changes
-            $sql = "SELECT sys_hw_processor.processor_id
-					FROM sys_hw_processor, system
-					WHERE
-						sys_hw_processor.system_id = system.system_id AND
-						system.system_id = ? AND
-						system.man_status = 'production' AND
-						processor_description = ? AND
-						( sys_hw_processor.timestamp = ? OR sys_hw_processor.timestamp = ?) LIMIT 1";
+            $sql = "SELECT processor_id FROM sys_hw_processor WHERE system_id =  ? AND processor_description = ? AND (`timestamp` = ? OR `timestamp` = ?) LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->system_id", "$input->processor_description", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);

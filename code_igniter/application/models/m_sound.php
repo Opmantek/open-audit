@@ -80,21 +80,9 @@ class M_sound extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for sound card changes
-            $sql = "SELECT sys_hw_sound.sound_id
-					FROM sys_hw_sound, system
-					WHERE sys_hw_sound.system_id = system.system_id AND
-						system.system_id = ? AND
-						system.man_status = 'production' AND
-						sound_manufacturer = ? AND
-						sound_name = ? AND
-						( sys_hw_sound.timestamp = ? OR
-						sys_hw_sound.timestamp = ? )";
+            $sql = "SELECT sound_id FROM sys_hw_sound WHERE system_id = ? AND sound_manufacturer = ? AND sound_name = ? AND (`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->sound_manufacturer",
-                    "$input->sound_name",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->sound_manufacturer", "$input->sound_name", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

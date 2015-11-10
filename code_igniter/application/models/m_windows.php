@@ -115,19 +115,9 @@ class M_windows extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for windows changes
-            $sql = "SELECT sys_sw_windows.windows_id
-					FROM sys_sw_windows, system
-					WHERE sys_sw_windows.system_id = system.system_id AND
-						system.system_id = ? AND
-						system.man_status = 'production' AND
-						windows_service_pack = ? AND
-						( sys_sw_windows.timestamp = ? OR
-						sys_sw_windows.timestamp = ? )";
+            $sql = "SELECT windows_id FROM sys_sw_windows WHERE system_id =  ? AND windows_service_pack = ? AND (`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->windows_service_pack",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->windows_service_pack", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

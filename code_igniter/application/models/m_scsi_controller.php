@@ -89,22 +89,9 @@ class M_scsi_controller extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for sound card changes
-            $sql = "SELECT sys_hw_scsi_controller.scsi_controller_id
-				FROM sys_hw_scsi_controller, system
-				WHERE sys_hw_scsi_controller.system_id 	= system.system_id AND
-					system.system_id			= ? AND
-					system.man_status 			= 'production' AND
-					scsi_controller_manufacturer 		= ? AND
-					scsi_controller_name 			= ? AND
-					scsi_controller_device_id		= ? AND
-					( sys_hw_scsi_controller.timestamp = ? OR sys_hw_scsi_controller.timestamp = ? )";
+            $sql = "SELECT scsi_controller_id FROM sys_hw_scsi_controller WHERE system_id = ? AND scsi_controller_manufacturer = ? AND scsi_controller_name = ? AND scsi_controller_device_id = ? AND (`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->manufacturer",
-                    "$input->name",
-                    "$input->device_id",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->manufacturer", "$input->name", "$input->device_id", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

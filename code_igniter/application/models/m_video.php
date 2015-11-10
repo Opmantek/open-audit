@@ -80,19 +80,9 @@ class M_video extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for video card changes
-            $sql = "SELECT sys_hw_video.video_id
-					FROM sys_hw_video, system
-					WHERE sys_hw_video.system_id = system.system_id AND
-						system.system_id = ? AND
-						system.man_status = 'production' AND
-						video_description = ? AND
-						( sys_hw_video.timestamp = ? OR
-						sys_hw_video.timestamp = ? )";
+            $sql = "SELECT video_id FROM sys_hw_video WHERE sys_hw_video.system_id = ? AND video_description = ? AND (`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->video_description",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->video_description", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

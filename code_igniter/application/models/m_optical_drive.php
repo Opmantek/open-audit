@@ -84,21 +84,9 @@ class M_optical_drive extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for optical_drive changes
-            $sql = "SELECT sys_hw_optical_drive.optical_drive_id
-					FROM sys_hw_optical_drive, system
-					WHERE 	sys_hw_optical_drive.system_id 	= system.system_id AND
-							system.system_id				= ? AND
-							system.man_status 				= 'production' AND
-							optical_drive_model 			= ? AND
-							optical_drive_mount_point 		= ? AND
-							( sys_hw_optical_drive.timestamp = ? OR
-							sys_hw_optical_drive.timestamp 	= ? )";
+            $sql = "SELECT optical_drive_id FROM sys_hw_optical_drive WHERE system_id = ? AND optical_drive_model = ? AND optical_drive_mount_point = ? AND (`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->optical_drive_model",
-                    "$input->optical_drive_mount_point",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->optical_drive_model", "$input->optical_drive_mount_point", "$details->original_timestamp","$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

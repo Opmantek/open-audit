@@ -93,32 +93,10 @@ class M_bios extends MY_Model
                     "$details->first_timestamp",    );
             $query = $this->db->query($sql, $data);
         } else {
-            // check for processor changes
-            $sql = "SELECT
-					sys_hw_bios.bios_id
-				FROM
-					sys_hw_bios,
-					system
-				WHERE
-					sys_hw_bios.system_id = system.system_id AND
-					system.system_id = ? AND
-					system.man_status = 'production' AND
-					bios_description = ? AND
-					bios_manufacturer = ? AND
-					bios_serial = ? AND
-					bios_smversion = ? AND
-					bios_version = ? AND
-					( sys_hw_bios.timestamp = ? OR sys_hw_bios.timestamp = ? )
-				LIMIT 1";
+            // check for bios changes
+            $sql = "SELECT bios_id FROM sys_hw_bios WHERE system_id = ? AND bios_description = ? AND bios_manufacturer = ? AND bios_serial = ? AND bios_smversion = ? AND bios_version = ? AND (`timestamp` = ? OR `timestamp` = ?) LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array(    "$details->system_id",
-                    "$input->bios_description",
-                    "$input->bios_manufacturer",
-                    "$input->bios_serial",
-                    "$input->bios_smversion",
-                    "$input->bios_version",
-                    "$details->original_timestamp",
-                    "$details->timestamp",    );
+            $data = array("$details->system_id", "$input->bios_description", "$input->bios_manufacturer", "$input->bios_serial", "$input->bios_smversion", "$input->bios_version", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

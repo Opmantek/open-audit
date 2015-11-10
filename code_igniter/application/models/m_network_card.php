@@ -150,31 +150,17 @@ class M_network_card extends MY_Model
             }
             # normal computers
             if ($details->type == 'computer' and $details->os_group != 'VMware') {
-                $sql = "SELECT sys_hw_network_card.net_id
-            			FROM sys_hw_network_card
-            			WHERE sys_hw_network_card.system_id = ? AND
-            				sys_hw_network_card.net_mac_address = ? AND
-            				( sys_hw_network_card.timestamp = ? OR sys_hw_network_card.timestamp = ? )";
+                $sql = "SELECT net_id FROM sys_hw_network_card WHERE system_id = ? AND net_mac_address = ? AND (`timestamp` = ? OR `timestamp` = ?)";
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id", "$input->net_mac_address", "$details->timestamp", "$details->original_timestamp");
             # specific case for ESX (SNMP matches on net_index, audit matches on net_connection_id)
             } elseif ($details->type == 'computer' and $details->os_group == 'VMware') {
-                $sql = "SELECT sys_hw_network_card.net_id
-						FROM sys_hw_network_card
-						WHERE sys_hw_network_card.system_id = ? AND
-							sys_hw_network_card.net_mac_address = ? AND
-							( sys_hw_network_card.net_index = ? OR sys_hw_network_card.net_connection_id = ? ) AND
-							( sys_hw_network_card.timestamp = ? OR sys_hw_network_card.timestamp = ? )";
+                $sql = "SELECT net_id FROM sys_hw_network_card WHERE system_id = ? AND net_mac_address = ? AND (net_index = ? OR net_connection_id = ? ) AND (`timestamp` = ? OR `timestamp` = ? )";
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id", "$input->net_mac_address", "$input->net_index", "$input->net_connection_id", "$details->timestamp", "$details->original_timestamp");
             # other types of network devices
             } else {
-                $sql = "SELECT sys_hw_network_card.net_id
-						FROM sys_hw_network_card
-						WHERE sys_hw_network_card.system_id = ? AND
-							sys_hw_network_card.net_mac_address = ? AND
-							sys_hw_network_card.net_index = ? AND
-							( sys_hw_network_card.timestamp = ? OR sys_hw_network_card.timestamp = ? )";
+                $sql = "SELECT net_id FROM sys_hw_network_card WHERE system_id = ? AND net_mac_address = ? AND net_index = ? AND (`timestamp` = ? OR `timestamp` = ?)";
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id", "$input->net_mac_address", "$input->net_index", "$details->timestamp", "$details->original_timestamp");
             }

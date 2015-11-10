@@ -80,17 +80,9 @@ class M_user extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // check for user changes
-            $sql = "SELECT sys_sw_user.user_id FROM sys_sw_user, system
-				WHERE sys_sw_user.system_id = system.system_id AND system.system_id = ? AND
-					system.man_status = 'production' AND  user_name = ? AND user_sid = ? AND
-					( sys_sw_user.timestamp = ? OR sys_sw_user.timestamp= ? )
-				LIMIT 1";
+            $sql = "SELECT user_id FROM sys_sw_user WHERE system_id = ? AND user_name = ? AND user_sid = ? AND (`timestamp` = ? OR `timestamp` = ?) LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->user_name",
-                    "$input->user_sid",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->user_name", "$input->user_sid", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

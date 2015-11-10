@@ -95,21 +95,9 @@ class M_motherboard extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for motherboard changes
-            $sql = "SELECT sys_hw_motherboard.motherboard_id FROM sys_hw_motherboard, system WHERE
-					sys_hw_motherboard.system_id = system.system_id AND
-					system.system_id = ? AND
-					system.man_status = 'production' AND
-					sys_hw_motherboard.manufacturer = ? AND
-					sys_hw_motherboard.model = ? AND
-					sys_hw_motherboard.serial = ? AND
-					( sys_hw_motherboard.timestamp = ? OR sys_hw_motherboard.timestamp = ? )";
+            $sql = "SELECT motherboard_id FROM sys_hw_motherboard WHERE system_id = ? AND manufacturer = ? AND model = ? AND `serial` = ? AND(`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->manufacturer",
-                    "$input->model",
-                    "$input->serial",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->manufacturer", "$input->model", "$input->serial", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

@@ -115,15 +115,9 @@ class M_ip_address extends MY_Model
 
         # NOTE - revised the SQL for 1.8.4 because we don't always have a value for subnet.
         # Allow for blank value as well as a matching value
-        $sql = "SELECT sys_hw_network_card_ip.ip_id FROM sys_hw_network_card_ip, system
-			WHERE sys_hw_network_card_ip.system_id = system.system_id AND
-			system.system_id = ? AND system.man_status = 'production' AND
-			sys_hw_network_card_ip.net_mac_address = ? AND sys_hw_network_card_ip.ip_address_v4 = ? AND
-			(sys_hw_network_card_ip.ip_subnet = ? OR sys_hw_network_card_ip.ip_subnet = '' OR sys_hw_network_card_ip.ip_subnet = '0.0.0.0') AND
-            (sys_hw_network_card_ip.timestamp = ? OR sys_hw_network_card_ip.timestamp = ? )";
+        $sql = "SELECT ip_id FROM sys_hw_network_card_ip WHERE sys_hw_network_card_ip.system_id = ? AND net_mac_address = ? AND ip_address_v4 = ? AND (ip_subnet = ? OR ip_subnet = '' OR ip_subnet = '0.0.0.0') AND (`timestamp` = ? OR `timestamp` = ? )";
         $sql = $this->clean_sql($sql);
-        $data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4),
-                "$input->ip_subnet", "$details->original_timestamp", "$details->timestamp", );
+        $data = array("$details->system_id", "$input->net_mac_address", $this->ip_address_to_db($input->ip_address_v4), "$input->ip_subnet", "$details->original_timestamp", "$details->timestamp");
         $query = $this->db->query($sql, $data);
 
         if ($query->num_rows() > 0) {
