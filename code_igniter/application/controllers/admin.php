@@ -3889,29 +3889,53 @@ class admin extends MY_Controller
             $log_details->message = 'Upgrade database to 1.8.4 commenced';
             stdlog($log_details);
 
-            $sql = "ALTER TABLE sys_sw_service MODIFY service_start_mode varchar(200) NOT NULL default ''";
-            $this->data['output'] .= $sql."<br /><br />\n";
-            $query = $this->db->query($sql);
+            $sql = array();
+            $sql[] = "ALTER TABLE sys_sw_service MODIFY service_start_mode varchar(200) NOT NULL default ''";
+            $sql[] = "ALTER TABLE sys_sw_service MODIFY service_state varchar(200) NOT NULL default ''";
+            $sql[] = "DELETE FROM oa_config WHERE config_name = 'discovery_ip_exclude'";
+            $sql[] = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('discovery_ip_exclude', '', 'y', 'Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.')";
 
-            $sql = "ALTER TABLE sys_sw_service MODIFY service_state varchar(200) NOT NULL default ''";
-            $this->data['output'] .= $sql."<br /><br />\n";
-            $query = $this->db->query($sql);
+            # network card
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_hw_network_card ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_mac_address mac varchar(200) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_manufacturer manufacturer varchar(100) NOT NULL DEFAULT '' AFTER mac";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_model model varchar(255) NOT NULL DEFAULT '' AFTER manufacturer";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_description description varchar(255) NOT NULL DEFAULT '' AFTER model";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_alias alias varchar(255) NOT NULL DEFAULT '' AFTER description";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_ip_enabled ip_enabled varchar(10) NOT NULL DEFAULT '' AFTER alias";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_index net_index varchar(10) NOT NULL DEFAULT '' AFTER ip_enabled";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_dhcp_enabled dhcp_enabled varchar(100) NOT NULL DEFAULT '' AFTER net_index";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_dhcp_server dhcp_server varchar(30) NOT NULL DEFAULT '' AFTER dhcp_enabled";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_dhcp_lease_obtained dhcp_lease_obtained varchar(14) NOT NULL DEFAULT '' AFTER dhcp_server";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_dhcp_lease_expires dhcp_lease_expires varchar(14) NOT NULL DEFAULT '' AFTER dhcp_lease_obtained";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_dns_host_name dns_host_name varchar(100) NOT NULL DEFAULT '' AFTER dhcp_lease_expires";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_dns_server dns_server varchar(100) NOT NULL DEFAULT '' AFTER dns_host_name";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_dns_domain dns_domain varchar(100) NOT NULL DEFAULT '' AFTER dns_server";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_dns_domain_reg_enabled dns_domain_reg_enabled varchar(10) NOT NULL DEFAULT '' AFTER dns_domain";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_adapter_type type varchar(100) NOT NULL DEFAULT '' AFTER dns_domain_reg_enabled";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_connection_id connection varchar(255) NOT NULL DEFAULT '' AFTER type";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_connection_status connection_status varchar(30) NOT NULL DEFAULT '' AFTER connection";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_speed speed int(10) unsigned NOT NULL DEFAULT '0' AFTER connection_status";
+            $sql[] = "ALTER TABLE sys_hw_network_card CHANGE net_slaves slaves varchar(100) NOT NULL DEFAULT '' AFTER speed";
+            $sql[] = "ALTER TABLE sys_hw_network_card DROP net_dns_domain_suffix";
+            $sql[] = "ALTER TABLE sys_hw_network_card DROP net_wins_primary";
+            $sql[] = "ALTER TABLE sys_hw_network_card DROP net_wins_secondary";
+            $sql[] = "ALTER TABLE sys_hw_network_card DROP net_wins_lmhosts_enabled";
+            $sql[] = "ALTER TABLE sys_hw_network_card DROP KEY net_mac_address";
+            $sql[] = "ALTER TABLE sys_hw_network_card ADD KEY mac (`mac`)";
+            $sql[] = "RENAME TABLE sys_hw_network_card TO network";
 
-            $sql = "DELETE FROM oa_config WHERE config_name = 'discovery_ip_exclude'";
-            $this->data['output'] .= $sql."<br /><br />\n";
-            $query = $this->db->query($sql);
+            $sql[] = "UPDATE oa_config SET config_value = '20151112' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.8.4' WHERE config_name = 'display_version'";
 
-            $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('discovery_ip_exclude', '', 'y', 'Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.')";
-            $this->data['output'] .= $sql."<br /><br />\n";
-            $query = $this->db->query($sql);
-
-            $sql = "UPDATE oa_config SET config_value = '20151112' WHERE config_name = 'internal_version'";
-            $this->data['output'] .= $sql."<br /><br />\n";
-            $query = $this->db->query($sql);
-
-            $sql = "UPDATE oa_config SET config_value = '1.8.4' WHERE config_name = 'display_version'";
-            $this->data['output'] .= $sql."<br /><br />\n";
-            $query = $this->db->query($sql);
+            foreach ($sql as $this_query) {
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
 
             $log_details->message = 'Upgrade database to 1.8.4 completed';
             stdlog($log_details);
