@@ -425,8 +425,8 @@ class System extends CI_Controller
             print_r($errors);
             // not a valid XML string
             $xml_split = explode("\n", $xml_input, 10);
-            $hostname = str_replace("\t\t<hostname>", '', $xml_split[5]);
-            $hostname = str_replace('</hostname>', '', $hostname);
+            $hostname = @str_replace("\t\t<hostname>", '', $xml_split[5]);
+            $hostname = @str_replace('</hostname>', '', $hostname);
             $error_output = 'Invalid XML input for: ' . $hostname;
 
             $log_details = new stdClass();
@@ -437,7 +437,7 @@ class System extends CI_Controller
             unset($log_details);
 
             echo "<pre>\n";
-            print_r($xml);
+            @print_r($xml);
             exit;
         }
 
