@@ -127,7 +127,7 @@ class M_software extends MY_Model
         }
 
         // select all the current software from the DB
-        $sql = "SELECT sys_sw_software.* FROM sys_sw_software, system WHERE sys_sw_software.system_id = system.system_id AND system.system_id = ? AND system.man_status = 'production' AND sys_sw_software.timestamp = ? ";
+        $sql = "SELECT * FROM sys_sw_software WHERE system_id = ? AND `timestamp` = ? ";
         $sql = $this->clean_sql($sql);
         $data = array("$details->system_id", "$details->original_timestamp");
         $query = $this->db->query($sql, $data);
