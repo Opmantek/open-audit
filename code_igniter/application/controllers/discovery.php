@@ -698,7 +698,7 @@ class discovery extends CI_Controller
                 echo "***********************************************************************************\n";
                 echo "* NOTE - THIS PAGE WILL CONTINUOUSLY RENDER UNTIL THE DISCOVERY HAS FINISHED      *\n";
                 echo "* WATCH YOUR BROSWER TO SEE WHEN THE PAGE FINISHES RENDERING                      *\n";
-                echo "* DO NOT REFRESH THIS PAGE OR ATTEMPT TO GO 'back' UNITL THE PAGE HAS COMPLETED   *\n";
+                echo "* DO NOT REFRESH THIS PAGE OR ATTEMPT TO GO 'back' UNTIL THE PAGE HAS COMPLETED   *\n";
                 echo "***********************************************************************************\n";
             }
 
