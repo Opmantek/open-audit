@@ -1989,7 +1989,13 @@ if [ "$submit_online" = "y" ]; then
 		echo "Submitting results to server"
 		echo "URL: $url"
 	fi
-	wget --delete-after --post-file="$xml_file" "$url" 2>/dev/null
+	if [ -n "$(which wget 2>/dev/null)" ]; then
+		wget --delete-after --post-file="$xml_file" "$url" 2>/dev/null
+	else
+		if [ -n "$(which curl 2>/dev/null)" ]; then
+			curl --data "@$xml_file" "$url"
+		fi
+	fi
 fi
 
 sed -i -e 's/form_systemXML=//g' "$xml_file"
