@@ -99,16 +99,7 @@ class M_service extends MY_Model
             $services_that_change = "AeLookupSvc AppMgmt BITS FLEXnet Licensing Service LiveUpdate MMCSS MSIServer NSClient ShellHWDetection swprv TrustedInstaller VSS WinHttpAutoProxySvc Winexe ";
 
             // select all the current services from the DB
-            $sql = "SELECT
-	                    sys_sw_service.*
-	                FROM
-	                    sys_sw_service,
-	                    system
-	                WHERE
-	                    sys_sw_service.system_id     = system.system_id AND
-	                    system.system_id            = ? AND
-	                    system.man_status            = 'production' AND
-	                    sys_sw_service.timestamp     = ? ";
+            $sql = "SELECT * FROM sys_sw_service WHERE system_id = ? AND `timestamp` = ?";
             $sql = $this->clean_sql($sql);
             $data = array("$details->system_id", "$details->original_timestamp");
             $query = $this->db->query($sql, $data);
@@ -118,11 +109,13 @@ class M_service extends MY_Model
                 foreach ($input->service as $service_xml) {
                     $flag = 'insert';
                     foreach ($result as $service_db) {
-                        if (($service_db->service_name == $service_xml->service_name) and
-                            ($service_db->service_display_name == $service_xml->service_display_name) and
+                        # NOTE - removed the service_display_name test because of linux in 1.8.4
+                        if ((($service_db->service_name == $service_xml->service_name) and
                             ($service_db->service_path_name == $service_xml->service_path_name) and
-                            (($service_db->timestamp == $details->timestamp) or
-                            ($service_db->timestamp == $details->original_timestamp))) {
+                            (($service_db->timestamp == $details->timestamp) or ($service_db->timestamp == $details->original_timestamp))) or
+                            # As at 1.8.4, RedHat based computers were storing records inconsistent with others - this allows for that
+                            # We were storing the servicename as the final / separated string from the real service name as per other Linux's
+                            ($service_db->service_name == $service_xml->service_display_name and strtolower($details->os_group) == 'linux')) {
                             // we match - need to check details
                             $change_comment = "";
                             if (mb_strpos(strtolower($services_that_change), strtolower($service_db->service_name)) === false) {
@@ -134,10 +127,13 @@ class M_service extends MY_Model
                                     if ($change_comment > "") {
                                         $change_comment .= ", Service Start Mode was ".$service_db->service_start_mode." but is now ".$service_xml->service_start_mode;
                                     } else {
-                                        $change_comment = "Service Start Mode = was ".$service_db->service_start_mode." but is now ".$service_xml->service_start_mode;
+                                        $change_comment = "Service Start Mode was ".$service_db->service_start_mode." but is now ".$service_xml->service_start_mode;
                                     }
                                 }
-                                if ($service_db->service_state != $service_xml->service_state and $details->os_group == 'Windows') {
+                                # NOTE - Added "strtolower($details->os_group) != 'linux'" to the test below for the 1.8.4 release
+                                # we added service state in 1.8.4 for linux and some attributes return a value containing the PID
+                                # in order to not generate an alert every time the PID changes, we account for it here
+                                if ($service_db->service_state != $service_xml->service_state and strtolower($details->os_group) != 'linux') {
                                     if ($change_comment > "") {
                                         $change_comment .= ", Service State was ".$service_db->service_state." but is now ".$service_xml->service_state;
                                     } else {
@@ -145,9 +141,11 @@ class M_service extends MY_Model
                                     }
                                 }
                             }
+                            # NOTE - As at 1.8.4 we also return the service display name under Linux. Need to update it here or otherwise matching services
+                            # will not have this attribute updated
                             $flag = 'update';
-                            $sql = "UPDATE sys_sw_service SET timestamp = ?, service_started = ?, service_start_mode = ?, service_state = ? WHERE service_id = ?";
-                            $data = array("$details->timestamp", "$service_xml->service_started", "$service_xml->service_start_mode", "$service_xml->service_state", "$service_db->service_id");
+                            $sql = "UPDATE sys_sw_service SET timestamp = ?, service_started = ?, service_start_mode = ?, service_state = ?, service_display_name = ?, service_name = ? WHERE service_id = ?";
+                            $data = array("$details->timestamp", "$service_xml->service_started", "$service_xml->service_start_mode", "$service_xml->service_state", "$service_xml->service_display_name", "$service_xml->service_name", "$service_db->service_id");
                             $query = $this->db->query($sql, $data);
                             // insert the changed service into oa_alert_log
                             if ($change_comment != "") {
