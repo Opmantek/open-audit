@@ -299,7 +299,7 @@ if (!function_exists('get_snmp')) {
                 $details->man_type = 'router';
 
                 if (!isset($details->manufacturer)) {
-                    $details->manufacturer = '';
+                    $details->manufacturer = (string)'';
                 }
 
                 if (stripos($details->manufacturer, 'tplink') !== false or stripos($details->manufacturer, 'tp-link') !== false) {
@@ -327,7 +327,7 @@ if (!function_exists('get_snmp')) {
             if ($details->snmp_oid > '') {
                 $details->manufacturer = get_oid($details->snmp_oid);
                 if ($details->manufacturer == 'net-snmp') {
-                    $details->manufacturer = '';
+                    $details->manufacturer = (string)'';
                 }
                 $log_details->message = 'SNMPv2 manufacturer for '.$log_machine.' is: '.$details->manufacturer;
                 stdlog($log_details);
@@ -395,7 +395,7 @@ if (!function_exists('get_snmp')) {
             // guess at model using entity mib
             if (!isset($details->model) or $details->model == '') {
                 $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13"));
-                $log_details->message = 'SNMPv2 model for '.$log_machine.' is: '.$details->manufacturer.'(using Entity MIB)';
+                $log_details->message = 'SNMPv2 model for '.$log_machine.' is: '.$details->model.'(using Entity MIB)';
                 stdlog($log_details);
             }
 
@@ -409,6 +409,7 @@ if (!function_exists('get_snmp')) {
             if (!isset($details->model) or $details->model == '' or $details->model == 'unknown') {
                 $log_details->message = 'SNMPv2 model for '.$log_machine.' is unknown';
                 stdlog($log_details);
+                unset($details->model);
             }
 
             // serial
@@ -888,6 +889,13 @@ if (!function_exists('get_snmp')) {
                     include 'snmp_6876_2_helper.php';
                 }
             }
+
+            if (!isset($details->manufacturer) or $details->manufacturer == '' or $details->manufacturer == 'unknown') {
+                $log_details->message = 'SNMPv2 manufacturer for '.$log_machine.' is unknown';
+                stdlog($log_details);
+                unset($details->manufacturer);
+            }
+
         } // end of v2
 
 
