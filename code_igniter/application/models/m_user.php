@@ -133,7 +133,7 @@ class M_user extends MY_Model
         $result = $query->result();
         foreach ($result as $myrow) {
             $alert_details = 'user removed - '.$myrow->user_name;
-            $this->m_alerts->generate_alert($details->system_id, 'sys_sw_user', $myrow->processor_id, $alert_details, $details->timestamp);
+            $this->m_alerts->generate_alert($details->system_id, 'sys_sw_user', $myrow->user_id, $alert_details, $details->timestamp);
         }
 
         // new user
@@ -151,7 +151,7 @@ class M_user extends MY_Model
         $result = $query->result();
         foreach ($result as $myrow) {
             $alert_details = 'user installed - '.$myrow->user_name;
-            $this->m_alerts->generate_alert($details->system_id, 'sys_sw_user', $myrow->processor_id, $alert_details, $details->timestamp);
+            $this->m_alerts->generate_alert($details->system_id, 'sys_sw_user', $myrow->user_id, $alert_details, $details->timestamp);
         }
     }
 }
