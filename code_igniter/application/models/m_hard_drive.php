@@ -93,7 +93,7 @@ class M_hard_drive extends MY_Model
             if ($input->hard_drive_model == 'VMware Virtual Disk') {
                 $sql = "SELECT hard_drive_id FROM sys_hw_hard_drive WHERE system_id = ? AND (hard_drive_model = ? or hard_drive_model = 'VMware, VMware Virtual S SCSI Disk Device') AND hard_drive_serial = ? AND hard_drive_index = ? AND hard_drive_size = ? AND (`timestamp` = ? OR `timestamp` = ? ) LIMIT 1";
             } else {
-                $sql = "SELECT hard_drive_id FROM sys_hw_hard_drive WHERE system_id = ? AND hard_drive_model = ? AND hard_drive_serial = ? AND hard_drive_index = ? AND hard_drive_size = ? AND (`timestamp` = ? OR `timestamp `= ? ) LIMIT 1";
+                $sql = "SELECT hard_drive_id FROM sys_hw_hard_drive WHERE system_id = ? AND hard_drive_model = ? AND hard_drive_serial = ? AND hard_drive_index = ? AND hard_drive_size = ? AND (`timestamp` = ? OR `timestamp`= ? ) LIMIT 1";
             }
             $sql = $this->clean_sql($sql);
             $data = array("$details->system_id", "$input->hard_drive_model", "$input->hard_drive_serial", "$input->hard_drive_index", "$input->hard_drive_size", "$details->original_timestamp", "$details->timestamp");
