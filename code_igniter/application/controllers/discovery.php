@@ -249,7 +249,6 @@ class discovery extends CI_Controller
                     echo 'DEBUG - Command Executed: '.$command_string."\n";
                     echo 'DEBUG - Return Value: '.$return_var."\n";
                     echo "DEBUG - Command Output:\n";
-                    print_r($output);
                     if ($return_var != '0') {
                         $log_details->message = 'Attempt to run discover_domain.vbs on localhost has failed';
                         stdlog($log_details);
@@ -749,7 +748,7 @@ class discovery extends CI_Controller
                 $this->load->helper('snmp_oid');
             }
             $this->load->model('m_system');
-            $this->load->model('m_network_card');
+            #$this->load->model('m_network_card');
             $this->load->model('m_ip_address');
             $this->load->model('m_virtual_machine');
             $this->load->model('m_module');
@@ -757,6 +756,7 @@ class discovery extends CI_Controller
             $this->load->model('m_oa_general');
             $this->load->model('m_sys_man_audits');
             $this->load->model('m_alerts');
+            $this->load->model('m_devices_components');
             $timestamp = date('Y-m-d H:i:s');
 
             $count = 0;
@@ -953,9 +953,14 @@ class discovery extends CI_Controller
                             }
                             if (isset($network_interfaces) and count($network_interfaces > 0)) {
                                 foreach ($network_interfaces as $interface) {
-                                    if (isset($interface->net_mac_address) and (string) $interface->net_mac_address != '') {
+                                    // if (isset($interface->net_mac_address) and (string) $interface->net_mac_address != '') {
+                                    //     // we have a mac address, insert it into the $details object
+                                    //     $mac_address = strtolower((string) $interface->net_mac_address);
+                                    //     $details->mac_addresses->$mac_address = $mac_address;
+                                    // }
+                                    if (isset($interface->mac) and (string) $interface->mac != '') {
                                         // we have a mac address, insert it into the $details object
-                                        $mac_address = strtolower((string) $interface->net_mac_address);
+                                        $mac_address = strtolower((string) $interface->mac);
                                         $details->mac_addresses->$mac_address = $mac_address;
                                     }
                                 }
@@ -1417,14 +1422,22 @@ class discovery extends CI_Controller
 
                         // update any network interfaces and ip addresses retrieved by SNMP
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
-                            foreach ($network_interfaces as $input) {
-                                $this->m_network_card->process_network_cards($input, $details);
-
-                                if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                                    foreach ($input->ip_addresses as $ip_input) {
-                                        $ip_input = (object) $ip_input;
-                                        $this->m_ip_address->process_addresses($ip_input, $details);
-                                    }
+                            // foreach ($network_interfaces as $input) {
+                                // $this->m_network_card->process_network_cards($input, $details);
+                                // if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
+                                //     foreach ($input->ip_addresses as $ip_input) {
+                                //         $ip_input = (object) $ip_input;
+                                //         $this->m_ip_address->process_addresses($ip_input, $details);
+                                //     }
+                                // }
+                            // }
+                            // print_r($network_interfaces);
+                            // echo "\n";
+                            $this->m_devices_components->process_component('network', $details, $network_interfaces);
+                            if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
+                                foreach ($input->ip_addresses as $ip_input) {
+                                    $ip_input = (object) $ip_input;
+                                    $this->m_ip_address->process_addresses($ip_input, $details);
                                 }
                             }
                             // finish off with updating any network IPs that don't have a matching interface
@@ -1738,12 +1751,11 @@ class discovery extends CI_Controller
                                                         }
 
                                                         $count = 0;
-                                                        $this->load->model('m_processor');
-                                                        $this->load->model('m_bios');
-                                                        $this->load->model('m_memory');
-                                                        $this->load->model('m_motherboard');
-                                                        $this->load->model('m_video');
-                                                        $this->load->model('m_software');
+                                                        // $this->load->model('m_processor');
+                                                        // $this->load->model('m_bios');
+                                                        // $this->load->model('m_memory');
+                                                        // $this->load->model('m_motherboard');
+                                                        // $this->load->model('m_video');
 
                                                         foreach ($esx_xml->children() as $child) {
                                                             if ($child->getName() === 'sys') {
@@ -1775,45 +1787,18 @@ class discovery extends CI_Controller
                                                                 $this->m_sys_man_audits->insert_audit($esx_details);
                                                             }
                                                         }
+                                                        $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network);
+                                                        $this->m_devices_components->process_component('software', $esx_details, $esx_xml->software);
+                                                        $this->m_devices_components->process_component('processor', $esx_details, $esx_xml->processor);
+                                                        $this->m_devices_components->process_component('bios', $esx_details, $esx_xml->bios);
+                                                        $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory);
+                                                        $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard);
+                                                        $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video);
                                                         foreach ($esx_xml->children() as $child) {
-                                                            if ($child->getName() === 'bios') {
-                                                                $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                                $this->m_bios->process_bios($esx_xml->bios, $esx_details);
-                                                            }
-                                                            if ($child->getName() === 'memory') {
-                                                                $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                                foreach ($esx_xml->memory->slot as $input) {
-                                                                    $this->m_memory->process_memory($input, $esx_details);
-                                                                }
-                                                            }
-                                                            if ($child->getName() === 'motherboard') {
-                                                                $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                                $this->m_motherboard->process_motherboard($esx_xml->motherboard, $esx_details);
-                                                            }
-                                                            if ($child->getName() === 'network_cards') {
-                                                                $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                                foreach ($esx_xml->network_cards->network_card as $input) {
-                                                                    $this->m_network_card->process_network_cards($input, $esx_details);
-                                                                }
-                                                            }
                                                             if ($child->getName() === 'addresses') {
                                                                 $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
                                                                 foreach ($esx_xml->addresses->ip_address as $input) {
                                                                     $this->m_ip_address->process_addresses($input, $esx_details);
-                                                                }
-                                                            }
-                                                            if ($child->getName() === 'processor') {
-                                                                $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                                $this->m_processor->process_processor($esx_xml->processor, $esx_details);
-                                                            }
-                                                            if ($child->getName() === 'software') {
-                                                                $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                                $this->m_software->process_software($esx_xml->software, $esx_details);
-                                                            }
-                                                            if ($child->getName() === 'video_cards') {
-                                                                $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                                foreach ($esx_xml->video_cards->video_card as $input) {
-                                                                    $this->m_video->process_video_cards($input, $esx_details);
                                                                 }
                                                             }
                                                             if ($child->getName() === 'guests') {
@@ -2095,12 +2080,11 @@ class discovery extends CI_Controller
                                             }
                                             if ($error == '') {
                                                 $count = 0;
-                                                $this->load->model('m_processor');
-                                                $this->load->model('m_bios');
-                                                $this->load->model('m_memory');
-                                                $this->load->model('m_motherboard');
-                                                $this->load->model('m_video');
-                                                $this->load->model('m_software');
+                                                // $this->load->model('m_processor');
+                                                // $this->load->model('m_bios');
+                                                // $this->load->model('m_memory');
+                                                // $this->load->model('m_motherboard');
+                                                // $this->load->model('m_video');
 
                                                 foreach ($esx_xml->children() as $child) {
                                                     if ($child->getName() === 'sys') {
@@ -2132,45 +2116,18 @@ class discovery extends CI_Controller
                                                         $this->m_sys_man_audits->insert_audit($esx_details);
                                                     }
                                                 }
+                                                $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network);
+                                                $this->m_devices_components->process_component('software', $esx_details, $esx_xml->software);
+                                                $this->m_devices_components->process_component('processor', $esx_details, $esx_xml->processor);
+                                                $this->m_devices_components->process_component('bios', $esx_details, $esx_xml->bios);
+                                                $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory);
+                                                $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard);
+                                                $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video);
                                                 foreach ($esx_xml->children() as $child) {
-                                                    if ($child->getName() === 'bios') {
-                                                        $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                        $this->m_bios->process_bios($esx_xml->bios, $esx_details);
-                                                    }
-                                                    if ($child->getName() === 'memory') {
-                                                        $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                        foreach ($esx_xml->memory->slot as $input) {
-                                                            $this->m_memory->process_memory($input, $esx_details);
-                                                        }
-                                                    }
-                                                    if ($child->getName() === 'motherboard') {
-                                                        $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                        $this->m_motherboard->process_motherboard($esx_xml->motherboard, $esx_details);
-                                                    }
-                                                    if ($child->getName() === 'network_cards') {
-                                                        $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                        foreach ($esx_xml->network_cards->network_card as $input) {
-                                                            $this->m_network_card->process_network_cards($input, $esx_details);
-                                                        }
-                                                    }
                                                     if ($child->getName() === 'addresses') {
                                                         $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
                                                         foreach ($esx_xml->addresses->ip_address as $input) {
                                                             $this->m_ip_address->process_addresses($input, $esx_details);
-                                                        }
-                                                    }
-                                                    if ($child->getName() === 'processor') {
-                                                        $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                        $this->m_processor->process_processor($esx_xml->processor, $esx_details);
-                                                    }
-                                                    if ($child->getName() === 'software') {
-                                                        $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                        $this->m_software->process_software($esx_xml->software, $esx_details);
-                                                    }
-                                                    if ($child->getName() === 'video_cards') {
-                                                        $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                        foreach ($esx_xml->video_cards->video_card as $input) {
-                                                            $this->m_video->process_video_cards($input, $esx_details);
                                                         }
                                                     }
                                                     if ($child->getName() === 'guests') {

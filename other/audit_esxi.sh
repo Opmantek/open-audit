@@ -578,11 +578,13 @@ bios_serial="$system_serial"
 bios_smversion=""
 bios_version="$bios_firm_rev"
 echo "	<bios>" >> $xml_file
-echo "		<bios_description>"$(escape_xml "$bios_description")"</bios_description>" >> $xml_file
-echo "		<bios_manufacturer>"$(escape_xml "$bios_manufacturer")"</bios_manufacturer>" >> $xml_file
-echo "		<bios_serial>"$(escape_xml "$bios_serial")"</bios_serial>" >> $xml_file
-echo "		<bios_smversion>"$(escape_xml "$bios_smversion")"</bios_smversion>" >> $xml_file
-echo "		<bios_version>"$(escape_xml "$bios_version")"</bios_version>" >> $xml_file
+echo "		<item>" >> $xml_file
+echo "			<description>"$(escape_xml "$bios_description")"</description>" >> $xml_file
+echo "			<manufacturer>"$(escape_xml "$bios_manufacturer")"</manufacturer>" >> $xml_file
+echo "			<serial>"$(escape_xml "$bios_serial")"</serial>" >> $xml_file
+echo "			<smversion>"$(escape_xml "$bios_smversion")"</smversion>" >> $xml_file
+echo "			<version>"$(escape_xml "$bios_version")"</version>" >> $xml_file
+echo "		</item>" >> $xml_file
 echo "	</bios>" >> $xml_file
 
 
@@ -596,16 +598,16 @@ processor_socket=$(trim `echo "$smbiosDump" | sed -n '/^  Processor Info:/,/^  [
 processor_speed=$(trim `echo "$smbiosDump" | sed -n '/^  Processor Info:/,/^  [A-Za-z]/p' | grep '    Current Speed:' | cut -d: -f2 | sed 's/"//g'`)
 processor_speed=$(echo "$processor_speed" | sed 's/ MHz//g')
 processor_manufacturer=$(trim `echo "$smbiosDump" | sed -n '/^  Processor Info:/,/^  [A-Za-z]/p' | grep '    Manufacturer:' | cut -d: -f2 | sed 's/"//g'`)
-processor_power_management_supported=""
 echo "	<processor>" >> $xml_file
-echo "		<processor_count>"$(escape_xml "$system_pc_processors")"</processor_count>" >> $xml_file
-echo "		<processor_cores>"$(escape_xml "$system_pc_cores")"</processor_cores>" >> $xml_file
-echo "		<processor_logical>"$(escape_xml "$system_pc_threads")"</processor_logical>" >> $xml_file
-echo "		<processor_socket>"$(escape_xml "$processor_socket")"</processor_socket>" >> $xml_file
-echo "		<processor_description>"$(escape_xml "$processor_description")"</processor_description>" >> $xml_file
-echo "		<processor_speed>"$(escape_xml "$processor_speed")"</processor_speed>" >> $xml_file
-echo "		<processor_manufacturer>"$(escape_xml "$processor_manufacturer")"</processor_manufacturer>" >> $xml_file
-echo "		<processor_power_management_supported>"$(escape_xml "$processor_power_management_supported")"</processor_power_management_supported>" >> $xml_file
+echo "		<item>" >> $xml_file
+echo "			<physical_count>"$(escape_xml "$system_pc_processors")"</physical_count>" >> $xml_file
+echo "			<core_count>"$(escape_xml "$system_pc_cores")"</core_count>" >> $xml_file
+echo "			<logical_count>"$(escape_xml "$system_pc_threads")"</logical_count>" >> $xml_file
+echo "			<socket>"$(escape_xml "$processor_socket")"</socket>" >> $xml_file
+echo "			<description>"$(escape_xml "$processor_description")"</description>" >> $xml_file
+echo "			<speed>"$(escape_xml "$processor_speed")"</speed>" >> $xml_file
+echo "			<manufacturer>"$(escape_xml "$processor_manufacturer")"</manufacturer>" >> $xml_file
+echo "		</item>" >> $xml_file
 echo "	</processor>" >> $xml_file
 
 
@@ -658,16 +660,16 @@ if [ "$memory_slots" != "0" ]; then
 		# Ignore empty slots
 		if [ "$memory_capacity" != "" ]; then
 			#echo "3: $memory_capacity"
-			echo "		<slot>">> $xml_file
+			echo "		<item>">> $xml_file
 			echo "			<bank>"$(escape_xml "$memory_bank")"</bank>">> $xml_file
 			echo "			<type>"$(escape_xml "$memory_type")"</type>">> $xml_file
 			echo "			<form_factor>"$(escape_xml "$memory_form_factor")"</form_factor>">> $xml_file
 			echo "			<detail>"$(escape_xml "$memory_detail")"</detail>">> $xml_file
-			echo "			<capacity>"$(escape_xml "$memory_capacity")"</capacity>">> $xml_file
+			echo "			<size>"$(escape_xml "$memory_capacity")"</size>">> $xml_file
 			echo "			<speed>"$(escape_xml "$memory_speed")"</speed>">> $xml_file
 			echo "			<tag>"$(escape_xml "$memory_tag")"</tag>">> $xml_file
 			echo "			<serial>"$(escape_xml "$memory_serial")"</serial>">> $xml_file
-			echo "		</slot>">> $xml_file
+			echo "		</item>">> $xml_file
 		fi
 	done
 	echo "	</memory>">> $xml_file
@@ -725,12 +727,13 @@ if [ "$mobo_manufacturer" != "" ]; then
 	mobo_serial=$(trim `echo "$smbiosDump" | sed -n '/^  Board Info:/,/^  [A-Za-z]/p' | grep '    Serial' | cut -d":" -f2 | sed 's/"//g'`)
 
 	echo "	<motherboard>">> $xml_file
-	echo "		<manufacturer>"$(escape_xml "$mobo_manufacturer")"</manufacturer>" >> $xml_file
-	echo "		<model>"$(escape_xml "$mobo_model")"</model>" >> $xml_file
-	echo "		<serial>"$(escape_xml "$mobo_serial")"</serial>" >> $xml_file
-	echo "		<processor_slots></processor_slots>" >> $xml_file
-	echo "		<processor_type>"$(escape_xml "$processor_socket")"</processor_type>" >> $xml_file
-	echo "		<memory_slots>"$(escape_xml "$memory_slots")"</memory_slots>" >> $xml_file
+	echo "		<item>">> $xml_file
+	echo "			<manufacturer>"$(escape_xml "$mobo_manufacturer")"</manufacturer>" >> $xml_file
+	echo "			<model>"$(escape_xml "$mobo_model")"</model>" >> $xml_file
+	echo "			<serial>"$(escape_xml "$mobo_serial")"</serial>" >> $xml_file
+	echo "			<processor_type>"$(escape_xml "$processor_socket")"</processor_type>" >> $xml_file
+	echo "			<memory_slot_count>"$(escape_xml "$memory_slots")"</memory_slot_count>" >> $xml_file
+	echo "		</item>">> $xml_file
 	echo "	</motherboard>" >> $xml_file
 fi
 
@@ -748,13 +751,13 @@ if [ "$video_description" != "" ]; then
 	video_memory=""
 	video_memory=$(trim `esxcli graphics device list 2>/dev/null | grep 'Memory Size' | cut -d: -f2`)
 	video_memory=`expr $video_memory \* 1024`
-	echo "	<video_cards>" >> $xml_file
-		echo "		<video_card>" >> $xml_file
-		echo "			<video_description>"$(escape_xml "$video_description")"</video_description>" >> $xml_file
-		echo "			<video_manufacturer>"$(escape_xml "$video_manufacturer")"</video_manufacturer>" >> $xml_file
-		echo "			<video_memory>"$(escape_xml "$video_memory")"</video_memory>" >> $xml_file
-		echo "		</video_card>" >> $xml_file
-	echo "	</video_cards>" >> $xml_file
+	echo "	<video>" >> $xml_file
+		echo "		<item>" >> $xml_file
+		echo "			<model>"$(escape_xml "$video_description")"</model>" >> $xml_file
+		echo "			<manufacturer>"$(escape_xml "$video_manufacturer")"</manufacturer>" >> $xml_file
+		echo "			<size>"$(escape_xml "$video_memory")"</size>" >> $xml_file
+		echo "		</item>" >> $xml_file
+	echo "	</video>" >> $xml_file
 fi
 
 
@@ -765,7 +768,7 @@ fi
 # Name    PCI           Driver      Link Speed     Duplex MAC Address       MTU    Description
 # vmnic0  0000:01:00.00 e1000e      Up   1000Mbps  Full   68:05:ff:23:69:aa 1500   Intel Corporation 82574L Gigabit Network Connection
 addr_info=""
-echo "	<network_cards>" >> $xml_file
+echo "	<network>" >> $xml_file
 # for card in `esxcfg-nics -l | grep -v ^Name`; do
 	# icard=$(echo "$card" | sed 's/ \+/ /g')
 	# net_index=$(echo "$icard" | cut -d" " -f1)
@@ -815,31 +818,19 @@ for card in `esxcli network ip interface list | grep -v "^ " | grep .`; do
 		addr_info=$addr_info"		</ip_address>\n"
 	done
 
-	echo "		<network_card>" >> $xml_file
+	echo "		<item>" >> $xml_file
 	echo "			<net_index>"$(escape_xml "$net_index")"</net_index>" >> $xml_file
-	echo "			<net_mac_address>"$(escape_xml "$net_mac_address")"</net_mac_address>" >> $xml_file
-	echo "			<net_manufacturer>"$(escape_xml "$net_manufacturer")"</net_manufacturer>" >> $xml_file
-	echo "			<net_model>"$(escape_xml "$net_model")"</net_model>" >> $xml_file
-	echo "			<net_description>"$(escape_xml "$net_model")"</net_description>" >> $xml_file
-	echo "			<net_ip_enabled>"$(escape_xml "$net_ip_enabled")"</net_ip_enabled>" >> $xml_file
-	echo "			<net_connection_id>"$(escape_xml "$net_connection_id")"</net_connection_id>" >> $xml_file
-	echo "			<net_connection_status>"$(escape_xml "$net_connection_status")"</net_connection_status>" >> $xml_file
-	echo "			<net_speed>"$(escape_xml "$net_speed")"</net_speed>" >> $xml_file
-	echo "			<net_adapter_type></net_adapter_type>" >> $xml_file
-	echo "			<net_dhcp_enabled></net_dhcp_enabled>" >> $xml_file
-	echo "			<net_dhcp_server></net_dhcp_server>" >> $xml_file
-	echo "			<net_dhcp_lease_obtained></net_dhcp_lease_obtained>" >> $xml_file
-	echo "			<net_dhcp_lease_expires></net_dhcp_lease_expires>" >> $xml_file
-	echo "			<net_dns_host_name></net_dns_host_name>" >> $xml_file
-	echo "			<net_dns_domain></net_dns_domain>" >> $xml_file
-	echo "			<net_dns_domain_reg_enabled></net_dns_domain_reg_enabled>" >> $xml_file
-	echo "			<net_dns_server></net_dns_server>" >> $xml_file
-	echo "			<net_wins_primary></net_wins_primary>" >> $xml_file
-	echo "			<net_wins_secondary></net_wins_secondary>" >> $xml_file
-	echo "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>" >> $xml_file
-	echo "		</network_card>" >> $xml_file
+	echo "			<mac>"$(escape_xml "$net_mac_address")"</mac>" >> $xml_file
+	echo "			<manufacturer>"$(escape_xml "$net_manufacturer")"</manufacturer>" >> $xml_file
+	echo "			<model>"$(escape_xml "$net_model")"</model>" >> $xml_file
+	echo "			<description>"$(escape_xml "$net_model")"</description>" >> $xml_file
+	echo "			<ip_enabled>"$(escape_xml "$net_ip_enabled")"</ip_enabled>" >> $xml_file
+	echo "			<connection>"$(escape_xml "$net_connection_id")"</connection>" >> $xml_file
+	echo "			<connection_status>"$(escape_xml "$net_connection_status")"</connection_status>" >> $xml_file
+	echo "			<speed>"$(escape_xml "$net_speed")"</speed>" >> $xml_file
+	echo "		</item>" >> $xml_file
 done
-echo "	</network_cards>" >> $xml_file
+echo "	</network>" >> $xml_file
 
 if [ -n "$addr_info" ]; then
 	{
@@ -915,14 +906,13 @@ for package in `esxcli software vib list | grep -v -e ^--------- -e ^Name` ; do
 	software_publisher=`echo "$package" | cut -d" " -f3`
 	software_install_date=`echo "$package" | cut -d" " -f5`
 	software_installed_on=`echo "$package" | cut -d" " -f5`
-	echo "		<package>" >> $xml_file
-	echo "			<software_name>"$(escape_xml "$software_name")"</software_name>" >> $xml_file
-	echo "			<software_version>"$(escape_xml "$software_version")"</software_version>" >> $xml_file
-	echo "			<software_url></software_url>" >> $xml_file
-	echo "			<software_install_date>"$(escape_xml "$software_install_date")"</software_install_date>" >> $xml_file
-	echo "			<software_installed_on>"$(escape_xml "$software_installed_on")"</software_installed_on>" >> $xml_file
-	echo "			<software_publisher>"$(escape_xml "$software_publisher")"</software_publisher>" >> $xml_file
-	echo "		</package>" >> $xml_file
+	echo "		<item>" >> $xml_file
+	echo "			<name>"$(escape_xml "$software_name")"</name>" >> $xml_file
+	echo "			<version>"$(escape_xml "$software_version")"</version>" >> $xml_file
+	echo "			<install_date>"$(escape_xml "$software_install_date")"</install_date>" >> $xml_file
+	echo "			<installed_on>"$(escape_xml "$software_installed_on")"</installed_on>" >> $xml_file
+	echo "			<publisher>"$(escape_xml "$software_publisher")"</publisher>" >> $xml_file
+	echo "		</item>" >> $xml_file
 done
 echo "	</software>" >> $xml_file
 

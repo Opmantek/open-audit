@@ -795,44 +795,32 @@ if (!function_exists('get_snmp')) {
                     $interface->net_index = snmp_clean($value);
 
                     snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-                    $interface->net_mac_address = format_mac(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6.".$interface->net_index));
+                    $interface->mac = format_mac(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.2.2.1.6.".$interface->net_index));
                     snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
 
-                    // if (!isset($interface->net_mac_address) or $interface->net_mac_address == '') {
-                    //     snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-                    //     $test_mac = @snmp2_walk($details->man_ip_address, $details->snmp_community, ".1.3.6.1.2.1.4.22.1.2.".$interface->net_index);
-                    //     snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-                    //     if (is_array($test_mac) and count($test_mac) > 0) {
-                    //         $interface->net_mac_address = format_mac($test_mac[0]);
-                    //     }
-                    // }
-
-                    if (!isset($interface->net_mac_address)) {
-                        $interface->net_mac_address = '';
+                    if (!isset($interface->mac)) {
+                        $interface->mac = '';
                     }
 
-                    $interface->net_model = @snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
-                    $interface->net_description = $interface->net_model;
-                    $interface->net_connection_id = @snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
-                    $interface->net_alias = @snmp_clean($aliases[".1.3.6.1.2.1.31.1.1.1.18.".$interface->net_index]);
-                    $interface->net_adapter_type = @interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
-                    $interface->net_ip_enabled = @ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
+                    $interface->model = @snmp_clean($models[".1.3.6.1.2.1.2.2.1.2.".$interface->net_index]);
+                    $interface->description = $interface->model;
+                    $interface->connection_id = @snmp_clean($connection_ids[".1.3.6.1.2.1.31.1.1.1.1.".$interface->net_index]);
+                    $interface->alias = @snmp_clean($aliases[".1.3.6.1.2.1.31.1.1.1.18.".$interface->net_index]);
+                    $interface->type = @interface_type(snmp_clean($types[".1.3.6.1.2.1.2.2.1.3.".$interface->net_index]));
+                    $interface->ip_enabled = @ip_enabled(snmp_clean($ip_enableds[".1.3.6.1.2.1.2.2.1.8.".$interface->net_index]));
                     $interface->ifadminstatus = @if_admin_status(snmp_clean($ifAdminStatus[".1.3.6.1.2.1.2.2.1.7.".$interface->net_index]));
                     $interface->iflastchange = @snmp_clean($ifLastChange[".1.3.6.1.2.1.2.2.1.9.".$interface->net_index]);
-                    $interface->net_speed = @snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
-                    $interface->net_manufacturer = '';
-                    $interface->net_connection_status = '';
-                    $interface->net_dhcp_enabled = '';
-                    $interface->net_dhcp_server = '';
-                    $interface->net_dhcp_lease_obtained = '';
-                    $interface->net_dhcp_lease_expires = '';
-                    $interface->net_dns_host_name = '';
-                    $interface->net_dns_domain = '';
-                    $interface->net_dns_domain_reg_enabled = '';
-                    $interface->net_dns_server = '';
-                    $interface->net_wins_primary = '';
-                    $interface->net_wins_secondary = '';
-                    $interface->net_wins_lmhosts_enabled = '';
+                    $interface->speed = @snmp_clean($speeds[".1.3.6.1.2.1.2.2.1.5.".$interface->net_index]);
+                    $interface->manufacturer = '';
+                    $interface->connection_status = '';
+                    $interface->dhcp_enabled = '';
+                    $interface->dhcp_server = '';
+                    $interface->dhcp_lease_obtained = '';
+                    $interface->dhcp_lease_expires = '';
+                    $interface->dns_host_name = '';
+                    $interface->dns_domain = '';
+                    $interface->dns_domain_reg_enabled = '';
+                    $interface->dns_server = '';
                     if (is_array($ip_addresses) and count($ip_addresses > 0)) {
                         foreach ($ip_addresses as $each_key => $each_value) {
                             $each_value = snmp_clean($each_value);
@@ -840,7 +828,8 @@ if (!function_exists('get_snmp')) {
                                 $new_ip = new stdclass();
                                 $new_ip->net_index = $interface->net_index;
                                 $new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.20.1.2.", "", $each_key);
-                                $new_ip->net_mac_address = $interface->net_mac_address;
+                                #$new_ip->net_mac_address = $interface->net_mac_address;
+                                $new_ip->net_mac_address = $interface->mac;
                                 $new_ip->ip_address_v6 = '';
                                 $new_ip->ip_subnet = snmp_clean($subnets[".1.3.6.1.2.1.4.20.1.3.".$new_ip->ip_address_v4]);
                                 $new_ip->ip_address_version = '4';
@@ -859,7 +848,8 @@ if (!function_exists('get_snmp')) {
                             $new_ip->ip_subnet = '';
                             $new_ip->ip_address_version = '4';
                             if ($new_ip->net_index == $interface->net_index) {
-                                $new_ip->net_mac_address = $interface->net_mac_address;
+                                #$new_ip->net_mac_address = $interface->net_mac_address;
+                                $new_ip->net_mac_address = $interface->mac;
                                 $interface->ip_addresses[] = $new_ip;
                             }
                             $new_ip = null;
@@ -867,7 +857,8 @@ if (!function_exists('get_snmp')) {
                     }
                     if (isset($details->os_group) and $details->os_group == 'Windows') {
                         if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-                            if (strpos(strtolower($interface->net_adapter_type), 'loopback') === false) {
+                            #if (strpos(strtolower($interface->net_adapter_type), 'loopback') === false) {
+                            if (strpos(strtolower($interface->type), 'loopback') === false) {
                                 $interfaces_filtered[] = $interface;
                             }
                         }

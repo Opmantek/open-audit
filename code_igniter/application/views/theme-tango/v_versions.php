@@ -32,19 +32,44 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_help_about' and $include != 'v_upgrade') {
-    $include = "v_help_about";
-    $heading = "You must upgrade";
-}
-if (!isset($this->user->user_theme) or $this->user->user_theme == '') {
-    $this->user->user_theme = 'tango';
-}
+$sortcolumn = 2;
+if (count($query) > 0) {
+    ?>
+<table cellspacing="1" class="tablesorter">
+	<thead>
+		<tr>
+			<th><?php echo __('Name')?></th>
+			<th><?php echo __('Version')?></th>
+            <th><?php echo __('Chunk Length')?></th>
+			<th><?php echo __('Chunk')?></th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+        if (count($query) > 0) {
+            foreach ($query as $key): ?>
+    			<tr>
+                    <td><?php echo $key['name']; ?></td>
+                    <td><?php echo $key['version']; ?></td>
+                    <td><?php echo $key['length']; ?></td>
+                    <td><?php echo $key['piece']; ?></td>
+    			</tr>
+			<?php endforeach;
+            ?>
+		<?php } else { ?>
+		<tr>
+			<td>&nbsp;</td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<?php } ?>
+	</tbody>
+</table>
+<?php
 
-$oa_web_index    = htmlentities($this->config->item('oa_web_index'));
-$oa_web_folder   = htmlentities($this->config->item('oa_web_folder'));
-$oa_theme_images = htmlentities($oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images');
-$oa_theme_files  = htmlentities($oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-files');
-$GLOBALS['oa_theme_images'] = $oa_theme_images;
-$GLOBALS['oa_theme_files'] = $oa_theme_files;
-
-include "theme-".$this->user->user_theme."/v_template.php";
+} else {
+    echo "<br /><br />";
+}
+?>

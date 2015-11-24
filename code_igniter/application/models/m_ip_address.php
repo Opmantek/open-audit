@@ -42,15 +42,25 @@ class M_ip_address extends MY_Model
 
     public function get_system_ip($system_id)
     {
+   //      $sql = "SELECT sys_hw_network_card_ip.*,
+			// sys_hw_network_card.net_description  as net_description,
+			// sys_hw_network_card.net_connection_id  as net_connection_id
+			// FROM sys_hw_network_card_ip
+			// LEFT JOIN system ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp)
+			// LEFT JOIN sys_hw_network_card ON (sys_hw_network_card_ip.net_index = sys_hw_network_card.net_index AND
+			// 	sys_hw_network_card_ip.system_id = sys_hw_network_card.system_id AND
+			// 	sys_hw_network_card_ip.timestamp = sys_hw_network_card.timestamp)
+			// WHERE system.system_id = ? GROUP BY ip_id";
+
         $sql = "SELECT sys_hw_network_card_ip.*,
-			sys_hw_network_card.net_description  as net_description,
-			sys_hw_network_card.net_connection_id  as net_connection_id
-			FROM sys_hw_network_card_ip
-			LEFT JOIN system ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp)
-			LEFT JOIN sys_hw_network_card ON (sys_hw_network_card_ip.net_index = sys_hw_network_card.net_index AND
-				sys_hw_network_card_ip.system_id = sys_hw_network_card.system_id AND
-				sys_hw_network_card_ip.timestamp = sys_hw_network_card.timestamp)
-			WHERE system.system_id = ? GROUP BY ip_id";
+            network.description  as net_description,
+            network.connection  as net_connection_id
+            FROM sys_hw_network_card_ip
+            LEFT JOIN system ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp)
+            LEFT JOIN network ON (sys_hw_network_card_ip.net_index = network.net_index AND
+                sys_hw_network_card_ip.system_id = network.system_id)
+            WHERE system.system_id = ? AND network.current = 'y' GROUP BY ip_id";
+
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
@@ -61,13 +71,22 @@ class M_ip_address extends MY_Model
 
     public function update_missing_interfaces($system_id)
     {
-        $sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card.net_index
-		FROM sys_hw_network_card
-		LEFT JOIN sys_hw_network_card_ip ON
-		(sys_hw_network_card.system_id = sys_hw_network_card_ip.system_id AND
-			sys_hw_network_card.net_mac_address = sys_hw_network_card_ip.net_mac_address)
-		WHERE sys_hw_network_card.system_id = ? AND
-		sys_hw_network_card_ip.net_index = ''";
+  //       $sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card.net_index
+		// FROM sys_hw_network_card
+		// LEFT JOIN sys_hw_network_card_ip ON
+		// (sys_hw_network_card.system_id = sys_hw_network_card_ip.system_id AND
+		// 	sys_hw_network_card.net_mac_address = sys_hw_network_card_ip.net_mac_address)
+		// WHERE sys_hw_network_card.system_id = ? AND
+		// sys_hw_network_card_ip.net_index = ''";
+
+        $sql = "SELECT sys_hw_network_card_ip.ip_id, network.net_index
+        FROM network
+        LEFT JOIN sys_hw_network_card_ip ON
+        (network.system_id = sys_hw_network_card_ip.system_id AND
+            network.mac = sys_hw_network_card_ip.net_mac_address)
+        WHERE network.system_id = ? AND
+        sys_hw_network_card_ip.net_index = ''";
+
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
@@ -209,7 +228,7 @@ class M_ip_address extends MY_Model
     public function alert_ip_address($details)
     {
         // ip no longer detected - ONLY for devices not using DHCP
-        $sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN sys_hw_network_card ON sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.timestamp = ? and sys_hw_network_card.net_dhcp_enabled = 'false'";
+        $sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN network ON sys_hw_network_card_ip.net_mac_address = network.mac WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.timestamp = ? and network.dhcp_enabled = 'false'";
         $data = array("$details->system_id", "$details->original_timestamp");
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
@@ -225,7 +244,7 @@ class M_ip_address extends MY_Model
 				FROM
 					sys_hw_network_card_ip
 				LEFT JOIN
-					sys_hw_network_card ON (sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address)
+					network ON (sys_hw_network_card_ip.net_mac_address = network.mac)
 				LEFT JOIN
 					system ON (sys_hw_network_card_ip.system_id = system.system_id)
 				WHERE
@@ -233,7 +252,7 @@ class M_ip_address extends MY_Model
 					sys_hw_network_card_ip.first_timestamp = ? AND
 					sys_hw_network_card_ip.first_timestamp = sys_hw_network_card_ip.timestamp AND
 					sys_hw_network_card_ip.first_timestamp != system.first_timestamp AND
-					sys_hw_network_card.net_dhcp_enabled = 'false'";
+					network.dhcp_enabled = 'false'";
         $data = array("$details->system_id", "$details->timestamp");
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
@@ -262,19 +281,19 @@ class M_ip_address extends MY_Model
         if ($force == 'y' or (isset($result) and is_array($result) and ($result[0]->man_ip_address == ''  or $result[0]->man_ip_address == '000.000.000.000'  or $result[0]->man_ip_address == '0.0.0.0'))) {
             # we do not already have an ip address - attempt to set one
             $sql = "SELECT
-					sys_hw_network_card.net_dhcp_enabled,
+					network.dhcp_enabled,
 					sys_hw_network_card_ip.ip_address_v4,
 					if( (sys_hw_network_card_ip.ip_address_v4 >= '010.000.000.000' AND sys_hw_network_card_ip.ip_address_v4 <= '010.255.255.255') OR
 						(sys_hw_network_card_ip.ip_address_v4 >= '172.016.000.000' AND sys_hw_network_card_ip.ip_address_v4 <= '172.031.255.255') OR
 						(sys_hw_network_card_ip.ip_address_v4 >= '192.168.000.000' AND sys_hw_network_card_ip.ip_address_v4 <= '192.168.255.255'), 'prv', 'pub') as pubpriv
 					FROM
-					sys_hw_network_card LEFT JOIN sys_hw_network_card_ip ON
-						(sys_hw_network_card.system_id = sys_hw_network_card_ip.system_id AND
-						sys_hw_network_card.timestamp = sys_hw_network_card_ip.timestamp AND
-						sys_hw_network_card_ip.net_mac_address = sys_hw_network_card.net_mac_address)
+					network LEFT JOIN sys_hw_network_card_ip ON
+						(network.system_id = sys_hw_network_card_ip.system_id AND
+						network.timestamp = sys_hw_network_card_ip.timestamp AND
+						sys_hw_network_card_ip.net_mac_address = network.mac)
 					WHERE
-					sys_hw_network_card.system_id = ? AND
-					sys_hw_network_card.net_ip_enabled != 'false' AND
+					network.system_id = ? AND
+					network.ip_enabled != 'false' AND
 					sys_hw_network_card_ip.timestamp = ? AND
 					sys_hw_network_card_ip.ip_address_v4 != '' AND
 					sys_hw_network_card_ip.ip_address_v4 != '0.0.0.0' AND
@@ -285,7 +304,7 @@ class M_ip_address extends MY_Model
 					sys_hw_network_card_ip.ip_address_v4 != '127.000.001.001' AND
 					sys_hw_network_card_ip.ip_address_v4 NOT LIKE '169.254.%'
 					ORDER BY
-					sys_hw_network_card.net_dhcp_enabled ASC,
+					network.dhcp_enabled ASC,
 					pubpriv ASC,
 					sys_hw_network_card_ip.ip_address_v4 DESC
 					LIMIT 1";

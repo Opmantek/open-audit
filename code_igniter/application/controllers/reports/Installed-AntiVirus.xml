@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Installed - AntiVirus</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_os_name, sys_sw_software.software_name, sys_sw_software.software_version FROM system LEFT JOIN sys_sw_software ON (system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp AND (software_name LIKE '%virus%' or software_name like '%trend micro%' or software_name like '%endpoint%')) JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id and oa_group_sys.group_id = @group) WHERE system.man_type = 'computer' AND system.man_os_group = 'Windows' GROUP BY system.system_id ORDER BY system.hostname]]></report_sql>
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_os_name, software.name, software.version FROM system LEFT JOIN software ON (system.system_id = software.system_id AND (software.name LIKE '%virus%' or software.name like '%trend micro%' or software.name like '%endpoint%')) JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND software.current = 'y']]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -34,7 +34,7 @@
 		<column>
 			<column_order>1</column_order>
 			<column_name>Software Name</column_name>
-			<column_variable>software_name</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Version</column_name>
-			<column_variable>software_version</column_variable>
+			<column_variable>version</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

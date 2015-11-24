@@ -810,11 +810,13 @@ fi
 #'''''''''''''''''''''''''''''''''
 {
 echo "	<bios>"
-echo "		<bios_description>$(escape_xml "$bios_description")</bios_description>"
-echo "		<bios_manufacturer>$(escape_xml "$bios_manufacturer")</bios_manufacturer>"
-echo "		<bios_serial>$(escape_xml "$bios_serial")</bios_serial>"
-echo "		<bios_smversion>$(escape_xml "$bios_smversion")</bios_smversion>"
-echo "		<bios_version>$(escape_xml "$bios_version")</bios_version>"
+echo "		<item>"
+echo "			<description>$(escape_xml "$bios_description")</description>"
+echo "			<manufacturer>$(escape_xml "$bios_manufacturer")</manufacturer>"
+echo "			<serial>$(escape_xml "$bios_serial")</serial>"
+echo "			<smversion>$(escape_xml "$bios_smversion")</smversion>"
+echo "			<version>$(escape_xml "$bios_version")</version>"
+echo "		</item>"
 echo "	</bios>"
 } >> "$xml_file"
 
@@ -839,21 +841,6 @@ processor_speed=$(grep "cpu MHz" /proc/cpuinfo | head -n1 | cut -d: -f2 | awk '{
 # Get processor manufacturer
 processor_manufacturer=$(grep vendor_id /proc/cpuinfo | head -n1 | cut -d: -f2)
 
-# Get processor power management support
-processor_power_management_supported=$(dmidecode -t processor 2>/dev/null | grep Thermal 2>/dev/null)
-if [ -z "$processor_power_management_supported" ]; then
-	if [ -n "$(which lshal 2>/dev/null)" ]; then
-		processor_power_management_supported=$(lshal | grep -m 1 "processor.can_throttle" | cut -d= -f2 | cut -d" " -f2)
-	fi
-fi
-
-
-if [ -n "$processor_power_management_supported" ]; then
-	processor_power_management_supported="True"
-else
-	processor_power_management_supported="False"
-fi
-
 #'''''''''''''''''''''''''''''''''
 #' Write to the audit file       '
 
@@ -863,14 +850,15 @@ let total_cores=$system_pc_cores_x_processor*$system_pc_physical_processors
 let total_logical_processors=$system_pc_threads_x_processor*$system_pc_physical_processors
 {
 echo "	<processor>"
-echo "		<processor_count>$(escape_xml "$system_pc_physical_processors")</processor_count>"
-echo "		<processor_cores>$(escape_xml "$total_cores")</processor_cores>"
-echo "		<processor_logical>$(escape_xml "$total_logical_processors")</processor_logical>"
-echo "		<processor_socket>$(escape_xml "$processor_socket")</processor_socket>"
-echo "		<processor_description>$(escape_xml "$processor_description")</processor_description>"
-echo "		<processor_speed>$(escape_xml "$processor_speed")</processor_speed>"
-echo "		<processor_manufacturer>$(escape_xml "$processor_manufacturer")</processor_manufacturer>"
-echo "		<processor_power_management_supported>$(escape_xml "$processor_power_management_supported")</processor_power_management_supported>"
+echo "		<item>"
+echo "			<physical_count>$(escape_xml "$system_pc_physical_processors")</physical_count>"
+echo "			<core_count>$(escape_xml "$total_cores")</core_count>"
+echo "			<logical_count>$(escape_xml "$total_logical_processors")</logical_count>"
+echo "			<socket>$(escape_xml "$processor_socket")</socket>"
+echo "			<description>$(escape_xml "$processor_description")</description>"
+echo "			<speed>$(escape_xml "$processor_speed")</speed>"
+echo "			<manufacturer>$(escape_xml "$processor_manufacturer")</manufacturer>"
+echo "		</item>"
 echo "	</processor>"
 } >> "$xml_file"
 
@@ -931,16 +919,16 @@ if [ "$memory_slots" != "0" ]; then
 			# Ignore empty slots
 			if [ -n "$memory_capacity" ]; then
 				{
-				echo "		<slot>"
+				echo "		<item>"
 				echo "			<bank>$(escape_xml "$memory_bank")</bank>"
 				echo "			<type>$(escape_xml "$memory_type")</type>"
 				echo "			<form_factor>$(escape_xml "$memory_form_factor")</form_factor>"
 				echo "			<detail>$(escape_xml "$memory_detail")</detail>"
-				echo "			<capacity>$(escape_xml "$memory_capacity")</capacity>"
+				echo "			<size>$(escape_xml "$memory_capacity")</size>"
 				echo "			<speed>$(escape_xml "$memory_speed")</speed>"
 				echo "			<tag>$(escape_xml "$memory_tag")</tag>"
 				echo "			<serial>$(escape_xml "$memory_serial")</serial>"
-				echo "		</slot>"
+				echo "		</item>"
 				} >> "$xml_file"
 			fi
 	done
@@ -975,12 +963,14 @@ fi
 if [ -n "$mobo_manufacturer" ] || [ -n "$mobo_model" ]; then
 	{
 	echo "	<motherboard>"
-	echo "		<manufacturer>$(escape_xml "$mobo_manufacturer")</manufacturer>"
-	echo "		<model>$(escape_xml "$mobo_model")</model>"
-	echo "		<serial>$(escape_xml "$mobo_serial")</serial>"
-	echo "		<processor_slots>$(escape_xml "$system_pc_physical_processors")</processor_slots>"
-	echo "		<processor_type>$(escape_xml "$processor_socket")</processor_type>"
-	echo "		<memory_slots>$(escape_xml "$memory_slots")</memory_slots>"
+	echo "		<item>"
+	echo "			<manufacturer>$(escape_xml "$mobo_manufacturer")</manufacturer>"
+	echo "			<model>$(escape_xml "$mobo_model")</model>"
+	echo "			<serial>$(escape_xml "$mobo_serial")</serial>"
+	echo "			<processor_slot_count>$(escape_xml "$system_pc_physical_processors")</processor_slot_count>"
+	echo "			<processor_type>$(escape_xml "$processor_socket")</processor_type>"
+	echo "			<memory_slot_count>$(escape_xml "$memory_slots")</memory_slot_count>"
+	echo "		</item>"
 	echo "	</motherboard>"
 	} >> "$xml_file"
 fi
@@ -1008,7 +998,7 @@ if [ "$optical_num_devices" != "0" ]; then
 	#' Write to the audit file       '
 	#'''''''''''''''''''''''''''''''''
 
-	echo "	<optical_drives>" >> "$xml_file"
+	echo "	<optical>" >> "$xml_file"
 
 	for optical_device in $(cdrdao scanbus 2>&1 | grep '/dev'); do
 		temp=""
@@ -1028,15 +1018,15 @@ if [ "$optical_num_devices" != "0" ]; then
 		optical_device_ID=$(trim "$temp")
 		optical_caption="$optical_drive_vendor $optical_drive_model"
 		{
-		echo "		<optical_drive>"
-		echo "			<optical_drive_caption>$(escape_xml "$optical_caption")</optical_drive_caption>"
-		echo "			<optical_drive_model>$(escape_xml "$optical_caption $optical_drive_release")</optical_drive_model>"
-		echo "			<optical_drive_device_id>$(escape_xml "$optical_device_ID")</optical_drive_device_id>"
-		echo "			<optical_drive_mount_point>$(escape_xml "$optical_drive_mount_point")</optical_drive_mount_point>"
-		echo "		</optical_drive>"
+		echo "		<item>"
+		echo "			<description>$(escape_xml "$optical_caption")</description>"
+		echo "			<model>$(escape_xml "$optical_caption $optical_drive_release")</model>"
+		echo "			<device>$(escape_xml "$optical_device_ID")</device>"
+		echo "			<mount_point>$(escape_xml "$optical_drive_mount_point")</mount_point>"
+		echo "		</item>"
 		} >> "$xml_file"
 	done
-	echo "	</optical_drives>" >> "$xml_file"
+	echo "	</optical>" >> "$xml_file"
 fi
 
 ##################################
@@ -1051,7 +1041,7 @@ video_pci_adapters=""
 video_pci_adapters=$(lspci 2>/dev/null | grep VGA | cut -d" " -f1)
 
 if [ -n "$video_pci_adapters" ]; then
-	echo "	<video_cards>" >> "$xml_file"
+	echo "	<video>" >> "$xml_file"
 	for video_adapter in $video_pci_adapters; do
 		video_device_name=$(lspci -vms "$video_adapter" | grep '^Device' | tail -n1  | cut -d: -f2 | cut -c2-)
 		video_revision=$(lspci -vms "$video_adapter" | grep '^Rev' | cut -d: -f2 | cut -c2-)
@@ -1063,14 +1053,14 @@ if [ -n "$video_pci_adapters" ]; then
 		video_manufacturer=$(lspci -vms "$video_adapter" | grep '^Vendor' | cut -d: -f2 | cut -c2-)
 		video_memory=$(lspci -vs "$video_adapter" | grep Memory | tail -n1 | cut -d= -f2 | sed 's/[^0-9]//g')
 		{
-		echo "		<video_card>"
-		echo "			<video_description>$(escape_xml "$video_description")</video_description>"
-		echo "			<video_manufacturer>$(escape_xml "$video_manufacturer")</video_manufacturer>"
-		echo "			<video_memory>$(escape_xml "$video_memory")</video_memory>"
-		echo "		</video_card>"
+		echo "		<item>"
+		echo "			<model>$(escape_xml "$video_description")</model>"
+		echo "			<manufacturer>$(escape_xml "$video_manufacturer")</manufacturer>"
+		echo "			<size>$(escape_xml "$video_memory")</size>"
+		echo "		</item>"
 		} >> "$xml_file"
 	done
-	echo "	</video_cards>" >> "$xml_file"
+	echo "	</video>" >> "$xml_file"
 fi
 
 
@@ -1086,7 +1076,7 @@ sound_pci_adapters=""
 sound_pci_adapters=$(lspci 2>/dev/null | grep -Ei 'audio | multmedia' | cut -d" " -f1)
 
 if [ -n "$sound_pci_adapters" ]; then
-	echo "	<sound_cards>" >> "$xml_file"
+	echo "	<sound>" >> "$xml_file"
 	for sound_adapter in $sound_pci_adapters; do
 		sound_device_name=$(lspci -vms "$sound_adapter" | grep '^Device' | tail -n1  | cut -d: -f2 | cut -c2-)
 		sound_revision=$(lspci -vms "$sound_adapter" | grep '^Rev' | cut -d: -f2 | cut -c2-)
@@ -1096,14 +1086,14 @@ if [ -n "$sound_pci_adapters" ]; then
 		fi
 		sound_manufacturer=$(lspci -vms "$sound_adapter" | grep '^Vendor' | cut -d: -f2 | cut -c2-)
 		{
-		echo "		<sound_card>"
-		echo "			<sound_name>$(escape_xml "$sound_name")</sound_name>"
-		echo "			<sound_manufacturer>$(escape_xml "$sound_manufacturer")</sound_manufacturer>"
-		echo "			<sound_device_id>$(escape_xml "$sound_adapter")</sound_device_id>"
-		echo "		</sound_card>"
+		echo "		<item>"
+		echo "			<model>$(escape_xml "$sound_name")</model>"
+		echo "			<manufacturer>$(escape_xml "$sound_manufacturer")</manufacturer>"
+		echo "			<device>$(escape_xml "$sound_adapter")</sound_device>"
+		echo "		</item>"
 		} >> "$xml_file"
 	done
-	echo "	</sound_cards>" >> "$xml_file"
+	echo "	</sound>" >> "$xml_file"
 fi
 
 ##################################
@@ -1149,7 +1139,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 addr_info=""
-echo "	<network_cards>" >> "$xml_file";
+echo "	<network>" >> "$xml_file";
 
 # first look for bonded network cards - new for 1.5.6
 for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print` | cut -d" " -f9 | cut -d/ -f5); do
@@ -1265,30 +1255,30 @@ for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print
 		done
 
 		{
-		echo "		<network_card>"
+		echo "		<item>"
+		echo "			<mac>$(escape_xml "$net_card_mac")</mac>"
+		echo "			<manufacturer>$(escape_xml "$net_card_manufacturer")</manufacturer>"
+		echo "			<model>$(escape_xml "$net_card_model")</model>"
+		echo "			<description>$(escape_xml "$net_card_description")</description>"
+		echo "			<alias></alias>"
+		echo "			<ip_enabled>$(escape_xml "$net_card_enabled")</ip_enabled>"
 		echo "			<net_index>$(escape_xml "$net_index")</net_index>"
-		echo "			<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>"
-		echo "			<net_manufacturer>$(escape_xml "$net_card_manufacturer")</net_manufacturer>"
-		echo "			<net_model>$(escape_xml "$net_card_model")</net_model>"
-		echo "			<net_description>$(escape_xml "$net_card_description")</net_description>"
-		echo "			<net_ip_enabled>$(escape_xml "$net_card_enabled")</net_ip_enabled>"
-		echo "			<net_connection_id>$(escape_xml "$net_connection_id")</net_connection_id>"
-		echo "			<net_connection_status>$(escape_xml "$net_card_status")</net_connection_status>"
-		echo "			<net_speed>$(escape_xml "$net_card_speed")</net_speed>"
-		echo "			<net_adapter_type>$(escape_xml "$net_card_type")</net_adapter_type>"
-		echo "			<net_dhcp_enabled>$(escape_xml "$net_card_dhcp_enab")</net_dhcp_enabled>"
-		echo "			<net_dhcp_server>$(escape_xml "$net_card_dhcp_server")</net_dhcp_server>"
-		echo "			<net_dhcp_lease_obtained>$(escape_xml "$net_card_dhcp_lease_obtained")</net_dhcp_lease_obtained>"
-		echo "			<net_dhcp_lease_expires>$(escape_xml "$net_card_dhcp_lease_expire")</net_dhcp_lease_expires>"
-		echo "			<net_dns_host_name>$(escape_xml "$system_hostname")</net_dns_host_name>"
-		echo "			<net_dns_domain>$(escape_xml "$net_card_dns_domain")</net_dns_domain>"
-		echo "			<net_dns_domain_reg_enabled>$(escape_xml "$net_card_domain_reg")</net_dns_domain_reg_enabled>"
-		echo "			<net_dns_server>$(escape_xml "$net_card_dns_server")</net_dns_server>"
-		echo "			<net_wins_primary></net_wins_primary>"
-		echo "			<net_wins_secondary></net_wins_secondary>"
-		echo "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>"
-		echo "			<net_slaves>$(escape_xml "$net_slaves")</net_slaves>"
-		echo "		</network_card>"
+		echo "			<dhcp_enabled>$(escape_xml "$net_card_dhcp_enab")</dhcp_enabled>"
+		echo "			<dhcp_server>$(escape_xml "$net_card_dhcp_server")</dhcp_server>"
+		echo "			<dhcp_lease_obtained>$(escape_xml "$net_card_dhcp_lease_obtained")</dhcp_lease_obtained>"
+		echo "			<dhcp_lease_expires>$(escape_xml "$net_card_dhcp_lease_expire")</dhcp_lease_expires>"
+		echo "			<dns_host_name>$(escape_xml "$system_hostname")</dns_host_name>"
+		echo "			<dns_server>$(escape_xml "$net_card_dns_server")</dns_server>"
+		echo "			<dns_domain>$(escape_xml "$net_card_dns_domain")</dns_domain>"
+		echo "			<dns_domain_reg_enabled>$(escape_xml "$net_card_domain_reg")</dns_domain_reg_enabled>"
+		echo "			<type>$(escape_xml "$net_card_type")</type>"
+		echo "			<connection>$(escape_xml "$net_connection_id")</connection>"
+		echo "			<connection_status>$(escape_xml "$net_card_status")</connection_status>"
+		echo "			<speed>$(escape_xml "$net_card_speed")</speed>"
+		echo "			<slaves>$(escape_xml "$net_slaves")</slaves>"
+		echo "			<ifadminstatus></ifadminstatus>"
+		echo "			<iflastchange></iflastchange>"
+		echo "		</item>"
 		} >> "$xml_file"
 
 	fi
@@ -1450,33 +1440,34 @@ if [ -n "$net_cards" ]; then
 		fi
 
 		{
-		echo "		<network_card>"
+		echo "		<item>"
+		echo "			<mac>$(escape_xml "$net_card_mac")</mac>"
+		echo "			<manufacturer>$(escape_xml "$net_card_manufacturer")</manufacturer>"
+		echo "			<model>$(escape_xml "$net_card_model")</model>"
+		echo "			<description>$(escape_xml "$net_card_description")</description>"
+		echo "			<alias></alias>"
+		echo "			<ip_enabled>$(escape_xml "$net_card_enabled")</ip_enabled>"
 		echo "			<net_index>$(escape_xml "$net_index")</net_index>"
-		echo "			<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>"
-		echo "			<net_manufacturer>$(escape_xml "$net_card_manufacturer")</net_manufacturer>"
-		echo "			<net_model>$(escape_xml "$net_card_model")</net_model>"
-		echo "			<net_description>$(escape_xml "$net_card_description")</net_description>"
-		echo "			<net_ip_enabled>$(escape_xml "$net_card_enabled")</net_ip_enabled>"
-		echo "			<net_connection_id>$(escape_xml "$net_card_id")</net_connection_id>"
-		echo "			<net_connection_status>$(escape_xml "$net_card_status")</net_connection_status>"
-		echo "			<net_speed>$(escape_xml "$net_card_speed")</net_speed>"
-		echo "			<net_adapter_type>$(escape_xml "$net_card_type")</net_adapter_type>"
-		echo "			<net_dhcp_enabled>$(escape_xml "$net_card_dhcp_enab")</net_dhcp_enabled>"
-		echo "			<net_dhcp_server>$(escape_xml "$net_card_dhcp_server")</net_dhcp_server>"
-		echo "			<net_dhcp_lease_obtained>$(escape_xml "$net_card_dhcp_lease_obtained")</net_dhcp_lease_obtained>"
-		echo "			<net_dhcp_lease_expires>$(escape_xml "$net_card_dhcp_lease_expire")</net_dhcp_lease_expires>"
-		echo "			<net_dns_host_name>$(escape_xml "$system_hostname")</net_dns_host_name>"
-		echo "			<net_dns_domain>$(escape_xml "$net_card_dns_domain")</net_dns_domain>"
-		echo "			<net_dns_domain_reg_enabled>$(escape_xml "$net_card_domain_reg")</net_dns_domain_reg_enabled>"
-		echo "			<net_dns_server>$(escape_xml "$net_card_dns_server")</net_dns_server>"
-		echo "			<net_wins_primary></net_wins_primary>"
-		echo "			<net_wins_secondary></net_wins_secondary>"
-		echo "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>"
-		echo "		</network_card>"
+		echo "			<dhcp_enabled>$(escape_xml "$net_card_dhcp_enab")</dhcp_enabled>"
+		echo "			<dhcp_server>$(escape_xml "$net_card_dhcp_server")</dhcp_server>"
+		echo "			<dhcp_lease_obtained>$(escape_xml "$net_card_dhcp_lease_obtained")</dhcp_lease_obtained>"
+		echo "			<dhcp_lease_expires>$(escape_xml "$net_card_dhcp_lease_expire")</dhcp_lease_expires>"
+		echo "			<dns_host_name>$(escape_xml "$system_hostname")</dns_host_name>"
+		echo "			<dns_server>$(escape_xml "$net_card_dns_server")</dns_server>"
+		echo "			<dns_domain>$(escape_xml "$net_card_dns_domain")</dns_domain>"
+		echo "			<dns_domain_reg_enabled>$(escape_xml "$net_card_domain_reg")</dns_domain_reg_enabled>"
+		echo "			<type>$(escape_xml "$net_card_type")</type>"
+		echo "			<connection>$(escape_xml "$net_connection_id")</connection>"
+		echo "			<connection_status>$(escape_xml "$net_card_status")</connection_status>"
+		echo "			<speed>$(escape_xml "$net_card_speed")</speed>"
+		echo "			<slaves>$(escape_xml "$net_slaves")</slaves>"
+		echo "			<ifadminstatus></ifadminstatus>"
+		echo "			<iflastchange></iflastchange>"
+		echo "		</item>"
 		} >> "$xml_file"
 	done
 fi
-echo "	</network_cards>" >> "$xml_file"
+echo "	</network>" >> "$xml_file"
 
 
 ##################################
@@ -1498,7 +1489,7 @@ fi
 if [ "$debugging" -gt "0" ]; then
 	echo "Hard Disk Info"
 fi
-echo "	<hard_disks>" >> "$xml_file"
+echo "	<disk>" >> "$xml_file"
 partition_result=""
 for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 
@@ -1522,7 +1513,6 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 	hard_drive_status=""
 	hard_drive_model_family=""
 	hard_drive_firmware=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_REVISION= | cut -d= -f2)
-	hard_drive_scsi_logical_unit=""
 
 	mycommand="lshw -class disk 2>/dev/null"
 	mydelimiter="*-disk"
@@ -1557,21 +1547,20 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 	fi
 
 	{
-	echo "		<hard_disk>"
-	echo "			<hard_drive_caption>$(escape_xml "$hard_drive_caption")</hard_drive_caption>"
+	echo "		<item>"
+	echo "			<caption>$(escape_xml "$hard_drive_caption")</caption>"
 	echo "			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>"
-	echo "			<hard_drive_interface_type>$(escape_xml "$hard_drive_interface_type")</hard_drive_interface_type>"
-	echo "			<hard_drive_manufacturer>$(escape_xml "$hard_drive_manufacturer")</hard_drive_manufacturer>"
-	echo "			<hard_drive_model>$(escape_xml "$hard_drive_model")</hard_drive_model>"
-	echo "			<hard_drive_serial>$(escape_xml "$hard_drive_serial")</hard_drive_serial>"
-	echo "			<hard_drive_size>$(escape_xml "$hard_drive_size")</hard_drive_size>"
-	echo "			<hard_drive_device_id>$(escape_xml "$hard_drive_device_id")</hard_drive_device_id>"
-	echo "			<hard_drive_partitions>$(escape_xml "$hard_drive_partitions")</hard_drive_partitions>"
-	echo "			<hard_drive_status>$(escape_xml "$hard_drive_status")</hard_drive_status>"
-	echo "			<hard_drive_firmware>$(escape_xml "$hard_drive_firmware")</hard_drive_firmware>"
-	echo "			<hard_drive_model_family>$(escape_xml "$hard_drive_model_family")</hard_drive_model_family>"
-	echo "			<hard_drive_scsi_logical_unit>$(escape_xml "$hard_drive_scsi_logical_unit")</hard_drive_scsi_logical_unit>"
-	echo "		</hard_disk>"
+	echo "			<interface_type>$(escape_xml "$hard_drive_interface_type")</interface_type>"
+	echo "			<manufacturer>$(escape_xml "$hard_drive_manufacturer")</manufacturer>"
+	echo "			<model>$(escape_xml "$hard_drive_model")</model>"
+	echo "			<serial>$(escape_xml "$hard_drive_serial")</serial>"
+	echo "			<size>$(escape_xml "$hard_drive_size")</size>"
+	echo "			<device>$(escape_xml "$hard_drive_device_id")</device>"
+	echo "			<partition_count>$(escape_xml "$hard_drive_partitions")</partition_count>"
+	echo "			<status>$(escape_xml "$hard_drive_status")</status>"
+	echo "			<firmware>$(escape_xml "$hard_drive_firmware")</firmware>"
+	echo "			<model_family>$(escape_xml "$hard_drive_model_family")</model_family>"
+	echo "		</item>"
 	} >> "$xml_file"
 
 	for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ ); do
@@ -1654,7 +1643,7 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 		fi
 	done
 done
-echo "	</hard_disks>" >> "$xml_file"
+echo "	</disk>" >> "$xml_file"
 
 
 ##################################
@@ -1763,15 +1752,13 @@ done
 if [ "$debugging" -gt "0" ]; then
 	echo "User Info"
 fi
-echo "	<users>" >> "$xml_file"
+echo "	<user>" >> "$xml_file"
 
 IFS=$(echo -en "\n\b");
-#for i in $(cat /etc/passwd) ; do
-#	echo $i | awk -F: ' { print "\t\t<user>\n" "\t\t\t<user_name>"$1"</user_name>\n" "\t\t\t<user_full_name>"$5"</user_full_name>\n" "\t\t\t<user_sid>"$3"</user_sid>\n" "\t\t</user>" } ' >> "$xml_file"
 grep -v '^ *#' < /etc/passwd | while IFS= read -r line; do
-	echo "$line" | awk -F: ' { print "\t\t<user>\n" "\t\t\t<user_name>"$1"</user_name>\n" "\t\t\t<user_full_name><![CDATA["$5"]]></user_full_name>\n" "\t\t\t<user_sid>"$3"</user_sid>\n" "\t\t</user>" } ' >> "$xml_file"
+	echo "$line" | awk -F: ' { print "\t\t<item>\n" "\t\t\t<name>"$1"</name>\n" "\t\t\t<full_name><![CDATA["$5"]]></full_name>\n" "\t\t\t<sid>"$3"</sid>\n" "\t\t</item>" } ' >> "$xml_file"
 done
-echo "	</users>" >> "$xml_file"
+echo "	</user>" >> "$xml_file"
 
 
 ########################################################
@@ -1785,15 +1772,12 @@ fi
 echo "	<software>" >> "$xml_file"
 case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' )
-			#dpkg-query --show --showformat="\t\t<package>\n\t\t\t<software_name><![CDATA[\${Package}]]></software_name>\n\t\t\t<software_version><![CDATA[\${Version}]]></software_version>\n\t\t\t<software_url><![CDATA[\${Homepage} ]]></software_url>\n\t\t</package>\n" |\
-			dpkg-query --show --showformat="\t\t<package>\n\t\t\t<software_name><![CDATA[\${Package}]]></software_name>\n\t\t\t<software_version><![CDATA[\${Version}]]></software_version>\n\t\t\t<software_url></software_url>\n\t\t</package>\n" |\
+			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
-				#sed -e 's/url><.*><\/software/url><\/software/' >> "$xml_file"
 			;;
 		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
-			rpm -qa --queryformat="\t\t<package>\n\t\t\t<software_name><\!\[CDATA\[%{NAME}\]\]></software_name>\n\t\t\t<software_version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></software_version>\n\t\t\t<software_version_orig><\!\[CDATA\[%{VERSION}\]\]></software_version_orig>\n\t\t\t<software_url><\!\[CDATA\[%{URL}\]\]></software_url>\n\t\t</package>\n" |\
+			rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
-			#sed -e 's/url><.*><\/software/url><\/software/' >> "$xml_file"
 			;;
 esac
 echo "	</software>" >> "$xml_file"
@@ -1806,7 +1790,7 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Service Info"
 fi
 
-echo "	<services>" >> "$xml_file"
+echo "	<service>" >> "$xml_file"
 if hash systemctl 2>/dev/null; then
     # systemD services
     for name in $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1); do
@@ -1824,16 +1808,14 @@ if hash systemctl 2>/dev/null; then
             start_mode=$(systemctl show "$name" -p After | cut -d= -f2)
         fi
         {
-        echo "      <service>"
-        echo "          <service_display_name>$(escape_xml "$display_name")</service_display_name>"
-        echo "          <service_name>$(escape_xml "$name")</service_name>"
-        echo "          <service_start_mode>$(escape_xml "$start_mode")</service_start_mode>"
-        echo "          <service_path_name>$(escape_xml "$binary")</service_path_name>"
-        echo "          <service_state>$(escape_xml "$state")</service_state>"
-        echo "          <service_start_name>$(escape_xml "$user")</service_start_name>"
-        echo "          <service_started></service_started>"
-        echo "          <service_count></service_count>"
-        echo "      </service>"
+        echo "      <item>"
+        echo "          <description>$(escape_xml "$display_name")</description>"
+        echo "          <name>$(escape_xml "$name")</name>"
+        echo "          <start_mode>$(escape_xml "$start_mode")</start_mode>"
+        echo "          <executable>$(escape_xml "$binary")</executable>"
+        echo "          <state>$(escape_xml "$state")</state>"
+        echo "          <user>$(escape_xml "$user")</user>"
+        echo "      </item>"
         } >> "$xml_file"
     done
 else
@@ -1854,31 +1836,31 @@ else
                         service_start_mode="Manual"
                     fi
                     service_name=$(escape_xml "$s")
-                    echo -e "\t\t<service>\n\t\t\t<service_name>$service_name</service_name>\n\t\t\t<service_start_mode>$service_start_mode</service_start_mode>\n\t\t</service>" >> "$xml_file"
+                    echo -e "\t\t<item>\n\t\t\t<name>$service_name</name>\n\t\t\t<start_mode>$service_start_mode</start_mode>\n\t\t</item>" >> "$xml_file"
                 done
                 # SysV init services
                 for service_name in /etc/init.d/* ; do
                     [[ -e $service_name ]] || break
                     if [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]] && [[ "$service_name" != "skeleton" ]]; then
                         {
-                        echo "      <service>"
+                        echo "      <item>"
 				        service_display_name=$(echo "$service_name" | cut -d/ -f4)
-				        echo "          <service_display_name>$(escape_xml "$service_display_name")</service_display_name>" >> "$xml_file"
-                        echo "          <service_name>$(escape_xml "$service_name")</service_name>"
+				        echo "          <description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
+                        echo "          <name>$(escape_xml "$service_name")</name>"
                         } >> "$xml_file"
                         if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* &>/dev/null ; then
-                            echo "          <service_start_mode>Manual</service_start_mode>" >> "$xml_file"
+                            echo "          <start_mode>Manual</start_mode>" >> "$xml_file"
                         else
-                            echo "          <service_start_mode>Auto</service_start_mode>" >> "$xml_file"
+                            echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
                         fi
 				        service_name=$(echo "$service_name" | cut -d/ -f4)
-				        echo "          <service_display_name>$(escape_xml "$service_name")</service_display_name>" >> "$xml_file"
+				        echo "          <description>$(escape_xml "$service_name")</description>" >> "$xml_file"
 				        if  [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]] && [[ "$service_name" != "skeleton" ]] && [[ "$service_name" != "rcS" ]]; then
 				            service_state=$(service "$service_display_name" status 2>/dev/null | grep running)
-				            echo "          <service_state>$(escape_xml "$service_state")</service_state>" >> "$xml_file"
+				            echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
 				            service_state=""
 				        fi
-                        echo "      </service>" >> "$xml_file"
+                        echo "      </item>" >> "$xml_file"
                     fi
                 done
                 ;;
@@ -1893,29 +1875,29 @@ else
                     [[ -e $service_name ]] || break
                     if [[ "$service_name" != "functions" ]] && [[ "$service_name" != "rcS" ]]; then
                         {
-                        echo "      <service>"
+                        echo "      <item>"
 				        service_display_name=$(echo "$service_name" | cut -d/ -f4)
-				        echo "          <service_display_name>$(escape_xml "$service_display_name")</service_display_name>" >> "$xml_file"
-                        echo "          <service_name>$(escape_xml "$service_name")</service_name>"
+				        echo "          <description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
+                        echo "          <name>$(escape_xml "$service_name")</name>"
                         } >> "$xml_file"
                         if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* &>/dev/null ; then
-                            echo "          <service_start_mode>Manual</service_start_mode>" >> "$xml_file"
+                            echo "          <start_mode>Manual</start_mode>" >> "$xml_file"
                         else
-                            echo "          <service_start_mode>Auto</service_start_mode>" >> "$xml_file"
+                            echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
                         fi
 				        if  [[ "$service_name" != "functions" ]] && [[ "$service_name" != "rcS" ]]; then
 				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -E "running|stopped")
-				            echo "          <service_state>$(escape_xml "$service_state")</service_state>" >> "$xml_file"
+				            echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
 				            service_state=""
 				        fi
-                        echo "      </service>" >> "$xml_file"
+                        echo "      </item>" >> "$xml_file"
                     fi
                 done
                 ;;
     esac
 fi
 
-echo "	</services>" >> "$xml_file"
+echo "	</service>" >> "$xml_file"
 
 ########################################################
 # ROUTE SECTION                                        #

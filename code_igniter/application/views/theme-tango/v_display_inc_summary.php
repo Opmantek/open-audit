@@ -536,26 +536,26 @@
 						<tbody>
 						<?php foreach ($network as $key) { ?><tr>
 								<td><?php echo print_something($key->net_index); ?></td>
-								<td><?php echo print_something($key->net_mac_address); ?></td>
-								<td><?php echo print_something($key->net_connection_id); ?></td>
-								<td><?php echo print_something($key->net_description); ?></td>
-								<td><?php echo print_something($key->net_alias); ?></td>
-								<td><?php echo print_something($key->net_adapter_type); ?></td>
-                                <td><?php echo print_something($key->net_ip_enabled); ?></td>
+								<td><?php echo print_something($key->mac); ?></td>
+								<td><?php echo print_something($key->connection); ?></td>
+								<td><?php echo print_something($key->description); ?></td>
+								<td><?php echo print_something($key->alias); ?></td>
+								<td><?php echo print_something($key->type); ?></td>
+                                <td><?php echo print_something($key->ip_enabled); ?></td>
                                 <td><?php echo print_something($key->ifadminstatus); ?></td>
-								<?php if (intval($key->net_speed) < 1000) {
-                                    $speed = number_format(intval($key->net_speed))." b/s";
+								<?php if (intval($key->speed) < 1000) {
+                                    $speed = number_format(intval($key->speed))." b/s";
                                 }
-                                if (intval($key->net_speed) >= 1000 and intval($key->net_speed) < 1000000) {
-                                    $speed = number_format(intval($key->net_speed / 1000))." Kb/s";
+                                if (intval($key->speed) >= 1000 and intval($key->speed) < 1000000) {
+                                    $speed = number_format(intval($key->speed / 1000))." Kb/s";
                                 }
-                                if (intval($key->net_speed) >= 1000000 and intval($key->net_speed) < 1000000000) {
-                                    $speed = number_format(intval($key->net_speed / 1000 / 1000))." Mb/s";
+                                if (intval($key->speed) >= 1000000 and intval($key->speed) < 1000000000) {
+                                    $speed = number_format(intval($key->speed / 1000 / 1000))." Mb/s";
                                 }
-                                if (intval($key->net_speed) >= 1000000000) {
-                                    $speed = number_format(intval($key->net_speed / 1000 / 1000 / 1000))." Gb/s";
+                                if (intval($key->speed) >= 1000000000) {
+                                    $speed = number_format(intval($key->speed / 1000 / 1000 / 1000))." Gb/s";
                                 }
-                                ?><td><?php echo "<span style=\"display: none;\">".substr('000000000000'.$key->net_speed, -13)."</span>".$speed;
+                                ?><td><?php echo "<span style=\"display: none;\">".substr('000000000000'.$key->speed, -13)."</span>".$speed;
                                 ?></td>
 							</tr>
 						<?php } ?>
@@ -623,8 +623,8 @@
 								<td align='center'><?php echo print_something($mod->hardware_revision)?></td>
 								<td><?php echo print_something($mod->firmware_revision)?></td>
 								<td><?php echo print_something($mod->software_revision)?></td>
-								<td><?php echo print_something($mod->serial_number)?></td>
-								<td><?php echo print_something($mod->asset_id)?></td>
+								<td><?php echo print_something($mod->serial)?></td>
+								<td><?php echo print_something($mod->asset_ident)?></td>
 								<td align='center'><?php echo print_something($mod->is_fru)?></td>
 							</tr>
 					<?php endforeach; ?>
