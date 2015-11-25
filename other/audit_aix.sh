@@ -35,7 +35,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.8.2
+# @version 1.8.4
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -263,12 +263,15 @@ processor_manufacturer="IBM"
 processor_power_management_supported=""
 cat >>"$xml_file" <<EndOfFile
 	<processor>
-		<processor_cores>$(escape_xml "$system_pc_num_processor")</processor_cores>
-		<processor_socket>$(escape_xml "$processor_socket")</processor_socket>
-		<processor_description>$(escape_xml "$processor_description")</processor_description>
-		<processor_speed>$(escape_xml "$processor_speed")</processor_speed>
-		<processor_manufacturer>$(escape_xml "$processor_manufacturer")</processor_manufacturer>
-		<processor_power_management_supported>$(escape_xml "$processor_power_management_supported")</processor_power_management_supported>
+		<item>
+			<physical_count>$(escape_xml "$i_processor")</physical_count>
+			<core_count>$(escape_xml "$j_processor")</core_count>
+			<logical_count>$(escape_xml "$system_pc_num_processor")</logical_count>
+			<socket>$(escape_xml "$processor_socket")</socket>
+			<description>$(escape_xml "$processor_description")</description>
+			<speed>$(escape_xml "$processor_speed")</speed>
+			<manufacturer>$(escape_xml "$processor_manufacturer")</manufacturer>
+		</item>
 	</processor>
 EndOfFile
 FINISH=$((SECONDS-START))
@@ -360,7 +363,7 @@ if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; f
 
 START="$SECONDS"
 if [[ "$debugging" -gt 0 ]]; then print -n "Network Card Details"; fi
-echo "	<network_cards>" >> "$xml_file"
+echo "	<network>" >> "$xml_file"
 for interface in $(eval "lsdev -Cc if | grep Available | grep 'Standard Ethernet' | cut -d' ' -f1 $safety"); do
 	net_card_mac=$(eval "entstat $interface | grep 'Hardware Address:' | cut -d' ' -f3 $safety")
 	net_card_manufacturer="IBM"
@@ -383,32 +386,23 @@ for interface in $(eval "lsdev -Cc if | grep Available | grep 'Standard Ethernet
 	done
 	net_card_model=$(eval "echo \"$net_card_model\" | cut -d' ' -f3 $safety")
 	cat >>"$xml_file" <<EndOfFile
-		<network_card>
-			<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>
-			<net_manufacturer>$(escape_xml "$net_card_manufacturer")</net_manufacturer>
-			<net_model>$(escape_xml "$net_card_model")</net_model>
-			<net_description>$(escape_xml "$net_card_description")</net_description>
-			<net_ip_enabled>$(escape_xml "$net_card_enabled")</net_ip_enabled>
-			<net_connection_id>$(escape_xml "$net_card_id")</net_connection_id>
-			<net_connection_status>$(escape_xml "$net_card_status")</net_connection_status>
-			<net_speed>$(escape_xml "$net_card_speed")</net_speed>
-			<net_adapter_type></net_adapter_type>
-			<net_dhcp_enabled>$(escape_xml "$net_dhcp_enabled")</net_dhcp_enabled>
-			<net_dhcp_server></net_dhcp_server>
-			<net_dhcp_lease_obtained></net_dhcp_lease_obtained>
-			<net_dhcp_lease_expires></net_dhcp_lease_expires>
-			<net_dns_host_name>$(escape_xml "$system_hostname")</net_dns_host_name>
-			<net_dns_domain>$(escape_xml "$system_domain")</net_dns_domain>
-			<net_dns_domain_reg_enabled></net_dns_domain_reg_enabled>
-			<net_dns_server></net_dns_server>
-			<net_wins_primary></net_wins_primary>
-			<net_wins_secondary></net_wins_secondary>
-			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>
-		</network_card>
+		<item>
+			<mac>$(escape_xml "$net_card_mac")</mac>
+			<manufacturer>$(escape_xml "$net_card_manufacturer")</manufacturer>
+			<model>$(escape_xml "$net_card_model")</model>
+			<description>$(escape_xml "$net_card_description")</description>
+			<ip_enabled>$(escape_xml "$net_card_enabled")</ip_enabled>
+			<connectio>$(escape_xml "$net_card_id")</connection>
+			<connection_status>$(escape_xml "$net_card_status")</connection_status>
+			<speed>$(escape_xml "$net_card_speed")</speed>
+			<dhcp_enabled>$(escape_xml "$net_dhcp_enabled")</dhcp_enabled>
+			<dns_host_name>$(escape_xml "$system_hostname")</dns_host_name>
+			<dns_domain>$(escape_xml "$system_domain")</dns_domain>
+		</item>
 EndOfFile
 
 done
-echo "	</network_cards>" >> "$xml_file"
+echo "	</network>" >> "$xml_file"
 FINISH=$((SECONDS-START))
 if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; fi
 
@@ -443,23 +437,23 @@ if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; f
 
 START="$SECONDS"
 if [[ "$debugging" -gt 0 ]]; then print -n "User Details        "; fi
-echo "	<users>" >> "$xml_file"
+echo "	<user>" >> "$xml_file"
 for username in $(eval "lsuser -a ALL $safety"); do
 	user_name="$username"
 	user_sid=$(eval "lsuser -f -a id $username | grep id | cut -d= -f2 $safety")
 	user_full_name=$(eval "lsuser -f -a gecos $username | grep gecos | cut -d= -f2 $safety")
 	user_disabled=$(eval "lsuser -f -a account_locked $username | grep account_locked | cut -d= -f2 $safety")
 	cat >>"$xml_file" <<EndOfFile
-		<user>
-			<user_name>$(escape_xml "$user_name")</user_name>
-			<user_sid>$(escape_xml "$user_sid")</user_sid>
-			<user_full_name>$(escape_xml "$user_full_name")</user_full_name>
-			<user_disabled>$(escape_xml "$user_disabled")</user_disabled>
-			<user_type>local</user_type>
-		</user>
+		<item>
+			<name>$(escape_xml "$user_name")</name>
+			<sid>$(escape_xml "$user_sid")</sid>
+			<full_name>$(escape_xml "$user_full_name")</full_name>
+			<disabled>$(escape_xml "$user_disabled")</disabled>
+			<type>local</type>
+		</item>
 EndOfFile
 done
-echo "	</users>" >> "$xml_file"
+echo "	</user>" >> "$xml_file"
 FINISH=$((SECONDS-START))
 if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; fi
 
@@ -558,12 +552,12 @@ for software in $(lslpp -lc -q); do
 		software_status=$(eval "echo \"$software\" | cut -d':' -f5 $safety")
 		software_description=$(eval "echo \"$software\" | cut -d':' -f7 $safety")
 		cat >>"$xml_file" <<EndOfFile
-		<package>
-			<software_name>$(escape_xml "$software_name")</software_name>
-			<software_version>$(escape_xml "$software_version")</software_version>
-			<software_status>$(escape_xml "$software_status")</software_status>
-			<software_description>$(escape_xml "$software_description")</software_description>
-		</package>
+		<item>
+			<name>$(escape_xml "$software_name")</name>
+			<version>$(escape_xml "$software_version")</version>
+			<status>$(escape_xml "$software_status")</status>
+			<description>$(escape_xml "$software_description")</description>
+		</item>
 EndOfFile
 	fi
 done

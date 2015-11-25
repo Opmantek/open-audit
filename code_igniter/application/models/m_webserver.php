@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -105,23 +105,9 @@ class M_webserver extends MY_Model
                     $webserver_id = $this->db->insert_id();
                 } else {
                     // need to check for web_server changes
-                    $sql = "SELECT sys_sw_web_server.webserver_id
-							FROM sys_sw_web_server, system
-							WHERE sys_sw_web_server.system_id = system.system_id AND
-								system.system_id			= ? AND
-								system.man_status 			= 'production' AND
-								webserver_type 				= ? AND
-								webserver_version			= ? AND
-								webserver_state				= ? AND
-								( sys_sw_web_server.timestamp = ? OR
-								sys_sw_web_server.timestamp = ? )";
+                    $sql = "SELECT webserver_id FROM sys_sw_web_server WHERE system_id = ? AND webserver_type = ? AND webserver_version = ? AND webserver_state = ? AND (`timestamp` = ? OR `timestamp` = ? )";
                     $sql = $this->clean_sql($sql);
-                    $data = array("$details->system_id",
-                            "$child->webserver_type",
-                            "$child->webserver_version",
-                            "$child->webserver_state",
-                            "$details->original_timestamp",
-                            "$details->timestamp", );
+                    $data = array("$details->system_id", "$child->webserver_type", "$child->webserver_version", "$child->webserver_state", "$details->original_timestamp", "$details->timestamp");
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
                         $row = $query->row();

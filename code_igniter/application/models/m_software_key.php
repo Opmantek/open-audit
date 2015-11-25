@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -83,25 +83,9 @@ class M_software_key extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for software changes
-            $sql = "SELECT sys_sw_software_key.key_id
-					FROM sys_sw_software_key, system
-					WHERE sys_sw_software_key.system_id = system.system_id AND
-						system.system_id				= ? AND
-						system.man_status			 	= 'production' AND
-						key_name 						= ? AND
-						key_release 					= ? AND
-						key_text						= ? AND
-						key_edition						= ? AND
-						( sys_sw_software_key.timestamp = ? OR
-						sys_sw_software_key.timestamp 	= ? )";
+            $sql = "SELECT key_id FROM sys_sw_software_key WHERE system_id = ? AND key_name = ? AND key_release = ? AND key_text = ? AND key_edition = ? AND (`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->key_name",
-                    "$input->key_release",
-                    "$input->key_text",
-                    "$input->key_edition",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->key_name", "$input->key_release", "$input->key_text", "$input->key_edition", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

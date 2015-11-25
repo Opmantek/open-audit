@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -175,13 +175,9 @@ class M_dns extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // check for dns changes
-            $sql = "SELECT sys_sw_dns.dns_id FROM sys_sw_dns, system WHERE sys_sw_dns.system_id = system.system_id AND
-					system.system_id = ? AND system.man_status = 'production' AND dns_name = ? AND
-					dns_full_name = ? AND dns_ip_address = ? AND ( sys_sw_dns.timestamp = ? OR sys_sw_dns.timestamp = ? )
-				LIMIT 1";
+            $sql = "SELECT dns_id FROM sys_sw_dns WHERE system_id = ? AND dns_name = ? AND dns_full_name = ? AND dns_ip_address = ? AND (`timestamp` = ? OR `timestamp` = ?) LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id", "$input->dns_name", "$input->dns_full_name",
-                    "$input->dns_ip_address", "$details->original_timestamp", "$details->timestamp",    );
+            $data = array("$details->system_id", "$input->dns_name", "$input->dns_full_name", "$input->dns_ip_address", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

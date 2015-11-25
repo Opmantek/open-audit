@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -654,28 +654,28 @@ $(document).ready(function(){
         toggleBold("toggle_hardware_printer");
 	});
 
-	$('#view_software_installed').hide();
-	$('#view_software_updates').hide();
-	$('#view_software_library').hide();
+	$('#view_software').hide();
+	$('#view_update').hide();
+	$('#view_library').hide();
 	$('#view_software_services').hide();
-	$('#view_software_codecs').hide();
-	$('#view_software_odbc').hide();
-	$('#view_software_assembly').hide();
+	$('#view_codec').hide();
+	$('#view_odbc').hide();
+	$('#view_assembly').hide();
 	$('#view_software_keys').hide();
 
 
 	$('#toggle_software_installed').click(function(){
-		$('#view_software_installed').slideToggle("fast");
+		$('#view_software').slideToggle("fast");
         toggleBold("toggle_software_installed");
 	});
 
 	$('#toggle_software_updates').click(function(){
-		$('#view_software_updates').slideToggle("fast");
+		$('#view_update').slideToggle("fast");
         toggleBold("toggle_software_updates");
 	});
 
 	$('#toggle_software_library').click(function(){
-		$('#view_software_library').slideToggle("fast");
+		$('#view_library').slideToggle("fast");
         toggleBold("toggle_software_library");
 	});
 
@@ -685,17 +685,17 @@ $(document).ready(function(){
 	});
 
 	$('#toggle_software_codecs').click(function(){
-		$('#view_software_codecs').slideToggle("fast");
+		$('#view_codec').slideToggle("fast");
         toggleBold("toggle_software_codecs");
 	});
 
 	$('#toggle_software_odbc').click(function(){
-		$('#view_software_odbc').slideToggle("fast");
+		$('#view_odbc').slideToggle("fast");
         toggleBold("toggle_software_odbc");
 	});
 
 	$('#toggle_software_assembly').click(function(){
-		$('#view_software_assembly').slideToggle("fast");
+		$('#view_assembly').slideToggle("fast");
         toggleBold("toggle_software_assembly");
 	});
 

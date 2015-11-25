@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -83,24 +83,9 @@ class M_variable extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for variable changes
-            $sql = "SELECT
-					sys_sw_variable.variable_id
-				FROM
-					sys_sw_variable,
-					system
-				WHERE
-					sys_sw_variable.system_id 	= system.system_id AND
-					system.system_id		= ? AND
-					system.man_status 		= 'production' AND
-					sys_sw_variable.variable_name 	= ? AND
-					sys_sw_variable.variable_value	= ? AND
-					( sys_sw_variable.timestamp = ? OR sys_sw_variable.timestamp = ? )";
+            $sql = "SELECT variable_id FROM sys_sw_variable WHERE system_id = ? AND variable_name = ? AND variable_value = ? AND (`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->variable_name",
-                    "$input->variable_value",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->variable_name", "$input->variable_value", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

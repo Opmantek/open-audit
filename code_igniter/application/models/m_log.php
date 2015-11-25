@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -92,26 +92,9 @@ class M_log extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for log changes
-            $sql = "SELECT
-					sys_sw_log.log_id
-				FROM
-					sys_sw_log,
-					system
-				WHERE
-					sys_sw_log.system_id 		= system.system_id AND
-					system.system_id		= ? AND
-					system.man_status 		= 'production' AND
-					sys_sw_log.log_name 		= ? AND
-					sys_sw_log.log_file_name	= ? AND
-					sys_sw_log.log_overwrite	= ? AND
-					( sys_sw_log.timestamp = ? OR sys_sw_log.timestamp = ? )";
+            $sql = "SELECT log_id FROM sys_sw_log WHERE system_id = ? AND log_name = ? AND log_file_name = ? AND log_overwrite = ? AND (`timestamp` = ? OR `timestamp` = ?)";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    trim($input->log_name),
-                    trim($input->log_file_name),
-                    trim($input->log_overwrite),
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", trim($input->log_name), trim($input->log_file_name), trim($input->log_overwrite), "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

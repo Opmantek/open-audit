@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -92,17 +92,7 @@ class M_print_queue extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for print queue changes
-            $sql = "SELECT
-					sys_sw_print_queue.queue_id
-				FROM
-					sys_sw_print_queue,
-					system
-				WHERE
-					sys_sw_print_queue.queue_system_key = ? AND
-					sys_sw_print_queue.system_id = system.system_id AND
-					system.system_id			= ? AND
-					system.man_status 			= 'production' AND
-					( sys_sw_print_queue.timestamp 	= ? OR sys_sw_print_queue.timestamp = ? )";
+            $sql = "SELECT queue_id FROM sys_sw_print_queue WHERE queue_system_key = ? AND system_id = ? AND (`timestamp` = ? OR `timestamp` = ?)";
             $sql = $this->clean_sql($sql);
             $data = array("$input->system_key", "$details->system_id", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);

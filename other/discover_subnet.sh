@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.8.2
+# @version 1.8.4
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -49,6 +49,7 @@ url="http://localhost/open-audit/index.php/discovery/process_subnet"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
+sequential="n"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -110,6 +111,9 @@ if [ "$help" == "y" ]; then
 	echo "  subnet_timestamp"
 	echo "       - Set by the web GUI. Not used on the command line."
 	echo ""
+	echo "  sequential"
+	echo "     *n - Set to n to NOT wait for each result from the server before continuing to scan the next ip in the list."
+	echo "      y - Set to y to wait for a result from the server before continuing on to the next ip to scan. Will extend discovery times."
 	echo "  syslog"
 	echo "     *y - Log entries to the Open-AudIT log file."
 	echo "      n - Do not log entries."
@@ -128,6 +132,11 @@ if [ "$help" == "y" ]; then
 	exit
 fi
 
+if [ "$sequential" == "n" ]; then
+	sequential="-b"
+else
+	sequential=""
+fi
 
 # logging to a file
 function write_log()
@@ -220,7 +229,6 @@ if [[ "$hosts" != "" ]]; then
 		os_group=""
 		os_family=""
 		os_name=""
-		type="unknown"
 		ssh_status="false"
 		wmi_status="false"
 		snmp_status="false"
@@ -249,10 +257,8 @@ if [[ "$hosts" != "" ]]; then
 				NEEDLE="|"
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					# could be one of multiple
-					# just ignore setting type as it's already set to "unknown" above
 					description=$(echo "$line" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
 				else
-					type=$(echo "$line" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
 					description=""
 				fi
 			fi
@@ -422,7 +428,7 @@ if [[ "$hosts" != "" ]]; then
 		result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
 		result="$result		<mac_address>$mac_address</mac_address>"$'\n'
 		result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
-		result="$result		<type><![CDATA[$type]]></type>"$'\n'
+		result="$result		<type>unknown</type>"$'\n'
 		result="$result		<os_group><![CDATA[$os_group]]></os_group>"$'\n'
 		result="$result		<os_family><![CDATA[$os_family]]></os_family>"$'\n'
 		result="$result		<os_name><![CDATA[$os_name]]></os_name>"$'\n'
@@ -453,8 +459,8 @@ if [[ "$hosts" != "" ]]; then
 				# -b   = background the wget command
 				# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 				# -q   = quiet (no output)
-				wget -b -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
-			fi
+				wget "$sequential" -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
+							fi
 			if [[ $(uname) == "Darwin" ]]; then
 				curl --data "form_details=$result" "$url"
 			fi

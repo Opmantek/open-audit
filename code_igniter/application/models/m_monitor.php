@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -85,27 +85,9 @@ class M_monitor extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for monitor changes
-            $sql = "SELECT
-					sys_hw_monitor.monitor_id
-				FROM
-					sys_hw_monitor,
-					system
-				WHERE
-					sys_hw_monitor.system_id	 = system.system_id AND
-					system.system_id		= ? AND
-					system.man_status 		= 'production' AND
-					sys_hw_monitor.manufacturer 	= ? AND
-					sys_hw_monitor.model 		= ? AND
-					sys_hw_monitor.serial		= ? AND
-					( sys_hw_monitor.timestamp 	= ? OR
-					sys_hw_monitor.timestamp 	= ? )";
+            $sql = "SELECT monitor_id FROM sys_hw_monitor WHERE system_id = ? AND manufacturer = ? AND model = ? AND `serial` = ? AND (`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->manufacturer",
-                    "$input->model",
-                    "$input->serial",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->manufacturer", "$input->model", "$input->serial", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

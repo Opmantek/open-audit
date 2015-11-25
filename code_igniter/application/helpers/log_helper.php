@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.8.2
+ * @version 1.8.4
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('stdlog')) {
@@ -157,7 +157,9 @@ if (! function_exists('stdlog')) {
             $log->display = $log_details->display;
         }
         if ($log->display == 'y') {
-            echo "LOG   - ".$log->message."\n";
+            echo "LOG   - ".$log->message."\n".str_pad("", 1024, " ")."\n";
+            ob_flush();
+            flush();
         }
 
         // check the requested logging level and if not met, exit

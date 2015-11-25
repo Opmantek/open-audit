@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -92,22 +92,9 @@ class M_pagefile extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for pagefile changes
-            $sql = "SELECT sys_sw_pagefile.pagefile_id FROM sys_sw_pagefile LEFT JOIN
-					system ON (sys_sw_pagefile.system_id = system.system_id )
-				WHERE
-					system.system_id = ? AND
-					pagefile_name = ? AND
-					pagefile_initial_size = ? AND
-					pagefile_max_size = ? AND
-					( sys_sw_pagefile.timestamp = ? OR
-					sys_sw_pagefile.timestamp 	= ? )";
+            $sql = "SELECT pagefile_id FROM sys_sw_pagefile WHERE system_id = ? AND pagefile_name = ? AND pagefile_initial_size = ? AND pagefile_max_size = ? AND (`timestamp` = ? OR `timestamp` = ?)";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->file_name",
-                    "$input->initial_size",
-                    "$input->max_size",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->file_name", "$input->initial_size", "$input->max_size", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

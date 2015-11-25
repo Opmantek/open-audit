@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -615,8 +615,12 @@ class report extends MY_Controller
         $limit = $this->uri->segment(4, 1000000);
         $this->data['heading'] = "Locations";
         $this->data['query'] = $this->m_oa_location->location_report($group_id, $limit);
+        $locations = array();
+        foreach ($this->data['query'] as $location) {
+            $locations[] = $location;
+        }
         echo "{\"locations\": ";
-        print_r(json_encode($this->data['query']));
+        print_r(json_encode($locations));
         echo "\n}";
     }
 

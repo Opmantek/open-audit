@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -88,18 +88,7 @@ class M_route extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for route changes
-            $sql = "SELECT
-					sys_sw_route.route_id
-				FROM
-					sys_sw_route,
-					system
-				WHERE
-					sys_sw_route.system_id 		= system.system_id AND
-					system.system_id		= ? AND
-					system.man_status 		= 'production' AND
-					sys_sw_route.destination 	= ? AND
-					sys_sw_route.next_hop 		= ? AND
-					( sys_sw_route.timestamp = ? OR sys_sw_route.timestamp = ? )";
+            $sql = "SELECT route_id FROM sys_sw_route WHERE system_id = ? AND destination = ? AND next_hop = ? AND (`timestamp` = ? OR `timestamp` = ?)";
             $sql = $this->clean_sql($sql);
             $data = array("$details->system_id", $this->ip_address_to_db($input->destination), $this->ip_address_to_db($input->next_hop), "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);

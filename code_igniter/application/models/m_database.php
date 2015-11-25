@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -184,15 +184,9 @@ class M_database extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for database changes
-            $sql = "SELECT sys_sw_database.db_id FROM sys_sw_database, system WHERE sys_sw_database.system_id = system.system_id AND
-						system.system_id = ? AND system.man_status = 'production' AND sys_sw_database.db_type = ? AND sys_sw_database.db_version = ? AND
-						( sys_sw_database.timestamp = ? OR sys_sw_database.timestamp = ? )";
+            $sql = "SELECT db_id FROM sys_sw_database WHERE system_id = ? AND db_type = ? AND db_version = ? AND (`timestamp` = ? OR `timestamp` = ?)";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->db_type",
-                    "$input->db_version",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->db_type", "$input->db_version", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.8.2
+# @version 1.8.4
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -162,7 +162,7 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Network Cards Info"
 fi
 ip_info=""
-echo "	<network_cards>" >> $xml_file
+echo "	<network>" >> $xml_file
 for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | cut -d":" -f2); do
 	line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
 	net_mac_address=`ifconfig $line 2>/dev/null | grep "ether" | awk '{print $2}'`
@@ -179,32 +179,19 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
 	net_speed=""
 	net_adapter_type="$j"
 	if [[ "$net_mac_address" > "" ]]; then
-		echo "		<network_card>" >> $xml_file
+		echo "		<item>" >> $xml_file
 		echo "			<net_index>$net_index</net_index>" >> $xml_file
-		echo "			<net_mac_address>$net_mac_address</net_mac_address>" >> $xml_file
-		echo "			<net_manufacturer>$net_manufacturer</net_manufacturer>" >> $xml_file
-		echo "			<net_model>$net_model</net_model>" >> $xml_file
-		echo "			<net_description>$net_description</net_description>" >> $xml_file
-		echo "			<net_ip_enabled>$net_ip_enabled</net_ip_enabled>" >> $xml_file
-		echo "			<net_connection_id>$net_connection_id</net_connection_id>" >> $xml_file
-		echo "			<net_connection_status></net_connection_status>" >> $xml_file
-		echo "			<net_speed></net_speed>" >> $xml_file
-		echo "			<net_adapter_type>$net_adapter_type</net_adapter_type>" >> $xml_file
-		echo "			<net_dhcp_enabled></net_dhcp_enabled>" >> $xml_file
-		echo "			<net_dhcp_server></net_dhcp_server>" >> $xml_file
-		echo "			<net_dhcp_lease_obtained></net_dhcp_lease_obtained>" >> $xml_file
-		echo "			<net_dhcp_lease_expires></net_dhcp_lease_expires>" >> $xml_file
-		echo "			<net_dns_host_name></net_dns_host_name>" >> $xml_file
-		echo "			<net_dns_domain></net_dns_domain>" >> $xml_file
-		echo "			<net_dns_domain_reg_enabled></net_dns_domain_reg_enabled>" >> $xml_file
-		echo "			<net_dns_server></net_dns_server>" >> $xml_file
-		echo "			<net_wins_primary></net_wins_primary>" >> $xml_file
-		echo "			<net_wins_secondary></net_wins_secondary>" >> $xml_file
-		echo "			<net_wins_lmhosts_enabled></net_wins_lmhosts_enabled>" >> $xml_file
-		echo "		</network_card>" >> $xml_file
+		echo "			<mac>$net_mac_address</mac>" >> $xml_file
+		echo "			<manufacturer>$net_manufacturer</manufacturer>" >> $xml_file
+		echo "			<model>$net_model</model>" >> $xml_file
+		echo "			<description>$net_description</description>" >> $xml_file
+		echo "			<ip_enabled>$net_ip_enabled</ip_enabled>" >> $xml_file
+		echo "			<connection>$net_connection_id</connection>" >> $xml_file
+		echo "			<type>$net_adapter_type</type>" >> $xml_file
+		echo "		</item>" >> $xml_file
 	fi
 done
-echo "	</network_cards>" >> $xml_file
+echo "	</network>" >> $xml_file
 echo "	<addresses>" >> $xml_file
 for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | cut -d":" -f2); do
 	line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
@@ -239,18 +226,18 @@ processor_description=`sysctl -n machdep.cpu.brand_string`
 processor_speed=`system_profiler SPHardwareDataType | grep "Processor Speed:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1 | sed 's/,/./g'`
 processor_speed=`echo "scale = 0; $processor_speed*1000" | bc`
 processor_manufacturer="GenuineIntel"
-processor_power_management_supported=""
 
 echo  "	<processor>" >> $xml_file
-echo  "		<processor_count>$processor_count</processor_count>" >> $xml_file
-echo  "		<processor_cores>$processor_cores</processor_cores>" >> $xml_file
-echo  "		<processor_logical>$processor_logical</processor_logical>" >> $xml_file
-echo  "		<processor_socket>$processor_socket</processor_socket>" >> $xml_file
-echo  "		<processor_description>$processor_description</processor_description>" >> $xml_file
-echo  "		<processor_speed>$processor_speed</processor_speed>" >> $xml_file
-echo  "		<processor_manufacturer>$processor_manufacturer</processor_manufacturer>" >> $xml_file
-echo  "		<processor_power_management_supported>$processor_power_management_supported</processor_power_management_supported>" >> $xml_file
-echo "		<processor_architecture>x64</processor_architecture>" >> $xml_file
+echo  "		<item>" >> $xml_file
+echo  "			<physical_count>$processor_count</physical_count>" >> $xml_file
+echo  "			<core_count>$processor_cores</core_count>" >> $xml_file
+echo  "			<logical_count>$processor_logical</logical_count>" >> $xml_file
+echo  "			<socket>$processor_socket</socket>" >> $xml_file
+echo  "			<description>$processor_description</description>" >> $xml_file
+echo  "			<speed>$processor_speed</speed>" >> $xml_file
+echo  "			<manufacturer>$processor_manufacturer</manufacturer>" >> $xml_file
+echo "			<architecture>x64</architecture>" >> $xml_file
+echo  "		</item>" >> $xml_file
 echo  "	</processor>" >> $xml_file
 
 
@@ -283,16 +270,16 @@ for line in $(system_profiler SPMemoryDataType | grep "BANK" -A 8); do
 	if [[ "$line" == *"Serial Number"* ]]; then
 		memory_serial=`echo "$line" | grep "Serial Number:" | cut -d":" -f2 | sed 's/^ *//g'`
 
-		echo "		<slot>" >> $xml_file
+		echo "		<item>" >> $xml_file
 		echo "			<bank>$memory_bank</bank>" >> $xml_file
 		echo "			<type></type>" >> $xml_file
 		echo "			<form_factor></form_factor>" >> $xml_file
 		echo "			<detail>$memory_detail</detail>" >> $xml_file
-		echo "			<capacity>$memory_capacity</capacity>" >> $xml_file
+		echo "			<size>$memory_capacity</size>" >> $xml_file
 		echo "			<speed>$memory_speed</speed>" >> $xml_file
 		echo "			<tag>$memory_tag</tag>" >> $xml_file
 		echo "			<serial>$memory_serial</serial>" >> $xml_file
-		echo "		</slot>" >> $xml_file
+		echo "		</item>" >> $xml_file
 	fi
 done
 #unset IFS
@@ -307,7 +294,7 @@ fi
 # partition count not available
 # scsi logical unit not available
 
-echo "  <hard_disks>" >> $xml_file
+echo "  <disk>" >> $xml_file
 partition_each=""
 for disk in $(diskutil list | grep "^/" | cut -d/ -f3); do
     hard_drive_index=$disk
@@ -368,20 +355,18 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3); do
         partition_each="$partition_each           <partition_serial>$partition_serial</partition_serial>"$'\n'
         partition_each="$partition_each       </partition>"$'\n'
     else
-        echo "      <hard_disk>" >> $xml_file
-        echo "          <hard_drive_caption>$hard_drive_caption</hard_drive_caption>" >> $xml_file
+        echo "      <item>" >> $xml_file
+        echo "          <caption>$hard_drive_caption</caption>" >> $xml_file
         echo "          <hard_drive_index>$hard_drive_index</hard_drive_index>" >> $xml_file
-        echo "          <hard_drive_interface_type>$hard_drive_interface_type</hard_drive_interface_type>" >> $xml_file
-        echo "          <hard_drive_manufacturer>$hard_drive_manufacturer</hard_drive_manufacturer>" >> $xml_file
-        echo "          <hard_drive_model>$hard_drive_model</hard_drive_model>" >> $xml_file
-        echo "          <hard_drive_serial>$hard_drive_serial</hard_drive_serial>" >> $xml_file
-        echo "          <hard_drive_size>$hard_drive_size</hard_drive_size>" >> $xml_file
-        echo "          <hard_drive_device_id>$hard_drive_device_id</hard_drive_device_id>" >> $xml_file
-        # echo "          <hard_drive_partitions>$hard_drive_partitions</hard_drive_partitions>" >> $xml_file
-        echo "          <hard_drive_status>$hard_drive_status</hard_drive_status>" >> $xml_file
-        echo "          <hard_drive_firmware>$hard_drive_firmware</hard_drive_firmware>" >> $xml_file
-        echo "          <hard_drive_scsi_logical_unit></hard_drive_scsi_logical_unit>" >> $xml_file
-        echo "      </hard_disk>" >> $xml_file
+        echo "          <interface_type>$hard_drive_interface_type</interface_type>" >> $xml_file
+        echo "          <manufacturer>$hard_drive_manufacturer</manufacturer>" >> $xml_file
+        echo "          <model>$hard_drive_model</model>" >> $xml_file
+        echo "          <serial>$hard_drive_serial</serial>" >> $xml_file
+        echo "          <size>$hard_drive_size</size>" >> $xml_file
+        echo "          <device>$hard_drive_device_id</device>" >> $xml_file
+        echo "          <status>$hard_drive_status</status>" >> $xml_file
+        echo "          <firmware>$hard_drive_firmware</firmware>" >> $xml_file
+        echo "      </item>" >> $xml_file
         # partitions on this disk
         for partition in $(diskutil list | grep "  $disk"s.\$ | awk 'NF>1{print $NF}'); do
             partition_mount_point=$(diskutil info "$partition" | grep "^ " | grep "Mount Point:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
@@ -419,7 +404,7 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3); do
         done
     fi
 done
-echo "  </hard_disks>" >> $xml_file
+echo "  </disk>" >> $xml_file
 echo "   <partitions>" >> $xml_file
 echo "$partition_each</partitions>" >> $xml_file
 
@@ -834,13 +819,13 @@ for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8 -A
 	if [[ "$line" == *"Location:"* ]]; then
 		software_location=`echo "$line" | cut -d":" -f2 | sed 's/^ *//'`
 		software_name=`echo $software_name | cut -d":" -f1`
-		echo "		<package>" >> $xml_file
-		echo "			<software_name><![CDATA[$software_name]]></software_name>" >> $xml_file
-		echo "			<software_version><![CDATA[$software_version]]></software_version>" >> $xml_file
-		echo "			<software_location><![CDATA[$software_location]]></software_location>" >> $xml_file
-		echo "			<software_install_source>$software_install_source</software_install_source>" >> $xml_file
-		echo "			<software_publisher><![CDATA[$software_publisher]]></software_publisher>" >> $xml_file
-		echo "		</package>" >> $xml_file
+		echo "		<item>" >> $xml_file
+		echo "			<name><![CDATA[$software_name]]></name>" >> $xml_file
+		echo "			<version><![CDATA[$software_version]]></version>" >> $xml_file
+		echo "			<location><![CDATA[$software_location]]></location>" >> $xml_file
+		echo "			<install_source>$software_install_source</install_source>" >> $xml_file
+		echo "			<publisher><![CDATA[$software_publisher]]></publisher>" >> $xml_file
+		echo "		</item>" >> $xml_file
 		software_name=""
 		software_version=""
 		software_location=""

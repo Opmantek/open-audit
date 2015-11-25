@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -67,13 +67,9 @@ class M_group extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for group changes
-            $sql = "SELECT sys_sw_group.group_id FROM sys_sw_group, system WHERE
-					sys_sw_group.system_id 	= system.system_id AND system.system_id	= ? AND
-					system.man_status 	= 'production' AND sys_sw_group.group_name = ? AND
-					sys_sw_group.group_sid	= ? AND ( sys_sw_group.timestamp = ? OR sys_sw_group.timestamp = ? )";
+            $sql = "SELECT group_id FROM sys_sw_group WHERE system_id = ? AND group_name = ? AND group_sid = ? AND (`timestamp` = ? OR `timestamp` = ?)";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id", "$input->name", "$input->sid",
-                    "$details->original_timestamp", "$details->timestamp", );
+            $data = array("$details->system_id", "$input->name", "$input->sid", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

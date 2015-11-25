@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -86,21 +86,9 @@ class M_share extends MY_Model
             $query = $this->db->query($sql, $data);
         } else {
             // need to check for shared directory changes
-            $sql = "SELECT sys_sw_share.share_id
-					FROM sys_sw_share, system
-					WHERE 	sys_sw_share.system_id 	= system.system_id AND
-							system.system_id		= ? AND
-							system.man_status 	= 'production' AND
-							share_name			= ? AND
-							share_path			= ? AND
-							( sys_sw_share.timestamp = ? OR
-							sys_sw_share.timestamp 	= ? )";
+            $sql = "SELECT share_id FROM sys_sw_share WHERE system_id  = ? AND share_name = ? AND share_path = ? AND (`timestamp` = ? OR `timestamp` = ? )";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id",
-                    "$input->share_name",
-                    "$input->share_path",
-                    "$details->original_timestamp",
-                    "$details->timestamp", );
+            $data = array("$details->system_id", "$input->share_name", "$input->share_path", "$details->original_timestamp", "$details->timestamp");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

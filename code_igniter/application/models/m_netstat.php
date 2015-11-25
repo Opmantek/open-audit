@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -209,24 +209,9 @@ class M_netstat extends MY_Model
                 $query = $this->db->query($sql, $data);
             } else {
                 // need to check for netstat changes
-                $sql = "SELECT sys_sw_netstat.id FROM sys_sw_netstat, system
-						WHERE
-							sys_sw_netstat.system_id 	= system.system_id AND
-							system.system_id			= ? AND
-							system.man_status 			= 'production' AND
-							sys_sw_netstat.protocol 	= ? AND
-							sys_sw_netstat.ip_address 	= ? AND
-							sys_sw_netstat.port 		= ? AND
-							sys_sw_netstat.program 		= ? AND
-							( sys_sw_netstat.timestamp = ? OR sys_sw_netstat.timestamp = ? )";
+                $sql = "SELECT id FROM sys_sw_netstat WHERE system_id = ? AND protocol = ? AND ip_address = ? AND port = ? AND program = ? AND (`timestamp` = ? OR `timestamp` = ? )";
                 $sql = $this->clean_sql($sql);
-                $data = array("$details->system_id",
-                        "$input->protocol",
-                        "$input->ip_address",
-                        "$input->port",
-                        "$input->program",
-                        "$details->original_timestamp",
-                        "$details->timestamp", );
+                $data = array("$details->system_id", "$input->protocol", "$input->ip_address", "$input->port", "$input->program", "$details->original_timestamp", "$details->timestamp");
                 $query = $this->db->query($sql, $data);
                 if ($query->num_rows() > 0) {
                     $row = $query->row();

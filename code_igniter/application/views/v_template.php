@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.2
+ * @version 1.8.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -44,5 +44,7 @@ $oa_web_index    = htmlentities($this->config->item('oa_web_index'));
 $oa_web_folder   = htmlentities($this->config->item('oa_web_folder'));
 $oa_theme_images = htmlentities($oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images');
 $oa_theme_files  = htmlentities($oa_web_folder.'/theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-files');
+$GLOBALS['oa_theme_images'] = $oa_theme_images;
+$GLOBALS['oa_theme_files'] = $oa_theme_files;
 
 include "theme-".$this->user->user_theme."/v_template.php";
