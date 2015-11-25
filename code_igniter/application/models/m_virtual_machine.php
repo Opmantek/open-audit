@@ -70,7 +70,7 @@ class M_virtual_machine extends MY_Model
 
         # attempt to match system_id
         if ($input->guest_system_id == '') {
-            $sql = "SELECT system_id FROM system WHERE uuid = ? and man_status = 'production'";
+            $sql = "SELECT system_id FROM system WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
             $data = array(strtolower("$input->uuid"));
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
