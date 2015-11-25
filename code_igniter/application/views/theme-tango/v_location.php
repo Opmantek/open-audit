@@ -36,7 +36,7 @@
 <form action="#" method="post" class='niceforms'>
 	<fieldset id="org_details" class='niceforms'>
 		<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Location Details')?></span></legend>
-		<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
+		<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 		<table cellpadding = "0" cellspacing="0">
 			<tr>
 				<td valign="top">

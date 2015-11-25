@@ -89,7 +89,7 @@ if (isset($form_url) and $form_url != '') {
                     <?php
                     if ((file_exists($filename)) and $show == 'y') {
                         ?>
-                        <span align='center'><br /><input type="button" name="audit" id="audit" onClick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
+                        <span align='center'><br /><input type="button" name="audit" id="audit" onclick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
                         <?php
 
                     }

@@ -51,8 +51,8 @@ if (count($query) > 0) {
         if (count($query) > 0) {
             foreach ($query as $key):
                 if ($key->field_id > 0) {
-                    $edit_pic = "<a href=\"edit_field/".intval($key->field_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-                    $delete_pic = "<a href=\"delete_field/".intval($key->field_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                    $edit_pic = "<a href=\"edit_field/".intval($key->field_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
+                    $delete_pic = "<a href=\"delete_field/".intval($key->field_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                     ?>
 			<tr>
 				<td><a href="../admin_field/edit_field/<?php echo $key->field_id?>"><?php echo htmlentities($key->field_name)?></a></td>

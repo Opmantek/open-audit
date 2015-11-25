@@ -42,12 +42,12 @@ echo form_open('admin_location/edit_location')."\n";
 ?>
 <fieldset id="location_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Location Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 	<?php foreach ($location as $key) {
     ?>
-	<table width='780' cellpadding='0' cellspacing='0'>
+	<table style='width:780' cellpadding='0' cellspacing='0'>
 		<tr>
-			<td width='50%'>
+			<td style='width:50%'>
 				<p><label for='location_name'><?php echo __("Name")?>: </label><input type='text' id='location_name' name='location_name' tabindex='1' title='Location Name' value="<?php echo print_something($key->location_name); ?>"/><?php echo $error_message; ?></p>
 				<p><label for='location_type'><?php echo __("Type")?>: </label><input type='text' id='location_type' name='location_type' tabindex='2' title='Type'  value="<?php echo print_something($key->location_type); ?>"/></p>
 				<p><label for='location_level'><?php echo __("Level")?>: </label><input type='text' id='location_level' name='location_level' tabindex='3' title='Level'  value="<?php echo print_something($key->location_level); ?>"/></p>

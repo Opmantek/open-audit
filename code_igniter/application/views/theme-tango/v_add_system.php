@@ -41,7 +41,7 @@ echo form_open('admin_system/add_system')."\n";
 ?>
 <fieldset id="org_details" class='niceforms'>
     <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('System Details')?></span></legend>
-    <img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
+    <img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
     <p><?php echo $error_message; ?>&nbsp;</p>
     <p><label for='man_type'><?php echo __("Type")?>: </label>
         <select id='man_type' name='man_type' tabindex='1' style='width: 135px' onchange='select_device();'>

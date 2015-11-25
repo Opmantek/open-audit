@@ -34,7 +34,7 @@
  */
 $sortcolumn = 0;
 ?>
-<table cellspacing='1' class='tablesorter' width='900'>
+<table cellspacing='1' class='tablesorter' style='width:900'>
 	<thead>
 		<tr>
 			<th><?php echo __('System Name')?></th>

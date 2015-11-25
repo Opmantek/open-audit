@@ -202,7 +202,7 @@ function dynamic_search( group )
 </script>
 
 <?php if ($this->config->config['rss_enable'] == 'y') { ?>
-<style>
+<style type="text/css">
 li a {text-decoration: underline; color: #729FCF;}
 </style>
 
@@ -212,12 +212,12 @@ li a {text-decoration: underline; color: #729FCF;}
 	</tr>
 </table>
 
-<style>
+<style type="text/css">
 li a {text-decoration: none;}
 </style>
 
 
-<script>
+<script type="text/javascript">
     (function (e) {
         e.fn.inewsticker = function (t) {
             var n = {

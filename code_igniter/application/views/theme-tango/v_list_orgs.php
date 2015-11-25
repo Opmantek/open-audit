@@ -53,19 +53,19 @@ if (count($query) > 0) {
 		<?php
         if (count($query) > 0) {
             foreach ($query as $key):
-                $edit_pic = "<a href=\"edit_org/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-                $delete_pic = "<a href=\"delete_org/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                $edit_pic = "<a href=\"edit_org/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
+                $delete_pic = "<a href=\"delete_org/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                 if ($key->org_name == '') {
                     $key->org_name = '(none)';
                 }
                 if ($key->org_group_id != '0') {
-                    $show_pic = "<a href=\"../main/list_devices/".intval($key->org_group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' width='16'/></a>";
-                    $deactivate_pic = "<a href=\"delete_group/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                    $show_pic = "<a href=\"../main/list_devices/".intval($key->org_group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' style='width:16'/></a>";
+                    $deactivate_pic = "<a href=\"delete_group/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                     $activate_pic = '';
                 } else {
                     $show_pic = '';
                     $deactivate_pic = '';
-                    $activate_pic = "<a href=\"activate_group/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
+                    $activate_pic = "<a href=\"activate_group/".intval($key->org_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>";
                 }
                 ?>
     			<tr>

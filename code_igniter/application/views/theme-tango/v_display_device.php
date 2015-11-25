@@ -184,10 +184,10 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
         <div style="float:right; width: 120px; text-align:center">
             <img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo htmlentities($system[0]->man_picture); ?>" style="border: 1px solid rgb(219, 217, 197);"/>
             <?php if (($access_level > 7) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
-                <input type="button" onclick="window.location.href='<?php echo base_url(); ?>index.php/discovery/discover_subnet/device/<?php echo intval($system_id); ?>'" value='Discover Device' title='Discover Device' name='Discover Device' alt='Discover Device' width='24' />
+                <input type="button" onclick="window.location.href='<?php echo base_url(); ?>index.php/discovery/discover_subnet/device/<?php echo intval($system_id); ?>'" value='Discover Device' title='Discover Device' name='Discover Device' alt='Discover Device' style='width:24' />
             <?php } ?>
             <?php if (($access_level > 7) and (extension_loaded('snmp')) and ($system[0]->man_ip_address != '000.000.000.000') and ($system[0]->man_ip_address != '0.0.0.0') and ($system[0]->man_ip_address > '')) { ?>
-                <input type="button" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo intval($system_id); ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');" value='SNMP Scan' title='SNMP Scan' name='SNMP Scan' alt='SNMP Scan' width='24' />
+                <input type="button" onclick="window.open('<?php echo base_url(); ?>index.php/admin_system/system_snmp/<?php echo intval($system_id); ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');" value='SNMP Scan' title='SNMP Scan' name='SNMP Scan' alt='SNMP Scan' style='width:24' />
             <?php } ?>
             <?php if ($system[0]->snmp_oid != '') { ?>
                 <?php $email_body = "The following attributes have been incorrectly detected: %0A&lt;PLEASE INSERT THE CORRECT DETAILS BELOW&gt;%0AType: %0AManufacturer: %0AsysDescr: %0AModel: %0APrinter Duplex: %0APrinter Color: %0A%0AThe following attributes were automatically detected:%0ASNMP OID: ".htmlentities($system[0]->snmp_oid)."%0AType: ".htmlentities($system[0]->man_type)."%0AManufacturer: ".htmlentities($system[0]->manufacturer)."%0ASysDescr: ".htmlentities($system[0]->sysDescr)."%0AModel: ".htmlentities($system[0]->model)."%0APrinter Duplex: ".htmlentities($system[0]->printer_duplex)."%0APrinter Color: ".htmlentities($system[0]->printer_color); ?>
@@ -243,7 +243,7 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 
                 if ((string)$value == 'icon') {
                     $icon = htmlentities($system[0]->icon);
-                    echo "<p><label for='man_icon'>" . __('Icon') . ": </label><span id='man_icon'><img src='" . base_url() . "theme-tango/tango-images/16_" . $icon . ".png' /></span></p>";
+                    echo "<p><label for='man_icon'>" . __('Icon') . ": </label><span id='man_icon'><img src='" . base_url() . "theme-tango/tango-images/16_" . $icon . ".png' alt='' /></span></p>";
                 }
             }
             echo "</div>\n";
@@ -264,7 +264,7 @@ if ($system[0]->man_type == 'computer') {
     include "v_display_inc_blocks.php";
 }
 ?>
-
+</div>
 <!-- end of content_column -->
 
 <?php include "v_display_inc_javascript.php"; ?>

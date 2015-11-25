@@ -47,10 +47,10 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 echo form_open('discovery/discover_active_directory') ?>
 <fieldset id="group_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Discover and Audit an Active Directory Domain')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_ldap.png' alt='' title='' width='48'/>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_ldap.png' alt='' title='' />
 	<table width="90%" cellpadding = "0" cellspacing="0">
 		<tr>
-			<td width='100%'>
+			<td style='width:100%'>
 				<p><label for="server"><?php echo __("Active Directory Server"); ?>: </label><input type='text' id="server" name="server" tabindex='1' title='Active Directory Server'> eg: 192.168.61.200 (IP Address is best). <?php echo $ldap_server_addition; ?></p>
 
 				<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $this->config->item('default_network_address'); ?>' /> This servers network address.</p>

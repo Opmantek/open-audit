@@ -134,10 +134,10 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 
 <fieldset id="subnet_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __($title)?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $icon;?>' alt='' title='' width='48'/>
+	<img class='section_image' src='<?php echo $icon;?>' alt='' title='' />
 	<table cellpadding = "0" cellspacing="0">
 		<tr>
-			<td width='30%' style="vertical-align: top;">
+			<td style='width:30%' style="vertical-align: top;">
 				<p><label for='subnet_range'><?php echo __($scan_title); ?>: </label> <input type='text' id='subnet_range' name='subnet_range' tabindex='1' title='Subnet Range' value='<?php echo $ip_address; ?>' /></p>
 
 				<?php if ($type == "" or $type == "device" or $type == "linux" or (php_uname('s') == "Linux" and $type == "windows")) { ?>
@@ -212,7 +212,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                     echo "<p><br /><br />$warning</p>\n";
                 } ?>
 			</td>
-			<td width='70%' style="vertical-align: top;">
+			<td style='width:70%' style="vertical-align: top;">
 				<?php if ($type != '') { ?>
 				<h3><?php echo __('Note'); ?> - <?php echo __('Discovery'); ?></h3><?php echo __('This will run an nmap scan against the target device, followed by attempting to retrieve details via SNMP (if SNMP is detected), then finally either running the Windows or Linux audit script (if WMI/SMB or SSH is detected). This will effectively "audit" your target device, assuming you provide the correct credentials.'); ?>
 

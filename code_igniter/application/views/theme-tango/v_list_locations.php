@@ -55,21 +55,21 @@ if (count($query) > 0) {
         if (count($query) > 0) {
             foreach ($query as $key):
 
-                $edit_pic = "<a href=\"edit_location/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-            $delete_pic = "<a href=\"delete_location/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                $edit_pic = "<a href=\"edit_location/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
+            $delete_pic = "<a href=\"delete_location/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
 
             if ($key->location_name == '') {
                 $key->location_name = '(none)';
             }
 
             if ($key->location_group_id > '0') {
-                $show_pic = "<a href=\"../main/list_devices/".intval($key->location_group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' width='16'/></a>";
-                $deactivate_pic = "<a href=\"delete_group/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                $show_pic = "<a href=\"../main/list_devices/".intval($key->location_group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' style='width:16'/></a>";
+                $deactivate_pic = "<a href=\"delete_group/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                 $activate_pic = '';
             } else {
                 $show_pic = '';
                 $deactivate_pic = '';
-                $activate_pic = "<a href=\"activate_group/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
+                $activate_pic = "<a href=\"activate_group/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>";
             }
 
             if ($key->location_id == '0') {

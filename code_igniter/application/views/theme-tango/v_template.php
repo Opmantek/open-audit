@@ -116,7 +116,7 @@ function print_something($string)
 	<script type="text/javascript">
 	$(document).ready(function() {
 		$(function() {
-			$("table").tablesorter({cancelSelection: false, widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
+            $("table").tablesorter({cancelSelection: false, widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
 		});
 	});
 
@@ -185,6 +185,45 @@ function print_something($string)
     }
     ?>
 
+<style type="text/css">
+
+    #overlay {
+        position:fixed; 
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:#000;
+        opacity:0.5;
+        filter:alpha(opacity=50);
+    }
+
+    #modal {
+        position:absolute;
+        background:url(/open-audit/images/tint20.png) 0 0 repeat;
+        background:rgba(0,0,0,0.2);
+        border-radius:14px;
+        padding:8px;
+        width:1000px;
+    }
+
+    #content {
+        border-radius:8px;
+        background:#fff;
+        padding:20px;
+    }
+
+    #close {
+        position:absolute;
+        background:url(/open-audit/images/close.png) 0 0 no-repeat;
+        width:24px;
+        height:27px;
+        display:block;
+        text-indent:-9999px;
+        top:-7px;
+        right:-7px;
+    }
+</style>
 
 	<!-- removed the menu css from here -->
 
@@ -203,8 +242,13 @@ function print_something($string)
     }
     ?>
 
-
-
+<style type="text/css">
+.section_image {
+    float:right;
+    margin;10px;
+    width:48px;
+}
+</style>
 
 <style type="text/css" media="print">
 	#topsection {

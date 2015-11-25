@@ -42,7 +42,7 @@ echo form_open('admin_location/edit_location')."\n";
 ?>
 <fieldset id="location_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Location Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 	<?php foreach ($location as $key) {
     ?>
 	<table cellpadding = "0" cellspacing="0">
@@ -142,7 +142,7 @@ echo form_open('admin_location/edit_location')."\n";
 
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 
-<script>
+<script type="text/javascript">
 function getlatlong() {
 	if (document.getElementById("location_geo").value > "") {
 		var address = document.getElementById("location_geo").value;

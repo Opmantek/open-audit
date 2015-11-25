@@ -41,16 +41,16 @@ echo form_open('admin_user/add_user')."\n";
 ?>
 <fieldset id="group_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('User Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_users.png' alt='' title='' width='48'/>
-	<table width='780' cellpadding='0' cellspacing='0'>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_users.png' alt='' title='' />
+	<table style='width:780' cellpadding='0' cellspacing='0'>
 		<tr>
-			<td width='50%'>
+			<td style='width:50%'>
 				<p><label for='user_name'><?php echo __("User Name")?>: </label><input type='text' id='user_name' name='user_name' tabindex='1' title='User Name' value="<?php echo set_value('user_name'); ?>"/><?php echo $error_message; ?></p>
 				<p><label for='user_full_name'><?php echo __("Full Name")?>: </label><input type='text' id='user_full_name' name='user_full_name' tabindex='2' title='Full Name'  value="<?php echo set_value('user_full_name'); ?>"/></p>
 				<p><label for='user_password'><?php echo __("Password")?>: </label><input type='text' id='user_password' name='user_password' tabindex='3' title='Password'  value="<?php echo set_value('user_password'); ?>"/></p>
 				<p><label for='user_email'><?php echo __("Email Address")?>: </label><input type='text' id='user_email' name='user_email' tabindex='4' title='Email Address'  value="<?php echo set_value('user_email'); ?>"/></p>
 			</td>
-			<td width='50%'>
+			<td style='width:50%'>
 				<p><label for='user_lang'><?php echo __("Language")?>: </label>
 					<select id='user_lang' name='user_lang' tabindex='5' title='Is Admin' />
 						<option value="en" selected>English</option>

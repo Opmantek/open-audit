@@ -49,7 +49,7 @@ if ($query) {
 				<th width="140"><?php echo __('System Description')?></th>
 				<th><?php echo __('Details')?></th>
 				<th  width="150" align="middle" class='{sorter: false}'>
-					<button onClick="document.alertform.submit();"><?php echo __('Acknowledge') ?></button>
+					<button onclick="document.alertform.submit();"><?php echo __('Acknowledge') ?></button>
 					<input type="checkbox" valign="absmiddle" id="alert_id_0" name="alert_id_0" onchange="alter_all_alerts();"/>
 				</th>
 			</tr>

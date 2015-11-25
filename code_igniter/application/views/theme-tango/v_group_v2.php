@@ -62,7 +62,7 @@ if ($manual_edit == 'y') {
             <th>OS Family</th>
             <?php
             if ($manual_edit == 'y') {
-                echo "<th align=\"center\" class=\"{sorter: false}\"><button onClick=\"document.change_form.submit();\">Edit</button>";
+                echo "<th align=\"center\" class=\"{sorter: false}\"><button onclick=\"document.change_form.submit();\">Edit</button>";
                 echo "<input type=\"checkbox\" id=\"system_id_0\" name=\"system_id_0\" onchange=\"check_all_systems();\"/></th>";
             }
             ?>

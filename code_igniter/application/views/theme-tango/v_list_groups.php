@@ -51,10 +51,10 @@
 		<?php
         foreach ($query as $key):
             $tag = 'User Defined';
-            $edit_pic = "<a href=\"edit_group/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-            $export_pic = "<a href=\"export_group/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_text-x-generic-template.png' alt='' title='' width='16'/></a>";
-            $delete_pic = "<a href=\"delete_group/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
-            $update_pic = "<a href=\"update_group/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_update.png' alt='' title='' width='16'/></a>";
+            $edit_pic = "<a href=\"edit_group/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
+            $export_pic = "<a href=\"export_group/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_text-x-generic-template.png' alt='' title='' style='width:16'/></a>";
+            $delete_pic = "<a href=\"delete_group/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
+            $update_pic = "<a href=\"update_group/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_update.png' alt='' title='' style='width:16'/></a>";
          ?>
 		<tr>
 			<td align='center'><img src="<?php echo $oa_theme_images;?>/16_<?php echo htmlentities($key->group_icon);?>.png" border="0" title="<?php echo htmlentities($key->group_icon);?>" alt="<?php echo htmlentities($key->group_icon);?>" /></td>

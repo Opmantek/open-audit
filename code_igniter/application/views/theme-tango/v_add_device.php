@@ -42,7 +42,7 @@ echo form_open('admin_device/add_device', $attributes)."\n";
 ?>
 <fieldset id="device_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Device Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_harddisk.png' alt='' title='' width='48'/>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_harddisk.png' alt='' title='' />
 	<p>
 		<label style='margin-top: 8px;' for='device_name' ><?php echo __('Name'); ?>: </label>
 		<input style='padding-top: -2px;' type='text' id='device_name' name='device_name' tabindex='1' title='Device Name' onchange='update_icon()'/>

@@ -64,7 +64,7 @@ foreach ($group as $group_data):
 	<p><label for='group_description'><?php echo __('Group Description')?>: </label><input size='40' type='text' id='group_description' name='group_description' tabindex='2' title='Group Description' value='<?php echo str_replace("'", "&apos;", $group_data->group_description); ?>'/></p>
 	<p>
 		<label for='group_icon'><?php echo __('Group Icon')?>: </label><input size='40' type='text' id='group_icon' name='group_icon' tabindex='2' title='Group Icon' value='<?php echo $group_data->group_icon?>'/>
-		<img src='<?php echo $oa_theme_images;?>/16_<?php echo $group_data->group_icon; ?>.png' alt='' title='' width='16'/>
+		<img src='<?php echo $oa_theme_images;?>/16_<?php echo $group_data->group_icon; ?>.png' alt='' title='' style='width:16'/>
 	</p>
 	<label for='group_category'><?php echo __('Group Category')?>: </label>
 	<select id='group_category' name='group_category' title='Group Category' >
