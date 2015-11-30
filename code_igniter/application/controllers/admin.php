@@ -3831,6 +3831,20 @@ class admin extends MY_Controller
 
             $sql = array();
 
+            # We know these tables aren't used - drop them
+            $sql[] = "DROP TABLE IF EXISTS oa_change_log";
+            $sql[] = "DROP TABLE IF EXISTS oa_contact";
+            $sql[] = "DROP TABLE IF EXISTS oa_location_org";
+            $sql[] = "DROP TABLE IF EXISTS oa_asset_line";
+            $sql[] = "DROP TABLE IF EXISTS oa_asset_order";
+            $sql[] = "DROP TABLE IF EXISTS oa_asset_select";
+            $sql[] = "DROP TABLE IF EXISTS oa_device_col";
+            $sql[] = "DROP TABLE IF EXISTS oa_device";
+            $sql[] = "DROP TABLE IF EXISTS oa_graph";
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_antivirus";
+            $sql[] = "DROP TABLE IF EXISTS oa_switch_ports";
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_share_perms";
+
             # bios
             $sql[] = "DELETE sys_hw_bios FROM sys_hw_bios LEFT JOIN system ON system.system_id = sys_hw_bios.system_id WHERE sys_hw_bios.timestamp <> system.timestamp";
             $sql[] = "ALTER TABLE sys_hw_bios CHANGE bios_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -3868,6 +3882,20 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_firmware firmware varchar(100) NOT NULL DEFAULT '' AFTER status";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_model_family model_family varchar(200) NOT NULL DEFAULT '' AFTER firmware";
             $sql[] = "RENAME TABLE sys_hw_hard_drive TO disk";
+
+            # log
+            $sql[] = "DELETE sys_sw_log FROM sys_sw_log LEFT JOIN system ON system.system_id = sys_sw_log.system_id WHERE sys_sw_log.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_sw_log CHANGE log_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_sw_log CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_sw_log ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_log CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_log CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_log CHANGE log_name name varchar(50) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_sw_log CHANGE log_file_name file_name varchar(250) NOT NULL DEFAULT '' AFTER name";
+            $sql[] = "ALTER TABLE sys_sw_log CHANGE log_file_size file_size int unsigned NOT NULL DEFAULT '0' AFTER file_name";
+            $sql[] = "ALTER TABLE sys_sw_log CHANGE log_max_file_size max_file_size int unsigned NOT NULL DEFAULT '0' AFTER file_size";
+            $sql[] = "ALTER TABLE sys_sw_log CHANGE log_overwrite overwrite varchar(30) NOT NULL DEFAULT '' AFTER max_file_size";
+            $sql[] = "RENAME TABLE sys_sw_log TO log";
 
             # memory
             $sql[] = "DELETE sys_hw_memory FROM sys_hw_memory LEFT JOIN system ON system.system_id = sys_hw_memory.system_id WHERE sys_hw_memory.timestamp <> system.timestamp";
@@ -4021,18 +4049,6 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE scsi_controller_type type enum('raid','hba','other') NOT NULL DEFAULT 'other' AFTER device";
             $sql[] = "RENAME TABLE sys_hw_scsi_controller TO scsi";
 
-            # sound
-            $sql[] = "DELETE sys_hw_sound FROM sys_hw_sound LEFT JOIN system ON system.system_id = sys_hw_sound.system_id WHERE sys_hw_sound.timestamp <> system.timestamp";
-            $sql[] = "ALTER TABLE sys_hw_sound CHANGE sound_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
-            $sql[] = "ALTER TABLE sys_hw_sound CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
-            $sql[] = "ALTER TABLE sys_hw_sound ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
-            $sql[] = "ALTER TABLE sys_hw_sound CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
-            $sql[] = "ALTER TABLE sys_hw_sound CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
-            $sql[] = "ALTER TABLE sys_hw_sound CHANGE sound_manufacturer manufacturer varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
-            $sql[] = "ALTER TABLE sys_hw_sound CHANGE sound_name model varchar(100) NOT NULL DEFAULT '' AFTER manufacturer";
-            $sql[] = "ALTER TABLE sys_hw_sound CHANGE sound_device_id device varchar(100) NOT NULL DEFAULT '' AFTER model";
-            $sql[] = "RENAME TABLE sys_hw_sound TO sound";
-
             # service
             $sql[] = "DELETE sys_sw_service FROM sys_sw_service LEFT JOIN system ON system.system_id = sys_sw_service.system_id WHERE sys_sw_service.timestamp <> system.timestamp";
             $sql[] = "ALTER TABLE sys_sw_service DROP KEY `timestamp`";
@@ -4059,13 +4075,27 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_sw_service ADD KEY `description` (`description`)";
             $sql[] = "RENAME TABLE sys_sw_service TO service";
 
+            # share
+            $sql[] = "DELETE sys_sw_share FROM sys_sw_share LEFT JOIN system ON system.system_id = sys_sw_share.system_id WHERE sys_sw_share.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_sw_share CHANGE share_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_sw_share CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_sw_share ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_share CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_share CHANGE `timestamp` last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_share CHANGE share_caption description varchar(250) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_sw_share CHANGE share_name name varchar(250) NOT NULL DEFAULT '' AFTER description";
+            $sql[] = "ALTER TABLE sys_sw_share CHANGE share_path `path` varchar(250) NOT NULL DEFAULT '' AFTER name";
+            $sql[] = "ALTER TABLE sys_sw_share CHANGE share_size size int unsigned NOT NULL DEFAULT '0' AFTER `path`";
+            $sql[] = "ALTER TABLE sys_sw_share CHANGE share_users users varchar(200) NOT NULL DEFAULT '' AFTER size";
+            $sql[] = "RENAME TABLE sys_sw_share TO share";
+
             # software
             $sql[] = "DELETE sys_sw_software FROM sys_sw_software LEFT JOIN system ON system.system_id = sys_sw_software.system_id WHERE sys_sw_software.timestamp <> system.timestamp";
             $sql[] = "ALTER TABLE sys_sw_software CHANGE software_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE sys_sw_software CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
             $sql[] = "ALTER TABLE sys_sw_software ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
             $sql[] = "ALTER TABLE sys_sw_software CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
-            $sql[] = "ALTER TABLE sys_sw_software CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_software CHANGE `timestamp` last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
             $sql[] = "ALTER TABLE sys_sw_software CHANGE software_name name varchar(255) NOT NULL DEFAULT '' AFTER last_seen";
             $sql[] = "ALTER TABLE sys_sw_software CHANGE software_version version varchar(255) NOT NULL DEFAULT '' AFTER name";
             $sql[] = "ALTER TABLE sys_sw_software CHANGE software_description description text NOT NULL AFTER version";
@@ -4095,6 +4125,31 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_sw_software ADD KEY `last_seen` (`last_seen`)";
             $sql[] = "ALTER TABLE sys_sw_software ADD KEY `name` (`name`)";
             $sql[] = "RENAME TABLE sys_sw_software TO software";
+
+            # software key
+            $sql[] = "DELETE sys_sw_software_key FROM sys_sw_software_key LEFT JOIN system ON system.system_id = sys_sw_software_key.system_id WHERE sys_sw_software_key.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_sw_software_key CHANGE key_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_sw_software_key CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_sw_software_key ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_software_key CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_software_key CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_software_key CHANGE key_name name varchar(250) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_sw_software_key CHANGE key_text string varchar(100) NOT NULL DEFAULT '' AFTER name";
+            $sql[] = "ALTER TABLE sys_sw_software_key CHANGE key_release rel varchar(100) NOT NULL DEFAULT '' AFTER string";
+            $sql[] = "ALTER TABLE sys_sw_software_key CHANGE key_edition edition varchar(100) NOT NULL DEFAULT '' AFTER rel";
+            $sql[] = "RENAME TABLE sys_sw_software_key TO software_key";
+
+            # sound
+            $sql[] = "DELETE sys_hw_sound FROM sys_hw_sound LEFT JOIN system ON system.system_id = sys_hw_sound.system_id WHERE sys_hw_sound.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_hw_sound CHANGE sound_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_hw_sound CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_hw_sound ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_hw_sound CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_hw_sound CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_hw_sound CHANGE sound_manufacturer manufacturer varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_hw_sound CHANGE sound_name model varchar(100) NOT NULL DEFAULT '' AFTER manufacturer";
+            $sql[] = "ALTER TABLE sys_hw_sound CHANGE sound_device_id device varchar(100) NOT NULL DEFAULT '' AFTER model";
+            $sql[] = "RENAME TABLE sys_hw_sound TO sound";
 
             # user
             $sql[] = "DELETE sys_sw_user FROM sys_sw_user LEFT JOIN system ON system.system_id = sys_sw_user.system_id WHERE sys_sw_user.timestamp <> system.timestamp";

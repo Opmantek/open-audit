@@ -57,105 +57,6 @@ LOCK TABLES `oa_alert_log` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `oa_asset_line`
---
-
-DROP TABLE IF EXISTS `oa_asset_line`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_asset_line` (
-  `line_id` int(10) NOT NULL AUTO_INCREMENT,
-  `order_id` int(10) unsigned DEFAULT NULL,
-  `org_id` int(10) unsigned DEFAULT NULL,
-  `select_id` int(10) unsigned DEFAULT NULL,
-  `line_amount` int(10) unsigned DEFAULT NULL,
-  `line_cost_each` int(10) unsigned DEFAULT NULL,
-  `line_tax_each` int(10) unsigned DEFAULT NULL,
-  `line_asset_number` varchar(50) NOT NULL,
-  `line_gl` varchar(50) NOT NULL,
-  `line_type` enum('','sw','hw') NOT NULL DEFAULT '',
-  `line_sw_license_expires_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `line_sw_license_key` varchar(50) NOT NULL,
-  `line_sw_license_number` varchar(50) NOT NULL,
-  `line_sw_license_agreement` varchar(50) NOT NULL,
-  `line_sw_license_type` enum('','license','license and maintenance','upgrade','upgrade and maintenance','maintenance') NOT NULL DEFAULT '',
-  `line_vendor_producit_id` varchar(50) NOT NULL,
-  `line_vendor_part_id` varchar(50) NOT NULL,
-  `line_maintenance_included` varchar(50) NOT NULL,
-  `line_maintenance_date_expires` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `allocate_type` enum('','group','location','org','person','item','other') NOT NULL DEFAULT '',
-  `allocate_text` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`line_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_asset_line`
---
-
-LOCK TABLES `oa_asset_line` WRITE;
-/*!40000 ALTER TABLE `oa_asset_line` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_asset_line` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_asset_order`
---
-
-DROP TABLE IF EXISTS `oa_asset_order`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_asset_order` (
-  `order_id` int(10) NOT NULL AUTO_INCREMENT,
-  `order_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `order_po` varchar(50) NOT NULL,
-  `order_vn` varchar(50) NOT NULL,
-  `order_in` varchar(50) NOT NULL,
-  `order_vendor` varchar(50) NOT NULL,
-  `order_auth_officer` varchar(100) NOT NULL,
-  `order_cost_code` varchar(50) NOT NULL,
-  `order_notes` text NOT NULL,
-  PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_asset_order`
---
-
-LOCK TABLES `oa_asset_order` WRITE;
-/*!40000 ALTER TABLE `oa_asset_order` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_asset_order` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_asset_select`
---
-
-DROP TABLE IF EXISTS `oa_asset_select`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_asset_select` (
-  `select_id` int(10) NOT NULL AUTO_INCREMENT,
-  `select_name` varchar(50) NOT NULL,
-  `select_type` enum('','sw','hw','service','other') NOT NULL DEFAULT '',
-  `select_sql` varchar(250) NOT NULL,
-  `group_id` int(10) unsigned DEFAULT NULL,
-  `group_amount` int(10) unsigned DEFAULT '0',
-  PRIMARY KEY (`select_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_asset_select`
---
-
-LOCK TABLES `oa_asset_select` WRITE;
-/*!40000 ALTER TABLE `oa_asset_select` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_asset_select` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `oa_audit_log`
 --
 
@@ -222,37 +123,6 @@ LOCK TABLES `oa_change` WRITE;
 /*!40000 ALTER TABLE `oa_change` DISABLE KEYS */;
 INSERT INTO `oa_change` VALUES (1,'Default Change.','','0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','',1,'0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `oa_change` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_change_log`
---
-
-DROP TABLE IF EXISTS `oa_change_log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_change_log` (
-  `change_log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `change_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `change_log_attachment` varchar(200) NOT NULL DEFAULT '',
-  `change_log_comments` text NOT NULL,
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`change_log_id`),
-  KEY `change_id` (`change_id`),
-  KEY `oa_change_log_user_id` (`user_id`),
-  CONSTRAINT `oa_change_log_change_id` FOREIGN KEY (`change_id`) REFERENCES `oa_change` (`change_id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_change_log_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_change_log`
---
-
-LOCK TABLES `oa_change_log` WRITE;
-/*!40000 ALTER TABLE `oa_change_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_change_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -358,121 +228,6 @@ CREATE TABLE `oa_connection` (
 LOCK TABLES `oa_connection` WRITE;
 /*!40000 ALTER TABLE `oa_connection` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oa_connection` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_contact`
---
-
-DROP TABLE IF EXISTS `oa_contact`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_contact` (
-  `contact_id` int(10) NOT NULL AUTO_INCREMENT,
-  `location_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `name` varchar(100) NOT NULL DEFAULT '',
-  `phone_number` varchar(20) NOT NULL DEFAULT '',
-  `mobile_number` varchar(20) NOT NULL DEFAULT '',
-  `fax_number` varchar(20) NOT NULL DEFAULT '',
-  `picture` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`contact_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_contact`
---
-
-LOCK TABLES `oa_contact` WRITE;
-/*!40000 ALTER TABLE `oa_contact` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_contact` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_device`
---
-
-DROP TABLE IF EXISTS `oa_device`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_device` (
-  `dev_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `dev_name` varchar(100) NOT NULL DEFAULT '',
-  `dev_group_id` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`dev_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_device`
---
-
-LOCK TABLES `oa_device` WRITE;
-/*!40000 ALTER TABLE `oa_device` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_device` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_device_col`
---
-
-DROP TABLE IF EXISTS `oa_device_col`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_device_col` (
-  `col_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `dev_id` int(10) unsigned DEFAULT NULL,
-  `col_table` varchar(100) NOT NULL DEFAULT '',
-  `col_column` varchar(100) NOT NULL DEFAULT '',
-  `col_type` varchar(100) NOT NULL DEFAULT '',
-  `col_order` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`col_id`),
-  KEY `dev_id` (`dev_id`),
-  CONSTRAINT `oa_dev_col_dev_id` FOREIGN KEY (`dev_id`) REFERENCES `oa_device` (`dev_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_device_col`
---
-
-LOCK TABLES `oa_device_col` WRITE;
-/*!40000 ALTER TABLE `oa_device_col` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_device_col` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_graph`
---
-
-DROP TABLE IF EXISTS `oa_graph`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_graph` (
-  `graph_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `type` enum('disk','partition','directory','file','database') NOT NULL DEFAULT 'partition',
-  `foreign_id` int(10) unsigned DEFAULT NULL,
-  `foreign_description` varchar(100) NOT NULL DEFAULT '',
-  `path_to` varchar(200) NOT NULL DEFAULT '',
-  `used` int(10) unsigned NOT NULL DEFAULT '0',
-  `free` int(10) unsigned NOT NULL DEFAULT '0',
-  `total` int(10) unsigned NOT NULL DEFAULT '0',
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`graph_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `oa_graph_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_graph`
---
-
-LOCK TABLES `oa_graph` WRITE;
-/*!40000 ALTER TABLE `oa_graph` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_graph` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -761,35 +516,6 @@ LOCK TABLES `oa_location` WRITE;
 /*!40000 ALTER TABLE `oa_location` DISABLE KEYS */;
 INSERT INTO `oa_location` VALUES (0,'Default Location','Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','',-28.017260,153.425705,'','Default location','office',9);
 /*!40000 ALTER TABLE `oa_location` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_location_org`
---
-
-DROP TABLE IF EXISTS `oa_location_org`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_location_org` (
-  `loc_org_id` int(10) NOT NULL AUTO_INCREMENT,
-  `location_id` int(10) unsigned DEFAULT NULL,
-  `location_name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`loc_org_id`),
-  KEY `id2` (`location_id`),
-  KEY `id3` (`org_id`),
-  CONSTRAINT `oa_loc_org_loc_id` FOREIGN KEY (`location_id`) REFERENCES `oa_location` (`location_id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_loc_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `oa_org` (`org_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_location_org`
---
-
-LOCK TABLES `oa_location_org` WRITE;
-/*!40000 ALTER TABLE `oa_location_org` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_location_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1089,37 +815,6 @@ INSERT INTO `oa_report_column` VALUES (178,26,5,'Operational Status','ifOperStat
 INSERT INTO `oa_report_column` VALUES (179,26,6,'Days Since Changed','diff_days','text','','','','left');
 INSERT INTO `oa_report_column` VALUES (180,26,7,'Availability','available','text','','','','left');
 /*!40000 ALTER TABLE `oa_report_column` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_switch_ports`
---
-
-DROP TABLE IF EXISTS `oa_switch_ports`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_switch_ports` (
-  `switch_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `switch_system_id` int(10) unsigned DEFAULT NULL,
-  `switch_port` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` varchar(200) NOT NULL DEFAULT '',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`switch_id`),
-  KEY `system_id` (`system_id`),
-  KEY `switch_system_id` (`switch_system_id`),
-  CONSTRAINT `oa_switch_ports_switch_switch_id` FOREIGN KEY (`switch_system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_switch_ports_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_switch_ports`
---
-
-LOCK TABLES `oa_switch_ports` WRITE;
-/*!40000 ALTER TABLE `oa_switch_ports` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_switch_ports` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2016,38 +1711,6 @@ LOCK TABLES `sys_man_notes` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_antivirus`
---
-
-DROP TABLE IF EXISTS `sys_sw_antivirus`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_antivirus` (
-  `virus_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `virus_manufacturer` varchar(150) NOT NULL DEFAULT '',
-  `virus_version` varchar(45) NOT NULL DEFAULT '',
-  `virus_name` varchar(100) NOT NULL DEFAULT '',
-  `virus_uptodate` varchar(45) NOT NULL DEFAULT '',
-  `virus_def_date` date NOT NULL DEFAULT '0000-00-00',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`virus_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_antivirus_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_antivirus`
---
-
-LOCK TABLES `sys_sw_antivirus` WRITE;
-/*!40000 ALTER TABLE `sys_sw_antivirus` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_antivirus` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `sys_sw_database`
 --
 
@@ -2183,35 +1846,36 @@ LOCK TABLES `sys_sw_group` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_log`
+-- Table structure for table `log`
 --
 
-DROP TABLE IF EXISTS `sys_sw_log`;
+DROP TABLE IF EXISTS `log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_log` (
-  `log_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `log_name` varchar(50) NOT NULL DEFAULT '',
-  `log_file_name` varchar(250) NOT NULL DEFAULT '',
-  `log_file_size` int(10) NOT NULL DEFAULT '0',
-  `log_max_file_size` int(10) NOT NULL DEFAULT '0',
-  `log_overwrite` varchar(30) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`log_id`),
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(50) NOT NULL DEFAULT '',
+  `file_name` varchar(250) NOT NULL DEFAULT '',
+  `file_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `max_file_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `overwrite` varchar(30) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_log`
+-- Dumping data for table `log`
 --
 
-LOCK TABLES `sys_sw_log` WRITE;
-/*!40000 ALTER TABLE `sys_sw_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_log` ENABLE KEYS */;
+LOCK TABLES `log` WRITE;
+/*!40000 ALTER TABLE `log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2428,69 +2092,36 @@ LOCK TABLES `service` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_share`
+-- Table structure for table `share`
 --
 
-DROP TABLE IF EXISTS `sys_sw_share`;
+DROP TABLE IF EXISTS `share`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_share` (
-  `share_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `share` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `share_caption` varchar(250) NOT NULL DEFAULT '',
-  `share_name` varchar(250) NOT NULL DEFAULT '',
-  `share_path` varchar(250) NOT NULL DEFAULT '',
-  `share_size` varchar(10) NOT NULL DEFAULT '',
-  `share_users` varchar(200) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`share_id`),
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `description` varchar(250) NOT NULL DEFAULT '',
+  `name` varchar(250) NOT NULL DEFAULT '',
+  `path` varchar(250) NOT NULL DEFAULT '',
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `users` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_share_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_share`
+-- Dumping data for table `share`
 --
 
-LOCK TABLES `sys_sw_share` WRITE;
-/*!40000 ALTER TABLE `sys_sw_share` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_share` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_sw_share_perms`
---
-
-DROP TABLE IF EXISTS `sys_sw_share_perms`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_share_perms` (
-  `perm_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `share_id` int(10) unsigned DEFAULT NULL,
-  `perm_prefix` varchar(100) NOT NULL DEFAULT '',
-  `perm_name` varchar(100) NOT NULL DEFAULT '',
-  `perm_type` enum('local_user','local_group','domain_user','domain_group','remote_user','remote_group') NOT NULL DEFAULT 'local_user',
-  `perm_access` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`perm_id`),
-  KEY `system_id` (`system_id`),
-  KEY `sys_sw_share_perm_share_id` (`share_id`),
-  CONSTRAINT `sys_sw_share_perm_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `sys_sw_share_perm_share_id` FOREIGN KEY (`share_id`) REFERENCES `sys_sw_share` (`share_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_share_perms`
---
-
-LOCK TABLES `sys_sw_share_perms` WRITE;
-/*!40000 ALTER TABLE `sys_sw_share_perms` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_share_perms` ENABLE KEYS */;
+LOCK TABLES `share` WRITE;
+/*!40000 ALTER TABLE `share` DISABLE KEYS */;
+/*!40000 ALTER TABLE `share` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2540,34 +2171,35 @@ LOCK TABLES `software` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_software_key`
+-- Table structure for table `software_key`
 --
 
-DROP TABLE IF EXISTS `sys_sw_software_key`;
+DROP TABLE IF EXISTS `software_key`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_software_key` (
-  `key_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `software_key` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `key_name` varchar(250) NOT NULL DEFAULT '',
-  `key_text` varchar(100) NOT NULL DEFAULT '',
-  `key_release` varchar(100) NOT NULL DEFAULT '',
-  `key_edition` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`key_id`),
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(250) NOT NULL DEFAULT '',
+  `string` varchar(100) NOT NULL DEFAULT '',
+  `rel` varchar(100) NOT NULL DEFAULT '',
+  `edition` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_software_key_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_software_key`
+-- Dumping data for table `software_key`
 --
 
-LOCK TABLES `sys_sw_software_key` WRITE;
-/*!40000 ALTER TABLE `sys_sw_software_key` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_software_key` ENABLE KEYS */;
+LOCK TABLES `software_key` WRITE;
+/*!40000 ALTER TABLE `software_key` DISABLE KEYS */;
+/*!40000 ALTER TABLE `software_key` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
