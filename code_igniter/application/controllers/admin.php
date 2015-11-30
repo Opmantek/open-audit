@@ -3826,7 +3826,7 @@ class admin extends MY_Controller
 
             $log_details = new stdClass();
             $log_details->file = 'system';
-            $log_details->message = 'Upgrade database to 1.8.4 commenced';
+            $log_details->message = 'Upgrade database to 1.10 commenced';
             stdlog($log_details);
 
             $sql = array();
@@ -3986,8 +3986,6 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_network_card DROP KEY net_mac_address";
             $sql[] = "ALTER TABLE sys_hw_network_card ADD KEY mac (`mac`)";
             $sql[] = "RENAME TABLE sys_hw_network_card TO network";
-
-            $sql[] = 'UPDATE oa_report SET report_sql = "SELECT system.system_id, system.hostname, alias as ifAlias, net_index AS ifIndex, description as ifDescription, ifadminstatus as ifAdminStatus, ip_enabled as ifOperStatus, sysUpTime, iflastchange as ifLastChange, (sysuptime - iflastchange) AS diff, floor((sysuptime - iflastchange) /60/60/24/100) as diff_days, IF((ifadminstatus = \'down\') OR (ifadminstatus = \'up\' AND (ip_enabled != \'up\' AND ip_enabled != \'dormant\') AND (((sysuptime - iflastchange) > 60480000) OR (sysuptime < iflastchange))), \'available\', \'used\') AS available FROM network LEFT JOIN system ON (network.system_id = system.system_id AND network.current = \'y\') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND ifadminstatus != \'\'" WHERE report_name = "Interfaces Used - Available"';
 
             # processor
             $sql[] = "DELETE sys_hw_processor FROM sys_hw_processor LEFT JOIN system ON system.system_id = sys_hw_processor.system_id WHERE sys_hw_processor.timestamp <> system.timestamp";
@@ -4170,6 +4168,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_sw_windows CHANGE windows_workgroup workgroup varchar(255) NOT NULL DEFAULT '' AFTER active_directory_ou";
             $sql[] = "RENAME TABLE sys_sw_windows TO windows";
 
+            $sql[] = "ALTER TABLE oa_alert_log ADD `link_row_action` enum('','create','update','delete') NOT NULL DEFAULT '' AFTER alert_foreign_row";
 
             $sql[] = "UPDATE oa_config SET config_value = '20151130' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.10' WHERE config_name = 'display_version'";
@@ -4178,6 +4177,12 @@ class admin extends MY_Controller
                 $this->data['output'] .= $this_query."<br /><br />\n";
                 $query = $this->db->query($this_query);
             }
+
+            $this->load->helper('report_helper');
+            $sql[] = refresh_report_definitions();
+
+            $this->load->helper('group_helper');
+            $sql[] = refresh_group_definitions();
 
             $log_details->message = 'Upgrade database to 1.10 completed';
             stdlog($log_details);
