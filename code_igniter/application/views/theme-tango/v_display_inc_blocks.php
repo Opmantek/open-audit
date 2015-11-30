@@ -71,17 +71,17 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </div>
                 </div>
                 <?php
-                if ($key->windows_active_directory_ou > "") { ?>
+                if ($key->active_directory_ou > "") { ?>
                 <div style="float:left; width:90%;">
                     <label for="windows_active_directory_ou"><?php echo __('Active Directory OU')?>: </label><span id="windows_active_directory_ou"><?php echo print_something(str_replace(",", ", ", $key->active_directory_ou))?></span>
                 </div>
                 <?php }
-                if ($key->windows_user_name > "") { ?>
+                if ($key->user_name > "") { ?>
                     <div style="float:left; width:90%;">
                         <p><label for="windows_user_name"><?php echo __('Last Logged on User')?>: </label><span id="windows_user_name"><?php echo str_replace("&", "&amp;", print_something($key->user_name))?></span></p>
                     </div>
                 <?php }
-                $windows_service_pack = $key->windows_service_pack;
+                $windows_service_pack = $key->service_pack;
             endforeach;
             echo display_custom_field('view_summary_windows',  $additional_fields_data, $edit);
             ?>
@@ -835,10 +835,10 @@ function show_software($type, $software) {
                 <tbody>
                 <?php foreach ($software_key as $key): ?>
                     <tr>
-                        <td><?php echo print_something($key->key_name)?></td>
-                        <td><?php echo print_something($key->key_text)?></td>
-                        <td><?php echo print_something($key->key_edition)?></td>
-                        <td><?php echo print_something($key->key_release)?></td>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->string)?></td>
+                        <td><?php echo print_something($key->edition)?></td>
+                        <td><?php echo print_something($key->rel)?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -899,29 +899,26 @@ function show_software($type, $software) {
                             <th><?php echo __('Path')?></th>                        </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($share as $key_share): ?>
+                    <?php foreach ($share as $key): ?>
                     <?php
-                    if ((!$key_share->share_size == '') or ($key_share->share_size == '0') or (is_null($key_share->share_size))) {
-                        $size = number_format(intval($key_share->share_size)).' Mb';
+                    if ((!$key->size == '') or ($key->size == '0') or (is_null($key->size))) {
+                        $size = number_format(intval($key->size)).' Mb';
                     } else {
-                        $size = number_format(intval($key_share->share_size));
+                        $size = number_format(intval($key->size));
                     }
                     ?>
                         <tr>
-                            <td><?php echo clean_url($key_share->share_name)?></td>
+                            <td><?php echo clean_url($key->name)?></td>
                             <td style="text-align: right;" ><?php echo $size?></td>
-                            <td><?php echo clean_url($key_share->share_caption)?></td>
-                            <td><?php echo clean_url($key_share->share_path)?></td>
-                            <!-- <td><?php echo str_replace(", ", "<br />", clean_url($key_share->share_users))?></td> -->
+                            <td><?php echo clean_url($key->caption)?></td>
+                            <td><?php echo clean_url($key->path)?></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
                 </table>
             </fieldset>
         </form>
-    <?php
-
-} ?>
+    <?php } ?>
     </div>
 
     <div id="view_settings_routes" style="float: left; width: 100%;">
@@ -1111,7 +1108,7 @@ function show_software($type, $software) {
                     <tr>
                         <td><?php echo print_something($key->dns_name)?></td>
                         <td><?php echo print_something($key->dns_full_name)?></td>
-                        <td><?php echo print_something($key->dns_ip_address)?></td>
+                        <td><span style="display:none;"><?php echo print_something($key->dns_ip_address)?></span><?php echo print_something(ip_address_from_db($key->dns_ip_address))?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -1161,7 +1158,7 @@ function show_software($type, $software) {
 
 
     <div id="view_settings_logs" style="float: left; width: 100%;">
-    <?php if (count($system_log) > 0) { ?>
+    <?php if (count($log) > 0) { ?>
         <br />
         <br />
         <form action="#" method="post" class='niceforms'>
@@ -1178,13 +1175,13 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($system_log as $key): ?>
+                    <?php foreach ($log as $key): ?>
                     <tr>
-                        <td><?php echo print_something($key->log_name)?></td>
-                        <td><?php echo print_something($key->log_file_name)?></td>
-                        <td><?php echo print_something($key->log_file_size)?></td>
-                        <td><?php echo print_something($key->log_max_file_size)?></td>
-                        <td><?php echo print_something($key->log_overwrite)?></td>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->file_name)?></td>
+                        <td><?php echo print_something($key->file_size)?></td>
+                        <td><?php echo print_something($key->max_file_size)?></td>
+                        <td><?php echo print_something($key->overwrite)?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>
