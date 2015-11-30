@@ -1089,7 +1089,7 @@ if [ -n "$sound_pci_adapters" ]; then
 		echo "		<item>"
 		echo "			<model>$(escape_xml "$sound_name")</model>"
 		echo "			<manufacturer>$(escape_xml "$sound_manufacturer")</manufacturer>"
-		echo "			<device>$(escape_xml "$sound_adapter")</sound_device>"
+		echo "			<device>$(escape_xml "$sound_adapter")</device>"
 		echo "		</item>"
 		} >> "$xml_file"
 	done
@@ -1854,7 +1854,6 @@ else
                             echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
                         fi
 				        service_name=$(echo "$service_name" | cut -d/ -f4)
-				        echo "          <description>$(escape_xml "$service_name")</description>" >> "$xml_file"
 				        if  [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]] && [[ "$service_name" != "skeleton" ]] && [[ "$service_name" != "rcS" ]]; then
 				            service_state=$(service "$service_display_name" status 2>/dev/null | grep running)
 				            echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"

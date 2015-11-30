@@ -1391,18 +1391,18 @@ item = ""
 set colItems = objWMIService.ExecQuery("Select * FROM Win32_BIOS",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Bios)" : audit_wmi_fails = audit_wmi_fails & "Win32_Bios " : end if
 for each objItem in colItems
-	item = item & "		<description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
-	item = item & "		<manufacturer>" & escape_xml(objItem.Manufacturer) & "</manufacturer>" & vbcrlf
-	item = item & "		<serial>" & escape_xml(objItem.SerialNumber) & "</serial>" & vbcrlf
-	item = item & "		<smversion>" & escape_xml(objItem.SMBIOSBIOSVersion) & "</smversion>" & vbcrlf
-	item = item & "		<version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
-	item = item & "		<asset_tag>" & escape_xml(bios_asset_tag) & "</asset_tag>" & vbcrlf
+	item = item & "			<description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
+	item = item & "			<manufacturer>" & escape_xml(objItem.Manufacturer) & "</manufacturer>" & vbcrlf
+	item = item & "			<serial>" & escape_xml(objItem.SerialNumber) & "</serial>" & vbcrlf
+	item = item & "			<smversion>" & escape_xml(objItem.SMBIOSBIOSVersion) & "</smversion>" & vbcrlf
+	item = item & "			<version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
+	item = item & "			<asset_tag>" & escape_xml(bios_asset_tag) & "</asset_tag>" & vbcrlf
 next
 if item > "" then
 	result.WriteText "	<bios>" & vbcrlf
-	result.WriteText "	<item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
 	result.WriteText item
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	result.WriteText "	</bios>" & vbcrlf
 end if
 
@@ -3957,7 +3957,7 @@ end if
 				result.WriteText "         <install_date>" & escape_xml(objItem2.InstalledOn) & "</install_date>" & vbcrlf
 				result.WriteText "         <publisher>Microsoft</publisher>" & vbcrlf
 				result.WriteText "         <url>" & escape_xml(objItem2.Caption) & "</url>" & vbcrlf
-				result.WriteText "         <comment>update</comment>" & vbcrlf
+				result.WriteText "         <type>update</type>" & vbcrlf
 				result.WriteText "         <installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
 				result.WriteText "         <installed_on>" & escape_xml(objItem2.InstalledOn) & "</installed_on>" & vbcrlf
 				result.WriteText "      </item>" & vbcrlf
