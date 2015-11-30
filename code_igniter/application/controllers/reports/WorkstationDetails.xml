@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Workstation Details</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_serial, system.timestamp, system.man_manufacturer, system.man_model, sys_sw_windows.windows_user_name, system.man_ip_address, system.man_description, oa_location.location_name, oa_org.org_name, system.man_owner FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id and system.timestamp = sys_sw_windows.timestamp) WHERE oa_group_sys.group_id = @group GROUP BY system.hostname ORDER BY system.hostname]]></report_sql>
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_serial, system.timestamp, system.man_manufacturer, system.man_model, windows.user_name, system.man_ip_address, system.man_description, oa_location.location_name, oa_org.org_name, system.man_owner FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN oa_org ON (system.man_org_id = oa_org.org_id) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') WHERE oa_group_sys.group_id = @group]]></report_sql>
 		<report_display_sql></report_display_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>

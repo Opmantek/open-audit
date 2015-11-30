@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Web Servers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system LEFT JOIN sys_sw_service ON (system.system_id = sys_sw_service.system_id AND system.timestamp = sys_sw_service.timestamp) WHERE sys_sw_service.service_name = 'IISADMIN' AND system.man_os_name LIKE '%server%' AND system.man_status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system LEFT JOIN service ON (system.system_id = service.system_id AND service.current = 'y') WHERE (LOWER(service.name) = 'iisadmin' OR LOWER(service.name) = 'nginx' OR LOWER(service.name) LIKE '%apache2' OR LOWER(service.name) = 'httpd') AND system.man_status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>application</group_category>
 		<group_icon>web</group_icon>
-		<group_description>Any items that have their status attribute set to 'production' and have their os_name attribute containing 'server' and have a service installed called 'iisadmin'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_description, system.man_os_name FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_description>Any items that have their status attribute set to 'production' and have a service installed called 'iisadmin' or 'apache2' or 'httpd' or 'nginx'.</group_description>
+		<group_display_sql><![CDATA[SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_description, system.man_os_name FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
 		<column>

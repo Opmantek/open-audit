@@ -8,7 +8,7 @@
 		<group_category>os</group_category>
 		<group_icon>windows</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their os_name attribute containing 'windows server'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.man_icon, system.man_os_family, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.man_icon, system.man_os_family, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
 		<column>

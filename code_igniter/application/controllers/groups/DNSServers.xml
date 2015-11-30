@@ -3,7 +3,7 @@
 	<details>
 		<group_name>DNS Servers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system LEFT JOIN sys_sw_service ON (system.system_id = sys_sw_service.system_id AND system.timestamp = sys_sw_service.timestamp) WHERE sys_sw_service.service_display_name = 'DNS Server' AND system.man_status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system LEFT JOIN service ON (system.system_id = service.system_id AND service.current = 'y') WHERE service.description = 'DNS Server' AND system.man_status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>application</group_category>
 		<group_icon>application</group_icon>

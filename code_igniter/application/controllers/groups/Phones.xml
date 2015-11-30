@@ -3,7 +3,7 @@
 	<details>
 		<group_name>Phones</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_status = 'production' and (man_type = 'phone' or man_type = 'smart phone' or man_type = 'ip phone' or man_type = 'cell phone' or man_type = 'satellite phone ')]]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_status = 'production' and man_type LIKE '%phone']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>cell_phone</group_icon>
