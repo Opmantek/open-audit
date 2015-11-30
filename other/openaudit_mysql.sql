@@ -27,6 +27,7 @@ CREATE TABLE `oa_alert_log` (
   `system_id` int(10) unsigned DEFAULT NULL,
   `alert_table` varchar(50) NOT NULL,
   `alert_foreign_row` int(10) NOT NULL,
+  `link_row_action` enum('','create','update','delete') NOT NULL DEFAULT '',
   `alert_details` varchar(200) NOT NULL,
   `user_id` int(10) unsigned DEFAULT NULL,
   `alert_ack_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1522,8 +1523,8 @@ CREATE TABLE `network` (
 --
 
 LOCK TABLES `network` WRITE;
-/*!40000 ALTER TABLE `network_card` DISABLE KEYS */;
-/*!40000 ALTER TABLE `network_card` ENABLE KEYS */;
+/*!40000 ALTER TABLE `network` DISABLE KEYS */;
+/*!40000 ALTER TABLE `network` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
