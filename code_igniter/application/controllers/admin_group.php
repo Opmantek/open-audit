@@ -340,4 +340,16 @@ class Admin_group extends MY_Controller
             $this->load->view('v_template', $this->data);
         }
     }
+
+    function refresh_group_definitions()
+    {
+        $this->load->helper('group');
+        $this->data['query'] = refresh_group_definitions();
+        $this->data['heading'] = 'Refresh Group Definitions';
+        $this->data['include'] = 'v_general';
+        $this->data['sortcolumn'] = '0';
+        $this->load->view('v_template', $this->data);
+
+    }
+
 }

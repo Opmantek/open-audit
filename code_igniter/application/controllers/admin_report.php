@@ -213,4 +213,15 @@ class Admin_report extends MY_Controller
         $this->data['include'] = 'v_incomplete';
         $this->load->view('v_template', $this->data);
     }
+
+    function refresh_report_definitions()
+    {
+        $this->load->helper('report');
+        $this->data['query'] = refresh_report_definitions();
+        $this->data['heading'] = 'Update reports';
+        $this->data['include'] = 'v_general';
+        $this->data['sortcolumn'] = '0';
+        $this->load->view('v_template', $this->data);
+
+    }
 }
