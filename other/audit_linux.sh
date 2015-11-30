@@ -1715,22 +1715,21 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Log Info"
 fi
 
-echo "	<logs>" >> "$xml_file"
+echo "	<log>" >> "$xml_file"
 for log in ls /etc/logrotate.d/* ; do
 	if [ -e "$log" ]; then
 		log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
 		log_max_file_size=$(grep -E '\ size\ ' "$log" | grep -oE '[[:digit:]]*')
 		{
-		echo "		<log>"
-		echo "			<log_name>$(escape_xml "$log")</log_name>"
-		echo "			<log_file_name>$(escape_xml "$log_file_name")</log_file_name>"
-		echo "			<log_file_size></log_file_size>"
-		echo "			<log_max_file_size>$(escape_xml "$log_max_file_size")</log_max_file_size>"
-		echo "		</log>"
+		echo "		<item>"
+		echo "			<name>$(escape_xml "$log")</name>"
+		echo "			<file_name>$(escape_xml "$log_file_name")</file_name>"
+		echo "			<max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
+		echo "		</item>"
 		} >> "$xml_file"
 	fi
 done
-echo "	</logs>" >> "$xml_file"
+echo "	</log>" >> "$xml_file"
 
 
 ##################################

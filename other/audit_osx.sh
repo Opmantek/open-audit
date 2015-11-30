@@ -42,6 +42,7 @@ create_file="y"
 org_id=""
 terminal_print="n"
 debugging="3"
+system_id=""
 
 # import the command line arguements
 for arg in "$@"; do
@@ -133,7 +134,8 @@ echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
 echo  "	<sys>" >> $xml_file
 echo  "		<timestamp>$system_timestamp</timestamp>" >> $xml_file
-echo  "		<uuid>$system_uuid</uuid>" >> $xml_file
+echo  "     <system_id>$system_id</system_id>" >> $xml_file
+echo  "     <uuid>$system_uuid</uuid>" >> $xml_file
 echo  "		<hostname>$system_hostname</hostname>" >> $xml_file
 echo  "		<domain>$system_domain</domain>" >> $xml_file
 echo  "		<description></description>" >> $xml_file

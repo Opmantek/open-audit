@@ -3111,18 +3111,18 @@ for each objItem in colItems
 		case "OutDated"    OverWritePolicy = "OutDated (after " & objItem.OverwriteOutDated & " days)"
 		case "WhenNeeded"  OverWritePolicy = "As Needed"
 	end select
-	item = item & "		<log>" & vbcrlf
-	item = item & "			<log_name>"		& escape_xml(objItem.LogFileName) 	& "</log_name>" & vbcrlf
-	item = item & "			<log_file_name>" 	& escape_xml(objItem.Name) 		& "</log_file_name>" & vbcrlf
-	item = item & "			<log_file_size>" 	& escape_xml(objItem.FileSize/1024) 	& "</log_file_size>" & vbcrlf
-	item = item & "			<log_max_file_size>"	& escape_xml(objItem.MaxFileSize/1024)  & "</log_max_file_size>" & vbcrlf
-	item = item & "			<log_overwrite>" 	& escape_xml(OverWritePolicy)		& "</log_overwrite>" & vbcrlf
-	item = item & "		</log>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<name>"		& escape_xml(objItem.LogFileName) 	& "</name>" & vbcrlf
+	item = item & "			<file_name>" 	& escape_xml(objItem.Name) 		& "</file_name>" & vbcrlf
+	item = item & "			<file_size>" 	& escape_xml(objItem.FileSize/1024) 	& "</file_size>" & vbcrlf
+	item = item & "			<max_file_size>"	& escape_xml(objItem.MaxFileSize/1024)  & "</max_file_size>" & vbcrlf
+	item = item & "			<overwrite>" 	& escape_xml(OverWritePolicy)		& "</overwrite>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 next
 if item > "" then
-	result.WriteText "	<logs>" & vbcrlf
+	result.WriteText "	<log>" & vbcrlf
 	result.WriteText item
-	result.WriteText "	</logs>" & vbcrlf
+	result.WriteText "	</log>" & vbcrlf
 end if
 
 
@@ -4679,7 +4679,7 @@ end if
 
 
 
-result.WriteText "	<software_keys>" & vbcrlf
+result.WriteText "	<software_key>" & vbcrlf
 
 if debugging > "0" then wscript.echo "CD Keys" end if
 win_cd_key = "n"
@@ -4695,12 +4695,12 @@ key_text = getkey(key, 1)
 if (IsNull(key_text) or key_text = "") then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(system_os_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(windows_build_number) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(system_os_version) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(system_os_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(windows_build_number) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(system_os_version) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	strOffXPRUKey = ""
 	release_type = ""
 	edition_type = ""
@@ -4741,12 +4741,12 @@ if address_width = "64" then
 		' do nothing
 	else
 		win_cd_key = "y"
-		result.WriteText "		<key>" & vbcrlf
-		result.WriteText "			<key_name>" & escape_xml(system_os_name) & "</key_name>" & vbcrlf
-		result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-		result.WriteText "			<key_release>" & escape_xml(windows_build_number) & "</key_release>" & vbcrlf
-		result.WriteText "			<key_edition>" & escape_xml(system_os_version) & "</key_edition>" & vbcrlf
-		result.WriteText "		</key>" & vbcrlf
+		result.WriteText "		<item>" & vbcrlf
+		result.WriteText "			<name>" & escape_xml(system_os_name) & "</name>" & vbcrlf
+		result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+		result.WriteText "			<rel>" & escape_xml(windows_build_number) & "</rel>" & vbcrlf
+		result.WriteText "			<edition>" & escape_xml(system_os_version) & "</edition>" & vbcrlf
+		result.WriteText "		</item>" & vbcrlf
 	end if
 	Inparams.Svaluename = "DigitalProductID4"
 	set Outparams = o64reg.ExecMethod_("GetBinaryValue", Inparams,,objCtx)
@@ -4759,12 +4759,12 @@ if address_width = "64" then
 		' do nothing
 	else
 			win_cd_key = "y"
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(system_os_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(windows_build_number) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(system_os_version) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(system_os_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(windows_build_number) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(system_os_version) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 	end if
 end if
 
@@ -4791,12 +4791,12 @@ if (not isnull(arrSubKeys)) then
 		if IsNull(key) then
 		else
 			key_text = getkey(key, 1)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_text = ""
 			key_release = ""
 			key_edition = ""
@@ -4821,12 +4821,12 @@ if (not isnull(arrSubKeys)) then
 			' do nothing - no key retrieved
 		else
 			key_text = getkey(key, 1)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_name = ""
 			key_text = ""
 			key_release = ""
@@ -4852,12 +4852,12 @@ if (not isnull(arrSubKeys)) then
 			' do nothing
 		else
 			key_text = getkey(key, 1)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_text = ""
 			key_release = ""
 			key_edition = ""
@@ -4882,12 +4882,12 @@ if (not isnull(arrSubKeys)) then
 			' do nothing - no key retrieved
 		else
 			key_text = getkey(key, 1)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_name = ""
 			key_text = ""
 			key_release = ""
@@ -4913,12 +4913,12 @@ if (not isnull(arrSubKeys)) then
 			' do nothing
 		else
 			key_text = getkey(key, 1)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_text = ""
 			key_release = ""
 			key_edition = ""
@@ -4943,12 +4943,12 @@ if (not isnull(arrSubKeys)) then
 			' do nothing - no key retrieved
 		else
 			key_text = getkey(key, 1)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_name = ""
 			key_text = ""
 			key_release = ""
@@ -4974,12 +4974,12 @@ if (not isnull(arrSubKeys)) then
 			' do nothing
 		else
 			key_text = getkey(key, 2)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_text = ""
 			key_release = ""
 			key_edition = ""
@@ -5004,12 +5004,12 @@ if (not isnull(arrSubKeys)) then
 			' do nothing - no key retrieved
 		else
 			key_text = getkey(key, 2)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_name = ""
 			key_text = ""
 			key_release = ""
@@ -5035,12 +5035,12 @@ if (not isnull(arrSubKeys)) then
 			' do nothing
 		else
 			key_text = getkey(key, 2)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_text = ""
 			key_release = ""
 			key_edition = ""
@@ -5065,12 +5065,12 @@ if (not isnull(arrSubKeys)) then
 			' do nothing - no key retrieved
 		else
 			key_text = getkey(key, 2)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_name = ""
 			key_text = ""
 			key_release = ""
@@ -5091,12 +5091,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5124,23 +5124,23 @@ if (IsNull(key_text) or key_text = "") then
 	if (IsNull(key_text) or key_text = "") then
 		' nothing returned
 	else
-		result.WriteText "      <key>" & vbcrlf
-		result.WriteText "         <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-		result.WriteText "         <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-		result.WriteText "         <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-		result.WriteText "         <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-		result.WriteText "      </key>" & vbcrlf
+		result.WriteText "      <item>" & vbcrlf
+		result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+		result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+		result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+		result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+		result.WriteText "      </item>" & vbcrlf
 		key_text = ""
 		key_release = ""
 		key_edition = ""
 	end if
 else
-	result.WriteText "      <key>" & vbcrlf
-	result.WriteText "         <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "         <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "         <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "         <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "      </key>" & vbcrlf
+	result.WriteText "      <item>" & vbcrlf
+	result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "      </item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5164,12 +5164,12 @@ if IsNull(key) then
 	' do nothing
 else
 	key_text = getkey(key, 1)
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5192,24 +5192,24 @@ If IsNull(key) OR key = "" then
 	if IsNull(key) OR key = "" then
 	else
 		key_text = key
-		result.WriteText "      <key>" & vbcrlf
-		result.WriteText "         <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-		result.WriteText "         <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-		result.WriteText "         <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-		result.WriteText "         <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-		result.WriteText "      </key>" & vbcrlf
+		result.WriteText "      <item>" & vbcrlf
+		result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+		result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+		result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+		result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+		result.WriteText "      </item>" & vbcrlf
 		key_text = ""
 		key_release = ""
 		key_edition = ""
 	end if
 else
 	key_text = key
-	result.WriteText "      <key>" & vbcrlf
-	result.WriteText "         <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "         <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "         <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "         <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "      </key>" & vbcrlf
+	result.WriteText "      <item>" & vbcrlf
+	result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "      </item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5228,12 +5228,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) or key_text = "" then
 	' do nothing
 else
-	result.WriteText "      <key>" & vbcrlf
-	result.WriteText "         <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "         <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "         <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "         <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "      </key>" & vbcrlf
+	result.WriteText "      <item>" & vbcrlf
+	result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "      </item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5252,12 +5252,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) or key_text = "" then
 	' do nothing
 else
-	result.WriteText "      <key>" & vbcrlf
-	result.WriteText "         <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "         <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "         <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "         <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "      </key>" & vbcrlf
+	result.WriteText "      <item>" & vbcrlf
+	result.WriteText "         <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "         <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "         <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "         <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "      </item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5328,12 +5328,12 @@ if objFSO.FileExists("sqlite3.Exe") then
 			key_release = ""
 			key_edition = "Licensed"
 			if (key_name > "" and key_name <> "Adobe " and key_text > "") then
-				result.WriteText "		<key>" & vbcrlf
-				result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-				result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-				result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-				result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-				result.WriteText "		</key>" & vbcrlf
+				result.WriteText "		<item>" & vbcrlf
+				result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+				result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+				result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+				result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+				result.WriteText "		</item>" & vbcrlf
 			end if
 			key_text = ""
 			key_release = ""
@@ -5361,12 +5361,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5386,12 +5386,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5410,12 +5410,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5433,12 +5433,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5457,12 +5457,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5482,12 +5482,12 @@ if IsNull(key) then
 	' do nothing
 else
 	key_text = get_adobe(key)
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5507,12 +5507,12 @@ if IsNull(key) then
 	' do nothing
 else
 	key_text = get_adobe(key)
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5531,12 +5531,12 @@ if IsNull(key) then
 	' do nothing
 else
 	key_text = get_adobe(key)
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5558,12 +5558,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5581,12 +5581,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5604,12 +5604,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5632,12 +5632,12 @@ else
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	subKey = "ProductId"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_edition
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5660,12 +5660,12 @@ else
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	subKey = "ProductId"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_edition
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5688,12 +5688,12 @@ else
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	subKey = "ProductId"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_edition
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5716,12 +5716,12 @@ else
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	subKey = "ProductId"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_edition
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5744,12 +5744,12 @@ else
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	subKey = "ProductId"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_edition
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5772,12 +5772,12 @@ else
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	subKey = "ProductId"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_edition
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5798,12 +5798,12 @@ if IsNull(key_text) then
 else
 	subKey = "Release"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5826,12 +5826,12 @@ if IsNull(key_text) then
 else
 	subKey = "Release"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5854,12 +5854,12 @@ if IsNull(key_text) then
 else
 	subKey = "Release"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5882,12 +5882,12 @@ key_text = key1 & "-" & key2
 if IsNull(key_text) or key_text = "-" then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5906,12 +5906,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5936,12 +5936,12 @@ On Error goto 0
 if IsNull(key_text) or key_text = "--" then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -5967,12 +5967,12 @@ else
 			' do nothing
 		else
 			key_text = Mid(key_text,3,21)
-			result.WriteText "		<key>" & vbcrlf
-			result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-			result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-			result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-			result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-			result.WriteText "		</key>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+			result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+			result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+			result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			key_text = ""
 			key_release = ""
 			key_edition = ""
@@ -5996,12 +5996,12 @@ if IsNull(key_text) then
 else
 	subKey = "Version"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6030,12 +6030,12 @@ else
 	key_name = key_name & key_release
 	subKey = "VType"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_edition
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6055,12 +6055,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6079,12 +6079,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6103,12 +6103,12 @@ oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_text
 if IsNull(key_text) then
 	' do nothing
 else
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6129,12 +6129,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6155,12 +6155,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6181,12 +6181,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6207,12 +6207,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6230,12 +6230,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6256,12 +6256,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6279,12 +6279,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6305,12 +6305,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6328,12 +6328,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6354,12 +6354,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6377,12 +6377,12 @@ if IsNull(key_text) then
 else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
-	result.WriteText "		<key>" & vbcrlf
-	result.WriteText "			<key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-	result.WriteText "			<key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-	result.WriteText "			<key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-	result.WriteText "			<key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-	result.WriteText "		</key>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "			<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "			<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6401,12 +6401,12 @@ if IsNull(key_text) or key_text = "" then
    ' do nothing
 else
    key_text = AddDashes(key_text, 5)
-   result.WriteText " <key>" & vbcrlf
-   result.WriteText " <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-   result.WriteText " <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-   result.WriteText " <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-   result.WriteText " <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-   result.WriteText " </key>" & vbcrlf
+   result.WriteText " <item>" & vbcrlf
+   result.WriteText " <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+   result.WriteText " <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+   result.WriteText " <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+   result.WriteText " <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+   result.WriteText " </item>" & vbcrlf
    key_text = ""
    key_release = ""
    key_edition = ""
@@ -6422,18 +6422,18 @@ if IsNull(key_text) or key_text = "" then
    ' do nothing
 else
    key_text = AddDashes(key_text, 5)
-   result.WriteText " <key>" & vbcrlf
-   result.WriteText " <key_name>" & escape_xml(key_name) & "</key_name>" & vbcrlf
-   result.WriteText " <key_text>" & escape_xml(key_text) & "</key_text>" & vbcrlf
-   result.WriteText " <key_release>" & escape_xml(key_release) & "</key_release>" & vbcrlf
-   result.WriteText " <key_edition>" & escape_xml(key_edition) & "</key_edition>" & vbcrlf
-   result.WriteText " </key>" & vbcrlf
+   result.WriteText " <item>" & vbcrlf
+   result.WriteText " <name>" & escape_xml(key_name) & "</name>" & vbcrlf
+   result.WriteText " <string>" & escape_xml(key_text) & "</string>" & vbcrlf
+   result.WriteText " <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+   result.WriteText " <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+   result.WriteText " </item>" & vbcrlf
    key_text = ""
    key_release = ""
    key_edition = ""
 end if
 
-result.WriteText "	</software_keys>" & vbcrlf
+result.WriteText "	</software_key>" & vbcrlf
 
 if ((run_netstat = "y") or (run_netstat = "s" and instr(lcase(system_os_name), "server"))) then
 	if debugging > "0" then wscript.echo "netstat info" end if
