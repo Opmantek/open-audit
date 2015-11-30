@@ -748,7 +748,6 @@ class discovery extends CI_Controller
                 $this->load->helper('snmp_oid');
             }
             $this->load->model('m_system');
-            #$this->load->model('m_network_card');
             $this->load->model('m_ip_address');
             $this->load->model('m_virtual_machine');
             $this->load->model('m_module');
@@ -1400,7 +1399,7 @@ class discovery extends CI_Controller
                             $log_details->message = strtoupper($details->last_seen_by) . " insert for $details->man_ip_address";
                             stdlog($log_details);
                             $details->system_id = $this->m_system->insert_system($details);
-                            $this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', date('Y-m-d H:i:s'));
+                            $this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'Item added to system', date('Y-m-d H:i:s'), 'system');
                         }
                         // grab some timestamps
                         $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
@@ -1422,18 +1421,11 @@ class discovery extends CI_Controller
 
                         // update any network interfaces and ip addresses retrieved by SNMP
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
-                            // foreach ($network_interfaces as $input) {
-                                // $this->m_network_card->process_network_cards($input, $details);
-                                // if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                                //     foreach ($input->ip_addresses as $ip_input) {
-                                //         $ip_input = (object) $ip_input;
-                                //         $this->m_ip_address->process_addresses($ip_input, $details);
-                                //     }
-                                // }
-                            // }
-                            // print_r($network_interfaces);
-                            // echo "\n";
-                            $this->m_devices_components->process_component('network', $details, $network_interfaces);
+                            $input = new stdClass();
+                            $input->item = array();
+                            $input->item = $network_interfaces;
+
+                            $this->m_devices_components->process_component('network', $details, $input);
                             if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
                                 foreach ($input->ip_addresses as $ip_input) {
                                     $ip_input = (object) $ip_input;
@@ -1443,12 +1435,12 @@ class discovery extends CI_Controller
                             // finish off with updating any network IPs that don't have a matching interface
                             $this->m_ip_address->update_missing_interfaces($details->system_id);
                         }
-
                         // insert any modules
                         if (isset($modules) and count($modules) > 0) {
-                            foreach ($modules as $input) {
-                                $this->m_module->process_module($input, $details);
-                            }
+                            $input = new stdClass();
+                            $input->item = array();
+                            $input->item = $modules;
+                            $this->m_devices_components->process_component('module', $details, $input);
                         }
 
                         // insert any found virtual machines
@@ -1779,7 +1771,7 @@ class discovery extends CI_Controller
                                                                     $esx_details->system_id = $this->m_system->insert_system($esx_details);
                                                                     $log_details->message = "ESX insert for $esx_details->man_ip_address (System ID $esx_details->system_id)";
                                                                     stdlog($log_details);
-                                                                    $this->m_alerts->generate_alert($details->system_id, 'system', $esx_details->system_id, 'system detected', date('Y-m-d H:i:s'));
+                                                                    $this->m_alerts->generate_alert($details->system_id, 'system', $esx_details->system_id, 'Item added to system', date('Y-m-d H:i:s'), 'system');
                                                                 }
                                                                 if (!isset($esx_details->audits_ip)) {
                                                                     $esx_details->audits_ip = $details->audits_ip;
@@ -2108,7 +2100,7 @@ class discovery extends CI_Controller
                                                             $esx_details->system_id = $this->m_system->insert_system($esx_details);
                                                             $log_details->message = "ESX insert for $esx_details->man_ip_address (System ID $esx_details->system_id)";
                                                             stdlog($log_details);
-                                                            $this->m_alerts->generate_alert($details->system_id, 'system', $esx_details->system_id, 'system detected', date('Y-m-d H:i:s'));
+                                                            $this->m_alerts->generate_alert($details->system_id, 'system', $esx_details->system_id, 'Item added to system', date('Y-m-d H:i:s'), 'system');
                                                         }
                                                         if (!isset($esx_details->audits_ip)) {
                                                             $esx_details->audits_ip = $details->audits_ip;

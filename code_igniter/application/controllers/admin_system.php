@@ -285,11 +285,10 @@ class Admin_system extends MY_Controller
         }
         $this->load->model("m_system");
         $this->load->model("m_sys_man_audits");
-        $this->load->model("m_network_card");
         $this->load->model("m_ip_address");
         $this->load->model("m_oa_general");
         $this->load->model("m_virtual_machine");
-        $this->load->model("m_module");
+        $this->load->model("m_devices_components");
         $this->load->library('encrypt');
         $this->load->helper('snmp');
         $this->load->helper('snmp_oid');
@@ -351,9 +350,11 @@ class Admin_system extends MY_Controller
             $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
 
             if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                $input = new stdClass();
+                $input->item = array();
+                $input->item = $network_interfaces;
+                $this->m_devices_components->process_component('network', $details, $input);
                 foreach ($network_interfaces as $input) {
-                    $this->m_network_card->process_network_cards($input, $details);
-
                     if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
                         foreach ($input->ip_addresses as $ip_input) {
                             $ip_input = (object) $ip_input;
@@ -372,9 +373,10 @@ class Admin_system extends MY_Controller
 
             # insert any modules
             if (isset($modules) and is_array($modules) and count($modules) > 0) {
-                foreach ($modules as $input) {
-                    $this->m_module->process_module($input, $details);
-                }
+                $input = new stdClass();
+                $input->item = array();
+                $input->item = $modules;
+                $this->m_devices_components->process_component('module', $details, $input);
             }
 
             // Generate any DNS entries required
@@ -580,7 +582,7 @@ class Admin_system extends MY_Controller
             $this->load->model("m_sys_man_audits");
             $this->load->model("m_oa_group");
             $this->load->model("m_oa_general");
-            $this->load->model("m_network_card");
+            $this->load->model("m_devices_components");
             $this->load->helper('snmp');
             $this->load->helper('snmp_oid');
             $this->load->library('encrypt');
@@ -732,9 +734,8 @@ class Admin_system extends MY_Controller
                         $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
                         $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                            $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {
-                                $this->m_network_card->process_network_cards($input, $details);
-
                                 if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
                                     foreach ($input->ip_addresses as $ip_input) {
                                         $ip_input = (object) $ip_input;

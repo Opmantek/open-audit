@@ -127,7 +127,7 @@ class cli extends CI_Controller
         $this->load->model('m_system');
         $this->load->model('m_oa_group');
         $this->load->model('m_oa_general');
-        $this->load->model('m_network_card');
+        $this->load->model('m_devices_components');
         $this->load->model('m_ip_address');
         $file_handle = fopen($nodes_file, 'r');
         $string = fread($file_handle, filesize($nodes_file));
@@ -295,8 +295,8 @@ class cli extends CI_Controller
                         $device->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $device->system_id);
                         $device->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $device->system_id);
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                            $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {
-                                $this->m_network_card->process_network_cards($input, $device);
                                 if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
                                     foreach ($input->ip_addresses as $ip_input) {
                                         $ip_input = (object) $ip_input;
