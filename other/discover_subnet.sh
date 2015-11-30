@@ -179,11 +179,12 @@ fi
 # Nmap command line switches explained
 # -PE == icmp echo
 # -PP == timestamp
-# -v  == verbose
 # -sP == ping scan
 # -PE == imcp echo
 # -PP == timestamp
-# -n == no name resolution
+# -v  == verbose
+# -sn == ping scan only
+# -n  == no name resolution
 
 i=0
 j=0
