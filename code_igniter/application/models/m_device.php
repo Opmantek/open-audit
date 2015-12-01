@@ -45,8 +45,8 @@ class M_device extends MY_Model
         $this->m_sys_man_audits->update_audit($details, "$table - start");
 
         if (count($match_columns == 0)) {
-            if ((string)$table == 'sys_hw_bios') {
-                $match_columns = array('bios_description', 'bios_manufacturer', 'bios_serial', 'bios_smversion', 'bios_version' );
+            if ((string)$table == 'bios') {
+                $match_columns = array('description', 'manufacturer', 'serial', 'smversion', 'version' );
             }
             if ((string)$table == 'sys_sw_database') {
                 $match_columns = array('db_type', 'db_version');
@@ -60,28 +60,28 @@ class M_device extends MY_Model
             if ((string)$table == 'sys_sw_group') {
                 $match_columns = array('group_name', 'group_sid');
             }
-            if ((string)$table == 'sys_hw_hard_drive') {
-                $match_columns = array('hard_drive_model', 'hard_drive_serial', 'hard_drive_index', 'hard_drive_size');
+            if ((string)$table == 'disk') {
+                $match_columns = array('model', 'serial', 'hard_drive_index', 'size');
             }
             if ((string)$table == 'sys_hw_network_card_ip') {
                 $match_columns = array(''); // TODO - revise this table
             }
-            if ((string)$table == 'sys_sw_logfile') {
-                $match_columns = array('log_name', 'log_file_name', 'log_overwrite');
+            if ((string)$table == 'log') {
+                $match_columns = array('name', 'file_name', 'overwrite');
             }
-            if ((string)$table == 'sys_hw_memory') {
-                $match_columns = array('memory_bank', 'memory_capacity', 'memory_speed', 'memory_serial ');
+            if ((string)$table == 'memory') {
+                $match_columns = array('bank', 'size', 'speed', 'serial ');
             }
-            if ((string)$table == 'sys_hw_module') {
+            if ((string)$table == 'module') {
                 $match_columns = array('');
             }
-            if ((string)$table == 'sys_hw_monitor') {
+            if ((string)$table == 'monitor') {
                 $match_columns = array('manufacturer', 'model', 'serial');
             }
-            if ((string)$table == 'sys_hw_motherboard') {
+            if ((string)$table == 'motherboard') {
                 $match_columns = array('manufacturer', 'model', 'serial');
             }
-            if ((string)$table == 'sys_sw_netstat') {
+            if ((string)$table == 'netstat') {
                 $match_columns = array(''); // TODO - this is a special case, look at the model m_netstat
             }
             if ((string)$table == 'sys_hw_network_card') {
@@ -93,8 +93,8 @@ class M_device extends MY_Model
                     $match_columns = array('net_mac_address', 'net_index');
                 }
             }
-            if ((string)$table == 'sys_hw_optical_drive') {
-                $match_columns = array('optical_drive_model', 'optical_drive_mount_point');
+            if ((string)$table == 'optical') {
+                $match_columns = array('model', 'mount_point');
             }
             if ((string)$table == 'sys_sw_pagefile') {
                 $match_columns = array('pagefile_name', 'pagefile_initial_size', 'pagefile_max_size');
@@ -109,14 +109,14 @@ class M_device extends MY_Model
             if ((string)$table == 'sys_sw_print_queue') {
                 $match_columns = array('system_key', 'printer_name', 'printer_port_name');
             }
-            if ((string)$table == 'sys_hw_processor') {
-                $match_columns = array('processor_description');
+            if ((string)$table == 'processor') {
+                $match_columns = array('description');
             }
-            if ((string)$table == 'sys_sw_route') {
+            if ((string)$table == 'route') {
                 $match_columns = array('destination', 'next_hop');
             }
-            if ((string)$table == 'sys_hw_scsi_controller') {
-                $match_columns = array('scsi_controller_manufacturer', 'scsi_controller_name', 'scsi_controller_device_id');
+            if ((string)$table == 'scsi') {
+                $match_columns = array('manufacturer', 'model', 'device');
             }
             if ((string)$table == '') {
                 $match_columns = array('');
@@ -136,11 +136,11 @@ class M_device extends MY_Model
             if ((string)$table == '') {
                 $match_columns = array('');
             }
-            if ((string)$table == 'sys_sw_software') {
-                $match_columns = array('software_name', 'software_version');
+            if ((string)$table == 'software') {
+                $match_columns = array('name', 'version');
             }
-            if ((string)$table == 'sys_sw_service') {
-                $match_columns = array('service_name, service_status');
+            if ((string)$table == 'service') {
+                $match_columns = array('name', 'status');
             }
 
         }
