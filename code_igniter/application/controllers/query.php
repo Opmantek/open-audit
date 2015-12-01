@@ -133,7 +133,7 @@ class query extends MY_Controller
             break;
 
             case "new_software":
-            $sql = "SELECT DATE(oa_alert_log.timestamp) AS 'date', COUNT(DISTINCT(oa_alert_log.alert_details)) as count FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND alert_table = 'sys_sw_software' AND alert_details LIKE 'software installed - %' AND DATE(oa_alert_log.timestamp) >= ? AND DATE(oa_alert_log.timestamp) <= ? AND system.man_status = 'production' GROUP BY DATE(oa_alert_log.timestamp)";
+           $sql = "SELECT DATE(oa_alert_log.timestamp) AS 'date', count(oa_alert_log.alert_id) AS 'count' FROM oa_alert_log LEFT JOIN oa_group_sys ON (oa_alert_log.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND oa_alert_log.alert_table = 'software' AND oa_alert_log.link_row_action = 'create' AND DATE(oa_alert_log.timestamp) >= ? AND DATE(oa_alert_log.timestamp) <= ? GROUP BY DATE(oa_alert_log.timestamp)";
             $this->data['heading'] = "Software Discovered 30";
             $data = array($group_id, $start_date, $end_date);
             $json = 'y';
