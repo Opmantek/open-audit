@@ -3821,7 +3821,7 @@ class admin extends MY_Controller
 
 
 
-        if (($db_internal_version < '20151130') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160104') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.10
 
             $log_details = new stdClass();
@@ -4225,7 +4225,7 @@ class admin extends MY_Controller
 
             $sql[] = "ALTER TABLE oa_alert_log ADD `link_row_action` enum('','create','update','delete') NOT NULL DEFAULT '' AFTER alert_foreign_row";
 
-            $sql[] = "UPDATE oa_config SET config_value = '20151130' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '20160104' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.10' WHERE config_name = 'display_version'";
 
             foreach ($sql as $this_query) {
