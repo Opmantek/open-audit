@@ -48,11 +48,11 @@ class M_oa_config extends MY_Model
         $query = $this->db->query($sql);
         $row = $query->row();
         $internal_version = $row->config_value;
-        if (isset($internal_version) and $internal_version > '20151230') {
-            $edited_by = 'config_edited_by_user_id';
-        } else {
+        #if (isset($internal_version) and $internal_version > '20151230') {
+        #    $edited_by = 'config_edited_by_user_id';
+        #} else {
             $edited_by = 'config_edited_by';
-        }
+        #}
 
         $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.user_id";
         $query = $this->db->query($sql);
@@ -87,11 +87,11 @@ class M_oa_config extends MY_Model
         $query = $this->db->query($sql);
         $row = $query->row();
         $internal_version = $row->config_value;
-        if (isset($internal_version) and $internal_version > '20151230') {
-            $edited_by = 'config_edited_by_user_id';
-        } else {
+        #if (isset($internal_version) and $internal_version > '20151230') {
+        #    $edited_by = 'config_edited_by_user_id';
+        #} else {
             $edited_by = 'config_edited_by';
-        }
+        #}
 
         $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.user_id";
         $query = $this->db->query($sql);
