@@ -182,16 +182,14 @@ class System extends CI_Controller
         $this->load->model('m_dns');
         $this->load->model('m_group');
         $this->load->model('m_ip_address');
-        $this->load->model('m_log');
         $this->load->model('m_pagefile');
         $this->load->model('m_partition');
         $this->load->model('m_print_queue');
         $this->load->model('m_printer');
         $this->load->model('m_route');
-        $this->load->model('m_share');
-        $this->load->model('m_software_key');
         $this->load->model('m_sys_man_audits');
         $this->load->model('m_variable');
+        $this->load->model('m_virtual_machine');
         $this->load->model('m_webserver');
 
         $this->load->model('m_devices_components');
@@ -363,7 +361,8 @@ class System extends CI_Controller
         $this->m_devices_components->process_component('bios', $details, $xml->bios);
         $this->m_devices_components->process_component('disk', $details, $xml->disk);
         $this->m_devices_components->process_component('memory', $details, $xml->memory);
-        #$this->m_devices_components->process_component('module', $details, $xml->module);
+        $this->m_devices_components->process_component('log', $details, $xml->log);
+        $this->m_devices_components->process_component('module', $details, $xml->module);
         $this->m_devices_components->process_component('monitor', $details, $xml->monitor);
         $this->m_devices_components->process_component('motherboard', $details, $xml->motherboard);
         $this->m_devices_components->process_component('netstat', $details, $xml->netstat);
@@ -372,11 +371,13 @@ class System extends CI_Controller
         $this->m_devices_components->process_component('processor', $details, $xml->processor);
         $this->m_devices_components->process_component('service', $details, $xml->service);
         $this->m_devices_components->process_component('scsi', $details, $xml->scsi);
+        $this->m_devices_components->process_component('share', $details, $xml->share);
         $this->m_devices_components->process_component('software', $details, $xml->software);
+        $this->m_devices_components->process_component('software_key', $details, $xml->software_key);
         $this->m_devices_components->process_component('sound', $details, $xml->sound);
-        $this->m_devices_components->process_component('user', $details, $xml->software);
+        $this->m_devices_components->process_component('user', $details, $xml->user);
         $this->m_devices_components->process_component('video', $details, $xml->video);
-        $this->m_devices_components->process_component('windows', $details, $xml->software);
+        $this->m_devices_components->process_component('windows', $details, $xml->windows);
 
         foreach ($xml->children() as $child) {
             if ($child->getName() === 'addresses') {
@@ -417,12 +418,6 @@ class System extends CI_Controller
                     $this->m_virtual_machine->process_vm($input, $details);
                 }
             }
-            if ($child->getName() === 'logs') {
-                $this->m_sys_man_audits->update_audit($details, $child->getName());
-                foreach ($xml->logs->log as $input) {
-                    $this->m_log->process_log($input, $details);
-                }
-            }
             if ($child->getName() === 'pagefiles') {
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
                 foreach ($xml->pagefiles->pagefile as $input) {
@@ -448,18 +443,6 @@ class System extends CI_Controller
                     $this->m_route->process_route($input, $details);
                 }
             }
-            if ($child->getName() === 'shares') {
-                $this->m_sys_man_audits->update_audit($details, $child->getName());
-                foreach ($xml->shares->share as $input) {
-                    $this->m_share->process_shares($input, $details);
-                }
-            }
-            if ($child->getName() === 'software_keys') {
-                $this->m_sys_man_audits->update_audit($details, $child->getName());
-                foreach ($xml->software_keys->key as $input) {
-                    $this->m_software_key->process_software_key($input, $details);
-                }
-            }
             if ($child->getName() === 'variables') {
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
                 foreach ($xml->variables->variable as $input) {
@@ -480,17 +463,16 @@ class System extends CI_Controller
         if ($details->original_timestamp == '') {
             $this->m_sys_man_audits->update_audit($details, 'generate initial audit alert');
             // We have a new PC, so generate an alert
-            $this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'system detected', $details->timestamp);
+            $this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'Item added to system', $details->timestamp, 'create');
         }
 
         // set the man_ip_address (if not already set)
         $this->m_sys_man_audits->update_audit($details, 'check and set initial man_ip_address');
         $this->m_ip_address->set_initial_address($details->system_id);
         $dhcp = false;
-        $network_details = $this->m_network_card->get_system_network($details->system_id);
+        $network_details = $this->m_devices_components->read($details->system_id, 'y', 'network');
         foreach ($network_details as $card) {
-            #if ($card->net_dhcp_enabled !== '') {
-            if ($card->dhcp_enabled !== '') {
+            if (stripos($card->dhcp_enabled, 'true') !== false) {
                 $dhcp = true;
             }
         }
@@ -503,19 +485,13 @@ class System extends CI_Controller
             // We have to go through all tables, checking for
             // entries with current_timestamp = first_timestamp
             $this->m_group->alert_group($details);
-            $this->m_hard_drive->alert_hard_drive($details);
             if ($dhcp !== true) {
                 $this->m_ip_address->alert_ip_address($details);
             }
-            $this->m_log->alert_log($details);
-            $this->m_partition->alert_partition($details); // TODO: - check if NOT a USB drive
             if ($dhcp !== true) {
                 $this->m_route->alert_route($details);
             }
-            $this->m_share->alert_share($details);
-            $this->m_software_key->alert_software_key($details);
             $this->m_variable->alert_variable($details);
-            #$this->m_database_details->alert_db_details($details);  // TODO: check if this is complete
         }
 
         $this->load->model('m_oa_group');
@@ -548,6 +524,6 @@ class System extends CI_Controller
         unset($log_details);
 
         echo '</body></html>';
-
     }
+
 }
