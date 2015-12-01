@@ -33,17 +33,54 @@
  * @version 1.8.4
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+if (! function_exists('log_error')) {
+    function log_error($error)
+    {
+        if (!isset($error)) {
+            $error = new stdClass();
+        }
+        if (!isset($error->controller) or $error->controller == '') {
+            $router = & load_class('Router', 'core');
+            $error->controller = $router->fetch_class() . ' ::' . $router->fetch_method();
+        }
+        if (!isset($error->model)) {
+            $error->model = '';
+        }
+        if (!isset($error->code)) {
+            $error->code = '';
+        }
+        // get the details of the error from the error helper
+        $log_details = getError($error);
+        $log_details->file = 'system';
+
+        // log the details of the error to the log file
+        stdlog($log_details);
+        // if the error is severe enough, set the error in the response object
+        if ($log_details->severity <= 3) {
+            error_reporting(E_ALL);
+            $CI = & get_instance();
+            unset($log_details->extended_message);
+            unset($log_details->file);
+            unset($log_details->controller);
+            unset($log_details->model);
+            $log_details->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $log_details->code;
+            $CI->response->header = $log_details->type;
+            $CI->response->error = $log_details;
+        }
+    }
+}
+
 if (! function_exists('stdlog')) {
     /**
      * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
      *
-     * @access	  public
+     * @access    public
      *
      * @category  Function
      *
      * @author    Mark Unwin <marku@opmantek.com>
      *
-     * @param	  Object	log_details		An object containing details you wish to log
+     * @param     Object    log_details     An object containing details you wish to log
      *
      * @return NULL [logs the provided string to the log file]
      */
@@ -53,18 +90,18 @@ if (! function_exists('stdlog')) {
         $CI = & get_instance();
 
         // log_details:
-        // 	timestamp - default to current. Format is YYYY-MM-DD HH:II:SS
-        // 	severity - default to 5
-        // 	log level - default to 5, default set in config, can be over written
-        // 	file - the log file to write to. Default to 'access'.
-        // 	       this will log to /other/log_access.log Others used are system (which replaces open-audit.log) and debug.
-        // 	pid - default to PHP function to retrieve PHP script PID
-        // 	hostname - default to PHP function to retrieve hostname of current server
-        // 	user - default to user calling function
-        // 	style - json or syslog - default to json, default set in config, can be over written
-        // 	ip address - the address of the client calling the function
-        // 	display - echo the log entry $message to the screen - n is the default
-        // 	message
+        //  timestamp - default to current. Format is YYYY-MM-DD HH:II:SS
+        //  severity - default to 5
+        //  log level - default to 5, default set in config, can be over written
+        //  file - the log file to write to. Default to 'access'.
+        //         this will log to /other/log_access.log Others used are system (which replaces open-audit.log) and debug.
+        //  pid - default to PHP function to retrieve PHP script PID
+        //  hostname - default to PHP function to retrieve hostname of current server
+        //  user - default to user calling function
+        //  style - json or syslog - default to json, default set in config, can be over written
+        //  ip address - the address of the client calling the function
+        //  display - echo the log entry $message to the screen - n is the default
+        //  message
 
         // setup the default values
         $log = new stdClass();
@@ -311,7 +348,6 @@ if (! function_exists('stdlog')) {
         unset($log);
         unset($log_details);
     }
-
+}
 /* End of file log_helper.php */
 /* Location: ./system/application/helpers/log_helper.php */
-}
