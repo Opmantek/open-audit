@@ -130,7 +130,6 @@ if (! function_exists('refresh_group_definitions')) {
                             (string)$column->column_ternary,
                             (string)$column->column_align);
                         $query = $CI->db->query($sql, $data);
-                        $output .= "<br />\n" . $group->group_name . ": " . $CI->db->last_query();
                     }
                     $sql = "UPDATE oa_group SET updated = 'y' WHERE group_id = ?";
                     $data = array($group_id);
