@@ -289,7 +289,7 @@ class M_ip_address extends MY_Model
 					FROM
 					network LEFT JOIN sys_hw_network_card_ip ON
 						(network.system_id = sys_hw_network_card_ip.system_id AND
-						network.timestamp = sys_hw_network_card_ip.timestamp AND
+						network.last_seen = sys_hw_network_card_ip.timestamp AND
 						sys_hw_network_card_ip.net_mac_address = network.mac)
 					WHERE
 					network.system_id = ? AND
