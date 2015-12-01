@@ -120,7 +120,7 @@ class M_devices_components extends MY_Model
         if ($table == 'processor') {
                 $match_columns = array('description');
         }
-        if ($table == 'scsi_controller') {
+        if ($table == 'scsi') {
                 $match_columns = array('model', 'manufacturer', 'device');
         }
         if ($table == 'sound') {
@@ -157,7 +157,7 @@ class M_devices_components extends MY_Model
                 $match_columns = array('name', 'type', 'instance');
         }
         if ($table == 'service') {
-                $match_columns = array('display_name', 'name', 'path_name');
+                $match_columns = array('description', 'name', 'executable');
         }
         if ($table == 'share') {
                 $match_columns = array('name', 'path');
@@ -185,9 +185,15 @@ class M_devices_components extends MY_Model
 
     public function process_component($table = '', $details, $input, $match_columns = array())
     {
-        echo "here for $table\n";
+        echo "<pre>here for $table\n";
+        $create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
+
         // ensure we have a valid table name
         if (!$this->db->table_exists($table)) {
+            return;
+        }
+
+        if (!$input) {
             return;
         }
 
@@ -228,14 +234,19 @@ class M_devices_components extends MY_Model
             } elseif ($details->type == 'computer' and $details->os_group == 'VMware') {
                 # add index and connection id to the list to be matched
                 $match_columns[] = 'net_index';
-                $match_columns[] = 'connection_id';
+                $match_columns[] = 'connection';
             } else {
                 # just match the index
                 $match_columns[] = 'net_index';
             }
+
             # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
-            foreach ($input as $input_item) {
-                $input_item->mac = strtolower($input_item->mac);
+            foreach ($input->item as $key => $input_item) {
+                if (isset($input_item->mac) and $input_item->mac != '') {
+                    $input_item->mac = strtolower($input_item->mac);
+                } else {
+                    $input->item[$key]->mac = (string)'';
+                }
             }
         }
 
@@ -332,40 +343,68 @@ class M_devices_components extends MY_Model
         }
 
         // get any existing current rows from the database
-        $sql = "SELECT * FROM `$table` WHERE current = 'y' AND system_id = ?";
+        $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND system_id = ?";
         #$data = array($details->id); # this will be changed when we convert the system table
         $data = array($details->system_id);
         $query = $this->db->query($sql, $data);
-        $result = $query->result();
+        $db_result = $query->result();
         $alert = false;
-        if (count($result) != 0) {
+        if (count($db_result) != 0) {
             // we have existing items in the database
             // we should raise an alert where required
             $alert = true;
         }
-        $count = 0;
-        // for each item from the audit
-        foreach ($input->item as $input_item) {
-            // set these flags on a per audit item basis
-            $flag = 'insert';
-            // get the field list from the table
-            $fields = $this->db->list_fields($table);
-            // compare the audit data against the rows from the DB
-            foreach ($result as &$db_item) {
-                // check for a match against the columns in $match_columns
+
+        // get the field list from the table
+        $fields = $this->db->list_fields($table);
+
+        // ensure we have a filtered array with only single copies of each $item
+        $items = array();
+        foreach ($input->item as $ikey => $iitem) {
+            $matched = 'n';
+            foreach ($items as $okey => $oitem) {
                 $match_count = 0;
                 for ($i = 0; $i < count($match_columns); $i++) {
-                    if ((string)$input_item->$match_columns[$i] == (string)$db_item->$match_columns[$i]) {
+                    if ((string)$iitem->$match_columns[$i] == (string)$oitem->$match_columns[$i]) {
                         $match_count ++;
                     }
                 }
-                // UPDATE because all supplied columns match
                 if ($match_count == (count($match_columns))) {
+                    // we have two matching items - combine them
+                    foreach ($fields as $field) {
+                        if ((!isset($oitem->$field) or $oitem->$field == '') and isset($iitem->$field) and $iitem->$field != '') {
+                            $oitem->$field = (string) $iitem->$field;
+                        }
+                    }
+                    $items[$okey] = $oitem;
+                    $matched = 'y';
+                }
+            }
+            if ($matched != 'y') {
+                $items[] = $iitem;
+            }
+        }
+
+        // for each item from the audit
+        foreach ($items as $input_item) {
+            // set these flags on a per audit item basis
+            $flag = 'insert';
+            // compare the audit data against the rows from the DB
+            foreach ($db_result as $key => $db_item) {
+                // check for a match against the columns in $match_columns
+                $match_count = 0;
+                for ($i = 0; $i < count($match_columns); $i++) {
+                    if ((string)$input_item->$match_columns[$i] == (string)$db_item->$match_columns[$i] and $db_item->updated != 'y') {
+                        $match_count ++;
+                    }
+                }
+                if ($match_count == (count($match_columns))) {
+                    // UPDATE because all supplied columns match
                     $flag = 'update';
                     $sql = '';
                     // for each db column, if we don't have a value, use the audit value
                     foreach ($fields as $field) {
-                        if ($db_item->$field == '' and $input_item->$field != '') {
+                        if ($db_item->$field == '' and isset($input_item->$field) and $input_item->$field != '') {
                             $db_item->$field = (string) $input_item->$field;
                         }
                         $sql .= " " . $table . "." . $field . " = ? , ";
@@ -373,7 +412,7 @@ class M_devices_components extends MY_Model
                     // remove the trailing characters
                     $sql = substr($sql, 0, -2);
                     // set the last_seen column to the same as in $details (system table)
-                    $db_item->last_seen = $details->last_seen;
+                    $db_item->last_seen = (string)$details->last_seen;
                     // update all values in the table
                     $sql = "UPDATE $table SET $sql WHERE " . $table . ".id = '" . $db_item->id . "'";
                     // make sure no data is in $data
@@ -387,12 +426,14 @@ class M_devices_components extends MY_Model
                     $query = $this->db->query($sql, $data);
                     // remove this item from the database array
                     // we will later update the remaining items with current = n
-                    unset($result[$count]);
-                    $count++;
+                    // don't deletre it yet as we need to account for multiple items that are the same
+                    //    typically in the Windows software listing
+                    // unset($db_result[$key]);
+                    $db_item->updated = 'y';
                     // stop the loop
                     break;
                 } else {
-                    // no match - insert $flag stays unchanged
+                    // no match - $flag = 'insert' stays unchanged
                 }
             }
             // we have looped through the database items
@@ -401,8 +442,8 @@ class M_devices_components extends MY_Model
                 # $input_item->system_id  = $details->id; # this will be changed when we convert the system table
                 $input_item->system_id  = $details->system_id;
                 $input_item->current  = 'y';
-                $input_item->first_seen = $details->last_seen;
-                $input_item->last_seen  = $details->last_seen;
+                $input_item->first_seen = (string)$details->last_seen;
+                $input_item->last_seen  = (string)$details->last_seen;
                 $data = array();
                 $set_fields = '';
                 $set_values = '';
@@ -421,32 +462,48 @@ class M_devices_components extends MY_Model
                 $query = $this->db->query($sql, $data);
                 $id = $this->db->insert_id();
 
-                if ($alert) {
+
+
+                if ($alert and strtolower($create_alerts) == 'y') {
                     // We have existing items and this is a new item - raise an alert
-                    $alert_details = "item added to $table - " . $input_item->$match_columns[0];
-                    # $sql = "INSERT INTO sys_change_log ( id, system_id, link_table, link_row_id, details, `timestamp` ) VALUES ( NULL, ?, ?, ?, ?, ?)";
-                    # $data = array("$details->id", "$table", "$id", "$alert_details", "$details->last_seen"); # this will be changed when we convert the system table
-                    # $data = array("$details->system_id", "$table", "$id", "$alert_details", "$details->last_seen");
-                    # $query = $this->db->query($sql, $data);
-                    $this->m_alerts->generate_alert($details->system_id, $table, $id, $alert_details, $details->last_seen);
+                    $alert_details = '';
+                    foreach ($match_columns as $key => $value) {
+                        $alert_details .= $value . ' is ' . $input_item->$value . ', ';
+                    }
+                    $alert_details = substr($alert_details, 0, -2);
+                    $alert_details = "Item added to $table - " . $alert_details;
+                    $sql = "INSERT INTO oa_alert_log ( system_id, alert_table, alert_foreign_row, link_row_action, alert_details, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
+                    $data = array("$details->system_id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
+                    $query = $this->db->query($sql, $data);
                 }
+            }
+        }
+
+        // remove the duplicated DB_items
+        foreach ($db_result as $key => $db_item) {
+            if ($db_item->updated) {
+                unset($db_result[$key]);
             }
         }
 
         // we have now inserted or updated all items in the audit set
         // we have also unset any items that were inserted from the db set
         // UPDATE any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
-        foreach ($result as $db_item) {
+        foreach ($db_result as $db_item) {
             $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
             $data = array($db_item->id);
             $query = $this->db->query($sql, $data);
-            // insert an alert that something was not found
-            $alert_details =  "Item removed from $table - " . $db_item->$match_columns[0];
-            # $sql = "INSERT INTO sys_change_log ( id, system_id, link_table, link_row_id, details, `timestamp`) VALUES ( NULL, ?, ?, ?, ?, ?)";
-            # $data = array("$details->id", "$table", "$db_item->id", "$alert_details", "$details->last_seen"); # this will be changed when we convert the system table
-            # $data = array("$details->system_id", "$table", "$db_item->id", "$alert_details", "$details->last_seen");
-            # $query = $this->db->query($sql, $data);
-            $this->m_alerts->generate_alert($details->system_id, $table, $db_item->id, $alert_details, $details->last_seen);
+            if (strtolower($create_alerts) == 'y') {
+                $alert_details = '';
+                foreach ($match_columns as $key => $value) {
+                    $alert_details .= $value . ' is ' . $db_item->$value . ', ';
+                }
+                $alert_details = substr($alert_details, 0, -2);
+                $alert_details = "Item removed from $table - " . $alert_details;
+                $sql = "INSERT INTO oa_alert_log ( system_id, alert_table, alert_foreign_row, link_row_action, alert_details, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
+                $data = array("$details->system_id", "$table", "$id", "delete", "$alert_details", "$details->last_seen");
+                $query = $this->db->query($sql, $data);
+            }
         }
         // update the audit log
         $this->m_sys_man_audits->update_audit($details, "$table - end");
