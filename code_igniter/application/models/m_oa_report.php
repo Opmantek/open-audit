@@ -209,9 +209,9 @@ class M_oa_report extends MY_Model
 
         if (stripos($sql, '@limit') !== false) {
             if ($offset != 0) {
-                $sql = str_replace('@limit', $offset . ',' . $limit, $sql);
+                $sql = str_ireplace('@limit', $offset . ',' . $limit, $sql);
             } else {
-                $sql = str_replace('@limit', $limit, $sql);
+                $sql = str_ireplace('@limit', $limit, $sql);
             }
         }
 
