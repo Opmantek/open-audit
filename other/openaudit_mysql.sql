@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.43, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: test
+-- Host: localhost    Database: ttt
 -- ------------------------------------------------------
--- Server version	5.5.43-0+deb7u1-log
+-- Server version	5.5.44-0+deb7u1-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,349 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `bios`
+--
+
+DROP TABLE IF EXISTS `bios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bios` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `manufacturer` varchar(200) NOT NULL DEFAULT '',
+  `serial` varchar(100) NOT NULL DEFAULT '',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `smversion` varchar(100) NOT NULL DEFAULT '',
+  `version` varchar(100) NOT NULL DEFAULT '',
+  `asset_tag` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_hw_bios_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bios`
+--
+
+LOCK TABLES `bios` WRITE;
+/*!40000 ALTER TABLE `bios` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `disk`
+--
+
+DROP TABLE IF EXISTS `disk`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `disk` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
+  `model` varchar(100) NOT NULL DEFAULT '',
+  `serial` varchar(100) NOT NULL DEFAULT '',
+  `device` varchar(200) NOT NULL DEFAULT '',
+  `caption` varchar(100) NOT NULL DEFAULT '',
+  `hard_drive_index` varchar(100) NOT NULL DEFAULT '',
+  `interface_type` varchar(10) NOT NULL DEFAULT '',
+  `partition_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `scsi_bus` varchar(10) NOT NULL DEFAULT '',
+  `scsi_logical_unit` varchar(100) NOT NULL DEFAULT '',
+  `scsi_port` varchar(10) NOT NULL DEFAULT '',
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `status` varchar(100) NOT NULL DEFAULT '',
+  `firmware` varchar(100) NOT NULL DEFAULT '',
+  `model_family` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `hard_drive_index` (`hard_drive_index`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_hw_hard_drive_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `disk`
+--
+
+LOCK TABLES `disk` WRITE;
+/*!40000 ALTER TABLE `disk` DISABLE KEYS */;
+/*!40000 ALTER TABLE `disk` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `log`
+--
+
+DROP TABLE IF EXISTS `log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(50) NOT NULL DEFAULT '',
+  `file_name` varchar(250) NOT NULL DEFAULT '',
+  `file_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `max_file_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `overwrite` varchar(30) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `log`
+--
+
+LOCK TABLES `log` WRITE;
+/*!40000 ALTER TABLE `log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `memory`
+--
+
+DROP TABLE IF EXISTS `memory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `memory` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `serial` varchar(100) NOT NULL DEFAULT '',
+  `bank` varchar(100) NOT NULL DEFAULT '',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `form_factor` varchar(100) NOT NULL DEFAULT '',
+  `detail` varchar(100) NOT NULL DEFAULT '',
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `speed` int(10) unsigned NOT NULL DEFAULT '0',
+  `tag` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_hw_memory_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `memory`
+--
+
+LOCK TABLES `memory` WRITE;
+/*!40000 ALTER TABLE `memory` DISABLE KEYS */;
+/*!40000 ALTER TABLE `memory` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `module`
+--
+
+DROP TABLE IF EXISTS `module`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `module` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `module_index` varchar(100) NOT NULL DEFAULT '',
+  `object_ident` varchar(100) NOT NULL DEFAULT '',
+  `contained_in` varchar(100) NOT NULL DEFAULT '',
+  `class` varchar(10) NOT NULL DEFAULT '',
+  `class_text` varchar(20) NOT NULL DEFAULT '',
+  `hardware_revision` varchar(100) NOT NULL DEFAULT '',
+  `firmware_revision` varchar(100) NOT NULL DEFAULT '',
+  `software_revision` varchar(100) NOT NULL DEFAULT '',
+  `serial` varchar(100) NOT NULL DEFAULT '',
+  `asset_ident` varchar(100) NOT NULL DEFAULT '',
+  `is_fru` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_hw_module_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `module`
+--
+
+LOCK TABLES `module` WRITE;
+/*!40000 ALTER TABLE `module` DISABLE KEYS */;
+/*!40000 ALTER TABLE `module` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `monitor`
+--
+
+DROP TABLE IF EXISTS `monitor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `monitor` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
+  `model` varchar(100) NOT NULL DEFAULT '',
+  `serial` varchar(50) NOT NULL DEFAULT '',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `device` varchar(100) NOT NULL DEFAULT '',
+  `manufacture_date` varchar(20) NOT NULL DEFAULT '',
+  `size` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `aspect_ratio` varchar(5) NOT NULL DEFAULT '',
+  `edid_version` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_hw_monitor_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `monitor`
+--
+
+LOCK TABLES `monitor` WRITE;
+/*!40000 ALTER TABLE `monitor` DISABLE KEYS */;
+/*!40000 ALTER TABLE `monitor` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `motherboard`
+--
+
+DROP TABLE IF EXISTS `motherboard`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `motherboard` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `manufacturer` varchar(50) NOT NULL DEFAULT '',
+  `model` varchar(50) NOT NULL DEFAULT '',
+  `serial` varchar(100) NOT NULL DEFAULT '',
+  `memory_slot_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `processor_slot_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `processor_type` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_hw_motherboard_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `motherboard`
+--
+
+LOCK TABLES `motherboard` WRITE;
+/*!40000 ALTER TABLE `motherboard` DISABLE KEYS */;
+/*!40000 ALTER TABLE `motherboard` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `netstat`
+--
+
+DROP TABLE IF EXISTS `netstat`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `netstat` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `port` int(5) NOT NULL DEFAULT '0',
+  `program` varchar(250) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_netstat_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `netstat`
+--
+
+LOCK TABLES `netstat` WRITE;
+/*!40000 ALTER TABLE `netstat` DISABLE KEYS */;
+/*!40000 ALTER TABLE `netstat` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `network`
+--
+
+DROP TABLE IF EXISTS `network`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `network` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `mac` varchar(200) NOT NULL DEFAULT '',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
+  `model` varchar(255) NOT NULL DEFAULT '',
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `alias` varchar(255) NOT NULL DEFAULT '',
+  `ip_enabled` varchar(10) NOT NULL DEFAULT '',
+  `net_index` varchar(10) NOT NULL DEFAULT '',
+  `dhcp_enabled` varchar(100) NOT NULL DEFAULT '',
+  `dhcp_server` varchar(30) NOT NULL DEFAULT '',
+  `dhcp_lease_obtained` varchar(14) NOT NULL DEFAULT '',
+  `dhcp_lease_expires` varchar(14) NOT NULL DEFAULT '',
+  `dns_host_name` varchar(100) NOT NULL DEFAULT '',
+  `dns_server` varchar(100) NOT NULL DEFAULT '',
+  `dns_domain` varchar(100) NOT NULL DEFAULT '',
+  `dns_domain_reg_enabled` varchar(10) NOT NULL DEFAULT '',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `connection` varchar(255) NOT NULL DEFAULT '',
+  `connection_status` varchar(30) NOT NULL DEFAULT '',
+  `speed` int(10) unsigned NOT NULL DEFAULT '0',
+  `slaves` varchar(100) NOT NULL DEFAULT '',
+  `ifadminstatus` varchar(100) NOT NULL DEFAULT '',
+  `iflastchange` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  KEY `net_index` (`net_index`),
+  KEY `timestamp` (`last_seen`),
+  KEY `mac` (`mac`),
+  CONSTRAINT `sys_hw_network_card_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `network`
+--
+
+LOCK TABLES `network` WRITE;
+/*!40000 ALTER TABLE `network` DISABLE KEYS */;
+/*!40000 ALTER TABLE `network` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `oa_alert_log`
@@ -161,11 +504,11 @@ INSERT INTO `oa_config` VALUES ('default_windows_domain','','y','0000-00-00 00:0
 INSERT INTO `oa_config` VALUES ('default_windows_password','','y','0000-00-00 00:00:00',0,'The default password used by Open-AudIT to audit Windows PCs.');
 INSERT INTO `oa_config` VALUES ('default_windows_username','','y','0000-00-00 00:00:00',0,'The default username used by Open-AudIT to audit Windows PCs.');
 INSERT INTO `oa_config` VALUES ('discovery_create_alerts','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT create an entry in the alert table if a change is detected.');
-INSERT INTO `oa_config` VALUES ('discovery_name_match','y','y','0000-00-00 00:00:00',0,'Should we match a device based only on its hostname during discovery.');
-INSERT INTO `oa_config` VALUES ('discovery_ip_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its ip during discovery.');
 INSERT INTO `oa_config` VALUES ('discovery_ip_exclude','','y','0000-00-00 00:00:00',0,'Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
-INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
+INSERT INTO `oa_config` VALUES ('discovery_ip_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its ip during discovery.');
+INSERT INTO `oa_config` VALUES ('discovery_name_match','y','y','0000-00-00 00:00:00',0,'Should we match a device based only on its hostname during discovery.');
 INSERT INTO `oa_config` VALUES ('discovery_update_groups','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT update the device groups after discovering a device.');
+INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
 INSERT INTO `oa_config` VALUES ('display_version','1.8.4','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
 INSERT INTO `oa_config` VALUES ('distinct_groups','y','y','0000-00-00 00:00:00',0,'Display Groups on the homepage, separated into the type of each Group.');
 INSERT INTO `oa_config` VALUES ('download_reports','download','y','0000-00-00 00:00:00',0,'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
@@ -249,7 +592,7 @@ CREATE TABLE `oa_group` (
   `group_icon` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`group_id`),
   KEY `group_id_index` (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,18 +601,18 @@ CREATE TABLE `oa_group` (
 
 LOCK TABLES `oa_group` WRITE;
 /*!40000 ALTER TABLE `oa_group` DISABLE KEYS */;
-INSERT INTO `oa_group` VALUES (1,'All Devices','','SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\'.','device','','devices');
-INSERT INTO `oa_group` VALUES (2,'All Printers','','SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and (man_type = \'printer\' or man_type = \'network printer\')',1,'Any items that have their status attribute set to \'production\' and have their type attribute set to \'printer\'.','device','SELECT system.system_id, system.hostname, system.man_description, system.man_manufacturer, system.man_model, system.man_serial, system.man_ip_address, system.man_type, system.man_icon FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id','printer');
-INSERT INTO `oa_group` VALUES (3,'Routers','','SELECT distinct(system.system_id) FROM system WHERE system.man_type = \'router\' AND system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\' and have their type attribute set to \'router\'.','device','SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','router');
-INSERT INTO `oa_group` VALUES (4,'Switches','','SELECT distinct(system.system_id) FROM system WHERE system.man_type = \'switch\' AND system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\' and have their type attribute set to \'switch\'.','device','SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','switch');
-INSERT INTO `oa_group` VALUES (5,'Windows Computers','','SELECT distinct(system.system_id) FROM system WHERE system.man_os_group = \'Windows\' AND system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\' and have their os_name attribute containing \'windows\'.','os','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, windows.windows_user_name, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN windows ON (system.system_id = windows.system_id AND system.timestamp = windows.timestamp) LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE oa_group_sys.group_id = ?','windows');
-INSERT INTO `oa_group` VALUES (6,'GNU/Linux Systems','','SELECT distinct(system.system_id) FROM system WHERE system.man_os_group LIKE LOWER(\'linux\') AND system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\' and have their os_group attribute set to \'linux\'.','os','SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','linux');
-INSERT INTO `oa_group` VALUES (7,'Virtual Hosts','','SELECT distinct(system.system_id) FROM system WHERE system.system_id = system.system_id AND LOWER(man_class) = \'hypervisor\' AND system.man_status = \'production\' AND system.timestamp = system.timestamp',1,'Any items that have their status attribute set to \'production\' and have their class attribute set to \'hypervisor\'.','device','SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','vmware');
-INSERT INTO `oa_group` VALUES (8,'Computers','','SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and system.man_type = \'computer\'',1,'Any items that have their status attribute set to \'production\' and have their type attribute set to \'computer\'.','device','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_description, system.man_os_name FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','computer');
+INSERT INTO `oa_group` VALUES (1,'All Devices','','SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\'.','device','SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','devices');
 INSERT INTO `oa_group` VALUES (9,'Items in Default Location','','SELECT distinct(system.system_id) FROM system WHERE system.man_location_id = \'0\' AND system.man_status = \'production\'',1,'Items in Default Location','location','','location');
-INSERT INTO `oa_group` VALUES (10,'Non Production Devices','','SELECT distinct(system.system_id) FROM system WHERE system.man_status != \'production\'',1,'Any items that have their status attribute not set to \'production\'.','device','SELECT system.man_icon, system.man_os_family, system.man_type, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, system.man_description, system.man_owner FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','devices');
-INSERT INTO `oa_group` VALUES (11,'Virtual Guests','','SELECT distinct(system.system_id) FROM system WHERE (system.man_manufacturer LIKE \'VMware\\%\' or system.man_manufacturer LIKE \'Parallels\\%\') AND system.man_status = \'production\' and man_os_name NOT LIKE \'\\%ESX\\%\'',1,'Any items that have their status attribute set to \'production\' and their manufacturer attribute contains \'VMware\', \'Parallels\' or \'KVM\' and their OS Name does not contain ESX.','device','SELECT system.man_icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, man_os_family, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id','vmware');
 INSERT INTO `oa_group` VALUES (12,'Default Organisation owned items','','SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = \'0\' AND system.man_status = \'production\'',1,'Items in Default Organisation','location','','location');
+INSERT INTO `oa_group` VALUES (13,'All Printers','','SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and (man_type = \'printer\' or man_type = \'network printer\')',1,'Any items that have their status attribute set to \'production\' and have their type attribute set to \'printer\'.','device','SELECT system.system_id, system.hostname, system.man_description, system.man_manufacturer, system.man_model, system.man_serial, system.man_ip_address, system.man_type, system.man_icon FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id','printer');
+INSERT INTO `oa_group` VALUES (14,'Routers','','SELECT distinct(system.system_id) FROM system WHERE system.man_type = \'router\' AND system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\' and have their type attribute set to \'router\'.','device','SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','router');
+INSERT INTO `oa_group` VALUES (15,'Switches','','SELECT distinct(system.system_id) FROM system WHERE system.man_type = \'switch\' AND system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\' and have their type attribute set to \'switch\'.','device','SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','switch');
+INSERT INTO `oa_group` VALUES (16,'Windows Computers','','SELECT distinct(system.system_id) FROM system WHERE system.man_os_group = \'Windows\' AND system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\' and have their os_name attribute containing \'windows\'.','os','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, windows.user_name, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = \'y\') LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE oa_group_sys.group_id = ?','windows');
+INSERT INTO `oa_group` VALUES (17,'GNU/Linux Systems','','SELECT distinct(system.system_id) FROM system WHERE system.man_os_group LIKE LOWER(\'linux\') AND system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\' and have their os_group attribute set to \'linux\'.','os','SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','linux');
+INSERT INTO `oa_group` VALUES (18,'Virtual Hosts','','SELECT distinct(system.system_id) FROM system WHERE LOWER(man_class) = \'hypervisor\' AND system.man_status = \'production\'',1,'Any items that have their status attribute set to \'production\' and have their class attribute set to \'hypervisor\'.','device','SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','vmware');
+INSERT INTO `oa_group` VALUES (19,'Computers','','SELECT distinct(system.system_id) FROM system WHERE system.man_status = \'production\' and system.man_type = \'computer\'',1,'Any items that have their status attribute set to \'production\' and have their type attribute set to \'computer\'.','device','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_description, system.man_os_name FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','computer');
+INSERT INTO `oa_group` VALUES (20,'Non Production Devices','','SELECT distinct(system.system_id) FROM system WHERE system.man_status != \'production\'',1,'Any items that have their status attribute not set to \'production\'.','device','SELECT system.man_icon, system.man_os_family, system.man_type, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, system.man_description, system.man_owner FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id','devices');
+INSERT INTO `oa_group` VALUES (21,'Virtual Guests','','SELECT distinct(system.system_id) FROM system WHERE (system.man_manufacturer LIKE \'VMware%\' or system.man_manufacturer LIKE \'Parallels%\') AND system.man_status = \'production\' and man_os_name NOT LIKE \'%ESX%\'',1,'Any items that have their status attribute set to \'production\' and their manufacturer attribute contains \'VMware\', \'Parallels\' or \'KVM\' and their OS Name does not contain ESX.','device','SELECT system.man_icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, man_os_family, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id','vmware');
 /*!40000 ALTER TABLE `oa_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -294,7 +637,7 @@ CREATE TABLE `oa_group_column` (
   PRIMARY KEY (`column_id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `oa_group_column_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -303,83 +646,88 @@ CREATE TABLE `oa_group_column` (
 
 LOCK TABLES `oa_group_column` WRITE;
 /*!40000 ALTER TABLE `oa_group_column` DISABLE KEYS */;
-INSERT INTO `oa_group_column` VALUES (1,1,1,'Icon','man_icon','image','','man_os_family','','left');
-INSERT INTO `oa_group_column` VALUES (2,1,2,'Hostname','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_group_column` VALUES (3,1,3,'Domain','domain','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (4,1,4,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_group_column` VALUES (5,1,5,'Type','man_type','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (6,1,6,'Description','man_description','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (7,1,7,'OS / Device','man_os_name','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (8,1,8,'Tags','tag','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (9,2,1,'Name','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_group_column` VALUES (10,2,2,'Description','man_description','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (11,2,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_group_column` VALUES (12,2,4,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (13,2,5,'Model','man_model','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (14,2,6,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (15,2,7,'Tags','tag','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (16,3,1,'Hostname','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_group_column` VALUES (17,3,2,'Description','man_description','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (18,3,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_group_column` VALUES (19,3,4,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (20,3,5,'Model','man_model','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (21,3,6,'OS Name','man_os_name','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (22,3,7,'Tags','tag','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (23,3,8,'','man_os_family','','','','','left');
-INSERT INTO `oa_group_column` VALUES (24,3,9,'','system_id','','','','','left');
-INSERT INTO `oa_group_column` VALUES (25,4,1,'Hostname','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_group_column` VALUES (26,4,2,'Description','man_description','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (27,4,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_group_column` VALUES (28,4,4,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (29,4,5,'Model','man_model','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (30,4,6,'OS / Device','man_os_name','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (31,4,7,'Tags','tag','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (32,5,1,'Icon','man_icon','image','','man_os_family','','left');
-INSERT INTO `oa_group_column` VALUES (33,5,2,'Hostname','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_group_column` VALUES (34,5,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_group_column` VALUES (35,5,4,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (36,5,5,'Model','man_model','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (37,5,6,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (38,5,7,'User','windows_user_name','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (39,5,8,'Location','location_name','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (40,5,9,'Tags','tag','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (41,6,1,'Icon','man_icon','image','','man_os_family','','left');
-INSERT INTO `oa_group_column` VALUES (42,6,2,'Hostname','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_group_column` VALUES (43,6,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_group_column` VALUES (44,6,4,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (45,6,5,'Model','man_model','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (46,6,6,'Description','man_description','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (47,6,7,'OS / Device','man_os_name','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (48,6,8,'Tags','tag','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (49,7,1,'Icon','man_icon','image','','man_os_family','','left');
-INSERT INTO `oa_group_column` VALUES (50,7,2,'Hostname','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_group_column` VALUES (51,7,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_group_column` VALUES (52,7,4,'Function','man_function','text','','','','center');
-INSERT INTO `oa_group_column` VALUES (53,7,5,'Environment','man_environment','text','','','','center');
-INSERT INTO `oa_group_column` VALUES (54,7,6,'Description','man_description','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (55,7,7,'OS','man_os_name','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (56,7,8,'VM Group','man_vm_group','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (57,7,9,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (58,7,10,'Location','location_name','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (59,7,11,'Tags','tag','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (60,8,1,'Icon','man_icon','image','','man_os_family','','left');
-INSERT INTO `oa_group_column` VALUES (61,8,2,'Hostname','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_group_column` VALUES (62,8,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_group_column` VALUES (63,8,4,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (64,8,5,'Model','man_model','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (65,8,6,'Description','man_description','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (66,8,7,'OS Name','man_os_name','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (67,8,8,'Tags','tag','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (68,10,1,'Icon','man_icon','image','','man_os_family','','left');
-INSERT INTO `oa_group_column` VALUES (69,10,2,'Type','man_type','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (70,10,3,'Hostname','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_group_column` VALUES (71,10,4,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_group_column` VALUES (72,10,5,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (73,10,6,'Model','man_model','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (74,10,7,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (75,10,8,'Description','man_description','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (76,10,9,'Assigned','man_owner','text','','','','left');
-INSERT INTO `oa_group_column` VALUES (77,10,10,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (78,1,1,'Icon','man_icon','image','','man_os_family','','left');
+INSERT INTO `oa_group_column` VALUES (79,1,2,'Hostname','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (80,1,3,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (81,1,4,'Type','man_type','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (82,1,5,'Description','man_description','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (83,1,6,'OS Name','man_os_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (84,1,7,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (85,13,1,'Name','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (86,13,2,'Description','man_description','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (87,13,3,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (88,13,4,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (89,13,5,'Model','man_model','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (90,13,6,'Serial','man_serial','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (91,13,7,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (92,14,1,'Hostname','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (93,14,2,'Description','man_description','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (94,14,3,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (95,14,4,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (96,14,5,'Model','man_model','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (97,14,5,'OS Name','man_os_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (98,14,6,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (99,14,7,'','man_os_family','','','','','left');
+INSERT INTO `oa_group_column` VALUES (100,14,8,'','system_id','','','','','left');
+INSERT INTO `oa_group_column` VALUES (101,15,1,'Hostname','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (102,15,2,'Description','man_description','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (103,15,3,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (104,15,4,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (105,15,5,'Model','man_model','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (106,15,5,'OS / Device','man_os_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (107,15,6,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (108,16,1,'Icon','man_icon','image','','man_os_family','','left');
+INSERT INTO `oa_group_column` VALUES (109,16,2,'Hostname','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (110,16,3,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (111,16,4,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (112,16,5,'Model','man_model','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (113,16,6,'Serial','man_serial','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (114,16,7,'User','user_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (115,16,8,'Location','location_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (116,16,9,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (117,17,1,'Icon','man_icon','image','','man_os_family','','left');
+INSERT INTO `oa_group_column` VALUES (118,17,2,'Hostname','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (119,17,3,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (120,17,4,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (121,17,4,'Model','man_model','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (122,17,5,'Description','man_description','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (123,17,6,'OS / Device','man_os_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (124,17,7,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (125,18,0,'Icon','man_icon','image','','man_os_family','','left');
+INSERT INTO `oa_group_column` VALUES (126,18,1,'Hostname','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (127,18,2,'Description','man_description','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (128,18,3,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (129,18,4,'OS Name','man_os_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (130,18,5,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (131,19,1,'Icon','man_icon','image','','man_os_family','','left');
+INSERT INTO `oa_group_column` VALUES (132,19,2,'Hostname','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (133,19,3,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (134,19,4,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (135,19,5,'Model','man_model','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (136,19,6,'Description','man_description','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (137,19,7,'OS Name','man_os_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (138,19,8,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (139,20,1,'Icon','man_icon','image','','man_os_family','','left');
+INSERT INTO `oa_group_column` VALUES (140,20,2,'Type','man_type','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (141,20,3,'Hostname','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (142,20,4,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (143,20,5,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (144,20,6,'Model','man_model','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (145,20,7,'Serial','man_serial','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (146,20,8,'Description','man_description','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (147,20,9,'Assigned','man_owner','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (148,20,10,'Tags','tag','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (149,21,0,'Icon','man_icon','image','','man_os_family','','left');
+INSERT INTO `oa_group_column` VALUES (150,21,1,'Hostname','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_group_column` VALUES (151,21,2,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_group_column` VALUES (152,21,3,'Function','man_function','text','','','','center');
+INSERT INTO `oa_group_column` VALUES (153,21,4,'Environment','man_environment','text','','','','center');
+INSERT INTO `oa_group_column` VALUES (154,21,5,'Description','man_description','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (155,21,6,'OS','man_os_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (156,21,7,'VM Group','man_vm_group','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (157,21,8,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (158,21,9,'Location','location_name','text','','','','left');
+INSERT INTO `oa_group_column` VALUES (159,21,10,'Tags','tag','text','','','','left');
 /*!40000 ALTER TABLE `oa_group_column` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -430,7 +778,7 @@ CREATE TABLE `oa_group_user` (
   KEY `user_id_index` (`user_id`),
   CONSTRAINT `oa_group_user_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE,
   CONSTRAINT `oa_group_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -439,36 +787,36 @@ CREATE TABLE `oa_group_user` (
 
 LOCK TABLES `oa_group_user` WRITE;
 /*!40000 ALTER TABLE `oa_group_user` DISABLE KEYS */;
-INSERT INTO `oa_group_user` VALUES (2,1,1,10);
-INSERT INTO `oa_group_user` VALUES (3,1,2,10);
-INSERT INTO `oa_group_user` VALUES (4,1,8,10);
-INSERT INTO `oa_group_user` VALUES (5,1,6,10);
-INSERT INTO `oa_group_user` VALUES (6,1,3,10);
-INSERT INTO `oa_group_user` VALUES (7,1,4,10);
-INSERT INTO `oa_group_user` VALUES (8,1,7,10);
-INSERT INTO `oa_group_user` VALUES (9,1,5,10);
-INSERT INTO `oa_group_user` VALUES (10,3,1,10);
-INSERT INTO `oa_group_user` VALUES (11,3,2,10);
-INSERT INTO `oa_group_user` VALUES (12,3,8,10);
-INSERT INTO `oa_group_user` VALUES (13,3,6,10);
-INSERT INTO `oa_group_user` VALUES (14,3,3,10);
-INSERT INTO `oa_group_user` VALUES (15,3,4,10);
-INSERT INTO `oa_group_user` VALUES (16,3,7,10);
-INSERT INTO `oa_group_user` VALUES (17,3,5,10);
 INSERT INTO `oa_group_user` VALUES (18,1,9,10);
 INSERT INTO `oa_group_user` VALUES (19,3,9,10);
-INSERT INTO `oa_group_user` VALUES (20,1,10,10);
-INSERT INTO `oa_group_user` VALUES (21,3,10,10);
-INSERT INTO `oa_group_user` VALUES (23,2,1,3);
-INSERT INTO `oa_group_user` VALUES (24,2,2,0);
-INSERT INTO `oa_group_user` VALUES (25,2,8,0);
-INSERT INTO `oa_group_user` VALUES (26,2,6,0);
 INSERT INTO `oa_group_user` VALUES (27,2,9,0);
-INSERT INTO `oa_group_user` VALUES (28,2,10,5);
-INSERT INTO `oa_group_user` VALUES (29,2,3,0);
-INSERT INTO `oa_group_user` VALUES (30,2,4,0);
-INSERT INTO `oa_group_user` VALUES (31,2,7,0);
-INSERT INTO `oa_group_user` VALUES (32,2,5,0);
+INSERT INTO `oa_group_user` VALUES (33,1,1,10);
+INSERT INTO `oa_group_user` VALUES (34,3,1,10);
+INSERT INTO `oa_group_user` VALUES (35,2,1,3);
+INSERT INTO `oa_group_user` VALUES (36,1,13,10);
+INSERT INTO `oa_group_user` VALUES (37,3,13,10);
+INSERT INTO `oa_group_user` VALUES (38,2,13,0);
+INSERT INTO `oa_group_user` VALUES (39,1,14,10);
+INSERT INTO `oa_group_user` VALUES (40,3,14,10);
+INSERT INTO `oa_group_user` VALUES (41,2,14,0);
+INSERT INTO `oa_group_user` VALUES (42,1,15,10);
+INSERT INTO `oa_group_user` VALUES (43,3,15,10);
+INSERT INTO `oa_group_user` VALUES (44,2,15,0);
+INSERT INTO `oa_group_user` VALUES (45,1,16,10);
+INSERT INTO `oa_group_user` VALUES (46,3,16,10);
+INSERT INTO `oa_group_user` VALUES (47,2,16,0);
+INSERT INTO `oa_group_user` VALUES (48,1,17,10);
+INSERT INTO `oa_group_user` VALUES (49,3,17,10);
+INSERT INTO `oa_group_user` VALUES (50,2,17,0);
+INSERT INTO `oa_group_user` VALUES (51,1,18,10);
+INSERT INTO `oa_group_user` VALUES (52,3,18,10);
+INSERT INTO `oa_group_user` VALUES (53,2,18,0);
+INSERT INTO `oa_group_user` VALUES (54,1,19,10);
+INSERT INTO `oa_group_user` VALUES (55,3,19,10);
+INSERT INTO `oa_group_user` VALUES (56,2,19,0);
+INSERT INTO `oa_group_user` VALUES (57,1,20,10);
+INSERT INTO `oa_group_user` VALUES (58,3,20,10);
+INSERT INTO `oa_group_user` VALUES (59,2,20,5);
 /*!40000 ALTER TABLE `oa_group_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -566,7 +914,7 @@ CREATE TABLE `oa_report` (
   `report_processing` text NOT NULL,
   `report_sort_column` int(10) unsigned NOT NULL,
   PRIMARY KEY (`report_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -575,32 +923,32 @@ CREATE TABLE `oa_report` (
 
 LOCK TABLES `oa_report` WRITE;
 /*!40000 ALTER TABLE `oa_report` DISABLE KEYS */;
-INSERT INTO `oa_report` VALUES (1,'Device Details','','y','SELECT system.man_icon, system.man_type, system.system_id, system.hostname, date(system.first_timestamp) as first_seen, date(system.last_seen) as last_seen, system.last_seen_by, system.man_model, system.man_manufacturer, system.man_serial, system.man_owner, oa_location.location_name, system.os_family, oa_org.org_name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.hostname','','v_report','','',0);
-INSERT INTO `oa_report` VALUES (2,'Device Hardware','','y','SELECT system.system_id, system.hostname, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, man_icon, man_os_family FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id','','v_report','','',0);
-INSERT INTO `oa_report` VALUES (3,'Installed - Software','','y','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment FROM sys_sw_software, system, oa_group_sys WHERE sys_sw_software.timestamp = system.timestamp AND sys_sw_software.system_id = system.system_id AND system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_report','','',0);
-INSERT INTO `oa_report` VALUES (4,'Specific Software','','n','SELECT system.system_id, system.hostname, sys_sw_software.software_name, sys_sw_software.software_installed_by, sys_sw_software.software_installed_on, sys_sw_software.software_version, windows.windows_user_name, oa_org.org_name, sys_sw_software.first_timestamp FROM system LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.system_id LEFT JOIN windows ON system.system_id = windows.system_id AND system.timestamp = windows.timestamp LEFT JOIN sys_sw_software ON system.system_id = sys_sw_software.system_id AND system.timestamp = sys_sw_software.timestamp LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id INNER JOIN (SELECT sys_sw_software.software_name, sys_sw_software.software_version FROM sys_sw_software WHERE sys_sw_software.software_id = ?) software_version_temp ON sys_sw_software.software_name = software_version_temp.software_name AND sys_sw_software.software_version = software_version_temp.software_version WHERE oa_group_sys.group_id = @group','','v_report','','',0);
-INSERT INTO `oa_report` VALUES (5,'Software Keys','','y','SELECT COUNT(key_text) as count, key_name, key_text, key_id FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN sys_sw_software_key ON (sys_sw_software_key.system_id = system.system_id and sys_sw_software_key.timestamp = system.timestamp) WHERE oa_group_sys.group_id = @group GROUP BY key_text ORDER BY key_name','','v_report','','',1);
-INSERT INTO `oa_report` VALUES (6,'Specific Key Name','','n','SELECT system.system_id, system.hostname, sys_sw_software_key.key_name, sys_sw_software_key.key_text FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) LEFT JOIN sys_sw_software_key ON (system.system_id = sys_sw_software_key.system_id AND system.timestamp = sys_sw_software_key.timestamp) WHERE oa_group_sys.group_id = @group AND sys_sw_software_key.key_name = (SELECT key_name FROM sys_sw_software_key WHERE key_id = ? LIMIT 1)','','v_report','','',0);
-INSERT INTO `oa_report` VALUES (7,'Specific Key Text','','n','SELECT system.system_id, system.hostname, sys_sw_software_key.key_name, sys_sw_software_key.key_text FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) LEFT JOIN sys_sw_software_key ON (system.system_id = sys_sw_software_key.system_id AND system.timestamp = sys_sw_software_key.timestamp) WHERE oa_group_sys.group_id = @group AND sys_sw_software_key.key_text = (SELECT key_text FROM sys_sw_software_key WHERE key_text = ? LIMIT 1)','','v_report','','',0);
-INSERT INTO `oa_report` VALUES (8,'Alerts','','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ORDER BY oa_alert_log.timestamp DESC ','','v_report_alerts','','',0);
-INSERT INTO `oa_report` VALUES (9,'Alerts - Software','','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.timestamp > DATE_SUB(NOW(),INTERVAL 100 DAY) AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_alert_log.alert_details LIKE \'software%\' AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ASC ','','v_report_alerts','','',0);
-INSERT INTO `oa_report` VALUES (10,'Enterprise - Devices Discovered in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE system.first_timestamp > (NOW() - INTERVAL ? DAY) AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (11,'Enterprise - Software Discovered in the Last Days','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, DATE(sys_sw_software.timestamp) AS first_attribute FROM sys_sw_software LEFT JOIN system ON sys_sw_software.system_id = system.system_id INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE sys_sw_software.first_timestamp != system.first_timestamp AND sys_sw_software.first_timestamp > (NOW() - INTERVAL ? DAY) GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (12,'Enterprise - Devices Not Seen by Date','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id  LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN windows ON (system.system_id = windows.system_id AND system.timestamp = windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL 30 day) AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (13,'Enterprise - Specific Software','','n','SELECT system.system_id, system.hostname, sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_installed_by, date(sys_sw_software.software_installed_on) as software_installed_on, sys_sw_software.software_version, date(sys_sw_software.first_timestamp) as first_timestamp FROM system LEFT JOIN sys_sw_software ON (system.system_id = sys_sw_software.system_id and system.first_timestamp < sys_sw_software.first_timestamp) INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE sys_sw_software.software_name = (SELECT software_name FROM sys_sw_software WHERE software_id = ? LIMIT 1) AND date(sys_sw_software.first_timestamp) = date(?) GROUP BY system.system_id','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (14,'Enterprise - Software Discovered by Date','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment, date(sys_sw_software.first_timestamp) as first_attribute FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) LEFT JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE date(sys_sw_software.first_timestamp) = ? GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (15,'Enterprise - Devices Discovered by Date','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, man_status AS status, last_seen_by FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group AND date(system.first_timestamp) = ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname LIMIT @limit','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (16,'Enterprise - Devices Not Seen in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN windows ON (system.system_id = windows.system_id AND system.timestamp = windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(NOW(), INTERVAL ? day) AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (17,'Enterprise - OS Group','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_os_group = ?','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (18,'Enterprise - OS Types','','n','SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id)) * 100) AS y, IF(CHAR_LENGTH(man_os_group)=0,\'Other\', man_os_group) AS name, count(*) as count FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id GROUP BY name','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (19,'Enterprise - OS Family','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_os_family = ?','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (20,'Enterprise - OS Name','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_os_name = ?','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (21,'Enterprise - Device Types','','n','SELECT CEILING(COUNT(*) / (SELECT COUNT(system.system_id) FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id) * 100) AS y, man_type AS name, count(*) as count FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp2 ON system.system_id = grp2.system_id GROUP BY name','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (22,'Enterprise - Device Type','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_manufacturer, system.man_model, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_type = ?','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (23,'Enterprise - Software Discovered Range','','n','SELECT COUNT(DISTINCT system.system_id) AS software_count, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.software_publisher, sys_sw_software.software_url, sys_sw_software.software_email, sys_sw_software.software_id, sys_sw_software.software_comment FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id AND sys_sw_software.first_timestamp != system.first_timestamp) INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE date(sys_sw_software.first_timestamp) >= ? AND date(sys_sw_software.first_timestamp) <= ? GROUP BY sys_sw_software.software_name, sys_sw_software.software_version ORDER BY sys_sw_software.software_name','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (24,'Enterprise - Devices Discovered Range','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE date(system.first_timestamp) >= ? AND date(system.first_timestamp) <= ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (25,'Disk Partition Use','','y','SELECT partition_id, system.system_id, system.hostname, sys_hw_partition.hard_drive_index AS disk, sys_hw_partition.partition_mount_point AS mount_point, partition_mount_type as type, sys_hw_partition.partition_size AS size, sys_hw_partition.partition_used_space AS used, sys_hw_partition.partition_free_space AS free, ROUND(((sys_hw_partition.partition_free_space / sys_hw_partition.partition_size) * 100), 0) AS percent_free FROM sys_hw_partition LEFT JOIN system ON (sys_hw_partition.system_id = system.system_id AND sys_hw_partition.timestamp = system.timestamp) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE partition_used_space > 0 AND partition_free_space > 0 AND oa_group_sys.group_id = @group AND partition_type != \'Volume\' AND partition_type != \'Network Drive\' AND partition_mount_point != \'[SWAP]\' ORDER BY sys_hw_partition.system_id, partition_id ','','v_report','','',0);
-INSERT INTO `oa_report` VALUES (26,'Interfaces Used - Available','','y','SELECT system.system_id, system.hostname, alias as ifAlias, net_index AS ifIndex, description as ifDescription, ifadminstatus as ifAdminStatus, ip_enabled as ifOperStatus, sysUpTime, iflastchange as ifLastChange, (sysuptime - iflastchange) AS diff, floor((sysuptime - iflastchange) /60/60/24/100) as diff_days, IF((ifadminstatus = \'down\') OR (ifadminstatus = \'up\' AND (ip_enabled != \'up\' AND ip_enabled != \'dormant\') AND (((sysuptime - iflastchange) > 60480000) OR (sysuptime < iflastchange))), \'available\', \'used\') AS available FROM network LEFT JOIN system ON (network.system_id = system.system_id AND network.current = \'y\') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND ifadminstatus != \'\'','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (27,'Device Details','Icon, type, name, first seen on, last seen on, last seen by, manufacturer, model, serial, owner, organisation, location, operating system.','y','SELECT system.man_icon, system.man_type, system.system_id, system.hostname, date(system.first_timestamp) as first_seen, date(system.last_seen) as last_seen, system.last_seen_by, system.man_model, system.man_manufacturer, system.man_serial, system.man_owner, oa_location.location_name, system.os_family, oa_org.org_name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.hostname','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (28,'Device Hardware','Icon, name, ip address, manufacturer, model, serial.','y','SELECT system.system_id, system.hostname, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, man_icon, man_os_family, man_asset_number, man_type FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (29,'Installed - Software','Currently installed software.','y','SELECT COUNT(DISTINCT system.system_id) AS `count`, software.name, software.version, software.publisher, software.url, software.email, software.id, software.type, system.icon, system.man_os_family FROM software LEFT JOIN system ON (software.system_id = system.system_id AND software.current = \'y\') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group GROUP BY software.name, software.version','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (30,'Specific Software','Specific installed software.','n','SELECT system.system_id, system.hostname, software.name, software.installed_by, software.installed_on, software.version, windows.user_name, oa_org.org_name, software.first_seen FROM system LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.system_id LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = \'y\') LEFT JOIN software ON (system.system_id = software.system_id AND software.current = \'y\') LEFT JOIN oa_org ON (system.man_org_id = oa_org.org_id) INNER JOIN (SELECT software.name, software.version FROM software WHERE software.id = ?) software_version_temp ON software.name = software_version_temp.name AND software.version = software_version_temp.version WHERE oa_group_sys.group_id = @group','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (31,'Software Keys','Software install keys.','y','SELECT COUNT(string) as count, name, string, id FROM system LEFT JOIN software_key ON (software_key.system_id = system.system_id and software_key.current = \'y\') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND string IS NOT NULL GROUP BY name, string ORDER BY name','','v_report','','',1);
+INSERT INTO `oa_report` VALUES (32,'Specific Key Name','Specific software install keys, by name.','n','SELECT system.system_id, system.hostname, software_key.name, software_key.string FROM system LEFT JOIN software_key ON (system.system_id = software_key.system_id AND software_key.current = \'y\') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) WHERE oa_group_sys.group_id = @group AND software_key.name = (SELECT name FROM software_key WHERE id = ? LIMIT 1)','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (33,'Specific Key Text','Specific software install keys, by key.','n','SELECT system.system_id, system.hostname, software_key.name, software_key.string FROM system LEFT JOIN software_key ON (system.system_id = software_key.system_id AND software_key.current = \'y\') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) WHERE oa_group_sys.group_id = @group AND software_key.string = ?','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (34,'Alerts','Any Alerts created by newly found, no longer present or changed items.','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ORDER BY oa_alert_log.timestamp DESC ','','v_report_alerts','','',0);
+INSERT INTO `oa_report` VALUES (35,'Alerts - Software','Any Alerts created by newly found, no longer present or changed software.','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.timestamp > DATE_SUB(NOW(),INTERVAL 100 DAY) AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_alert_log.alert_details LIKE \'software%\' AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ASC ','','v_report_alerts','','',0);
+INSERT INTO `oa_report` VALUES (36,'Enterprise - Devices Discovered in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE system.first_timestamp > (NOW() - INTERVAL ? DAY) AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (37,'Enterprise - Software Discovered in the Last Days','','n','SELECT COUNT(oa_alert_log.system_id) AS `count`, software.id, name, type, url, version, publisher, DATE(oa_alert_log.timestamp) AS `date` FROM oa_alert_log LEFT JOIN software ON (oa_alert_log.alert_foreign_row = software.id) LEFT JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON oa_alert_log.system_id = grp.system_id WHERE oa_alert_log.alert_table = \'software\' AND oa_alert_log.link_row_action = \'create\' AND DATE(oa_alert_log.timestamp) > (NOW() - INTERVAL ? DAY) GROUP BY software.name, software.version','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (38,'Enterprise - Devices Not Seen by Date','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id  LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL 30 day) AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (39,'Enterprise - Specific Software','','n','SELECT system.system_id, system.hostname, software.id, software.name, software.installed_by, date(software.installed_on) as software_installed_on, software.version, date(software.first_seen) as first_seen FROM system LEFT JOIN software ON (system.system_id = software.system_id and software.current = \'y\') INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE software.name = (SELECT name FROM software WHERE id = ? LIMIT 1) AND date(software.first_seen) = date(?) GROUP BY system.system_id','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (40,'Enterprise - Software Discovered by Date','','n','SELECT COUNT(oa_alert_log.system_id) AS `count`, id, name, type, url, version, publisher, DATE(oa_alert_log.timestamp) AS `date` FROM oa_alert_log LEFT JOIN software ON (oa_alert_log.alert_foreign_row = software.id) LEFT JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON oa_alert_log.system_id = grp.system_id WHERE oa_alert_log.alert_table = \'software\' AND oa_alert_log.link_row_action = \'create\' AND DATE(oa_alert_log.timestamp) = ? GROUP BY software.name, software.version','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (41,'Enterprise - Devices Discovered by Date','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, man_status AS status, last_seen_by FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group AND date(system.first_timestamp) = ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname LIMIT @limit','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (42,'Enterprise - Devices Not Seen in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, sys_sw_windows.windows_user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(NOW(), INTERVAL ? day) AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (43,'Enterprise - OS Group','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_os_group = ?','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (44,'Enterprise - OS Types','','n','SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id)) * 100) AS y, IF(CHAR_LENGTH(man_os_group)=0,\'Other\', man_os_group) AS name, count(*) as count FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id GROUP BY name','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (45,'Enterprise - OS Family','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_os_family = ?','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (46,'Enterprise - OS Name','','n','SELECT system.man_icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_type, system.man_manufacturer, system.man_model, system.man_serial, system.man_os_group, system.man_os_family, system.man_os_name, oa_location.location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_os_name = ?','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (47,'Enterprise - Device Types','','n','SELECT CEILING(COUNT(*) / (SELECT COUNT(system.system_id) FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id) * 100) AS y, man_type AS name, count(*) as count FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp2 ON system.system_id = grp2.system_id GROUP BY name','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (48,'Enterprise - Device Type','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_manufacturer, system.man_model, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_type = ?','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (49,'Enterprise - Software Discovered Range','','n','SELECT COUNT(oa_alert_log.system_id) AS `count`, id, name, type, url, version, publisher, DATE(oa_alert_log.timestamp) AS `date` FROM oa_alert_log LEFT JOIN software ON (oa_alert_log.alert_foreign_row = software.id) LEFT JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON oa_alert_log.system_id = grp.system_id WHERE oa_alert_log.alert_table = \'software\' AND oa_alert_log.link_row_action = \'create\' AND DATE(oa_alert_log.timestamp) >= ? AND DATE(oa_alert_log.timestamp) <= ? GROUP BY software.name, software.version','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (50,'Enterprise - Devices Discovered Range','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE date(system.first_timestamp) >= ? AND date(system.first_timestamp) <= ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
+INSERT INTO `oa_report` VALUES (51,'Disk Partition Use','Partition details where partition free and used space aren\'t 0 and type isn\'t Volume or Network Drive and mount point isn\'t [SWAP].','y','SELECT partition_id, system.system_id, system.hostname, sys_hw_partition.hard_drive_index AS disk, sys_hw_partition.partition_mount_point AS mount_point, partition_mount_type as type, sys_hw_partition.partition_size AS size, sys_hw_partition.partition_used_space AS used, sys_hw_partition.partition_free_space AS free, ROUND(((sys_hw_partition.partition_free_space / sys_hw_partition.partition_size) * 100), 0) AS percent_free FROM sys_hw_partition LEFT JOIN system ON (sys_hw_partition.system_id = system.system_id AND sys_hw_partition.timestamp = system.timestamp) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE partition_used_space > 0 AND partition_free_space > 0 AND oa_group_sys.group_id = @group AND partition_type != \'Volume\' AND partition_type != \'Network Drive\' AND partition_mount_point != \'[SWAP]\' ORDER BY sys_hw_partition.system_id, partition_id ','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (52,'Interfaces Used - Available','','y','SELECT system.system_id, system.hostname, alias as ifAlias, net_index AS ifIndex, description as ifDescription, ifadminstatus as ifAdminStatus, ip_enabled as ifOperStatus, sysUpTime, iflastchange as ifLastChange, (sysuptime - iflastchange) AS diff, floor((sysuptime - iflastchange) /60/60/24/100) as diff_days, IF((ifadminstatus = \\\'down\\\') OR (ifadminstatus = \'up\' AND (ip_enabled != \'up\' AND ip_enabled != \'dormant\') AND (((sysuptime - iflastchange) > 60480000) OR (sysuptime < iflastchange))), \'available\', \'used\') AS available FROM network LEFT JOIN system ON (network.system_id = system.system_id AND network.current = \'y\') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND ifadminstatus != \'\'','','v_report','','',0);
 /*!40000 ALTER TABLE `oa_report` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -625,7 +973,7 @@ CREATE TABLE `oa_report_column` (
   PRIMARY KEY (`column_id`),
   KEY `report_id` (`report_id`),
   CONSTRAINT `oa_report_column_group_id` FOREIGN KEY (`report_id`) REFERENCES `oa_report` (`report_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=364 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -634,186 +982,189 @@ CREATE TABLE `oa_report_column` (
 
 LOCK TABLES `oa_report_column` WRITE;
 /*!40000 ALTER TABLE `oa_report_column` DISABLE KEYS */;
-INSERT INTO `oa_report_column` VALUES (1,1,0,'Icon','man_icon','image','','man_type','','center');
-INSERT INTO `oa_report_column` VALUES (2,1,1,'Type','man_type','text','','','','');
-INSERT INTO `oa_report_column` VALUES (3,1,2,'System Name','hostname','link','/main/system_display/','system_id','','');
-INSERT INTO `oa_report_column` VALUES (4,1,3,'First Seen','first_seen','timestamp','','','','');
-INSERT INTO `oa_report_column` VALUES (5,1,4,'Last Seen','last_seen','timestamp','','','','');
-INSERT INTO `oa_report_column` VALUES (6,1,5,'Last Seen By','last_seen_by','text','','','','');
-INSERT INTO `oa_report_column` VALUES (7,1,6,'Manufacturer','man_manufacturer','text','','','','');
-INSERT INTO `oa_report_column` VALUES (8,1,7,'Model','man_model','text','','','','');
-INSERT INTO `oa_report_column` VALUES (9,1,8,'Serial','man_serial','text','','','','');
-INSERT INTO `oa_report_column` VALUES (10,1,9,'Assigned To','man_owner','text','','','','');
-INSERT INTO `oa_report_column` VALUES (11,1,10,'Organisation','org_name','text','','','','');
-INSERT INTO `oa_report_column` VALUES (12,1,11,'Location','location_name','text','','','','');
-INSERT INTO `oa_report_column` VALUES (13,1,12,'OS','os_family','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (14,1,13,'Tags','tag','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (15,2,1,'Icon','man_icon','image','','man_os_family','','center');
-INSERT INTO `oa_report_column` VALUES (16,2,2,'System Name','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (17,2,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_report_column` VALUES (18,2,4,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (19,2,5,'Model','man_model','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (20,2,6,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (21,3,1,'Package Name','software_name','link','/report/specific_software/$group_id/','software_id','','left');
-INSERT INTO `oa_report_column` VALUES (22,3,2,'Version','software_version','text','','','','right');
-INSERT INTO `oa_report_column` VALUES (23,3,3,'Installs','software_count','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (24,3,4,'Publisher','software_publisher','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (25,3,5,'Type','software_comment','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (26,3,6,'Contact','software_url','url','','','','left');
-INSERT INTO `oa_report_column` VALUES (27,3,7,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center');
-INSERT INTO `oa_report_column` VALUES (28,4,0,'System Name','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (29,4,1,'User','windows_user_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (30,4,2,'Organisation','org_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (31,4,3,'Software Name','software_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (32,4,4,'Software Version','software_version','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (33,4,5,'Installed By','software_installed_by','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (34,4,6,'Detected On','first_timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (35,4,7,'Installed On','software_installed_on','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (36,4,8,'Tags','tag','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (37,5,0,'System Count','count','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (38,5,0,'Key Name','key_name','link','/report/specific_key_name/$group_id/','key_id','','left');
-INSERT INTO `oa_report_column` VALUES (39,5,2,'Key Text','key_text','link','/report/specific_key_text/$group_id/','key_text','','left');
-INSERT INTO `oa_report_column` VALUES (40,6,0,'System Name','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (41,6,2,'Key Name','key_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (42,6,3,'Key Text','key_text','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (43,6,7,'Tags','tag','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (44,7,0,'System Name','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (45,7,2,'Key Name','key_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (46,7,3,'Key Text','key_text','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (47,7,7,'Tags','tag','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (48,8,0,'Timestamp','timestamp','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (49,8,1,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_report_column` VALUES (50,8,2,'System Name','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (51,8,3,'System Description','man_description','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (52,8,4,'Details','alert_details','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (53,8,5,'Tags','tag','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (54,9,0,'Timestamp','timestamp','text','','','','');
-INSERT INTO `oa_report_column` VALUES (55,9,1,'IP Address','man_ip_address','ip_address','','','','');
-INSERT INTO `oa_report_column` VALUES (56,9,2,'System Name','hostname','link','/main/system_display/','system_id','','');
-INSERT INTO `oa_report_column` VALUES (57,9,3,'System Description','man_description','text','','','','');
-INSERT INTO `oa_report_column` VALUES (58,9,4,'Details','alert_details','text','','','','');
-INSERT INTO `oa_report_column` VALUES (59,9,5,'Tags','tag','text','','','','');
-INSERT INTO `oa_report_column` VALUES (60,10,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (61,10,1,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_report_column` VALUES (62,10,2,'Type','man_type','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (63,10,3,'OS','man_os_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (64,10,4,'First Audited','first_timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (65,10,5,'Last Audited','timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (66,10,6,'Status','status','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (67,11,0,'Package Name','software_name','link','/omk/oae/show_report/specific software/','software_id','first_attribute','left');
-INSERT INTO `oa_report_column` VALUES (68,11,1,'Type','software_comment','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (69,11,2,'Installs','software_count','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (70,11,3,'Contact','software_url','url','','','','center');
-INSERT INTO `oa_report_column` VALUES (71,11,4,'Version','software_version','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (72,11,5,'Publisher','software_publisher','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (73,11,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center');
-INSERT INTO `oa_report_column` VALUES (74,12,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (75,12,1,'Type','man_type','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (76,12,2,'Location','location_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (77,12,3,'User','windows_user_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (78,12,4,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (79,12,5,'Model','man_model','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (80,12,6,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (81,12,7,'First Audited','first_timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (82,12,8,'Last Audited','timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (83,13,0,'Software Name','software_name','link','/omk/oae/show_report/Specific Software/','software_id','','left');
-INSERT INTO `oa_report_column` VALUES (84,13,1,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (85,13,2,'Software Version','software_version','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (86,13,3,'Detected On','first_timestamp','timestamp','','','','center');
-INSERT INTO `oa_report_column` VALUES (87,13,4,'Installed By','software_installed_by','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (88,13,5,'Installed On','software_installed_on','timestamp','','','','center');
-INSERT INTO `oa_report_column` VALUES (89,14,0,'Package Name','software_name','link','/omk/oae/show_report/Enterprise - Specific Software/','software_id','first_attribute','left');
-INSERT INTO `oa_report_column` VALUES (90,14,1,'Type','software_comment','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (91,14,2,'Installs','software_count','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (92,14,3,'Contact','software_url','url','','','','center');
-INSERT INTO `oa_report_column` VALUES (93,14,4,'Version','software_version','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (94,14,5,'Publisher','software_publisher','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (95,14,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center');
-INSERT INTO `oa_report_column` VALUES (96,15,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (97,15,1,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_report_column` VALUES (98,15,2,'Type','man_type','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (99,15,3,'OS','man_os_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (100,15,5,'Last Seen By','last_seen_by','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (101,15,6,'Status','status','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (102,16,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (103,16,1,'Type','man_type','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (104,16,2,'Location','location_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (105,16,3,'User','windows_user_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (106,16,4,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (107,16,5,'Model','man_model','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (108,16,6,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (109,16,7,'First Audited','first_timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (110,16,8,'Last Audited','timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (111,17,0,'Icon','man_icon','image','','man_os_family','','center');
-INSERT INTO `oa_report_column` VALUES (112,17,1,'OS Family','man_os_family','link','/omk/oae/show_report/Enterprise - OS Family/','man_os_family','','left');
-INSERT INTO `oa_report_column` VALUES (113,17,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (114,17,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_report_column` VALUES (115,17,4,'Type','man_type','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (116,17,5,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (117,17,6,'Model','man_model','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (118,17,7,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (119,17,8,'Location','location_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (120,18,0,'Type','name','link','/omk/oae/show_report/Enterprise - OS Group/','name','','left');
-INSERT INTO `oa_report_column` VALUES (121,18,1,'Count','count','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (122,18,2,'Percent','y','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (123,19,0,'Icon','man_icon','image','','man_os_family','','center');
-INSERT INTO `oa_report_column` VALUES (124,19,1,'OS Name','man_os_name','link','/omk/oae/show_report/Enterprise - OS Name/','man_os_name','','left');
-INSERT INTO `oa_report_column` VALUES (125,19,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (126,19,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_report_column` VALUES (127,19,4,'Type','man_type','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (128,19,5,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (129,19,6,'Model','man_model','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (130,19,7,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (131,19,8,'Location','location_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (132,20,0,'Icon','man_icon','image','','man_os_family','','center');
-INSERT INTO `oa_report_column` VALUES (133,20,1,'OS Name','man_os_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (134,20,2,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (135,20,3,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_report_column` VALUES (136,20,4,'Type','man_type','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (137,20,5,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (138,20,6,'Model','man_model','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (139,20,7,'Serial','man_serial','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (140,20,8,'Location','location_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (141,21,0,'Type','name','link','/omk/oae/show_report/Enterprise - Device Type/','name','','left');
-INSERT INTO `oa_report_column` VALUES (142,21,1,'Count','count','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (143,21,2,'Percent','y','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (144,22,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (145,22,1,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_report_column` VALUES (146,22,2,'Manufacturer','man_manufacturer','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (147,22,3,'Model','man_model','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (148,22,4,'OS','man_os_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (149,22,5,'First Audited','first_timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (150,22,6,'Last Audited','timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (151,22,7,'Status','status','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (152,23,0,'Package Name','software_name','link','/omk/oae/report/SpecificSoftwareRange/','software_id','first_attribute','left');
-INSERT INTO `oa_report_column` VALUES (153,23,1,'Type','software_comment','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (154,23,2,'Installs','software_count','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (155,23,3,'Contact','software_url','url','','','','center');
-INSERT INTO `oa_report_column` VALUES (156,23,4,'Version','software_version','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (157,23,5,'Publisher','software_publisher','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (158,23,6,'Google Search','','url','https://encrypted.google.com/search?q=','software_name','google','center');
-INSERT INTO `oa_report_column` VALUES (159,24,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (160,24,1,'IP Address','man_ip_address','ip_address','','','','left');
-INSERT INTO `oa_report_column` VALUES (161,24,2,'Type','man_type','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (162,24,3,'OS','man_os_name','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (163,24,4,'First Audited','first_timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (164,24,5,'Last Audited','timestamp','timestamp','','','','left');
-INSERT INTO `oa_report_column` VALUES (165,25,0,'System Name','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (166,25,1,'Disk','disk','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (167,25,2,'Type','type','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (168,25,3,'Mount Point','mount_point','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (169,25,4,'Size MB','size','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (170,25,5,'Used MB','used','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (171,25,6,'Free MB','free','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (172,25,7,'Free %','percent_free','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (173,26,0,'Name','hostname','link','/main/system_display/','system_id','','left');
-INSERT INTO `oa_report_column` VALUES (174,26,1,'Index','ifIndex','text','','','','center');
-INSERT INTO `oa_report_column` VALUES (175,26,2,'Description','ifDescription','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (176,26,3,'Alias','ifAlias','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (177,26,4,'Admin Status','ifAdminStatus','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (178,26,5,'Operational Status','ifOperStatus','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (179,26,6,'Days Since Changed','diff_days','text','','','','left');
-INSERT INTO `oa_report_column` VALUES (180,26,7,'Availability','available','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (181,27,0,'Icon','man_icon','image','','man_type','','center');
+INSERT INTO `oa_report_column` VALUES (182,27,1,'Type','man_type','text','','','','');
+INSERT INTO `oa_report_column` VALUES (183,27,2,'System Name','hostname','link','/main/system_display/','system_id','','');
+INSERT INTO `oa_report_column` VALUES (184,27,3,'First Seen','first_seen','timestamp','','','','');
+INSERT INTO `oa_report_column` VALUES (185,27,4,'Last Seen','last_seen','timestamp','','','','');
+INSERT INTO `oa_report_column` VALUES (186,27,5,'Last Seen By','last_seen_by','text','','','','');
+INSERT INTO `oa_report_column` VALUES (187,27,6,'Manufacturer','man_manufacturer','text','','','','');
+INSERT INTO `oa_report_column` VALUES (188,27,7,'Model','man_model','text','','','','');
+INSERT INTO `oa_report_column` VALUES (189,27,8,'Serial','man_serial','text','','','','');
+INSERT INTO `oa_report_column` VALUES (190,27,9,'Assigned To','man_owner','text','','','','');
+INSERT INTO `oa_report_column` VALUES (191,27,10,'Organisation','org_name','text','','','','');
+INSERT INTO `oa_report_column` VALUES (192,27,11,'Location','location_name','text','','','','');
+INSERT INTO `oa_report_column` VALUES (193,27,12,'OS','os_family','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (194,27,13,'Tags','tag','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (195,28,1,'Icon','man_icon','image','','man_os_family','','center');
+INSERT INTO `oa_report_column` VALUES (196,28,2,'System Name','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (197,28,3,'Type','man_type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (198,28,4,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_report_column` VALUES (199,28,5,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (200,28,6,'Model','man_model','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (201,28,7,'Serial','man_serial','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (202,28,8,'Asset Number','man_asset_number','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (203,29,1,'Icon','icon','image','','man_os_family','','center');
+INSERT INTO `oa_report_column` VALUES (204,29,2,'Software Name','name','link','/report/specific_software/$group_id/','id','','left');
+INSERT INTO `oa_report_column` VALUES (205,29,3,'Version','version','text','','','','right');
+INSERT INTO `oa_report_column` VALUES (206,29,4,'Installs','count','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (207,29,5,'Publisher','publisher','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (208,29,6,'Type','type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (209,29,7,'Contact','url','url','','','','center');
+INSERT INTO `oa_report_column` VALUES (210,29,8,'Google Search','','url','https://encrypted.google.com/search?q=','name','google','center');
+INSERT INTO `oa_report_column` VALUES (211,30,0,'System Name','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (212,30,1,'User','user_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (213,30,2,'Organisation','org_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (214,30,3,'Software Name','name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (215,30,4,'Software Version','version','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (216,30,5,'Installed By','installed_by','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (217,30,6,'Detected On','first_seen','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (218,30,7,'Installed On','installed_on','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (219,30,8,'Tags','tag','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (220,31,0,'System Count','count','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (221,31,0,'Key Name','name','link','/report/Specific Key Name/$group_id/','id','','left');
+INSERT INTO `oa_report_column` VALUES (222,31,2,'Key String','string','link','/report/Specific Key Text/$group_id/','string','','left');
+INSERT INTO `oa_report_column` VALUES (223,32,0,'System Name','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (224,32,2,'Key Name','name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (225,32,3,'Key String','string','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (226,32,7,'Tags','tag','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (227,33,0,'System Name','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (228,33,2,'Key Name','name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (229,33,3,'Key String','string','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (230,33,7,'Tags','tag','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (231,34,0,'Timestamp','timestamp','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (232,34,1,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_report_column` VALUES (233,34,2,'System Name','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (234,34,3,'System Description','man_description','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (235,34,4,'Details','alert_details','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (236,34,5,'Tags','tag','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (237,35,0,'Timestamp','timestamp','text','','','','');
+INSERT INTO `oa_report_column` VALUES (238,35,1,'IP Address','man_ip_address','ip_address','','','','');
+INSERT INTO `oa_report_column` VALUES (239,35,2,'System Name','hostname','link','/main/system_display/','system_id','','');
+INSERT INTO `oa_report_column` VALUES (240,35,3,'System Description','man_description','text','','','','');
+INSERT INTO `oa_report_column` VALUES (241,35,4,'Details','alert_details','text','','','','');
+INSERT INTO `oa_report_column` VALUES (242,35,5,'Tags','tag','text','','','','');
+INSERT INTO `oa_report_column` VALUES (243,36,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (244,36,1,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_report_column` VALUES (245,36,2,'Type','man_type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (246,36,3,'OS','man_os_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (247,36,4,'First Audited','first_timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (248,36,5,'Last Audited','timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (249,36,6,'Status','status','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (250,37,0,'Package Name','name','link','/omk/oae/show_report/Enterprise - Specific Software/$group_id/','date','id','left');
+INSERT INTO `oa_report_column` VALUES (251,37,1,'Type','type','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (252,37,2,'Installs','count','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (253,37,3,'Contact','url','url','','','','center');
+INSERT INTO `oa_report_column` VALUES (254,37,4,'Version','version','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (255,37,5,'Publisher','publisher','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (256,37,6,'Google Search','','url','https://encrypted.google.com/search?q=','name','google','center');
+INSERT INTO `oa_report_column` VALUES (257,38,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (258,38,1,'Type','man_type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (259,38,2,'Location','location_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (260,38,3,'User','windows_user_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (261,38,4,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (262,38,5,'Model','man_model','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (263,38,6,'Serial','man_serial','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (264,38,7,'First Audited','first_timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (265,38,8,'Last Audited','timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (266,39,1,'Software Name','name','link','/omk/oae/show_report/Specific Software/','id','','left');
+INSERT INTO `oa_report_column` VALUES (267,39,2,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (268,39,3,'Software Version','version','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (269,39,4,'Detected On','first_seen','timestamp','','','','center');
+INSERT INTO `oa_report_column` VALUES (270,39,5,'Installed By','installed_by','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (271,39,6,'Installed On','software_installed_on','timestamp','','','','center');
+INSERT INTO `oa_report_column` VALUES (272,40,0,'Package Name','name','link','/omk/oae/show_report/Enterprise - Specific Software/','id','date','left');
+INSERT INTO `oa_report_column` VALUES (273,40,1,'Type','type','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (274,40,2,'Installs','count','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (275,40,3,'Contact','url','url','','','','center');
+INSERT INTO `oa_report_column` VALUES (276,40,4,'Version','version','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (277,40,5,'Publisher','publisher','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (278,40,6,'Google Search','','url','https://encrypted.google.com/search?q=','name','google','center');
+INSERT INTO `oa_report_column` VALUES (279,41,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (280,41,1,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_report_column` VALUES (281,41,2,'Type','man_type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (282,41,3,'OS','man_os_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (283,41,5,'Last Seen By','last_seen_by','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (284,41,6,'Status','status','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (285,42,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (286,42,1,'Type','man_type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (287,42,2,'Location','location_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (288,42,3,'User','windows_user_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (289,42,4,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (290,42,5,'Model','man_model','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (291,42,6,'Serial','man_serial','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (292,42,7,'First Audited','first_timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (293,42,8,'Last Audited','timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (294,43,1,'Icon','man_icon','image','','man_os_family','','center');
+INSERT INTO `oa_report_column` VALUES (295,43,2,'OS Family','man_os_family','link','/omk/oae/show_report/Enterprise - OS Family/','man_os_family','','left');
+INSERT INTO `oa_report_column` VALUES (296,43,3,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (297,43,4,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_report_column` VALUES (298,43,5,'Type','man_type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (299,43,6,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (300,43,7,'Model','man_model','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (301,43,8,'Serial','man_serial','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (302,43,9,'Location','location_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (303,44,0,'Type','name','link','/omk/oae/show_report/Enterprise - OS Group/','name','','left');
+INSERT INTO `oa_report_column` VALUES (304,44,1,'Count','count','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (305,44,2,'Percent','y','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (306,45,1,'Icon','man_icon','image','','man_os_family','','center');
+INSERT INTO `oa_report_column` VALUES (307,45,2,'OS Name','man_os_name','link','/omk/oae/show_report/Enterprise - OS Name/','man_os_name','','left');
+INSERT INTO `oa_report_column` VALUES (308,45,3,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (309,45,4,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_report_column` VALUES (310,45,5,'Type','man_type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (311,45,6,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (312,45,7,'Model','man_model','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (313,45,8,'Serial','man_serial','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (314,45,9,'Location','location_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (315,46,1,'Icon','man_icon','image','','man_os_family','','center');
+INSERT INTO `oa_report_column` VALUES (316,46,2,'OS Name','man_os_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (317,46,3,'Hostname','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (318,46,4,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_report_column` VALUES (319,46,5,'Type','man_type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (320,46,6,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (321,46,7,'Model','man_model','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (322,46,8,'Serial','man_serial','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (323,46,9,'Location','location_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (324,47,0,'Type','name','link','/omk/oae/show_report/Enterprise - Device Type/','name','','left');
+INSERT INTO `oa_report_column` VALUES (325,47,1,'Count','count','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (326,47,2,'Percent','y','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (327,48,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (328,48,1,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_report_column` VALUES (329,48,2,'Manufacturer','man_manufacturer','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (330,48,2,'Model','man_model','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (331,48,3,'OS','man_os_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (332,48,4,'First Audited','first_timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (333,48,5,'Last Audited','timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (334,48,6,'Status','status','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (335,49,0,'Package Name','name','link','/omk/oae/show_report/Enterprise - Specific Software/$group_id/','date','id','left');
+INSERT INTO `oa_report_column` VALUES (336,49,1,'Type','type','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (337,49,2,'Installs','count','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (338,49,3,'Contact','url','url','','','','center');
+INSERT INTO `oa_report_column` VALUES (339,49,4,'Version','version','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (340,49,5,'Publisher','publisher','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (341,49,6,'Google Search','','url','https://encrypted.google.com/search?q=','name','google','center');
+INSERT INTO `oa_report_column` VALUES (342,50,0,'System Name','hostname','link','/omk/oae/device_details/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (343,50,1,'IP Address','man_ip_address','ip_address','','','','left');
+INSERT INTO `oa_report_column` VALUES (344,50,2,'Type','man_type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (345,50,3,'OS','man_os_name','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (346,50,4,'First Audited','first_timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (347,50,5,'Last Audited','timestamp','timestamp','','','','left');
+INSERT INTO `oa_report_column` VALUES (348,51,0,'System Name','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (349,51,1,'Disk','disk','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (350,51,2,'Type','type','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (351,51,3,'Mount Point','mount_point','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (352,51,4,'Size MB','size','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (353,51,5,'Used MB','used','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (354,51,6,'Free MB','free','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (355,51,7,'Free %','percent_free','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (356,52,0,'Name','hostname','link','/main/system_display/','system_id','','left');
+INSERT INTO `oa_report_column` VALUES (357,52,1,'Index','ifIndex','text','','','','center');
+INSERT INTO `oa_report_column` VALUES (358,52,2,'Description','ifDescription','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (359,52,3,'Alias','ifAlias','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (360,52,4,'Admin Status','ifAdminStatus','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (361,52,5,'Operational Status','ifOperStatus','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (362,52,6,'Days Since Changed','diff_days','text','','','','left');
+INSERT INTO `oa_report_column` VALUES (363,52,7,'Availability','available','text','','','','left');
 /*!40000 ALTER TABLE `oa_report_column` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -906,357 +1257,6 @@ LOCK TABLES `oa_user_sessions` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `bios`
---
-
-DROP TABLE IF EXISTS `bios`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `bios` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `manufacturer` varchar(200) NOT NULL DEFAULT '',
-  `serial` varchar(100) NOT NULL DEFAULT '',
-  `description` varchar(200) NOT NULL DEFAULT '',
-  `smversion` varchar(100) NOT NULL DEFAULT '',
-  `version` varchar(100) NOT NULL DEFAULT '',
-  `asset_tag` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_bios_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `bios`
---
-
-LOCK TABLES `bios` WRITE;
-/*!40000 ALTER TABLE `bios` DISABLE KEYS */;
-/*!40000 ALTER TABLE `bios` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_hw_graphs_disk`
---
-
-DROP TABLE IF EXISTS `sys_hw_graphs_disk`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_hw_graphs_disk` (
-  `graph_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `disk_id` int(10) unsigned DEFAULT NULL,
-  `partition_id` int(10) unsigned DEFAULT NULL,
-  `directory_id` int(10) unsigned DEFAULT NULL,
-  `database_id` int(10) unsigned DEFAULT NULL,
-  `graph_type` enum('disk','partition','directory','file','database') NOT NULL DEFAULT 'partition',
-  `partition_mount_point` varchar(100) NOT NULL DEFAULT '',
-  `dir_description` varchar(100) NOT NULL DEFAULT '',
-  `dir_path` varchar(100) NOT NULL DEFAULT '',
-  `used_percent` int(3) unsigned NOT NULL DEFAULT '0',
-  `free_percent` int(3) unsigned NOT NULL DEFAULT '0',
-  `used` int(10) unsigned NOT NULL DEFAULT '0',
-  `free` int(10) unsigned NOT NULL DEFAULT '0',
-  `total` int(10) unsigned NOT NULL DEFAULT '0',
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`graph_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_graphs_disk_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_hw_graphs_disk`
---
-
-LOCK TABLES `sys_hw_graphs_disk` WRITE;
-/*!40000 ALTER TABLE `sys_hw_graphs_disk` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_hw_graphs_disk` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `disk`
---
-
-DROP TABLE IF EXISTS `disk`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `disk` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `manufacturer` varchar(100) NOT NULL DEFAULT '',
-  `model` varchar(100) NOT NULL DEFAULT '',
-  `serial` varchar(100) NOT NULL DEFAULT '',
-  `device` varchar(200) NOT NULL DEFAULT '',
-  `caption` varchar(100) NOT NULL DEFAULT '',
-  `hard_drive_index` varchar(100) NOT NULL DEFAULT '',
-  `interface_type` varchar(10) NOT NULL DEFAULT '',
-  `partition_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `scsi_bus` varchar(10) NOT NULL DEFAULT '',
-  `scsi_logical_unit` varchar(100) NOT NULL DEFAULT '',
-  `scsi_port` varchar(10) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `status` varchar(100) NOT NULL DEFAULT '',
-  `firmware` varchar(100) NOT NULL DEFAULT '',
-  `model_family` varchar(200) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `hard_drive_index` (`hard_drive_index`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_hard_drive_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `disk`
---
-
-LOCK TABLES `disk` WRITE;
-/*!40000 ALTER TABLE `disk` DISABLE KEYS */;
-/*!40000 ALTER TABLE `disk` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `memory`
---
-
-DROP TABLE IF EXISTS `memory`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `memory` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `serial` varchar(100) NOT NULL DEFAULT '',
-  `bank` varchar(100) NOT NULL DEFAULT '',
-  `type` varchar(100) NOT NULL DEFAULT '',
-  `form_factor` varchar(100) NOT NULL DEFAULT '',
-  `detail` varchar(100) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `speed` int(10) unsigned NOT NULL DEFAULT '0',
-  `tag` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_memory_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_hw_memory`
---
-
-LOCK TABLES `memory` WRITE;
-/*!40000 ALTER TABLE `memory` DISABLE KEYS */;
-/*!40000 ALTER TABLE `memory` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `module`
---
-
-DROP TABLE IF EXISTS `module`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `module` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `description` varchar(200) NOT NULL DEFAULT '',
-  `module_index` varchar(100) NOT NULL DEFAULT '',
-  `object_ident` varchar(100) NOT NULL DEFAULT '',
-  `contained_in` varchar(100) NOT NULL DEFAULT '',
-  `class` varchar(10) NOT NULL DEFAULT '',
-  `class_text` varchar(20) NOT NULL DEFAULT '',
-  `hardware_revision` varchar(100) NOT NULL DEFAULT '',
-  `firmware_revision` varchar(100) NOT NULL DEFAULT '',
-  `software_revision` varchar(100) NOT NULL DEFAULT '',
-  `serial` varchar(100) NOT NULL DEFAULT '',
-  `asset_ident` varchar(100) NOT NULL DEFAULT '',
-  `is_fru` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_module_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `module`
---
-
-LOCK TABLES `module` WRITE;
-/*!40000 ALTER TABLE `module` DISABLE KEYS */;
-/*!40000 ALTER TABLE `module` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `monitor`
---
-
-DROP TABLE IF EXISTS `monitor`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `monitor` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `manufacturer` varchar(100) NOT NULL DEFAULT '',
-  `model` varchar(100) NOT NULL DEFAULT '',
-  `serial` varchar(50) NOT NULL DEFAULT '',
-  `description` varchar(200) NOT NULL DEFAULT '',
-  `device` varchar(100) NOT NULL DEFAULT '',
-  `manufacture_date` varchar(20) NOT NULL DEFAULT '',
-  `size` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `aspect_ratio` varchar(5) NOT NULL DEFAULT '',
-  `edid_version` varchar(50) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_monitor_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `monitor`
---
-
-LOCK TABLES `monitor` WRITE;
-/*!40000 ALTER TABLE `monitor` DISABLE KEYS */;
-/*!40000 ALTER TABLE `monitor` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `motherboard`
---
-
-DROP TABLE IF EXISTS `motherboard`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `motherboard` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `manufacturer` varchar(50) NOT NULL DEFAULT '',
-  `model` varchar(50) NOT NULL DEFAULT '',
-  `serial` varchar(100) NOT NULL DEFAULT '',
-  `memory_slot_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `processor_slot_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `processor_type` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_motherboard_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `motherboard`
---
-
-LOCK TABLES `motherboard` WRITE;
-/*!40000 ALTER TABLE `motherboard` DISABLE KEYS */;
-/*!40000 ALTER TABLE `motherboard` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `network`
---
-
-DROP TABLE IF EXISTS `network`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `network` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `mac` varchar(200) NOT NULL DEFAULT '',
-  `manufacturer` varchar(100) NOT NULL DEFAULT '',
-  `model` varchar(255) NOT NULL DEFAULT '',
-  `description` varchar(255) NOT NULL DEFAULT '',
-  `alias` varchar(255) NOT NULL DEFAULT '',
-  `ip_enabled` varchar(10) NOT NULL DEFAULT '',
-  `net_index` varchar(10) NOT NULL DEFAULT '',
-  `dhcp_enabled` varchar(100) NOT NULL DEFAULT '',
-  `dhcp_server` varchar(30) NOT NULL DEFAULT '',
-  `dhcp_lease_obtained` varchar(14) NOT NULL DEFAULT '',
-  `dhcp_lease_expires` varchar(14) NOT NULL DEFAULT '',
-  `dns_host_name` varchar(100) NOT NULL DEFAULT '',
-  `dns_server` varchar(100) NOT NULL DEFAULT '',
-  `dns_domain` varchar(100) NOT NULL DEFAULT '',
-  `dns_domain_reg_enabled` varchar(10) NOT NULL DEFAULT '',
-  `type` varchar(100) NOT NULL DEFAULT '',
-  `connection` varchar(255) NOT NULL DEFAULT '',
-  `connection_status` varchar(30) NOT NULL DEFAULT '',
-  `speed` int(10) unsigned NOT NULL DEFAULT '0',
-  `slaves` varchar(100) NOT NULL DEFAULT '',
-  `ifadminstatus` varchar(100) NOT NULL DEFAULT '',
-  `iflastchange` bigint(20) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  KEY `net_index` (`net_index`),
-  KEY `timestamp` (`last_seen`),
-  KEY `mac` (`mac`),
-  CONSTRAINT `sys_hw_network_card_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_hw_network_card`
---
-
-LOCK TABLES `network` WRITE;
-/*!40000 ALTER TABLE `network` DISABLE KEYS */;
-/*!40000 ALTER TABLE `network` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_hw_network_card_ip`
---
-
-DROP TABLE IF EXISTS `sys_hw_network_card_ip`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_hw_network_card_ip` (
-  `ip_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `net_mac_address` varchar(200) NOT NULL DEFAULT '',
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `net_index` varchar(10) NOT NULL DEFAULT '',
-  `ip_address_v4` varchar(30) NOT NULL DEFAULT '',
-  `ip_address_v6` varchar(30) NOT NULL DEFAULT '',
-  `ip_subnet` varchar(30) NOT NULL DEFAULT '',
-  `ip_address_version` varchar(10) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`ip_id`),
-  KEY `id` (`net_mac_address`),
-  KEY `sys_hw_network_card_ip_system_id` (`system_id`),
-  CONSTRAINT `sys_hw_network_card_ip_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_hw_network_card_ip`
---
-
-LOCK TABLES `sys_hw_network_card_ip` WRITE;
-/*!40000 ALTER TABLE `sys_hw_network_card_ip` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_hw_network_card_ip` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `optical`
 --
 
@@ -1286,49 +1286,6 @@ CREATE TABLE `optical` (
 LOCK TABLES `optical` WRITE;
 /*!40000 ALTER TABLE `optical` DISABLE KEYS */;
 /*!40000 ALTER TABLE `optical` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_hw_partition`
---
-
-DROP TABLE IF EXISTS `sys_hw_partition`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_hw_partition` (
-  `partition_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `hard_drive_index` varchar(100) NOT NULL DEFAULT '',
-  `partition_mount_type` varchar(100) NOT NULL DEFAULT '',
-  `partition_mount_point` varchar(100) NOT NULL DEFAULT '',
-  `partition_name` varchar(100) NOT NULL DEFAULT '',
-  `partition_size` int(10) unsigned NOT NULL DEFAULT '1',
-  `partition_free_space` int(10) unsigned NOT NULL DEFAULT '1',
-  `partition_used_space` int(10) unsigned NOT NULL DEFAULT '1',
-  `partition_format` varchar(20) NOT NULL DEFAULT '',
-  `partition_caption` varchar(100) NOT NULL DEFAULT '',
-  `partition_device_id` varchar(100) NOT NULL DEFAULT '',
-  `partition_disk_index` varchar(50) NOT NULL DEFAULT '',
-  `partition_bootable` varchar(10) NOT NULL DEFAULT '',
-  `partition_type` varchar(50) NOT NULL DEFAULT '',
-  `partition_quotas_supported` varchar(10) NOT NULL DEFAULT '',
-  `partition_quotas_enabled` varchar(10) NOT NULL DEFAULT '',
-  `partition_serial` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`partition_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_partition_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_hw_partition`
---
-
-LOCK TABLES `sys_hw_partition` WRITE;
-/*!40000 ALTER TABLE `sys_hw_partition` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_hw_partition` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1400,6 +1357,156 @@ LOCK TABLES `scsi` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `service`
+--
+
+DROP TABLE IF EXISTS `service`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `service` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `description` varchar(100) NOT NULL DEFAULT '',
+  `executable` text NOT NULL,
+  `user` varchar(100) NOT NULL DEFAULT '',
+  `start_mode` varchar(200) NOT NULL DEFAULT '',
+  `state` varchar(200) NOT NULL DEFAULT '',
+  `count` varchar(5) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  KEY `first_seen` (`first_seen`),
+  KEY `last_seen` (`last_seen`),
+  KEY `name` (`name`),
+  KEY `description` (`description`),
+  CONSTRAINT `sys_sw_service_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `service`
+--
+
+LOCK TABLES `service` WRITE;
+/*!40000 ALTER TABLE `service` DISABLE KEYS */;
+/*!40000 ALTER TABLE `service` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `share`
+--
+
+DROP TABLE IF EXISTS `share`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `share` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `description` varchar(250) NOT NULL DEFAULT '',
+  `name` varchar(250) NOT NULL DEFAULT '',
+  `path` varchar(250) NOT NULL DEFAULT '',
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `users` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_share_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `share`
+--
+
+LOCK TABLES `share` WRITE;
+/*!40000 ALTER TABLE `share` DISABLE KEYS */;
+/*!40000 ALTER TABLE `share` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `software`
+--
+
+DROP TABLE IF EXISTS `software`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `software` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `version` varchar(255) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `location` varchar(255) NOT NULL DEFAULT '',
+  `uninstall` mediumtext NOT NULL,
+  `install_date` varchar(100) NOT NULL DEFAULT '',
+  `installed_by` varchar(100) NOT NULL DEFAULT '',
+  `installed_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `publisher` varchar(255) NOT NULL DEFAULT '',
+  `install_source` varchar(200) NOT NULL DEFAULT '',
+  `system_component` varchar(2) NOT NULL DEFAULT '',
+  `url` varchar(255) NOT NULL DEFAULT '',
+  `email` varchar(255) NOT NULL DEFAULT '',
+  `type` varchar(200) NOT NULL DEFAULT '',
+  `version_padded` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  KEY `first_seen` (`first_seen`),
+  KEY `last_seen` (`last_seen`),
+  KEY `name` (`name`),
+  CONSTRAINT `sys_sw_software_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `software`
+--
+
+LOCK TABLES `software` WRITE;
+/*!40000 ALTER TABLE `software` DISABLE KEYS */;
+/*!40000 ALTER TABLE `software` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `software_key`
+--
+
+DROP TABLE IF EXISTS `software_key`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `software_key` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(250) NOT NULL DEFAULT '',
+  `string` varchar(100) NOT NULL DEFAULT '',
+  `rel` varchar(100) NOT NULL DEFAULT '',
+  `edition` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_software_key_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `software_key`
+--
+
+LOCK TABLES `software_key` WRITE;
+/*!40000 ALTER TABLE `software_key` DISABLE KEYS */;
+/*!40000 ALTER TABLE `software_key` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `sound`
 --
 
@@ -1431,36 +1538,119 @@ LOCK TABLES `sound` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `video`
+-- Table structure for table `sys_hw_graphs_disk`
 --
 
-DROP TABLE IF EXISTS `video`;
+DROP TABLE IF EXISTS `sys_hw_graphs_disk`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `video` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `sys_hw_graphs_disk` (
+  `graph_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `manufacturer` varchar(100) NOT NULL DEFAULT '',
-  `model` varchar(100) NOT NULL DEFAULT '',
-  `device` varchar(100) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `caption` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
+  `disk_id` int(10) unsigned DEFAULT NULL,
+  `partition_id` int(10) unsigned DEFAULT NULL,
+  `directory_id` int(10) unsigned DEFAULT NULL,
+  `database_id` int(10) unsigned DEFAULT NULL,
+  `graph_type` enum('disk','partition','directory','file','database') NOT NULL DEFAULT 'partition',
+  `partition_mount_point` varchar(100) NOT NULL DEFAULT '',
+  `dir_description` varchar(100) NOT NULL DEFAULT '',
+  `dir_path` varchar(100) NOT NULL DEFAULT '',
+  `used_percent` int(3) unsigned NOT NULL DEFAULT '0',
+  `free_percent` int(3) unsigned NOT NULL DEFAULT '0',
+  `used` int(10) unsigned NOT NULL DEFAULT '0',
+  `free` int(10) unsigned NOT NULL DEFAULT '0',
+  `total` int(10) unsigned NOT NULL DEFAULT '0',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`graph_id`),
   KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_hw_video_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+  CONSTRAINT `sys_hw_graphs_disk_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `video`
+-- Dumping data for table `sys_hw_graphs_disk`
 --
 
-LOCK TABLES `video` WRITE;
-/*!40000 ALTER TABLE `video` DISABLE KEYS */;
-/*!40000 ALTER TABLE `video` ENABLE KEYS */;
+LOCK TABLES `sys_hw_graphs_disk` WRITE;
+/*!40000 ALTER TABLE `sys_hw_graphs_disk` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sys_hw_graphs_disk` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_hw_network_card_ip`
+--
+
+DROP TABLE IF EXISTS `sys_hw_network_card_ip`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sys_hw_network_card_ip` (
+  `ip_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `net_mac_address` varchar(200) NOT NULL DEFAULT '',
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `net_index` varchar(10) NOT NULL DEFAULT '',
+  `ip_address_v4` varchar(30) NOT NULL DEFAULT '',
+  `ip_address_v6` varchar(30) NOT NULL DEFAULT '',
+  `ip_subnet` varchar(30) NOT NULL DEFAULT '',
+  `ip_address_version` varchar(10) NOT NULL DEFAULT '',
+  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`ip_id`),
+  KEY `id` (`net_mac_address`),
+  KEY `sys_hw_network_card_ip_system_id` (`system_id`),
+  CONSTRAINT `sys_hw_network_card_ip_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_hw_network_card_ip`
+--
+
+LOCK TABLES `sys_hw_network_card_ip` WRITE;
+/*!40000 ALTER TABLE `sys_hw_network_card_ip` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sys_hw_network_card_ip` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sys_hw_partition`
+--
+
+DROP TABLE IF EXISTS `sys_hw_partition`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sys_hw_partition` (
+  `partition_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `hard_drive_index` varchar(100) NOT NULL DEFAULT '',
+  `partition_mount_type` varchar(100) NOT NULL DEFAULT '',
+  `partition_mount_point` varchar(100) NOT NULL DEFAULT '',
+  `partition_name` varchar(100) NOT NULL DEFAULT '',
+  `partition_size` int(10) unsigned NOT NULL DEFAULT '1',
+  `partition_free_space` int(10) unsigned NOT NULL DEFAULT '1',
+  `partition_used_space` int(10) unsigned NOT NULL DEFAULT '1',
+  `partition_format` varchar(20) NOT NULL DEFAULT '',
+  `partition_caption` varchar(100) NOT NULL DEFAULT '',
+  `partition_device_id` varchar(100) NOT NULL DEFAULT '',
+  `partition_disk_index` varchar(50) NOT NULL DEFAULT '',
+  `partition_bootable` varchar(10) NOT NULL DEFAULT '',
+  `partition_type` varchar(50) NOT NULL DEFAULT '',
+  `partition_quotas_supported` varchar(10) NOT NULL DEFAULT '',
+  `partition_quotas_enabled` varchar(10) NOT NULL DEFAULT '',
+  `partition_serial` varchar(100) NOT NULL DEFAULT '',
+  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`partition_id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_hw_partition_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sys_hw_partition`
+--
+
+LOCK TABLES `sys_hw_partition` WRITE;
+/*!40000 ALTER TABLE `sys_hw_partition` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sys_hw_partition` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1846,71 +2036,6 @@ LOCK TABLES `sys_sw_group` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `log`
---
-
-DROP TABLE IF EXISTS `log`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `log` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `name` varchar(50) NOT NULL DEFAULT '',
-  `file_name` varchar(250) NOT NULL DEFAULT '',
-  `file_size` int(10) unsigned NOT NULL DEFAULT '0',
-  `max_file_size` int(10) unsigned NOT NULL DEFAULT '0',
-  `overwrite` varchar(30) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `log`
---
-
-LOCK TABLES `log` WRITE;
-/*!40000 ALTER TABLE `log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `netstat`
---
-
-DROP TABLE IF EXISTS `netstat`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `netstat` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '',
-  `ip` varchar(45) NOT NULL DEFAULT '',
-  `port` int(5) NOT NULL DEFAULT '0',
-  `program` varchar(250) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_netstat_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `netstat`
---
-
-LOCK TABLES `netstat` WRITE;
-/*!40000 ALTER TABLE `netstat` DISABLE KEYS */;
-/*!40000 ALTER TABLE `netstat` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `sys_sw_pagefile`
 --
 
@@ -2050,195 +2175,6 @@ CREATE TABLE `sys_sw_scheduled_task` (
 LOCK TABLES `sys_sw_scheduled_task` WRITE;
 /*!40000 ALTER TABLE `sys_sw_scheduled_task` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sys_sw_scheduled_task` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `service`
---
-
-DROP TABLE IF EXISTS `service`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `service` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `name` varchar(100) NOT NULL DEFAULT '',
-  `description` varchar(100) NOT NULL DEFAULT '',
-  `executable` text NOT NULL,
-  `user` varchar(100) NOT NULL DEFAULT '',
-  `start_mode` varchar(200) NOT NULL DEFAULT '',
-  `state` varchar(200) NOT NULL DEFAULT '',
-  `count` varchar(5) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  KEY `first_seen` (`first_seen`),
-  KEY `last_seen` (`last_seen`),
-  KEY `name` (`name`),
-  KEY `description` (`description`),
-  CONSTRAINT `sys_sw_service_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `service`
---
-
-LOCK TABLES `service` WRITE;
-/*!40000 ALTER TABLE `service` DISABLE KEYS */;
-/*!40000 ALTER TABLE `service` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `share`
---
-
-DROP TABLE IF EXISTS `share`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `share` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `description` varchar(250) NOT NULL DEFAULT '',
-  `name` varchar(250) NOT NULL DEFAULT '',
-  `path` varchar(250) NOT NULL DEFAULT '',
-  `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `users` varchar(200) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_share_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `share`
---
-
-LOCK TABLES `share` WRITE;
-/*!40000 ALTER TABLE `share` DISABLE KEYS */;
-/*!40000 ALTER TABLE `share` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `software`
---
-
-DROP TABLE IF EXISTS `software`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `software` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `name` varchar(255) NOT NULL DEFAULT '',
-  `version` varchar(255) NOT NULL DEFAULT '',
-  `description` text NOT NULL,
-  `location` varchar(255) NOT NULL DEFAULT '',
-  `uninstall` mediumtext NOT NULL,
-  `install_date` varchar(100) NOT NULL DEFAULT '',
-  `installed_by` varchar(100) NOT NULL DEFAULT '',
-  `installed_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `publisher` varchar(255) NOT NULL DEFAULT '',
-  `install_source` varchar(200) NOT NULL DEFAULT '',
-  `system_component` varchar(2) NOT NULL DEFAULT '',
-  `url` varchar(255) NOT NULL DEFAULT '',
-  `email` varchar(255) NOT NULL DEFAULT '',
-  `type` varchar(200) NOT NULL DEFAULT '',
-  `version_padded` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  KEY `first_seen` (`first_seen`),
-  KEY `last_seen` (`last_seen`),
-  KEY `name` (`name`),
-  CONSTRAINT `sys_sw_software_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `software`
---
-
-LOCK TABLES `software` WRITE;
-/*!40000 ALTER TABLE `software` DISABLE KEYS */;
-/*!40000 ALTER TABLE `software` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `software_key`
---
-
-DROP TABLE IF EXISTS `software_key`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `software_key` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `name` varchar(250) NOT NULL DEFAULT '',
-  `string` varchar(100) NOT NULL DEFAULT '',
-  `rel` varchar(100) NOT NULL DEFAULT '',
-  `edition` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_software_key_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `software_key`
---
-
-LOCK TABLES `software_key` WRITE;
-/*!40000 ALTER TABLE `software_key` DISABLE KEYS */;
-/*!40000 ALTER TABLE `software_key` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `user`
---
-
-DROP TABLE IF EXISTS `user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `name` varchar(100) NOT NULL DEFAULT '',
-  `caption` varchar(255) NOT NULL DEFAULT '',
-  `sid` varchar(100) NOT NULL DEFAULT '',
-  `domain` varchar(100) NOT NULL DEFAULT '',
-  `disabled` varchar(20) NOT NULL DEFAULT '',
-  `full_name` varchar(100) NOT NULL DEFAULT '',
-  `password_changeable` varchar(20) NOT NULL DEFAULT '',
-  `password_expires` varchar(20) NOT NULL DEFAULT '',
-  `password_required` varchar(20) NOT NULL DEFAULT '',
-  `status` varchar(100) NOT NULL DEFAULT '',
-  `type` enum('local','domain','database','application','other') NOT NULL DEFAULT 'local',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_user_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2491,55 +2427,6 @@ LOCK TABLES `sys_sw_web_site_virtual` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `windows`
---
-
-DROP TABLE IF EXISTS `windows`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `windows` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
-  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `build_number` varchar(20) NOT NULL DEFAULT '',
-  `user_name` varchar(100) NOT NULL DEFAULT '',
-  `client_site_name` varchar(100) NOT NULL DEFAULT '',
-  `domain_short` varchar(100) NOT NULL DEFAULT '',
-  `domain_controller_address` varchar(100) NOT NULL DEFAULT '',
-  `domain_controller_name` varchar(100) NOT NULL DEFAULT '',
-  `domain_role` varchar(40) NOT NULL DEFAULT '',
-  `part_of_domain` varchar(10) NOT NULL DEFAULT '',
-  `id_number` varchar(100) NOT NULL DEFAULT '',
-  `time_caption` varchar(100) NOT NULL DEFAULT '',
-  `time_daylight` varchar(100) NOT NULL DEFAULT '',
-  `boot_device` varchar(100) NOT NULL DEFAULT '',
-  `country_code` varchar(50) NOT NULL DEFAULT '',
-  `organisation` varchar(80) NOT NULL DEFAULT '',
-  `language` varchar(50) NOT NULL DEFAULT '',
-  `registered_user` varchar(100) NOT NULL DEFAULT '',
-  `service_pack` varchar(20) NOT NULL DEFAULT '',
-  `version` varchar(20) NOT NULL DEFAULT '',
-  `install_directory` varchar(20) NOT NULL DEFAULT '',
-  `active_directory_ou` varchar(200) NOT NULL DEFAULT '',
-  `workgroup` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_windows_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `windows`
---
-
-LOCK TABLES `windows` WRITE;
-/*!40000 ALTER TABLE `windows` DISABLE KEYS */;
-/*!40000 ALTER TABLE `windows` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `system`
 --
 
@@ -2676,6 +2563,127 @@ LOCK TABLES `system` WRITE;
 /*!40000 ALTER TABLE `system` DISABLE KEYS */;
 /*!40000 ALTER TABLE `system` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `caption` varchar(255) NOT NULL DEFAULT '',
+  `sid` varchar(100) NOT NULL DEFAULT '',
+  `domain` varchar(100) NOT NULL DEFAULT '',
+  `disabled` varchar(20) NOT NULL DEFAULT '',
+  `full_name` varchar(100) NOT NULL DEFAULT '',
+  `password_changeable` varchar(20) NOT NULL DEFAULT '',
+  `password_expires` varchar(20) NOT NULL DEFAULT '',
+  `password_required` varchar(20) NOT NULL DEFAULT '',
+  `status` varchar(100) NOT NULL DEFAULT '',
+  `type` enum('local','domain','database','application','other') NOT NULL DEFAULT 'local',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_user_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `video`
+--
+
+DROP TABLE IF EXISTS `video`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `video` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
+  `model` varchar(100) NOT NULL DEFAULT '',
+  `device` varchar(100) NOT NULL DEFAULT '',
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `caption` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_hw_video_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `video`
+--
+
+LOCK TABLES `video` WRITE;
+/*!40000 ALTER TABLE `video` DISABLE KEYS */;
+/*!40000 ALTER TABLE `video` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `windows`
+--
+
+DROP TABLE IF EXISTS `windows`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `windows` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `build_number` varchar(20) NOT NULL DEFAULT '',
+  `user_name` varchar(100) NOT NULL DEFAULT '',
+  `client_site_name` varchar(100) NOT NULL DEFAULT '',
+  `domain_short` varchar(100) NOT NULL DEFAULT '',
+  `domain_controller_address` varchar(100) NOT NULL DEFAULT '',
+  `domain_controller_name` varchar(100) NOT NULL DEFAULT '',
+  `domain_role` varchar(40) NOT NULL DEFAULT '',
+  `part_of_domain` varchar(10) NOT NULL DEFAULT '',
+  `id_number` varchar(100) NOT NULL DEFAULT '',
+  `time_caption` varchar(100) NOT NULL DEFAULT '',
+  `time_daylight` varchar(100) NOT NULL DEFAULT '',
+  `boot_device` varchar(100) NOT NULL DEFAULT '',
+  `country_code` varchar(50) NOT NULL DEFAULT '',
+  `organisation` varchar(80) NOT NULL DEFAULT '',
+  `language` varchar(50) NOT NULL DEFAULT '',
+  `registered_user` varchar(100) NOT NULL DEFAULT '',
+  `service_pack` varchar(20) NOT NULL DEFAULT '',
+  `version` varchar(20) NOT NULL DEFAULT '',
+  `install_directory` varchar(20) NOT NULL DEFAULT '',
+  `active_directory_ou` varchar(200) NOT NULL DEFAULT '',
+  `workgroup` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_windows_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `windows`
+--
+
+LOCK TABLES `windows` WRITE;
+/*!40000 ALTER TABLE `windows` DISABLE KEYS */;
+/*!40000 ALTER TABLE `windows` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -2686,4 +2694,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-07-09 14:13:03
+-- Dump completed on 2015-12-01 11:42:35
