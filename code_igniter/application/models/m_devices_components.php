@@ -39,7 +39,7 @@ class M_devices_components extends MY_Model
         parent::__construct();
     }
 
-    public function read($id = 0, $current = 'y', $table = '')
+    public function read($id = 0, $current = 'y', $table = '', $filter = '')
     {
         if ($table == '') {
             // we require a DB table to read from
@@ -73,9 +73,9 @@ class M_devices_components extends MY_Model
         }
         if ($found_id) {
             if ($found_current) {
-                $sql = "SELECT * FROM `$table` WHERE system_id = ? $current";
+                $sql = "SELECT * FROM `$table` WHERE system_id = ? $current $filter";
             } else {
-                $sql = "SELECT * FROM `$table` WHERE system_id = ?";
+                $sql = "SELECT * FROM `$table` WHERE system_id = ? $filter";
             }
             $data = array($id);
             $query = $this->db->query($sql, $data);
@@ -242,29 +242,24 @@ class M_devices_components extends MY_Model
 
             # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
             foreach ($input->item as $key => $input_item) {
-                if (isset($input_item->mac) and $input_item->mac != '') {
-                    $input_item->mac = strtolower($input_item->mac);
-                } else {
-                    $input->item[$key]->mac = (string)'';
+                if (isset($input->item[$key]->mac)) {
+                    $input->item[$key]->mac = (string)strtolower($input->item[$key]->mac);
+                }
+            }
+        }
+
+        ### SERVER ###
+        if ((string)$table == 'server') {
+            foreach ($input->item as $key => $input_item) {
+                if (isset($input->item[$key]->version) and $input->item[$key]->version != '' and $input->item[$key]->type == 'database') {
+                    $input->item[$key]->full_name = (string)$this->get_sql_server_version_string($input->item[$key]->version);
                 }
             }
         }
 
         ### NETSTAT ###
-        if ($table == 'netstat') {
+        if ((string)$table == 'netstat') {
             $input = $this->format_netstat_data($input, $details);
-        }
-
-        ### SERVER type = db ###
-        if ($table == 'server') {
-            foreach ($input as &$input_item) {
-                if ($input_item->type = 'db') {
-                    if (!isset($input_item->version)) {
-                        $input_item->version = '';
-                    }
-                    $input_item->full_name = $this->get_sql_server_version_string($input_item->version);
-                }
-            }
         }
 
         ### PROCESSOR ###
