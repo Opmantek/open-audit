@@ -229,11 +229,11 @@ class M_oa_config extends MY_Model
         $query = $this->db->query($sql);
         $row = $query->row();
         $internal_version = $row->config_value;
-        if (isset($internal_version) and $internal_version > '20151230') {
-            $edited_by = 'config_edited_by_user_id';
-        } else {
+        #if (isset($internal_version) and $internal_version > '20151230') {
+        #    $edited_by = 'config_edited_by_user_id';
+        #} else {
             $edited_by = 'config_edited_by';
-        }
+        #}
 
         # encrypt any credentials
         if ($config_name == 'default_ipmi_password' or
