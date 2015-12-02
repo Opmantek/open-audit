@@ -35,6 +35,11 @@ set -f              # turn off globbing
 IFS='
 '
 
+echo "-------ATTENTION------"
+echo "This script has been depreciated. Please use the discover_subnet.sh script instead."
+echo "----------------------"
+echo ""
+
 create_file="n"
 debugging=0
 echo_output="n"
@@ -93,6 +98,11 @@ if [ "$help" == "y" ]; then
 	echo "Open-AudIT Linux Discovery script"
 	echo "(c) Opmantek, 2014.              "
 	echo "---------------------------------"
+	echo ""
+	echo "-------ATTENTION------"
+	echo "This script has been depreciated. Please use the duscover_subnet.sh script instead."
+	echo "----------------------"
+	echo ""
 	echo "This script should be used on a Linux based computer to discover hosts in a subnet."
 	echo "It will run nmap against the target subnet and submit the result."
 	echo ""

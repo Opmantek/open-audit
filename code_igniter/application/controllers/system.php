@@ -518,4 +518,188 @@ class System extends CI_Controller
         echo '</body></html>';
     }
 
+    public function add_nmap()
+    {
+        if (! isset($_POST['form_nmap'])) {
+            $this->load->view('v_system_add_nmap', $this->data);
+        } else {
+            $log_details = new stdClass();
+            $log_details->severity = 7;
+            $log_details->file = 'system';
+            $log_details->message = 'Start processing nmap submitted data';
+            stdlog($log_details);
+            $log_details->message = 'ATTENTION - audit_subnet script being used. This is depreciated. Please use discovery scripts instead.';
+            $log_details->severity = 5;
+            stdlog($log_details);
+            unset($log_details);
+
+
+
+            $this->load->helper('url');
+            $this->load->helper('xml');
+            $this->load->library('encrypt');
+            if (extension_loaded('snmp')) {
+                $this->load->helper('snmp');
+                $this->load->helper('snmp_oid');
+            }
+            $this->load->model('m_system');
+            $this->load->model('m_oa_group');
+            $this->load->model('m_ip_address');
+            $this->load->model('m_sys_man_audits');
+            $timestamp = date('Y-m-d H:i:s');
+            $xml_input = $_POST['form_nmap'];
+
+            try {
+                $xml_post = new SimpleXMLElement($xml_input);
+            } catch (Exception $error) {
+                // not a valid XML string
+                $log_details = new stdClass();
+                $log_details->severity = 5;
+                $log_details->file = 'system';
+                $log_details->message = 'Invalid XML input for NMap import';
+                stdlog($log_details);
+                unset($log_details);
+                exit;
+            }
+            $count = 0;
+
+            foreach ($xml_post->children() as $details) {
+                $details = (object) $details;
+
+                if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
+                    echo 'Device IP: ' . $details->man_ip_address . "\n";
+                }
+
+                $count++;
+                $details->last_seen = $timestamp;
+                $details->last_user = '';
+                $details->timestamp = $timestamp;
+
+                $details->hostname = '';
+                $details->hostname = gethostbyaddr($details->man_ip_address);
+                $details->hostname = strtolower($details->hostname);
+                $details->domain = '';
+                $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+
+                $log_details = new stdClass();
+                $log_details->severity = 7;
+                $log_details->file = 'system';
+                $log_details->message = 'Processing nmap audit result for ' . $details->man_ip_address . ' (' . $details->hostname . ')';
+                stdlog($log_details);
+                unset($log_details);
+
+                if (! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+                    if (strpos($details->hostname, '.') !== false) {
+                        // we have a domain returned
+                        $details->fqdn = strtolower($details->hostname);
+                        $t_array = explode('.', $details->hostname);
+                        $details->hostname = $t_array[0];
+                        unset($t_array[0]);
+                        $details->domain = implode('.', $t_array);
+                    }
+                }
+
+                if (! isset($details->type) or $details->type === '') {
+                    $details->type = 'unknown';
+                }
+
+                if (extension_loaded('snmp')) {
+                    // try to get more information using SNMP
+                    if (! isset($details->access_details)) {
+                        $details->access_details = $this->m_system->get_access_details($details->system_id);
+                    }
+                    $decoded_access = $this->encrypt->decode($details->access_details);
+                    $decoded_access = json_decode($decoded_access);
+                    $details->snmp_community = @$decoded_access->snmp_community;
+                    $details->snmp_version = @$decoded_access->snmp_version;
+                    $details->snmp_port = @$decoded_access->snmp_port;
+                    $temp_array = get_snmp($details);
+                    $details = $temp_array['details'];
+                    $network_interfaces = $temp_array['interfaces'];
+                }
+
+                $details->system_key = '';
+                $details->system_key = $this->m_system->create_system_key($details);
+                $details->system_id = '';
+                $details->system_id = $this->m_system->find_system($details);
+
+                if ((isset($details->snmp_oid)) and ($details->snmp_oid > '')) {
+                    // we received a result from SNMP, use this data to update OR insert
+                    $details->last_seen_by = 'snmp';
+                    $details->audits_ip = '127.0.0.1';
+
+                    if (isset($details->system_id) and !empty($details->system_id)) {
+                        // we have a system_id and snmp details to update
+                        $log_details = new stdClass();
+                        $log_details->severity = 7;
+                        $log_details->file = 'system';
+                        $log_details->message = 'SNMP update for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        stdlog($log_details);
+                        unset($log_details);
+                        $this->m_system->update_system($details);
+                    } else {
+                        // we have a new system
+                        $details->system_id = $this->m_system->insert_system($details);
+                        $log_details = new stdClass();
+                        $log_details->severity = 7;
+                        $log_details->message = 'SNMP insert for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        stdlog($log_details);
+                        unset($log_details);
+                    }
+
+                    # update any network interfaces and ip addresses retrieved by SNMP
+                    if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                        $input = new stdClass();
+                        $input->item = array();
+                        $input->item = $network_interfaces;
+                        $this->m_devices_components->process_component('network', $details, $input);
+
+                        foreach ($network_interfaces as $input) {
+                            if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
+                                foreach ($input->ip_addresses as $ip_input) {
+                                    $ip_input = (object) $ip_input;
+                                    $this->m_ip_address->process_addresses($ip_input, $details);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // we received a result from nmap only, use this data to update OR insert
+                    $details->last_seen_by = 'nmap';
+
+                    if (isset($details->system_id) and $details->system_id !== '') {
+                        // we have a system id and nmap details to update
+                        $log_details = new stdClass();
+                        $log_details->severity = 7;
+                        $log_details->message = 'Nmap update for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        stdlog($log_details);
+                        unset($log_details);
+                        $this->m_system->update_system($details);
+                    } else {
+                        // we have a new system
+                        $details->system_id = $this->m_system->insert_system($details);
+                        $log_details = new stdClass();
+                        $log_details->severity = 7;
+                        $log_details->message = 'Nmap insert for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        stdlog($log_details);
+                        unset($log_details);
+                    }
+                }
+                $this->m_sys_man_audits->insert_audit($details);
+                $this->m_oa_group->update_system_groups($details);
+            }
+
+            if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
+                echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
+                echo "<head>\n<title>Open-AudIT</title>\n</head>\n<body>\n<pre>\n";
+                echo $count . ' systems processed.<br />';
+                echo "<a href='" . base_url() . "index.php/system/add_nmap'>Back to input page</a><br />\n";
+                echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
+                echo "<pre>\n";
+                print_r($details);
+                echo "</pre>\n";
+            }
+        }
+    }
+
 }

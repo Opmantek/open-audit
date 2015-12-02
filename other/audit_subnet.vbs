@@ -29,6 +29,10 @@
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
+wscript.echo "-------ATTENTION------"
+wscript.echo "This script has been depreciated. Please use the discover_subnet.vbs script instead."
+wscript.echo "----------------------"
+wscript.echo ""
 
 create_file = "n"
 debugging = "1"
@@ -54,16 +58,16 @@ for each strArg in objArgs
 
 			case "create_file"
 				create_file = varArray(1)
-				
+
 			case "debugging"
 				debugging = varArray(1)
-				
+
 			case "echo_output"
 				echo_output = varArray(1)
 
 			case "help"
 				help = varArray(1)
-				
+
 			case "nmap_exe"
 				nmap_exe = varArray(1)
 
@@ -89,6 +93,11 @@ if (help = "y") then
 	wscript.echo "Open-AudIT Subnet Audit Script"
 	wscript.echo "(c) Opmantek, 2014.           "
 	wscript.echo "------------------------------"
+	wscript.echo ""
+	wscript.echo "-------ATTENTION------"
+	wscript.echo "This script has been depreciated. Please use the discover_subnet.vbs script instead."
+	wscript.echo "----------------------"
+	wscript.echo ""
 	wscript.echo "This script should be used on a Windows based computer to discover hosts in a subnet."
 	wscript.echo "It will run nmap against the target subnet and submit the result."
 	wscript.echo ""
