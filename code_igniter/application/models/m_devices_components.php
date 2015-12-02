@@ -339,8 +339,8 @@ class M_devices_components extends MY_Model
                 }
                 # attempt to match system_id
                 if ($input->item[$i]->guest_system_id == '') {
-                    $sql = "SELECT id FROM system WHERE uuid = ? and status = 'production'";
-                    $data = array("$input->item[$i]->uuid");
+                    $sql = "SELECT system_id FROM system WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
+                    $data = array((string)$input->item[$i]->uuid);
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
                         $row = $query->row();
@@ -350,15 +350,13 @@ class M_devices_components extends MY_Model
                 # update the system table
                 if ($input->item[$i]->guest_system_id != '') {
                     $sql = "UPDATE system SET vm_server_name = ?, vm_system_id = ? WHERE system_id = ?";
-                    # $data = array("$details->name", "$details->id", "$input_item->guest_system_id");  # this will be changed when we convert the system table
-                    $data = array("$details->name", "$details->system_id", "$input->item[$i]->guest_system_id");
+                    $data = array("$details->name", "$details->system_id", (string)$input->item[$i]->guest_system_id);
                     $query = $this->db->query($sql, $data);
                 }
                 # set the current flag to n for all devices != id
-                $sql = "UPDATE virtual_machine SET current = 'n' WHERE uuid = ? AND system_id != ?";
-                # $data = array("$input_item->uuid", "$details->id");  # this will be changed when we convert the system table
-                $data = array("$input->item[$i]->uuid", "$details->system_id");
-                $query = $this->db->query($sql, $data);
+                #$sql = "UPDATE virtual_machine SET current = 'n' WHERE uuid = ? AND system_id != ?";
+                #$data = array("$input->item[$i]->uuid", "$details->system_id");
+                #$query = $this->db->query($sql, $data);
             }
         }
 
