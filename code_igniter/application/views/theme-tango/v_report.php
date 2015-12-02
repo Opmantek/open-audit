@@ -130,7 +130,7 @@ foreach ($query as $row) {
                     if (isset($row->$column_variable_name)) {
                         $output = $row->$column_variable_name;
                         if (is_numeric($output) and (strpos($column_variable_name, "serial") === false) and (strpos($column_variable_name, "model") === false)) {
-                            echo "\t\t\t<td align=\"right\"><span style=\"display: none;\">".mb_substr("0000000000".htmlentities($output), -10)."</span><span id=\"".htmlentities($column_variable_name)."-".$i."\" onmouseover=\"show_modifier('".htmlentities($column_variable_name)."','".$i."');\"  >".number_format(htmlentities($output))."</span><span id=\"".htmlentities($row->$column_variable_name)."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
+                            echo "\t\t\t<td align=\"right\"><span style=\"display: none;\">".mb_substr("0000000000".htmlentities($output), -10)."</span><span id=\"".htmlentities($column_variable_name)."-".$i."\" onmouseover=\"show_modifier('".htmlentities($column_variable_name)."','".$i."');\"  >".htmlentities($output)."</span><span id=\"".htmlentities($row->$column_variable_name)."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
                         } else {
                             if ($row->$column_variable_name == '') {
                                 $row->$column_variable_name = ' ';
