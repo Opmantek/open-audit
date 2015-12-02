@@ -103,6 +103,8 @@ $system[0]->uptime = strTime($system[0]->uptime);
 # create the individual summary sections
 $summary_attributes = array('hostname' => 'text' ,
                             'man_ip_address' => 'text',
+                            'domain' => 'text',
+                            'fqdn' => 'text',
                             'man_type' => 'select',
                             'man_criticality' => 'select',
                             'man_environment' => 'select',
@@ -210,6 +212,9 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
                 }
                 if ($text == 'Snmp Oid') {
                     $text = __('SNMP OID');
+                }
+                if ($text == 'Fqdn') {
+                    $text = __('FQDN');
                 }
                 if ($text == 'Vm Group') {
                     $text = __('VM Group');
