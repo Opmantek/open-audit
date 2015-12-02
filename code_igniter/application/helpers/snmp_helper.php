@@ -289,7 +289,16 @@ if (!function_exists('get_snmp')) {
             $details->sysLocation = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");
 
             if ($details->sysName != '') {
-                $details->hostname = $details->sysName;
+                if (strpos($details->sysName, '.') !== false) {
+                    $details->fqdn = $details->sysName;
+                    $tmp = explode('.', $details->sysName);
+                    $details->hostname = $tmp[0];
+                    unset($tmp[0]);
+                    $details->domain = implode('.', $tmp);
+                    unset($tmp);
+                } else {
+                    $details->hostname = $details->sysName;
+                }
             }
 
             if (stripos($details->sysDescr, 'dd-wrt') !== false) {
