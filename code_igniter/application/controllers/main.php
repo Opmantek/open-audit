@@ -219,7 +219,7 @@ class main extends MY_Controller
                     $document["$table"] = $result;
                 }
             }
-            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'processor', 'netstat', 'network', 'scsi', 'service', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
+            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'processor', 'netstat', 'network', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
@@ -883,8 +883,6 @@ class main extends MY_Controller
         $this->load->model("m_alerts");
         $this->load->model("m_attachment");
         $this->load->model("m_audit_log");
-        $this->load->model("m_database");
-        $this->load->model("m_database_details");
         $this->load->model("m_dns");
         $this->load->model("m_group");
         $this->load->model("m_ip_address");
@@ -898,7 +896,6 @@ class main extends MY_Controller
         $this->load->model("m_sys_man_audits");
         $this->load->model("m_variable");
         $this->load->model("m_virtual_machine");
-        $this->load->model("m_webserver");
 
         $this->load->model("m_devices_components");
         // $this->data['additional_fields_data'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
@@ -922,20 +919,24 @@ class main extends MY_Controller
         $this->data['processor'] = $this->m_devices_components->read($this->data['id'], 'y', 'processor');
         $this->data['scsi'] = $this->m_devices_components->read($this->data['id'], 'y', 'scsi');
         $this->data['share'] = $this->m_devices_components->read($this->data['id'], 'y', 'share');
+        $this->data['server'] = $this->m_devices_components->read($this->data['id'], 'y', 'server');
+        $this->data['server_item'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item');
         $this->data['service'] = $this->m_devices_components->read($this->data['id'], 'y', 'service');
         $this->data['software'] = $this->m_devices_components->read($this->data['id'], 'y', 'software');
         $this->data['sound'] = $this->m_devices_components->read($this->data['id'], 'y', 'sound');
         $this->data['user'] = $this->m_devices_components->read($this->data['id'], 'y', 'user');
         $this->data['video'] = $this->m_devices_components->read($this->data['id'], 'y', 'video');
         $this->data['windows'] = $this->m_devices_components->read($this->data['id'], 'y', 'windows');
+        $this->data['webserver'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'web\'');
+        $this->data['website_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'website\'');
+        $this->data['database'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'database\'');
+        $this->data['database_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'database\'');
 
         $this->data['additional_fields_data'] = $this->m_additional_fields->get_system_fields($this->data['id']);
         $this->data['alerts'] = $this->m_alerts->get_system_alerts($this->data['id']);
         $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
         $this->data['audit_log'] = $this->m_audit_log->get_audit_log($this->data['id']);
         $this->data['audits'] = $this->m_sys_man_audits->get_system_audits($this->data['id']);
-        $this->data['database'] = $this->m_database->get_system_db($this->data['id']);
-        $this->data['database_details'] = $this->m_database_details->get_system_db_details($this->data['id']);
         $this->data['dns'] = $this->m_dns->get_system_dns($this->data['id']);
         $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
         $this->data['locations'] = $this->m_oa_location->get_location_names();
@@ -952,8 +953,6 @@ class main extends MY_Controller
         $this->data['system_org'] = $this->m_oa_org->get_system_org($this->data['id']);
         $this->data['system_variable'] = $this->m_variable->get_system_variable($this->data['id']);
         $this->data['vm'] = $this->m_virtual_machine->get_vm($this->data['id']);
-        $this->data['webserver'] = $this->m_webserver->get_system_webserver($this->data['id']);
-        $this->data['website_details'] = $this->m_webserver->get_system_websites($this->data['id']);
 
         include 'include_device_types.php';
         $this->data['device_types'] = $device_types;

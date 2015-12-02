@@ -4225,6 +4225,83 @@ class admin extends MY_Controller
 
             $sql[] = "ALTER TABLE oa_alert_log ADD `link_row_action` enum('','create','update','delete') NOT NULL DEFAULT '' AFTER alert_foreign_row";
 
+            # server - new table
+            $sql[] = "DROP TABLE IF EXISTS server";
+            $sql[] = "CREATE TABLE server ( id int(10) unsigned NOT NULL AUTO_INCREMENT,
+                system_id int(10) unsigned DEFAULT NULL,
+                current enum('y','n') NOT NULL DEFAULT 'y',
+                first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                type varchar(100) NOT NULL DEFAULT '',
+                name varchar(100) NOT NULL DEFAULT '',
+                full_name varchar(100) NOT NULL DEFAULT '',
+                description varchar(100) NOT NULL DEFAULT '',
+                version varchar(100) NOT NULL DEFAULT '',
+                version_string varchar(100) NOT NULL DEFAULT '',
+                edition varchar(100) NOT NULL DEFAULT '',
+                status varchar(100) NOT NULL DEFAULT '',
+                ip varchar(45) NOT NULL DEFAULT '',
+                port smallint unsigned NOT NULL DEFAULT '0',
+                PRIMARY KEY (id), KEY system_id (system_id),
+                CONSTRAINT server_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE )
+                ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            # server item - new table
+            $sql[] = "DROP TABLE IF EXISTS server_item";
+            $sql[] = "CREATE TABLE server_item (
+                id int(10) unsigned NOT NULL AUTO_INCREMENT,
+                system_id int(10) unsigned DEFAULT NULL,
+                current enum('y','n') NOT NULL DEFAULT 'y',
+                first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                server_id int(10) unsigned DEFAULT NULL,
+                type varchar(100) NOT NULL DEFAULT '',
+                parent_name varchar(100) NOT NULL DEFAULT '',
+                name varchar(100) NOT NULL DEFAULT '',
+                description varchar(100) NOT NULL DEFAULT '',
+                id_internal varchar(100) NOT NULL DEFAULT '',
+                ip varchar(45) NOT NULL DEFAULT '',
+                hostname varchar(100) NOT NULL DEFAULT '',
+                port smallint unsigned NOT NULL DEFAULT '0',
+                status varchar(100) NOT NULL DEFAULT '',
+                parent_id int(11) unsigned DEFAULT NULL,
+                instance varchar(100) NOT NULL DEFAULT '',
+                `path` varchar(250) NOT NULL DEFAULT '',
+                size int unsigned NOT NULL DEFAULT '0',
+                log_status varchar(100) NOT NULL DEFAULT '',
+                log_format varchar(100) NOT NULL DEFAULT '',
+                log_path varchar(100) NOT NULL DEFAULT '',
+                log_rotation varchar(100) NOT NULL DEFAULT '',
+                PRIMARY KEY (id), KEY system_id (system_id),
+                CONSTRAINT server_item_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE)
+                ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+
+            $sql[] = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2012 RTM'            WHERE db_version LIKE '11.0.2100%' OR db_version LIKE '11.00.2100%'";
+            $sql[] = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2012 Service Pack 1' WHERE db_version LIKE '11.0.3000%' OR db_version LIKE '11.00.3000%'";
+            $sql[] = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2012 Service Pack 2' WHERE db_version LIKE '11.0.5058%' OR db_version LIKE '11.00.5058%'";
+            $sql[] = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2014 Community Technology Preview 1 (CTP1)' WHERE db_version LIKE '11.0.9120%' OR db_version LIKE '11.00.9120%'";
+            $sql[] = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2014 Community Technology Preview 2 (CTP2)' WHERE db_version LIKE '12.0.1524%' OR db_version LIKE '12.00.1524%'";
+            $sql[] = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2014 RTM'                                   WHERE db_version LIKE '12.0.2000%' OR db_version LIKE '12.00.2000%'";
+
+            $sql[] = "INSERT INTO server SELECT db_id, sys_sw_database.system_id, 'y', sys_sw_database.first_timestamp, sys_sw_database.timestamp, 'database', db_type, db_version_string, '', db_version, '', db_edition, '', '', db_port FROM sys_sw_database LEFT JOIN system ON sys_sw_database.system_id = system.system_id AND sys_sw_database.timestamp = system.last_seen";
+            $sql[] = "INSERT INTO server_item SELECT NULL, sys_sw_database.system_id, 'y', sys_sw_database_details.first_timestamp, sys_sw_database_details.timestamp, sys_sw_database_details.db_id, 'database', sys_sw_database.db_type, sys_sw_database_details.details_name, '', sys_sw_database_details.details_internal_id, '', '', '', '', '', sys_sw_database_details.details_instance, sys_sw_database_details.details_filename, sys_sw_database_details.details_current_size, '', '', '', '' FROM sys_sw_database_details LEFT JOIN sys_sw_database ON sys_sw_database_details.db_id = sys_sw_database.db_id AND sys_sw_database_details.timestamp = sys_sw_database.timestamp";
+
+            $sql[] = "INSERT INTO server SELECT NULL, sys_sw_web_server.system_id, 'y', sys_sw_web_server.first_timestamp, sys_sw_web_server.timestamp, 'web', 'IIS', '', '', sys_sw_web_server.webserver_version, '', '', sys_sw_web_server.webserver_state, '', '' FROM sys_sw_web_server";
+            $sql[] = "INSERT INTO server_item SELECT NULL as id, sys_sw_web_site.system_id, 'y' as current, sys_sw_web_site.first_timestamp as first_seen, sys_sw_web_site.timestamp as last_seen, server.id as server_id, 'website' as type, 'IIS', sys_sw_web_site.site_description as name, sys_sw_web_site.site_description as description, sys_sw_web_site.site_internal_id as internal_id, '' as ip, '' as hostname, '' as port, sys_sw_web_site.site_state as status, '' as parent, sys_sw_web_site.site_app_pool as instance, sys_sw_web_site.site_path as path, sys_sw_web_site.site_size as size, '' as log_status, sys_sw_web_site.site_log_format as log_format, sys_sw_web_site.site_log_directory as log_path, sys_sw_web_site.site_log_rotation as log_rotation FROM sys_sw_web_site LEFT JOIN server ON sys_sw_web_site.first_timestamp = server.first_seen AND sys_sw_web_site.timestamp = server.last_seen AND sys_sw_web_site.system_id = server.system_id WHERE server.type = 'web'";
+
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_database_details";
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_database";
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_web_server_ext";
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_web_site_header";
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_web_site_virtual";
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_web_site";
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_web_server";
+
+            $sql[] = "UPDATE system SET description = '', man_description = '' WHERE man_description LIKE 'general purpose|%' AND description = man_description";
+            $sql[] = "UPDATE system SET description = '', man_description = '' WHERE man_description LIKE '%\%)' AND description = man_description";
+            $sql[] = "UPDATE system SET description = '', man_description = '' WHERE man_description LIKE '%|%|%' AND description = man_description";
+
             $sql[] = "UPDATE oa_config SET config_value = '20160104' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.10' WHERE config_name = 'display_version'";
 

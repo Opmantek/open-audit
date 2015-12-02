@@ -1226,21 +1226,20 @@ function show_software($type, $software) {
             <fieldset id="server_database" class='niceforms'>
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Database Server Details')?></span></legend>
                 <?php foreach ($database as $key): ?>
-                    <?php $db_type = $key->db_type; ?>
-                    <?php if ($key->db_type == 'SQL Server') { ?>
+                    <?php if ($key->name == 'SQL Server') { ?>
                     <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_sql_server.png' alt='' title='' />
-                    <?php } elseif ($db_type == 'MySQL') { ?>
+                    <?php } elseif ($key->name == 'MySQL') { ?>
                     <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_mysql_server.png' alt='' title='' />
-                    <?php } elseif ($db_type == 'Postgres') { ?>
+                    <?php } elseif ($key->name == 'Postgres') { ?>
                     <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_postgres_server.png' alt='' title='' />
-                    <?php } elseif ($db_type == 'Oracle') { ?>
+                    <?php } elseif ($key->name == 'Oracle') { ?>
                     <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_partition.png' alt='' title='' />
                     <?php } ?>
-                    <p><label for="sw_db_type"><?php echo __('Type')?>: </label><span id="sw_db_type"><?php echo print_something($key->db_type)?>&nbsp;</span></p>
-                    <p><label for="sw_db_version"><?php echo __('Version')?>: </label><span id="sw_db_version"><?php echo print_something($key->db_version_string)?>&nbsp;</span></p>
-                    <p><label for="sw_db_version"><?php echo __('Version ID')?>: </label><span id="sw_db_version"><?php echo print_something($key->db_version)?>&nbsp;</span></p>
-                    <p><label for="sw_db_edition"><?php echo __('Edition')?>: </label><span id="sw_db_edition"><?php echo print_something($key->db_edition)?>&nbsp;</span></p>
-                    <p><label for="sw_db_port"><?php echo __('Port')?>: </label><span id="sw_db_port"><?php echo print_something($key->db_port)?>&nbsp;</span></p>
+                    <p><label for="sw_db_type"><?php echo __('Name')?>: </label><span id="sw_db_type"><?php echo print_something($key->name)?>&nbsp;</span></p>
+                    <p><label for="sw_db_version"><?php echo __('Version')?>: </label><span id="sw_db_version"><?php echo print_something($key->version)?>&nbsp;</span></p>
+                    <p><label for="sw_db_version"><?php echo __('Version String')?>: </label><span id="sw_db_version"><?php echo print_something($key->full_name)?>&nbsp;</span></p>
+                    <p><label for="sw_db_edition"><?php echo __('Edition')?>: </label><span id="sw_db_edition"><?php echo print_something($key->edition)?>&nbsp;</span></p>
+                    <p><label for="sw_db_port"><?php echo __('Port')?>: </label><span id="sw_db_port"><?php echo print_something($key->port)?>&nbsp;</span></p>
                 <?php endforeach; ?>
             </fieldset>
         <br />
@@ -1254,21 +1253,17 @@ function show_software($type, $software) {
                         <th><?php echo __('Internal ID')?></th>
                         <th><?php echo __('Name')?></th>
                         <th width="80"><?php echo __('Size')?></th>
-                        <th><?php echo __('Mode')?></th>
-                        <th width="120"><?php echo __('Created')?></th>
-                        <th><?php echo __('Filename')?></th>
+                        <th><?php echo __('Path')?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($database_details as $key): ?>
                     <tr>
-                        <td><?php echo print_something($key->details_instance)?></td>
-                        <td><?php echo print_something($key->details_internal_id)?></td>
-                        <td><?php echo print_something($key->details_name)?></td>
-                        <td align="right"><?php echo number_format(intval($key->details_current_size))?> MB</td>
-                        <td align='center'><?php echo print_something($key->details_compatibility_mode)?></td>
-                        <td><?php echo print_something($key->details_creation_date)?></td>
-                        <td><?php echo print_something($key->details_filename)?></td>
+                        <td><?php echo print_something($key->instance)?></td>
+                        <td><?php echo print_something($key->id_internal)?></td>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td align="right"><?php echo number_format(intval($key->size))?> MB</td>
+                        <td><?php echo print_something($key->path)?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -1296,18 +1291,10 @@ function show_software($type, $software) {
             <fieldset id="server_web" class='niceforms'>
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Web Server Details')?></span></legend>
                 <?php foreach ($webserver as $key): ?>
-                    <?php if ($key->webserver_type == 'IIS') { ?>
-                    <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_web.png' alt='' title='' />
-                    <?php } elseif ($webserver_type == 'Apache') { ?>
-                    <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_web.png' alt='' title='' />
-                    <?php } elseif ($webserver_type == 'Cherokee') { ?>
-                    <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_web.png' alt='' title='' />
-                    <?php } elseif ($webserver_type == 'LightHTTPD') { ?>
-                    <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_web.png' alt='' title='' />
-                    <?php } ?>
-                    <p><label for="sw_webserver_type"><?php echo __('Type')?>: </label><span id="sw_webserver_type"><?php echo print_something($key->webserver_type)?>&nbsp;</span></p>
-                    <p><label for="sw_webserver_version"><?php echo __('Version')?>: </label><span id="sw_webserver_version"><?php echo print_something($key->webserver_version)?>&nbsp;</span></p>
-                    <p><label for="sw_webserver_state"><?php echo __('State')?>: </label><span id="sw_webserver_port"><?php echo print_something($key->webserver_state)?>&nbsp;</span></p>
+                    <p><label for="sw_webserver_type"><?php echo __('Type')?>: </label><span id="sw_webserver_type"><?php echo print_something($key->type)?>&nbsp;</span></p>
+                    <p><label for="sw_webserver_name"><?php echo __('Name')?>: </label><span id="sw_webserver_name"><?php echo print_something($key->name)?>&nbsp;</span></p>
+                    <p><label for="sw_webserver_version"><?php echo __('Version')?>: </label><span id="sw_webserver_version"><?php echo print_something($key->version)?>&nbsp;</span></p>
+                    <p><label for="sw_webserver_state"><?php echo __('State')?>: </label><span id="sw_webserver_status"><?php echo print_something($key->status)?>&nbsp;</span></p>
                 <?php endforeach; ?>
             </fieldset>
         <p><br /></p>
@@ -1327,11 +1314,11 @@ function show_software($type, $software) {
                 <tbody>
                     <?php foreach ($website_details as $key): ?>
                     <tr>
-                        <td><?php echo print_something($key->site_internal_id)?></td>
-                        <td><?php echo print_something($key->site_description)?></td>
-                        <td><?php echo print_something($key->site_state)?></td>
-                        <td><?php echo print_something($key->site_path)?></td>
-                        <td><?php echo print_something($key->site_app_pool)?></td>
+                        <td><?php echo print_something($key->id_internal)?></td>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->status)?></td>
+                        <td><?php echo print_something($key->path)?></td>
+                        <td><?php echo print_something($key->instance)?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -1342,3 +1329,7 @@ function show_software($type, $software) {
     <?php } ?>
 
 <!-- end of content_column -->
+<?php
+// echo "<pre>\n";
+// print_r($this);
+?>

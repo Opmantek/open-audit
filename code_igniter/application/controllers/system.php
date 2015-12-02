@@ -177,8 +177,6 @@ class System extends CI_Controller
         echo "<a href='" . base_url() . "index.php/system'>Back to input page</a><br />\n";
         echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
         $this->load->model('m_alerts');
-        $this->load->model('m_database');
-        $this->load->model('m_database_details');
         $this->load->model('m_dns');
         $this->load->model('m_group');
         $this->load->model('m_ip_address');
@@ -190,7 +188,6 @@ class System extends CI_Controller
         $this->load->model('m_sys_man_audits');
         $this->load->model('m_variable');
         $this->load->model('m_virtual_machine');
-        $this->load->model('m_webserver');
 
         $this->load->model('m_devices_components');
 
@@ -380,6 +377,15 @@ class System extends CI_Controller
         $this->m_devices_components->process_component('windows', $details, $xml->windows);
 
         foreach ($xml->children() as $child) {
+            // these two (server and server_item) must be processed in this way
+            // because there may be multiple entries for them (eg: DB and WEB)
+            if ($child->getName() === 'server') {
+                $this->m_devices_components->process_component('server', $details, $child);
+            }
+            if ($child->getName() === 'server_item') {
+                $this->m_devices_components->process_component('server_item', $details, $child);
+            }
+
             if ($child->getName() === 'addresses') {
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
                 foreach ($xml->addresses->ip_address as $input) {
@@ -389,16 +395,6 @@ class System extends CI_Controller
             if ($child->getName() === 'audit_wmi_fail') {
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
                 $this->m_sys_man_audits->update_wmi_fails($xml->audit_wmi_fail, $details);
-            }
-            if ($child->getName() === 'database') {
-                $this->m_sys_man_audits->update_audit($details, $child->getName());
-                $this->m_database->process_database($xml->database, $details);
-            }
-            if ($child->getName() === 'database_details') {
-                $this->m_sys_man_audits->update_audit($details, $child->getName());
-                foreach ($xml->database_details->details as $input) {
-                    $this->m_database_details->process_db_details($input, $details);
-                }
             }
             if ($child->getName() === 'dns') {
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
@@ -448,10 +444,6 @@ class System extends CI_Controller
                 foreach ($xml->variables->variable as $input) {
                     $this->m_variable->process_variable($input, $details);
                 }
-            }
-            if ($child->getName() === 'webserver') {
-                $this->m_sys_man_audits->update_audit($details, $child->getName());
-                $this->m_webserver->process_webserver($xml->webserver, $details);
             }
         }
         $this->m_sys_man_audits->update_audit($details, 'finished xml processing');

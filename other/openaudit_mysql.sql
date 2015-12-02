@@ -1357,6 +1357,90 @@ LOCK TABLES `scsi` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `server`
+--
+
+DROP TABLE IF EXISTS `server`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `server` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `full_name` varchar(100) NOT NULL DEFAULT '',
+  `description` varchar(100) NOT NULL DEFAULT '',
+  `version` varchar(100) NOT NULL DEFAULT '',
+  `version_string` varchar(100) NOT NULL DEFAULT '',
+  `edition` varchar(100) NOT NULL DEFAULT '',
+  `status` varchar(100) NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `port` smallint(5) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `server_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `server`
+--
+
+LOCK TABLES `server` WRITE;
+/*!40000 ALTER TABLE `server` DISABLE KEYS */;
+/*!40000 ALTER TABLE `server` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `server_item`
+--
+
+DROP TABLE IF EXISTS `server_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `server_item` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `server_id` int(10) unsigned DEFAULT NULL,
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `parent_name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `description` varchar(100) NOT NULL DEFAULT '',
+  `id_internal` varchar(100) NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `hostname` varchar(100) NOT NULL DEFAULT '',
+  `port` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `status` varchar(100) NOT NULL DEFAULT '',
+  `parent_id` int(11) unsigned DEFAULT NULL,
+  `instance` varchar(100) NOT NULL DEFAULT '',
+  `path` varchar(250) NOT NULL DEFAULT '',
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `log_status` varchar(100) NOT NULL DEFAULT '',
+  `log_format` varchar(100) NOT NULL DEFAULT '',
+  `log_path` varchar(100) NOT NULL DEFAULT '',
+  `log_rotation` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `server_item_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `server_item`
+--
+
+LOCK TABLES `server_item` WRITE;
+/*!40000 ALTER TABLE `server_item` DISABLE KEYS */;
+/*!40000 ALTER TABLE `server_item` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `service`
 --
 
