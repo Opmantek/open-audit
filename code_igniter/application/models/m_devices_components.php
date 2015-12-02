@@ -185,7 +185,7 @@ class M_devices_components extends MY_Model
 
     public function process_component($table = '', $details, $input, $match_columns = array())
     {
-        echo "<pre>here for $table\n";
+        echo "<pre>Processing $table\n";
         $create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
 
         // ensure we have a valid table name
@@ -241,18 +241,43 @@ class M_devices_components extends MY_Model
             }
 
             # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
-            foreach ($input->item as $key => $input_item) {
-                if (isset($input->item[$key]->mac)) {
-                    $input->item[$key]->mac = (string)strtolower($input->item[$key]->mac);
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]->mac)) {
+                    $input->item[$i]->mac = strtolower($input->item[$i]->mac);
+                } else {
+                    $input->item[$i]->mac = '';
                 }
             }
         }
 
         ### SERVER ###
         if ((string)$table == 'server') {
-            foreach ($input->item as $key => $input_item) {
-                if (isset($input->item[$key]->version) and $input->item[$key]->version != '' and $input->item[$key]->type == 'database') {
-                    $input->item[$key]->full_name = (string)$this->get_sql_server_version_string($input->item[$key]->version);
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]->version) and $input->item[$i]->version != '' and $input->item[$i]->type == 'database') {
+                    $input->item[$i]->full_name = (string)$this->get_sql_server_version_string($input->item[$i]->version);
+                }
+            }
+        }
+
+
+
+        ### SOFTWARE VERSION PADDED ###
+        if ((string)$table == 'software') {
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]->version) and $input->item[$i]->version != '') {
+                    $pieces = array();
+                    $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $input->item[$i]->version);
+                    #$input->item[$key]->version_padded = (string)'';
+                    $input->item[$i]->version_padded = (string)'';
+                    foreach ($pieces as $piece) {
+                        if (strlen($piece) > 10 ) {
+                            $input->item[$i]->version_padded .= $piece;
+                        } else {
+                            $input->item[$i]->version_padded .= mb_substr("00000000000000000000".$piece, -10);
+                        }
+                    }
+                } else {
+                    $input->item[$i]->version_padded = '';
                 }
             }
         }
@@ -273,66 +298,66 @@ class M_devices_components extends MY_Model
 
         ### IP ADDRESS ###
         if ($table == 'ip') {
-            foreach ($input as $input_item) {
+            for ($i=0; $i<count($input->item); $i++) {
                 # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
-                $input_item->mac = strtolower($input_item->mac);
+                $input->item[$i]->mac = strtolower($input->item[$i]->mac);
                 # As at 1.5.6 we pass an additional attribute called 'type' for bonded adapters
                 # We use this to test and not pad the MAC address if set
-                if (!isset($input_item->type)) {
-                    $input_item->type = '';
+                if (!isset($input->item[$i]->type)) {
+                    $input->item[$i]->type = '';
                 }
                 # ensure we have a fully padded mac address
-                if ($input_item->type != 'bonded') {
-                    if ($input_item->mac != '') {
-                        $mymac = explode(":", $input_item->mac);
+                if ($input->item[$i]->type != 'bonded') {
+                    if ($input->item[$i]->mac != '') {
+                        $mymac = explode(":", $input->item[$i]->mac);
                         for ($i = 0; $i<count($mymac); $i++) {
                             $mymac[$i] = mb_substr("00".$mymac[$i], -2);
                         }
-                        $input_item->mac = implode(":", $mymac);
+                        $input->item[$i]->mac = implode(":", $mymac);
                     }
                 }
-                if (!isset($input_item->version) or $input_item->version != '6') {
-                    $input_item->version = '4';
+                if (!isset($input->item[$i]->version) or $input->item[$i]->version != '6') {
+                    $input->item[$i]->version = '4';
                 }
                 # ensure we have the correctly padded ip v4 address
-                if ($input_item->version == '4') {
-                    $input_item->ip = $this->ip_address_to_db($input_item->ip);
+                if ($input->item[$i]->version == '4') {
+                    $input->item[$i]->ip = $this->ip_address_to_db($input->item[$i]->ip);
                 }
             }
         }
 
         ### VIRTUAL MACHINE ###
         if ($table == 'virtual_machine') {
-            foreach ($input->item as &$input_item) {
+            for ($i=0; $i<count($input->item); $i++) {
                 # make sure group is set
-                if (!isset($input_item->vm_group)) {
-                    $input_item->vm_group = '';
+                if (!isset($input->item[$i]->vm_group)) {
+                    $input->item[$i]->vm_group = '';
                 }
                 # make sure guest_system_id is set
-                if (!isset($input_item->guest_system_id)) {
-                    $input_item->guest_system_id = '';
+                if (!isset($input->item[$i]->guest_system_id)) {
+                    $input->item[$i]->guest_system_id = '';
                 }
                 # attempt to match system_id
-                if ($input_item->guest_system_id == '') {
+                if ($input->item[$i]->guest_system_id == '') {
                     $sql = "SELECT id FROM system WHERE uuid = ? and status = 'production'";
-                    $data = array("$input_item->uuid");
+                    $data = array("$input->item[$i]->uuid");
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
                         $row = $query->row();
-                        $input_item->guest_system_id = $row->id;
+                        $input->item[$i]->guest_system_id = $row->id;
                     }
                 }
                 # update the system table
-                if (isset($input_item->guest_system_id) and $input_item->guest_system_id != '') {
+                if ($input->item[$i]->guest_system_id != '') {
                     $sql = "UPDATE system SET vm_server_name = ?, vm_system_id = ? WHERE system_id = ?";
                     # $data = array("$details->name", "$details->id", "$input_item->guest_system_id");  # this will be changed when we convert the system table
-                    $data = array("$details->name", "$details->system_id", "$input_item->guest_system_id");
+                    $data = array("$details->name", "$details->system_id", "$input->item[$i]->guest_system_id");
                     $query = $this->db->query($sql, $data);
                 }
                 # set the current flag to n for all devices != id
                 $sql = "UPDATE virtual_machine SET current = 'n' WHERE uuid = ? AND system_id != ?";
                 # $data = array("$input_item->uuid", "$details->id");  # this will be changed when we convert the system table
-                $data = array("$input_item->uuid", "$details->system_id");
+                $data = array("$input->item[$i]->uuid", "$details->system_id");
                 $query = $this->db->query($sql, $data);
             }
         }
