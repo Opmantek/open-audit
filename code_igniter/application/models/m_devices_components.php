@@ -519,7 +519,7 @@ class M_devices_components extends MY_Model
                 $alert_details = substr($alert_details, 0, -2);
                 $alert_details = "Item removed from $table - " . $alert_details;
                 $sql = "INSERT INTO oa_alert_log ( system_id, alert_table, alert_foreign_row, link_row_action, alert_details, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
-                $data = array("$details->system_id", "$table", "$id", "delete", "$alert_details", "$details->last_seen");
+                $data = array("$details->system_id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
                 $query = $this->db->query($sql, $data);
             }
         }
