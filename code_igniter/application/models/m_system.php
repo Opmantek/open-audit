@@ -1630,16 +1630,14 @@ class M_system extends MY_Model
             // }
             # as at 1.10 - we don't need to do this for every table
             $table_array = array('sys_hw_partition', 'sys_hw_warranty',
-                    'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
+                    'sys_sw_dns', 'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
                     'sys_sw_route', 'sys_sw_scheduled_task',
-                    'sys_sw_variable', 'sys_sw_virtual_machine', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site',
-                    'sys_sw_web_site_header', 'sys_sw_web_site_virtual');
+                    'sys_sw_variable', 'sys_sw_virtual_machine');
             } else {
                 $table_array = array('sys_hw_partition', 'sys_hw_warranty',
-                    'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
+                    'sys_sw_dns', 'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
                     'sys_sw_route', 'sys_sw_scheduled_task',
-                    'sys_sw_variable', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site',
-                    'sys_sw_web_site_header', 'sys_sw_web_site_virtual');
+                    'sys_sw_variable');
             }
             foreach ($table_array as $key => $value) {
                 $update_sql = "UPDATE $value SET timestamp = ? WHERE timestamp = ? AND system_id = ?";
