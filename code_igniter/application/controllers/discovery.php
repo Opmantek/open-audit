@@ -950,7 +950,7 @@ class discovery extends CI_Controller
                             if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
                                 $guests = $temp_array['guests'];
                             }
-                            if (isset($network_interfaces) and count($network_interfaces > 0)) {
+                            if (isset($temp_array['interfaces']) and count($temp_array['interfaces'] > 0)) {
                                 foreach ($network_interfaces as $interface) {
                                     // if (isset($interface->net_mac_address) and (string) $interface->net_mac_address != '') {
                                     //     // we have a mac address, insert it into the $details object
