@@ -380,8 +380,10 @@ class Admin_system extends MY_Controller
             }
 
             // Generate any DNS entries required
-            $this->load->model('m_dns');
-            $this->m_dns->create_dns_entries((int)$details->system_id);
+            $dns_entries = array();
+            $dns_entries = $this->m_devices_components->create_dns_entries((int)$details->system_id);
+            $this->m_devices_components->process_component('dns', $details, $dns_entries);
+            unset($dns_entries);
 
         } else {
             echo "Audit NOT submitted.";

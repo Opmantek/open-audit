@@ -93,6 +93,9 @@ class M_devices_components extends MY_Model
         if ($table == 'disk') {
                 $match_columns = array('model', 'serial', 'hard_drive_index', 'size');
         }
+        if ($table == 'dns') {
+                $match_columns = array('ip', 'name', 'fqdn');
+        }
         if ($table == 'memory') {
                 $match_columns = array('bank', 'size', 'serial');
         }
@@ -984,6 +987,69 @@ class M_devices_components extends MY_Model
         return ($resultset);
     }
 
+    public function create_dns_entries($id = 0)
+    {
+
+        $this->load->helper('log');
+        $log_details = new stdClass();
+        $log_details->file = 'system';
+        $log_details->severity = 7;
+        $sql = "SELECT DISTINCT ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN system ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) WHERE system.system_id = ?";
+        $data = array($id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        $dns_entries = array();
+        foreach ($result as $row) {
+            $ip = $this->ip_address_from_db($row->ip_address_v4);
+            if (isset($ip) and $ip != '0.0.0.0' and $ip != '000.000.000.000' and $ip != '' and $ip != '127.0.0.1' and filter_var($ip, FILTER_VALIDATE_IP) !== false) {
+                $dns_entry = new stdClass();
+                $dns_entry->ip = $ip;
+                $dns_entry->fqdn = '';
+                $dns_entry->name = '';
+                $dns_entry->fqdn = gethostbyaddr($ip);
+                if ($dns_entry->fqdn == $dns_entry->ip) {
+                    $dns_entry->fqdn = '';
+                } else {
+                    if (strrpos($dns_entry->fqdn, '.')) {
+                        $temp = explode('.', $dns_entry->fqdn);
+                        $dns_entry->name = $temp[0];
+                        unset($temp);
+                    } else {
+                        $dns_entry->name = $dns_entry->fqdn;
+                        $dns_entry->fqdn = '';
+                    }
+                }
+                $dns_entries[] = $dns_entry;
+                unset($dns_entry);
+            }
+        }
+        foreach ($dns_entries as $dns_entry) {
+            if ($dns_entry->name != '') {
+                $ip = gethostbyname($dns_entry->name);
+                if ($ip != $dns_entry->ip and $ip != $dns_entry->name) {
+                    foreach ($dns_entries as $dns) {
+                        if ($dns->ip == $ip) {
+                            $ip = '';
+                        }
+                        unset($dns);
+                    }
+                    if ($ip != '') {
+                        $new = new stdClass();
+                        $new->ip = $ip;
+                        $new->name = $dns_entry->name;
+                        $new->fqdn = $dns_entry->fqdn;
+                        $dns_entries[] = $new;
+                    }
+                }
+            }
+        }
+        foreach ($dns_entries as $key => $dns_entry) {
+            if (!isset($dns_entry->name) or $dns_entry->name == '') {
+                unset($dns_entries[$key]);
+            }
+        }
+        return $dns_entries;
+    }
 
 
     /**

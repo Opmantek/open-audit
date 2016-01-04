@@ -258,7 +258,7 @@ if (help = "y") then
 	wscript.echo "      y - Delete the audit script file upon script completion."
 	wscript.echo ""
 	wscript.echo "  skip_*"
-	wscript.echo "     *n - Do no skip detecting attributes in this section of the audit script."
+	wscript.echo "     *n - Do not skip detecting attributes in this section of the audit script."
 	wscript.echo "      y - Skip detection of this particular section."
 	wscript.echo "     Valid sections are dns, printer, software, mount_point."
 	wscript.echo ""
@@ -2580,11 +2580,11 @@ if skip_dns = "n" then
 						hostname = lcase(hostname)
 						dns_full_name = lcase(dns_host_name)
 					end if
-					item = item & "		<dns_entry>" & vbcrlf
-					item = item & "			<dns_name>" & escape_xml(hostname) & "</dns_name>" & vbcrlf
-					item = item & "			<dns_full_name>" & escape_xml(dns_full_name) & "</dns_full_name>" & vbcrlf
-					item = item & "			<dns_ip_address>" & escape_xml(objItem2.IPAddress) & "</dns_ip_address>" & vbcrlf
-					item = item & "		</dns_entry>" & vbcrlf
+					item = item & "		<item>" & vbcrlf
+					item = item & "			<name>" & escape_xml(hostname) & "</name>" & vbcrlf
+					item = item & "			<fqdn>" & escape_xml(dns_full_name) & "</fqdn>" & vbcrlf
+					item = item & "			<ip>" & escape_xml(objItem2.IPAddress) & "</ip>" & vbcrlf
+					item = item & "		</item>" & vbcrlf
 				next
 			end if
 		next

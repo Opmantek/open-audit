@@ -882,7 +882,6 @@ class main extends MY_Controller
         $this->load->model("m_alerts");
         $this->load->model("m_attachment");
         $this->load->model("m_audit_log");
-        $this->load->model("m_dns");
         $this->load->model("m_group");
         $this->load->model("m_ip_address");
         $this->load->model("m_oa_location");
@@ -906,6 +905,7 @@ class main extends MY_Controller
 
         $this->data['bios'] = $this->m_devices_components->read($this->data['id'], 'y', 'bios');
         $this->data['hard_drive'] = $this->m_devices_components->read($this->data['id'], 'y', 'disk');
+        $this->data['dns'] = $this->m_devices_components->read($this->data['id'], 'y', 'dns');
         $this->data['log'] = $this->m_devices_components->read($this->data['id'], 'y', 'log');
         $this->data['memory'] = $this->m_devices_components->read($this->data['id'], 'y', 'memory');
         $this->data['module'] = $this->m_devices_components->read($this->data['id'], 'y', 'module');
@@ -936,7 +936,6 @@ class main extends MY_Controller
         $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
         $this->data['audit_log'] = $this->m_audit_log->get_audit_log($this->data['id']);
         $this->data['audits'] = $this->m_sys_man_audits->get_system_audits($this->data['id']);
-        $this->data['dns'] = $this->m_dns->get_system_dns($this->data['id']);
         $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['orgs'] = $this->m_oa_org->get_all_orgs();

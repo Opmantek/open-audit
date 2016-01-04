@@ -1614,28 +1614,14 @@ class M_system extends MY_Model
         # As at 1.5, update the timestamps in the linked tables
         if ($details->last_seen_by != 'audit') {
             if ($details->last_seen_by != 'snmp') {
-            //     $table_array = array('sys_hw_bios', 'sys_hw_hard_drive', 'sys_hw_memory', 'sys_hw_monitor', 'sys_hw_motherboard', 'sys_hw_network_card',
-            //         'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 'sys_hw_sound', 'sys_hw_video', 'sys_hw_warranty',
-            //         'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_log', 'sys_sw_netstat', 'sys_sw_pagefile', 'sys_sw_print_queue',
-            //         'sys_sw_route', 'sys_sw_scheduled_task', 'sys_sw_service', 'sys_sw_share', 'sys_sw_share_perms', 'sys_sw_software', 'sys_sw_software_key',
-            //         'sys_sw_user', 'sys_sw_variable', 'sys_sw_virtual_machine', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site',
-            //         'sys_sw_web_site_header', 'sys_sw_web_site_virtual', 'sys_sw_windows', );
-            // } else {
-            //     $table_array = array('sys_hw_bios', 'sys_hw_hard_drive', 'sys_hw_memory', 'sys_hw_monitor', 'sys_hw_motherboard',
-            //         'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 'sys_hw_sound', 'sys_hw_video', 'sys_hw_warranty',
-            //         'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_log', 'sys_sw_netstat', 'sys_sw_pagefile', 'sys_sw_print_queue',
-            //         'sys_sw_route', 'sys_sw_scheduled_task', 'sys_sw_service', 'sys_sw_share', 'sys_sw_share_perms', 'sys_sw_software', 'sys_sw_software_key',
-            //         'sys_sw_user', 'sys_sw_variable', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site',
-            //         'sys_sw_web_site_header', 'sys_sw_web_site_virtual', 'sys_sw_windows', );
-            // }
             # as at 1.10 - we don't need to do this for every table
             $table_array = array('sys_hw_network_card_ip',
-                    'sys_sw_dns', 'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
+                    'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
                     'sys_sw_route', 'sys_sw_scheduled_task',
                     'sys_sw_variable', 'sys_sw_virtual_machine');
             } else {
                 $table_array = array('sys_hw_network_card_ip',
-                    'sys_sw_dns', 'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
+                    'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
                     'sys_sw_route', 'sys_sw_scheduled_task',
                     'sys_sw_variable');
             }

@@ -1108,9 +1108,9 @@ function show_software($type, $software) {
                     <tbody>
                     <?php foreach ($dns as $key): ?>
                     <tr>
-                        <td><?php echo print_something($key->dns_name)?></td>
-                        <td><?php echo print_something($key->dns_full_name)?></td>
-                        <td><span style="display:none;"><?php echo print_something($key->dns_ip_address)?></span><?php echo print_something(ip_address_from_db($key->dns_ip_address))?></td>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->fqdn)?></td>
+                        <td><span style="display:none;"><?php echo print_something($key->ip)?></span><?php echo print_something(ip_address_from_db($key->ip))?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>

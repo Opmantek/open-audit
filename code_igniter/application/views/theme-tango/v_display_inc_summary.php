@@ -657,9 +657,9 @@
                     <tbody>
                         <?php foreach ($dns as $key): ?>
                         <tr>
-                            <td><?php echo print_something(ip_address_from_db($key->dns_ip_address))?>&nbsp;</td>
-                            <td><?php echo print_something($key->dns_name)?>&nbsp;</td>
-                            <td><?php echo print_something($key->dns_full_name)?>&nbsp;</td>
+                            <td><span style="display:none;"><?php echo print_something($key->ip)?></span><?php echo print_something(ip_address_from_db($key->ip))?></td>
+                            <td><?php echo print_something($key->name)?>&nbsp;</td>
+                            <td><?php echo print_something($key->fqdn)?>&nbsp;</td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

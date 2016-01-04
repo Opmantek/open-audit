@@ -177,7 +177,6 @@ class System extends CI_Controller
         echo "<a href='" . base_url() . "index.php/system'>Back to input page</a><br />\n";
         echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
         $this->load->model('m_alerts');
-        $this->load->model('m_dns');
         $this->load->model('m_group');
         $this->load->model('m_ip_address');
         $this->load->model('m_pagefile');
@@ -396,12 +395,6 @@ class System extends CI_Controller
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
                 $this->m_sys_man_audits->update_wmi_fails($xml->audit_wmi_fail, $details);
             }
-            if ($child->getName() === 'dns') {
-                $this->m_sys_man_audits->update_audit($details, $child->getName());
-                foreach ($xml->dns->dns_entry as $input) {
-                    $this->m_dns->process_dns($input, $details);
-                }
-            }
             if ($child->getName() === 'groups') {
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
                 foreach ($xml->groups->group as $input) {
@@ -443,7 +436,15 @@ class System extends CI_Controller
         $this->m_sys_man_audits->update_audit($details, 'finished xml processing');
 
         // Generate any DNS entries required
-        $this->m_dns->create_dns_entries((int)$details->system_id);
+        $dns_entries = array();
+        $dns_entries = $this->m_devices_components->create_dns_entries((int)$details->system_id);
+        // combine the above with anything we recieve from the audit script
+        foreach ($xml->dns as $key => $dns_entry) {
+            if (isset($dns_entry->name) and $dns_entry->name != '') {
+                $dns_entries[] = $xml->dns[$key];
+        }
+        $this->m_devices_components->process_component('dns', $details, $dns_entries);
+        unset($dns_entries);
 
         // Now generate any needed alerts
         if ($details->original_timestamp == '') {

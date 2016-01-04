@@ -1979,107 +1979,34 @@ LOCK TABLES `sys_man_notes` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_database`
+-- Table structure for table `dns`
 --
 
-DROP TABLE IF EXISTS `sys_sw_database`;
+DROP TABLE IF EXISTS `dns`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_database` (
-  `db_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `dns` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `db_type` varchar(50) NOT NULL DEFAULT '',
-  `db_version` varchar(50) NOT NULL DEFAULT '',
-  `db_version_string` varchar(50) NOT NULL DEFAULT '',
-  `db_edition` varchar(50) NOT NULL DEFAULT '',
-  `db_port` int(10) unsigned DEFAULT NULL,
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`db_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_db_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_database`
---
-
-LOCK TABLES `sys_sw_database` WRITE;
-/*!40000 ALTER TABLE `sys_sw_database` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_database` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_sw_database_details`
---
-
-DROP TABLE IF EXISTS `sys_sw_database_details`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_database_details` (
-  `details_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `db_id` int(10) unsigned DEFAULT NULL,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `details_name` varchar(50) NOT NULL DEFAULT '',
-  `details_internal_id` varchar(50) NOT NULL DEFAULT '',
-  `details_instance` varchar(50) NOT NULL DEFAULT '',
-  `details_current_size` varchar(50) NOT NULL DEFAULT '',
-  `details_compatibility_mode` varchar(50) NOT NULL DEFAULT '',
-  `details_filename` varchar(200) NOT NULL DEFAULT '',
-  `details_creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `details_last_accessed_date` varchar(50) NOT NULL DEFAULT '',
-  `details_last_accessed_login_name` varchar(50) NOT NULL DEFAULT '',
-  `details_last_accessed_hostname` varchar(50) NOT NULL DEFAULT '',
-  `details_last_accessed_program` varchar(50) NOT NULL DEFAULT '',
-  `details_last_accessed_domain` varchar(50) NOT NULL DEFAULT '',
-  `details_last_accessed_username` varchar(50) NOT NULL DEFAULT '',
-  `details_last_accessed_protocol` varchar(50) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`details_id`),
-  KEY `system_id` (`db_id`),
-  CONSTRAINT `sys_sw_db_id` FOREIGN KEY (`db_id`) REFERENCES `sys_sw_database` (`db_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_database_details`
---
-
-LOCK TABLES `sys_sw_database_details` WRITE;
-/*!40000 ALTER TABLE `sys_sw_database_details` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_database_details` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_sw_dns`
---
-
-DROP TABLE IF EXISTS `sys_sw_dns`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_dns` (
-  `dns_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `dns_name` varchar(100) NOT NULL DEFAULT '',
-  `dns_full_name` varchar(200) NOT NULL DEFAULT '',
-  `dns_ip_address` varchar(30) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`dns_id`),
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `fqdn` varchar(200) NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_dns_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_dns`
+-- Dumping data for table `dns`
 --
 
-LOCK TABLES `sys_sw_dns` WRITE;
-/*!40000 ALTER TABLE `sys_sw_dns` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_dns` ENABLE KEYS */;
+LOCK TABLES `dns` WRITE;
+/*!40000 ALTER TABLE `dns` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dns` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2318,190 +2245,6 @@ CREATE TABLE `sys_sw_virtual_machine` (
 LOCK TABLES `sys_sw_virtual_machine` WRITE;
 /*!40000 ALTER TABLE `sys_sw_virtual_machine` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sys_sw_virtual_machine` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_sw_web_server`
---
-
-DROP TABLE IF EXISTS `sys_sw_web_server`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_web_server` (
-  `webserver_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `webserver_type` varchar(100) NOT NULL DEFAULT '',
-  `webserver_version` varchar(100) NOT NULL DEFAULT '',
-  `webserver_state` varchar(100) NOT NULL DEFAULT '',
-  `webserver_man_description` varchar(100) NOT NULL DEFAULT '',
-  `webserver_log_enabled` varchar(100) NOT NULL DEFAULT '',
-  `webserver_log_dir` varchar(100) NOT NULL DEFAULT '',
-  `webserver_log_format` varchar(100) NOT NULL DEFAULT '',
-  `webserver_log_time_period` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`webserver_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_web_server_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_web_server`
---
-
-LOCK TABLES `sys_sw_web_server` WRITE;
-/*!40000 ALTER TABLE `sys_sw_web_server` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_web_server` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_sw_web_server_ext`
---
-
-DROP TABLE IF EXISTS `sys_sw_web_server_ext`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_web_server_ext` (
-  `ext_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `webserver_id` int(10) unsigned DEFAULT NULL,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `ext_name` varchar(100) NOT NULL DEFAULT '',
-  `ext_path` varchar(100) NOT NULL DEFAULT '',
-  `ext_access` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`ext_id`),
-  KEY `webserver_id` (`webserver_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_web_server_extn_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `sys_sw_web_server_extn_server_id` FOREIGN KEY (`webserver_id`) REFERENCES `sys_sw_web_server` (`webserver_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_web_server_ext`
---
-
-LOCK TABLES `sys_sw_web_server_ext` WRITE;
-/*!40000 ALTER TABLE `sys_sw_web_server_ext` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_web_server_ext` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_sw_web_site`
---
-
-DROP TABLE IF EXISTS `sys_sw_web_site`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_web_site` (
-  `site_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `webserver_id` int(10) unsigned DEFAULT NULL,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `site_internal_id` int(12) unsigned DEFAULT NULL,
-  `site_description` varchar(100) NOT NULL DEFAULT '',
-  `site_state` varchar(100) NOT NULL DEFAULT '',
-  `site_logging` varchar(100) NOT NULL DEFAULT '',
-  `site_log_format` varchar(100) NOT NULL DEFAULT '',
-  `site_log_directory` varchar(100) NOT NULL DEFAULT '',
-  `site_log_rotation` varchar(100) NOT NULL DEFAULT '',
-  `site_secure_ip` varchar(100) NOT NULL DEFAULT '',
-  `site_secure_port` varchar(100) NOT NULL DEFAULT '',
-  `site_path` varchar(100) NOT NULL DEFAULT '',
-  `site_size` varchar(100) NOT NULL DEFAULT '',
-  `site_app_pool` varchar(100) NOT NULL DEFAULT '',
-  `site_directory_browsing` varchar(100) NOT NULL DEFAULT '',
-  `site_anon_user` varchar(100) NOT NULL DEFAULT '',
-  `site_anon_auth` varchar(100) NOT NULL DEFAULT '',
-  `site_basic_auth` varchar(100) NOT NULL DEFAULT '',
-  `site_ntlm_auth` varchar(100) NOT NULL DEFAULT '',
-  `site_ssl_enabled` varchar(100) NOT NULL DEFAULT '',
-  `site_ssl_128_enabled` varchar(100) NOT NULL DEFAULT '',
-  `site_default_documents` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`site_id`),
-  KEY `webserver_id` (`webserver_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_web_site_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `sys_sw_web_site_server_id` FOREIGN KEY (`webserver_id`) REFERENCES `sys_sw_web_server` (`webserver_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_web_site`
---
-
-LOCK TABLES `sys_sw_web_site` WRITE;
-/*!40000 ALTER TABLE `sys_sw_web_site` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_web_site` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_sw_web_site_header`
---
-
-DROP TABLE IF EXISTS `sys_sw_web_site_header`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_web_site_header` (
-  `header_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `site_id` int(10) unsigned DEFAULT NULL,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `header_address` varchar(30) NOT NULL DEFAULT '',
-  `header_port` varchar(100) NOT NULL DEFAULT '',
-  `header_hostname` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`header_id`),
-  KEY `site_id` (`site_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_web_site_header_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `sys_sw_web_site_header_site_id` FOREIGN KEY (`site_id`) REFERENCES `sys_sw_web_site` (`site_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_web_site_header`
---
-
-LOCK TABLES `sys_sw_web_site_header` WRITE;
-/*!40000 ALTER TABLE `sys_sw_web_site_header` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_web_site_header` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_sw_web_site_virtual`
---
-
-DROP TABLE IF EXISTS `sys_sw_web_site_virtual`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_web_site_virtual` (
-  `virtual_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `site_id` int(10) unsigned DEFAULT NULL,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `virtual_name` varchar(100) NOT NULL DEFAULT '',
-  `virtual_path` varchar(100) NOT NULL DEFAULT '',
-  `virtual_app_pool` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`virtual_id`),
-  KEY `site_id` (`site_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_web_site_virtual_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `sys_sw_web_site_virtual_site_id` FOREIGN KEY (`site_id`) REFERENCES `sys_sw_web_site` (`site_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_web_site_virtual`
---
-
-LOCK TABLES `sys_sw_web_site_virtual` WRITE;
-/*!40000 ALTER TABLE `sys_sw_web_site_virtual` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_web_site_virtual` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

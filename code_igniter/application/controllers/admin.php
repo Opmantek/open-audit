@@ -3865,7 +3865,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
             $sql[] = "ALTER TABLE sys_hw_hard_drive ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
-            $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE `timestamp` last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_manufacturer manufacturer varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_model model varchar(100) NOT NULL DEFAULT '' AFTER manufacturer";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_serial serial varchar(100) NOT NULL DEFAULT '' AFTER model";
@@ -3882,6 +3882,19 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_firmware firmware varchar(100) NOT NULL DEFAULT '' AFTER status";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_model_family model_family varchar(200) NOT NULL DEFAULT '' AFTER firmware";
             $sql[] = "RENAME TABLE sys_hw_hard_drive TO disk";
+
+            # dns
+            $sql[] = "DELETE sys_sw_dns FROM sys_sw_dns LEFT JOIN system ON system.system_id = sys_sw_dns.system_id WHERE sys_sw_dns.timestamp <> system.timestamp";
+            $sql[] = "DELETE sys_sw_dns FROM sys_sw_dns WHERE (dns_name = '' AND dns_full_name = '')";
+            $sql[] = "ALTER TABLE sys_sw_dns CHANGE dns_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_sw_dns CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_sw_dns ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_dns CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_dns CHANGE `timestamp` last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_dns CHANGE dns_name name varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_sw_dns CHANGE dns_full_name fqdn varchar(200) NOT NULL DEFAULT '' AFTER name";
+            $sql[] = "ALTER TABLE sys_sw_dns CHANGE dns_ip_address ip varchar(45) NOT NULL DEFAULT '' AFTER fqdn";
+            $sql[] = "RENAME TABLE sys_sw_dns TO dns";
 
             # graphs
             $sql[] = "DROP TABLE IF EXISTS sys_hw_graph";
