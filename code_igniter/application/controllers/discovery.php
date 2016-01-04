@@ -750,7 +750,6 @@ class discovery extends CI_Controller
             $this->load->model('m_system');
             $this->load->model('m_ip_address');
             $this->load->model('m_virtual_machine');
-            $this->load->model('m_module');
             $this->load->model('m_oa_group');
             $this->load->model('m_oa_general');
             $this->load->model('m_sys_man_audits');

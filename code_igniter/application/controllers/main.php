@@ -667,28 +667,6 @@ class main extends MY_Controller
         $this->load->view('v_template', $this->data);
     }
 
-    public function database_graph()
-    {
-        $this->load->model("m_database_details");
-        $this->load->model("m_system");
-        $this->data['system_id'] = $this->uri->segment(3, 0);
-        $this->data['database_id'] = $this->uri->segment(4, 0);
-        $this->data['days'] = $this->uri->segment(5, 0);
-        if ($this->data['days'] > "0") {
-            //
-        } else {
-            $this->data['days'] = "30";
-        }
-        $this->data['query'] = $this->m_database_details->get_database_graph($this->data['system_id'], $this->data['database_id'], $this->data['days']);
-        $this->data['count'] = count($this->data['query']);
-        $this->data['include'] = 'v_database_graph';
-        $this->data['sortcolumn'] = '0';
-        $system_name = $this->m_system->get_system_hostname($this->data['system_id']);
-        $this->data['heading'] = 'Storage use for '.$system_name;
-        #$this->data['database_details'] = $this->m_partition->get_partition_details($this->data['partition_id']);
-        $this->load->view('v_template', $this->data);
-    }
-
     public function help_about()
     {
         $this->data['heading'] = 'About Open-AudIT';
