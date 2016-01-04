@@ -50,7 +50,9 @@
 		<option value='general'><?php echo __('General'); ?></option>
 		<option value='location'><?php echo __('Location'); ?></option>
 		<option value='network'><?php echo __('Network'); ?></option>
+		<option value='org' <?php if ($group_data->group_category == 'org') { echo "selected";} ?>><?php echo __('Organisation')?></option>
 		<option value='os'><?php echo __('Operating System'); ?></option>
+		<option value='owner' <?php if ($group_data->group_category == 'owner') { echo "selected";} ?>><?php echo __('Owner')?></option>
 	</select>
 </fieldset>
 <p><br /></p>
