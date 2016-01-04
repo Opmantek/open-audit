@@ -192,7 +192,6 @@ class main extends MY_Controller
                 'system',
                 'oa_alert_log', 'oa_audit_log', 'sys_sw_group',
                 'sys_hw_network_card_ip',
-                'sys_hw_partition',
                 'sys_man_audits',
                 'sys_sw_route',
                 'sys_sw_software',
@@ -219,7 +218,7 @@ class main extends MY_Controller
                     $document["$table"] = $result;
                 }
             }
-            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'processor', 'netstat', 'network', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
+            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'netstat', 'network', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
@@ -254,7 +253,7 @@ class main extends MY_Controller
         if (isset($system_id) and $system_id != '') {
             $this->load->model('m_oa_general');
             $document = array();
-            $list = array('system', 'sys_sw_group', 'sys_hw_network_card_ip', 'sys_hw_partition', 'sys_sw_route', 'sys_sw_variable');
+            $list = array('system', 'sys_sw_group', 'sys_hw_network_card_ip', 'sys_sw_route', 'sys_sw_variable');
             foreach ($list as $table) {
                 $result = $this->m_oa_general->get_system_document_api($table, $system_id);
                 if (is_array($result) and count($result) != 0) {
@@ -277,7 +276,7 @@ class main extends MY_Controller
                     $document["$table"] = $result;
                 }
             }
-            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'processor', 'netstat', 'network', 'scsi', 'service', 'share', 'software', 'sound', 'user', 'video', 'windows');
+            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'netstat', 'network', 'scsi', 'service', 'share', 'software', 'sound', 'user', 'video', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
@@ -648,8 +647,8 @@ class main extends MY_Controller
 
     public function disk_graph()
     {
-        $this->load->model("m_partition");
         $this->load->model("m_system");
+        $this->load->model("m_devices_components");
         $this->data['system_id'] = $this->uri->segment(3, 0);
         $this->data['partition_id'] = $this->uri->segment(4, 0);
         $this->data['days'] = $this->uri->segment(5, 0);
@@ -658,13 +657,13 @@ class main extends MY_Controller
         } else {
             $this->data['days'] = "30";
         }
-        $this->data['query'] = $this->m_partition->get_partition_graph($this->data['system_id'], $this->data['partition_id'], $this->data['days']);
+        $this->data['query'] = $this->m_devices_components->graph($this->data['system_id'], $this->data['partition_id'], 'partition', $this->data['days']);
         $this->data['count'] = count($this->data['query']);
         $this->data['include'] = 'v_partition_graph';
         $this->data['sortcolumn'] = '0';
         $system_name = $this->m_system->get_system_hostname($this->data['system_id']);
         $this->data['heading'] = 'Storage use for '.$system_name;
-        $this->data['partition_details'] = $this->m_partition->get_partition_details($this->data['partition_id']);
+        $this->data['partition_details'] = $this->m_devices_components->read($this->data['system_id'], 'y', 'partition', 'AND id = \'' . $this->data['partition_id'] . '\'');
         $this->load->view('v_template', $this->data);
     }
 
@@ -889,7 +888,6 @@ class main extends MY_Controller
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
         $this->load->model("m_pagefile");
-        $this->load->model("m_partition");
         $this->load->model("m_print_queue");
         $this->load->model("m_printer");
         $this->load->model("m_route");
@@ -916,6 +914,7 @@ class main extends MY_Controller
         $this->data['netstat'] = $this->m_devices_components->read($this->data['id'], 'y', 'netstat');
         $this->data['network'] = $this->m_devices_components->read($this->data['id'], 'y', 'network');
         $this->data['optical'] = $this->m_devices_components->read($this->data['id'], 'y', 'optical');
+        $this->data['partition'] = $this->m_devices_components->read($this->data['id'], 'y', 'partition');
         $this->data['processor'] = $this->m_devices_components->read($this->data['id'], 'y', 'processor');
         $this->data['scsi'] = $this->m_devices_components->read($this->data['id'], 'y', 'scsi');
         $this->data['share'] = $this->m_devices_components->read($this->data['id'], 'y', 'share');
@@ -941,7 +940,6 @@ class main extends MY_Controller
         $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['orgs'] = $this->m_oa_org->get_all_orgs();
-        $this->data['partition'] = $this->m_partition->get_system_partition($this->data['id']);
         $this->data['pagefile'] = $this->m_pagefile->get_system_pagefile($this->data['id']);
         $this->data['print_queue'] = $this->m_print_queue->get_print_queue($this->data['id']);
         $this->data['printer'] = $this->m_printer->get_system_printer($this->data['id']);

@@ -1713,22 +1713,14 @@ on error resume next
 		Instr(objItem.Caption, "DameWare") = 0 AND _
 		Instr(objItem.Caption, "Innobec SideWindow") = 0 AND _
 		Instr(objItem.Caption, "ConfigMgr Remote Control Driver") = 0 AND _
+		Instr(objItem.Caption, "Mirage Driver") = 0 AND _
+		Instr(objItem.Caption, "VNC Mirror Driver") = 0 AND _
 		Instr(objItem.Caption, "Microsoft SMS Mirror Driver") = 0) then
 		item = item & "		<item>" & vbcrlf
 		item = item & "			<model>" & escape_xml(objItem.Name) & "</model>" & vbcrlf
 		item = item & "			<device>" & escape_xml(objItem.PNPDeviceID) & "</device>" & vbcrlf
 		item = item & "			<manufacturer>" & escape_xml(objItem.AdapterCompatibility) & "</manufacturer>" & vbcrlf
 		item = item & "			<size>" & escape_xml(int(objItem.AdapterRAM /1024 /1024)) & "</size>" & vbcrlf
-	'	device_id = objItem.PNPDeviceID
-	'	query = "Select * from Win32_PnPSignedDriver where DeviceID = '" & device_id & "'"
-	'	wscript.echo query
-	'	set colItems2 = objWMIService.ExecQuery(query,,32)
-	'	for each objItem2 in colItems2
-	'		driver_date = CDate(Mid(objItem2.DriverDate, 5, 2) & "/" & Mid(objItem2.DriverDate, 7, 2) & "/" & Left(objItem2.DriverDate, 4) & " " & Mid (objItem2.DriverDate, 9, 2) & ":" & Mid(objItem2.DriverDate, 11, 2) & ":" & Mid(objItem2.DriverDate,13, 2))
-	'		driver_version = objItem2.DriverVersion
-	'		item = item & "			<video_driver_date>" & escape_xml(driver_date) & "</video_driver_date>" & vbcrlf
-	'		item = item & "			<video_driver_version>" & escape_xml(driver_version) & "</video_driver_version>" & vbcrlf
-	'	next
 		item = item & "		</item>" & vbcrlf
 		end if
 	next
@@ -2206,31 +2198,28 @@ for each objPartition In colPartitions
 	partition_serial 		= objPartition.VolumeSerialNumber
 
 	if ( objPartition.DriveType = "2") then
-		partition_type = "Removable Disk"
+		partition_type = "local removable"
 	end if
 	if ( objPartition.DriveType = "3") then
-		partition_type = "Local Disk"
+		partition_type = "local"
 	end if
 
 	if (partition_size > "") then
-		result_partition = result_partition & "		<partition>" & vbcrlf
+		result_partition = result_partition & "		<item>" & vbcrlf
 		result_partition = result_partition & "			<hard_drive_index>" & escape_xml(partition_disk_index) & "</hard_drive_index>" & vbcrlf
-		result_partition = result_partition & "			<partition_mount_type>partition</partition_mount_type>" & vbcrlf
-		result_partition = result_partition & "			<partition_mount_point>" & escape_xml(partition_mount_point) & "</partition_mount_point>" & vbcrlf
-		result_partition = result_partition & "			<partition_name>" & escape_xml(partition_name) & "</partition_name>" & vbcrlf
-		result_partition = result_partition & "			<partition_size>" & escape_xml(partition_size) & "</partition_size>" & vbcrlf
-		result_partition = result_partition & "			<partition_free_space>" & escape_xml(partition_free_space) & "</partition_free_space>" & vbcrlf
-		result_partition = result_partition & "			<partition_used_space>" & escape_xml(partition_used_space) & "</partition_used_space>" & vbcrlf
-		result_partition = result_partition & "			<partition_format>" & escape_xml(partition_format) & "</partition_format>" & vbcrlf
-		result_partition = result_partition & "			<partition_caption>" & escape_xml(partition_caption) & "</partition_caption>" & vbcrlf
-		result_partition = result_partition & "			<partition_device_id>" & escape_xml(partition_device_id) & "</partition_device_id>" & vbcrlf
+		result_partition = result_partition & "			<mount_type>partition</mount_type>" & vbcrlf
+		result_partition = result_partition & "			<mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
+		result_partition = result_partition & "			<name>" & escape_xml(partition_name) & "</name>" & vbcrlf
+		result_partition = result_partition & "			<size>" & escape_xml(partition_size) & "</size>" & vbcrlf
+		result_partition = result_partition & "			<free>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
+		result_partition = result_partition & "			<used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
+		result_partition = result_partition & "			<format>" & escape_xml(partition_format) & "</format>" & vbcrlf
+		result_partition = result_partition & "			<description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
+		result_partition = result_partition & "			<device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
 		result_partition = result_partition & "			<partition_disk_index></partition_disk_index>" & vbcrlf
-		result_partition = result_partition & "			<partition_bootable></partition_bootable>" & vbcrlf
-		result_partition = result_partition & "			<partition_type>" & escape_xml(partition_type) & "</partition_type>" & vbcrlf
-		result_partition = result_partition & "			<partition_quotas_supported></partition_quotas_supported>" & vbcrlf
-		result_partition = result_partition & "			<partition_quotas_enabled></partition_quotas_enabled>" & vbcrlf
-		result_partition = result_partition & "			<partition_serial>" & escape_xml(partition_serial) & "</partition_serial>" & vbcrlf
-		result_partition = result_partition & "		</partition>" & vbcrlf
+		result_partition = result_partition & "			<type>" & escape_xml(partition_type) & "</type>" & vbcrlf
+		result_partition = result_partition & "			<serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
+		result_partition = result_partition & "		</item>" & vbcrlf
 	end if
 next
 
@@ -2252,7 +2241,6 @@ if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
 		partition_caption 		= objPartition.Caption
 		partition_serial 		= objPartition.VolumeSerialNumber
 		partition_provider_name = objPartition.ProviderName
-		partition_type 			= "Network Drive"
 
 		if (isnull(partition_name)) then
 			temp = split(partition_provider_name, "\")
@@ -2266,21 +2254,19 @@ if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
 		if (partition_size > "") then
 			result_partition = result_partition & "		<partition>" & vbcrlf
 			result_partition = result_partition & "			<hard_drive_index></hard_drive_index>" & vbcrlf
-			result_partition = result_partition & "			<partition_mount_type>partition</partition_mount_type>" & vbcrlf
-			result_partition = result_partition & "			<partition_mount_point>" & escape_xml(partition_mount_point) & "</partition_mount_point>" & vbcrlf
-			result_partition = result_partition & "			<partition_name>" & escape_xml(partition_name) & "</partition_name>" & vbcrlf
-			result_partition = result_partition & "			<partition_size>" & escape_xml(partition_size) & "</partition_size>" & vbcrlf
-			result_partition = result_partition & "			<partition_free_space>" & escape_xml(partition_free_space) & "</partition_free_space>" & vbcrlf
-			result_partition = result_partition & "			<partition_used_space>" & escape_xml(partition_used_space) & "</partition_used_space>" & vbcrlf
-			result_partition = result_partition & "			<partition_format>" & escape_xml(partition_format) & "</partition_format>" & vbcrlf
-			result_partition = result_partition & "			<partition_caption>" & escape_xml(partition_caption) & "</partition_caption>" & vbcrlf
-			result_partition = result_partition & "			<partition_device_id>" & escape_xml(partition_device_id) & "</partition_device_id>" & vbcrlf
+			result_partition = result_partition & "			<mount_type>mount point</mount_type>" & vbcrlf
+			result_partition = result_partition & "			<mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
+			result_partition = result_partition & "			<name>" & escape_xml(partition_name) & "</pname>" & vbcrlf
+			result_partition = result_partition & "			<size>" & escape_xml(partition_size) & "</size>" & vbcrlf
+			result_partition = result_partition & "			<freee>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
+			result_partition = result_partition & "			<used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
+			result_partition = result_partition & "			<format>" & escape_xml(partition_format) & "</format>" & vbcrlf
+			result_partition = result_partition & "			<description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
+			result_partition = result_partition & "			<device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
 			result_partition = result_partition & "			<partition_disk_index></partition_disk_index>" & vbcrlf
-			result_partition = result_partition & "			<partition_bootable></partition_bootable>" & vbcrlf
-			result_partition = result_partition & "			<partition_type>" & escape_xml(partition_type) & "</partition_type>" & vbcrlf
-			result_partition = result_partition & "			<partition_quotas_supported></partition_quotas_supported>" & vbcrlf
-			result_partition = result_partition & "			<partition_quotas_enabled></partition_quotas_enabled>" & vbcrlf
-			result_partition = result_partition & "			<partition_serial>" & escape_xml(partition_serial) & "</partition_serial>" & vbcrlf
+			result_partition = result_partition & "			<bootable></bootable>" & vbcrlf
+			result_partition = result_partition & "			<type>smb</type>" & vbcrlf
+			result_partition = result_partition & "			<serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
 			result_partition = result_partition & "		</partition>" & vbcrlf
 		end if
 	next
@@ -2301,34 +2287,31 @@ if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
 			mount_used_space = int(mount_size - mount_free_space)
 			mount_format 	 = mount.FileSystem
 			mount_serial 	 = mount.SerialNumber
-			mount_type 	 	 = "Volume"
 			if (mount_size > "") then
-				result_partition = result_partition & "		<partition>" & vbcrlf
+				result_partition = result_partition & "		<item>" & vbcrlf
 				result_partition = result_partition & "			<hard_drive_index></hard_drive_index>" & vbcrlf
-				result_partition = result_partition & "			<partition_mount_type>mount point</partition_mount_type>" & vbcrlf
-				result_partition = result_partition & "			<partition_mount_point>" & escape_xml(mount_caption) & "</partition_mount_point>" & vbcrlf
-				result_partition = result_partition & "			<partition_name>" & escape_xml(mount_name) & "</partition_name>" & vbcrlf
-				result_partition = result_partition & "			<partition_size>" & escape_xml(mount_size) & "</partition_size>" & vbcrlf
-				result_partition = result_partition & "			<partition_free_space>" & escape_xml(mount_free_space) & "</partition_free_space>" & vbcrlf
-				result_partition = result_partition & "			<partition_used_space>" & escape_xml(mount_used_space) & "</partition_used_space>" & vbcrlf
-				result_partition = result_partition & "			<partition_format>" & escape_xml(mount_format) & "</partition_format>" & vbcrlf
-				result_partition = result_partition & "			<partition_caption>" & escape_xml(mount_caption) & "</partition_caption>" & vbcrlf
-				result_partition = result_partition & "			<partition_device_id></partition_device_id>" & vbcrlf
+				result_partition = result_partition & "			<mount_type>mount point</mount_type>" & vbcrlf
+				result_partition = result_partition & "			<mount_point>" & escape_xml(mount_caption) & "</mount_point>" & vbcrlf
+				result_partition = result_partition & "			<name>" & escape_xml(mount_name) & "</name>" & vbcrlf
+				result_partition = result_partition & "			<size>" & escape_xml(mount_size) & "</size>" & vbcrlf
+				result_partition = result_partition & "			<free>" & escape_xml(mount_free_space) & "</free>" & vbcrlf
+				result_partition = result_partition & "			<used>" & escape_xml(mount_used_space) & "</used>" & vbcrlf
+				result_partition = result_partition & "			<format>" & escape_xml(mount_format) & "</format>" & vbcrlf
+				result_partition = result_partition & "			<description>" & escape_xml(mount_caption) & "</description>" & vbcrlf
+				result_partition = result_partition & "			<device></device>" & vbcrlf
 				result_partition = result_partition & "			<partition_disk_index></partition_disk_index>" & vbcrlf
-				result_partition = result_partition & "			<partition_type>" & escape_xml(mount_type) & "</partition_type>" & vbcrlf
-				result_partition = result_partition & "			<partition_quotas_supported></partition_quotas_supported>" & vbcrlf
-				result_partition = result_partition & "			<partition_quotas_enabled></partition_quotas_enabled>" & vbcrlf
-				result_partition = result_partition & "			<partition_serial>" & escape_xml(mount_serial) & "</partition_serial>" & vbcrlf
-				result_partition = result_partition & "		</partition>" & vbcrlf
+				result_partition = result_partition & "			<type>volume</type>" & vbcrlf
+				result_partition = result_partition & "			<serial>" & escape_xml(mount_serial) & "</serial>" & vbcrlf
+				result_partition = result_partition & "		</item>" & vbcrlf
 			end if
 		next
 	On Error Goto 0
 end if
 
 if result_partition > "" then
-	result.WriteText "	<partitions>" & vbcrlf
+	result.WriteText "	<partition>" & vbcrlf
 	result.WriteText 	result_partition
-	result.WriteText "	</partitions>" & vbcrlf
+	result.WriteText "	</partition>" & vbcrlf
 end if
 
 

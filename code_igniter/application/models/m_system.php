@@ -1629,12 +1629,12 @@ class M_system extends MY_Model
             //         'sys_sw_web_site_header', 'sys_sw_web_site_virtual', 'sys_sw_windows', );
             // }
             # as at 1.10 - we don't need to do this for every table
-            $table_array = array('sys_hw_partition', 'sys_hw_warranty',
+            $table_array = array('sys_hw_network_card_ip',
                     'sys_sw_dns', 'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
                     'sys_sw_route', 'sys_sw_scheduled_task',
                     'sys_sw_variable', 'sys_sw_virtual_machine');
             } else {
-                $table_array = array('sys_hw_partition', 'sys_hw_warranty',
+                $table_array = array('sys_hw_network_card_ip',
                     'sys_sw_dns', 'sys_sw_group', 'sys_sw_pagefile', 'sys_sw_print_queue',
                     'sys_sw_route', 'sys_sw_scheduled_task',
                     'sys_sw_variable');

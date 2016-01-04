@@ -326,8 +326,8 @@ class report extends MY_Controller
         } else {
             $this->data['heading'] = 'Partition '.number_format($days).' Days Alert for All Devices';
         }
-        $this->load->model("m_partition");
-        $this->data['query'] = $this->m_partition->partition_alert($this->data['id'], $this->user->user_id, $days);
+        $this->load->model("m_devices_components");
+        $this->data['query'] = $this->m_devices_components->partition_use_report($this->data['id'], $this->user->user_id, $days);
         $this->data['count'] = count($this->data['query']);
         $this->data['include'] = 'v_report_partition_alert';
         $this->data['sortcolumn'] = '0';

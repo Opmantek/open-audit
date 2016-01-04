@@ -181,7 +181,6 @@ class System extends CI_Controller
         $this->load->model('m_group');
         $this->load->model('m_ip_address');
         $this->load->model('m_pagefile');
-        $this->load->model('m_partition');
         $this->load->model('m_print_queue');
         $this->load->model('m_printer');
         $this->load->model('m_route');
@@ -365,6 +364,7 @@ class System extends CI_Controller
         $this->m_devices_components->process_component('netstat', $details, $xml->netstat);
         $this->m_devices_components->process_component('network', $details, $xml->network);
         $this->m_devices_components->process_component('optical', $details, $xml->optical);
+        $this->m_devices_components->process_component('partition', $details, $xml->partition);
         $this->m_devices_components->process_component('processor', $details, $xml->processor);
         $this->m_devices_components->process_component('service', $details, $xml->service);
         $this->m_devices_components->process_component('scsi', $details, $xml->scsi);
@@ -418,12 +418,6 @@ class System extends CI_Controller
                 $this->m_sys_man_audits->update_audit($details, $child->getName());
                 foreach ($xml->pagefiles->pagefile as $input) {
                     $this->m_pagefile->process_pagefile($input, $details);
-                }
-            }
-            if ($child->getName() === 'partitions') {
-                $this->m_sys_man_audits->update_audit($details, $child->getName());
-                foreach ($xml->partitions->partition as $input) {
-                    $this->m_partition->process_partitions($input, $details);
                 }
             }
             if ($child->getName() === 'printers') {

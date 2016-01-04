@@ -1571,6 +1571,10 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 			partition_mount_type=$(trim "$partition_mount_type")
 			if [ "$partition_mount_type" = "part" ]; then
 				partition_mount_type="partition"
+				partition_type="local"
+			else
+				partition_mount_type="mount point"
+				partition_type="$partition_mount_type"
 			fi
 
 			#partition_mount_point=$(lsblk -lndo MOUNTPOINT /dev/"$partition" 2>/dev/null)
@@ -1597,7 +1601,6 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 			partition_device_id="/dev/$partition"
 			partition_disk_index="$disk"
 			partition_bootable=""
-			partition_type="$partition_mount_type"
 			partition_quotas_supported=""
 			partition_quotas_enabled=""
 
@@ -1621,24 +1624,21 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 				partition_free_space=$(free -m | grep -i swap | awk '{print $4}')
 			fi
 
-			partition_result=$partition_result"		<partition>\n"
+			partition_result=$partition_result"		<item>\n"
+			partition_result=$partition_result"			<serial>$(escape_xml "$partition_serial")</serial>\n"
+			partition_result=$partition_result"			<name>$(escape_xml "$partition_name")</name>\n"
+			partition_result=$partition_result"			<description>$(escape_xml "$partition_caption")</description>\n"
+			partition_result=$partition_result"			<device>$(escape_xml "$partition_device_id")</device>\n"
 			partition_result=$partition_result"			<hard_drive_index>$(escape_xml "$partition_disk_index")</hard_drive_index>\n"
-			partition_result=$partition_result"			<partition_mount_type>$(escape_xml "$partition_mount_type")</partition_mount_type>\n"
-			partition_result=$partition_result"			<partition_mount_point>$(escape_xml "$partition_mount_point")</partition_mount_point>\n"
-			partition_result=$partition_result"			<partition_name>$(escape_xml "$partition_name")</partition_name>\n"
-			partition_result=$partition_result"			<partition_size>$(escape_xml "$partition_size")</partition_size>\n"
-			partition_result=$partition_result"			<partition_free_space>$(escape_xml "$partition_free_space")</partition_free_space>\n"
-			partition_result=$partition_result"			<partition_used_space>$(escape_xml "$partition_used_space")</partition_used_space>\n"
-			partition_result=$partition_result"			<partition_format>$(escape_xml "$partition_format")</partition_format>\n"
-			partition_result=$partition_result"			<partition_caption>$(escape_xml "$partition_caption")</partition_caption>\n"
-			partition_result=$partition_result"			<partition_device_id>$(escape_xml "$partition_device_id")</partition_device_id>\n"
 			partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n"
-			partition_result=$partition_result"			<partition_bootable></partition_bootable>\n"
-			partition_result=$partition_result"			<partition_type>$(escape_xml "$partition_type")</partition_type>\n"
-			partition_result=$partition_result"			<partition_quotas_supported></partition_quotas_supported>\n"
-			partition_result=$partition_result"			<partition_quotas_enabled></partition_quotas_enabled>\n"
-			partition_result=$partition_result"			<partition_serial>$(escape_xml "$partition_serial")</partition_serial>\n"
-			partition_result=$partition_result"		</partition>"
+			partition_result=$partition_result"			<mount_type>$(escape_xml "$partition_mount_type")</mount_type>\n"
+			partition_result=$partition_result"			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>\n"
+			partition_result=$partition_result"			<size>$(escape_xml "$partition_size")</size>\n"
+			partition_result=$partition_result"			<free>$(escape_xml "$partition_free_space")</free>\n"
+			partition_result=$partition_result"			<used>$(escape_xml "$partition_used_space")</used>\n"
+			partition_result=$partition_result"			<format>$(escape_xml "$partition_format")</format>\n"
+			partition_result=$partition_result"			<type>$(escape_xml "$partition_type")</type>\n"
+			partition_result=$partition_result"		</item>"
 
 		fi
 	done
@@ -1673,36 +1673,34 @@ for mount in $(mount -l -t nfs,nfs2,nfs3,nfs4 2>/dev/null); do
 	partition_disk_index=""
 	partition_type="NFS Mount"
 	partition_serial=""
-	partition_result=$partition_result"		<partition>\n"
+	partition_result=$partition_result"		<item>\n"
+	partition_result=$partition_result"			<serial>$(escape_xml "$partition_serial")</serial>\n"
+	partition_result=$partition_result"			<name>$(escape_xml "$partition_name")</name>\n"
+	partition_result=$partition_result"			<description>$(escape_xml "$partition_caption")</description>\n"
+	partition_result=$partition_result"			<device>$(escape_xml "$partition_device_id")</device>\n"
 	partition_result=$partition_result"			<hard_drive_index></hard_drive_index>\n"
-	partition_result=$partition_result"			<partition_mount_type>NFS Mount</partition_mount_type>\n"
-	partition_result=$partition_result"			<partition_mount_point>$(escape_xml "$partition_mount_point")</partition_mount_point>\n"
-	partition_result=$partition_result"			<partition_name>$(escape_xml "$partition_name")</partition_name>\n"
-	partition_result=$partition_result"			<partition_size>$(escape_xml "$partition_size")</partition_size>\n"
-	partition_result=$partition_result"			<partition_free_space>$(escape_xml "$partition_free_space")</partition_free_space>\n"
-	partition_result=$partition_result"			<partition_used_space>$(escape_xml "$partition_used_space")</partition_used_space>\n"
-	partition_result=$partition_result"			<partition_format>$(escape_xml "$partition_format")</partition_format>\n"
-	partition_result=$partition_result"			<partition_caption>$(escape_xml "$partition_caption")</partition_caption>\n"
-	partition_result=$partition_result"			<partition_device_id>$(escape_xml "$partition_device_id")</partition_device_id>\n"
 	partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n"
-	partition_result=$partition_result"			<partition_bootable></partition_bootable>\n"
-	partition_result=$partition_result"			<partition_type>$(escape_xml "$partition_type")</partition_type>\n"
-	partition_result=$partition_result"			<partition_quotas_supported></partition_quotas_supported>\n"
-	partition_result=$partition_result"			<partition_quotas_enabled></partition_quotas_enabled>\n"
-	partition_result=$partition_result"			<partition_serial>$(escape_xml "$partition_serial")</partition_serial>\n"
-	partition_result=$partition_result"		</partition>"
+	partition_result=$partition_result"			<mount_type>mount point</mount_type>\n"
+	partition_result=$partition_result"			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>\n"
+	partition_result=$partition_result"			<size>$(escape_xml "$partition_size")</size>\n"
+	partition_result=$partition_result"			<free>$(escape_xml "$partition_free_space")</free>\n"
+	partition_result=$partition_result"			<used>$(escape_xml "$partition_used_space")</used>\n"
+	partition_result=$partition_result"			<format>$(escape_xml "$partition_format")</format>\n"
+	partition_result=$partition_result"			<bootable></bootable>\n"
+	partition_result=$partition_result"			<type>nfs</type>\n"
+	partition_result=$partition_result"		</item>"
 done
 
 
 #####################################
-# PARTITION  AND NFS MOUNTS SECTION #
+# PARTITION AND NFS MOUNTS SECTION  #
 #####################################
 
 if [ -n "$partition_result" ]; then
 	{
-	echo "	<partitions>"
+	echo "	<partition>"
 	echo -e "$partition_result"
-	echo "	</partitions>"
+	echo "	</partition>"
 	} >> "$xml_file"
 fi
 

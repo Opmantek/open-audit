@@ -414,6 +414,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         <tr>
                             <th><?php echo __('Graph')?></th>
                             <th><?php echo __('Device ID')?></th>
+                            <th><?php echo __('Type')?></th>
                             <th><?php echo __('Mount Point')?></th>
                             <th><?php echo __('Name')?></th>
                             <th><?php echo __('Format')?></th>
@@ -428,14 +429,15 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         <?php if ($key_partition->hard_drive_index == $key->hard_drive_index): ?>
                         <?php $partition_count++; ?>
                             <tr>
-                                <td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo intval($system_id)."/".print_something($key_partition->partition_id)?>"><img src='<?php echo $oa_theme_images; ?>/16_graph.png' alt='' title='' /></a></td>
-                                <td><?php echo print_something($key_partition->partition_device_id)?></td>
-                                <td><?php echo print_something($key_partition->partition_mount_point)?></td>
-                                <td><?php echo print_something($key_partition->partition_name)?></td>
-                                <td><?php echo print_something($key_partition->partition_format)?></td>
-                                <td><?php echo number_format($key_partition->partition_size)?> MiB&nbsp;</td>
-                                <td><?php echo number_format($key_partition->partition_used_space)?> MiB&nbsp;</td>
-                                <td><?php echo number_format($key_partition->partition_free_space)?> MiB&nbsp;</td>
+                                <td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo intval($system_id)."/".print_something($key_partition->id)?>"><img src='<?php echo $oa_theme_images; ?>/16_graph.png' alt='' title='' /></a></td>
+                                <td><?php echo print_something($key_partition->device)?></td>
+                                <td><?php echo print_something($key_partition->type) . ' ' . print_something($key_partition->mount_type)?></td>
+                                <td><?php echo print_something($key_partition->mount_point)?></td>
+                                <td><?php echo print_something($key_partition->name)?></td>
+                                <td><?php echo print_something($key_partition->format)?></td>
+                                <td><?php echo number_format($key_partition->size)?> MiB&nbsp;</td>
+                                <td><?php echo number_format($key_partition->used)?> MiB&nbsp;</td>
+                                <td><?php echo number_format($key_partition->free)?> MiB&nbsp;</td>
                             </tr>
                         <?php endif; ?>
                     <?php endforeach; ?>

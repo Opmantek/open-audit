@@ -338,24 +338,22 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
         partition_caption=$(diskutil info "$disk" | grep "^ " | grep "Volume Name:" | cut -d":" -f2- | sed 's/^ *//g')
         partition_disk_index=$(system_profiler SPStorageDataType | grep "Volume UUID: $partition_device_id" -A20 | grep "Physical Volumes:" -A1 | grep -v "Physical" | cut -d":" -f1 | sed 's/^ *//g')
         partition_used_space=$(echo "$partition_size - $partition_free_space" | bc | cut -d"." -f1)
-        partition_each="$partition_each       <partition>"$'\n'
+        partition_each="$partition_each       <item>"$'\n'
+        partition_each="$partition_each           <serial>$partition_serial</serial>"$'\n'
         partition_each="$partition_each           <hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
-        partition_each="$partition_each           <partition_mount_type>partition</partition_mount_type>"$'\n'
-        partition_each="$partition_each           <partition_mount_point>$partition_mount_point</partition_mount_point>"$'\n'
-        partition_each="$partition_each           <partition_name>$partition_name</partition_name>"$'\n'
-        partition_each="$partition_each           <partition_size>$partition_size</partition_size>"$'\n'
-        partition_each="$partition_each           <partition_free_space>$partition_free_space</partition_free_space>"$'\n'
-        partition_each="$partition_each           <partition_used_space>$partition_used_space</partition_used_space>"$'\n'
-        partition_each="$partition_each           <partition_format>$partition_format</partition_format>"$'\n'
-        partition_each="$partition_each           <partition_caption>$partition_caption</partition_caption>"$'\n'
-        partition_each="$partition_each           <partition_device_id>$partition_device_id</partition_device_id>"$'\n'
+        partition_each="$partition_each           <mount_type>partition</mount_type>"$'\n'
+        partition_each="$partition_each           <mount_point>$partition_mount_point</mount_point>"$'\n'
+        partition_each="$partition_each           <name>$partition_name</name>"$'\n'
+        partition_each="$partition_each           <size>$partition_size</size>"$'\n'
+        partition_each="$partition_each           <free>$partition_free_space</free>"$'\n'
+        partition_each="$partition_each           <used>$partition_used_space</used>"$'\n'
+        partition_each="$partition_each           <format>$partition_format</format>"$'\n'
+        partition_each="$partition_each           <description>$partition_caption</description>"$'\n'
+        partition_each="$partition_each           <device>$partition_device_id</device>"$'\n'
         partition_each="$partition_each           <partition_disk_index>$partition_disk_index</partition_disk_index>"$'\n'
-        partition_each="$partition_each           <partition_bootable></partition_bootable>"$'\n'
-        partition_each="$partition_each           <partition_type>local hard disk</partition_type>"$'\n'
-        partition_each="$partition_each           <partition_quotas_supported></partition_quotas_supported>"$'\n'
-        partition_each="$partition_each           <partition_quotas_enabled></partition_quotas_enabled>"$'\n'
-        partition_each="$partition_each           <partition_serial>$partition_serial</partition_serial>"$'\n'
-        partition_each="$partition_each       </partition>"$'\n'
+        partition_each="$partition_each           <bootable></bootable>"$'\n'
+        partition_each="$partition_each           <type>local</type>"$'\n'
+        partition_each="$partition_each       </item>"$'\n'
     else
         echo "      <item>" >> $xml_file
         echo "          <caption>$hard_drive_caption</caption>" >> $xml_file
@@ -385,30 +383,28 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
             partition_device_id=$(diskutil info "$partition" | grep "^ " | grep "Volume UUID:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
             partition_disk_index=$(diskutil info "$partition" | grep "^ " | grep "Device Identifier:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
             partition_used_space=$(echo "$partition_size - $partition_free_space" | bc | cut -d"." -f1)
-            partition_each="$partition_each       <partition>"$'\n'
+            partition_each="$partition_each       <item>"$'\n'
+            partition_each="$partition_each           <serial>$partition_serial</serial>"$'\n'
             partition_each="$partition_each           <hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
-            partition_each="$partition_each           <partition_mount_type>partition</partition_mount_type>"$'\n'
-            partition_each="$partition_each           <partition_mount_point>$partition_mount_point</partition_mount_point>"$'\n'
-            partition_each="$partition_each           <partition_name>$partition_name</partition_name>"$'\n'
-            partition_each="$partition_each           <partition_size>$partition_size</partition_size>"$'\n'
-            partition_each="$partition_each           <partition_free_space>$partition_free_space</partition_free_space>"$'\n'
-            partition_each="$partition_each           <partition_used_space>$partition_used_space</partition_used_space>"$'\n'
-            partition_each="$partition_each           <partition_format>$partition_format</partition_format>"$'\n'
-            partition_each="$partition_each           <partition_caption>$partition_caption</partition_caption>"$'\n'
-            partition_each="$partition_each           <partition_device_id>$partition_device_id</partition_device_id>"$'\n'
+            partition_each="$partition_each           <mount_type>partition</mount_type>"$'\n'
+            partition_each="$partition_each           <mount_point>$partition_mount_point</mount_point>"$'\n'
+            partition_each="$partition_each           <name>$partition_name</name>"$'\n'
+            partition_each="$partition_each           <size>$partition_size</size>"$'\n'
+            partition_each="$partition_each           <free>$partition_free_space</free>"$'\n'
+            partition_each="$partition_each           <used>$partition_used_space</used>"$'\n'
+            partition_each="$partition_each           <format>$partition_format</format>"$'\n'
+            partition_each="$partition_each           <>$partition_caption</description>"$'\n'
+            partition_each="$partition_each           <device>$partition_device_id</device>"$'\n'
             partition_each="$partition_each           <partition_disk_index>$partition_disk_index</partition_disk_index>"$'\n'
-            partition_each="$partition_each           <partition_bootable></partition_bootable>"$'\n'
-            partition_each="$partition_each           <partition_type>local hard disk</partition_type>"$'\n'
-            partition_each="$partition_each           <partition_quotas_supported></partition_quotas_supported>"$'\n'
-            partition_each="$partition_each           <partition_quotas_enabled></partition_quotas_enabled>"$'\n'
-            partition_each="$partition_each           <partition_serial>$partition_serial</partition_serial>"$'\n'
-            partition_each="$partition_each       </partition>"$'\n'
+            partition_each="$partition_each           <bootable></bootable>"$'\n'
+            partition_each="$partition_each           <type>local</type>"$'\n'
+            partition_each="$partition_each       </item>"$'\n'
         done
     fi
 done
 echo "  </disk>" >> $xml_file
-echo "   <partitions>" >> $xml_file
-echo "$partition_each</partitions>" >> $xml_file
+echo "   <partition>" >> $xml_file
+echo "$partition_each</partition>" >> $xml_file
 
 
 

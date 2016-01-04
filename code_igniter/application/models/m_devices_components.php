@@ -448,6 +448,8 @@ class M_devices_components extends MY_Model
                     //    typically in the Windows software listing
                     // unset($db_result[$key]);
                     $db_item->updated = 'y';
+                    // set the $id so we can link to this row from graph, etc tables
+                    $id = $db_item->id;
                     // stop the loop
                     break;
                 } else {
@@ -480,8 +482,6 @@ class M_devices_components extends MY_Model
                 $query = $this->db->query($sql, $data);
                 $id = $this->db->insert_id();
 
-
-
                 if ($alert and strtolower($create_alerts) == 'y') {
                     // We have existing items and this is a new item - raise an alert
                     $alert_details = '';
@@ -495,6 +495,15 @@ class M_devices_components extends MY_Model
                     $query = $this->db->query($sql, $data);
                 }
             }
+            if ($table == 'partition') {
+                // insert an entry into the graph table
+                $used_percent = intval(($input_item->used / $input_item->size) * 100);
+                $free_percent = intval(100 - $used_parcent);
+                $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $data = array(intval($details->system_id), "$table", intval($id), "$table", intval($used_percent),
+                    intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");
+                $query = $this->db->query($sql, $data);
+            }
         }
 
         // remove the duplicated DB_items
@@ -506,7 +515,7 @@ class M_devices_components extends MY_Model
 
         // we have now inserted or updated all items in the audit set
         // we have also unset any items that were inserted from the db set
-        // UPDATE any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
+        // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
         foreach ($db_result as $db_item) {
             $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
             $data = array($db_item->id);
@@ -841,6 +850,141 @@ class M_devices_components extends MY_Model
             }
         }
     }
+
+    public function graph($system_id, $linked_row, $type = 'partition', $days = 30)
+    {
+        if ($system_id == '' or !is_numeric($system_id)) {
+            # TODO - wrtie out a log entry
+            return;
+        }
+        if ($linked_row == '' or !is_numeric($linked_row)) {
+            return;
+        }
+        if (!is_numeric($days)) {
+           return;
+        }
+        $sql = "SELECT used_percent, DATE(timestamp) AS timestamp FROM graph WHERE system_id = ? AND linked_row = ? AND type = ? AND timestamp > adddate(current_date(), interval -".$days." day) GROUP BY DAY(timestamp) ORDER BY timestamp";
+        $sql = $this->clean_sql($sql);
+        $data = array($system_id, $linked_row, "$type");
+        $query = $this->db->query($sql, $data);
+        return ($query->result());
+    }
+
+    public function partition_use_report($group_id, $user_id, $days = '120')
+    {
+        $resultset = array();
+        $sql = "SELECT DISTINCT(system.system_id), hostname, man_status, man_function, man_criticality, man_environment, man_description, partition.id as partition_id, mount_point, partition.name as partition_name
+            FROM system, oa_group_sys, partition
+            WHERE
+                system.system_id = oa_group_sys.system_id AND
+                partition.current = 'y' AND
+                system.system_id = partition.system_id AND
+                partition.mount_point > '' AND
+                oa_group_sys.group_id = ? AND
+                partition.mount_point != ''
+            GROUP BY
+                system.hostname, partition.mount_point
+            ORDER BY
+                system.hostname,
+                partition.mount_point ";
+        $sql = $this->clean_sql($sql);
+        $data = array($group_id);
+        $query = $this->db->query($sql, $data);
+        $returned_data = array();
+        foreach ($query->result() as $system) {
+            $partition_sql = "SELECT id, round(AVG(used),0) AS used, size as total, used_percent as percent_used, free_percent as percent_free, DATE(`timestamp`) AS `timestamp` FROM graph WHERE system_id = ? AND linked_row = ? AND linked_table = 'partition' GROUP BY DATE(`timestamp`) ORDER BY `timestamp`";
+            $partition_sql = $this->clean_sql($partition_sql);
+            $data = array($system->system_id, $system->partition_id);
+            $partition_query = $this->db->query($partition_sql, $data);
+            $count = 0;
+            $current_date = '';
+            $prev_date = '';
+            $current_used = 0;
+            $prev_used = 0;
+            $days_between = 0;
+            $used_calc = 0;
+            $used_diff = 0;
+            $total_days = 0;
+            $total_use = 0;
+            $temp_partition = $partition_query->result();
+            if (count($temp_partition) > 0) {
+                foreach ($temp_partition as $partition) {
+                    $count++;
+                    if ($count > 1) {
+                        $current_date = strtotime($partition->timestamp);
+                        $prev_date = strtotime($prev_date);
+                        $days_between = round((($current_date - $prev_date) / 84600), 0);
+                        $current_used = $partition->used;
+                        if ($days_between < 2) {
+                            $days_between = 1;
+                        }
+                        $used_calc = ($current_used - $prev_used);
+                        if (($used_calc < 1) and ($used_calc > -500)) {
+                            $used_calc = abs($used_calc);
+                            $used_diff = round(($used_calc / $days_between), 2);
+                            $used_diff = $used_diff - (2* $used_diff);
+                        }
+                        if ($used_calc > 0) {
+                            $used_diff = round(($used_calc / $days_between), 2);
+                        }
+                        if ($used_calc < -499) {
+                            $used_diff = 0;
+                            $days_between = 0;
+                        }
+                    }
+                    $partition_id = $partition->id;
+                    $prev_used = $partition->used;
+                    $prev_date = $partition->timestamp;
+                    $total_days += $days_between;
+                    $total_use += $used_diff;
+                    $total = $partition->total;
+                    $partition_used_space = $partition->used;
+                }
+                if ($total_use < 1) {
+                    $total_use = 1;
+                }
+                if ($total_days < 1) {
+                    $total_days = 1;
+                }
+                if ($total < 1) {
+                    $total = 1;
+                }
+                if ($partition_used_space < 1) {
+                    $partition_used_space = 1;
+                }
+                $i = ceil($total_use / $total_days);
+                if ($i < 1) {
+                    $i = 1;
+                }
+                $days_until_full = round((($total - $partition_used_space) / $i), 2, 0);
+                if (intval($days_until_full) <= intval($days)) {
+                    $returned_row["system_id"] = $system->system_id;
+                    $returned_row["hostname"] = $system->hostname;
+                    $returned_row["partition_name"] = $system->partition_name;
+                    $returned_row["partition_mount_point"] = $system->mount_point;
+                    $returned_row["man_environment"] = $system->man_environment;
+                    $returned_row["man_description"] = $system->man_description;
+                    $returned_row["man_function"] = $system->man_function;
+                    $returned_row["man_criticality"] = $system->man_criticality;
+                    $returned_row["partition_id"] = $partition_id;
+                    $returned_row["partition_size"] = $total;
+                    $returned_row["partition_used_space"] = $partition_used_space;
+                    $returned_row["partition_free_space"] = ($total - $partition_used_space);
+                    #$returned_row["days_until_used"] = round(($total - $partition_used_space) / round(($total_use / $total_days), 2),0);
+                    $returned_row["days_until_used"] = $days_until_full;
+                    if ($returned_row["days_until_used"] == 0) {
+                        $returned_row["days_until_used"] = 'unknown';
+                    }
+                    $returned_row["change_per_day"] = round(($total_use / $total_days), 2);
+                    $resultset[] = $returned_row;
+                }
+            }
+        }
+
+        return ($resultset);
+    }
+
+
 
     /**
     * Pass in a resultset and have the integer columns return as INT types, not strings

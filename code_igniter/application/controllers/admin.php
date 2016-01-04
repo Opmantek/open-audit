@@ -3883,6 +3883,27 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_model_family model_family varchar(200) NOT NULL DEFAULT '' AFTER firmware";
             $sql[] = "RENAME TABLE sys_hw_hard_drive TO disk";
 
+            # graphs
+            $sql[] = "DROP TABLE IF EXISTS sys_hw_graph";
+            $sql[] = "CREATE TABLE `graph` (
+                        `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                        `system_id` int(10) unsigned DEFAULT NULL,
+                        `linked_table` varchar(100) NOT NULL DEFAULT '',
+                        `linked_row` varchar(100) NOT NULL DEFAULT '',
+                        `type` enum('disk','partition','directory','file','database','share','other') NOT NULL DEFAULT 'partition',
+                        `used_percent` tinyint unsigned NOT NULL DEFAULT '0',
+                        `free_percent` tinyint unsigned NOT NULL DEFAULT '0',
+                        `used` int unsigned NOT NULL DEFAULT '0',
+                        `free` int unsigned NOT NULL DEFAULT '0',
+                        `size` int unsigned NOT NULL DEFAULT '0',
+                        `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                        PRIMARY KEY (`id`), KEY `system_id` (`system_id`),
+                        CONSTRAINT `sys_hw_graph_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE)
+                        ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "INSERT INTO graph SELECT NULL, system_id, 'partition', partition_id, 'partition', used_percent, free_percent, used, free, total as size, `timestamp` FROM sys_hw_graphs_disk";
+            $sql[] = "DROP TABLE IF EXISTS sys_hw_graphs_disk";
+
+
             # log
             $sql[] = "DELETE sys_sw_log FROM sys_sw_log LEFT JOIN system ON system.system_id = sys_sw_log.system_id WHERE sys_sw_log.timestamp <> system.timestamp";
             $sql[] = "ALTER TABLE sys_sw_log CHANGE log_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -4014,6 +4035,40 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_network_card DROP KEY net_mac_address";
             $sql[] = "ALTER TABLE sys_hw_network_card ADD KEY mac (`mac`)";
             $sql[] = "RENAME TABLE sys_hw_network_card TO network";
+
+            # partition
+            $sql[] = "DELETE sys_hw_partition FROM sys_hw_partition LEFT JOIN system ON system.system_id = sys_hw_partition.system_id WHERE sys_hw_partition.timestamp <> system.timestamp";
+            $sql[] = "UPDATE sys_hw_partition SET partition_type = 'volume'                                         WHERE partition_type = 'Volume'";
+            $sql[] = "UPDATE sys_hw_partition SET partition_type = 'local'                                          WHERE partition_type = 'Local Disk'";
+            $sql[] = "UPDATE sys_hw_partition SET partition_type = 'local removable'                                WHERE partition_type = 'Removable Disk'";
+            $sql[] = "UPDATE sys_hw_partition SET partition_type = 'local'                                          WHERE partition_type = 'local hard disk'";
+            $sql[] = "UPDATE sys_hw_partition SET partition_mount_type = 'partition', partition_type = 'local'      WHERE partition_type = 'partition'";
+            $sql[] = "UPDATE sys_hw_partition SET partition_mount_type = 'mount point', partition_type = 'smb'      WHERE partition_type = 'Network Drive'";
+            $sql[] = "UPDATE sys_hw_partition SET partition_mount_type = 'mount point'                              WHERE partition_type LIKE 'raid%'";
+            $sql[] = "UPDATE sys_hw_partition SET partition_mount_type = 'mount point'                              WHERE partition_mount_type = 'lvm'";
+            $sql[] = "UPDATE sys_hw_partition SET partition_mount_type = 'other' WHERE (partition_mount_type != 'partition' AND partition_mount_type != 'mount point')";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_hw_partition ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_serial serial varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_name name varchar(100) NOT NULL DEFAULT '' AFTER serial";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_caption description varchar(100) NOT NULL DEFAULT '' AFTER name";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_device_id device varchar(100) NOT NULL DEFAULT '' AFTER description";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE hard_drive_index hard_drive_index varchar(100) NOT NULL DEFAULT '' AFTER device";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_disk_index partition_disk_index varchar(50) NOT NULL DEFAULT '' AFTER hard_drive_index";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_mount_type mount_type enum('mount point', 'partition', 'other') NOT NULL DEFAULT 'partition' AFTER partition_disk_index";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_mount_point mount_point varchar(100) NOT NULL DEFAULT '' AFTER mount_type";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_size size int unsigned NOT NULL DEFAULT '1' AFTER mount_point";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_free_space free int unsigned NOT NULL DEFAULT '1' AFTER size";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_used_space used int unsigned NOT NULL DEFAULT '1' AFTER free";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_format format varchar(20) NOT NULL DEFAULT '' AFTER used";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_bootable bootable varchar(10) NOT NULL DEFAULT '' AFTER format";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_type type varchar(50) NOT NULL DEFAULT '' AFTER bootable";
+            $sql[] = "ALTER TABLE sys_hw_partition DROP partition_quotas_supported";
+            $sql[] = "ALTER TABLE sys_hw_partition DROP partition_quotas_enabled";
+            $sql[] = "RENAME TABLE sys_hw_partition TO partition";
 
             # processor
             $sql[] = "DELETE sys_hw_processor FROM sys_hw_processor LEFT JOIN system ON system.system_id = sys_hw_processor.system_id WHERE sys_hw_processor.timestamp <> system.timestamp";
@@ -4192,6 +4247,18 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_video DROP video_max_refresh_rate";
             $sql[] = "ALTER TABLE sys_hw_video DROP video_min_refresh_rate";
             $sql[] = "RENAME TABLE sys_hw_video TO video";
+
+            # warranty
+            $sql[] = "ALTER TABLE sys_hw_warranty CHANGE warranty_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_hw_warranty CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_hw_warranty ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_hw_warranty CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_hw_warranty CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_hw_warranty CHANGE warranty_provider provider varchar(200) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_hw_warranty CHANGE warranty_type type varchar(100) NOT NULL DEFAULT '' AFTER provider";
+            $sql[] = "ALTER TABLE sys_hw_warranty CHANGE warranty_start start datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER type";
+            $sql[] = "ALTER TABLE sys_hw_warranty CHANGE warranty_end end datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER start";
+            $sql[] = "RENAME TABLE sys_hw_warranty TO warranty";
 
             # windows
             $sql[] = "DELETE sys_sw_windows FROM sys_sw_windows LEFT JOIN system ON system.system_id = sys_sw_windows.system_id WHERE sys_sw_windows.timestamp <> system.timestamp";
