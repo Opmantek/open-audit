@@ -442,6 +442,7 @@ class System extends CI_Controller
         foreach ($xml->dns as $key => $dns_entry) {
             if (isset($dns_entry->name) and $dns_entry->name != '') {
                 $dns_entries[] = $xml->dns[$key];
+            }
         }
         $this->m_devices_components->process_component('dns', $details, $dns_entries);
         unset($dns_entries);
@@ -696,5 +697,6 @@ class System extends CI_Controller
             }
         }
     }
+
 
 }
