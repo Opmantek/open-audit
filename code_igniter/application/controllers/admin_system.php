@@ -768,4 +768,25 @@ class Admin_system extends MY_Controller
             }
         }
     }
+
+
+
+    public function reset_devices_ip()
+    {
+        $this->load->model('m_ip_address');
+        $group_id = $this->data['id'];
+        if (!is_numeric($group_id)) {
+            redirect('main/index');
+        } else {
+            $group_id = intval($group_id);
+            $sql = "SELECT DISTINCT system_id FROM oa_group_sys WHERE group_id = ?";
+            $data = array($group_id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            foreach ($result as $system) {
+                $this->m_ip_address->set_initial_address($system->system_id, 'y');
+            }
+            redirect('main/list_devices/' . $group_id);
+        }
+    }
 }
