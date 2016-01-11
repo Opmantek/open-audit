@@ -511,7 +511,7 @@
 
 
 	<div id="view_summary_network_interfaces" style="float: left; width: 100%;">
-	<?php if (count($network) > 0 and ($system[0]->man_type != 'computer')) { ?>
+	<?php if (count($network) > 0 and $system[0]->man_type != 'computer') { ?>
 		<br />
 		<br />
 		<form action="#" method="post" class='niceforms'>
@@ -665,6 +665,98 @@
                     </tbody>
                 </table>
                 </div>
+            </fieldset>
+        </form>
+    <?php } ?>
+    </div>
+
+
+
+
+
+    <div id="view_summary_san" style="float: left; width: 100%;">
+    <?php if (count($san) > 0) { ?>
+        <br />
+        <br />
+        <form action="#" method="post" class='niceforms'>
+            <fieldset id="san_details">
+                <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('SAN Component Details')?></span></legend>
+                <table cellspacing='1' class='tablesorter' style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __('Type')?></th>
+                            <th><?php echo __('Manufacturer')?></th>
+                            <th><?php echo __('Serial')?></th>
+                            <th><?php echo __('Part Number')?></th>
+                            <th><?php echo __('Location')?></th>
+                            <th><?php echo __('Attached To')?></th>
+                            <th><?php echo __('Status')?></th>
+                            <th><?php echo __('Manufacture Date')?></th>
+                            <th><?php echo __('Notes')?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                            foreach ($san as $item) {
+                                echo "<tr>
+                                <td>" . @$item->type . "</td>
+                                <td>" . @$item->manufacturer . "</td>
+                                <td>" . @$item->serial . "</td>
+                                <td>" . @$item->part_number . "</td>
+                                <td>" . @$item->location . "</td>
+                                <td>" . @$item->attached_to . "</td>
+                                <td>" . @$item->status . "</td>
+                                <td>" . @$item->date_of_manufacture . "</td>
+                                <td>" . @str_replace(',', ',<br />', $item->notes) . "</td>
+                                </tr>\n";
+                            }
+                        ?>
+                    </tbody>
+                </table>
+                <?php echo display_custom_field('view_hardware_san',  $additional_fields_data, $edit); ?>
+            </fieldset>
+        </form>
+    <?php } ?>
+    </div>
+
+    <div id="view_summary_san_disk" style="float: left; width: 100%;">
+    <?php if (count($hard_drive) > 0 and $system[0]->man_type == 'san') { ?>
+        <br />
+        <br />
+        <form action="#" method="post" class='niceforms'>
+            <fieldset id="san_details">
+                <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('SAN Disks')?></span></legend>
+                <table cellspacing='1' class='tablesorter' style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __('Location')?></th>
+                            <th><?php echo __('Manufacturer')?></th>
+                            <th><?php echo __('Model')?></th>
+                            <th><?php echo __('Serial')?></th>
+                            <th><?php echo __('Interface')?></th>
+                            <th><?php echo __('Size')?></th>
+                            <th><?php echo __('Status')?></th>
+                            <th><?php echo __('Firmware')?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php 
+                            foreach ($hard_drive as $item) {
+                                echo "<tr>
+                                <td>" . @$item->device . "</td>
+                                <td>" . @$item->manufacturer . "</td>
+                                <td>" . @$item->model . "</td>
+                                <td>" . @$item->serial . "</td>
+                                <td>" . @$item->interface_type . "</td>
+                                <td>" . @number_format(($item->size / 1024 / 1024)) . " GB</td>
+                                <td>" . @$item->status . "</td>
+                                <td>" . @$item->firmware . "</td>
+                                </tr>\n";
+                            }
+                        ?>
+                    </tbody>
+                </table>
+                <?php echo display_custom_field('view_hardware_san_disk',  $additional_fields_data, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>

@@ -451,6 +451,8 @@ $(document).ready(function(){
 	$('#view_summary_nmis').hide();
     $('#view_summary_module').hide();
     $('#view_summary_dns').hide();
+    $('#view_summary_san').hide();
+    $('#view_summary_san_disk').hide();
 	<?php if ($system[0]->man_type == 'access point' or
         $system[0]->man_type == 'adsl modem' or
         $system[0]->man_type == 'bdsl modem' or
@@ -465,7 +467,6 @@ $(document).ready(function(){
         $system[0]->man_type == 'network printer' or
         $system[0]->man_type == 'network scanner' or
         $system[0]->man_type == 'router' or
-        $system[0]->man_type == 'san' or
         $system[0]->man_type == 'switch' or
         $system[0]->man_type == 'voip gateway' or
         $system[0]->man_type == 'vpn terminator' or
@@ -476,9 +477,17 @@ $(document).ready(function(){
     $('#view_summary_network_interfaces').show();
     toggleBold("toggle_summary_network_interfaces");
 	<?php } ?>
+    <?php if ($system[0]->man_type == 'san') { ?>
+        $('#view_summary_san').show();
+        $('#view_summary_san_disk').show();
+        $('#view_summary_network_interfaces').hide();
+        toggleBold("toggle_summary_san");
+        toggleBold("toggle_summary_san_disk");
+    <?php } ?>
 	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
         $('#view_summary_phone').show();
-        toggleBold("toggle_summary_phone");<?php } ?>
+        toggleBold("toggle_summary_phone");
+    <?php } ?>
 	<?php if (count($vm) > 0) { ?>
         $('#view_summary_vms').show();
         toggleBold("toggle_summary_vms");
@@ -540,10 +549,20 @@ $(document).ready(function(){
         toggleBold("toggle_summary_attachment");
 	});
 
-	$('#toggle_summary_nmis').click(function(){
-		$('#view_summary_nmis').slideToggle("fast");
+    $('#toggle_summary_nmis').click(function(){
+        $('#view_summary_nmis').slideToggle("fast");
         toggleBold("toggle_summary_nmis");
-	});
+    });
+
+    $('#toggle_summary_san').click(function(){
+        $('#view_summary_san').slideToggle("fast");
+        toggleBold("toggle_summary_san");
+    });
+
+    $('#toggle_summary_san_disk').click(function(){
+        $('#view_summary_san_disk').slideToggle("fast");
+        toggleBold("toggle_summary_san_disk");
+    });
 
 	$('#toggle_summary_network_interfaces').click(function(){
 		$('#view_summary_network_interfaces').slideToggle("fast");
@@ -586,7 +605,7 @@ $(document).ready(function(){
 	$('#view_hardware_memory').hide();
 	$('#view_hardware_bios').hide();
 	$('#view_hardware_motherboard').hide();
-	$('#view_hardware_scsi_controller').hide();
+    $('#view_hardware_scsi_controller').hide();
 	$('#view_hardware_network').hide();
 	$('#view_hardware_hard_drive').hide();
 	$('#view_hardware_optical').hide();
@@ -616,10 +635,10 @@ $(document).ready(function(){
         toggleBold("toggle_hardware_motherboard");
 	});
 
-	$('#toggle_hardware_scsi_controller').click(function(){
-		$('#view_hardware_scsi_controller').slideToggle("fast");
+    $('#toggle_hardware_scsi_controller').click(function(){
+        $('#view_hardware_scsi_controller').slideToggle("fast");
         toggleBold("toggle_hardware_scsi_controller");
-	});
+    });
 
 	$('#toggle_hardware_network').click(function(){
 		$('#view_hardware_network').slideToggle("fast");

@@ -114,7 +114,7 @@ CREATE TABLE `graph` (
   `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`), KEY `system_id` (`system_id`),
   CONSTRAINT `sys_hw_graph_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-  ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1400,6 +1400,44 @@ LOCK TABLES `processor` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `san`
+--
+
+DROP TABLE IF EXISTS `san`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `san` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
+  `serial` varchar(50) NOT NULL DEFAULT '',
+  `part_number` varchar(100) NOT NULL DEFAULT '',
+  `location` varchar(100) NOT NULL DEFAULT '',
+  `attached_to` varchar(100) NOT NULL DEFAULT '',
+  `status` varchar(100) NOT NULL DEFAULT '',
+  `date_of_manufacture` varchar(100) NOT NULL DEFAULT '',
+  `notes` text NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `san_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `san`
+--
+
+LOCK TABLES `san` WRITE;
+/*!40000 ALTER TABLE `san` DISABLE KEYS */;
+/*!40000 ALTER TABLE `san` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `scsi`
 --
 
@@ -1414,8 +1452,9 @@ CREATE TABLE `scsi` (
   `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `manufacturer` varchar(100) NOT NULL DEFAULT '',
   `model` varchar(200) NOT NULL DEFAULT '',
+  `serial` varchar(200) NOT NULL DEFAULT '',
   `device` varchar(200) NOT NULL DEFAULT '',
-  `type` enum('raid','hba','other') NOT NULL DEFAULT 'other',
+  `type` enum('raid','hba','other','san controller','san shelf') NOT NULL DEFAULT 'other',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_hw_scsi_controller_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
@@ -1997,7 +2036,7 @@ CREATE TABLE `dns` (
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_dns_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

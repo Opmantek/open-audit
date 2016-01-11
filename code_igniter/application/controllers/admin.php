@@ -4104,6 +4104,27 @@ class admin extends MY_Controller
             $sql[] = "UPDATE processor SET manufacturer = 'Intel' WHERE manufacturer = 'GenuineIntel'";
             $sql[] = "UPDATE processor SET manufacturer = 'AMD' WHERE manufacturer = 'AuthenticAMD'";
 
+            # san (new table)
+            $sql[] = "DROP TABLE IF EXISTS `san`";
+            $sql[] = "CREATE TABLE `san` (
+                id int(10) unsigned NOT NULL AUTO_INCREMENT,
+                system_id int(10) unsigned DEFAULT NULL,
+                current enum('y','n') NOT NULL DEFAULT 'y',
+                first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                type varchar(100) NOT NULL DEFAULT '',
+                manufacturer varchar(100) NOT NULL DEFAULT '',
+                `serial` varchar(50) NOT NULL DEFAULT '',
+                part_number varchar(100) NOT NULL DEFAULT '',
+                location varchar(100) NOT NULL DEFAULT '',
+                attached_to varchar(100) NOT NULL DEFAULT '',
+                status varchar(100) NOT NULL DEFAULT '',
+                date_of_manufacture varchar(100) NOT NULL DEFAULT '',
+                notes text NOT NULL DEFAULT '',
+                PRIMARY KEY (`id`), KEY `system_id` (`system_id`),
+                CONSTRAINT `san_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE)
+                ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
             # scsi controller
             $sql[] = "DELETE sys_hw_scsi_controller FROM sys_hw_scsi_controller LEFT JOIN system ON system.system_id = sys_hw_scsi_controller.system_id WHERE sys_hw_scsi_controller.timestamp <> system.timestamp";
             $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE scsi_controller_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -4113,8 +4134,9 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
             $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE scsi_controller_manufacturer manufacturer varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
             $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE scsi_controller_name model varchar(200) NOT NULL DEFAULT '' AFTER manufacturer";
-            $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE scsi_controller_device_id device varchar(200) NOT NULL DEFAULT '' AFTER model";
-            $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE scsi_controller_type type enum('raid','hba','other') NOT NULL DEFAULT 'other' AFTER device";
+            $sql[] = "ALTER TABLE sys_hw_scsi_controller ADD `serial` varchar(200) NOT NULL DEFAULT '' AFTER model";
+            $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE scsi_controller_device_id device varchar(200) NOT NULL DEFAULT '' AFTER `serial`";
+            $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE scsi_controller_type type enum('raid','hba','other','san controller','san shelf') NOT NULL DEFAULT 'other' AFTER device";
             $sql[] = "RENAME TABLE sys_hw_scsi_controller TO scsi";
 
             # service

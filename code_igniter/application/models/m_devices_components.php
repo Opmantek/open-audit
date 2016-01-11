@@ -153,6 +153,9 @@ class M_devices_components extends MY_Model
         if ($table == 'route') {
                 $match_columns = array('destination', 'next_hop');
         }
+        if ($table == 'san') {
+                $match_columns = array('serial');
+        }
         if ($table == 'server') {
                 $match_columns = array('name', 'type', 'full_name', 'version');
         }
@@ -501,7 +504,7 @@ class M_devices_components extends MY_Model
             if ($table == 'partition') {
                 // insert an entry into the graph table
                 $used_percent = intval(($input_item->used / $input_item->size) * 100);
-                $free_percent = intval(100 - $used_parcent);
+                $free_percent = intval(100 - $used_percent);
                 $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $data = array(intval($details->system_id), "$table", intval($id), "$table", intval($used_percent),
                     intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");

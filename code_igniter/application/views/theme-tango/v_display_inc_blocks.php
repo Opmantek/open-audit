@@ -480,7 +480,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         <?php foreach ($partition as $key_partition): ?>
                             <?php if ($key_partition->hard_drive_index == ''): ?>
                                 <tr>
-                                    <td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo $system_id."/".$key_partition->partition_id?>"><img src='<?php echo $oa_theme_images?>/16_graph.png' alt='' title='' /></a></td>
+                                    <td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo $system_id."/".$key_partition->id?>"><img src='<?php echo $oa_theme_images?>/16_graph.png' alt='' title='' /></a></td>
                                     <td><?php echo print_something($key_partition->type) . ' ' . print_something($key_partition->mount_type)?></td>
                                     <td><?php echo print_something($key_partition->mount_point)?></td>
                                     <td><?php echo print_something($key_partition->name)?></td>

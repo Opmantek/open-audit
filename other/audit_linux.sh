@@ -56,7 +56,7 @@
 strComputer="."
 
 # submit the audit to the OAv2 server
-submit_online="n"
+submit_online="y"
 
 # create an XML text file of the result in the current directory
 create_file="y"
@@ -84,6 +84,9 @@ ping_target="y"
 
 # set by the Discovery function - do not normally set this manually
 system_id=""
+
+# If we detect the san management software, should we run an auto-discover before the query
+run_san_discover="n"
 
 PATH="$PATH:/sbin:/usr/sbin"
 export PATH
@@ -289,6 +292,8 @@ for arg in "$@"; do
 			submit_online="$parameter_value" ;;
 		"system_id" )
 			system_id="$parameter_value" ;;
+		"run_san_discover" )
+			run_san_discover="$parameter_value" ;;
 		"url" )
 			url="$parameter_value" ;;
 		"$parameter_value" )
@@ -330,6 +335,10 @@ if [ "$help" = "y" ]; then
 	echo ""
 	echo "  org_id"
 	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
+	echo ""
+	echo "  run_san_discover"
+	echo "     *n - Do not run smcli -A if we detect the SAN management software"
+	echo "      Y - Run the command and update the list of any connected SANs"
 	echo ""
 	echo "  submit_online"
 	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
@@ -434,6 +443,63 @@ if [ $(pidof -x "$script_name") != "$script_pid" ]; then
 	exit 0
 fi
 IFS=$'\n';
+
+
+
+#========================
+#  SAN INFO             #
+#========================
+if [ -f "/opt/IBM_DS/client/SMcli" ]; then
+	san_url=${url/system\/add_system/san\/add_san}
+	if [ "$debugging" -gt 0 ]; then
+		echo "SAN info"
+	fi
+	if [ "$run_san_discover" = "y" ]; then
+		if [ "$debugging" -gt 1 ]; then
+			echo "Running SAN refresh / discover."
+		fi
+		output=$(/opt/IBM_DS/client/SMcli -A)
+	fi
+	if [ "$debugging" -gt 1 ]; then
+		echo "Running SAN list"
+	fi
+	for san in $(/opt/IBM_DS/client/SMcli -d | grep -v -e '^$' | grep -v 'SMcli' | cut -d" " -f2 ); do
+		$(echo "input=" > /tmp/"$san".txt)
+		if [ "$debugging" -gt 1 ]; then
+			echo "Running command: /opt/IBM_DS/client/SMcli \"$san\" -c \"show storagesubsystem profile;\" >> /tmp/\"$san\".txt"
+		fi
+		$(/opt/IBM_DS/client/SMcli "$san" -c "show storagesubsystem profile;" >> /tmp/"$san".txt)
+		if [ "$submit_online" = "y" ]; then
+			if [ "$debugging" -gt 1 ]; then
+				echo "Submitting SAN results to server"
+				echo "URL: $san_url"
+				if [ "$debugging" -gt 2 ]; then
+					head /tmp/"$san".txt
+				fi
+			fi
+			if [ -n "$(which wget 2>/dev/null)" ]; then
+				if [ "$debugging" -gt 1 ]; then
+					echo "Sending using wget."
+				fi
+				wget --delete-after --post-file=/tmp/"$san".txt "$san_url" 2>/dev/null
+			else
+				if [ -n "$(which curl 2>/dev/null)" ]; then
+				if [ "$debugging" -gt 1 ]; then
+					echo "Sending using curl."
+				fi
+					curl --data @/tmp/"$san".txt "$san_url"
+				fi
+			fi
+		fi
+		if [ "$debugging" -gt 1 ]; then
+			echo "Deleting SAN output file /tmp/$san.txt."
+		fi
+		$(rm /tmp/"$san".txt)
+	done
+fi
+
+
+
 
 #========================
 #  SYSTEM INFO          #

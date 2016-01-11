@@ -218,7 +218,7 @@ class main extends MY_Controller
                     $document["$table"] = $result;
                 }
             }
-            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'netstat', 'network', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
+            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'netstat', 'network', 'scsi', 'san', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
@@ -894,6 +894,7 @@ class main extends MY_Controller
         $this->data['optical'] = $this->m_devices_components->read($this->data['id'], 'y', 'optical');
         $this->data['partition'] = $this->m_devices_components->read($this->data['id'], 'y', 'partition');
         $this->data['processor'] = $this->m_devices_components->read($this->data['id'], 'y', 'processor');
+        $this->data['san'] = $this->m_devices_components->read($this->data['id'], 'y', 'san');
         $this->data['scsi'] = $this->m_devices_components->read($this->data['id'], 'y', 'scsi');
         $this->data['share'] = $this->m_devices_components->read($this->data['id'], 'y', 'share');
         $this->data['server'] = $this->m_devices_components->read($this->data['id'], 'y', 'server');

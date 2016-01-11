@@ -237,7 +237,7 @@ class M_devices extends MY_Model
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $document['system'] = $query->result();
-        $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'processor', 'netstat', 'network', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
+        $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'processor', 'netstat', 'network', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
         foreach ($tables as $table) {
             $sql = "SELECT $this->properties FROM $table WHERE system_id = ? $this->filter $this->sort $this->limit $this->offset";
             $data = array($id);
