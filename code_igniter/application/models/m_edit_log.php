@@ -32,55 +32,42 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-class M_audit_log extends MY_Model
+class M_edit_log extends MY_Model
 {
     public function __construct()
     {
         parent::__construct();
     }
 
-    public function create($system_id, $username = '', $type = '', $ip = '', $debug = '', $wmi_fails = '', $timestamp = '')
+    public function create($system_id, $details = '',  $db_table = 'system', $db_column = '', $timestamp = '', $value = '', $previous_value = '')
     {
         $system_id = intval($system_id);
-        if ($system_id == '' or $system_id == 0) {
-            return;
+        if ($system_id != '' and $system_id != 0) {
+            if ($details == '') {
+                if (isset($this->session->userdata['user_full_name'])) {
+                    $details = $this->session->userdata['user_full_name'] . ' changed data';
+                } else {
+                    $details = 'Data was changed';
+                }
+            }
+            if ($db_table == '') {
+                $db_table = 'system';
+            }
+            if ($timestamp == '') {
+                $timestamp = date('Y-m-d H:i:s');
+            }
+            $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) 
+                    VALUES (?, ?, ?, 'user', 1000, ?, ?, ?, ?, ?)";
+            $sql = $this->clean_sql($sql);
+            $data = array($this->session->userdata['user_id'], $system_id, "$details", "$db_table", "$db_column", "$timestamp", "$value", "$previous_value");
+            $query = $this->db->query($sql, $data);
         }
-        if ($username == '' and isset($this->user->user_full_name)) {
-            $username = @$this->user->user_full_name;
-        }
-        if ($type == '') {
-            $type = 'audit';
-        }
-        if ($timestamp == '') {
-            $timestamp = date('Y-m-d H:i:s');
-        }
-
-        if ($timestamp == '') {
-            $timestamp = date('Y-m-d H:i:s');
-        }
-        $sql = "INSERT INTO audit_log (system_id, username, type, ip, debug, wmi_fails, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $data = array($system_id, "$username", "$type", "$ip", "$debug", "$wmi_fails", "$timestamp");
-        $query = $this->db->query($sql, $data);
-    }
-
-    public function update($column, $value, $system_id, $timestamp)
-    {
-        $system_id = intval($system_id);
-        if ($system_id == '' or $system_id == 0) {
-            return;
-        }
-        $sql = "UPDATE audit_log SET $column = ? WHERE system_id = ? AND timestamp = ?";
-        $data = array("$value", "$system_id", "$timestamp");
-        $query = $this->db->query($sql, $data);
     }
 
     public function read($system_id)
     {
-        $system_id = intval($system_id);
-        if ($system_id == '' or $system_id == 0) {
-            return;
-        }
-        $sql = "SELECT * FROM audit_log WHERE audit_log.system_id = ?";
+        $sql = "SELECT edit_log.*, oa_user.user_full_name FROM edit_log, oa_user WHERE edit_log.system_id = ? AND oa_user.user_id = edit_log.user_id";
+        $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();

@@ -682,7 +682,7 @@ fi
 if [ "$debugging" -gt "0" ]; then
 	echo "VM Guest Info"
 fi
-echo "	<guests>" >> $xml_file
+echo "	<vm>" >> $xml_file
 for vm in $(vim-cmd vmsvc/getallvms | grep -v ^Vmid | sed 's/ \+/ /g'); do
 	vm_id=$(echo "$vm" | cut -d" " -f1)
 	#if [ "$vm_id" =~ ^?[0-9]+$ ]; then
@@ -696,19 +696,19 @@ for vm in $(vim-cmd vmsvc/getallvms | grep -v ^Vmid | sed 's/ \+/ /g'); do
 		vm_config_file=$(echo "$vm" | cut -d" " -f4)
 		temp_dir=$(vim-cmd vmsvc/get.config $vm_id | grep datastoreUrl -A5 | grep url | cut -d= -f2- | sed 's/ "//' | sed 's/", //')
 		vm_config_file=$(echo "$temp_dir$vm_config_file")
-		echo "		<guest>" >> $xml_file
+		echo "		<item>" >> $xml_file
 		echo "			<vm_id>"$(escape_xml "$vm_id")"</vm_id>" >> $xml_file
 		echo "			<name>"$(escape_xml "$vm_name")"</name>" >> $xml_file
 		echo "			<uuid>"$(escape_xml "$vm_uuid")"</uuid>" >> $xml_file
-		echo "			<memory>"$(escape_xml "$vm_memory")"</memory>" >> $xml_file
-		echo "			<cpu>"$(escape_xml "$vm_cpu")"</cpu>" >> $xml_file
+		echo "			<memory_count>"$(escape_xml "$vm_memory")"</memory_count>" >> $xml_file
+		echo "			<cpu_count>"$(escape_xml "$vm_cpu")"</cpu_count>" >> $xml_file
 		echo "			<status>"$(escape_xml "$vm_status")"</status>" >> $xml_file
 		echo "			<config_file>"$(escape_xml "$vm_config_file")"</config_file>" >> $xml_file
 		echo "			<vm_group></vm_group>" >> $xml_file
-		echo "		</guest>" >> $xml_file
+		echo "		</item>" >> $xml_file
 	fi
 done
-echo "	</guests>" >> $xml_file
+echo "	</vm>" >> $xml_file
 
 
 

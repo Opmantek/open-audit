@@ -146,6 +146,15 @@ if (! function_exists('input')) {
             $CI->response->sort = $_POST['sort'];
         }
 
+        # get current
+        $CI->response->current = 'y';
+        if (isset($_GET['current'])) {
+            $CI->response->current = $_GET['current'];
+        }
+        if (isset($_POST['current'])) {
+            $CI->response->current = $_POST['current'];
+        }
+
         # get the limit
         $CI->response->limit = 10000;
         if (isset($_GET['limit'])) {
@@ -177,7 +186,7 @@ if (! function_exists('input')) {
         }
 
         # get the list of requested properties
-        $CI->response->properties = '';
+        $CI->response->properties = '*';
         if (isset($_GET['properties'])) {
             $CI->response->properties = $_GET['properties'];
         }

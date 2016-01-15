@@ -197,11 +197,11 @@ class M_printer extends MY_Model
                 $query = $this->db->query($sql, $data);
 
                 $system_id = $this->db->insert_id();
-                $inserted_via = 'audit';
-                $inserted_user = '';
-                $sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp ) VALUES (?, ?, ?, ?, ?)";
-                $data = array("$system_id", "$inserted_user", "$inserted_via", "$details->timestamp", "$details->timestamp");
-                $query = $this->db->query($sql, $data);
+                // $inserted_via = 'audit';
+                // $inserted_user = '';
+                // $sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp ) VALUES (?, ?, ?, ?, ?)";
+                // $data = array("$system_id", "$inserted_user", "$inserted_via", "$details->timestamp", "$details->timestamp");
+                // $query = $this->db->query($sql, $data);
             }
         }
     } // end of function

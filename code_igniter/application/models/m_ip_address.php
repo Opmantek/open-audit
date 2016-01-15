@@ -234,7 +234,7 @@ class M_ip_address extends MY_Model
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $myrow) {
             $alert_details = 'ip address removed - '.$myrow->ip_address_v4;
-            $this->m_alerts->generate_alert($details->system_id, 'sys_hw_network_card_ip', $myrow->ip_id, $alert_details, $details->timestamp);
+            $this->m_change_log->create($details->system_id, 'sys_hw_network_card_ip', $myrow->ip_id, 'delete', $alert_details, $details->timestamp);
         }
 
         // new network_card_ip - ONLY for devices not using DHCP
@@ -258,7 +258,7 @@ class M_ip_address extends MY_Model
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $myrow) {
             $alert_details = 'ip address detected - '.$myrow->ip_address_v4;
-            $this->m_alerts->generate_alert("$details->system_id", 'sys_hw_network_card_ip', "$myrow->ip_id", $alert_details, "$details->timestamp");
+            $this->m_change_log->create("$details->system_id", 'sys_hw_network_card_ip', "$myrow->ip_id", 'create', $alert_details, "$details->timestamp");
         }
     }
 

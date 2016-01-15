@@ -198,12 +198,12 @@ class M_oa_general extends MY_Model
             $sql = 'SELECT sys_hw_sound.* FROM sys_hw_sound LEFT JOIN system ON system.system_id = sys_hw_sound.system_id AND system.timestamp = sys_hw_sound.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_hw_video') {
             $sql = 'SELECT sys_hw_video.* FROM sys_hw_video LEFT JOIN system ON system.system_id = sys_hw_video.system_id AND system.timestamp = sys_hw_video.timestamp WHERE system.system_id = ?';
-        } elseif ($table == 'sys_man_audits') {
-            $sql = 'SELECT sys_man_audits.* FROM sys_man_audits LEFT JOIN system ON system.system_id = sys_man_audits.system_id WHERE system.system_id = ?';
+        } elseif ($table == 'audit_log') {
+            $sql = 'SELECT audit_log.* FROM audit_log LEFT JOIN system ON system.system_id = audit_log.system_id WHERE system.system_id = ?';
         } elseif ($table == 'oa_audit_log') {
             $sql = 'SELECT oa_audit_log.*, user_full_name FROM oa_audit_log LEFT JOIN system ON system.system_id = oa_audit_log.system_id LEFT JOIN oa_user ON oa_audit_log.user_id = oa_user.user_id WHERE system.system_id = ?';
-        } elseif ($table == 'oa_alert_log') {
-            $sql = 'SELECT oa_alert_log.* FROM oa_alert_log LEFT JOIN system ON system.system_id = oa_alert_log.system_id WHERE system.system_id = ?';
+        } elseif ($table == 'change_log') {
+            $sql = 'SELECT change_log.* FROM change_log LEFT JOIN system ON system.system_id = change_log.system_id WHERE system.system_id = ?';
         } elseif ($table == 'sys_sw_route') {
             $sql = 'SELECT destination, next_hop, mask, metric, protocol, sys_sw_route.type FROM sys_sw_route LEFT JOIN system ON system.system_id = sys_sw_route.system_id AND system.timestamp = sys_sw_route.timestamp WHERE system.system_id = ?';
         } elseif ($table == 'sys_sw_service') {
@@ -237,7 +237,7 @@ class M_oa_general extends MY_Model
         if ($table == '') {
             return;
         }
-        $sql = 'SELECT system_audits_time FROM sys_man_audits WHERE system_id = ? AND system_audits_type = "audit" ORDER BY system_audits_time LIMIT 1';
+        $sql = 'SELECT `timestamp` FROM audit_log WHERE system_id = ? AND type = "audit" ORDER BY `timestamp` LIMIT 1';
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -247,14 +247,14 @@ class M_oa_general extends MY_Model
             return;
         }
 
-        $sql = 'SELECT system_audits_time FROM sys_man_audits WHERE system_id = ? ORDER BY system_audits_time LIMIT 1';
+        $sql = 'SELECT `timestamp` FROM audit_log WHERE system_id = ? ORDER BY `timestamp` LIMIT 1';
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         $first_timestamp = $result[0]->system_audits_time;
 
         if ($table == 'sys_sw_software_history_delta') {
-            $sql = 'SELECT sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.first_timestamp, sys_sw_software.timestamp, IF((sys_sw_software.first_timestamp = ? OR sys_sw_software.first_timestamp = ?), "y", "n") as original_install, IF(sys_sw_software.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id) WHERE system.system_id = ?';
+            $sql = 'SELECT software.id, software.name, software.version, software.first_seen, software.last_seen, IF((software.first_seen = ? OR software.first_seen = ?), "y", "n") as original_install, IF(software.current = "y", "y", "n") as current_install FROM software LEFT JOIN system ON (software.system_id = system.system_id) WHERE system.system_id = ?';
         } elseif ($table == 'sys_sw_software_history_full') {
             $sql = 'SELECT sys_sw_software.software_id, sys_sw_software.software_name, sys_sw_software.software_version, sys_sw_software.first_timestamp, sys_sw_software.timestamp, IF((sys_sw_software.first_timestamp = ? OR sys_sw_software.first_timestamp = ?), "y", "n") as original_install, IF(sys_sw_software.timestamp = system.timestamp, "y", "n") as current_install FROM sys_sw_software LEFT JOIN system ON (sys_sw_software.system_id = system.system_id) WHERE system.system_id = ? AND (sys_sw_software.first_timestamp = ? OR sys_sw_software.first_timestamp = ? OR system.timestamp = sys_sw_software.timestamp)';
         } elseif ($table == 'sys_sw_netstat_history_delta') {
@@ -397,11 +397,11 @@ class M_oa_general extends MY_Model
     public function process_result($table = '', $match_columns = array(), $details)
     {
         // update the audit log
-        $this->m_sys_man_audits->update_audit($details, "$table - start");
+        $this->m_audit_log->update('debug', "$table - start", $details->system_id, $details->last_seen);
 
         if ($table == '' or count($match_columns == 0) or ! isset($details->system_id)) {
             // TODO probably should log something here
-            $this->m_sys_man_audits->update_audit($details, "$table - failed 1");
+            $this->m_audit_log->update('debug', "$table - failed 1", $details->system_id, $details->last_seen);
 
             return;
         }
@@ -416,7 +416,7 @@ class M_oa_general extends MY_Model
         }
         if ($found == 0) {
             // TODO probably should log something here
-            $this->m_sys_man_audits->update_audit($details, "$table - failed 2");
+            $this->m_audit_log->update('debug', "$table - failed 2", $details->system_id, $details->last_seen);
 
             return;
         }
@@ -514,7 +514,7 @@ class M_oa_general extends MY_Model
                     $alert_details .= $column.' = '.$myrow->$column.', ';
                 }
                 $alert_details = substr($alert_details, 0, -2);
-                $this->m_alerts->generate_alert($details->system_id, $table, $myrow->id, $alert_details, $details->timestamp);
+                $this->m_change_log->create($details->system_id, $table, $myrow->id, 'delete', $alert_details, $details->timestamp);
             }
             // test for new items
             $sql = "SELECT $sql_select FROM $table WHERE $table.first_timestamp = $table.timestamp AND $table.system_id = ? AND $table.first_timestamp = ? ";
@@ -527,10 +527,10 @@ class M_oa_general extends MY_Model
                     $alert_details .= $column.' = '.$myrow->$column.', ';
                 }
                 $alert_details = substr($alert_details, 0, -2);
-                $this->m_alerts->generate_alert($details->system_id, $table, $myrow->id, $alert_details, $details->timestamp);
+                $this->m_change_log->create($details->system_id, $table, $myrow->id, 'delete', $alert_details, $details->timestamp);
             }
             // update the audit log
-            $this->m_sys_man_audits->update_audit($details, "$table - end");
+            $this->m_audit_log->update('debug', "$table - end", $details->system_id, $details->last_seen);
         }
     }
 }

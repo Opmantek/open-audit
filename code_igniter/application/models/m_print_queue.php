@@ -146,7 +146,7 @@ class M_print_queue extends MY_Model
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $myrow) {
             $alert_details = 'print queue removed - '.$myrow->queue_system_key.' ('.$myrow->model.')';
-            $this->m_alerts->generate_alert($details->system_id, 'sys_sw_print_queue', $myrow->queue_id, $alert_details, $details->timestamp);
+            $this->m_change_log->create($details->system_id, 'print_queue', $myrow->queue_id, 'delete', $alert_details, $details->timestamp);
         }
 
         // new print queue
@@ -163,7 +163,7 @@ class M_print_queue extends MY_Model
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $myrow) {
             $alert_details = 'print queue installed - '.$myrow->queue_system_key.' ('.$myrow->model.')';
-            $this->m_alerts->generate_alert($details->system_id, 'sys_sw_print_queue', $myrow->queue_id, $alert_details, $details->timestamp);
+            $this->m_change_log->create($details->system_id, 'print_queue', $myrow->queue_id, 'create', $alert_details, $details->timestamp);
         }
     }
 }

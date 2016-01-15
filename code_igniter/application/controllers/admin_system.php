@@ -284,10 +284,9 @@ class Admin_system extends MY_Controller
             redirect('main/list_devices');
         }
         $this->load->model("m_system");
-        $this->load->model("m_sys_man_audits");
+        $this->load->model("m_audit_log");
         $this->load->model("m_ip_address");
         $this->load->model("m_oa_general");
-        $this->load->model("m_virtual_machine");
         $this->load->model("m_devices_components");
         $this->load->library('encrypt');
         $this->load->helper('snmp');
@@ -342,7 +341,13 @@ class Admin_system extends MY_Controller
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
             $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
             $this->m_system->update_system($details);
-            $this->m_sys_man_audits->insert_audit($details);
+            if (isset($this->user->user_full_name)) {
+                $temp_user = $this->user->user_full_name;
+            } else {
+                $temp_user = '';
+            }
+            $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+            unset($temp_user);
 
             # update any network interfaces and ip addresses retrieved by SNMP
             $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
@@ -366,9 +371,13 @@ class Admin_system extends MY_Controller
 
             # insert any found virtual machines
             if (isset($guests) and is_array($guests) and count($guests) > 0) {
-                foreach ($guests as $guest) {
-                    $this->m_virtual_machine->process_vm($guest, $details);
-                }
+                $vm = new stdClass();
+                $vm->item = array();
+                $vm->item = $guests;
+                $this->m_devices_components->process_component('vm', $details, $vm);
+                // foreach ($guests as $guest) {
+                //     $this->m_virtual_machine->process_vm($guest, $details);
+                // }
             }
 
             # insert any modules
@@ -380,10 +389,24 @@ class Admin_system extends MY_Controller
             }
 
             // Generate any DNS entries required
-            $dns_entries = array();
+            // $dns_entries = array();
+            // $dns_entries = $this->m_devices_components->create_dns_entries((int)$details->system_id);
+            // $this->m_devices_components->process_component('dns', $details, $dns_entries);
+            // unset($dns_entries);
+
+            // Generate any DNS entries required
             $dns_entries = $this->m_devices_components->create_dns_entries((int)$details->system_id);
-            $this->m_devices_components->process_component('dns', $details, $dns_entries);
-            unset($dns_entries);
+            $dns = new SimpleXMLElement('<root/>');
+            foreach ($dns_entries as $key => $value) {
+                $item = $dns->addChild('item');
+                $class_vars = get_object_vars($value);
+                foreach ($class_vars as $name => $item_value) {
+                    $item->$name = (string)$item_value;
+                }
+                unset($item);
+            }
+            $this->m_devices_components->process_component('dns', $details, $dns);
+
 
         } else {
             echo "Audit NOT submitted.";
@@ -414,7 +437,7 @@ class Admin_system extends MY_Controller
             $this->data['error'] = '';
             $this->load->model('m_system');
             $this->load->model('m_oa_group');
-            $this->load->model("m_sys_man_audits");
+            $this->load->model("m_audit_log");
             $details = new stdClass();
             foreach ($_POST as $key => $value) {
                 $details->$key = $value;
@@ -506,7 +529,13 @@ class Admin_system extends MY_Controller
                 # add the system
                 $details->system_id = $this->m_system->insert_system($details);
                 $this->m_oa_group->update_system_groups($details);
-                $this->m_sys_man_audits->insert_audit($details);
+                if (isset($this->user->user_full_name)) {
+                    $temp_user = $this->user->user_full_name;
+                } else {
+                    $temp_user = '';
+                }
+                $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                unset($temp_user);
                 redirect('main/index');
             } else {
                 $this->data['query'] = $this->data['error'];
@@ -581,7 +610,7 @@ class Admin_system extends MY_Controller
             $this->load->model("m_system");
             $this->load->model("m_oa_org");
             $this->load->model("m_oa_location");
-            $this->load->model("m_sys_man_audits");
+            $this->load->model("m_audit_log");
             $this->load->model("m_oa_group");
             $this->load->model("m_oa_general");
             $this->load->model("m_devices_components");
@@ -730,7 +759,14 @@ class Admin_system extends MY_Controller
                         if (!isset($details->type) or $details->type == '') {
                             $details->type = $this->m_system->get_system_type($details->system_id);
                         }
-                        $this->m_sys_man_audits->insert_audit($details);
+
+                        if (isset($this->user->user_full_name)) {
+                            $temp_user = $this->user->user_full_name;
+                        } else {
+                            $temp_user = '';
+                        }
+                        $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                        unset($temp_user);
 
                          # update any network interfaces and ip addresses retrieved by SNMP
                         $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);

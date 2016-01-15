@@ -392,75 +392,104 @@ LOCK TABLES `network` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `oa_alert_log`
+-- Table structure for table `change_log`
 --
 
-DROP TABLE IF EXISTS `oa_alert_log`;
+DROP TABLE IF EXISTS `change_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_alert_log` (
-  `alert_id` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `change_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `alert_table` varchar(50) NOT NULL,
-  `alert_foreign_row` int(10) NOT NULL,
+  `db_table` varchar(50) NOT NULL DEFAULT '',
+  `db_row` int(10) unsigned NOT NULL DEFAULT '0',
+  `db_action` enum('','create','update','delete') NOT NULL DEFAULT '',
+  `details` varchar(200) NOT NULL DEFAULT '',
   `link_row_action` enum('','create','update','delete') NOT NULL DEFAULT '',
-  `alert_details` varchar(200) NOT NULL,
   `user_id` int(10) unsigned DEFAULT NULL,
-  `alert_ack_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `alert_note` varchar(200) NOT NULL,
-  `external_change_id` varchar(200) NOT NULL,
-  `external_change_link` varchar(200) NOT NULL,
+  `ack_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `external_link` varchar(200) NOT NULL DEFAULT '',
+  `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `note` varchar(200) NOT NULL DEFAULT '',
   `change_id` int(10) unsigned DEFAULT NULL,
   `change_type` enum('','standard','normal','emergency','unauthorised') NOT NULL DEFAULT '',
   `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`alert_id`),
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
-  KEY `oa_alert_log_user_id` (`user_id`),
-  KEY `oa_alert_change_id` (`change_id`),
-  CONSTRAINT `oa_alert_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_alert_log_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_alert_oa_change` FOREIGN KEY (`change_id`) REFERENCES `oa_change` (`change_id`) ON DELETE CASCADE
+  CONSTRAINT `change_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `oa_alert_log`
+-- Dumping data for table `change_log`
 --
 
-LOCK TABLES `oa_alert_log` WRITE;
-/*!40000 ALTER TABLE `oa_alert_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_alert_log` ENABLE KEYS */;
+LOCK TABLES `change_log` WRITE;
+/*!40000 ALTER TABLE `change_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `change_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `oa_audit_log`
+-- Table structure for table `oa_asset_select`
 --
 
-DROP TABLE IF EXISTS `oa_audit_log`;
+DROP TABLE IF EXISTS `oa_asset_select`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_audit_log` (
-  `audit_log_id` int(10) NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned DEFAULT '0',
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `audit_log_event_type` varchar(50) NOT NULL,
-  `audit_log_event_details` varchar(200) NOT NULL,
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`audit_log_id`),
-  KEY `user_id` (`user_id`),
-  KEY `oa_audit_log_system_id` (`system_id`),
-  CONSTRAINT `oa_audit_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_audit_log_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE
+CREATE TABLE `oa_asset_select` (
+  `select_id` int(10) NOT NULL AUTO_INCREMENT,
+  `select_name` varchar(50) NOT NULL,
+  `select_type` enum('','sw','hw','service','other') NOT NULL DEFAULT '',
+  `select_sql` varchar(250) NOT NULL,
+  `group_id` int(10) unsigned DEFAULT NULL,
+  `group_amount` int(10) unsigned DEFAULT '0',
+  PRIMARY KEY (`select_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `oa_audit_log`
+-- Dumping data for table `oa_asset_select`
 --
 
-LOCK TABLES `oa_audit_log` WRITE;
-/*!40000 ALTER TABLE `oa_audit_log` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_audit_log` ENABLE KEYS */;
+LOCK TABLES `oa_asset_select` WRITE;
+/*!40000 ALTER TABLE `oa_asset_select` DISABLE KEYS */;
+/*!40000 ALTER TABLE `oa_asset_select` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `edit_log`
+--
+
+DROP TABLE IF EXISTS `edit_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `edit_log` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `details` varchar(200) NOT NULL DEFAULT '',
+  `source` varchar(100) NOT NULL DEFAULT '',
+  `weight` int(10) unsigned NOT NULL DEFAULT '0',
+  `db_table` varchar(100) NOT NULL DEFAULT '',
+  `db_column` varchar(100) NOT NULL DEFAULT '',
+  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `value` text NOT NULL,
+  `previous_value` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `edit_log_system_id` (`system_id`),
+  CONSTRAINT `edit_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
+  CONSTRAINT `edit_log_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `edit_log`
+--
+
+LOCK TABLES `edit_log` WRITE;
+/*!40000 ALTER TABLE `edit_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `edit_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -963,8 +992,8 @@ INSERT INTO `oa_report` VALUES (30,'Specific Software','Specific installed softw
 INSERT INTO `oa_report` VALUES (31,'Software Keys','Software install keys.','y','SELECT COUNT(string) as count, name, string, id FROM system LEFT JOIN software_key ON (software_key.system_id = system.system_id and software_key.current = \'y\') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND string IS NOT NULL GROUP BY name, string ORDER BY name','','v_report','','',1);
 INSERT INTO `oa_report` VALUES (32,'Specific Key Name','Specific software install keys, by name.','n','SELECT system.system_id, system.hostname, software_key.name, software_key.string FROM system LEFT JOIN software_key ON (system.system_id = software_key.system_id AND software_key.current = \'y\') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) WHERE oa_group_sys.group_id = @group AND software_key.name = (SELECT name FROM software_key WHERE id = ? LIMIT 1)','','v_report','','',0);
 INSERT INTO `oa_report` VALUES (33,'Specific Key Text','Specific software install keys, by key.','n','SELECT system.system_id, system.hostname, software_key.name, software_key.string FROM system LEFT JOIN software_key ON (system.system_id = software_key.system_id AND software_key.current = \'y\') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) WHERE oa_group_sys.group_id = @group AND software_key.string = ?','','v_report','','',0);
-INSERT INTO `oa_report` VALUES (34,'Alerts','Any Alerts created by newly found, no longer present or changed items.','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ORDER BY oa_alert_log.timestamp DESC ','','v_report_alerts','','',0);
-INSERT INTO `oa_report` VALUES (35,'Alerts - Software','Any Alerts created by newly found, no longer present or changed software.','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, system.man_ip_address, system.hostname, system.man_description, oa_alert_log.alert_details FROM system, oa_alert_log, oa_group_sys WHERE oa_alert_log.user_id is NULL AND oa_alert_log.system_id = system.system_id AND oa_alert_log.timestamp > DATE_SUB(NOW(),INTERVAL 100 DAY) AND oa_alert_log.system_id = oa_group_sys.system_id AND oa_alert_log.alert_details LIKE \'software%\' AND oa_group_sys.group_id = @group GROUP BY oa_alert_log.alert_id ASC ','','v_report_alerts','','',0);
+INSERT INTO `oa_report` VALUES (34,'Alerts','Any Alerts created by newly found, no longer present or changed items.','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, alert_table, link_row_action, alert_details, system.man_ip_address, system.icon, system.hostname, system.type FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) WHERE oa_group_sys.group_id = @group AND oa_alert_log.alert_ack_time = \'0000-00-00 00:00:00\'','','v_report_alerts','','',0);
+INSERT INTO `oa_report` VALUES (35,'Alerts - Software','Any Alerts created by newly found, no longer present or changed software.','y','SELECT oa_alert_log.alert_id, oa_alert_log.system_id, oa_alert_log.timestamp, alert_table, link_row_action, alert_details, system.man_ip_address, system.icon, system.hostname, system.type FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) WHERE oa_group_sys.group_id = @group AND oa_alert_log.alert_ack_time = \'0000-00-00 00:00:00\' AND alert_table = \'software\'','','v_report_alerts','','',0);
 INSERT INTO `oa_report` VALUES (36,'Enterprise - Devices Discovered in the Last Days','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE system.first_timestamp > (NOW() - INTERVAL ? DAY) AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
 INSERT INTO `oa_report` VALUES (37,'Enterprise - Software Discovered in the Last Days','','n','SELECT COUNT(oa_alert_log.system_id) AS `count`, software.id, name, type, url, version, publisher, DATE(oa_alert_log.timestamp) AS `date` FROM oa_alert_log LEFT JOIN software ON (oa_alert_log.alert_foreign_row = software.id) LEFT JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON oa_alert_log.system_id = grp.system_id WHERE oa_alert_log.alert_table = \'software\' AND oa_alert_log.link_row_action = \'create\' AND DATE(oa_alert_log.timestamp) > (NOW() - INTERVAL ? DAY) GROUP BY software.name, software.version','','v_help_oae','','',0);
 INSERT INTO `oa_report` VALUES (38,'Enterprise - Devices Not Seen by Date','','n','SELECT system.system_id, system.hostname, system.man_type, oa_location.location_name, windows.user_name, system.man_manufacturer, system.man_model, system.man_serial, date(system.first_timestamp) as first_timestamp, GREATEST(date(system.timestamp), date(system.last_seen)) as timestamp FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id  LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = \'y\') WHERE GREATEST(date(system.timestamp), date(system.last_seen)) < DATE_SUB(?, INTERVAL 30 day) AND (system.man_ip_address <> \'\' AND system.man_ip_address <> \'000.000.000.000\' AND system.man_ip_address <> \'0.0.0.0\') GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
@@ -980,8 +1009,8 @@ INSERT INTO `oa_report` VALUES (47,'Enterprise - Device Types','','n','SELECT CE
 INSERT INTO `oa_report` VALUES (48,'Enterprise - Device Type','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_manufacturer, system.man_model, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_type = ?','','v_help_oae','','',0);
 INSERT INTO `oa_report` VALUES (49,'Enterprise - Software Discovered Range','','n','SELECT COUNT(oa_alert_log.system_id) AS `count`, id, name, type, url, version, publisher, DATE(oa_alert_log.timestamp) AS `date` FROM oa_alert_log LEFT JOIN software ON (oa_alert_log.alert_foreign_row = software.id) LEFT JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON oa_alert_log.system_id = grp.system_id WHERE oa_alert_log.alert_table = \'software\' AND oa_alert_log.link_row_action = \'create\' AND DATE(oa_alert_log.timestamp) >= ? AND DATE(oa_alert_log.timestamp) <= ? GROUP BY software.name, software.version','','v_help_oae','','',0);
 INSERT INTO `oa_report` VALUES (50,'Enterprise - Devices Discovered Range','','n','SELECT system.system_id, system.hostname, system.man_type, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE date(system.first_timestamp) >= ? AND date(system.first_timestamp) <= ? AND system.man_ip_address <> \'\' AND system.man_ip_address <> \'0.0.0.0\' AND system.man_ip_address <> \'000.000.000.000\' GROUP BY system.system_id ORDER BY system.hostname','','v_help_oae','','',0);
-INSERT INTO `oa_report` VALUES (51,'Disk Partition Use','Partition details where partition free and used space aren\'t 0 and type isn\'t Volume or Network Drive and mount point isn\'t [SWAP].','y','SELECT partition_id, system.system_id, system.hostname, sys_hw_partition.hard_drive_index AS disk, sys_hw_partition.partition_mount_point AS mount_point, partition_mount_type as type, sys_hw_partition.partition_size AS size, sys_hw_partition.partition_used_space AS used, sys_hw_partition.partition_free_space AS free, ROUND(((sys_hw_partition.partition_free_space / sys_hw_partition.partition_size) * 100), 0) AS percent_free FROM sys_hw_partition LEFT JOIN system ON (sys_hw_partition.system_id = system.system_id AND sys_hw_partition.timestamp = system.timestamp) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE partition_used_space > 0 AND partition_free_space > 0 AND oa_group_sys.group_id = @group AND partition_type != \'Volume\' AND partition_type != \'Network Drive\' AND partition_mount_point != \'[SWAP]\' ORDER BY sys_hw_partition.system_id, partition_id ','','v_report','','',0);
-INSERT INTO `oa_report` VALUES (52,'Interfaces Used - Available','','y','SELECT system.system_id, system.hostname, alias as ifAlias, net_index AS ifIndex, description as ifDescription, ifadminstatus as ifAdminStatus, ip_enabled as ifOperStatus, sysUpTime, iflastchange as ifLastChange, (sysuptime - iflastchange) AS diff, floor((sysuptime - iflastchange) /60/60/24/100) as diff_days, IF((ifadminstatus = \\\'down\\\') OR (ifadminstatus = \'up\' AND (ip_enabled != \'up\' AND ip_enabled != \'dormant\') AND (((sysuptime - iflastchange) > 60480000) OR (sysuptime < iflastchange))), \'available\', \'used\') AS available FROM network LEFT JOIN system ON (network.system_id = system.system_id AND network.current = \'y\') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND ifadminstatus != \'\'','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (51,'Disk Partition Use','Partition details where partition free and used space aren\'t 0 and type isn\'t Volume or Network Drive and mount point isn\'t [SWAP].','y','SELECT partition.id, system.system_id, system.hostname, partition.hard_drive_index AS disk, partition.mount_point, partition.mount_type as type, partition.size, partition.used, partition.free, ROUND(((partition.free / partition.size) * 100), 0) AS percent_free FROM partition LEFT JOIN system ON (partition.system_id = system.system_id AND partition.current = \'y\') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE partition.used > 0 AND partition.free > 0 AND oa_group_sys.group_id = @group AND LOWER(partition.type) != \'volume\' AND LOWER(partition.type) != \'network drive\' AND LOWER(partition.mount_point) != \'[swap]\' ORDER BY partition.system_id, partition.id ','','v_report','','',0);
+INSERT INTO `oa_report` VALUES (52,'Interfaces Used - Available','','y','SELECT system.system_id, system.hostname, alias as ifAlias, net_index AS ifIndex, network.description as ifDescription, ifadminstatus as ifAdminStatus, ip_enabled as ifOperStatus, sysUpTime, iflastchange as ifLastChange, (sysuptime - iflastchange) AS diff, floor((sysuptime - iflastchange) /60/60/24/100) as diff_days, IF((ifadminstatus = \'down\') OR (ifadminstatus = \'up\' AND (ip_enabled != \'up\' AND ip_enabled != \'dormant\') AND (((sysuptime - iflastchange) > 60480000) OR (sysuptime < iflastchange))), \'available\', \'used\') AS available FROM network LEFT JOIN system ON (network.system_id = system.system_id AND network.current = \'y\') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group AND ifadminstatus != \'\'','','v_report','','',0);
 /*!40000 ALTER TABLE `oa_report` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1897,35 +1926,34 @@ LOCK TABLES `sys_man_attachment` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_man_audits`
+-- Table structure for table `audit_log`
 --
 
-DROP TABLE IF EXISTS `sys_man_audits`;
+DROP TABLE IF EXISTS `audit_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_man_audits` (
-  `system_audits_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `system_audits_username` varchar(45) NOT NULL DEFAULT '',
-  `system_audits_type` varchar(45) NOT NULL DEFAULT '',
-  `system_audits_time` varchar(45) NOT NULL DEFAULT '',
-  `system_audits_ip` varchar(30) NOT NULL DEFAULT '',
-  `audit_debug` text NOT NULL,
-  `audit_wmi_fails` text NOT NULL,
+CREATE TABLE `audit_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT '0',
+  `username` varchar(45) NOT NULL DEFAULT '',
+  `type` varchar(45) NOT NULL DEFAULT '',
+  `time` varchar(45) NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `debug` text NOT NULL,
+  `wmi_fails` text NOT NULL,
   `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`system_audits_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_man_audits_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_man_audits`
+-- Dumping data for table `audit_log`
 --
 
-LOCK TABLES `sys_man_audits` WRITE;
-/*!40000 ALTER TABLE `sys_man_audits` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_man_audits` ENABLE KEYS */;
+LOCK TABLES `audit_log` WRITE;
+/*!40000 ALTER TABLE `audit_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `audit_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2049,228 +2077,204 @@ LOCK TABLES `dns` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_group`
+-- Table structure for table `pagefile`
 --
 
-DROP TABLE IF EXISTS `sys_sw_group`;
+DROP TABLE IF EXISTS `pagefile`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_group` (
-  `group_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `pagefile` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `group_name` varchar(100) NOT NULL DEFAULT '',
-  `group_description` varchar(200) NOT NULL DEFAULT '',
-  `group_sid` varchar(100) NOT NULL DEFAULT '',
-  `group_members` text NOT NULL,
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`group_id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_groups_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_sw_group`
---
-
-LOCK TABLES `sys_sw_group` WRITE;
-/*!40000 ALTER TABLE `sys_sw_group` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_group` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_sw_pagefile`
---
-
-DROP TABLE IF EXISTS `sys_sw_pagefile`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_pagefile` (
-  `pagefile_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `pagefile_name` varchar(100) NOT NULL DEFAULT '',
-  `pagefile_initial_size` varchar(10) NOT NULL DEFAULT '',
-  `pagefile_max_size` varchar(10) NOT NULL DEFAULT '',
-  `pagefile_size` varchar(10) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`pagefile_id`),
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `initial_size` int(10) unsigned NOT NULL DEFAULT '0',
+  `max_size` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_pagefile_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_pagefile`
+-- Dumping data for table `pagefile`
 --
 
-LOCK TABLES `sys_sw_pagefile` WRITE;
-/*!40000 ALTER TABLE `sys_sw_pagefile` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_pagefile` ENABLE KEYS */;
+LOCK TABLES `pagefile` WRITE;
+/*!40000 ALTER TABLE `pagefile` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pagefile` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_print_queue`
+-- Table structure for table `print_queue`
 --
 
-DROP TABLE IF EXISTS `sys_sw_print_queue`;
+DROP TABLE IF EXISTS `print_queue`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_print_queue` (
-  `queue_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `print_queue` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `queue_system_key` varchar(100) NOT NULL DEFAULT '',
-  `queue_name` varchar(100) NOT NULL DEFAULT '',
-  `queue_port_name` varchar(100) NOT NULL DEFAULT '',
-  `queue_ip_address` varchar(100) NOT NULL DEFAULT '',
-  `queue_description` varchar(100) NOT NULL DEFAULT '',
-  `queue_model` varchar(100) NOT NULL DEFAULT '',
-  `queue_manufacturer` varchar(100) NOT NULL DEFAULT '',
-  `queue_shared` varchar(100) NOT NULL DEFAULT '',
-  `queue_shared_name` varchar(100) NOT NULL DEFAULT '',
-  `queue_location` varchar(100) NOT NULL DEFAULT '',
-  `queue_color` varchar(100) NOT NULL DEFAULT '',
-  `queue_duplex` varchar(100) NOT NULL DEFAULT '',
-  `queue_type` enum('virtual','physical','') NOT NULL DEFAULT '',
-  `queue_connection_status` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`queue_id`),
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `manufacturer` varchar(100) NOT NULL DEFAULT '',
+  `model` varchar(100) NOT NULL DEFAULT '',
+  `description` varchar(100) NOT NULL DEFAULT '',
+  `system_key` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `port_name` varchar(100) NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `shared` varchar(100) NOT NULL DEFAULT '',
+  `shared_name` varchar(100) NOT NULL DEFAULT '',
+  `location` varchar(100) NOT NULL DEFAULT '',
+  `color` varchar(100) NOT NULL DEFAULT '',
+  `duplex` varchar(100) NOT NULL DEFAULT '',
+  `type` enum('virtual','physical','') NOT NULL DEFAULT '',
+  `connection_status` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_print_queue_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_print_queue`
+-- Dumping data for table `print_queue`
 --
 
-LOCK TABLES `sys_sw_print_queue` WRITE;
-/*!40000 ALTER TABLE `sys_sw_print_queue` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_print_queue` ENABLE KEYS */;
+LOCK TABLES `print_queue` WRITE;
+/*!40000 ALTER TABLE `print_queue` DISABLE KEYS */;
+/*!40000 ALTER TABLE `print_queue` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_route`
+-- Table structure for table `route`
 --
 
-DROP TABLE IF EXISTS `sys_sw_route`;
+DROP TABLE IF EXISTS `route`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_route` (
-  `route_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `route` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `destination` varchar(20) NOT NULL DEFAULT '',
   `mask` varchar(20) NOT NULL DEFAULT '',
   `metric` varchar(10) NOT NULL DEFAULT '',
-  `next_hop` varchar(20) NOT NULL DEFAULT '',
+  `next_hop` varchar(40) NOT NULL DEFAULT '',
   `protocol` varchar(10) NOT NULL DEFAULT '',
   `type` varchar(10) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`route_id`),
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_ip_route_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_route`
+-- Dumping data for table `route`
 --
 
-LOCK TABLES `sys_sw_route` WRITE;
-/*!40000 ALTER TABLE `sys_sw_route` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_route` ENABLE KEYS */;
+LOCK TABLES `route` WRITE;
+/*!40000 ALTER TABLE `route` DISABLE KEYS */;
+/*!40000 ALTER TABLE `route` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_scheduled_task`
+-- Table structure for table `task`
 --
 
-DROP TABLE IF EXISTS `sys_sw_scheduled_task`;
+DROP TABLE IF EXISTS `task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_scheduled_task` (
-  `sched_task_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `task` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `sched_task_name` varchar(100) NOT NULL DEFAULT '',
-  `sched_task_next_run` varchar(50) NOT NULL DEFAULT '',
-  `sched_task_status` varchar(50) NOT NULL DEFAULT '',
-  `sched_task_last_run` varchar(50) NOT NULL DEFAULT '',
-  `sched_task_last_result` varchar(50) NOT NULL DEFAULT '',
-  `sched_task_creator` varchar(50) NOT NULL DEFAULT '',
-  `sched_task_schedule` varchar(100) NOT NULL DEFAULT '',
-  `sched_task_task` varchar(100) NOT NULL DEFAULT '',
-  `sched_task_state` varchar(10) NOT NULL DEFAULT '',
-  `sched_task_runas` varchar(50) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`sched_task_id`),
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `next_run` varchar(50) NOT NULL DEFAULT '',
+  `status` varchar(50) NOT NULL DEFAULT '',
+  `last_run` varchar(50) NOT NULL DEFAULT '',
+  `last_result` varchar(50) NOT NULL DEFAULT '',
+  `creator` varchar(50) NOT NULL DEFAULT '',
+  `schedule` varchar(100) NOT NULL DEFAULT '',
+  `task` varchar(100) NOT NULL DEFAULT '',
+  `state` varchar(10) NOT NULL DEFAULT '',
+  `runas` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
-  CONSTRAINT `sys_sw_scheduled_task_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+  CONSTRAINT `task_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_scheduled_task`
+-- Dumping data for table `task`
 --
 
-LOCK TABLES `sys_sw_scheduled_task` WRITE;
-/*!40000 ALTER TABLE `sys_sw_scheduled_task` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_scheduled_task` ENABLE KEYS */;
+LOCK TABLES `task` WRITE;
+/*!40000 ALTER TABLE `task` DISABLE KEYS */;
+/*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_variable`
+-- Table structure for table `variable`
 --
 
-DROP TABLE IF EXISTS `sys_sw_variable`;
+DROP TABLE IF EXISTS `variable`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_variable` (
-  `variable_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `variable` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `variable_name` varchar(100) NOT NULL DEFAULT '',
-  `variable_value` text NOT NULL,
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`variable_id`),
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `value` text NOT NULL,
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_variable_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_variable`
+-- Dumping data for table `variable`
 --
 
-LOCK TABLES `sys_sw_variable` WRITE;
-/*!40000 ALTER TABLE `sys_sw_variable` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_variable` ENABLE KEYS */;
+LOCK TABLES `variable` WRITE;
+/*!40000 ALTER TABLE `variable` DISABLE KEYS */;
+/*!40000 ALTER TABLE `variable` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sys_sw_virtual_machine`
+-- Table structure for table `vm`
 --
 
-DROP TABLE IF EXISTS `sys_sw_virtual_machine`;
+DROP TABLE IF EXISTS `vm`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_sw_virtual_machine` (
+CREATE TABLE `vm` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `guest_system_id` int(10) unsigned DEFAULT NULL,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `vm_id` int(12) unsigned NOT NULL DEFAULT '0',
+  `vm_id` int(12) unsigned DEFAULT NULL,
   `uuid` text NOT NULL,
   `vm_group` text NOT NULL,
   `config_file` text NOT NULL,
-  `memory` int(12) unsigned NOT NULL DEFAULT '0',
-  `cpu` int(10) unsigned NOT NULL DEFAULT '0',
+  `memory_count` int(12) unsigned NOT NULL DEFAULT '0',
+  `cpu_count` int(10) unsigned NOT NULL DEFAULT '0',
   `status` varchar(100) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `icon` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `sys_sw_virtual_machine_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
@@ -2278,12 +2282,12 @@ CREATE TABLE `sys_sw_virtual_machine` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sys_sw_virtual_machine`
+-- Dumping data for table `vm`
 --
 
-LOCK TABLES `sys_sw_virtual_machine` WRITE;
-/*!40000 ALTER TABLE `sys_sw_virtual_machine` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_sw_virtual_machine` ENABLE KEYS */;
+LOCK TABLES `vm` WRITE;
+/*!40000 ALTER TABLE `vm` DISABLE KEYS */;
+/*!40000 ALTER TABLE `vm` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2461,6 +2465,38 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_group`
+--
+
+DROP TABLE IF EXISTS `user_group`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_group` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `sid` varchar(100) NOT NULL DEFAULT '',
+  `members` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `sys_sw_groups_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_group`
+--
+
+LOCK TABLES `user_group` WRITE;
+/*!40000 ALTER TABLE `user_group` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_group` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

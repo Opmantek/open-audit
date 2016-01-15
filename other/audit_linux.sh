@@ -1803,10 +1803,12 @@ echo "	</log>" >> "$xml_file"
 if [ "$debugging" -gt "0" ]; then
 	echo "Swap Info"
 fi
-
+echo "	<pagefile>" >> "$xml_file"
 for swap in $(tail -n +2 /proc/swaps) ; do
-	echo "$swap" | awk ' { print "\t<pagefile>\n\t\t<file_name>"$1"</file_name>\n\t\t<initial_size>"$3"</initial_size>\n\t\t<max_size>"$3"</max_size>\n\t</pagefile>" } ' >> "$xml_file"
+	echo "$swap" | awk ' { print "\t<item>\n\t\t<name>"$1"</name>\n\t\t<initial_size>"$3"</initial_size>\n\t\t<max_size>"$3"</max_size>\n\t</item>" } ' >> "$xml_file"
 done
+echo "	</pagefile>" >> "$xml_file"
+
 
 ##################################
 # USER SECTION                   #
@@ -1969,10 +1971,10 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Route Info"
 fi
 
-echo "	<routes>" >> "$xml_file"
+echo "	<route>" >> "$xml_file"
 if [ -n "$(which route 2>/dev/null)" ]; then
 	for i in $(route -n | tail -n +3) ; do
-		echo "$i" | awk ' { print "\t\t<route>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</route>" } ' >> "$xml_file"
+		echo "$i" | awk ' { print "\t\t<item>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</item>" } ' >> "$xml_file"
 	done
 fi
 if [ -n "$(which route 2>/dev/null)" ] && [ -n "$(which ip 2>/dev/null)" ]; then
@@ -1980,15 +1982,15 @@ if [ -n "$(which route 2>/dev/null)" ] && [ -n "$(which ip 2>/dev/null)" ]; then
 	route_next_hop=$(ip r | grep "default via" | cut -d" " -f3)
 	route_metric=$(ip r | grep "default via" | cut -d" " -f10)
 	{
-	echo "		<route>"
+	echo "		<item>"
 	echo "			<destination>0.0.0.0</destination>"
 	echo "			<mask></mask>"
 	echo "			<metric>$(escape_xml "$route_metric")</metric>"
 	echo "			<next_hop>$(escape_xml "$route_next_hop")</next_hop>"
-	echo "		</route>"
+	echo "		</item>"
 	} >> "$xml_file"
 fi
-echo "	</routes>" >> "$xml_file"
+echo "	</route>" >> "$xml_file"
 
 
 ########################################################

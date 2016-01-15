@@ -63,6 +63,53 @@ class test extends CI_Controller
         redirect('/');
     }
 
+    public function dns()
+    {
+        print gethostbyaddr('192.168.1.1');
+    }
+
+    public function delta()
+    {
+        echo "<pre>\n";
+        $type = 'delta';
+        $table = 'netstat';
+        $system_id = 23;
+        $first_seen = '';
+
+
+        if ($type != 'delta' and $type != 'full') {
+            return;
+        }
+
+
+        $sql = "SELECT first_seen FROM $table WHERE system_id = ? ORDER BY first_seen LIMIT 1";
+        $data = array($system_id);
+        $query = $this->db->query($sql, $data);
+            echo $this->db->last_query() . "\n";
+        $result = $query->result();
+        if ($query->num_rows() > 0) {
+            $row = $query->row();
+            $first_seen = $row->first_seen;
+        }
+        if ($first_seen != '') {
+            if ($type == 'delta') {
+                $sql = "SELECT $table.*, IF(($table.first_seen = ?), 'y', 'n') as original_install, IF($table.current = 'y', 'y', 'n') as current_install FROM $table WHERE system_id = ? and (current = 'y' or first_seen = ?)";
+                $data = array("$first_seen", $system_id, "$first_seen");
+            }
+            if ($type == 'full') {
+                $sql = "SELECT $table.*, IF(($table.first_seen = ?), 'y', 'n') as original_install, IF($table.current = 'y', 'y', 'n') as current_install FROM $table WHERE system_id = ?";
+                $data = array("$first_seen", $system_id);
+            }
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            echo $this->db->last_query() . "\n";
+            print_r($result);
+        } else {
+            # no data in this table for the system_id
+            return;
+        }
+    }
+
     public function login()
     {
         $this->load->model('m_oa_user');

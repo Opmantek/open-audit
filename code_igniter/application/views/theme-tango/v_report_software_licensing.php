@@ -65,15 +65,15 @@
         }
     ?>
 		<tr>
-			<td><a href="<?php echo base_url(); ?>index.php/report/specific_software/<?php echo $group_id; ?>/<?php echo $key->software_id; ?>"><?php echo $key->software_name; ?></a></td>
-			<td><?php echo htmlentities($key->software_comment); ?></td>
-			<td><?php echo htmlentities($key->software_version); ?></td>
-			<td><?php echo htmlentities($key->software_publisher); ?></td>
+			<td><a href="<?php echo base_url(); ?>index.php/report/specific_software/<?php echo $group_id; ?>/<?php echo $key->id; ?>"><?php echo $key->name; ?></a></td>
+			<td><?php echo htmlentities($key->type); ?></td>
+			<td><?php echo htmlentities($key->version); ?></td>
+			<td><?php echo htmlentities($key->publisher); ?></td>
 			<td align='center'><?php echo intval($key->software_count); ?></td>
 			<td align='center'><?php echo $key->software_licenses ?></td>
 			<?php
             if ($this->user->user_sam > '1') {
-                echo "\t\t\t<td align=\"center\"><a class='AssetPopupTrigger' rel='".htmlentities($key->software_name)."' href='#' ><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16' /></a></td>\n";
+                echo "\t\t\t<td align=\"center\"><a class='AssetPopupTrigger' rel='".htmlentities($key->name)."' href='#' ><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16' /></a></td>\n";
             //} else if ($this->user->user_sam > '1') {
                 //if ($key->software_licenses == '') {
                     //echo "\t\t\t<td align=\"center\"></td>\n";

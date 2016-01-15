@@ -710,7 +710,7 @@ class admin extends MY_Controller
         if (isset($_POST['submit'])) {
             $this->load->model("m_system");
             $this->load->model("m_oa_group");
-            $this->load->model("m_sys_man_audits");
+            $this->load->model("m_audit_log");
             $details = new stdClass();
             $timestamp = date('Y-m-d H:i:s');
             $ad_ldap_server = $_POST['ad_ldap_server'];
@@ -828,9 +828,13 @@ class admin extends MY_Controller
                         # insert a new system
                         $details->system_id = $this->m_system->insert_system($details);
                     }
-                    #echo "<pre>\n";
-                    #print_r($details);
-                    $this->m_sys_man_audits->insert_audit($details);
+                    if (isset($this->user->user_full_name)) {
+                        $temp_user = $this->user->user_full_name;
+                    } else {
+                        $temp_user = '';
+                    }
+                    $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                    unset($temp_user);
                     $this->m_oa_group->update_system_groups($details);
                 }
                 redirect('/');
@@ -3837,7 +3841,6 @@ class admin extends MY_Controller
             $sql[] = "DROP TABLE IF EXISTS oa_location_org";
             $sql[] = "DROP TABLE IF EXISTS oa_asset_line";
             $sql[] = "DROP TABLE IF EXISTS oa_asset_order";
-            $sql[] = "DROP TABLE IF EXISTS oa_asset_select";
             $sql[] = "DROP TABLE IF EXISTS oa_device_col";
             $sql[] = "DROP TABLE IF EXISTS oa_device";
             $sql[] = "DROP TABLE IF EXISTS oa_graph";
@@ -4139,6 +4142,65 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_scsi_controller CHANGE scsi_controller_type type enum('raid','hba','other','san controller','san shelf') NOT NULL DEFAULT 'other' AFTER device";
             $sql[] = "RENAME TABLE sys_hw_scsi_controller TO scsi";
 
+            # group
+            $sql[] = "DELETE sys_sw_group FROM sys_sw_group LEFT JOIN system ON system.system_id = sys_sw_group.system_id WHERE sys_sw_group.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_sw_group CHANGE group_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_sw_group CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_sw_group ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_group CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_group CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_group CHANGE group_name name varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_sw_group CHANGE group_description description varchar(200) NOT NULL DEFAULT '' AFTER name";
+            $sql[] = "ALTER TABLE sys_sw_group CHANGE group_sid sid varchar(100) NOT NULL DEFAULT '' AFTER description";
+            $sql[] = "ALTER TABLE sys_sw_group CHANGE group_members members text NOT NULL AFTER sid";
+            $sql[] = "RENAME TABLE sys_sw_group TO user_group";
+
+            # pagefile
+            $sql[] = "DELETE sys_sw_pagefile FROM sys_sw_pagefile LEFT JOIN system ON system.system_id = sys_sw_pagefile.system_id WHERE sys_sw_pagefile.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_sw_pagefile CHANGE pagefile_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_sw_pagefile CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_sw_pagefile ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_pagefile CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_pagefile CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_pagefile CHANGE pagefile_name name varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_sw_pagefile CHANGE pagefile_size size int unsigned NOT NULL DEFAULT '0' AFTER name";
+            $sql[] = "ALTER TABLE sys_sw_pagefile CHANGE pagefile_initial_size initial_size int unsigned NOT NULL DEFAULT '0' AFTER size";
+            $sql[] = "ALTER TABLE sys_sw_pagefile CHANGE pagefile_max_size max_size int unsigned NOT NULL DEFAULT '0' AFTER initial_size";
+            $sql[] = "RENAME TABLE sys_sw_pagefile TO pagefile";
+
+            # print queue
+            $sql[] = "DELETE sys_sw_print_queue FROM sys_sw_print_queue LEFT JOIN system ON system.system_id = sys_sw_print_queue.system_id WHERE sys_sw_print_queue.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_sw_print_queue ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_manufacturer manufacturer varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_model model varchar(100) NOT NULL DEFAULT '' AFTER manufacturer";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_description description varchar(100) NOT NULL DEFAULT '' AFTER model";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_system_key system_key varchar(100) NOT NULL DEFAULT '' AFTER description";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_name name varchar(100) NOT NULL DEFAULT '' AFTER system_key";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_port_name port_name varchar(100) NOT NULL DEFAULT '' AFTER name";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_ip_address ip varchar(45) NOT NULL DEFAULT '' AFTER port_name";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_shared shared varchar(100) NOT NULL DEFAULT '' AFTER ip";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_shared_name shared_name varchar(100) NOT NULL DEFAULT '' AFTER shared";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_location location varchar(100) NOT NULL DEFAULT '' AFTER shared_name";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_color color varchar(100) NOT NULL DEFAULT '' AFTER location";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_duplex duplex varchar(100) NOT NULL DEFAULT '' AFTER color";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_type type enum('virtual','physical','') NOT NULL DEFAULT '' AFTER duplex";
+            $sql[] = "ALTER TABLE sys_sw_print_queue CHANGE queue_connection_status connection_status varchar(100) NOT NULL DEFAULT '' AFTER type";
+            $sql[] = "RENAME TABLE sys_sw_print_queue TO print_queue";
+
+            # route
+            $sql[] = "DELETE sys_sw_route FROM sys_sw_route LEFT JOIN system ON system.system_id = sys_sw_route.system_id WHERE sys_sw_route.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_sw_route CHANGE route_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_sw_route CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_sw_route ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_route CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_route CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_route CHANGE next_hop next_hop varchar(40) NOT NULL DEFAULT ''";
+            $sql[] = "RENAME TABLE sys_sw_route TO route";
+
             # service
             $sql[] = "DELETE sys_sw_service FROM sys_sw_service LEFT JOIN system ON system.system_id = sys_sw_service.system_id WHERE sys_sw_service.timestamp <> system.timestamp";
             $sql[] = "ALTER TABLE sys_sw_service DROP KEY `timestamp`";
@@ -4261,6 +4323,17 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_sw_user CHANGE user_type type enum('local','domain','database','application','other') NOT NULL DEFAULT 'local' AFTER status";
             $sql[] = "RENAME TABLE sys_sw_user TO user";
 
+            # variable
+            $sql[] = "DELETE sys_sw_variable FROM sys_sw_variable LEFT JOIN system ON system.system_id = sys_sw_variable.system_id WHERE sys_sw_variable.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_sw_variable CHANGE variable_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE sys_sw_variable CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE sys_sw_variable ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_variable CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_variable CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_variable CHANGE variable_name name varchar(100) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE sys_sw_variable CHANGE variable_value value text NOT NULL AFTER name";
+            $sql[] = "RENAME TABLE sys_sw_variable TO variable";
+
             # video
             $sql[] = "DELETE sys_hw_video FROM sys_hw_video LEFT JOIN system ON system.system_id = sys_hw_video.system_id WHERE sys_hw_video.timestamp <> system.timestamp";
             $sql[] = "ALTER TABLE sys_hw_video CHANGE video_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -4282,6 +4355,17 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_video DROP video_max_refresh_rate";
             $sql[] = "ALTER TABLE sys_hw_video DROP video_min_refresh_rate";
             $sql[] = "RENAME TABLE sys_hw_video TO video";
+
+            # vm
+            $sql[] = "DELETE sys_sw_virtual_machine FROM sys_sw_virtual_machine LEFT JOIN system ON system.system_id = sys_sw_virtual_machine.system_id WHERE sys_sw_virtual_machine.timestamp <> system.timestamp";
+            $sql[] = "ALTER TABLE sys_sw_virtual_machine ADD current enum('y','n') NOT NULL DEFAULT 'y' AFTER system_id";
+            $sql[] = "ALTER TABLE sys_sw_virtual_machine CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current";
+            $sql[] = "ALTER TABLE sys_sw_virtual_machine CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE sys_sw_virtual_machine CHANGE memory memory_count int(12) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE sys_sw_virtual_machine CHANGE cpu cpu_count int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE sys_sw_virtual_machine CHANGE vm_id vm_id int(12) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE sys_sw_virtual_machine ADD icon varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "RENAME TABLE sys_sw_virtual_machine TO vm";
 
             # warranty
             $sql[] = "ALTER TABLE sys_hw_warranty CHANGE warranty_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -4325,7 +4409,96 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_sw_windows CHANGE windows_workgroup workgroup varchar(255) NOT NULL DEFAULT '' AFTER active_directory_ou";
             $sql[] = "RENAME TABLE sys_sw_windows TO windows";
 
-            $sql[] = "ALTER TABLE oa_alert_log ADD `link_row_action` enum('','create','update','delete') NOT NULL DEFAULT '' AFTER alert_foreign_row";
+            # oa_alert_log -> change_log (list of detected changes)
+            $sql[] = "DROP TABLE IF EXISTS change_log";
+            $sql[] = "ALTER TABLE oa_alert_log DROP FOREIGN KEY oa_alert_log_user_id";
+            $sql[] = "ALTER TABLE oa_alert_log DROP FOREIGN KEY oa_alert_log_system_id";
+            $sql[] = "ALTER TABLE oa_alert_log DROP FOREIGN KEY oa_alert_oa_change";
+            $sql[] = "ALTER TABLE oa_alert_log DROP KEY oa_alert_log_user_id";
+            $sql[] = "ALTER TABLE oa_alert_log DROP KEY oa_alert_change_id";
+            $sql[] = "ALTER TABLE oa_alert_log CHANGE alert_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE oa_alert_log CHANGE system_id system_id int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE oa_alert_log CHANGE alert_table db_table varchar(50) NOT NULL DEFAULT '' AFTER system_id";
+            $sql[] = "ALTER TABLE oa_alert_log CHANGE alert_foreign_row db_row int(10) unsigned NOT NULL DEFAULT '0' AFTER db_table";
+            $sql[] = "ALTER TABLE oa_alert_log ADD db_action enum('','create','update','delete') NOT NULL DEFAULT '' AFTER db_row";
+            $sql[] = "ALTER TABLE oa_alert_log CHANGE alert_details details varchar(200) NOT NULL DEFAULT '' AFTER db_action";
+            $sql[] = "ALTER TABLE oa_alert_log CHANGE alert_ack_time ack_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER user_id";
+            $sql[] = "ALTER TABLE oa_alert_log CHANGE alert_note note varchar(200) NOT NULL DEFAULT '' AFTER ack_time";
+            $sql[] = "ALTER TABLE oa_alert_log CHANGE external_change_id external_ident varchar(200) NOT NULL DEFAULT '' AFTER ack_time";
+            $sql[] = "ALTER TABLE oa_alert_log CHANGE external_change_link external_link varchar(200) NOT NULL DEFAULT '' AFTER ack_time";
+            $sql[] = "ALTER TABLE oa_alert_log ADD CONSTRAINT change_log_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE";
+            $sql[] = "RENAME TABLE oa_alert_log TO change_log";
+
+            # sys_man_audits -> audit_log (list of audits)
+            $sql[] = "DROP TABLE IF EXISTS audit_log";
+            $sql[] = "CREATE TABLE audit_log ( 
+                id int(10) unsigned NOT NULL AUTO_INCREMENT,
+                system_id int(10) unsigned DEFAULT '0',
+                username varchar(45) NOT NULL DEFAULT '',
+                type varchar(45) NOT NULL DEFAULT '',
+                time varchar(45) NOT NULL DEFAULT '',
+                ip varchar(45) NOT NULL DEFAULT '',
+                debug text NOT NULL DEFAULT '',
+                wmi_fails text NOT NULL DEFAULT '',
+                timestamp datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                PRIMARY KEY (id),
+                KEY system_id (system_id),
+                CONSTRAINT audit_log_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "INSERT INTO audit_log SELECT NULL, system_id, system_audits_username, system_audits_type, system_audits_time, system_audits_ip, audit_debug, audit_wmi_fails, `timestamp` FROM sys_man_audits";
+            $sql[] = "DROP TABLE IF EXISTS sys_man_audits";
+
+            # oa_audit_log -> edit_log (list of edits by who [user||audit||snmp||etc])
+            $sql[] = "DROP TABLE IF EXISTS edit_log";
+            $sql[] = "CREATE TABLE edit_log (
+                id int(10) NOT NULL AUTO_INCREMENT,
+                user_id int(10) unsigned DEFAULT NULL,
+                system_id int(10) unsigned DEFAULT NULL,
+                details varchar(200) NOT NULL DEFAULT '',
+                source varchar(100) NOT NULL DEFAULT '',
+                weight int(10) unsigned NOT NULL DEFAULT '0',
+                db_table varchar(100) NOT NULL DEFAULT '',
+                db_column varchar(100) NOT NULL DEFAULT '',
+                timestamp datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                value text NOT NULL DEFAULT '',
+                previous_value text NOT NULL DEFAULT '',
+                PRIMARY KEY (id),
+                KEY user_id (user_id),
+                KEY edit_log_system_id (system_id),
+                CONSTRAINT edit_log_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE,
+                CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (user_id)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the ', SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5), ' attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5) as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'man_%'";
+            $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the name attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, 'name' as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'hostname - %'";
+            $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited a custom attribute.') as details, 'user' as source, '1000' as weight, 'sys_additional_fields_data' as db_table, '' db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'sys_man_additional_fields_data%'";
+            $sql[] = "DROP TABLE IF EXISTS oa_audit_log";
+
+
+
+
+
+            # tasks (scheduled tasks / cron)
+            $sql[] = "DROP TABLE IF EXISTS sys_sw_scheduled_task";
+            $sql[] = "CREATE TABLE `task` (
+                  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `system_id` int(10) unsigned DEFAULT NULL,
+                  `current` enum('y','n') NOT NULL DEFAULT 'y',
+                  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                  `name` varchar(100) NOT NULL DEFAULT '',
+                  `next_run` varchar(50) NOT NULL DEFAULT '',
+                  `status` varchar(50) NOT NULL DEFAULT '',
+                  `last_run` varchar(50) NOT NULL DEFAULT '',
+                  `last_result` varchar(50) NOT NULL DEFAULT '',
+                  `creator` varchar(50) NOT NULL DEFAULT '',
+                  `schedule` varchar(100) NOT NULL DEFAULT '',
+                  `task` varchar(100) NOT NULL DEFAULT '',
+                  `state` varchar(10) NOT NULL DEFAULT '',
+                  `runas` varchar(50) NOT NULL DEFAULT '',
+                  PRIMARY KEY (`id`),
+                  KEY `system_id` (`system_id`),
+                  CONSTRAINT `task_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
             # server - new table
             $sql[] = "DROP TABLE IF EXISTS server";

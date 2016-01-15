@@ -864,7 +864,7 @@ function show_software($type, $software) {
                 <thead>
                     <tr>
                         <th align="left" ><?php echo __('File Name')?></th>
-                        <th><?php echo __('Initial Size')?>&nbsp;&nbsp;&nbsp;</th>
+                        <th><?php echo __('Initial Size')?></th>
                         <th><?php echo __('Max Size')?></th>
                         <th><?php echo __('Current Size')?></th>
                     </tr>
@@ -872,10 +872,10 @@ function show_software($type, $software) {
                 <tbody>
                 <?php foreach ($pagefile as $key): ?>
                     <tr>
-                        <td><?php echo print_something($key->pagefile_name)?></td>
-                        <td><?php echo print_something($key->pagefile_initial_size)?></td>
-                        <td><?php echo print_something($key->pagefile_max_size)?></td>
-                        <td><?php echo print_something($key->pagefile_size)?></td>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->initial_size)?></td>
+                        <td><?php echo print_something($key->max_size)?></td>
+                        <td><?php echo print_something($key->size)?></td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -959,6 +959,50 @@ function show_software($type, $software) {
     <?php } ?>
     </div>
 
+    <div id="view_settings_tasks" style="float: left; width: 100%;">
+    <?php if (count($task) > 0) { ?>
+        <br />
+        <br />
+        <form action="#" method="post" class='niceforms'>
+            <fieldset id="tasks">
+            <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Tasks')?></span></legend>
+                <table cellspacing="1" class="tablesorter" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __('Name')?></th>
+                            <th><?php echo __('Last Run')?></th>
+                            <th><?php echo __('Next Run')?></th>
+                            <th><?php echo __('Last Run Result')?></th>
+                            <th><?php echo __('Status')?></th>
+                            <th><?php echo __('State')?></th>
+                            <th><?php echo __('Creator')?></th>
+                            <th><?php echo __('Task')?></th>
+                            <th><?php echo __('Run As')?></th>
+                            <th><?php echo __('Schedule')?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($task as $key): ?>
+                    <tr>
+                        <td><?php echo print_something($key->name); ?></td>
+                        <td><?php echo print_something($key->last_run)?></td>
+                        <td><?php echo print_something($key->next_run); ?></td>
+                        <td><?php echo print_something($key->last_result)?></td>
+                        <td><?php echo print_something($key->status)?></td>
+                        <td><?php echo print_something($key->state)?></td>
+                        <td><?php echo print_something($key->creator)?></td>
+                        <td><?php echo print_something($key->task)?></td>
+                        <td><?php echo print_something($key->runas)?></td>
+                        <td><?php echo print_something($key->schedule)?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </fieldset>
+        </form>
+    <?php } ?>
+    </div>
+
     <div id="view_settings_users" style="float: left; width: 100%;">
     <?php if (count($user) > 0) { ?>
         <br />
@@ -1002,7 +1046,7 @@ function show_software($type, $software) {
     </div>
 
     <div id="view_settings_groups" style="float: left; width: 100%;">
-    <?php if (count($system_group) > 0) {
+    <?php if (count($user_group) > 0) {
     ?>
         <br />
         <br />
@@ -1018,13 +1062,13 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($system_group as $key): ?>
-                    <?php $group_members = str_replace(", ", " <br />", $key->group_members); ?>
+                    <?php foreach ($user_group as $key): ?>
+                    <?php $group_members = str_replace(", ", " <br />", $key->members); ?>
                     <?php $group_members = mb_substr($group_members, 0, mb_strlen($group_members)-1); ?>
                     <tr>
-                        <td><?php echo print_something($key->group_name)?></td>
-                        <td><?php echo print_something($key->group_description)?></td>
-                        <td><?php echo print_something($group_members)?></td>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->description)?></td>
+                        <td><?php echo $group_members?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -1061,26 +1105,19 @@ function show_software($type, $software) {
                     </thead>
                     <tbody>
                     <?php foreach ($print_queue as $key): ?>
-                    <?php
-                    if ($key->queue_ip_address == '') {
-                        $ip_address = '';
-                    } else {
-                        $ip_address = ip_address_from_db($key->queue_ip_address);
-                    }
-                    ?>
                     <tr>
-                        <td><?php echo print_something($key->queue_name)?></td>
-                        <td><?php echo print_something($key->queue_model)?></td>
-                        <td><?php echo print_something($key->queue_manufacturer)?></td>
-                        <td><?php echo print_something($key->queue_port_name)?></td>
-                        <td><?php echo "<span style=\"display: none;\">".print_something($key->queue_ip_address)."&nbsp;</span>".print_something($ip_address)?></td>
-                        <td><?php echo print_something($key->queue_shared)?></td>
-                        <td><?php echo print_something($key->queue_shared_name)?></td>
-                        <td><?php echo print_something($key->queue_color)?></td>
-                        <td><?php echo print_something($key->queue_duplex)?></td>
-                        <td><?php echo print_something($key->queue_type)?></td>
-                        <td><?php echo print_something($key->queue_location)?></td>
-                        <td><?php echo print_something($key->queue_connection_status)?></td>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->model)?></td>
+                        <td><?php echo print_something($key->manufacturer)?></td>
+                        <td><?php echo print_something($key->port_name)?></td>
+                        <td><?php echo print_something($key->ip)?></td>
+                        <td><?php echo print_something($key->shared)?></td>
+                        <td><?php echo print_something($key->shared_name)?></td>
+                        <td><?php echo print_something($key->color)?></td>
+                        <td><?php echo print_something($key->duplex)?></td>
+                        <td><?php echo print_something($key->type)?></td>
+                        <td><?php echo print_something($key->location)?></td>
+                        <td><?php echo print_something($key->connection_status)?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -1194,7 +1231,7 @@ function show_software($type, $software) {
     </div>
 
     <div id="view_settings_variables" style="float: left; width: 100%;">
-    <?php if (count($system_variable) > 0) { ?>
+    <?php if (count($variable) > 0) { ?>
         <br />
         <br />
         <form action="#" method="post" class='niceforms'>
@@ -1203,15 +1240,15 @@ function show_software($type, $software) {
                 <table cellspacing="1" class="tablesorter" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __('Variable Name')?></th>
+                            <th><?php echo __('Name')?></th>
                             <th><?php echo __('Value')?></th>
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($system_variable as $key): ?>
+                    <?php foreach ($variable as $key): ?>
                     <tr>
-                        <td><?php echo print_something($key->variable_name)?></td>
-                        <td><?php echo print_something($key->variable_value)?></td>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->value)?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -1254,6 +1291,8 @@ function show_software($type, $software) {
                         <th><?php echo __('Instance')?></th>
                         <th><?php echo __('Internal ID')?></th>
                         <th><?php echo __('Name')?></th>
+                        <th><?php echo __('Description')?></th>
+                        <th><?php echo __('Status')?></th>
                         <th width="80"><?php echo __('Size')?></th>
                         <th><?php echo __('Path')?></th>
                     </tr>
@@ -1264,6 +1303,8 @@ function show_software($type, $software) {
                         <td><?php echo print_something($key->instance)?></td>
                         <td><?php echo print_something($key->id_internal)?></td>
                         <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->description)?></td>
+                        <td><?php echo print_something($key->status)?></td>
                         <td align="right"><?php echo number_format(intval($key->size))?> MB</td>
                         <td><?php echo print_something($key->path)?></td>
                     </tr>
@@ -1303,24 +1344,28 @@ function show_software($type, $software) {
         <p><br /></p>
             <fieldset id="server_web_details" class='niceforms'>
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Websites Installed')?></span></legend>
-                <table cellspacing='1' class='tablesorter' style='width:900'>
+                <table cellspacing='1' class='tablesorter' style="width:100%;">
                 <thead>
                     <tr>
+                        <th><?php echo __('Instance')?></th>
                         <th><?php echo __('Internal ID')?></th>
                         <th><?php echo __('Name')?></th>
-                        <th><?php echo __('State')?></th>
+                        <th><?php echo __('Description')?></th>
+                        <th><?php echo __('Status')?></th>
+                        <th width="80"><?php echo __('Size')?></th>
                         <th><?php echo __('Path')?></th>
-                        <th><?php echo __('App Pool')?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($website_details as $key): ?>
                     <tr>
+                        <td><?php echo print_something($key->instance)?></td>
                         <td><?php echo print_something($key->id_internal)?></td>
                         <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->description)?></td>
                         <td><?php echo print_something($key->status)?></td>
+                        <td align="right"><?php echo number_format(intval($key->size))?> MB</td>
                         <td><?php echo print_something($key->path)?></td>
-                        <td><?php echo print_something($key->instance)?></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

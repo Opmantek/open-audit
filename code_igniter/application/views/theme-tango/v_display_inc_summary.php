@@ -190,60 +190,12 @@
 	</form>
 	</div>
 
-	<div id="view_summary_audits" style="float: left; width: 100%;">
-	<?php if (count($audits) > 0) { ?>
-		<br />
-		<form action="#" method="post" class='niceforms'>
-			<fieldset id="summary_audits">
-				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('System Audits')?></span></legend>
-				<div style="min-width: 50px; float: right;">
-				<img class='section_image' src='<?php echo $oa_theme_images; ?>/48_search.png' alt='' title='' />
-				</div>
-				<div style="width: 90%; float:left;">
-				<table cellspacing="1" class="tablesorter" width="100%">
-					<thead>
-						<tr>
-							<th align="left"><?php echo __('ID')?></th>
-							<th><?php echo __('By')?>&nbsp;&nbsp;&nbsp;</th>
-							<th><?php echo __('Type')?></th>
-							<th><?php echo __('Audited On')?></th>
-							<th><?php echo __('Submitted On')?></th>
-							<th><?php echo __('Submitted From')?></th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php foreach ($audits as $key): ?>
-						<tr>
-							<td><?php echo print_something($key->system_audits_id)?></td>
-							<td><?php echo print_something($key->system_audits_username)?></td>
-							<td><?php echo print_something($key->system_audits_type)?></td>
-							<td><?php echo print_something($key->system_audits_time)?></td>
-							<td><?php echo print_something($key->timestamp)?></td>
-							<?php
-                            if (isset($key->system_audits_ip)) {
-                                echo "<td><span style=\"display:none;\">".print_something($key->system_audits_ip)."</span>".print_something(ip_address_from_db($key->system_audits_ip))."</td>\n";
-                            } else {
-                                echo "<td></td>";
-                            }
-    ?>
-						</tr>
-						<?php endforeach;
-    ?>
-					</tbody>
-				</table>
-				</div>
-			</fieldset>
-		</form>
-	<?php 
-} ?>
-	</div>
-
 	<div id="view_summary_audit_log" style="float: left; width: 100%;">
 	<?php if (count($audit_log) > 0) { ?>
 		<br />
 		<form action="#" method="post" class='niceforms'>
-			<fieldset id="summary_audit_log">
-				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('System Audit Log')?></span></legend>
+			<fieldset id="summary_audits">
+				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Audit Log')?></span></legend>
 				<div style="min-width: 50px; float: right;">
 				<img class='section_image' src='<?php echo $oa_theme_images; ?>/48_audit_log.png' alt='' title='' />
 				</div>
@@ -251,19 +203,27 @@
 				<table cellspacing="1" class="tablesorter" width="100%">
 					<thead>
 						<tr>
-							<th><?php echo __('By')?></th>
-							<th><?php echo __('On')?></th>
+							<th align="left"><?php echo __('ID')?></th>
+							<th><?php echo __('Username')?>&nbsp;&nbsp;&nbsp;</th>
 							<th><?php echo __('Type')?></th>
-							<th><?php echo __('Details')?></th>
+							<th><?php echo __('Submitted On')?></th>
+							<th><?php echo __('Submitted From')?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php foreach ($audit_log as $key): ?>
 						<tr>
-							<td><?php echo print_something($key->user_full_name)?>&nbsp;</td>
-							<td><?php echo print_something($key->timestamp)?>&nbsp;</td>
-							<td><?php echo print_something($key->audit_log_event_type)?>&nbsp;</td>
-							<td><?php echo print_something($key->audit_log_event_details)?>&nbsp;</td>
+							<td><?php echo print_something($key->id)?></td>
+							<td><?php echo print_something($key->username)?></td>
+							<td><?php echo print_something($key->type)?></td>
+							<td><?php echo print_something($key->timestamp)?></td>
+							<?php
+                            if (isset($key->ip)) {
+                                echo "<td><span style=\"display:none;\">".print_something($key->ip)."</span>".print_something(ip_address_from_db($key->ip))."</td>\n";
+                            } else {
+                                echo "<td>-</td>";
+                            }
+                        ?>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -274,14 +234,52 @@
 	<?php } ?>
 	</div>
 
-	<div id="view_summary_alerts" style="float: left; width: 100%;">
-	<?php if (count($alerts) > 0) { ?>
+	<div id="view_summary_edit_log" style="float: left; width: 100%;">
+	<?php if (count($edit_log) > 0) { ?>
 		<br />
 		<form action="#" method="post" class='niceforms'>
-			<fieldset id="summary_alert_log">
-				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('System Alert Log')?></span></legend>
+			<fieldset id="summary_edit_log">
+				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Edit Log')?></span></legend>
 				<div style="min-width: 50px; float: right;">
-				<img class='section_image' src='<?php echo $oa_theme_images; ?>/48_alerts.png' alt='' title='' />
+				<img class='section_image' src='<?php echo $oa_theme_images; ?>/48_edit_log.png' alt='' title='' />
+				</div>
+				<div style="width: 90%; float:left;">
+				<table cellspacing="1" class="tablesorter" width="100%">
+					<thead>
+						<tr>
+							<th><?php echo __('By')?></th>
+							<th><?php echo __('On')?></th>
+                            <th><?php echo __('Attribute')?></th>
+                            <th><?php echo __('Value')?></th>
+                            <th><?php echo __('Previous Value')?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ($edit_log as $key): ?>
+						<tr>
+							<td><?php echo print_something($key->user_full_name)?>&nbsp;</td>
+							<td><?php echo print_something($key->timestamp)?>&nbsp;</td>
+                            <td><?php echo print_something($key->db_column)?>&nbsp;</td>
+                            <td><?php echo print_something($key->value)?>&nbsp;</td>
+                            <td><?php echo print_something($key->previous_value)?>&nbsp;</td>
+						</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+				</div>
+			</fieldset>
+		</form>
+	<?php } ?>
+	</div>
+
+	<div id="view_summary_change_log" style="float: left; width: 100%;">
+	<?php if (count($change_log) > 0) { ?>
+		<br />
+		<form action="#" method="post" class='niceforms'>
+			<fieldset id="summary_change_log">
+				<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Change Log')?></span></legend>
+				<div style="min-width: 50px; float: right;">
+				<img class='section_image' src='<?php echo $oa_theme_images; ?>/48_change_log.png' alt='' title='' />
 				</div>
 				<div style="width: 90%; float:left;">
 				<table cellspacing="1" class="tablesorter" width="100%">
@@ -289,37 +287,27 @@
 						<tr>
 							<th><?php echo __('Timestamp')?></th>
 							<th><?php echo __('Type')?></th>
+							<th><?php echo __('Table')?></th>
+							<th><?php echo __('Row')?></th>
 							<th><?php echo __('Details')?></th>
-							<th><?php echo __('Ack Time')?></th>
-							<th><?php echo __('Ack User')?></th>
-							<th><?php echo __('Type')?></th>
-							<th><?php echo __('Note')?></th>
-							<th><?php echo __('External')?></th>
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ($alerts as $key): ?>
-						<?php $key->alert_table = str_replace('sys_sw_', '', $key->alert_table); ?>
-						<?php $key->alert_table = str_replace('sys_hw_', '', $key->alert_table); ?>
-						<?php $key->alert_table = str_replace('_', ' ', $key->alert_table); ?>
-						<?php $key->alert_table = ucwords($key->alert_table); ?>
+						<?php foreach ($change_log as $key): ?>
 						<?php
-                        if ((!is_null($key->external_change_link) and $key->external_change_link != '') and
-                            ($key->external_change_id == '' or is_null($key->external_change_id))) {
-                            $key->external_change_id = 'link';
+                        if ((!is_null($key->external_link) and $key->external_link != '') and
+                            ($key->external_ident == '' or is_null($key->external_ident))) {
+                            $key->external_ident= 'link';
                         } ?>
-						<?php if (($key->external_change_link == '') or (is_null($key->external_change_link))) {
-                            $key->external_change_link = '#';
+						<?php if (($key->external_link == '') or (is_null($key->external_link))) {
+                            $key->external_link = '#';
                         } ?>
 						<tr>
 							<td><?php echo print_something($key->timestamp)?></td>
-							<td><?php echo print_something($key->alert_table)?></td>
-							<td><?php echo utf8_decode(print_something($key->alert_details))?></td>
-							<td><?php echo print_something($key->alert_ack_time)?></td>
-							<td><?php echo print_something($key->user_full_name)?></td>
-							<td><?php echo print_something($key->change_type)?></td>
-							<td><?php echo print_something($key->alert_note)?></td>
-							<td><a href="<?php echo print_something($key->external_change_link)?>" ><?php echo print_something($key->external_change_id)?> </a></td>
+                            <td><?php echo print_something($key->db_action)?></td>
+                            <td><?php echo print_something($key->db_table)?></td>
+                            <td><?php echo print_something($key->db_row)?></td>
+							<td><?php echo utf8_decode(print_something($key->details))?></td>
 						</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -475,10 +463,10 @@
 					</thead>
 					<tbody>
 					<?php foreach ($vm as $key) {
-                        if ($key->man_icon == 'unknown' or $key->man_icon == '') {
-                            $icon = '';
+                        if ($key->icon != '') {
+                            $icon = "<a href=\"".base_url()."index.php/main/system_display/".$key->guest_system_id."\"><img alt=\"\" src=\"".base_url()."theme-tango/tango-images/16_" . $key->icon . ".png\" /></a>\n";
                         } else {
-                            $icon = "<a href=\"".base_url()."index.php/main/system_display/".$key->guest_system_id."\"><img alt=\"\" src=\"".base_url()."theme-tango/tango-images/16_".$key->man_icon.".png\" /></a>\n";
+                            $icon = '';
                         }
                         if (trim($key->status) == 'powered off' or trim($key->status) == 'poweredOff') {
                             $status = '<span style="color: red;">'.print_something($key->status).'</span>';
@@ -494,8 +482,8 @@
                     <td align='center'><?php echo $icon; ?></td>
                     <td><?php echo $link; ?></td>
                     <!-- <td><?php echo $key->vm_group; ?></td> -->
-                    <td align='center'><?php echo print_something($key->memory); ?></td>
-                    <td align='center'><?php echo print_something($key->cpu); ?></td>
+                    <td align='center'><?php echo print_something($key->memory_count); ?></td>
+                    <td align='center'><?php echo print_something($key->cpu_count); ?></td>
                     <td align='center'><?php echo $status; ?></td>
                     <td><?php echo print_something($key->uuid); ?></td>
                     <td><?php echo print_something($key->config_file); ?></td>

@@ -134,6 +134,7 @@ class devices extends MY_Controller
         unset($this->response->filtered);
         unset($this->response->limit);
         unset($this->response->offset);
+        $this->response->include = 'v_display_device';
         $this->response->header = 'HTTP/1.1 200 OK';
         output($this->response);
     }

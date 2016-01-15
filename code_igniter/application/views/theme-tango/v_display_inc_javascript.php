@@ -442,9 +442,9 @@ $(document).ready(function(){
 	$('#view_summary_credentials').hide();
 	$('#view_summary_purchase').hide();
 	$('#view_summary_network').hide();
-	$('#view_summary_audits').hide();
 	$('#view_summary_audit_log').hide();
-	$('#view_summary_alerts').hide();
+	$('#view_summary_change_log').hide();
+    $('#view_summary_edit_log').hide();
 	$('#view_summary_location').hide();
 	$('#view_summary_custom').hide();
 	$('#view_summary_attachment').hide();
@@ -519,19 +519,19 @@ $(document).ready(function(){
         toggleBold("toggle_summary_network");
 	});
 
-	$('#toggle_summary_audits').click(function(){
-		$('#view_summary_audits').slideToggle("fast");
-        toggleBold("toggle_summary_audits");
-	});
-
 	$('#toggle_summary_audit_log').click(function(){
 		$('#view_summary_audit_log').slideToggle("fast");
         toggleBold("toggle_summary_audit_log");
 	});
 
-	$('#toggle_summary_alert_log').click(function(){
-		$('#view_summary_alerts').slideToggle("fast");
-        toggleBold("toggle_summary_alert_log");
+	$('#toggle_summary_edit_log').click(function(){
+		$('#view_summary_edit_log').slideToggle("fast");
+        toggleBold("toggle_summary_edit_log");
+	});
+
+	$('#toggle_summary_change_log').click(function(){
+		$('#view_summary_change_log').slideToggle("fast");
+        toggleBold("toggle_summary_change_log");
 	});
 
 	$('#toggle_summary_location').click(function(){
@@ -726,16 +726,17 @@ $(document).ready(function(){
 	});
 
 
-	$('#view_settings_pagefile').hide();
-	$('#view_settings_shares').hide();
-	$('#view_settings_routes').hide();
-	$('#view_settings_users').hide();
-	$('#view_settings_groups').hide();
-	$('#view_settings_print_queue').hide();
-	$('#view_settings_dns').hide();
-	$('#view_settings_netstat').hide();
-	$('#view_settings_logs').hide();
-	$('#view_settings_variables').hide();
+    $('#view_settings_dns').hide();
+    $('#view_settings_groups').hide();
+    $('#view_settings_logs').hide();
+    $('#view_settings_netstat').hide();
+    $('#view_settings_pagefile').hide();
+    $('#view_settings_print_queue').hide();
+    $('#view_settings_routes').hide();
+    $('#view_settings_shares').hide();
+    $('#view_settings_tasks').hide();
+    $('#view_settings_users').hide();
+    $('#view_settings_variables').hide();
 
 
 	$('#toggle_settings_pagefile').click(function(){
@@ -743,10 +744,15 @@ $(document).ready(function(){
         toggleBold("toggle_settings_pagefile");
 	});
 
-	$('#toggle_settings_shares').click(function(){
-		$('#view_settings_shares').slideToggle("fast");
+    $('#toggle_settings_shares').click(function(){
+        $('#view_settings_shares').slideToggle("fast");
         toggleBold("toggle_settings_shares");
-	});
+    });
+
+    $('#toggle_settings_tasks').click(function(){
+        $('#view_settings_tasks').slideToggle("fast");
+        toggleBold("toggle_settings_tasks");
+    });
 
 	$('#toggle_settings_routes').click(function(){
 		$('#view_settings_routes').slideToggle("fast");

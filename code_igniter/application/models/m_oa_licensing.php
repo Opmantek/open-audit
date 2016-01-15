@@ -42,23 +42,23 @@ class M_oa_licensing extends MY_Model
     public function software_licensing_report($id)
     {
         $sql = "SELECT COUNT(DISTINCT system.system_id) AS software_count,
-				sys_sw_software.software_name,
-				sys_sw_software.software_version,
-				sys_sw_software.software_publisher,
-				sys_sw_software.software_id,
-				sys_sw_software.software_comment,
+				software.name,
+				software.version,
+				software.publisher,
+				software.id,
+				software.type,
 				round(sum(oa_asset_select.group_amount)/COUNT(DISTINCT system.system_id), 0) as software_licenses,
 				oa_asset_select.select_id
 				FROM
-				sys_sw_software
-				LEFT JOIN system ON (sys_sw_software.timestamp = system.timestamp AND sys_sw_software.system_id = system.system_id)
+				software
+				LEFT JOIN system ON (software.system_id = system.system_id and software.current = 'y')
 				LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id)
-				LEFT JOIN oa_asset_select ON (sys_sw_software.software_name = oa_asset_select.select_name AND oa_asset_select.group_id = ? )
+				LEFT JOIN oa_asset_select ON (software.name = oa_asset_select.select_name AND oa_asset_select.group_id = ? )
 				WHERE
 				oa_group_sys.group_id = ?
 				GROUP BY
-				sys_sw_software.software_name, sys_sw_software.software_version
-				ORDER BY sys_sw_software.software_name";
+				software.name, software.version
+				ORDER BY software.name";
         $sql = $this->clean_sql($sql);
         $data = array($id, $id);
         $query = $this->db->query($sql, $data);

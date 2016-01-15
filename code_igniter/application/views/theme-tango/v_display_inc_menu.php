@@ -74,9 +74,14 @@ if (count($software) > 0 or count($service) > 0 or count($software_key) > 0) {
 	</ul>
 </li>
 <?php }
-if (count($share) > 0 or count($route) > 0 or count($user) > 0 or
-    count($system_group) > 0 or count($dns) > 0 or count($log) > 0 or
-    count($system_variable) > 0 or count($netstat) > 0) {
+if ((isset($share) and count($share) > 0) or
+	(isset($route) and count($route) > 0) or
+	(isset($user) and count($user) > 0) or
+    (isset($user_group) and count($user_group) > 0) or
+    (isset($dns) and count($dns) > 0) or
+    (isset($log) and count($log) > 0) or
+    (isset($variable) and count($variable) > 0) or
+    (isset($netstat) and count($netstat) > 0)) {
     ?>
     <li class="parent"><a href="#">&nbsp;&nbsp;&nbsp;<?php echo __('Settings')?></a>
 	<ul>
@@ -84,12 +89,13 @@ if (count($share) > 0 or count($route) > 0 or count($user) > 0 or
 	 	<?php if (count($pagefile) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_general.png" /><a href="#" id="toggle_settings_pagefile"><?php echo __('Pagefiles')?></a></li> <?php } ?>
 	 	<?php if (count($route) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_routes.png" /><a href="#" id="toggle_settings_routes"><?php echo __('Routes')?></a></li> <?php } ?>
 	 	<?php if (count($user) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_theme.png" /><a href="#" id="toggle_settings_users"><?php echo __('Users')?></a></li> <?php } ?>
-	 	<?php if (count($system_group) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_users.png" /><a href="#" id="toggle_settings_groups"><?php echo __('Groups')?></a></li> <?php } ?>
+	 	<?php if (count($user_group) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_users.png" /><a href="#" id="toggle_settings_groups"><?php echo __('Groups')?></a></li> <?php } ?>
 	 	<?php if (count($dns) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_font.png" /><a href="#" id="toggle_settings_dns"><?php echo __('DNS')?></a></li> <?php } ?>
 	 	<?php if (count($netstat) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_network.png" /><a href="#" id="toggle_settings_netstat"><?php echo __('NetStat')?></a></li> <?php } ?>
 	 	<?php if (count($print_queue) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_printer.png" /><a href="#" id="toggle_settings_print_queue"><?php echo __('Print Queue')?></a></li> <?php } ?>
 	 	<?php if (count($log) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_fill.png" /><a href="#" id="toggle_settings_logs"><?php echo __('Logs')?></a></li> <?php } ?>
-	 	<?php if (count($system_variable) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_font.png" /><a href="#" id="toggle_settings_variables"><?php echo __('Variables')?></a></li> <?php } ?>
+        <?php if (count($task) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_task.png" /><a href="#" id="toggle_settings_tasks"><?php echo __('Tasks')?></a></li> <?php } ?>
+	 	<?php if (count($variable) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_font.png" /><a href="#" id="toggle_settings_variables"><?php echo __('Variables')?></a></li> <?php } ?>
 	</ul>
 </li>
 <?php }

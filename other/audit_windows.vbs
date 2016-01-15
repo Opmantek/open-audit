@@ -3100,15 +3100,15 @@ if (skip_printer = "n") then
 	item = item & "	<icon>printer</icon>" & vbcrlf
 	item = item & "	<model>" & escape_xml(printer_model) & "</model>" & vbcrlf
 	item = item & "	<manufacturer>" & escape_xml(printer_manufacturer) & "</manufacturer>" & vbcrlf
-	item = item & "	<printer_port_name>" & escape_xml(objItem.PortName) & "</printer_port_name>" & vbcrlf
-	item = item & "	<printer_shared>" & escape_xml(printer_shared) & "</printer_shared>" & vbcrlf
-	item = item & "	<printer_shared_name>" & escape_xml(printer_share_name) & "</printer_shared_name>" & vbcrlf
-	item = item & "	<printer_location>" & escape_xml(printer_location) & "</printer_location>" & vbcrlf
-	item = item & "	<printer_color>" & escape_xml(printer_color) & "</printer_color>" & vbcrlf
-	item = item & "	<printer_duplex>" & escape_xml(printer_duplex) & "</printer_duplex>" & vbcrlf
-	item = item & "	<printer_type>physical</printer_type>" & vbcrlf
-	item = item & "	<printer_name>" & escape_xml(printer_name) & "</printer_name>" & vbcrlf
-	item = item & "	<printer_connection_status>" & escape_xml(connection_status) & "</printer_connection_status>" & vbcrlf
+	item = item & "	<port_name>" & escape_xml(objItem.PortName) & "</port_name>" & vbcrlf
+	item = item & "	<shared>" & escape_xml(printer_shared) & "</shared>" & vbcrlf
+	item = item & "	<shared_name>" & escape_xml(printer_share_name) & "</shared_name>" & vbcrlf
+	item = item & "	<location>" & escape_xml(printer_location) & "</location>" & vbcrlf
+	item = item & "	<color>" & escape_xml(printer_color) & "</color>" & vbcrlf
+	item = item & "	<duplex>" & escape_xml(printer_duplex) & "</duplex>" & vbcrlf
+	item = item & "	<type>physical</type>" & vbcrlf
+	item = item & "	<name>" & escape_xml(printer_name) & "</name>" & vbcrlf
+	item = item & "	<status>" & escape_xml(connection_status) & "</status>" & vbcrlf
 	On Error Goto 0
 	item = item & "	</printer>" & vbcrlf
 	'end if
@@ -3123,49 +3123,52 @@ if (skip_printer = "n") then
 end if
 
 
-if debugging > "0" then wscript.echo "scheduled tasks" end if
-item = ""
-' We rely on schtasks.exe so skipping if local system is older than WinXP
-' Check Build Number: Win2k-->2195, Win98-->2222, WinME-->3000,
-if ((CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) and audit_location = "local" ) then
-   if windows_build_number = "2600" then
-      intOffset = 0
-   else
-      intOffset = 1
-   End if
-   strCommand = "%ComSpec% /c schtasks.exe /query /v /nh /fo csv"
-   strCommand = "schtasks.exe /query /v /nh /fo csv"
-   On Error Resume Next
-   set objExecObject = objShell.Exec(strCommand)
-   On Error GoTo 0
-   If IsObject(objExecObject) then
-      do While Not objExecObject.StdOut.AtEndOfStream
-         strResults = objExecObject.StdOut.ReadAll()
-      Loop
-      MyArray = Split(strResults, vbcrlf)
-      for each line in MyArray
-         sTask = CSVParser(line)
-         if UCase(sTask(0)) = UCase(system_hostname) then
-            item = item & "      <task>" & vbcrlf
-            item = item & "         <task_name><![CDATA[" & sTask(1) & "]]></task_name>" & vbcrlf
-            item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
-            item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
-            item = item & "         <last_run><![CDATA[" & sTask(4+intOffset) & "]]></last_run>" & vbcrlf
-            item = item & "         <last_result><![CDATA[" & sTask(5+intOffset) & "]]></last_result>" & vbcrlf
-            item = item & "         <creator><![CDATA[" & sTask(6+intOffset) & "]]></creator>" & vbcrlf
-            item = item & "         <schedule><![CDATA[" & sTask(7+intOffset) & "]]></schedule>" & vbcrlf
-            item = item & "         <task_to_run><![CDATA[" & sTask(8+intOffset) & "]]></task_to_run>" & vbcrlf
-            item = item & "         <state><![CDATA[" & sTask(11+intOffset) & "]]></state>" & vbcrlf
-            item = item & "         <user><![CDATA[" & sTask(18+intOffset) & "]]></user>" & vbcrlf
-            item = item & "      </task>" & vbcrlf
-         end if
-      next
-   end if
-end if
-if item > "" then
-   result.WriteText "   <tasks>" & vbcrlf
-   result.WriteText item
-   result.WriteText "   </tasks>" & vbcrlf
+if debugging > "0" and strcomputer = "." then wscript.echo "scheduled tasks" end if
+'' only run this if we are auditing on the local machine
+if strcomputer = "." then
+	item = ""
+	' We rely on schtasks.exe so skipping if local system is older than WinXP
+	' Check Build Number: Win2k-->2195, Win98-->2222, WinME-->3000,
+	if ((CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) and audit_location = "local" ) then
+	   if windows_build_number = "2600" then
+	      intOffset = 0
+	   else
+	      intOffset = 1
+	   End if
+	   strCommand = "%ComSpec% /c schtasks.exe /query /v /nh /fo csv"
+	   strCommand = "schtasks.exe /query /v /nh /fo csv"
+	   On Error Resume Next
+	   set objExecObject = objShell.Exec(strCommand)
+	   On Error GoTo 0
+	   If IsObject(objExecObject) then
+	      do While Not objExecObject.StdOut.AtEndOfStream
+	         strResults = objExecObject.StdOut.ReadAll()
+	      Loop
+	      MyArray = Split(strResults, vbcrlf)
+	      for each line in MyArray
+	         sTask = CSVParser(line)
+	         if UCase(sTask(0)) = UCase(system_hostname) then
+	            item = item & "      <item>" & vbcrlf
+	            item = item & "         <name><![CDATA[" & sTask(1) & "]]><name>" & vbcrlf
+	            item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
+	            item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
+	            item = item & "         <last_run><![CDATA[" & sTask(4+intOffset) & "]]></last_run>" & vbcrlf
+	            item = item & "         <last_result><![CDATA[" & sTask(5+intOffset) & "]]></last_result>" & vbcrlf
+	            item = item & "         <creator><![CDATA[" & sTask(6+intOffset) & "]]></creator>" & vbcrlf
+	            item = item & "         <schedule><![CDATA[" & sTask(7+intOffset) & "]]></schedule>" & vbcrlf
+	            item = item & "         <task><![CDATA[" & sTask(8+intOffset) & "]]></task>" & vbcrlf
+	            item = item & "         <state><![CDATA[" & sTask(11+intOffset) & "]]></state>" & vbcrlf
+	            item = item & "         <user><![CDATA[" & sTask(18+intOffset) & "]]></user>" & vbcrlf
+	            item = item & "      </item>" & vbcrlf
+	         end if
+	      next
+	   end if
+	end if
+	if item > "" then
+	   result.WriteText "   <task>" & vbcrlf
+	   result.WriteText item
+	   result.WriteText "   </task>" & vbcrlf
+	end if
 end if
 
 if debugging > "0" then wscript.echo "environment variables" end if
@@ -3177,16 +3180,16 @@ for each objItem in colItems
 	  (instr(lcase (escape_xml(objItem.VariableValue)), lcase (struser))) ) then
 	' do not record user specific variables
 	else
-	item = item & "	<variable>" & vbcrlf
-	item = item & "	<variable_name>" & escape_xml(objItem.Name) & "</variable_name>" & vbcrlf
-	item = item & "	<variable_value>" & escape_xml(objItem.VariableValue) & "</variable_value>" & vbcrlf
-	item = item & "	</variable>" & vbcrlf
+	item = item & "	<item>" & vbcrlf
+	item = item & "	<variable_name><![CDATA[" & escape_xml(objItem.Name) & "]]></variable_name>" & vbcrlf
+	item = item & "	<variable_value><![CDATA[" & escape_xml(objItem.VariableValue) & "]]></variable_value>" & vbcrlf
+	item = item & "	</item>" & vbcrlf
 	end if
 next
 if item > "" then
-	result.WriteText "	<variables>" & vbcrlf
+	result.WriteText "	<variables" & vbcrlf
 	result.WriteText item
-	result.WriteText "	</variables>" & vbcrlf
+	result.WriteText "	</variable>" & vbcrlf
 end if
 
 
@@ -3221,17 +3224,17 @@ item = ""
 set colItems = objWMIService.ExecQuery("Select * from Win32_PageFile",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_PageFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_PageFile " : end if
 for each objItem in colItems
-	item = item & "	<pagefile>" & vbcrlf
-	item = item & "	<file_name>" & escape_xml(objItem.Name) & "</file_name>" & vbcrlf
-	item = item & "	<initial_size>" & escape_xml(objItem.InitialSize) & "</initial_size>" & vbcrlf
-	item = item & "	<size>" & escape_xml(objItem.FileSize) & "</size>" & vbcrlf
-	item = item & "	<max_size>" & escape_xml(objItem.MaximumSize) & "</max_size>" & vbcrlf
-	item = item & "	</pagefile>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+	item = item & "			<initial_size>" & escape_xml(objItem.InitialSize) & "</initial_size>" & vbcrlf
+	item = item & "			<size>" & escape_xml(objItem.FileSize) & "</size>" & vbcrlf
+	item = item & "			<max_size>" & escape_xml(objItem.MaximumSize) & "</max_size>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 next
 if item > "" then
-	result.WriteText "	<pagefiles>" & vbcrlf
+	result.WriteText "	<pagefile>" & vbcrlf
 	result.WriteText item
-	result.WriteText "	</pagefiles>" & vbcrlf
+	result.WriteText "	</pagefile>" & vbcrlf
 end if
 
 
@@ -3307,68 +3310,58 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 end if
 
 
-if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role <> "Primary Domain Controller") and (windows_part_of_domain = True Or windows_part_of_domain = "True")) then
-	result.WriteText "	<groups>" & vbcrlf
+if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <> "Primary Domain Controller") then
+	result.WriteText "	<user_group>" & vbcrlf
 	if debugging > "0" then wscript.echo "local groups info" end if
-
 	if struser = "" then
-	dim group_domain
-	dim member_domain
-	For Each group In GetObject("WinNT://" & system_hostname)
-	If group.Class = "Group" Then
-	group_members = ""
-	result.WriteText "	<group>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(group.Name) & "</name>" & vbcrlf
-	result.WriteText "	<description>" & escape_xml(group.Description) & "</description>" & vbcrlf
-	result.WriteText "	<sid>" & escape_xml(group.GUID) & "</sid>" & vbcrlf
-	'result.WriteText "	<members>" & vbcrlf
-	For Each member In group.members
-	group_domain = split(member.ADSPath, "/")
-	member_domain = group_domain(ubound(group_domain)-1)
-	'result.WriteText "	<member>" & vbcrlf
-	'result.WriteText "	<name>" & escape_xml(member.name) & "</name>" & vbcrlf
-	'result.WriteText "	<sid>" & escape_xml(member.GUID) & "</sid>" & vbcrlf
-	'result.WriteText "	<type>" & escape_xml(member.class) & "</type>" & vbcrlf
-	'result.WriteText "	<domain>" & escape_xml(member_domain) & "</domain>" & vbcrlf
-	'result.WriteText "	</member>" & vbcrlf
-	group_members = group_members & member.name & "@" & member_domain & ", "
-	Next
-	'result.WriteText "	</members>" & vbcrlf
-	result.WriteText "	<group_members>" & escape_xml(group_members) & "</group_members>" & vbcrlf
-	result.WriteText "	</group>" & vbcrlf
-	End If
-	Next
+		dim group_domain
+		dim member_domain
+		For Each group In GetObject("WinNT://" & system_hostname)
+			If group.Class = "Group" Then
+				group_members = ""
+				result.WriteText "	<item>" & vbcrlf
+				result.WriteText "		<name>" & escape_xml(group.Name) & "</name>" & vbcrlf
+				result.WriteText "		<description>" & escape_xml(group.Description) & "</description>" & vbcrlf
+				result.WriteText "		<sid>" & escape_xml(group.GUID) & "</sid>" & vbcrlf
+				For Each member In group.members
+					group_domain = split(member.ADSPath, "/")
+					member_domain = group_domain(ubound(group_domain)-1)
+					group_members = group_members & member.name & "@" & member_domain & ", "
+				Next
+				result.WriteText "		<members>" & escape_xml(group_members) & "</members>" & vbcrlf
+				result.WriteText "	</item>" & vbcrlf
+			End If
+		Next
 	end if
 
 	if struser > "" then
-	set colItems = objWMIService.ExecQuery("Select * from Win32_Group where Domain = '" & system_hostname & "'",,32)
-	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Group)" : audit_wmi_fails = audit_wmi_fails & "Win32_Group " : end if
-	for Each objItem in colItems
-	users = ""
-	set objDSO = GetObject("WinNT:")
-	set colGroups = objDSO.OpenDSObject("WinNT://" & system_hostname & "", struser, strpass, ADS_USE_ENCRYPTION OR ADS_SECURE_AUTHENTICATION)
-	colGroups.Filter = Array("group")
-	group_members = ""
-	for Each objGroup In colGroups
-	if objGroup.Name = objItem.Name then
-	for each objUser in objGroup.Members
-	group_domain = split(objUser.ADSPath, "/")
-	member_domain = group_domain(ubound(group_domain)-1)
-	group_members = group_members & objUser.Name & "@" & member_domain & ", "
-	next
+		set colItems = objWMIService.ExecQuery("Select * from Win32_Group where Domain = '" & system_hostname & "'",,32)
+		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Group)" : audit_wmi_fails = audit_wmi_fails & "Win32_Group " : end if
+		for Each objItem in colItems
+			users = ""
+			set objDSO = GetObject("WinNT:")
+			set colGroups = objDSO.OpenDSObject("WinNT://" & system_hostname & "", struser, strpass, ADS_USE_ENCRYPTION OR ADS_SECURE_AUTHENTICATION)
+			colGroups.Filter = Array("group")
+			group_members = ""
+			for Each objGroup In colGroups
+				if objGroup.Name = objItem.Name then
+					for each objUser in objGroup.Members
+						group_domain = split(objUser.ADSPath, "/")
+						member_domain = group_domain(ubound(group_domain)-1)
+						group_members = group_members & objUser.Name & "@" & member_domain & ", "
+					next
+				end if
+			next
+			result.WriteText "	<item>" & vbcrlf
+			result.WriteText "		<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+			result.WriteText "		<description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
+			result.WriteText "		<sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
+			result.WriteText "		<members>" & escape_xml(group_members) & "</members>" & vbcrlf
+			result.WriteText "	</item>" & vbcrlf
+			group_members = ""
+		next
 	end if
-	next
-	result.WriteText "	<group>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
-	result.WriteText "	<description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
-	result.WriteText "	<sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
-	result.WriteText "	<group_members>" & escape_xml(group_members) & "</group_members>" & vbcrlf
-	result.WriteText "	</group>" & vbcrlf
-	group_members = ""
-	next
-	end if
-
-	result.WriteText "	</groups>" & vbcrlf
+	result.WriteText "	</user_group>" & vbcrlf
 end if
 
 
@@ -3379,18 +3372,18 @@ if (skip_software = "n") then
 	set colItems = objWMIService.ExecQuery("Select * FROM Win32_CodecFile", , 48)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_CodecFile)" : audit_wmi_fails = audit_wmi_fails & "Win32_CodecFile " : end if
 	if (not isnull(colItems)) then
-	for each objItem In colItems
-	if objItem.Manufacturer <> "Microsoft Corporation" then
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(objItem.Group) & " - " & objItem.Filename & "</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
-	result.WriteText "	<location>" & escape_xml(objItem.Caption) & "</location>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(objItem.InstallDate) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>" & escape_xml(objItem.Manufacturer) & "</publisher>" & vbcrlf
-	result.WriteText "	<type>codec</type>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
-	end if
-	next
+		for each objItem In colItems
+			if objItem.Manufacturer <> "Microsoft Corporation" then
+				result.WriteText "	<item>" & vbcrlf
+				result.WriteText "	<name>" & escape_xml(objItem.Group) & " - " & objItem.Filename & "</name>" & vbcrlf
+				result.WriteText "	<version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
+				result.WriteText "	<location>" & escape_xml(objItem.Caption) & "</location>" & vbcrlf
+				result.WriteText "	<install_date>" & escape_xml(objItem.InstallDate) & "</install_date>" & vbcrlf
+				result.WriteText "	<publisher>" & escape_xml(objItem.Manufacturer) & "</publisher>" & vbcrlf
+				result.WriteText "	<type>codec</type>" & vbcrlf
+				result.WriteText "	</item>" & vbcrlf
+			end if
+		next
 	end if
 
 
@@ -4135,8 +4128,9 @@ for each objItem in colItems
 
 next
 result.WriteText "	</service>" & vbcrlf
-item = ""
 
+server = ""
+server_item = ""
 if ((en_sql_server = "y") or (en_sql_express = "y")) then
 	if debugging > "0" then wscript.echo "SQL info" end if
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,    "SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\","CSDVersion", db_version
@@ -4302,24 +4296,15 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 	end if
 	end if
 
-	' result.WriteText "	<database>" & vbcrlf
-	' result.WriteText "	<db_type>" & escape_xml(db_type) & "</db_type>" & vbcrlf
-	' result.WriteText "	<db_version>" & escape_xml(db_version) & "</db_version>" & vbcrlf
-	' result.WriteText "	<db_edition>" & escape_xml(db_edition) & "</db_edition>" & vbcrlf
-	' result.WriteText "	<db_port>" & escape_xml(db_port) & "</db_port>" & vbcrlf
-	' result.WriteText "	<db_login_type>" & escape_xml(db_login_type) & "</db_login_type>" & vbcrlf
-	' result.WriteText "	<db_service_state>" & escape_xml(en_sql_server_state) & "</db_service_state>" & vbcrlf
-	' result.WriteText "	</database>" & vbcrlf
-	result.WriteText "	<server>" & vbcrlf
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<type>database</type>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(db_type) & "</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(db_version) & "</version>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(db_edition) & "</edition>" & vbcrlf
-	result.WriteText "	<port>" & escape_xml(db_port) & "</port>" & vbcrlf
-	result.WriteText "	<status>" & escape_xml(en_sql_server_state) & "</status>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
-	result.WriteText "	</server>" & vbcrlf
+
+	server = server & "		<item>" & vbcrlf
+	server = server & "			<type>database</type>" & vbcrlf
+	server = server & "			<name>" & escape_xml(db_type) & "</name>" & vbcrlf
+	server = server & "			<version>" & escape_xml(db_version) & "</version>" & vbcrlf
+	server = server & "			<edition>" & escape_xml(db_edition) & "</edition>" & vbcrlf
+	server = server & "			<port>" & escape_xml(db_port) & "</port>" & vbcrlf
+	server = server & "			<status>" & escape_xml(en_sql_server_state) & "</status>" & vbcrlf
+	server = server & "		</item>" & vbcrlf
 
 
 
@@ -4361,16 +4346,16 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 	next
 	database_name = CStr(objRS("Name"))
 	if debugging > "1" then wscript.echo "DB Name: " & database_name end if
-	item = item & "	<item>" & vbcrlf
-	item = item & "	<type>database</type>" & vbcrlf
-	item = item & "	<parent_name>" & escape_xml(db_type) & "</parent_name>" & vbcrlf
-	item = item & "	<name>" & escape_xml(database_name) & "</name>" & vbcrlf
-	item = item & "	<id_internal>" & escape_xml(objRS("dbid")) & "</id_internal>" & vbcrlf
-	item = item & "	<instance>" & escape_xml(instance) & "</instance>" & vbcrlf
-	item = item & "	<filename>" & escape_xml(objRS("FileName")) & "</filename>" & vbcrlf
-	item = item & "	<size>" & escape_xml(filesize) & "</size>" & vbcrlf
-	item = item & "	<details_creation_date>" & escape_xml(objRS("crdate")) & "</details_creation_date>" & vbcrlf
-	item = item & "	</item>" & vbcrlf
+	server_item = server_item & "		<item>" & vbcrlf
+	server_item = server_item& "			<type>database</type>" & vbcrlf
+	server_item = server_item & "			<parent_name>" & escape_xml(db_type) & "</parent_name>" & vbcrlf
+	server_item = server_item & "			<name>" & escape_xml(database_name) & "</name>" & vbcrlf
+	server_item = server_item & "			<id_internal>" & escape_xml(objRS("dbid")) & "</id_internal>" & vbcrlf
+	server_item = server_item & "			<instance>" & escape_xml(instance) & "</instance>" & vbcrlf
+	server_item = server_item & "			<filename>" & escape_xml(objRS("FileName")) & "</filename>" & vbcrlf
+	server_item = server_item & "			<size>" & escape_xml(filesize) & "</size>" & vbcrlf
+	server_item = server_item & "			<details_creation_date>" & escape_xml(objRS("crdate")) & "</details_creation_date>" & vbcrlf
+	server_item = server_item & "		</item>" & vbcrlf
 	end if
 	objRS.Movenext
 	Loop
@@ -4381,25 +4366,16 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 	next
 	end if
 end if
-if item > "" then
-	result.WriteText "	<server_item>" & vbcrlf
-	result.WriteText item
-	result.WriteText "	</server_item>" & vbcrlf
-end if
-item = ""
-
 
 if ((iis_w3svc = True) and (iis = True) and ((cint(windows_build_number) = 2195) or (cint(windows_build_number) = 2600)) ) then
 	' IIS 5 or 5.1
 	if debugging > "1" then wscript.echo "IIS 5 Installed" end if
-	result.WriteText "	<server>" & vbcrlf
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<type>web</type>" & vbcrlf
-	result.WriteText "	<name>IIS</name>" & vbcrlf
-	result.WriteText "	<version>5</version>" & vbcrlf
-	result.WriteText "	<status>running</status>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
-	result.WriteText "	</server>" & vbcrlf
+	server = server & "		<item>" & vbcrlf
+	server = server & "			<type>web</type>" & vbcrlf
+	server = server & "			<name>IIS</name>" & vbcrlf
+	server = server & "			<version>5</version>" & vbcrlf
+	server = server & "			<status>running</status>" & vbcrlf
+	server = server & "		</item>" & vbcrlf
 
 	result_site = ""
 	if audit_location = "local" then iis_connect = "localhost" else iis_connect = strcomputer end if
@@ -4409,47 +4385,45 @@ if ((iis_w3svc = True) and (iis = True) and ((cint(windows_build_number) = 2195)
 	if objWMIService_IIS.count = 0 then
 	' do nothing
 	else
-	result.WriteText "	<server_item>" & vbcrlf
 	for each objitem in objWMIService_IIS
 	if objitem.class = "IIsWebServer" then
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<type>website</type>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(objitem.name) & "</name>" & vbcrlf
-	result.WriteText "	<parent_name>IIS</parent_name>" & vbcrlf
-	result.WriteText "	<id_internal>" & escape_xml(objitem.name) & "</id_internal>" & vbcrlf
-	result.WriteText "	<description>" & escape_xml(objItem.servercomment) & "</description>" & vbcrlf
+	server_item = server_item & "	<item>" & vbcrlf
+	server_item = server_item & "		<type>website</type>" & vbcrlf
+	server_item = server_item & "		<name>" & escape_xml(objitem.name) & "</name>" & vbcrlf
+	server_item = server_item & "		<parent_name>IIS</parent_name>" & vbcrlf
+	server_item = server_item & "		<id_internal>" & escape_xml(objitem.name) & "</id_internal>" & vbcrlf
+	server_item = server_item & "		<description>" & escape_xml(objItem.servercomment) & "</description>" & vbcrlf
 	Select Case objItem.serverstate
-	Case 1:       result.WriteText "	<status>Starting</status>" & vbcrlf
-	Case 2:       result.WriteText "	<status>Running</status>" & vbcrlf
-	Case 3:       result.WriteText "	<status>Stopping</status>" & vbcrlf
-	Case 4:       result.WriteText "	<status>Stopped</status>" & vbcrlf
-	Case 5:       result.WriteText "	<status>Pausing</status>" & vbcrlf
-	Case 6:       result.WriteText "	<status>Paused</status>" & vbcrlf
-	Case 7:       result.WriteText "	<status>Continuing</status>" & vbcrlf
-	Case Default: result.WriteText "	<status>Unknown</status>" & vbcrlf
+	Case 1:       server_item = server_item & "			<status>Starting</status>" & vbcrlf
+	Case 2:       server_item = server_item & "			<status>Running</status>" & vbcrlf
+	Case 3:       server_item = server_item & "			<status>Stopping</status>" & vbcrlf
+	Case 4:       server_item = server_item & "			<status>Stopped</status>" & vbcrlf
+	Case 5:       server_item = server_item & "			<status>Pausing</status>" & vbcrlf
+	Case 6:       server_item = server_item & "			<status>Paused</status>" & vbcrlf
+	Case 7:       server_item = server_item & "			<status>Continuing</status>" & vbcrlf
+	Case Default: server_item = server_item & "			<status>Unknown</status>" & vbcrlf
 	End Select
 	Select Case objItem.LogType
-	Case 0:       result.WriteText "	<log_status>disabled</log_status>" & vbcrlf
-	Case 1:       result.WriteText "	<log_status>enabled</log_status>" & vbcrlf
-	Case Default: result.WriteText "	<log_status>undefined</log_status>" & vbcrlf
+	Case 0:       server_item = server_item & "			<log_status>disabled</log_status>" & vbcrlf
+	Case 1:       server_item = server_item & "			<log_status>enabled</log_status>" & vbcrlf
+	Case Default: server_item = server_item & "			<log_status>undefined</log_status>" & vbcrlf
 	End Select
-	result.WriteText "	<log_path>" & escape_xml(objItem.logfiledirectory) & "</log_path>" & vbcrlf
+	server_item = server_item & "		<log_path>" & escape_xml(objItem.logfiledirectory) & "</log_path>" & vbcrlf
 	Select Case objItem.LogFilePeriod
 	Case 0: If objItem.LogFileTruncateSize = -1 Then
-	result.WriteText "	<log_rotation>Unlimited file size</log_rotation>" & vbcrlf
+	server_item = server_item & "		<log_rotation>Unlimited file size</log_rotation>" & vbcrlf
 	Else
-	result.WriteText "	<log_rotation>When file size reaches " & (objItem.LogFileTruncateSize/1048576) & " MB</log_rotation>" & vbcrlf
+	server_item = server_item & "		<log_rotation>When file size reaches " & (objItem.LogFileTruncateSize/1048576) & " MB</log_rotation>" & vbcrlf
 	End If
-	Case 1:       result.WriteText "	<log_rotation>daily</log_rotation>" & vbcrlf
-	Case 2:       result.WriteText "	<log_rotation>weekly</log_rotation>" & vbcrlf
-	Case 3:       result.WriteText "	<log_rotation>monthly</log_rotation>" & vbcrlf
-	Case 4:       result.WriteText "	<log_rotation>hourly</log_rotation>" & vbcrlf
-	Case Default: result.WriteText "	<log_rotation>undefined</log_rotation>" & vbcrlf
+	Case 1:       server_item = server_item & "			<log_rotation>daily</log_rotation>" & vbcrlf
+	Case 2:       server_item = server_item & "			<log_rotation>weekly</log_rotation>" & vbcrlf
+	Case 3:       server_item = server_item & "			<log_rotation>monthly</log_rotation>" & vbcrlf
+	Case 4:       server_item = server_item & "			<log_rotation>hourly</log_rotation>" & vbcrlf
+	Case Default: server_item = server_item & "			<log_rotation>undefined</log_rotation>" & vbcrlf
 	End Select
-	result.WriteText "	</item>" & vbcrlf
+	server_item = server_item & "	</item>" & vbcrlf
 	end if
 	next
-	result.WriteText "	</server_item>" & vbcrlf
 	end if
 	on error goto 0
 end if
@@ -4484,20 +4458,17 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 	For Each objItem in colItems
 	iis_version = objItem.MajorIIsVersionNumber & "." & objItem.MinorIIsVersionNumber
 	Next
-	result.WriteText "	<server>" & vbcrlf
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<type>web</type>" & vbcrlf
-	result.WriteText "	<name>IIS</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(iis_version) & "</version>" & vbcrlf
-	result.WriteText "	<status>running</status>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
-	result.WriteText "	</server>" & vbcrlf
+	server = server & "		<item>" & vbcrlf
+	server = server & "			<type>web</type>" & vbcrlf
+	server = server & "			<name>IIS</name>" & vbcrlf
+	server = server & "			<version>" & escape_xml(iis_version) & "</version>" & vbcrlf
+	server = server & "			<status>running</status>" & vbcrlf
+	server = server & "		</item>" & vbcrlf
 	if iis_version > "." then iis_wmi = True else iis_wmi = False
 	on error goto 0
 	end if
 
 	if iis_wmi = True then
-	result.WriteText "	<server_item>" & vbcrlf
 	Set colItems = objWMIService_IIS.ExecQuery("Select * from IIsWebServerSetting",,32)
 	For Each objItem in colItems
 	result_site = result_site & "	<item>" & vbcrlf
@@ -4514,12 +4485,12 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 
 	log_path = objItem.LogFileDirectory
 
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<type>website</type>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(site_id) & "</name>" & vbcrlf
-	result.WriteText "	<parent_name>IIS</parent_name>" & vbcrlf
-	result.WriteText "	<id_internal>" & escape_xml(objItem.Name) & "</id_internal>" & vbcrlf
-	result.WriteText "	<description>" & escape_xml(objItem.ServerComment) & "</description>" & vbcrlf
+	server_item = server_item & "		<item>" & vbcrlf
+	server_item = server_item & "			<type>website</type>" & vbcrlf
+	server_item = server_item & "			<name>" & escape_xml(site_id) & "</name>" & vbcrlf
+	server_item = server_item & "			<parent_name>IIS</parent_name>" & vbcrlf
+	server_item = server_item & "			<id_internal>" & escape_xml(objItem.Name) & "</id_internal>" & vbcrlf
+	server_item = server_item & "			<description>" & escape_xml(objItem.ServerComment) & "</description>" & vbcrlf
 
 
 	' Status
@@ -4527,14 +4498,14 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 	Set colItems1 = objWMIService_IIS.ExecQuery(strQuery,,32)
 	For Each objItem1 in colItems1
 	Select Case objItem1.ServerState
-	Case 1:       result.WriteText "	<status>Starting</status>" & vbcrlf
-	Case 2:       result.WriteText "	<status>Running</status>" & vbcrlf
-	Case 3:       result.WriteText "	<status>Stopping</status>" & vbcrlf
-	Case 4:       result.WriteText "	<status>Stopped</status>" & vbcrlf
-	Case 5:       result.WriteText "	<status>Pausing</status>" & vbcrlf
-	Case 6:       result.WriteText "	<status>Paused</status>" & vbcrlf
-	Case 7:       result.WriteText "	<status>Continuing</status>" & vbcrlf
-	Case Default: result.WriteText "	<status>Unknown</status>" & vbcrlf
+	Case 1:       server_item = server_item & "			<status>Starting</status>" & vbcrlf
+	Case 2:       server_item = server_item & "			<status>Running</status>" & vbcrlf
+	Case 3:       server_item = server_item & "			<status>Stopping</status>" & vbcrlf
+	Case 4:       server_item = server_item & "			<status>Stopped</status>" & vbcrlf
+	Case 5:       server_item = server_item & "			<status>Pausing</status>" & vbcrlf
+	Case 6:       server_item = server_item & "			<status>Paused</status>" & vbcrlf
+	Case 7:       server_item = server_item & "			<status>Continuing</status>" & vbcrlf
+	Case Default: server_item = server_item & "			<status>Unknown</status>" & vbcrlf
 	End Select
 	Next
 
@@ -4561,10 +4532,10 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 	Case Default: log_rotation = "undefined"
 	End Select
 
-	result.WriteText "	<log_status>" & escape_xml(log_status) & "</log_status>" & vbcrlf
-	result.WriteText "	<log_format>" & escape_xml(log_format) & "</log_format>" & vbcrlf
-	result.WriteText "	<log_path>" & escape_xml(log_path) & "</log_path>" & vbcrlf
-	result.WriteText "	<log_rotation>" & escape_xml(log_rotation) & "</log_rotation>" & vbcrlf
+	server_item = server_item & "			<log_status>" & escape_xml(log_status) & "</log_status>" & vbcrlf
+	server_item = server_item & "			<log_format>" & escape_xml(log_format) & "</log_format>" & vbcrlf
+	server_item = server_item & "			<log_path>" & escape_xml(log_path) & "</log_path>" & vbcrlf
+	server_item = server_item & "			<log_rotation>" & escape_xml(log_rotation) & "</log_rotation>" & vbcrlf
 
 	' Host Headers
 	result_host_headers = ""
@@ -4596,18 +4567,28 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 	end if
 	end if
 	on error goto 0
-	result.WriteText "	<ip>" & escape_xml(site_ip) & "</ip>" & vbcrlf
-	result.WriteText "	<port>" & escape_xml(site_port) & "</port>" & vbcrlf
-	result.WriteText "	<hostname>" & escape_xml(site_hostname) & "</hostname>" & vbcrlf
-	result.WriteText "	<path>" & escape_xml(iis_path) & "</path>" & vbcrlf
-	result.WriteText "	<size>" & escape_xml(site_size) & "</size>" & vbcrlf
-	result.WriteText "	<instance>" & escape_xml(objItem.AppPoolId) & "</instance>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	server_item = server_item & "			<ip>" & escape_xml(site_ip) & "</ip>" & vbcrlf
+	server_item = server_item & "			<port>" & escape_xml(site_port) & "</port>" & vbcrlf
+	server_item = server_item & "			<hostname>" & escape_xml(site_hostname) & "</hostname>" & vbcrlf
+	server_item = server_item & "			<path>" & escape_xml(iis_path) & "</path>" & vbcrlf
+	server_item = server_item & "			<size>" & escape_xml(site_size) & "</size>" & vbcrlf
+	server_item = server_item & "			<instance>" & escape_xml(objItem.AppPoolId) & "</instance>" & vbcrlf
+	server_item = server_item & "		</item>" & vbcrlf
 	Next
-	result.WriteText "	</server_item>" & vbcrlf
 	end if
 end if
 
+' now enumerate our servers and server items'
+if server > "" then
+	result.WriteText "	<server>" & vbcrlf
+	result.WriteText server
+	result.WriteText "	</server>" & vbcrlf
+end if
+if server_item > "" then
+	result.WriteText "	<server_item>" & vbcrlf
+	result.WriteText server_item
+	result.WriteText "	</server_item>" & vbcrlf
+end if
 
 
 result.WriteText "	<software_key>" & vbcrlf
@@ -6408,7 +6389,7 @@ end if
 ' below only checks when OS is XP or later (not 2000 or NT)
 if (windows_build_number > 2195) then
 	if debugging > "0" then wscript.echo "network routing info" end if
-	result.WriteText "	<routes>" & vbcrlf
+	result.WriteText "	<route>" & vbcrlf
 	set colItems = objWMIService.ExecQuery("Select * from Win32_IP4RouteTable",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_IP4RouteTable)" : audit_wmi_fails = audit_wmi_fails & "Win32_IP4RouteTable " : end if
 	for each objItem in colItems
@@ -6447,18 +6428,18 @@ if (windows_build_number > 2195) then
 	if ( (ip_hit = "1") or (objItem.NextHop = "127.0.0.1") ) then
 	' do nothing
 	else
-	  result.WriteText "	<route>" & vbcrlf
+	  result.WriteText "	<item>" & vbcrlf
 	  result.WriteText "	<destination>" & objItem.Destination & "</destination>" & vbcrlf
 	  result.WriteText "	<mask>" & objItem.Mask & "</mask>" & vbcrlf
 	  result.WriteText "	<metric>" & objItem.Metric1 & "</metric>" & vbcrlf
 	  result.WriteText "	<next_hop>" & objItem.NextHop & "</next_hop>" & vbcrlf
 	  result.WriteText "	<protocol>" & Protocol & "</protocol>" & vbcrlf
 	  result.WriteText "	<type>" & RouteType & "</type>" & vbcrlf
-	  result.WriteText "	</route>" & vbcrlf
+	  result.WriteText "	</item>" & vbcrlf
 	  end if
 	  ip_hit = "0"
 	next
-	result.WriteText "	</routes>" & vbcrlf
+	result.WriteText "	</route>" & vbcrlf
 end if
 'end function
 

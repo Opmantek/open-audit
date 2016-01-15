@@ -39,7 +39,7 @@ class M_devices_components extends MY_Model
         parent::__construct();
     }
 
-    public function read($id = 0, $current = 'y', $table = '', $filter = '')
+    public function read($id = 0, $current = 'y', $table = '', $filter = '', $properties = '*')
     {
         if ($table == '') {
             // we require a DB table to read from
@@ -49,17 +49,22 @@ class M_devices_components extends MY_Model
             // we require a system id
             return;
         }
-        if ($current == '') {
-            // we want all attributes, regardless of them being current or not
+
+        if ($current == 'delta' or $current == 'full') {
+            $sql = "SELECT first_seen FROM `$table` WHERE system_id = ? ORDER BY first_seen LIMIT 1";
+            $data = array($id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            if ($query->num_rows() > 0) {
+                $row = $query->row();
+                $first_seen = $row->first_seen;
+            } else {
+                $first_seen = '';
+            }
+        } else {
+            $first_seen = '';
         }
-        if ($current == 'y') {
-            // we only want the current attributes
-            $current = " AND current = 'y'";
-        }
-        if ($current == 'n') {
-            // we only want non-current attributes
-            $current = " AND current = 'n'";
-        }
+
         $fields = $this->db->list_fields($table);
         $found_id = false;
         $found_current = false;
@@ -71,18 +76,51 @@ class M_devices_components extends MY_Model
                 $found_current = true;
             }
         }
+        $sql = '';
+        if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
+            $filter = 'AND ' . $filter;
+        }
         if ($found_id) {
             if ($found_current) {
-                $sql = "SELECT * FROM `$table` WHERE system_id = ? $current $filter";
+                if ($current == 'y') {
+                    $sql = "SELECT $properties FROM `$table` WHERE system_id = ? AND current = 'y' $filter";
+                    $data = array($id);
+                }
+                if ($current == 'n') {
+                    $sql = "SELECT $properties FROM `$table` WHERE system_id = ? AND current = 'n' $filter";
+                    $data = array($id);
+                }
+                if ($current == '' or $current == 'all') {
+                    $sql = "SELECT $properties FROM `$table` WHERE system_id = ? $filter";
+                    $data = array($id);
+                }
+                if ($current == 'delta') {
+                    if ($first_seen != '') {
+                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE system_id = ? and (current = 'y' or first_seen = ?)";
+                        $data = array("$first_seen", $id, "$first_seen");
+                    }
+                }
+                if ($current == 'full') {
+                    if ($first_seen != '') {
+                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE system_id = ?";
+                        $data = array("$first_seen", $id);
+                    }
+                }
             } else {
                 $sql = "SELECT * FROM `$table` WHERE system_id = ? $filter";
+                $data = array($id);
             }
-            $data = array($id);
+        }
+        
+        if ($sql != '') {
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             $result = $this->from_db($result);
             return($result);
+        } else {
+            return;
         }
+
     }
 
     public function match_columns($table)
@@ -96,6 +134,9 @@ class M_devices_components extends MY_Model
         if ($table == 'dns') {
                 $match_columns = array('ip', 'name', 'fqdn');
         }
+        if ($table == 'log') {
+                $match_columns = array('name', 'file_name', 'overwrite');
+        }
         if ($table == 'memory') {
                 $match_columns = array('bank', 'size', 'serial');
         }
@@ -103,10 +144,13 @@ class M_devices_components extends MY_Model
                 $match_columns = array('description', 'module_index', 'serial');
         }
         if ($table == 'monitor') {
-                        $match_columns = array('model', 'manufacturer', 'serial');
+                $match_columns = array('model', 'manufacturer', 'serial');
         }
         if ($table == 'motherboard') {
                 $match_columns = array('model', 'manufacturer', 'serial');
+        }
+        if ($table == 'netstat') {
+                $match_columns = array('protocol', 'ip', 'port', 'program');
         }
         if ($table == 'network') {
                 $match_columns = array('mac');
@@ -117,44 +161,26 @@ class M_devices_components extends MY_Model
         if ($table == 'optical') {
                 $match_columns = array('model', 'mount_point');
         }
-        if ($table == 'partition') {
-                $match_columns = array('name', 'hard_drive_index', 'mount_point', 'size');
-        }
-        if ($table == 'processor') {
-                $match_columns = array('description');
-        }
-        if ($table == 'scsi') {
-                $match_columns = array('model', 'manufacturer', 'device');
-        }
-        if ($table == 'sound') {
-                $match_columns = array('model', 'manufacturer');
-        }
-        if ($table == 'video') {
-                $match_columns = array('model');
-        }
-        if ($table == 'dns') {
-                $match_columns = array('hostname', 'fqdn', 'ip');
-        }
-        if ($table == 'user_group') {
-                $match_columns = array('name', 'sid');
-        }
-        if ($table == 'log') {
-                $match_columns = array('name', 'file_name', 'overwrite');
-        }
-        if ($table == 'netstat') {
-                $match_columns = array('protocol', 'ip', 'port', 'program');
-        }
         if ($table == 'pagefile') {
                 $match_columns = array('name', 'initial_size', 'max_size');
         }
+        if ($table == 'partition') {
+                $match_columns = array('name', 'hard_drive_index', 'mount_point', 'size');
+        }
         if ($table == 'print_queue') {
                 $match_columns = array('system_key');
+        }
+        if ($table == 'processor') {
+                $match_columns = array('description');
         }
         if ($table == 'route') {
                 $match_columns = array('destination', 'next_hop');
         }
         if ($table == 'san') {
                 $match_columns = array('serial');
+        }
+        if ($table == 'scsi') {
+                $match_columns = array('model', 'manufacturer', 'device');
         }
         if ($table == 'server') {
                 $match_columns = array('name', 'type', 'full_name', 'version');
@@ -174,13 +200,25 @@ class M_devices_components extends MY_Model
         if ($table == 'software_key') {
                 $match_columns = array('name', 'string', 'rel', 'edition');
         }
+        if ($table == 'sound') {
+                $match_columns = array('model', 'manufacturer');
+        }
+        if ($table == 'task') {
+                $match_columns = array('name', 'task');
+        }
         if ($table == 'user') {
+                $match_columns = array('name', 'sid');
+        }
+        if ($table == 'user_group') {
                 $match_columns = array('name', 'sid');
         }
         if ($table == 'variable') {
                 $match_columns = array('name', 'value');
         }
-        if ($table == 'virtual_machine') {
+        if ($table == 'video') {
+                $match_columns = array('model');
+        }
+        if ($table == 'vm') {
                 $match_columns = array('name', 'uuid');
         }
         if ($table == 'windows') {
@@ -219,11 +257,11 @@ class M_devices_components extends MY_Model
             if (!isset($details->system_id)) {
                 $message = "$table - No system_id supplied - failed";
             }
-            $this->m_sys_man_audits->update_audit($details, $message);
+            $this->m_audit_log->update('debug', $message, $details->system_id, $details->last_seen);
             unset($message);
             return;
         } else {
-            $this->m_sys_man_audits->update_audit($details, "$table - start");
+            $this->m_audit_log->update('debug', "$table - start", $details->system_id, $details->last_seen);
         }
 
         ### PARTITION ###
@@ -264,8 +302,6 @@ class M_devices_components extends MY_Model
                 }
             }
         }
-
-
 
         ### SOFTWARE VERSION PADDED ###
         if ((string)$table == 'software') {
@@ -333,38 +369,35 @@ class M_devices_components extends MY_Model
         }
 
         ### VIRTUAL MACHINE ###
-        if ($table == 'virtual_machine') {
-            for ($i=0; $i<count($input->item); $i++) {
-                # make sure group is set
-                if (!isset($input->item[$i]->vm_group)) {
-                    $input->item[$i]->vm_group = '';
+        if ($table == 'vm') {
+            foreach ($input->item as &$vm) {
+                if (!isset($vm->group)) {
+                    $vm->group = '';
                 }
-                # make sure guest_system_id is set
-                if (!isset($input->item[$i]->guest_system_id)) {
-                    $input->item[$i]->guest_system_id = '';
+                if (!isset($vm->guest_system_id)) {
+                    $vm->guest_system_id = '';
                 }
-                # attempt to match system_id
-                if ($input->item[$i]->guest_system_id == '') {
-                    $sql = "SELECT system_id FROM system WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
-                    $data = array((string)$input->item[$i]->uuid);
+                if (!isset($vm->icon)) {
+                    $vm->icon = '';
+                }
+                if (!isset($vm->uuid) or $vm->uuid == '') {
+                    $vm->uuid = '';
+                } else {
+                    $sql = "SELECT system_id, icon FROM system WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
+                    $data = array($vm->uuid);
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
                         $row = $query->row();
-                        $input->item[$i]->guest_system_id = $row->id;
+                        $vm->guest_system_id = $row->system_id;
+                        $vm->icon = $row->icon;
+                        $sql = "UPDATE system SET man_vm_server_name = ?, man_vm_system_id = ? WHERE system_id = ?";
+                        $data = array("$details->hostname", "$details->system_id", $vm->guest_system_id);
+                        $query = $this->db->query($sql, $data);
                     }
                 }
-                # update the system table
-                if ($input->item[$i]->guest_system_id != '') {
-                    $sql = "UPDATE system SET vm_server_name = ?, vm_system_id = ? WHERE system_id = ?";
-                    $data = array("$details->name", "$details->system_id", (string)$input->item[$i]->guest_system_id);
-                    $query = $this->db->query($sql, $data);
-                }
-                # set the current flag to n for all devices != id
-                #$sql = "UPDATE virtual_machine SET current = 'n' WHERE uuid = ? AND system_id != ?";
-                #$data = array("$input->item[$i]->uuid", "$details->system_id");
-                #$query = $this->db->query($sql, $data);
             }
         }
+
 
         // get any existing current rows from the database
         $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND system_id = ?";
@@ -426,9 +459,9 @@ class M_devices_components extends MY_Model
                     // UPDATE because all supplied columns match
                     $flag = 'update';
                     $sql = '';
-                    // for each db column, if we don't have a value, use the audit value
+                    // if we have an audit value, replace the DB value
                     foreach ($fields as $field) {
-                        if ($db_item->$field == '' and isset($input_item->$field) and $input_item->$field != '') {
+                        if (isset($input_item->$field) and $input_item->$field != '') {
                             $db_item->$field = (string) $input_item->$field;
                         }
                         $sql .= " " . $table . "." . $field . " = ? , ";
@@ -496,15 +529,15 @@ class M_devices_components extends MY_Model
                     }
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item added to $table - " . $alert_details;
-                    $sql = "INSERT INTO oa_alert_log ( system_id, alert_table, alert_foreign_row, link_row_action, alert_details, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
+                    $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
                     $data = array("$details->system_id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
                     $query = $this->db->query($sql, $data);
                 }
             }
             if ($table == 'partition') {
                 // insert an entry into the graph table
-                $used_percent = intval(($input_item->used / $input_item->size) * 100);
-                $free_percent = intval(100 - $used_percent);
+                $used_percent = @intval(($input_item->used / $input_item->size) * 100);
+                $free_percent = @intval(100 - $used_percent);
                 $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $data = array(intval($details->system_id), "$table", intval($id), "$table", intval($used_percent),
                     intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");
@@ -533,13 +566,13 @@ class M_devices_components extends MY_Model
                 }
                 $alert_details = substr($alert_details, 0, -2);
                 $alert_details = "Item removed from $table - " . $alert_details;
-                $sql = "INSERT INTO oa_alert_log ( system_id, alert_table, alert_foreign_row, link_row_action, alert_details, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
+                $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
                 $data = array("$details->system_id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
                 $query = $this->db->query($sql, $data);
             }
         }
         // update the audit log
-        $this->m_sys_man_audits->update_audit($details, "$table - end");
+        $this->m_audit_log->update('debug', "$table - end", $details->system_id, $details->last_seen);
         return;
     }
 

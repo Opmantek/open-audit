@@ -52,11 +52,11 @@ class change extends MY_Controller
 
     public function edit_alert()
     {
-        $this->load->model("m_alerts");
+        $this->load->model("m_change_log");
         $data['query'] = array();
         foreach ($_POST as $key => $value) {
             if (mb_strpos($key, 'alert_id_') !== false) {
-                $alert = $this->m_alerts->get_alert_details(mb_substr($key, 9));
+                $alert = $this->m_change_log->readChange(mb_substr($key, 9));
                 foreach ($alert as $alert2) {
                     array_push($data['query'], $alert2);
                 }
@@ -120,8 +120,8 @@ class change extends MY_Controller
         $details['alerts'] = $data['alerts'];
         $details['user_id'] = $this->user->user_id;
         $details['alert_ack_time'] = date('Y-m-d H:i:s');
-        $this->load->model("m_alerts");
-        $result = $this->m_alerts->assign_change($details);
+        $this->load->model("m_change_log");
+        $result = $this->m_change_log->updateChange($details);
         redirect('/');
     }
 

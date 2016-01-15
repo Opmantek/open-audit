@@ -136,13 +136,16 @@ if (! function_exists('output')) {
     function output_screen()
     {
         $CI = & get_instance();
-        if (isset($CI->response->data)) {
-            output_table();
-        } else {
-            $CI->response->data = '';
-        }
+        // if (isset($CI->response->data)) {
+        //     output_table();
+        // } else {
+        //     $CI->response->data = '';
+        // }
         header($CI->response->header);
-        $CI->load->view('v_template', $CI->response);
+        $CI->response->user = $CI->user;
+        echo "<pre>\n";
+        print_r($CI->response);
+        #$CI->load->view('v_template', $CI->response);
     }
 
     function output_xml()
@@ -169,7 +172,7 @@ if (! function_exists('output')) {
                               (strrpos($key, '_percent') === strlen($key)-8) or
                               (strrpos($key, '_size') === strlen($key)-5)) {
                         $row->$key = intval($value);
-                    } elseif (isset($key) and ($key == 'ip' or $key == 'next_hop') and isset($value)) {
+                    } elseif (isset($key) and ($key == 'ip' or $key == 'next_hop' or $key == 'destination') and isset($value)) {
                         $temp_name = $key . '_padded';
                         $row->$temp_name = ip_address_from_db($value);
                         $row->$temp_name = ip_address_to_db($row->$temp_name);

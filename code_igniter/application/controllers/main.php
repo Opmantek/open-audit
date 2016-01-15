@@ -139,10 +139,6 @@ class main extends MY_Controller
         if (isset($system_id) and $system_id != '') {
             $this->load->model('m_oa_general');
             $document = array();
-            // $list = array(
-            // 	'system', 'sys_sw_netstat_history_full', 'sys_sw_netstat_history_delta',
-            // 	'sys_sw_service_history_full', 'sys_sw_service_history_delta',
-            // 	'sys_sw_software_history_full', 'sys_sw_software_history_delta');
             $list = array("$table");
 
             foreach ($list as $table) {
@@ -188,18 +184,12 @@ class main extends MY_Controller
             $this->load->model('m_oa_general');
             $this->load->model('m_devices_components');
             $document = array();
-            $list = array(
-                'system',
-                'oa_alert_log', 'oa_audit_log', 'sys_sw_group',
-                'sys_hw_network_card_ip',
-                'sys_man_audits',
-                'sys_sw_route',
-                'sys_sw_software',
-                'sys_sw_variable', 'sys_sw_virtual_machine');
+            $list = array( 'system', 'change_log', 'audit_log', 'sys_hw_network_card_ip', 'edit_log');
             foreach ($list as $table) {
                 $result = $this->m_oa_general->get_system_document_api_new($table, $system_id);
+                $document["$table"] = new stdclass();
                 if (is_array($result) and count($result) != 0) {
-                    $document["$table"] = new stdclass();
+                    #$document["$table"] = new stdclass();
                     for ($count = 0; $count<count($result); $count++) {
                         #$result[$count]->system_id = $system_id;
                         foreach ($result[$count] as $key => $value) {
@@ -215,10 +205,11 @@ class main extends MY_Controller
                             }
                         }
                     }
-                    $document["$table"] = $result;
+                    #$document["$table"] = $result;
                 }
+                $document["$table"] = $result;
             }
-            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'netstat', 'network', 'scsi', 'san', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
+            $tables = array('bios', 'disk', 'dns', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
@@ -253,7 +244,7 @@ class main extends MY_Controller
         if (isset($system_id) and $system_id != '') {
             $this->load->model('m_oa_general');
             $document = array();
-            $list = array('system', 'sys_sw_group', 'sys_hw_network_card_ip', 'sys_sw_route', 'sys_sw_variable');
+            $list = array('system', 'sys_hw_network_card_ip');
             foreach ($list as $table) {
                 $result = $this->m_oa_general->get_system_document_api($table, $system_id);
                 if (is_array($result) and count($result) != 0) {
@@ -276,7 +267,7 @@ class main extends MY_Controller
                     $document["$table"] = $result;
                 }
             }
-            $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'netstat', 'network', 'scsi', 'service', 'share', 'software', 'sound', 'user', 'video', 'windows');
+            $tables = array('bios', 'disk', 'dns', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
@@ -381,7 +372,7 @@ class main extends MY_Controller
             redirect('main/list_groups/');
         }
         $this->load->model("m_oa_group");
-        $this->load->model("m_audit_log");
+        $this->load->model("m_edit_log");
         $this->load->model("m_additional_fields");
         if (is_numeric($_POST['group_id'])) {
             // we must check to see if the user has at least VIEW permission on the group
@@ -430,7 +421,7 @@ class main extends MY_Controller
                     $field_name = $field[0];
                     $field_data = $field[1];
                     $this->m_additional_fields->set_system_field($system[1], $field_name, $field_data);
-                    $this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
+                    $this->m_edit_log->create($system[1] , '', 'sys_man_additional_fields_data', $field_name, '', $field_data, '');
                 }
             }
         }
@@ -468,7 +459,7 @@ class main extends MY_Controller
                         $field_data = '';
                     }
                     $this->m_system->update_system_man($system[1], $field_name, $field_data);
-                    $this->m_audit_log->insert_audit_event($field_name, $field_data, $system[1]);
+                    $this->m_edit_log->create($system[1] , '', 'system', $field_name, '', $field_data, '');
                 }
             }
         }
@@ -857,20 +848,14 @@ class main extends MY_Controller
         }
         $this->load->model("m_oa_general");
         $this->load->model("m_additional_fields");
-        $this->load->model("m_alerts");
-        $this->load->model("m_attachment");
         $this->load->model("m_audit_log");
-        $this->load->model("m_group");
+        $this->load->model("m_edit_log");
+        $this->load->model("m_change_log");
+        $this->load->model("m_attachment");
         $this->load->model("m_ip_address");
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
-        $this->load->model("m_pagefile");
-        $this->load->model("m_print_queue");
         $this->load->model("m_printer");
-        $this->load->model("m_route");
-        $this->load->model("m_sys_man_audits");
-        $this->load->model("m_variable");
-        $this->load->model("m_virtual_machine");
 
         $this->load->model("m_devices_components");
         // $this->data['additional_fields_data'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
@@ -882,8 +867,10 @@ class main extends MY_Controller
         // $this->data['additional_fields'] = $sort;
 
         $this->data['bios'] = $this->m_devices_components->read($this->data['id'], 'y', 'bios');
-        $this->data['hard_drive'] = $this->m_devices_components->read($this->data['id'], 'y', 'disk');
+        $this->data['database'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'database\'');
+        $this->data['database_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'database\'');
         $this->data['dns'] = $this->m_devices_components->read($this->data['id'], 'y', 'dns');
+        $this->data['hard_drive'] = $this->m_devices_components->read($this->data['id'], 'y', 'disk');
         $this->data['log'] = $this->m_devices_components->read($this->data['id'], 'y', 'log');
         $this->data['memory'] = $this->m_devices_components->read($this->data['id'], 'y', 'memory');
         $this->data['module'] = $this->m_devices_components->read($this->data['id'], 'y', 'module');
@@ -892,43 +879,42 @@ class main extends MY_Controller
         $this->data['netstat'] = $this->m_devices_components->read($this->data['id'], 'y', 'netstat');
         $this->data['network'] = $this->m_devices_components->read($this->data['id'], 'y', 'network');
         $this->data['optical'] = $this->m_devices_components->read($this->data['id'], 'y', 'optical');
+        $this->data['pagefile'] = $this->m_devices_components->read($this->data['id'], 'y', 'pagefile');
         $this->data['partition'] = $this->m_devices_components->read($this->data['id'], 'y', 'partition');
+        $this->data['print_queue'] = $this->m_devices_components->read($this->data['id'], 'y', 'print_queue');
         $this->data['processor'] = $this->m_devices_components->read($this->data['id'], 'y', 'processor');
+        $this->data['route'] = $this->m_devices_components->read($this->data['id'], 'y', 'route');
         $this->data['san'] = $this->m_devices_components->read($this->data['id'], 'y', 'san');
         $this->data['scsi'] = $this->m_devices_components->read($this->data['id'], 'y', 'scsi');
-        $this->data['share'] = $this->m_devices_components->read($this->data['id'], 'y', 'share');
         $this->data['server'] = $this->m_devices_components->read($this->data['id'], 'y', 'server');
         $this->data['server_item'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item');
         $this->data['service'] = $this->m_devices_components->read($this->data['id'], 'y', 'service');
+        $this->data['share'] = $this->m_devices_components->read($this->data['id'], 'y', 'share');
         $this->data['software'] = $this->m_devices_components->read($this->data['id'], 'y', 'software');
         $this->data['sound'] = $this->m_devices_components->read($this->data['id'], 'y', 'sound');
+        $this->data['task'] = $this->m_devices_components->read($this->data['id'], 'y', 'task');
         $this->data['user'] = $this->m_devices_components->read($this->data['id'], 'y', 'user');
+        $this->data['user_group'] = $this->m_devices_components->read($this->data['id'], 'y', 'user_group');
+        $this->data['variable'] = $this->m_devices_components->read($this->data['id'], 'y', 'variable');
         $this->data['video'] = $this->m_devices_components->read($this->data['id'], 'y', 'video');
-        $this->data['windows'] = $this->m_devices_components->read($this->data['id'], 'y', 'windows');
+        $this->data['vm'] = $this->m_devices_components->read($this->data['id'], 'y', 'vm');
         $this->data['webserver'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'web\'');
         $this->data['website_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'website\'');
-        $this->data['database'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'database\'');
-        $this->data['database_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'database\'');
+        $this->data['windows'] = $this->m_devices_components->read($this->data['id'], 'y', 'windows');
 
         $this->data['additional_fields_data'] = $this->m_additional_fields->get_system_fields($this->data['id']);
-        $this->data['alerts'] = $this->m_alerts->get_system_alerts($this->data['id']);
         $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
-        $this->data['audit_log'] = $this->m_audit_log->get_audit_log($this->data['id']);
-        $this->data['audits'] = $this->m_sys_man_audits->get_system_audits($this->data['id']);
+        $this->data['audit_log'] = $this->m_audit_log->read($this->data['id']);
+        $this->data['change_log'] = $this->m_change_log->readDevice($this->data['id']);
+        $this->data['edit_log'] = $this->m_edit_log->read($this->data['id']);
         $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['orgs'] = $this->m_oa_org->get_all_orgs();
-        $this->data['pagefile'] = $this->m_pagefile->get_system_pagefile($this->data['id']);
-        $this->data['print_queue'] = $this->m_print_queue->get_print_queue($this->data['id']);
         $this->data['printer'] = $this->m_printer->get_system_printer($this->data['id']);
-        $this->data['route'] = $this->m_route->get_system_route($this->data['id']);
         $this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
-        $this->data['system_group'] = $this->m_group->get_system_group($this->data['id']);
         $this->data['system_id'] = $this->data['id'];
         $this->data['system_location'] = $this->m_oa_location->get_system_location($this->data['id']);
         $this->data['system_org'] = $this->m_oa_org->get_system_org($this->data['id']);
-        $this->data['system_variable'] = $this->m_variable->get_system_variable($this->data['id']);
-        $this->data['vm'] = $this->m_virtual_machine->get_vm($this->data['id']);
 
         include 'include_device_types.php';
         $this->data['device_types'] = $device_types;

@@ -95,7 +95,7 @@ class San extends CI_Controller
             $this->load->model('m_system');
             $this->load->model('m_oa_group');
             $this->load->model('m_oa_general');
-            $this->load->model('m_sys_man_audits');
+            $this->load->model('m_audit_log');
             $this->load->model('m_ip_address');
             $this->load->helper('url');
 
@@ -696,7 +696,7 @@ class San extends CI_Controller
         $details->system_id = intval($this->m_system->find_system($details));
         $details->last_seen = $details->timestamp;
         $details->last_seen_by = 'audit';
-        $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
+        $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
         if ($details->system_id == '') {
             // insert a new system
@@ -723,16 +723,35 @@ class San extends CI_Controller
             echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
         }
         $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
-        $this->m_sys_man_audits->insert_audit($details);
+        if (isset($this->user->user_full_name)) {
+            $temp_user = $this->user->user_full_name;
+        } else {
+            $temp_user = '';
+        }
+        $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+        unset($temp_user);
 
-        $this->m_sys_man_audits->update_audit($details, 'san');
+
+        if (isset($this->user->user_full_name)) {
+            $temp_user = $this->user->user_full_name;
+        } else {
+            $temp_user = '';
+        }
+        $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+        unset($temp_user);
+
+
+
+        $this->m_audit_log->update('debug', 'san', $details->system_id, $details->last_seen);
         $this->m_devices_components->process_component('san', $details, $san);
-        $this->m_sys_man_audits->update_audit($details, 'network');
+
+        $this->m_audit_log->update('debug', 'network', $details->system_id, $details->last_seen);
         $this->m_devices_components->process_component('network', $details, $network);
-        $this->m_sys_man_audits->update_audit($details, 'disk');
+
+        $this->m_audit_log->update('debug', 'disk', $details->system_id, $details->last_seen);
         $this->m_devices_components->process_component('disk', $details, $disk);
 
-        $this->m_sys_man_audits->update_audit($details, 'IP Addresses');
+        $this->m_audit_log->update('debug', 'ip address', $details->system_id, $details->last_seen);
         foreach ($ip as $input) {
             $this->m_ip_address->process_addresses($input, $details);
         }
@@ -742,10 +761,10 @@ class San extends CI_Controller
         if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
             # don't run the update group routine
         } else {
-            $this->m_sys_man_audits->update_audit($details, 'system groups');
+            $this->m_audit_log->update('debug', 'system groups', $details->system_id, $details->last_seen);
             $this->m_oa_group->update_system_groups($details);
         }
-        $this->m_sys_man_audits->update_audit($details, '');
+        $this->m_audit_log->update('debug', '', $details->system_id, $details->last_seen);
 
         $this->benchmark->mark('code_end');
         #$log_details->message = 'Processing completed for ' . $details->man_ip_address . ' (System ID ' . $details->system_id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';

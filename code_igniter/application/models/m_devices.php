@@ -231,23 +231,33 @@ class M_devices extends MY_Model
 
     public function readDevice($id)
     {
-        $this->getResponse();
+        $CI = & get_instance();
         $this->load->model('m_devices_components');
         $sql = "SELECT * FROM system WHERE system_id = ?";
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $document['system'] = $query->result();
-        $tables = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'processor', 'netstat', 'network', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'video', 'windows');
+        $tables = array('audit_log', 'bios', 'disk', 'dns', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'user', 'user_group', 'video', 'windows');
         foreach ($tables as $table) {
-            $sql = "SELECT $this->properties FROM $table WHERE system_id = ? $this->filter $this->sort $this->limit $this->offset";
-            $data = array($id);
-            $query = $this->db->query($sql, $data);
-            $result = $query->result();
+            $result = $this->m_devices_components->read($id, $CI->response->current, $table, $CI->response->filter, $CI->response->properties);
             if (count($result) > 0) {
                 $document[$table] = $result;
             }
         }
         return($document);
+    }
+
+    public function readDeviceSubresource($id, $subresource)
+    {
+        $CI = & get_instance();
+        $this->load->model('m_devices_components');
+        $result = $this->m_devices_components->read($id, $CI->response->current, $CI->response->subresource, $CI->response->filter, $CI->response->properties);
+        if (count($result) == 0) {
+            #$CI->error->code = 'ERR-0001';
+            #log_error($CI->error);
+            return false;
+        }
+        return ($result);
     }
 
     public function readDevices($hostname)
@@ -268,21 +278,6 @@ class M_devices extends MY_Model
         if (count($result) == 0) {
             $CI->error->code = 'ERR-0001';
             log_error($CI->error);
-            return false;
-        }
-        return ($result);
-    }
-
-    public function readDeviceSubresource($id, $subresource)
-    {
-        $this->getResponse();
-        $sql = "SELECT $this->properties FROM $subresource WHERE system_id = ? $this->filter $this->sort $this->limit $this->offset";
-        $data = array($id);
-        $query = $this->db->query($sql, $data);
-        $result = $query->result();
-        if (count($result) == 0) {
-            #$CI->error->code = 'ERR-0001';
-            #log_error($CI->error);
             return false;
         }
         return ($result);

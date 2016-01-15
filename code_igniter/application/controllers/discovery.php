@@ -749,11 +749,10 @@ class discovery extends CI_Controller
             }
             $this->load->model('m_system');
             $this->load->model('m_ip_address');
-            $this->load->model('m_virtual_machine');
             $this->load->model('m_oa_group');
             $this->load->model('m_oa_general');
-            $this->load->model('m_sys_man_audits');
-            $this->load->model('m_alerts');
+            $this->load->model('m_audit_log');
+            $this->load->model('m_change_log');
             $this->load->model('m_devices_components');
             $timestamp = date('Y-m-d H:i:s');
 
@@ -1213,11 +1212,19 @@ class discovery extends CI_Controller
 
                                 # Get the UUID
                                 if ($details->os_group == 'Linux') {
-                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'dmidecode -s system-uuid', $details->ssh_password, $display);
+                                    if ($details->ssh_username == 'root') {
+                                        $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'dmidecode -s system-uuid', $details->ssh_password, $display);
+                                    } else {
+                                        $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'echo ' . escapeshellarg($details->ssh_password) . ' | sudo -S dmidecode -s system-uuid', $details->ssh_password, $display);
+                                    }
                                     if ($ssh_result['status'] == 0) {
                                         $details->uuid = $ssh_result['output'][0];
                                     } else {
-                                        $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'cat /sys/class/dmi/id/product_uuid', $details->ssh_password, $display);
+                                        if ($details->ssh_username == 'root') {
+                                            $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'cat /sys/class/dmi/id/product_uuid', $details->ssh_password, $display);
+                                        } else {
+                                            $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'echo ' . escapeshellarg($details->ssh_password) . ' | sudo -S cat /sys/class/dmi/id/product_uuid', $details->ssh_password, $display);
+                                        }
                                         if ($ssh_result['status'] == 0) {
                                             $details->uuid = $ssh_result['output'][0];
                                         }
@@ -1398,13 +1405,20 @@ class discovery extends CI_Controller
                             $log_details->message = strtoupper($details->last_seen_by) . " insert for $details->man_ip_address";
                             stdlog($log_details);
                             $details->system_id = $this->m_system->insert_system($details);
-                            $this->m_alerts->generate_alert($details->system_id, 'system', $details->system_id, 'Item added to system', date('Y-m-d H:i:s'), 'system');
                         }
                         // grab some timestamps
                         $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
                         $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
-                        // Insert an audit
-                        $this->m_sys_man_audits->insert_audit($details);
+
+                        // Insert an audit log
+                        if (isset($this->user->user_full_name)) {
+                            $temp_user = $this->user->user_full_name;
+                        } else {
+                            $temp_user = '';
+                        }
+                        $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                        unset($temp_user);
+
                         // Update the groups
                         $this->m_oa_group->update_system_groups($details);
 
@@ -1444,9 +1458,20 @@ class discovery extends CI_Controller
 
                         // insert any found virtual machines
                         if (isset($guests) and is_array($guests) and count($guests) > 0) {
-                            foreach ($guests as $guest) {
-                                $this->m_virtual_machine->process_vm($guest, $details);
-                            }
+                            $vm = new stdClass();
+                            $vm->item = array();
+                            $vm->item = $guests;
+                            $this->m_devices_components->process_component('vm', $details, $vm);
+                            // $xml_vm = new SimpleXMLElement('<root/>');
+                            // foreach ($guests as $key => $value) {
+                            //     $item = $xml_vm->addChild('item');
+                            //     $class_vars = get_object_vars($value);
+                            //     foreach ($class_vars as $name => $item_value) {
+                            //         $item->$name = (string)$item_value;
+                            //     }
+                            //     unset($item);
+                            // }
+                            // $this->m_devices_components->process_component('vm', $details, $xml_vm);
                         }
 
                         if (isset($details->snmp_oid) and $details->snmp_oid != '' and $details->snmp_status == 'true') {
@@ -1742,12 +1767,6 @@ class discovery extends CI_Controller
                                                         }
 
                                                         $count = 0;
-                                                        // $this->load->model('m_processor');
-                                                        // $this->load->model('m_bios');
-                                                        // $this->load->model('m_memory');
-                                                        // $this->load->model('m_motherboard');
-                                                        // $this->load->model('m_video');
-
                                                         foreach ($esx_xml->children() as $child) {
                                                             if ($child->getName() === 'sys') {
                                                                 $esx_details = (object) $esx_xml->sys;
@@ -1770,12 +1789,19 @@ class discovery extends CI_Controller
                                                                     $esx_details->system_id = $this->m_system->insert_system($esx_details);
                                                                     $log_details->message = "ESX insert for $esx_details->man_ip_address (System ID $esx_details->system_id)";
                                                                     stdlog($log_details);
-                                                                    $this->m_alerts->generate_alert($details->system_id, 'system', $esx_details->system_id, 'Item added to system', date('Y-m-d H:i:s'), 'system');
                                                                 }
                                                                 if (!isset($esx_details->audits_ip)) {
                                                                     $esx_details->audits_ip = $details->audits_ip;
                                                                 }
-                                                                $this->m_sys_man_audits->insert_audit($esx_details);
+
+                                                                if (isset($this->user->user_full_name)) {
+                                                                    $temp_user = $this->user->user_full_name;
+                                                                } else {
+                                                                    $temp_user = '';
+                                                                }
+                                                                $this->m_audit_log->create($esx_details->system_id, $temp_user, $esx_details->last_seen_by, $esx_details->audits_ip, '', '', $esx_details->timestamp);
+                                                                unset($temp_user);
+
                                                             }
                                                         }
                                                         $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network);
@@ -1785,17 +1811,12 @@ class discovery extends CI_Controller
                                                         $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory);
                                                         $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard);
                                                         $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video);
+                                                        $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm);
                                                         foreach ($esx_xml->children() as $child) {
                                                             if ($child->getName() === 'addresses') {
-                                                                $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
+                                                                $this->m_audit_log->update('debug', $child->getName(), $esx_details->system_id, $esx_details->last_seen);
                                                                 foreach ($esx_xml->addresses->ip_address as $input) {
                                                                     $this->m_ip_address->process_addresses($input, $esx_details);
-                                                                }
-                                                            }
-                                                            if ($child->getName() === 'guests') {
-                                                                $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                                foreach ($esx_xml->guests->guest as $input) {
-                                                                    $this->m_virtual_machine->process_vm($input, $details);
                                                                 }
                                                             }
                                                         }
@@ -2099,12 +2120,17 @@ class discovery extends CI_Controller
                                                             $esx_details->system_id = $this->m_system->insert_system($esx_details);
                                                             $log_details->message = "ESX insert for $esx_details->man_ip_address (System ID $esx_details->system_id)";
                                                             stdlog($log_details);
-                                                            $this->m_alerts->generate_alert($details->system_id, 'system', $esx_details->system_id, 'Item added to system', date('Y-m-d H:i:s'), 'system');
                                                         }
                                                         if (!isset($esx_details->audits_ip)) {
                                                             $esx_details->audits_ip = $details->audits_ip;
                                                         }
-                                                        $this->m_sys_man_audits->insert_audit($esx_details);
+                                                        if (isset($this->user->user_full_name)) {
+                                                            $temp_user = $this->user->user_full_name;
+                                                        } else {
+                                                            $temp_user = '';
+                                                        }
+                                                        $this->m_audit_log->create($esx_details->system_id, $temp_user, $esx_details->last_seen_by, $esx_details->audits_ip, '', '', $esx_details->timestamp);
+                                                        unset($temp_user);
                                                     }
                                                 }
                                                 $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network);
@@ -2114,17 +2140,12 @@ class discovery extends CI_Controller
                                                 $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory);
                                                 $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard);
                                                 $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video);
+                                                $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm);
                                                 foreach ($esx_xml->children() as $child) {
                                                     if ($child->getName() === 'addresses') {
-                                                        $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
+                                                        $this->m_audit_log->update('debug', $child->getName(), $esx_details->system_id, $esx_details->last_seen);
                                                         foreach ($esx_xml->addresses->ip_address as $input) {
                                                             $this->m_ip_address->process_addresses($input, $esx_details);
-                                                        }
-                                                    }
-                                                    if ($child->getName() === 'guests') {
-                                                        $this->m_sys_man_audits->update_audit($esx_details, $child->getName());
-                                                        foreach ($esx_xml->guests->guest as $input) {
-                                                            $this->m_virtual_machine->process_vm($input, $details);
                                                         }
                                                     }
                                                 }
@@ -2276,7 +2297,7 @@ class discovery extends CI_Controller
             $cwd = '/tmp';
             $env = array();
             if ($command != '') {
-                $command_string = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . $user . '@' . $host . ' ' . $command;
+                $command_string = 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . $user . '@' . $host . ' "' . $command . '"';
                 $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
                 if (is_resource($process)) {
                     fwrite($pipes[0], $password);
