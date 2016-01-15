@@ -94,7 +94,7 @@
 		<column>
 			<column_order>9</column_order>
 			<column_name>Processor</column_name>
-			<column_variable>processor_description</column_variable>
+			<column_variable>description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

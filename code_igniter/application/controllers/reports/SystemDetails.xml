@@ -3,7 +3,7 @@
 	<details>
 		<report_name>System Details</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.os_name, system.man_class, system.man_owner, system.man_ip_address, system.man_model, date_format(system.first_timestamp, '%Y-%m-%d') as first_seen, date_format(system.last_seen, '%Y-%m-%d') as last_seen, system.last_seen_by, system.pc_date_os_installation as installed, system.man_manufacturer, system.man_serial, system.man_form_factor, windows.client_site_name,  windows.user_name, oa_location.location_name, windows.active_directory_ou FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN windows ON (system.system_id = sys_sw_windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.os_name, system.man_class, system.man_owner, system.man_ip_address, system.man_model, date_format(system.first_timestamp, '%Y-%m-%d') as first_seen, date_format(system.last_seen, '%Y-%m-%d') as last_seen, system.last_seen_by, system.pc_date_os_installation as installed, system.man_manufacturer, system.man_serial, system.man_form_factor, windows.client_site_name,  windows.user_name, oa_location.location_name, windows.active_directory_ou FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -152,16 +152,6 @@
 			<column_align></column_align>
 		</column>
 		<column>
-			<column_order>14</column_order>
-			<column_name>Tags</column_name>
-			<column_variable>tag</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>center</column_align>
-		</column>
-		<column>
 			<column_order>15</column_order>
 			<column_name>IP</column_name>
 			<column_variable>man_ip_address</column_variable>
@@ -190,6 +180,16 @@
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>14</column_order>
+			<column_name>Tags</column_name>
+			<column_variable>tag</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>center</column_align>
 		</column>
 	</columns>
 </report>

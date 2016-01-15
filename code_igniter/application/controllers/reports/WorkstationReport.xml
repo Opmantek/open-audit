@@ -44,7 +44,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>User</column_name>
-			<column_variable>windows_user_name</column_variable>
+			<column_variable>user_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
