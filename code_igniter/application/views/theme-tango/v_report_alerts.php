@@ -63,10 +63,10 @@ if ($query) {
 				<td><span style="display: none;"><?php echo $key->man_ip_address?></span><?php echo ip_address_from_db($key->man_ip_address)?></td>
 				<td style="text-align: center;"><img src="<?php echo $oa_theme_images ?>/16_<?php echo $key->icon; ?>.png" style='border-width:0px;' title="" alt=""/></td>
 				<td><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->system_id)?>"><?php echo htmlentities($key->hostname)?></a></td>
-				<td><?php echo htmlentities($key->alert_table)?></td>
-				<td><?php echo htmlentities($key->link_row_action)?></td>
-				<td><?php echo htmlentities($key->alert_details)?></td>
-				<td align='center'><input type="checkbox" id="alert_id_<?php echo intval($key->alert_id)?>" name="alert_id_<?php echo intval($key->alert_id)?>" /></td>
+				<td><?php echo htmlentities($key->db_table)?></td>
+				<td><?php echo htmlentities($key->db_action)?></td>
+				<td><?php echo htmlentities($key->details)?></td>
+				<td align='center'><input type="checkbox" id="alert_id_<?php echo intval($key->id)?>" name="alert_id_<?php echo intval($key->id)?>" /></td>
 			</tr>
 	<?php endforeach;
     ?>
