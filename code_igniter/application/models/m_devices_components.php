@@ -229,7 +229,6 @@ class M_devices_components extends MY_Model
 
     public function process_component($table = '', $details, $input, $match_columns = array())
     {
-        echo "<pre>Processing $table\n";
         $create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
 
         // ensure we have a valid table name
@@ -245,7 +244,6 @@ class M_devices_components extends MY_Model
             $match_columns = $this->match_columns($table);
         }
 
-        # if ($table == '' or count($match_columns) == 0 or !isset($details->id)) { # this will be changed when we convert the system table
         if ($table == '' or count($match_columns) == 0 or !isset($details->system_id)) {
             if ($table == '') {
                 $message = "No table name supplied - failed";
@@ -264,79 +262,7 @@ class M_devices_components extends MY_Model
             $this->m_audit_log->update('debug', "$table - start", $details->system_id, $details->last_seen);
         }
 
-        ### PARTITION ###
-        # AIX needs to also match on partition.name
-        if ((string)$table == 'partition' and strtolower($details->os_family) == 'ibm aix') {
-            $match_columns[] = 'name';
-        }
-
-        ### NETWORK ###
-        # depending on the device type we need to alter our matching columns for the network card
-        if ((string)$table == 'network') {
-            if ($details->type == 'computer' and $details->os_group != 'VMware') {
-                # we already match only on MAC Address
-            } elseif ($details->type == 'computer' and $details->os_group == 'VMware') {
-                # add index and connection id to the list to be matched
-                $match_columns[] = 'net_index';
-                $match_columns[] = 'connection';
-            } else {
-                # just match the index
-                $match_columns[] = 'net_index';
-            }
-
-            # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
-            for ($i=0; $i<count($input->item); $i++) {
-                if (isset($input->item[$i]->mac)) {
-                    $input->item[$i]->mac = strtolower($input->item[$i]->mac);
-                } else {
-                    $input->item[$i]->mac = '';
-                }
-            }
-        }
-
-        ### SERVER ###
-        if ((string)$table == 'server') {
-            for ($i=0; $i<count($input->item); $i++) {
-                if (isset($input->item[$i]->version) and $input->item[$i]->version != '' and $input->item[$i]->type == 'database') {
-                    $input->item[$i]->full_name = (string)$this->get_sql_server_version_string($input->item[$i]->version);
-                }
-            }
-        }
-
-        ### SOFTWARE VERSION PADDED ###
-        if ((string)$table == 'software') {
-            for ($i=0; $i<count($input->item); $i++) {
-                if (isset($input->item[$i]->version) and $input->item[$i]->version != '') {
-                    $pieces = array();
-                    $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $input->item[$i]->version);
-                    #$input->item[$key]->version_padded = (string)'';
-                    $input->item[$i]->version_padded = (string)'';
-                    foreach ($pieces as $piece) {
-                        if (strlen($piece) > 10 ) {
-                            $input->item[$i]->version_padded .= $piece;
-                        } else {
-                            $input->item[$i]->version_padded .= mb_substr("00000000000000000000".$piece, -10);
-                        }
-                    }
-                } else {
-                    $input->item[$i]->version_padded = '';
-                }
-            }
-        }
-
-        ### NETSTAT ###
-        if ((string)$table == 'netstat') {
-            $input = $this->format_netstat_data($input, $details);
-        }
-
-        ### PROCESSOR ###
-        if ($table == 'processor') {
-            $input->item[0]->description = str_ireplace('(R)', '', $input->item[0]->description);
-            $input->item[0]->description = str_ireplace('(TM)', '', $input->item[0]->description);
-            $input->item[0]->description = str_ireplace('  ', ' ', $input->item[0]->description);
-            $input->item[0]->manufacturer = str_ireplace('AuthenticAMD', 'AMD', $input->item[0]->manufacturer);
-            $input->item[0]->manufacturer = str_ireplace('GenuineIntel', 'Intel', $input->item[0]->manufacturer);
-        }
+        echo "<pre>Processing $table\n";
 
         ### IP ADDRESS ###
         if ($table == 'ip') {
@@ -368,9 +294,84 @@ class M_devices_components extends MY_Model
             }
         }
 
+        ### NETSTAT ###
+        if ((string)$table == 'netstat') {
+            $input = $this->format_netstat_data($input, $details);
+        }
+
+        ### NETWORK ###
+        # depending on the device type we need to alter our matching columns for the network card
+        if ((string)$table == 'network') {
+            if ($details->type == 'computer' and $details->os_group != 'VMware') {
+                # we already match only on MAC Address
+            } elseif ($details->type == 'computer' and $details->os_group == 'VMware') {
+                # add index and connection id to the list to be matched
+                $match_columns[] = 'net_index';
+                $match_columns[] = 'connection';
+            } else {
+                # just match the index
+                $match_columns[] = 'net_index';
+            }
+
+            # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]->mac)) {
+                    $input->item[$i]->mac = strtolower($input->item[$i]->mac);
+                } else {
+                    $input->item[$i]->mac = '';
+                }
+            }
+        }
+
+        ### PARTITION ###
+        # AIX needs to also match on partition.name
+        if ((string)$table == 'partition' and strtolower($details->os_family) == 'ibm aix') {
+            $match_columns[] = 'name';
+        }
+
+        ### PROCESSOR ###
+        if ($table == 'processor') {
+            $input->item[0]->description = str_ireplace('(R)', '', $input->item[0]->description);
+            $input->item[0]->description = str_ireplace('(TM)', '', $input->item[0]->description);
+            $input->item[0]->description = str_ireplace('  ', ' ', $input->item[0]->description);
+            $input->item[0]->manufacturer = str_ireplace('AuthenticAMD', 'AMD', $input->item[0]->manufacturer);
+            $input->item[0]->manufacturer = str_ireplace('GenuineIntel', 'Intel', $input->item[0]->manufacturer);
+        }
+
+        ### SERVER ###
+        if ((string)$table == 'server') {
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]->version) and $input->item[$i]->version != '' and $input->item[$i]->type == 'database') {
+                    $input->item[$i]->full_name = (string)$this->get_sql_server_version_string($input->item[$i]->version);
+                }
+            }
+        }
+
+        ### SOFTWARE ###
+        # need to pad the version
+        if ((string)$table == 'software') {
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]->version) and $input->item[$i]->version != '') {
+                    $pieces = array();
+                    $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $input->item[$i]->version);
+                    #$input->item[$key]->version_padded = (string)'';
+                    $input->item[$i]->version_padded = (string)'';
+                    foreach ($pieces as $piece) {
+                        if (strlen($piece) > 10 ) {
+                            $input->item[$i]->version_padded .= $piece;
+                        } else {
+                            $input->item[$i]->version_padded .= mb_substr("00000000000000000000".$piece, -10);
+                        }
+                    }
+                } else {
+                    $input->item[$i]->version_padded = '';
+                }
+            }
+        }
+
         ### VIRTUAL MACHINE ###
         if ($table == 'vm') {
-            foreach ($input->item as &$vm) {
+            foreach ($input->item as $vm) {
                 if (!isset($vm->group)) {
                     $vm->group = '';
                 }
@@ -384,7 +385,7 @@ class M_devices_components extends MY_Model
                     $vm->uuid = '';
                 } else {
                     $sql = "SELECT system_id, icon FROM system WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
-                    $data = array($vm->uuid);
+                    $data = array("$vm->uuid");
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
                         $row = $query->row();
@@ -397,7 +398,6 @@ class M_devices_components extends MY_Model
                 }
             }
         }
-
 
         // get any existing current rows from the database
         $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND system_id = ?";

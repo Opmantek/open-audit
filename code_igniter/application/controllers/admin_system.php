@@ -389,24 +389,17 @@ class Admin_system extends MY_Controller
             }
 
             // Generate any DNS entries required
-            // $dns_entries = array();
-            // $dns_entries = $this->m_devices_components->create_dns_entries((int)$details->system_id);
-            // $this->m_devices_components->process_component('dns', $details, $dns_entries);
-            // unset($dns_entries);
-
-            // Generate any DNS entries required
-            $dns_entries = $this->m_devices_components->create_dns_entries((int)$details->system_id);
-            $dns = new SimpleXMLElement('<root/>');
-            foreach ($dns_entries as $key => $value) {
-                $item = $dns->addChild('item');
-                $class_vars = get_object_vars($value);
-                foreach ($class_vars as $name => $item_value) {
-                    $item->$name = (string)$item_value;
-                }
-                unset($item);
+            $dns = new stdClass();
+            $dns->item = array();
+            $dns->item = $this->m_devices_components->create_dns_entries((int)$details->system_id);
+            if (count($dns->item) > 0) {
+                $this->m_devices_components->process_component('dns', $details, $dns);
             }
-            $this->m_devices_components->process_component('dns', $details, $dns);
+            unset($dns);
 
+            // insert a blank to indicate we're finished this part of the discovery
+            // if required, the audit scripts will insert their own audit logs
+            $this->m_audit_log->update('debug', '', $details->system_id, $details->last_seen);
 
         } else {
             echo "Audit NOT submitted.";

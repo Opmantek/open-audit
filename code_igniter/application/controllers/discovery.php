@@ -1462,16 +1462,6 @@ class discovery extends CI_Controller
                             $vm->item = array();
                             $vm->item = $guests;
                             $this->m_devices_components->process_component('vm', $details, $vm);
-                            // $xml_vm = new SimpleXMLElement('<root/>');
-                            // foreach ($guests as $key => $value) {
-                            //     $item = $xml_vm->addChild('item');
-                            //     $class_vars = get_object_vars($value);
-                            //     foreach ($class_vars as $name => $item_value) {
-                            //         $item->$name = (string)$item_value;
-                            //     }
-                            //     unset($item);
-                            // }
-                            // $this->m_devices_components->process_component('vm', $details, $xml_vm);
                         }
 
                         if (isset($details->snmp_oid) and $details->snmp_oid != '' and $details->snmp_status == 'true') {
@@ -1514,6 +1504,10 @@ class discovery extends CI_Controller
                         if ($display == 'y') {
                             echo "DEBUG - System ID <a href='".base_url()."index.php/main/system_display/".$details->system_id."'>".$details->system_id."</a>\n";
                         }
+
+                        // insert a blank to indicate we're finished this part of the discovery
+                        // if required, the audit scripts will insert their own audit logs
+                        $this->m_audit_log->update('debug', '', $details->system_id, $details->last_seen);
 
                         // Windows WMI audit - audit_windows.vbs
                         if ($details->wmi_status == "true" and $details->windows_username > '' and $details->windows_domain > '' and $details->windows_password > '') {

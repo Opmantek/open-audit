@@ -414,23 +414,23 @@ class System extends CI_Controller
         }
 
         // Generate any DNS entries required
-        $dns_entries = $this->m_devices_components->create_dns_entries((int)$details->system_id);
-        $dns = $xml->dns;
-        foreach ($dns_entries as $key => $value) {
-            $item = $dns->addChild('item');
-            $class_vars = get_object_vars($value);
-            foreach ($class_vars as $name => $item_value) {
-                $item->$name = (string)$item_value;
+        $dns = new stdClass();
+        $dns->item = array();
+        $dns->item = $this->m_devices_components->create_dns_entries((int)$details->system_id);
+        if ($xml->dns) {
+            foreach ($xml->dns->item as $item) {
+                # likely not required, but turn it into an array and back to a standard object
+                # so we have consistency inside the dns->item array of all objects versus some standard objects
+                # and some simpleXML objects
+                $item = (array) $item;
+                $item = (object) $item;
+                $dns->item[] = $item;
             }
-            unset($item);
         }
-        unset($key);
-        unset($value);
+        if (count($dns->item) > 0) {
+            $this->m_devices_components->process_component('dns', $details, $dns);
+        }
         unset($item);
-        unset($class_vars);
-        unset($name);
-        unset($item_value);
-        $this->m_devices_components->process_component('dns', $details, $dns);
         unset($dns);
 
         $this->m_audit_log->update('debug', 'finished processing', $details->system_id, $details->last_seen);
