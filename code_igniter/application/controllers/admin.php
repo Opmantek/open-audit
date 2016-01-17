@@ -4436,7 +4436,6 @@ class admin extends MY_Controller
                 system_id int(10) unsigned DEFAULT '0',
                 username varchar(45) NOT NULL DEFAULT '',
                 type varchar(45) NOT NULL DEFAULT '',
-                time varchar(45) NOT NULL DEFAULT '',
                 ip varchar(45) NOT NULL DEFAULT '',
                 debug text NOT NULL DEFAULT '',
                 wmi_fails text NOT NULL DEFAULT '',
@@ -4445,7 +4444,7 @@ class admin extends MY_Controller
                 KEY system_id (system_id),
                 CONSTRAINT audit_log_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-            $sql[] = "INSERT INTO audit_log SELECT NULL, system_id, system_audits_username, system_audits_type, system_audits_time, system_audits_ip, audit_debug, audit_wmi_fails, `timestamp` FROM sys_man_audits";
+            $sql[] = "INSERT INTO audit_log SELECT NULL, system_id, system_audits_username, system_audits_type, system_audits_ip, audit_debug, audit_wmi_fails, `timestamp` FROM sys_man_audits";
             $sql[] = "DROP TABLE IF EXISTS sys_man_audits";
 
             # oa_audit_log -> edit_log (list of edits by who [user||audit||snmp||etc])
@@ -4472,10 +4471,6 @@ class admin extends MY_Controller
             $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the name attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, 'name' as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'hostname - %'";
             $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited a custom attribute.') as details, 'user' as source, '1000' as weight, 'sys_additional_fields_data' as db_table, '' db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'sys_man_additional_fields_data%'";
             $sql[] = "DROP TABLE IF EXISTS oa_audit_log";
-
-
-
-
 
             # tasks (scheduled tasks / cron)
             $sql[] = "DROP TABLE IF EXISTS sys_sw_scheduled_task";
@@ -4589,11 +4584,42 @@ class admin extends MY_Controller
                 $query = $this->db->query($this_query);
             }
 
+
+            $this->load->model('m_oa_report');
+            $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Changes'";
+            if ($this->db->affected_rows() > 0) {
+                $this->m_oa_report->activate_file('Changes - Acknowledged');
+            }
+            $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Alerts'";
+            if ($this->db->affected_rows() > 0) {
+                $this->m_oa_report->activate_file('Changes');
+            }
+            $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Alerts - Hardware'";
+            if ($this->db->affected_rows() > 0) {
+                $this->m_oa_report->activate_file('Changes - Hardware');
+            }
+            $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Alerts - Netstat Ports'";
+            if ($this->db->affected_rows() > 0) {
+                $this->m_oa_report->activate_file('Changes - Netstat Ports');
+            }
+            $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Alerts - New Systems'";
+            if ($this->db->affected_rows() > 0) {
+                $this->m_oa_report->activate_file('Changes - New Devices');
+            }
+            $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Alerts - Software'";
+            if ($this->db->affected_rows() > 0) {
+                $this->m_oa_report->activate_file('Changes - Software');
+            }
+            $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Alerts - Software Updates'";
+
             $this->load->helper('report_helper');
             $sql[] = refresh_report_definitions();
 
             $this->load->helper('group_helper');
             $sql[] = refresh_group_definitions();
+
+
+
 
             $log_details->message = 'Upgrade database to 1.10 completed';
             stdlog($log_details);

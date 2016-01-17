@@ -509,11 +509,6 @@ class M_oa_group extends MY_Model
 
     public function import_group($input)
     {
-        //echo "<pre>\n";
-        //print_r($input);
-        //echo "</pre>\n";
-        //echo $input->group_dynamic_select;
-        //exit;
         $sql = "INSERT INTO
 					oa_group
 				SET
@@ -561,4 +556,99 @@ class M_oa_group extends MY_Model
             }
         }
     }
+
+    public function activate_file($group_name)
+    {
+        $group_file = '';
+        $group_definition = '';
+        $paths = array(BASEPATH.'../application/controllers/groups');
+        foreach ($paths as $path) {
+            if (is_dir($path)) {
+                if ($handle = opendir($path)) {
+                    while (false !== ($file = readdir($handle))) {
+                        if (mb_strpos($file, ".xml") !== false) {
+                            if ($file_handle = fopen($path.'/'.$file, "rb")) {
+                                if ($contents = fread($file_handle, filesize($path.'/'.$file))) {
+                                    try {
+                                        $xml = new SimpleXMLElement($contents);
+                                    } catch (Exception $error) {
+                                        $errors = libxml_get_errors();
+                                        # TODO - log something here (see m_oa_report->activate_fle for details)
+                                    }
+                                    if (isset($xml)) {
+                                        if (strtolower($group_name) == strtolower($xml->details->group_name)) {
+                                            $group_file = $file;
+                                            $group_definition = $xml;
+                                            break;
+                                        }
+                                        unset($xml);
+                                    }
+                                }
+                                fclose($file_handle);
+                            }
+                        }
+                    }
+                    closedir($handle);
+                }
+                unset($handle);
+                if ($group_file != '') {
+                    break;
+                }
+            }
+        }
+
+        if ($group_file == '') {
+            # TODO - log something here
+            return;
+        }
+        // insert the group details into oa_group
+        $sql = "INSERT INTO oa_group SET group_name = ?, group_padded_name = ?, group_dynamic_select = ?,
+                    group_parent = ?, group_description = ?, group_category = ?, group_display_sql = ?, group_icon = ?";
+        $sql = $this->clean_sql($sql);
+        $data = array(  (string)$group_definition->details->group_name,
+                        (string)$group_definition->details->group_padded_name,
+                        (string)$group_definition->details->group_dynamic_select,
+                        (string)$group_definition->details->group_parent,
+                        (string)$group_definition->details->group_description,
+                        (string)$group_definition->details->group_category,
+                        (string)$group_definition->details->group_display_sql,
+                        (string)$group_definition->details->group_icon);
+        $query = $this->db->query($sql, $data);
+        $group_id = $this->db->insert_id();
+
+        // insert an entry into oa_group_user for any Admin level user
+        $sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+        $data = array("$group_id");
+        $result = $this->db->query($sql, $data);
+
+        // insert the group columns
+        foreach ($group_definition->columns->column as $column) {
+            $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?,
+            column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array( $group_id,
+                (string)$column->column_order,
+                (string)$column->column_name,
+                (string)$column->column_variable,
+                (string)$column->column_type,
+                (string)$column->column_link,
+                (string)$column->column_secondary,
+                (string)$column->column_ternary,
+                (string)$column->column_align);
+            $query = $this->db->query($sql, $data);
+        }
+        // update the group members
+        # get the group select
+        $sql_select = $group_definition->details->group_dynamic_select;
+        # remove the existing systems in this group
+        $sql = "DELETE FROM oa_group_sys WHERE group_id = ?";
+        $data = array($group_id);
+        $query = $this->db->query($sql, $data);
+        # update the group with all systems that match
+        $sql = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
+        $sql = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$group_id."' ", $sql);
+        $query = $this->db->query($sql);
+        return;
+    }
+
 }

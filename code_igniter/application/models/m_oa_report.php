@@ -220,4 +220,82 @@ class M_oa_report extends MY_Model
 
         return($query->result());
     }
+
+    public function activate_file($report_name)
+    {
+        $report_file = '';
+        $report_definition = '';
+        $paths = array(BASEPATH.'../application/controllers/reports', '/usr/local/omk/reports', '/usr/local/opmojo/reports', 'c:\\omk\\reports');
+        foreach ($paths as $path) {
+            if (is_dir($path)) {
+                if ($handle = opendir($path)) {
+                    while (false !== ($file = readdir($handle))) {
+                        if (mb_strpos($file, ".xml") !== false) {
+                            $file_handle = fopen($path.'/'.$file, "rb");
+                            $contents = fread($file_handle, filesize($path.'/'.$file));
+                            try {
+                                $xml = new SimpleXMLElement($contents);
+                            } catch (Exception $error) {
+                                $errors = libxml_get_errors();
+                                # TODO - log something here
+                                // echo "Invalid XML.<br />\n<pre>\n";
+                                // print_r($errors);
+                                // // not a valid XML string
+                                // echo'Invalid XML input for: '.$file;
+                                // echo "<pre>\n";
+                                // print_r($xml);
+                                // exit;
+                            }
+                            if ($xml) {
+                                if (strtolower($report_name) == strtolower($xml->details->report_name)) {
+                                    $report_file = $file;
+                                    $report_definition = $xml;
+                                    break;
+                                }
+                                unset($xml);
+                            }
+                            fclose($file_handle);
+                        }
+                    }
+                    closedir($handle);
+                }
+                unset($handle);
+                if ($report_file != '') {
+                    break;
+                }
+            }
+        }
+
+        if ($report_file == '') {
+            # TODO - log something here
+            return;
+        }
+        $sql = "INSERT INTO oa_report SET report_name = ?, report_sql = ?, report_display_sql = ?, report_view_file = ?, report_view_contents = ?, report_processing = ?, report_sort_column = ?, report_display_in_menu = ?";
+        $sql = $this->clean_sql($sql);
+        $data = array((string)$report_definition->details->report_name, (string)$report_definition->details->report_sql, (string)$report_definition->details->report_display_sql,
+                        (string)$report_definition->details->report_view_file, (string)$report_definition->details->report_view_contents, (string)$report_definition->details->report_processing,
+                        (string)$report_definition->details->report_sort_column, (string)$report_definition->details->report_display_in_menu, );
+        $query = $this->db->query($sql, $data);
+         #echo "<pre>\n"; print_r($this->db->last_query()); echo "</pre>\n";
+
+        $report_id = $this->db->insert_id();
+        foreach ($report_definition->columns->column as $column) {
+            $sql = "INSERT INTO oa_report_column SET report_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?,  column_ternary = ?, column_align = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($report_id, "$column->column_order", "$column->column_name", "$column->column_variable",
+                            "$column->column_type", "$column->column_link", "$column->column_secondary",
+                            "$column->column_ternary", "$column->column_align", );
+            $query = $this->db->query($sql, $data);
+        }
+        return;
+    }
+
+
+
+
+
+
+
+
+
 }

@@ -78,10 +78,6 @@ if (! function_exists('refresh_report_definitions')) {
                 closedir($handle);
             }
         }
-
-        // $sql = "DELETE FROM oa_report WHERE report_name = ''";
-        // $query = $CI->db->query($sql);
-
         # get the list of activated reports
         $sql = "SELECT report_id, report_name FROM oa_report";
         $query = $CI->db->query($sql);
@@ -90,10 +86,6 @@ if (! function_exists('refresh_report_definitions')) {
         foreach ($result as $report) {
             // against each retrieved file
             foreach ($report_files as $file) {
-// echo "<pre>\n";
-// print_r($report);
-// print_r($file);
-// echo "</pre>\n";
                 if ($report->report_name == $file['report_name']) {
                     $sql = "DELETE FROM oa_report WHERE report_id = " . intval($report->report_id);
                     $query = $CI->db->query($sql);
@@ -154,6 +146,47 @@ if (! function_exists('refresh_report_definitions')) {
         $query = $CI->db->query($sql);
 
         return($output);
+    }
+}
+
+
+if (! function_exists('check_default_reports')) {
+    function check_default_reports()
+    {
+        $CI = get_instance();
+       # check to see if we have any reports activated - if not, activate the default set
+        $sql = "SELECT count(*) as count FROM oa_report";
+        $query = $CI->db->query($sql);
+        $result = $query->result();
+        if (intval($result[0]->count) == 0) {
+            $CI->load->model('m_oa_report');
+            $CI->m_oa_report->activate_file('Device Details');
+            $CI->m_oa_report->activate_file('Device Hardware');
+            $CI->m_oa_report->activate_file('Installed - Software');
+            $CI->m_oa_report->activate_file('Specific Software');
+            $CI->m_oa_report->activate_file('Software Keys');
+            $CI->m_oa_report->activate_file('Specific Key Name');
+            $CI->m_oa_report->activate_file('Specific Key Text');
+            $CI->m_oa_report->activate_file('Changes');
+            $CI->m_oa_report->activate_file('Changes - Software');
+            $CI->m_oa_report->activate_file('Disk Partition Use');
+            $CI->m_oa_report->activate_file('Interfaces Used - Available');
+            $CI->m_oa_report->activate_file('Enterprise - Devices Discovered in the Last Days');
+            $CI->m_oa_report->activate_file('Enterprise - Software Discovered in the Last Days');
+            $CI->m_oa_report->activate_file('Enterprise - Devices Not Seen by Date');
+            $CI->m_oa_report->activate_file('Enterprise - Specific Software');
+            $CI->m_oa_report->activate_file('Enterprise - Software Discovered by Date');
+            $CI->m_oa_report->activate_file('Enterprise - Devices Discovered by Date');
+            $CI->m_oa_report->activate_file('Enterprise - Devices Not Seen in the Last Days');
+            $CI->m_oa_report->activate_file('Enterprise - OS Group');
+            $CI->m_oa_report->activate_file('Enterprise - OS Types');
+            $CI->m_oa_report->activate_file('Enterprise - OS Family');
+            $CI->m_oa_report->activate_file('Enterprise - OS Name');
+            $CI->m_oa_report->activate_file('Enterprise - Device Types');
+            $CI->m_oa_report->activate_file('Enterprise - Device Type');
+            $CI->m_oa_report->activate_file('Enterprise - Software Discovered Range');
+            $CI->m_oa_report->activate_file('Enterprise - Devices Discovered Range');
+        }
     }
 }
 

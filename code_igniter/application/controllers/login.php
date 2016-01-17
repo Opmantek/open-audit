@@ -69,6 +69,12 @@ class login extends CI_Controller
         $data['password'] = array('id' => 'password', 'name' => 'password');
         $data['oae_message'] = '';
 
+        $this->load->helper('report_helper');
+        check_default_reports();
+
+        $this->load->helper('group_helper');
+        check_default_groups();
+
         // cater to an unauth page request
         // get the requested page from the session
         $form_url = @$this->session->userdata('url');

@@ -187,5 +187,31 @@ if (! function_exists('refresh_group_definitions')) {
     }
 }
 
+if (! function_exists('check_default_groups')) {
+    function check_default_groups()
+    {
+        $CI = get_instance();
+        # check to see if we have any groups activated - if not, activate the default set
+        $sql = "SELECT count(*) as count FROM oa_group";
+        $query = $CI->db->query($sql);
+        $result = $query->result();
+        if (intval($result[0]->count) == 0) {
+            $CI->load->model('m_oa_group');
+            $CI->m_oa_group->activate_file('All Devices');
+            $CI->m_oa_group->activate_file('Items in Default Location');
+            $CI->m_oa_group->activate_file('Default Organisation owned items');
+            $CI->m_oa_group->activate_file('All Printers');
+            $CI->m_oa_group->activate_file('Routers');
+            $CI->m_oa_group->activate_file('Switches');
+            $CI->m_oa_group->activate_file('Windows Computers');
+            $CI->m_oa_group->activate_file('GNU/Linux Systems');
+            $CI->m_oa_group->activate_file('Virtual Hosts');
+            $CI->m_oa_group->activate_file('Virtual Guests');
+            $CI->m_oa_group->activate_file('Computers');
+            $CI->m_oa_group->activate_file('Non Production Devices');
+        }
+    }
+}
+
 /* End of file group_helper.php */
 /* Location: ./system/application/helpers/group_helper.php */
