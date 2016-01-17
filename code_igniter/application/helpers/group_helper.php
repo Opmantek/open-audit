@@ -191,12 +191,12 @@ if (! function_exists('check_default_groups')) {
     function check_default_groups()
     {
         $CI = get_instance();
+        $CI->load->model('m_oa_group');
         # check to see if we have any groups activated - if not, activate the default set
         $sql = "SELECT count(*) as count FROM oa_group";
         $query = $CI->db->query($sql);
         $result = $query->result();
         if (intval($result[0]->count) == 0) {
-            $CI->load->model('m_oa_group');
             $CI->m_oa_group->activate_file('All Devices');
             $CI->m_oa_group->activate_file('Items in Default Location');
             $CI->m_oa_group->activate_file('Default Organisation owned items');

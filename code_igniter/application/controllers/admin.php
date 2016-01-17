@@ -4613,13 +4613,10 @@ class admin extends MY_Controller
             $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Alerts - Software Updates'";
 
             $this->load->helper('report_helper');
-            $sql[] = refresh_report_definitions();
+            refresh_report_definitions();
 
             $this->load->helper('group_helper');
-            $sql[] = refresh_group_definitions();
-
-
-
+            refresh_group_definitions();
 
             $log_details->message = 'Upgrade database to 1.10 completed';
             stdlog($log_details);

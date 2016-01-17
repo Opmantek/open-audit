@@ -50,6 +50,11 @@ class login extends CI_Controller
         $this->load->model('m_oa_config');
         $this->m_oa_config->load_config();
 
+        $this->load->helper('report_helper');
+        check_default_reports();
+        $this->load->helper('group_helper');
+        check_default_groups();
+
         // log the attempt
         $log_details = new stdClass();
         $log_details->severity = 6;
@@ -68,12 +73,6 @@ class login extends CI_Controller
         $data['username'] = array('id' => 'username', 'name' => 'username');
         $data['password'] = array('id' => 'password', 'name' => 'password');
         $data['oae_message'] = '';
-
-        $this->load->helper('report_helper');
-        check_default_reports();
-
-        $this->load->helper('group_helper');
-        check_default_groups();
 
         // cater to an unauth page request
         // get the requested page from the session

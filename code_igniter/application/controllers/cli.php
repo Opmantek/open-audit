@@ -76,6 +76,11 @@ class cli extends CI_Controller
         if (! $this->input->is_cli_request()) {
             exit();
         }
+
+        $this->load->helper('report_helper');
+        check_default_reports();
+        $this->load->helper('group_helper');
+        check_default_groups();
     }
 
     /**

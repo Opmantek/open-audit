@@ -52,6 +52,11 @@ class discovery extends CI_Controller
         $log_details->severity = 6;
         stdlog($log_details);
         unset($log_details);
+
+        $this->load->helper('report_helper');
+        check_default_reports();
+        $this->load->helper('group_helper');
+        check_default_groups();
     }
 
     public function index()

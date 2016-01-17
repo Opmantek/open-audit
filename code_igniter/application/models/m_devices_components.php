@@ -529,6 +529,13 @@ class M_devices_components extends MY_Model
                     }
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item added to $table - " . $alert_details;
+                    if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
+                        $sql = "SELECT last_seen FROM system WHERE system_id = ?";
+                        $data = array($details->system_id);
+                        $query = $this->db->query($sql, $data);
+                        $result = $query->result();
+                        $details->last_seen = $result[0]->last_seen;
+                    }
                     $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
                     $data = array("$details->system_id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
                     $query = $this->db->query($sql, $data);
@@ -540,7 +547,7 @@ class M_devices_components extends MY_Model
                 $free_percent = @intval(100 - $used_percent);
                 $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $data = array(intval($details->system_id), "$table", intval($id), "$table", intval($used_percent),
-                    intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");
+                        intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");
                 $query = $this->db->query($sql, $data);
             }
         }
@@ -566,6 +573,13 @@ class M_devices_components extends MY_Model
                 }
                 $alert_details = substr($alert_details, 0, -2);
                 $alert_details = "Item removed from $table - " . $alert_details;
+                if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
+                    $sql = "SELECT last_seen FROM system WHERE system_id = ?";
+                    $data = array($details->system_id);
+                    $query = $this->db->query($sql, $data);
+                    $result = $query->result();
+                    $details->last_seen = $result[0]->last_seen;
+                }
                 $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
                 $data = array("$details->system_id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
                 $query = $this->db->query($sql, $data);
