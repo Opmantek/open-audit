@@ -786,7 +786,8 @@ for card in `esxcli network ip interface list | grep -v "^ " | grep .`; do
 	net_index="$card"
 	net_mac_address=`esxcli network ip interface list | grep "Name: $card" -A1 | grep "MAC Address: " | sed 's/ \+/ /g' | cut -d" " -f4`
 	net_ip_enabled=`esxcli network ip interface list | grep "Name: $card" -A2 | grep "Enabled: " | sed 's/ \+/ /g' | cut -d" " -f3`
-	net_connection_id="$card"
+	#net_connection_id="$card"
+	net_connection_id=`esxcli network nic list | grep "$net_mac_address" | cut -d" " -f1`
 	net_connection_status=`esxcli network ip interface list | grep "Name: $card" -A2 | grep "Enabled: " | sed 's/ \+/ /g' | cut -d" " -f3`
 	icard=`esxcfg-nics -l | grep -v ^Name | grep "$net_mac_address" | sed 's/ \+/ /g'`
 	net_speed=$(echo "$icard" | cut -d" " -f5 | sed 's/Mbps//')
