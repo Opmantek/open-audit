@@ -1239,7 +1239,7 @@ class discovery extends CI_Controller
                                     $command = "vim-cmd hostsvc/hostsummary | sed -n '/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p' | grep uuid | cut -d= -f2 | sed 's/,//g' | sed 's/\\\"//g'";
                                     $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, $command, $details->ssh_password, $display);
                                     if ($ssh_result['status'] == 0) {
-                                        $details->uuid = $ssh_result['output'][0];
+                                        $details->uuid = trim($ssh_result['output'][0]);
                                     }
                                 }
                                 if ($details->os_group == 'Windows') {
