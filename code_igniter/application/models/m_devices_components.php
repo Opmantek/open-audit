@@ -292,6 +292,15 @@ class M_devices_components extends MY_Model
                     $input->item[$i]->ip = $this->ip_address_to_db($input->item[$i]->ip);
                 }
             }
+            if ($details->type == 'computer' and $details->os_group == 'VMware') {
+                # TODO - fix the below somewhow ?!??
+                # the issue is that ESXi provides different values for network cards from the command line and from SNMP
+                $sql = "DELETE FROM sys_hw_network_card_ip WHERE system_id = ?";
+                $data = array($details->system_id);
+                $query = $this->db->query($sql, $data);
+                # set the below so we don't generate alerts for this
+                $create_alerts = 'n';
+            }
         }
 
         ### NETSTAT ###
@@ -308,6 +317,13 @@ class M_devices_components extends MY_Model
                 # add index and connection id to the list to be matched
                 $match_columns[] = 'net_index';
                 $match_columns[] = 'connection';
+                # TODO - fix the below somewhow ?!??
+                # the issue is that ESXi provides different values for network cards from the command line and from SNMP
+                $sql = "DELETE FROM network WHERE system_id = ?";
+                $data = array($details->system_id);
+                $query = $this->db->query($sql, $data);
+                # set the below so we don't generate alerts for this
+                $create_alerts = 'n';
             } else {
                 # just match the index
                 $match_columns[] = 'net_index';
