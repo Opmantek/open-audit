@@ -1239,6 +1239,7 @@ class M_system extends MY_Model
         }
 
         # insert an entry into the change log
+        $this->load->model('m_change_log');
         $this->m_change_log->create($details->system_id, 'system', $details->system_id, 'create', 'Item added to system', $details->last_seen);
 
         $log_details->message = 'System insert end for '.ip_address_from_db($details->man_ip_address).' ('.$details->hostname.') (System ID '.$details->system_id.')';

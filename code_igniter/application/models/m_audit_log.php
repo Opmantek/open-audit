@@ -45,9 +45,6 @@ class M_audit_log extends MY_Model
         if ($system_id == '' or $system_id == 0) {
             return;
         }
-        if ($username == '' and isset($this->user->user_full_name)) {
-            $username = @$this->user->user_full_name;
-        }
         if ($type == '') {
             $type = 'audit';
         }

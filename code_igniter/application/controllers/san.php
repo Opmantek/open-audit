@@ -728,24 +728,12 @@ class San extends CI_Controller
             echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
         }
         $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+        $temp_user = '';
         if (isset($this->user->user_full_name)) {
             $temp_user = $this->user->user_full_name;
-        } else {
-            $temp_user = '';
         }
         $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
         unset($temp_user);
-
-
-        if (isset($this->user->user_full_name)) {
-            $temp_user = $this->user->user_full_name;
-        } else {
-            $temp_user = '';
-        }
-        $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
-        unset($temp_user);
-
-
 
         $this->m_audit_log->update('debug', 'san', $details->system_id, $details->last_seen);
         $this->m_devices_components->process_component('san', $details, $san);
