@@ -68,7 +68,7 @@ CREATE TABLE `disk` (
   `device` varchar(200) NOT NULL DEFAULT '',
   `caption` varchar(100) NOT NULL DEFAULT '',
   `hard_drive_index` varchar(100) NOT NULL DEFAULT '',
-  `interface_type` varchar(10) NOT NULL DEFAULT '',
+  `interface_type` varchar(100) NOT NULL DEFAULT '',
   `partition_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `scsi_bus` varchar(10) NOT NULL DEFAULT '',
   `scsi_logical_unit` varchar(100) NOT NULL DEFAULT '',
@@ -686,7 +686,7 @@ CREATE TABLE `oa_group_column` (
   PRIMARY KEY (`column_id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `oa_group_column_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -745,7 +745,7 @@ CREATE TABLE `oa_group_user` (
   KEY `user_id_index` (`user_id`),
   CONSTRAINT `oa_group_user_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE,
   CONSTRAINT `oa_group_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -754,36 +754,6 @@ CREATE TABLE `oa_group_user` (
 
 LOCK TABLES `oa_group_user` WRITE;
 /*!40000 ALTER TABLE `oa_group_user` DISABLE KEYS */;
-INSERT INTO `oa_group_user` VALUES (18,1,9,10);
-INSERT INTO `oa_group_user` VALUES (19,3,9,10);
-INSERT INTO `oa_group_user` VALUES (27,2,9,0);
-INSERT INTO `oa_group_user` VALUES (33,1,1,10);
-INSERT INTO `oa_group_user` VALUES (34,3,1,10);
-INSERT INTO `oa_group_user` VALUES (35,2,1,3);
-INSERT INTO `oa_group_user` VALUES (36,1,13,10);
-INSERT INTO `oa_group_user` VALUES (37,3,13,10);
-INSERT INTO `oa_group_user` VALUES (38,2,13,0);
-INSERT INTO `oa_group_user` VALUES (39,1,14,10);
-INSERT INTO `oa_group_user` VALUES (40,3,14,10);
-INSERT INTO `oa_group_user` VALUES (41,2,14,0);
-INSERT INTO `oa_group_user` VALUES (42,1,15,10);
-INSERT INTO `oa_group_user` VALUES (43,3,15,10);
-INSERT INTO `oa_group_user` VALUES (44,2,15,0);
-INSERT INTO `oa_group_user` VALUES (45,1,16,10);
-INSERT INTO `oa_group_user` VALUES (46,3,16,10);
-INSERT INTO `oa_group_user` VALUES (47,2,16,0);
-INSERT INTO `oa_group_user` VALUES (48,1,17,10);
-INSERT INTO `oa_group_user` VALUES (49,3,17,10);
-INSERT INTO `oa_group_user` VALUES (50,2,17,0);
-INSERT INTO `oa_group_user` VALUES (51,1,18,10);
-INSERT INTO `oa_group_user` VALUES (52,3,18,10);
-INSERT INTO `oa_group_user` VALUES (53,2,18,0);
-INSERT INTO `oa_group_user` VALUES (54,1,19,10);
-INSERT INTO `oa_group_user` VALUES (55,3,19,10);
-INSERT INTO `oa_group_user` VALUES (56,2,19,0);
-INSERT INTO `oa_group_user` VALUES (57,1,20,10);
-INSERT INTO `oa_group_user` VALUES (58,3,20,10);
-INSERT INTO `oa_group_user` VALUES (59,2,20,5);
 /*!40000 ALTER TABLE `oa_group_user` ENABLE KEYS */;
 UNLOCK TABLES;
 

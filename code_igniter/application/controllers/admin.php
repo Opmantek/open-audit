@@ -3875,7 +3875,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_device_id device varchar(200) NOT NULL DEFAULT '' AFTER serial";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_caption caption varchar(100) NOT NULL DEFAULT '' AFTER device";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_index hard_drive_index varchar(100) NOT NULL DEFAULT '' AFTER caption";
-            $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_interface_type interface_type varchar(10) NOT NULL DEFAULT '' AFTER hard_drive_index";
+            $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_interface_type interface_type varchar(100) NOT NULL DEFAULT '' AFTER hard_drive_index";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_partitions partition_count tinyint unsigned NOT NULL DEFAULT '0' AFTER interface_type";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_scsi_bus scsi_bus varchar(10) NOT NULL DEFAULT '' AFTER partition_count";
             $sql[] = "ALTER TABLE sys_hw_hard_drive CHANGE hard_drive_scsi_logical_unit scsi_logical_unit varchar(100) NOT NULL DEFAULT '' AFTER scsi_bus";
