@@ -1523,7 +1523,7 @@ if [ -n "$net_cards" ]; then
 		echo "			<dns_domain>$(escape_xml "$net_card_dns_domain")</dns_domain>"
 		echo "			<dns_domain_reg_enabled>$(escape_xml "$net_card_domain_reg")</dns_domain_reg_enabled>"
 		echo "			<type>$(escape_xml "$net_card_type")</type>"
-		echo "			<connection>$(escape_xml "$net_connection_id")</connection>"
+		echo "			<connection>$(escape_xml "$net_card_id")</connection>"
 		echo "			<connection_status>$(escape_xml "$net_card_status")</connection_status>"
 		echo "			<speed>$(escape_xml "$net_card_speed")</speed>"
 		echo "			<slaves>$(escape_xml "$net_slaves")</slaves>"
