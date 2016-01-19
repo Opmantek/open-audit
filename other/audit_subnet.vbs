@@ -384,4 +384,5 @@ function write_log(log_message)
 		objTS.Write log_entry
 		objTS.Close
 		Set objTS = Nothing
+	end if
 end function
