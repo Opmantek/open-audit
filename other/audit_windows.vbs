@@ -121,6 +121,9 @@ help = "n"
 
 hide_audit_window = "n"
 
+' Should we attempt to audit any connected SAN's
+audit_san="y"
+
 ' If we detect the san management software, should we run an auto-discover before the query
 run_san_discover = "n"
 
@@ -205,6 +208,9 @@ For Each strArg in objArgs
 
 	case "hide_audit_window"
 	hide_audit_window = argvalue
+
+	case "audit_san"
+	audit_san = argvalue
 
 	case "run_san_discover"
 	run_san_discover = argvalue
@@ -299,6 +305,10 @@ if (help = "y") then
 	wscript.echo "  hide_window"
 	wscript.echo "      *n - Do not hide the audit script window when executing."
 	wscript.echo "       y - Hide the audit script window when executing."
+	wscript.echo ""
+	wscript.echo "  audit_san"
+	wscript.echo "     *y - Should we audit a SAN if it is detected"
+	wscript.echo "      n - Do not attempt to audit any attached SANs"
 	wscript.echo ""
 	wscript.echo "  run_san_discover"
 	wscript.echo "     *n - Do not run smcli -A if we detect the SAN management software"
@@ -1134,93 +1144,95 @@ on error goto 0
 
 
 ' New for 1.10 - get SAN details if management software installed
-smcli = "C:\Program Files\IBM_DS\client\smcli.exe"
-If (objFSO.FileExists(smcli)) Then
-	if debugging > "0" then wscript.echo "SAN info" end if
-	Dim smcli_output
-	if run_san_discover = "y" then
-		Set objWshScriptExec = objShell.Exec(smcli & " -A")
+if audit_san = "y" then
+	smcli = "C:\Program Files\IBM_DS\client\smcli.exe"
+	If (objFSO.FileExists(smcli)) Then
+		if debugging > "0" then wscript.echo "SAN info" end if
+		Dim smcli_output
+		if run_san_discover = "y" then
+			Set objWshScriptExec = objShell.Exec(smcli & " -A")
+			Set objStdOut = objWshScriptExec.StdOut
+			While Not objStdOut.AtEndOfStream
+				line = objStdOut.ReadLine
+				wscript.echo line & vbcrlf
+			Wend
+		end if
+		Set objWshScriptExec = objShell.Exec(smcli & " -d")
 		Set objStdOut = objWshScriptExec.StdOut
 		While Not objStdOut.AtEndOfStream
 			line = objStdOut.ReadLine
-			wscript.echo line & vbcrlf
-		Wend
-	end if
-	Set objWshScriptExec = objShell.Exec(smcli & " -d")
-	Set objStdOut = objWshScriptExec.StdOut
-	While Not objStdOut.AtEndOfStream
-		line = objStdOut.ReadLine
-		if (line > "" and instr(line, "SMcli") = 0) then
-			san_split = split(line)
-			wscript.echo line
-			san_name = san_split(2)
-			if debugging > "0" then wscript.echo "Running command: " & smcli & " " & san_name & " -c ""show storagesubsystem profile;"" " end if
-			Set objWshScriptExecSMcli = objShell.Exec(smcli & " " & san_name & " -c ""show storagesubsystem profile;"" ")
-			Set objStdOutSMcli = objWshScriptExecSMcli.StdOut
-			While Not objStdOutSMcli.AtEndOfStream
-				smcli_output = smcli_output & objStdOutSMcli.ReadLine & vbcrlf
-			Wend
-			' send the output result to the server
-			if submit_online = "y" then
-			   if debugging > "0" then wscript.echo "Submitting SAN audit online" end if
-			   san_url = replace(url, "system/add_system", "san/add_san")
-			   Err.clear
-			   Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
-			   objHTTP.setTimeouts 5000, 5000, 5000, 480000
-			   objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-			   On Error Resume Next
-			   objHTTP.Open "POST", san_url, False
-			   aErr = Array(Err.Number, Err.Description)
-			   On Error GoTo 0
-			    If 0 = aErr(0) Then
-			      result.position = 0
-			      On Error Resume Next
-			      objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-			      objHTTP.Send "input=" + urlEncode(smcli_output) + vbcrlf
-			      aErr = Array(Err.Number, Err.Description)
-			      On Error GoTo 0
-			      Select Case True
-			      Case 0 <> aErr(0)
-			         if debugging > "0" then
-			            wscript.echo "Error with http request. Audit not submitted."
-			         end if
-			         if debugging > "1" then
-			            wscript.echo "HTTP Error: " & aErr(0)
-			            wscript.echo "HTTP Status: " &  aErr(1)
-			         end if
-			         responseAvailable = False
-			      Case 200 = objHTTP.status
-			         if debugging > "0" then wscript.echo "Audit Submitted" end if
-			         responseAvailable = True
-			      Case Else
-			         if debugging > "0" then wscript.echo "Error with http request(2). Audit not submitted." end if
-			         responseAvailable = True
-			      End Select
+			if (line > "" and instr(line, "SMcli") = 0) then
+				san_split = split(line)
+				wscript.echo line
+				san_name = san_split(2)
+				if debugging > "0" then wscript.echo "Running command: " & smcli & " " & san_name & " -c ""show storagesubsystem profile;"" " end if
+				Set objWshScriptExecSMcli = objShell.Exec(smcli & " " & san_name & " -c ""show storagesubsystem profile;"" ")
+				Set objStdOutSMcli = objWshScriptExecSMcli.StdOut
+				While Not objStdOutSMcli.AtEndOfStream
+					smcli_output = smcli_output & objStdOutSMcli.ReadLine & vbcrlf
+				Wend
+				' send the output result to the server
+				if submit_online = "y" then
+				   if debugging > "0" then wscript.echo "Submitting SAN audit online" end if
+				   san_url = replace(url, "system/add_system", "san/add_san")
+				   Err.clear
+				   Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+				   objHTTP.setTimeouts 5000, 5000, 5000, 480000
+				   objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+				   On Error Resume Next
+				   objHTTP.Open "POST", san_url, False
+				   aErr = Array(Err.Number, Err.Description)
+				   On Error GoTo 0
+				    If 0 = aErr(0) Then
+				      result.position = 0
+				      On Error Resume Next
+				      objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+				      objHTTP.Send "input=" + urlEncode(smcli_output) + vbcrlf
+				      aErr = Array(Err.Number, Err.Description)
+				      On Error GoTo 0
+				      Select Case True
+				      Case 0 <> aErr(0)
+				         if debugging > "0" then
+				            wscript.echo "Error with http request. Audit not submitted."
+				         end if
+				         if debugging > "1" then
+				            wscript.echo "HTTP Error: " & aErr(0)
+				            wscript.echo "HTTP Status: " &  aErr(1)
+				         end if
+				         responseAvailable = False
+				      Case 200 = objHTTP.status
+				         if debugging > "0" then wscript.echo "Audit Submitted" end if
+				         responseAvailable = True
+				      Case Else
+				         if debugging > "0" then wscript.echo "Error with http request(2). Audit not submitted." end if
+				         responseAvailable = True
+				      End Select
 
-			      if responseAvailable = True then
-			         if (objHTTP.ResponseText > "" and debugging > "1") then
-			            wscript.echo
-			            wscript.echo
-			            wscript.echo "Response"
-			            wscript.echo "--------"
-			            wscript.echo objHTTP.ResponseText
-			            if (inStr(objHTTP.ResponseText, "error")) then
-			               wscript.sleep 50000
-			            end if
-			         end if
-			      end if
-			   else
-			      if debugging > "0" then
-			         wscript.echo "Error opening http url. SAN audit not submitted."
-			      end if
-			      if debugging > "1" then
-			         wscript.echo "HTTP Error: " & aErr(0)
-			         wscript.echo "HTTP Description: " &  aErr(1)
-			      end if
-			   end if
-			end if ' submit_online'
-		end if ' line contains a SAN name / ip'
-	Wend ' each line of output from the smcli -c command'
+				      if responseAvailable = True then
+				         if (objHTTP.ResponseText > "" and debugging > "1") then
+				            wscript.echo
+				            wscript.echo
+				            wscript.echo "Response"
+				            wscript.echo "--------"
+				            wscript.echo objHTTP.ResponseText
+				            if (inStr(objHTTP.ResponseText, "error")) then
+				               wscript.sleep 50000
+				            end if
+				         end if
+				      end if
+				   else
+				      if debugging > "0" then
+				         wscript.echo "Error opening http url. SAN audit not submitted."
+				      end if
+				      if debugging > "1" then
+				         wscript.echo "HTTP Error: " & aErr(0)
+				         wscript.echo "HTTP Description: " &  aErr(1)
+				      end if
+				   end if
+				end if ' submit_online'
+			end if ' line contains a SAN name / ip'
+		Wend ' each line of output from the smcli -c command'
+	end if
 end if
 
 

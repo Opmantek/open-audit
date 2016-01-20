@@ -66,24 +66,26 @@ if (! function_exists('input')) {
         # get the id of the resource in question
         $temp = $CI->uri->segment(2);
         $CI->response->id = '';
-        if (isset($temp) and is_numeric($temp)) {
+        if (isset($temp) and is_numeric($temp) and $temp != '') {
             $CI->response->id = intval($temp);
         } else {
-            $data = array("$temp");
-            // TODO - SEPARATE THIS OUT
-            IF ($CI->response->resource == 'devices') {
-                $sql = "SELECT system_id AS id FROM system WHERE hostname = ? ORDER BY system_id DESC LIMIT 1";
-            }
-            if ($CI->response->resource == 'groups') {
-                $sql = "SELECT group_id AS id FROM oa_GROUP WHERE group_name = ? LIMIT 1";
-            }
-            $query = $CI->db->query($sql, $data);
-            $result = $query->result();
-            if (count($result) > 0) {
-                $CI->response->id = intval($result[0]->id);
-            } else {
-                // should thro an error as we were given a name, but nothing matched
-                $CI->response->id = '';
+            if ($temp != '') {
+                // TODO - SEPARATE THIS OUT
+                IF ($CI->response->resource == 'devices') {
+                    $sql = "SELECT system_id AS id FROM system WHERE hostname = ? ORDER BY system_id DESC LIMIT 1";
+                }
+                if ($CI->response->resource == 'groups') {
+                    $sql = "SELECT group_id AS id FROM oa_GROUP WHERE group_name = ? LIMIT 1";
+                }
+                $data = array("$temp");
+                $query = $CI->db->query($sql, $data);
+                $result = $query->result();
+                if (count($result) > 0) {
+                    $CI->response->id = intval($result[0]->id);
+                } else {
+                    // should thro an error as we were given a name, but nothing matched
+                    $CI->response->id = '';
+                }
             }
         }
         unset($temp);
