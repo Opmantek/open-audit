@@ -93,7 +93,7 @@
 function dynamic_asset( software_name )
 {
 	licenses = document.getElementById("licenses").value;
-	location.href = '<?php echo site_url(); ?>/admin_licenses/change_license/<?php echo intval($group_id); ?>/' + licenses + '/' + software_name;
+	location.href = '<?php echo site_url(); ?>/licenses/change_license/<?php echo intval($group_id); ?>/' + licenses + '/' + software_name;
 	return false;
 }
 </script>
