@@ -295,7 +295,7 @@ class M_devices_components extends MY_Model
             if ($details->type == 'computer' and $details->os_group == 'VMware') {
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
-                $sql = "DELETE FROM sys_hw_network_card_ip WHERE system_id = ?";
+                $sql = "DELETE FROM `sys_hw_network_card_ip` WHERE system_id = ?";
                 $data = array($details->system_id);
                 $query = $this->db->query($sql, $data);
                 # set the below so we don't generate alerts for this
@@ -319,7 +319,7 @@ class M_devices_components extends MY_Model
                 $match_columns[] = 'connection';
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
-                $sql = "DELETE FROM network WHERE system_id = ?";
+                $sql = "DELETE FROM `network` WHERE system_id = ?";
                 $data = array($details->system_id);
                 $query = $this->db->query($sql, $data);
                 # set the below so we don't generate alerts for this
@@ -400,7 +400,7 @@ class M_devices_components extends MY_Model
                 if (!isset($vm->uuid) or $vm->uuid == '') {
                     $vm->uuid = '';
                 } else {
-                    $sql = "SELECT system_id, icon FROM system WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
+                    $sql = "SELECT system_id, icon FROM `system` WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
                     $data = array("$vm->uuid");
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
@@ -546,7 +546,7 @@ class M_devices_components extends MY_Model
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item added to $table - " . $alert_details;
                     if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                        $sql = "SELECT last_seen FROM system WHERE system_id = ?";
+                        $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
                         $data = array($details->system_id);
                         $query = $this->db->query($sql, $data);
                         $result = $query->result();
@@ -590,7 +590,7 @@ class M_devices_components extends MY_Model
                 $alert_details = substr($alert_details, 0, -2);
                 $alert_details = "Item removed from $table - " . $alert_details;
                 if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                    $sql = "SELECT last_seen FROM system WHERE system_id = ?";
+                    $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
                     $data = array($details->system_id);
                     $query = $this->db->query($sql, $data);
                     $result = $query->result();
@@ -872,7 +872,7 @@ class M_devices_components extends MY_Model
         # secondary prefer private to public ip address (pubpriv)
 
         # get the stored attribute for man_ip_address
-        $sql = "SELECT ip, timestamp FROM system WHERE id = ?";
+        $sql = "SELECT ip, timestamp FROM `system` WHERE id = ?";
         $data = array("$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -932,7 +932,7 @@ class M_devices_components extends MY_Model
         if (!is_numeric($days)) {
            return;
         }
-        $sql = "SELECT used_percent, DATE(timestamp) AS timestamp FROM graph WHERE system_id = ? AND linked_row = ? AND type = ? AND timestamp > adddate(current_date(), interval -".$days." day) GROUP BY DAY(timestamp) ORDER BY timestamp";
+        $sql = "SELECT used_percent, DATE(timestamp) AS timestamp FROM `graph` WHERE system_id = ? AND linked_row = ? AND type = ? AND timestamp > adddate(current_date(), interval -".$days." day) GROUP BY DAY(timestamp) ORDER BY timestamp";
         $sql = $this->clean_sql($sql);
         $data = array($system_id, $linked_row, "$type");
         $query = $this->db->query($sql, $data);
@@ -943,7 +943,7 @@ class M_devices_components extends MY_Model
     {
         $resultset = array();
         $sql = "SELECT DISTINCT(system.system_id), hostname, man_status, man_function, man_criticality, man_environment, man_description, partition.id as partition_id, mount_point, partition.name as partition_name
-            FROM system, oa_group_sys, partition
+            FROM `system`, `oa_group_sys`, `partition`
             WHERE
                 system.system_id = oa_group_sys.system_id AND
                 partition.current = 'y' AND
@@ -961,7 +961,7 @@ class M_devices_components extends MY_Model
         $query = $this->db->query($sql, $data);
         $returned_data = array();
         foreach ($query->result() as $system) {
-            $partition_sql = "SELECT id, round(AVG(used),0) AS used, size as total, used_percent as percent_used, free_percent as percent_free, DATE(`timestamp`) AS `timestamp` FROM graph WHERE system_id = ? AND linked_row = ? AND linked_table = 'partition' GROUP BY DATE(`timestamp`) ORDER BY `timestamp`";
+            $partition_sql = "SELECT id, round(AVG(used),0) AS used, size as total, used_percent as percent_used, free_percent as percent_free, DATE(`timestamp`) AS `timestamp` FROM `graph` WHERE system_id = ? AND linked_row = ? AND linked_table = 'partition' GROUP BY DATE(`timestamp`) ORDER BY `timestamp`";
             $partition_sql = $this->clean_sql($partition_sql);
             $data = array($system->system_id, $system->partition_id);
             $partition_query = $this->db->query($partition_sql, $data);
@@ -1060,7 +1060,7 @@ class M_devices_components extends MY_Model
         $log_details = new stdClass();
         $log_details->file = 'system';
         $log_details->severity = 7;
-        $sql = "SELECT DISTINCT ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN system ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) WHERE system.system_id = ?";
+        $sql = "SELECT DISTINCT ip_address_v4 FROM `sys_hw_network_card_ip` LEFT JOIN `system` ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) WHERE system.system_id = ?";
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
