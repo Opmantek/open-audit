@@ -735,16 +735,15 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 	if debugging > "1" then wscript.echo "Looking up DNS entry for " & dns_hostname end if
 	Set objExecObj = objShell.exec(strParams)
 	Do While Not objExecObj.StdOut.AtEndOfStream
-	strText = objExecObj.StdOut.Readline()
-	If instr(strText, "Server") then
-	strServer = trim(replace(strText,"Server:",""))
-	Elseif instr (strText, "Name") Then
-	strhost = trim(replace(strText,"Name:",""))
-	Elseif instr (strText, "Address") Then
-	man_ip_address = trim(replace(strText,"Address:","")) : stradd = stradd + 1
-	End if
+		strText = objExecObj.StdOut.Readline()
+		If instr(strText, "Server") then
+			strServer = trim(replace(strText,"Server:",""))
+		Elseif instr (strText, "Name") Then
+			strhost = trim(replace(strText,"Name:",""))
+		Elseif instr (strText, "Address") Then
+			man_ip_address = trim(replace(strText,"Address:","")) : stradd = stradd + 1
+		End if
 	Loop
-
 	if stradd = 1 then man_ip_address = "0.0.0.0" end if
 
 	computer_ou = lcase(ou(objRecordSet.Fields("distinguishedName").Value))
@@ -1104,36 +1103,37 @@ on error goto 0
 ' ## kolmann@zid.tuwien.ac.at 20150917: Get IP Adress of adapter with default route
 ' ##################################
 man_ip_address = ""
-if debugging > "0" then wscript.echo "    Get IP Adress of adapter with default route" end if
-on error resume next
-strByteMatch = "(25[0-5]|2[0-4]\d|[01]?\d\d?)"
-strIpMatch = strByteMatch & "\." & strByteMatch & "\." & strByteMatch & "\.(" & strByteMatch & "|(" & strByteMatch & "-" & strByteMatch & "))"
-strPattern = "^" & strIpMatch & "(," & strIpMatch & ")*$"
-Set RegEx = New RegExp
-RegEx.IgnoreCase = True
-RegEx.Global=True
-RegEx.Pattern=strPattern
-Set objExecObj = objShell.exec("route print 0.0.0.0")
-Do While Not objExecObj.StdOut.AtEndOfStream
-	strText = objExecObj.StdOut.Readline()
-	Do
-	If InStr(1, strText, "  ") > 0 Then
-	strText = Replace(strText, "  ", " ")
-	Else
-	Exit Do
-	End If
+if audit_location = "local" then
+	if debugging > "0" then wscript.echo "Get IP Adress of adapter with default route" end if
+	on error resume next
+	strByteMatch = "(25[0-5]|2[0-4]\d|[01]?\d\d?)"
+	strIpMatch = strByteMatch & "\." & strByteMatch & "\." & strByteMatch & "\.(" & strByteMatch & "|(" & strByteMatch & "-" & strByteMatch & "))"
+	strPattern = "^" & strIpMatch & "(," & strIpMatch & ")*$"
+	Set RegEx = New RegExp
+	RegEx.IgnoreCase = True
+	RegEx.Global=True
+	RegEx.Pattern=strPattern
+	Set objExecObj = objShell.exec("route print 0.0.0.0")
+	Do While Not objExecObj.StdOut.AtEndOfStream
+		strText = objExecObj.StdOut.Readline()
+		Do
+			If InStr(1, strText, "  ") > 0 Then
+				strText = Replace(strText, "  ", " ")
+			Else
+				Exit Do
+			End If
+		Loop
+		splitLine = Split(strText, " ")
+		' IP address is in a row with 5 values, value1 and value2 equals 0.0.0.0 and value4 is a IP Address
+		if (ubound(splitLine) = 5) then
+			if (splitLine(1) = "0.0.0.0" and splitLine(2) = "0.0.0.0" and RegEx.Test(splitLine(4))) then
+				man_ip_address = splitLine(4)
+				exit do
+			end if
+		end if
 	Loop
-	splitLine = Split(strText, " ")
-	' IP address is in a row with 5 values, value1 and value2 equals 0.0.0.0 and value4 is a IP Address
-	if (ubound(splitLine) = 5) then
-	if (splitLine(1) = "0.0.0.0" and splitLine(2) = "0.0.0.0" and RegEx.Test(splitLine(4))) then
-	'result.WriteText "              <man_ip_address>" & escape_xml(splitLine(4)) & "</man_ip_address>" & vbcrlf
-	man_ip_address = splitLine(4)
-	exit do
-	end if
-	end if
-Loop
-on error goto 0
+	on error goto 0
+end if
 ' ##################################
 ' ## kolmann@zid.tuwien.ac.at 20150917: Get IP Adress of adapter with default route
 ' ##################################
@@ -1144,7 +1144,7 @@ on error goto 0
 
 
 ' New for 1.10 - get SAN details if management software installed
-if audit_san = "y" then
+if audit_san = "y" and audit_location = "local" then
 	smcli = "C:\Program Files\IBM_DS\client\smcli.exe"
 	If (objFSO.FileExists(smcli)) Then
 		if debugging > "0" then wscript.echo "SAN info" end if
