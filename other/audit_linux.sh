@@ -1931,7 +1931,7 @@ else
                         fi
 				        service_name=$(echo "$service_name" | cut -d/ -f4)
 				        if  [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]] && [[ "$service_name" != "skeleton" ]] && [[ "$service_name" != "rcS" ]]; then
-				            service_state=$(service "$service_display_name" status 2>/dev/null | grep running)
+				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -i running)
 				            echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
 				            service_state=""
 				        fi
@@ -1961,7 +1961,7 @@ else
                             echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
                         fi
 				        if  [[ "$service_name" != "functions" ]] && [[ "$service_name" != "rcS" ]]; then
-				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -E "running|stopped")
+				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -E -i "running|stopped")
 				            echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
 				            service_state=""
 				        fi
