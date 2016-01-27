@@ -772,19 +772,19 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 	result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 	result.WriteText "<system>" & vbcrlf
 	result.WriteText "	<sys>" & vbcrlf
-	result.WriteText "	<timestamp>" & escape_xml(system_timestamp) & "</timestamp>" & vbcrlf
-	result.WriteText "	<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
-	result.WriteText "	<man_ip_address>" & escape_xml(man_ip_address) & "</man_ip_address>" & vbcrlf
-	result.WriteText "	<domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
-	result.WriteText "	<type>computer</type>" & vbcrlf
-	result.WriteText "	<icon>" & escape_xml(icon) & "</icon>" & vbcrlf
-	result.WriteText "	<os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
-	result.WriteText "	<os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
-	result.WriteText "	<os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
-	result.WriteText "	<windows_active_directory_ou>" & escape_xml(computer_ou) & "</windows_active_directory_ou>" & vbcrlf
-	result.WriteText "	<last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
-	result.WriteText "	<last_seen_by>active directory</last_seen_by>" & vbcrlf
-	result.WriteText "	<system_id>" & system_id & "</system_id>" & vbcrlf
+	result.WriteText "		<timestamp>" & escape_xml(system_timestamp) & "</timestamp>" & vbcrlf
+	result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
+	result.WriteText "		<man_ip_address>" & escape_xml(man_ip_address) & "</man_ip_address>" & vbcrlf
+	result.WriteText "		<domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
+	result.WriteText "		<type>computer</type>" & vbcrlf
+	result.WriteText "		<icon>" & escape_xml(icon) & "</icon>" & vbcrlf
+	result.WriteText "		<os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
+	result.WriteText "		<os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
+	result.WriteText "		<os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
+	result.WriteText "		<windows_active_directory_ou>" & escape_xml(computer_ou) & "</windows_active_directory_ou>" & vbcrlf
+	result.WriteText "		<last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
+	result.WriteText "		<last_seen_by>active directory</last_seen_by>" & vbcrlf
+	result.WriteText "		<system_id>" & system_id & "</system_id>" & vbcrlf
 	result.WriteText "	</sys>" & vbcrlf
 	end if
 	objRecordSet.MoveNext
@@ -1239,30 +1239,30 @@ end if
 result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 result.WriteText "<system>" & vbcrlf
 result.WriteText "	<sys>" & vbcrlf
-result.WriteText "	<timestamp>" & escape_xml(system_timestamp) & "</timestamp>" & vbcrlf
-result.WriteText "	<uuid>" & escape_xml(system_uuid) & "</uuid>" & vbcrlf
-result.WriteText "	<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
-result.WriteText "	<domain>" & escape_xml(system_domain) & "</domain>" & vbcrlf
-result.WriteText "	<man_ip_address>" & escape_xml(man_ip_address) & "</man_ip_address>" & vbcrlf
-result.WriteText "	<description>" & escape_xml(system_description) & "</description>" & vbcrlf
-result.WriteText "	<type>computer</type>" & vbcrlf
-result.WriteText "	<icon>" & system_os_icon & "</icon>" & vbcrlf
-result.WriteText "	<os_group>Windows</os_group>" & vbcrlf
-result.WriteText "	<os_family>" & escape_xml(system_os_family) & "</os_family>" & vbcrlf
-result.WriteText "	<os_name>" & escape_xml(system_os_name) & "</os_name>" & vbcrlf
-result.WriteText "	<os_version>" & escape_xml(system_os_version) & "</os_version>" & vbcrlf
-result.WriteText "	<serial>" & escape_xml(system_serial) & "</serial>" & vbcrlf
-result.WriteText "	<model>" & escape_xml(system_model) & "</model>" & vbcrlf
-result.WriteText "	<manufacturer>" & escape_xml(system_manufacturer) & "</manufacturer>" & vbcrlf
-result.WriteText "	<uptime>" & escape_xml(system_uptime) & "</uptime>" & vbcrlf
-result.WriteText "	<form_factor>" & escape_xml(system_form_factor) & "</form_factor>" & vbcrlf
-result.WriteText "	<pc_os_bit>" & escape_xml(address_width) & "</pc_os_bit>" & vbcrlf
-result.WriteText "	<pc_memory>" & escape_xml(system_pc_memory) & "</pc_memory>" & vbcrlf
-result.WriteText "	<pc_num_processor>" & escape_xml(system_pc_num_processor) & "</pc_num_processor>" & vbcrlf
-result.WriteText "	<pc_date_os_installation>" & escape_xml(system_pc_date_os_installation) & "</pc_date_os_installation>" & vbcrlf
-result.WriteText "	<man_org_id>" & escape_xml(org_id) & "</man_org_id>" & vbcrlf
-result.WriteText "	<system_id>" & escape_xml(system_id) & "</system_id>" & vbcrlf
-result.WriteText "	<man_cluster_name>" & escape_xml(man_cluster_name) & "</man_cluster_name>" & vbcrlf
+result.WriteText "		<timestamp>" & escape_xml(system_timestamp) & "</timestamp>" & vbcrlf
+result.WriteText "		<uuid>" & escape_xml(system_uuid) & "</uuid>" & vbcrlf
+result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
+result.WriteText "		<domain>" & escape_xml(system_domain) & "</domain>" & vbcrlf
+result.WriteText "		<man_ip_address>" & escape_xml(man_ip_address) & "</man_ip_address>" & vbcrlf
+result.WriteText "		<description>" & escape_xml(system_description) & "</description>" & vbcrlf
+result.WriteText "		<type>computer</type>" & vbcrlf
+result.WriteText "		<icon>" & system_os_icon & "</icon>" & vbcrlf
+result.WriteText "		<os_group>Windows</os_group>" & vbcrlf
+result.WriteText "		<os_family>" & escape_xml(system_os_family) & "</os_family>" & vbcrlf
+result.WriteText "		<os_name>" & escape_xml(system_os_name) & "</os_name>" & vbcrlf
+result.WriteText "		<os_version>" & escape_xml(system_os_version) & "</os_version>" & vbcrlf
+result.WriteText "		<serial>" & escape_xml(system_serial) & "</serial>" & vbcrlf
+result.WriteText "		<model>" & escape_xml(system_model) & "</model>" & vbcrlf
+result.WriteText "		<manufacturer>" & escape_xml(system_manufacturer) & "</manufacturer>" & vbcrlf
+result.WriteText "		<uptime>" & escape_xml(system_uptime) & "</uptime>" & vbcrlf
+result.WriteText "		<form_factor>" & escape_xml(system_form_factor) & "</form_factor>" & vbcrlf
+result.WriteText "		<pc_os_bit>" & escape_xml(address_width) & "</pc_os_bit>" & vbcrlf
+result.WriteText "		<pc_memory>" & escape_xml(system_pc_memory) & "</pc_memory>" & vbcrlf
+result.WriteText "		<pc_num_processor>" & escape_xml(system_pc_num_processor) & "</pc_num_processor>" & vbcrlf
+result.WriteText "		<pc_date_os_installation>" & escape_xml(system_pc_date_os_installation) & "</pc_date_os_installation>" & vbcrlf
+result.WriteText "		<man_org_id>" & escape_xml(org_id) & "</man_org_id>" & vbcrlf
+result.WriteText "		<system_id>" & escape_xml(system_id) & "</system_id>" & vbcrlf
+result.WriteText "		<man_cluster_name>" & escape_xml(man_cluster_name) & "</man_cluster_name>" & vbcrlf
 result.WriteText "	</sys>" & vbcrlf
 
 
@@ -1477,29 +1477,29 @@ for each objItem in colItems
 next
 
 result.WriteText " 	<windows>" & vbcrlf
-result.WriteText " 	<item>" & vbcrlf
-result.WriteText "	<build_number>" & escape_xml(windows_build_number) & "</build_number>" & vbcrlf
-result.WriteText "	<user_name>" & escape_xml(windows_user_name) & "</user_name>" & vbcrlf
-result.WriteText "	<client_site_name>" & escape_xml(windows_client_site_name) & "</client_site_name>" & vbcrlf
-result.WriteText "	<domain_short>" & escape_xml(domain_nb) & "</domain_short>" & vbcrlf
-result.WriteText "	<workgroup>" & escape_xml(windows_workgroup) & "</workgroup>" & vbcrlf
-result.WriteText "	<domain_controller_address>" & escape_xml(windows_domain_controller_address) & "</domain_controller_address>" & vbcrlf
-result.WriteText "	<domain_controller_name>" & escape_xml(windows_domain_controller_name) & "</domain_controller_name>" & vbcrlf
-result.WriteText "	<domain_role>" & escape_xml(windows_domain_role) & "</domain_role>" & vbcrlf
-result.WriteText "	<part_of_domain>" & escape_xml(windows_part_of_domain) & "</part_of_domain>" & vbcrlf
-result.WriteText "	<id_number>" & escape_xml(windows_id_number) & "</id_number>" & vbcrlf
-result.WriteText "	<time_caption>" & escape_xml(windows_time_caption) & "</time_caption>" & vbcrlf
-result.WriteText "	<time_daylight>" & escape_xml(windows_time_daylight) & "</time_daylight>" & vbcrlf
-result.WriteText "	<boot_device>" & escape_xml(windows_boot_device) & "</boot_device>" & vbcrlf
-result.WriteText "	<country_code>" & escape_xml(windows_country_code) & "</country_code>" & vbcrlf
-result.WriteText "	<organisation>" & escape_xml(windows_organisation) & "</organisation>" & vbcrlf
-result.WriteText "	<language>" & escape_xml(windows_language) & "</language>" & vbcrlf
-result.WriteText "	<registered_user>" & escape_xml(windows_registered_user) & "</registered_user>" & vbcrlf
-result.WriteText "	<service_pack>" & escape_xml(windows_service_pack) & "</service_pack>" & vbcrlf
-result.WriteText "	<version>" & escape_xml(system_os_version) & "</version>" & vbcrlf
-result.WriteText "	<install_directory>" & escape_xml(windows_install_directory) & "</install_directory>" & vbcrlf
-result.WriteText "	<active_directory_ou>" & escape_xml(windows_active_directory_ou) & "</active_directory_ou>" & vbcrlf
-result.WriteText " 	</item>" & vbcrlf
+result.WriteText " 		<item>" & vbcrlf
+result.WriteText "			<build_number>" & escape_xml(windows_build_number) & "</build_number>" & vbcrlf
+result.WriteText "			<user_name>" & escape_xml(windows_user_name) & "</user_name>" & vbcrlf
+result.WriteText "			<client_site_name>" & escape_xml(windows_client_site_name) & "</client_site_name>" & vbcrlf
+result.WriteText "			<domain_short>" & escape_xml(domain_nb) & "</domain_short>" & vbcrlf
+result.WriteText "			<workgroup>" & escape_xml(windows_workgroup) & "</workgroup>" & vbcrlf
+result.WriteText "			<domain_controller_address>" & escape_xml(windows_domain_controller_address) & "</domain_controller_address>" & vbcrlf
+result.WriteText "			<domain_controller_name>" & escape_xml(windows_domain_controller_name) & "</domain_controller_name>" & vbcrlf
+result.WriteText "			<domain_role>" & escape_xml(windows_domain_role) & "</domain_role>" & vbcrlf
+result.WriteText "			<part_of_domain>" & escape_xml(windows_part_of_domain) & "</part_of_domain>" & vbcrlf
+result.WriteText "			<id_number>" & escape_xml(windows_id_number) & "</id_number>" & vbcrlf
+result.WriteText "			<time_caption>" & escape_xml(windows_time_caption) & "</time_caption>" & vbcrlf
+result.WriteText "			<time_daylight>" & escape_xml(windows_time_daylight) & "</time_daylight>" & vbcrlf
+result.WriteText "			<boot_device>" & escape_xml(windows_boot_device) & "</boot_device>" & vbcrlf
+result.WriteText "			<country_code>" & escape_xml(windows_country_code) & "</country_code>" & vbcrlf
+result.WriteText "			<organisation>" & escape_xml(windows_organisation) & "</organisation>" & vbcrlf
+result.WriteText "			<language>" & escape_xml(windows_language) & "</language>" & vbcrlf
+result.WriteText "			<registered_user>" & escape_xml(windows_registered_user) & "</registered_user>" & vbcrlf
+result.WriteText "			<service_pack>" & escape_xml(windows_service_pack) & "</service_pack>" & vbcrlf
+result.WriteText "			<version>" & escape_xml(system_os_version) & "</version>" & vbcrlf
+result.WriteText "			<install_directory>" & escape_xml(windows_install_directory) & "</install_directory>" & vbcrlf
+result.WriteText "			<active_directory_ou>" & escape_xml(windows_active_directory_ou) & "</active_directory_ou>" & vbcrlf
+result.WriteText " 		</item>" & vbcrlf
 result.WriteText " 	</windows>" & vbcrlf
 
 
@@ -1509,18 +1509,18 @@ item = ""
 set colItems = objWMIService.ExecQuery("Select * FROM Win32_BIOS",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Bios)" : audit_wmi_fails = audit_wmi_fails & "Win32_Bios " : end if
 for each objItem in colItems
-	item = item & "	<description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
-	item = item & "	<manufacturer>" & escape_xml(objItem.Manufacturer) & "</manufacturer>" & vbcrlf
-	item = item & "	<serial>" & escape_xml(objItem.SerialNumber) & "</serial>" & vbcrlf
-	item = item & "	<smversion>" & escape_xml(objItem.SMBIOSBIOSVersion) & "</smversion>" & vbcrlf
-	item = item & "	<version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
-	item = item & "	<asset_tag>" & escape_xml(bios_asset_tag) & "</asset_tag>" & vbcrlf
+	item = item & "			<description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
+	item = item & "			<manufacturer>" & escape_xml(objItem.Manufacturer) & "</manufacturer>" & vbcrlf
+	item = item & "			<serial>" & escape_xml(objItem.SerialNumber) & "</serial>" & vbcrlf
+	item = item & "			<smversion>" & escape_xml(objItem.SMBIOSBIOSVersion) & "</smversion>" & vbcrlf
+	item = item & "			<version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
+	item = item & "			<asset_tag>" & escape_xml(bios_asset_tag) & "</asset_tag>" & vbcrlf
 next
 if item > "" then
 	result.WriteText "	<bios>" & vbcrlf
-	result.WriteText "	<item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
 	result.WriteText item
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	result.WriteText "	</bios>" & vbcrlf
 end if
 
@@ -1531,10 +1531,10 @@ set colItems = objWMIService.ExecQuery("Select * from Win32_SCSIController",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_SCSIController)" : audit_wmi_fails = audit_wmi_fails & "Win32_SCSIController " : end if
 for each objItem in colItems
 	item = item & "	<item>" & vbcrlf
-	item = item & "	<model>" & escape_xml(objItem.Name) & "</model>" & vbcrlf
-	item = item & "	<manufacturer>" & escape_xml(objItem.Manufacturer) & "</manufacturer>" & vbcrlf
-	item = item & "	<device>" & escape_xml(objItem.PNPDeviceID) & "</device>" & vbcrlf
-	item = item & "	<type>other</type>" & vbcrlf
+	item = item & "		<model>" & escape_xml(objItem.Name) & "</model>" & vbcrlf
+	item = item & "		<manufacturer>" & escape_xml(objItem.Manufacturer) & "</manufacturer>" & vbcrlf
+	item = item & "		<device>" & escape_xml(objItem.PNPDeviceID) & "</device>" & vbcrlf
+	item = item & "		<type>other</type>" & vbcrlf
 	item = item & "	</item>" & vbcrlf
 next
 if item > "" then
@@ -1631,16 +1631,16 @@ for each objItem In colItems
 
 next
 result.WriteText "	<processor>" & vbcrlf
-result.WriteText "	<item>" & vbcrlf
-result.WriteText "	<physical_count>" & escape_xml(processor_count) & "</physical_count>" & vbcrlf
-result.WriteText "	<core_count>" & escape_xml(system_pc_num_processor) & "</core_count>" & vbcrlf
-result.WriteText "	<logical_count>" & escape_xml(processor_logical) & "</logical_count>" & vbcrlf
-result.WriteText "	<socket>" & escape_xml(cpu_socket) & "</socket>" & vbcrlf
-result.WriteText "	<description>" & escape_xml(processor_description) & "</description>" & vbcrlf
-result.WriteText "	<speed>" & escape_xml(processor_speed) & "</speed>" & vbcrlf
-result.WriteText "	<manufacturer>" & escape_xml(processor_manufacturer) & "</manufacturer>" & vbcrlf
-result.WriteText "	<architecture>" & escape_xml(processor_architecture) & "</architecture>" & vbcrlf
-result.WriteText "	</item>" & vbcrlf
+result.WriteText "		<item>" & vbcrlf
+result.WriteText "			<physical_count>" & escape_xml(processor_count) & "</physical_count>" & vbcrlf
+result.WriteText "			<core_count>" & escape_xml(system_pc_num_processor) & "</core_count>" & vbcrlf
+result.WriteText "			<logical_count>" & escape_xml(processor_logical) & "</logical_count>" & vbcrlf
+result.WriteText "			<socket>" & escape_xml(cpu_socket) & "</socket>" & vbcrlf
+result.WriteText "			<description>" & escape_xml(processor_description) & "</description>" & vbcrlf
+result.WriteText "			<speed>" & escape_xml(processor_speed) & "</speed>" & vbcrlf
+result.WriteText "			<manufacturer>" & escape_xml(processor_manufacturer) & "</manufacturer>" & vbcrlf
+result.WriteText "			<architecture>" & escape_xml(processor_architecture) & "</architecture>" & vbcrlf
+result.WriteText "		</item>" & vbcrlf
 result.WriteText "	</processor>" & vbcrlf
 
 if debugging > "0" then wscript.echo "memory info" end if
@@ -1722,14 +1722,14 @@ for each objItem in colItems
 	mem_serial = objItem.SerialNumber
 	mem_tag = objItem.Tag
 	memory = memory & "	<item>" & vbcrlf
-	memory = memory & "	<bank>" & escape_xml(mem_bank) & "</bank>" & vbcrlf
-	memory = memory & "	<type>" & escape_xml(mem_typedetail) & "</type>" & vbcrlf
-	memory = memory & "	<form_factor>" & escape_xml(mem_formfactor) & "</form_factor>" & vbcrlf
-	memory = memory & "	<detail>" & escape_xml(mem_detail) & "</detail>" & vbcrlf
-	memory = memory & "	<size>" & escape_xml(mem_size) & "</size>" & vbcrlf
-	memory = memory & "	<speed>" & escape_xml(mem_speed) & "</speed>" & vbcrlf
-	memory = memory & "	<tag>" & escape_xml(mem_tag) & "</tag>" & vbcrlf
-	memory = memory & "	<serial>" & escape_xml(mem_serial) & "</serial>" & vbcrlf
+	memory = memory & "		<bank>" & escape_xml(mem_bank) & "</bank>" & vbcrlf
+	memory = memory & "		<type>" & escape_xml(mem_typedetail) & "</type>" & vbcrlf
+	memory = memory & "		<form_factor>" & escape_xml(mem_formfactor) & "</form_factor>" & vbcrlf
+	memory = memory & "		<detail>" & escape_xml(mem_detail) & "</detail>" & vbcrlf
+	memory = memory & "		<size>" & escape_xml(mem_size) & "</size>" & vbcrlf
+	memory = memory & "		<speed>" & escape_xml(mem_speed) & "</speed>" & vbcrlf
+	memory = memory & "		<tag>" & escape_xml(mem_tag) & "</tag>" & vbcrlf
+	memory = memory & "		<serial>" & escape_xml(mem_serial) & "</serial>" & vbcrlf
 	memory = memory & "	</item>" & vbcrlf
 next
 if memory > "" then
@@ -1762,14 +1762,14 @@ for each objItem in colItems
 	mb_memory_slots = objItem.MemoryDevices
 next
 result.WriteText "	<motherboard>" & vbcrlf
-result.WriteText "	<item>" & vbcrlf
-result.WriteText "	<manufacturer>" & escape_xml(mb_manufacturer) & "</manufacturer>" & vbcrlf
-result.WriteText "	<model>" & escape_xml(mb_model) & "</model>" & vbcrlf
-result.WriteText "	<serial>" & escape_xml(mb_serial) & "</serial>" & vbcrlf
-result.WriteText "	<processor_slot_count>" & escape_xml(mb_cpu_sockets) & "</processor_slot_count>" & vbcrlf
-result.WriteText "	<processor_type>" & escape_xml(cpu_socket) & "</processor_type>" & vbcrlf
-result.WriteText "	<memory_slot_count>" & escape_xml(mb_memory_slots) & "</memory_slot_count>" & vbcrlf
-result.WriteText "	</item>" & vbcrlf
+result.WriteText "		<item>" & vbcrlf
+result.WriteText "			<manufacturer>" & escape_xml(mb_manufacturer) & "</manufacturer>" & vbcrlf
+result.WriteText "			<model>" & escape_xml(mb_model) & "</model>" & vbcrlf
+result.WriteText "			<serial>" & escape_xml(mb_serial) & "</serial>" & vbcrlf
+result.WriteText "			<processor_slot_count>" & escape_xml(mb_cpu_sockets) & "</processor_slot_count>" & vbcrlf
+result.WriteText "			<processor_type>" & escape_xml(cpu_socket) & "</processor_type>" & vbcrlf
+result.WriteText "			<memory_slot_count>" & escape_xml(mb_memory_slots) & "</memory_slot_count>" & vbcrlf
+result.WriteText "		</item>" & vbcrlf
 result.WriteText "	</motherboard>" & vbcrlf
 
 
@@ -1780,13 +1780,13 @@ on error resume next
 	set colItems = objWMIService.ExecQuery("Select * from Win32_CDROMDrive",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_CDROMDrive)" : audit_wmi_fails = audit_wmi_fails & "Win32_CDROMDrive " : end if
 	for each objItem in colItems
-	item = item & "	<item>" & vbcrlf
-	item = item & "	<description>" & escape_xml(objItem.Caption) & "</description>" & vbcrlf
-	item = item & "	<model>" & escape_xml(objItem.Caption) & "</model>" & vbcrlf
-	item = item & "	<device>" & escape_xml(objItem.DeviceID) & "</device>" & vbcrlf
-	item = item & "	<mount_point>" & escape_xml(objItem.Drive) & "</mount_point>" & vbcrlf
-	item = item & "	<serial>" & escape_xml(objItem.SerialNumber) & "</serial>" & vbcrlf
-	item = item & "	</item>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<description>" & escape_xml(objItem.Caption) & "</description>" & vbcrlf
+	item = item & "			<model>" & escape_xml(objItem.Caption) & "</model>" & vbcrlf
+	item = item & "			<device>" & escape_xml(objItem.DeviceID) & "</device>" & vbcrlf
+	item = item & "			<mount_point>" & escape_xml(objItem.Drive) & "</mount_point>" & vbcrlf
+	item = item & "			<serial>" & escape_xml(objItem.SerialNumber) & "</serial>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 	next
 	if item > "" then
 	result.WriteText "	<optical>" & vbcrlf
@@ -1796,27 +1796,27 @@ on error resume next
 on error goto 0
 
 
-if debugging > "0" then wscript.echo "modem info" end if
-item = ""
-on error resume next
-	set colItems = objWMIService.ExecQuery("Select * from Win32_POTSModem where status='OK' ",,32)
-	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_POTSModem)" : audit_wmi_fails = audit_wmi_fails & "Win32_POTSModem " : end if
-	for each objItem in colItems
-	item = item & "	<modem>" & vbcrlf
-	item = item & "	<port>" & escape_xml(objItem.AttachedTo) & "</port>" & vbcrlf
-	item = item & "	<model>" & escape_xml(objItem.Model) & "</model>" & vbcrlf
-	item = item & "	<country>" & escape_xml(objItem.CountrySelected) & "</country>" & vbcrlf
-	item = item & "	<device_id>" & escape_xml(objItem.DeviceID) & "</device_id>" & vbcrlf
-	item = item & "	<type>" & escape_xml(objItem.DeviceType) & "</type>" & vbcrlf
-	item = item & "	<manufacturer>" & escape_xml(objItem.ProviderName) & "</manufacturer>" & vbcrlf
-	item = item & "	</modem>" & vbcrlf
-	next
-	if item > "" then
-	result.WriteText "	<modems>" & vbcrlf
-	result.WriteText item
-	result.WriteText "	</modems>" & vbcrlf
-	end if
-on error goto 0
+' if debugging > "0" then wscript.echo "modem info" end if
+' item = ""
+' on error resume next
+' 	set colItems = objWMIService.ExecQuery("Select * from Win32_POTSModem where status='OK' ",,32)
+' 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_POTSModem)" : audit_wmi_fails = audit_wmi_fails & "Win32_POTSModem " : end if
+' 	for each objItem in colItems
+' 	item = item & "		<modem>" & vbcrlf
+' 	item = item & "			<port>" & escape_xml(objItem.AttachedTo) & "</port>" & vbcrlf
+' 	item = item & "			<model>" & escape_xml(objItem.Model) & "</model>" & vbcrlf
+' 	item = item & "			<country>" & escape_xml(objItem.CountrySelected) & "</country>" & vbcrlf
+' 	item = item & "			<device_id>" & escape_xml(objItem.DeviceID) & "</device_id>" & vbcrlf
+' 	item = item & "			<type>" & escape_xml(objItem.DeviceType) & "</type>" & vbcrlf
+' 	item = item & "			<manufacturer>" & escape_xml(objItem.ProviderName) & "</manufacturer>" & vbcrlf
+' 	item = item & "		</modem>" & vbcrlf
+' 	next
+' 	if item > "" then
+' 	result.WriteText "	<modems>" & vbcrlf
+' 	result.WriteText item
+' 	result.WriteText "	</modems>" & vbcrlf
+' 	end if
+' on error goto 0
 
 
 
@@ -1834,12 +1834,12 @@ on error resume next
 	Instr(objItem.Caption, "Mirage Driver") = 0 AND _
 	Instr(objItem.Caption, "VNC Mirror Driver") = 0 AND _
 	Instr(objItem.Caption, "Microsoft SMS Mirror Driver") = 0) then
-	item = item & "	<item>" & vbcrlf
-	item = item & "	<model>" & escape_xml(objItem.Name) & "</model>" & vbcrlf
-	item = item & "	<device>" & escape_xml(objItem.PNPDeviceID) & "</device>" & vbcrlf
-	item = item & "	<manufacturer>" & escape_xml(objItem.AdapterCompatibility) & "</manufacturer>" & vbcrlf
-	item = item & "	<size>" & escape_xml(int(objItem.AdapterRAM /1024 /1024)) & "</size>" & vbcrlf
-	item = item & "	</item>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<model>" & escape_xml(objItem.Name) & "</model>" & vbcrlf
+	item = item & "			<device>" & escape_xml(objItem.PNPDeviceID) & "</device>" & vbcrlf
+	item = item & "			<manufacturer>" & escape_xml(objItem.AdapterCompatibility) & "</manufacturer>" & vbcrlf
+	item = item & "			<size>" & escape_xml(int(objItem.AdapterRAM /1024 /1024)) & "</size>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 	end if
 	next
 	if item > "" then
@@ -2129,16 +2129,16 @@ else
 	if (manufacturer <> "" and _
 	manufacture_date <> "01/1990" and _
 	model <> "Model Descriptor Not Found in EDID data") then
-	item = item & "	<item>" & vbcrlf
-	item = item & "	<manufacturer>" & escape_xml(manufacturer) & "</manufacturer>" & vbcrlf
-	item = item & "	<device>" & escape_xml(device_id) & "</device>" & vbcrlf
-	item = item & "	<manufacture_date>" & escape_xml(manufacture_date) & "</manufacture_date>" & vbcrlf
-	item = item & "	<model>" & escape_xml(model) & "</model>" & vbcrlf
-	item = item & "	<serial>" & escape_xml(serial) & "</serial>" & vbcrlf
-	item = item & "	<edid_version>" & escape_xml(edid_version) & "</edid_version>" & vbcrlf
-	item = item & "	<aspect_ratio>" & escape_xml(ratio) & "</aspect_ratio>" & vbcrlf
-	item = item & "	<size>" & escape_xml(screen_size) & "</size>" & vbcrlf
-	item = item & "	</item>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<manufacturer>" & escape_xml(manufacturer) & "</manufacturer>" & vbcrlf
+	item = item & "			<device>" & escape_xml(device_id) & "</device>" & vbcrlf
+	item = item & "			<manufacture_date>" & escape_xml(manufacture_date) & "</manufacture_date>" & vbcrlf
+	item = item & "			<model>" & escape_xml(model) & "</model>" & vbcrlf
+	item = item & "			<serial>" & escape_xml(serial) & "</serial>" & vbcrlf
+	item = item & "			<edid_version>" & escape_xml(edid_version) & "</edid_version>" & vbcrlf
+	item = item & "			<aspect_ratio>" & escape_xml(ratio) & "</aspect_ratio>" & vbcrlf
+	item = item & "			<size>" & escape_xml(screen_size) & "</size>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 	end if
 	all_device_id = all_device_id & device_id & " "
 	all_device_serial = all_device_serial & serial & " "
@@ -2168,11 +2168,11 @@ item = ""
 set colItems = objWMIService.ExecQuery("Select * from Win32_SoundDevice",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_SoundDevice)" : audit_wmi_fails = audit_wmi_fails & "Win32_SoundDevice " : end if
 for each objItem in colItems
-	item = item & "	<item>" & vbcrlf
-	item = item & "	<model>" & escape_xml(objItem.Name) & "</model>" & vbcrlf
-	item = item & "	<manufacturer>" & escape_xml(objItem.Manufacturer) & "</manufacturer>" & vbcrlf
-	item = item & "	<device>" & escape_xml(objItem.DeviceID) & "</device>" & vbcrlf
-	item = item & "	</item>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<model>" & escape_xml(objItem.Name) & "</model>" & vbcrlf
+	item = item & "			<manufacturer>" & escape_xml(objItem.Manufacturer) & "</manufacturer>" & vbcrlf
+	item = item & "			<device>" & escape_xml(objItem.DeviceID) & "</device>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 next
 if item > "" then
 	result.WriteText "	<sound>" & vbcrlf
@@ -2247,20 +2247,20 @@ for each objItem In colDiskDrives
 	end if
 	on error goto 0
 
-	item = item & "	<item>" & vbcrlf
-	item = item & "	<caption>" & escape_xml(hard_drive_caption) & "</caption>" & vbcrlf
-	item = item & "	<hard_drive_index>" & escape_xml(hard_drive_index) & "</hard_drive_index>" & vbcrlf
-	item = item & "	<interface_type>" & escape_xml(hard_drive_interface_type) & "</interface_type>" & vbcrlf
-	item = item & "	<manufacturer>" & escape_xml(hard_drive_manufacturer) & "</manufacturer>" & vbcrlf
-	item = item & "	<model>" & escape_xml(hard_drive_model) & "</model>" & vbcrlf
-	item = item & "	<serial>" & escape_xml(hard_drive_serial) & "</serial>" & vbcrlf
-	item = item & "	<size>" & escape_xml(hard_drive_size) & "</size>" & vbcrlf
-	item = item & "	<device>" & escape_xml(hard_drive_device_id) & "</device>" & vbcrlf
-	item = item & "	<partition_count>" & escape_xml(hard_drive_partitions) & "</partition_count>" & vbcrlf
-	item = item & "	<status>" & escape_xml(hard_drive_status) & "</status>" & vbcrlf
-	item = item & "	<firmware>" & escape_xml(hard_drive_firmware) & "</firmware>" & vbcrlf
-	item = item & "	<scsi_logical_unit>" & escape_xml(hard_drive_scsi_logical_unit) & "</scsi_logical_unit>" & vbcrlf
-	item = item & "	</item>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<caption>" & escape_xml(hard_drive_caption) & "</caption>" & vbcrlf
+	item = item & "			<hard_drive_index>" & escape_xml(hard_drive_index) & "</hard_drive_index>" & vbcrlf
+	item = item & "			<interface_type>" & escape_xml(hard_drive_interface_type) & "</interface_type>" & vbcrlf
+	item = item & "			<manufacturer>" & escape_xml(hard_drive_manufacturer) & "</manufacturer>" & vbcrlf
+	item = item & "			<model>" & escape_xml(hard_drive_model) & "</model>" & vbcrlf
+	item = item & "			<serial>" & escape_xml(hard_drive_serial) & "</serial>" & vbcrlf
+	item = item & "			<size>" & escape_xml(hard_drive_size) & "</size>" & vbcrlf
+	item = item & "			<device>" & escape_xml(hard_drive_device_id) & "</device>" & vbcrlf
+	item = item & "			<partition_count>" & escape_xml(hard_drive_partitions) & "</partition_count>" & vbcrlf
+	item = item & "			<status>" & escape_xml(hard_drive_status) & "</status>" & vbcrlf
+	item = item & "			<firmware>" & escape_xml(hard_drive_firmware) & "</firmware>" & vbcrlf
+	item = item & "			<scsi_logical_unit>" & escape_xml(hard_drive_scsi_logical_unit) & "</scsi_logical_unit>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 next
 
 if item > "" then
@@ -2323,21 +2323,21 @@ for each objPartition In colPartitions
 	end if
 
 	if (partition_size > "") then
-	result_partition = result_partition & "	<item>" & vbcrlf
-	result_partition = result_partition & "	<hard_drive_index>" & escape_xml(partition_disk_index) & "</hard_drive_index>" & vbcrlf
-	result_partition = result_partition & "	<mount_type>partition</mount_type>" & vbcrlf
-	result_partition = result_partition & "	<mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
-	result_partition = result_partition & "	<name>" & escape_xml(partition_name) & "</name>" & vbcrlf
-	result_partition = result_partition & "	<size>" & escape_xml(partition_size) & "</size>" & vbcrlf
-	result_partition = result_partition & "	<free>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
-	result_partition = result_partition & "	<used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
-	result_partition = result_partition & "	<format>" & escape_xml(partition_format) & "</format>" & vbcrlf
-	result_partition = result_partition & "	<description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
-	result_partition = result_partition & "	<device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
-	result_partition = result_partition & "	<partition_disk_index></partition_disk_index>" & vbcrlf
-	result_partition = result_partition & "	<type>" & escape_xml(partition_type) & "</type>" & vbcrlf
-	result_partition = result_partition & "	<serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
-	result_partition = result_partition & "	</item>" & vbcrlf
+	result_partition = result_partition & "		<item>" & vbcrlf
+	result_partition = result_partition & "			<hard_drive_index>" & escape_xml(partition_disk_index) & "</hard_drive_index>" & vbcrlf
+	result_partition = result_partition & "			<mount_type>partition</mount_type>" & vbcrlf
+	result_partition = result_partition & "			<mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
+	result_partition = result_partition & "			<name>" & escape_xml(partition_name) & "</name>" & vbcrlf
+	result_partition = result_partition & "			<size>" & escape_xml(partition_size) & "</size>" & vbcrlf
+	result_partition = result_partition & "			<free>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
+	result_partition = result_partition & "			<used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
+	result_partition = result_partition & "			<format>" & escape_xml(partition_format) & "</format>" & vbcrlf
+	result_partition = result_partition & "			<description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
+	result_partition = result_partition & "			<device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
+	result_partition = result_partition & "			<partition_disk_index></partition_disk_index>" & vbcrlf
+	result_partition = result_partition & "			<type>" & escape_xml(partition_type) & "</type>" & vbcrlf
+	result_partition = result_partition & "			<serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
+	result_partition = result_partition & "		</item>" & vbcrlf
 	end if
 next
 
@@ -2370,22 +2370,22 @@ if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
 	end if
 
 	if (partition_size > "") then
-	result_partition = result_partition & "	<partition>" & vbcrlf
-	result_partition = result_partition & "	<hard_drive_index></hard_drive_index>" & vbcrlf
-	result_partition = result_partition & "	<mount_type>mount point</mount_type>" & vbcrlf
-	result_partition = result_partition & "	<mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
-	result_partition = result_partition & "	<name>" & escape_xml(partition_name) & "</name>" & vbcrlf
-	result_partition = result_partition & "	<size>" & escape_xml(partition_size) & "</size>" & vbcrlf
-	result_partition = result_partition & "	<free>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
-	result_partition = result_partition & "	<used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
-	result_partition = result_partition & "	<format>" & escape_xml(partition_format) & "</format>" & vbcrlf
-	result_partition = result_partition & "	<description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
-	result_partition = result_partition & "	<device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
-	result_partition = result_partition & "	<partition_disk_index></partition_disk_index>" & vbcrlf
-	result_partition = result_partition & "	<bootable></bootable>" & vbcrlf
-	result_partition = result_partition & "	<type>smb</type>" & vbcrlf
-	result_partition = result_partition & "	<serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
-	result_partition = result_partition & "	</partition>" & vbcrlf
+	result_partition = result_partition & "		<item>" & vbcrlf
+	result_partition = result_partition & "			<hard_drive_index></hard_drive_index>" & vbcrlf
+	result_partition = result_partition & "			<mount_type>mount point</mount_type>" & vbcrlf
+	result_partition = result_partition & "			<mount_point>" & escape_xml(partition_mount_point) & "</mount_point>" & vbcrlf
+	result_partition = result_partition & "			<name>" & escape_xml(partition_name) & "</name>" & vbcrlf
+	result_partition = result_partition & "			<size>" & escape_xml(partition_size) & "</size>" & vbcrlf
+	result_partition = result_partition & "			<free>" & escape_xml(partition_free_space) & "</free>" & vbcrlf
+	result_partition = result_partition & "			<used>" & escape_xml(partition_used_space) & "</used>" & vbcrlf
+	result_partition = result_partition & "			<format>" & escape_xml(partition_format) & "</format>" & vbcrlf
+	result_partition = result_partition & "			<description>" & escape_xml(partition_caption) & "</description>" & vbcrlf
+	result_partition = result_partition & "			<device>" & escape_xml(partition_device_id) & "</device>" & vbcrlf
+	result_partition = result_partition & "			<partition_disk_index></partition_disk_index>" & vbcrlf
+	result_partition = result_partition & "			<bootable></bootable>" & vbcrlf
+	result_partition = result_partition & "			<type>smb</type>" & vbcrlf
+	result_partition = result_partition & "			<serial>" & escape_xml(partition_serial) & "</serial>" & vbcrlf
+	result_partition = result_partition & "		</item>" & vbcrlf
 	end if
 	next
 end if
@@ -2406,21 +2406,21 @@ if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
 	mount_format 	= mount.FileSystem
 	mount_serial 	= mount.SerialNumber
 	if (mount_size > "") then
-	result_partition = result_partition & "	<item>" & vbcrlf
-	result_partition = result_partition & "	<hard_drive_index></hard_drive_index>" & vbcrlf
-	result_partition = result_partition & "	<mount_type>mount point</mount_type>" & vbcrlf
-	result_partition = result_partition & "	<mount_point>" & escape_xml(mount_caption) & "</mount_point>" & vbcrlf
-	result_partition = result_partition & "	<name>" & escape_xml(mount_name) & "</name>" & vbcrlf
-	result_partition = result_partition & "	<size>" & escape_xml(mount_size) & "</size>" & vbcrlf
-	result_partition = result_partition & "	<free>" & escape_xml(mount_free_space) & "</free>" & vbcrlf
-	result_partition = result_partition & "	<used>" & escape_xml(mount_used_space) & "</used>" & vbcrlf
-	result_partition = result_partition & "	<format>" & escape_xml(mount_format) & "</format>" & vbcrlf
-	result_partition = result_partition & "	<description>" & escape_xml(mount_caption) & "</description>" & vbcrlf
-	result_partition = result_partition & "	<device></device>" & vbcrlf
-	result_partition = result_partition & "	<partition_disk_index></partition_disk_index>" & vbcrlf
-	result_partition = result_partition & "	<type>volume</type>" & vbcrlf
-	result_partition = result_partition & "	<serial>" & escape_xml(mount_serial) & "</serial>" & vbcrlf
-	result_partition = result_partition & "	</item>" & vbcrlf
+	result_partition = result_partition & "		<item>" & vbcrlf
+	result_partition = result_partition & "			<hard_drive_index></hard_drive_index>" & vbcrlf
+	result_partition = result_partition & "			<mount_type>mount point</mount_type>" & vbcrlf
+	result_partition = result_partition & "			<mount_point>" & escape_xml(mount_caption) & "</mount_point>" & vbcrlf
+	result_partition = result_partition & "			<name>" & escape_xml(mount_name) & "</name>" & vbcrlf
+	result_partition = result_partition & "			<size>" & escape_xml(mount_size) & "</size>" & vbcrlf
+	result_partition = result_partition & "			<free>" & escape_xml(mount_free_space) & "</free>" & vbcrlf
+	result_partition = result_partition & "			<used>" & escape_xml(mount_used_space) & "</used>" & vbcrlf
+	result_partition = result_partition & "			<format>" & escape_xml(mount_format) & "</format>" & vbcrlf
+	result_partition = result_partition & "			<description>" & escape_xml(mount_caption) & "</description>" & vbcrlf
+	result_partition = result_partition & "			<device></device>" & vbcrlf
+	result_partition = result_partition & "			<partition_disk_index></partition_disk_index>" & vbcrlf
+	result_partition = result_partition & "			<type>volume</type>" & vbcrlf
+	result_partition = result_partition & "			<serial>" & escape_xml(mount_serial) & "</serial>" & vbcrlf
+	result_partition = result_partition & "		</item>" & vbcrlf
 	end if
 	next
 	On Error Goto 0
@@ -2489,11 +2489,11 @@ for each objItem in colItems
 	On Error Goto 0
 	end if
 
-	result_share = result_share & "	<share>" & vbcrlf
-	result_share = result_share & "	<share_name>" & escape_xml(objItem.Name) & "</share_name>" & vbcrlf
-	result_share = result_share & "	<share_caption>" & escape_xml(objItem.Caption) & "</share_caption>" & vbcrlf
-	result_share = result_share & "	<share_path>" & escape_xml(objItem.Path) & "</share_path>" & vbcrlf
-	result_share = result_share & "	<share_size>" & escape_xml(folder_size) & "</share_size>" & vbcrlf
+	result_share = result_share & "		<item>" & vbcrlf
+	result_share = result_share & "			<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+	result_share = result_share & "			<caption>" & escape_xml(objItem.Caption) & "</caption>" & vbcrlf
+	result_share = result_share & "			<path>" & escape_xml(objItem.Path) & "</path>" & vbcrlf
+	result_share = result_share & "			<size>" & escape_xml(folder_size) & "</size>" & vbcrlf
 
 	if file_exists = True then
 	strCommand = "c:\RMTSHARE.EXE \\" & system_hostname & "\""" & objItem.Name & """ "
@@ -2520,10 +2520,10 @@ for each objItem in colItems
 	next
 	if share_users > "" then
 	share_users = left(share_users, len(share_users)-2)
-	result_share = result_share & "	<share_users>" & escape_xml(share_users) & "</share_users>" & vbcrlf
+	result_share = result_share & "			<users>" & escape_xml(share_users) & "</users>" & vbcrlf
 	end if
 	end if
-	result_share = result_share & "	</share>" & vbcrlf
+	result_share = result_share & "	</item>" & vbcrlf
 next
 if result_share > "" then
 	result.WriteText "	<shares>" & vbcrlf
@@ -2603,26 +2603,26 @@ for each objItem in colItems
 	net_speed = ""
 	end if
 	if net_manufacturer <> "Microsoft TV/Video Connection" then
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<mac>" & escape_xml(net_mac_address) & "</mac>" & vbcrlf
-	result.WriteText "	<manufacturer>" & escape_xml(net_manufacturer) & "</manufacturer>" & vbcrlf
-	result.WriteText "	<model>" & escape_xml(net_model) & "</model>" & vbcrlf
-	result.WriteText "	<description>" & escape_xml(net_description) & "</description>" & vbcrlf
-	result.WriteText "	<ip_enabled>" & escape_xml(net_ip_enabled) & "</ip_enabled>" & vbcrlf
-	result.WriteText "	<net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
-	result.WriteText "	<connection>" & escape_xml(net_connection_id) & "</connection>" & vbcrlf
-	result.WriteText "	<connection_status>" & escape_xml(net_connection_status) & "</connection_status>" & vbcrlf
-	result.WriteText "	<speed>" & escape_xml(net_speed) & "</speed>" & vbcrlf
-	result.WriteText "	<type>" & escape_xml(net_adapter_type) & "</type>" & vbcrlf
-	result.WriteText "	<dhcp_enabled>" & escape_xml(net_dhcp_enabled) & "</dhcp_enabled>" & vbcrlf
-	result.WriteText "	<dhcp_server>" & escape_xml(net_dhcp_server) & "</dhcp_server>" & vbcrlf
-	result.WriteText "	<dhcp_lease_obtained>" & escape_xml(net_dhcp_lease_obtained) & "</dhcp_lease_obtained>" & vbcrlf
-	result.WriteText "	<dhcp_lease_expires>" & escape_xml(net_dhcp_lease_expires) & "</dhcp_lease_expires>" & vbcrlf
-	result.WriteText "	<dns_host_name>" & escape_xml(net_dns_host_name) & "</dns_host_name>" & vbcrlf
-	result.WriteText "	<dns_domain>" & escape_xml(net_dns_domain) & "</dns_domain>" & vbcrlf
-	result.WriteText "	<dns_domain_reg_enabled>" & escape_xml(net_dns_domain_reg_enabled) & "</dns_domain_reg_enabled>" & vbcrlf
-	result.WriteText "	<dns_server>" & escape_xml(net_dns_server) & "</dns_server>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<mac>" & escape_xml(net_mac_address) & "</mac>" & vbcrlf
+	result.WriteText "			<manufacturer>" & escape_xml(net_manufacturer) & "</manufacturer>" & vbcrlf
+	result.WriteText "			<model>" & escape_xml(net_model) & "</model>" & vbcrlf
+	result.WriteText "			<description>" & escape_xml(net_description) & "</description>" & vbcrlf
+	result.WriteText "			<ip_enabled>" & escape_xml(net_ip_enabled) & "</ip_enabled>" & vbcrlf
+	result.WriteText "			<net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
+	result.WriteText "			<connection>" & escape_xml(net_connection_id) & "</connection>" & vbcrlf
+	result.WriteText "			<connection_status>" & escape_xml(net_connection_status) & "</connection_status>" & vbcrlf
+	result.WriteText "			<speed>" & escape_xml(net_speed) & "</speed>" & vbcrlf
+	result.WriteText "			<type>" & escape_xml(net_adapter_type) & "</type>" & vbcrlf
+	result.WriteText "			<dhcp_enabled>" & escape_xml(net_dhcp_enabled) & "</dhcp_enabled>" & vbcrlf
+	result.WriteText "			<dhcp_server>" & escape_xml(net_dhcp_server) & "</dhcp_server>" & vbcrlf
+	result.WriteText "			<dhcp_lease_obtained>" & escape_xml(net_dhcp_lease_obtained) & "</dhcp_lease_obtained>" & vbcrlf
+	result.WriteText "			<dhcp_lease_expires>" & escape_xml(net_dhcp_lease_expires) & "</dhcp_lease_expires>" & vbcrlf
+	result.WriteText "			<dns_host_name>" & escape_xml(net_dns_host_name) & "</dns_host_name>" & vbcrlf
+	result.WriteText "			<dns_domain>" & escape_xml(net_dns_domain) & "</dns_domain>" & vbcrlf
+	result.WriteText "			<dns_domain_reg_enabled>" & escape_xml(net_dns_domain_reg_enabled) & "</dns_domain_reg_enabled>" & vbcrlf
+	result.WriteText "			<dns_server>" & escape_xml(net_dns_server) & "</dns_server>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 	end if
 	next
@@ -2655,14 +2655,14 @@ for each objItem in colItems
 	end if
 	if ip_address <> "0.0.0.0" then
 	count = count + 1
-	item = item & "	<ip_address>" & vbcrlf
-	item = item & "	<net_mac_address>" & escape_xml(net_mac_address) & "</net_mac_address>" & vbcrlf
-	item = item & "	<net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
-	item = item & "	<ip_address_v4>" & escape_xml(ip_address_v4) & "</ip_address_v4>" & vbcrlf
-	item = item & "	<ip_address_v6>" & escape_xml(ip_address_v6) & "</ip_address_v6>" & vbcrlf
-	item = item & "	<ip_subnet>" & escape_xml(ip_subnet) & "</ip_subnet>" & vbcrlf
-	item = item & "	<ip_address_version>" & escape_xml(ip_address_version) & "</ip_address_version>" & vbcrlf
-	item = item & "	</ip_address>" & vbcrlf
+	item = item & "		<ip_address>" & vbcrlf
+	item = item & "			<net_mac_address>" & escape_xml(net_mac_address) & "</net_mac_address>" & vbcrlf
+	item = item & "			<net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
+	item = item & "			<ip_address_v4>" & escape_xml(ip_address_v4) & "</ip_address_v4>" & vbcrlf
+	item = item & "			<ip_address_v6>" & escape_xml(ip_address_v6) & "</ip_address_v6>" & vbcrlf
+	item = item & "			<ip_subnet>" & escape_xml(ip_subnet) & "</ip_subnet>" & vbcrlf
+	item = item & "			<ip_address_version>" & escape_xml(ip_address_version) & "</ip_address_version>" & vbcrlf
+	item = item & "		</ip_address>" & vbcrlf
 	if ip_address_version = "4" then
 	ip_address_array(count) = ip_address_v4
 	end if
@@ -2698,11 +2698,11 @@ if skip_dns = "n" then
 	hostname = lcase(hostname)
 	dns_full_name = lcase(dns_host_name)
 	end if
-	item = item & "	<item>" & vbcrlf
-	item = item & "	<name>" & escape_xml(hostname) & "</name>" & vbcrlf
-	item = item & "	<fqdn>" & escape_xml(dns_full_name) & "</fqdn>" & vbcrlf
-	item = item & "	<ip>" & escape_xml(objItem2.IPAddress) & "</ip>" & vbcrlf
-	item = item & "	</item>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<name>" & escape_xml(hostname) & "</name>" & vbcrlf
+	item = item & "			<fqdn>" & escape_xml(dns_full_name) & "</fqdn>" & vbcrlf
+	item = item & "			<ip>" & escape_xml(objItem2.IPAddress) & "</ip>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 	next
 	end if
 	next
@@ -3104,23 +3104,23 @@ if (skip_printer = "n") then
 	'if (connection_status = "OK") then
 	item = item & "	<printer>" & vbcrlf
 	on error resume next
-	item = item & "	<man_ip_address>" & escape_xml(printer_ip_address) & "</man_ip_address>" & vbcrlf
-	item = item & "	<hostname>" & escape_xml(printer_hostname) & "</hostname>" & vbcrlf
-	item = item & "	<system_key>" & escape_xml(printer_system_key) & "</system_key>" & vbcrlf
-	item = item & "	<uuid>" & escape_xml(printer_uuid) & "</uuid>" & vbcrlf
-	item = item & "	<description>" & escape_xml(printer_comment) & "</description>" & vbcrlf
-	item = item & "	<icon>printer</icon>" & vbcrlf
-	item = item & "	<model>" & escape_xml(printer_model) & "</model>" & vbcrlf
-	item = item & "	<manufacturer>" & escape_xml(printer_manufacturer) & "</manufacturer>" & vbcrlf
-	item = item & "	<port_name>" & escape_xml(objItem.PortName) & "</port_name>" & vbcrlf
-	item = item & "	<shared>" & escape_xml(printer_shared) & "</shared>" & vbcrlf
-	item = item & "	<shared_name>" & escape_xml(printer_share_name) & "</shared_name>" & vbcrlf
-	item = item & "	<location>" & escape_xml(printer_location) & "</location>" & vbcrlf
-	item = item & "	<color>" & escape_xml(printer_color) & "</color>" & vbcrlf
-	item = item & "	<duplex>" & escape_xml(printer_duplex) & "</duplex>" & vbcrlf
-	item = item & "	<type>physical</type>" & vbcrlf
-	item = item & "	<name>" & escape_xml(printer_name) & "</name>" & vbcrlf
-	item = item & "	<status>" & escape_xml(connection_status) & "</status>" & vbcrlf
+	item = item & "		<man_ip_address>" & escape_xml(printer_ip_address) & "</man_ip_address>" & vbcrlf
+	item = item & "		<hostname>" & escape_xml(printer_hostname) & "</hostname>" & vbcrlf
+	item = item & "		<system_key>" & escape_xml(printer_system_key) & "</system_key>" & vbcrlf
+	item = item & "		<uuid>" & escape_xml(printer_uuid) & "</uuid>" & vbcrlf
+	item = item & "		<description>" & escape_xml(printer_comment) & "</description>" & vbcrlf
+	item = item & "		<icon>printer</icon>" & vbcrlf
+	item = item & "		<model>" & escape_xml(printer_model) & "</model>" & vbcrlf
+	item = item & "		<manufacturer>" & escape_xml(printer_manufacturer) & "</manufacturer>" & vbcrlf
+	item = item & "		<port_name>" & escape_xml(objItem.PortName) & "</port_name>" & vbcrlf
+	item = item & "		<shared>" & escape_xml(printer_shared) & "</shared>" & vbcrlf
+	item = item & "		<shared_name>" & escape_xml(printer_share_name) & "</shared_name>" & vbcrlf
+	item = item & "		<location>" & escape_xml(printer_location) & "</location>" & vbcrlf
+	item = item & "		<color>" & escape_xml(printer_color) & "</color>" & vbcrlf
+	item = item & "		<duplex>" & escape_xml(printer_duplex) & "</duplex>" & vbcrlf
+	item = item & "		<type>physical</type>" & vbcrlf
+	item = item & "		<name>" & escape_xml(printer_name) & "</name>" & vbcrlf
+	item = item & "		<status>" & escape_xml(connection_status) & "</status>" & vbcrlf
 	On Error Goto 0
 	item = item & "	</printer>" & vbcrlf
 	'end if
@@ -3161,7 +3161,7 @@ if strcomputer = "." then
 	         sTask = CSVParser(line)
 	         if UCase(sTask(0)) = UCase(system_hostname) then
 	            item = item & "      <item>" & vbcrlf
-	            item = item & "         <name><![CDATA[" & sTask(1) & "]]><name>" & vbcrlf
+	            item = item & "         <name><![CDATA[" & sTask(1) & "]]></name>" & vbcrlf
 	            item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
 	            item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
 	            item = item & "         <last_run><![CDATA[" & sTask(4+intOffset) & "]]></last_run>" & vbcrlf
@@ -3192,10 +3192,10 @@ for each objItem in colItems
 	  (instr(lcase (escape_xml(objItem.VariableValue)), lcase (struser))) ) then
 	' do not record user specific variables
 	else
-	item = item & "	<item>" & vbcrlf
-	item = item & "	<variable_name><![CDATA[" & escape_xml(objItem.Name) & "]]></variable_name>" & vbcrlf
-	item = item & "	<variable_value><![CDATA[" & escape_xml(objItem.VariableValue) & "]]></variable_value>" & vbcrlf
-	item = item & "	</item>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<variable_name><![CDATA[" & escape_xml(objItem.Name) & "]]></variable_name>" & vbcrlf
+	item = item & "			<variable_value><![CDATA[" & escape_xml(objItem.VariableValue) & "]]></variable_value>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 	end if
 next
 if item > "" then
@@ -3215,13 +3215,13 @@ for each objItem in colItems
 	case "OutDated"    OverWritePolicy = "OutDated (after " & objItem.OverwriteOutDated & " days)"
 	case "WhenNeeded"  OverWritePolicy = "As Needed"
 	end select
-	item = item & "	<item>" & vbcrlf
-	item = item & "	<name>"	& escape_xml(objItem.LogFileName) 	& "</name>" & vbcrlf
-	item = item & "	<file_name>" 	& escape_xml(objItem.Name) 	& "</file_name>" & vbcrlf
-	item = item & "	<file_size>" 	& escape_xml(objItem.FileSize/1024) 	& "</file_size>" & vbcrlf
-	item = item & "	<max_file_size>"	& escape_xml(objItem.MaxFileSize/1024)  & "</max_file_size>" & vbcrlf
-	item = item & "	<overwrite>" 	& escape_xml(OverWritePolicy)	& "</overwrite>" & vbcrlf
-	item = item & "	</item>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<name>"	& escape_xml(objItem.LogFileName) 	& "</name>" & vbcrlf
+	item = item & "			<file_name>" 	& escape_xml(objItem.Name) 	& "</file_name>" & vbcrlf
+	item = item & "			<file_size>" 	& escape_xml(objItem.FileSize/1024) 	& "</file_size>" & vbcrlf
+	item = item & "			<max_file_size>"	& escape_xml(objItem.MaxFileSize/1024)  & "</max_file_size>" & vbcrlf
+	item = item & "			<overwrite>" 	& escape_xml(OverWritePolicy)	& "</overwrite>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 next
 if item > "" then
 	result.WriteText "	<log>" & vbcrlf
@@ -3258,66 +3258,65 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_UserAccount)" : audit_wmi_fails = audit_wmi_fails & "Win32_UserAccount " : end if
 	if (not isnull(colItems)) then
 	for each objItem in colItems
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
-	result.WriteText "	<caption>" & escape_xml(objItem.Caption) & "</caption>" & vbcrlf
-	result.WriteText "	<sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
-	result.WriteText "	<domain>" & escape_xml(objItem.Domain) & "</domain>" & vbcrlf
-	result.WriteText "	<disabled>" & escape_xml(objItem.Disabled) & "</disabled>" & vbcrlf
-	result.WriteText "	<full_name>" & escape_xml(objItem.FullName) & "</full_name>" & vbcrlf
-	result.WriteText "	<password_changeable>" & escape_xml(objItem.PasswordChangeable) & "</password_changeable>" & vbcrlf
-	result.WriteText "	<password_expires>" & escape_xml(objItem.PasswordExpires) & "</password_expires>" & vbcrlf
-	result.WriteText "	<password_required>" & escape_xml(objItem.PasswordRequired) & "</password_required>" & vbcrlf
-
-	result.WriteText "	<status>" & escape_xml(objItem.Status) & "</status>" & vbcrlf
-	result.WriteText "	<type>local</type>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+	result.WriteText "			<caption>" & escape_xml(objItem.Caption) & "</caption>" & vbcrlf
+	result.WriteText "			<sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
+	result.WriteText "			<domain>" & escape_xml(objItem.Domain) & "</domain>" & vbcrlf
+	result.WriteText "			<disabled>" & escape_xml(objItem.Disabled) & "</disabled>" & vbcrlf
+	result.WriteText "			<full_name>" & escape_xml(objItem.FullName) & "</full_name>" & vbcrlf
+	result.WriteText "			<password_changeable>" & escape_xml(objItem.PasswordChangeable) & "</password_changeable>" & vbcrlf
+	result.WriteText "			<password_expires>" & escape_xml(objItem.PasswordExpires) & "</password_expires>" & vbcrlf
+	result.WriteText "			<password_required>" & escape_xml(objItem.PasswordRequired) & "</password_required>" & vbcrlf
+	result.WriteText "			<status>" & escape_xml(objItem.Status) & "</status>" & vbcrlf
+	result.WriteText "			<type>local</type>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	next
 	end if
 	' The LocalSystem account
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>LocalSystem</name>" & vbcrlf
-	result.WriteText "	<caption>" & escape_xml(system_hostname) & "\LocalSystem</caption>" & vbcrlf
-	result.WriteText "	<sid></sid>" & vbcrlf
-	result.WriteText "	<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
-	result.WriteText "	<disabled>False</disabled>" & vbcrlf
-	result.WriteText "	<full_name>LocalSystem</full_name>" & vbcrlf
-	result.WriteText "	<password_changeable>False</password_changeable>" & vbcrlf
-	result.WriteText "	<password_expires>False</password_expires>" & vbcrlf
-	result.WriteText "	<password_required>False</password_required>" & vbcrlf
-	result.WriteText "	<status>OK</status>" & vbcrlf
-	result.WriteText "	<type>local</type>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>LocalSystem</name>" & vbcrlf
+	result.WriteText "			<caption>" & escape_xml(system_hostname) & "\LocalSystem</caption>" & vbcrlf
+	result.WriteText "			<sid></sid>" & vbcrlf
+	result.WriteText "			<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
+	result.WriteText "			<disabled>False</disabled>" & vbcrlf
+	result.WriteText "			<full_name>LocalSystem</full_name>" & vbcrlf
+	result.WriteText "			<password_changeable>False</password_changeable>" & vbcrlf
+	result.WriteText "			<password_expires>False</password_expires>" & vbcrlf
+	result.WriteText "			<password_required>False</password_required>" & vbcrlf
+	result.WriteText "			<status>OK</status>" & vbcrlf
+	result.WriteText "			<type>local</type>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 
 	' The LocalService account
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>NT AUTHORITY\LocalService</name>" & vbcrlf
-	result.WriteText "	<caption>NT AUTHORITY\LocalService</caption>" & vbcrlf
-	result.WriteText "	<sid></sid>" & vbcrlf
-	result.WriteText "	<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
-	result.WriteText "	<disabled>False</disabled>" & vbcrlf
-	result.WriteText "	<full_name>LocalSystem</full_name>" & vbcrlf
-	result.WriteText "	<password_changeable>False</password_changeable>" & vbcrlf
-	result.WriteText "	<password_expires>False</password_expires>" & vbcrlf
-	result.WriteText "	<password_required>False</password_required>" & vbcrlf
-	result.WriteText "	<status>OK</status>" & vbcrlf
-	result.WriteText "	<type>local</type>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>NT AUTHORITY\LocalService</name>" & vbcrlf
+	result.WriteText "			<caption>NT AUTHORITY\LocalService</caption>" & vbcrlf
+	result.WriteText "			<sid></sid>" & vbcrlf
+	result.WriteText "			<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
+	result.WriteText "			<disabled>False</disabled>" & vbcrlf
+	result.WriteText "			<full_name>LocalSystem</full_name>" & vbcrlf
+	result.WriteText "			<password_changeable>False</password_changeable>" & vbcrlf
+	result.WriteText "			<password_expires>False</password_expires>" & vbcrlf
+	result.WriteText "			<password_required>False</password_required>" & vbcrlf
+	result.WriteText "			<status>OK</status>" & vbcrlf
+	result.WriteText "			<type>local</type>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 
 	' The NetworkService account
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>NT AUTHORITY\NetworkService</name>" & vbcrlf
-	result.WriteText "	<caption>NT AUTHORITY\NetworkService</caption>" & vbcrlf
-	result.WriteText "	<sid></sid>" & vbcrlf
-	result.WriteText "	<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
-	result.WriteText "	<disabled>False</disabled>" & vbcrlf
-	result.WriteText "	<full_name>LocalSystem</full_name>" & vbcrlf
-	result.WriteText "	<password_changeable>False</password_changeable>" & vbcrlf
-	result.WriteText "	<password_expires>False</password_expires>" & vbcrlf
-	result.WriteText "	<password_required>False</password_required>" & vbcrlf
-	result.WriteText "	<status>OK</status>" & vbcrlf
-	result.WriteText "	<type>local</type>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>NT AUTHORITY\NetworkService</name>" & vbcrlf
+	result.WriteText "			<caption>NT AUTHORITY\NetworkService</caption>" & vbcrlf
+	result.WriteText "			<sid></sid>" & vbcrlf
+	result.WriteText "			<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
+	result.WriteText "			<disabled>False</disabled>" & vbcrlf
+	result.WriteText "			<full_name>LocalSystem</full_name>" & vbcrlf
+	result.WriteText "			<password_changeable>False</password_changeable>" & vbcrlf
+	result.WriteText "			<password_expires>False</password_expires>" & vbcrlf
+	result.WriteText "			<password_required>False</password_required>" & vbcrlf
+	result.WriteText "			<status>OK</status>" & vbcrlf
+	result.WriteText "			<type>local</type>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	result.WriteText "	</user>" & vbcrlf
 end if
 
@@ -3364,12 +3363,12 @@ if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <>
 					next
 				end if
 			next
-			result.WriteText "	<item>" & vbcrlf
-			result.WriteText "		<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
-			result.WriteText "		<description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
-			result.WriteText "		<sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
-			result.WriteText "		<members>" & escape_xml(group_members) & "</members>" & vbcrlf
-			result.WriteText "	</item>" & vbcrlf
+			result.WriteText "		<item>" & vbcrlf
+			result.WriteText "			<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+			result.WriteText "			<description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
+			result.WriteText "			<sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
+			result.WriteText "			<members>" & escape_xml(group_members) & "</members>" & vbcrlf
+			result.WriteText "		</item>" & vbcrlf
 			group_members = ""
 		next
 	end if
@@ -3386,14 +3385,14 @@ if (skip_software = "n") then
 	if (not isnull(colItems)) then
 		for each objItem In colItems
 			if objItem.Manufacturer <> "Microsoft Corporation" then
-				result.WriteText "	<item>" & vbcrlf
-				result.WriteText "	<name>" & escape_xml(objItem.Group) & " - " & objItem.Filename & "</name>" & vbcrlf
-				result.WriteText "	<version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
-				result.WriteText "	<location>" & escape_xml(objItem.Caption) & "</location>" & vbcrlf
-				result.WriteText "	<install_date>" & escape_xml(objItem.InstallDate) & "</install_date>" & vbcrlf
-				result.WriteText "	<publisher>" & escape_xml(objItem.Manufacturer) & "</publisher>" & vbcrlf
-				result.WriteText "	<type>codec</type>" & vbcrlf
-				result.WriteText "	</item>" & vbcrlf
+				result.WriteText "		<item>" & vbcrlf
+				result.WriteText "			<name>" & escape_xml(objItem.Group) & " - " & objItem.Filename & "</name>" & vbcrlf
+				result.WriteText "			<version>" & escape_xml(objItem.Version) & "</version>" & vbcrlf
+				result.WriteText "			<location>" & escape_xml(objItem.Caption) & "</location>" & vbcrlf
+				result.WriteText "			<install_date>" & escape_xml(objItem.InstallDate) & "</install_date>" & vbcrlf
+				result.WriteText "			<publisher>" & escape_xml(objItem.Manufacturer) & "</publisher>" & vbcrlf
+				result.WriteText "			<type>codec</type>" & vbcrlf
+				result.WriteText "		</item>" & vbcrlf
 			end if
 		next
 	end if
@@ -3410,12 +3409,12 @@ if (skip_software = "n") then
 	if strValue = "Installed" then
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(strValueName) & "</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(driver_version) & "</version>" & vbcrlf
-	result.WriteText "	<location>" & escape_xml(file_name) & "</location>" & vbcrlf
-	result.WriteText "	<type>odbc driver</type>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(strValueName) & "</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(driver_version) & "</version>" & vbcrlf
+	result.WriteText "			<location>" & escape_xml(file_name) & "</location>" & vbcrlf
+	result.WriteText "			<type>odbc driver</type>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 	next
 	end if
@@ -3432,12 +3431,12 @@ if (skip_software = "n") then
 	if strValue = "Installed" then
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Wow6432Node\ODBC\ODBCINST.INI\" & strValueName,"DriverODBCVer",driver_version
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Wow6432Node\ODBC\ODBCINST.INI\" & strValueName,"Driver",file_name
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(strValueName) & "</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(driver_version) & "</version>" & vbcrlf
-	result.WriteText "	<location>" & escape_xml(file_name) & "</location>" & vbcrlf
-	result.WriteText "	<type>odbc driver</type>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(strValueName) & "</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(driver_version) & "</version>" & vbcrlf
+	result.WriteText "			<location>" & escape_xml(file_name) & "</location>" & vbcrlf
+	result.WriteText "			<type>odbc driver</type>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 	next
 	end if
@@ -3453,13 +3452,13 @@ if (skip_software = "n") then
 	else
 	 display_name = "Windows DAC"
 	end if
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(display_name) & "</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(dac_version) & "</version>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>Microsoft Corporation</publisher>" & vbcrlf
-	result.WriteText "	<url>http://msdn2.microsoft.com/en-us/data/default.aspx</url>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(display_name) & "</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(dac_version) & "</version>" & vbcrlf
+	result.WriteText "			<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+	result.WriteText "			<publisher>Microsoft Corporation</publisher>" & vbcrlf
+	result.WriteText "			<url>http://msdn2.microsoft.com/en-us/data/default.aspx</url>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 
 
@@ -3507,13 +3506,13 @@ if (skip_software = "n") then
 	strValueName = "PlayerVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,wmp_version
 	if (not isnull(wmp_version)) then
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>Windows Media Player</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(wmp_version) & "</version>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>Microsoft Corporation</publisher>" & vbcrlf
-	result.WriteText "	<url>http://windows.microsoft.com/en-us/windows/windows-media-player</url>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>Windows Media Player</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(wmp_version) & "</version>" & vbcrlf
+	result.WriteText "			<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+	result.WriteText "			<publisher>Microsoft Corporation</publisher>" & vbcrlf
+	result.WriteText "			<url>http://windows.microsoft.com/en-us/windows/windows-media-player</url>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 
 
@@ -3522,13 +3521,13 @@ if (skip_software = "n") then
 	strValueName = "Version"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,strValueName,ie_version
 	if (not isnull(ie_version)) then
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>Internet Explorer</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(ie_version) & "</version>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>Microsoft Corporation</publisher>" & vbcrlf
-	result.WriteText "	<url>http://windows.microsoft.com/en-us/internet-explorer/internet-explorer-help</url>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>Internet Explorer</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(ie_version) & "</version>" & vbcrlf
+	result.WriteText "			<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+	result.WriteText "			<publisher>Microsoft Corporation</publisher>" & vbcrlf
+	result.WriteText "			<url>http://windows.microsoft.com/en-us/internet-explorer/internet-explorer-help</url>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 
 
@@ -3540,23 +3539,23 @@ if (skip_software = "n") then
 	set colFiles = objWMIService.ExecQuery("Select * from CIM_Datafile Where Name = 'c:\\program files\\Outlook Express\\msimn.exe'",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (CIM_Datafile)" : audit_wmi_fails = audit_wmi_fails & "CIM_Datafile " : end if
 	for each objFile in colFiles
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>Outlook Express</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(objFile.Version) & "</version>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>Microsoft Corporation</publisher>" & vbcrlf
-	result.WriteText "	<url>http://windows.microsoft.com/en-us/windows/outlook-express</url>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>Outlook Express</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(objFile.Version) & "</version>" & vbcrlf
+	result.WriteText "			<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+	result.WriteText "			<publisher>Microsoft Corporation</publisher>" & vbcrlf
+	result.WriteText "			<url>http://windows.microsoft.com/en-us/windows/outlook-express</url>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	next
 	else
 	oe_version = replace(oe_version, ",", ".")
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>Outlook Express</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(oe_version) & "</version>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>Microsoft Corporation</publisher>" & vbcrlf
-	result.WriteText "	<url>http://windows.microsoft.com/en-us/windows/outlook-express</url>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>Outlook Express</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(oe_version) & "</version>" & vbcrlf
+	result.WriteText "			<install_date>" & escape_xml(system_pc_date_os_installation) & "</install_date>" & vbcrlf
+	result.WriteText "			<publisher>Microsoft Corporation</publisher>" & vbcrlf
+	result.WriteText "			<url>http://windows.microsoft.com/en-us/windows/outlook-express</url>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 
 
@@ -3663,18 +3662,18 @@ if (skip_software = "n") then
 	next
 	on error goto 0
 
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(package_name) & "</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(package_version) & "</version>" & vbcrlf
-	result.WriteText "	<location>" & escape_xml(package_location) & "</location>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
-	result.WriteText "	<install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
-	result.WriteText "	<system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
-	result.WriteText "	<url>" & escape_xml(package_url) & "</url>" & vbcrlf
-	result.WriteText "	<installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
-	result.WriteText "	<installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(package_name) & "</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(package_version) & "</version>" & vbcrlf
+	result.WriteText "			<location>" & escape_xml(package_location) & "</location>" & vbcrlf
+	result.WriteText "			<install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
+	result.WriteText "			<publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
+	result.WriteText "			<install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
+	result.WriteText "			<system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
+	result.WriteText "			<url>" & escape_xml(package_url) & "</url>" & vbcrlf
+	result.WriteText "			<installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
+	result.WriteText "			<installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 	next
 	end if
@@ -3747,17 +3746,17 @@ if (skip_software = "n") then
 	end if
 	next
 
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(package_name) & "</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(objItem2.version) & "</version>" & vbcrlf
-	result.WriteText "	<location>" & escape_xml(objItem2.InstallLocation) & "</location>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(objItem2.InstallDate) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>" & escape_xml(objItem2.Vendor) & "</publisher>" & vbcrlf
-	result.WriteText "	<install_source>" & escape_xml(software_install_source) & "</install_source>" & vbcrlf
-	result.WriteText "	<url>" & escape_xml(software_url) & "</url>" & vbcrlf
-	result.WriteText "	<installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
-	result.WriteText "	<installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(package_name) & "</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(objItem2.version) & "</version>" & vbcrlf
+	result.WriteText "			<location>" & escape_xml(objItem2.InstallLocation) & "</location>" & vbcrlf
+	result.WriteText "			<install_date>" & escape_xml(objItem2.InstallDate) & "</install_date>" & vbcrlf
+	result.WriteText "			<publisher>" & escape_xml(objItem2.Vendor) & "</publisher>" & vbcrlf
+	result.WriteText "			<install_source>" & escape_xml(software_install_source) & "</install_source>" & vbcrlf
+	result.WriteText "			<url>" & escape_xml(software_url) & "</url>" & vbcrlf
+	result.WriteText "			<installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
+	result.WriteText "			<installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	next
 	on error goto 0
 	end if
@@ -3872,18 +3871,18 @@ if (reg_node = "y") then
 	next
 	On Error Goto 0
 
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(package_name) & "</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(package_version) & "</version>" & vbcrlf
-	result.WriteText "	<location>" & escape_xml(package_location) & "</location>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
-	result.WriteText "	<install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
-	result.WriteText "	<system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
-	result.WriteText "	<url>" & escape_xml(package_url) & "</url>" & vbcrlf
-	result.WriteText "	<installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
-	result.WriteText "	<installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(package_name) & "</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(package_version) & "</version>" & vbcrlf
+	result.WriteText "			<location>" & escape_xml(package_location) & "</location>" & vbcrlf
+	result.WriteText "			<install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
+	result.WriteText "			<publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
+	result.WriteText "			<install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
+	result.WriteText "			<system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
+	result.WriteText "			<url>" & escape_xml(package_url) & "</url>" & vbcrlf
+	result.WriteText "			<installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
+	result.WriteText "			<installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 	next
 	end if
@@ -4017,18 +4016,18 @@ if address_width = "64" then
 	next
 	on error goto 0
 
-	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(package_name) & "</name>" & vbcrlf
-	result.WriteText "	<version>" & escape_xml(package_version) & "</version>" & vbcrlf
-	result.WriteText "	<location>" & escape_xml(package_location) & "</location>" & vbcrlf
-	result.WriteText "	<install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
-	result.WriteText "	<publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
-	result.WriteText "	<install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
-	result.WriteText "	<system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
-	result.WriteText "	<url>" & escape_xml(package_url) & "</url>" & vbcrlf
-	result.WriteText "	<installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
-	result.WriteText "	<installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(package_name) & "</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(package_version) & "</version>" & vbcrlf
+	result.WriteText "			<location>" & escape_xml(package_location) & "</location>" & vbcrlf
+	result.WriteText "			<install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
+	result.WriteText "			<publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
+	result.WriteText "			<install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
+	result.WriteText "			<system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
+	result.WriteText "			<url>" & escape_xml(package_url) & "</url>" & vbcrlf
+	result.WriteText "			<installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
+	result.WriteText "			<installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	end if
 	next
 	end if
@@ -4068,15 +4067,15 @@ en_sql_express = "n"
 result.WriteText "	<service>" & vbcrlf
 set colItems = objWMIService.ExecQuery("Select * from Win32_Service",,32)
 for each objItem in colItems
-	result.WriteText "	<item>" & vbcrlf
-	'result.WriteText "	<service_description>" & escape_xml(objItem.Description) & "</service_description>" & vbcrlf
-	result.WriteText "	<description>" & escape_xml(objItem.DisplayName) & "</description>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
-	result.WriteText "	<executable>" & escape_xml(objItem.PathName) & "</executable>" & vbcrlf
-	result.WriteText "	<user>" & escape_xml(objItem.StartName) & "</user>" & vbcrlf
-	result.WriteText "	<start_mode>" & escape_xml(objItem.StartMode) & "</start_mode>" & vbcrlf
-	result.WriteText "	<state>" & escape_xml(objItem.State) & "</state>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<item>" & vbcrlf
+	'result.WriteText "			<service_description>" & escape_xml(objItem.Description) & "</service_description>" & vbcrlf
+	result.WriteText "			<description>" & escape_xml(objItem.DisplayName) & "</description>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+	result.WriteText "			<executable>" & escape_xml(objItem.PathName) & "</executable>" & vbcrlf
+	result.WriteText "			<user>" & escape_xml(objItem.StartName) & "</user>" & vbcrlf
+	result.WriteText "			<start_mode>" & escape_xml(objItem.StartMode) & "</start_mode>" & vbcrlf
+	result.WriteText "			<state>" & escape_xml(objItem.State) & "</state>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 
 	service_name = objItem.Name
 	if details_to_lower = "y" then service_name = lcase(service_name) end if
@@ -5921,10 +5920,10 @@ else
 	subKey = "Version"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -5955,10 +5954,10 @@ else
 	subKey = "VType"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_edition
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -5980,10 +5979,10 @@ if IsNull(key_text) then
 	' do nothing
 else
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6004,10 +6003,10 @@ if IsNull(key_text) then
 	' do nothing
 else
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6028,10 +6027,10 @@ if IsNull(key_text) then
 	' do nothing
 else
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6054,10 +6053,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6080,10 +6079,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6106,10 +6105,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6132,10 +6131,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6155,10 +6154,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6181,11 +6180,11 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
-	result.WriteText "	</item>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
 	key_edition = ""
@@ -6204,10 +6203,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6230,10 +6229,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6253,10 +6252,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6279,10 +6278,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6302,10 +6301,10 @@ else
 	subKey = "LicenseVersion"
 	oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key_release
 	result.WriteText "	<item>" & vbcrlf
-	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
-	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
-	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "		<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "		<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "		<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "		<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
 	result.WriteText "	</item>" & vbcrlf
 	key_text = ""
 	key_release = ""
@@ -6326,10 +6325,10 @@ if IsNull(key_text) or key_text = "" then
 else
    key_text = AddDashes(key_text, 5)
    result.WriteText " <item>" & vbcrlf
-   result.WriteText " <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-   result.WriteText " <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-   result.WriteText " <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-   result.WriteText " <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+   result.WriteText " 	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+   result.WriteText " 	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+   result.WriteText " 	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+   result.WriteText " 	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
    result.WriteText " </item>" & vbcrlf
    key_text = ""
    key_release = ""
@@ -6347,10 +6346,10 @@ if IsNull(key_text) or key_text = "" then
 else
    key_text = AddDashes(key_text, 5)
    result.WriteText " <item>" & vbcrlf
-   result.WriteText " <name>" & escape_xml(key_name) & "</name>" & vbcrlf
-   result.WriteText " <string>" & escape_xml(key_text) & "</string>" & vbcrlf
-   result.WriteText " <rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
-   result.WriteText " <edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+   result.WriteText " 	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+   result.WriteText " 	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+   result.WriteText " 	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+   result.WriteText " 	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
    result.WriteText " </item>" & vbcrlf
    key_text = ""
    key_release = ""
@@ -6368,28 +6367,28 @@ if ((run_netstat = "y") or (run_netstat = "s" and instr(lcase(system_os_name), "
 	old_line = ""
 	new_line = ""
 	if (isobject(rexec)) then
-	result.WriteText "	<netstat>" & vbcrlf
-	result.WriteText "	<![CDATA["
-	do while not rexec.StdOut.AtEndofStream
-	strtext = rexec.stdout.readline()
-	if (instr(strtext, "Active Connections") or instr(strtext, "Proto  Local Address")) then
-	' do noting - these are header lines
-	else
-	if ((instr(strtext, "  TCP") = 1) or (instr(strtext, "  UDP") = 1)) then
-	' we have a new line, write out the old line
-	if (instr(old_line, "LISTENING") or instr(old_line, "  UDP") = 1) then
-	' only write out the line if it's a "listening" port
-	result.WriteText old_line & vbcrlf
-	end if
-	old_line = strText
-	else
-	' we have to add on to the previous line
-	old_line = old_line & " " & strText
-	end if
-	end if
-	loop
-	result.WriteText "]]>" & vbcrlf
-	result.WriteText "	</netstat>" & vbcrlf
+		result.WriteText "	<netstat>" & vbcrlf
+		result.WriteText "	<![CDATA["
+		do while not rexec.StdOut.AtEndofStream
+			strtext = rexec.stdout.readline()
+			if (instr(strtext, "Active Connections") or instr(strtext, "Proto  Local Address")) then
+				' do noting - these are header lines
+			else
+				if ((instr(strtext, "  TCP") = 1) or (instr(strtext, "  UDP") = 1)) then
+					' we have a new line, write out the old line
+					if (instr(old_line, "LISTENING") or instr(old_line, "  UDP") = 1) then
+						' only write out the line if it's a "listening" port
+						result.WriteText old_line & vbcrlf
+					end if
+					old_line = strText
+				else
+					' we have to add on to the previous line
+					old_line = old_line & " " & strText
+				end if
+			end if
+		loop
+		result.WriteText "]]>" & vbcrlf
+		result.WriteText "	</netstat>" & vbcrlf
 	end if
 end if
 
@@ -6407,29 +6406,29 @@ if (windows_build_number > 2195) then
 	for each objItem in colItems
 	  Protocol = objItem.Protocol
 	  select case  Protocol
-	case "1"  Protocol = "Other"
-	case "2"  Protocol = "Local"
-	case "3"  Protocol = "Netmgmt"
-	case "4"  Protocol = "icmp"
-	case "5"  Protocol = "egp"
-	case "6"  Protocol = "ggp"
-	case "7"  Protocol = "hello"
-	case "8"  Protocol = "rip"
-	case "9"  Protocol = "is-is"
-	case "10" Protocol = "es-is"
-	case "11" Protocol = "CiscoIgrp"
-	case "12" Protocol = "bbnSpfIgp"
-	case "13" Protocol = "ospf"
-	case "14" Protocol = "bgp"
-	case else Protocol = "unknown"
-	end select
-	RouteType = objItem.Type
-	select case  RouteType
-	case "1"  RouteType = "Other"
-	case "2"  RouteType = "Invalid"
-	case "3"  RouteType = "Direct"
-	case "4"  RouteType = "Indirect"
-	case else RouteType = "unknown"
+		case "1"  Protocol = "Other"
+		case "2"  Protocol = "Local"
+		case "3"  Protocol = "Netmgmt"
+		case "4"  Protocol = "icmp"
+		case "5"  Protocol = "egp"
+		case "6"  Protocol = "ggp"
+		case "7"  Protocol = "hello"
+		case "8"  Protocol = "rip"
+		case "9"  Protocol = "is-is"
+		case "10" Protocol = "es-is"
+		case "11" Protocol = "CiscoIgrp"
+		case "12" Protocol = "bbnSpfIgp"
+		case "13" Protocol = "ospf"
+		case "14" Protocol = "bgp"
+		case else Protocol = "unknown"
+		end select
+		RouteType = objItem.Type
+		select case  RouteType
+		case "1"  RouteType = "Other"
+		case "2"  RouteType = "Invalid"
+		case "3"  RouteType = "Direct"
+		case "4"  RouteType = "Indirect"
+		case else RouteType = "unknown"
 	end select
 	ip_hit = "0"
 	for i = 1 to ubound(ip_address_array)
@@ -6441,12 +6440,12 @@ if (windows_build_number > 2195) then
 	' do nothing
 	else
 	  result.WriteText "	<item>" & vbcrlf
-	  result.WriteText "	<destination>" & objItem.Destination & "</destination>" & vbcrlf
-	  result.WriteText "	<mask>" & objItem.Mask & "</mask>" & vbcrlf
-	  result.WriteText "	<metric>" & objItem.Metric1 & "</metric>" & vbcrlf
-	  result.WriteText "	<next_hop>" & objItem.NextHop & "</next_hop>" & vbcrlf
-	  result.WriteText "	<protocol>" & Protocol & "</protocol>" & vbcrlf
-	  result.WriteText "	<type>" & RouteType & "</type>" & vbcrlf
+	  result.WriteText "		<destination>" & objItem.Destination & "</destination>" & vbcrlf
+	  result.WriteText "		<mask>" & objItem.Mask & "</mask>" & vbcrlf
+	  result.WriteText "		<metric>" & objItem.Metric1 & "</metric>" & vbcrlf
+	  result.WriteText "		<next_hop>" & objItem.NextHop & "</next_hop>" & vbcrlf
+	  result.WriteText "		<protocol>" & Protocol & "</protocol>" & vbcrlf
+	  result.WriteText "		<type>" & RouteType & "</type>" & vbcrlf
 	  result.WriteText "	</item>" & vbcrlf
 	  end if
 	  ip_hit = "0"
@@ -6519,21 +6518,21 @@ if submit_online = "y" then
       aErr = Array(Err.Number, Err.Description)
       On Error GoTo 0
       Select Case True
-      Case 0 <> aErr(0)
-         if debugging > "0" then
-            wscript.echo "Error with http request. Audit not submitted."
-         end if
-         if debugging > "1" then
-            wscript.echo "HTTP Error: " & aErr(0)
-            wscript.echo "HTTP Status: " &  aErr(1)
-         end if
-         responseAvailable = False
-      Case 200 = objHTTP.status
-         if debugging > "0" then wscript.echo "Audit Submitted" end if
-         responseAvailable = True
-      Case Else
-         if debugging > "0" then wscript.echo "Error with http request(2). Audit not submitted." end if
-         responseAvailable = True
+	      Case 0 <> aErr(0)
+	         if debugging > "0" then
+	            wscript.echo "Error with http request. Audit not submitted."
+	         end if
+	         if debugging > "1" then
+	            wscript.echo "HTTP Error: " & aErr(0)
+	            wscript.echo "HTTP Status: " &  aErr(1)
+	         end if
+	         responseAvailable = False
+	      Case 200 = objHTTP.status
+	         if debugging > "0" then wscript.echo "Audit Submitted" end if
+	         responseAvailable = True
+	      Case Else
+	         if debugging > "0" then wscript.echo "Error with http request(2). Audit not submitted." end if
+	         responseAvailable = True
       End Select
 
       if responseAvailable = True then
