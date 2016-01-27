@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<group>
+	<details>
+		<group_name>SAN devices</group_name>
+		<group_padded_name></group_padded_name>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_type LIKE 'san' AND system.man_status = 'production']]></group_dynamic_select>
+		<group_parent>1</group_parent>
+		<group_category>device</group_category>
+		<group_icon>nas</group_icon>
+		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'san'.</group_description>
+		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_type, system.man_manufacturer, system.man_serial, system.man_model, system.man_ip_address FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id ]]></group_display_sql>
+	</details>
+	<columns>
+		<column>
+			<column_order>0</column_order>
+			<column_name>Name</column_name>
+			<column_variable>hostname</column_variable>
+			<column_type>link</column_type>
+			<column_link>/main/system_display/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>Description</column_name>
+			<column_variable>man_description</column_variable>
+			<column_type>link</column_type>
+			<column_link>/main/system_display/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>2</column_order>
+			<column_name>Manufacturer</column_name>
+			<column_variable>man_manufacturer</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>3</column_order>
+			<column_name>Model</column_name>
+			<column_variable>man_model</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>4</column_order>
+			<column_name>Serial</column_name>
+			<column_variable>man_serial</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>6</column_order>
+			<column_name>IP Address</column_name>
+			<column_variable>man_ip_address</column_variable>
+			<column_type>ip_address</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>7</column_order>
+			<column_name>Tags</column_name>
+			<column_variable>tag</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>8</column_order>
+			<column_name></column_name>
+			<column_variable>system_id</column_variable>
+			<column_type></column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+	</columns>
+</group>
