@@ -516,7 +516,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <thead>
                         <tr>
                             <th><?php echo __('Mount Point')?></th>
-                            <th><?php echo __('Caption')?></th>
+                            <th><?php echo __('Description')?></th>
                             <th><?php echo __('Model')?></th>
                             <th><?php echo __('Device ID')?></th>
                         </tr>
@@ -897,7 +897,7 @@ function show_software($type, $software) {
                         <tr>
                             <th style='width:120px;'><?php echo __('Name')?></th>
                             <th style="text-align: right; padding: 0 20px 0 0; width:120px;"><?php echo __('Size')?></th>
-                            <th><?php echo __('Caption')?></th>
+                            <th><?php echo __('Description')?></th>
                             <th><?php echo __('Path')?></th>                        </tr>
                     </thead>
                     <tbody>
@@ -912,7 +912,7 @@ function show_software($type, $software) {
                         <tr>
                             <td><?php echo clean_url($key->name)?></td>
                             <td style="text-align: right;" ><?php echo $size?></td>
-                            <td><?php echo clean_url($key->caption)?></td>
+                            <td><?php echo clean_url($key->description)?></td>
                             <td><?php echo clean_url($key->path)?></td>
                         </tr>
                     <?php endforeach; ?>
