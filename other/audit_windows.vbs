@@ -3135,46 +3135,41 @@ if (skip_printer = "n") then
 end if
 
 
-if debugging > "0" and strcomputer = "." then wscript.echo "scheduled tasks" end if
-'' only run this if we are auditing on the local machine
-if strcomputer = "." then
+' only run this if we are auditing on the local machine
+' only run this for build 7600 and newer (Win7 and Win 2008 r2 or later)
+' TODO - the database field for task name is only 100 characters long
+'        this will need extending to avoid creating false positive alerts
+'        because some built in Windows tasks have LONG names
+'        Fix the truncated name below and expand the database attribute to 250 characters
+if (strcomputer = "." and audit_location = "local" and CInt(windows_build_number) > 7599) then
+	if debugging > "0" and strcomputer = "." then wscript.echo "scheduled tasks" end if
 	item = ""
-	' We rely on schtasks.exe so skipping if local system is older than WinXP
-	' Check Build Number: Win2k-->2195, Win98-->2222, WinME-->3000,
-	if ((CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) and audit_location = "local" ) then
-	   if windows_build_number = "2600" then
-	      intOffset = 0
-	   else
-	      intOffset = 1
-	   End if
-	   strCommand = "%ComSpec% /c schtasks.exe /query /v /nh /fo csv"
-	   strCommand = "schtasks.exe /query /v /nh /fo csv"
-	   On Error Resume Next
-	   set objExecObject = objShell.Exec(strCommand)
-	   On Error GoTo 0
-	   If IsObject(objExecObject) then
-	      do While Not objExecObject.StdOut.AtEndOfStream
-	         strResults = objExecObject.StdOut.ReadAll()
-	      Loop
-	      MyArray = Split(strResults, vbcrlf)
-	      for each line in MyArray
-	         sTask = CSVParser(line)
-	         if UCase(sTask(0)) = UCase(system_hostname) then
-	            item = item & "      <item>" & vbcrlf
-	            item = item & "         <name><![CDATA[" & sTask(1) & "]]></name>" & vbcrlf
-	            item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
-	            item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
-	            item = item & "         <last_run><![CDATA[" & sTask(4+intOffset) & "]]></last_run>" & vbcrlf
-	            item = item & "         <last_result><![CDATA[" & sTask(5+intOffset) & "]]></last_result>" & vbcrlf
-	            item = item & "         <creator><![CDATA[" & sTask(6+intOffset) & "]]></creator>" & vbcrlf
-	            item = item & "         <schedule><![CDATA[" & sTask(7+intOffset) & "]]></schedule>" & vbcrlf
-	            item = item & "         <task><![CDATA[" & sTask(8+intOffset) & "]]></task>" & vbcrlf
-	            item = item & "         <state><![CDATA[" & sTask(11+intOffset) & "]]></state>" & vbcrlf
-	            item = item & "         <user><![CDATA[" & sTask(18+intOffset) & "]]></user>" & vbcrlf
-	            item = item & "      </item>" & vbcrlf
-	         end if
-	      next
-	   end if
+	strCommand = "schtasks.exe /query /v /fo csv"
+	On Error Resume Next
+	set objExecObject = objShell.Exec(strCommand)
+	On Error GoTo 0
+	if IsObject(objExecObject) then
+		do While Not objExecObject.StdOut.AtEndOfStream
+			strResults = objExecObject.StdOut.ReadAll()
+		Loop
+		MyArray = Split(strResults, vbcrlf)
+		for each line in MyArray
+			sTask = CSVParser(line)
+			if UCase(sTask(0)) = UCase(system_hostname) then
+				item = item & "      <item>" & vbcrlf
+				item = item & "         <name><![CDATA[" & mid(sTask(1), 1, 100) & "]]></name>" & vbcrlf
+				item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
+				item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
+				item = item & "         <last_run><![CDATA[" & sTask(5) & "]]></last_run>" & vbcrlf
+				item = item & "         <last_result><![CDATA[" & sTask(6) & "]]></last_result>" & vbcrlf
+				item = item & "         <creator><![CDATA[" & sTask(7) & "]]></creator>" & vbcrlf
+				item = item & "         <schedule></schedule>" & vbcrlf
+				item = item & "         <task><![CDATA[" & sTask(8) & "]]></task>" & vbcrlf
+				item = item & "         <state><![CDATA[" & sTask(11) & "]]></state>" & vbcrlf
+				item = item & "         <user><![CDATA[" & sTask(14) & "]]></user>" & vbcrlf
+				item = item & "      </item>" & vbcrlf
+			end if
+		next
 	end if
 	if item > "" then
 	   result.WriteText "   <task>" & vbcrlf
