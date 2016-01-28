@@ -781,7 +781,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 	result.WriteText "		<os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
 	result.WriteText "		<os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
 	result.WriteText "		<os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
-	result.WriteText "		<windows_active_directory_ou>" & escape_xml(computer_ou) & "</windows_active_directory_ou>" & vbcrlf
+	result.WriteText "		<active_directory_ou>" & escape_xml(computer_ou) & "</active_directory_ou>" & vbcrlf
 	result.WriteText "		<last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
 	result.WriteText "		<last_seen_by>active directory</last_seen_by>" & vbcrlf
 	result.WriteText "		<system_id>" & system_id & "</system_id>" & vbcrlf
