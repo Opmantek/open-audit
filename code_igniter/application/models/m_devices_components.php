@@ -124,6 +124,13 @@ class M_devices_components extends MY_Model
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             $result = $this->from_db($result);
+            if ($properties != '*' and !stripos($properties, ',') and $table == 'system') {
+                # the request is for a single value from the system table - return only this value (as a string)
+                $temp_result = $result[0]->$properties;
+                unset($result);
+                $result = (string)$temp_result;
+                unset($temp_result);
+            }
             return($result);
         } else {
             return;

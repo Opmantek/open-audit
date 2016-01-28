@@ -236,8 +236,7 @@ class ajax extends MY_Controller
                         }
                     }
                     if (($field_ok == 1) && ($access_level >= 7)) {
-                        $temp = $this->data['field_name'];
-                        $original_value = $this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', $temp)[0]->$temp;
+                        $original_value = $this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', $this->data['field_name']);
                         $this->m_system->update_system_man($this->data['system_id'], $this->data['field_name'], $this->oa_urldecode($this->data['field_data']));
                         $this->m_edit_log->create($this->data['system_id'], '', 'system', $this->data['field_name'], '', $this->oa_urldecode($this->data['field_data']), $original_value);
 

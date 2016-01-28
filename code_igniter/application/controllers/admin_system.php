@@ -293,8 +293,8 @@ class Admin_system extends MY_Controller
         $details = new stdClass();
         $details->system_id = $this->uri->segment(3, 0);
         $encrypted_access_details = $this->m_system->get_access_details($details->system_id);
-        $details->hostname = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'hostname')[0]->hostname;
-        $details->man_ip_address = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'man_ip_address')[0]->man_ip_address;
+        $details->hostname = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'hostname');
+        $details->man_ip_address = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'man_ip_address');
         $details->show_output = true;
 
         # set up the pop up page
@@ -338,7 +338,7 @@ class Admin_system extends MY_Controller
         unset($details->man_ip_address);
         echo "<pre>\n";
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
-            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
+            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
             $this->m_system->update_system($details);
             if (isset($this->user->user_full_name)) {
                 $temp_user = $this->user->user_full_name;
@@ -349,9 +349,9 @@ class Admin_system extends MY_Controller
             unset($temp_user);
 
             # update any network interfaces and ip addresses retrieved by SNMP
-            $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
-            $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp')[0]->first_timestamp;
-            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by')[0]->last_seen_by;
+            $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
+            $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
+            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
 
             if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                 $input = new stdClass();
@@ -759,8 +759,8 @@ class Admin_system extends MY_Controller
                         unset($temp_user);
 
                          # update any network interfaces and ip addresses retrieved by SNMP
-                        $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
-                        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp')[0]->first_timestamp;
+                        $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
+                        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                             $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {

@@ -294,7 +294,7 @@ class System extends CI_Controller
             $received_system_id = (string) $details->system_id;
         }
         $received_status = "";
-        $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'man_status')[0]->man_status;
+        $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'man_status');
         if ($received_status !== 'production') {
             $received_system_id = '';
         }
@@ -356,12 +356,12 @@ class System extends CI_Controller
             stdlog($log_details);
             unset($log_details);
 
-            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by')[0]->last_seen_by;
-            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
+            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
+            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
             $this->m_system->update_system($details);
             echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
         }
-        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp')[0]->first_timestamp;
+        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
 
 
         $this->m_audit_log->create($details->system_id, $user_full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);

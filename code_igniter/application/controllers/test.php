@@ -68,9 +68,26 @@ class test extends CI_Controller
         redirect('/');
     }
 
+    public function types ()
+    {
+        include 'include_device_types.php';
+        echo "<pre>\n";
+        foreach ($device_types as $key => $value) {
+            echo $key . ' = ' . $value . "\n";
+        }
+    }
+
     public function dns()
     {
         print gethostbyaddr('192.168.1.1');
+    }
+
+    public function system_read()
+    {
+        $this->load->model('m_devices_components');
+        echo "<pre>\n";
+        echo $this->m_devices_components->read(1, 'y', 'system', '', 'hostname') . "\n";
+        print_r($this->m_devices_components->read(1, 'y', 'edit_log', '', '*')); echo "\n";
     }
 
     public function delta()
