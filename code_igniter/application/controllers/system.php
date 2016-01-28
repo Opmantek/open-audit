@@ -293,7 +293,8 @@ class System extends CI_Controller
         } else if ($details->system_id > '') {
             $received_system_id = (string) $details->system_id;
         }
-        $received_status = $this->m_devices_components->read($received_system_id, 'y', 'system', '', 'man_status')[0]->man_status;
+        $received_status = "";
+        $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'man_status')[0]->man_status;
         if ($received_status !== 'production') {
             $received_system_id = '';
         }
