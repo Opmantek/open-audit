@@ -265,7 +265,7 @@ class M_devices_components extends MY_Model
         echo "<pre>Processing $table\n";
 
         ### IP ADDRESS ###
-        if ($table == 'ip') {
+        if ((string)$table == 'ip') {
             for ($i=0; $i<count($input->item); $i++) {
                 # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
                 $input->item[$i]->mac = strtolower($input->item[$i]->mac);
@@ -346,7 +346,7 @@ class M_devices_components extends MY_Model
         }
 
         ### PROCESSOR ###
-        if ($table == 'processor') {
+        if ((string)$table == 'processor') {
             $input->item[0]->description = str_ireplace('(R)', '', $input->item[0]->description);
             $input->item[0]->description = str_ireplace('(TM)', '', $input->item[0]->description);
             $input->item[0]->description = str_ireplace('  ', ' ', $input->item[0]->description);
@@ -386,7 +386,7 @@ class M_devices_components extends MY_Model
         }
 
         ### VIRTUAL MACHINE ###
-        if ($table == 'vm') {
+        if ((string)$table == 'vm') {
             foreach ($input->item as $vm) {
                 if (!isset($vm->group)) {
                     $vm->group = '';
@@ -480,7 +480,7 @@ class M_devices_components extends MY_Model
                         if (isset($input_item->$field) and $input_item->$field != '') {
                             $db_item->$field = (string) $input_item->$field;
                         }
-                        $sql .= " " . $table . "." . $field . " = ? , ";
+                        $sql .= " `" . $table . "`." . $field . " = ? , ";
                     }
                     // remove the trailing characters
                     $sql = substr($sql, 0, -2);
@@ -557,7 +557,7 @@ class M_devices_components extends MY_Model
                     $query = $this->db->query($sql, $data);
                 }
             }
-            if ($table == 'partition') {
+            if ((string)$table == 'partition') {
                 // insert an entry into the graph table
                 $used_percent = @intval(($input_item->used / $input_item->size) * 100);
                 $free_percent = @intval(100 - $used_percent);
