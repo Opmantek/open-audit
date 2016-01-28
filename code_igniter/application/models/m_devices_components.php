@@ -487,7 +487,7 @@ class M_devices_components extends MY_Model
                     // set the last_seen column to the same as in $details (system table)
                     $db_item->last_seen = (string)$details->last_seen;
                     // update all values in the table
-                    $sql = "UPDATE $table SET $sql WHERE `" . $table . ".id` = '" . $db_item->id . "'";
+                    $sql = "UPDATE `$table` SET $sql WHERE `" . $table . "`.id = '" . $db_item->id . "'";
                     // make sure no data is in $data
                     unset ($data);
                     // populate $data with the values from the database, combined with those of the audit
