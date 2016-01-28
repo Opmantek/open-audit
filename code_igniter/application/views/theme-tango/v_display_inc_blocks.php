@@ -73,7 +73,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                 <?php
                 if ($key->active_directory_ou > "") { ?>
                 <div style="float:left; width:90%;">
-                    <label for="windows_active_directory_ou"><?php echo __('Active Directory OU')?>: </label><span id="windows_active_directory_ou"><?php echo print_something(str_replace(",", ", ", $key->active_directory_ou))?></span>
+                    <label for="active_directory_ou"><?php echo __('Active Directory OU')?>: </label><span id="active_directory_ou"><?php echo print_something(str_replace(",", ", ", $key->active_directory_ou))?></span>
                 </div>
                 <?php }
                 if ($key->user_name > "") { ?>
