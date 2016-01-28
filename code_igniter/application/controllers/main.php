@@ -100,8 +100,8 @@ class main extends MY_Controller
         if (isset($_POST['attribute'])) {
             $attribute = $_POST['attribute'];
         }
-        $this->load->model('m_oa_general');
-        $result = $this->m_oa_general->get_system_attribute_api($resource, $attribute, $system_id);
+        $this->load->model('m_devices_components');
+        $result = $this->m_devices_components->read($system_id, 'y', $resource, '', $attribute);
         if (is_array($result)) {
             for ($count = 0; $count<count($result); $count++) {
                 $result[$count]->system_id = $system_id;
@@ -124,55 +124,6 @@ class main extends MY_Controller
         header('Cache-Control: max-age=0');
     }
 
-    public function api_node_config_history()
-    {
-        $system_id = $this->uri->segment(3, 0);
-        if (isset($_POST['system_id'])) {
-            $system_id = $_POST['system_id'];
-        }
-
-        $table = $this->uri->segment(4, 0);
-        if (isset($_POST['table'])) {
-            $table = $_POST['table'];
-        }
-
-        if (isset($system_id) and $system_id != '') {
-            $this->load->model('m_oa_general');
-            $document = array();
-            $list = array("$table");
-
-            foreach ($list as $table) {
-                $result = $this->m_oa_general->get_system_document_api_history($table, $system_id);
-                if (is_array($result) and count($result) != 0) {
-                    $document["$table"] = new stdclass();
-                    for ($count = 0; $count<count($result); $count++) {
-                        #$result[$count]->system_id = $system_id;
-                        foreach ($result[$count] as $key => $value) {
-                            // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
-                            if ($key == 'man_ip_address' or
-                                $key == 'destination'    or
-                                $key == 'ip_address_v4'  or
-                                $key == 'next_hop') {
-                                $result[$count]->$key = ip_address_from_db($result[$count]->$key);
-                            }
-                            if ($key == 'ip_address_v4' and ($value == '000.000.000.000' or $value == '0.0.0.0')) {
-                                $result[$count]->ip_address_v4 = '';
-                            }
-                        }
-                    }
-                    $document["$table"] = $result;
-                }
-            }
-        } else {
-            $this->load->model('m_systems');
-            $document = $this->m_systems->api_index('list');
-        }
-        $document['system'] = $this->m_oa_general->get_system_document_api_new("system", $system_id);
-        echo json_encode($document);
-        header('Content-Type: application/json');
-        header('Cache-Control: max-age=0');
-    }
-
     public function api_node_config_new()
     {
         $system_id = $this->uri->segment(3, 0);
@@ -184,7 +135,7 @@ class main extends MY_Controller
             $this->load->model('m_oa_general');
             $this->load->model('m_devices_components');
             $document = array();
-            $list = array( 'system', 'change_log', 'audit_log', 'sys_hw_network_card_ip', 'edit_log');
+            $list = array( 'system', 'sys_hw_network_card_ip');
             foreach ($list as $table) {
                 $result = $this->m_oa_general->get_system_document_api_new($table, $system_id);
                 $document["$table"] = new stdclass();
@@ -209,7 +160,7 @@ class main extends MY_Controller
                 }
                 $document["$table"] = $result;
             }
-            $tables = array('bios', 'disk', 'dns', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }

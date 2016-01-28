@@ -204,8 +204,6 @@ class System extends CI_Controller
 
         $this->load->model('m_devices_components');
 
-        $this->load->model('m_oa_general');
-
         // date_default_timezone_set("Australia/Queensland");
         $timestamp = date('Y-m-d H:i:s');
 
@@ -295,7 +293,7 @@ class System extends CI_Controller
         } else if ($details->system_id > '') {
             $received_system_id = (string) $details->system_id;
         }
-        $received_status = $this->m_oa_general->get_attribute('system', 'man_status', $received_system_id);
+        $received_status = $this->m_devices_components->read($received_system_id, 'y', 'system', '', 'man_status')[0]->man_status;
         if ($received_status !== 'production') {
             $received_system_id = '';
         }
@@ -357,12 +355,12 @@ class System extends CI_Controller
             stdlog($log_details);
             unset($log_details);
 
-            $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
-            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by')[0]->last_seen_by;
+            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
             $this->m_system->update_system($details);
             echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
         }
-        $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp')[0]->first_timestamp;
 
 
         $this->m_audit_log->create($details->system_id, $user_full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);

@@ -174,7 +174,7 @@ class ajax extends MY_Controller
 
         $this->load->model("m_system");
         $this->load->model("m_oa_group");
-        $this->load->model("m_oa_general");
+        $this->load->model("m_devices_components");
         $access_level = $this->m_system->get_system_access_level($this->data['system_id'], $this->user->user_id);
         if ($access_level > 7) {
             $field_ok = 0;
@@ -236,7 +236,8 @@ class ajax extends MY_Controller
                         }
                     }
                     if (($field_ok == 1) && ($access_level >= 7)) {
-                        $original_value = $this->m_oa_general->get_attribute('system', $this->data['field_name'], $this->data['system_id']);
+                        $temp = $this->data['field_name'];
+                        $original_value = $this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', $temp)[0]->$temp;
                         $this->m_system->update_system_man($this->data['system_id'], $this->data['field_name'], $this->oa_urldecode($this->data['field_data']));
                         $this->m_edit_log->create($this->data['system_id'], '', 'system', $this->data['field_name'], '', $this->oa_urldecode($this->data['field_data']), $original_value);
 

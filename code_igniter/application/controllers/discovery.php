@@ -75,7 +75,7 @@ class discovery extends CI_Controller
         $log_details = new stdClass();
         $log_details->severity = 6;
 
-        $this->load->model('m_oa_general');
+        $this->load->model('m_devices_components');
         $this->load->model('m_system');
         $this->load->model('m_oa_user');
         $this->load->library('encrypt');
@@ -117,7 +117,7 @@ class discovery extends CI_Controller
         foreach ($system_ids as $key => $value) {
             $timestamp = date('Y-m-d H:i:s');
             $system_id = $value;
-            $ip_address = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $system_id));
+            $ip_address = $this->ip_address_from_db($this->m_devices_components->read($system_id, 'y', 'system', '', 'man_ip_address')[0]->man_ip_address);
             $credentials = $this->m_system->get_credentials($system_id);
             if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
                 unset($temp);
@@ -371,7 +371,7 @@ class discovery extends CI_Controller
             $this->data['apppath'] = APPPATH;
             $this->data['image_path'] = base_url().'theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images/';
             $this->load->model("m_oa_report");
-            $this->load->model('m_oa_general');
+            $this->load->model('m_devices_components');
             $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
 
             // show the form to accept scan details
@@ -381,7 +381,7 @@ class discovery extends CI_Controller
                 if (is_numeric($this->uri->segment(3))) {
                     $this->data['system_id'] = $this->uri->segment(3);
                     $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
-                    $this->data['ip_address'] = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $this->data['system_id']));
+                    $this->data['ip_address'] = $this->ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address')[0]->man_ip_address);
                     $this->data['type'] = 'device';
                 } else {
                     $this->data['system_id'] = "";
@@ -392,7 +392,7 @@ class discovery extends CI_Controller
             if ($this->uri->segment(4) and is_numeric($this->uri->segment(4))) {
                 $this->data['system_id'] = $this->uri->segment(4);
                 $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
-                $this->data['ip_address'] = $this->ip_address_from_db($this->m_oa_general->get_attribute('system', 'man_ip_address', $this->data['system_id']));
+                $this->data['ip_address'] = $this->ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address')[0]->man_ip_address);
             }
             $this->data['warning'] = '';
             $this->data['include'] = "v_discover_subnet";
@@ -755,7 +755,6 @@ class discovery extends CI_Controller
             $this->load->model('m_system');
             $this->load->model('m_ip_address');
             $this->load->model('m_oa_group');
-            $this->load->model('m_oa_general');
             $this->load->model('m_audit_log');
             $this->load->model('m_change_log');
             $this->load->model('m_devices_components');
@@ -1402,8 +1401,8 @@ class discovery extends CI_Controller
                             // we have a system id - UPDATE
                             $log_details->message = strtoupper($details->last_seen_by) . " update for $details->man_ip_address (System ID $details->system_id)";
                             stdlog($log_details);
-                            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
-                            $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
+                            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
+                            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by')[0]->last_seen_by;
                             $this->m_system->update_system($details);
                         } else {
                             // we have a new system - INSERT
@@ -1412,8 +1411,8 @@ class discovery extends CI_Controller
                             $details->system_id = $this->m_system->insert_system($details);
                         }
                         // grab some timestamps
-                        $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
-                        $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+                        $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
+                        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp')[0]->first_timestamp;
 
                         // Insert an audit log
                         if (isset($this->user->user_full_name)) {
@@ -1778,8 +1777,8 @@ class discovery extends CI_Controller
 
                                                                 if (isset($esx_details->system_id) and $esx_details->system_id != '') {
                                                                     // we have an existing device
-                                                                    $esx_details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $esx_details->system_id);
-                                                                    $esx_details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $esx_details->system_id);
+                                                                    $esx_details->original_last_seen_by = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen_by')[0]->last_seen_by;
+                                                                    $esx_details->original_timestamp = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
                                                                     $this->m_system->update_system($esx_details);
                                                                     $log_details->message = "ESX update for $esx_details->man_ip_address (System ID $esx_details->system_id)";
                                                                     stdlog($log_details);
@@ -2109,8 +2108,8 @@ class discovery extends CI_Controller
                                                         }
                                                         if (isset($esx_details->system_id) and $esx_details->system_id != '') {
                                                             // we have an existing device
-                                                            $esx_details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $esx_details->system_id);
-                                                            $esx_details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $esx_details->system_id);
+                                                            $esx_details->original_last_seen_by = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen_by')[0]->last_seen_by;
+                                                            $esx_details->original_timestamp = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
                                                             $this->m_system->update_system($esx_details);
                                                             $log_details->message = "ESX update for $esx_details->man_ip_address (System ID $esx_details->system_id)";
                                                             stdlog($log_details);

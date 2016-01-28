@@ -99,7 +99,6 @@ class San extends CI_Controller
             $this->load->model('m_devices_components');
             $this->load->model('m_system');
             $this->load->model('m_oa_group');
-            $this->load->model('m_oa_general');
             $this->load->model('m_audit_log');
             $this->load->model('m_ip_address');
             $this->load->helper('url');
@@ -722,12 +721,12 @@ class San extends CI_Controller
             $log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->system_id . ')';
             stdlog($log_details);
             unset($log_details);
-            $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
-            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by')[0]->last_seen_by;
+            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
             $this->m_system->update_system($details);
             echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
         }
-        $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp')[0]->first_timestamp;
         $temp_user = '';
         if (isset($this->user->user_full_name)) {
             $temp_user = $this->user->user_full_name;

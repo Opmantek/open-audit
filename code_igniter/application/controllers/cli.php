@@ -131,7 +131,6 @@ class cli extends CI_Controller
         $this->load->library('encrypt');
         $this->load->model('m_system');
         $this->load->model('m_oa_group');
-        $this->load->model('m_oa_general');
         $this->load->model('m_devices_components');
         $this->load->model('m_ip_address');
         $file_handle = fopen($nodes_file, 'r');
@@ -279,8 +278,8 @@ class cli extends CI_Controller
                         // we received a result from snmp, use this data to update or insert
                         if (isset($device->system_id) and (string) $device->system_id !== '') {
                             // update an existing device with snmp
-                            $device->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $device->system_id);
-                            $device->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $device->system_id);
+                            $device->original_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
+                            $device->original_last_seen_by = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen_by')[0]->last_seen_by;
                             $device->last_seen_by = 'snmp nmis import';
                             $this->m_system->update_system($device);
                             $log_details->message = 'NMIS import, update SNMP for '.$device->man_ip_address.' ('.$device->hostname.')';
@@ -291,14 +290,14 @@ class cli extends CI_Controller
                             $device->last_seen_by = 'snmp nmis import';
                             $device->original_last_seen_by = 'snmp nmis import';
                             $device->system_id = $this->m_system->insert_system($device);
-                            $device->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $device->system_id);
+                            $device->original_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
                             $log_details->message = 'NMIS import, insert SNMP for '.$device->man_ip_address.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         }
                         // update any network interfaces and ip addresses retrieved by SNMP
-                        $device->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $device->system_id);
-                        $device->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $device->system_id);
+                        $device->timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'timestamp')[0]->timestamp;
+                        $device->first_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'first_timestamp')[0]->first_timestamp;
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                             $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {

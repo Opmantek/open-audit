@@ -39,62 +39,6 @@ class M_oa_general extends MY_Model
         parent::__construct();
     }
 
-    /**
-     * Get the attribute or attributes from the system_id.
-     *
-     * @access	public
-     *
-     * @param	table & attribute & system_id
-     *
-     * @return string | array of objects
-     */
-    public function get_attribute($table = 'system', $attribute = 'hostname', $system_id = '')
-    {
-        if ($system_id === '') {
-            return('');
-        }
-        if ((strpos($attribute, ",") !== false) or ($attribute == "*")) {
-            $limit = "";
-        } else {
-            $limit = "LIMIT 1";
-        }
-        $sql = "SELECT $attribute FROM $table WHERE system_id = ? ".$limit;
-        $data = array("$system_id");
-        $query = $this->db->query($sql, $data);
-
-        #if ($attribute === 'man_status'){
-            #echo $this->db->last_query() . "<br />\n";
-            #print_r($query->row());
-        #}
-
-        if ((strpos($attribute, ",") !== false) or ($attribute == "*")) {
-            $result = $query->result();
-
-            return ($result);
-        } else {
-            $row = $query->row();
-            if (isset($row->$attribute)) {
-                return ($row->$attribute);
-            } else {
-                return('');
-            }
-        }
-    }
-
-    public function get_system_attribute_api($table = 'system', $attribute = 'hostname', $system_id = '')
-    {
-        if ($table == 'system') {
-            $sql = "SELECT $attribute FROM $table WHERE system_id = ? ";
-        } else {
-            $sql = "SELECT $table.$attribute FROM $table LEFT JOIN system ON ($table.system_id = system.system_id AND $table.timestamp = system.timestamp) WHERE system.system_id = ? ";
-        }
-        $data = array("$system_id");
-        $query = $this->db->query($sql, $data);
-        $result = $query->result();
-
-        return ($result);
-    }
-
     public function get_system_document_api($table = '', $system_id = '')
     {
         if ($table == '') {
