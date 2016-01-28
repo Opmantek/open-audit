@@ -506,8 +506,8 @@ class M_system extends MY_Model
             $data = array("$details->hostname", $this->ip_address_to_db($details->man_ip_address), "$details->domain", "$details->icon", "$details->os_group", "$details->os_family", "$details->os_name", "$details->os_group", "$details->os_family", "$details->os_name", "$details->last_seen", $timestamp, "$details->last_seen" );
             $query = $this->db->query($sql, $data);
             $system_id = $this->db->insert_id();
-            $sql = "INSERT INTO sys_sw_windows (system_id, windows_active_directory_ou, timestamp, first_timestamp) values (?, ?, ?, ?)";
-            $data = array("$system_id", "$details->windows_active_directory_ou", $timestamp, $timestamp );
+            $sql = "INSERT INTO windows (system_id, active_directory_ou, last_seen, first_seen) values (?, ?, ?, ?)";
+            $data = array("$system_id", "$details->active_directory_ou", $timestamp, $timestamp );
             $query = $this->db->query($sql, $data);
         }
 
