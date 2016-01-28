@@ -50,6 +50,14 @@ class M_devices_components extends MY_Model
             return;
         }
 
+        if (stripos($filter, 'current = \'full') !== false or stripos($filter, 'current = "full') !== false) {
+            $current = 'full';
+        }
+
+        if (stripos($filter, 'current = \'delta') !== false or stripos($filter, 'current = "delta') !== false) {
+            $current = 'delta';
+        }
+
         if ($current == 'delta' or $current == 'full') {
             $sql = "SELECT first_seen FROM `$table` WHERE system_id = ? ORDER BY first_seen LIMIT 1";
             $data = array($id);
