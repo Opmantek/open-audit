@@ -61,7 +61,7 @@ submit_online="n"
 # create an XML text file of the result in the current directory
 create_file="y"
 
-# the address of the OAv2 server "submit" page
+# the address of the Open-AudIT server "submit" page
 url="http://localhost/open-audit/index.php/system/add_system"
 
 # optional - assign any PCs audited to this Org - take the OrgId from OAv2 interface
