@@ -228,7 +228,7 @@ class M_devices_components extends MY_Model
                 $match_columns = array('name', 'sid');
         }
         if ($table == 'variable') {
-                $match_columns = array('name', 'value');
+                $match_columns = array('program', 'name', 'value');
         }
         if ($table == 'video') {
                 $match_columns = array('model');
