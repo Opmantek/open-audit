@@ -1237,9 +1237,10 @@ function show_software($type, $software) {
         <form action="#" method="post" class='niceforms'>
             <fieldset id="variables">
             <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Variables')?></span></legend>
-                <table cellspacing="1" class="tablesorter" style="width:100%;">
+                <table cellspacing="1" class="tablesorter" style="width:100%; table-layout:fixed;">
                     <thead>
                         <tr>
+                            <th><?php echo __('Program')?></th>
                             <th><?php echo __('Name')?></th>
                             <th><?php echo __('Value')?></th>
                         </tr>
@@ -1247,8 +1248,9 @@ function show_software($type, $software) {
                     <tbody>
                     <?php foreach ($variable as $key): ?>
                     <tr>
+                        <td><?php echo print_something($key->program)?></td>
                         <td><?php echo print_something($key->name)?></td>
-                        <td><?php echo print_something($key->value)?></td>
+                        <td style="word-wrap:break-word;"><?php echo print_something($key->value)?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>
