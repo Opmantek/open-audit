@@ -407,7 +407,7 @@ class System extends CI_Controller
             }
             if ($child->getName() === 'audit_wmi_fail') {
                 $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
-                $this->m_audit_log->update('wmi_fail', $xml->audit_wmi_fail, $details->system_id, $details->last_seen);
+                $this->m_audit_log->update('wmi_fails', $xml->audit_wmi_fail, $details->system_id, $details->last_seen);
             }
             if ($child->getName() === 'printers') {
                 $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
