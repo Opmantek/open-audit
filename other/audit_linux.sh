@@ -363,7 +363,6 @@ if [ "$help" = "y" ]; then
 	exit
 fi
 
-
 # test pinging the server hosting the URL
 if [ "$submit_online" = "y" ]; then
 	server=$(echo "$url" | cut -d"/" -f3 | cut -d: -f1)
@@ -1805,6 +1804,27 @@ for log in ls /etc/logrotate.d/* ; do
 	fi
 done
 echo "	</log>" >> "$xml_file"
+
+
+##################################
+# ENVIRONMENT VARIABLE SECTION   #
+##################################
+
+if [ "$debugging" -gt "0" ]; then
+	echo "Environment Variable Info"
+fi
+echo "	<variable>" >> "$xml_file"
+for variable in $(printenv); do
+	name=$( echo "$variable" | cut -d= -f1 )
+	value=${variable#*=}
+		echo "		<item>" >> "$xml_file"
+		echo "			<program>environment</program>" >> "$xml_file"
+		echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
+		echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
+		echo "		</item>" >> "$xml_file"
+done
+echo "	</variable>" >> "$xml_file"
+
 
 
 ##################################
