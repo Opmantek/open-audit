@@ -3180,21 +3180,17 @@ end if
 
 if debugging > "0" then wscript.echo "environment variables" end if
 item = ""
-set colItems = objWMIService.ExecQuery("Select * from Win32_Environment where SystemVariable = True",,32)
+set colItems = objWMIService.ExecQuery("Select * from Win32_Environment where SystemVariable = True and username = '<SYSTEM>' ",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Environment)" : audit_wmi_fails = audit_wmi_fails & "Win32_Environment " : end if
 for each objItem in colItems
-	if (instr(lcase (escape_xml(objItem.VariableValue)), lcase (wshNetwork.userName)) or _
-	  (instr(lcase (escape_xml(objItem.VariableValue)), lcase (struser))) ) then
-	' do not record user specific variables
-	else
 	item = item & "		<item>" & vbcrlf
-	item = item & "			<variable_name><![CDATA[" & escape_xml(objItem.Name) & "]]></variable_name>" & vbcrlf
-	item = item & "			<variable_value><![CDATA[" & escape_xml(objItem.VariableValue) & "]]></variable_value>" & vbcrlf
+	item = item & "			<program>environment</program>" & vbcrlf
+	item = item & "			<name><![CDATA[" & escape_xml(objItem.Name) & "]]></name>" & vbcrlf
+	item = item & "			<value><![CDATA[" & escape_xml(objItem.VariableValue) & "]]></value>" & vbcrlf
 	item = item & "		</item>" & vbcrlf
-	end if
 next
 if item > "" then
-	result.WriteText "	<variables" & vbcrlf
+	result.WriteText "	<variable>" & vbcrlf
 	result.WriteText item
 	result.WriteText "	</variable>" & vbcrlf
 end if
