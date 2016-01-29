@@ -575,6 +575,9 @@ class main extends MY_Controller
         $this->load->model("m_system");
         $this->data['query'] = $this->m_system->search_device($this->data['search']);
         $this->data['heading'] = 'Search Result ('.$this->data['search'].")";
+        if ($this->user->user_name == 'open-audit_enterprise') {
+            $this->data['heading'] = "Enterprise - " . $this->data['heading'];
+        }
         $this->data['column'] = $this->m_system->search_device_columns();
         $this->data['count'] = count($this->data['query']);
         $this->data['include'] = 'v_search_device';

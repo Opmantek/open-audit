@@ -752,17 +752,19 @@ class MY_Controller extends CI_Controller
         if (strpos($col_link, '/') === 0) {
             $col_link = substr($col_link, 1);
         }
-        // NOTE - Relative Index is normally /open-audit/index.php/
-        $temp_url = $this->relative_index.$col_link.$col_var_name_sec;
+        // NOTE - For most reports, $col_var_name_sec is normally system_id expressed as an int
+        // NOTE - Relative Index is normally like                      - /open-audit/index.php/
+        // NOTE - For an Enterprise report, $col_link is normally like - /omk/oae/device_details/
+        // NOTE - For a Community report, $col_link is normally like   - /main/system_display/
         if (stripos($this->data['heading'], 'Enterprise - ') !== false) {
-            if (strpos($col_link, '/') === 0) {
-                $col_link = substr($col_link, 1);
-            }
+            $temp_url = $col_link.$col_var_name_sec;
             $temp_url = $this->relative_index.$col_link.$col_var_name_sec;
-            $temp_url = str_replace($this->relative_index.'main/system_display', '/omk/oae/device_details', $temp_url);
+            $temp_url = str_replace($this->relative_index.'main/system_display', 'omk/oae/device_details', $temp_url);
+            $temp_url = str_replace($this->relative_index.'report/show_report', 'omk/oae/show_report', $temp_url);
+            $temp_url = str_replace($this->relative_index.'report/', 'omk/oae/show_report/', $temp_url);
             $temp_url = str_replace($this->relative_index.'omk/oae', '/omk/oae', $temp_url);
-            $temp_url = str_replace($this->relative_index.'report/show_report', '/omk/oae/show_report', $temp_url);
-            $temp_url = str_replace($this->relative_index.'report/', '/omk/oae/show_report/', $temp_url);
+        } else {
+            $temp_url = $this->relative_index.$col_link.$col_var_name_sec;
         }
 
         return($temp_url);
