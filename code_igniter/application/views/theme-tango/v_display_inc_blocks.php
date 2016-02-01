@@ -585,50 +585,36 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
         <form action="#" method="post" class='niceforms'>
             <fieldset id="monitor_details">
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Monitor Details')?></span></legend>
-                <?php
-                $image = '48_video';
-                if (count($monitor) < 2) {
-                    echo "<img class='section_image' src='".$oa_theme_images.'/'.$image.".png' alt='' title='' />\n";
-                }
-                ?>
-                <?php foreach ($monitor as $key): ?>
-                    <?php if (count($monitor) > 1) { ?>
-                    <fieldset id="monitor_details_<?php echo print_something($key->id); ?>">
-                    <legend>&nbsp;</legend>
-                    <?php } ?>
-                    <table style="width:100%;" border="0">
-                    <tr>
-                    <td>
-                        <p><label for="monitor_manufacturer_<?php echo print_something($key->id)?>"><?php echo __('Manufacturer')?>: </label><span id="monitor_manufacturer_<?php echo print_something($key->monitor_id)?>"><?php echo print_something($key->manufacturer); ?></span></p>
-                        <p><label for="monitor_model_<?php echo print_something($key->id)?>"><?php echo __('Model')?>: </label><span id="monitor_model_<?php echo print_something($key->monitor_id)?>"><?php echo print_something($key->model); ?></span></p>
-                        <p><label for="monitor_manufacture_date_<?php echo print_something($key->id)?>"><?php echo __('Manufacturer Date')?>: </label><span id="monitor_manufacture_date_<?php echo print_something($key->monitor_id)?>"><?php echo print_something($key->manufacture_date); ?></span></p>
-                        <p><label for="monitor_description_<?php echo print_something($key->id)?>"><?php echo __('Description')?>: </label><span id="monitor_description_<?php echo print_something($key->monitor_id)?>"><?php echo print_something($key->description); ?></span></p>
-                        <p><label for="monitor_serial_<?php echo print_something($key->id)?>"><?php echo __('Serial')?>: </label><span id="monitor_serial_<?php echo print_something($key->monitor_id)?>"><?php echo print_something($key->serial); ?></span></p>
-                        <p><label for="monitor_size_<?php echo print_something($key->id)?>"><?php echo __('Size')?>: </label><span id="monitor_size_<?php echo print_something($key->monitor_id)?>"><?php echo print_something($key->size); ?> <?php echo __('inch')?></span></p>
-                        <p><label for="monitor_aspect_ratio_<?php echo print_something($key->id)?>"><?php echo __('Aspect Ratio')?>: </label><span id="monitor_aspect_ratio_<?php echo print_something($key->monitor_id)?>"><?php echo print_something($key->aspect_ratio); ?></span></p>
-                    </td>
-                    <td>
-                        <img width="100" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo str_replace("/", "_", str_replace(" ", "_", mb_strtolower($key->model))); ?>.jpg" style="border: 1px solid rgb(219, 217, 197);"/>
-                    </td>
-                    </tr>
+                <div style="min-width: 50px; float: right;">
+                    <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_video.png' alt='' title='' />
+                </div>
+                <div style="width: 90%; float: left;">
+                    <table cellspacing='1' class='tablesorter' style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>Manufacturer</th>
+                                <th>Model</th>
+                                <th>Manufacture Date</th>
+                                <th>Serial</th>
+                                <th>Size</th>
+                                <th>Aspect Ratio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($monitor as $key): ?>
+                            <tr>
+                                <td><?php echo print_something($key->manufacturer); ?></td>
+                                <td><?php echo print_something($key->model); ?></td>
+                                <td><?php echo print_something($key->manufacture_date); ?></td>
+                                <td><?php echo print_something($key->serial); ?></td>
+                                <td><?php echo print_something($key->size); ?> <?php echo __('inch')?></td>
+                                <td><?php echo print_something($key->aspect_ratio); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
                     </table>
-                    <?php
-                    // $image = '48_video';
-                    // if (file_exists($images_directory . "48_" . strtolower(str_replace(" ", "_", $key->manufacturer)) . ".png")) {
-                    //  $image = "48_" . strtolower(str_replace(" ", "_", $key->manufacturer));
-                    // }
-                    ?>
-                    <!--
-                    <div style="float:right; width: 100px; margin-left: -80%;">
-                         <img class='section_image' src='<?php echo $oa_theme_images.'/'.$image; ?>.png' alt='' title='' />
-                    </div>
-                    -->
-                    <?php if (count($monitor) > 1) { ?>
-                    </fieldset>
-                    <?php } ?>
-                    <br />&nbsp;
-                <?php endforeach; ?>
                 <?php echo display_custom_field('view_hardware_monitor',  $additional_fields_data, $edit); ?>
+                </div>
             </fieldset>
         </form>
 
