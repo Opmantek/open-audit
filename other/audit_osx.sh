@@ -393,7 +393,7 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
             partition_each="$partition_each           <free>$partition_free_space</free>"$'\n'
             partition_each="$partition_each           <used>$partition_used_space</used>"$'\n'
             partition_each="$partition_each           <format>$partition_format</format>"$'\n'
-            partition_each="$partition_each           <>$partition_caption</description>"$'\n'
+            partition_each="$partition_each           <description>$partition_caption</description>"$'\n'
             partition_each="$partition_each           <device>$partition_device_id</device>"$'\n'
             partition_each="$partition_each           <partition_disk_index>$partition_disk_index</partition_disk_index>"$'\n'
             partition_each="$partition_each           <bootable></bootable>"$'\n'
