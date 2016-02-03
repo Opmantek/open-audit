@@ -145,6 +145,7 @@
 				<?php foreach ($system as $key): ?>
 					<p><label for="man_owner"><?php echo __('Owner')?>: </label><span id="man_owner" <?php echo $edit?>><?php echo print_something($key->man_owner)?></span><?php echo $edit_icon; ?></p>
 				<?php endforeach; ?>
+                <p><label for="comments"><?php echo __('Comments')?>: </label><span id="comments" <?php echo $edit?>><?php echo print_something($system[0]->comments)?></span></p>
 				<div id="org_container">
 				<?php if (count($system_org) > 0) {
                     foreach ($system_org as $key):
@@ -160,7 +161,7 @@
                             }
                             echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'>".print_something($key->contact_id)."</span></p>\n";
                             echo "<p><label for='parent_org'>".__('Parent Org').": </label><span id='parent_org'>".print_something($key->org_parent_name)."</span></p>\n";
-                            echo "<p><label for='org_comments'>".__('Comments').": </label><span id='org_comments'>".print_something($key->org_comments)."</span></p>\n";
+                            echo "<p><label for='org_comments'>".__('Org Comments').": </label><span id='org_comments'>".print_something($key->org_comments)."</span></p>\n";
                         }
                     endforeach;
                     } ?>
