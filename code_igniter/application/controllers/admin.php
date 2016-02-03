@@ -4648,6 +4648,30 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
+        if (($db_internal_version < '20160130') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.12
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.12 commenced';
+            stdlog($log_details);
+
+            $sql = array();
+            $sql[] = "ALTER TABLE system ADD comments text NOT NULL AFTER description";
+
+            $sql[] = "UPDATE oa_config SET config_value = '20160130' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12' WHERE config_name = 'display_version'";
+
+            foreach ($sql as $this_query) {
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
+
+            $log_details->message = 'Upgrade database to 1.12 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
+
         $this->m_oa_config->load_config();
         $this->data['message'] .= "New (now current) database version: ".$this->config->item('display_version')." (".$this->config->item('internal_version').")<br />Don't forget to use the new audit scripts!<br/>\n";
         $this->data['include'] = 'v_upgrade';

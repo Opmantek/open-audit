@@ -570,10 +570,10 @@ INSERT INTO `oa_config` VALUES ('discovery_ip_match','n','y','0000-00-00 00:00:0
 INSERT INTO `oa_config` VALUES ('discovery_name_match','y','y','0000-00-00 00:00:00',0,'Should we match a device based only on its hostname during discovery.');
 INSERT INTO `oa_config` VALUES ('discovery_update_groups','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT update the device groups after discovering a device.');
 INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `oa_config` VALUES ('display_version','1.10.1','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
+INSERT INTO `oa_config` VALUES ('display_version','1.12','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
 INSERT INTO `oa_config` VALUES ('distinct_groups','y','y','0000-00-00 00:00:00',0,'Display Groups on the homepage, separated into the type of each Group.');
 INSERT INTO `oa_config` VALUES ('download_reports','download','y','0000-00-00 00:00:00',0,'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
-INSERT INTO `oa_config` VALUES ('internal_version','20160104','n','0000-00-00 00:00:00',0,'The internal numerical version.');
+INSERT INTO `oa_config` VALUES ('internal_version','20160130','n','0000-00-00 00:00:00',0,'The internal numerical version.');
 INSERT INTO `oa_config` VALUES ('logo','logo-banner-oac-oae','y','0000-00-00 00:00:00',0,'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `oa_config` VALUES ('log_level','5','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `oa_config` VALUES ('log_style','syslog','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
@@ -1971,6 +1971,7 @@ CREATE TABLE `system` (
   `domain` varchar(100) NOT NULL DEFAULT '',
   `fqdn` text NOT NULL,
   `description` text NOT NULL,
+  `comments` text NOT NULL,
   `type` varchar(50) NOT NULL DEFAULT '',
   `icon` varchar(50) NOT NULL DEFAULT '',
   `os_group` varchar(50) NOT NULL DEFAULT '',
