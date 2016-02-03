@@ -683,5 +683,26 @@ class System extends CI_Controller
         }
     }
 
+    public function version_padded()
+    {
+        # take an upadded version string and return a padded version string
+        $json = new stdClass();
+        $json->version = $this->uri->segment(3, 0);
+        if (isset($_POST['version'])) {
+            $json->version = $_POST['version'];
+        }
+        $json->version_padded = '';
+        $pieces = array();
+        $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $json->version);
+        foreach ($pieces as $piece) {
+            if (strlen($piece) > 10 ) {
+                $json->version_padded .= $piece;
+            } else {
+                $json->version_padded .= mb_substr("00000000000000000000".$piece, -10);
+            }
+        }
+        echo json_encode($json);
+    }
+
 
 }
