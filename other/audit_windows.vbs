@@ -2715,11 +2715,13 @@ if skip_dns = "n" then
                         wscript.echo "      DNS Full Name: " & dns_full_name
                         wscript.echo "      DNS IP Address: " & dns_ip_address
                     end if
-                    item = item & "     <item>" & vbcrlf
-                    item = item & "         <name>" & escape_xml(hostname) & "</name>" & vbcrlf
-                    item = item & "         <fqdn>" & escape_xml(dns_full_name) & "</fqdn>" & vbcrlf
-                    item = item & "         <ip>" & escape_xml(dns_ip_address) & "</ip>" & vbcrlf
-                    item = item & "     </item>" & vbcrlf
+                    if dns_ip_address <> "" and hostname <> "" then
+	                    item = item & "     <item>" & vbcrlf
+	                    item = item & "         <name>" & escape_xml(hostname) & "</name>" & vbcrlf
+	                    item = item & "         <fqdn>" & escape_xml(dns_full_name) & "</fqdn>" & vbcrlf
+	                    item = item & "         <ip>" & escape_xml(dns_ip_address) & "</ip>" & vbcrlf
+	                    item = item & "     </item>" & vbcrlf
+	                end if
                 next
             end if
         next

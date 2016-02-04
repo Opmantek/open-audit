@@ -421,16 +421,19 @@ class System extends CI_Controller
         $dns = new stdClass();
         $dns->item = array();
         $dns->item = $this->m_devices_components->create_dns_entries((int)$details->system_id);
-        if ($xml->dns) {
+        if (count($xml->dns->item) > 0) {
             foreach ($xml->dns->item as $item) {
                 # likely not required, but turn it into an array and back to a standard object
                 # so we have consistency inside the dns->item array of all objects versus some standard objects
                 # and some simpleXML objects
                 $item = (array) $item;
                 $item = (object) $item;
-                $dns->item[] = $item;
+                if (isset($item->ip) and $item->ip != '' and isset($item->name) and $item->name != '' and isset($item->fqdn)) {
+                    $dns->item[] = $item;
+                }
             }
         }
+        print_r($dns); echo "\n";
         if (count($dns->item) > 0) {
             $this->m_devices_components->process_component('dns', $details, $dns);
         }
