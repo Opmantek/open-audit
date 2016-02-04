@@ -279,6 +279,13 @@ class M_devices_components extends MY_Model
 
         echo "<pre>Processing $table\n";
 
+        // make sure we have an entry for each match column, even if it's empty
+        foreach ($match_columns as $match_column) {
+            if (!isset($input->$match_column)) {
+                $input->$match_column = '';
+            }
+        }
+
         ### IP ADDRESS ###
         if ((string)$table == 'ip') {
             for ($i=0; $i<count($input->item); $i++) {
@@ -448,28 +455,36 @@ class M_devices_components extends MY_Model
 
         // ensure we have a filtered array with only single copies of each $item
         $items = array();
-        foreach ($input->item as $ikey => $iitem) {
+        // for every input item
+        foreach ($input->item as $input_key => $input_item) {
             $matched = 'n';
-            foreach ($items as $okey => $oitem) {
+            // loop through the building up item array
+            foreach ($items as $output_key => $output_item) {
+                // the matched count is the number of columns in the match_columns array
+                // that have equal values in our input items
                 $match_count = 0;
+                // loop through our match_columns array
                 for ($i = 0; $i < count($match_columns); $i++) {
-                    if ((string)$iitem->$match_columns[$i] == (string)$oitem->$match_columns[$i]) {
+                    // and test if the variables match
+                    if ((string)$input_item->$match_columns[$i] == (string)$output_item->$match_columns[$i]) {
+                        // they match so increment the count
                         $match_count ++;
                     }
                 }
                 if ($match_count == (count($match_columns))) {
                     // we have two matching items - combine them
                     foreach ($fields as $field) {
-                        if ((!isset($oitem->$field) or $oitem->$field == '') and isset($iitem->$field) and $iitem->$field != '') {
-                            $oitem->$field = (string) $iitem->$field;
+                        if ((!isset($output_item->$field) or $output_item->$field == '') and isset($input_item->$field) and $input_item->$field != '') {
+                            $output_item->$field = (string) $input_item->$field;
                         }
                     }
-                    $items[$okey] = $oitem;
+                    $items[$output_key] = $output_item;
                     $matched = 'y';
                 }
             }
             if ($matched != 'y') {
-                $items[] = $iitem;
+                // no match, add the input item to the item array
+                $items[] = $input_item;
             }
         }
 
