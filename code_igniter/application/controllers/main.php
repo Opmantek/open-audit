@@ -160,10 +160,17 @@ class main extends MY_Controller
                 }
                 $document["$table"] = $result;
             }
-            $tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            #$tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $tables = array('bios', 'disk', 'dns', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
+            $this->load->model("m_audit_log");
+            $this->load->model("m_change_log");
+            $this->load->model("m_edit_log");
+            $document['audit_log'] = $this->m_audit_log->read($system_id);
+            $document['change_log'] = $this->m_change_log->readDevice($system_id);
+            $document['edit_log'] = $this->m_edit_log->read($system_id);
         } else {
             $this->load->model('m_systems');
             $document = $this->m_systems->api_index('list');
