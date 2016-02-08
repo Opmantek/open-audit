@@ -433,7 +433,6 @@ class System extends CI_Controller
                 }
             }
         }
-        print_r($dns); echo "\n";
         if (count($dns->item) > 0) {
             $this->m_devices_components->process_component('dns', $details, $dns);
         }
