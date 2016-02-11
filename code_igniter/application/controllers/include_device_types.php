@@ -50,6 +50,7 @@
      */
     $device_types = array();
     $device_types[''] = '&nbsp;';
+    $device_types['access control'] = 'Access Control';
     $device_types['access point'] = 'Access Point';
     $device_types['access server'] = 'Access Server';
     $device_types['access token'] = 'Access Token';
@@ -112,6 +113,7 @@
     $device_types['telecom misc'] = 'Telecom Misc';
     $device_types['terminal'] = 'Terminal';
     $device_types['terminal server'] = 'Terminal Server';
+    $device_types['time clock'] = 'Time Clock';
     $device_types['ups'] = 'UPS (Uninterruptible Power Supply)';
     $device_types['video conference'] = 'Video Conference';
     $device_types['voip adapter'] = 'VoIP Adapter';
