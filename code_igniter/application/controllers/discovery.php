@@ -1288,9 +1288,9 @@ class discovery extends CI_Controller
                             $credentials['specific']['pass'] = @$specific->windows_password;
                             $credentials['specific']['domain'] = @$specific->windows_domain;
                             $credentials['specific']['type'] = 'specific';
-                            $credentials['default']['user'] = @$default->windows_username;
-                            $credentials['default']['pass'] = @$default->windows_password;
-                            $credentials['default']['domain'] = @$default->windows_domain;
+                            $credentials['default']['user'] = @$default->default_windows_username;
+                            $credentials['default']['pass'] = @$default->default_windows_password;
+                            $credentials['default']['domain'] = @$default->default_windows_domain;
                             $credentials['default']['type'] = 'default';
                             # unset these as we test below and set only if correct
                             $details->windows_username = '';
