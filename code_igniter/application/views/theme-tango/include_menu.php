@@ -349,7 +349,7 @@ var modal_content_image = "";
         })
         .fail(function() {
             // get from OAC
-                $.get('/open-audit/js/oae.json', function(data){
+                $.get('/omk/data/oae.json', function(data){
                 modal.open({content: data, source: "offline"});
                 highlightColumn();
             })
