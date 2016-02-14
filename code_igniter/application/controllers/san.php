@@ -134,13 +134,13 @@ class San extends CI_Controller
                     $details->serial = str_replace('Storage array world-wide identifier (ID):', '', $value);
                 }
                 if (stripos($value, 'Controller DNS/Network name:') === 0 and $details->hostname == '') {
-                    $details->hostname = str_replace('Controller DNS/Network name:', '', $value);
+                    $details->hostname = trim(str_replace('Controller DNS/Network name:', '', $value));
                 }
                 if (stripos($value, 'Controller host name:') === 0 and $details->hostname == '') {
-                    $details->hostname = str_replace('Controller host name:', '', $value);
+                    $details->hostname = trim(str_replace('Controller host name:', '', $value));
                 }
                 if (stripos($value, 'RAID Controller Module host name:') === 0 and $details->hostname == '') {
-                    $details->hostname = str_replace('RAID Controller Module host name:', '', $value);
+                    $details->hostname = trim(str_replace('RAID Controller Module host name:', '', $value));
                 }
 
                 if (stripos($value, 'Controller in Enclosure') === 0 or stripos($value, 'RAID Controller Module in Enclosure') === 0) {
