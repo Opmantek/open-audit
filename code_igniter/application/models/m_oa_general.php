@@ -48,7 +48,7 @@ class M_oa_general extends MY_Model
             $sql = 'SELECT system_id, hostname, fqdn, man_ip_address, man_type, man_class, os_version, man_function, man_environment, man_status, man_description, man_os_group, man_os_family, man_os_name, man_manufacturer, man_model, man_serial, man_form_factor, man_vm_group, uptime, location_name, last_seen, last_seen_by, icon, snmp_oid, sysDescr, sysObjectID, sysUpTime, sysContact, sysName, sysLocation FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?';
 
         } elseif ($table == 'sys_hw_network_card_ip' or $table == 'ip') {
-            $sql = 'SELECT ip_address_v4, ip_address_v6, ip_subnet, ip_address_version, sys_hw_network_card_ip.net_mac_address, net_connection_id FROM sys_hw_network_card_ip LEFT JOIN system ON system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp LEFT JOIN network ON sys_hw_network_card_ip.net_index = network.net_index AND sys_hw_network_card_ip.system_id = network.system_id WHERE system.system_id = ? GROUP BY sys_hw_network_card_ip.ip_id';
+            $sql = 'SELECT sys_hw_network_card_ip.ip_address_v4, sys_hw_network_card_ip.ip_address_v6, sys_hw_network_card_ip.ip_subnet, sys_hw_network_card_ip.ip_address_version, sys_hw_network_card_ip.net_mac_address, network.connection FROM sys_hw_network_card_ip LEFT JOIN system ON system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp LEFT JOIN network ON sys_hw_network_card_ip.net_index = network.net_index AND sys_hw_network_card_ip.system_id = network.system_id WHERE system.system_id = ? GROUP BY sys_hw_network_card_ip.ip_id';
         }
 
         $data = array("$system_id");

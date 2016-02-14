@@ -198,9 +198,10 @@ class main extends MY_Controller
         if (isset($_POST['system_id'])) {
             $system_id = $_POST['system_id'];
         }
-
+        $this->load->model('m_oa_general');
+        $this->load->model('m_devices_components');
+        $this->load->model('m_systems');
         if (isset($system_id) and $system_id != '') {
-            $this->load->model('m_oa_general');
             $document = array();
             $list = array('system', 'sys_hw_network_card_ip');
             foreach ($list as $table) {
@@ -229,9 +230,7 @@ class main extends MY_Controller
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
-
         } else {
-            $this->load->model('m_systems');
             $document = $this->m_systems->api_index('list');
         }
         echo json_encode($document);
