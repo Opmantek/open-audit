@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.8.4
+# @version 1.12
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -682,7 +682,7 @@ fi
 if [ "$debugging" -gt "0" ]; then
 	echo "VM Guest Info"
 fi
-echo "	<guests>" >> $xml_file
+echo "	<vm>" >> $xml_file
 for vm in $(vim-cmd vmsvc/getallvms | grep -v ^Vmid | sed 's/ \+/ /g'); do
 	vm_id=$(echo "$vm" | cut -d" " -f1)
 	#if [ "$vm_id" =~ ^?[0-9]+$ ]; then
@@ -696,19 +696,19 @@ for vm in $(vim-cmd vmsvc/getallvms | grep -v ^Vmid | sed 's/ \+/ /g'); do
 		vm_config_file=$(echo "$vm" | cut -d" " -f4)
 		temp_dir=$(vim-cmd vmsvc/get.config $vm_id | grep datastoreUrl -A5 | grep url | cut -d= -f2- | sed 's/ "//' | sed 's/", //')
 		vm_config_file=$(echo "$temp_dir$vm_config_file")
-		echo "		<guest>" >> $xml_file
+		echo "		<item>" >> $xml_file
 		echo "			<vm_id>"$(escape_xml "$vm_id")"</vm_id>" >> $xml_file
 		echo "			<name>"$(escape_xml "$vm_name")"</name>" >> $xml_file
 		echo "			<uuid>"$(escape_xml "$vm_uuid")"</uuid>" >> $xml_file
-		echo "			<memory>"$(escape_xml "$vm_memory")"</memory>" >> $xml_file
-		echo "			<cpu>"$(escape_xml "$vm_cpu")"</cpu>" >> $xml_file
+		echo "			<memory_count>"$(escape_xml "$vm_memory")"</memory_count>" >> $xml_file
+		echo "			<cpu_count>"$(escape_xml "$vm_cpu")"</cpu_count>" >> $xml_file
 		echo "			<status>"$(escape_xml "$vm_status")"</status>" >> $xml_file
 		echo "			<config_file>"$(escape_xml "$vm_config_file")"</config_file>" >> $xml_file
 		echo "			<vm_group></vm_group>" >> $xml_file
-		echo "		</guest>" >> $xml_file
+		echo "		</item>" >> $xml_file
 	fi
 done
-echo "	</guests>" >> $xml_file
+echo "	</vm>" >> $xml_file
 
 
 
@@ -786,7 +786,8 @@ for card in `esxcli network ip interface list | grep -v "^ " | grep .`; do
 	net_index="$card"
 	net_mac_address=`esxcli network ip interface list | grep "Name: $card" -A1 | grep "MAC Address: " | sed 's/ \+/ /g' | cut -d" " -f4`
 	net_ip_enabled=`esxcli network ip interface list | grep "Name: $card" -A2 | grep "Enabled: " | sed 's/ \+/ /g' | cut -d" " -f3`
-	net_connection_id="$card"
+	#net_connection_id="$card"
+	net_connection_id=`esxcli network nic list | grep "$net_mac_address" | cut -d" " -f1`
 	net_connection_status=`esxcli network ip interface list | grep "Name: $card" -A2 | grep "Enabled: " | sed 's/ \+/ /g' | cut -d" " -f3`
 	icard=`esxcfg-nics -l | grep -v ^Name | grep "$net_mac_address" | sed 's/ \+/ /g'`
 	net_speed=$(echo "$icard" | cut -d" " -f5 | sed 's/Mbps//')

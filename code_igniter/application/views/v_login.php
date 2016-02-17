@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -89,7 +89,7 @@ if (isset($form_url) and $form_url != '') {
                     <?php
                     if ((file_exists($filename)) and $show == 'y') {
                         ?>
-                        <span align='center'><br /><input type="button" name="audit" id="audit" onClick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
+                        <span align='center'><br /><input type="button" name="audit" id="audit" onclick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
                         <?php
 
                     }

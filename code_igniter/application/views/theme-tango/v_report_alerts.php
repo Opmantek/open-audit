@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -43,13 +43,15 @@ if ($query) {
 	<table cellspacing="1" class="tablesorter">
 		<thead>
 			<tr>
-				<th width="130"><?php echo __('Timestamp')?></th>
-				<th width="100"><?php echo __('IP address')?></th>
-				<th width="110"><?php echo __('System Name')?></th>
-				<th width="140"><?php echo __('System Description')?></th>
+				<th><?php echo __('Timestamp')?></th>
+				<th><?php echo __('IP address')?></th>
+				<th style="text-align: center;">Icon</th>
+				<th><?php echo __('System Name')?></th>
+				<th><?php echo __('DB Table')?></th>
+				<th><?php echo __('DB Action')?></th>
 				<th><?php echo __('Details')?></th>
 				<th  width="150" align="middle" class='{sorter: false}'>
-					<button onClick="document.alertform.submit();"><?php echo __('Acknowledge') ?></button>
+					<button onclick="document.alertform.submit();"><?php echo __('Acknowledge') ?></button>
 					<input type="checkbox" valign="absmiddle" id="alert_id_0" name="alert_id_0" onchange="alter_all_alerts();"/>
 				</th>
 			</tr>
@@ -59,10 +61,12 @@ if ($query) {
 			<tr>
 				<td><?php echo $key->timestamp?></td>
 				<td><span style="display: none;"><?php echo $key->man_ip_address?></span><?php echo ip_address_from_db($key->man_ip_address)?></td>
+				<td style="text-align: center;"><img src="<?php echo $oa_theme_images ?>/16_<?php echo $key->icon; ?>.png" style='border-width:0px;' title="" alt=""/></td>
 				<td><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->system_id)?>"><?php echo htmlentities($key->hostname)?></a></td>
-				<td><?php echo htmlentities($key->man_description)?></td>
-				<td><?php echo htmlentities($key->alert_details)?></td>
-				<td align='center'><input type="checkbox" id="alert_id_<?php echo intval($key->alert_id)?>" name="alert_id_<?php echo intval($key->alert_id)?>" /></td>
+				<td><?php echo htmlentities($key->db_table)?></td>
+				<td><?php echo htmlentities($key->db_action)?></td>
+				<td><?php echo htmlentities($key->details)?></td>
+				<td align='center'><input type="checkbox" id="alert_id_<?php echo intval($key->id)?>" name="alert_id_<?php echo intval($key->id)?>" /></td>
 			</tr>
 	<?php endforeach;
     ?>

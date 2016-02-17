@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -361,10 +361,10 @@ class M_oa_user extends MY_Model
                 exit();
             } else {
                 // log the attempt
-                $log_details->severity = 5;
-                $log_details->message = 'Incomplete credentials supplied for '.$username.' (html request)';
-                stdlog($log_details);
-                unset($log_details);
+                // $log_details->severity = 5;
+                // $log_details->message = 'Incomplete credentials supplied for '.$username.' (html request)';
+                // stdlog($log_details);
+                // unset($log_details);
                 // set the original requested URL
                 $requested_url = array('url'  => current_url());
                 $this->session->set_userdata($requested_url);

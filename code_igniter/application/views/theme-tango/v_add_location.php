@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -42,7 +42,7 @@ echo form_open('admin_location/add_location')."\n";
 ?>
 <fieldset id="location_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Location Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 	<table cellpadding = "0" cellspacing="0">
 		<tr>
 			<td valign="top">

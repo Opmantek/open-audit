@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -42,10 +42,10 @@ echo form_open('admin_connection/add_connection')."\n";
 ?>
 <fieldset id="connection_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Connection Details')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
-	<table width='780' cellpadding='0' cellspacing='0'>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
+	<table style='width:780' cellpadding='0' cellspacing='0'>
 		<tr>
-			<td width='100%'>
+			<td style='width:100%'>
 				<p><label for="connection_org_id"><?php echo __('Organisation Name'); ?>: </label><select id="connection_org_id" name="connection_org_id" tabindex='1' title='Organisation Name'><option value="">&nbsp;</option>
 				<?php foreach ($orgs as $org) {
     				echo "<option value=\"".intval($org->org_id)."\">".htmlentities($org->org_name)."</option>\n";

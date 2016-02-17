@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -284,20 +284,17 @@ class Admin_system extends MY_Controller
             redirect('main/list_devices');
         }
         $this->load->model("m_system");
-        $this->load->model("m_sys_man_audits");
-        $this->load->model("m_network_card");
+        $this->load->model("m_audit_log");
         $this->load->model("m_ip_address");
-        $this->load->model("m_oa_general");
-        $this->load->model("m_virtual_machine");
-        $this->load->model("m_module");
+        $this->load->model("m_devices_components");
         $this->load->library('encrypt');
         $this->load->helper('snmp');
         $this->load->helper('snmp_oid');
         $details = new stdClass();
         $details->system_id = $this->uri->segment(3, 0);
         $encrypted_access_details = $this->m_system->get_access_details($details->system_id);
-        $details->hostname = $this->m_oa_general->get_attribute("system", "hostname", $details->system_id);
-        $details->man_ip_address = ip_address_from_db($this->m_oa_general->get_attribute("system", "man_ip_address", $details->system_id));
+        $details->hostname = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'hostname');
+        $details->man_ip_address = ip_address_from_db($this->m_devices_components->read($details->system_id, 'y', 'system', '', 'man_ip_address'));
         $details->show_output = true;
 
         # set up the pop up page
@@ -341,19 +338,27 @@ class Admin_system extends MY_Controller
         unset($details->man_ip_address);
         echo "<pre>\n";
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
-            $details->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
+            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
             $this->m_system->update_system($details);
-            $this->m_sys_man_audits->insert_audit($details);
+            if (isset($this->user->user_full_name)) {
+                $temp_user = $this->user->user_full_name;
+            } else {
+                $temp_user = '';
+            }
+            $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+            unset($temp_user);
 
             # update any network interfaces and ip addresses retrieved by SNMP
-            $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
-            $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
-            $details->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $details->system_id);
+            $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
+            $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
+            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
 
             if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                $input = new stdClass();
+                $input->item = array();
+                $input->item = $network_interfaces;
+                $this->m_devices_components->process_component('network', $details, $input);
                 foreach ($network_interfaces as $input) {
-                    $this->m_network_card->process_network_cards($input, $details);
-
                     if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
                         foreach ($input->ip_addresses as $ip_input) {
                             $ip_input = (object) $ip_input;
@@ -365,21 +370,35 @@ class Admin_system extends MY_Controller
 
             # insert any found virtual machines
             if (isset($guests) and is_array($guests) and count($guests) > 0) {
-                foreach ($guests as $guest) {
-                    $this->m_virtual_machine->process_vm($guest, $details);
-                }
+                $vm = new stdClass();
+                $vm->item = array();
+                $vm->item = $guests;
+                $this->m_devices_components->process_component('vm', $details, $vm);
+                // foreach ($guests as $guest) {
+                //     $this->m_virtual_machine->process_vm($guest, $details);
+                // }
             }
 
             # insert any modules
             if (isset($modules) and is_array($modules) and count($modules) > 0) {
-                foreach ($modules as $input) {
-                    $this->m_module->process_module($input, $details);
-                }
+                $input = new stdClass();
+                $input->item = array();
+                $input->item = $modules;
+                $this->m_devices_components->process_component('module', $details, $input);
             }
 
             // Generate any DNS entries required
-            $this->load->model('m_dns');
-            $this->m_dns->create_dns_entries((int)$details->system_id);
+            $dns = new stdClass();
+            $dns->item = array();
+            $dns->item = $this->m_devices_components->create_dns_entries((int)$details->system_id);
+            if (count($dns->item) > 0) {
+                $this->m_devices_components->process_component('dns', $details, $dns);
+            }
+            unset($dns);
+
+            // insert a blank to indicate we're finished this part of the discovery
+            // if required, the audit scripts will insert their own audit logs
+            $this->m_audit_log->update('debug', '', $details->system_id, $details->last_seen);
 
         } else {
             echo "Audit NOT submitted.";
@@ -396,7 +415,6 @@ class Admin_system extends MY_Controller
             $this->load->model("m_oa_location");
             $this->data['locations'] = $this->m_oa_location->get_location_names();
             $this->load->model("m_systems");
-            $this->load->model("m_oa_general");
             $this->data['os_group'] = $this->m_systems->get_distinct_os_group();
             $this->data['os_family'] = $this->m_systems->get_distinct_os_family();
             $this->data['os_name'] = $this->m_systems->get_distinct_os_name();
@@ -410,7 +428,7 @@ class Admin_system extends MY_Controller
             $this->data['error'] = '';
             $this->load->model('m_system');
             $this->load->model('m_oa_group');
-            $this->load->model("m_sys_man_audits");
+            $this->load->model("m_audit_log");
             $details = new stdClass();
             foreach ($_POST as $key => $value) {
                 $details->$key = $value;
@@ -502,7 +520,13 @@ class Admin_system extends MY_Controller
                 # add the system
                 $details->system_id = $this->m_system->insert_system($details);
                 $this->m_oa_group->update_system_groups($details);
-                $this->m_sys_man_audits->insert_audit($details);
+                if (isset($this->user->user_full_name)) {
+                    $temp_user = $this->user->user_full_name;
+                } else {
+                    $temp_user = '';
+                }
+                $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                unset($temp_user);
                 redirect('main/index');
             } else {
                 $this->data['query'] = $this->data['error'];
@@ -577,10 +601,9 @@ class Admin_system extends MY_Controller
             $this->load->model("m_system");
             $this->load->model("m_oa_org");
             $this->load->model("m_oa_location");
-            $this->load->model("m_sys_man_audits");
+            $this->load->model("m_audit_log");
             $this->load->model("m_oa_group");
-            $this->load->model("m_oa_general");
-            $this->load->model("m_network_card");
+            $this->load->model("m_devices_components");
             $this->load->helper('snmp');
             $this->load->helper('snmp_oid');
             $this->load->library('encrypt');
@@ -726,15 +749,21 @@ class Admin_system extends MY_Controller
                         if (!isset($details->type) or $details->type == '') {
                             $details->type = $this->m_system->get_system_type($details->system_id);
                         }
-                        $this->m_sys_man_audits->insert_audit($details);
+
+                        if (isset($this->user->user_full_name)) {
+                            $temp_user = $this->user->user_full_name;
+                        } else {
+                            $temp_user = '';
+                        }
+                        $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                        unset($temp_user);
 
                          # update any network interfaces and ip addresses retrieved by SNMP
-                        $details->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $details->system_id);
-                        $details->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $details->system_id);
+                        $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
+                        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                            $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {
-                                $this->m_network_card->process_network_cards($input, $details);
-
                                 if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
                                     foreach ($input->ip_addresses as $ip_input) {
                                         $ip_input = (object) $ip_input;
@@ -763,6 +792,27 @@ class Admin_system extends MY_Controller
             } else {
                 redirect('main/index');
             }
+        }
+    }
+
+
+
+    public function reset_devices_ip()
+    {
+        $this->load->model('m_ip_address');
+        $group_id = $this->data['id'];
+        if (!is_numeric($group_id)) {
+            redirect('main/index');
+        } else {
+            $group_id = intval($group_id);
+            $sql = "SELECT DISTINCT system_id FROM oa_group_sys WHERE group_id = ?";
+            $data = array($group_id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            foreach ($result as $system) {
+                $this->m_ip_address->set_initial_address($system->system_id, 'y');
+            }
+            redirect('main/list_devices/' . $group_id);
         }
     }
 }

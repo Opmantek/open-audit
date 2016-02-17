@@ -27,13 +27,15 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
 <script type="text/javascript">
+//<![CDATA[
+
 $(document).ready( function() {
 	$.NiceJForms.build();
 });
@@ -440,15 +442,17 @@ $(document).ready(function(){
 	$('#view_summary_credentials').hide();
 	$('#view_summary_purchase').hide();
 	$('#view_summary_network').hide();
-	$('#view_summary_audits').hide();
 	$('#view_summary_audit_log').hide();
-	$('#view_summary_alerts').hide();
+	$('#view_summary_change_log').hide();
+    $('#view_summary_edit_log').hide();
 	$('#view_summary_location').hide();
 	$('#view_summary_custom').hide();
 	$('#view_summary_attachment').hide();
 	$('#view_summary_nmis').hide();
     $('#view_summary_module').hide();
     $('#view_summary_dns').hide();
+    $('#view_summary_san').hide();
+    $('#view_summary_san_disk').hide();
 	<?php if ($system[0]->man_type == 'access point' or
         $system[0]->man_type == 'adsl modem' or
         $system[0]->man_type == 'bdsl modem' or
@@ -463,7 +467,6 @@ $(document).ready(function(){
         $system[0]->man_type == 'network printer' or
         $system[0]->man_type == 'network scanner' or
         $system[0]->man_type == 'router' or
-        $system[0]->man_type == 'san' or
         $system[0]->man_type == 'switch' or
         $system[0]->man_type == 'voip gateway' or
         $system[0]->man_type == 'vpn terminator' or
@@ -474,9 +477,17 @@ $(document).ready(function(){
     $('#view_summary_network_interfaces').show();
     toggleBold("toggle_summary_network_interfaces");
 	<?php } ?>
+    <?php if ($system[0]->man_type == 'san') { ?>
+        $('#view_summary_san').show();
+        $('#view_summary_san_disk').show();
+        $('#view_summary_network_interfaces').hide();
+        toggleBold("toggle_summary_san");
+        toggleBold("toggle_summary_san_disk");
+    <?php } ?>
 	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
         $('#view_summary_phone').show();
-        toggleBold("toggle_summary_phone");<?php } ?>
+        toggleBold("toggle_summary_phone");
+    <?php } ?>
 	<?php if (count($vm) > 0) { ?>
         $('#view_summary_vms').show();
         toggleBold("toggle_summary_vms");
@@ -508,19 +519,19 @@ $(document).ready(function(){
         toggleBold("toggle_summary_network");
 	});
 
-	$('#toggle_summary_audits').click(function(){
-		$('#view_summary_audits').slideToggle("fast");
-        toggleBold("toggle_summary_audits");
-	});
-
 	$('#toggle_summary_audit_log').click(function(){
 		$('#view_summary_audit_log').slideToggle("fast");
         toggleBold("toggle_summary_audit_log");
 	});
 
-	$('#toggle_summary_alert_log').click(function(){
-		$('#view_summary_alerts').slideToggle("fast");
-        toggleBold("toggle_summary_alert_log");
+	$('#toggle_summary_edit_log').click(function(){
+		$('#view_summary_edit_log').slideToggle("fast");
+        toggleBold("toggle_summary_edit_log");
+	});
+
+	$('#toggle_summary_change_log').click(function(){
+		$('#view_summary_change_log').slideToggle("fast");
+        toggleBold("toggle_summary_change_log");
 	});
 
 	$('#toggle_summary_location').click(function(){
@@ -538,10 +549,20 @@ $(document).ready(function(){
         toggleBold("toggle_summary_attachment");
 	});
 
-	$('#toggle_summary_nmis').click(function(){
-		$('#view_summary_nmis').slideToggle("fast");
+    $('#toggle_summary_nmis').click(function(){
+        $('#view_summary_nmis').slideToggle("fast");
         toggleBold("toggle_summary_nmis");
-	});
+    });
+
+    $('#toggle_summary_san').click(function(){
+        $('#view_summary_san').slideToggle("fast");
+        toggleBold("toggle_summary_san");
+    });
+
+    $('#toggle_summary_san_disk').click(function(){
+        $('#view_summary_san_disk').slideToggle("fast");
+        toggleBold("toggle_summary_san_disk");
+    });
 
 	$('#toggle_summary_network_interfaces').click(function(){
 		$('#view_summary_network_interfaces').slideToggle("fast");
@@ -584,7 +605,7 @@ $(document).ready(function(){
 	$('#view_hardware_memory').hide();
 	$('#view_hardware_bios').hide();
 	$('#view_hardware_motherboard').hide();
-	$('#view_hardware_scsi_controller').hide();
+    $('#view_hardware_scsi_controller').hide();
 	$('#view_hardware_network').hide();
 	$('#view_hardware_hard_drive').hide();
 	$('#view_hardware_optical').hide();
@@ -614,10 +635,10 @@ $(document).ready(function(){
         toggleBold("toggle_hardware_motherboard");
 	});
 
-	$('#toggle_hardware_scsi_controller').click(function(){
-		$('#view_hardware_scsi_controller').slideToggle("fast");
+    $('#toggle_hardware_scsi_controller').click(function(){
+        $('#view_hardware_scsi_controller').slideToggle("fast");
         toggleBold("toggle_hardware_scsi_controller");
-	});
+    });
 
 	$('#toggle_hardware_network').click(function(){
 		$('#view_hardware_network').slideToggle("fast");
@@ -705,16 +726,17 @@ $(document).ready(function(){
 	});
 
 
-	$('#view_settings_pagefile').hide();
-	$('#view_settings_shares').hide();
-	$('#view_settings_routes').hide();
-	$('#view_settings_users').hide();
-	$('#view_settings_groups').hide();
-	$('#view_settings_print_queue').hide();
-	$('#view_settings_dns').hide();
-	$('#view_settings_netstat').hide();
-	$('#view_settings_logs').hide();
-	$('#view_settings_variables').hide();
+    $('#view_settings_dns').hide();
+    $('#view_settings_groups').hide();
+    $('#view_settings_logs').hide();
+    $('#view_settings_netstat').hide();
+    $('#view_settings_pagefile').hide();
+    $('#view_settings_print_queue').hide();
+    $('#view_settings_routes').hide();
+    $('#view_settings_shares').hide();
+    $('#view_settings_tasks').hide();
+    $('#view_settings_users').hide();
+    $('#view_settings_variables').hide();
 
 
 	$('#toggle_settings_pagefile').click(function(){
@@ -722,10 +744,15 @@ $(document).ready(function(){
         toggleBold("toggle_settings_pagefile");
 	});
 
-	$('#toggle_settings_shares').click(function(){
-		$('#view_settings_shares').slideToggle("fast");
+    $('#toggle_settings_shares').click(function(){
+        $('#view_settings_shares').slideToggle("fast");
         toggleBold("toggle_settings_shares");
-	});
+    });
+
+    $('#toggle_settings_tasks').click(function(){
+        $('#view_settings_tasks').slideToggle("fast");
+        toggleBold("toggle_settings_tasks");
+    });
 
 	$('#toggle_settings_routes').click(function(){
 		$('#view_settings_routes').slideToggle("fast");
@@ -782,18 +809,7 @@ $(document).ready(function(){
 	});
 
 });
-</script>
 
-
-
-
-
-
-
-
-
-
-<script>
 <?php
 foreach ($additional_fields_data as $field) {
     if ($field->field_type == 'list') {
@@ -830,11 +846,13 @@ foreach ($additional_fields_data as $field) {
           if(http.readyState == 4 && http.status == 200){
             // Text returned FROM the PHP script
             if(http.responseText) {
-              update = "<span id='custom_<?php echo htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_inner"; ?>' onClick='display_additional_<?php echo str_replace(' ', '_', $field->field_name);?>();' >"+http.responseText+"</span>";
+              update = "<span id='custom_<?php echo htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_inner"; ?>' onclick='display_additional_<?php echo str_replace(' ', '_', $field->field_name);?>();' >"+http.responseText+"</span>";
               document.getElementById("<?php echo $field_id; ?>_outer").innerHTML = update;
             }
           }
         }
         <?php } ?>
     <?php } ?>
+
+//]]>
 </script>

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -117,7 +117,7 @@ class Admin_db extends MY_Controller
         $this->data['flashdata'] = $this->session->flashdata('message');
 
         $this->load->model("m_system");
-        $this->load->model("m_alerts");
+        $this->load->model("m_change_log");
         $this->load->model("m_oa_general");
         $this->load->model("m_oa_group");
         $this->load->model("m_oa_admin_database");
@@ -132,8 +132,8 @@ class Admin_db extends MY_Controller
         $this->data['count_not_seen_days'] = $this->m_system->count_not_seen_days($this->data['days']);
 
         # alerts
-        $this->data['count_alerts'] = $this->m_alerts->count_alerts();
-        $this->data['count_alerts_days'] = $this->m_alerts->count_alerts_days($this->data['days']);
+        $this->data['count_alerts'] = $this->m_change_log->count();
+        $this->data['count_alerts_days'] = $this->m_change_log->countDays($this->data['days']);
 
         # network groups with $subnet higher than $config
         $this->data['network_group_subnet'] = $this->m_oa_group->get_network_group_subnet($this->config->config['network_group_subnet']);
@@ -236,8 +236,8 @@ class Admin_db extends MY_Controller
     public function delete_alerts_days()
     {
         $days = $this->uri->segment(3, 365);
-        $this->load->model("m_alerts");
-        $this->data['count'] = $this->m_alerts->delete_alerts_days($days);
+        $this->load->model("m_change_log");
+        $this->data['count'] = $this->m_change_log->deleteDays($days);
         $this->session->set_flashdata('message', $this->data['count']." alerts removed from the database");
         redirect("admin_db/maintenance/".$days);
     }
@@ -245,8 +245,8 @@ class Admin_db extends MY_Controller
     public function delete_all_alerts()
     {
         $days = $this->uri->segment(3, 365);
-        $this->load->model("m_alerts");
-        $this->data['count'] = $this->m_alerts->delete_all_alerts();
+        $this->load->model("m_change_log");
+        $this->data['count'] = $this->m_change_log->deleteAll();
         $this->data['query'] = $this->data['count']." alerts removed from the database";
         $this->session->set_flashdata('message', $this->data['count']." alerts removed from the database");
         redirect("admin_db/maintenance/".$days);

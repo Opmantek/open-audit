@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -133,7 +133,7 @@ class query extends MY_Controller
             break;
 
             case "new_software":
-            $sql = "SELECT DATE(oa_alert_log.timestamp) AS 'date', COUNT(DISTINCT(oa_alert_log.alert_details)) as count FROM oa_alert_log LEFT JOIN system ON (oa_alert_log.system_id = system.system_id) LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND alert_table = 'sys_sw_software' AND alert_details LIKE 'software installed - %' AND DATE(oa_alert_log.timestamp) >= ? AND DATE(oa_alert_log.timestamp) <= ? AND system.man_status = 'production' GROUP BY DATE(oa_alert_log.timestamp)";
+           $sql = "SELECT DATE(change_log.timestamp) AS 'date', count(change_log.id) AS 'count' FROM change_log LEFT JOIN oa_group_sys ON (change_log.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND change_log.db_table = 'software' AND change_log.db_action = 'create' AND DATE(change_log.timestamp) >= ? AND DATE(change_log.timestamp) <= ? GROUP BY DATE(change_log.timestamp)";
             $this->data['heading'] = "Software Discovered 30";
             $data = array($group_id, $start_date, $end_date);
             $json = 'y';

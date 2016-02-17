@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -55,14 +55,16 @@
 
 <?php
 $line1 = "[";
-foreach ($query as $partition) {
-    $line1 .= "['".$partition->timestamp."', ".$partition->percent_used."], ";
+if (count($query) > 0) {
+	foreach ($query as $partition) {
+	    $line1 .= "['".$partition->timestamp."', ".$partition->used_percent."], ";
+	}
 }
 $line1 = mb_substr($line1, 0, (mb_strlen($line1) - 2));
 $line1 = $line1."];";
 
 foreach ($partition_details as $partition) {
-    $graph_title = str_replace("\\", "\\\\", $partition->partition_mount_point)." (".$partition->partition_mount_type.")";
+    $graph_title = str_replace("\\", "\\\\", $partition->mount_point)." (".$partition->type . ' ' . $partition->mount_type.")";
 }
 ?>
 

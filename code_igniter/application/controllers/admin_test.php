@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -59,13 +59,13 @@ class Admin_test extends MY_Controller
         $this->load->model("m_system");
         $this->load->helper('snmp');
         $this->load->helper('snmp_oid');
-        $this->load->model("m_oa_general");
+        $this->load->model("m_devices_components");
         $this->load->library('encrypt');
         $details = new stdClass();
         $details->system_id = $this->uri->segment(3, 0);
         $encrypted_access_details = $this->m_system->get_access_details($details->system_id);
-        $details->hostname = $this->m_oa_general->get_attribute("system", "hostname", $details->system_id);
-        $details->man_ip_address = ip_address_from_db($this->m_oa_general->get_attribute("system", "man_ip_address", $details->system_id));
+        $details->hostname = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'hostname');
+        $details->man_ip_address = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'man_ip_address');
         $details->show_output = true;
 
         $temp_array = get_snmp($details);

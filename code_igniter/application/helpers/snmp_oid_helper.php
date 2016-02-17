@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.8.4
+ * @version 1.12
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -18564,6 +18564,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.29898') { $new->manufacturer = 'Acropolis Software SPRL'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.29968') { $new->manufacturer = 'Universidade Estadual de Campinas (UNICAMP)'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.30036') { $new->manufacturer = 'Nomad Digital Ltd'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.30065') { $new->manufacturer = 'Arista Networks'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.30318') { $new->manufacturer = 'GSoft PKI'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.30400') { $new->manufacturer = 'Discount Ltd Shob Team'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.30445') { $new->manufacturer = 'Genie Technology Management'; }

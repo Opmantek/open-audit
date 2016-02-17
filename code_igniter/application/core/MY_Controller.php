@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -96,7 +96,6 @@ class MY_Controller extends CI_Controller
         $this->data['title'] = 'Open-AudIT';
         $this->data['id'] = $this->uri->segment(3, 0);
         $this->load->helper('log');
-        $this->load->helper('url');
         $this->load->helper('network');
         $this->data['apppath'] = APPPATH;
         if (!isset($this->user->user_theme)) {
@@ -476,15 +475,14 @@ class MY_Controller extends CI_Controller
                         /////////////////////
                         case 'link':
                             $col_link = str_replace('$group_id', $this->data['group_id'], $col_link);
-                            $temp_link = $query_row->$col_var_name_sec;
-                            $temp_url = $this->make_url($col_link, $temp_link);
+                            $temp_url = $this->make_url($col_link, (string)$query_row->$col_var_name_sec);
 
-                            if ($column->column_ternary != ''
-                                and isset($col_var_name_ter) and isset($query_row->$col_var_name_ter)) {
+                            if ($column->column_ternary != '' and isset($col_var_name_ter) and isset($query_row->$col_var_name_ter)) {
                                 $temp_url .= '/'.$query_row->$col_var_name_ter;
                             }
 
                             echo '			<td style="text-align: '.$col_align.';">';
+                            #echo '<a href="'.$temp_url.'">'.htmlentities($query_row->$col_var_name, ENT_QUOTES, 'UTF-8')."</a></td>\n";
                             echo '<a href="'.$temp_url.'">'.htmlentities($query_row->$col_var_name, ENT_QUOTES, 'UTF-8')."</a></td>\n";
                                         break;
 
@@ -754,17 +752,19 @@ class MY_Controller extends CI_Controller
         if (strpos($col_link, '/') === 0) {
             $col_link = substr($col_link, 1);
         }
-        $temp_url = $this->relative_index.$col_link.$col_var_name_sec;
-        if ((string) $this->user->user_full_name === 'Open-AudIT Enterprise') {
-            if (strpos($col_link, '/') === 0) {
-                $col_link = substr($col_link, 1);
-            }
+        // NOTE - For most reports, $col_var_name_sec is normally system_id expressed as an int
+        // NOTE - Relative Index is normally like                      - /open-audit/index.php/
+        // NOTE - For an Enterprise report, $col_link is normally like - /omk/oae/device_details/
+        // NOTE - For a Community report, $col_link is normally like   - /main/system_display/
+        if (stripos($this->data['heading'], 'Enterprise - ') !== false) {
+            $temp_url = $col_link.$col_var_name_sec;
             $temp_url = $this->relative_index.$col_link.$col_var_name_sec;
-            #$temp_url = str_replace($this->relative_index . 'main/system_display', '/omk/oae/system_summary', $temp_url);
-            $temp_url = str_replace($this->relative_index.'main/system_display', '/omk/oae/device_details', $temp_url);
+            $temp_url = str_replace($this->relative_index.'main/system_display', 'omk/oae/device_details', $temp_url);
+            $temp_url = str_replace($this->relative_index.'report/show_report', 'omk/oae/show_report', $temp_url);
+            $temp_url = str_replace($this->relative_index.'report/', 'omk/oae/show_report/', $temp_url);
             $temp_url = str_replace($this->relative_index.'omk/oae', '/omk/oae', $temp_url);
-            $temp_url = str_replace($this->relative_index.'report/show_report', '/omk/oae/show_report', $temp_url);
-            $temp_url = str_replace($this->relative_index.'report/', '/omk/oae/show_report/', $temp_url);
+        } else {
+            $temp_url = $this->relative_index.$col_link.$col_var_name_sec;
         }
 
         return($temp_url);

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -49,9 +49,9 @@ if (count($query) > 0) {
         if (count($query) > 0) {
             foreach ($query as $key):
                 if ($key->report_id > 0) {
-                    $edit_pic = "<a href=\"edit_report/".intval($key->report_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-                    $export_pic = "<a href=\"export_report/".intval($key->report_id)."\"><img src='".$oa_theme_images."/16_text-x-generic-template.png' alt='' title='' width='16'/></a>";
-                    $delete_pic = "<a href=\"delete_report/".intval($key->report_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                    $edit_pic = "<a href=\"edit_report/".intval($key->report_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
+                    $export_pic = "<a href=\"export_report/".intval($key->report_id)."\"><img src='".$oa_theme_images."/16_text-x-generic-template.png' alt='' title='' style='width:16'/></a>";
+                    $delete_pic = "<a href=\"delete_report/".intval($key->report_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                     ?>
         			<tr>
         				<td><?php echo htmlentities(__($key->report_name))?></td>

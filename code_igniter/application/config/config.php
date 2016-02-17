@@ -2,8 +2,8 @@
 if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-$config['web_internal_version'] = '20151112';
-$config['web_display_version'] = '1.8.4';
+$config['web_internal_version'] = '20160130';
+$config['web_display_version'] = '1.12';
 # $config['debug'] = FALSE;
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +59,7 @@ $config['index_page'] = "index.php";
 | 'ORIG_PATH_INFO'	Uses the ORIG_PATH_INFO
 |
 */
-$config['uri_protocol']    = "AUTO";
+$config['uri_protocol']    = "REQUEST_URI";
 
 /*
 |--------------------------------------------------------------------------

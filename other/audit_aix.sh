@@ -35,7 +35,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.8.4
+# @version 1.12
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -282,7 +282,7 @@ if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; f
 
 START="$SECONDS"
 if [[ "$debugging" -gt 0 ]]; then print -n "Disk Details        "; fi
-echo "	<hard_disks>" >> "$xml_file"
+echo "	<disk>" >> "$xml_file"
 for disk in $(lspv | cut -d" " -f1); do
 	hard_drive_caption="$disk"
 	hard_drive_index=$(eval "lspv $disk | grep 'PV IDENTIFIER:' | sed -e 's/^[ \t]*//' | sed 's/  */\ /g' | cut -d' ' -f3 $safety")
@@ -296,22 +296,22 @@ for disk in $(lspv | cut -d" " -f1); do
 	hard_drive_status=""
 	hard_drive_scsi_logical_unit=""
 	cat >>"$xml_file" <<EndOfFile
-		<hard_disk>
-			<hard_drive_caption>$(escape_xml "$hard_drive_caption")</hard_drive_caption>
+		<item>
+			<caption>$(escape_xml "$hard_drive_caption")</caption>
 			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>
-			<hard_drive_interface_type>$(escape_xml "$hard_drive_interface_type")</hard_drive_interface_type>
-			<hard_drive_manufacturer>$(escape_xml "$hard_drive_manufacturer")</hard_drive_manufacturer>
-			<hard_drive_model>$(escape_xml "$hard_drive_model")</hard_drive_model>
-			<hard_drive_serial>$(escape_xml "$hard_drive_serial")</hard_drive_serial>
-			<hard_drive_size>$(escape_xml "$hard_drive_size")</hard_drive_size>
-			<hard_drive_device_id>$(escape_xml "$hard_drive_device_id")</hard_drive_device_id>
-			<hard_drive_partitions>$(escape_xml "$hard_drive_partitions")</hard_drive_partitions>
-			<hard_drive_status>$(escape_xml "$hard_drive_status")</hard_drive_status>
-			<hard_drive_scsi_logical_unit>$(escape_xml "$hard_drive_scsi_logical_unit")</hard_drive_scsi_logical_unit>
-		</hard_disk>
+			<interface_type>$(escape_xml "$hard_drive_interface_type")</interface_type>
+			<manufacturer>$(escape_xml "$hard_drive_manufacturer")</manufacturer>
+			<model>$(escape_xml "$hard_drive_model")</model>
+			<serial>$(escape_xml "$hard_drive_serial")</serial>
+			<size>$(escape_xml "$hard_drive_size")</size>
+			<device>$(escape_xml "$hard_drive_device_id")</device>
+			<partition_count>$(escape_xml "$hard_drive_partitions")</partition_count>
+			<status>$(escape_xml "$hard_drive_status")</status>
+			<scsi_logical_unit>$(escape_xml "$hard_drive_scsi_logical_unit")</scsi_logical_unit>
+		</item>
 EndOfFile
 done
-echo "	</hard_disks>" >> "$xml_file"
+echo "	</disk>" >> "$xml_file"
 FINISH=$((SECONDS-START))
 if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; fi
 
@@ -320,7 +320,7 @@ if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; f
 
 START="$SECONDS"
 if [[ "$debugging" -gt 0 ]]; then print -n "Partition Details   "; fi
-echo "	<partitions>" >> "$xml_file"
+echo "	<partition>" >> "$xml_file"
 for disk in $(lspv | cut -d" " -f1); do
 	hard_drive_index=$(eval "lspv $disk | grep 'PV IDENTIFIER:' | sed -e 's/^[ \t]*//' | sed 's/  */\ /g' | cut -d' ' -f3 $safety")
 	for partition in $(eval "lspv -l $disk | cut -d' ' -f1 | grep -v 'LV' | grep -v '$disk' $safety"); do
@@ -328,33 +328,31 @@ for disk in $(lspv | cut -d" " -f1); do
 			partition_mount_point=$(eval "lspv -p $disk | grep '$partition' | sed -e 's/^[ \t]*//' | sed 's/  */\ /g' | sed 's/inner /inner/' | sed 's/outer /outer/' | cut -d' ' -f6 | head -1 $safety")
 
 			partition_format=$(eval "lspv -p $disk | grep '$partition' | sed -e 's/^[ \t]*//' | sed 's/  */\ /g' | sed 's/inner /inner/' | sed 's/outer /outer/' | cut -d' ' -f5 | head -1 $safety")
-			
+
 			partition_size=$(eval "getconf DISK_SIZE /dev/$partition $safety")
 			partition_used_space=$(eval "df -mP | grep '/dev/$partition ' | sed 's/  */\ /g' | cut -d' ' -f3 $safety")
 			partition_free_space=$(eval "df -mP | grep '/dev/$partition ' | sed 's/  */\ /g' | cut -d' ' -f4 $safety")
 			cat >>"$xml_file" <<EndOfFile
-		<partition>
+		<item>
+			<serial></serial>
+			<name>$(escape_xml "$partition")</name>
+			<description>$(escape_xml "$partition_mount_point")</description>
+			<device></device>
 			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>
-			<partition_mount_type>partition</partition_mount_type>
-			<partition_mount_point>$(escape_xml "$partition_mount_point")</partition_mount_point>
-			<partition_name>$(escape_xml "$partition")</partition_name>
-			<partition_size>$(escape_xml "$partition_size")</partition_size>
-			<partition_free_space>$(escape_xml "$partition_free_space")</partition_free_space>
-			<partition_used_space>$(escape_xml "$partition_used_space")</partition_used_space>
-			<partition_format>$(escape_xml "$partition_format")</partition_format>
-			<partition_caption>$(escape_xml "$partition_mount_point")</partition_caption>
-			<partition_device_id></partition_device_id>
 			<partition_disk_index></partition_disk_index>
-			<partition_bootable></partition_bootable>
-			<partition_type></partition_type>
-			<partition_quotas_supported></partition_quotas_supported>
-			<partition_quotas_enabled></partition_quotas_enabled>
-			<partition_serial></partition_serial>
-		</partition>
+			<mount_type>partition</mount_type>
+			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
+			<size>$(escape_xml "$partition_size")</size>
+			<free>$(escape_xml "$partition_free_space")</free>
+			<used>$(escape_xml "$partition_used_space")</used>
+			<format>$(escape_xml "$partition_format")</format>
+			<bootable></bootable>
+			<type>local</type>
+		</item>
 EndOfFile
 	done
 done
-echo "	</partitions>" >> "$xml_file"
+echo "	</partition>" >> "$xml_file"
 FINISH=$((SECONDS-START))
 if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; fi
 

@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.8.4
+# @version 1.12
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -179,11 +179,12 @@ fi
 # Nmap command line switches explained
 # -PE == icmp echo
 # -PP == timestamp
-# -v  == verbose
 # -sP == ping scan
 # -PE == imcp echo
 # -PP == timestamp
-# -n == no name resolution
+# -v  == verbose
+# -sn == ping scan only
+# -n  == no name resolution
 
 i=0
 j=0

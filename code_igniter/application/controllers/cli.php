@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -76,6 +76,11 @@ class cli extends CI_Controller
         if (! $this->input->is_cli_request()) {
             exit();
         }
+
+        $this->load->helper('report_helper');
+        check_default_reports();
+        $this->load->helper('group_helper');
+        check_default_groups();
     }
 
     /**
@@ -126,8 +131,7 @@ class cli extends CI_Controller
         $this->load->library('encrypt');
         $this->load->model('m_system');
         $this->load->model('m_oa_group');
-        $this->load->model('m_oa_general');
-        $this->load->model('m_network_card');
+        $this->load->model('m_devices_components');
         $this->load->model('m_ip_address');
         $file_handle = fopen($nodes_file, 'r');
         $string = fread($file_handle, filesize($nodes_file));
@@ -274,8 +278,8 @@ class cli extends CI_Controller
                         // we received a result from snmp, use this data to update or insert
                         if (isset($device->system_id) and (string) $device->system_id !== '') {
                             // update an existing device with snmp
-                            $device->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $device->system_id);
-                            $device->original_last_seen_by = $this->m_oa_general->get_attribute('system', 'last_seen_by', $device->system_id);
+                            $device->original_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'timestamp');
+                            $device->original_last_seen_by = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen_by');
                             $device->last_seen_by = 'snmp nmis import';
                             $this->m_system->update_system($device);
                             $log_details->message = 'NMIS import, update SNMP for '.$device->man_ip_address.' ('.$device->hostname.')';
@@ -286,17 +290,17 @@ class cli extends CI_Controller
                             $device->last_seen_by = 'snmp nmis import';
                             $device->original_last_seen_by = 'snmp nmis import';
                             $device->system_id = $this->m_system->insert_system($device);
-                            $device->original_timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $device->system_id);
+                            $device->original_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'timestamp');
                             $log_details->message = 'NMIS import, insert SNMP for '.$device->man_ip_address.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         }
                         // update any network interfaces and ip addresses retrieved by SNMP
-                        $device->timestamp = $this->m_oa_general->get_attribute('system', 'timestamp', $device->system_id);
-                        $device->first_timestamp = $this->m_oa_general->get_attribute('system', 'first_timestamp', $device->system_id);
+                        $device->timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'timestamp');
+                        $device->first_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'first_timestamp');
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                            $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {
-                                $this->m_network_card->process_network_cards($input, $device);
                                 if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
                                     foreach ($input->ip_addresses as $ip_input) {
                                         $ip_input = (object) $ip_input;

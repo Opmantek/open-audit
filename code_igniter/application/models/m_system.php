@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -506,8 +506,8 @@ class M_system extends MY_Model
             $data = array("$details->hostname", $this->ip_address_to_db($details->man_ip_address), "$details->domain", "$details->icon", "$details->os_group", "$details->os_family", "$details->os_name", "$details->os_group", "$details->os_family", "$details->os_name", "$details->last_seen", $timestamp, "$details->last_seen" );
             $query = $this->db->query($sql, $data);
             $system_id = $this->db->insert_id();
-            $sql = "INSERT INTO sys_sw_windows (system_id, windows_active_directory_ou, timestamp, first_timestamp) values (?, ?, ?, ?)";
-            $data = array("$system_id", "$details->windows_active_directory_ou", $timestamp, $timestamp );
+            $sql = "INSERT INTO windows (system_id, active_directory_ou, last_seen, first_seen) values (?, ?, ?, ?)";
+            $data = array("$system_id", "$details->active_directory_ou", $timestamp, $timestamp );
             $query = $this->db->query($sql, $data);
         }
 
@@ -1214,6 +1214,34 @@ class M_system extends MY_Model
             $query = $this->db->query($sql, $data);
         }
 
+        # check if we have a matching entry in the vm table and update it if required
+        if (isset($details->uuid) and $details->uuid != '') {
+            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) and vm.current = 'y' and vm.system_id = system.system_id";
+            $data = array("$details->uuid");
+            $query = $this->db->query($sql, $data);
+            if ($query->num_rows() > 0) {
+                $row = $query->row();
+                $temp_vm_id = $row->id;
+                $details->man_vm_system_id = $row->man_vm_system_id;
+                $details->man_vm_server_name = $row->man_vm_server_name;
+                $sql = "SELECT icon , 'vm' FROM system WHERE system_id = ?";
+                $data = array($details->system_id);
+                $query = $this->db->query($sql, $data);
+                $row = $query->row();
+                $details->icon = $row->icon;
+                $sql = "UPDATE vm SET guest_system_id = ?, icon = ? WHERE id = ?";
+                $data = array($details->system_id, "$details->icon", "$temp_vm_id");
+                $query = $this->db->query($sql, $data);
+                $sql = "UPDATE system SET man_vm_system_id = ?, man_vm_server_name = ? WHERE system_id = ?";
+                $data = array($details->man_vm_system_id, $details->man_vm_server_name, $details->system_id);
+                $query = $this->db->query($sql, $data);
+            }
+        }
+
+        # insert an entry into the change log
+        $this->load->model('m_change_log');
+        $this->m_change_log->create($details->system_id, 'system', $details->system_id, 'create', 'Item added to system', $details->last_seen);
+
         $log_details->message = 'System insert end for '.ip_address_from_db($details->man_ip_address).' ('.$details->hostname.') (System ID '.$details->system_id.')';
         stdlog($log_details);
         unset($log_details);
@@ -1613,21 +1641,7 @@ class M_system extends MY_Model
 
         # As at 1.5, update the timestamps in the linked tables
         if ($details->last_seen_by != 'audit') {
-            if ($details->last_seen_by != 'snmp') {
-                $table_array = array('sys_hw_bios', 'sys_hw_hard_drive', 'sys_hw_memory', 'sys_hw_monitor', 'sys_hw_motherboard', 'sys_hw_network_card',
-                    'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 'sys_hw_sound', 'sys_hw_video', 'sys_hw_warranty',
-                    'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_log', 'sys_sw_netstat', 'sys_sw_pagefile', 'sys_sw_print_queue',
-                    'sys_sw_route', 'sys_sw_scheduled_task', 'sys_sw_service', 'sys_sw_share', 'sys_sw_share_perms', 'sys_sw_software', 'sys_sw_software_key',
-                    'sys_sw_user', 'sys_sw_variable', 'sys_sw_virtual_machine', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site',
-                    'sys_sw_web_site_header', 'sys_sw_web_site_virtual', 'sys_sw_windows', );
-            } else {
-                $table_array = array('sys_hw_bios', 'sys_hw_hard_drive', 'sys_hw_memory', 'sys_hw_monitor', 'sys_hw_motherboard',
-                    'sys_hw_optical_drive', 'sys_hw_partition', 'sys_hw_processor', 'sys_hw_scsi_controller', 'sys_hw_sound', 'sys_hw_video', 'sys_hw_warranty',
-                    'sys_sw_database', 'sys_sw_database_details', 'sys_sw_dns', 'sys_sw_group', 'sys_sw_log', 'sys_sw_netstat', 'sys_sw_pagefile', 'sys_sw_print_queue',
-                    'sys_sw_route', 'sys_sw_scheduled_task', 'sys_sw_service', 'sys_sw_share', 'sys_sw_share_perms', 'sys_sw_software', 'sys_sw_software_key',
-                    'sys_sw_user', 'sys_sw_variable', 'sys_sw_web_server', 'sys_sw_web_server_ext', 'sys_sw_web_site',
-                    'sys_sw_web_site_header', 'sys_sw_web_site_virtual', 'sys_sw_windows', );
-            }
+            $table_array = array('sys_hw_network_card_ip');
             foreach ($table_array as $key => $value) {
                 $update_sql = "UPDATE $value SET timestamp = ? WHERE timestamp = ? AND system_id = ?";
                 $update_data = array("$details->timestamp", "$details->original_timestamp", "$details->system_id");
@@ -1638,6 +1652,30 @@ class M_system extends MY_Model
             $temp_ip = $details->man_ip_address.' ';
         } else {
             $temp_ip = '';
+        }
+
+        # check if we have a matching entry in the vm table and update it if required
+        if (isset($details->uuid) and $details->uuid != '') {
+            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) and vm.current = 'y' and vm.system_id = system.system_id";
+            $data = array("$details->uuid");
+            $query = $this->db->query($sql, $data);
+            if ($query->num_rows() > 0) {
+                $row = $query->row();
+                $temp_vm_id = $row->id;
+                $details->man_vm_system_id = $row->man_vm_system_id;
+                $details->man_vm_server_name = $row->man_vm_server_name;
+                $sql = "SELECT icon  FROM system WHERE system_id = ?";
+                $data = array($details->system_id);
+                $query = $this->db->query($sql, $data);
+                $row = $query->row();
+                $details->icon = $row->icon;
+                $sql = "UPDATE vm SET guest_system_id = ?, icon = ? WHERE id = ?";
+                $data = array($details->system_id, "$details->icon", "$temp_vm_id");
+                $query = $this->db->query($sql, $data);
+                $sql = "UPDATE system SET man_vm_system_id = ?, man_vm_server_name = ? WHERE system_id = ?";
+                $data = array($details->man_vm_system_id, $details->man_vm_server_name, $details->system_id);
+                $query = $this->db->query($sql, $data);
+            }
         }
 
         $log_details->message = 'System update end for '.ip_address_from_db($temp_ip).'('.$details->hostname.') (System ID '.$details->system_id.')';

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -53,14 +53,14 @@ if (count($query) > 1) { ?>
 						<td><?php echo preg_replace("/(\w+) attribute/", "<i>$1</i> attribute", $key['group_description']); ?></td>
 						<?php if ($key['activated']) { ?>
 							<?php if ($key['activated'] != '1') { ?>
-								<td align='center'><?php echo "<a href=\"action_delete_group/".$key['activated']."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>"; ?></td>
+								<td align='center'><?php echo "<a href=\"action_delete_group/".$key['activated']."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>"; ?></td>
 								<td align='center'>yes</td>
 		                    <?php } else { ?>
 								<td align='center'></td>
 								<td align='center'>yes</td>
 							<?php } ?>
 						<?php } else { ?>
-							<td align='center'><?php echo "<a href=\"action_activate_group/".$key['file']."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>"; ?></td>
+							<td align='center'><?php echo "<a href=\"action_activate_group/".$key['file']."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>"; ?></td>
 							<td align='center'></td>
 						<?php } ?>
 					</tr>

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -50,20 +50,20 @@ if ($query) {
 	<tbody>
 		<?php
         foreach ($query as $key):
-            $edit_pic = "<a href=\"edit_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16'/></a>";
-            $delete_pic = "<a href=\"delete_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+            $edit_pic = "<a href=\"edit_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
+            $delete_pic = "<a href=\"delete_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
             if ($key->user_admin == 'y') {
-                $admin_pic = "<img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/>";
+                $admin_pic = "<img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/>";
             } else {
-                $admin_pic = "<img src='".$oa_theme_images."/16_false.png' alt='' title='' width='16'/>";
+                $admin_pic = "<img src='".$oa_theme_images."/16_false.png' alt='' title='' style='width:16'/>";
                 $admin_pic = "";
             }
             if ($key->user_active == 'y') {
-                $deactivate_pic = "<a href=\"deactivate_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' width='16'/></a>";
+                $deactivate_pic = "<a href=\"deactivate_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                 $activate_pic = "";
             } else {
                 $deactivate_pic = "";
-                $activate_pic = "<a href=\"activate_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' width='16'/></a>";
+                $activate_pic = "<a href=\"activate_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>";
             }
             ?>
 			<tr>

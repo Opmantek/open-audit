@@ -3,7 +3,7 @@
 	<details>
 		<group_name>Domain Controllers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system LEFT JOIN sys_sw_windows ON (system.system_id = sys_sw_windows.system_id AND system.timestamp = sys_sw_windows.timestamp) WHERE sys_sw_windows.windows_domain_role LIKE '%Domain Controller' AND system.man_status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') WHERE windows.domain_role LIKE '%Domain Controller' AND system.man_status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>application</group_category>
 		<group_icon>ldap</group_icon>

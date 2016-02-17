@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -174,10 +174,11 @@ class ajax extends MY_Controller
 
         $this->load->model("m_system");
         $this->load->model("m_oa_group");
+        $this->load->model("m_devices_components");
         $access_level = $this->m_system->get_system_access_level($this->data['system_id'], $this->user->user_id);
         if ($access_level > 7) {
             $field_ok = 0;
-            $this->load->model("m_audit_log");
+            $this->load->model("m_edit_log");
             $columns = $this->m_system->get_columns();
             if ((mb_substr_count($this->data['field_name'], 'custom_') > 0) && ($access_level >= 7)) {
                 $data = explode("_", $this->data['field_name']);
@@ -213,13 +214,13 @@ class ajax extends MY_Controller
                         $row = $query->row();
                         $sql = "UPDATE sys_man_additional_fields_data SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
                         $query = $this->db->query($sql);
-                        $this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
+                        $this->m_edit_log->create($this->data['system_id'], "", "sys_man_additional_fields_data", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));
                     } else {
                         # we have to insert a new record for a custom data value for this system
                         $sql = "INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
                         $query = $this->db->query($sql);
-                        $this->m_audit_log->insert_audit_event("sys_man_additional_fields_data", $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
+                        $this->m_edit_log->create($this->data['system_id'], "", "sys_man_additional_fields_data", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));
                     }
                 } else {
@@ -235,8 +236,9 @@ class ajax extends MY_Controller
                         }
                     }
                     if (($field_ok == 1) && ($access_level >= 7)) {
+                        $original_value = $this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', $this->data['field_name']);
                         $this->m_system->update_system_man($this->data['system_id'], $this->data['field_name'], $this->oa_urldecode($this->data['field_data']));
-                        $this->m_audit_log->insert_audit_event($this->data['field_name'], $this->oa_urldecode($this->data['field_data']), $this->data['system_id']);
+                        $this->m_edit_log->create($this->data['system_id'], '', 'system', $this->data['field_name'], '', $this->oa_urldecode($this->data['field_data']), $original_value);
 
                         if (($this->data['field_name'] == 'man_status') or ($this->data['field_name'] == 'man_org_id')) {
                             $details = new stdClass();

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -37,6 +37,7 @@
 <fieldset id="group_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Scanning A Subnet using Nmap')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_network_wireless.png' alt='' title='' width='48'/>
+	<h1>Using audit_subnet.[sh|vbs] scripts is depreciated. Please use discover_subnet.[sh.vbs] instead. This facility will be removed in a furute version of Open-AudIT.</h1>
 	<table cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='100%'>

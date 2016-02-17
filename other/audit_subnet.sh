@@ -27,13 +27,18 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.8.4
+# @version 1.12
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 set -f              # turn off globbing
 IFS='
 '
+
+echo "-------ATTENTION------"
+echo "This script has been depreciated. Please use the discover_subnet.sh script instead."
+echo "----------------------"
+echo ""
 
 create_file="n"
 debugging=0
@@ -93,6 +98,11 @@ if [ "$help" == "y" ]; then
 	echo "Open-AudIT Linux Discovery script"
 	echo "(c) Opmantek, 2014.              "
 	echo "---------------------------------"
+	echo ""
+	echo "-------ATTENTION------"
+	echo "This script has been depreciated. Please use the duscover_subnet.sh script instead."
+	echo "----------------------"
+	echo ""
 	echo "This script should be used on a Linux based computer to discover hosts in a subnet."
 	echo "It will run nmap against the target subnet and submit the result."
 	echo ""

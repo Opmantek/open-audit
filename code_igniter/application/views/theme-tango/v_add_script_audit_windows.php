@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -70,10 +70,10 @@ echo form_open('admin/add_script_audit_windows')."\n";
 ?>
 <fieldset id="org_details" class='niceforms'>
     <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Script Options')?></span></legend>
-    <img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
+    <img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
     <table width="80%" cellpadding = "0" cellspacing="0" style=".label {width:200px;}">
         <tr>
-            <td width='50%'>
+            <td style='width:50%'>
                 <p><label for='strcomputer' ><?php echo __('Computer'); ?>: </label><input type='text' id='strcomputer' name='strcomputer' tabindex='1' title=''  value='.'/></p>
                 <p><label for='submit_online'><?php echo __('Submit Online'); ?>: </label><input type='checkbox' id='submit_online' name='submit_online' tabindex='2' title='' checked /></p>
                 <p><label for='create_file'><?php echo __('Create an XML file'); ?>: </label><input type='checkbox' id='create_file' name='create_file' tabindex='3' title='' /></p>
@@ -93,7 +93,7 @@ echo form_open('admin/add_script_audit_windows')."\n";
                 </p>
                 <p><label for='windows_user_work_1'><?php echo __('Active Directory User Details'); ?> #1: </label><input type='text' id='windows_user_work_1' name='windows_user_work_1' tabindex='9' title=''  value="physicalDeliveryOfficeName"/></p>
                 <p><label for='windows_user_work_2'><?php echo __('Active Directory User Details'); ?> #2: </label><input type='text' id='windows_user_work_2' name='windows_user_work_2' tabindex='10' title=''  value="company"/></p>
-            </td><td width='50%'>
+            </td><td style='width:50%'>
                 <p><label for='skip_mount_point'><?php echo __('Do not audit mount points'); ?>: </label><input type='checkbox' id='skip_mount_point' name='skip_mount_point' tabindex='11' title='' /></p>
                 <p><label for='skip_printer'><?php echo __('Do not audit attached printers'); ?>: </label><input type='checkbox' id='skip_printer' name='skip_printer' tabindex='12' title='' /></p>
                 <p><label for='skip_software'><?php echo __('Do not audit installed software'); ?>: </label><input type='checkbox' id='skip_software' name='skip_software' tabindex='13' title='' /></p>

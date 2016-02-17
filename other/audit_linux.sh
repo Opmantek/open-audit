@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
-# @version 1.8.4
+# @version 1.12
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -61,7 +61,7 @@ submit_online="n"
 # create an XML text file of the result in the current directory
 create_file="y"
 
-# the address of the OAv2 server "submit" page
+# the address of the Open-AudIT server "submit" page
 url="http://localhost/open-audit/index.php/system/add_system"
 
 # optional - assign any PCs audited to this Org - take the OrgId from OAv2 interface
@@ -84,6 +84,12 @@ ping_target="y"
 
 # set by the Discovery function - do not normally set this manually
 system_id=""
+
+# Should we attempt to audit any connected SAN's
+audit_san="y"
+
+# If we detect the san management software, should we run an auto-discover before the query
+run_san_discover="n"
 
 PATH="$PATH:/sbin:/usr/sbin"
 export PATH
@@ -289,6 +295,10 @@ for arg in "$@"; do
 			submit_online="$parameter_value" ;;
 		"system_id" )
 			system_id="$parameter_value" ;;
+		"audit_san" )
+			audit_san="$parameter_value" ;;
+		"run_san_discover" )
+			run_san_discover="$parameter_value" ;;
 		"url" )
 			url="$parameter_value" ;;
 		"$parameter_value" )
@@ -331,6 +341,14 @@ if [ "$help" = "y" ]; then
 	echo "  org_id"
 	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
 	echo ""
+	echo "  audit_san"
+	echo "     *y - Should we audit a SAN if it is detected"
+	echo "      n - Do not attempt to audit any attached SANs"
+	echo ""
+	echo "  run_san_discover"
+	echo "     *n - Do not run smcli -A if we detect the SAN management software"
+	echo "      Y - Run the command and update the list of any connected SANs"
+	echo ""
 	echo "  submit_online"
 	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
 	echo "     n - Do not submit the audit result"
@@ -344,7 +362,6 @@ if [ "$help" = "y" ]; then
 	echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
 	exit
 fi
-
 
 # test pinging the server hosting the URL
 if [ "$submit_online" = "y" ]; then
@@ -434,6 +451,65 @@ if [ $(pidof -x "$script_name") != "$script_pid" ]; then
 	exit 0
 fi
 IFS=$'\n';
+
+
+
+#========================
+#  SAN INFO             #
+#========================
+if [ "$audit_san" = "y" ]; then
+	if [ -f "/opt/IBM_DS/client/SMcli" ]; then
+		san_url=${url/system\/add_system/san\/add_san}
+		if [ "$debugging" -gt 0 ]; then
+			echo "SAN info"
+		fi
+		if [ "$run_san_discover" = "y" ]; then
+			if [ "$debugging" -gt 1 ]; then
+				echo "Running SAN refresh / discover."
+			fi
+			output=$(/opt/IBM_DS/client/SMcli -A)
+		fi
+		if [ "$debugging" -gt 1 ]; then
+			echo "Running SAN list"
+		fi
+		for san in $(/opt/IBM_DS/client/SMcli -d | grep -v -e '^$' | grep -v 'SMcli' | cut -d" " -f2 ); do
+			$(echo "input=" > /tmp/"$san".txt)
+			if [ "$debugging" -gt 1 ]; then
+				echo "Running command: /opt/IBM_DS/client/SMcli \"$san\" -c \"show storagesubsystem profile;\" >> /tmp/\"$san\".txt"
+			fi
+			$(/opt/IBM_DS/client/SMcli "$san" -c "show storagesubsystem profile;" >> /tmp/"$san".txt)
+			if [ "$submit_online" = "y" ]; then
+				if [ "$debugging" -gt 1 ]; then
+					echo "Submitting SAN results to server"
+					echo "URL: $san_url"
+					if [ "$debugging" -gt 2 ]; then
+						head /tmp/"$san".txt
+					fi
+				fi
+				if [ -n "$(which wget 2>/dev/null)" ]; then
+					if [ "$debugging" -gt 1 ]; then
+						echo "Sending using wget."
+					fi
+					wget --delete-after --post-file=/tmp/"$san".txt "$san_url" 2>/dev/null
+				else
+					if [ -n "$(which curl 2>/dev/null)" ]; then
+					if [ "$debugging" -gt 1 ]; then
+						echo "Sending using curl."
+					fi
+						curl --data @/tmp/"$san".txt "$san_url"
+					fi
+				fi
+			fi
+			if [ "$debugging" -gt 1 ]; then
+				echo "Deleting SAN output file /tmp/$san.txt."
+			fi
+			$(rm /tmp/"$san".txt)
+		done
+	fi
+fi
+
+
+
 
 #========================
 #  SYSTEM INFO          #
@@ -1089,7 +1165,7 @@ if [ -n "$sound_pci_adapters" ]; then
 		echo "		<item>"
 		echo "			<model>$(escape_xml "$sound_name")</model>"
 		echo "			<manufacturer>$(escape_xml "$sound_manufacturer")</manufacturer>"
-		echo "			<device>$(escape_xml "$sound_adapter")</sound_device>"
+		echo "			<device>$(escape_xml "$sound_adapter")</device>"
 		echo "		</item>"
 		} >> "$xml_file"
 	done
@@ -1457,7 +1533,7 @@ if [ -n "$net_cards" ]; then
 		echo "			<dns_domain>$(escape_xml "$net_card_dns_domain")</dns_domain>"
 		echo "			<dns_domain_reg_enabled>$(escape_xml "$net_card_domain_reg")</dns_domain_reg_enabled>"
 		echo "			<type>$(escape_xml "$net_card_type")</type>"
-		echo "			<connection>$(escape_xml "$net_connection_id")</connection>"
+		echo "			<connection>$(escape_xml "$net_card_id")</connection>"
 		echo "			<connection_status>$(escape_xml "$net_card_status")</connection_status>"
 		echo "			<speed>$(escape_xml "$net_card_speed")</speed>"
 		echo "			<slaves>$(escape_xml "$net_slaves")</slaves>"
@@ -1571,6 +1647,10 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 			partition_mount_type=$(trim "$partition_mount_type")
 			if [ "$partition_mount_type" = "part" ]; then
 				partition_mount_type="partition"
+				partition_type="local"
+			else
+				partition_mount_type="mount point"
+				partition_type="$partition_mount_type"
 			fi
 
 			#partition_mount_point=$(lsblk -lndo MOUNTPOINT /dev/"$partition" 2>/dev/null)
@@ -1597,7 +1677,6 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 			partition_device_id="/dev/$partition"
 			partition_disk_index="$disk"
 			partition_bootable=""
-			partition_type="$partition_mount_type"
 			partition_quotas_supported=""
 			partition_quotas_enabled=""
 
@@ -1621,24 +1700,21 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 				partition_free_space=$(free -m | grep -i swap | awk '{print $4}')
 			fi
 
-			partition_result=$partition_result"		<partition>\n"
+			partition_result=$partition_result"		<item>\n"
+			partition_result=$partition_result"			<serial>$(escape_xml "$partition_serial")</serial>\n"
+			partition_result=$partition_result"			<name>$(escape_xml "$partition_name")</name>\n"
+			partition_result=$partition_result"			<description>$(escape_xml "$partition_caption")</description>\n"
+			partition_result=$partition_result"			<device>$(escape_xml "$partition_device_id")</device>\n"
 			partition_result=$partition_result"			<hard_drive_index>$(escape_xml "$partition_disk_index")</hard_drive_index>\n"
-			partition_result=$partition_result"			<partition_mount_type>$(escape_xml "$partition_mount_type")</partition_mount_type>\n"
-			partition_result=$partition_result"			<partition_mount_point>$(escape_xml "$partition_mount_point")</partition_mount_point>\n"
-			partition_result=$partition_result"			<partition_name>$(escape_xml "$partition_name")</partition_name>\n"
-			partition_result=$partition_result"			<partition_size>$(escape_xml "$partition_size")</partition_size>\n"
-			partition_result=$partition_result"			<partition_free_space>$(escape_xml "$partition_free_space")</partition_free_space>\n"
-			partition_result=$partition_result"			<partition_used_space>$(escape_xml "$partition_used_space")</partition_used_space>\n"
-			partition_result=$partition_result"			<partition_format>$(escape_xml "$partition_format")</partition_format>\n"
-			partition_result=$partition_result"			<partition_caption>$(escape_xml "$partition_caption")</partition_caption>\n"
-			partition_result=$partition_result"			<partition_device_id>$(escape_xml "$partition_device_id")</partition_device_id>\n"
 			partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n"
-			partition_result=$partition_result"			<partition_bootable></partition_bootable>\n"
-			partition_result=$partition_result"			<partition_type>$(escape_xml "$partition_type")</partition_type>\n"
-			partition_result=$partition_result"			<partition_quotas_supported></partition_quotas_supported>\n"
-			partition_result=$partition_result"			<partition_quotas_enabled></partition_quotas_enabled>\n"
-			partition_result=$partition_result"			<partition_serial>$(escape_xml "$partition_serial")</partition_serial>\n"
-			partition_result=$partition_result"		</partition>"
+			partition_result=$partition_result"			<mount_type>$(escape_xml "$partition_mount_type")</mount_type>\n"
+			partition_result=$partition_result"			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>\n"
+			partition_result=$partition_result"			<size>$(escape_xml "$partition_size")</size>\n"
+			partition_result=$partition_result"			<free>$(escape_xml "$partition_free_space")</free>\n"
+			partition_result=$partition_result"			<used>$(escape_xml "$partition_used_space")</used>\n"
+			partition_result=$partition_result"			<format>$(escape_xml "$partition_format")</format>\n"
+			partition_result=$partition_result"			<type>$(escape_xml "$partition_type")</type>\n"
+			partition_result=$partition_result"		</item>"
 
 		fi
 	done
@@ -1673,36 +1749,34 @@ for mount in $(mount -l -t nfs,nfs2,nfs3,nfs4 2>/dev/null); do
 	partition_disk_index=""
 	partition_type="NFS Mount"
 	partition_serial=""
-	partition_result=$partition_result"		<partition>\n"
+	partition_result=$partition_result"		<item>\n"
+	partition_result=$partition_result"			<serial>$(escape_xml "$partition_serial")</serial>\n"
+	partition_result=$partition_result"			<name>$(escape_xml "$partition_name")</name>\n"
+	partition_result=$partition_result"			<description>$(escape_xml "$partition_caption")</description>\n"
+	partition_result=$partition_result"			<device>$(escape_xml "$partition_device_id")</device>\n"
 	partition_result=$partition_result"			<hard_drive_index></hard_drive_index>\n"
-	partition_result=$partition_result"			<partition_mount_type>NFS Mount</partition_mount_type>\n"
-	partition_result=$partition_result"			<partition_mount_point>$(escape_xml "$partition_mount_point")</partition_mount_point>\n"
-	partition_result=$partition_result"			<partition_name>$(escape_xml "$partition_name")</partition_name>\n"
-	partition_result=$partition_result"			<partition_size>$(escape_xml "$partition_size")</partition_size>\n"
-	partition_result=$partition_result"			<partition_free_space>$(escape_xml "$partition_free_space")</partition_free_space>\n"
-	partition_result=$partition_result"			<partition_used_space>$(escape_xml "$partition_used_space")</partition_used_space>\n"
-	partition_result=$partition_result"			<partition_format>$(escape_xml "$partition_format")</partition_format>\n"
-	partition_result=$partition_result"			<partition_caption>$(escape_xml "$partition_caption")</partition_caption>\n"
-	partition_result=$partition_result"			<partition_device_id>$(escape_xml "$partition_device_id")</partition_device_id>\n"
 	partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n"
-	partition_result=$partition_result"			<partition_bootable></partition_bootable>\n"
-	partition_result=$partition_result"			<partition_type>$(escape_xml "$partition_type")</partition_type>\n"
-	partition_result=$partition_result"			<partition_quotas_supported></partition_quotas_supported>\n"
-	partition_result=$partition_result"			<partition_quotas_enabled></partition_quotas_enabled>\n"
-	partition_result=$partition_result"			<partition_serial>$(escape_xml "$partition_serial")</partition_serial>\n"
-	partition_result=$partition_result"		</partition>"
+	partition_result=$partition_result"			<mount_type>mount point</mount_type>\n"
+	partition_result=$partition_result"			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>\n"
+	partition_result=$partition_result"			<size>$(escape_xml "$partition_size")</size>\n"
+	partition_result=$partition_result"			<free>$(escape_xml "$partition_free_space")</free>\n"
+	partition_result=$partition_result"			<used>$(escape_xml "$partition_used_space")</used>\n"
+	partition_result=$partition_result"			<format>$(escape_xml "$partition_format")</format>\n"
+	partition_result=$partition_result"			<bootable></bootable>\n"
+	partition_result=$partition_result"			<type>nfs</type>\n"
+	partition_result=$partition_result"		</item>"
 done
 
 
 #####################################
-# PARTITION  AND NFS MOUNTS SECTION #
+# PARTITION AND NFS MOUNTS SECTION  #
 #####################################
 
 if [ -n "$partition_result" ]; then
 	{
-	echo "	<partitions>"
+	echo "	<partition>"
 	echo -e "$partition_result"
-	echo "	</partitions>"
+	echo "	</partition>"
 	} >> "$xml_file"
 fi
 
@@ -1715,22 +1789,42 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Log Info"
 fi
 
-echo "	<logs>" >> "$xml_file"
+echo "	<log>" >> "$xml_file"
 for log in ls /etc/logrotate.d/* ; do
 	if [ -e "$log" ]; then
 		log_file_name=$(grep -m 1 -E "^/" "$log" | sed -e 's/\ {//g')
 		log_max_file_size=$(grep -E '\ size\ ' "$log" | grep -oE '[[:digit:]]*')
 		{
-		echo "		<log>"
-		echo "			<log_name>$(escape_xml "$log")</log_name>"
-		echo "			<log_file_name>$(escape_xml "$log_file_name")</log_file_name>"
-		echo "			<log_file_size></log_file_size>"
-		echo "			<log_max_file_size>$(escape_xml "$log_max_file_size")</log_max_file_size>"
-		echo "		</log>"
+		echo "		<item>"
+		echo "			<name>$(escape_xml "$log")</name>"
+		echo "			<file_name>$(escape_xml "$log_file_name")</file_name>"
+		echo "			<max_file_size>$(escape_xml "$log_max_file_size")</max_file_size>"
+		echo "		</item>"
 		} >> "$xml_file"
 	fi
 done
-echo "	</logs>" >> "$xml_file"
+echo "	</log>" >> "$xml_file"
+
+
+##################################
+# ENVIRONMENT VARIABLE SECTION   #
+##################################
+
+if [ "$debugging" -gt "0" ]; then
+	echo "Environment Variable Info"
+fi
+echo "	<variable>" >> "$xml_file"
+for variable in $(printenv); do
+	name=$( echo "$variable" | cut -d= -f1 )
+	value=${variable#*=}
+		echo "		<item>" >> "$xml_file"
+		echo "			<program>environment</program>" >> "$xml_file"
+		echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
+		echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
+		echo "		</item>" >> "$xml_file"
+done
+echo "	</variable>" >> "$xml_file"
+
 
 
 ##################################
@@ -1740,10 +1834,12 @@ echo "	</logs>" >> "$xml_file"
 if [ "$debugging" -gt "0" ]; then
 	echo "Swap Info"
 fi
-
+echo "	<pagefile>" >> "$xml_file"
 for swap in $(tail -n +2 /proc/swaps) ; do
-	echo "$swap" | awk ' { print "\t<pagefile>\n\t\t<file_name>"$1"</file_name>\n\t\t<initial_size>"$3"</initial_size>\n\t\t<max_size>"$3"</max_size>\n\t</pagefile>" } ' >> "$xml_file"
+	echo "$swap" | awk ' { print "\t<item>\n\t\t<name>"$1"</name>\n\t\t<initial_size>"$3"</initial_size>\n\t\t<max_size>"$3"</max_size>\n\t</item>" } ' >> "$xml_file"
 done
+echo "	</pagefile>" >> "$xml_file"
+
 
 ##################################
 # USER SECTION                   #
@@ -1854,9 +1950,8 @@ else
                             echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
                         fi
 				        service_name=$(echo "$service_name" | cut -d/ -f4)
-				        echo "          <description>$(escape_xml "$service_name")</description>" >> "$xml_file"
 				        if  [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]] && [[ "$service_name" != "skeleton" ]] && [[ "$service_name" != "rcS" ]]; then
-				            service_state=$(service "$service_display_name" status 2>/dev/null | grep running)
+				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -i running)
 				            echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
 				            service_state=""
 				        fi
@@ -1886,7 +1981,7 @@ else
                             echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
                         fi
 				        if  [[ "$service_name" != "functions" ]] && [[ "$service_name" != "rcS" ]]; then
-				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -E "running|stopped")
+				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -E -i "running|stopped")
 				            echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
 				            service_state=""
 				        fi
@@ -1907,10 +2002,10 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Route Info"
 fi
 
-echo "	<routes>" >> "$xml_file"
+echo "	<route>" >> "$xml_file"
 if [ -n "$(which route 2>/dev/null)" ]; then
 	for i in $(route -n | tail -n +3) ; do
-		echo "$i" | awk ' { print "\t\t<route>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</route>" } ' >> "$xml_file"
+		echo "$i" | awk ' { print "\t\t<item>\n\t\t\t<destination>"$1"</destination>\n\t\t\t<mask>"$3"</mask>\n\t\t\t<metric>"$5"</metric>\n\t\t\t<next_hop>"$2"</next_hop>\n\t\t\t<type>"$4"</type>\n\t\t</item>" } ' >> "$xml_file"
 	done
 fi
 if [ -n "$(which route 2>/dev/null)" ] && [ -n "$(which ip 2>/dev/null)" ]; then
@@ -1918,15 +2013,15 @@ if [ -n "$(which route 2>/dev/null)" ] && [ -n "$(which ip 2>/dev/null)" ]; then
 	route_next_hop=$(ip r | grep "default via" | cut -d" " -f3)
 	route_metric=$(ip r | grep "default via" | cut -d" " -f10)
 	{
-	echo "		<route>"
+	echo "		<item>"
 	echo "			<destination>0.0.0.0</destination>"
 	echo "			<mask></mask>"
 	echo "			<metric>$(escape_xml "$route_metric")</metric>"
 	echo "			<next_hop>$(escape_xml "$route_next_hop")</next_hop>"
-	echo "		</route>"
+	echo "		</item>"
 	} >> "$xml_file"
 fi
-echo "	</routes>" >> "$xml_file"
+echo "	</route>" >> "$xml_file"
 
 
 ########################################################

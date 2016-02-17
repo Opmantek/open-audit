@@ -28,7 +28,7 @@
     /**
      * @author Mark Unwin <marku@opmantek.com>
      *
-     * @version 1.8.4
+     * @version 1.12
      *
      * @copyright Copyright (c) 2014, Opmantek
      * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -37,7 +37,7 @@
     /**
      * Base Object Admin.
      *
-     * @access	 public
+     * @access   public
      *
      * @category Object
      *
@@ -50,6 +50,7 @@
      */
     $device_types = array();
     $device_types[''] = '&nbsp;';
+    $device_types['access control'] = 'Access Control';
     $device_types['access point'] = 'Access Point';
     $device_types['access server'] = 'Access Server';
     $device_types['access token'] = 'Access Token';
@@ -112,6 +113,7 @@
     $device_types['telecom misc'] = 'Telecom Misc';
     $device_types['terminal'] = 'Terminal';
     $device_types['terminal server'] = 'Terminal Server';
+    $device_types['time clock'] = 'Time Clock';
     $device_types['ups'] = 'UPS (Uninterruptible Power Supply)';
     $device_types['video conference'] = 'Video Conference';
     $device_types['voip adapter'] = 'VoIP Adapter';
@@ -124,3 +126,33 @@
     $device_types['web cache'] = 'Web Cache';
     $device_types['webcam'] = 'Web Camera';
     $device_types['wireless router'] = 'Wireless Router';
+
+    $device_class = array();
+    $device_class[''] = '&nbsp;';
+    $device_class['desktop'] = 'Desktop';
+    $device_class['laptop'] = 'Laptop';
+    $device_class['tablet'] = 'Tablet';
+    $device_class['workstation'] = 'Workstation';
+    $device_class['server'] = 'Server';
+    $device_class['hypervisor'] = 'Hypervisor';
+    $device_class['virtual server'] = 'Virtual Server';
+    $device_class['virtual desktop'] = 'Virtual Desktop';
+
+    $device_environment = array();
+    $device_environment['production'] = 'Production';
+    $device_environment['dev'] = 'Development';
+    $device_environment['dr'] = 'Disaster Recovery';
+    $device_environment['eval'] = 'Evaluation';
+    $device_environment['pre-prod'] = 'Pre-Production';
+    $device_environment['test'] = 'Testing';
+    $device_environment['train'] = 'Training';
+    $device_environment['uat'] = 'User Acceptance Testing';
+
+    $device_status = array();
+    $device_status['deleted'] = 'Deleted';
+    $device_status['lost'] = 'Lost';
+    $device_status['maintenance'] = 'Maintenance';
+    $device_status['production'] = 'Production';
+    $device_status['retired'] = 'Retired';
+    $device_status['unallocated'] = 'Unallocated';
+

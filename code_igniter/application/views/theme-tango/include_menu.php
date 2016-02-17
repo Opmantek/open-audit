@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -41,7 +41,7 @@ if ($license != 'none' and $license != 'commercial' and $license != 'free') {
 }
 ?>
 
-<script>
+<script type="text/javascript">
 var license = "<?php echo $license; ?>";
 var modal_content_original = "";
 var modal_content_image = "";
@@ -59,10 +59,10 @@ var modal_content_image = "";
             <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks'><?php echo __('Scheduled Tasks')?></a></li>
             <li><a href='#'><?php echo __('Reports')?></a>
                 <ul>
-                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Device%20Types'><?php echo __('Device Types')?></a>
-                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20OS%20Types'><?php echo __('OS Types')?></a>
-                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Devices%20Discovered%20by%20Date/'><?php echo __('Devices Discovered Today')?></a>
-                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Software%20Discovered%20by%20Date/'><?php echo __('Software Discovered Today')?></a>
+                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Device%20Types'><?php echo __('Device Types')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20OS%20Types'><?php echo __('OS Types')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Devices%20Discovered%20by%20Date/'><?php echo __('Devices Discovered Today')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Software%20Discovered%20by%20Date/'><?php echo __('Software Discovered Today')?></a></li>
                 </ul>
             </li>
         </ul>
@@ -349,7 +349,7 @@ var modal_content_image = "";
         })
         .fail(function() {
             // get from OAC
-                $.get('/open-audit/js/oae.json', function(data){
+                $.get('/omk/data/oae.json', function(data){
                 modal.open({content: data, source: "offline"});
                 highlightColumn();
             })
@@ -357,47 +357,8 @@ var modal_content_image = "";
     });
 </script>
 
-<style>
-
-    #overlay {
-        position:fixed; 
-        top:0;
-        left:0;
-        width:100%;
-        height:100%;
-        background:#000;
-        opacity:0.5;
-        filter:alpha(opacity=50);
-    }
-
-    #modal {
-        position:absolute;
-        background:url(/open-audit/images/tint20.png) 0 0 repeat;
-        background:rgba(0,0,0,0.2);
-        border-radius:14px;
-        padding:8px;
-        width:1000px;
-    }
-
-    #content {
-        border-radius:8px;
-        background:#fff;
-        padding:20px;
-    }
-
-    #close {
-        position:absolute;
-        background:url(/open-audit/images/close.png) 0 0 no-repeat;
-        width:24px;
-        height:27px;
-        display:block;
-        text-indent:-9999px;
-        top:-7px;
-        right:-7px;
-    }
-</style>
-
-<script>
+<script type="text/javascript">
+//<![CDATA[
     var modal = (function(){
         var
         method = {},
@@ -500,7 +461,7 @@ var modal_content_image = "";
                         }
                     } else {
                         if (row[j].hasOwnProperty("image")) {
-                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<div class="pull-right"><span class="glyphicon glyphicon-camera" aria-hidden="true" onMouseOver="imageModal(\''+row[j]["text"]+'\',\''+row[j]["image"]+'\');"></span></div></td>';
+                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<div class="pull-right"><span class="glyphicon glyphicon-camera" aria-hidden="true" onmouseover="imageModal(\''+row[j]["text"]+'\',\''+row[j]["image"]+'\');"></span></div></td>';
                         } else {
                             rowData += '<td class="'+classText+'">'+row[j]["text"]+'</td>';
                         }
@@ -605,11 +566,12 @@ var modal_content_image = "";
             modal.close();
         }
     });
-
+//]]>
 </script>
 
 
-<script>
+<script type="text/javascript">
+//<![CDATA[
 function imageModal(title, image) {
     //document.getElementById("imageModalLabel").innerHTML = title;
     modal_content_original = document.getElementById("modal_content").innerHTML;
@@ -626,6 +588,7 @@ function removeImageModal() {
     document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/1\">Ask me later</a>";
     document.getElementById("button_prompt_never").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/-\">Do now show me again</a>";
 }
+//]]>
 </script>
 
 

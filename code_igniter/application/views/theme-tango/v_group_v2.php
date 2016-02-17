@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -62,7 +62,7 @@ if ($manual_edit == 'y') {
             <th>OS Family</th>
             <?php
             if ($manual_edit == 'y') {
-                echo "<th align=\"center\" class=\"{sorter: false}\"><button onClick=\"document.change_form.submit();\">Edit</button>";
+                echo "<th align=\"center\" class=\"{sorter: false}\"><button onclick=\"document.change_form.submit();\">Edit</button>";
                 echo "<input type=\"checkbox\" id=\"system_id_0\" name=\"system_id_0\" onchange=\"check_all_systems();\"/></th>";
             }
             ?>

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -61,11 +61,11 @@ echo "<th width=\"10%\" align=\"left\">" . __('SNMP Community') . "</th>";
 echo "<th width=\"10%\" align=\"left\">" . __('SNMP Version') . "</th>";
 
 # edit column
-#echo "<th align=\"center\" class=\"{sorter: false}\"><button onClick=\"document.change_form.submit();\">Edit</button>";
+#echo "<th align=\"center\" class=\"{sorter: false}\"><button onclick=\"document.change_form.submit();\">Edit</button>";
 #echo "<input type=\"checkbox\" id=\"system_id_0\" name=\"system_id_0\" onchange=\"check_all_systems();\"/></th>";
 
 # export column
-echo "<th align=\"center\" class=\"{sorter: false}\"><button id='submit' name='submit' onClick=\"document.alertform.submit();\">Export</button>";
+echo "<th align=\"center\" class=\"{sorter: false}\"><button id='submit' name='submit' onclick=\"document.alertform.submit();\">Export</button>";
 echo "<input type=\"checkbox\" id=\"system_id_0\" name=\"system_id_0\" onchange=\"check_all_systems();\"/></th>";
 
 echo "\t\t</tr>\n";

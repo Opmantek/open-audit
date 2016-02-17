@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -56,42 +56,42 @@
 			<tr>
 				<td><?php echo __("Devices with 'Deleted' status")?></td>
 				<td style="text-align: center;"><?php echo $count_status_deleted; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_status_deleted/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_status_deleted/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 			<tr>
 				<td><?php echo __("Devices with 'Retired' status")?></td>
 				<td style="text-align: center;"><?php echo $count_status_retired; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_status_retired/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_status_retired/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 			<tr>
 				<td><?php echo __("Devices with 'Maintenance' status")?></td>
 				<td style="text-align: center;"><?php echo $count_status_maintenance; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_status_maintenance/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_status_maintenance/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 			<tr>
 				<td><?php echo __("All Alerts"); ?></td>
 				<td style="text-align: center;"><?php echo $count_alerts; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_all_alerts/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_all_alerts/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 			<tr>
 				<td><?php echo __("Alerts older than")." ".$days." ".__("Days"); ?></td>
 				<td style="text-align: center;"><?php echo $count_alerts_days; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_alerts_days/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_alerts_days/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 			<tr>
 				<td><?php echo __("Non Current Attributes older than")." ".$days." ".__("Days"); ?></td>
 				<td style="text-align: center;"><?php echo $count_non_current_attributes; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_all_non_current_attributes/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_all_non_current_attributes/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 			<tr>
 				<td><?php echo __("Devices Not Seen For")." ".$days." ".__("Days"); ?></td>
 				<td style="text-align: center;"><?php echo $count_not_seen_days; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_systems_not_seen_days/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_systems_not_seen_days/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 			<tr>
 				<td><?php echo __("Rows in Temp Table"); ?></td>
 				<td style="text-align: center;"><?php echo $count_temp; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_all_temp/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_all_temp/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 
 
@@ -99,13 +99,13 @@
 			<tr>
 				<td><?php echo __("Network Groups with subnets above ") . $this->config->config['network_group_subnet']; ?></td>
 				<td style="text-align: center;"><?php echo $network_group_subnet; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_network_group_subnet"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_network_group_subnet"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 
 			<tr>
 				<td><?php echo __("Network Groups with 0 devices") ?></td>
 				<td style="text-align: center;"><?php echo $network_group_count_zero; ?></td>
-				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_network_group_count_zero"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo $oa_web_index; ?>/admin_db/delete_network_group_count_zero"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 
 
@@ -129,7 +129,7 @@
 			<tr>
 				<td><?php echo $attribute->table; ?></td>
 				<td style="text-align: center;"><?php echo $attribute->count; ?></td>
-				<td style="text-align: center;"><a href="<?php echo base_url(); ?>index.php/admin_db/delete_table_non_current_attributes/<?php echo $attribute->table; ?>/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' width='16'/></a></td>
+				<td style="text-align: center;"><a href="<?php echo base_url(); ?>index.php/admin_db/delete_table_non_current_attributes/<?php echo $attribute->table; ?>/<?php echo $days; ?>"><img src='<?php echo $oa_theme_images; ?>/16_delete.png' alt='' title='' style='width:16'/></a></td>
 			</tr>
 			<?php } ?>
 		</tbody>

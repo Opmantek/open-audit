@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -42,9 +42,9 @@ echo form_open('admin_system/add_system_def')."\n";
 ?>
 <fieldset id="standard_fields" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Standard Fields')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 	<p><?php echo $error_message; ?>&nbsp;</p>
-	<table width='700'><tr><td valign='top'>
+	<table style='width:700'><tr><td valign='top'>
 	<label for='name' style='width: 250px; padding: 3px 0px 0px 0px;'>Name:</label><input type='text' name='name' id='name' size='10' title='' onchange='update_man_type();' /><br />
 	<?php
     for ($i = 0; $i<25; $i++) {
@@ -124,17 +124,17 @@ echo form_open('admin_system/add_system_def')."\n";
 <!--
 <fieldset id="custom_fields" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Custom Fields')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
-	<table width='500' name='custom_fields_table' id='custom_fields_table'><tr><th>Name</th><th>Type</th><th>Use This?</th></tr>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
+	<table style='width:500' name='custom_fields_table' id='custom_fields_table'><tr><th>Name</th><th>Type</th><th>Use This?</th></tr>
 	<?php
     foreach ($custom_fields as $custom_field) {
-        echo "<tr><td align='center' width='200'>".htmlentities($custom_field->field_name)."</td><td align='center' width='200'>".htmlentities($custom_field->field_type)."</td><td align='center' width='100'><input type='checkbox' id='custom_exist_".htmlentities($custom_field->field_name)."' name='custom_exist_".htmlentities($custom_field->field_name)."' size='20' title='custom_exist_".htmlentities($custom_field->field_name)."' /></td></tr>\n";
+        echo "<tr><td align='center' style='width:200'>".htmlentities($custom_field->field_name)."</td><td align='center' style='width:200'>".htmlentities($custom_field->field_type)."</td><td align='center' style='width:100'><input type='checkbox' id='custom_exist_".htmlentities($custom_field->field_name)."' name='custom_exist_".htmlentities($custom_field->field_name)."' size='20' title='custom_exist_".htmlentities($custom_field->field_name)."' /></td></tr>\n";
     }
     ?>
 	</table>
-	<table width='500'><tr><td align='center' width='200'><input type='button' name='AddCustom' value='Add a custom field' id='AddCustom' onclick='add_custom();'\/></td>
-	<td width='200'></td>
-	<td width='100'></td>
+	<table style='width:500'><tr><td align='center' style='width:200'><input type='button' name='AddCustom' value='Add a custom field' id='AddCustom' onclick='add_custom();'\/></td>
+	<td style='width:200'></td>
+	<td style='width:100'></td>
 	</tr></table>
 	<br />
 	<span id='custom'>&nbsp;</span>

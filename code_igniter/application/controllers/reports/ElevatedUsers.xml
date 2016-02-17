@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Elevated Users</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, sys_sw_group.group_members, sys_sw_group.group_name FROM system LEFT JOIN sys_sw_group ON (sys_sw_group.system_id = system.system_id AND sys_sw_group.timestamp = system.timestamp) LEFT JOIN oa_group_sys ON oa_group_sys.system_id = sys_sw_group.system_id WHERE oa_group_sys.group_id = @group AND (sys_sw_group.group_name = "Administrators" OR sys_sw_group.group_name = "Power Users" OR sys_sw_group.group_name = "Remote Desktop Users") AND sys_sw_group.group_members > '' GROUP BY sys_sw_group.group_id ORDER BY sys_sw_group.system_id]]></report_sql>
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, user_group.members, user_group.name FROM user_group LEFT JOIN system ON (user_group.system_id = system.system_id AND user_group.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) WHERE oa_group_sys.group_id = @group AND (user_group.name = "Administrators" OR user_group.name = "Power Users" OR user_group.name = "Remote Desktop Users") AND user_group.members > '']]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -23,8 +23,8 @@
 		</column>
 		<column>
 			<column_order>1</column_order>
-			<column_name>Group</column_name>
-			<column_variable>group_name</column_variable>
+			<column_name>Name</column_name>
+			<column_variable>name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -33,8 +33,8 @@
 		</column>
 		<column>
 			<column_order>2</column_order>
-			<column_name>Group Members</column_name>
-			<column_variable>group_members</column_variable>
+			<column_name>Members</column_name>
+			<column_variable>members</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

@@ -27,14 +27,14 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $sortcolumn = 0;
 ?>
-<table cellspacing='1' class='tablesorter' width='900'>
+<table cellspacing='1' class='tablesorter' style='width:900'>
 	<thead>
 		<tr>
 			<th><?php echo __('System Name')?></th>

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -133,7 +133,7 @@ class Admin_location extends MY_Controller
         $group->group_description = "Items in ".$location_name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '".$this->data['id']."' OR LOWER(system.sysLocation) LIKE LOWER('%".$location_name."%')) AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '".$this->data['id']."' OR LOWER(system.sysLocation) LIKE LOWER('%".str_replace("'", "\'", $location_name)."%')) AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         if (isset($location_group_id) and $location_group_id != '' and $location_group_id != '0') {

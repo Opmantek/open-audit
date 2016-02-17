@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -197,11 +197,11 @@ class M_printer extends MY_Model
                 $query = $this->db->query($sql, $data);
 
                 $system_id = $this->db->insert_id();
-                $inserted_via = 'audit';
-                $inserted_user = '';
-                $sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp ) VALUES (?, ?, ?, ?, ?)";
-                $data = array("$system_id", "$inserted_user", "$inserted_via", "$details->timestamp", "$details->timestamp");
-                $query = $this->db->query($sql, $data);
+                // $inserted_via = 'audit';
+                // $inserted_user = '';
+                // $sql = "INSERT INTO sys_man_audits ( system_id, system_audits_username, system_audits_type, system_audits_time, timestamp ) VALUES (?, ?, ?, ?, ?)";
+                // $data = array("$system_id", "$inserted_user", "$inserted_via", "$details->timestamp", "$details->timestamp");
+                // $query = $this->db->query($sql, $data);
             }
         }
     } // end of function

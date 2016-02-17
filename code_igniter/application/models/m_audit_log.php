@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -39,38 +39,48 @@ class M_audit_log extends MY_Model
         parent::__construct();
     }
 
-    public function insert_audit_event($field_name, $field_value, $system_id)
+    public function create($system_id, $username = '', $type = '', $ip = '', $debug = '', $wmi_fails = '', $timestamp = '')
     {
-        $sql = "INSERT INTO oa_audit_log
-				(user_id, system_id, audit_log_event_type, audit_log_event_details, timestamp)
-				VALUES (?, ?, ?, ?, ?)";
-        $sql = $this->clean_sql($sql);
-        $data = array($this->session->userdata['user_id'], "$system_id", 'System Manual Data Changed', "$field_name".' - '."$field_value", date('Y-m-d H:i:s'));
+        $system_id = intval($system_id);
+        if ($system_id == '' or $system_id == 0) {
+            return;
+        }
+        if ($type == '') {
+            $type = 'audit';
+        }
+        if ($timestamp == '') {
+            $timestamp = date('Y-m-d H:i:s');
+        }
+
+        if ($timestamp == '') {
+            $timestamp = date('Y-m-d H:i:s');
+        }
+        $sql = "INSERT INTO audit_log (system_id, username, type, ip, debug, wmi_fails, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $data = array($system_id, "$username", "$type", "$ip", "$debug", "$wmi_fails", "$timestamp");
         $query = $this->db->query($sql, $data);
     }
 
-    public function get_audit_log($system_id)
+    public function update($column, $value, $system_id, $timestamp)
     {
-        $sql = "SELECT
-				oa_audit_log.user_id,
-				oa_audit_log.audit_log_event_type,
-				oa_audit_log.audit_log_event_details,
-				oa_user.user_full_name,
-				oa_audit_log.timestamp
-			FROM
-				oa_audit_log,
-				oa_user
-			WHERE
-				oa_audit_log.system_id = ? AND
-				oa_user.user_id = oa_audit_log.user_id
-			ORDER BY
-				oa_audit_log.timestamp DESC
-			LIMIT 500";
-        $sql = $this->clean_sql($sql);
+        $system_id = intval($system_id);
+        if ($system_id == '' or $system_id == 0) {
+            return;
+        }
+        $sql = "UPDATE audit_log SET $column = ? WHERE system_id = ? AND timestamp = ?";
+        $data = array("$value", "$system_id", "$timestamp");
+        $query = $this->db->query($sql, $data);
+    }
+
+    public function read($system_id)
+    {
+        $system_id = intval($system_id);
+        if ($system_id == '' or $system_id == 0) {
+            return;
+        }
+        $sql = "SELECT * FROM audit_log WHERE audit_log.system_id = ?";
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-
         return ($result);
     }
 }

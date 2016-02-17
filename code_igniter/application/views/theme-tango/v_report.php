@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -67,7 +67,7 @@ foreach ($columns as $column) {
     }
 }
 if (($manual_edit == 'y') and ($system_id = "set")) {
-    echo "<th align=\"center\" class=\"{sorter: false}\"><button onClick=\"document.change_form.submit();\">Edit</button>";
+    echo "<th align=\"center\" class=\"{sorter: false}\"><button onclick=\"document.change_form.submit();\">Edit</button>";
     echo "<input type=\"checkbox\" id=\"system_id_0\" name=\"system_id_0\" onchange=\"check_all_systems();\"/></th>";
 }
 echo "\t\t</tr>\n";
@@ -130,12 +130,12 @@ foreach ($query as $row) {
                     if (isset($row->$column_variable_name)) {
                         $output = $row->$column_variable_name;
                         if (is_numeric($output) and (strpos($column_variable_name, "serial") === false) and (strpos($column_variable_name, "model") === false)) {
-                            echo "\t\t\t<td align=\"right\"><span style=\"display: none;\">".mb_substr("0000000000".htmlentities($output), -10)."</span><span id=\"".htmlentities($column_variable_name)."-".$i."\" onMouseOver=\"show_modifier('".htmlentities($column_variable_name)."','".$i."');\"  >".number_format(htmlentities($output))."</span><span id=\"".htmlentities($row->$column_variable_name)."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
+                            echo "\t\t\t<td align=\"right\"><span style=\"display: none;\">".mb_substr("0000000000".htmlentities($output), -10)."</span><span id=\"".htmlentities($column_variable_name)."-".$i."\" onmouseover=\"show_modifier('".htmlentities($column_variable_name)."','".$i."');\"  >".htmlentities($output)."</span><span id=\"".htmlentities($row->$column_variable_name)."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
                         } else {
                             if ($row->$column_variable_name == '') {
                                 $row->$column_variable_name = ' ';
                             }
-                            echo "\t\t\t<td align=\"$column_align\"><span id=\"".htmlentities($column_variable_name)."-".$i."\" onMouseOver=\"show_modifier('".htmlentities($column_variable_name)."','".$i."');\"  >".htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8")."</span><span id=\"".htmlentities($row->$column_variable_name)."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
+                            echo "\t\t\t<td align=\"$column_align\"><span id=\"".htmlentities($column_variable_name)."-".$i."\" onmouseover=\"show_modifier('".htmlentities($column_variable_name)."','".$i."');\"  >".htmlentities($row->$column_variable_name, ENT_QUOTES, "UTF-8")."</span><span id=\"".htmlentities($row->$column_variable_name)."-".$i."\">&nbsp;&nbsp;&nbsp;</span></td>\n";
                         }
                     } else {
                         echo "\t\t\t<td></td>\n";

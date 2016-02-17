@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -340,4 +340,16 @@ class Admin_group extends MY_Controller
             $this->load->view('v_template', $this->data);
         }
     }
+
+    function refresh_group_definitions()
+    {
+        $this->load->helper('group');
+        $this->data['query'] = refresh_group_definitions();
+        $this->data['heading'] = 'Refresh Group Definitions';
+        $this->data['include'] = 'v_general';
+        $this->data['sortcolumn'] = '0';
+        $this->load->view('v_template', $this->data);
+
+    }
+
 }

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -36,7 +36,7 @@ echo form_open('admin_system/system_add_credentials')."\n";
 ?>
 <fieldset id="credentials" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('SNMP Credentials')?></span></legend>
-	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' width='48'/>
+	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 	<p>
 		<label for='ip_address'><?php echo __("IP Address")?>: </label>
 		<input type='text' id='ip_address' name='ip_address' tabindex='1' title='IP Address' value="<?php echo $ip_address; ?>"/>

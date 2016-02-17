@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -326,8 +326,8 @@ class report extends MY_Controller
         } else {
             $this->data['heading'] = 'Partition '.number_format($days).' Days Alert for All Devices';
         }
-        $this->load->model("m_partition");
-        $this->data['query'] = $this->m_partition->partition_alert($this->data['id'], $this->user->user_id, $days);
+        $this->load->model("m_devices_components");
+        $this->data['query'] = $this->m_devices_components->partition_use_report($this->data['id'], $this->user->user_id, $days);
         $this->data['count'] = count($this->data['query']);
         $this->data['include'] = 'v_report_partition_alert';
         $this->data['sortcolumn'] = '0';
@@ -626,6 +626,10 @@ class report extends MY_Controller
 
     public function list_reports()
     {
+        $this->load->helper('report_helper');
+        check_default_reports();
+        $this->load->helper('group_helper');
+        check_default_groups();
         $this->load->model("m_oa_report");
         echo json_encode($this->m_oa_report->list_reports_in_menu());
     }

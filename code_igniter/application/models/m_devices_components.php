@@ -39,7 +39,7 @@ class M_devices_components extends MY_Model
         parent::__construct();
     }
 
-    public function read($id = 0, $current = 'y', $table = '')
+    public function read($id = 0, $current = 'y', $table = '', $filter = '', $properties = '*')
     {
         if ($table == '') {
             // we require a DB table to read from
@@ -49,17 +49,30 @@ class M_devices_components extends MY_Model
             // we require a system id
             return;
         }
-        if ($current == '') {
-            // we want all attributes, regardless of them being current or not
+
+        if (stripos($filter, 'current = \'full') !== false or stripos($filter, 'current = "full') !== false) {
+            $current = 'full';
         }
-        if ($current == 'y') {
-            // we only want the current attributes
-            $current = " AND current = 'y'";
+
+        if (stripos($filter, 'current = \'delta') !== false or stripos($filter, 'current = "delta') !== false) {
+            $current = 'delta';
         }
-        if ($current == 'n') {
-            // we only want non-current attributes
-            $current = " AND current = 'n'";
+
+        if ($current == 'delta' or $current == 'full') {
+            $sql = "SELECT first_seen FROM `$table` WHERE system_id = ? ORDER BY first_seen LIMIT 1";
+            $data = array($id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            if ($query->num_rows() > 0) {
+                $row = $query->row();
+                $first_seen = $row->first_seen;
+            } else {
+                $first_seen = '';
+            }
+        } else {
+            $first_seen = '';
         }
+
         $fields = $this->db->list_fields($table);
         $found_id = false;
         $found_current = false;
@@ -71,18 +84,58 @@ class M_devices_components extends MY_Model
                 $found_current = true;
             }
         }
+        $sql = '';
+        if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
+            $filter = 'AND ' . $filter;
+        }
         if ($found_id) {
             if ($found_current) {
-                $sql = "SELECT * FROM `$table` WHERE system_id = ? $current";
+                if ($current == 'y') {
+                    $sql = "SELECT $properties FROM `$table` WHERE system_id = ? AND current = 'y' $filter";
+                    $data = array($id);
+                }
+                if ($current == 'n') {
+                    $sql = "SELECT $properties FROM `$table` WHERE system_id = ? AND current = 'n' $filter";
+                    $data = array($id);
+                }
+                if ($current == '' or $current == 'all') {
+                    $sql = "SELECT $properties FROM `$table` WHERE system_id = ? $filter";
+                    $data = array($id);
+                }
+                if ($current == 'delta') {
+                    if ($first_seen != '') {
+                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE system_id = ? and (current = 'y' or first_seen = ?)";
+                        $data = array("$first_seen", $id, "$first_seen");
+                    }
+                }
+                if ($current == 'full') {
+                    if ($first_seen != '') {
+                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE system_id = ?";
+                        $data = array("$first_seen", $id);
+                    }
+                }
             } else {
-                $sql = "SELECT * FROM `$table` WHERE system_id = ?";
+                $sql = "SELECT $properties FROM `$table` WHERE system_id = ? $filter";
+                $data = array($id);
             }
-            $data = array($id);
+        }
+        
+        if ($sql != '') {
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             $result = $this->from_db($result);
+            if ($properties != '*' and !stripos($properties, ',') and $table == 'system') {
+                # the request is for a single value from the system table - return only this value (as a string)
+                $temp_result = $result[0]->$properties;
+                unset($result);
+                $result = (string)$temp_result;
+                unset($temp_result);
+            }
             return($result);
+        } else {
+            return;
         }
+
     }
 
     public function match_columns($table)
@@ -93,6 +146,12 @@ class M_devices_components extends MY_Model
         if ($table == 'disk') {
                 $match_columns = array('model', 'serial', 'hard_drive_index', 'size');
         }
+        if ($table == 'dns') {
+                $match_columns = array('ip', 'name', 'fqdn');
+        }
+        if ($table == 'log') {
+                $match_columns = array('name', 'file_name', 'overwrite');
+        }
         if ($table == 'memory') {
                 $match_columns = array('bank', 'size', 'serial');
         }
@@ -100,10 +159,13 @@ class M_devices_components extends MY_Model
                 $match_columns = array('description', 'module_index', 'serial');
         }
         if ($table == 'monitor') {
-                        $match_columns = array('model', 'manufacturer', 'serial');
+                $match_columns = array('model', 'manufacturer', 'serial');
         }
         if ($table == 'motherboard') {
                 $match_columns = array('model', 'manufacturer', 'serial');
+        }
+        if ($table == 'netstat') {
+                $match_columns = array('protocol', 'ip', 'port', 'program');
         }
         if ($table == 'network') {
                 $match_columns = array('mac');
@@ -114,41 +176,26 @@ class M_devices_components extends MY_Model
         if ($table == 'optical') {
                 $match_columns = array('model', 'mount_point');
         }
-        if ($table == 'partition') {
-                $match_columns = array('name', 'hard_drive_index', 'mount_point', 'size');
-        }
-        if ($table == 'processor') {
-                $match_columns = array('description');
-        }
-        if ($table == 'scsi_controller') {
-                $match_columns = array('model', 'manufacturer', 'device');
-        }
-        if ($table == 'sound') {
-                $match_columns = array('model', 'manufacturer');
-        }
-        if ($table == 'video') {
-                $match_columns = array('model');
-        }
-        if ($table == 'dns') {
-                $match_columns = array('hostname', 'fqdn', 'ip');
-        }
-        if ($table == 'user_group') {
-                $match_columns = array('name', 'sid');
-        }
-        if ($table == 'log') {
-                $match_columns = array('name', 'file_name', 'overwrite');
-        }
-        if ($table == 'netstat') {
-                $match_columns = array('protocol', 'ip', 'port', 'program');
-        }
         if ($table == 'pagefile') {
                 $match_columns = array('name', 'initial_size', 'max_size');
+        }
+        if ($table == 'partition') {
+                $match_columns = array('name', 'hard_drive_index', 'mount_point', 'size');
         }
         if ($table == 'print_queue') {
                 $match_columns = array('system_key');
         }
+        if ($table == 'processor') {
+                $match_columns = array('description');
+        }
         if ($table == 'route') {
                 $match_columns = array('destination', 'next_hop');
+        }
+        if ($table == 'san') {
+                $match_columns = array('serial');
+        }
+        if ($table == 'scsi') {
+                $match_columns = array('model', 'manufacturer', 'device');
         }
         if ($table == 'server') {
                 $match_columns = array('name', 'type', 'full_name', 'version');
@@ -157,7 +204,7 @@ class M_devices_components extends MY_Model
                 $match_columns = array('name', 'type', 'instance');
         }
         if ($table == 'service') {
-                $match_columns = array('display_name', 'name', 'path_name');
+                $match_columns = array('description', 'name', 'executable');
         }
         if ($table == 'share') {
                 $match_columns = array('name', 'path');
@@ -168,13 +215,25 @@ class M_devices_components extends MY_Model
         if ($table == 'software_key') {
                 $match_columns = array('name', 'string', 'rel', 'edition');
         }
+        if ($table == 'sound') {
+                $match_columns = array('model', 'manufacturer');
+        }
+        if ($table == 'task') {
+                $match_columns = array('name', 'task');
+        }
         if ($table == 'user') {
                 $match_columns = array('name', 'sid');
         }
-        if ($table == 'variable') {
-                $match_columns = array('name', 'value');
+        if ($table == 'user_group') {
+                $match_columns = array('name', 'sid');
         }
-        if ($table == 'virtual_machine') {
+        if ($table == 'variable') {
+                $match_columns = array('program', 'name', 'value');
+        }
+        if ($table == 'video') {
+                $match_columns = array('model');
+        }
+        if ($table == 'vm') {
                 $match_columns = array('name', 'uuid');
         }
         if ($table == 'windows') {
@@ -185,9 +244,14 @@ class M_devices_components extends MY_Model
 
     public function process_component($table = '', $details, $input, $match_columns = array())
     {
-        echo "here for $table\n";
+        $create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
+
         // ensure we have a valid table name
         if (!$this->db->table_exists($table)) {
+            return;
+        }
+
+        if (!$input) {
             return;
         }
 
@@ -195,7 +259,6 @@ class M_devices_components extends MY_Model
             $match_columns = $this->match_columns($table);
         }
 
-        # if ($table == '' or count($match_columns) == 0 or !isset($details->id)) { # this will be changed when we convert the system table
         if ($table == '' or count($match_columns) == 0 or !isset($details->system_id)) {
             if ($table == '') {
                 $message = "No table name supplied - failed";
@@ -207,17 +270,64 @@ class M_devices_components extends MY_Model
             if (!isset($details->system_id)) {
                 $message = "$table - No system_id supplied - failed";
             }
-            $this->m_sys_man_audits->update_audit($details, $message);
+            $this->m_audit_log->update('debug', $message, $details->system_id, $details->last_seen);
             unset($message);
             return;
         } else {
-            $this->m_sys_man_audits->update_audit($details, "$table - start");
+            $this->m_audit_log->update('debug', "$table - start", $details->system_id, $details->last_seen);
         }
 
-        ### PARTITION ###
-        # AIX needs to also match on partition.name
-        if ((string)$table == 'partition' and strtolower($details->os_family) == 'ibm aix') {
-            $match_columns[] = 'name';
+        echo "<pre>Processing $table\n";
+
+        // make sure we have an entry for each match column, even if it's empty
+        foreach ($match_columns as $match_column) {
+            if (!isset($input->$match_column)) {
+                $input->$match_column = '';
+            }
+        }
+
+        ### IP ADDRESS ###
+        if ((string)$table == 'ip') {
+            for ($i=0; $i<count($input->item); $i++) {
+                # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
+                $input->item[$i]->mac = strtolower($input->item[$i]->mac);
+                # As at 1.5.6 we pass an additional attribute called 'type' for bonded adapters
+                # We use this to test and not pad the MAC address if set
+                if (!isset($input->item[$i]->type)) {
+                    $input->item[$i]->type = '';
+                }
+                # ensure we have a fully padded mac address
+                if ($input->item[$i]->type != 'bonded') {
+                    if ($input->item[$i]->mac != '') {
+                        $mymac = explode(":", $input->item[$i]->mac);
+                        for ($i = 0; $i<count($mymac); $i++) {
+                            $mymac[$i] = mb_substr("00".$mymac[$i], -2);
+                        }
+                        $input->item[$i]->mac = implode(":", $mymac);
+                    }
+                }
+                if (!isset($input->item[$i]->version) or $input->item[$i]->version != '6') {
+                    $input->item[$i]->version = '4';
+                }
+                # ensure we have the correctly padded ip v4 address
+                if ($input->item[$i]->version == '4') {
+                    $input->item[$i]->ip = $this->ip_address_to_db($input->item[$i]->ip);
+                }
+            }
+            if ($details->type == 'computer' and $details->os_group == 'VMware') {
+                # TODO - fix the below somewhow ?!??
+                # the issue is that ESXi provides different values for network cards from the command line and from SNMP
+                $sql = "DELETE FROM `sys_hw_network_card_ip` WHERE system_id = ?";
+                $data = array($details->system_id);
+                $query = $this->db->query($sql, $data);
+                # set the below so we don't generate alerts for this
+                $create_alerts = 'n';
+            }
+        }
+
+        ### NETSTAT ###
+        if ((string)$table == 'netstat') {
+            $input = $this->format_netstat_data($input, $details);
         }
 
         ### NETWORK ###
@@ -228,36 +338,37 @@ class M_devices_components extends MY_Model
             } elseif ($details->type == 'computer' and $details->os_group == 'VMware') {
                 # add index and connection id to the list to be matched
                 $match_columns[] = 'net_index';
-                $match_columns[] = 'connection_id';
+                $match_columns[] = 'connection';
+                # TODO - fix the below somewhow ?!??
+                # the issue is that ESXi provides different values for network cards from the command line and from SNMP
+                $sql = "DELETE FROM `network` WHERE system_id = ?";
+                $data = array($details->system_id);
+                $query = $this->db->query($sql, $data);
+                # set the below so we don't generate alerts for this
+                $create_alerts = 'n';
             } else {
                 # just match the index
                 $match_columns[] = 'net_index';
             }
+
             # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
-            foreach ($input as $input_item) {
-                $input_item->mac = strtolower($input_item->mac);
-            }
-        }
-
-        ### NETSTAT ###
-        if ($table == 'netstat') {
-            $input = $this->format_netstat_data($input, $details);
-        }
-
-        ### SERVER type = db ###
-        if ($table == 'server') {
-            foreach ($input as &$input_item) {
-                if ($input_item->type = 'db') {
-                    if (!isset($input_item->version)) {
-                        $input_item->version = '';
-                    }
-                    $input_item->full_name = $this->get_sql_server_version_string($input_item->version);
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]->mac)) {
+                    $input->item[$i]->mac = strtolower($input->item[$i]->mac);
+                } else {
+                    $input->item[$i]->mac = '';
                 }
             }
         }
 
+        ### PARTITION ###
+        # AIX needs to also match on partition.name
+        if ((string)$table == 'partition' and strtolower($details->os_family) == 'ibm aix') {
+            $match_columns[] = 'name';
+        }
+
         ### PROCESSOR ###
-        if ($table == 'processor') {
+        if ((string)$table == 'processor') {
             $input->item[0]->description = str_ireplace('(R)', '', $input->item[0]->description);
             $input->item[0]->description = str_ireplace('(TM)', '', $input->item[0]->description);
             $input->item[0]->description = str_ireplace('  ', ' ', $input->item[0]->description);
@@ -265,117 +376,148 @@ class M_devices_components extends MY_Model
             $input->item[0]->manufacturer = str_ireplace('GenuineIntel', 'Intel', $input->item[0]->manufacturer);
         }
 
-        ### IP ADDRESS ###
-        if ($table == 'ip') {
-            foreach ($input as $input_item) {
-                # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
-                $input_item->mac = strtolower($input_item->mac);
-                # As at 1.5.6 we pass an additional attribute called 'type' for bonded adapters
-                # We use this to test and not pad the MAC address if set
-                if (!isset($input_item->type)) {
-                    $input_item->type = '';
+        ### SERVER ###
+        if ((string)$table == 'server') {
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]->version) and $input->item[$i]->version != '' and $input->item[$i]->type == 'database') {
+                    $input->item[$i]->full_name = (string)$this->get_sql_server_version_string($input->item[$i]->version);
                 }
-                # ensure we have a fully padded mac address
-                if ($input_item->type != 'bonded') {
-                    if ($input_item->mac != '') {
-                        $mymac = explode(":", $input_item->mac);
-                        for ($i = 0; $i<count($mymac); $i++) {
-                            $mymac[$i] = mb_substr("00".$mymac[$i], -2);
+            }
+        }
+
+        ### SOFTWARE ###
+        # need to pad the version
+        if ((string)$table == 'software') {
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]->version) and $input->item[$i]->version != '') {
+                    $pieces = array();
+                    $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $input->item[$i]->version);
+                    #$input->item[$key]->version_padded = (string)'';
+                    $input->item[$i]->version_padded = (string)'';
+                    foreach ($pieces as $piece) {
+                        if (strlen($piece) > 10 ) {
+                            $input->item[$i]->version_padded .= $piece;
+                        } else {
+                            $input->item[$i]->version_padded .= mb_substr("00000000000000000000".$piece, -10);
                         }
-                        $input_item->mac = implode(":", $mymac);
                     }
-                }
-                if (!isset($input_item->version) or $input_item->version != '6') {
-                    $input_item->version = '4';
-                }
-                # ensure we have the correctly padded ip v4 address
-                if ($input_item->version == '4') {
-                    $input_item->ip = $this->ip_address_to_db($input_item->ip);
+                } else {
+                    $input->item[$i]->version_padded = '';
                 }
             }
         }
 
         ### VIRTUAL MACHINE ###
-        if ($table == 'virtual_machine') {
-            foreach ($input->item as &$input_item) {
-                # make sure group is set
-                if (!isset($input_item->vm_group)) {
-                    $input_item->vm_group = '';
+        if ((string)$table == 'vm') {
+            foreach ($input->item as $vm) {
+                if (!isset($vm->group)) {
+                    $vm->group = '';
                 }
-                # make sure guest_system_id is set
-                if (!isset($input_item->guest_system_id)) {
-                    $input_item->guest_system_id = '';
+                if (!isset($vm->guest_system_id)) {
+                    $vm->guest_system_id = '';
                 }
-                # attempt to match system_id
-                if ($input_item->guest_system_id == '') {
-                    $sql = "SELECT id FROM system WHERE uuid = ? and status = 'production'";
-                    $data = array("$input_item->uuid");
+                if (!isset($vm->icon)) {
+                    $vm->icon = '';
+                }
+                if (!isset($vm->uuid) or $vm->uuid == '') {
+                    $vm->uuid = '';
+                } else {
+                    $sql = "SELECT system_id, icon FROM `system` WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
+                    $data = array("$vm->uuid");
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
                         $row = $query->row();
-                        $input_item->guest_system_id = $row->id;
+                        $vm->guest_system_id = $row->system_id;
+                        $vm->icon = $row->icon;
+                        $sql = "UPDATE system SET man_vm_server_name = ?, man_vm_system_id = ? WHERE system_id = ?";
+                        $data = array("$details->hostname", "$details->system_id", $vm->guest_system_id);
+                        $query = $this->db->query($sql, $data);
                     }
                 }
-                # update the system table
-                if (isset($input_item->guest_system_id) and $input_item->guest_system_id != '') {
-                    $sql = "UPDATE system SET vm_server_name = ?, vm_system_id = ? WHERE system_id = ?";
-                    # $data = array("$details->name", "$details->id", "$input_item->guest_system_id");  # this will be changed when we convert the system table
-                    $data = array("$details->name", "$details->system_id", "$input_item->guest_system_id");
-                    $query = $this->db->query($sql, $data);
-                }
-                # set the current flag to n for all devices != id
-                $sql = "UPDATE virtual_machine SET current = 'n' WHERE uuid = ? AND system_id != ?";
-                # $data = array("$input_item->uuid", "$details->id");  # this will be changed when we convert the system table
-                $data = array("$input_item->uuid", "$details->system_id");
-                $query = $this->db->query($sql, $data);
             }
         }
 
         // get any existing current rows from the database
-        $sql = "SELECT * FROM `$table` WHERE current = 'y' AND system_id = ?";
+        $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND system_id = ?";
         #$data = array($details->id); # this will be changed when we convert the system table
         $data = array($details->system_id);
         $query = $this->db->query($sql, $data);
-        $result = $query->result();
+        $db_result = $query->result();
         $alert = false;
-        if (count($result) != 0) {
+        if (count($db_result) != 0) {
             // we have existing items in the database
             // we should raise an alert where required
             $alert = true;
         }
-        $count = 0;
-        // for each item from the audit
-        foreach ($input->item as $input_item) {
-            // set these flags on a per audit item basis
-            $flag = 'insert';
-            // get the field list from the table
-            $fields = $this->db->list_fields($table);
-            // compare the audit data against the rows from the DB
-            foreach ($result as &$db_item) {
-                // check for a match against the columns in $match_columns
+
+        // get the field list from the table
+        $fields = $this->db->list_fields($table);
+
+        // ensure we have a filtered array with only single copies of each $item
+        $items = array();
+        // for every input item
+        foreach ($input->item as $input_key => $input_item) {
+            $matched = 'n';
+            // loop through the building up item array
+            foreach ($items as $output_key => $output_item) {
+                // the matched count is the number of columns in the match_columns array
+                // that have equal values in our input items
                 $match_count = 0;
+                // loop through our match_columns array
                 for ($i = 0; $i < count($match_columns); $i++) {
-                    if ((string)$input_item->$match_columns[$i] == (string)$db_item->$match_columns[$i]) {
+                    // and test if the variables match
+                    if ((string)$input_item->$match_columns[$i] == (string)$output_item->$match_columns[$i]) {
+                        // they match so increment the count
                         $match_count ++;
                     }
                 }
-                // UPDATE because all supplied columns match
                 if ($match_count == (count($match_columns))) {
+                    // we have two matching items - combine them
+                    foreach ($fields as $field) {
+                        if ((!isset($output_item->$field) or $output_item->$field == '') and isset($input_item->$field) and $input_item->$field != '') {
+                            $output_item->$field = (string) $input_item->$field;
+                        }
+                    }
+                    $items[$output_key] = $output_item;
+                    $matched = 'y';
+                }
+            }
+            if ($matched != 'y') {
+                // no match, add the input item to the item array
+                $items[] = $input_item;
+            }
+        }
+
+        // for each item from the audit
+        foreach ($items as $input_item) {
+            // set these flags on a per audit item basis
+            $flag = 'insert';
+            // compare the audit data against the rows from the DB
+            foreach ($db_result as $key => $db_item) {
+                // check for a match against the columns in $match_columns
+                $match_count = 0;
+                for ($i = 0; $i < count($match_columns); $i++) {
+                    if ((string)$input_item->$match_columns[$i] == (string)$db_item->$match_columns[$i] and $db_item->updated != 'y') {
+                        $match_count ++;
+                    }
+                }
+                if ($match_count == (count($match_columns))) {
+                    // UPDATE because all supplied columns match
                     $flag = 'update';
                     $sql = '';
-                    // for each db column, if we don't have a value, use the audit value
+                    // if we have an audit value, replace the DB value
                     foreach ($fields as $field) {
-                        if ($db_item->$field == '' and $input_item->$field != '') {
+                        if (isset($input_item->$field) and $input_item->$field != '') {
                             $db_item->$field = (string) $input_item->$field;
                         }
-                        $sql .= " " . $table . "." . $field . " = ? , ";
+                        $sql .= " `" . $table . "`." . $field . " = ? , ";
                     }
                     // remove the trailing characters
                     $sql = substr($sql, 0, -2);
                     // set the last_seen column to the same as in $details (system table)
-                    $db_item->last_seen = $details->last_seen;
+                    $db_item->last_seen = (string)$details->last_seen;
                     // update all values in the table
-                    $sql = "UPDATE $table SET $sql WHERE " . $table . ".id = '" . $db_item->id . "'";
+                    $sql = "UPDATE `$table` SET $sql WHERE `" . $table . "`.id = '" . $db_item->id . "'";
                     // make sure no data is in $data
                     unset ($data);
                     // populate $data with the values from the database, combined with those of the audit
@@ -387,12 +529,16 @@ class M_devices_components extends MY_Model
                     $query = $this->db->query($sql, $data);
                     // remove this item from the database array
                     // we will later update the remaining items with current = n
-                    unset($result[$count]);
-                    $count++;
+                    // don't deletre it yet as we need to account for multiple items that are the same
+                    //    typically in the Windows software listing
+                    // unset($db_result[$key]);
+                    $db_item->updated = 'y';
+                    // set the $id so we can link to this row from graph, etc tables
+                    $id = $db_item->id;
                     // stop the loop
                     break;
                 } else {
-                    // no match - insert $flag stays unchanged
+                    // no match - $flag = 'insert' stays unchanged
                 }
             }
             // we have looped through the database items
@@ -401,8 +547,8 @@ class M_devices_components extends MY_Model
                 # $input_item->system_id  = $details->id; # this will be changed when we convert the system table
                 $input_item->system_id  = $details->system_id;
                 $input_item->current  = 'y';
-                $input_item->first_seen = $details->last_seen;
-                $input_item->last_seen  = $details->last_seen;
+                $input_item->first_seen = (string)$details->last_seen;
+                $input_item->last_seen  = (string)$details->last_seen;
                 $data = array();
                 $set_fields = '';
                 $set_values = '';
@@ -417,39 +563,76 @@ class M_devices_components extends MY_Model
                 }
                 $set_fields = substr($set_fields, 0, -2);
                 $set_values = substr($set_values, 0, -2);
-                $sql = "INSERT INTO $table ( $set_fields ) VALUES ( $set_values ) ";
+                $sql = "INSERT INTO `$table` ( $set_fields ) VALUES ( $set_values ) ";
                 $query = $this->db->query($sql, $data);
                 $id = $this->db->insert_id();
 
-                if ($alert) {
+                if ($alert and strtolower($create_alerts) == 'y') {
                     // We have existing items and this is a new item - raise an alert
-                    $alert_details = "item added to $table - " . $input_item->$match_columns[0];
-                    # $sql = "INSERT INTO sys_change_log ( id, system_id, link_table, link_row_id, details, `timestamp` ) VALUES ( NULL, ?, ?, ?, ?, ?)";
-                    # $data = array("$details->id", "$table", "$id", "$alert_details", "$details->last_seen"); # this will be changed when we convert the system table
-                    # $data = array("$details->system_id", "$table", "$id", "$alert_details", "$details->last_seen");
-                    # $query = $this->db->query($sql, $data);
-                    $this->m_alerts->generate_alert($details->system_id, $table, $id, $alert_details, $details->last_seen);
+                    $alert_details = '';
+                    foreach ($match_columns as $key => $value) {
+                        $alert_details .= $value . ' is ' . $input_item->$value . ', ';
+                    }
+                    $alert_details = substr($alert_details, 0, -2);
+                    $alert_details = "Item added to $table - " . $alert_details;
+                    if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
+                        $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
+                        $data = array($details->system_id);
+                        $query = $this->db->query($sql, $data);
+                        $result = $query->result();
+                        $details->last_seen = $result[0]->last_seen;
+                    }
+                    $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+                    $data = array("$details->system_id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
+                    $query = $this->db->query($sql, $data);
                 }
+            }
+            if ((string)$table == 'partition') {
+                // insert an entry into the graph table
+                $used_percent = @intval(($input_item->used / $input_item->size) * 100);
+                $free_percent = @intval(100 - $used_percent);
+                $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $data = array(intval($details->system_id), "$table", intval($id), "$table", intval($used_percent),
+                        intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");
+                $query = $this->db->query($sql, $data);
+            }
+        }
+
+        // remove the duplicated DB_items
+        foreach ($db_result as $key => $db_item) {
+            if ($db_item->updated) {
+                unset($db_result[$key]);
             }
         }
 
         // we have now inserted or updated all items in the audit set
         // we have also unset any items that were inserted from the db set
-        // UPDATE any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
-        foreach ($result as $db_item) {
+        // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
+        foreach ($db_result as $db_item) {
             $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
             $data = array($db_item->id);
             $query = $this->db->query($sql, $data);
-            // insert an alert that something was not found
-            $alert_details =  "Item removed from $table - " . $db_item->$match_columns[0];
-            # $sql = "INSERT INTO sys_change_log ( id, system_id, link_table, link_row_id, details, `timestamp`) VALUES ( NULL, ?, ?, ?, ?, ?)";
-            # $data = array("$details->id", "$table", "$db_item->id", "$alert_details", "$details->last_seen"); # this will be changed when we convert the system table
-            # $data = array("$details->system_id", "$table", "$db_item->id", "$alert_details", "$details->last_seen");
-            # $query = $this->db->query($sql, $data);
-            $this->m_alerts->generate_alert($details->system_id, $table, $db_item->id, $alert_details, $details->last_seen);
+            if (strtolower($create_alerts) == 'y') {
+                $alert_details = '';
+                foreach ($match_columns as $key => $value) {
+                    $alert_details .= $value . ' is ' . $db_item->$value . ', ';
+                }
+                $alert_details = substr($alert_details, 0, -2);
+                $alert_details = "Item removed from $table - " . $alert_details;
+                if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
+                    $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
+                    $data = array($details->system_id);
+                    $query = $this->db->query($sql, $data);
+                    $result = $query->result();
+                    $details->last_seen = $result[0]->last_seen;
+                }
+                $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+                $data = array("$details->system_id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
+                $query = $this->db->query($sql, $data);
+            }
         }
         // update the audit log
-        $this->m_sys_man_audits->update_audit($details, "$table - end");
+        $this->m_audit_log->update('debug', "$table - end", $details->system_id, $details->last_seen);
         return;
     }
 
@@ -719,7 +902,7 @@ class M_devices_components extends MY_Model
         # secondary prefer private to public ip address (pubpriv)
 
         # get the stored attribute for man_ip_address
-        $sql = "SELECT ip, timestamp FROM system WHERE id = ?";
+        $sql = "SELECT ip, timestamp FROM `system` WHERE id = ?";
         $data = array("$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -766,6 +949,204 @@ class M_devices_components extends MY_Model
             }
         }
     }
+
+    public function graph($system_id, $linked_row, $type = 'partition', $days = 30)
+    {
+        if ($system_id == '' or !is_numeric($system_id)) {
+            # TODO - wrtie out a log entry
+            return;
+        }
+        if ($linked_row == '' or !is_numeric($linked_row)) {
+            return;
+        }
+        if (!is_numeric($days)) {
+           return;
+        }
+        $sql = "SELECT used_percent, DATE(timestamp) AS timestamp FROM `graph` WHERE system_id = ? AND linked_row = ? AND type = ? AND timestamp > adddate(current_date(), interval -".$days." day) GROUP BY DAY(timestamp) ORDER BY timestamp";
+        $sql = $this->clean_sql($sql);
+        $data = array($system_id, $linked_row, "$type");
+        $query = $this->db->query($sql, $data);
+        return ($query->result());
+    }
+
+    public function partition_use_report($group_id, $user_id, $days = '120')
+    {
+        $resultset = array();
+        $sql = "SELECT DISTINCT(system.system_id), hostname, man_status, man_function, man_criticality, man_environment, man_description, partition.id as partition_id, mount_point, partition.name as partition_name
+            FROM `system`, `oa_group_sys`, `partition`
+            WHERE
+                system.system_id = oa_group_sys.system_id AND
+                partition.current = 'y' AND
+                system.system_id = partition.system_id AND
+                partition.mount_point > '' AND
+                oa_group_sys.group_id = ? AND
+                partition.mount_point != ''
+            GROUP BY
+                system.hostname, partition.mount_point
+            ORDER BY
+                system.hostname,
+                partition.mount_point ";
+        $sql = $this->clean_sql($sql);
+        $data = array($group_id);
+        $query = $this->db->query($sql, $data);
+        $returned_data = array();
+        foreach ($query->result() as $system) {
+            $partition_sql = "SELECT id, round(AVG(used),0) AS used, size as total, used_percent as percent_used, free_percent as percent_free, DATE(`timestamp`) AS `timestamp` FROM `graph` WHERE system_id = ? AND linked_row = ? AND linked_table = 'partition' GROUP BY DATE(`timestamp`) ORDER BY `timestamp`";
+            $partition_sql = $this->clean_sql($partition_sql);
+            $data = array($system->system_id, $system->partition_id);
+            $partition_query = $this->db->query($partition_sql, $data);
+            $count = 0;
+            $current_date = '';
+            $prev_date = '';
+            $current_used = 0;
+            $prev_used = 0;
+            $days_between = 0;
+            $used_calc = 0;
+            $used_diff = 0;
+            $total_days = 0;
+            $total_use = 0;
+            $temp_partition = $partition_query->result();
+            if (count($temp_partition) > 0) {
+                foreach ($temp_partition as $partition) {
+                    $count++;
+                    if ($count > 1) {
+                        $current_date = strtotime($partition->timestamp);
+                        $prev_date = strtotime($prev_date);
+                        $days_between = round((($current_date - $prev_date) / 84600), 0);
+                        $current_used = $partition->used;
+                        if ($days_between < 2) {
+                            $days_between = 1;
+                        }
+                        $used_calc = ($current_used - $prev_used);
+                        if (($used_calc < 1) and ($used_calc > -500)) {
+                            $used_calc = abs($used_calc);
+                            $used_diff = round(($used_calc / $days_between), 2);
+                            $used_diff = $used_diff - (2* $used_diff);
+                        }
+                        if ($used_calc > 0) {
+                            $used_diff = round(($used_calc / $days_between), 2);
+                        }
+                        if ($used_calc < -499) {
+                            $used_diff = 0;
+                            $days_between = 0;
+                        }
+                    }
+                    $partition_id = $partition->id;
+                    $prev_used = $partition->used;
+                    $prev_date = $partition->timestamp;
+                    $total_days += $days_between;
+                    $total_use += $used_diff;
+                    $total = $partition->total;
+                    $partition_used_space = $partition->used;
+                }
+                if ($total_use < 1) {
+                    $total_use = 1;
+                }
+                if ($total_days < 1) {
+                    $total_days = 1;
+                }
+                if ($total < 1) {
+                    $total = 1;
+                }
+                if ($partition_used_space < 1) {
+                    $partition_used_space = 1;
+                }
+                $i = ceil($total_use / $total_days);
+                if ($i < 1) {
+                    $i = 1;
+                }
+                $days_until_full = round((($total - $partition_used_space) / $i), 2, 0);
+                if (intval($days_until_full) <= intval($days)) {
+                    $returned_row["system_id"] = $system->system_id;
+                    $returned_row["hostname"] = $system->hostname;
+                    $returned_row["partition_name"] = $system->partition_name;
+                    $returned_row["partition_mount_point"] = $system->mount_point;
+                    $returned_row["man_environment"] = $system->man_environment;
+                    $returned_row["man_description"] = $system->man_description;
+                    $returned_row["man_function"] = $system->man_function;
+                    $returned_row["man_criticality"] = $system->man_criticality;
+                    $returned_row["partition_id"] = $partition_id;
+                    $returned_row["partition_size"] = $total;
+                    $returned_row["partition_used_space"] = $partition_used_space;
+                    $returned_row["partition_free_space"] = ($total - $partition_used_space);
+                    #$returned_row["days_until_used"] = round(($total - $partition_used_space) / round(($total_use / $total_days), 2),0);
+                    $returned_row["days_until_used"] = $days_until_full;
+                    if ($returned_row["days_until_used"] == 0) {
+                        $returned_row["days_until_used"] = 'unknown';
+                    }
+                    $returned_row["change_per_day"] = round(($total_use / $total_days), 2);
+                    $resultset[] = $returned_row;
+                }
+            }
+        }
+
+        return ($resultset);
+    }
+
+    public function create_dns_entries($id = 0)
+    {
+
+        $this->load->helper('log');
+        $log_details = new stdClass();
+        $log_details->file = 'system';
+        $log_details->severity = 7;
+        $sql = "SELECT DISTINCT ip_address_v4 FROM `sys_hw_network_card_ip` LEFT JOIN `system` ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) WHERE system.system_id = ?";
+        $data = array($id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        $dns_entries = array();
+        foreach ($result as $row) {
+            $ip = $this->ip_address_from_db($row->ip_address_v4);
+            if (isset($ip) and $ip != '0.0.0.0' and $ip != '000.000.000.000' and $ip != '' and $ip != '127.0.0.1' and filter_var($ip, FILTER_VALIDATE_IP) !== false) {
+                $dns_entry = new stdClass();
+                $dns_entry->ip = $ip;
+                $dns_entry->fqdn = '';
+                $dns_entry->name = '';
+                $dns_entry->fqdn = gethostbyaddr($ip);
+                if ($dns_entry->fqdn == $dns_entry->ip) {
+                    $dns_entry->fqdn = '';
+                } else {
+                    if (strrpos($dns_entry->fqdn, '.')) {
+                        $temp = explode('.', $dns_entry->fqdn);
+                        $dns_entry->name = $temp[0];
+                        unset($temp);
+                    } else {
+                        $dns_entry->name = $dns_entry->fqdn;
+                        $dns_entry->fqdn = '';
+                    }
+                }
+                $dns_entries[] = $dns_entry;
+                unset($dns_entry);
+            }
+        }
+        foreach ($dns_entries as $dns_entry) {
+            if ($dns_entry->name != '') {
+                $ip = gethostbyname($dns_entry->name);
+                if ($ip != $dns_entry->ip and $ip != $dns_entry->name) {
+                    foreach ($dns_entries as $dns) {
+                        if ($dns->ip == $ip) {
+                            $ip = '';
+                        }
+                        unset($dns);
+                    }
+                    if ($ip != '') {
+                        $new = new stdClass();
+                        $new->ip = $ip;
+                        $new->name = $dns_entry->name;
+                        $new->fqdn = $dns_entry->fqdn;
+                        $dns_entries[] = $new;
+                    }
+                }
+            }
+        }
+        foreach ($dns_entries as $key => $dns_entry) {
+            if (!isset($dns_entry->name) or $dns_entry->name == '') {
+                unset($dns_entries[$key]);
+            }
+        }
+        return $dns_entries;
+    }
+
 
     /**
     * Pass in a resultset and have the integer columns return as INT types, not strings

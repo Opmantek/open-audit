@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -80,7 +80,7 @@ if ($query) {
                 echo "			<td align=\"center\"><img src=\"".$oa_theme_images."/16_".htmlentities($key->group_icon).".png\" alt=\"".htmlentities($key->group_category)."\" title=\"".htmlentities($key->group_category)."\" style=\"border-width:0px;\" /></td>\n";
                 echo "			<td align=\"center\">".$key->total."</td>\n";
                 if ($key->group_padded_name > "") {
-                    echo "			<td><span style=\"display: none;\">".htmlentities($key->group_padded_name)."</span><a href=\"".base_url()."index.php/main/list_devices/".intval($key->group_id)."\">".htmlentities($key->group_name)."</a></td>\n";
+                    echo "			<td><span style=\"display: none;\">".print_something($key->group_padded_name)."</span><a href=\"".base_url()."index.php/main/list_devices/".intval($key->group_id)."\">".print_something($key->group_name)."</a></td>\n";
                 } else {
                     echo "			<td><a href=\"".base_url()."index.php/main/list_devices/".intval($key->group_id)."\">".htmlentities($key->group_name)."</a></td>\n";
                 }
@@ -114,9 +114,9 @@ if ($query) {
 			<td align='center'><img src="<?php echo $oa_theme_images; ?>/16_<?php echo htmlentities($key->group_icon)?>.png" alt="<?php echo htmlentities($key->group_category)?>" title="<?php echo htmlentities($key->group_category)?>" style='border-width:0px;' /></td>
 			<td align='center'><?php echo intval($key->total)?></td>
 			<?php if ($key->group_padded_name > "") { ?>
-				<td><span style="display: none;"><?php echo htmlentities($key->group_padded_name)?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
+				<td><span style="display: none;"><?php echo print_something($key->group_padded_name)?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo print_something($key->group_name)?></a></td>
 			<?php } else { ?>
-				<td><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
+				<td><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo print_something($key->group_name)?></a></td>
 			<?php } ?>
 			<td><?php echo htmlentities($key->group_description)?></td>
 			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
@@ -152,9 +152,9 @@ if ($query) {
         			<td align='center'><img src="<?php echo $oa_theme_images; ?>/16_<?php echo htmlentities($key->group_icon)?>.png" alt="<?php echo htmlentities($key->group_category)?>" title="<?php echo htmlentities($key->group_category)?>" style='border-width:0px;' /></td>
         			<td align='center'><?php echo intval($key->total)?></td>
         			<?php if ($key->group_padded_name > "") { ?>
-        				<td><span style="display: none;"><?php echo htmlentities($key->group_padded_name)?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
+        				<td><span style="display: none;"><?php echo htmlentities($key->group_padded_name)?></span><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo print_something($key->group_name)?></a></td>
         			<?php } else { ?>
-        				<td><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
+        				<td><a href="<?php echo base_url()?>index.php/main/list_devices/<?php echo intval($key->group_id)?>"><?php echo print_something($key->group_name)?></a></td>
         			<?php } ?>
         			<td><?php echo htmlentities($key->group_description)?></td>
         			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
@@ -202,7 +202,7 @@ function dynamic_search( group )
 </script>
 
 <?php if ($this->config->config['rss_enable'] == 'y') { ?>
-<style>
+<style type="text/css">
 li a {text-decoration: underline; color: #729FCF;}
 </style>
 
@@ -212,12 +212,12 @@ li a {text-decoration: underline; color: #729FCF;}
 	</tr>
 </table>
 
-<style>
+<style type="text/css">
 li a {text-decoration: none;}
 </style>
 
 
-<script>
+<script type="text/javascript">
     (function (e) {
         e.fn.inewsticker = function (t) {
             var n = {

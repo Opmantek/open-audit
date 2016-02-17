@@ -8,7 +8,7 @@
 		<group_category>device</group_category>
 		<group_icon>printer</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'printer' and have no valid ip address.</group_description>
-		<group_display_sql><![CDATA[SELECT b.hostname, a.linked_sys, a.system_id, a.man_manufacturer, a.man_model, a.man_serial, a.man_description, a.printer_port_name, a.printer_color, a.printer_duplex, windows_user_name FROM system b LEFT JOIN sys_sw_windows ON (b.system_id = sys_sw_windows.system_id AND b.timestamp = sys_sw_windows.timestamp), system a LEFT JOIN oa_group_sys ON a.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ? AND a.linked_sys = b.system_id GROUP BY a.system_id ORDER BY a.man_manufacturer, a.man_model]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT b.hostname, a.linked_sys, a.system_id, a.man_manufacturer, a.man_model, a.man_serial, a.man_description, a.printer_port_name, a.printer_color, a.printer_duplex, windows.user_name FROM system b LEFT JOIN windows ON (b.system_id = windows.system_id AND windows.current = 'y'), system a LEFT JOIN oa_group_sys ON a.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ? AND a.linked_sys = b.system_id GROUP BY a.system_id ORDER BY a.man_manufacturer, a.man_model]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -94,7 +94,7 @@
 		<column>
 			<column_order>9</column_order>
 			<column_name>User</column_name>
-			<column_variable>windows_user_name</column_variable>
+			<column_variable>user_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

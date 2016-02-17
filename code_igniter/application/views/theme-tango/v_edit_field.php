@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -35,12 +35,12 @@
 echo form_open('admin_field/edit_field')."\n"; ?>
 <fieldset id="field_details" class='niceforms'>
     <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Field Details')?></span></legend>
-    <img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_audit_log.png' alt='' title='' width='48'/>
+    <img class='section_image' src='<?php echo $oa_theme_images;?>/48_audit_log.png' alt='' title='' />
     <?php foreach ($field as $key) {
     ?>
-    <table width='780' cellpadding='0' cellspacing='0'>
+    <table style='width:780' cellpadding='0' cellspacing='0'>
         <tr>
-            <td width='100%'>
+            <td style='width:100%'>
                 <p><label for='field_name'><?php echo __('Name')?>: </label><input type='text' id='field_name' name='field_name' tabindex='1' title='<?php echo __('Field Name'); ?>' value='<?php echo $key->field_name; ?>' /></p>
                 <p><label for='field_type'><?php echo __('Type')?>: </label>
                     <select id='field_type' name='field_type' tabindex='2' title='Field Type' onChange='toggleValues()'>
@@ -101,7 +101,7 @@ echo form_open('admin_field/edit_field')."\n"; ?>
 </fieldset>
 <?php echo form_close(); ?>
 
-<script>
+<script type="text/javascript">
 function toggleValues() {
     if (document.getElementById("field_type").value == "list") {
         document.getElementById("field_values_p").style.display = "block";

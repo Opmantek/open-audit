@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.8.4
+ * @version 1.12
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -236,32 +236,37 @@ function inttobin($intin)
 
 function ip_address_from_db($ip)
 {
-    $ip_pre = $ip;
     if (($ip != "") and (!(is_null($ip)))) {
-        $myip = explode(".", $ip);
-        $myip[0] = ltrim($myip[0], "0");
-        if ($myip[0] == "") {
-            $myip[0] = "0";
+        if (stripos($ip, '.') !== false) {
+            // this is an ip v4 address
+            $myip = explode(".", $ip);
+            $myip[0] = ltrim($myip[0], "0");
+            if ($myip[0] == "") {
+                $myip[0] = "0";
+            }
+            if (isset($myip[1])) {
+                $myip[1] = ltrim($myip[1], "0");
+            }
+            if (!isset($myip[1]) or $myip[1] == "") {
+                $myip[1] = "0";
+            }
+            if (isset($myip[2])) {
+                $myip[2] = ltrim($myip[2], "0");
+            }
+            if (!isset($myip[2]) or $myip[2] == "") {
+                $myip[2] = "0";
+            }
+            if (isset($myip[3])) {
+                $myip[3] = ltrim($myip[3], "0");
+            }
+            if (!isset($myip[3]) or $myip[3] == "") {
+                $myip[3] = "0";
+            }
+            $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
         }
-        if (isset($myip[1])) {
-            $myip[1] = ltrim($myip[1], "0");
+        if (stripos($ip, ':') !== false) {
+            // this is an ip v6 address
         }
-        if (!isset($myip[1]) or $myip[1] == "") {
-            $myip[1] = "0";
-        }
-        if (isset($myip[2])) {
-            $myip[2] = ltrim($myip[2], "0");
-        }
-        if (!isset($myip[2]) or $myip[2] == "") {
-            $myip[2] = "0";
-        }
-        if (isset($myip[3])) {
-            $myip[3] = ltrim($myip[3], "0");
-        }
-        if (!isset($myip[3]) or $myip[3] == "") {
-            $myip[3] = "0";
-        }
-        $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
     } else {
         $ip = "";
     }

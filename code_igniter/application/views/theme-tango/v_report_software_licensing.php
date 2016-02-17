@@ -27,13 +27,13 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<table cellspacing='1' class='tablesorter' width='900'>
+<table cellspacing='1' class='tablesorter' style='width:900'>
 	<thead>
 		<tr>
 			<th><?php echo __('Package Name')?></th>
@@ -65,20 +65,20 @@
         }
     ?>
 		<tr>
-			<td><a href="<?php echo base_url(); ?>index.php/report/specific_software/<?php echo $group_id; ?>/<?php echo $key->software_id; ?>"><?php echo $key->software_name; ?></a></td>
-			<td><?php echo htmlentities($key->software_comment); ?></td>
-			<td><?php echo htmlentities($key->software_version); ?></td>
-			<td><?php echo htmlentities($key->software_publisher); ?></td>
+			<td><a href="<?php echo base_url(); ?>index.php/report/specific_software/<?php echo $group_id; ?>/<?php echo $key->id; ?>"><?php echo $key->name; ?></a></td>
+			<td><?php echo htmlentities($key->type); ?></td>
+			<td><?php echo htmlentities($key->version); ?></td>
+			<td><?php echo htmlentities($key->publisher); ?></td>
 			<td align='center'><?php echo intval($key->software_count); ?></td>
 			<td align='center'><?php echo $key->software_licenses ?></td>
 			<?php
             if ($this->user->user_sam > '1') {
-                echo "\t\t\t<td align=\"center\"><a class='AssetPopupTrigger' rel='".htmlentities($key->software_name)."' href='#' ><img src='".$oa_theme_images."/16_edit.png' alt='' title='' width='16' /></a></td>\n";
+                echo "\t\t\t<td align=\"center\"><a class='AssetPopupTrigger' rel='".htmlentities($key->name)."' href='#' ><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16' /></a></td>\n";
             //} else if ($this->user->user_sam > '1') {
                 //if ($key->software_licenses == '') {
                     //echo "\t\t\t<td align=\"center\"></td>\n";
                 //} else {
-                    //echo "\t\t\t<td align=\"center\"><a href='" . $key->software_licenses . "'><img src='" . $oa_theme_images . "/16_edit.png' alt='' title='' width='16' /></a></td>\n";
+                    //echo "\t\t\t<td align=\"center\"><a href='" . $key->software_licenses . "'><img src='" . $oa_theme_images . "/16_edit.png' alt='' title='' style='width:16' /></a></td>\n";
                 //}
             }
             ?>
@@ -93,7 +93,7 @@
 function dynamic_asset( software_name )
 {
 	licenses = document.getElementById("licenses").value;
-	location.href = '<?php echo site_url(); ?>/admin_licenses/change_license/<?php echo intval($group_id); ?>/' + licenses + '/' + software_name;
+	location.href = '<?php echo site_url(); ?>/licenses/change_license/<?php echo intval($group_id); ?>/' + licenses + '/' + software_name;
 	return false;
 }
 </script>

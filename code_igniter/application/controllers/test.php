@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -56,11 +56,80 @@ class test extends CI_Controller
         $log_details->severity = 6;
         stdlog($log_details);
         unset($log_details);
+
+        $this->load->helper('report_helper');
+        check_default_reports();
+        $this->load->helper('group_helper');
+        check_default_groups();
     }
 
     public function index()
     {
         redirect('/');
+    }
+
+    public function types ()
+    {
+        include 'include_device_types.php';
+        echo "<pre>\n";
+        foreach ($device_types as $key => $value) {
+            echo $key . ' = ' . $value . "\n";
+        }
+    }
+
+    public function dns()
+    {
+        print gethostbyaddr('192.168.1.1');
+    }
+
+    public function system_read()
+    {
+        $this->load->model('m_devices_components');
+        echo "<pre>\n";
+        echo $this->m_devices_components->read(1, 'y', 'system', '', 'hostname') . "\n";
+        print_r($this->m_devices_components->read(1, 'y', 'edit_log', '', '*')); echo "\n";
+    }
+
+    public function delta()
+    {
+        echo "<pre>\n";
+        $type = 'delta';
+        $table = 'netstat';
+        $system_id = 23;
+        $first_seen = '';
+
+
+        if ($type != 'delta' and $type != 'full') {
+            return;
+        }
+
+
+        $sql = "SELECT first_seen FROM $table WHERE system_id = ? ORDER BY first_seen LIMIT 1";
+        $data = array($system_id);
+        $query = $this->db->query($sql, $data);
+            echo $this->db->last_query() . "\n";
+        $result = $query->result();
+        if ($query->num_rows() > 0) {
+            $row = $query->row();
+            $first_seen = $row->first_seen;
+        }
+        if ($first_seen != '') {
+            if ($type == 'delta') {
+                $sql = "SELECT $table.*, IF(($table.first_seen = ?), 'y', 'n') as original_install, IF($table.current = 'y', 'y', 'n') as current_install FROM $table WHERE system_id = ? and (current = 'y' or first_seen = ?)";
+                $data = array("$first_seen", $system_id, "$first_seen");
+            }
+            if ($type == 'full') {
+                $sql = "SELECT $table.*, IF(($table.first_seen = ?), 'y', 'n') as original_install, IF($table.current = 'y', 'y', 'n') as current_install FROM $table WHERE system_id = ?";
+                $data = array("$first_seen", $system_id);
+            }
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            echo $this->db->last_query() . "\n";
+            print_r($result);
+        } else {
+            # no data in this table for the system_id
+            return;
+        }
     }
 
     public function login()

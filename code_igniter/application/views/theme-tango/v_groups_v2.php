@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.8.4
+ * @version 1.12
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -188,7 +188,7 @@ function dynamic_search( group )
 
 <?php if ($this->config->config['rss_enable'] == 'y') {
     ?>
-<style>
+<style type="text/css">
 li a {text-decoration: underline; color: #729FCF;}
 </style>
 
@@ -199,12 +199,12 @@ li a {text-decoration: underline; color: #729FCF;}
 	</tr>
 </table>
 
-<style>
+<style type="text/css">
 li a {text-decoration: none;}
 </style>
 
 
-<script>
+<script type="text/javascript">
     (function (e) {
         e.fn.inewsticker = function (t) {
             var n = {
