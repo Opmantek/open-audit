@@ -187,7 +187,8 @@ class M_oa_group extends MY_Model
         $fields_in_table = $this->db->list_fields($table);
         $result = array();
         foreach ($fields_in_table as $field_in_table) {
-            if ((mb_strpos($field_in_table, '_id') === false) and (mb_strpos($field_in_table, 'timestamp') === false)) {
+            if (mb_strpos($field_in_table, '_id') === false AND mb_strpos($field_in_table, 'timestamp') === false AND
+                $field_in_table != 'id' AND $field_in_table != 'last_seen' AND $field_in_table != 'first_seen' AND $field_in_table != 'current') {
                 $result[] = $field_in_table;
             }
         }
