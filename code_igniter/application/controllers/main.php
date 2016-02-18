@@ -426,7 +426,7 @@ class main extends MY_Controller
             $details->system_id = $system[1];
             $details->type = 'computer';
             $discover_ids .= $system[1].',';
-            $this->m_oa_group->update_system_groups($details);
+            $this->m_oa_group->update_system_groups($details, 'network');
         }
 
         $calculate_ip = $this->input->post('calculate_ip');
