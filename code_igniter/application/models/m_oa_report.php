@@ -205,7 +205,9 @@ class M_oa_report extends MY_Model
             $sql = $key->report_sql;
         }
         $data = array($group_id);
-        $query = $this->db->query('SET @group = ?', $data);
+        $sql_group = 'SET @group = ?';
+        $sql_group = $this->clean_sql($sql_group);
+        $query = $this->db->query($sql_group, $data);
 
         if (stripos($sql, '@limit') !== false) {
             if ($offset != 0) {
@@ -214,7 +216,7 @@ class M_oa_report extends MY_Model
                 $sql = str_ireplace('@limit', $limit, $sql);
             }
         }
-
+        $sql = $this->clean_sql($sql);
         $data = array($first_attribute, $second_attribute, $third_attribute, $forth_attribute);
         $query = $this->db->query($sql, $data);
 
