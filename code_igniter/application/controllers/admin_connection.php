@@ -192,8 +192,6 @@ class Admin_connection extends MY_Controller
                             $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
                             $sql_query .= ')';
                         }
-                        // run the query !!!
-                        echo $sql_query."<br />\n";
                         $query = $this->db->query($sql_query);
                     } else {
                         echo 'no connection name provided';
