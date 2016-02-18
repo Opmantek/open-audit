@@ -42,6 +42,7 @@ class M_oa_admin_database extends MY_Model
     public function count_systems()
     {
         $sql = "SELECT count(*) as count FROM system";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
 
@@ -51,6 +52,7 @@ class M_oa_admin_database extends MY_Model
     public function statistics()
     {
         $sql = "SELECT type, os_family, COUNT(*) as count FROM system WHERE man_status = 'production' GROUP BY type, os_family ";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -74,6 +76,7 @@ class M_oa_admin_database extends MY_Model
     public function export_table($table)
     {
         $sql = "SELECT * FROM $table";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -103,6 +106,7 @@ class M_oa_admin_database extends MY_Model
     public function get_field_values($table, $field)
     {
         $sql = "SELECT DISTINCT($field) AS value FROM $table ORDER BY value";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -125,6 +129,7 @@ class M_oa_admin_database extends MY_Model
     public function count_all_rows($table = 'oa_temp')
     {
         $sql = "SELECT COUNT(*) AS count FROM $table";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
 
@@ -134,6 +139,7 @@ class M_oa_admin_database extends MY_Model
     public function delete_all_rows($table = 'oa_temp')
     {
         $sql = "DELETE FROM $table";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
         return($this->db->affected_rows());

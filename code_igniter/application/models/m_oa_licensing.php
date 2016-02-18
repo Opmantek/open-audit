@@ -42,22 +42,22 @@ class M_oa_licensing extends MY_Model
     public function software_licensing_report($id)
     {
         $sql = "SELECT COUNT(DISTINCT system.system_id) AS software_count,
-				software.name,
-				software.version,
-				software.publisher,
-				software.id,
-				software.type,
-				round(sum(oa_asset_select.group_amount)/COUNT(DISTINCT system.system_id), 0) as software_licenses,
-				oa_asset_select.select_id
+    				software.name,
+    				software.version,
+    				software.publisher,
+    				software.id,
+    				software.type,
+    				round(sum(oa_asset_select.group_amount)/COUNT(DISTINCT system.system_id), 0) as software_licenses,
+    				oa_asset_select.select_id
 				FROM
-				software
+				    software
 				LEFT JOIN system ON (software.system_id = system.system_id and software.current = 'y')
 				LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id)
 				LEFT JOIN oa_asset_select ON (software.name = oa_asset_select.select_name AND oa_asset_select.group_id = ? )
 				WHERE
-				oa_group_sys.group_id = ?
+				    oa_group_sys.group_id = ?
 				GROUP BY
-				software.name, software.version
+				    software.name, software.version
 				ORDER BY software.name";
         $sql = $this->clean_sql($sql);
         $data = array($id, $id);
@@ -77,11 +77,13 @@ class M_oa_licensing extends MY_Model
         if ($query->num_rows() > 0) {
             # we have an existing match - need to run an update
             $sql = "UPDATE oa_asset_select SET group_amount = ? WHERE select_name = ? AND group_id = ?";
+            $sql = $this->clean_sql($sql);
             $data = array("$licenses", "$software_name", "$group_id");
             $query = $this->db->query($sql, $data);
         } else {
             # this is a new license - need to insert
             $sql = "INSERT INTO oa_asset_select VALUES(NULL, ?, 'sw', '', ?, ?)";
+            $sql = $this->clean_sql($sql);
             $data = array("$software_name", "$group_id", "$licenses");
             $query = $this->db->query($sql, $data);
         }

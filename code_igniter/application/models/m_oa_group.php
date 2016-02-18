@@ -45,6 +45,7 @@ class M_oa_group extends MY_Model
             $group_id = '1';
         }
         $sql = "SELECT group_user_access_level FROM oa_group_user WHERE user_id = ? AND group_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$user_id", "$group_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -56,6 +57,7 @@ class M_oa_group extends MY_Model
     {
         $group_id = intval($group_id);
         $sql = "SELECT group_name from oa_group WHERE group_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$group_id");
         $query = $this->db->query($sql, $data);
         $row = @$query->row();
@@ -73,6 +75,7 @@ class M_oa_group extends MY_Model
             return '0';
         }
         $sql = "SELECT oa_group.*, count(oa_group_sys.system_id) as total FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -83,6 +86,7 @@ class M_oa_group extends MY_Model
     public function get_group_id($group_name)
     {
         $sql = "SELECT group_id FROM oa_group WHERE group_name = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$group_name");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -100,6 +104,7 @@ class M_oa_group extends MY_Model
     {
         $group_id = intval($group_id);
         $sql = "SELECT group_dynamic_select from oa_group WHERE group_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$group_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -111,7 +116,7 @@ class M_oa_group extends MY_Model
         }
     }
 
-    public function update_system_groups($details)
+    public function update_system_groups($details, $exclude_type = '')
     {
         if (!isset($details->type)) {
             $details->type = '';
@@ -119,19 +124,35 @@ class M_oa_group extends MY_Model
         if (!isset($details->man_type) or $details->man_type == '') {
             $details->man_type = $details->type;
         }
-        $sql = "DELETE FROM oa_group_sys WHERE system_id = ?";
-        $data = array("$details->system_id");
+        if ($exclude_type != '') {
+            $sql = "DELETE FROM oa_group_sys WHERE oa_group_sys.system_id = ? AND oa_group_sys.group_id IN (SELECT oa_group.group_id FROM oa_group WHERE oa_group.group_category != ?)";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->system_id", "$exclude_type");
+        } else {
+            $sql = "DELETE FROM oa_group_sys WHERE oa_group_sys.system_id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->system_id");
+        }
         $query = $this->db->query($sql, $data);
-        $sql = "SELECT group_id, group_name, group_dynamic_select FROM oa_group WHERE group_dynamic_select > ''";
-        $query = $this->db->query($sql);
+        if ($exclude_type != '') {
+            $sql = "SELECT oa_group.group_id, oa_group.group_name, oa_group.group_dynamic_select FROM oa_group WHERE oa_group.group_dynamic_select > '' AND oa_group.group_category != ?";
+            $sql = $this->clean_sql($sql);
+            $data = array("$exclude_type");
+            $query = $this->db->query($sql, $data);
+        } else {
+            $sql = "SELECT oa_group.group_id, oa_group.group_name, oa_group.group_dynamic_select FROM oa_group WHERE oa_group.group_dynamic_select > ''";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+        }
         foreach ($query->result() as $myrow) {
             $sql_select = "SELECT system_id FROM system WHERE system_id = ? AND system_id in ( ".$myrow->group_dynamic_select." )";
-            #$data_select = array("$details->system_id", "$myrow->group_id");
             $data_select = array("$details->system_id");
+            $sql_select = $this->clean_sql($sql_select);
             $query_select = $this->db->query($sql_select, $data_select);
             if ($query_select->num_rows() > 0) {
                 // insert a row because the system matches the select criteria
                 $sql_insert = "INSERT INTO oa_group_sys (system_id, group_id) VALUES (?, ?)";
+                $sql_insert = $this->clean_sql($sql_insert);
                 $data_insert = array("$details->system_id", "$myrow->group_id");
                 $query_insert = $this->db->query($sql_insert, $data_insert);
             }
@@ -141,16 +162,20 @@ class M_oa_group extends MY_Model
     public function update_groups()
     {
         $sql = "DELETE FROM oa_group_sys";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql) or die("Error with delete from oa_group_sys");
         $sql = "ALTER TABLE oa_group_sys AUTO_INCREMENT = 1";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql) or die("Error with auto increment reset from oa_group_sys");
         $sql = "SELECT group_id, group_dynamic_select, group_name FROM oa_group";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         foreach ($query->result() as $myrow) {
             $sql_select = $myrow->group_dynamic_select;
             # update the group with all systems that match
             $sql_insert = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
             $sql_insert = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$myrow->group_id."' ", $sql_insert);
+            $sql_insert = $this->clean_sql($sql_insert);
             $insert = $this->db->query($sql_insert);
         }
     }
@@ -159,6 +184,7 @@ class M_oa_group extends MY_Model
     {
         # get the group select
         $sql = "SELECT group_dynamic_select FROM oa_group WHERE group_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($group_id);
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $myrow) {
@@ -166,12 +192,14 @@ class M_oa_group extends MY_Model
         }
         # remove the existing systems in this group
         $sql_delete = "DELETE FROM oa_group_sys WHERE group_id = ?";
+        $sql_delete = $this->clean_sql($sql_delete);
         $data = array($group_id);
         $delete = $this->db->query($sql_delete, $data) or die("Error with delete from oa_group_sys");
         # update the group with all systems that match
         $sql_insert = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
         #$sql_insert = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$group_id."', 'system'", $sql_insert);
         $sql_insert = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$group_id."' ", $sql_insert);
+        $sql_insert = $this->clean_sql($sql_insert);
         $insert = $this->db->query($sql_insert);
     }
 
@@ -199,6 +227,7 @@ class M_oa_group extends MY_Model
     public function get_field_values($table, $field)
     {
         $sql = "SELECT DISTINCT($field) AS value FROM $table ORDER BY value";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -209,9 +238,7 @@ class M_oa_group extends MY_Model
     {
         // TODO: need some data validation in here
         $sql = "
-			UPDATE
-				oa_group
-			SET
+			UPDATE oa_group SET
 				group_name = ?,
 				group_padded_name = ?,
 				group_dynamic_select = ?,
@@ -327,6 +354,7 @@ class M_oa_group extends MY_Model
     public function count_all_groups()
     {
         $sql = "SELECT count(oa_group.group_id) AS total FROM oa_group LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         $row = $query->row();
@@ -337,6 +365,7 @@ class M_oa_group extends MY_Model
     public function get_network_group_subnet($subnet = '30')
     {
         $sql = "SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         // echo $this->db->last_query();
         // echo "<br /><br />\n";
@@ -351,15 +380,19 @@ class M_oa_group extends MY_Model
     public function delete_network_group_subnet($subnet = '30')
     {
         $sql = "DELETE FROM oa_group_user WHERE group_id IN (SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "')";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
         $sql = "DELETE FROM oa_group_sys WHERE group_id IN (SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "')";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
         $sql = "DELETE FROM oa_group_column WHERE group_id IN (SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "')";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
         $sql = "DELETE FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
         return($this->db->affected_rows());
@@ -370,6 +403,7 @@ class M_oa_group extends MY_Model
         #$sql = "SELECT oa_group.group_id, oa_group.group_name, COUNT(oa_group_sys.system_id) AS system_total FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING system_total = 0 LIMIT 20";
         #$sql = "SELECT oa_group.group_id AS total, COUNT(oa_group_sys.system_id) AS system_total FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING system_total = 0";
         $sql = "SELECT oa_group.group_id FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING COUNT(oa_group_sys.system_id) = 0";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         return ($query->num_rows());
     }
@@ -377,6 +411,7 @@ class M_oa_group extends MY_Model
     public function delete_network_group_count_zero()
     {
         $sql = "SELECT oa_group.group_id FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING COUNT(oa_group_sys.system_id) = 0";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         $count = 0;
@@ -405,7 +440,7 @@ class M_oa_group extends MY_Model
 
     public function get_user_groups($user_id = '0')
     {
-        $sql = "SELECT
+        $sql = "SELECT 
 					oa_group.group_id,
 					oa_group.group_name,
 					oa_group.group_padded_name,
@@ -439,7 +474,7 @@ class M_oa_group extends MY_Model
     {
         // get ALL groups, even those with no entry in the oa_group_user table.
         // assign a permission level to each group. Use '0' for those without entries in oa_group_user
-        $sql = "SELECT
+        $sql = "SELECT  
 					oa_group.group_id,
 					oa_group.group_name,
 					oa_group.group_padded_name,
@@ -461,7 +496,7 @@ class M_oa_group extends MY_Model
         $query = $this->db->query($sql);
         $group = $query->result();
         // get user access levels
-        $sql = "SELECT
+        $sql = "SELECT 
 					oa_group.group_id,
 					oa_group_user.group_user_access_level
 				FROM
@@ -492,25 +527,29 @@ class M_oa_group extends MY_Model
     public function delete_group($id)
     {
         $sql = "DELETE FROM oa_group_user WHERE group_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
 
         $sql = "DELETE FROM oa_group_sys WHERE group_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
 
         $sql = "DELETE FROM oa_group_column WHERE group_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
 
         $sql = "DELETE FROM oa_group WHERE group_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
     }
 
     public function import_group($input)
     {
-        $sql = "INSERT INTO
+        $sql = "INSERT INTO 
 					oa_group
 				SET
 					group_name = ?,
@@ -544,6 +583,7 @@ class M_oa_group extends MY_Model
     {
         # remove the existing user->group permissions
         $sql = "DELETE FROM oa_group_user WHERE user_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$details->user_id");
         $query = $this->db->query($sql, $data);
         # assign new user-> group permissions

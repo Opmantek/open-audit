@@ -60,6 +60,7 @@ class M_devices_components extends MY_Model
 
         if ($current == 'delta' or $current == 'full') {
             $sql = "SELECT first_seen FROM `$table` WHERE system_id = ? ORDER BY first_seen LIMIT 1";
+            $sql = $this->clean_sql($sql);
             $data = array($id);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
@@ -121,6 +122,7 @@ class M_devices_components extends MY_Model
         }
         
         if ($sql != '') {
+            $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             $result = $this->from_db($result);
@@ -318,6 +320,7 @@ class M_devices_components extends MY_Model
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
                 $sql = "DELETE FROM `sys_hw_network_card_ip` WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($details->system_id);
                 $query = $this->db->query($sql, $data);
                 # set the below so we don't generate alerts for this
@@ -342,6 +345,7 @@ class M_devices_components extends MY_Model
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
                 $sql = "DELETE FROM `network` WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($details->system_id);
                 $query = $this->db->query($sql, $data);
                 # set the below so we don't generate alerts for this
@@ -423,6 +427,7 @@ class M_devices_components extends MY_Model
                     $vm->uuid = '';
                 } else {
                     $sql = "SELECT system_id, icon FROM `system` WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
+                    $sql = $this->clean_sql($sql);
                     $data = array("$vm->uuid");
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
@@ -430,6 +435,7 @@ class M_devices_components extends MY_Model
                         $vm->guest_system_id = $row->system_id;
                         $vm->icon = $row->icon;
                         $sql = "UPDATE system SET man_vm_server_name = ?, man_vm_system_id = ? WHERE system_id = ?";
+                        $sql = $this->clean_sql($sql);
                         $data = array("$details->hostname", "$details->system_id", $vm->guest_system_id);
                         $query = $this->db->query($sql, $data);
                     }
@@ -439,6 +445,7 @@ class M_devices_components extends MY_Model
 
         // get any existing current rows from the database
         $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND system_id = ?";
+        $sql = $this->clean_sql($sql);
         #$data = array($details->id); # this will be changed when we convert the system table
         $data = array($details->system_id);
         $query = $this->db->query($sql, $data);
@@ -526,6 +533,7 @@ class M_devices_components extends MY_Model
                     foreach ($fields as $field) {
                         $data[] = (string)$db_item->$field;
                     }
+                    $sql = $this->clean_sql($sql);
                     $query = $this->db->query($sql, $data);
                     // remove this item from the database array
                     // we will later update the remaining items with current = n
@@ -564,6 +572,7 @@ class M_devices_components extends MY_Model
                 $set_fields = substr($set_fields, 0, -2);
                 $set_values = substr($set_values, 0, -2);
                 $sql = "INSERT INTO `$table` ( $set_fields ) VALUES ( $set_values ) ";
+                $sql = $this->clean_sql($sql);
                 $query = $this->db->query($sql, $data);
                 $id = $this->db->insert_id();
 
@@ -577,12 +586,14 @@ class M_devices_components extends MY_Model
                     $alert_details = "Item added to $table - " . $alert_details;
                     if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
                         $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
+                        $sql = $this->clean_sql($sql);
                         $data = array($details->system_id);
                         $query = $this->db->query($sql, $data);
                         $result = $query->result();
                         $details->last_seen = $result[0]->last_seen;
                     }
                     $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+                    $sql = $this->clean_sql($sql);
                     $data = array("$details->system_id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
                     $query = $this->db->query($sql, $data);
                 }
@@ -592,6 +603,7 @@ class M_devices_components extends MY_Model
                 $used_percent = @intval(($input_item->used / $input_item->size) * 100);
                 $free_percent = @intval(100 - $used_percent);
                 $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $sql = $this->clean_sql($sql);
                 $data = array(intval($details->system_id), "$table", intval($id), "$table", intval($used_percent),
                         intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");
                 $query = $this->db->query($sql, $data);
@@ -610,6 +622,7 @@ class M_devices_components extends MY_Model
         // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
         foreach ($db_result as $db_item) {
             $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
+            $sql = $this->clean_sql($sql);
             $data = array($db_item->id);
             $query = $this->db->query($sql, $data);
             if (strtolower($create_alerts) == 'y') {
@@ -621,12 +634,14 @@ class M_devices_components extends MY_Model
                 $alert_details = "Item removed from $table - " . $alert_details;
                 if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
                     $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
+                    $sql = $this->clean_sql($sql);
                     $data = array($details->system_id);
                     $query = $this->db->query($sql, $data);
                     $result = $query->result();
                     $details->last_seen = $result[0]->last_seen;
                 }
                 $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+                $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
                 $query = $this->db->query($sql, $data);
             }
@@ -903,6 +918,7 @@ class M_devices_components extends MY_Model
 
         # get the stored attribute for man_ip_address
         $sql = "SELECT ip, timestamp FROM `system` WHERE id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -944,6 +960,7 @@ class M_devices_components extends MY_Model
 
             if (isset($result[0]->ip) and $result[0]->ip != '') {
                 $sql = "UPDATE system SET ip = ? WHERE id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($result[0]->ip, "$id");
                 $query = $this->db->query($sql, $data);
             }
@@ -1091,6 +1108,7 @@ class M_devices_components extends MY_Model
         $log_details->file = 'system';
         $log_details->severity = 7;
         $sql = "SELECT DISTINCT ip_address_v4 FROM `sys_hw_network_card_ip` LEFT JOIN `system` ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) WHERE system.system_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();

@@ -56,8 +56,7 @@ class M_edit_log extends MY_Model
             if ($timestamp == '') {
                 $timestamp = date('Y-m-d H:i:s');
             }
-            $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) 
-                    VALUES (?, ?, ?, 'user', 1000, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (?, ?, ?, 'user', 1000, ?, ?, ?, ?, ?)";
             $sql = $this->clean_sql($sql);
             $data = array($this->session->userdata['user_id'], $system_id, "$details", "$db_table", "$db_column", "$timestamp", "$value", "$previous_value");
             $query = $this->db->query($sql, $data);

@@ -51,6 +51,7 @@ class M_oa_device extends MY_Model
     public function get_device($id)
     {
         $sql = "SELECT * FROM oa_device WHERE dev_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -70,6 +71,7 @@ class M_oa_device extends MY_Model
     public function get_group_id($device_id)
     {
         $sql = "SELECT dev_group_id FROM oa_device WHERE dev_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$device_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -89,6 +91,7 @@ class M_oa_device extends MY_Model
     public function set_group_id($device_id, $group_id)
     {
         $sql = "UPDATE oa_device SET dev_group_id = ? WHERE dev_id = ? ";
+        $sql = $this->clean_sql($sql);
         $data = array("$group_id", "$device_id");
         $query = $this->db->query($sql, $data);
     }
@@ -105,6 +108,7 @@ class M_oa_device extends MY_Model
     public function get_device_details($org_id)
     {
         $sql = "SELECT oa_device.*, count(oa_group_sys.system_id) as total FROM oa_device LEFT JOIN oa_group_sys ON oa_group_sys.group_id = oa_device.dev_group_id where oa_device.dev_id = ? GROUP BY oa_device.dev_id LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$org_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -124,6 +128,7 @@ class M_oa_device extends MY_Model
     public function get_device_id($name)
     {
         $sql = "SELECT dev_id FROM oa_device WHERE dev_name = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$name");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -148,6 +153,7 @@ class M_oa_device extends MY_Model
     public function get_device_name($id)
     {
         $sql = "SELECT dev_name FROM oa_device WHERE dev_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -165,6 +171,7 @@ class M_oa_device extends MY_Model
     public function get_device_names()
     {
         $sql = "SELECT dev_name, dev_id FROM oa_device ORDER BY dev_name";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -201,6 +208,7 @@ class M_oa_device extends MY_Model
     public function check_device_name($device_name, $device_id)
     {
         $sql = "SELECT dev_id FROM oa_device WHERE dev_name = ? AND dev_id <> ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$device_name", "$device_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -283,9 +291,11 @@ class M_oa_device extends MY_Model
     public function delete_device($device_id)
     {
         $sql = "DELETE FROM oa_device WHERE dev_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$device_id");
         $query = $this->db->query($sql, $data);
         $sql = "UPDATE system SET man_dev_id = '' WHERE man_dev_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$device_id");
         $query = $this->db->query($sql, $data);
     }

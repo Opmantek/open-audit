@@ -45,6 +45,7 @@ class M_oa_config extends MY_Model
 
         // need to account for v2 having different column names
         $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version' ";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
         $internal_version = $row->config_value;
@@ -55,6 +56,7 @@ class M_oa_config extends MY_Model
         #}
 
         $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.user_id";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $key => $value) {
@@ -83,7 +85,8 @@ class M_oa_config extends MY_Model
         $this->load->library('encrypt');
 
         // need to account for v2 having different column names
-        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version' ";
+        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
         $internal_version = $row->config_value;
@@ -94,6 +97,7 @@ class M_oa_config extends MY_Model
         #}
 
         $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.user_id";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -141,6 +145,7 @@ class M_oa_config extends MY_Model
 
         # get the total number of devices
         $sql = "SELECT count(system_id) as device_count FROM system WHERE man_status = 'production'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         $this->config->config['device_count'] = intval($result[0]->device_count);
@@ -150,6 +155,7 @@ class M_oa_config extends MY_Model
     {
         $this->load->library('encrypt');
         $sql = "SELECT config_name, config_value FROM oa_config";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         $credentials = new stdClass();
@@ -193,12 +199,14 @@ class M_oa_config extends MY_Model
     {
         $this->load->library('encrypt');
         $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version' ";
+        $sql = $this->clean_sql($sql);
         $data = array("$config_name");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
         $internal_version = $row->config_value;
 
         $sql = "SELECT config_value FROM oa_config WHERE config_name = ? ";
+        $sql = $this->clean_sql($sql);
         $data = array("$config_name");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -226,6 +234,7 @@ class M_oa_config extends MY_Model
 
         // need to account for v2 having different column names
         $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version' ";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
         $internal_version = $row->config_value;
@@ -243,6 +252,7 @@ class M_oa_config extends MY_Model
             $config_value = $this->encrypt->encode($config_value);
         }
         $sql = "UPDATE oa_config SET config_value = ?, $edited_by = ?, config_edited_date = ? WHERE config_name = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$config_value", "$user_id", "$timestamp", "$config_name");
         $query = $this->db->query($sql, $data);
 

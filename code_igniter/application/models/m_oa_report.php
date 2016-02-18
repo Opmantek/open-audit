@@ -42,16 +42,16 @@ class M_oa_report extends MY_Model
     public function list_reports_in_menu()
     {
         $sql = "SELECT report_id, report_name, '' as report_url FROM oa_report WHERE report_display_in_menu = 'y' and report_view_file != 'v_help_oae' ORDER BY report_name";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
-
         return($query->result());
     }
 
     public function list_reports()
     {
         $sql = "SELECT report_id, report_name FROM oa_report WHERE report_view_file != 'v_help_oae' ORDER BY report_name";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
-
         return($query->result());
     }
 
@@ -77,45 +77,44 @@ class M_oa_report extends MY_Model
                         "$input->report_processing",
                         "$input->report_sort_column",
                         "$input->report_display_in_menu", );
-        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
-
         return($this->db->insert_id());
     }
 
     public function delete_report($report_id)
     {
         $sql = "DELETE FROM oa_report WHERE report_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array($report_id);
         $query = $this->db->query($sql, $data);
-
         return(true);
     }
 
     public function get_report_details($report_id)
     {
         $sql = "SELECT * FROM oa_report WHERE report_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($report_id);
         $query = $this->db->query($sql, $data);
-
         return($query->result());
     }
 
     public function get_report_name($report_id)
     {
         $sql = "SELECT report_name FROM oa_report WHERE report_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($report_id);
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $key) {
             $report_name = $key->report_name;
         }
-
         return($report_name);
     }
 
     public function get_report_id($report_name)
     {
         $sql = "SELECT report_id FROM oa_report WHERE report_name = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$report_name");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -132,24 +131,24 @@ class M_oa_report extends MY_Model
     public function get_report_view($report_id)
     {
         $sql = "SELECT report_view_file FROM oa_report WHERE report_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($report_id);
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $key) {
             $report_view_file = $key->report_view_file;
         }
-
         return($report_view_file);
     }
 
     public function get_report_sort_column($report_id)
     {
         $sql = "SELECT report_sort_column FROM oa_report WHERE report_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($report_id);
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $key) {
             $report_sort_column = $key->report_sort_column;
         }
-
         return($report_sort_column);
     }
 
@@ -199,6 +198,7 @@ class M_oa_report extends MY_Model
         }
 
         $sql = "SELECT report_sql FROM oa_report WHERE report_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($report_id);
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $key) {

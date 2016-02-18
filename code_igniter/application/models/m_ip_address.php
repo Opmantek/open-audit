@@ -145,9 +145,11 @@ class M_ip_address extends MY_Model
             // As at 1.8.4, update the subnet as well if we have a value
             if ($input->ip_subnet != '' AND $input->ip_subnet != '0.0.0.0') {
                 $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ?, net_index = ?, ip_subnet = ? WHERE ip_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array("$details->timestamp", "$input->net_index", "$input->ip_subnet", "$row->ip_id");
             } else {
                 $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ?, net_index = ? WHERE ip_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array("$details->timestamp", "$input->net_index", "$row->ip_id");
             }
             $query = $this->db->query($sql, $data);
@@ -193,6 +195,7 @@ class M_ip_address extends MY_Model
                     $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '".$start_ip."' AND sys_hw_network_card_ip.ip_address_v4 <= '".$finish_ip."' AND sys_hw_network_card_ip.ip_subnet = '".$input->ip_subnet."' AND sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp AND system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".$start_ip."' AND system.man_ip_address <= '".$finish_ip."' AND system.man_status = 'production')";
                     $start = explode(' ', microtime());
                     $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
+                    $sql = $this->clean_sql($sql);
                     $data = array($group_dynamic_select);
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
@@ -229,6 +232,7 @@ class M_ip_address extends MY_Model
     {
         // ip no longer detected - ONLY for devices not using DHCP
         $sql = "SELECT sys_hw_network_card_ip.ip_id, sys_hw_network_card_ip.ip_address_v4 FROM sys_hw_network_card_ip LEFT JOIN network ON sys_hw_network_card_ip.net_mac_address = network.mac WHERE sys_hw_network_card_ip.system_id = ? and sys_hw_network_card_ip.timestamp = ? and network.dhcp_enabled = 'false'";
+        $sql = $this->clean_sql($sql);
         $data = array("$details->system_id", "$details->original_timestamp");
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
@@ -275,6 +279,7 @@ class M_ip_address extends MY_Model
 
         # get the stored attribute for man_ip_address
         $sql = "SELECT man_ip_address, timestamp FROM system WHERE system_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -315,6 +320,7 @@ class M_ip_address extends MY_Model
 
             if (isset($result[0]->ip_address_v4) and strtolower($result[0]->ip_address_v4) != '') {
                 $sql = "UPDATE system SET man_ip_address = ? WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($result[0]->ip_address_v4, "$system_id");
                 $query = $this->db->query($sql, $data);
             }

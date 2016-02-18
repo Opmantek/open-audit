@@ -42,12 +42,14 @@ class M_oa_group_column extends MY_Model
     public function get_group_column($group_id = 0)
     {
         $sql = "SELECT * FROM oa_group_column WHERE group_id = ? ORDER BY column_order";
+        $sql = $this->clean_sql($sql);
         $data = array($group_id );
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         if ($query->num_rows() == '0') {
             // return the 'standard' rows
             $sql = "SELECT * FROM oa_group_column WHERE group_id = '1' ORDER BY column_order";
+            $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $result = $query->result();
         }
@@ -58,12 +60,14 @@ class M_oa_group_column extends MY_Model
     public function get_group_column_new($group_id = 0)
     {
         $sql = "SELECT * FROM oa_group_column WHERE group_id = ? AND column_name <> 'Tags' ORDER BY column_order";
+        $sql = $this->clean_sql($sql);
         $data = array($group_id );
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         if ($query->num_rows() == '0') {
             // return the 'standard' rows
             $sql = "SELECT * FROM oa_group_column WHERE group_id = '1' AND column_name <> 'Tags' ORDER BY column_order";
+            $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $result = $query->result();
         }

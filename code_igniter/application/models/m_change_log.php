@@ -60,6 +60,7 @@ class M_change_log extends MY_Model
     public function deleteAll()
     {
         $sql = "DELETE FROM change_log";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $count = $this->db->affected_rows();
         return ($count);
@@ -75,6 +76,7 @@ class M_change_log extends MY_Model
     public function deleteDays($days = 365)
     {
         $sql = "DELETE FROM change_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $count = $this->db->affected_rows();
         return ($count);
@@ -90,6 +92,7 @@ class M_change_log extends MY_Model
     public function count()
     {
         $sql = "SELECT COUNT(*) AS count FROM change_log";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
         return($row->count);
@@ -105,6 +108,7 @@ class M_change_log extends MY_Model
     public function countDays($days = 7)
     {
         $sql = "SELECT COUNT(*) AS count FROM change_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
         return($row->count);
@@ -123,8 +127,7 @@ class M_change_log extends MY_Model
     {
         $id = intval($id);
         if ($id > 0) {
-            $sql = "SELECT change_log.*, oa_user.user_full_name FROM change_log LEFT JOIN oa_user ON change_log.user_id = oa_user.user_id
-    			WHERE change_log.system_id = ? ORDER BY timestamp";
+            $sql = "SELECT change_log.*, oa_user.user_full_name FROM change_log LEFT JOIN oa_user ON change_log.user_id = oa_user.user_id WHERE change_log.system_id = ? ORDER BY timestamp";
             $sql = $this->clean_sql($sql);
             $data = array($id);
             $query = $this->db->query($sql, $data);

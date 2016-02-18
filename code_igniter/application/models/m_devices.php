@@ -220,6 +220,7 @@ class M_devices extends MY_Model
     {
         $CI = & get_instance();
         $sql = "SELECT group_user_access_level as access_level FROM oa_group_user LEFT JOIN oa_group_sys ON (oa_group_user.group_id = oa_group_sys.group_id) WHERE oa_group_sys.system_id = ? AND oa_group_user.user_id = ? ORDER BY group_user_access_level DESC LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array(intval($id), intval($CI->user->user_id));
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -234,6 +235,7 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $this->load->model('m_devices_components');
         $sql = "SELECT * FROM system WHERE system_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $document['system'] = $query->result();
@@ -272,6 +274,7 @@ class M_devices extends MY_Model
             }
         }
         $sql = "SELECT $this->properties FROM system WHERE system_id IN (SELECT DISTINCT system_id FROM oa_group_sys LEFT JOIN oa_group_user ON (oa_group_sys.group_id = oa_group_user.group_id AND oa_group_user.group_user_access_level > 0) WHERE oa_group_user.user_id = ?) $this->filter $this->sort $this->limit $this->offset";
+        $sql = $this->clean_sql($sql);
         $data = array($this->user_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -287,6 +290,7 @@ class M_devices extends MY_Model
     {
         $this->getResponse();
         $sql = "SELECT $this->properties FROM $this->subresource WHERE system_id IN (SELECT DISTINCT system_id FROM oa_group_sys LEFT JOIN oa_group_user ON (oa_group_sys.group_id = oa_group_user.group_id AND oa_group_user.group_user_access_level > 0) WHERE oa_group_user.user_id = ?) $this->filter $this->sort $this->limit $this->offset";
+        $sql = $this->clean_sql($sql);
         $data = array($this->user_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();

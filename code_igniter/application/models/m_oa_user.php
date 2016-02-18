@@ -42,6 +42,7 @@ class M_oa_user extends MY_Model
     public function select_user($name)
     {
         $sql = "SELECT user_id FROM oa_user WHERE user_name = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($name);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -57,6 +58,7 @@ class M_oa_user extends MY_Model
     public function check_user_name($user_name, $user_id)
     {
         $sql = "SELECT user_id FROM oa_user WHERE user_name = ? AND user_id <> ?";
+        $sql = $this->clean_sql($sql);
         $data = array($user_name, $user_id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -67,23 +69,14 @@ class M_oa_user extends MY_Model
         }
     }
 
-/*
-    function delete_user($id) {
-        $sql = "DELETE FROM oa_group_user WHERE user_id = ? LIMIT 1";
-        $data = array($id);
-        $query = $this->db->query($sql, $data);
-        $sql = "DELETE FROM oa_user WHERE user_id = ? LIMIT 1";
-        $data = array($id);
-        $query = $this->db->query($sql, $data);
-    }
-*/
-
     public function deactivate_user($id)
     {
         $sql = "DELETE FROM oa_group_user WHERE user_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $sql = "UPDATE oa_user SET user_active = 'n' WHERE user_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
     }
@@ -91,6 +84,7 @@ class M_oa_user extends MY_Model
     public function activate_user($id)
     {
         $sql = "UPDATE oa_user SET user_active = 'y' WHERE user_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
     }
@@ -98,20 +92,19 @@ class M_oa_user extends MY_Model
     public function get_user_details($id)
     {
         $sql = "SELECT * FROM oa_user WHERE user_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-
         return ($result);
     }
 
     public function get_all_users()
     {
-        $sql = "SELECT user_id, user_name, user_full_name, user_email, user_admin, user_active
-				FROM oa_user ORDER BY user_name";
+        $sql = "SELECT user_id, user_name, user_full_name, user_email, user_admin, user_active FROM oa_user ORDER BY user_name";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-
         return ($result);
     }
 
@@ -131,15 +124,12 @@ class M_oa_user extends MY_Model
         $hash = hash("sha256", $salt.$details->user_password); # prepend the salt, then hash
         # store the salt and hash in the same string, so only 1 DB column is needed
         $encrypted_password = $salt.$hash;
-
-        $sql = "INSERT INTO oa_user (user_name, user_full_name, user_email, user_password, user_theme,
-				user_lang, user_admin, user_sam) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO oa_user (user_name, user_full_name, user_email, user_password, user_theme, user_lang, user_admin, user_sam) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
         $data = array("$details->user_name", "$details->user_full_name", "$details->user_email",
             "$encrypted_password", "$details->user_theme", "$details->user_lang",
             "$details->user_admin", "$details->user_sam", );
         $query = $this->db->query($sql, $data);
-
         return($this->db->insert_id());
     }
 
@@ -217,6 +207,7 @@ class M_oa_user extends MY_Model
         if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
             // user is logged in, return the $this->user object
             $sql = "SELECT * FROM oa_user WHERE oa_user.user_id = ? LIMIT 1";
+            $sql = $this->clean_sql($sql);
             $data = array($this->session->userdata['user_id']);
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
@@ -379,6 +370,7 @@ class M_oa_user extends MY_Model
         } else {
             $sql = "SELECT * FROM oa_user WHERE oa_user.user_name = ? AND user_active = 'y' LIMIT 1";
         }
+        $sql = $this->clean_sql($sql);
         $data = array("$username");
         $query = $this->db->query($sql, $data);
         if ($query->num_rows() > 0) {
@@ -507,6 +499,7 @@ class M_oa_user extends MY_Model
             # store the salt and hash in the same string, so only 1 DB column is needed
             $encrypted_password = $salt.$hash;
             $sql = "UPDATE oa_user SET user_password = ? WHERE user_id = ?";
+            $sql = $this->clean_sql($sql);
             $data = array("$encrypted_password", (string) $CI->user->user_id);
             $query = $this->db->query($sql, $data);
         }

@@ -48,6 +48,7 @@ class M_system extends MY_Model
             return;
         }
         $sql = "SELECT access_details FROM system WHERE system_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -152,6 +153,7 @@ class M_system extends MY_Model
         # check system_key
         if (isset($details->system_key) and $details->system_id == '') {
             $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->system_key");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
@@ -166,6 +168,7 @@ class M_system extends MY_Model
         if (isset($details->hostname) and strlen($details->hostname) > 15 and isset($details->uuid) and $details->system_id == '') {
             $temp_uuid = $details->uuid."-".substr($details->hostname, 0, 15);
             $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
             $data = array("$temp_uuid");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
@@ -180,6 +183,7 @@ class M_system extends MY_Model
         if (isset($details->hostname) and isset($details->uuid) and $details->system_id == '') {
             $temp_uuid = $details->uuid."-".$details->hostname;
             $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
             $data = array("$temp_uuid");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
@@ -193,6 +197,7 @@ class M_system extends MY_Model
         # check for a FQDN
         if (isset($details->fqdn) and $details->fqdn != '' and $details->system_id == '') {
             $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->fqdn");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
@@ -207,6 +212,7 @@ class M_system extends MY_Model
         if (isset($details->hostname) and $details->hostname != '' and isset($details->domain) and $details->domain != '' and $details->system_id == '') {
             $details->fqdn = $details->hostname.".".$details->domain;
             $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->fqdn");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
@@ -266,6 +272,7 @@ class M_system extends MY_Model
         }
 
         $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_ip_match'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
         $ip_match = @$row->config_value;
@@ -302,6 +309,7 @@ class M_system extends MY_Model
                 # next check the system table for a man_ip_address match
                 if ($details->system_id == '') {
                     $sql = "SELECT system.system_id FROM system WHERE man_ip_address = ? and system.man_status = 'production'";
+                    $sql = $this->clean_sql($sql);
                     $data = array(ip_address_to_db($details->man_ip_address));
                     $query = $this->db->query($sql, $data);
                     $row = $query->row();
@@ -315,6 +323,7 @@ class M_system extends MY_Model
                 # finally one last try - check for a minimal matching system_key
                 if ($details->system_id == '') {
                     $sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
+                    $sql = $this->clean_sql($sql);
                     $data = array(ip_address_to_db($details->man_ip_address));
                     $query = $this->db->query($sql, $data);
                     $row = $query->row();
@@ -336,6 +345,7 @@ class M_system extends MY_Model
             }
             if ($details->type != '' or $details->man_type != '') {
                 $sql = "SELECT system.system_id FROM system WHERE system.system_key = ? AND system.man_status = 'production'";
+                $sql = $this->clean_sql($sql);
                 $data = array("$details->type"."_"."$details->serial");
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
@@ -345,6 +355,7 @@ class M_system extends MY_Model
 
                 if ($details->system_key == '') {
                     $sql = "SELECT system.system_id FROM system WHERE system.serial = ? AND (system.man_type = ? OR system.type = ?) AND system.man_status = 'production'";
+                    $sql = $this->clean_sql($sql);
                     $data = array("$details->serial", "$details->man_type", "$details->type");
                     $query = $this->db->query($sql, $data);
                     $row = $query->row();
@@ -370,6 +381,7 @@ class M_system extends MY_Model
             }
             if ($type > '' or $man_type > '') {
                 $sql = "SELECT system.system_id FROM system WHERE system.man_serial = ? AND (system.man_type = ? OR system.type = ?) AND system.man_status = 'production'";
+                $sql = $this->clean_sql($sql);
                 $data = array("$details->man_serial", "$details->man_type", "$details->type");
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
@@ -382,6 +394,7 @@ class M_system extends MY_Model
         }
 
         $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_name_match'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
         $name_match = @$row->config_value;
@@ -403,6 +416,7 @@ class M_system extends MY_Model
                     $hostname = $details->hostname;
                 }
                 $sql = "SELECT system.system_id FROM system WHERE (hostname = ? or hostname = ?) AND system.man_status = 'production'";
+                $sql = $this->clean_sql($sql);
                 $data = array("$hostname", "$details->hostname");
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
@@ -423,6 +437,7 @@ class M_system extends MY_Model
                     if (strlen($hostname) == 15) {
                         # We do have a 15 character hostname - check if this exists in the DB
                         $sql = "SELECT system.system_id FROM system WHERE hostname LIKE '".$hostname."%' AND system.man_status = 'production'";
+                        $sql = $this->clean_sql($sql);
                         $query = $this->db->query($sql);
                         $row = $query->row();
                         if (count($row) > 0) {
@@ -440,6 +455,7 @@ class M_system extends MY_Model
                 $hostname = $i[0];
                 $hostname = substr($hostname, 0, 15);
                 $sql = "SELECT system.system_id FROM system WHERE hostname = ? AND system.man_status = 'production'";
+                $sql = $this->clean_sql($sql);
                 $data = array("$hostname");
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
@@ -471,6 +487,7 @@ class M_system extends MY_Model
             return;
         }
         $sql = "SELECT system_id FROM system WHERE (hostname = ? or hostname = ? ) AND man_status = 'production' LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$details->hostname", "$details->man_ip_address");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -484,6 +501,7 @@ class M_system extends MY_Model
         if ($system_id > '0') {
             // ok, we have a hit
             $sql = "SELECT last_seen FROM system WHERE system_id = '".$system_id."'";
+            $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $row = $query->row();
             $last_seen = $row->last_seen;
@@ -492,21 +510,25 @@ class M_system extends MY_Model
             } else {
                 // the ad audit is later - update
                 $sql = "UPDATE system SET last_seen = '".$details->last_seen."', last_seen_by = 'active directory' WHERE system_id = '".$system_id."'";
+                $sql = $this->clean_sql($sql);
                 $query = $this->db->query($sql, $data);
             }
             # update the various settings that we KNOW because of an AD scan.
             $sql = "UPDATE system SET type = 'computer', man_type = 'computer', os_group = ?, man_os_group = ?, os_family = ?, man_os_family = ?, os_name = ?, man_os_name = ?, icon = ?, domain = ?, hostname = ? WHERE system_id = ?";
             $data = array("$details->os_group", "$details->os_group", "$details->os_family", "$details->os_family", "$details->os_name", "$details->os_name", "$details->icon", "$details->domain", "$details->hostname", "$system_id");
+            $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
             #echo $this->db->last_query();
         } else {
             // this is a new system
             $timestamp = date('Y-m-d H:i:s');
             $sql = "INSERT INTO system (hostname, man_ip_address, domain, type, man_type, icon, os_group, os_family, os_name, man_os_group, man_os_family, man_os_name, last_seen, last_seen_by, timestamp, first_timestamp) VALUES (?, ?, ?, 'computer', 'computer', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active directory', ?, ?)";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->hostname", $this->ip_address_to_db($details->man_ip_address), "$details->domain", "$details->icon", "$details->os_group", "$details->os_family", "$details->os_name", "$details->os_group", "$details->os_family", "$details->os_name", "$details->last_seen", $timestamp, "$details->last_seen" );
             $query = $this->db->query($sql, $data);
             $system_id = $this->db->insert_id();
             $sql = "INSERT INTO windows (system_id, active_directory_ou, last_seen, first_seen) values (?, ?, ?, ?)";
+            $sql = $this->clean_sql($sql);
             $data = array("$system_id", "$details->active_directory_ou", $timestamp, $timestamp );
             $query = $this->db->query($sql, $data);
         }
@@ -547,6 +569,7 @@ class M_system extends MY_Model
             $field_data = $this->ip_address_to_db($field_data);
         }
         $sql = "UPDATE system SET $field_name = ? WHERE system_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$field_data", "$system_id");
         $query = $this->db->query($sql, $data);
     }
@@ -554,6 +577,7 @@ class M_system extends MY_Model
     public function check_man_ip_address($system_id)
     {
         $sql = "SELECT system.man_ip_address FROM system WHERE system.system_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -564,6 +588,7 @@ class M_system extends MY_Model
     public function get_system_type($system_id)
     {
         $sql = "SELECT system.man_type FROM system WHERE system.system_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -573,26 +598,7 @@ class M_system extends MY_Model
 
     public function get_system_hostname($system_id)
     {
-        // $sql = "SELECT
-        // 		system.hostname
-        // 	FROM
-        // 		system
-        // 	WHERE
-        // 		(system.system_id = ? OR
-        // 		system.system_key = ? OR
-        // 		system.hostname = ? )
-        // 	ORDER BY
-        // 		system.timestamp
-        // 	LIMIT 1";
-        $sql = "SELECT
-				system.hostname
-			FROM
-				system
-			WHERE
-				system.system_id = ?
-			ORDER BY
-				system.timestamp
-			LIMIT 1";
+        $sql = "SELECT system.hostname FROM system WHERE system.system_id = ? ORDER BY system.timestamp LIMIT 1";
         $sql = $this->clean_sql($sql);
         //$data = array($system_id, $system_id, $system_id);
         $data = array($system_id);
@@ -799,23 +805,12 @@ class M_system extends MY_Model
 
     public function system_summary($system_id)
     {
-        // $sql = "SELECT 		system.system_id, hostname, man_ip_address, man_environment,
-        // 					man_status, man_description, man_type,
-        // 					man_class, man_os_group, man_os_family, man_os_name,
-        // 					man_manufacturer, man_model, man_serial,
-        // 					man_form_factor,
-        // 					location_name, last_seen, last_seen_by
-        // 		FROM 		system
-        // 		LEFT JOIN   oa_location on system.man_location_id = oa_location.location_id
-        // 		WHERE 		system.system_id = ? ";
-
         // Improved SQL to show the linked system for the case of devices like local attached, non-networked printers
         $sql = "SELECT a.system_id, a.hostname, a.man_ip_address, a.man_environment, a.man_status, a.man_description, a.man_type, a.man_class, a.man_os_group, a.man_os_family, a.man_os_name, a.man_manufacturer, a.man_model, a.man_serial, a.man_form_factor, location_name, a.last_seen, a.last_seen_by, a.linked_sys as linked_system_id, b.hostname as linked_hostname FROM system a LEFT JOIN system b on a.linked_sys = b.system_id LEFT JOIN oa_location on a.man_location_id = oa_location.location_id WHERE a.system_id = ?";
 
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
-        #echo $this->db->last_query() . "<br />";
         $result = $query->result();
         $result[0]->{'IP Address'} = $this->ip_address_from_db($result[0]->{'man_ip_address'});
 
@@ -851,6 +846,7 @@ class M_system extends MY_Model
     public function get_system_id_from_hostname($hostname)
     {
         $sql = "SELECT system.system_id FROM system WHERE system.hostname = ? AND system.man_status = 'production' ORDER BY system_id LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$hostname");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -891,6 +887,7 @@ class M_system extends MY_Model
     public function get_system_summary($system_id)
     {
         $sql = "SELECT system.*, location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE system.system_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -901,6 +898,7 @@ class M_system extends MY_Model
     public function get_columns()
     {
         $sql = "SHOW COLUMNS FROM system";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -910,11 +908,13 @@ class M_system extends MY_Model
     public function get_non_production_systems()
     {
         $sql = "SELECT system_id, hostname, timestamp, oa_org.org_name FROM system LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id WHERE man_status = 'deleted'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         $i = 0;
         foreach ($result as $system) {
             $sql = "SELECT count(*) AS count FROM system WHERE hostname = ?";
+            $sql = $this->clean_sql($sql);
             $data = array($system->hostname);
             $query = $this->db->query($sql, $data);
             $row = $query->row();
@@ -929,6 +929,7 @@ class M_system extends MY_Model
     public function count_non_production_systems($status = 'deleted')
     {
         $sql = "SELECT COUNT(*) AS count FROM system WHERE man_status = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$status");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -940,6 +941,7 @@ class M_system extends MY_Model
     public function count_not_seen_days($days = 365)
     {
         $sql = "SELECT COUNT(*) AS count FROM system WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
 
@@ -949,6 +951,7 @@ class M_system extends MY_Model
     public function delete_systems_not_seen_days($days = 365)
     {
         $sql = "DELETE FROM system WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $count = $this->db->affected_rows();
 
@@ -958,6 +961,7 @@ class M_system extends MY_Model
     public function delete_non_production_systems($status = 'deleted')
     {
         $sql = "DELETE FROM system WHERE man_status = ?";
+        $sql = $this->clean_sql($sql);
         $data = array($status);
         $query = $this->db->query($sql, $data);
         $count = $this->db->affected_rows();
@@ -969,6 +973,7 @@ class M_system extends MY_Model
     public function delete_linked_system($system_id)
     {
         $sql = "DELETE FROM system WHERE linked_sys = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
     }
@@ -1156,6 +1161,7 @@ class M_system extends MY_Model
         }
 
         $sql = "SHOW COLUMNS FROM system";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $columns = $query->result();
 
@@ -1183,7 +1189,7 @@ class M_system extends MY_Model
         }
         $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
         $sql .= ")";
-
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $details->system_id = $this->db->insert_id();
 
@@ -1217,6 +1223,7 @@ class M_system extends MY_Model
         # check if we have a matching entry in the vm table and update it if required
         if (isset($details->uuid) and $details->uuid != '') {
             $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) and vm.current = 'y' and vm.system_id = system.system_id";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->uuid");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
@@ -1225,14 +1232,17 @@ class M_system extends MY_Model
                 $details->man_vm_system_id = $row->man_vm_system_id;
                 $details->man_vm_server_name = $row->man_vm_server_name;
                 $sql = "SELECT icon , 'vm' FROM system WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($details->system_id);
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
                 $details->icon = $row->icon;
                 $sql = "UPDATE vm SET guest_system_id = ?, icon = ? WHERE id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($details->system_id, "$details->icon", "$temp_vm_id");
                 $query = $this->db->query($sql, $data);
                 $sql = "UPDATE system SET man_vm_system_id = ?, man_vm_server_name = ? WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($details->man_vm_system_id, $details->man_vm_server_name, $details->system_id);
                 $query = $this->db->query($sql, $data);
             }
@@ -1306,6 +1316,7 @@ class M_system extends MY_Model
         }
 
         $sql = "SELECT hostname FROM system WHERE system_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$details->system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->row();
@@ -1338,6 +1349,7 @@ class M_system extends MY_Model
         # the key in the db may be better than what we have
         if (isset($details->system_key)) {
             $sql = "SELECT system_key, system_key_type FROM system WHERE system_id = ?";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->system_id");
             $query = $this->db->query($sql, $data);
             $result = $query->row();
@@ -1410,6 +1422,7 @@ class M_system extends MY_Model
         # we would not normally over write man_ items
         if (isset($details->last_seen_by) and ($details->last_seen_by == 'audit' or $details->last_seen_by == 'snmp' or $details->last_seen_by == 'ipmi')) {
             $sql = "SELECT * FROM system WHERE system_id = ? LIMIT 1";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->system_id");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
@@ -1540,9 +1553,10 @@ class M_system extends MY_Model
         }
 
         if (!isset($details->original_timestamp) or $details->original_timestamp == '') {
-            $sql_timestamp = "SELECT timestamp FROM system WHERE system_id = ?";
-            $sql_data = array("$details->system_id");
-            $query = $this->db->query($sql_timestamp, $sql_data);
+            $sql = "SELECT timestamp FROM system WHERE system_id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->system_id");
+            $query = $this->db->query($sql, $data);
             $row = $query->row();
             $details->original_timestamp = $row->timestamp;
         }
@@ -1568,6 +1582,7 @@ class M_system extends MY_Model
         }
 
         $sql = "SHOW COLUMNS FROM system";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $columns = $query->result();
         $sql = "UPDATE system SET ";
@@ -1583,6 +1598,7 @@ class M_system extends MY_Model
         }
         $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
         $sql .= " WHERE system_id = '".$details->system_id."'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
         # finally, update the device icon
@@ -1599,6 +1615,7 @@ class M_system extends MY_Model
             # check to see if we have a timestamp
             if (!isset($details->timestamp) or $details->timestamp == '') {
                 $sql = "SELECT timestamp, last_seen FROM system WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id");
                 $query = $this->db->query($sql, $data);
                 $result = $query->result();
@@ -1622,6 +1639,7 @@ class M_system extends MY_Model
 
             # search for any entries in both sys_hw_network_card_ip
             $sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
             $query = $this->db->query($sql, $data);
             $result = $query->result();
@@ -1634,6 +1652,7 @@ class M_system extends MY_Model
             } else {
                 # match - update timestamp only
                 $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+                $sql = $this->clean_sql($sql);
                 $data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
                 $query = $this->db->query($sql, $data);
             }
@@ -1657,6 +1676,7 @@ class M_system extends MY_Model
         # check if we have a matching entry in the vm table and update it if required
         if (isset($details->uuid) and $details->uuid != '') {
             $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) and vm.current = 'y' and vm.system_id = system.system_id";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->uuid");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
@@ -1665,14 +1685,17 @@ class M_system extends MY_Model
                 $details->man_vm_system_id = $row->man_vm_system_id;
                 $details->man_vm_server_name = $row->man_vm_server_name;
                 $sql = "SELECT icon  FROM system WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($details->system_id);
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
                 $details->icon = $row->icon;
                 $sql = "UPDATE vm SET guest_system_id = ?, icon = ? WHERE id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($details->system_id, "$details->icon", "$temp_vm_id");
                 $query = $this->db->query($sql, $data);
                 $sql = "UPDATE system SET man_vm_system_id = ?, man_vm_server_name = ? WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array($details->man_vm_system_id, $details->man_vm_server_name, $details->system_id);
                 $query = $this->db->query($sql, $data);
             }
@@ -1691,6 +1714,7 @@ class M_system extends MY_Model
         } else {
             $sql = "SELECT system_id, man_type, man_os_name, man_os_family, man_os_group, man_manufacturer, icon, man_icon FROM system";
         }
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         $count = $query->num_rows();
@@ -1809,6 +1833,7 @@ class M_system extends MY_Model
             }
 
             $sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->icon", "$details->icon", "$details->system_id");
             $query = $this->db->query($sql, $data);
         }
@@ -1823,6 +1848,7 @@ class M_system extends MY_Model
         }
         $this->load->library('encrypt');
         $sql = "SELECT access_details FROM system WHERE system_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -1952,6 +1978,7 @@ class M_system extends MY_Model
         $encoded = json_encode($new_credentials);
         $encoded = $this->encrypt->encode($encoded);
         $sql = "UPDATE system SET access_details = ? WHERE system_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array($encoded, $system_id);
         $query = $this->db->query($sql, $data);
 
@@ -1964,6 +1991,7 @@ class M_system extends MY_Model
             return;
         }
         $sql = "SELECT access_details FROM system WHERE system_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();

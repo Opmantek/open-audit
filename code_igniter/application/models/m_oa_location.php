@@ -51,6 +51,7 @@ class M_oa_location extends MY_Model
     public function get_location($id)
     {
         $sql = "SELECT * FROM oa_location WHERE location_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -70,6 +71,7 @@ class M_oa_location extends MY_Model
     public function get_group_id($location_id)
     {
         $sql = "SELECT location_group_id FROM oa_location WHERE location_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$location_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -89,6 +91,7 @@ class M_oa_location extends MY_Model
     public function set_group_id($location_id, $group_id)
     {
         $sql = "UPDATE oa_location SET location_group_id = ? WHERE location_id = ? ";
+        $sql = $this->clean_sql($sql);
         $data = array("$group_id", "$location_id");
         $query = $this->db->query($sql, $data);
     }
@@ -105,6 +108,7 @@ class M_oa_location extends MY_Model
     public function get_location_details($org_id)
     {
         $sql = "SELECT oa_location.*, count(oa_group_sys.system_id) as total FROM oa_location LEFT JOIN oa_group_sys ON oa_group_sys.group_id = oa_location.location_group_id where oa_location.location_id = ? GROUP BY oa_location.location_id LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$org_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -124,6 +128,7 @@ class M_oa_location extends MY_Model
     public function get_location_id($name)
     {
         $sql = "SELECT location_id FROM oa_location WHERE location_name = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$name");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -148,6 +153,7 @@ class M_oa_location extends MY_Model
     public function get_location_name($id)
     {
         $sql = "SELECT location_name FROM oa_location WHERE location_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -165,6 +171,7 @@ class M_oa_location extends MY_Model
     public function get_location_names()
     {
         $sql = "SELECT location_name, location_id FROM oa_location ORDER BY location_name";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -201,6 +208,7 @@ class M_oa_location extends MY_Model
     public function check_location_name($location_name, $location_id)
     {
         $sql = "SELECT location_id FROM oa_location WHERE location_name = ? AND location_id <> ?";
+        $sql = $this->clean_sql($sql);
         $data = array($location_name, $location_id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -297,9 +305,11 @@ class M_oa_location extends MY_Model
     public function delete_location($location_id)
     {
         $sql = "DELETE FROM oa_location WHERE location_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$location_id");
         $query = $this->db->query($sql, $data);
         $sql = "UPDATE system SET man_location_id = '' WHERE man_location_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$location_id");
         $query = $this->db->query($sql, $data);
     }
@@ -365,43 +375,42 @@ class M_oa_location extends MY_Model
     {
         // we have not requested a specific group.
         // display all items the current user has at least 'level 3' - view list rights on.
-        $sql = "
-			SELECT
-				system.system_id,
-				system.hostname,
-				system.man_description,
-				system.man_ip_address,
-				system.man_icon,
-				system.man_os_name,
-				system.man_os_family
-			FROM
-				system,
-				oa_group,
-				oa_group_sys,
-				oa_group_user
-			WHERE
-				system.system_id IN (
-					SELECT
-						system.system_id
-					FROM
-						system,
-						oa_group_sys,
-						oa_group,
-						oa_group_user
-					WHERE
-						system.man_status = 'production' AND
-						system.system_id = oa_group_sys.system_id AND
-						oa_group_sys.group_id = oa_group.group_id AND
-						oa_group.group_id = oa_group_user.group_id AND
-						oa_group_user.user_id = ?
-						) AND
-				system.system_id = oa_group_sys.system_id AND
-				oa_group_sys.group_id = oa_group.group_id AND
-				oa_group.group_id = oa_group_user.group_id AND
-				oa_group_user.group_user_access_level > '2' AND
-				oa_group_user.user_id = ? AND
-				system.man_location_id = ?
-			GROUP BY system.system_id ";
+        $sql = "SELECT
+    				system.system_id,
+    				system.hostname,
+    				system.man_description,
+    				system.man_ip_address,
+    				system.man_icon,
+    				system.man_os_name,
+    				system.man_os_family
+    			FROM
+    				system,
+    				oa_group,
+    				oa_group_sys,
+    				oa_group_user
+    			WHERE
+    				system.system_id IN (
+    					SELECT
+    						system.system_id
+    					FROM
+    						system,
+    						oa_group_sys,
+    						oa_group,
+    						oa_group_user
+    					WHERE
+    						system.man_status = 'production' AND
+    						system.system_id = oa_group_sys.system_id AND
+    						oa_group_sys.group_id = oa_group.group_id AND
+    						oa_group.group_id = oa_group_user.group_id AND
+    						oa_group_user.user_id = ?
+    						) AND
+    				system.system_id = oa_group_sys.system_id AND
+    				oa_group_sys.group_id = oa_group.group_id AND
+    				oa_group.group_id = oa_group_user.group_id AND
+    				oa_group_user.group_user_access_level > '2' AND
+    				oa_group_user.user_id = ? AND
+    				system.man_location_id = ?
+    			GROUP BY system.system_id ";
         $sql = $this->clean_sql($sql);
         $data = array("$user_id", "$user_id", "$location_id");
         $query = $this->db->query($sql, $data);
@@ -477,6 +486,7 @@ class M_oa_location extends MY_Model
 
         $count = 5;
         $sql = "SELECT DISTINCT(man_type) FROM system";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $types = $query->result();
         foreach ($types as $type) {
@@ -506,10 +516,12 @@ class M_oa_location extends MY_Model
         $limit = intval($limit);
         # get the devices in the group, apply limit if requested
         $sql = "SELECT man_type, man_location_id FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = $group_id LIMIT $limit";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $types = $query->result();
         # get all the locations
         $sql = "SELECT location_id as id, location_name as name, location_type as type, location_group_id as `group`, '' as address, location_latitude, location_longitude, location_address, location_city, location_postcode, location_country, CONCAT('{\"latitude\":\"', location_latitude, '\",\"longitude\":\"', location_longitude, '\"}') as geo, '' as icon FROM oa_location";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $locations = $query->result();
         # for each retrieved location, format the required details and add it to the new_locations array
