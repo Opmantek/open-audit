@@ -231,7 +231,7 @@ class M_system extends MY_Model
         # check MAC Address - this caters for a single mac address, usually from a nmap result
         if (isset($details->mac_address) and $details->mac_address > '' and $details->mac_address != '00:00:00:00:00:00' and $details->system_id == '') {
             # check the ip table
-            $sql = "SELECT system.system_id FROM system LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.man_status = 'production' LIMIT 1";
+            $sql = "SELECT system.system_id FROM system LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.man_status = 'production' AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->mac_address");
             $query = $this->db->query($sql, $data);
@@ -249,7 +249,7 @@ class M_system extends MY_Model
                 foreach ($mac_address as $mac) {
                     if ($mac != '' and $mac != '00:00:00:00:00:00') {
                         # check the ip table
-                        $sql = "SELECT system.system_id FROM system LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.man_status = 'production' LIMIT 1";
+                        $sql = "SELECT system.system_id FROM system LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.man_status = 'production' AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' LIMIT 1";
                         $sql = $this->clean_sql($sql);
                         $data = array("$mac");
                         $query = $this->db->query($sql, $data);
