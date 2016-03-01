@@ -4672,6 +4672,121 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
+        if (($db_internal_version < '20160303') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.12.2
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.12.2 commenced';
+            stdlog($log_details);
+
+            $sql = array();
+
+            $sql[] = "UPDATE system SET man_class = 'virtual server' WHERE (manufacturer LIKE '%vmware%' OR manufacturer LIKE '%Parallels%') AND os_family IN ('Windows 2008', 'Windows 2012', 'Windows 2003')";
+            $sql[] = "UPDATE system SET man_class = 'hypervisor' WHERE os_family LIKE 'VMware ESX%'";
+            $sql[] = "UPDATE system SET man_class = 'virtual desktop' WHERE manufacturer LIKE '%vmware%' AND os_family IN ('Windows XP', 'Windows 7', 'Windows 8', 'Windows 10')";
+
+            $sql[] = "DROP TABLE IF EXISTS ip";
+
+            $sql[] = "CREATE TABLE `ip` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `system_id` int(10) unsigned DEFAULT NULL,
+              `current` enum('y','n') NOT NULL DEFAULT 'y',
+              `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `mac` varchar(200) NOT NULL DEFAULT '',
+              `net_index` varchar(10) NOT NULL DEFAULT '',
+              `ip` varchar(45) NOT NULL DEFAULT '',
+              `netmask` varchar(30) NOT NULL DEFAULT '',
+              `cidr` varchar(4) NOT NULL DEFAULT '',
+              `version` tinyint(3) unsigned NOT NULL DEFAULT '4',
+              `network` varchar(40) NOT NULL DEFAULT '',
+              `set_by` enum('','dhcp','static','auto','local') NOT NULL DEFAULT '',
+              PRIMARY KEY (`id`),
+              KEY `system_id` (`system_id`),
+              KEY `mac` (`mac`),
+              CONSTRAINT `ip_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            $sql[] = "INSERT INTO ip (SELECT NULL, system_id, 'y', first_timestamp, `timestamp`, net_mac_address, net_index, ip_address_v4, ip_subnet, NULL, '4', '', '' FROM sys_hw_network_card_ip WHERE ip_address_version = '4')";
+
+            $sql[] = "INSERT INTO ip (SELECT NULL, system_id, 'y', first_timestamp, `timestamp`, net_mac_address, net_index, ip_address_v6, NULL, ip_subnet, '6', '', '' FROM sys_hw_network_card_ip WHERE ip_address_version = '6')";
+
+            $sql[] = "DROP TABLE IF EXISTS sys_hw_network_card_ip";
+
+            $sql[] = "UPDATE oa_config SET config_value = '20160303' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12.2' WHERE config_name = 'display_version'";
+
+            foreach ($sql as $this_query) {
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
+
+            // update the network groups
+            $this->data['output'] .= "Converting network groups.<br /><br />\n";
+            $sql = "SELECT group_id, group_dynamic_select, group_name FROM oa_group WHERE group_category = 'network'";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $group) {
+                $dynamic_select = $group->group_dynamic_select;
+                $dynamic_select = str_replace("SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip", "SELECT distinct(system.system_id) FROM system, ip", $dynamic_select);
+                $dynamic_select = str_replace("WHERE ( sys_hw_network_card_ip", "WHERE ( ip.version = '4' AND ip", $dynamic_select);
+                $dynamic_select = str_replace("sys_hw_network_card_ip.ip_address_v4", "ip.ip", $dynamic_select);
+                $dynamic_select = str_replace("sys_hw_network_card_ip.ip_subnet", "ip.netmask", $dynamic_select);
+                $dynamic_select = str_replace("sys_hw_network_card_ip.timestamp = system.timestamp", "ip.current = 'y'", $dynamic_select);
+                $dynamic_select = str_replace("oa_group_sys.group_id = ?", "oa_group_sys.group_id = @group", $dynamic_select);
+                $dynamic_select = str_replace("ip.ip_address_v4", "ip.ip", $dynamic_select);
+                $dynamic_select = str_replace("sys_hw_network_card_ip.system_id", "ip.system_id", $dynamic_select);
+                $sql = "UPDATE oa_group SET group_dynamic_select = ? WHERE group_id = ?";
+                $data = array("$dynamic_select", $group->group_id);
+                $query = $this->db->query($sql, $data);
+                $this->data['output'] .= $this->db->last_query()."<br /><br />\n";
+            }
+
+            # remove any groups that are using sys_hw_network_card_ip
+            $sql = "SELECT group_name, group_dynamic_select from oa_group WHERE group_dnamic_select like '%sys_hw_network_card_ip%'";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $row) {
+                $this->data['output'] .= 'WARNING - the folloing group has been deleted as it used incompatible SQL. We no longer have a table named sys_hw_network_ip_address (it is now \'ip\' with renamed columns). Please recreate this group: ' . $row->group_name . '\n<br />The SQL for this group was: ' . $row->group_dynamic_select . "<br /><br />\n";
+            }
+            $sql = "DELETE oa_group FROM oa_group WHERE group_dnamic_select like '%sys_hw_network_card_ip%'";
+            $query = $this->db->query($sql);
+
+            # remove any incorrectly formatted netmasks
+            $sql = "UPDATE ip SET netmask = '0.0.0.0' WHERE netmask = '000.000.000.000'";
+            $this->db->query($sql);
+
+            # get all our candidate ip addresses and add a network name and a CIDR
+            $sql = "SELECT * FROM ip WHERE ip.ip != '' AND ip.netmask != '' AND ip.netmask != '0.0.0.0' AND ip.version = 4 and ip.network = ''";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $row) {
+                $temp_long = ip2long($row->netmask);
+                $temp_base = ip2long('255.255.255.255');
+                $temp_cidr = 32-log(($temp_long ^ $temp_base)+1,2);
+                $network_details = network_details($row->ip.'/'.$temp_cidr);
+                if (isset($network_details) and isset($network_details->network) and $network_details->network != '') {
+                    $temp_network = $network_details->network.' / '.$temp_cidr;
+                    $sql = "UPDATE ip SET network = ?, cidr = ? WHERE id = ?";
+                    $data = array("$temp_network", "$temp_cidr", $row->id);
+                    $this->db->query($sql, $data);
+                }
+                unset($temp_long);
+                unset($temp_base);
+                unset($temp_cidr);
+                unset($network_details);
+                unset($temp_network);
+            }
+
+            $log_details->message = 'Upgrade database to 1.12.2 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
+
+
+
+
         $this->m_oa_config->load_config();
         $this->data['message'] .= "New (now current) database version: ".$this->config->item('display_version')." (".$this->config->item('internal_version').")<br />Don't forget to use the new audit scripts!<br/>\n";
         $this->data['include'] = 'v_upgrade';

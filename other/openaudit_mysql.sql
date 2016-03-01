@@ -127,6 +127,43 @@ LOCK TABLES `graph` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ip`
+--
+
+DROP TABLE IF EXISTS `ip`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ip` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `mac` varchar(200) NOT NULL DEFAULT '',
+  `net_index` varchar(10) NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `netmask` varchar(30) NOT NULL DEFAULT '',
+  `cidr` varchar(4) NOT NULL DEFAULT '',
+  `version` tinyint(3) unsigned NOT NULL DEFAULT '4',
+  `network` varchar(40) NOT NULL DEFAULT '',
+  `set_by` enum('','dhcp','static','auto','local') NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  KEY `mac` (`mac`),
+  CONSTRAINT `ip_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ip`
+--
+
+LOCK TABLES `ip` WRITE;
+/*!40000 ALTER TABLE `ip` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ip` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `log`
 --
 
@@ -570,10 +607,10 @@ INSERT INTO `oa_config` VALUES ('discovery_ip_match','n','y','0000-00-00 00:00:0
 INSERT INTO `oa_config` VALUES ('discovery_name_match','y','y','0000-00-00 00:00:00',0,'Should we match a device based only on its hostname during discovery.');
 INSERT INTO `oa_config` VALUES ('discovery_update_groups','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT update the device groups after discovering a device.');
 INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `oa_config` VALUES ('display_version','1.12','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
+INSERT INTO `oa_config` VALUES ('display_version','1.12.2','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
 INSERT INTO `oa_config` VALUES ('distinct_groups','y','y','0000-00-00 00:00:00',0,'Display Groups on the homepage, separated into the type of each Group.');
 INSERT INTO `oa_config` VALUES ('download_reports','download','y','0000-00-00 00:00:00',0,'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
-INSERT INTO `oa_config` VALUES ('internal_version','20160130','n','0000-00-00 00:00:00',0,'The internal numerical version.');
+INSERT INTO `oa_config` VALUES ('internal_version','20160303','n','0000-00-00 00:00:00',0,'The internal numerical version.');
 INSERT INTO `oa_config` VALUES ('logo','logo-banner-oac-oae','y','0000-00-00 00:00:00',0,'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `oa_config` VALUES ('log_level','5','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `oa_config` VALUES ('log_style','syslog','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
@@ -1428,40 +1465,6 @@ CREATE TABLE `sound` (
 LOCK TABLES `sound` WRITE;
 /*!40000 ALTER TABLE `sound` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sound` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_hw_network_card_ip`
---
-
-DROP TABLE IF EXISTS `sys_hw_network_card_ip`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_hw_network_card_ip` (
-  `ip_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `net_mac_address` varchar(200) NOT NULL DEFAULT '',
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `net_index` varchar(10) NOT NULL DEFAULT '',
-  `ip_address_v4` varchar(30) NOT NULL DEFAULT '',
-  `ip_address_v6` varchar(30) NOT NULL DEFAULT '',
-  `ip_subnet` varchar(30) NOT NULL DEFAULT '',
-  `ip_address_version` varchar(10) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`ip_id`),
-  KEY `id` (`net_mac_address`),
-  KEY `sys_hw_network_card_ip_system_id` (`system_id`),
-  CONSTRAINT `sys_hw_network_card_ip_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_hw_network_card_ip`
---
-
-LOCK TABLES `sys_hw_network_card_ip` WRITE;
-/*!40000 ALTER TABLE `sys_hw_network_card_ip` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_hw_network_card_ip` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
