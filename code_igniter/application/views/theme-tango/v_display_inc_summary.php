@@ -560,18 +560,29 @@
 								<th>MAC Address</th>
 								<th>Interface</th>
 								<th>IP Address</th>
-								<th>Subnet</th>
+                                <th>Netmask</th>
+                                <th>CIDR</th>
+                                <th>Network</th>
 							</td>
 						</thead>
 						<tbody>
 						<?php foreach ($ip as $ip_address) {
-                        if ($ip_address->net_connection_id != '') { $ip_address->net_connection_id = $ip_address->net_connection_id." - "; } ?><tr>
-							<td><?php echo print_something($ip_address->net_index); ?></td>
-							<td><?php echo print_something($ip_address->net_mac_address); ?></td>
-							<td><?php echo print_something($ip_address->net_connection_id.$ip_address->net_description); ?></td>
-							<td><?php echo "<span style=\"display: none;\">".print_something($ip_address->ip_address_v4)."</span>".print_something(ip_address_from_db($ip_address->ip_address_v4))?></td>
-							<td><?php echo print_something($ip_address->ip_subnet)?></td>
-							</tr>
+                            $interface = '';
+                            foreach ($network as $key) {
+                                if ($key->net_index == $ip_address->net_index) {
+                                    $interface = $key->connection . ' - ' . $key->description;
+                                }
+                            }
+                        ?>
+                        <tr>
+						 <td><?php echo print_something($ip_address->net_index); ?></td>
+						 <td><?php echo print_something($ip_address->mac); ?></td>
+						 <td><?php echo print_something($interface); ?></td>
+						 <td><?php echo "<span style=\"display: none;\">".print_something($ip_address->ip)."</span>".print_something(ip_address_from_db($ip_address->ip))?></td>
+                         <td><?php echo print_something($ip_address->netmask)?></td>
+                         <td><?php echo print_something($ip_address->cidr)?></td>
+						 <td><?php echo print_something($ip_address->network)?></td>
+						</tr>
 						<?php } ?>
 					</table>
 				</fieldset>

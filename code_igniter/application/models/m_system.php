@@ -230,11 +230,8 @@ class M_system extends MY_Model
 
         # check MAC Address - this caters for a single mac address, usually from a nmap result
         if (isset($details->mac_address) and $details->mac_address > '' and $details->mac_address != '00:00:00:00:00:00' and $details->system_id == '') {
-            # check the sys_hw_network_card_ip table
-            $sql = "SELECT system.system_id FROM system
-					LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
-					WHERE sys_hw_network_card_ip.net_mac_address = ?
-					AND system.man_status = 'production' LIMIT 1";
+            # check the ip table
+            $sql = "SELECT system.system_id FROM system LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.man_status = 'production' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->mac_address");
             $query = $this->db->query($sql, $data);
@@ -251,12 +248,8 @@ class M_system extends MY_Model
             foreach ($details->mac_addresses as $mac_address) {
                 foreach ($mac_address as $mac) {
                     if ($mac != '' and $mac != '00:00:00:00:00:00') {
-                        # check the sys_hw_network_card_ip table
-                        $sql = "SELECT system.system_id FROM system
-								LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND
-									system.timestamp = sys_hw_network_card_ip.timestamp)
-								WHERE sys_hw_network_card_ip.net_mac_address = ?
-								AND system.man_status = 'production' LIMIT 1";
+                        # check the ip table
+                        $sql = "SELECT system.system_id FROM system LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.man_status = 'production' LIMIT 1";
                         $sql = $this->clean_sql($sql);
                         $data = array("$mac");
                         $query = $this->db->query($sql, $data);
@@ -280,7 +273,7 @@ class M_system extends MY_Model
             $ip_match = 'y';
         }
 
-        # check IP Address in system, then sys_hw_network_card_ip tables
+        # check IP Address in system, then ip tables
         if ($ip_match == 'y') {
             if (isset($details->man_ip_address) and
                     $details->man_ip_address > '' and
@@ -288,13 +281,10 @@ class M_system extends MY_Model
                     $details->man_ip_address != '000.000.000.000' and
                     filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
 
-                # first check the sys_hw_network_card_ip table as eny existing devices that have been seen
+                # first check the ip table as eny existing devices that have been seen
                 # by more than just Nmap will have an entry here
                 if ($details->system_id == '') {
-                    $sql = "SELECT system.system_id FROM system
-                            LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
-                            WHERE (sys_hw_network_card_ip.ip_address_v4 = ? OR sys_hw_network_card_ip.ip_address_v6 = ?)
-                            AND system.man_status = 'production' LIMIT 1";
+                    $sql = "SELECT system.system_id FROM system LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND system.man_status = 'production' LIMIT 1";
                     $sql = $this->clean_sql($sql);
                     $data = array(ip_address_to_db($details->man_ip_address), "$details->man_ip_address");
                     $query = $this->db->query($sql, $data);
@@ -623,62 +613,22 @@ class M_system extends MY_Model
         $search_ip = "%".implode(".", $myip)."%";
         $search = "%".$search."%";
 
-        $sql = "SELECT
-				system.icon,
-                system.hostname,
-                system.system_id,
-                system.domain,
-                system.man_ip_address,
-				system.man_type,
-				system.man_description,
-				system.man_os_family,
-				sys_hw_network_card_ip.ip_address_v4
-			FROM
-				system LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
-			WHERE
-				( system.hostname LIKE ? OR
-				system.fqdn LIKE ? OR
-				system.domain LIKE ? OR
-				system.man_ip_address LIKE ? OR
-				sys_hw_network_card_ip.ip_address_v4 LIKE ? OR
-				sys_hw_network_card_ip.ip_address_v6 LIKE ? ) AND
-				system.man_status = 'production'
-			GROUP BY
-				system.system_id
-			ORDER BY
-				system.hostname";
-
-        $sql = "SELECT
-				system.icon,
-				system.man_type,
-				system.man_ip_address,
-				system.system_id,
-				system.hostname,
-				system.domain,
-				system.fqdn,
-				system.man_description,
-				system.man_os_family,
-				sys_hw_network_card_ip.ip_address_v4
-			FROM
-				system
-			LEFT JOIN sys_hw_network_card_ip ON (system.system_id = sys_hw_network_card_ip.system_id AND system.timestamp = sys_hw_network_card_ip.timestamp)
+        $sql = "SELECT system.icon, system.man_type, system.man_ip_address, system.system_id, system.hostname, system.domain, system.fqdn, system.man_description, system.man_os_family, ip.ip
+			FROM system
+			LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y')
 			LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id)
 			LEFT JOIN oa_group ON (oa_group_sys.group_id = oa_group.group_id)
 			LEFT JOIN oa_group_user ON  (oa_group_user.group_id = oa_group.group_id)
-			WHERE
-				( system.hostname LIKE ? OR
+			WHERE ( system.hostname LIKE ? OR
 				system.fqdn LIKE ? OR
 				system.domain LIKE ? OR
 				system.man_ip_address LIKE ? OR
-				sys_hw_network_card_ip.ip_address_v4 LIKE ? OR
-				sys_hw_network_card_ip.ip_address_v6 LIKE ? ) AND
+				ip.ip LIKE ? ) AND
 				system.man_status = 'production' AND
 				oa_group_user.user_id = ? AND
 				oa_group_user.group_user_access_level > '0'
-			GROUP BY
-				system.system_id
-			ORDER BY
-				system.hostname";
+			GROUP BY system.system_id
+			ORDER BY system.hostname";
         $sql = $this->clean_sql($sql);
         $data = array("$search", "$search", "$search", "$search_ip", "$search_ip", "$search", $this->user->user_id);
         $query = $this->db->query($sql, $data);
@@ -1198,7 +1148,7 @@ class M_system extends MY_Model
 
         # insert a subnet so we have a default
         if (!isset($details->subnet) or $details->subnet == '') {
-            $details->subnet = '0.0.0.0';
+            $details->subnet = '';
         }
 
         # insert the network card details of we have them
@@ -1206,17 +1156,15 @@ class M_system extends MY_Model
             (isset($details->man_ip_address) and $details->man_ip_address != '') and
             (isset($details->subnet) and $details->subnet != '') and
             (isset($details->system_id) and $details->system_id != '')) {
-            $sql = "INSERT INTO sys_hw_network_card_ip (net_mac_address,
-				system_id, ip_address_v4, ip_subnet, ip_address_version,
-				timestamp, first_timestamp)
-				VALUES(LOWER(?), ?, ?, ?, '4', ?, ?)";
+            $sql = "INSERT INTO ip (id, system_id, current, first_seen, last_seen, mac, net_index, ip, netmask, version, network, set_by) VALUES (NULL, ?, 'y', ?, ?, ?, '', ?, ?, '4', '', '')";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->mac_address",
+            $data = array(
                 "$details->system_id",
-                "$details->man_ip_address",
-                "$details->subnet",
                 "$details->timestamp",
-                "$details->timestamp", );
+                "$details->timestamp",
+                "$details->mac_address",
+                "$details->man_ip_address",
+                "$details->subnet");
             $query = $this->db->query($sql, $data);
         }
 
@@ -1605,68 +1553,35 @@ class M_system extends MY_Model
         $this->m_system->reset_icons($details->system_id);
 
         if (isset($details->mac_address) and $details->mac_address != '' and
-            isset($details->man_ip_address) and $details->man_ip_address != '') {
-            # we need to check if we have an entry in sys_hw_network_card
+            isset($details->man_ip_address) and $details->man_ip_address != '' and
+            isset($details->subnet) and $details->subnet != '') {
+            # we need to check if we have an entry in `network`
             # if we do not, but we have details (ex- an nmap device that previously existed but did not have a MAC, but now does)
             # we need to insert it.
             # ideally this would have already been done when the device was initially discovered, but we cannot count on that.
-            # need to check if an entry in sys_hw_network_card exists and if it does not AND we have details, insert something
+            # need to check if an entry in `network` exists and if it does not AND we have details, insert something
 
-            # check to see if we have a timestamp
-            if (!isset($details->timestamp) or $details->timestamp == '') {
-                $sql = "SELECT timestamp, last_seen FROM system WHERE system_id = ?";
-                $sql = $this->clean_sql($sql);
-                $data = array("$details->system_id");
-                $query = $this->db->query($sql, $data);
-                $result = $query->result();
-                foreach ($result as $db_details) {
-                    if (!isset($db_details->timestamp) or $db_details->timestamp == '') {
-                        if (!isset($db_details->last_seen) or $db_details->last_seen == '') {
-                            # should NEVER get here - this would indicate nothing in timestamp AND nothing in last_seen
-                        } else {
-                            $details->timestamp = $db_details->last_seen;
-                        }
-                    } else {
-                        $details->timestamp = $db_details->timestamp;
-                    }
-                }
-            }
-
-            # insert a subnet so we have a default
-            if (!isset($details->subnet) or $details->subnet == '') {
-                $details->subnet = '0.0.0.0';
-            }
-
-            # search for any entries in both sys_hw_network_card_ip
-            $sql = "SELECT * FROM sys_hw_network_card_ip WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+            # search for any entries in `ip`
+            $sql = "SELECT * FROM ip WHERE system_id = ? AND mac = ? AND current = 'y' AND ip = ?";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
+            $data = array("$details->system_id", "$details->mac_address", "$details->man_ip_address");
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             if (count($result) == 0) {
                 # no match - insert
-                $sql = "INSERT INTO sys_hw_network_card_ip (net_mac_address, system_id, ip_address_v4, ip_subnet, ip_address_version, timestamp, first_timestamp) VALUES(LOWER(?), ?, ?, ?, '4', ?, ?)";
+                $sql = "INSERT INTO ip (id, system_id, current, first_seen, last_seen, mac, net_index, ip, netmask, version, network, set_by) VALUES(NULL, ?, 'y', ?, ?, ?, '', ?, ?, '', '', '')";
                 $sql = $this->clean_sql($sql);
-                $data = array("$details->mac_address", "$details->system_id", "$details->man_ip_address", "$details->subnet", "$details->timestamp", "$details->timestamp");
+                $data = array("$details->system_id", "$details->timestamp", "$details->timestamp", "$details->mac_address", "$details->man_ip_address", "$details->netmask");
                 $query = $this->db->query($sql, $data);
             } else {
                 # match - update timestamp only
-                $sql = "UPDATE sys_hw_network_card_ip SET timestamp = ? WHERE system_id = ? AND net_mac_address = ? AND (timestamp = ? OR timestamp = ?)";
+                $sql = "UPDATE ip SET last_seen = ? WHERE system_id = ? AND mac = ? AND current = 'y' AND ip = ?";
                 $sql = $this->clean_sql($sql);
-                $data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->timestamp", "$details->original_timestamp");
+                $data = array("$details->timestamp", "$details->system_id", "$details->mac_address", "$details->man_ip_address");
                 $query = $this->db->query($sql, $data);
             }
         }
 
-        # As at 1.5, update the timestamps in the linked tables
-        if ($details->last_seen_by != 'audit') {
-            $table_array = array('sys_hw_network_card_ip');
-            foreach ($table_array as $key => $value) {
-                $update_sql = "UPDATE $value SET timestamp = ? WHERE timestamp = ? AND system_id = ?";
-                $update_data = array("$details->timestamp", "$details->original_timestamp", "$details->system_id");
-                $query = $this->db->query($update_sql, $update_data);
-            }
-        }
         if (isset($details->man_ip_address) and $details->man_ip_address != '') {
             $temp_ip = $details->man_ip_address.' ';
         } else {

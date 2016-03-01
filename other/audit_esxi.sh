@@ -809,14 +809,13 @@ for card in `esxcli network ip interface list | grep -v "^ " | grep .`; do
 		net_ip_enabled="True"
 		net_card_enabled_ip4_addr=$(echo "$ip" | cut -d" " -f2)
 	 	net_card_enabled_ip_subnet=$(echo "$ip" | cut -d" " -f3)
-		addr_info=$addr_info"		<ip_address>\n"
-		addr_info=$addr_info"			<net_mac_address>$(escape_xml "$net_mac_address")</net_mac_address>\n"
+		addr_info=$addr_info"		<item>\n"
+		addr_info=$addr_info"			<mac>$(escape_xml "$net_mac_address")</mac>\n"
 		addr_info=$addr_info"			<net_index>$(escape_xml "$net_index")</net_index>\n"
-		addr_info=$addr_info"			<ip_address_v4>$(escape_xml "$net_card_enabled_ip4_addr")</ip_address_v4>\n"
-		addr_info=$addr_info"			<ip_address_v6></ip_address_v6>\n"
-		addr_info=$addr_info"			<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>\n"
-		addr_info=$addr_info"			<ip_address_version>4</ip_address_version>\n"
-		addr_info=$addr_info"		</ip_address>\n"
+		addr_info=$addr_info"			<ip>$(escape_xml "$net_card_enabled_ip4_addr")</ip>\n"
+		addr_info=$addr_info"			<netmask>$(escape_xml "$net_card_enabled_ip_subnet")</netmask>\n"
+		addr_info=$addr_info"			<version>4</version>\n"
+		addr_info=$addr_info"		</item>\n"
 	done
 
 	echo "		<item>" >> $xml_file
@@ -835,9 +834,9 @@ echo "	</network>" >> $xml_file
 
 if [ -n "$addr_info" ]; then
 	{
-	echo "	<addresses>"
+	echo "	<ip>"
 	echo -e "$addr_info"
-	echo "	</addresses>"
+	echo "	</ip>"
 	} >> "$xml_file"
 fi
 

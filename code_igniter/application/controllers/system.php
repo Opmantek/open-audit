@@ -198,7 +198,6 @@ class System extends CI_Controller
         echo "<a href='" . base_url() . "index.php/system'>Back to input page</a><br />\n";
         echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
         $this->load->model('m_change_log');
-        $this->load->model('m_ip_address');
         $this->load->model('m_printer');
         $this->load->model('m_audit_log');
 
@@ -370,6 +369,7 @@ class System extends CI_Controller
 
         $this->m_devices_components->process_component('bios', $details, $xml->bios);
         $this->m_devices_components->process_component('disk', $details, $xml->disk);
+        $this->m_devices_components->process_component('ip', $details, $xml->ip);
         $this->m_devices_components->process_component('log', $details, $xml->log);
         $this->m_devices_components->process_component('memory', $details, $xml->memory);
         $this->m_devices_components->process_component('module', $details, $xml->module);
@@ -400,13 +400,6 @@ class System extends CI_Controller
         $this->m_devices_components->process_component('windows', $details, $xml->windows);
 
         foreach ($xml->children() as $child) {
-
-            if ($child->getName() === 'addresses') {
-                $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
-                foreach ($xml->addresses->ip_address as $input) {
-                    $this->m_ip_address->process_addresses($input, $details);
-                }
-            }
             if ($child->getName() === 'audit_wmi_fail') {
                 $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
                 $this->m_audit_log->update('wmi_fails', $xml->audit_wmi_fail, $details->system_id, $details->last_seen);
@@ -445,25 +438,7 @@ class System extends CI_Controller
 
         // set the man_ip_address (if not already set)
         $this->m_audit_log->update('debug', 'check and set initial man_ip_address', $details->system_id, $details->last_seen);
-        $this->m_ip_address->set_initial_address($details->system_id);
-        $dhcp = false;
-        $network_details = $this->m_devices_components->read($details->system_id, 'y', 'network');
-        foreach ($network_details as $card) {
-            if (stripos($card->dhcp_enabled, 'true') !== false) {
-                $dhcp = true;
-            }
-        }
-
-        $discovery_create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
-
-        if ($details->original_timestamp !== '' and $discovery_create_alerts == 'y') {
-            $this->m_audit_log->update('debug', 'alerts', $details->system_id, $details->last_seen);
-            // We have to go through all tables, checking for
-            // entries with current_timestamp = first_timestamp
-            if ($dhcp !== true) {
-                $this->m_ip_address->alert_ip_address($details);
-            }
-        }
+        $this->m_devices_components->set_initial_address($details->system_id);
 
         $this->load->model('m_oa_group');
         // update any tags for new printers
@@ -523,7 +498,6 @@ class System extends CI_Controller
             }
             $this->load->model('m_system');
             $this->load->model('m_oa_group');
-            $this->load->model('m_ip_address');
             $this->load->model('m_audit_log');
             $timestamp = date('Y-m-d H:i:s');
             $xml_input = $_POST['form_nmap'];
@@ -595,6 +569,7 @@ class System extends CI_Controller
                     $temp_array = get_snmp($details);
                     $details = $temp_array['details'];
                     $network_interfaces = $temp_array['interfaces'];
+                    $ip = $temp_array['ip'];
                 }
 
                 $details->system_key = '';
@@ -632,15 +607,9 @@ class System extends CI_Controller
                         $input->item = array();
                         $input->item = $network_interfaces;
                         $this->m_devices_components->process_component('network', $details, $input);
-
-                        foreach ($network_interfaces as $input) {
-                            if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                                foreach ($input->ip_addresses as $ip_input) {
-                                    $ip_input = (object) $ip_input;
-                                    $this->m_ip_address->process_addresses($ip_input, $details);
-                                }
-                            }
-                        }
+                    }
+                    if (isset($ip->item) and count($ip->item) > 0) {
+                        $this->m_devices_components->process_component('ip', $details, $ip);
                     }
                 } else {
                     // we received a result from nmap only, use this data to update OR insert

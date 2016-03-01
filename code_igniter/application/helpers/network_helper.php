@@ -38,6 +38,7 @@
 if (! function_exists('network_details')) {
     function network_details($ip)
     {
+        $ip = str_replace(' ', '', $ip);
         $my_net_info = rtrim($ip);
         $details = new stdClass();
 
@@ -77,16 +78,16 @@ if (! function_exists('network_details')) {
             }
             $cdr_nmask = bintocdr($bin_nmask);
         }
-    //Check for valid $dq_host
-    if (! preg_match('/^0./', $dq_host)) {
-        foreach (explode(".", $dq_host) as $octet) {
-            if ($octet > 255) {
-                $details->error = "Invalid IP Address";
+        //Check for valid $dq_host
+        if (! preg_match('/^0./', $dq_host)) {
+            foreach (explode(".", $dq_host) as $octet) {
+                if ($octet > 255) {
+                    $details->error = "Invalid IP Address";
 
-                return($details);
+                    return($details);
+                }
             }
         }
-    }
 
         $bin_host = dqtobin($dq_host);
         $bin_bcast = (str_pad(mb_substr($bin_host, 0, $cdr_nmask), 32, 1));
@@ -104,41 +105,41 @@ if (! function_exists('network_details')) {
             }
         }
 
-    //Determine Class
-    if (preg_match('/^0/', $bin_net)) {
-        $class = "A";
-        $dotbin_net = "0".mb_substr(dotbin($bin_net, $cdr_nmask), 1);
-    } elseif (preg_match('/^10/', $bin_net)) {
-        $class = "B";
-        $dotbin_net = "10".mb_substr(dotbin($bin_net, $cdr_nmask), 2);
-    } elseif (preg_match('/^110/', $bin_net)) {
-        $class = "C";
-        $dotbin_net = "110".mb_substr(dotbin($bin_net, $cdr_nmask), 3);
-    } elseif (preg_match('/^1110/', $bin_net)) {
-        $class = "D";
-        $dotbin_net = "1110".mb_substr(dotbin($bin_net, $cdr_nmask), 4);
-        $special = "Class D = Multicast Address Space.";
-    } else {
-        $class = "E";
-        $dotbin_net = "1111".mb_substr(dotbin($bin_net, $cdr_nmask), 4);
-        $special = "Class E = Experimental Address Space.";
-    }
+        //Determine Class
+        if (preg_match('/^0/', $bin_net)) {
+            $class = "A";
+            $dotbin_net = "0".mb_substr(dotbin($bin_net, $cdr_nmask), 1);
+        } elseif (preg_match('/^10/', $bin_net)) {
+            $class = "B";
+            $dotbin_net = "10".mb_substr(dotbin($bin_net, $cdr_nmask), 2);
+        } elseif (preg_match('/^110/', $bin_net)) {
+            $class = "C";
+            $dotbin_net = "110".mb_substr(dotbin($bin_net, $cdr_nmask), 3);
+        } elseif (preg_match('/^1110/', $bin_net)) {
+            $class = "D";
+            $dotbin_net = "1110".mb_substr(dotbin($bin_net, $cdr_nmask), 4);
+            $special = "Class D = Multicast Address Space.";
+        } else {
+            $class = "E";
+            $dotbin_net = "1111".mb_substr(dotbin($bin_net, $cdr_nmask), 4);
+            $special = "Class E = Experimental Address Space.";
+        }
 
         if (preg_match('/^(00001010)|(101011000001)|(1100000010101000)/', $bin_net)) {
             $special = '<a href="http://www.ietf.org/rfc/rfc1918.txt">( RFC-1918 Private Internet Address. )</a>';
         }
 
-    // Print Results
-    #tr("Address: ".$dq_host."<br />");
-    #tr("Netmask: ".bintodq($bin_nmask)." = $cdr_nmask<br />");
-    #tr("Wildcard: " .bintodq($bin_wmask)."<br />");
-    #tr("Network: "  .bintodq($bin_net)." (Class $class)<br/>");
-    #tr("Broadcast: ".bintodq($bin_bcast)."<br />");
-    #tr("HostMin: "  .bintodq($bin_first)."<br />");
-    #tr("HostMax: "  .bintodq($bin_last)."<br />");
-    #tr("Hosts/Net: ".$host_total." $special"."<br />");
+        // Print Results
+        #tr("Address: ".$dq_host."<br />");
+        #tr("Netmask: ".bintodq($bin_nmask)." = $cdr_nmask<br />");
+        #tr("Wildcard: " .bintodq($bin_wmask)."<br />");
+        #tr("Network: "  .bintodq($bin_net)." (Class $class)<br/>");
+        #tr("Broadcast: ".bintodq($bin_bcast)."<br />");
+        #tr("HostMin: "  .bintodq($bin_first)."<br />");
+        #tr("HostMax: "  .bintodq($bin_last)."<br />");
+        #tr("Hosts/Net: ".$host_total." $special"."<br />");
 
-    $details = new stdClass();
+        $details = new stdClass();
         $details->error = '';
         $details->address = $dq_host;
         $details->netmask = bintodq($bin_nmask);
@@ -234,9 +235,9 @@ function inttobin($intin)
     return str_pad(decbin($intin), 32, "0", STR_PAD_LEFT);
 }
 
-function ip_address_from_db($ip)
+function ip_address_from_db($ip = '')
 {
-    if (($ip != "") and (!(is_null($ip)))) {
+    if ($ip != "") {
         if (stripos($ip, '.') !== false) {
             // this is an ip v4 address
             $myip = explode(".", $ip);
@@ -274,20 +275,26 @@ function ip_address_from_db($ip)
     return $ip;
 }
 
-function ip_address_to_db($ip)
+function ip_address_to_db($ip = '')
 {
-    if (($ip != "") and (!(is_null($ip))) and (substr_count($ip, '.') == 3)) {
-        $myip = explode(".", $ip);
-        $myip[0] = mb_substr("000".$myip[0], -3);
-        $myip[1] = mb_substr("000".$myip[1], -3);
-        $myip[2] = mb_substr("000".$myip[2], -3);
-        $myip[3] = mb_substr("000".$myip[3], -3);
-        $ip_post = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
+    if ($ip != "") {
+        if (stripos($ip, '.') !== false) {
+            // this is an ip v4 address
+            $myip = explode(".", $ip);
+            $myip[0] = mb_substr("000".$myip[0], -3);
+            $myip[1] = mb_substr("000".$myip[1], -3);
+            $myip[2] = mb_substr("000".$myip[2], -3);
+            $myip[3] = mb_substr("000".$myip[3], -3);
+            $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
+        }
+        if (stripos($ip, ':') !== false) {
+            // this is an ip v6 address
+        }
     } else {
-        $ip_post = "000.000.000.000";
+        $ip = "";
     }
 
-    return $ip_post;
+    return $ip;
 }
 
 /* End of file network_helper.php */

@@ -267,6 +267,10 @@ if (!function_exists('get_snmp')) {
             $log_severity = 7;
         }
 
+
+        $ip = new stdClass();
+        $ip->item = array();
+
         if (!empty($test_v2)) {
             $details->snmp_version = '2';
 
@@ -836,13 +840,11 @@ if (!function_exists('get_snmp')) {
                             if ($each_value == $interface->net_index) {
                                 $new_ip = new stdclass();
                                 $new_ip->net_index = $interface->net_index;
-                                $new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.20.1.2.", "", $each_key);
-                                #$new_ip->net_mac_address = $interface->net_mac_address;
-                                $new_ip->net_mac_address = $interface->mac;
-                                $new_ip->ip_address_v6 = '';
-                                $new_ip->ip_subnet = snmp_clean($subnets[".1.3.6.1.2.1.4.20.1.3.".$new_ip->ip_address_v4]);
-                                $new_ip->ip_address_version = '4';
-                                $interface->ip_addresses[] = $new_ip;
+                                $new_ip->ip = str_replace(".1.3.6.1.2.1.4.20.1.2.", "", $each_key);
+                                $new_ip->mac = $interface->mac;
+                                $new_ip->netmask = snmp_clean($subnets[".1.3.6.1.2.1.4.20.1.3.".$new_ip->ip]);
+                                $new_ip->version = '4';
+                                $ip->item[] = $new_ip;
                                 $new_ip = null;
                             }
                         }
@@ -852,29 +854,22 @@ if (!function_exists('get_snmp')) {
                         foreach ($ip_addresses_2 as $each_key => $each_value) {
                             $new_ip = new stdClass();
                             $new_ip->net_index = snmp_clean($each_value);
-                            $new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.34.1.3.1.4.", "", $each_key);
-                            $new_ip->ip_address_v6 = '';
-                            $new_ip->ip_subnet = '';
-                            $new_ip->ip_address_version = '4';
+                            $new_ip->ip = str_replace(".1.3.6.1.2.1.4.34.1.3.1.4.", "", $each_key);
+                            $new_ip->netmask = '';
+                            $new_ip->version = '4';
                             if ($new_ip->net_index == $interface->net_index) {
-                                #$new_ip->net_mac_address = $interface->net_mac_address;
-                                $new_ip->net_mac_address = $interface->mac;
-                                $interface->ip_addresses[] = $new_ip;
+                                $new_ip->mac = $interface->mac;
+                                $ip->item[] = $new_ip;
                             }
                             $new_ip = null;
                         }
                     }
                     if (isset($details->os_group) and $details->os_group == 'Windows') {
                         if (isset($interface->ip_addresses) and count($interface->ip_addresses) > 0) {
-                            #if (strpos(strtolower($interface->net_adapter_type), 'loopback') === false) {
                             if (strpos(strtolower($interface->type), 'loopback') === false) {
                                 $interfaces_filtered[] = $interface;
                             }
                         }
-                    // } elseif (isset($details->os_group) and $details->os_group == 'VMware') {
-                    //     if (strpos($interface->net_description, 'Virtual interface:')) {
-                    //         $interfaces_filtered[] = $interface;
-                    //     }
                     } else {
                         $interfaces_filtered[] = $interface;
                     }
@@ -1056,12 +1051,12 @@ if (!function_exists('get_snmp')) {
                             if ($each_value === $interface->net_index) {
                                 $new_ip = new stdclass();
                                 $new_ip->net_index = $interface->net_index;
-                                $new_ip->net_mac_address = $interface->net_mac_address;
-                                $new_ip->ip_address_v4 = str_replace(".1.3.6.1.2.1.4.20.1.2.", "", $each_key);
-                                $new_ip->ip_address_v6 = '';
-                                $new_ip->ip_subnet = snmp_clean($subnets[".1.3.6.1.2.1.4.20.1.3.".$new_ip->ip_address_v4]);
-                                $new_ip->ip_address_version = '4';
+                                $new_ip->mac = $interface->net_mac_address;
+                                $new_ip->ip = str_replace(".1.3.6.1.2.1.4.20.1.2.", "", $each_key);
+                                $new_ip->netmask = snmp_clean($subnets[".1.3.6.1.2.1.4.20.1.3.".$new_ip->ip]);
+                                $new_ip->version = '4';
                                 $interface->ip_addresses[] = $new_ip;
+                                $ip->item[] = $new_ip;
                                 $new_ip = null;
                             }
                         }
@@ -1107,7 +1102,7 @@ if (!function_exists('get_snmp')) {
         if (!isset($guests)) {
             $guests = array();
         }
-        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules);
+        $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $ip);
 
         unset($log_details);
         if (isset($orig_log_details)) {

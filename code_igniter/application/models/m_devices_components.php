@@ -173,7 +173,7 @@ class M_devices_components extends MY_Model
                 $match_columns = array('mac');
         }
         if ($table == 'ip') {
-                $match_columns = array('ip', 'mac', 'subnet');
+                $match_columns = array('ip', 'mac', 'netmask');
         }
         if ($table == 'optical') {
                 $match_columns = array('model', 'mount_point');
@@ -283,8 +283,10 @@ class M_devices_components extends MY_Model
 
         // make sure we have an entry for each match column, even if it's empty
         foreach ($match_columns as $match_column) {
-            if (!isset($input->$match_column)) {
-                $input->$match_column = '';
+            for ($i=0; $i<count($input->item); $i++) {
+                if (!isset($input->item[$i]->$match_column)) {
+                    $input->item[$i]->$match_column = '';
+                }
             }
         }
 
@@ -298,28 +300,53 @@ class M_devices_components extends MY_Model
                 if (!isset($input->item[$i]->type)) {
                     $input->item[$i]->type = '';
                 }
-                # ensure we have a fully padded mac address
+                # calculate the network this address is on (assuming we have an ip AND subnet)
+                if (isset($input->item[$i]->ip) and $input->item[$i]->ip != '' and isset($input->item[$i]->netmask) and $input->item[$i]->netmask != '' and $input->item[$i]->netmask != '0.0.0.0') {
+                    $temp_long = ip2long($input->item[$i]->netmask);
+                    $temp_base = ip2long('255.255.255.255');
+                    $temp_subnet = 32-log(($temp_long ^ $temp_base)+1,2);
+                    $network_details = network_details($input->item[$i]->ip.'/'.$temp_subnet);
+                    if (isset($network_details->network) and $network_details->network != '') {
+                        $input->item[$i]->network = $network_details->network.' / '.$temp_subnet;
+                    } else {
+                        $input->item[$i]->network = '';
+                    }
+                    if (isset($network_details->network_slash) and $network_details->network_slash != '') {
+                        $input->item[$i]->cidr = $network_details->network_slash;
+                    } else {
+                        $input->item[$i]->cidr = '';
+                    }
+                    unset($temp_long);
+                    unset($temp_base);
+                    unset($temp_subnet);
+                    unset($network_details);
+                }
                 if ($input->item[$i]->type != 'bonded') {
-                    if ($input->item[$i]->mac != '') {
+                    if (isset($input->item[$i]->mac) and $input->item[$i]->mac != '') {
                         $mymac = explode(":", $input->item[$i]->mac);
-                        for ($i = 0; $i<count($mymac); $i++) {
-                            $mymac[$i] = mb_substr("00".$mymac[$i], -2);
+                        for ($j = 0; $j<count($mymac); $j++) {
+                            $mymac[$j] = mb_substr("00".$mymac[$j], -2);
                         }
-                        $input->item[$i]->mac = implode(":", $mymac);
+                        if (count($mymac) > 0) {
+                            $input->item[$i]->mac = implode(":", $mymac);
+                        }
                     }
                 }
                 if (!isset($input->item[$i]->version) or $input->item[$i]->version != '6') {
-                    $input->item[$i]->version = '4';
+                    $input->item[$i]->version = 4;
                 }
                 # ensure we have the correctly padded ip v4 address
-                if ($input->item[$i]->version == '4') {
-                    $input->item[$i]->ip = $this->ip_address_to_db($input->item[$i]->ip);
+                if ($input->item[$i]->version == 4) {
+                    $input->item[$i]->ip = ip_address_to_db($input->item[$i]->ip);
+                }
+                if (!isset($input->item[$i]->ip) or $input->item[$i]->ip == '') {
+                    unset($input->item[$i]);
                 }
             }
             if ($details->type == 'computer' and $details->os_group == 'VMware') {
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
-                $sql = "DELETE FROM `sys_hw_network_card_ip` WHERE system_id = ?";
+                $sql = "DELETE FROM `ip` WHERE system_id = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($details->system_id);
                 $query = $this->db->query($sql, $data);
@@ -618,7 +645,7 @@ class M_devices_components extends MY_Model
         }
 
         // we have now inserted or updated all items in the audit set
-        // we have also unset any items that were inserted from the db set
+        // we have also unset any items that were inserted (from the audit set above) from the db set
         // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
         foreach ($db_result as $db_item) {
             $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
@@ -913,45 +940,39 @@ class M_devices_components extends MY_Model
         # no unset ('', '0.0.0.0', '000.000.000.000') addresses
         # no localhost ('127.0.0.1', '127.000.000.001') addresses
         # no 169.254.x.x addresses (RFC 3927)
-        # prefer non-DHCP address (ORDER BY sys_hw_network_card.net_dhcp_enabled ASC)
+        # prefer non-DHCP address (ORDER BY network.dhcp_enabled ASC)
         # secondary prefer private to public ip address (pubpriv)
 
         # get the stored attribute for man_ip_address
-        $sql = "SELECT ip, timestamp FROM `system` WHERE id = ?";
+        $sql = "SELECT man_ip_address, timestamp FROM system WHERE system_id = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-        if ($force == 'y' or (isset($result) and is_array($result) and ($result[0]->ip == ''  or $result[0]->ip == '000.000.000.000'  or $result[0]->ip == '0.0.0.0'))) {
+        if ($force == 'y' or (isset($result) and is_array($result) and ($result[0]->man_ip_address == '' or $result[0]->man_ip_address == '000.000.000.000'  or $result[0]->man_ip_address == '0.0.0.0'))) {
             # we do not already have an ip address - attempt to set one
-            $sql = "SELECT
-                    network.system_id,
-                    network.dhcp_enabled,
-                    sys_hw_network_card_ip.ip,
-                    if( (sys_hw_network_card_ip.ip >= '010.000.000.000' AND sys_hw_network_card_ip.ip <= '010.255.255.255') OR
-                    (sys_hw_network_card_ip.ip >= '172.016.000.000' AND sys_hw_network_card_ip.ip <= '172.031.255.255') OR
-                    (sys_hw_network_card_ip.ip >= '192.168.000.000' AND sys_hw_network_card_ip.ip <= '192.168.255.255'), 'prv', 'pub') as pubpriv
-                    FROM
-                    sys_hw_network_card LEFT JOIN sys_hw_network_card_ip ON
-                    (network.system_id = sys_hw_network_card_ip.system_id AND
-                    sys_hw_network_card_ip.mac = network.mac)
-                    WHERE
-                    network.system_id = ? AND
-                    network.ip_enabled != 'false' AND
-                    sys_hw_network_card_ip.ip != '' AND
-                    sys_hw_network_card_ip.ip != '0.0.0.0' AND
-                    sys_hw_network_card_ip.ip != '000.000.000.000' AND
-                    sys_hw_network_card_ip.ip != '127.0.0.1' AND
-                    sys_hw_network_card_ip.ip != '127.000.000.001' AND
-                    sys_hw_network_card_ip.ip != '127.0.1.1' AND
-                    sys_hw_network_card_ip.ip != '127.000.001.001' AND
-                    sys_hw_network_card_ip.ip NOT LIKE '169.254.%' AND
-                    sys_hw_network_card_ip.current = 'y' AND
-                    sys_hw_network_card_ip.version = '4'
-                    ORDER BY
-                    network.dhcp_enabled ASC,
-                    pubpriv ASC,
-                    sys_hw_network_card_ip.ip DESC
+            $sql = "SELECT network.system_id, network.dhcp_enabled, ip.ip,
+                        if( (ip.ip >= '010.000.000.000' AND ip.ip <= '010.255.255.255') OR
+                        (ip.ip >= '172.016.000.000' AND ip.ip <= '172.031.255.255') OR
+                        (ip.ip >= '192.168.000.000' AND ip.ip <= '192.168.255.255'), 'prv', 'pub') as pubpriv
+                    FROM network LEFT JOIN ip ON
+                        (network.system_id = ip.system_id AND
+                        ip.mac = network.mac)
+                    WHERE network.system_id = ? AND
+                        network.ip_enabled != 'false' AND
+                        ip.ip != '' AND
+                        ip.ip != '0.0.0.0' AND
+                        ip.ip != '000.000.000.000' AND
+                        ip.ip != '127.0.0.1' AND
+                        ip.ip != '127.000.000.001' AND
+                        ip.ip != '127.0.1.1' AND
+                        ip.ip != '127.000.001.001' AND
+                        ip.ip NOT LIKE '169.254.%' AND
+                        ip.current = 'y' AND
+                        ip.version = '4'
+                    ORDER BY network.dhcp_enabled ASC,
+                        pubpriv ASC,
+                        ip.ip DESC
                     LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$id");
@@ -964,6 +985,20 @@ class M_devices_components extends MY_Model
                 $data = array($result[0]->ip, "$id");
                 $query = $this->db->query($sql, $data);
             }
+        }
+    }
+
+    public function update_missing_interfaces($system_id)
+    {
+        $sql = "SELECT ip.id, network.net_index FROM network LEFT JOIN ip ON (network.system_id = ip.system_id AND network.mac = ip.mac) WHERE network.system_id = ? AND ip.net_index = ''";
+        $sql = $this->clean_sql($sql);
+        $data = array($system_id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        foreach ($result as $line) {
+            $sql = "UPDATE ip SET net_index = ? WHERE id = ?";
+            $data = array("$line->net_index", "$line->id");
+            $query = $this->db->query($sql, $data);
         }
     }
 
@@ -1107,14 +1142,14 @@ class M_devices_components extends MY_Model
         $log_details = new stdClass();
         $log_details->file = 'system';
         $log_details->severity = 7;
-        $sql = "SELECT DISTINCT ip_address_v4 FROM `sys_hw_network_card_ip` LEFT JOIN `system` ON (sys_hw_network_card_ip.system_id = system.system_id AND sys_hw_network_card_ip.timestamp = system.timestamp) WHERE system.system_id = ?";
+        $sql = "SELECT DISTINCT ip FROM `ip` LEFT JOIN `system` ON (ip.system_id = system.system_id AND ip.current = 'y') WHERE system.system_id = ? AND ip.version = '4'";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         $dns_entries = array();
         foreach ($result as $row) {
-            $ip = $this->ip_address_from_db($row->ip_address_v4);
+            $ip = $this->ip_address_from_db($row->ip);
             if (isset($ip) and $ip != '0.0.0.0' and $ip != '000.000.000.000' and $ip != '' and $ip != '127.0.0.1' and filter_var($ip, FILTER_VALIDATE_IP) !== false) {
                 $dns_entry = new stdClass();
                 $dns_entry->ip = $ip;

@@ -135,7 +135,7 @@ class main extends MY_Controller
             $this->load->model('m_oa_general');
             $this->load->model('m_devices_components');
             $document = array();
-            $list = array( 'system', 'sys_hw_network_card_ip');
+            $list = array( 'system');
             foreach ($list as $table) {
                 $result = $this->m_oa_general->get_system_document_api_new($table, $system_id);
                 $document["$table"] = new stdclass();
@@ -160,8 +160,7 @@ class main extends MY_Controller
                 }
                 $document["$table"] = $result;
             }
-            #$tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
-            $tables = array('bios', 'disk', 'dns', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
@@ -203,7 +202,7 @@ class main extends MY_Controller
         $this->load->model('m_systems');
         if (isset($system_id) and $system_id != '') {
             $document = array();
-            $list = array('system', 'sys_hw_network_card_ip');
+            $list = array('system');
             foreach ($list as $table) {
                 $result = $this->m_oa_general->get_system_document_api($table, $system_id);
                 if (is_array($result) and count($result) != 0) {
@@ -226,7 +225,7 @@ class main extends MY_Controller
                     $document["$table"] = $result;
                 }
             }
-            $tables = array('bios', 'disk', 'dns', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
@@ -330,6 +329,7 @@ class main extends MY_Controller
         }
         $this->load->model("m_oa_group");
         $this->load->model("m_edit_log");
+        $this->load->model("m_devices_components");
         $this->load->model("m_additional_fields");
         if (is_numeric($_POST['group_id'])) {
             // we must check to see if the user has at least VIEW permission on the group
@@ -431,9 +431,8 @@ class main extends MY_Controller
 
         $calculate_ip = $this->input->post('calculate_ip');
         if (isset($calculate_ip) and $calculate_ip == 'yes') {
-            $this->load->model('m_ip_address');
             foreach ($data['systems'] as $system) {
-                $this->m_ip_address->set_initial_address($system[1], 'y');
+                $this->m_devices_components->set_initial_address($system[1], 'y');
             }
         }
 
@@ -812,7 +811,6 @@ class main extends MY_Controller
         $this->load->model("m_edit_log");
         $this->load->model("m_change_log");
         $this->load->model("m_attachment");
-        $this->load->model("m_ip_address");
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
         $this->load->model("m_printer");
@@ -867,7 +865,7 @@ class main extends MY_Controller
         $this->data['audit_log'] = $this->m_audit_log->read($this->data['id']);
         $this->data['change_log'] = $this->m_change_log->readDevice($this->data['id']);
         $this->data['edit_log'] = $this->m_edit_log->read($this->data['id']);
-        $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
+        $this->data['ip'] = $this->m_devices_components->read($this->data['id'], 'y', 'ip');
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['orgs'] = $this->m_oa_org->get_all_orgs();
         $this->data['printer'] = $this->m_printer->get_system_printer($this->data['id']);

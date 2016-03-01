@@ -266,29 +266,33 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <table cellspacing="1" class="tablesorter" style="width:100%;">
                         <thead>
                             <tr>
+                                <th><?php echo __('Version')?></th>
                                 <th><?php echo __('IP Address')?></th>
-                                <th><?php echo __('Subnet')?></th>
-                                <th><?php echo __('IP Version')?></th>
+                                <th><?php echo __('Netmask')?></th>
+                                <th><?php echo __('CIDR')?></th>
+                                <th><?php echo __('Network')?></th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php
                         $ip_count = 0;
                         foreach ($ip as $ip_address) {
-                            if ($ip_address->net_mac_address == $key->mac and $ip_address->net_index == $key->net_index) {
-                                $ip_address_displayed = '000.000.000.000';
-                                if ($ip_address->ip_address_version == '6') {
-                                    $ip_address_displayed = $ip_address->ip_address_v6;
-                                } else {
-                                    $ip_address_displayed = ip_address_from_db($ip_address->ip_address_v4);
-                                }
+                            if ($ip_address->mac == $key->mac and $ip_address->net_index == $key->net_index) {
                                 $ip_count ++;
-                                echo "                          <tr><td>".print_something($ip_address_displayed)."</td><td>".print_something($ip_address->ip_subnet)."</td><td>".print_something($ip_address->ip_address_version)."</td></tr>\n";
+                                echo "                          <tr>";
+                                echo "<td>".print_something($ip_address->version)."</td>";
+                                echo "<td><span style=\"display: none;\">".print_something($ip_address->ip)."</span>".print_something(ip_address_from_db($ip_address->ip))."</td>";
+                                echo "<td>".print_something($ip_address->netmask)."</td>";
+                                echo "<td>".print_something($ip_address->cidr)."</td>";
+                                echo "<td>".print_something($ip_address->network)."</td>";
+                                echo "                          </tr>\n";
                             }
                         }
                         if ($ip_count == 0) {
                         ?>
                         <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>
                             <td>&nbsp;</td>

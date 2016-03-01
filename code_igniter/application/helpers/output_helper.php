@@ -177,6 +177,9 @@ if (! function_exists('output')) {
                         $row->$temp_name = ip_address_from_db($value);
                         $row->$temp_name = ip_address_to_db($row->$temp_name);
                         $row->$key = ip_address_from_db($value);
+                        if ($row->$temp_name == $row->$key) {
+                            unset($row->$temp_name);
+                        }
                     }
                     elseif (isset($key) and $key == 'man_ip_address') {
                         $row->ip = ip_address_from_db($value);

@@ -285,7 +285,6 @@ class Admin_system extends MY_Controller
         }
         $this->load->model("m_system");
         $this->load->model("m_audit_log");
-        $this->load->model("m_ip_address");
         $this->load->model("m_devices_components");
         $this->load->library('encrypt');
         $this->load->helper('snmp');
@@ -322,6 +321,7 @@ class Admin_system extends MY_Controller
         $temp_array = get_snmp($details);
         $details = $temp_array['details'];
         $network_interfaces = $temp_array['interfaces'];
+        $ip = $temp_array['ip'];
         unset($guests);
         if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
             $guests = $temp_array['guests'];
@@ -358,14 +358,10 @@ class Admin_system extends MY_Controller
                 $input->item = array();
                 $input->item = $network_interfaces;
                 $this->m_devices_components->process_component('network', $details, $input);
-                foreach ($network_interfaces as $input) {
-                    if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                        foreach ($input->ip_addresses as $ip_input) {
-                            $ip_input = (object) $ip_input;
-                            $this->m_ip_address->process_addresses($ip_input, $details);
-                        }
-                    }
-                }
+            }
+
+            if (isset($ip->item) and count($ip->item) > 0) {
+                $this->m_devices_components->process_component('ip', $details, $ip);
             }
 
             # insert any found virtual machines
@@ -374,9 +370,6 @@ class Admin_system extends MY_Controller
                 $vm->item = array();
                 $vm->item = $guests;
                 $this->m_devices_components->process_component('vm', $details, $vm);
-                // foreach ($guests as $guest) {
-                //     $this->m_virtual_machine->process_vm($guest, $details);
-                // }
             }
 
             # insert any modules
@@ -765,10 +758,7 @@ class Admin_system extends MY_Controller
                             $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {
                                 if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                                    foreach ($input->ip_addresses as $ip_input) {
-                                        $ip_input = (object) $ip_input;
-                                        $this->m_ip_address->process_addresses($ip_input, $details);
-                                    }
+                                    $this->m_devices_components->process_component('ip', $details, $ip_input);
                                 }
                             }
                         }
@@ -799,7 +789,7 @@ class Admin_system extends MY_Controller
 
     public function reset_devices_ip()
     {
-        $this->load->model('m_ip_address');
+        $this->load->model('m_devices_components');
         $group_id = $this->data['id'];
         if (!is_numeric($group_id)) {
             redirect('main/index');
@@ -810,7 +800,7 @@ class Admin_system extends MY_Controller
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             foreach ($result as $system) {
-                $this->m_ip_address->set_initial_address($system->system_id, 'y');
+                $this->m_devices_components->set_initial_address($system->system_id, 'y');
             }
             redirect('main/list_devices/' . $group_id);
         }

@@ -194,7 +194,7 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
     fi
 done
 echo "  </network>" >> $xml_file
-echo "  <addresses>" >> $xml_file
+echo "  <ip>" >> $xml_file
 for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | cut -d":" -f2); do
     line=`echo "${line}" | awk '{gsub(/^ +| +$/,"")} {print $0}'`
     net_mac_address=`ifconfig $line 2>/dev/null | grep "ether" | awk '{print $2}'`
@@ -203,18 +203,17 @@ for line in $(system_profiler SPNetworkDataType | grep "BSD Device Name: en" | c
         if [[ "$ip_address_v4" > "" ]]; then
             net_index="$line"
             ip_subnet=`ipconfig getpacket $line | grep "subnet_mask" | cut -d" " -f3`
-            echo "      <ip_address>" >> $xml_file
+            echo "      <item>" >> $xml_file
             echo "          <net_index>$net_index</net_index>" >> $xml_file
-            echo "          <net_mac_address>$net_mac_address</net_mac_address>" >> $xml_file
-            echo "          <ip_address_v4>$ip_address_v4</ip_address_v4>" >> $xml_file
-            echo "          <ip_address_v6></ip_address_v6>" >> $xml_file
-            echo "          <ip_subnet>$ip_subnet</ip_subnet>" >> $xml_file
-            echo "          <ip_address_version>4</ip_address_version>" >> $xml_file
-            echo "      </ip_address>" >> $xml_file
+            echo "          <mac>$net_mac_address</mac>" >> $xml_file
+            echo "          <ip>$ip_address_v4</ip>" >> $xml_file
+            echo "          <netmask>$ip_subnet</netmask>" >> $xml_file
+            echo "          <version>4</version>" >> $xml_file
+            echo "      </item>" >> $xml_file
         fi
     fi
 done
-echo "  </addresses>" >> $xml_file
+echo "  </ip>" >> $xml_file
 
 
 if [ "$debugging" -gt "0" ]; then

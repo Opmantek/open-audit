@@ -100,7 +100,6 @@ class San extends CI_Controller
             $this->load->model('m_system');
             $this->load->model('m_oa_group');
             $this->load->model('m_audit_log');
-            $this->load->model('m_ip_address');
             $this->load->helper('url');
 
             $input = explode(PHP_EOL, $_POST['input']);
@@ -744,9 +743,7 @@ class San extends CI_Controller
         $this->m_devices_components->process_component('disk', $details, $disk);
 
         $this->m_audit_log->update('debug', 'ip address', $details->system_id, $details->last_seen);
-        foreach ($ip as $input) {
-            $this->m_ip_address->process_addresses($input, $details);
-        }
+        $this->m_devices_components->process_component('ip', $details, $ip);
 
         // Finally, update any groups for this system if config item is set
         $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');

@@ -533,7 +533,7 @@ class discovery extends CI_Controller
                 if (isset($this->config->config['network_group_auto_create']) and $this->config->config['network_group_auto_create'] != 'n' and $subnet_split[1] < $net_group_subnet) {
                     // we want to auto create network groups
                     // test if a network group exists with the matching definition
-                    $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, sys_hw_network_card_ip WHERE ( sys_hw_network_card_ip.ip_address_v4 >= '".ip_address_to_db($subnet_details->host_min)."' and sys_hw_network_card_ip.ip_address_v4 <= '".ip_address_to_db($subnet_details->host_max)."' and sys_hw_network_card_ip.ip_subnet = '".$subnet_details->netmask."' and sys_hw_network_card_ip.system_id = system.system_id and sys_hw_network_card_ip.timestamp = system.timestamp and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
+                    $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, ip WHERE ( ip.ip >= '".ip_address_to_db($subnet_details->host_min)."' and ip.ip <= '".ip_address_to_db($subnet_details->host_max)."' and ip.subnet = '".$subnet_details->netmask."' and ip.system_id = system.system_id and ip.current = 'y' and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
                     $start = explode(' ', microtime());
                     $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
                     $data = array($group_dynamic_select);
@@ -753,7 +753,6 @@ class discovery extends CI_Controller
                 $this->load->helper('snmp_oid');
             }
             $this->load->model('m_system');
-            $this->load->model('m_ip_address');
             $this->load->model('m_oa_group');
             $this->load->model('m_audit_log');
             $this->load->model('m_change_log');
@@ -948,17 +947,14 @@ class discovery extends CI_Controller
                             $details = $temp_array['details'];
                             $network_interfaces = $temp_array['interfaces'];
                             $modules = $temp_array['modules'];
+                            $ip = $temp_array['ip'];
+
                             unset($guests);
                             if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
                                 $guests = $temp_array['guests'];
                             }
                             if (isset($temp_array['interfaces']) and count($temp_array['interfaces'] > 0)) {
                                 foreach ($network_interfaces as $interface) {
-                                    // if (isset($interface->net_mac_address) and (string) $interface->net_mac_address != '') {
-                                    //     // we have a mac address, insert it into the $details object
-                                    //     $mac_address = strtolower((string) $interface->net_mac_address);
-                                    //     $details->mac_addresses->$mac_address = $mac_address;
-                                    // }
                                     if (isset($interface->mac) and (string) $interface->mac != '') {
                                         // we have a mac address, insert it into the $details object
                                         $mac_address = strtolower((string) $interface->mac);
@@ -1441,17 +1437,14 @@ class discovery extends CI_Controller
                             $input = new stdClass();
                             $input->item = array();
                             $input->item = $network_interfaces;
-
                             $this->m_devices_components->process_component('network', $details, $input);
-                            if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                                foreach ($input->ip_addresses as $ip_input) {
-                                    $ip_input = (object) $ip_input;
-                                    $this->m_ip_address->process_addresses($ip_input, $details);
-                                }
-                            }
-                            // finish off with updating any network IPs that don't have a matching interface
-                            $this->m_ip_address->update_missing_interfaces($details->system_id);
                         }
+                        // insert any ip addresses
+                        if (isset($ip->item) and count($ip->item) > 0) {
+                            $this->m_devices_components->process_component('ip', $details, $ip);
+                        }
+                        // finish off with updating any network IPs that don't have a matching interface
+                        $this->m_devices_components->update_missing_interfaces($details->system_id);
                         // insert any modules
                         if (isset($modules) and count($modules) > 0) {
                             $input = new stdClass();
@@ -1810,14 +1803,7 @@ class discovery extends CI_Controller
                                                         $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard);
                                                         $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video);
                                                         $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm);
-                                                        foreach ($esx_xml->children() as $child) {
-                                                            if ($child->getName() === 'addresses') {
-                                                                $this->m_audit_log->update('debug', $child->getName(), $esx_details->system_id, $esx_details->last_seen);
-                                                                foreach ($esx_xml->addresses->ip_address as $input) {
-                                                                    $this->m_ip_address->process_addresses($input, $esx_details);
-                                                                }
-                                                            }
-                                                        }
+                                                        $this->m_devices_components->process_component('ip', $esx_details, $esx_xml->ip);
                                                     }
                                                 } // end of ESXi
                                             } // end of run audit script
@@ -2139,14 +2125,7 @@ class discovery extends CI_Controller
                                                 $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard);
                                                 $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video);
                                                 $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm);
-                                                foreach ($esx_xml->children() as $child) {
-                                                    if ($child->getName() === 'addresses') {
-                                                        $this->m_audit_log->update('debug', $child->getName(), $esx_details->system_id, $esx_details->last_seen);
-                                                        foreach ($esx_xml->addresses->ip_address as $input) {
-                                                            $this->m_ip_address->process_addresses($input, $esx_details);
-                                                        }
-                                                    }
-                                                }
+                                                $this->m_devices_components->process_component('ip', $esx_details, $esx_xml->ip);
                                             }
                                         } // end of ESXi script
                                         if ($error == '') {

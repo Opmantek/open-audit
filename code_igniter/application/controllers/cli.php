@@ -132,7 +132,6 @@ class cli extends CI_Controller
         $this->load->model('m_system');
         $this->load->model('m_oa_group');
         $this->load->model('m_devices_components');
-        $this->load->model('m_ip_address');
         $file_handle = fopen($nodes_file, 'r');
         $string = fread($file_handle, filesize($nodes_file));
         $string = str_replace(PHP_EOL, ' ', $string);
@@ -263,6 +262,7 @@ class cli extends CI_Controller
 
                         $network_interfaces = $temp_array['interfaces'];
                         $modules = $temp_array['modules'];
+                        $ip = $temp_array['ip'];
 
                         $device->access_details = $encoded;
                         $device->nmis_group = $device->group;
@@ -300,14 +300,9 @@ class cli extends CI_Controller
                         $device->first_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'first_timestamp');
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                             $this->m_devices_components->process_component('network', $details, $xml->network);
-                            foreach ($network_interfaces as $input) {
-                                if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                                    foreach ($input->ip_addresses as $ip_input) {
-                                        $ip_input = (object) $ip_input;
-                                        $this->m_ip_address->process_addresses($ip_input, $device);
-                                    }
-                                }
-                            }
+                        }
+                        if (isset($ip->item) and count($ip->item) > 0) {
+                            $this->m_devices_components->process_component('ip', $details, $ip);
                         }
                         // and update all groups
                         $this->m_oa_group->update_system_groups($device);
