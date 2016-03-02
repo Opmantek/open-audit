@@ -400,8 +400,6 @@ class M_oa_group extends MY_Model
 
     public function get_network_group_count_zero()
     {
-        #$sql = "SELECT oa_group.group_id, oa_group.group_name, COUNT(oa_group_sys.system_id) AS system_total FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING system_total = 0 LIMIT 20";
-        #$sql = "SELECT oa_group.group_id AS total, COUNT(oa_group_sys.system_id) AS system_total FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING system_total = 0";
         $sql = "SELECT oa_group.group_id FROM oa_group LEFT JOIN oa_group_sys ON (oa_group.group_id = oa_group_sys.group_id) WHERE oa_group.group_category = 'network' GROUP BY oa_group.group_id HAVING COUNT(oa_group_sys.system_id) = 0";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
