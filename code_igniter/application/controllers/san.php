@@ -590,7 +590,7 @@ class San extends CI_Controller
                         }
                         if (stripos(trim($input[$i]), 'MAC address:') === 0 and (!isset($item->mac) or $item->mac == '')) {
                             $item->mac = strtolower(trim(str_ireplace('MAC address:', '', $input[$i])));
-                            $item_ip->net_mac_address = $item->mac;
+                            $item_ip->mac = $item->mac;
                         }
                         if (stripos(trim($input[$i]), 'Port speed:') === 0 and (!isset($item->speed) or $item->speed == '')) {
                             $item->speed = $this->get_speed(trim(str_replace('Port speed:', '', $input[$i])));
@@ -598,17 +598,16 @@ class San extends CI_Controller
                         if (stripos(trim($input[$i]), 'IP address:') === 0 and (!isset($item_ip->ip) or $item_ip->ip == '')) {
                             $item_ip->ip = trim(str_ireplace('IP address:', '', $input[$i]));
                             if (!filter_var($item_ip->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
-                                $item_ip->ip_address_v4 = $item_ip->ip;
-                                $item_ip->ip_address_version = 4;
+                                $item_ip->ip = $item_ip->ip;
+                                $item_ip->version = 4;
                             }
                             if (!filter_var($item_ip->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-                                $item_ip->ip_address_v6 = $item_ip->ip;
-                                $item_ip->ip_address_version = 6;
+                                $item_ip->ip = $item_ip->ip;
+                                $item_ip->version = 6;
                             }
                         }
                         if (stripos(trim($input[$i]), 'Subnet mask:') === 0 and (!isset($item_ip->subnet) or $item_ip->subnet == '')) {
                             $item_ip->subnet = trim(str_ireplace('Subnet mask:', '', $input[$i]));
-                            $item_ip->ip_subnet = $item_ip->subnet;
                         }
                         if (stripos(trim($input[$i]), 'Host name:') === 0 and (!isset($details->hostname) or $details->hostname == '')) {
                             $details->hostname = trim(str_ireplace('Host name:', '', $input[$i]));
