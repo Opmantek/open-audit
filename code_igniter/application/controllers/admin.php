@@ -4689,6 +4689,22 @@ class admin extends MY_Controller
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_mac_match'";
             $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_mac_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its mac address during discovery.')";
 
+            $sql[] = "ALTER TABLE oa_user ADD permissions text NOT NULL default ''";
+
+            $sql[] = "DROP TABLE IF EXISTS `oa_user_org`";
+            $sql[] = "CREATE TABLE `oa_user_org` (
+                      `id` int(10) NOT NULL AUTO_INCREMENT,
+                      `user_id` int(10) unsigned NOT NULL,
+                      `org_id` int(10) unsigned NOT NULL,
+                      `access_level` int(10) unsigned NOT NULL,
+                      `permissions` text NOT NULL DEFAULT '',
+                      PRIMARY KEY (`id`),
+                      KEY `user_id` (`user_id`),
+                      KEY `org_id` (`org_id`),
+                      CONSTRAINT `oa_user_org_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE,
+                      CONSTRAINT `oa_user_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `oa_org` (`org_id`) ON DELETE CASCADE
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
             $sql[] = "DROP TABLE IF EXISTS ip";
 
             $sql[] = "CREATE TABLE `ip` (
