@@ -4686,6 +4686,9 @@ class admin extends MY_Controller
             $sql[] = "UPDATE system SET man_class = 'hypervisor' WHERE os_family LIKE 'VMware ESX%'";
             $sql[] = "UPDATE system SET man_class = 'virtual desktop' WHERE manufacturer LIKE '%vmware%' AND os_family IN ('Windows XP', 'Windows 7', 'Windows 8', 'Windows 10')";
 
+            $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_mac_match'";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_mac_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its mac address during discovery.')";
+
             $sql[] = "DROP TABLE IF EXISTS ip";
 
             $sql[] = "CREATE TABLE `ip` (
