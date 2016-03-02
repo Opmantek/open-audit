@@ -165,7 +165,7 @@ if (! function_exists('output')) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
                 foreach ($row as $key => $value) {
-                    if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order')) {
+                    if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level')) {
                         $row->$key = intval($value);
                     } elseif ((strrpos($key, '_id') === strlen($key)-3) or
                               (strrpos($key, '_count') === strlen($key)-6) or
