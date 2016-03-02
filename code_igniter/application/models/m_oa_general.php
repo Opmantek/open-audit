@@ -45,7 +45,8 @@ class M_oa_general extends MY_Model
             return;
         }
         if ($table == 'system') {
-            $sql = $this->clean_sql('SELECT system_id, hostname, fqdn, man_ip_address, man_type, man_class, os_version, man_function, man_environment, man_status, man_description, man_os_group, man_os_family, man_os_name, man_manufacturer, man_model, man_serial, man_form_factor, man_vm_group, uptime, location_name, last_seen, last_seen_by, icon, snmp_oid, sysDescr, sysObjectID, sysUpTime, sysContact, sysName, sysLocation FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?');
+            $sql = 'SELECT system_id, hostname, fqdn, man_ip_address, man_type, man_class, os_version, man_function, man_environment, man_status, man_description, man_os_group, man_os_family, man_os_name, man_manufacturer, man_model, man_serial, man_form_factor, man_vm_group, uptime, location_name, last_seen, last_seen_by, icon, snmp_oid, sysDescr, sysObjectID, sysUpTime, sysContact, sysName, sysLocation FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?';
+            $sql = $this->clean_sql($sql);
 
         }
         $data = array("$system_id");
@@ -62,7 +63,8 @@ class M_oa_general extends MY_Model
         }
         $sql = '';
         if ($table == 'system') {
-            $sql = $this->clean_sql('SELECT system.* FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?');
+            $sql = 'SELECT system.* FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?';
+            $sql = $this->clean_sql($sql);
         }
         if ($sql != '') {
             $data = array("$system_id");
@@ -74,84 +76,73 @@ class M_oa_general extends MY_Model
 
     public function count_old_attributes($days = 7)
     {
-        $tables = $this->db->list_tables();
+        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         $string = '';
         $return = array();
         $object = new stdclass();
         foreach ($tables as $table) {
-            if (((strpos($table, 'sys_hw_') !== false) or (strpos($table, 'sys_sw_') !== false)) and (strpos($table, "sys_hw_warranty") === false)) {
-                $object->table = '';
-                $object->count = '';
-                $sql = "SELECT COUNT(*) as count FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
-                $sql = $this->clean_sql($sql);
-                $query = $this->db->query($sql);
-                $row = $query->row();
-                $object->count = $row->count;
-                $object->table = $table;
-                $return[] = clone $object;
-            }
+            $object->table = '';
+            $object->count = '';
+            $sql = "SELECT COUNT(*) as count FROM $table WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $row = $query->row();
+            $object->count = $row->count;
+            $object->table = $table;
+            $return[] = clone $object;
         }
-
         return($return);
     }
 
     public function count_all_hw_attributes()
     {
-        $tables = $this->db->list_tables();
+        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'processor', 'san', 'scsi', 'sound', 'video', 'vm');
         $string = '';
         $return = array();
         $object = new stdclass();
         foreach ($tables as $table) {
-            if (strpos($table, 'sys_hw_') !== false and strpos($table, "sys_hw_warranty") === false) {
-                $object->table = '';
-                $object->count = '';
-                $sql = "SELECT COUNT(*) as count FROM $table";
-                $sql = $this->clean_sql($sql);
-                $query = $this->db->query($sql);
-                $row = $query->row();
-                $object->count = $row->count;
-                $object->table = $table;
-                $return[] = clone $object;
-            }
+            $object->table = '';
+            $object->count = '';
+            $sql = "SELECT COUNT(*) as count FROM $table";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $row = $query->row();
+            $object->count = $row->count;
+            $object->table = $table;
+            $return[] = clone $object;
         }
-
         return($return);
     }
 
     public function count_all_sw_attributes()
     {
-        $tables = $this->db->list_tables();
+        $tables = array('netstat', 'print_queue', 'route', 'service', 'share', 'software', 'task', 'user', 'user_group', 'variable', 'windows');
         $string = '';
         $return = array();
         $object = new stdclass();
         foreach ($tables as $table) {
-            if (strpos($table, 'sys_sw_') !== false) {
-                $object->table = '';
-                $object->count = '';
-                $sql = "SELECT COUNT(*) as count FROM $table";
-                $sql = $this->clean_sql($sql);
-                $query = $this->db->query($sql);
-                $row = $query->row();
-                $object->count = $row->count;
-                $object->table = $table;
-                $return[] = clone $object;
-            }
+            $object->table = '';
+            $object->count = '';
+            $sql = "SELECT COUNT(*) as count FROM $table";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $row = $query->row();
+            $object->count = $row->count;
+            $object->table = $table;
+            $return[] = clone $object;
         }
-
         return($return);
     }
 
     public function delete_all_non_current_attributes($days = 365)
     {
-        $tables = $this->db->list_tables();
+        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         $count = 0;
         foreach ($tables as $table) {
-            if (((strpos($table, 'sys_hw_') !== false) or (strpos($table, 'sys_sw_') !== false)) and (strpos($table, "sys_hw_warranty") === false)) {
-                $sql = "DELETE $table FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
-                $sql = $this->clean_sql($sql);
-                $query = $this->db->query($sql);
-                $count = $count + $this->db->affected_rows();
-            }
+            $sql = "DELETE $table FROM $table WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $count = $count + $this->db->affected_rows();
         }
 
         return($count);
@@ -159,13 +150,10 @@ class M_oa_general extends MY_Model
 
     public function delete_table_non_current_attributes($table, $days = 365)
     {
-        if (((strpos($table, 'sys_hw_') !== false) or (strpos($table, 'sys_sw_') !== false)) and (strpos($table, "sys_hw_warranty") === false)) {
-            $sql = "DELETE $table FROM $table LEFT JOIN system ON (system.system_id = $table.system_id) WHERE system.timestamp <> $table.timestamp AND DATE($table.timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $count = $this->db->affected_rows();
-        }
-
+        $sql = "DELETE $table FROM $table WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $count = $this->db->affected_rows();
         return($count);
     }
 
