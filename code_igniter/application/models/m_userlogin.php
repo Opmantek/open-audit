@@ -44,7 +44,7 @@ class M_userlogin extends CI_Model
         $this->load->library('session');
 
         $sql = "SELECT user_id, user_name, user_email, user_full_name, user_lang, user_theme, user_admin, user_password, user_sam FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
-        $sql = $this->clean_sql($sql);
+        $sql = '/* M_userlogin::validate_user */ ' . $sql;
         $data = array("$username");
         $query = $this->db->query($sql, $data);
         if ($query->num_rows() > 0) {
@@ -123,7 +123,7 @@ class M_userlogin extends CI_Model
     public function get_user_details($username)
     {
         $sql = "SELECT user_id, user_name, user_email, user_full_name, user_lang, user_theme, user_admin, user_password, user_sam, user_active FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
-        $sql = $this->clean_sql($sql);
+        $sql = '/* M_userlogin::get_user_details */ ' . $sql;
         $data = array($username);
         $query = $this->db->query($sql, $data);
         if ($query->num_rows() > 0) {
