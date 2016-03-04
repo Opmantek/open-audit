@@ -4691,6 +4691,9 @@ class admin extends MY_Controller
 
             $sql[] = "ALTER TABLE oa_user ADD permissions text NOT NULL default ''";
 
+            $sql[] = "UPDATE oa_org SET org_name = 'Default Organisation' WHERE org_name = '' AND org_id = 0";
+            $sql[] = "UPDATE oa_org SET org_comments = '' WHERE org_comments = 'Default Organisation.' AND org_id = 0";
+
             # change the oa_org to the new SQL schema style
             // $sql[] = "ALTER TABLE oa_org CHANGE org_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             // $sql[] = "ALTER TABLE oa_org CHANGE org_name name varchar(100) NOT NULL DEFAULT ''";
