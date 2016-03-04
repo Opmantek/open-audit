@@ -38,8 +38,7 @@
 # Tandberg
 
 $get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.5776.1') {
-        $details->model = 'Cisco TelePresence SX20';
-        $details->type = 'video conference';
-    }
+    if ($details->snmp_oid == '1.3.6.1.4.1.5596.1') { $details->model = 'Cisco TelePresence SX20'; $details->type = 'video conference'; }
+    if ($details->snmp_oid == '1.3.6.1.4.1.5596.130.6.4.1') { $details->model = 'Cisco TelePresence SX20'; $details->type = 'video conference'; }
+    if ($details->snmp_oid == '1.3.6.1.4.1.5596.150.6.4.1') { $details->model = 'Cisco TelePresence SX20'; $details->type = 'video conference'; }
 };
