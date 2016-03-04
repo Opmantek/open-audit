@@ -4691,6 +4691,17 @@ class admin extends MY_Controller
 
             $sql[] = "ALTER TABLE oa_user ADD permissions text NOT NULL default ''";
 
+            # change the oa_org to the new SQL schema style
+            // $sql[] = "ALTER TABLE oa_org CHANGE org_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            // $sql[] = "ALTER TABLE oa_org CHANGE org_name name varchar(100) NOT NULL DEFAULT ''";
+            // $sql[] = "ALTER TABLE oa_org CHANGE org_parent_id parent_id int(10) unsigned DEFAULT NULL";
+            // $sql[] = "ALTER TABLE oa_org CHANGE org_group_id group_id int(10) unsigned DEFAULT NULL";
+            // $sql[] = "ALTER TABLE oa_org DROP contact_id";
+            // $sql[] = "ALTER TABLE oa_org DROP org_picture";
+            // $sql[] = "ALTER TABLE oa_org CHANGE org_comments comments text NOT NULL DEFAULT ''";
+            // $sql[] = "UPDATE oa_org SET name = 'Default Organisation' WHERE id = 0";
+            // $sql[] = "ALTER TABLE oa_org ADD CONSTRAINT oa_org_parent FOREIGN KEY (parent_id) REFERENCES oa_org (id)";
+
             $sql[] = "DROP TABLE IF EXISTS `oa_user_org`";
             $sql[] = "CREATE TABLE `oa_user_org` (
                       `id` int(10) NOT NULL AUTO_INCREMENT,
@@ -4704,6 +4715,8 @@ class admin extends MY_Controller
                       CONSTRAINT `oa_user_org_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE,
                       CONSTRAINT `oa_user_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `oa_org` (`org_id`) ON DELETE CASCADE
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+            $sql[] = "INSERT INTO oa_user_org (SELECT NULL, oa_user.user_id, 0, 10, '' FROM oa_user LEFT JOIN oa_group_user ON (oa_user.user_id = oa_group_user.user_id AND oa_group_user.group_user_access_level = 10) WHERE oa_user.user_admin = 'y' OR oa_group_user.group_id = 1 GROUP BY oa_user.user_id)";
 
             $sql[] = "DROP TABLE IF EXISTS ip";
 
