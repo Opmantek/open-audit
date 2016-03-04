@@ -232,9 +232,8 @@ class Admin_connection extends MY_Controller
                     $sql_query .= ')';
                 }
                 if ((string) $child->connection_name !== '') {
-                    // run the query !!!
-                    $query = $this->db->query($sql_query);
                     $sql_query = $this->clean_sql($sql_query);
+                    $query = $this->db->query($sql_query);
                 } else {
                     echo 'no connection name provided';
                 }
