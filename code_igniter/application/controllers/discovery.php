@@ -117,7 +117,7 @@ class discovery extends CI_Controller
         foreach ($system_ids as $key => $value) {
             $timestamp = date('Y-m-d H:i:s');
             $system_id = $value;
-            $ip_address = $this->ip_address_from_db($this->m_devices_components->read($system_id, 'y', 'system', '', 'man_ip_address'));
+            $ip_address = ip_address_from_db($this->m_devices_components->read($system_id, 'y', 'system', '', 'man_ip_address'));
             $credentials = $this->m_system->get_credentials($system_id);
             if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
                 unset($temp);
@@ -381,7 +381,7 @@ class discovery extends CI_Controller
                 if (is_numeric($this->uri->segment(3))) {
                     $this->data['system_id'] = $this->uri->segment(3);
                     $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
-                    $this->data['ip_address'] = $this->ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address'));
+                    $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address'));
                     $this->data['type'] = 'device';
                 } else {
                     $this->data['system_id'] = "";
@@ -392,7 +392,7 @@ class discovery extends CI_Controller
             if ($this->uri->segment(4) and is_numeric($this->uri->segment(4))) {
                 $this->data['system_id'] = $this->uri->segment(4);
                 $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
-                $this->data['ip_address'] = $this->ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address'));
+                $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address'));
             }
             $this->data['warning'] = '';
             $this->data['include'] = "v_discover_subnet";
@@ -819,7 +819,7 @@ class discovery extends CI_Controller
 
                         // process what little data we have and try to make a system_key
                         $details->system_key = '';
-                        $details->system_key = $this->m_system->create_system_key($details);
+                        $details->system_key = $this->m_system->create_system_key($details, $display);
 
                         // we have a system_key (best we can) - see if we can find an existing device
                         $details->system_id = '';
@@ -1391,8 +1391,19 @@ class discovery extends CI_Controller
                         }
 
                         # We have new details - create a new system key
-                        $details->system_key = $this->m_system->create_system_key($details);
-                        $details->system_id = $this->m_system->find_system($details);
+                        $details->system_key = $this->m_system->create_system_key($details, $display);
+                        $details = dns_validate($details, $display);
+                        $details->system_id = $this->m_system->find_system($details, $display);
+
+                        if ($display == 'y') {
+                            $details->show_output = true;
+                            echo "DEBUG ---------------\n";
+                            // remove all the null, false and Empty Strings but leaves 0 (zero) values
+                            $filtered_details = (object) array_filter((array) $details, 'strlen' );
+                            print_r($filtered_details);
+                            unset($filtered_details);
+                            echo "DEBUG ---------------\n";
+                        }
 
                         // insert or update the device
                         if (isset($details->system_id) and $details->system_id != '') {
@@ -1401,12 +1412,12 @@ class discovery extends CI_Controller
                             stdlog($log_details);
                             $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
                             $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
-                            $this->m_system->update_system($details);
+                            $this->m_system->update_system($details, $display);
                         } else {
                             // we have a new system - INSERT
                             $log_details->message = strtoupper($details->last_seen_by) . " insert for $details->man_ip_address";
                             stdlog($log_details);
-                            $details->system_id = $this->m_system->insert_system($details);
+                            $details->system_id = $this->m_system->insert_system($details, $display);
                         }
                         // grab some timestamps
                         $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
@@ -1422,16 +1433,8 @@ class discovery extends CI_Controller
                         unset($temp_user);
 
                         // Update the groups
-                        $this->m_oa_group->update_system_groups($details);
-
-                        if ($display == 'y') {
-                            $details->show_output = true;
-                            echo "DEBUG ---------------\n";
-                            // remove all the null, false and Empty Strings but leaves 0 (zero) values
-                            $filtered_details = (object) array_filter((array) $details, 'strlen' );
-                            print_r($filtered_details);
-                            unset($filtered_details);
-                            echo "DEBUG ---------------\n";
+                        if ($this->config->config['discovery_update_groups'] == 'y') {
+                            $this->m_oa_group->update_system_groups($details);
                         }
 
                         // update any network interfaces and ip addresses retrieved by SNMP
@@ -1439,11 +1442,11 @@ class discovery extends CI_Controller
                             $input = new stdClass();
                             $input->item = array();
                             $input->item = $network_interfaces;
-                            $this->m_devices_components->process_component('network', $details, $input);
+                            $this->m_devices_components->process_component('network', $details, $input, $display);
                         }
                         // insert any ip addresses
                         if (isset($ip->item) and count($ip->item) > 0) {
-                            $this->m_devices_components->process_component('ip', $details, $ip);
+                            $this->m_devices_components->process_component('ip', $details, $ip, $display);
                         }
                         // finish off with updating any network IPs that don't have a matching interface
                         $this->m_devices_components->update_missing_interfaces($details->system_id);
@@ -1452,7 +1455,7 @@ class discovery extends CI_Controller
                             $input = new stdClass();
                             $input->item = array();
                             $input->item = $modules;
-                            $this->m_devices_components->process_component('module', $details, $input);
+                            $this->m_devices_components->process_component('module', $details, $input, $display);
                         }
 
                         // insert any found virtual machines
@@ -1460,7 +1463,7 @@ class discovery extends CI_Controller
                             $vm = new stdClass();
                             $vm->item = array();
                             $vm->item = $guests;
-                            $this->m_devices_components->process_component('vm', $details, $vm);
+                            $this->m_devices_components->process_component('vm', $details, $vm, $display);
                         }
 
                         if (isset($details->snmp_oid) and $details->snmp_oid != '' and $details->snmp_status == 'true') {
@@ -1706,13 +1709,13 @@ class discovery extends CI_Controller
                                                 if (strtolower($remote_os) != 'vmkernel') {
                                                     // Exclude VMware ESX as it does not have a usable wget to send post-data back to Open-AudIT
                                                     if ($sudo != '' and $details->ssh_username != 'root') {
-                                                        $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "echo '.escapeshellarg($details->ssh_password).' | '.$sudo.' -S /tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.'" ';
+                                                        $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "echo '.escapeshellarg($details->ssh_password).' | '.$sudo.' -S /tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" ';
                                                         $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                         if ($ssh_result['status'] != '0') {
                                                             $error = 'SSH audit command for '.$remote_os.' audit using sudo on '.$details->man_ip_address.' failed. Attempting to run without sudo.';
                                                             $log_details->message = $error;
                                                             stdlog($log_details);
-                                                            $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).'  "/tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=3 system_id='.$details->system_id.'" ';
+                                                            $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).'  "/tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=3 system_id='.$details->system_id.' display=' . $display . '" ';
                                                             $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                             if ($ssh_result['status'] != '0') {
                                                                 $error = 'SSH audit command for '.$remote_os.' audit not using sudo on '.$details->man_ip_address.' failed';
@@ -1726,7 +1729,7 @@ class discovery extends CI_Controller
                                                         unset($ssh_command);
                                                         unset($ssh_result);
                                                     } else {
-                                                        $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "/tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.'" 2>/dev/null';
+                                                        $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "/tmp/'.$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" 2>/dev/null';
                                                         $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                         if ($ssh_result['status'] != '0') {
                                                             $error = 'SSH audit command for '.$remote_os.' audit script on '.$details->man_ip_address.' failed';
@@ -1766,8 +1769,8 @@ class discovery extends CI_Controller
                                                                 if (!isset($esx_details->man_ip_address) or $esx_details->man_ip_address == '') {
                                                                     $esx_details->man_ip_address = $details->man_ip_address;
                                                                 }
-                                                                $esx_details->system_key = $this->m_system->create_system_key($esx_details);
-                                                                $esx_details->system_id = $this->m_system->find_system($esx_details);
+                                                                $esx_details->system_key = $this->m_system->create_system_key($esx_details, $display);
+                                                                $esx_details->system_id = $this->m_system->find_system($esx_details, $display);
                                                                 $esx_details->timestamp = $details->timestamp;
 
                                                                 if (isset($esx_details->system_id) and $esx_details->system_id != '') {
@@ -1797,15 +1800,15 @@ class discovery extends CI_Controller
 
                                                             }
                                                         }
-                                                        $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network);
-                                                        $this->m_devices_components->process_component('software', $esx_details, $esx_xml->software);
-                                                        $this->m_devices_components->process_component('processor', $esx_details, $esx_xml->processor);
-                                                        $this->m_devices_components->process_component('bios', $esx_details, $esx_xml->bios);
-                                                        $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory);
-                                                        $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard);
-                                                        $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video);
-                                                        $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm);
-                                                        $this->m_devices_components->process_component('ip', $esx_details, $esx_xml->ip);
+                                                        $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network, $display);
+                                                        $this->m_devices_components->process_component('software', $esx_details, $esx_xml->software, $display);
+                                                        $this->m_devices_components->process_component('processor', $esx_details, $esx_xml->processor, $display);
+                                                        $this->m_devices_components->process_component('bios', $esx_details, $esx_xml->bios, $display);
+                                                        $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory, $display);
+                                                        $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard, $display);
+                                                        $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video, $display);
+                                                        $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm, $display);
+                                                        $this->m_devices_components->process_component('ip', $esx_details, $esx_xml->ip, $display);
                                                     }
                                                 } // end of ESXi
                                             } // end of run audit script
@@ -2087,7 +2090,7 @@ class discovery extends CI_Controller
                                                 foreach ($esx_xml->children() as $child) {
                                                     if ($child->getName() === 'sys') {
                                                         $esx_details = (object) $esx_xml->sys;
-                                                        $esx_details->system_key = $this->m_system->create_system_key($esx_details);
+                                                        $esx_details->system_key = $this->m_system->create_system_key($esx_details, $display);
                                                         $esx_details->system_id = $this->m_system->find_system($esx_details);
                                                         $esx_details->timestamp = $details->timestamp;
                                                         if ((!isset($esx_details->man_ip_address) or $esx_details->man_ip_address == '') and
@@ -2119,15 +2122,15 @@ class discovery extends CI_Controller
                                                         unset($temp_user);
                                                     }
                                                 }
-                                                $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network);
-                                                $this->m_devices_components->process_component('software', $esx_details, $esx_xml->software);
-                                                $this->m_devices_components->process_component('processor', $esx_details, $esx_xml->processor);
-                                                $this->m_devices_components->process_component('bios', $esx_details, $esx_xml->bios);
-                                                $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory);
-                                                $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard);
-                                                $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video);
-                                                $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm);
-                                                $this->m_devices_components->process_component('ip', $esx_details, $esx_xml->ip);
+                                                $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network, $display);
+                                                $this->m_devices_components->process_component('software', $esx_details, $esx_xml->software, $display);
+                                                $this->m_devices_components->process_component('processor', $esx_details, $esx_xml->processor, $display);
+                                                $this->m_devices_components->process_component('bios', $esx_details, $esx_xml->bios, $display);
+                                                $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory, $display);
+                                                $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard, $display);
+                                                $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video, $display);
+                                                $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm, $display);
+                                                $this->m_devices_components->process_component('ip', $esx_details, $esx_xml->ip, $display);
                                             }
                                         } // end of ESXi script
                                         if ($error == '') {
@@ -2147,56 +2150,6 @@ class discovery extends CI_Controller
         } // close for form submission
     } // close function
 
-    public function ip_address_from_db($ip)
-    {
-        $ip_pre = $ip;
-        if (($ip != '') and (!(is_null($ip)))) {
-            $myip = explode(".", $ip);
-            $myip[0] = ltrim($myip[0], "0");
-            if ($myip[0] == "") {
-                $myip[0] = "0";
-            }
-            if (isset($myip[1])) {
-                $myip[1] = ltrim($myip[1], "0");
-            }
-            if (!isset($myip[1]) or $myip[1] == "") {
-                $myip[1] = "0";
-            }
-            if (isset($myip[2])) {
-                $myip[2] = ltrim($myip[2], "0");
-            }
-            if (!isset($myip[2]) or $myip[2] == "") {
-                $myip[2] = "0";
-            }
-            if (isset($myip[3])) {
-                $myip[3] = ltrim($myip[3], "0");
-            }
-            if (!isset($myip[3]) or $myip[3] == "") {
-                $myip[3] = "0";
-            }
-            $ip = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
-        } else {
-            $ip = "";
-        }
-
-        return $ip;
-    }
-
-    public function ip_address_to_db($ip)
-    {
-        if (($ip != '') and (!(is_null($ip))) and (substr_count($ip, '.') == 3)) {
-            $myip = explode(".", $ip);
-            $myip[0] = mb_substr("000".$myip[0], -3);
-            $myip[1] = mb_substr("000".$myip[1], -3);
-            $myip[2] = mb_substr("000".$myip[2], -3);
-            $myip[3] = mb_substr("000".$myip[3], -3);
-            $ip_post = $myip[0].".".$myip[1].".".$myip[2].".".$myip[3];
-        } else {
-            $ip_post = "000.000.000.000";
-        }
-
-        return $ip_post;
-    }
 
     public function escape_plink_command($text) {
         $text = str_replace('"', '\"', $text);

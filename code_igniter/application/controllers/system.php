@@ -203,6 +203,22 @@ class System extends CI_Controller
 
         $this->load->model('m_devices_components');
 
+        if (!empty($_POST['display'])) {
+            $display = $_POST['display'];
+        }
+        $current_url = current_url();
+        if (stripos($current_url, '/display') !== false) {
+            $display = 'y';
+        }
+        unset($current_url);
+        if (!empty($display)) {
+            if ($display == 'on' or $display == 'y') {
+                $display = 'y';
+            }
+        } else {
+            $display = 'n';
+        }
+
         // date_default_timezone_set("Australia/Queensland");
         $timestamp = date('Y-m-d H:i:s');
 
@@ -260,6 +276,7 @@ class System extends CI_Controller
         $log_details = new stdClass();
         $log_details->severity = 7;
         $log_details->file = 'system';
+        $log_details->display = $display;
         if ($j > '') {
             $log_details->message = 'Processing audit result for ' . $i . ' (Supplied System ID ' . $j . ')';
         } else {
@@ -304,7 +321,7 @@ class System extends CI_Controller
         }
         $details->system_key = $this->m_system->create_system_key($details);
 
-        $i = $this->m_system->find_system($details);
+        $i = $this->m_system->find_system($details, $display);
         if ($i == '' and $received_system_id > '') {
             $i = $received_system_id;
         }
@@ -336,7 +353,7 @@ class System extends CI_Controller
         $details->last_audit_date = "";
         if ((string) $i === '') {
             // insert a new system
-            $details->system_id = $this->m_system->insert_system($details);
+            $details->system_id = $this->m_system->insert_system($details, $display);
 
             $log_details = new stdClass();
             $log_details->severity = 7;
@@ -359,7 +376,7 @@ class System extends CI_Controller
 
             $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
             $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
-            $this->m_system->update_system($details);
+            $this->m_system->update_system($details, $display);
             echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
         }
         $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
@@ -367,37 +384,37 @@ class System extends CI_Controller
 
         $this->m_audit_log->create($details->system_id, $user_full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
 
-        $this->m_devices_components->process_component('bios', $details, $xml->bios);
-        $this->m_devices_components->process_component('disk', $details, $xml->disk);
-        $this->m_devices_components->process_component('ip', $details, $xml->ip);
-        $this->m_devices_components->process_component('log', $details, $xml->log);
-        $this->m_devices_components->process_component('memory', $details, $xml->memory);
-        $this->m_devices_components->process_component('module', $details, $xml->module);
-        $this->m_devices_components->process_component('monitor', $details, $xml->monitor);
-        $this->m_devices_components->process_component('motherboard', $details, $xml->motherboard);
-        $this->m_devices_components->process_component('netstat', $details, $xml->netstat);
-        $this->m_devices_components->process_component('network', $details, $xml->network);
-        $this->m_devices_components->process_component('optical', $details, $xml->optical);
-        $this->m_devices_components->process_component('pagefile', $details, $xml->pagefile);
-        $this->m_devices_components->process_component('partition', $details, $xml->partition);
-        $this->m_devices_components->process_component('print_queue', $details, $xml->printer);
-        $this->m_devices_components->process_component('processor', $details, $xml->processor);
-        $this->m_devices_components->process_component('route', $details, $xml->route);
-        $this->m_devices_components->process_component('scsi', $details, $xml->scsi);
-        $this->m_devices_components->process_component('server', $details, $xml->server);
-        $this->m_devices_components->process_component('server_item', $details, $xml->server_item);
-        $this->m_devices_components->process_component('service', $details, $xml->service);
-        $this->m_devices_components->process_component('share', $details, $xml->share);
-        $this->m_devices_components->process_component('software', $details, $xml->software);
-        $this->m_devices_components->process_component('software_key', $details, $xml->software_key);
-        $this->m_devices_components->process_component('sound', $details, $xml->sound);
-        $this->m_devices_components->process_component('task', $details, $xml->task);
-        $this->m_devices_components->process_component('user', $details, $xml->user);
-        $this->m_devices_components->process_component('user_group', $details, $xml->user_group);
-        $this->m_devices_components->process_component('variable', $details, $xml->variable);
-        $this->m_devices_components->process_component('video', $details, $xml->video);
-        $this->m_devices_components->process_component('vm', $details, $xml->vm);
-        $this->m_devices_components->process_component('windows', $details, $xml->windows);
+        $this->m_devices_components->process_component('bios', $details, $xml->bios, $display);
+        $this->m_devices_components->process_component('disk', $details, $xml->disk, $display);
+        $this->m_devices_components->process_component('ip', $details, $xml->ip, $display);
+        $this->m_devices_components->process_component('log', $details, $xml->log, $display);
+        $this->m_devices_components->process_component('memory', $details, $xml->memory, $display);
+        $this->m_devices_components->process_component('module', $details, $xml->module, $display);
+        $this->m_devices_components->process_component('monitor', $details, $xml->monitor, $display);
+        $this->m_devices_components->process_component('motherboard', $details, $xml->motherboard, $display);
+        $this->m_devices_components->process_component('netstat', $details, $xml->netstat, $display);
+        $this->m_devices_components->process_component('network', $details, $xml->network, $display);
+        $this->m_devices_components->process_component('optical', $details, $xml->optical, $display);
+        $this->m_devices_components->process_component('pagefile', $details, $xml->pagefile, $display);
+        $this->m_devices_components->process_component('partition', $details, $xml->partition, $display);
+        $this->m_devices_components->process_component('print_queue', $details, $xml->printer, $display);
+        $this->m_devices_components->process_component('processor', $details, $xml->processor, $display);
+        $this->m_devices_components->process_component('route', $details, $xml->route, $display);
+        $this->m_devices_components->process_component('scsi', $details, $xml->scsi, $display);
+        $this->m_devices_components->process_component('server', $details, $xml->server, $display);
+        $this->m_devices_components->process_component('server_item', $details, $xml->server_item, $display);
+        $this->m_devices_components->process_component('service', $details, $xml->service, $display);
+        $this->m_devices_components->process_component('share', $details, $xml->share, $display);
+        $this->m_devices_components->process_component('software', $details, $xml->software, $display);
+        $this->m_devices_components->process_component('software_key', $details, $xml->software_key, $display);
+        $this->m_devices_components->process_component('sound', $details, $xml->sound, $display);
+        $this->m_devices_components->process_component('task', $details, $xml->task, $display);
+        $this->m_devices_components->process_component('user', $details, $xml->user, $display);
+        $this->m_devices_components->process_component('user_group', $details, $xml->user_group, $display);
+        $this->m_devices_components->process_component('variable', $details, $xml->variable, $display);
+        $this->m_devices_components->process_component('video', $details, $xml->video, $display);
+        $this->m_devices_components->process_component('vm', $details, $xml->vm, $display);
+        $this->m_devices_components->process_component('windows', $details, $xml->windows, $display);
 
         foreach ($xml->children() as $child) {
             if ($child->getName() === 'audit_wmi_fail') {

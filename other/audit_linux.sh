@@ -101,6 +101,9 @@ IFS="$NEWLINEIFS";
 # we set this if we detect we're running on a BB shell
 busybox="n"
 
+display=""
+# This should only be set by Discovery when using the debug option
+
 ########################################################
 # DEFINE SCRIPT FUNCTIONS                              #
 ########################################################
@@ -283,6 +286,8 @@ for arg in "$@"; do
 			self_delete="$parameter_value" ;;
 		"debugging" )
 			debugging="$parameter_value" ;;
+		"display" )
+			display="$parameter_value" ;;
 		"help" )
 			help="$parameter_value" ;;
 		"--help" )
@@ -332,6 +337,10 @@ if [ "$help" = "y" ]; then
 	echo "  self_delete"
 	echo "    *n - Do not delete the audit script after running"
 	echo "     y - Delete the audit script after running"
+	echo ""
+	echo "  display"
+	echo "    *  - Do not display debugging output upon submit"
+	echo "    on - Display debugging output upon submit (used by Discovery with debug)"
 	echo ""
 	echo "  debugging"
 	echo "     0 - No output."
@@ -864,7 +873,7 @@ fi
 if [ -n "$bios_firm_rev" ]; then
 	bios_description=$(echo "$bios_manufacturer" | cut -d" " -f1)" BIOS - Firmware Rev. $bios_firm_rev"
 else
-	if [ -N "$bios_manufacturer" ]; then
+	if [ -n "$bios_manufacturer" ]; then
 		bios_description=$(echo "$bios_manufacturer" | cut -d" " -f1)" BIOS"
 	else
 		bios_description=""
@@ -2157,9 +2166,13 @@ if [ "$submit_online" = "y" ]; then
 		echo "Submitting results to server"
 		echo "URL: $url"
 	fi
+	if [ "$display" = "y" ]; then
+		url="$url/display"
+		debugging=4
+	fi
 	if [ -n "$(which wget 2>/dev/null)" ]; then
 		if [ "$debugging" -gt 3 ]; then
-			wget --post-file="$xml_file" "$url" 2>/dev/null
+			wget -O add_system --post-file="$xml_file" "$url" 2>/dev/null
 			cat add_system
 			rm add_system
 		else
@@ -2167,7 +2180,13 @@ if [ "$submit_online" = "y" ]; then
 		fi
 	else
 		if [ -n "$(which curl 2>/dev/null)" ]; then
-			curl --data "@$xml_file" "$url"
+			if [ "$debugging" -gt 3 ]; then
+				curl -o add_system --data "@$xml_file" "$url"
+				cat add_system
+				rm add_system
+			else
+				curl --data "@$xml_file" "$url"
+			fi
 		fi
 	fi
 fi

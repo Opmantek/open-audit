@@ -59,12 +59,17 @@ class M_system extends MY_Model
         }
     }
 
-    public function create_system_key($details)
+    public function create_system_key($details, $display = 'n')
     {
         $log_details = new stdClass();
         $log_details->message = 'System Key being generated for '.$details->hostname.' at '.$details->man_ip_address;
         $log_details->severity = 7;
         $log_details->file = 'system';
+        if ($display != 'y') {
+            $display = 'n';
+        }
+        $log_details->display = $display;
+        unset($display);
         stdlog($log_details);
 
         $details = (object) $details;
@@ -138,7 +143,7 @@ class M_system extends MY_Model
         return $details->system_key;
     }
 
-    public function find_system($details)
+    public function find_system($details, $display = 'n')
     {
         # we are searching for a system_id.
         # search order is:
@@ -149,6 +154,11 @@ class M_system extends MY_Model
         $log_details = new stdClass();
         $log_details->severity = 7;
         $log_details->file = 'system';
+        if ($display != 'y') {
+            $display = 'n';
+        }
+        $log_details->display = $display;
+        unset($display);
 
         if (!empty($details->uuid) and !empty($details->hostname)) {
             $sql = "SELECT system.system_id FROM system WHERE system.uuid = ? AND system.hostname = ? AND system.man_status = 'production' LIMIT 1";
@@ -286,12 +296,13 @@ class M_system extends MY_Model
             $details->mac_address = $details->mac;
         }
 
+        $mac_match = 'n';
         $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_mac_match'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
-        $ip_match = @$row->config_value;
-        if (empty($ip_match) or (isset($ip_match) and $ip_match != 'n')) {
+        $mac_match = @$row->config_value;
+        if (empty($mac_match) or (isset($mac_match) and $mac_match != 'n')) {
             $mac_match = 'y';
         }
 
@@ -1012,7 +1023,7 @@ class M_system extends MY_Model
      *
      * @return int
      */
-    public function insert_system($details)
+    public function insert_system($details, $display = 'n')
     {
 
         # nasty hack because when a simplexmlobject is sent (ie, from audit_windows.vbs)
@@ -1035,6 +1046,12 @@ class M_system extends MY_Model
         $log_details->message = 'System insert start for '.ip_address_from_db($details->man_ip_address).' ('.$details->hostname.')';
         $log_details->severity = 7;
         $log_details->file = 'system';
+        if ($display != 'y') {
+            $display = 'n';
+        }
+        $log_details->display = $display;
+        unset($display);
+
         stdlog($log_details);
 
         # ensure we have something not null for all the below
@@ -1281,7 +1298,7 @@ class M_system extends MY_Model
         return $details->system_id;
     }
 
-    public function update_system($details)
+    public function update_system($details, $display = 'n')
     {
         if (!isset($details->system_id) or $details->system_id == '') {
             # this is an update - we need a system_id
@@ -1307,6 +1324,12 @@ class M_system extends MY_Model
         $log_details->message = 'System update start for '.ip_address_from_db($temp_ip).'('.$details->hostname.') (System ID '.$details->system_id.')';
         $log_details->severity = 7;
         $log_details->file = 'system';
+        if ($display != 'y') {
+            $display = 'n';
+        }
+        $log_details->display = $display;
+        unset($display);
+
         stdlog($log_details);
 
         unset($temp_ip);
