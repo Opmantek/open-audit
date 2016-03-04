@@ -43,11 +43,6 @@ if (!function_exists('get_snmp')) {
         error_reporting(E_ALL);
         $CI = & get_instance();
 
-        # new in 1.5 - remove the type from the returned SNMP query.
-        # this affects the snmp_clean function in this file
-        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-        snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
-
         if (isset($log_details)) {
             $orig_log_details = $log_details;
             unset($log_details);
@@ -55,6 +50,22 @@ if (!function_exists('get_snmp')) {
 
         $log_details = new stdClass();
         $log_details->file = 'system';
+
+        # we need at least an ip address or hostname
+        if ((empty($details->man_ip_address) or !filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) and empty($details->hostname)) {
+            $details->man_ip_address = '';
+            $log_details->message = 'SNMP scan received no ip address or hostname (aborting attempted scan)';
+            $log_details->severity = '5';
+            stdlog($log_details);
+            unset($log_details);
+            return;
+        }
+
+        # new in 1.5 - remove the type from the returned SNMP query.
+        # this affects the snmp_clean function in this file
+        snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+        snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
+
         $log_details->severity = 7;
         $log_details->message = 'SNMP PHP function loaded and running for ' . $details->man_ip_address;
         stdlog($log_details);
@@ -115,28 +126,19 @@ if (!function_exists('get_snmp')) {
             $supplied->windows_domain = '';
         }
 
-        if (!isset($details->snmp_version) or $details->snmp_version == '') {
+        if (empty($details->snmp_version)) {
             $details->snmp_version = '2c';
         }
-        if (!isset($details->snmp_port) or $details->snmp_port == '') {
+        if (empty($details->snmp_port)) {
             $details->snmp_port = '161';
         }
         if (!isset($details->type)) {
             $details->type = '';
         }
 
-        # we need at least an ip address or hostname
-        if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or $details->man_ip_address == '000.000.000.000' or $details->man_ip_address == '0.0.0.0') and (!isset($details->hostname) or $details->hostname == '')) {
-            unset($details->man_ip_address);
-            $log_details->message = 'SNMP scan received no ip address or hostname (aborting attempted scan)';
-            $log_details->severity = '5';
-            stdlog($log_details);
-            unset($log_details);
-
-            return;
-        }
-
         $module = new stdclass();
+
+        $details = dns_validate($details);
 
         if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
             # not a valid ip address - assume it's a hostname
@@ -292,18 +294,20 @@ if (!function_exists('get_snmp')) {
             $details->sysName =     snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.5.0"));
             $details->sysLocation = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.6.0");
 
-            if ($details->sysName != '') {
-                if (strpos($details->sysName, '.') !== false) {
-                    $details->fqdn = $details->sysName;
-                    $tmp = explode('.', $details->sysName);
-                    $details->hostname = $tmp[0];
-                    unset($tmp[0]);
-                    $details->domain = implode('.', $tmp);
-                    unset($tmp);
-                } else {
-                    $details->hostname = $details->sysName;
-                }
-            }
+            // if ($details->sysName != '') {
+            //     if (strpos($details->sysName, '.') !== false) {
+            //         $details->fqdn = $details->sysName;
+            //         $tmp = explode('.', $details->sysName);
+            //         $details->hostname = $tmp[0];
+            //         unset($tmp[0]);
+            //         $details->domain = implode('.', $tmp);
+            //         unset($tmp);
+            //     } else {
+            //         if (empty($details->hostname)) {
+            //             $details->hostname = $details->sysName;
+            //         }
+            //     }
+            // }
 
             if (stripos($details->sysDescr, 'dd-wrt') !== false) {
                 $details->os_group = 'Linux';
