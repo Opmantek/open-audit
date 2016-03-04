@@ -293,6 +293,9 @@ class Admin_system extends MY_Controller
         $details->system_id = $this->uri->segment(3, 0);
         $encrypted_access_details = $this->m_system->get_access_details($details->system_id);
         $details->hostname = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'hostname');
+        if ($details->hostname == '-') {
+            $details->hostname = '';
+        }
         $details->man_ip_address = ip_address_from_db($this->m_devices_components->read($details->system_id, 'y', 'system', '', 'man_ip_address'));
         $details->show_output = true;
 
@@ -333,6 +336,8 @@ class Admin_system extends MY_Controller
         $details->last_seen = $details->timestamp;
         $details->last_user = $this->user->user_full_name;
         $details->audits_ip = '127.0.0.1';
+        $details = dns_validate($details, 'y');
+
         unset($details->man_type);
         unset($details->show_output);
         unset($details->man_ip_address);

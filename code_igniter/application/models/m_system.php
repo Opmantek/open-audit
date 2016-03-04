@@ -76,7 +76,7 @@ class M_system extends MY_Model
             $details->system_key_type = '';
         }
 
-        if ((isset($details->hostname) and $details->hostname != '') and (isset($details->domain) and $details->domain != '')) {
+        if (!empty($details->hostname) and !empty($details->domain) and empty($details->fqdn)) {
             $details->fqdn = $details->hostname.".".$details->domain;
         }
 
@@ -1344,24 +1344,24 @@ class M_system extends MY_Model
         $result = $query->row();
         $db_hostname = $result->hostname;
 
-        if (strpos($db_hostname, ".") !== false) {
-            # our DB hostname field contains a .
-            # If we don't have an actual ip address, replace it the audit hostname with the db hostname
-            if (!filter_var($db_hostname, FILTER_VALIDATE_IP)) {
-                # we have a FQDN - split it
-                $details->fqdn = strtolower($db_hostname);
-                $i = explode(".", $db_hostname);
-                $details->hostname = $i[0];
-                unset($i[0]);
-                $details->domain = implode(".", $i);
-                unset($i);
-            } else {
-                # we have an ip address in the DB, replace it with the audit data (ie, don't change the audit data)
-            }
-        } else {
-            # we have a real hostname in the database, replace our audit data with that
-            $details->hostname = $db_hostname;
-        }
+        // if (strpos($db_hostname, ".") !== false) {
+        //     # our DB hostname field contains a .
+        //     # If we don't have an actual ip address, replace it the audit hostname with the db hostname
+        //     if (!filter_var($db_hostname, FILTER_VALIDATE_IP)) {
+        //         # we have a FQDN - split it
+        //         $details->fqdn = strtolower($db_hostname);
+        //         $i = explode(".", $db_hostname);
+        //         $details->hostname = $i[0];
+        //         unset($i[0]);
+        //         $details->domain = implode(".", $i);
+        //         unset($i);
+        //     } else {
+        //         # we have an ip address in the DB, replace it with the audit data (ie, don't change the audit data)
+        //     }
+        // } else {
+        //     # we have a real hostname in the database, replace our audit data with that
+        //     $details->hostname = $db_hostname;
+        // }
 
         if (!isset($details->system_key_type)) {
             $details->system_key_type = '';

@@ -793,27 +793,29 @@ class discovery extends CI_Controller
                         $details->domain = '';
                         $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
                         $details->hostname = '';
-                        if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
-                            $details->hostname = $details->man_ip_address;
-                            $details->man_ip_address = gethostbyname($details->man_ip_address);
-                            if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
-                                $details->man_ip_address = '0.0.0.0';
-                            }
-                        } else {
-                            # TODO - check if we're lower casing hostnames in the config
-                            $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
-                        }
 
-                        if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-                            if (strpos($details->hostname, ".") != false) {
-                                // we have a domain returned
-                                $details->fqdn = strtolower($details->hostname);
-                                $i = explode(".", $details->hostname);
-                                $details->hostname = $i[0];
-                                unset($i[0]);
-                                $details->domain = implode(".", $i);
-                            }
-                        }
+                        $details = dns_validate($details, $display);
+                        // if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
+                        //     $details->hostname = $details->man_ip_address;
+                        //     $details->man_ip_address = gethostbyname($details->man_ip_address);
+                        //     if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
+                        //         $details->man_ip_address = '0.0.0.0';
+                        //     }
+                        // } else {
+                        //     # TODO - check if we're lower casing hostnames in the config
+                        //     $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
+                        // }
+
+                        // if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+                        //     if (strpos($details->hostname, ".") != false) {
+                        //         // we have a domain returned
+                        //         $details->fqdn = strtolower($details->hostname);
+                        //         $i = explode(".", $details->hostname);
+                        //         $details->hostname = $i[0];
+                        //         unset($i[0]);
+                        //         $details->domain = implode(".", $i);
+                        //     }
+                        // }
 
                         // process what little data we have and try to make a system_key
                         $details->system_key = '';

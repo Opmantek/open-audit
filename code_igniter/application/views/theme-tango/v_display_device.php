@@ -104,6 +104,7 @@ $system[0]->uptime = strTime($system[0]->uptime);
 
 # create the individual summary sections
 $summary_attributes = array('hostname' => 'text' ,
+                            'sysName' => 'text',
                             'man_ip_address' => 'text',
                             'domain' => 'text',
                             'fqdn' => 'text',

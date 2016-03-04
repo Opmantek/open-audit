@@ -491,6 +491,7 @@ class System extends CI_Controller
 
             $this->load->helper('url');
             $this->load->helper('xml');
+            $this->load->helper('network');
             $this->load->library('encrypt');
             if (extension_loaded('snmp')) {
                 $this->load->helper('snmp');
@@ -529,9 +530,23 @@ class System extends CI_Controller
                 $details->timestamp = $timestamp;
 
                 $details->hostname = '';
-                $details->hostname = gethostbyaddr($details->man_ip_address);
-                $details->hostname = strtolower($details->hostname);
-                $details->domain = '';
+                // $details->hostname = gethostbyaddr($details->man_ip_address);
+                // $details->hostname = strtolower($details->hostname);
+                // $details->domain = '';
+                // if (! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+                //     if (strpos($details->hostname, '.') !== false) {
+                //         // we have a domain returned
+                //         $details->fqdn = strtolower($details->hostname);
+                //         $t_array = explode('.', $details->hostname);
+                //         $details->hostname = $t_array[0];
+                //         unset($t_array[0]);
+                //         $details->domain = implode('.', $t_array);
+                //     }
+                // }
+                $details = dns_validate($details);
+
+
+
                 $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
                 $log_details = new stdClass();
@@ -541,16 +556,7 @@ class System extends CI_Controller
                 stdlog($log_details);
                 unset($log_details);
 
-                if (! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-                    if (strpos($details->hostname, '.') !== false) {
-                        // we have a domain returned
-                        $details->fqdn = strtolower($details->hostname);
-                        $t_array = explode('.', $details->hostname);
-                        $details->hostname = $t_array[0];
-                        unset($t_array[0]);
-                        $details->domain = implode('.', $t_array);
-                    }
-                }
+
 
                 if (! isset($details->type) or $details->type === '') {
                     $details->type = 'unknown';
@@ -581,6 +587,7 @@ class System extends CI_Controller
                     // we received a result from SNMP, use this data to update OR insert
                     $details->last_seen_by = 'snmp';
                     $details->audits_ip = '127.0.0.1';
+                    $details = dns_validate($details);
 
                     if (isset($details->system_id) and !empty($details->system_id)) {
                         // we have a system_id and snmp details to update
