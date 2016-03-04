@@ -268,65 +268,48 @@ class ajax extends MY_Controller
                 }
             }
             if (mb_substr_count($this->data['field_name'], 'man_location_id') > 0) {
-                # we need to return data for the entire location div (excepting the rack details)
-                if ($this->data['field_data'] == '0') {
-                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>-</span></span></p>\n";
-                    echo "<p><label for='location_full_address'>".__('Full Location').": </label><span id='location_full_address'></span></p>\n";
-                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'></span></p>\n";
-                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'></span></p>\n";
-                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'></span></p>\n";
-                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'></span></p>\n";
-                    #echo "<p><label for='location_room'>" . __('Room') . ": </label><span id='location_room'></span></p>\n";
-                } else {
-                    $this->load->model("m_oa_location");
-                    $data = $this->m_oa_location->get_location($this->data['field_data']);
-                    foreach ($data as $key) {
-                        $full_location = '';
-                        if ($key->location_room > '') {
-                            $full_location = __('Room').$key->location_room.', ';
-                        }
-                        if ($key->location_suite > '') {
-                            $full_location .= __('Suite').$key->location_suite.', ';
-                        }
-                        if ($key->location_level > '') {
-                            $full_location .= __('Level').$key->location_level.', ';
-                        }
-                        $full_location .= $key->location_address;
-                        echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->location_name)."</span></span></p>\n";
-                        echo "<p><label for='location_full_address'>".__('Full Location').": </label><span id='location_full_address'>".htmlentities($full_location)."</span></p>\n";
-                        echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlentities($key->location_address)."</span></p>\n";
-                        echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlentities($key->location_city)."</span></p>\n";
-                        echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlentities($key->location_state)."</span></p>\n";
-                        echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlentities($key->location_country)."</span></p>\n";
-                        #echo "<p><label for='location_room'>" . __('Room') . ": </label><span id='location_room'>" . htmlentities($key->location_room) . "</span></p>\n";
+                $this->load->model("m_oa_location");
+                $data = $this->m_oa_location->get_location($this->data['field_data']);
+                foreach ($data as $key) {
+                    if ($key->location_address == '') {
+                        $key->location_address = '-';
                     }
+                    if ($key->location_city == '') {
+                        $key->location_city = '-';
+                    }
+                    if ($key->location_state == '') {
+                        $key->location_state = '-';
+                    }
+                    if ($key->location_country == '') {
+                        $key->location_country = '-';
+                    }
+                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->location_name)."</span></span></p>\n";
+                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlentities($key->location_address)."</span></p>\n";
+                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlentities($key->location_city)."</span></p>\n";
+                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlentities($key->location_state)."</span></p>\n";
+                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlentities($key->location_country)."</span></p>\n";
                 }
             }
             if (mb_substr_count($this->data['field_name'], 'man_org_id') > 0) {
-                # we need to return data for the entire org div
-                if ($this->data['field_data'] == '0') {
-                    echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>-</span></span></p>\n";
-                } else {
-                    $this->load->model("m_oa_org");
-                    $key = $this->m_oa_org->get_org_details($this->data['field_data']);
-                    echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->org_name."</span></span></p>\n";
-                    if ($key->contact_id == '') {
-                        $key->contact_id = '-';
-                    }
-                    echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'> ".htmlentities($key->contact_id)."</span></p>\n";
-                    echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlentities($key->org_parent_name)."</span></p>\n";
-                    echo "<p><label for='org_comments'>".__('Comments').": </label><span id='org_comments'>".htmlentities($key->org_comments)."</span></p>\n";
-                    ##echo "<p><label for='org_picture'>" . __('Picture') . ": </label><span id='org_picture'>" . $key->org_picture . "</span></p>\n";
+                $this->load->model("m_oa_org");
+                $key = $this->m_oa_org->get_org_details($this->data['field_data']);
+                if (empty($key->org_name)) {
+                    $key->org_name = '-';
                 }
+                echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->org_name."</span></span></p>\n";
+                echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlentities($key->org_parent_name)."</span></p>\n";
+                #echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'> ".htmlentities($key->contact_id)."</span></p>\n";
+                #echo "<p><label for='org_comments'>".__('Comments').": </label><span id='org_comments'>".htmlentities($key->org_comments)."</span></p>\n";
+                ##echo "<p><label for='org_picture'>" . __('Picture') . ": </label><span id='org_picture'>" . $key->org_picture . "</span></p>\n";
             }
-            #if (mb_substr_count($this->data['field_name'], 'man_status') > 0) {
+
+            # finally update any groups that this change has caused
             $details = new stdClass();
             $details->system_id = $this->data['system_id'];
             $this->load->model('m_system');
             $details->type = $this->m_system->get_system_type($this->data['system_id']);
             $this->load->model("m_oa_group");
             $this->m_oa_group->update_system_groups($details);
-            #}
         }
     }
 

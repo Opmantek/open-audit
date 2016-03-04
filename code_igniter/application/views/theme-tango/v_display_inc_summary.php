@@ -93,45 +93,22 @@
 		<fieldset id="summary_location_details">
 			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Location / Owner Details')?></span></legend>
 			<div style="float:left; width:50%;">
+                <div>
 				<div id="location_container">
-					<?php if (count($system_location) > 0) {
-    foreach ($system_location as $key) {
-        if ($access_level > 7) {
-            echo "<p><label for='man_location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".print_something($key->location_name)."</span></span>$edit_icon</p>\n";
-        } else {
-            echo "<p><label for='location_name'>".__('Location Name').": </label><span id='location_name'>".print_something($key->location_name)."</span></p>\n";
-        }
-        $full_location = '';
-        if ($key->location_room > '') {
-            $full_location = __('Room').' '.$key->location_room.', ';
-        }
-        if ($key->location_suite > '') {
-            $full_location .= __('Suite').' '.$key->location_suite.', ';
-        }
-        if ($key->location_level > '') {
-            $full_location .= __('Level').' '.$key->location_level.', ';
-        }
-        $full_location .= $key->location_address;
-        ?>
-			<p><label for="location_full_address"><?php echo __('Full Location')?>: </label><span id="location_full_address"><?php echo print_something($full_location)?></span></p>
-			<p><label for="location_address"><?php echo __('Building Address')?>: </label><span id="location_address"><?php echo print_something($key->location_address)?></span></p>
-			<p><label for="location_city"><?php echo __('City')?>: </label><span id="location_city"><?php echo print_something($key->location_city)?></span></p>
-			<p><label for="location_state"><?php echo __('State')?>: </label><span id="location_state"><?php echo print_something($key->location_state)?></span></p>
-			<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something($key->location_country)?></span></p>
-		<?php } # end for each
-        } else {
-        if ($access_level > 7) {
-            echo "<p><label for='man_location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".print_something('')."</span></span></p>\n";
-        } else {
-            echo "<p><label for='location_name'>".__('Location Name').": </label><span id='location_name'>".print_something('')."</span></p>\n";
-        }
-        ?>
-			<p><label for="location_address"><?php echo __('Address')?>: </label><span id="location_address"><?php echo print_something('')?></span></p>
-			<p><label for="location_city"><?php echo __('City')?>: </label><span id="location_city"><?php echo print_something('')?></span></p>
-			<p><label for="location_state"><?php echo __('State')?>: </label><span id="location_state"><?php echo print_something('')?></span></p>
-			<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something('')?></span></p>
-			<p><label for="location_room"><?php echo __('Room')?>: </label><span id="location_room"><?php echo print_something('')?></span></p></span></p>
-    			<?php } ?>
+				<?php
+                foreach ($system_location as $key) {
+                    if ($access_level > 7) {
+                        echo "<p><label for='man_location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".print_something($key->location_name)."</span></span>$edit_icon</p>\n";
+                    } else {
+                        echo "<p><label for='location_name'>".__('Location Name').": </label><span id='location_name'>".print_something($key->location_name)."</span></p>\n";
+                    }
+                    ?>
+        			<p><label for="location_address"><?php echo __('Building Address')?>: </label><span id="location_address"><?php echo print_something($key->location_address)?></span></p>
+        			<p><label for="location_city"><?php echo __('City')?>: </label><span id="location_city"><?php echo print_something($key->location_city)?></span></p>
+        			<p><label for="location_state"><?php echo __('State')?>: </label><span id="location_state"><?php echo print_something($key->location_state)?></span></p>
+        			<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something($key->location_country)?></span></p>
+            	<?php } ?>
+                </div>
     			<p><label for="man_location_level"><?php echo __('Device specific Level')?>: </label><span id="man_location_level" <?php echo $edit?>><?php echo print_something($location_level)?></span><?php echo $edit_icon; ?></p>
     			<p><label for="man_location_suite"><?php echo __('Device specific Suite')?>: </label><span id="man_location_suite" <?php echo $edit?>><?php echo print_something($location_suite)?></span><?php echo $edit_icon; ?></p>
     			<p><label for="man_location_room"><?php echo __('Device specific Room')?>: </label><span id="man_location_room" <?php echo $edit?>><?php echo print_something($location_room)?></span><?php echo $edit_icon; ?></p>
@@ -147,24 +124,18 @@
 				<?php endforeach; ?>
                 <p><label for="comments"><?php echo __('Comments')?>: </label><span id="comments" <?php echo $edit?>><?php echo print_something($system[0]->comments)?></span></p>
 				<div id="org_container">
-				<?php if (count($system_org) > 0) {
-                    foreach ($system_org as $key):
-                        echo "<p><label for='man_org_id_select'>".__('Org Name').": </label>";
+
+                <p><label for='man_org_id_select'><?php echo __('Org Name'); ?>: </label>
+                    <?php foreach ($system_org as $key):
                         if ($access_level > 7) {
                             echo "<span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".print_something($key->org_name)."</span></span>$edit_icon</p>\n";
                         } else {
                             echo "<span id='org_name'>".print_something($key->org_name)."</span></p>\n";
                         }
-                        if ($key->org_name > "") {
-                            if ($key->org_parent_id == '0') {
-                                $key->org_parent_id = '';
-                            }
-                            echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'>".print_something($key->contact_id)."</span></p>\n";
-                            echo "<p><label for='parent_org'>".__('Parent Org').": </label><span id='parent_org'>".print_something($key->org_parent_name)."</span></p>\n";
-                            echo "<p><label for='org_comments'>".__('Org Comments').": </label><span id='org_comments'>".print_something($key->org_comments)."</span></p>\n";
-                        }
-                    endforeach;
-                    } ?>
+                        #echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'>".print_something($key->contact_id)."</span></p>\n";
+                        echo "<p><label for='parent_org'>".__('Parent Org').": </label><span id='parent_org'>".print_something($key->org_parent_name)."</span></p>\n";
+                        #echo "<p><label for='org_comments'>".__('Org Comments').": </label><span id='org_comments'>".print_something($key->org_comments)."</span></p>\n";
+                    endforeach; ?>
 				</div>
 			</div>
 			<div style="float:right; width: 100px; margin-left: -80%;">
