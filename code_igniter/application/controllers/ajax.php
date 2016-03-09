@@ -206,7 +206,7 @@ class ajax extends MY_Controller
 
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $log_details->message = "GET request received to ajax/update_system_man. This is depreciated.";
-        $log_details->severity = 5;
+            $log_details->severity = 5;
             stdlog($log_details);
         }
 
