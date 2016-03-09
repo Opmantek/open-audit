@@ -4690,7 +4690,7 @@ class admin extends MY_Controller
             $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_mac_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its mac address during discovery.')";
 
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_linux_script_directory'";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_directory','/tmp','y','0000-00-00 00:00:00',0,'The directory the script is copied into on the target device.')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_directory','/tmp/','y','0000-00-00 00:00:00',0,'The directory the script is copied into on the target device.')";
 
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_linux_script_permissions'";
             $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_permissions','700','y','0000-00-00 00:00:00',0,'The permissions set on the audit_linux.sh script when it is copied to the target device.')";
