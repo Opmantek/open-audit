@@ -283,8 +283,8 @@ class M_devices_components extends MY_Model
                 $message = "No table name supplied - failed";
             }
             if (count($match_columns) == 0) {
-                $message = "$table - No columns to match supplied - failed";
                 $log_details->message = 'No columns to match supplied for '.@ip_address_from_db($details->man_ip_address).' ('.@$details->hostname.')';
+                $message = "$table - No columns to match supplied - failed";
             }
             # if (!isset($details->id)) { # this will be changed when we convert the system table
             if (!isset($details->system_id)) {
