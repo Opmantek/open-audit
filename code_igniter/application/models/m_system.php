@@ -1668,7 +1668,7 @@ class M_system extends MY_Model
                 # no match - insert
                 $sql = "INSERT INTO ip (id, system_id, current, first_seen, last_seen, mac, net_index, ip, netmask, version, network, set_by) VALUES(NULL, ?, 'y', ?, ?, ?, '', ?, ?, '', '', '')";
                 $sql = $this->clean_sql($sql);
-                $data = array("$details->system_id", "$details->timestamp", "$details->timestamp", "$details->mac_address", "$details->man_ip_address", "$details->netmask");
+                $data = array("$details->system_id", "$details->timestamp", "$details->timestamp", "$details->mac_address", "$details->man_ip_address", "$details->subnet");
                 $query = $this->db->query($sql, $data);
             } else {
                 # match - update timestamp only
