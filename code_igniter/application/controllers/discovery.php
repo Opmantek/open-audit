@@ -772,7 +772,7 @@ class discovery extends CI_Controller
                     if ($display == 'y') {
                         echo "DEBUG - ----------------------------------------------------\n";
                     }
-                    print_r($details);
+                    $this->echo_details($details);
                     sleep(5);
                     $log_details->message = 'Deleting credential set for '.$details->subnet_range.' submitted on '.$details->subnet_timestamp;
                     stdlog($log_details);
@@ -1407,10 +1407,7 @@ class discovery extends CI_Controller
                         if ($display == 'y') {
                             $details->show_output = true;
                             echo "DEBUG ---------------\n";
-                            // remove all the null, false and Empty Strings but leaves 0 (zero) values
-                            $filtered_details = (object) array_filter((array) $details, 'strlen' );
-                            print_r($filtered_details);
-                            unset($filtered_details);
+                            $this->echo_details($details);
                             echo "DEBUG ---------------\n";
                         }
 
@@ -2281,19 +2278,10 @@ class discovery extends CI_Controller
             }
         }
 
-        if ($return['status'] != '0') {
-            $log_details->message = 'SSH command \'' . $command . '\' on ' . $host . ' failed';
-            stdlog($log_details);
-        } else {
-            $log_details->message = 'SSH command \'' . $command . '\' on ' . $host . ' succeeded';
-            stdlog($log_details);
-        }
-
         if ($display == 'y') {
-            if ($this->config->item('show_passwords') != 'y') {
-                $command_string = str_replace($password, '******', $command_string);
-                $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
-            }
+            $command_string = str_replace($password, '******', $command_string);
+            $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
+            $command_string = str_replace(escapeshellarg($password), '******', $command_string);
             echo "\n";
             echo 'DEBUG - Command Executed: '.$command_string."\n";
             echo 'DEBUG - Return Value: '.$return['status']."\n";
@@ -2306,6 +2294,15 @@ class discovery extends CI_Controller
             }
             print_r($formatted_output);
         }
+
+        if ($return['status'] != '0') {
+            $log_details->message = 'SSH command \'' . $command_string . '\' on ' . $host . ' failed';
+            stdlog($log_details);
+        } else {
+            $log_details->message = 'SSH command \'' . $command_string . '\' on ' . $host . ' succeeded';
+            stdlog($log_details);
+        }
+
         return($return);
     }
 
@@ -2329,19 +2326,9 @@ class discovery extends CI_Controller
             exec($command_string, $return['output'], $return['status']);
         }
 
-        if ($return['status'] != '0') {
-            $log_details->message = 'WMIC command \'' . $command . '\' on ' . $host . ' failed';
-            stdlog($log_details);
-        } else {
-            $log_details->message = 'WMIC command \'' . $command . '\' on ' . $host . ' succeeded';
-            stdlog($log_details);
-        }
-
         if ($display == 'y') {
-            if ($this->config->item('show_passwords') != 'y') {
-                $command_string = str_replace($password, '******', $command_string);
-                $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
-            }
+            $command_string = str_replace($password, '******', $command_string);
+            $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
             echo 'DEBUG - Command Executed: '.$command_string."\n";
             echo 'DEBUG - Return Value: '.$return['status']."\n";
             echo "DEBUG - Command Output:\n";
@@ -2354,6 +2341,15 @@ class discovery extends CI_Controller
             print_r($formatted_output);
             echo "\nDEBUG ---------------\n";
         }
+
+        if ($return['status'] != '0') {
+            $log_details->message = 'WMIC command \'' . $command_string . '\' on ' . $host . ' failed';
+            stdlog($log_details);
+        } else {
+            $log_details->message = 'WMIC command \'' . $command_string . '\' on ' . $host . ' succeeded';
+            stdlog($log_details);
+        }
+
         return($return);
     }
 
@@ -2397,19 +2393,10 @@ class discovery extends CI_Controller
             exec($command_string, $return['output'], $return['status']);
         }
 
-        if ($return['status'] != '0') {
-            $log_details->message = 'SCP copy \'' . $source . '\' to ' . $host . ' failed';
-            stdlog($log_details);
-        } else {
-            $log_details->message = 'SCP copy \'' . $source . '\' to ' . $host . ' succeeded';
-            stdlog($log_details);
-        }
-
         if ($display == 'y') {
-            if ($this->config->item('show_passwords') != 'y') {
-                $command_string = str_replace($password, '******', $command_string);
-                $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
-            }
+            $command_string = str_replace($password, '******', $command_string);
+            $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
+            $command_string = str_replace(escapeshellarg($password), '******', $command_string);
             echo 'DEBUG - Command Executed: '.$command_string."\n";
             echo 'DEBUG - Return Value: '.$return['status']."\n";
             echo "DEBUG - Command Output:\n";
@@ -2422,8 +2409,31 @@ class discovery extends CI_Controller
             print_r($formatted_output);
             echo "\nDEBUG ---------------\n";
         }
+
+        if ($return['status'] != '0') {
+            $log_details->message = 'SCP copy \'' . $source . '\' to ' . $host . ' failed';
+            stdlog($log_details);
+        } else {
+            $log_details->message = 'SCP copy \'' . $source . '\' to ' . $host . ' succeeded';
+            stdlog($log_details);
+        }
+
         return($return);
     }
 
+function echo_details ($details) {
+    // remove all the null, false and Empty Strings but leaves 0 (zero) values
+    $filtered_details = (object) array_filter((array) $details, 'strlen' );
+    foreach ($filtered_details as $key => $value) {
+        if (stripos($key, 'password') !== false) {
+            $filtered_details->$key = '******';
+        }
+        if ($key == 'snmp_community') {
+            $filtered_details->snmp_community = '******';
+        }
+    }
+    print_r($filtered_details);
+    unset($filtered_details);
+}
 
 }
