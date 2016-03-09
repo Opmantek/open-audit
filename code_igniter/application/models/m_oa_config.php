@@ -121,7 +121,7 @@ class M_oa_config extends MY_Model
         # set all items to value or ''
         foreach ($result as $config_item) {
             $temp_name = $config_item->config_name;
-            if (!isset($config_item->config_value) or is_null($config_item->config_value) or $config_item->config_value == false) {
+            if (empty($config_item->config_value)) {
                 $this->config->config[$temp_name] = '';
             } else {
                 $this->config->config[$temp_name] = $config_item->config_value;
@@ -136,6 +136,12 @@ class M_oa_config extends MY_Model
                 }
             }
         }
+
+        # ensure we have a trailing slash
+        if (!empty($this->config->config['discovery_linux_script_directory']) and substr($this->config->config['discovery_linux_script_directory'], -1) !== '/') {
+            $this->config->config['discovery_linux_script_directory'] .= '/';
+        } 
+
         $this->config->config['oa_web_index'] = $basic_url;
         $this->config->config['oa_web_folder'] = str_replace('/index.php', '', $basic_url);
         unset($i, $j, $temp, $basic_url);
