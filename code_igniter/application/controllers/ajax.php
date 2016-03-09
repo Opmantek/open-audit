@@ -38,9 +38,17 @@ class ajax extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->data['system_id'] = $this->uri->segment(3, '');
-        $this->data['field_name'] = $this->uri->segment(4, '');
-        $this->data['field_data'] = $this->uri->segment(5, '');
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $this->data['system_id'] = $this->uri->segment(3, '');
+            $this->data['field_name'] = $this->uri->segment(4, '');
+            $this->data['field_data'] = $this->uri->segment(5, '');
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->data['system_id'] = @$_POST['system_id'];
+            $this->data['field_name'] = @$_POST['name'];
+            $this->data['field_data'] = @$_POST['value'];
+        }
+
         $this->data['title'] = 'Open-AudIT';
 
         if (!isset($this->user->user_lang) or $this->user->user_lang == "") {
@@ -104,47 +112,71 @@ class ajax extends MY_Controller
 
     public function update_config()
     {
+        $log_details = new stdClass();
+        $log_details->severity = 5;
+        $log_details->file = 'system';
+
+
         // must be an admin to access this function
         if ($this->user->user_admin != 'y') {
+            $log_details->message = "A non-admin user attempted to use ajax/update_config.";
+            stdlog($log_details);
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
                 redirect('main/list_groups');
             }
         }
-        $url = str_replace("%3A", ":", current_url());
-        $url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
-        $url_array = explode('/', $url);
 
-        if (strpos($_SERVER['QUERY_STRING'], "name=") !== false) {
-            # we have a GET style request from the Bootstrap theme.
-            $i = explode('&', $_SERVER['QUERY_STRING']);
-            # get the config name
-            $config_name = urldecode(str_replace('name=', '', $i[0]));
-            # get the new config value
-            $config_value = urldecode(str_replace('value=', '', $i[1]));
-        } else {
-            for ($i = 0; $i<count($url_array); $i++) {
-                if ($url_array[$i] == "update_config") {
-                    $config_name = $url_array[$i+1];
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $log_details->message = "GET request received to ajax/update_config. This is depreciated.";
+            stdlog($log_details);
+            $url = str_replace("%3A", ":", current_url());
+            $url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
+            $url_array = explode('/', $url);
+
+            if (strpos($_SERVER['QUERY_STRING'], "name=") !== false) {
+                # we have a GET style request from the Bootstrap theme.
+                $i = explode('&', $_SERVER['QUERY_STRING']);
+                # get the config name
+                $config_name = urldecode(str_replace('name=', '', $i[0]));
+                # get the new config value
+                $config_value = urldecode(str_replace('value=', '', $i[1]));
+            } else {
+                for ($i = 0; $i<count($url_array); $i++) {
+                    if ($url_array[$i] == "update_config") {
+                        $config_name = $url_array[$i+1];
+                    }
                 }
+                $config_name = str_replace("%5E%5E%5E", "/", $config_name);
+                $location = strpos($url, $config_name);
+                $config_value = substr($url, $location);
+                $location = strpos($config_value, "/");
+                $config_value = substr($config_value, $location);
+                $config_value = substr($config_value, 1);
             }
-            $config_name = str_replace("%5E%5E%5E", "/", $config_name);
-            if ($config_name == 'default_ad_server') { $config_name = 'ad_server'; }
-            $location = strpos($url, $config_name);
-            $config_value = substr($url, $location);
-            $location = strpos($config_value, "/");
-            $config_value = substr($config_value, $location);
-            $config_value = substr($config_value, 1);
+
+            $config_value = str_replace("%5E%5E%5E", "/", $config_value);
         }
 
-        $config_value = str_replace("%5E%5E%5E", "/", $config_value);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            # these are set in the constructor
+            $config_name = $this->data['field_name'];
+            $config_value = $this->data['field_data'];
+        }
+
+        if ($config_name == 'default_ad_server') { $config_name = 'ad_server'; }
+
+        if (empty($config_name)) {
+            return;
+        }
+
         $this->load->model("m_oa_config");
         if ($config_value == '-') {
             $config_value = '';
         }
 
-        $this->m_oa_config->update_config($config_name, $config_value, $this->user->user_id, date('Y-m-d H:i:s'));
+       $this->m_oa_config->update_config($config_name, $config_value, $this->user->user_id, date('Y-m-d H:i:s'));
 
         $masked = str_pad('', strlen($config_value), '*');
         if ($config_name == 'default_windows_password' and $this->config->config['show_passwords'] == 'n') {
@@ -163,14 +195,20 @@ class ajax extends MY_Controller
     }
 
     # /index.php/ajax/update_system_man/[system_id]/[field_name]/[field_value]
+    # This should be POST'd to only from 1.12.2
     public function update_system_man()
     {
-
         // log the attempt
         $log_details = new stdClass();
         $log_details->severity = 6;
         stdlog($log_details);
         unset($log_details);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $log_details->message = "GET request received to ajax/update_system_man. This is depreciated.";
+        $log_details->severity = 5;
+            stdlog($log_details);
+        }
 
         $this->load->model("m_system");
         $this->load->model("m_oa_group");

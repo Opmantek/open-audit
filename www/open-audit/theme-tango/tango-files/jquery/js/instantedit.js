@@ -50,7 +50,11 @@ xhr.prototype.send = function(urlget,data) {
         this.init();
     }
     if (!this.wait()) {
-        this._xh.open("GET",urlget,false);
+        //this._xh.open("GET",urlget,false);
+        // changed the below to use POST
+        this._xh.open("POST",urlget,false);
+        // added the below to set a POST header
+        this._xh.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         try {
             this._xh.send(data)
         } catch (e) {
@@ -75,8 +79,13 @@ function fieldEnter(campo,evt,idfld) {
     if (evt.keyCode == 13 && campo.value!="") {
         elem = document.getElementById( idfld );
         remote = new xhr;
+        // create our POST data
+        sendData = "name="+encodeURIComponent(elem.id)+"&value="+encodeURIComponent(campo.value)+"&system_id="+formVars;
+        //var sendData = {name: encodeURIComponent(elem.id), value: encodeURIComponent(campo.value)};
+        nt = remote.send(urlBase, sendData);
         //nt = remote.send(urlBase + "?fieldname=" +encodeURIComponent(elem.id)+ "&content="+encodeURIComponent(campo.value)+"&"+formVars,"");
-        nt = remote.send(urlBase+"/"+formVars+"/"+encodeURIComponent(elem.id)+"/"+encodeURIComponent(campo.value), encodeURIComponent(campo.value));
+        // below was working
+        //nt = remote.send(urlBase+"/"+formVars+"/"+encodeURIComponent(elem.id)+"/"+encodeURIComponent(campo.value), encodeURIComponent(campo.value));
         //remove glow
         noLight(elem);
         elem.innerHTML = nt;
@@ -93,8 +102,13 @@ function fieldBlur(campo,idfld) {
     if (campo.value!="") {
         elem = document.getElementById( idfld );
         remote = new xhr;
+        // create our POST data
+        sendData = "name="+encodeURIComponent(elem.id)+"&value="+encodeURIComponent(campo.value)+"&system_id="+formVars;
+        //var sendData = {name: encodeURIComponent(elem.id), value: encodeURIComponent(campo.value)};
+        nt = remote.send(urlBase, sendData);
         //nt = remote.send(urlBase + "?fieldname=" +encodeURIComponent(elem.id)+ "&content="+encodeURIComponent(campo.value)+"&"+formVars,"");
-        nt = remote.send(urlBase+"/"+formVars+"/"+encodeURIComponent(elem.id)+"/"+encodeURIComponent(campo.value), encodeURIComponent(campo.value));
+        // below was working
+        // nt = remote.send(urlBase+"/"+formVars+"/"+encodeURIComponent(elem.id)+"/"+encodeURIComponent(campo.value), encodeURIComponent(campo.value));
         elem.innerHTML = nt;
         changing = false;
         return false;
