@@ -251,6 +251,7 @@ class discovery extends CI_Controller
 
                 if ($display == 'y') {
                     exec($command_string, $output, $return_var);
+                    $command_string = str_replace($_POST['windows_password'], '******', $command_string);
                     echo 'DEBUG - Command Executed: '.$command_string."\n";
                     echo 'DEBUG - Return Value: '.$return_var."\n";
                     echo "DEBUG - Command Output:\n";
@@ -280,6 +281,7 @@ class discovery extends CI_Controller
                     $command_string = "smbclient \\\\\\\\".$_POST['server']."\\\\admin$ -U \"".$_POST['windows_domain']."\\".$_POST['windows_username']."%".$_POST['windows_password']."\" -c \"put $filepath/discover_domain.vbs discover_domain.vbs\" 2>&1";
                     exec($command_string, $output, $return_var);
                     if ($display == 'y') {
+                        $command_string = str_replace($_POST['windows_password'], '******', $command_string);
                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                         echo 'DEBUG - Return Value: '.$return_var."\n";
                         echo "DEBUG - Command Output:\n";
@@ -303,6 +305,7 @@ class discovery extends CI_Controller
                     $command_string = "smbclient \\\\\\\\".$_POST['server']."\\\\admin$ -U \"".$_POST['windows_domain']."\\".$_POST['windows_username']."%".$_POST['windows_password']."\" -c \"put $filepath/audit_windows.vbs audit_windows.vbs\" 2>&1";
                     exec($command_string, $output, $return_var);
                     if ($display == 'y') {
+                        $command_string = str_replace($_POST['windows_password'], '******', $command_string);
                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                         echo 'DEBUG - Return Value: '.$return_var."\n";
                         echo "DEBUG - Command Output:\n";
@@ -326,6 +329,7 @@ class discovery extends CI_Controller
                     $command_string = "screen -D -m /usr/local/open-audit/other/winexe-static -U ".$_POST['windows_domain']."/".$_POST['windows_username']."%".$_POST['windows_password']." --uninstall //".$_POST['server']." \"cscript //nologo c:\windows\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=c:\windows\audit_windows.vbs url=".$url." limit=".$limit." debugging=0 struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." \" ";
                     exec($command_string, $output, $return_var);
                     if ($display == 'y') {
+                        $command_string = str_replace($_POST['windows_password'], '******', $command_string);
                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                         echo 'DEBUG - Return Value: '.$return_var."\n";
                         // echo "DEBUG - Command Output:\n";  // nooutput because of use of 'screen' command
@@ -533,7 +537,7 @@ class discovery extends CI_Controller
                 if (isset($this->config->config['network_group_auto_create']) and $this->config->config['network_group_auto_create'] != 'n' and $subnet_split[1] < $net_group_subnet) {
                     // we want to auto create network groups
                     // test if a network group exists with the matching definition
-                    $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, ip WHERE ( ip.ip >= '".ip_address_to_db($subnet_details->host_min)."' and ip.ip <= '".ip_address_to_db($subnet_details->host_max)."' and ip.subnet = '".$subnet_details->netmask."' and ip.system_id = system.system_id and ip.current = 'y' and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
+                    $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, ip WHERE ( ip.ip >= '".ip_address_to_db($subnet_details->host_min)."' and ip.ip <= '".ip_address_to_db($subnet_details->host_max)."' and ip.netmask = '".$subnet_details->netmask."' and ip.system_id = system.system_id and ip.current = 'y' and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
                     $start = explode(' ', microtime());
                     $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
                     $data = array($group_dynamic_select);
@@ -1013,6 +1017,7 @@ class discovery extends CI_Controller
                                 $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2';
                                 exec($command_string, $output, $return_var);
                                 if ($display == 'y') {
+                                    $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
                                     echo 'DEBUG - Return Value: '.$return_var."\n";
                                     echo "DEBUG - Command Output:\n";
@@ -1042,6 +1047,7 @@ class discovery extends CI_Controller
                                     $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' lan print 2>/dev/null | grep "Subnet Mask" | cut -d":" -f2 ';
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
+                                        $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                                         echo 'DEBUG - Return Value: '.$return_var."\n";
                                         echo "DEBUG - Command Output:\n";
@@ -1058,6 +1064,7 @@ class discovery extends CI_Controller
                                     $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Manufacturer" | cut -d":" -f2 ';
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
+                                        $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                                         echo 'DEBUG - Return Value: '.$return_var."\n";
                                         echo "DEBUG - Command Output:\n";
@@ -1074,6 +1081,7 @@ class discovery extends CI_Controller
                                     $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Name" | cut -d":" -f2 ';
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
+                                        $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                                         echo 'DEBUG - Return Value: '.$return_var."\n";
                                         echo "DEBUG - Command Output:\n";
@@ -1090,6 +1098,7 @@ class discovery extends CI_Controller
                                     $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Serial" | cut -d":" -f2 ';
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
+                                        $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                                         echo 'DEBUG - Return Value: '.$return_var."\n";
                                         echo "DEBUG - Command Output:\n";
@@ -1522,6 +1531,7 @@ class discovery extends CI_Controller
                                 $command_string = 'smbclient \\\\\\\\'.$details->man_ip_address.'\\\\admin$ -U "'.str_replace("'", "", escapeshellarg($details->windows_domain)).'\\\\'.str_replace("'", "", escapeshellarg($details->windows_username)).'%'.str_replace("'", "", escapeshellarg($details->windows_password)).'" -c "put '.$filepath.'/audit_windows.vbs audit_windows.vbs" 2>&1';
                                 exec($command_string, $output, $return_var);
                                 if ($display == 'y') {
+                                    $command_string = str_replace(str_replace("'", "", escapeshellarg($details->windows_password)), '******', $command_string);
                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
                                     echo 'DEBUG - Return Value: '.$return_var."\n";
                                     echo "DEBUG - Command Output:\n";
@@ -1544,6 +1554,7 @@ class discovery extends CI_Controller
 
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
+                                        $command_string = str_replace(str_replace("'", "", escapeshellarg($details->windows_password)), '******', $command_string);
                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                                         echo 'DEBUG - Return Value: '.$return_var."\n";
                                         // echo "DEBUG - Command Output:\n"; // no output because of use of 'screen' command
@@ -1573,6 +1584,7 @@ class discovery extends CI_Controller
                                     $script_string = "$filepath\\audit_windows.vbs strcomputer=".$details->man_ip_address." submit_online=y create_file=n struser=".$details->windows_domain."\\".$details->windows_username." strpass=".$details->windows_password." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->system_id;
                                     $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
                                     exec($command_string, $output, $return_var);
+                                    $command_string = str_replace($details->windows_password, '******', $command_string);
                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
                                     echo 'DEBUG - Return Value: '.$return_var."\n";
                                     echo "DEBUG - Command Output:\n";
@@ -1611,8 +1623,8 @@ class discovery extends CI_Controller
                                     // Auditing a target device from a Linux Open-AudIT Server
                                     if ($display == 'y') {
                                         echo "DEBUG - Attempting SSH audit.\n";
-                                        echo "DEBUG - struser: ".$details->ssh_username."\n";
-                                        echo "DEBUG - strpass: ".$details->ssh_password."\n";
+                                        #echo "DEBUG - struser: ".$details->ssh_username."\n";
+                                        #echo "DEBUG - strpass: ".$details->ssh_password."\n";
                                     }
                                     $ssh_command = "sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." uname ";
                                     $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
@@ -1825,14 +1837,15 @@ class discovery extends CI_Controller
                                     // Auditing a unix based target device from a Windows Open-AudIT Server
                                     if ($display == 'y') {
                                         echo "DEBUG - Attempting SSH audit.\n";
-                                        echo "DEBUG - struser: ".$details->ssh_username."\n";
-                                        echo "DEBUG - strpass: ".$details->ssh_password."\n";
+                                        #echo "DEBUG - struser: ".$details->ssh_username."\n";
+                                        #echo "DEBUG - strpass: ".$details->ssh_password."\n";
                                     }
                                     $error = '';
                                     $audit_script = '';
                                     $command_string = "echo y | $filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->man_ip_address." -pw ".$this->escape_plink_command($details->ssh_password)." exit";
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
+                                        $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                                         echo 'DEBUG - Return Value: '.$return_var."\n";
                                         if ($return_var != '0') {
@@ -1857,6 +1870,7 @@ class discovery extends CI_Controller
                                         $command_string = "$filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->man_ip_address." -pw ".$this->escape_plink_command($details->ssh_password)." uname";
                                         exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
+                                            $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
                                             echo 'DEBUG - Command Executed: '.$command_string."\n";
                                             echo 'DEBUG - Return Value: '.$return_var."\n";
                                             echo "DEBUG - Command Output:\n";
@@ -1902,6 +1916,7 @@ class discovery extends CI_Controller
                                         $command_string = "$filepath\\pscp.exe -pw ".$this->escape_plink_command($details->ssh_password)." $filepath\\$audit_script ".$details->ssh_username."@".$details->man_ip_address.":/tmp/";
                                         exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
+                                            $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
                                             echo 'DEBUG - Command Executed: '.$command_string."\n";
                                             echo 'DEBUG - Return Value: '.$return_var."\n";
                                             echo "DEBUG - Command Output:\n";
@@ -1925,6 +1940,7 @@ class discovery extends CI_Controller
                                         $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." chmod 777 /tmp/$audit_script";
                                         exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
+                                            $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
                                             echo 'DEBUG - Command Executed: '.$command_string."\n";
                                             echo 'DEBUG - Return Value: '.$return_var."\n";
                                             echo "DEBUG - Command Output:\n";
@@ -1954,6 +1970,7 @@ class discovery extends CI_Controller
                                             $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." which sudo";
                                             exec($command_string, $output, $return_var);
                                             if ($display == 'y') {
+                                                $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
                                                 echo 'DEBUG - Command Executed: '.$command_string."\n";
                                                 echo 'DEBUG - Return Value: '.$return_var."\n";
                                                 echo "DEBUG - Command Output:\n";
@@ -1982,6 +1999,7 @@ class discovery extends CI_Controller
                                                 $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." \"echo ".$this->escape_plink_command($details->ssh_password)." | $sudo -S /tmp/".$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
                                                 @exec($command_string, $output, $return_var);
                                                 if ($display == 'y') {
+                                                    $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
                                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
                                                     echo 'DEBUG - Return Value: '.$return_var."\n";
                                                     echo "DEBUG - Command Output:\n";
@@ -1994,6 +2012,7 @@ class discovery extends CI_Controller
                                                     $command_string = $filepath.'\\plink.exe -pw '.$this->escape_plink_command($details->ssh_password).' '.$details->ssh_username.'@'.$details->man_ip_address." \"/tmp/".$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
                                                     @exec($command_string, $output, $return_var);
                                                     if ($display == 'y') {
+                                                        $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
                                                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                                                         echo 'DEBUG - Return Value: '.$return_var."\n";
                                                         echo "DEBUG - Command Output:\n";
@@ -2018,6 +2037,7 @@ class discovery extends CI_Controller
                                                 $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." \"/tmp/".$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
                                                 @exec($command_string, $output, $return_var);
                                                 if ($display == 'y') {
+                                                    $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
                                                     echo 'DEBUG - Command Executed: '.$command_string."\n";
                                                     echo 'DEBUG - Return Value: '.$return_var."\n";
                                                     echo "DEBUG - Command Output:\n";
@@ -2049,6 +2069,7 @@ class discovery extends CI_Controller
                                         # this is the linux command # $command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "/tmp/' . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
                                         @exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
+                                            $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
                                             echo 'DEBUG - Command Executed: '.$command_string."\n";
                                             echo 'DEBUG - Return Value: '.$return_var."\n";
                                             if ($return_var != '0') {
@@ -2185,6 +2206,8 @@ class discovery extends CI_Controller
                 $return['status'] = proc_close($process);
             }
             if ($ssh_display == 'y') {
+                $ssh_command = str_replace($ssh_password, '******', $ssh_command);
+                $ssh_command = str_replace(escapeshellarg($ssh_password), '******', $ssh_command);
                 echo 'DEBUG - Command Executed: '.$ssh_command."\n";
                 echo 'DEBUG - Return Value: '.$return['status']."\n";
                 echo "DEBUG - Command Output:\n";
@@ -2268,7 +2291,8 @@ class discovery extends CI_Controller
 
         if ($display == 'y') {
             if ($this->config->item('show_passwords') != 'y') {
-                $command_string = str_replace($password, '[REMOVED]', $command_string);
+                $command_string = str_replace($password, '******', $command_string);
+                $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
             }
             echo "\n";
             echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -2315,7 +2339,8 @@ class discovery extends CI_Controller
 
         if ($display == 'y') {
             if ($this->config->item('show_passwords') != 'y') {
-                $command_string = str_replace($password, '[REMOVED]', $command_string);
+                $command_string = str_replace($password, '******', $command_string);
+                $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
             }
             echo 'DEBUG - Command Executed: '.$command_string."\n";
             echo 'DEBUG - Return Value: '.$return['status']."\n";
@@ -2382,7 +2407,8 @@ class discovery extends CI_Controller
 
         if ($display == 'y') {
             if ($this->config->item('show_passwords') != 'y') {
-                $command_string = str_replace($password, '[REMOVED]', $command_string);
+                $command_string = str_replace($password, '******', $command_string);
+                $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
             }
             echo 'DEBUG - Command Executed: '.$command_string."\n";
             echo 'DEBUG - Return Value: '.$return['status']."\n";
