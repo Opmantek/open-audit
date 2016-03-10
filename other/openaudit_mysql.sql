@@ -608,6 +608,7 @@ INSERT INTO `oa_config` VALUES ('discovery_linux_script_directory','/tmp/','y','
 INSERT INTO `oa_config` VALUES ('discovery_linux_script_permissions','700','y','0000-00-00 00:00:00',0,'The permissions set on the audit_linux.sh script when it is copied to the target device.');
 INSERT INTO `oa_config` VALUES ('discovery_mac_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its mac address during discovery.');
 INSERT INTO `oa_config` VALUES ('discovery_name_match','y','y','0000-00-00 00:00:00',0,'Should we match a device based only on its hostname during discovery.');
+INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00',0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
 INSERT INTO `oa_config` VALUES ('discovery_update_groups','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT update the device groups after discovering a device.');
 INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
 INSERT INTO `oa_config` VALUES ('display_version','1.12.2','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');

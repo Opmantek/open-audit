@@ -151,9 +151,14 @@ class discovery extends CI_Controller
             // TODO - check this on the form
             $i = explode('/', base_url());
             $url = str_replace($i[2], $this->config->item('default_network_address'), base_url());
+            if (!empty($this->config->config['discovery_nmap_os'])) {
+                $nmap_os = $this->config->config['discovery_nmap_os'];
+            } else {
+                $nmap_os = 'n';
+            }
             if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
                 // run the script and continue (do not wait for result)
-                $command_string = "nohup $filepath/discover_subnet.sh subnet_range=$ip_address url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
+                $command_string = "nohup $filepath/discover_subnet.sh subnet_range=$ip_address url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
                 @exec($command_string, $output, $return_var);
                 if ($return_var != '0') {
                     $error = 'Discovery subnet starting script discover_subnet.sh ('.$ip_address.') has failed';
@@ -167,7 +172,7 @@ class discovery extends CI_Controller
             }
             if (php_uname('s') == 'Windows NT') {
                 // run the script and continue (do not wait for result)
-                $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet_range=$ip_address url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+                $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet_range=$ip_address url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " ";
                 pclose(popen($command_string, "r"));
             }
         }
@@ -590,7 +595,7 @@ class discovery extends CI_Controller
                     $i = explode('/', base_url());
                     $temp_network_address = $i[2];
                 } else {
-                    $temp_network_address = $this->config->item('default_network_address');
+                    $temp_network_address = $this->config->config['default_network_address'];
                 }
                 $url = str_replace($temp_network_address, $this->config->config['default_network_address'], base_url());
             # if nothing, then just try the base_url - this will likely use 127.0.0.1 and fail...
@@ -600,11 +605,17 @@ class discovery extends CI_Controller
             }
             unset($temp_network_address);
 
+             if (!empty($this->config->config['discovery_nmap_os'])) {
+                $nmap_os = $this->config->config['discovery_nmap_os'];
+            } else {
+                $nmap_os = 'n';
+            }
+
             if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
                 if ($subnet_range > '') {
                     if ($display == 'y') {
                         // run the script and wait for the output so we can echo it.
-                        $command_string = "$filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" 2>&1";
+                        $command_string = "$filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " 2>&1";
                         @exec($command_string, $output, $return_var);
                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                         echo 'DEBUG - Return Value: '.$return_var."\n";
@@ -629,7 +640,7 @@ class discovery extends CI_Controller
                         exit();
                     } else {
                         // run the script and continue (do not wait for result)
-                        $command_string = "nohup $filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\"  > /dev/null 2>&1 &";
+                        $command_string = "nohup $filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
                         @exec($command_string, $output, $return_var);
                         if ($return_var != '0') {
                             $error = 'Discovery subnet starting script discover_subnet.sh ('.$subnet_range.') has failed';
@@ -646,7 +657,7 @@ class discovery extends CI_Controller
                 if ($subnet_range > '') {
                     if ($display == 'y') {
                         // run the script and wait for the output so we can echo it.
-                        $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+                        $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os;
                         @exec($command_string, $output, $return_var);
                         echo 'DEBUG - Command Executed: '.$command_string."\n";
                         echo 'DEBUG - Return Value: '.$return_var."\n";
@@ -655,7 +666,7 @@ class discovery extends CI_Controller
                         print_r($output_new);
 
                         if ($return_var != '0') {
-                            $error = 'Discovery subnet starting script discover_subnet.sh ('.$subnet_range.') has failed';
+                            $error = 'Discovery subnet starting script discover_subnet.vbs ('.$subnet_range.') has failed';
                             $log_details->message = $error;
                             stdlog($log_details);
                         } else {
@@ -671,7 +682,7 @@ class discovery extends CI_Controller
                         }
                     } else {
                         // run the script and continue (do not wait for result)
-                        $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" ";
+                        $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os;
                         pclose(popen($command_string, "r"));
                     }
                 }
@@ -780,7 +791,7 @@ class discovery extends CI_Controller
                     $query = $this->db->query($sql);
                 } else {
                     $skip = false;
-                    if (stripos(' ' . $this->config->item('discovery_ip_exclude') . ' ', ' ' . $details->man_ip_address . ' ') !== false ) {
+                    if (stripos(' ' . $this->config->config['discovery_ip_exclude'] . ' ', ' ' . $details->man_ip_address . ' ') !== false ) {
                         # Our ip address matched an ip in the discovery_ip_exclude list - exit
                         $log_details->message = $details->man_ip_address . ' is in the list of excluded ip addresses - skipping.';
                         stdlog($log_details);

@@ -50,6 +50,7 @@ user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
 sequential="n"
+os_scan="n"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -66,6 +67,12 @@ for arg in "$@"; do
 	if [ "$parameter" == "-h" ]; then parameter="help"; value="y"; fi
 	eval "$parameter"=\""$value\""
 done
+
+if [ "$os_scan" == "y" ]; then
+	os_scan="-O"
+else
+	os_scan=""
+fi
 
 if [ "$help" == "y" ]; then
 	echo ""
@@ -89,6 +96,10 @@ if [ "$help" == "y" ]; then
 	echo "     0 - No output."
 	echo "     1 - Minimal Output."
 	echo "    *2 - Verbose output."
+	echo ""
+	echo "  os_scan"
+	echo "    *n - Do not use the -O Nmap flag when scanning devices."
+	echo "     y - Use -O (will slow down scan and requires SUID be set on the Nmap binary."
 	echo ""
 	echo "  -h or --help or help=y"
 	echo "      y - Display this help output."
@@ -188,27 +199,33 @@ fi
 
 i=0
 j=0
-#for line in $(nmap -v -sP -PE -PP -n "$subnet_range" 2>/dev/null | grep "scan report for"); do
-for line in $(nmap -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
-	if [ "$debugging" -gt 0 ]; then
-		echo "$line"
-	fi
-	host=$(echo "$line" | cut -d" " -f5)
+# removed the below for 1.12.2 - scan every IP now as we're checking for devices not responding to a ping
+# for line in $(nmap -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
+# 	if [ "$debugging" -gt 0 ]; then
+# 		echo "$line"
+# 	fi
+# 	host=$(echo "$line" | cut -d" " -f5)
+# 	let "i = i + 1"
+# 	if [[ "$line" == *"[host down]"* ]]; then
+# 		if [[ "$log_no_response" == "y" ]]; then
+# 			log_entry="Non responsive ip address $host"
+# 			write_log "$log_entry"
+# 		fi
+# 	else
+# 		let "j = j + 1"
+# 		hosts="$hosts"$'\n'"$host"
+# 	fi
+# done
+
+hosts=""
+for line in $(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
 	let "i = i + 1"
-	if [[ "$line" == *"[host down]"* ]]; then
-		if [[ "$log_no_response" == "y" ]]; then
-			log_entry="Non responsive ip address $host"
-			write_log "$log_entry"
-		fi
-	else
-		let "j = j + 1"
-		hosts="$hosts"$'\n'"$host"
-	fi
+	hosts="$hosts"$'\n'"$line"
 done
 
 if [ "$debugging" -gt 0 ]; then
 	echo "Total ip addresses: $i"
-	echo "Total responding ip addresses: $j"
+	#echo "Total responding ip addresses: $j"
 fi
 
 result_file=""
@@ -221,8 +238,8 @@ if [[ "$hosts" != "" ]]; then
 			echo "Scanning Host: $host"
 		fi
 
-		log_entry="Scanning ip address $host"
-		write_log "$log_entry"
+		#log_entry="Scanning ip address $host"
+		#write_log "$log_entry"
 
 		mac_address=""
 		manufacturer=""
@@ -236,16 +253,21 @@ if [[ "$hosts" != "" ]]; then
 		p80_status="false"
 		p443_status="false"
 		tel_status="false"
+		host_is_up="false"
 
 		# options
 		# -vv Very Verbose
 		# -n Do not resolve IP to DNS name
-		# -O attempt to determine operating system
-		# --host-timeout set to a smaller than default number
-		# -PN treat host as online, skip discovery (we already know it is because of above)
-		#nmap_scan=`nmap -vv -n -O --host-timeout 20000ms -PN $host 2>/dev/null`
-		nmap_scan=$(nmap -vv -n -O -PN "$timing" "$host" 2>/dev/null)
+		# -O attempt to determine operating system ($os_scan)
+		# --host-timeout so we don't hang indefinitley
+		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
+		nmap_scan=$(nmap -vv -n "$os_scan" --host-timeout 90 "$timing" "$host" 2>/dev/null)
 		for line in $nmap_scan; do
+
+			NEEDLE="Host is up"
+			if [[ "$line" == *"$NEEDLE"* ]]; then
+				host_is_up="true"
+			fi
 
 			NEEDLE="MAC Address:"
 			if [[ "$line" == *"$NEEDLE"* ]]; then
@@ -264,114 +286,6 @@ if [[ "$hosts" != "" ]]; then
 				fi
 			fi
 
-			NEEDLE="Running:"
-			if [[ "$line" == "$NEEDLE"* ]]; then
-				os_name=$(echo "$line" | cut -d":" -f2 | cut -d "," -f1 | sed 's/^ *//g' | sed 's/ *$//g')
-
-				NEEDLE="Cisco IOS"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="Cisco"
-					os_family="Cisco IOS"
-				fi
-
-				NEEDLE="Windows"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="Windows"
-					NEEDLE="Vista"
-					if [[ "$line" == *"$NEEDLE"* ]]; then
-						os_family="Windows Vista"
-					fi
-					NEEDLE="7"
-					if [[ "$line" == *"$NEEDLE"* ]]; then
-						os_family="Windows 7"
-					fi
-					NEEDLE="8"
-					if [[ "$line" == *"$NEEDLE"* ]]; then
-						os_family="Windows 8"
-					fi
-					NEEDLE="2003"
-					if [[ "$line" == *"$NEEDLE"* ]]; then
-						os_family="Windows 2003"
-					fi
-					NEEDLE="2008"
-					if [[ "$line" == *"$NEEDLE"* ]]; then
-						os_family="Windows 2008"
-					fi
-					NEEDLE="2012"
-					if [[ "$line" == *"$NEEDLE"* ]]; then
-						os_family="Windows 2012"
-					fi
-				fi
-				NEEDLE="IRIX"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="Irix"
-				fi
-				NEEDLE="OpenBSD"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="BSD"
-					os_family="Open BSD"
-				fi
-				NEEDLE="FreeBSD"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="BSD"
-					os_family="Free BSD"
-				fi
-				NEEDLE="NetBSD"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="BSD"
-					os_family="Net BSD"
-				fi
-				NEEDLE="SunOS"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="SunOS"
-				fi
-				NEEDLE="Solaris"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="Solaris"
-				fi
-				NEEDLE="Linux"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="Linux"
-				fi
-				NEEDLE="VMware"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="VMware"
-					os_family="VMware ESXi"
-				fi
-				NEEDLE="Apple Mac OS X"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="Apple"
-					os_family="Apple OSX"
-				fi
-				NEEDLE="Apple iOS"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					os_group="Apple"
-					os_family="Apple IOS"
-				fi
-
-			fi
-
-
-			NEEDLE="Running (JUST GUESSING):"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				os_name=$(echo "$line" | cut -d":" -f2 | cut -d "(" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
-			fi
-
-			NEEDLE="Aggressive OS guesses:"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				os_name=$(echo "$line" | cut -d":" -f2 | cut -d "(" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
-				if [[ "$description" == "" ]]; then
-					description=$(echo "$line" | cut -d":" -f2 | cut -d "," -f1 | sed 's/^ *//g' | sed 's/ *$//g')
-				fi
-			fi
-
-			NEEDLE="OS Details:"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				if [[ "$os_name" == "" ]]; then
-					os_name=$(echo "$line" | cut -d":" -f2 | cut -d "(" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
-				fi
-			fi
-
 			# individual ports
 
 			NEEDLE="22/tcp"
@@ -379,22 +293,6 @@ if [[ "$hosts" != "" ]]; then
 				NEEDLE="open"
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					ssh_status="true"
-				fi
-			fi
-
-			NEEDLE="23/tcp"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				NEEDLE="open"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					tel_status="true"
-				fi
-			fi
-
-			NEEDLE="80/tcp"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				NEEDLE="open"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					p80_status="true"
 				fi
 			fi
 
@@ -406,65 +304,58 @@ if [[ "$hosts" != "" ]]; then
 				fi
 			fi
 
-			NEEDLE="443/tcp"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				NEEDLE="open"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					p443_status="true"
-				fi
-			fi
-
 		done
 
 		# test for SNMP (separate scan as it's UDP)
 		snmp_status="false"
-		command=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp open")
+		command=$(nmap -n -sU -p161 "$timing" --host-timeout 90 "$host" 2>/dev/null | grep "161/udp open")
 		if [[ "$command" == *"161/udp open"* ]]; then
 				snmp_status="true"
+				host_is_up="true"
 		fi
 
 		result=""
-		result="	<device>"$'\n'
-		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
-		result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
-		result="$result		<mac_address>$mac_address</mac_address>"$'\n'
-		result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
-		result="$result		<type>unknown</type>"$'\n'
-		result="$result		<os_group><![CDATA[$os_group]]></os_group>"$'\n'
-		result="$result		<os_family><![CDATA[$os_family]]></os_family>"$'\n'
-		result="$result		<os_name><![CDATA[$os_name]]></os_name>"$'\n'
-		result="$result		<description><![CDATA[$description]]></description>"$'\n'
-		result="$result		<org_id>$org_id</org_id>"$'\n'
-		result="$result		<snmp_status>$snmp_status</snmp_status>"$'\n'
-		result="$result		<ssh_status>$ssh_status</ssh_status>"$'\n'
-		result="$result		<wmi_status>$wmi_status</wmi_status>"$'\n'
-		result="$result		<p80_status>$p80_status</p80_status>"$'\n'
-		result="$result		<p443_status>$p443_status</p443_status>"$'\n'
-		result="$result		<tel_status>$tel_status</tel_status>"$'\n'
-		result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
-		result="$result	</device>"
+		if [ "$host_is_up" == "true" ]; then
+			result="	<device>"$'\n'
+			result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
+			result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
+			result="$result		<mac_address>$mac_address</mac_address>"$'\n'
+			result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
+			result="$result		<description><![CDATA[$description]]></description>"$'\n'
+			result="$result		<org_id>$org_id</org_id>"$'\n'
+			result="$result		<snmp_status>$snmp_status</snmp_status>"$'\n'
+			result="$result		<ssh_status>$ssh_status</ssh_status>"$'\n'
+			result="$result		<wmi_status>$wmi_status</wmi_status>"$'\n'
+			result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
+			result="$result     <nmap_result><![CDATA[$nmap_scan]]></nmap_result>"$'\n'
+			result="$result	</device>"
+			# add the result for this device to the result_file var for display or file output later on
+			result_file="$result_file"$'\n'"$result"
+			# wrap this device in xml tags for submission individually
+			result="<devices>"$'\n'"$result"$'\n'"</devices>"
 
-		# add the result for this device to the result_file var for display or file output later on
-		result_file="$result_file"$'\n'"$result"
-
-		# wrap this device in xml tags for submission individually
-		result="<devices>"$'\n'"$result"$'\n'"</devices>"
-
-		if [[ "$submit_online" == "y" ]]; then
-			if [ "$debugging" -gt 0 ]; then
-				echo "Submitting online."$'\n'
+			if [[ "$submit_online" == "y" ]]; then
+				if [ "$debugging" -gt 0 ]; then
+					echo "Submitting online."$'\n'
+				fi
+				log_entry="IP $host responding, submitting."
+				write_log "$log_entry"
+				if [[ $(uname) == "Linux" ]]; then
+					# -b   = background the wget command
+					# -O - = output to STDOUT (combine with 1>/dev/null for no output).
+					# -q   = quiet (no output)
+					wget "$sequential" -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
+								fi
+				if [[ $(uname) == "Darwin" ]]; then
+					curl --data "form_details=$result" "$url"
+				fi
+			else
+				log_entry="IP $host responding."
+				write_log "$log_entry"
 			fi
-			log_entry="Submitting online $host"
+		else
+			log_entry="IP $host not responding, ignoring."
 			write_log "$log_entry"
-			if [[ $(uname) == "Linux" ]]; then
-				# -b   = background the wget command
-				# -O - = output to STDOUT (combine with 1>/dev/null for no output).
-				# -q   = quiet (no output)
-				wget "$sequential" -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
-							fi
-			if [[ $(uname) == "Darwin" ]]; then
-				curl --data "form_details=$result" "$url"
-			fi
 		fi
 
 		result=""

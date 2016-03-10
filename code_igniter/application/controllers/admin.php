@@ -4695,6 +4695,10 @@ class admin extends MY_Controller
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_linux_script_permissions'";
             $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_permissions','700','y','0000-00-00 00:00:00',0,'The permissions set on the audit_linux.sh script when it is copied to the target device.')";
 
+            $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_nmap_os'";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00',0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).')";
+
+
             $sql[] = "ALTER TABLE oa_user ADD permissions text NOT NULL default ''";
 
             $sql[] = "UPDATE oa_org SET org_name = 'Default Organisation' WHERE org_name = '' AND org_id = 0";
