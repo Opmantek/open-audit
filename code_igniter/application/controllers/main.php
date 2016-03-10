@@ -1260,7 +1260,9 @@ class main extends MY_Controller
             ### general items ###
 
             # log file perms
-            $command_string = 'ls -l ../../other/log_system.log | cut -d" " -f1';
+            #$command_string = 'ls -l ../../other/log_system.log | cut -d" " -f1';
+            # TODO - fix this hard coded path
+            $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             if (isset($output[0])) {
                 $data['application_log_permission'] = $output[0];
