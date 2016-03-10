@@ -101,9 +101,13 @@ function display_man_environment() {
 
 function send_environment() {
 	table_text=document.getElementById("man_environment").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_environment/'+table_text);
+	//http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_environment/'+table_text);
+    data = "name=man_environment&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
 	http.onreadystatechange = receive_environment;
-	http.send(null);
+	//http.send(null);
 }
 
 function receive_environment() {
@@ -129,9 +133,14 @@ function display_man_criticality() {
 
 function send_criticality() {
     table_text=document.getElementById("man_criticality").value;
-    http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_criticality/'+table_text);
+    //http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_criticality/'+table_text);
+    //http.onreadystatechange = receive_criticality;
+    data = "name=man_criticality&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
     http.onreadystatechange = receive_criticality;
-    http.send(null);
+    //http.send(null);
 }
 
 function receive_criticality() {
@@ -139,7 +148,7 @@ function receive_criticality() {
     // Text returned FROM the PHP script
     if(http.responseText) {
       // UPDATE ajaxTest content
-      update="<span onclick='display_criticality();'>"+http.responseText+"<\/span>";
+      update="<span onclick='display_man_criticality();'>"+http.responseText+"<\/span>";
       document.getElementById("man_criticality_select").innerHTML = update;
     }
   }
@@ -156,9 +165,14 @@ function display_man_oae_manage() {
 
 function send_man_oae_manage() {
 	table_text=document.getElementById("man_oae_manage").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_oae_manage/'+table_text);
-	http.onreadystatechange = receive_man_oae_manage;
-	http.send(null);
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_oae_manage/'+table_text);
+	// http.onreadystatechange = receive_man_oae_manage;
+	// http.send(null);
+    data = "name=man_oae_manage&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
+    http.onreadystatechange = receive_man_oae_manage;
 }
 
 function receive_man_oae_manage() {
@@ -187,9 +201,14 @@ function display_man_status() {
 
 function send_status() {
 	table_text=document.getElementById("man_status").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_status/'+table_text);
-	http.onreadystatechange = receive_status;
-	http.send(null);
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_status/'+table_text);
+	// http.onreadystatechange = receive_status;
+	// http.send(null);
+    data = "name=man_status&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
+    http.onreadystatechange = receive_status;
 }
 
 function receive_status() {
@@ -197,7 +216,7 @@ function receive_status() {
     // Text returned FROM the PHP script
     if(http.responseText) {
       // UPDATE ajaxTest content
-      update="<span onclick='display_status();'>"+http.responseText+"<\/span>";
+      update="<span onclick='display_man_status();'>"+http.responseText+"<\/span>";
       document.getElementById("man_status_select").innerHTML = update;
     }
   }
@@ -220,9 +239,14 @@ function display_man_class() {
 
 function send_man_class() {
 	table_text=document.getElementById("man_class").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_class/'+table_text);
-	http.onreadystatechange = receive_man_class;
-	http.send(null);
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_class/'+table_text);
+	// http.onreadystatechange = receive_man_class;
+	// http.send(null);
+    data = "name=man_class&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
+    http.onreadystatechange = receive_man_class;
 }
 
 function receive_man_class() {
@@ -247,9 +271,14 @@ function display_man_type() {
 
 function send_type() {
 	table_text=document.getElementById("man_type").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_type/'+table_text);
-	http.onreadystatechange = receive_type;
-	http.send(null);
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_type/'+table_text);
+	// http.onreadystatechange = receive_type;
+	// http.send(null);
+    data = "name=man_type&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
+    http.onreadystatechange = receive_type;
 }
 
 function receive_type() {
@@ -257,7 +286,7 @@ function receive_type() {
     // Text returned FROM the PHP script
     if(http.responseText) {
       // UPDATE ajaxTest content
-      update="<span onclick='display_type();'>"+http.responseText+"<\/span>";
+      update="<span onclick='display_man_type();'>"+http.responseText+"<\/span>";
       document.getElementById("man_type_select").innerHTML = update;
     }
   }
@@ -276,9 +305,14 @@ function display_nmis_role() {
 function send_nmis_role()
 {
 	table_text=document.getElementById("nmis_role").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_role/'+table_text);
-	http.onreadystatechange = receive_nmis_role;
-	http.send(null);
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_role/'+table_text);
+	// http.onreadystatechange = receive_nmis_role;
+	// http.send(null);
+    data = "name=nmis_role&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
+    http.onreadystatechange = receive_nmis_role;
 }
 
 function receive_nmis_role() {
@@ -293,10 +327,15 @@ function receive_nmis_role() {
 }
 
 function check_nmis_export() {
-	var state = document.getElementById("nmis_export").checked;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_export/'+state);
+	table_text=document.getElementById("nmis_export").checked;
+	//http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_export/'+state);
 	//http.onreadystatechange = receive_nmis_export;
-	http.send(null);
+	//http.send(null);
+    data = "name=nmis_export&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
+    http.onreadystatechange = receive_nmis_export;
 }
 
 function receive_nmis_export() {
@@ -327,9 +366,14 @@ function display_nmis_export2() {
 function send_nmis_export2()
 {
 	table_text=document.getElementById("nmis_export").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_export/'+table_text);
-	http.onreadystatechange = receive_nmis_export;
-	http.send(null);
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/nmis_export/'+table_text);
+	// http.onreadystatechange = receive_nmis_export;
+	// http.send(null);
+    data = "name=nmis_export&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
+    http.onreadystatechange = receive_nmis_export2;
 }
 
 function receive_nmis_export2() {
@@ -362,9 +406,14 @@ function display_location() {
 
 function send_location() {
 	table_text=document.getElementById("man_location_id").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_location_id/'+table_text);
-	http.onreadystatechange = receive_location;
-	http.send(null);
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_location_id/'+table_text);
+	// http.onreadystatechange = receive_location;
+	// http.send(null);
+    data = "name=man_location_id&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
+    http.onreadystatechange = receive_location;
 }
 
 function receive_location() {
@@ -399,9 +448,14 @@ function display_org() {
 
 function send_org() {
 	table_text=document.getElementById("man_org_id").value;
-	http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_org_id/'+table_text);
-	http.onreadystatechange = receive_org;
-	http.send(null);
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_org_id/'+table_text);
+	// http.onreadystatechange = receive_org;
+	// http.send(null);
+    data = "name=man_org_id&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.send(data);
+    http.onreadystatechange = receive_org;
 }
 
 function receive_org() {
@@ -836,10 +890,15 @@ foreach ($additional_fields_data as $field) {
         }
 
         function send_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
-            submitted_value=document.getElementById("<?php echo $field_id; ?>").value;
-            http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/<?php echo "custom_varchar_" . htmlentities($field->data_id) . "_" . $field->field_id; ?>/'+submitted_value);
+            table_text=document.getElementById("<?php echo $field_id; ?>").value;
+            // http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/<?php echo "custom_varchar_" . htmlentities($field->data_id) . "_" . $field->field_id; ?>/'+submitted_value);
+            // http.onreadystatechange = receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>;
+            // http.send(null);
+            data = "name=<?php echo "custom_varchar_" . htmlentities($field->data_id) . "_" . $field->field_id; ?>&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+            http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
+            http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            http.send(data);
             http.onreadystatechange = receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>;
-            http.send(null);
         }
 
         function receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
