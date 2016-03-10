@@ -800,7 +800,7 @@ class Admin_system extends MY_Controller
             redirect('main/index');
         } else {
             $group_id = intval($group_id);
-            $sql = "SELECT DISTINCT system_id FROM oa_group_sys WHERE group_id = ?";
+            $sql = '/* admin_system::reset_devices_ip */ SELECT DISTINCT system_id FROM oa_group_sys WHERE group_id = ?';
             $data = array($group_id);
             $query = $this->db->query($sql, $data);
             $result = $query->result();

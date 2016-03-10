@@ -1041,7 +1041,7 @@ class Admin_test extends MY_Controller
         $this->m_oa_group->update_groups();
 
         # insert some random software
-        $sql = "SELECT system_id, timestamp FROM system WHERE man_type = 'computer' ORDER BY RAND() DESC LIMIT 100";
+        $sql = "/* admin_test::data  */ SELECT system_id, timestamp FROM system WHERE man_type = 'computer' ORDER BY RAND() DESC LIMIT 100";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $system) {

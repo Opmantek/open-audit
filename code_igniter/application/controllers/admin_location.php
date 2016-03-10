@@ -219,7 +219,7 @@ class Admin_location extends MY_Controller
                             $sql .= ")";
                         }
                         // run the query !!!
-                        echo $sql."<br />\n";
+                        $sql = '/* admin_location::add_locations */ ' . $sql;
                         $query = $this->db->query($sql);
                     } else {
                         echo "no location name provided";
@@ -260,6 +260,7 @@ class Admin_location extends MY_Controller
                 }
                 if ($child->location_name != '') {
                     # run the query !!!
+                    $sql = '/* admin_location::add_locations */ ' . $sql;
                     $query = $this->db->query($sql);
                 } else {
                     echo "no location name provided";

@@ -175,7 +175,7 @@ class System extends CI_Controller
         $this->benchmark->mark('code_start');
         if (isset($this->session->userdata['user_id'])) {
             $temp_user_id = $this->session->userdata['user_id'];
-            $sql = "SELECT user_full_name FROM oa_user WHERE user_id = ?";
+            $sql = "/* system::add_system */ SELECT user_full_name FROM oa_user WHERE user_id = ?";
             $data = array($this->session->userdata['user_id']);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
@@ -330,7 +330,7 @@ class System extends CI_Controller
             // nmap and/or snmp) we couldn't match an existing system
             // Now we have an actual audit result with plenty of data
             // we have found a match and it's not the original
-            $sql = "DELETE FROM system WHERE system_id = ?";
+            $sql = "/* system::add_system */ DELETE FROM system WHERE system_id = ?";
             $data = array($received_system_id);
             $query = $this->db->query($sql, $data);
 
@@ -499,7 +499,7 @@ class System extends CI_Controller
             $log_details->file = 'system';
             $log_details->message = 'Start processing nmap submitted data';
             stdlog($log_details);
-            $log_details->message = 'ATTENTION - audit_subnet script being used. This is depreciated. Please use discovery scripts instead.';
+            $log_details->message = 'ATTENTION - audit_subnet script being used. This is deprecated. Please use discovery scripts instead.';
             $log_details->severity = 5;
             stdlog($log_details);
             unset($log_details);

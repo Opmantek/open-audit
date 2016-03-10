@@ -138,7 +138,7 @@ class discovery extends CI_Controller
                 }
             } while ($i = 0);
             // store it in the DB
-            $sql = 'INSERT INTO oa_temp (temp_id, temp_name, temp_value, temp_timestamp) VALUES (null, "Subnet Credentials - '.$ip_address.'", "'.$credentials.'", "'.$timestamp.'")';
+            $sql = '/* discovery::discover_list */ INSERT INTO oa_temp (temp_id, temp_name, temp_value, temp_timestamp) VALUES (null, "Subnet Credentials - '.$ip_address.'", "'.$credentials.'", "'.$timestamp.'")';
             $query = $this->db->query($sql);
             $credentials = "";
 
@@ -524,7 +524,7 @@ class discovery extends CI_Controller
             } while ($i = 0);
 
             // TODO - fix this SQL with proper escaping
-            $sql = 'INSERT INTO oa_temp (temp_id, temp_name, temp_value, temp_timestamp) VALUES (null, "Subnet Credentials - '.$subnet_range.'", "'.$credentials.'", "'.$timestamp.'")';
+            $sql = '/* discovery::discover_subnet */ INSERT INTO oa_temp (temp_id, temp_name, temp_value, temp_timestamp) VALUES (null, "Subnet Credentials - '.$subnet_range.'", "'.$credentials.'", "'.$timestamp.'")';
             $query = $this->db->query($sql);
             $credentials = "";
 
@@ -544,7 +544,7 @@ class discovery extends CI_Controller
                     // test if a network group exists with the matching definition
                     $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, ip WHERE ( ip.ip >= '".ip_address_to_db($subnet_details->host_min)."' and ip.ip <= '".ip_address_to_db($subnet_details->host_max)."' and ip.netmask = '".$subnet_details->netmask."' and ip.system_id = system.system_id and ip.current = 'y' and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
                     $start = explode(' ', microtime());
-                    $sql = "SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
+                    $sql = "/* discovery::discover_subnet */ SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
                     $data = array($group_dynamic_select);
                     $query = $this->db->query($sql, $data);
                     if ($query->num_rows() > 0) {
@@ -553,14 +553,14 @@ class discovery extends CI_Controller
                         // group does not exist - insert
                         $log_details->message = "Creating Group for $subnet_range";
                         stdlog($log_details);
-                        $sql = "INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (null, ?, ?, ?, '1', ?, 'network', 'switch')";
+                        $sql = "/* discovery::discover_subnet */ INSERT INTO oa_group (group_id, group_name, group_padded_name, group_dynamic_select, group_parent, group_description, group_category, group_icon) VALUES (null, ?, ?, ?, '1', ?, 'network', 'switch')";
                         $group_name = "Network - ".$subnet_details->network.' / '.$subnet_details->network_slash;
                         $group_padded_name = "Network - ".ip_address_to_db($subnet_details->network);
                         $data = array("$group_name", "$group_padded_name", "$group_dynamic_select", $subnet_details->network);
                         $query = $this->db->query($sql, $data);
                         $insert_id = $this->db->insert_id();
                         // We need to insert an entry into oa_group_user for any Admin level user
-                        $sql = "INSERT INTO oa_group_user (SELECT null, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+                        $sql = "/* discovery::discover_subnet */ INSERT INTO oa_group_user (SELECT null, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
                         $data = array( $insert_id );
                         $result = $this->db->query($sql, $data);
                         // now we update this specific group
@@ -787,7 +787,7 @@ class discovery extends CI_Controller
                     sleep(5);
                     $log_details->message = 'Deleting credential set for '.$details->subnet_range.' submitted on '.$details->subnet_timestamp;
                     stdlog($log_details);
-                    $sql = 'DELETE FROM oa_temp WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\' ';
+                    $sql = '/* discovery::process_subnet */ DELETE FROM oa_temp WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\' ';
                     $query = $this->db->query($sql);
                 } else {
                     $skip = false;
@@ -856,7 +856,7 @@ class discovery extends CI_Controller
                         $default = $this->m_oa_config->get_credentials();
 
                         // supplied credentials
-                        $sql = 'SELECT temp_value FROM oa_temp WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\' ORDER BY temp_id DESC LIMIT 1';
+                        $sql = '/* discovery::process_subnet */ SELECT temp_value FROM oa_temp WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\' ORDER BY temp_id DESC LIMIT 1';
                         $query = $this->db->query($sql);
                         $row = $query->row();
                         $supplied_credentials = @$row->temp_value;
@@ -899,7 +899,7 @@ class discovery extends CI_Controller
                         }
                         $supplied_credentials->count++;
 
-                        $sql = 'UPDATE oa_temp SET temp_value = ? WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\'';
+                        $sql = '/* discovery::process_subnet */ UPDATE oa_temp SET temp_value = ? WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\'';
                         $data_in = json_encode($supplied_credentials);
                         $data_in = $this->encrypt->encode($data_in);
                         $data = array("$data_in");

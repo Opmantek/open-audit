@@ -129,7 +129,7 @@ class ajax extends MY_Controller
         }
 
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $log_details->message = "GET request received to ajax/update_config. This is depreciated.";
+            $log_details->message = "GET request received to ajax/update_config. This is deprecated.";
             stdlog($log_details);
             $url = str_replace("%3A", ":", current_url());
             $url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
@@ -205,7 +205,7 @@ class ajax extends MY_Controller
         unset($log_details);
 
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $log_details->message = "GET request received to ajax/update_system_man. This is depreciated.";
+            $log_details->message = "GET request received to ajax/update_system_man. This is deprecated.";
             $log_details->severity = 5;
             stdlog($log_details);
         }
@@ -230,7 +230,7 @@ class ajax extends MY_Controller
                 # The code below assumes the view has done this (and it has), but it doesn't verify it.
                 # Could call this directly using a URL and set a custom field on a device that is not supposed to have it
 
-                $sql = "SELECT group_id FROM sys_man_additional_fields WHERE field_id = ?";
+                $sql = "/* ajax::update_system_man */ SELECT group_id FROM sys_man_additional_fields WHERE field_id = ?";
                 $data_array = array($data[3]);
                 $query = $this->db->query($sql, $data_array);
                 $row = $query->row();
@@ -244,19 +244,19 @@ class ajax extends MY_Controller
                 }
 
                 if ($group_allowed == 'y') {
-                    $sql = "SELECT * FROM sys_man_additional_fields_data WHERE field_id = ? AND system_id = ?";
+                    $sql = "/* ajax::update_system_man */ SELECT * FROM sys_man_additional_fields_data WHERE field_id = ? AND system_id = ?";
                     $data_array = array($data[3], $this->data['system_id']);
                     $query = $this->db->query($sql, $data_array);
                     if ($query->num_rows() > 0) {
                         # we are updating an existing value
                         $row = $query->row();
-                        $sql = "UPDATE sys_man_additional_fields_data SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
+                        $sql = "/* ajax::update_system_man */ UPDATE sys_man_additional_fields_data SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
                         $query = $this->db->query($sql);
                         $this->m_edit_log->create($this->data['system_id'], "", "sys_man_additional_fields_data", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));
                     } else {
                         # we have to insert a new record for a custom data value for this system
-                        $sql = "INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
+                        $sql = "/* ajax::update_system_man */ INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
                         $query = $this->db->query($sql);
                         $this->m_edit_log->create($this->data['system_id'], "", "sys_man_additional_fields_data", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));

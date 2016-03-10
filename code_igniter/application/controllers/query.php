@@ -167,7 +167,7 @@ class query extends MY_Controller
             $json = 'y';
             break;
         }
-
+        $sql = '/* query::graph */ ' . $sql;
         $query = $this->db->query($sql, $data);
         $result = $query->result();
 

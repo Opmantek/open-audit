@@ -37,7 +37,7 @@
 <fieldset id="group_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Scanning A Subnet using Nmap')?></span></legend>
 	<img style='float: right; margin; 10px; ' src='<?php echo $oa_theme_images;?>/48_network_wireless.png' alt='' title='' width='48'/>
-	<h1>Using audit_subnet.[sh|vbs] scripts is depreciated. Please use discover_subnet.[sh.vbs] instead. This facility will be removed in a furute version of Open-AudIT.</h1>
+	<h1>Using audit_subnet.[sh|vbs] scripts is deprecated. Please use discover_subnet.[sh.vbs] instead. This facility will be removed in a furute version of Open-AudIT.</h1>
 	<table cellpadding = "0" cellspacing="0">
 		<tr>
 			<td width='100%'>

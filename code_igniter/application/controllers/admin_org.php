@@ -131,7 +131,7 @@ class Admin_org extends MY_Controller
                             }
                         }
                         # run the query !!!
-                        echo $sql."<br />\n";
+                        $sql = '/* admin_org::add_orgs */ ' . $sql;
                         $query = $this->db->query($sql);
                         $group->org_id = $this->db->insert_id();
 
@@ -194,6 +194,7 @@ class Admin_org extends MY_Controller
                 }
                 if ($child->org_name != '') {
                     # run the query !!!
+                    $sql = '/* admin_org::add_orgs */ ' . $sql;
                     $query = $this->db->query($sql);
                     $group->org_id = $this->db->insert_id();
 
