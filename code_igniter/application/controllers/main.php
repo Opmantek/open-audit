@@ -239,6 +239,16 @@ class main extends MY_Controller
                 $row->ip_address_v4 = ip_address_from_db($row->ip_address_v4);
             }
             $document['sys_hw_network_card_ip'] = $result;
+            $sql = "/* main::api_node_config */ SELECT ip as ip_address_v6, '' as ip_address_v4, cidr as subnet, version as ip_address_version, mac as net_mac_address, net_index as connection FROM ip WHERE system_id = ? AND current = 'y' AND version = 6";
+            $data = array($system_id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            foreach ($result as $row) {
+                array_push($document['sys_hw_network_card_ip'], $row);
+            }
+
+
+
             $sql = "/* main::api_node_config */ SELECT id as net_id, system_id, mac as net_mac_address, manufacturer as net_manufacturer, model as net_model, description as net_description, alias as net_alias, ip_enabled as net_ip_enabled, net_index, dhcp_enabled as net_dhcp_enabled, dhcp_server as net_dhcp_server, dhcp_lease_obtained as net_dhcp_lease_obtained, dhcp_lease_expires as net_dhcp_lease_expires, dns_host_name as net_dns_host_name, dns_server as net_dns_server, dns_domain as net_dns_domain, dns_domain_reg_enabled as net_dns_domain_reg_enabled, type as net_adapter_type, connection as net_connection_id, connection_status as net_connection_status, speed as net_speed, slaves as net_slaves, ifadminstatus, iflastchange FROM network WHERE system_id = ? and current = 'y'";
             $data = array($system_id);
             $query = $this->db->query($sql, $data);
