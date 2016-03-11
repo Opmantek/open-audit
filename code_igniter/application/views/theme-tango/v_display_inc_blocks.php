@@ -432,10 +432,15 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <?php foreach ($partition as $key_partition): ?>
                         <?php if ($key_partition->hard_drive_index == $key->hard_drive_index): ?>
                         <?php $partition_count++; ?>
+                        <?php if ($key_partition->type == $key_partition->mount_type) {
+                            $type = print_something($key_partition->mount_type);
+                        } else {
+                            $type = print_something($key_partition->type) . ' ' . print_something($key_partition->mount_type);
+                        } ?>
                             <tr>
                                 <td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo intval($system_id)."/".print_something($key_partition->id)?>"><img src='<?php echo $oa_theme_images; ?>/16_graph.png' alt='' title='' /></a></td>
                                 <td><?php echo print_something($key_partition->device)?></td>
-                                <td><?php echo print_something($key_partition->type) . ' ' . print_something($key_partition->mount_type)?></td>
+                                <td><?php echo $type; ?></td>
                                 <td><?php echo print_something($key_partition->mount_point)?></td>
                                 <td><?php echo print_something($key_partition->name)?></td>
                                 <td><?php echo print_something($key_partition->format)?></td>
