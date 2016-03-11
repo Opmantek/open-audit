@@ -231,7 +231,7 @@ class main extends MY_Controller
             }
 
             # special SQL for backwards compat with opAddress
-            $sql = "/* main::api_node_config */ SELECT ip as ip_address_v4, '' as ip_address_v6, netmask as subnet, version as ip_address_version, mac as net_mac_address, net_index as connection FROM ip WHERE system_id = ? AND current = 'y' AND version = 4";
+            $sql = "/* main::api_node_config */ SELECT ip as ip_address_v4, '' as ip_address_v6, netmask as subnet, version as ip_address_version, ip.mac as net_mac_address, network.connection FROM ip LEFT JOIN network ON ip.system_id = network.system_id and ip.net_index = network.net_index WHERE ip.system_id = ? AND ip.current = 'y' AND ip.version = 4";
             $data = array($system_id);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
@@ -239,7 +239,7 @@ class main extends MY_Controller
                 $row->ip_address_v4 = ip_address_from_db($row->ip_address_v4);
             }
             $document['sys_hw_network_card_ip'] = $result;
-            $sql = "/* main::api_node_config */ SELECT ip as ip_address_v6, '' as ip_address_v4, cidr as subnet, version as ip_address_version, mac as net_mac_address, net_index as connection FROM ip WHERE system_id = ? AND current = 'y' AND version = 6";
+            $sql = "/* main::api_node_config */ SELECT ip as ip_address_v6, '' as ip_address_v4, cidr as subnet, version as ip_address_version, ip.mac as net_mac_address, network.connection FROM ip LEFT JOIN network ON ip.system_id = network.system_id and ip.net_index = network.net_index WHERE ip.system_id = ? AND ip.current = 'y' AND ip.version = 6";
             $data = array($system_id);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
