@@ -65,8 +65,7 @@ class M_userlogin extends CI_Model
                 $hash = hash("sha256", $salt.$password);
                 # store the salt and hash in the same string, so only 1 DB column is needed
                 $encrypted_password = $salt.$hash;
-                $sql = "UPDATE oa_user SET user_password = ? WHERE user_id = ?";
-                $sql = $this->clean_sql($sql);
+                $sql = "/* m_userlogin::validate_user */ UPDATE oa_user SET user_password = ? WHERE user_id = ?";
                 $data = array("$encrypted_password", "$user_id");
                 $query = $this->db->query($sql, $data);
 
@@ -85,8 +84,7 @@ class M_userlogin extends CI_Model
                 # correct password
                 # NOTE - we must test if user is active when DB version > 20130512 release.
                 # this releave (v1.0) added a flag to the users table for user_active.
-                $sql = "SELECT config_value FROM oa_config WHERE config_name = 'internal_version'";
-                $sql = $this->clean_sql($sql);
+                $sql = "/* m_userlogin::validate_user */ SELECT config_value FROM oa_config WHERE config_name = 'internal_version'";
                 $query = $this->db->query($sql);
                 $row = $query->row();
                 $db_version = $row->config_value;
@@ -95,8 +93,7 @@ class M_userlogin extends CI_Model
                 } else {
                     # this is a 1.0 (or above) version of the database
                     # only log user on to system if user is 'active'
-                    $sql = "SELECT user_active FROM oa_user WHERE user_id = ?";
-                    $sql = $this->clean_sql($sql);
+                    $sql = "/* m_userlogin::validate_user */ SELECT user_active FROM oa_user WHERE user_id = ?";
                     $data = array($user_id);
                     $query = $this->db->query($sql, $data);
                     $row = $query->row();
