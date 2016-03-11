@@ -47,7 +47,7 @@ echo form_open('admin_user/add_user')."\n";
 			<td style='width:50%'>
 				<p><label for='user_name'><?php echo __("User Name")?>: </label><input type='text' id='user_name' name='user_name' tabindex='1' title='User Name' value="<?php echo set_value('user_name'); ?>"/><?php echo $error_message; ?></p>
 				<p><label for='user_full_name'><?php echo __("Full Name")?>: </label><input type='text' id='user_full_name' name='user_full_name' tabindex='2' title='Full Name'  value="<?php echo set_value('user_full_name'); ?>"/></p>
-				<p><label for='user_password'><?php echo __("Password")?>: </label><input type='text' id='user_password' name='user_password' tabindex='3' title='Password'  value="<?php echo set_value('user_password'); ?>"/></p>
+				<p><label for='user_password'><?php echo __("Password")?>: </label><input type='password' id='user_password' name='user_password' tabindex='3' title='Password'  value="<?php echo set_value('user_password'); ?>"/></p>
 				<p><label for='user_email'><?php echo __("Email Address")?>: </label><input type='text' id='user_email' name='user_email' tabindex='4' title='Email Address'  value="<?php echo set_value('user_email'); ?>"/></p>
 			</td>
 			<td style='width:50%'>
