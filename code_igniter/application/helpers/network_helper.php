@@ -38,7 +38,7 @@
 if (! function_exists('network_details')) {
     function network_details($ip)
     {
-        $ip = str_replace(' ', '', $ip);
+        $ip = str_replace(' / ', ' ', $ip);
         $my_net_info = rtrim($ip);
         $details = new stdClass();
 

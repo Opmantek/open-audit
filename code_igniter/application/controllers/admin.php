@@ -4810,7 +4810,7 @@ class admin extends MY_Controller
                 $temp_long = ip2long($row->netmask);
                 $temp_base = ip2long('255.255.255.255');
                 $temp_cidr = 32-log(($temp_long ^ $temp_base)+1,2);
-                $network_details = network_details($row->ip.'/'.$temp_cidr);
+                $network_details = network_details($row->ip.' '.$temp_cidr);
                 if (isset($network_details) and isset($network_details->network) and $network_details->network != '') {
                     $temp_network = $network_details->network.' / '.$temp_cidr;
                     $sql = "UPDATE ip SET network = ?, cidr = ? WHERE id = ?";

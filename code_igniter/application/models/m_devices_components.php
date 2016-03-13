@@ -327,21 +327,21 @@ class M_devices_components extends MY_Model
                     $temp_long = ip2long($input->item[$i]->netmask);
                     $temp_base = ip2long('255.255.255.255');
                     $temp_subnet = 32-log(($temp_long ^ $temp_base)+1,2);
-                    $network_details = network_details($input->item[$i]->ip.'/'.$temp_subnet);
-                    if (isset($network_details->network) and $network_details->network != '') {
-                        $input->item[$i]->network = $network_details->network.' / '.$temp_subnet;
+                    $net = network_details($input->item[$i]->ip.' '.$temp_subnet);
+                    if (isset($net->network) and $net->network != '') {
+                        $input->item[$i]->network = $net->network.' / '.$temp_subnet;
                     } else {
                         $input->item[$i]->network = '';
                     }
-                    if (isset($network_details->network_slash) and $network_details->network_slash != '') {
-                        $input->item[$i]->cidr = $network_details->network_slash;
+                    if (isset($net->network_slash) and $net->network_slash != '') {
+                        $input->item[$i]->cidr = $net->network_slash;
                     } else {
                         $input->item[$i]->cidr = '';
                     }
                     unset($temp_long);
                     unset($temp_base);
                     unset($temp_subnet);
-                    unset($network_details);
+                    unset($net);
                 }
                 if ($input->item[$i]->type != 'bonded') {
                     if (isset($input->item[$i]->mac) and $input->item[$i]->mac != '') {
