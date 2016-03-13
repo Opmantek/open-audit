@@ -300,7 +300,7 @@ for each host in hosts_in_subnet
     wmi_status = "false"
     exit_status = "y"
     host_is_up = "false"
-    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 -PN " & host
+    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 -Pn " & host
     execute_command()
 
     Do Until objExecObject.Status = 0

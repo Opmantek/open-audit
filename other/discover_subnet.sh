@@ -261,7 +261,7 @@ if [[ "$hosts" != "" ]]; then
 		# -O attempt to determine operating system ($os_scan)
 		# --host-timeout so we don't hang indefinitley
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
-		nmap_scan=$(nmap -vv -n "$os_scan" --host-timeout 90 "$timing" "$host" 2>/dev/null)
+		nmap_scan=$(nmap -vv -n "$os_scan" --host-timeout 90 -Pn "$timing" "$host" 2>/dev/null)
 		for line in $nmap_scan; do
 
 			NEEDLE="Host is up"

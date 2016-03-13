@@ -268,7 +268,7 @@ RESULT=`curl -o /dev/null --silent --write-out '%{http_code}' --data "$FORM_DETA
 
 # confirm the above command worked
 if [ $? -ne 0 ]; then
-	LOG_ENTRY="Discovery for $FORM_SUBNET cron job FAILED wget submission"
+	LOG_ENTRY="Discovery for $FORM_SUBNET cron job FAILED submission"
 	write_log "$LOG_ENTRY"
 	exit 1
 fi
