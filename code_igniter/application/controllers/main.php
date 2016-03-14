@@ -148,6 +148,7 @@ class main extends MY_Controller
                             if ($key == 'man_ip_address' or
                                 $key == 'destination'    or
                                 $key == 'ip_address_v4'  or
+                                $key == 'ip'  or
                                 $key == 'next_hop') {
                                 $result[$count]->$key = ip_address_from_db($result[$count]->$key);
                             }
@@ -228,6 +229,11 @@ class main extends MY_Controller
             $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
+            }
+
+            foreach($document['ip'] as $row) {
+                $row->ip_padded = $row->ip;
+                $row->ip = ip_address_from_db($row->ip);
             }
 
             # special SQL for backwards compat with opAddress

@@ -36,9 +36,9 @@
  */
 
 if (! function_exists('network_details')) {
+    # accept $ip as either '192.168.0.12/24' or '192.168.0.12 255.255.255.0'
     function network_details($ip)
     {
-        $ip = str_replace(' / ', ' ', $ip);
         $my_net_info = rtrim($ip);
         $details = new stdClass();
 
