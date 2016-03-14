@@ -327,7 +327,9 @@ class M_devices_components extends MY_Model
                     $temp_long = ip2long($input->item[$i]->netmask);
                     $temp_base = ip2long('255.255.255.255');
                     $temp_subnet = 32-log(($temp_long ^ $temp_base)+1,2);
-                    $net = network_details($input->item[$i]->ip.' '.$temp_subnet);
+                    $net = network_details($input->item[$i]->ip.'/'.$temp_subnet);
+echo $input->item[$i]->ip.' '.$temp_subnet . "\n";
+print_r($net); echo "\n";
                     if (isset($net->network) and $net->network != '') {
                         $input->item[$i]->network = $net->network.' / '.$temp_subnet;
                     } else {
