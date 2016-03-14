@@ -116,7 +116,7 @@ if [ "$help" == "y" ]; then
 	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
 	echo "     n - Do not submit the audit result"
 	echo ""
-	echo "  subnet"
+	echo "  subnet_range"
 	echo "       - Any given subnet as per the Nmap command line options. http://nmap.org/book/man-target-specification.html EG - 192.168.1-3.1-20, 192.168.1.0/24, etc."
 	echo ""
 	echo "  subnet_timestamp"
