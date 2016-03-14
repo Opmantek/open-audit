@@ -4789,13 +4789,13 @@ class admin extends MY_Controller
             }
 
             # remove any groups that are using sys_hw_network_card_ip
-            $sql = "SELECT group_name, group_dynamic_select from oa_group WHERE group_dnamic_select like '%sys_hw_network_card_ip%'";
+            $sql = "SELECT group_name, group_dynamic_select from oa_group WHERE group_dynamic_select like '%sys_hw_network_card_ip%'";
             $query = $this->db->query($sql);
             $result = $query->result();
             foreach ($result as $row) {
                 $this->data['output'] .= 'WARNING - the folloing group has been deleted as it used incompatible SQL. We no longer have a table named sys_hw_network_ip_address (it is now \'ip\' with renamed columns). Please recreate this group: ' . $row->group_name . '\n<br />The SQL for this group was: ' . $row->group_dynamic_select . "<br /><br />\n";
             }
-            $sql = "DELETE oa_group FROM oa_group WHERE group_dnamic_select like '%sys_hw_network_card_ip%'";
+            $sql = "DELETE oa_group FROM oa_group WHERE group_dynamic_select like '%sys_hw_network_card_ip%'";
             $query = $this->db->query($sql);
 
             # remove any incorrectly formatted netmasks
