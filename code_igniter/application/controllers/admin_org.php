@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -131,7 +131,7 @@ class Admin_org extends MY_Controller
                             }
                         }
                         # run the query !!!
-                        echo $sql."<br />\n";
+                        $sql = '/* admin_org::add_orgs */ ' . $sql;
                         $query = $this->db->query($sql);
                         $group->org_id = $this->db->insert_id();
 
@@ -194,6 +194,7 @@ class Admin_org extends MY_Controller
                 }
                 if ($child->org_name != '') {
                     # run the query !!!
+                    $sql = '/* admin_org::add_orgs */ ' . $sql;
                     $query = $this->db->query($sql);
                     $group->org_id = $this->db->insert_id();
 

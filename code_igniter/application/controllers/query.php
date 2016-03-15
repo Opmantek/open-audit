@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -167,7 +167,7 @@ class query extends MY_Controller
             $json = 'y';
             break;
         }
-
+        $sql = '/* query::graph */ ' . $sql;
         $query = $this->db->query($sql, $data);
         $result = $query->result();
 

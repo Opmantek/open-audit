@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -65,9 +65,10 @@ class M_printer extends MY_Model
 
     public function get_new_network_printer($details)
     {
-        $sql = "SELECT system_id, type FROM system WHERE system.timestamp = ? AND (system.type = 'printer' OR system.man_type = 'printer') AND system.man_ip_address > '000.000.000.000'";
-        $sql = $this->clean_sql($sql);
+        // $sql = "SELECT system_id, type FROM system WHERE system.timestamp = ? AND (system.type = 'printer' OR system.man_type = 'printer') AND system.man_ip_address > '000.000.000.000'";
+        // $sql = $this->clean_sql($sql);
         $sql = "SELECT system_id, type FROM system WHERE system.timestamp = ? AND (system.type = 'printer' OR system.man_type = 'printer')";
+        $sql = $this->clean_sql($sql);
         $data = array("$details->timestamp");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -83,6 +84,7 @@ class M_printer extends MY_Model
 
             # check for a local printer
             $sql = "SELECT system_id FROM system WHERE man_type = 'printer' AND linked_sys = ? AND (timestamp = ? OR timestamp = ?) AND system_key = ?";
+            $sql = $this->clean_sql($sql);
             $data = array("$details->system_id", "$details->original_timestamp", "$details->timestamp", "$input->system_key");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
@@ -94,6 +96,7 @@ class M_printer extends MY_Model
             if ($exist_type == '') {
                 # if the above is empty, check for an network printer
                 $sql = "SELECT system_id FROM system WHERE (man_type = 'printer' or type = 'network printer') AND man_ip_address = ? AND man_ip_address <> '000.000.000.000' ";
+                $sql = $this->clean_sql($sql);
                 $data = array($this->ip_address_to_db("$input->man_ip_address"));
                 $query = $this->db->query($sql, $data);
                 if ($query->num_rows() > 0) {
@@ -177,6 +180,7 @@ class M_printer extends MY_Model
             if ($exist_type > '') {
                 # update a printer
                 $sql = "UPDATE system SET timestamp = ?, serial = ?, type = ?, man_type = ? WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array("$details->timestamp", "$input->serial", "$type", "$type", "$system_id");
                 $query = $this->db->query($sql, $data);
             }
@@ -189,6 +193,7 @@ class M_printer extends MY_Model
 					man_ip_address, man_model, man_manufacturer, man_icon, first_timestamp, timestamp,
 					last_seen, last_seen_by )
 					VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+                $sql = $this->clean_sql($sql);
                 $data = array( "$input->system_key", "$input->uuid", "$input->hostname", "$input->description", "$type", "printer", "$linked_sys", "$input->serial",
                     "$input->serial", "$input->model", "$input->manufacturer", "$input->printer_port_name", "$input->printer_shared", "$input->printer_shared_name",
                     "$input->printer_color", "$input->printer_duplex", "production", "production", "$input->description", "$type",

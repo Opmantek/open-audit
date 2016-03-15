@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
-' @version 1.12
+' @version 1.12.2
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -2645,24 +2645,24 @@ for each objItem in colItems
 	ip_address = objItem.IPAddress(i)
 	ip_subnet = objItem.IPSubnet(i)
 	if len(ip_address) > 15 then
-	ip_address_version = "6"
-	ip_address_v6 = ip_address
-	ip_address_v4 = ""
+		ip_address_version = "6"
+		cidr = ip_subnet
+		netmask = ""
 	else
-	ip_address_version = "4"
-	ip_address_v4 = ip_address
-	ip_address_v6 = ""
+		ip_address_version = "4"
+		cidr = ""
+		netmask = ip_subnet
 	end if
 	if ip_address <> "0.0.0.0" then
 	count = count + 1
-	item = item & "		<ip_address>" & vbcrlf
-	item = item & "			<net_mac_address>" & escape_xml(net_mac_address) & "</net_mac_address>" & vbcrlf
+	item = item & "		<item>" & vbcrlf
+	item = item & "			<mac>" & escape_xml(net_mac_address) & "</mac>" & vbcrlf
 	item = item & "			<net_index>" & escape_xml(net_index) & "</net_index>" & vbcrlf
-	item = item & "			<ip_address_v4>" & escape_xml(ip_address_v4) & "</ip_address_v4>" & vbcrlf
-	item = item & "			<ip_address_v6>" & escape_xml(ip_address_v6) & "</ip_address_v6>" & vbcrlf
-	item = item & "			<ip_subnet>" & escape_xml(ip_subnet) & "</ip_subnet>" & vbcrlf
-	item = item & "			<ip_address_version>" & escape_xml(ip_address_version) & "</ip_address_version>" & vbcrlf
-	item = item & "		</ip_address>" & vbcrlf
+	item = item & "			<ip>" & escape_xml(ip_address) & "</ip>" & vbcrlf
+	item = item & "			<netmask>" & escape_xml(netmask) & "</netmask>" & vbcrlf
+	item = item & "			<cidr>" & escape_xml(cidr) & "</cidr>" & vbcrlf
+	item = item & "			<version>" & escape_xml(ip_address_version) & "</version>" & vbcrlf
+	item = item & "		</item>" & vbcrlf
 	if ip_address_version = "4" then
 	ip_address_array(count) = ip_address_v4
 	end if
@@ -2671,9 +2671,9 @@ for each objItem in colItems
 	end if
 next
 if item > "" then
-	result.WriteText "	<addresses>" & vbcrlf
+	result.WriteText "	<ip>" & vbcrlf
 	result.WriteText item
-	result.WriteText "	</addresses>" & vbcrlf
+	result.WriteText "	</ip>" & vbcrlf
 end if
 
 if skip_dns = "n" then

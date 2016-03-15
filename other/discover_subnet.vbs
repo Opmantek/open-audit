@@ -25,7 +25,7 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.12
+' @version 1.12.2
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -53,6 +53,20 @@ dim syslog : syslog = "y"
 dim url : url = "http://localhost/open-audit/index.php/discovery/process_subnet"
 dim objHTTP
 dim sequential : sequential = "y"
+dim os_scan : os_san = "n"
+dim hosts
+dim hosts_in_subnet
+dim host
+dim mac_address : mac_address = ""
+dim manufacturer : manufacturer = ""
+dim description : description = ""
+dim i
+dim result : result = ""
+dim host_is_up
+dim snmp_status : snmp_status = "false"
+dim ssh_status : ssh_status = "false"
+dim wmi_status : wmi_status = "false"
+
 
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
@@ -78,6 +92,9 @@ for each strArg in objArgs
 
             case "log_no_response"
                 log_no_response = varArray(1)
+
+            case "os_scan"
+                os_scan = varArray(1)
 
             case "org_id"
                 org_id = varArray(1)
@@ -108,6 +125,12 @@ for each strArg in objArgs
     end if
 next
 
+if ( os_scan = "y" ) then
+    os_scan = "-O"
+else
+    os_scan = ""
+end if
+
 if (help = "y") then
     wscript.echo "------------------------------"
     wscript.echo "Open-AudIT Subnet Audit Script"
@@ -127,6 +150,10 @@ if (help = "y") then
     wscript.echo "     0 - No output."
     wscript.echo "     1 - Minimal Output."
     wscript.echo "    *2 - Verbose output."
+    wscript.echo ""
+    wscript.echo "  os_scan"
+    wscript.echo "    *n - Do not use the -O Nmap flag when scanning devices."
+    wscript.echo "     y - Use -O (will slow down scan and requires SUID be set on the Nmap binary."
     wscript.echo ""
     wscript.echo "  echo_output"
     wscript.echo "    *n - Do not echo the result to the screen."
@@ -248,44 +275,32 @@ if debugging > "0" then wscript.echo "Scanning Subnet: " & subnet_range
 if debugging > "0" then wscript.echo "URL: " & url
 
 exit_status = "y"
-command = nmap_path & " -v -sP -PE -PP -n " & subnet_range
+
+command = nmap_path & " -n -sL " & subnet_range
 execute_command()
-dim hosts
 Do Until objExecObject.StdOut.AtEndOfStream
     line = objExecObject.StdOut.ReadLine
-    line_split = split(line)
     if (instr(lcase(line), "scan report for")) then
-        if (instr(lcase(line), "[host down]")) then
-            if (log_no_response = "y") then
-                log_entry = "Non responsive ip address " & line_split(4)
-                write_log
-            end if
-        else
-            hosts = hosts & " " & line_split(4)
-        end if
+        line_split = split(line)
+        hosts = hosts & " " & line_split(4)
     end if
 Loop
 
 hosts = trim(hosts)
-dim hosts_in_subnet : hosts_in_subnet = split(hosts)
-dim host
+hosts_in_subnet = split(hosts)
 for each host in hosts_in_subnet
     if debugging > "0" then wscript.echo "Scanning Host: " & host end if
 
-    log_entry = "Scanning ip address " & host
-    write_log()
-
-    dim mac_address : mac_address = ""
-    dim manufacturer : manufacturer = ""
-    dim description : description = ""
-    dim os_group : os_group = ""
-    dim os_family : os_family = ""
-    dim os_name : os_name = ""
-    dim i
-    dim result : result = ""
-
+    mac_address = ""
+    manufacturer = ""
+    description = ""
+    result = ""
+    snmp_status = "false"
+    ssh_status = "false"
+    wmi_status = "false"
     exit_status = "y"
-    command = nmap_path & " -vv -n -O --host-timeout 90 -PN " & host
+    host_is_up = "false"
+    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 -Pn " & host
     execute_command()
 
     Do Until objExecObject.Status = 0
@@ -294,6 +309,10 @@ for each host in hosts_in_subnet
 
     Do Until objExecObject.StdOut.AtEndOfStream
         line = objExecObject.StdOut.ReadLine
+
+        if instr(lcase(line), "Host is up") then
+            host_is_up = "true"
+        end if
 
         if instr(lcase(line), "mac address:") then
             i = split(line, " ")
@@ -306,167 +325,26 @@ for each host in hosts_in_subnet
         end if
 
         if instr(lcase(line), "device type:") then
-            i = split(line, ":")
             if instr(line, "|") then
                 ' could be one of multiple - insert it as the description
+                i = split(line, ":")
                 description = trim(i(1))
             else
                 description = ""
             end if
         end if
 
-        if instr(lcase(line), "running:") then
-            i = split(line, ":")
-            os_name = i(1)
-            os_name = replace(os_name, ")", "")
-            os_name = replace(os_name, "(", "")
-            os_name = trim(os_name)
-            if (instr(lcase(line), "cisco ios")) then
-                os_group = "Cisco"
-                os_family="Cisco IOS"
-            end if
-            if (instr(lcase(line), "windows")) then
-                os_group = "Windows"
-                if (instr(lcase(line), "vista")) then os_family = "Windows Vista" end if
-                if (instr(lcase(line), "7")) then os_family = "Windows 7" end if
-                if (instr(lcase(line), "8")) then os_family = "Windows 8" end if
-                if (instr(lcase(line), "2003")) then os_family = "Windows 2003" end if
-                if (instr(lcase(line), "2008")) then os_family = "Windows 2008" end if
-                if (instr(lcase(line), "2012")) then os_family = "Windows 2012" end if
-            end if
-            if (instr(lcase(line), "irix")) then
-                os_group = "IRIX"
-            end if
-            if (instr(lcase(line), "openbsd")) then
-                os_group = "BSD"
-                os_family = "Open BSD"
-            end if
-            if (instr(lcase(line), "freebsd")) then
-                os_group = "BSD"
-                os_family = "Free BSD"
-            end if
-            if (instr(lcase(line), "netbsd")) then
-                os_group = "BSD"
-                os_family = "Net BSD"
-            end if
-            if (instr(lcase(line), "sunos")) then
-                os_group = "SunOS"
-            end if
-            if (instr(lcase(line), "solaris")) then
-                os_group = "Solaris"
-            end if
-            if (instr(lcase(line), "linux")) then
-                os_group = "Linux"
-            end if
-            if (instr(lcase(line), "vmware")) then
-                os_group = "VMware"
-                os_family = "VMware ESXi"
-            end if
-            if (instr(lcase(line), "apple mac os x")) then
-                os_group="Apple"
-                os_family="Apple OSX"
-            end if
-        end if
-
-        if instr(lcase(line), "running (just guessing):") and os_name = "" then
-            i = split(line, ":")
-            os_name = i(1)
-            os_name = replace(os_name, ")", "")
-            os_name = replace(os_name, "(", "")
-            os_name = trim(os_name)
-        end if
-
-        if instr(lcase(line), "aggressive os guesses:") and os_name = "" then
-            i = split(line, ":")
-            os_name = i(1)
-            os_name = replace(os_name, ")", "")
-            os_name = replace(os_name, "(", "")
-            os_name = trim(os_name)
-            if description = "" then
-                description = os_name
-            end if
-        end if
-
-        if instr(lcase(line), "os details:") and os_name = "" then
-            i = split(line, ":")
-            os_name = i(1)
-            os_name = replace(os_name, ")", "")
-            os_name = replace(os_name, "(", "")
-            os_name = trim(os_name)
-        end if
-    Loop
-
-
-    ' test for SNMP
-    dim snmp_status : snmp_status = "false"
-    exit_status = "n"
-    command = nmap_path & " -n -sU -p161 " & host
-    execute_command
-    Do Until objExecObject.StdOut.AtEndOfStream
-        line = objExecObject.StdOut.ReadLine
         if instr(lcase(line), "161/udp open") then
             snmp_status = "true"
         end if
-    Loop
 
-    ' test for SSH
-    dim ssh_status : ssh_status = "false"
-    exit_status = "n"
-    command = nmap_path & " -n -p22 " & host
-    execute_command()
-    Do Until objExecObject.StdOut.AtEndOfStream
-        line = objExecObject.StdOut.ReadLine
         if instr(lcase(line), "22/tcp open") then
             ssh_status = "true"
         end if
-    Loop
 
-    ' test for WMI
-    dim wmi_status : wmi_status = "false"
-    exit_status = "n"
-    command = nmap_path & " -n -p135 " & host
-    execute_command()
-    Do Until objExecObject.StdOut.AtEndOfStream
-        line = objExecObject.StdOut.ReadLine
         if instr(lcase(line), "135/tcp open") then
             wmi_status = "true"
         end if
-    Loop
-
-    ' test for webserver on port 80
-    dim p80_status : p80_status = "false"
-    exit_status = "n"
-    command = nmap_path & " -n -p80 " & host
-    execute_command()
-    Do Until objExecObject.StdOut.AtEndOfStream
-      line = objExecObject.StdOut.ReadLine
-      if instr(lcase(line), "80/tcp open") then
-          p80_status = "true"
-      end if
-    Loop
-
-    ' test for webserver on port 443
-    dim p443_status : p443_status = "false"
-    exit_status = "n"
-    command = nmap_path & " -n -p443 " & host
-    execute_command()
-    Do Until objExecObject.StdOut.AtEndOfStream
-      line = objExecObject.StdOut.ReadLine
-      if instr(lcase(line), "443/tcp open") then
-          p443_status = "true"
-      end if
-    Loop
-
-    ' test for telnet
-    dim tel_status : tel_status = "false"
-    exit_status = "n"
-    command = nmap_path & " -n -p23 " & host
-    execute_command()
-    Do Until objExecObject.StdOut.AtEndOfStream
-      line = objExecObject.StdOut.ReadLine
-      if instr(lcase(line), "23/tcp open") then
-          tel_status = "true"
-      end if
     Loop
 
     ' special case of determining WMI on localhost on Windows
@@ -474,57 +352,59 @@ for each host in hosts_in_subnet
         wmi_status = "true"
     end if
 
-    result =          " <device>" & vbcrlf
-    result = result & "     <subnet_range><![CDATA[" & subnet_range & "]]></subnet_range>" & vbcrlf
-    result = result & "     <man_ip_address><![CDATA[" & host & "]]></man_ip_address>" & vbcrlf
-    result = result & "     <mac_address><![CDATA[" & mac_address & "]]></mac_address>" & vbcrlf
-    result = result & "     <manufacturer><![CDATA[" & manufacturer & "]]></manufacturer>" & vbcrlf
-    result = result & "     <type>unknown</type>" & vbcrlf
-    result = result & "     <os_group><![CDATA[" & os_group & "]]></os_group>" & vbcrlf
-    result = result & "     <os_family><![CDATA[" & os_family & "]]></os_family>" & vbcrlf
-    result = result & "     <os_name><![CDATA[" & os_name & "]]></os_name>" & vbcrlf
-    result = result & "     <description><![CDATA[" & description & "]]></description>" & vbcrlf
-    result = result & "     <snmp_status><![CDATA[" & snmp_status & "]]></snmp_status>" & vbcrlf
-    result = result & "     <ssh_status><![CDATA[" & ssh_status & "]]></ssh_status>" & vbcrlf
-    result = result & "     <wmi_status><![CDATA[" & wmi_status & "]]></wmi_status>" & vbcrlf
-    result = result & "     <p80_status><![CDATA[" & p80_status & "]]></p80_status>" & vbcrlf
-    result = result & "     <p443_status><![CDATA[" & p443_status & "]]></p443_status>" & vbcrlf
-    result = result & "     <tel_status><![CDATA[" & tel_status & "]]></tel_status>" & vbcrlf
-    result = result & "     <subnet_timestamp><![CDATA[" & subnet_timestamp & "]]></subnet_timestamp>" & vbcrlf
-    result = result & " </device>" & vbcrlf
-    result_file = result_file & result
+    if host_is_up = "true" then
+        result =          " <device>" & vbcrlf
+        result = result & "     <subnet_range><![CDATA[" & subnet_range & "]]></subnet_range>" & vbcrlf
+        result = result & "     <man_ip_address><![CDATA[" & host & "]]></man_ip_address>" & vbcrlf
+        result = result & "     <mac_address><![CDATA[" & mac_address & "]]></mac_address>" & vbcrlf
+        result = result & "     <manufacturer><![CDATA[" & manufacturer & "]]></manufacturer>" & vbcrlf
+        result = result & "     <description><![CDATA[" & description & "]]></description>" & vbcrlf
+        result = result & "     <org_id><![CDATA[" & org_id & "]]></org_id>" & vbcrlf
+        result = result & "     <snmp_status><![CDATA[" & snmp_status & "]]></snmp_status>" & vbcrlf
+        result = result & "     <ssh_status><![CDATA[" & ssh_status & "]]></ssh_status>" & vbcrlf
+        result = result & "     <wmi_status><![CDATA[" & wmi_status & "]]></wmi_status>" & vbcrlf
+        result = result & "     <subnet_timestamp><![CDATA[" & subnet_timestamp & "]]></subnet_timestamp>" & vbcrlf
+        result = result & " </device>" & vbcrlf
+        result_file = result_file & result
 
-    if submit_online = "y" then
-        log_entry = "Submitting discovery subnet scan result for " & host
-        write_log()
-        result = "<devices>" & vbcrlf & result & "</devices>"
-        Err.clear
-        on error resume next
-            Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
-            objHTTP.setTimeouts 5000, 5000, 5000, 120000
-            objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-            if sequential = "y" then
-                objHTTP.Open "POST", url, False ' wait for a response before continuing
+        if submit_online = "y" then
+            log_entry = "IP " & $host & " responding, submitting."
+            write_log()
+            result = "<devices>" & vbcrlf & result & "</devices>"
+            Err.clear
+            on error resume next
+                Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+                objHTTP.setTimeouts 5000, 5000, 5000, 120000
+                objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+                if sequential = "y" then
+                    objHTTP.Open "POST", url, False ' wait for a response before continuing
+                else
+                    objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
+                end if
+                objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+                objHTTP.Send "form_details=" + result + vbcrlf
+            on error goto 0
+            if (error_returned <> 0) then
+                log_entry = "Result send for " & host & " failed"
+                write_log
             else
-                objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
+                log_entry = "Result send for " & host & " succeeded"
+                write_log
             end if
-            objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-            objHTTP.Send "form_details=" + result + vbcrlf
-        on error goto 0
-        if (error_returned <> 0) then
-            log_entry = "Result send for " & host & " failed"
-            write_log
+            if debugging > 1 and sequential = "n" then
+                wscript.echo
+                wscript.echo "Response"
+                wscript.echo "--------"
+                wscript.echo objHTTP.ResponseText
+            end if
         else
-            log_entry = "Result send for " & host & " succeeded"
-            write_log
-        end if
-        if debugging > 1 and sequential = "n" then
-            wscript.echo
-            wscript.echo "Response"
-            wscript.echo "--------"
-            wscript.echo objHTTP.ResponseText
-        end if
-    end if
+            log_entry = "IP " & $host & " responding."
+            write_log()
+        end if ' submit_online
+    else
+        log_entry = "IP " & $host & " not responding, ignoring."
+        write_log()
+    end if ' host_is_up'
 next
 result =          " <device>" & vbcrlf
 result = result & "     <subnet_range><![CDATA[" & subnet_range & "]]></subnet_range>" & vbcrlf

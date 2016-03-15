@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -53,6 +53,7 @@ class M_systems extends MY_Model
         if ($level === 'max') {
             $sql = 'SELECT * FROM system WHERE man_status = "production"';
         }
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -143,6 +144,7 @@ class M_systems extends MY_Model
         $group_id = intval($group_id);
         // check if the group has SQL defined in the DB (group_display_sql)
         $sql = "SELECT group_display_sql FROM oa_group WHERE group_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$group_id");
         $query = $this->db->query($sql, $data);
         $result = $query->row();
@@ -174,12 +176,12 @@ class M_systems extends MY_Model
 					system.man_status = 'production'
 				GROUP BY
 					system.system_id";
-            $sql = $this->clean_sql($sql);
             $data = array("$group_id");
         } else {
             $sql = $display_sql->group_display_sql;
             $data = array("$group_id");
         }
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
 
@@ -189,6 +191,7 @@ class M_systems extends MY_Model
     public function get_distinct_os_group()
     {
         $sql = "SELECT distinct(man_os_group) FROM system ORDER BY man_os_group";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -198,6 +201,7 @@ class M_systems extends MY_Model
     public function get_distinct_os_family()
     {
         $sql = "SELECT distinct(man_os_family) FROM system ORDER BY man_os_family";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -207,6 +211,7 @@ class M_systems extends MY_Model
     public function get_distinct_os_name()
     {
         $sql = "SELECT distinct(man_os_name) FROM system ORDER BY man_os_name";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -216,6 +221,7 @@ class M_systems extends MY_Model
     public function get_count()
     {
         $sql = "SELECT count(*) AS count FROM system WHERE man_status = 'production'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         $count = $result[0]->count;
@@ -226,6 +232,7 @@ class M_systems extends MY_Model
     public function get_non_prod_count()
     {
         $sql = "SELECT count(*) AS count FROM system WHERE man_status <> 'production'";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         $count = $result[0]->count;

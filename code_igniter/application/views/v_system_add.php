@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -45,6 +45,9 @@ $attributes = array('accept-charset' => 'UTF-8');
 echo form_open_multipart('system/add_system', $attributes)."\n";
 echo form_fieldset('Paste the XML')."\n";
 echo '<p>'.form_textarea(array('name' => 'form_systemXML', 'id' => 'form_systemXML', 'rows' => '15', 'cols' => '100'))."</p>\n";
+?>
+<p><label for='display'>Debug Display: </label> <input type='checkbox' id='display' name='display' title='Debug Display' /></p>
+<?php
 echo form_fieldset_close();
 echo "<br /><br />or<br /><br />\n";
 echo form_fieldset('Select a File')."\n";

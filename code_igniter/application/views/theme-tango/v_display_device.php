@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -104,6 +104,7 @@ $system[0]->uptime = strTime($system[0]->uptime);
 
 # create the individual summary sections
 $summary_attributes = array('hostname' => 'text' ,
+                            'sysName' => 'text',
                             'man_ip_address' => 'text',
                             'domain' => 'text',
                             'fqdn' => 'text',

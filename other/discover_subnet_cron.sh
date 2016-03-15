@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.12
+# @version 1.12.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -268,7 +268,7 @@ RESULT=`curl -o /dev/null --silent --write-out '%{http_code}' --data "$FORM_DETA
 
 # confirm the above command worked
 if [ $? -ne 0 ]; then
-	LOG_ENTRY="Discovery for $FORM_SUBNET cron job FAILED wget submission"
+	LOG_ENTRY="Discovery for $FORM_SUBNET cron job FAILED submission"
 	write_log "$LOG_ENTRY"
 	exit 1
 fi

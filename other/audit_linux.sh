@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
-# @version 1.12
+# @version 1.12.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -95,7 +95,14 @@ PATH="$PATH:/sbin:/usr/sbin"
 export PATH
 
 ORIGIFS=$IFS
-IFS=$'\n';
+NEWLINEIFS=$(echo -n "\n");
+IFS="$NEWLINEIFS";
+
+# we set this if we detect we're running on a BB shell
+busybox="n"
+
+display=""
+# This should only be set by Discovery when using the debug option
 
 ########################################################
 # DEFINE SCRIPT FUNCTIONS                              #
@@ -228,12 +235,12 @@ between_output ()
 
 	# first get all lines between $start and $end (inclusive)
 	for line in $(eval $command); do
-		if [[ "$line" == *"$delimiter"* ]]; then
+		if echo "$line" | grep -q "$delimiter" ; then
 			if [ -n "$resultgroup" ]; then
 				# resultgroup contains data, test it
-				if [[ $(echo -e "$resultgroup" | grep "$match" -c ) -ne 0 ]]; then
+				if [ $(echo "$resultgroup" | grep "$match" -c ) -ne 0 ]; then
 					# our match is contained within the resultgroup
-					result=$(echo -e "$resultgroup" | grep "vendor:")
+					result=$(echo "$resultgroup" | grep "vendor:")
 					break
 				fi
 				resultgroup=""
@@ -243,14 +250,14 @@ between_output ()
 			fi
 		else
 			# not a delimiter, so add to the result group
-			resultgroup=$(echo -e "$resultgroup\n$line")
+			resultgroup=$(echo "$resultgroup\n$line")
 		fi
 	done
 
 	# check a last time as we may not have a final delimiter
-	if [[ $(echo -e "$resultgroup" | grep "$match" -c ) -ne 0 ]]; then
+	if [ $(echo "$resultgroup" | grep "$match" -c ) -ne 0 ]; then
 		# our match is contained within the resultgroup
-		result=$(echo -e "$resultgroup" | grep "vendor:")
+		result=$(echo "$resultgroup" | grep "vendor:")
 	fi
 
 	echo "$result"
@@ -279,6 +286,8 @@ for arg in "$@"; do
 			self_delete="$parameter_value" ;;
 		"debugging" )
 			debugging="$parameter_value" ;;
+		"display" )
+			display="$parameter_value" ;;
 		"help" )
 			help="$parameter_value" ;;
 		"--help" )
@@ -328,6 +337,10 @@ if [ "$help" = "y" ]; then
 	echo "  self_delete"
 	echo "    *n - Do not delete the audit script after running"
 	echo "     y - Delete the audit script after running"
+	echo ""
+	echo "  display"
+	echo "    *  - Do not display debugging output upon submit"
+	echo "    on - Display debugging output upon submit (used by Discovery with debug)"
 	echo ""
 	echo "  debugging"
 	echo "     0 - No output."
@@ -430,18 +443,17 @@ fi
 
 # Set the TimeSamp
 system_timestamp=$(date +'%F %T')
-script_pid="$$"
 script_name=$(basename $0)
 
 if [ "$debugging" -gt 0 ]; then
-	echo "My PID is : $script_pid"
+	echo "My PID is : $$"
 	echo "Audit Start Time : $system_timestamp"
 	echo "Audit Location: $audit_location"
 	echo "-------------------"
 fi
 
-IFS=ORIGIFS;
-if [ $(pidof -x "$script_name") != "$script_pid" ]; then
+IFS="$ORIGIFS";
+if pidof -x -o $$ "$script_name" >/dev/null 2>&1; then
 	if [ "$debugging" -gt 0 ]; then
 		echo "Exiting as other audits are currently running."
 		for pid in $(pidof -x "$script_name"); do
@@ -450,7 +462,7 @@ if [ $(pidof -x "$script_name") != "$script_pid" ]; then
 	fi
 	exit 0
 fi
-IFS=$'\n';
+IFS="$NEWLINEIFS"
 
 
 
@@ -459,7 +471,7 @@ IFS=$'\n';
 #========================
 if [ "$audit_san" = "y" ]; then
 	if [ -f "/opt/IBM_DS/client/SMcli" ]; then
-		san_url=${url/system\/add_system/san\/add_san}
+		san_url=$(echo "$san_url" | sed 's/system\/add_system/san\/add_san/g')
 		if [ "$debugging" -gt 0 ]; then
 			echo "SAN info"
 		fi
@@ -510,7 +522,6 @@ fi
 
 
 
-
 #========================
 #  SYSTEM INFO          #
 #========================
@@ -544,11 +555,6 @@ else
 	system_domain=$(hostname -d 2>/dev/null)
 fi
 
-system_ip_address=$(ip route get $(ip route show 0.0.0.0/0 2>/dev/null | grep -oP 'via \K\S+') 2>/dev/null | grep -oP 'src \K\S+')
-if [ -z "$system_ip_address" ]; then
-	system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/' | head -n 1)
-fi
-
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
 #system_description=""
@@ -557,15 +563,34 @@ system_os_group="Linux"
 system_os_family=$(lsb_release -is 2>/dev/null | tr -d '"')
 system_os_name=$(lsb_release -ds 2>/dev/null | tr -d '"' | head -n1)
 system_os_version=$(lsb_release -rs 2>/dev/null | tr -d '"')
+system_manufacturer=""
+system_model=""
 
 # Some DD-WRT specials stuff
-if [ -z "$system_os_family" ] && [ -n "$(cat /etc/motd | grep DD-WRT)" ]; then
+if [ -z "$system_os_family" ] && grep -qi 'DD-WRT' /etc/motd ; then
 	system_os_family="DD-WRT"
-	system_os_version=$(cat /etc/motd | grep DD-WRT | cut -dv -f2)
+	system_os_version=$(grep DD-WRT /etc/motd | cut -dv -f2)
 	system_os_version="v$system_os_version"
 	system_os_name="DD-WRT $system_os_version"
-	#system_ip_address=$(ifconfig | grep UP | )
+	system_model=$(nvram get DD_BOARD)
+	if echo "$system_model" | grep -qi "tplink"; then
+		system_manufacturer="TP-Link Technology"
+	fi
+	system_ip_address=$(nvram get lan_ipaddr)
+	system_domain=$(nvram get lan_domain)
+	system_type="router"
+	busybox="y"
 fi
+
+if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
+	if grep -q 'Alpine Linux' /etc/os-release ; then
+		system_os_family="Alpine Linux"
+		system_os_version=$(grep VERSION_ID /etc/os-release | cur -d\" -f2)
+		system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
+		busybox="y"
+	fi
+fi
+
 
 
 for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
@@ -574,7 +599,7 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 	[ "$system_release_file" = "/etc/os-release" ] && continue;
 
 	if [ -z "$system_os_name" ]; then
-		system_os_name=$(cat "$system_release_file" | head -n1)
+		system_os_name=$(head -n1 "$system_release_file")
 	fi
 
 	# Suse Based
@@ -599,13 +624,13 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 
 	# RedHat based
 	if [ "$system_release_file" = "/etc/redhat-release" ]; then
-		if [[ "$(cat "$system_release_file")" == *"Red Hat"* ]]; then
+		if  cat "$system_release_file" | grep -q "Red Hat" ; then
 			system_os_family="RedHat"
 		fi
-		if [[ "$(cat "$system_release_file")" == *"CentOS"* ]]; then
+		if cat "$system_release_file" | grep -q "CentOS" ; then
 			system_os_family="CentOS"
 		fi
-		if [[ "$(cat "$system_release_file")" == *"Fedora"* ]]; then
+		if cat "$system_release_file" | grep -q "Fedora" ; then
 			system_os_family="Fedora"
 		fi
 		if [ -z "$system_os_version" ]; then
@@ -617,6 +642,13 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 		break;
 	fi
 done
+
+if [ "$busybox" = "n" ] && [ -z "$system_ip_address" ]; then
+	system_ip_address=$(ip route get $(ip route show 0.0.0.0/0 2>/dev/null | grep -oP 'via \K\S+') 2>/dev/null | grep -oP 'src \K\S+')
+fi
+if [ -z "$system_ip_address" ]; then
+	system_ip_address=$(ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/' | head -n 1)
+fi
 
 # Set the icon as the lower case version of the System Family.
 system_os_icon=$(lcase $system_os_family)
@@ -634,35 +666,37 @@ if [ -z "$system_serial" ]; then
 fi
 
 # Get the System Model
-system_model=""
-system_model=$(dmidecode -s system-product-name 2>/dev/null)
-if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
-	system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
-fi
 if [ -z "$system_model" ]; then
-	system_model=$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null)
+	system_model=$(dmidecode -s system-product-name 2>/dev/null)
+	if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
+		system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
+	fi
+	if [ -z "$system_model" ]; then
+		system_model=$(cat /sys/devices/virtual/dmi/id/product_name 2>/dev/null)
+	fi
 fi
 
 # Get the System Manufacturer
-system_manufacturer=""
-system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null)
 if [ -z "$system_manufacturer" ]; then
-	if [ -n "$(which lshal 2>/dev/null)" ]; then
-		system_manufacturer=$(lshal | grep "system.hardware.vendor" | cut -d\' -f2)
+	system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null)
+	if [ -z "$system_manufacturer" ]; then
+		if [ -n "$(which lshal 2>/dev/null)" ]; then
+			system_manufacturer=$(lshal | grep "system.hardware.vendor" | cut -d\' -f2)
+		fi
 	fi
-fi
-if [ -z "$system_manufacturer" ]; then
-	system_manufacturer=$(cat /sys/devices/virtual/dmi/id/sys_vendor 2>/dev/null)
+	if [ -z "$system_manufacturer" ]; then
+		system_manufacturer=$(cat /sys/devices/virtual/dmi/id/sys_vendor 2>/dev/null)
+	fi
 fi
 
 # A few specific checks below here
-if [ -z "$system_model" ] && [[ -e "/proc/user_beancounters" ]] && [[ "$(cat /proc/1/status 2>/dev/null | grep "^envID:" | cut -d: -f2 | awk '{print $1}')" != "1" ]]; then
+if [ -z "$system_model" ] && [ -e "/proc/user_beancounters" ] && [ "$(cat /proc/1/status 2>/dev/null | grep "^envID:" | cut -d: -f2 | awk '{print $1}')" != "1" ]; then
 	# Test for an OpenVZ guest
 	system_model="OpenVZ"
 	system_manufacturer="OpenVZ"
 fi
 if [ -z "$system_model" ] && [ -n "$(which dmidecode 2>/dev/null)" ]; then
-	if [[ "$(dmidecode | egrep -i 'manufacturer')" == *"Microsoft"* ]]; then
+	if dmidecode | egrep -i 'manufacturer' | grep -q "Microsoft" ; then
 		# test for a Microsoft virtual machine
 		system_model="Virtual Machine"
 		system_manufacturer="Microsoft"
@@ -748,7 +782,7 @@ fi
 
 
 system_pc_physical_processors=$((system_pc_total_threads / system_pc_threads_x_processor))
-if [ "$system_pc_physical_processors" == "0" ]; then
+if [ "$system_pc_physical_processors" = "0" ]; then
 	system_pc_physical_processors="1"
 fi
 
@@ -832,7 +866,7 @@ if [ -z "$bios_firm_rev" ]; then
 			bios_firm_rev=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
 		fi
 		if [ -z "$bios_firm_rev" ]; then
-			bios_firm_rev=$(cat /sys/class/dmi/id/bios_version)
+			bios_firm_rev=$(cat /sys/class/dmi/id/bios_version 2>/dev/null)
 		fi
 	fi
 fi
@@ -841,7 +875,11 @@ fi
 if [ -n "$bios_firm_rev" ]; then
 	bios_description=$(echo "$bios_manufacturer" | cut -d" " -f1)" BIOS - Firmware Rev. $bios_firm_rev"
 else
-	bios_description=$(echo "$bios_manufacturer" | cut -d" " -f1)" BIOS"
+	if [ -n "$bios_manufacturer" ]; then
+		bios_description=$(echo "$bios_manufacturer" | cut -d" " -f1)" BIOS"
+	else
+		bios_description=""
+	fi
 fi
 
 # Get the BIOS Serial = System Serial
@@ -884,18 +922,20 @@ fi
 #' Write to the audit file       '
 
 #'''''''''''''''''''''''''''''''''
-{
-echo "	<bios>"
-echo "		<item>"
-echo "			<description>$(escape_xml "$bios_description")</description>"
-echo "			<manufacturer>$(escape_xml "$bios_manufacturer")</manufacturer>"
-echo "			<serial>$(escape_xml "$bios_serial")</serial>"
-echo "			<smversion>$(escape_xml "$bios_smversion")</smversion>"
-echo "			<version>$(escape_xml "$bios_version")</version>"
-echo "		</item>"
-echo "	</bios>"
-} >> "$xml_file"
-
+# only output the bios section if we have some details
+if [ -n "$bios_description" ] || [ -n "$bios_manufacturer" ] || [ -n "$bios_serial" ] || [ -n "$bios_smversion" ] || [ -n "$bios_version" ]; then
+	{
+	echo "	<bios>"
+	echo "		<item>"
+	echo "			<description>$(escape_xml "$bios_description")</description>"
+	echo "			<manufacturer>$(escape_xml "$bios_manufacturer")</manufacturer>"
+	echo "			<serial>$(escape_xml "$bios_serial")</serial>"
+	echo "			<smversion>$(escape_xml "$bios_smversion")</smversion>"
+	echo "			<version>$(escape_xml "$bios_version")</version>"
+	echo "		</item>"
+	echo "	</bios>"
+	} >> "$xml_file"
+fi
 
 ##################################
 # PROCESSOR SECTION              #
@@ -910,10 +950,14 @@ processor_socket=$(dmidecode -t processor 2>/dev/null | grep Upgrade | head -n1 
 
 # Get processor description
 processor_description=$(grep "model name" /proc/cpuinfo | head -n1 | cut -d: -f2)
-
+if [ -z "$processor_description" ]; then
+	processor_description=$(grep "system type" /proc/cpuinfo | head -n1 | cut -d: -f2)
+fi
 # Get processor speed
 processor_speed=$(grep "cpu MHz" /proc/cpuinfo | head -n1 | cut -d: -f2 | awk '{printf("%d\n",$1 + 0.5)}')
-
+if [ -z "$processor_speed" ]; then
+	processor_speed=$(grep "CPUClock" /proc/cpuinfo | head -n1 | cut -d: -f2 | awk '{printf("%d\n",$1 + 0.5)}')
+fi
 # Get processor manufacturer
 processor_manufacturer=$(grep vendor_id /proc/cpuinfo | head -n1 | cut -d: -f2)
 
@@ -922,8 +966,8 @@ processor_manufacturer=$(grep vendor_id /proc/cpuinfo | head -n1 | cut -d: -f2)
 
 #'''''''''''''''''''''''''''''''''
 
-let total_cores=$system_pc_cores_x_processor*$system_pc_physical_processors
-let total_logical_processors=$system_pc_threads_x_processor*$system_pc_physical_processors
+total_cores=$(( $system_pc_cores_x_processor * $system_pc_physical_processors ))
+total_logical_processors=$(( $system_pc_threads_x_processor * $system_pc_physical_processors ))
 {
 echo "	<processor>"
 echo "		<item>"
@@ -953,7 +997,10 @@ memory_slots=$(dmidecode -t 17 2>/dev/null | awk '/DMI type 17/{print $2}' | wc 
 if [ "$memory_slots" != "0" ]; then
 
 	echo "	<memory>">> "$xml_file"
-
+#echo "IFS is "
+#echo "$IFS"|hexdump -C
+#dmidecode -t 17 2>/dev/null | awk '/DMI type 17/{print $2}' |hexdump -C
+	IFS="$ORIGIFS";
 	for memory_handle in $(dmidecode -t 17 2>/dev/null | awk '/DMI type 17/{print $2}'); do
 
 			# memory_detail and memory_type are switched here to match the Windows results
@@ -1011,7 +1058,7 @@ if [ "$memory_slots" != "0" ]; then
 
 	echo "	</memory>">> "$xml_file"
 fi
-
+IFS="$NEWLINEIFS"
 
 ##################################
 # MOTHERBOARD SECTION            #
@@ -1086,11 +1133,11 @@ if [ "$optical_num_devices" != "0" ]; then
 		temp=""
 		temp=$(echo "$optical_device" | cut -d: -f2 | cut -d, -f3)
 		optical_drive_release=$(trim "$temp")
-                if [ -n "$optical_drive_release" ]; then
-                  optical_drive_release="Rel.$optical_drive_release"
-                fi
-        temp=""
-        temp=$(echo "$optical_device" | cut -d: -f1)
+		if [ -n "$optical_drive_release" ]; then
+			optical_drive_release="Rel.$optical_drive_release"
+		fi
+		temp=""
+		temp=$(echo "$optical_device" | cut -d: -f1)
 		optical_device_ID=$(trim "$temp")
 		optical_caption="$optical_drive_vendor $optical_drive_model"
 		{
@@ -1218,49 +1265,49 @@ addr_info=""
 echo "	<network>" >> "$xml_file";
 
 # first look for bonded network cards - new for 1.5.6
-for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print` | cut -d" " -f9 | cut -d/ -f5); do
-    #temp=`cat $test/uevent | grep DEVTYPE=bond`
-    #if [ -n "$temp" ]; then
-    if [ -f "/proc/net/bonding/$net_connection_id" ]; then
-        # we have a bonded nic
-        net_index=$(cat /sys/class/net/$net_connection_id/ifindex)
-        net_card_id="$net_connection_id"
-        net_card_mac="$system_hostname:$net_connection_id:$net_index"
-        net_card_manufacturer="Linux Kernel"
-        net_card_model="Virtual Bonded NIC"
-        net_card_description="Virtual Bonded NIC ($net_connection_id)"
-        net_card_enabled=""
-        net_card_status=$(cat /sys/class/net/$net_connection_id/operstate)
-        if [ "$net_card_status" = "up" ]; then
-                net_card_status="Connected"
-        else
-                net_card_status="Disconnected"
-        fi
-        net_slaves=""
-        for slave in $(cat /proc/net/bonding/$net_connection_id | grep "Slave Interface" | cut -d" " -f3); do
-                if [ -n "$net_slaves" ]; then
-                        net_slaves="$net_slaves, $slave"
-                else
-                        net_slaves="$slave"
-                fi
-        done
-        net_active_slave=$(cat /proc/net/bonding/$net_connection_id | grep "Currently Active Slave" | cut -d" " -f4)
-        net_slaves="$net_slaves ($net_active_slave active)"
-        net_card_speed=""
-        if [ -n "$(which ethtool 2>/dev/null)" ]; then
-                net_card_speed=$(ethtool "$net_active_slave" 2>/dev/null | grep Speed | cut -d: -f2 | sed 's/[^0-9]//g')
-                if [ $net_card_speed ]; then
-                        net_card_speed=$((net_card_speed * 1000000))
-                fi
-        fi
-        net_card_type="Ethernet 802.3"
-        net_card_dhcp_enab=""
-        net_card_dhcp_server=""
-        net_card_dhcp_lease_obtained=""
-        net_card_dhcp_lease_expires=""
-        net_card_dns_domain=""
-        net_card_domain_reg=""
-        net_card_dns_server=""
+#for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print` | cut -d" " -f9 | cut -d/ -f5); do
+#for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print` | cut -d" " -f10 | cut -d/ -f5); do
+for net_connection_id in $(ls /sys/class/net/) ; do
+	if [ -f "/proc/net/bonding/$net_connection_id" ]; then
+		# we have a bonded nic
+		net_index=$(cat /sys/class/net/$net_connection_id/ifindex)
+		net_card_id="$net_connection_id"
+		net_card_mac="$system_hostname:$net_connection_id:$net_index"
+		net_card_manufacturer="Linux Kernel"
+		net_card_model="Virtual Bonded NIC"
+		net_card_description="Virtual Bonded NIC ($net_connection_id)"
+		net_card_enabled=""
+		net_card_status=$(cat /sys/class/net/$net_connection_id/operstate)
+		if [ "$net_card_status" = "up" ]; then
+				net_card_status="Connected"
+		else
+				net_card_status="Disconnected"
+		fi
+		net_slaves=""
+		for slave in $(cat /proc/net/bonding/$net_connection_id | grep "Slave Interface" | cut -d" " -f3); do
+				if [ -n "$net_slaves" ]; then
+						net_slaves="$net_slaves, $slave"
+				else
+						net_slaves="$slave"
+				fi
+		done
+		net_active_slave=$(cat /proc/net/bonding/$net_connection_id | grep "Currently Active Slave" | cut -d" " -f4)
+		net_slaves="$net_slaves ($net_active_slave active)"
+		net_card_speed=""
+		if [ -n "$(which ethtool 2>/dev/null)" ]; then
+				net_card_speed=$(ethtool "$net_active_slave" 2>/dev/null | grep Speed | cut -d: -f2 | sed 's/[^0-9]//g')
+				if [ $net_card_speed ]; then
+						net_card_speed=$((net_card_speed * 1000000))
+				fi
+		fi
+		net_card_type="Ethernet 802.3"
+		net_card_dhcp_enab=""
+		net_card_dhcp_server=""
+		net_card_dhcp_lease_obtained=""
+		net_card_dhcp_lease_expires=""
+		net_card_dns_domain=""
+		net_card_domain_reg=""
+		net_card_dns_server=""
 
 		# Check DHCP lease for this card
 		# Distros store the lease info in different files/locations, I'm getting the file from the running process
@@ -1272,10 +1319,12 @@ for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print
 
 		if [ ! -e "$net_card_lease_file" ]; then
 			net_card_dhcp_enab="False"
+			set_by="static"
 			net_card_dhcp_server=""
 			net_card_dhcp_lease_expire=""
 		else
 			net_card_dhcp_enab="True"
+			set_by="dhcp"
 			net_card_dhcp_server=$(grep dhcp-server "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5)
 			net_card_dhcp_lease_expire=$(grep expire "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5 | sed 's|/|-|g')
 			# To get the Obtained date we need to get lease time first
@@ -1295,39 +1344,35 @@ for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print
 		# Get Info on active IPV4 Addresses for this card
 		for net_card_enabled_ip4_addr in $(ip addr show "$net_connection_id" | grep 'inet ' | cut -dt -f2 | cut -db -f1 | cut -c2- | cut -d" " -f1); do
 			net_card_enabled="True"
-			net_card_enabled_ip6_addr=""
-			#echo "NCEIA: $net_card_enabled_ip4_addr"
+			ip=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f1)
 			temp=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f2)
-			net_card_enabled_ip_subnet=$(cidr2mask "$temp")
-			net_card_enabled_ip_version="4"
-			addr_info=$addr_info"\t\t<ip_address>\n"
-			addr_info=$addr_info"\t\t\t<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>\n"
-			addr_info=$addr_info"\t\t\t<net_index>$(escape_xml "$net_index")</net_index>\n"
-			temp=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f1)
-			addr_info=$addr_info"\t\t\t<ip_address_v4>$(escape_xml "$temp")</ip_address_v4>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_v6>$(escape_xml "$net_card_enabled_ip6_addr")</ip_address_v6>\n"
-			addr_info=$addr_info"\t\t\t<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_version>$(escape_xml "$net_card_enabled_ip_version")</ip_address_version>\n"
-			addr_info=$addr_info"\t\t\t<type>bonded</type>\n"
-			addr_info=$addr_info"\t\t</ip_address>\n"
+			subnet=$(cidr2mask "$temp")
+			addr_info=$addr_info"
+		<item>
+			<mac>$(escape_xml "$net_card_mac")</mac>
+			<net_index>$(escape_xml "$net_index")</net_index>
+			<ip>$(escape_xml "$ip")</ip>
+			<netmask>$(escape_xml "$subnet")</netmask>
+			<version>4</version>
+			<set_by>$(escape_xml "$set_by")</set_by>
+			<type>bonded</type>
+		</item>"
 		done
 		# Get Info on active IPV6 Addresses for this card
 		for net_card_enabled_ip6_addr in $(ip addr show "$net_connection_id" | grep 'inet6' | cut -c11- | cut -ds -f1); do
 			net_card_enabled="True"
-			net_card_enabled_ip4_addr=""
-		 		net_card_enabled_ip_subnet=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f2)
-			net_card_enabled_ip_version="6"
-
-			addr_info=$addr_info"\t\t<ip_address>\n"
-			addr_info=$addr_info"\t\t\t<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>\n"
-			addr_info=$addr_info"\t\t\t<net_index>$(escape_xml "$net_index")</net_index>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_v4>$(escape_xml "$net_card_enabled_ip4_addr")</ip_address_v4>\n"
-			temp=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f1)
-			addr_info=$addr_info"\t\t\t<ip_address_v6>$(escape_xml "$temp")</ip_address_v6>\n"
-			addr_info=$addr_info"\t\t\t<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_version>$(escape_xml "$net_card_enabled_ip_version")</ip_address_version>\n"
-			addr_info=$addr_info"\t\t\t<type>bonded</type>\n"
-			addr_info=$addr_info"\t\t</ip_address>\n"
+			ip=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f1)
+			subnet=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f2)
+			addr_info=$addr_info"
+		<item>
+			<mac>$(escape_xml "$net_card_mac")</mac>
+			<net_index>$(escape_xml "$net_index")</net_index>
+			<ip>$(escape_xml "$ip")</ip>
+			<cidr>$(escape_xml "$subnet")</cidr>
+			<version>6</version>
+			<set_by>$(escape_xml "$set_by")</set_by>
+			<type>bonded</type>
+		</item>"
 		done
 
 		{
@@ -1360,42 +1405,48 @@ for net_connection_id in $(ls -l `find /sys/class/net -maxdepth 1 -type l -print
 	fi
 done
 
-
-
+IFS="$ORIGIFS"
 net_cards=""
 temp=$(ls /sys/class/net/)
 for dir in $temp; do
 	if [ -e "/sys/class/net/$dir/device" ]; then
 		dev=""
-		dev=$(echo "/sys/class/net/$dir" | readlink -f "/sys/class/net/$dir/device" | awk -F/ '{ print $5 }' | awk -F: '{ print $2":"$3 }' | tr -d '[:blank:]' 2>/dev/null)
+		if [ "$busybox" = "n" ]; then
+		dev=$(echo "/sys/class/net/$dir" | readlink -f "/sys/class/net/$dir/device" 2>/dev/null | awk -F/ '{ print $5 }' | awk -F: '{ print $2":"$3 }' | tr -d '[:blank:]' 2>/dev/null)
+		fi
+		if [ "$busybox" = "y" ]; then
+			# busy box has realpath, not readlink
+			dev="0"
+		fi
 		if [ -n "$dev" ]; then
 			if [ -n "$net_cards" ]; then
-				net_cards=$(trim "$net_cards"$'\n'"$dev/$dir")
+				net_cards="$net_cards$dev/$dir "
 			else
-				net_cards=$(trim "$dev/$dir")
+				net_cards="$dev/$dir "
 			fi
 		fi
 	fi
 done
+
 dev=""
 temp=""
-
 if [ -n "$net_cards" ]; then
 	# Store the IP Addresses Information in a variable to write it later on the file
 	for net_card_connection_id in $net_cards; do
 		net_card_id=$(echo "$net_card_connection_id" | cut -d/ -f2)
 		net_card_pci=$(echo "$net_card_connection_id" | cut -d/ -f1)
+		net_card_mac=""
 
 		# determine the cards MAC Address
 		# first try ethtool as ifconfig can report duplicate MACs in the case of bonded NICs on CentOS
 		if [ -n "$(which ethtool 2>/dev/null)" ]; then
 			net_card_mac=$(ethtool -P "$net_card_id" 2>/dev/null | grep -F "Permanent" | cut -d" " -f3)
 		fi
-		if [ -z "$net_card_mac" ] || [ "$net_card_mac" == "00:00:00:00:00:00" ]; then
-			net_card_mac=$(cat /sys/class/net/"$net_card_id"/address)
+		if [ -z "$net_card_mac" ] || [ "$net_card_mac" = "00:00:00:00:00:00" ]; then
+			net_card_mac=$(cat /sys/class/net/$net_card_id/address)
 		fi
 
-		net_index=$(cat /sys/class/net/"$net_card_id"/ifindex)
+		net_index=$(cat /sys/class/net/$net_card_id/ifindex)
 
 		if [ "$net_card_pci" = 'virtual' ]; then
 			net_card_model="Virtual Interface"
@@ -1403,7 +1454,7 @@ if [ -n "$net_cards" ]; then
 		elif [ "$(which lspci 2>/dev/null)" != "" ]; then
 			net_card_model=$(lspci -vms "$net_card_pci" | grep -v "$net_card_pci" | grep ^Device | cut -d: -f2 | cut -c2-)
 			net_card_manufacturer=$(lspci -vms "$net_card_pci" | grep ^Vendor | cut -d: -f2 | cut -c2-)
-		elif [[ "$system_model" == *"VMware"* ]]; then
+		elif [ "$system_model" = *"VMware"* ]; then
 			net_card_model="PCI bridge"
 			net_card_manufacturer="VMware"
 		else
@@ -1447,47 +1498,9 @@ if [ -n "$net_cards" ]; then
 		fi
 
 		net_card_enabled="False"
-
-		# Get Info on active IPV4 Addresses for this card
-		for net_card_enabled_ip4_addr in $(ip addr show "$net_card_id" | grep 'inet ' | cut -dt -f2 | cut -db -f1 | cut -c2- | cut -d" " -f1); do
-			net_card_enabled="True"
-			net_card_enabled_ip6_addr=""
-			#echo "NCEIA: $net_card_enabled_ip4_addr"
-			temp=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f2)
-			net_card_enabled_ip_subnet=$(cidr2mask "$temp")
-			net_card_enabled_ip_version="4"
-			addr_info=$addr_info"\t\t<ip_address>\n"
-			addr_info=$addr_info"\t\t\t<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>\n"
-			addr_info=$addr_info"\t\t\t<net_index>$(escape_xml "$net_index")</net_index>\n"
-			temp=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f1)
-			addr_info=$addr_info"\t\t\t<ip_address_v4>$(escape_xml "$temp")</ip_address_v4>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_v6>$(escape_xml "$net_card_enabled_ip6_addr")</ip_address_v6>\n"
-			addr_info=$addr_info"\t\t\t<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_version>$(escape_xml "$net_card_enabled_ip_version")</ip_address_version>\n"
-			addr_info=$addr_info"\t\t</ip_address>\n"
-		done
-
-		# Get Info on active IPV6 Addresses for this card
-		for net_card_enabled_ip6_addr in $(ip addr show "$net_card_id" | grep 'inet6' | cut -c11- | cut -ds -f1); do
-			net_card_enabled="True"
-			net_card_enabled_ip4_addr=""
-		 		net_card_enabled_ip_subnet=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f2)
-			net_card_enabled_ip_version="6"
-
-			addr_info=$addr_info"\t\t<ip_address>\n"
-			addr_info=$addr_info"\t\t\t<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>\n"
-			addr_info=$addr_info"\t\t\t<net_index>$(escape_xml "$net_index")</net_index>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_v4>$(escape_xml "$net_card_enabled_ip4_addr")</ip_address_v4>\n"
-			temp=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f1)
-			addr_info=$addr_info"\t\t\t<ip_address_v6>$(escape_xml "$temp")</ip_address_v6>\n"
-			addr_info=$addr_info"\t\t\t<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>\n"
-			addr_info=$addr_info"\t\t\t<ip_address_version>$(escape_xml "$net_card_enabled_ip_version")</ip_address_version>\n"
-			addr_info=$addr_info"\t\t</ip_address>\n"
-		done
-
 		# Check DHCP lease for this card
 		# Distros store the lease info in different files/locations, I'm getting the file from the running process
-		net_card_lease_file=$(ps -ef | grep dhclient | grep "$net_card_id" | sed -e 's/^.*-lf//' | cut -d" " -f2)
+		net_card_lease_file=$(ps -ef 2>/dev/null | grep dhclient | grep "$net_card_id" | sed -e 's/^.*-lf//' | cut -d" " -f2)
 		# below only works for Debian
 		# net_card_lease_file="/var/lib/dhcp/dhclient.$net_card_id.leases"
 		# below only works for RH
@@ -1495,10 +1508,12 @@ if [ -n "$net_cards" ]; then
 
 		if [ ! -e "$net_card_lease_file" ]; then
 			net_card_dhcp_enab="False"
+			set_by="static"
 			net_card_dhcp_server=""
 			net_card_dhcp_lease_expire=""
 		else
 			net_card_dhcp_enab="True"
+			set_by="dhcp"
 			net_card_dhcp_server=$(grep dhcp-server "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5)
 			net_card_dhcp_lease_expire=$(grep expire "$net_card_lease_file" | tail -n1 | sed 's/;//' | cut -d" " -f5 | sed 's|/|-|g')
 			# To get the Obtained date we need to get lease time first
@@ -1506,6 +1521,40 @@ if [ -n "$net_cards" ]; then
 			net_card_dhcp_lease_days=$((net_card_dhcp_lease_time / 60 / 60 / 24))
 			net_card_dhcp_lease_obtained=$(date -d ''"$net_card_dhcp_lease_expire"' -'"$net_card_dhcp_lease_days"' days' +%F)
 		fi
+
+
+		# Get Info on active IPV4 Addresses for this card
+		for net_card_enabled_ip4_addr in $(ip addr show "$net_card_id" | grep 'inet ' | cut -dt -f2 | cut -db -f1 | cut -c2- | cut -d" " -f1); do
+			net_card_enabled="True"
+			ip=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f1)
+			temp=$(echo "$net_card_enabled_ip4_addr" | cut -d/ -f2)
+			subnet=$(cidr2mask "$temp")
+			addr_info=$addr_info"
+		<item>
+			<mac>$(escape_xml "$net_card_mac")</mac>
+			<net_index>$(escape_xml "$net_index")</net_index>
+			<ip>$(escape_xml "$ip")</ip>
+			<netmask>$(escape_xml "$subnet")</netmask>
+			<version>4</version>
+			<set_by>$(escape_xml "$set_by")</set_by>
+		</item>"
+		done
+
+		# Get Info on active IPV6 Addresses for this card
+		for net_card_enabled_ip6_addr in $(ip addr show "$net_card_id" | grep 'inet6' | cut -c11- | cut -ds -f1); do
+			net_card_enabled="True"
+			ip=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f1)
+			subnet=$(echo "$net_card_enabled_ip6_addr" | cut -d/ -f2)
+			addr_info=$addr_info"
+		<item>
+			<mac>$(escape_xml "$net_card_mac")</mac>
+			<net_index>$(escape_xml "$net_index")</net_index>
+			<ip>$(escape_xml "$ip")</ip>
+			<cidr>$(escape_xml "$subnet")</cidr>
+			<version>6</version>
+			<set_by>$(escape_xml "$set_by")</set_by>
+		</item>"
+		done
 
 		# TODO: Domain Registration & WINS Info (Samba)
 		net_card_domain_reg=""
@@ -1552,9 +1601,8 @@ echo "	</network>" >> "$xml_file"
 
 if [ -n "$addr_info" ]; then
 	{
-	echo "	<addresses>"
-	echo -e "$addr_info"
-	echo "	</addresses>"
+	echo "	<ip>$addr_info"
+	echo "	</ip>"
 	} >> "$xml_file"
 fi
 
@@ -1567,7 +1615,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 echo "	<disk>" >> "$xml_file"
 partition_result=""
-for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
+for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null:759); do
 
 	hard_drive_caption="/dev/$disk"
 	hard_drive_index="$disk"
@@ -1583,7 +1631,11 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 	fi
 	hard_drive_serial=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_SERIAL_SHORT= | cut -d= -f2)
 	hard_drive_size=$(lsblk -lbndo SIZE /dev/"$disk")
-	hard_drive_size=$((hard_drive_size /1024 / 1024))
+	if [ "$hard_drive_size" -gt 1048576 ]; then
+		hard_drive_size=$((hard_drive_size / 1024 / 1024))
+	else
+		hard_drive_size="0"
+	fi
 	hard_drive_device_id="/dev/$disk"
 	hard_drive_partitions=$(lsblk -lno NAME /dev/$disk | grep -v "^$disk\$" -c)
 	hard_drive_status=""
@@ -1608,17 +1660,17 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 	fi
 
 	# some hacks
-	if [ -z "$hard_drive_manufacturer" ] && [[ "$hard_drive_model" == *"Crucial"* ]]; then
+	if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "Crucial" ; then
 		hard_drive_manufacturer="Crucial"
 	fi
 
-	if [[ "$hard_drive_manufacturer" == *"VMware"* ]]; then
+	if echo "$hard_drive_manufacturer" | grep -q "VMware" ; then
 		hard_drive_manufacturer="VMware"
 		hard_drive_model_family="VMware"
 		hard_drive_model="VMware Virtual Disk"
 	fi
 
-	if [[ "$hard_drive_model" == *"VMware"* ]] || [[ "$hard_drive_model" == *"Virtual"* ]]; then
+	if echo "$hard_drive_model" | grep -q "VMware" || echo "$hard_drive_model" | grep -q "Virtual" ; then
 		hard_drive_model="VMware Virtual Disk"
 	fi
 
@@ -1662,9 +1714,9 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 			partition_name=$(trim "$partition_name")
 
 			#partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
-			partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//" )
-			partition_size=$(trim "$partition_size")
-			partition_size=$((partition_size /1024 / 1024))
+			#partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+			partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | rev | cut -d" " -f1 | rev)
+			partition_size=$((partition_size / 1024 / 1024))
 
 			#partition_format=$(lsblk -lndo FSTYPE /dev/"$partition" 2>/dev/null)
 			partition_format=$(lsblk -lno NAME,FSTYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
@@ -1700,21 +1752,22 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 				partition_free_space=$(free -m | grep -i swap | awk '{print $4}')
 			fi
 
-			partition_result=$partition_result"		<item>\n"
-			partition_result=$partition_result"			<serial>$(escape_xml "$partition_serial")</serial>\n"
-			partition_result=$partition_result"			<name>$(escape_xml "$partition_name")</name>\n"
-			partition_result=$partition_result"			<description>$(escape_xml "$partition_caption")</description>\n"
-			partition_result=$partition_result"			<device>$(escape_xml "$partition_device_id")</device>\n"
-			partition_result=$partition_result"			<hard_drive_index>$(escape_xml "$partition_disk_index")</hard_drive_index>\n"
-			partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n"
-			partition_result=$partition_result"			<mount_type>$(escape_xml "$partition_mount_type")</mount_type>\n"
-			partition_result=$partition_result"			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>\n"
-			partition_result=$partition_result"			<size>$(escape_xml "$partition_size")</size>\n"
-			partition_result=$partition_result"			<free>$(escape_xml "$partition_free_space")</free>\n"
-			partition_result=$partition_result"			<used>$(escape_xml "$partition_used_space")</used>\n"
-			partition_result=$partition_result"			<format>$(escape_xml "$partition_format")</format>\n"
-			partition_result=$partition_result"			<type>$(escape_xml "$partition_type")</type>\n"
-			partition_result=$partition_result"		</item>"
+			partition_result=$partition_result"
+		<item>
+			<serial>$(escape_xml "$partition_serial")</serial>
+			<name>$(escape_xml "$partition_name")</name>
+			<description>$(escape_xml "$partition_caption")</description>
+			<device>$(escape_xml "$partition_device_id")</device>
+			<hard_drive_index>$(escape_xml "$partition_disk_index")</hard_drive_index>
+			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
+			<mount_type>$(escape_xml "$partition_mount_type")</mount_type>
+			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
+			<size>$(escape_xml "$partition_size")</size>
+			<free>$(escape_xml "$partition_free_space")</free>
+			<used>$(escape_xml "$partition_used_space")</used>
+			<format>$(escape_xml "$partition_format")</format>
+			<type>$(escape_xml "$partition_type")</type>
+		</item>"
 
 		fi
 	done
@@ -1749,22 +1802,23 @@ for mount in $(mount -l -t nfs,nfs2,nfs3,nfs4 2>/dev/null); do
 	partition_disk_index=""
 	partition_type="NFS Mount"
 	partition_serial=""
-	partition_result=$partition_result"		<item>\n"
-	partition_result=$partition_result"			<serial>$(escape_xml "$partition_serial")</serial>\n"
-	partition_result=$partition_result"			<name>$(escape_xml "$partition_name")</name>\n"
-	partition_result=$partition_result"			<description>$(escape_xml "$partition_caption")</description>\n"
-	partition_result=$partition_result"			<device>$(escape_xml "$partition_device_id")</device>\n"
-	partition_result=$partition_result"			<hard_drive_index></hard_drive_index>\n"
-	partition_result=$partition_result"			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>\n"
-	partition_result=$partition_result"			<mount_type>mount point</mount_type>\n"
-	partition_result=$partition_result"			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>\n"
-	partition_result=$partition_result"			<size>$(escape_xml "$partition_size")</size>\n"
-	partition_result=$partition_result"			<free>$(escape_xml "$partition_free_space")</free>\n"
-	partition_result=$partition_result"			<used>$(escape_xml "$partition_used_space")</used>\n"
-	partition_result=$partition_result"			<format>$(escape_xml "$partition_format")</format>\n"
-	partition_result=$partition_result"			<bootable></bootable>\n"
-	partition_result=$partition_result"			<type>nfs</type>\n"
-	partition_result=$partition_result"		</item>"
+	partition_result=$partition_result"
+		<item>
+			<serial>$(escape_xml "$partition_serial")</serial>
+			<name>$(escape_xml "$partition_name")</name>
+			<description>$(escape_xml "$partition_caption")</description>
+			<device>$(escape_xml "$partition_device_id")</device>
+			<hard_drive_index></hard_drive_index>
+			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
+			<mount_type>mount point</mount_type>
+			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
+			<size>$(escape_xml "$partition_size")</size>
+			<free>$(escape_xml "$partition_free_space")</free>
+			<used>$(escape_xml "$partition_used_space")</used>
+			<format>$(escape_xml "$partition_format")</format>
+			<bootable></bootable>
+			<type>nfs</type>
+		</item>"
 done
 
 
@@ -1774,8 +1828,7 @@ done
 
 if [ -n "$partition_result" ]; then
 	{
-	echo "	<partition>"
-	echo -e "$partition_result"
+	echo "	<partition>$partition_result"
 	echo "	</partition>"
 	} >> "$xml_file"
 fi
@@ -1809,12 +1862,13 @@ echo "	</log>" >> "$xml_file"
 ##################################
 # ENVIRONMENT VARIABLE SECTION   #
 ##################################
-
+IFS='
+'
 if [ "$debugging" -gt "0" ]; then
 	echo "Environment Variable Info"
 fi
 echo "	<variable>" >> "$xml_file"
-for variable in $(printenv); do
+for variable in $(env); do
 	name=$( echo "$variable" | cut -d= -f1 )
 	value=${variable#*=}
 		echo "		<item>" >> "$xml_file"
@@ -1827,6 +1881,7 @@ echo "	</variable>" >> "$xml_file"
 
 
 
+
 ##################################
 # SWAP SECTION                   #
 ##################################
@@ -1834,9 +1889,10 @@ echo "	</variable>" >> "$xml_file"
 if [ "$debugging" -gt "0" ]; then
 	echo "Swap Info"
 fi
+IFS="$NEWLINEIFS"
 echo "	<pagefile>" >> "$xml_file"
 for swap in $(tail -n +2 /proc/swaps) ; do
-	echo "$swap" | awk ' { print "\t<item>\n\t\t<name>"$1"</name>\n\t\t<initial_size>"$3"</initial_size>\n\t\t<max_size>"$3"</max_size>\n\t</item>" } ' >> "$xml_file"
+	echo "$swap" | awk ' { print "\t\t<item>\n\t\t\t<name>"$1"</name>\n\t\t\t<initial_size>"$3"</initial_size>\n\t\t\t<max_size>"$3"</max_size>\n\t\t</item>" } ' >> "$xml_file"
 done
 echo "	</pagefile>" >> "$xml_file"
 
@@ -1850,7 +1906,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 echo "	<user>" >> "$xml_file"
 
-IFS=$(echo -en "\n\b");
+IFS=$(echo -n "\n\b");
 grep -v '^ *#' < /etc/passwd | while IFS= read -r line; do
 	echo "$line" | awk -F: ' { print "\t\t<item>\n" "\t\t\t<name>"$1"</name>\n" "\t\t\t<full_name><![CDATA["$5"]]></full_name>\n" "\t\t\t<sid>"$3"</sid>\n" "\t\t</item>" } ' >> "$xml_file"
 done
@@ -1864,7 +1920,8 @@ echo "	</user>" >> "$xml_file"
 if [ "$debugging" -gt "0" ]; then
 	echo "Software Info"
 fi
-
+IFS='
+'
 echo "	<software>" >> "$xml_file"
 case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' )
@@ -1874,6 +1931,18 @@ case $system_os_family in
 		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
 			rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
+			;;
+		'Alpine Linux' )
+			for package in $(apk info); do
+				name="$package"
+				version=$(apk info "$package" | grep description | cut -d" " -f1 | cut -d "-" -f2-)
+				description=$(apk info "$package" | grep description: -A1 | grep -v description:)
+				echo "		<item>" >> "$xml_file"
+				echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+				echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+				echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+				echo "		</item>" >> "$xml_file"
+			done
 			;;
 esac
 echo "	</software>" >> "$xml_file"
@@ -1888,111 +1957,152 @@ fi
 
 echo "	<service>" >> "$xml_file"
 if hash systemctl 2>/dev/null; then
-    # systemD services
-    for name in $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1); do
-        display_name=$(echo "$name" | cut -d. -f1)
-        description=$(systemctl show "$name" -p Description | cut -d= -f2)
-        binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
-        state=$(systemctl show "$name" -p ActiveState | cut -d= -f2)
-        user=$(systemctl show "$name" -p User | cut -d= -f2)
-        # start_mode order of attribute preference is WantedBy, Wants, After
-        start_mode=$(systemctl show "$name" -p WantedBy | cut -d= -f2)
-        if [ -z "$start_mode" ]; then
-            start_mode=$(systemctl show "$name" -p Wants | cut -d= -f2)
-        fi
-        if [ -z "$start_mode" ]; then
-            start_mode=$(systemctl show "$name" -p After | cut -d= -f2)
-        fi
-        {
-        echo "      <item>"
-        echo "          <description>$(escape_xml "$display_name")</description>"
-        echo "          <name>$(escape_xml "$name")</name>"
-        echo "          <start_mode>$(escape_xml "$start_mode")</start_mode>"
-        echo "          <executable>$(escape_xml "$binary")</executable>"
-        echo "          <state>$(escape_xml "$state")</state>"
-        echo "          <user>$(escape_xml "$user")</user>"
-        echo "      </item>"
-        } >> "$xml_file"
-    done
+	# systemD services
+	for name in $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1); do
+		display_name=$(echo "$name" | cut -d. -f1)
+		description=$(systemctl show "$name" -p Description | cut -d= -f2)
+		binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
+		state=$(systemctl show "$name" -p ActiveState | cut -d= -f2)
+		user=$(systemctl show "$name" -p User | cut -d= -f2)
+		# start_mode order of attribute preference is WantedBy, Wants, After
+		start_mode=$(systemctl show "$name" -p WantedBy | cut -d= -f2)
+		if [ -z "$start_mode" ]; then
+			start_mode=$(systemctl show "$name" -p Wants | cut -d= -f2)
+		fi
+		if [ -z "$start_mode" ]; then
+			start_mode=$(systemctl show "$name" -p After | cut -d= -f2)
+		fi
+		{
+		echo "      <item>"
+		echo "          <description>$(escape_xml "$display_name")</description>"
+		echo "          <name>$(escape_xml "$name")</name>"
+		echo "          <start_mode>$(escape_xml "$start_mode")</start_mode>"
+		echo "          <executable>$(escape_xml "$binary")</executable>"
+		echo "          <state>$(escape_xml "$state")</state>"
+		echo "          <user>$(escape_xml "$user")</user>"
+		echo "      </item>"
+		} >> "$xml_file"
+	done
 else
-    case $system_os_family in
-            'Ubuntu' | 'Debian' )
-                if [ -r /etc/inittab ]; then
-                    INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
-                else
-                    if [ -r /etc/init/rc-sysinit.conf ]; then
-                        INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
-                    fi
-                fi
-                # upstart services
-                for s in $(initctl 2>/dev/null | awk ' { print $1 } ' | sort | uniq) ; do
-                    if [ "$s" = "rc" ]; then
-                        service_start_mode="Auto"
-                    else
-                        service_start_mode="Manual"
-                    fi
-                    service_name=$(escape_xml "$s")
-                    echo -e "\t\t<item>\n\t\t\t<name>$service_name</name>\n\t\t\t<start_mode>$service_start_mode</start_mode>\n\t\t</item>" >> "$xml_file"
-                done
-                # SysV init services
-                for service_name in /etc/init.d/* ; do
-                    [[ -e $service_name ]] || break
-                    if [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]] && [[ "$service_name" != "skeleton" ]]; then
-                        {
-                        echo "      <item>"
-				        service_display_name=$(echo "$service_name" | cut -d/ -f4)
-				        echo "          <description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
-                        echo "          <name>$(escape_xml "$service_name")</name>"
-                        } >> "$xml_file"
-                        if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* &>/dev/null ; then
-                            echo "          <start_mode>Manual</start_mode>" >> "$xml_file"
-                        else
-                            echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
-                        fi
-				        service_name=$(echo "$service_name" | cut -d/ -f4)
-				        if  [[ "$service_name" != "README" ]] && [[ "$service_name" != "upstart" ]] && [[ "$service_name" != "skeleton" ]] && [[ "$service_name" != "rcS" ]]; then
-				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -i running)
-				            echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
-				            service_state=""
-				        fi
-                        echo "      </item>" >> "$xml_file"
-                    fi
-                done
-                ;;
-            'CentOS' | 'RedHat' | 'SUSE' )
-                # INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
-                # chkconfig --list |\
-                #     sed -e '/^$/d' -e '/xinetd based services:/d' |\
-                #     awk -v ID="$INITDEFAULT" ' { sub(/:/, "", $1); print "\t\t<service>\n\t\t\t<service_name>"$1"</service_name>"; if ($2 =="on" || $5 ==ID":on") print "\t\t\t<service_start_mode>Auto</service_start_mode>"; else if ($2 =="off" || $5 ==ID":off") print "\t\t\t<service_start_mode>Manual</service_start_mode>"; print "\t\t</service>" } ' >> "$xml_file"
-                # ;;
-                INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
-                for service_name in /etc/init.d/* ; do
-                    [[ -e $service_name ]] || break
-                    if [[ "$service_name" != "functions" ]] && [[ "$service_name" != "rcS" ]]; then
-                        {
-                        echo "      <item>"
-				        service_display_name=$(echo "$service_name" | cut -d/ -f4)
-				        echo "          <description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
-                        echo "          <name>$(escape_xml "$service_name")</name>"
-                        } >> "$xml_file"
-                        if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* &>/dev/null ; then
-                            echo "          <start_mode>Manual</start_mode>" >> "$xml_file"
-                        else
-                            echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
-                        fi
-				        if  [[ "$service_name" != "functions" ]] && [[ "$service_name" != "rcS" ]]; then
-				            service_state=$(service "$service_display_name" status 2>/dev/null | grep -E -i "running|stopped")
-				            echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
-				            service_state=""
-				        fi
-                        echo "      </item>" >> "$xml_file"
-                    fi
-                done
-                ;;
-    esac
+	case $system_os_family in
+			'Ubuntu' | 'Debian' )
+				if [ -r /etc/inittab ]; then
+					INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
+				else
+					if [ -r /etc/init/rc-sysinit.conf ]; then
+						INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
+					fi
+				fi
+				# upstart services
+				for s in $(initctl 2>/dev/null | awk ' { print $1 } ' | sort | uniq) ; do
+					if [ "$s" = "rc" ]; then
+						service_start_mode="Auto"
+					else
+						service_start_mode="Manual"
+					fi
+					service_name=$(escape_xml "$s")
+					echo "\t\t<item>\n\t\t\t<name>$service_name</name>\n\t\t\t<start_mode>$service_start_mode</start_mode>\n\t\t</item>" >> "$xml_file"
+				done
+				# SysV init services
+				for service_name in /etc/init.d/* ; do
+					[ -e $service_name ] || break
+					if [ "$service_name" != "README" ] && [ "$service_name" != "upstart" ] && [ "$service_name" != "skeleton" ]; then
+						{
+						echo "      <item>"
+						service_display_name=$(echo "$service_name" | cut -d/ -f4)
+						echo "          <description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
+						echo "          <name>$(escape_xml "$service_name")</name>"
+						} >> "$xml_file"
+						if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* 2>/dev/null ; then
+							echo "          <start_mode>Manual</start_mode>" >> "$xml_file"
+						else
+							echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
+						fi
+						service_name=$(echo "$service_name" | cut -d/ -f4)
+						if  [ "$service_name" != "README" ] && [ "$service_name" != "upstart" ] && [ "$service_name" != "skeleton" ] && [ "$service_name" != "rcS" ]; then
+							service_state=$(service "$service_display_name" status 2>/dev/null | grep -i running)
+							echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
+							service_state=""
+						fi
+						echo "      </item>" >> "$xml_file"
+					fi
+				done
+				;;
+			'CentOS' | 'RedHat' | 'SUSE' )
+				# INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
+				# chkconfig --list |\
+				#     sed -e '/^$/d' -e '/xinetd based services:/d' |\
+				#     awk -v ID="$INITDEFAULT" ' { sub(/:/, "", $1); print "\t\t<service>\n\t\t\t<service_name>"$1"</service_name>"; if ($2 =="on" || $5 ==ID":on") print "\t\t\t<service_start_mode>Auto</service_start_mode>"; else if ($2 =="off" || $5 ==ID":off") print "\t\t\t<service_start_mode>Manual</service_start_mode>"; print "\t\t</service>" } ' >> "$xml_file"
+				# ;;
+				INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
+				for service_name in /etc/init.d/* ; do
+					[ -e $service_name ] || break
+					if [ "$service_name" != "functions" ] && [ "$service_name" != "rcS" ]; then
+						{
+						echo "      <item>"
+						service_display_name=$(echo "$service_name" | cut -d/ -f4)
+						echo "          <description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
+						echo "          <name>$(escape_xml "$service_name")</name>"
+						} >> "$xml_file"
+						if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* 2>/dev/null ; then
+							echo "          <start_mode>Manual</start_mode>" >> "$xml_file"
+						else
+							echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
+						fi
+						if  [ "$service_name" != "functions" ] && [ "$service_name" != "rcS" ]; then
+							service_state=$(service "$service_display_name" status 2>/dev/null | grep -E -i "running|stopped")
+							echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
+							service_state=""
+						fi
+						echo "      </item>" >> "$xml_file"
+					fi
+				done
+				;;
+	esac
 fi
 
 echo "	</service>" >> "$xml_file"
+
+########################################################
+# SERVER SECTION                                       #
+########################################################
+server=""
+name=""
+version=""
+test=$(which apache2 2>/dev/null)
+if [ -n "$test" ]; then
+	name="apache2ctl"
+	version=$(apache2 -v | grep "Server version" | cut -d: -f2)
+	status=$(service apache2 status)
+	server=$server"		<item>"
+	server=$server"			<type>web</type>"
+	server=$server"			<name>Apache</name>"
+	server=$server"			<version>$(escape_xml "$version")</version>"
+	server=$server"			<status>$(escape_xml "$status")</status>"
+	server=$server"		</item>"
+fi
+test=$(which httpd 2>/dev/null)
+if [ -n "$test" ]; then
+	name="httpd"
+	version=$(httpd -v | grep "Server version" | cut -d: -f2)
+	status=$(service httpd status)
+	server=$server"		<item>"
+	server=$server"			<type>web</type>"
+	server=$server"			<name>Apache</name>"
+	server=$server"			<version>$(escape_xml "$version")</version>"
+	server=$server"			<status>$(escape_xml "$status")</status>"
+	server=$server"		</item>"
+fi
+if [ -n "$server" ]; then
+	echo "	<server>" >> "$xml_file"
+	echo "$server" >> "$xml_file"
+	echo "	</server>" >> "$xml_file"
+fi
+# if [ -n "$name" ]; then
+# 	hosts=$( "$name" -S 2>/dev/null)
+# 	echo "$hosts"
+# fi
+
 
 ########################################################
 # ROUTE SECTION                                        #
@@ -2066,11 +2176,27 @@ if [ "$submit_online" = "y" ]; then
 		echo "Submitting results to server"
 		echo "URL: $url"
 	fi
+	if [ "$display" = "y" ]; then
+		url="$url/display"
+		debugging=4
+	fi
 	if [ -n "$(which wget 2>/dev/null)" ]; then
-		wget --delete-after --post-file="$xml_file" "$url" 2>/dev/null
+		if [ "$debugging" -gt 3 ]; then
+			wget -O add_system --post-file="$xml_file" "$url" 2>/dev/null
+			cat add_system
+			rm add_system
+		else
+			wget --delete-after --post-file="$xml_file" "$url" 2>/dev/null
+		fi
 	else
 		if [ -n "$(which curl 2>/dev/null)" ]; then
-			curl --data "@$xml_file" "$url"
+			if [ "$debugging" -gt 3 ]; then
+				curl -o add_system --data "@$xml_file" "$url"
+				cat add_system
+				rm add_system
+			else
+				curl --data "@$xml_file" "$url"
+			fi
 		fi
 	fi
 fi

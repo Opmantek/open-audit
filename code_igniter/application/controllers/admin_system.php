@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -285,7 +285,6 @@ class Admin_system extends MY_Controller
         }
         $this->load->model("m_system");
         $this->load->model("m_audit_log");
-        $this->load->model("m_ip_address");
         $this->load->model("m_devices_components");
         $this->load->library('encrypt');
         $this->load->helper('snmp');
@@ -294,6 +293,9 @@ class Admin_system extends MY_Controller
         $details->system_id = $this->uri->segment(3, 0);
         $encrypted_access_details = $this->m_system->get_access_details($details->system_id);
         $details->hostname = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'hostname');
+        if ($details->hostname == '-') {
+            $details->hostname = '';
+        }
         $details->man_ip_address = ip_address_from_db($this->m_devices_components->read($details->system_id, 'y', 'system', '', 'man_ip_address'));
         $details->show_output = true;
 
@@ -322,6 +324,7 @@ class Admin_system extends MY_Controller
         $temp_array = get_snmp($details);
         $details = $temp_array['details'];
         $network_interfaces = $temp_array['interfaces'];
+        $ip = $temp_array['ip'];
         unset($guests);
         if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
             $guests = $temp_array['guests'];
@@ -333,6 +336,8 @@ class Admin_system extends MY_Controller
         $details->last_seen = $details->timestamp;
         $details->last_user = $this->user->user_full_name;
         $details->audits_ip = '127.0.0.1';
+        $details = dns_validate($details, 'y');
+
         unset($details->man_type);
         unset($details->show_output);
         unset($details->man_ip_address);
@@ -357,15 +362,11 @@ class Admin_system extends MY_Controller
                 $input = new stdClass();
                 $input->item = array();
                 $input->item = $network_interfaces;
-                $this->m_devices_components->process_component('network', $details, $input);
-                foreach ($network_interfaces as $input) {
-                    if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                        foreach ($input->ip_addresses as $ip_input) {
-                            $ip_input = (object) $ip_input;
-                            $this->m_ip_address->process_addresses($ip_input, $details);
-                        }
-                    }
-                }
+                $this->m_devices_components->process_component('network', $details, $input, 'y');
+            }
+
+            if (isset($ip->item) and count($ip->item) > 0) {
+                $this->m_devices_components->process_component('ip', $details, $ip, 'y');
             }
 
             # insert any found virtual machines
@@ -373,10 +374,7 @@ class Admin_system extends MY_Controller
                 $vm = new stdClass();
                 $vm->item = array();
                 $vm->item = $guests;
-                $this->m_devices_components->process_component('vm', $details, $vm);
-                // foreach ($guests as $guest) {
-                //     $this->m_virtual_machine->process_vm($guest, $details);
-                // }
+                $this->m_devices_components->process_component('vm', $details, $vm, 'y');
             }
 
             # insert any modules
@@ -384,7 +382,7 @@ class Admin_system extends MY_Controller
                 $input = new stdClass();
                 $input->item = array();
                 $input->item = $modules;
-                $this->m_devices_components->process_component('module', $details, $input);
+                $this->m_devices_components->process_component('module', $details, $input, 'y');
             }
 
             // Generate any DNS entries required
@@ -392,7 +390,7 @@ class Admin_system extends MY_Controller
             $dns->item = array();
             $dns->item = $this->m_devices_components->create_dns_entries((int)$details->system_id);
             if (count($dns->item) > 0) {
-                $this->m_devices_components->process_component('dns', $details, $dns);
+                $this->m_devices_components->process_component('dns', $details, $dns, 'y');
             }
             unset($dns);
 
@@ -765,10 +763,7 @@ class Admin_system extends MY_Controller
                             $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {
                                 if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                                    foreach ($input->ip_addresses as $ip_input) {
-                                        $ip_input = (object) $ip_input;
-                                        $this->m_ip_address->process_addresses($ip_input, $details);
-                                    }
+                                    $this->m_devices_components->process_component('ip', $details, $ip_input);
                                 }
                             }
                         }
@@ -799,18 +794,18 @@ class Admin_system extends MY_Controller
 
     public function reset_devices_ip()
     {
-        $this->load->model('m_ip_address');
+        $this->load->model('m_devices_components');
         $group_id = $this->data['id'];
         if (!is_numeric($group_id)) {
             redirect('main/index');
         } else {
             $group_id = intval($group_id);
-            $sql = "SELECT DISTINCT system_id FROM oa_group_sys WHERE group_id = ?";
+            $sql = '/* admin_system::reset_devices_ip */ SELECT DISTINCT system_id FROM oa_group_sys WHERE group_id = ?';
             $data = array($group_id);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             foreach ($result as $system) {
-                $this->m_ip_address->set_initial_address($system->system_id, 'y');
+                $this->m_devices_components->set_initial_address($system->system_id, 'y');
             }
             redirect('main/list_devices/' . $group_id);
         }

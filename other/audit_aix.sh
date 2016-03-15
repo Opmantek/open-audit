@@ -35,7 +35,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.12
+# @version 1.12.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -409,24 +409,23 @@ if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; f
 
 START="$SECONDS"
 if [[ "$debugging" -gt 0 ]]; then print -n "IP Details          "; fi
-echo "	<addresses>" >> "$xml_file"
+echo "	<ip>" >> "$xml_file"
 for interface in $(eval "lsdev -Cc if | grep Available | grep 'Standard Ethernet' | cut -d' ' -f1 $safety"); do
 	net_card_enabled_ip4_addr=$(eval "ifconfig $interface | grep inet | cut -d' ' -f2 $safety")
 	net_card_enabled_ip_subnet=$(eval "ifconfig $interface | grep inet | cut -d' ' -f4 $safety")
 	net_card_enabled_ip_subnet=$(echo "$net_card_enabled_ip_subnet" |  sed 's/^0x//g;s/\(..\)/\1\,/g;s/,$//g;' | tr ',' '\n' | while read w; do printf ".%d" 0x"$w"; done | sed -e 's/^\.//')
 	net_card_mac=$(eval "entstat $interface | grep 'Hardware Address:' | cut -d' ' -f3 $safety")
 	cat >>"$xml_file" <<EndOfFile
-		<ip_address>
-				<net_mac_address>$(escape_xml "$net_card_mac")</net_mac_address>
-				<ip_address_v4>$(escape_xml "$net_card_enabled_ip4_addr")</ip_address_v4>
-				<ip_address_v6></ip_address_v6>
-				<ip_subnet>$(escape_xml "$net_card_enabled_ip_subnet")</ip_subnet>
-				<ip_address_version>4</ip_address_version>
-			</ip_address>
+		<item>
+				<mac>$(escape_xml "$net_card_mac")</mac>
+				<ip>$(escape_xml "$net_card_enabled_ip4_addr")</ip>
+				<netmask>$(escape_xml "$net_card_enabled_ip_subnet")</netmask>
+				<version>4</version>
+			</item>
 EndOfFile
 
 done
-echo "	</addresses>" >> "$xml_file"
+echo "	</ip>" >> "$xml_file"
 FINISH=$((SECONDS-START))
 if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; fi
 

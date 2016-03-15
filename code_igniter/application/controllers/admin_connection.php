@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -192,8 +192,7 @@ class Admin_connection extends MY_Controller
                             $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
                             $sql_query .= ')';
                         }
-                        // run the query !!!
-                        echo $sql_query."<br />\n";
+                        $sql_query = '/* admin_connection::add_connections */ ' . $sql_query;
                         $query = $this->db->query($sql_query);
                     } else {
                         echo 'no connection name provided';
@@ -233,7 +232,7 @@ class Admin_connection extends MY_Controller
                     $sql_query .= ')';
                 }
                 if ((string) $child->connection_name !== '') {
-                    // run the query !!!
+                    $sql_query = '/* admin_connection::add_connections */ ' . $sql_query;
                     $query = $this->db->query($sql_query);
                 } else {
                     echo 'no connection name provided';

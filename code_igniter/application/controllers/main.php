@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -135,7 +135,7 @@ class main extends MY_Controller
             $this->load->model('m_oa_general');
             $this->load->model('m_devices_components');
             $document = array();
-            $list = array( 'system', 'sys_hw_network_card_ip');
+            $list = array( 'system');
             foreach ($list as $table) {
                 $result = $this->m_oa_general->get_system_document_api_new($table, $system_id);
                 $document["$table"] = new stdclass();
@@ -148,6 +148,7 @@ class main extends MY_Controller
                             if ($key == 'man_ip_address' or
                                 $key == 'destination'    or
                                 $key == 'ip_address_v4'  or
+                                $key == 'ip'  or
                                 $key == 'next_hop') {
                                 $result[$count]->$key = ip_address_from_db($result[$count]->$key);
                             }
@@ -160,8 +161,7 @@ class main extends MY_Controller
                 }
                 $document["$table"] = $result;
             }
-            #$tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
-            $tables = array('bios', 'disk', 'dns', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
@@ -203,7 +203,7 @@ class main extends MY_Controller
         $this->load->model('m_systems');
         if (isset($system_id) and $system_id != '') {
             $document = array();
-            $list = array('system', 'sys_hw_network_card_ip');
+            $list = array('system');
             foreach ($list as $table) {
                 $result = $this->m_oa_general->get_system_document_api($table, $system_id);
                 if (is_array($result) and count($result) != 0) {
@@ -226,10 +226,40 @@ class main extends MY_Controller
                     $document["$table"] = $result;
                 }
             }
-            $tables = array('bios', 'disk', 'dns', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+            $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
+
+            foreach($document['ip'] as $row) {
+                $row->ip_padded = $row->ip;
+                $row->ip = ip_address_from_db($row->ip);
+            }
+
+            # special SQL for backwards compat with opAddress
+            $sql = "/* main::api_node_config */ SELECT ip as ip_address_v4, '' as ip_address_v6, netmask as subnet, version as ip_address_version, ip.mac as net_mac_address, network.connection FROM ip LEFT JOIN network ON ip.system_id = network.system_id and ip.net_index = network.net_index WHERE ip.system_id = ? AND ip.current = 'y' AND ip.version = 4";
+            $data = array($system_id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            foreach ($result as $row) {
+                $row->ip_address_v4 = ip_address_from_db($row->ip_address_v4);
+            }
+            $document['sys_hw_network_card_ip'] = $result;
+            $sql = "/* main::api_node_config */ SELECT ip as ip_address_v6, '' as ip_address_v4, cidr as subnet, version as ip_address_version, ip.mac as net_mac_address, network.connection FROM ip LEFT JOIN network ON ip.system_id = network.system_id and ip.net_index = network.net_index WHERE ip.system_id = ? AND ip.current = 'y' AND ip.version = 6";
+            $data = array($system_id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            foreach ($result as $row) {
+                array_push($document['sys_hw_network_card_ip'], $row);
+            }
+
+
+
+            $sql = "/* main::api_node_config */ SELECT id as net_id, system_id, mac as net_mac_address, manufacturer as net_manufacturer, model as net_model, description as net_description, alias as net_alias, ip_enabled as net_ip_enabled, net_index, dhcp_enabled as net_dhcp_enabled, dhcp_server as net_dhcp_server, dhcp_lease_obtained as net_dhcp_lease_obtained, dhcp_lease_expires as net_dhcp_lease_expires, dns_host_name as net_dns_host_name, dns_server as net_dns_server, dns_domain as net_dns_domain, dns_domain_reg_enabled as net_dns_domain_reg_enabled, type as net_adapter_type, connection as net_connection_id, connection_status as net_connection_status, speed as net_speed, slaves as net_slaves, ifadminstatus, iflastchange FROM network WHERE system_id = ? and current = 'y'";
+            $data = array($system_id);
+            $query = $this->db->query($sql, $data);
+            $document['sys_hw_network_card'] = $query->result();
+            # End of special opAddress tables
         } else {
             $document = $this->m_systems->api_index('list');
         }
@@ -330,6 +360,7 @@ class main extends MY_Controller
         }
         $this->load->model("m_oa_group");
         $this->load->model("m_edit_log");
+        $this->load->model("m_devices_components");
         $this->load->model("m_additional_fields");
         if (is_numeric($_POST['group_id'])) {
             // we must check to see if the user has at least VIEW permission on the group
@@ -426,14 +457,13 @@ class main extends MY_Controller
             $details->system_id = $system[1];
             $details->type = 'computer';
             $discover_ids .= $system[1].',';
-            $this->m_oa_group->update_system_groups($details);
+            $this->m_oa_group->update_system_groups($details, 'network');
         }
 
         $calculate_ip = $this->input->post('calculate_ip');
         if (isset($calculate_ip) and $calculate_ip == 'yes') {
-            $this->load->model('m_ip_address');
             foreach ($data['systems'] as $system) {
-                $this->m_ip_address->set_initial_address($system[1], 'y');
+                $this->m_devices_components->set_initial_address($system[1], 'y');
             }
         }
 
@@ -812,7 +842,6 @@ class main extends MY_Controller
         $this->load->model("m_edit_log");
         $this->load->model("m_change_log");
         $this->load->model("m_attachment");
-        $this->load->model("m_ip_address");
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
         $this->load->model("m_printer");
@@ -867,7 +896,7 @@ class main extends MY_Controller
         $this->data['audit_log'] = $this->m_audit_log->read($this->data['id']);
         $this->data['change_log'] = $this->m_change_log->readDevice($this->data['id']);
         $this->data['edit_log'] = $this->m_edit_log->read($this->data['id']);
-        $this->data['ip'] = $this->m_ip_address->get_system_ip($this->data['id']);
+        $this->data['ip'] = $this->m_devices_components->read($this->data['id'], 'y', 'ip');
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['orgs'] = $this->m_oa_org->get_all_orgs();
         $this->data['printer'] = $this->m_printer->get_system_printer($this->data['id']);
@@ -1247,7 +1276,9 @@ class main extends MY_Controller
             ### general items ###
 
             # log file perms
-            $command_string = 'ls -l ../../other/log_system.log | cut -d" " -f1';
+            #$command_string = 'ls -l ../../other/log_system.log | cut -d" " -f1';
+            # TODO - fix this hard coded path
+            $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
             exec($command_string, $output, $return_var);
             if (isset($output[0])) {
                 $data['application_log_permission'] = $output[0];

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -455,7 +455,11 @@ var modal_content_image = "";
                             if (row[j]["button_link"] == "/omk/opLicense/") {
                                 rowData += '<br /><a class="btn btn-success btn-sm" style="color:white;" href="'+row[j]["button_link"]+'">'+row[j]["button"]+'</a>';
                             } else {
-                                rowData += '<br /><a class="btn btn-success btn-sm" style="color:white;" href="'+row[j]["button_link"]+'http://'+location.host+'<?php echo $this->config->config['oae_url']; ?>/purchase_complete">'+row[j]["button"]+'</a>';
+                                if (row[j]["button"] == "Buy") {
+                                rowData += '<br /><a class="btn btn-success btn-sm" style="color:white;" href="'+row[j]["button_link"]+'http://'+location.host+'<?php echo $this->config->config['oae_url']; ?>/purchase_complete&cancel_redirect_url='+window.location.href+'">'+row[j]["button"]+'</a>';
+                                } else {
+                                    rowData += '<br /><a class="btn btn-success btn-sm" style="color:white;" href="'+row[j]["button_link"]+'" target="_blank">'+row[j]["button"]+'</a>';
+                                }
                             }
                             rowData += '</td>';
                         }

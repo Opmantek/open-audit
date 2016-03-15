@@ -28,7 +28,7 @@
 /**
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12
+ * @version 1.12.2
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -1065,6 +1065,10 @@ $get_oid_details = function($details) {
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1137') { $details->model = 'Cisco Ap 541nNK9'; $details->type = 'wap'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1138') { $details->model = 'Cisco 887 GVdsl2'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1139') { $details->model = 'Cisco 887 SrstVdsl2'; $details->type = 'router'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1140') { $details->model = 'Cisco UC540W FXO K9'; $details->type = 'router'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1141') { $details->model = 'Cisco UC540W BRI K9'; $details->type = 'router'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1142') { $details->model = 'Cisco CA Server'; $details->type = 'network device'; }
+	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1143') { $details->model = 'Cisco CA Manager'; $details->type = 'network device'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1144') { $details->model = 'Cisco 3925 SPE200'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1145') { $details->model = 'Cisco 3945 SPE250'; $details->type = 'router'; }
 	if ($details->snmp_oid == '1.3.6.1.4.1.9.1.1146') { $details->model = 'Cisco Catalyst 2960 24LCS'; $details->type = 'switch'; }

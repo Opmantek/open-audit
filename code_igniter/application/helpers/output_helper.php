@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.8.4
+ * @version 1.12.2
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('output')) {
@@ -165,7 +165,7 @@ if (! function_exists('output')) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
                 foreach ($row as $key => $value) {
-                    if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order')) {
+                    if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level')) {
                         $row->$key = intval($value);
                     } elseif ((strrpos($key, '_id') === strlen($key)-3) or
                               (strrpos($key, '_count') === strlen($key)-6) or
@@ -177,6 +177,9 @@ if (! function_exists('output')) {
                         $row->$temp_name = ip_address_from_db($value);
                         $row->$temp_name = ip_address_to_db($row->$temp_name);
                         $row->$key = ip_address_from_db($value);
+                        if ($row->$temp_name == $row->$key) {
+                            unset($row->$temp_name);
+                        }
                     }
                     elseif (isset($key) and $key == 'man_ip_address') {
                         $row->ip = ip_address_from_db($value);

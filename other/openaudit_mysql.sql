@@ -127,6 +127,43 @@ LOCK TABLES `graph` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ip`
+--
+
+DROP TABLE IF EXISTS `ip`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ip` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `mac` varchar(200) NOT NULL DEFAULT '',
+  `net_index` varchar(10) NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `netmask` varchar(30) NOT NULL DEFAULT '',
+  `cidr` varchar(4) NOT NULL DEFAULT '',
+  `version` tinyint(3) unsigned NOT NULL DEFAULT '4',
+  `network` varchar(40) NOT NULL DEFAULT '',
+  `set_by` enum('','dhcp','static','auto','local') NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  KEY `mac` (`mac`),
+  CONSTRAINT `ip_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ip`
+--
+
+LOCK TABLES `ip` WRITE;
+/*!40000 ALTER TABLE `ip` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ip` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `log`
 --
 
@@ -567,13 +604,17 @@ INSERT INTO `oa_config` VALUES ('default_windows_username','','y','0000-00-00 00
 INSERT INTO `oa_config` VALUES ('discovery_create_alerts','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT create an entry in the alert table if a change is detected.');
 INSERT INTO `oa_config` VALUES ('discovery_ip_exclude','','y','0000-00-00 00:00:00',0,'Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
 INSERT INTO `oa_config` VALUES ('discovery_ip_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its ip during discovery.');
+INSERT INTO `oa_config` VALUES ('discovery_linux_script_directory','/tmp/','y','0000-00-00 00:00:00',0,'The directory the script is copied into on the target device.');
+INSERT INTO `oa_config` VALUES ('discovery_linux_script_permissions','700','y','0000-00-00 00:00:00',0,'The permissions set on the audit_linux.sh script when it is copied to the target device.');
+INSERT INTO `oa_config` VALUES ('discovery_mac_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its mac address during discovery.');
 INSERT INTO `oa_config` VALUES ('discovery_name_match','y','y','0000-00-00 00:00:00',0,'Should we match a device based only on its hostname during discovery.');
+INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00',0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
 INSERT INTO `oa_config` VALUES ('discovery_update_groups','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT update the device groups after discovering a device.');
 INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `oa_config` VALUES ('display_version','1.12','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
+INSERT INTO `oa_config` VALUES ('display_version','1.12.2','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
 INSERT INTO `oa_config` VALUES ('distinct_groups','y','y','0000-00-00 00:00:00',0,'Display Groups on the homepage, separated into the type of each Group.');
 INSERT INTO `oa_config` VALUES ('download_reports','download','y','0000-00-00 00:00:00',0,'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
-INSERT INTO `oa_config` VALUES ('internal_version','20160130','n','0000-00-00 00:00:00',0,'The internal numerical version.');
+INSERT INTO `oa_config` VALUES ('internal_version','20160303','n','0000-00-00 00:00:00',0,'The internal numerical version.');
 INSERT INTO `oa_config` VALUES ('logo','logo-banner-oac-oae','y','0000-00-00 00:00:00',0,'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `oa_config` VALUES ('log_level','5','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `oa_config` VALUES ('log_style','syslog','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
@@ -828,7 +869,7 @@ CREATE TABLE `oa_org` (
 
 LOCK TABLES `oa_org` WRITE;
 /*!40000 ALTER TABLE `oa_org` DISABLE KEYS */;
-INSERT INTO `oa_org` VALUES (0,'',0,12,'','','Default Organisation.');
+INSERT INTO `oa_org` VALUES (0,'Default Organisation',0,0,'','','');
 /*!40000 ALTER TABLE `oa_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -941,6 +982,7 @@ CREATE TABLE `oa_user` (
   `user_active` varchar(1) NOT NULL DEFAULT 'y',
   `user_change` int(10) NOT NULL DEFAULT '1',
   `user_sam` int(10) NOT NULL DEFAULT '1',
+  `permissions` text NOT NULL default '',
   PRIMARY KEY (`user_id`),
   KEY `user_id_index` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -952,10 +994,40 @@ CREATE TABLE `oa_user` (
 
 LOCK TABLES `oa_user` WRITE;
 /*!40000 ALTER TABLE `oa_user` DISABLE KEYS */;
-INSERT INTO `oa_user` VALUES (1,'admin','0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','en',10,'tango','y','y',10,3);
-INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise','43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','en',10,'tango','y','y',1,1);
-INSERT INTO `oa_user` VALUES (3,'nmis','5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','en',10,'tango','y','y',10,3);
+INSERT INTO `oa_user` VALUES (1,'admin','0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','en',10,'tango','y','y',10,3,'');
+INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise','43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','en',10,'tango','y','y',1,1,'');
+INSERT INTO `oa_user` VALUES (3,'nmis','5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','en',10,'tango','y','y',10,3,'');
 /*!40000 ALTER TABLE `oa_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `oa_user_org`
+--
+
+DROP TABLE IF EXISTS `oa_user_org`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `oa_user_org` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
+  `org_id` int(10) unsigned NOT NULL,
+  `access_level` int(10) unsigned NOT NULL,
+  `permissions` text NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `org_id` (`org_id`),
+  CONSTRAINT `oa_user_org_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `oa_user_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `oa_org` (`org_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `oa_user_org`
+--
+
+LOCK TABLES `oa_user_org` WRITE;
+/*!40000 ALTER TABLE `oa_user_org` DISABLE KEYS */;
+/*!40000 ALTER TABLE `oa_user_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1428,40 +1500,6 @@ CREATE TABLE `sound` (
 LOCK TABLES `sound` WRITE;
 /*!40000 ALTER TABLE `sound` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sound` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `sys_hw_network_card_ip`
---
-
-DROP TABLE IF EXISTS `sys_hw_network_card_ip`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sys_hw_network_card_ip` (
-  `ip_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `net_mac_address` varchar(200) NOT NULL DEFAULT '',
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `net_index` varchar(10) NOT NULL DEFAULT '',
-  `ip_address_v4` varchar(30) NOT NULL DEFAULT '',
-  `ip_address_v6` varchar(30) NOT NULL DEFAULT '',
-  `ip_subnet` varchar(30) NOT NULL DEFAULT '',
-  `ip_address_version` varchar(10) NOT NULL DEFAULT '',
-  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `first_timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`ip_id`),
-  KEY `id` (`net_mac_address`),
-  KEY `sys_hw_network_card_ip_system_id` (`system_id`),
-  CONSTRAINT `sys_hw_network_card_ip_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `sys_hw_network_card_ip`
---
-
-LOCK TABLES `sys_hw_network_card_ip` WRITE;
-/*!40000 ALTER TABLE `sys_hw_network_card_ip` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sys_hw_network_card_ip` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

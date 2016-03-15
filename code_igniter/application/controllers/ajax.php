@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,9 +38,17 @@ class ajax extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->data['system_id'] = $this->uri->segment(3, '');
-        $this->data['field_name'] = $this->uri->segment(4, '');
-        $this->data['field_data'] = $this->uri->segment(5, '');
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $this->data['system_id'] = $this->uri->segment(3, '');
+            $this->data['field_name'] = $this->uri->segment(4, '');
+            $this->data['field_data'] = $this->uri->segment(5, '');
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $this->data['system_id'] = @$_POST['system_id'];
+            $this->data['field_name'] = @$_POST['name'];
+            $this->data['field_data'] = @$_POST['value'];
+        }
+
         $this->data['title'] = 'Open-AudIT';
 
         if (!isset($this->user->user_lang) or $this->user->user_lang == "") {
@@ -104,47 +112,71 @@ class ajax extends MY_Controller
 
     public function update_config()
     {
+        $log_details = new stdClass();
+        $log_details->severity = 5;
+        $log_details->file = 'system';
+
+
         // must be an admin to access this function
         if ($this->user->user_admin != 'y') {
+            $log_details->message = "A non-admin user attempted to use ajax/update_config.";
+            stdlog($log_details);
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
                 redirect('main/list_groups');
             }
         }
-        $url = str_replace("%3A", ":", current_url());
-        $url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
-        $url_array = explode('/', $url);
 
-        if (strpos($_SERVER['QUERY_STRING'], "name=") !== false) {
-            # we have a GET style request from the Bootstrap theme.
-            $i = explode('&', $_SERVER['QUERY_STRING']);
-            # get the config name
-            $config_name = urldecode(str_replace('name=', '', $i[0]));
-            # get the new config value
-            $config_value = urldecode(str_replace('value=', '', $i[1]));
-        } else {
-            for ($i = 0; $i<count($url_array); $i++) {
-                if ($url_array[$i] == "update_config") {
-                    $config_name = $url_array[$i+1];
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $log_details->message = "GET request received to ajax/update_config. This is deprecated.";
+            stdlog($log_details);
+            $url = str_replace("%3A", ":", current_url());
+            $url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
+            $url_array = explode('/', $url);
+
+            if (strpos($_SERVER['QUERY_STRING'], "name=") !== false) {
+                # we have a GET style request from the Bootstrap theme.
+                $i = explode('&', $_SERVER['QUERY_STRING']);
+                # get the config name
+                $config_name = urldecode(str_replace('name=', '', $i[0]));
+                # get the new config value
+                $config_value = urldecode(str_replace('value=', '', $i[1]));
+            } else {
+                for ($i = 0; $i<count($url_array); $i++) {
+                    if ($url_array[$i] == "update_config") {
+                        $config_name = $url_array[$i+1];
+                    }
                 }
+                $config_name = str_replace("%5E%5E%5E", "/", $config_name);
+                $location = strpos($url, $config_name);
+                $config_value = substr($url, $location);
+                $location = strpos($config_value, "/");
+                $config_value = substr($config_value, $location);
+                $config_value = substr($config_value, 1);
             }
-            $config_name = str_replace("%5E%5E%5E", "/", $config_name);
-            if ($config_name == 'default_ad_server') { $config_name = 'ad_server'; }
-            $location = strpos($url, $config_name);
-            $config_value = substr($url, $location);
-            $location = strpos($config_value, "/");
-            $config_value = substr($config_value, $location);
-            $config_value = substr($config_value, 1);
+
+            $config_value = str_replace("%5E%5E%5E", "/", $config_value);
         }
 
-        $config_value = str_replace("%5E%5E%5E", "/", $config_value);
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            # these are set in the constructor
+            $config_name = $this->data['field_name'];
+            $config_value = $this->data['field_data'];
+        }
+
+        if ($config_name == 'default_ad_server') { $config_name = 'ad_server'; }
+
+        if (empty($config_name)) {
+            return;
+        }
+
         $this->load->model("m_oa_config");
         if ($config_value == '-') {
             $config_value = '';
         }
 
-        $this->m_oa_config->update_config($config_name, $config_value, $this->user->user_id, date('Y-m-d H:i:s'));
+       $this->m_oa_config->update_config($config_name, $config_value, $this->user->user_id, date('Y-m-d H:i:s'));
 
         $masked = str_pad('', strlen($config_value), '*');
         if ($config_name == 'default_windows_password' and $this->config->config['show_passwords'] == 'n') {
@@ -163,14 +195,20 @@ class ajax extends MY_Controller
     }
 
     # /index.php/ajax/update_system_man/[system_id]/[field_name]/[field_value]
+    # This should be POST'd to only from 1.12.2
     public function update_system_man()
     {
-
         // log the attempt
         $log_details = new stdClass();
         $log_details->severity = 6;
         stdlog($log_details);
         unset($log_details);
+
+        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+            $log_details->message = "GET request received to ajax/update_system_man. This is deprecated.";
+            $log_details->severity = 5;
+            stdlog($log_details);
+        }
 
         $this->load->model("m_system");
         $this->load->model("m_oa_group");
@@ -192,7 +230,7 @@ class ajax extends MY_Controller
                 # The code below assumes the view has done this (and it has), but it doesn't verify it.
                 # Could call this directly using a URL and set a custom field on a device that is not supposed to have it
 
-                $sql = "SELECT group_id FROM sys_man_additional_fields WHERE field_id = ?";
+                $sql = "/* ajax::update_system_man */ SELECT group_id FROM sys_man_additional_fields WHERE field_id = ?";
                 $data_array = array($data[3]);
                 $query = $this->db->query($sql, $data_array);
                 $row = $query->row();
@@ -206,19 +244,19 @@ class ajax extends MY_Controller
                 }
 
                 if ($group_allowed == 'y') {
-                    $sql = "SELECT * FROM sys_man_additional_fields_data WHERE field_id = ? AND system_id = ?";
+                    $sql = "/* ajax::update_system_man */ SELECT * FROM sys_man_additional_fields_data WHERE field_id = ? AND system_id = ?";
                     $data_array = array($data[3], $this->data['system_id']);
                     $query = $this->db->query($sql, $data_array);
                     if ($query->num_rows() > 0) {
                         # we are updating an existing value
                         $row = $query->row();
-                        $sql = "UPDATE sys_man_additional_fields_data SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
+                        $sql = "/* ajax::update_system_man */ UPDATE sys_man_additional_fields_data SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
                         $query = $this->db->query($sql);
                         $this->m_edit_log->create($this->data['system_id'], "", "sys_man_additional_fields_data", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));
                     } else {
                         # we have to insert a new record for a custom data value for this system
-                        $sql = "INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
+                        $sql = "/* ajax::update_system_man */ INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
                         $query = $this->db->query($sql);
                         $this->m_edit_log->create($this->data['system_id'], "", "sys_man_additional_fields_data", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));
@@ -268,65 +306,48 @@ class ajax extends MY_Controller
                 }
             }
             if (mb_substr_count($this->data['field_name'], 'man_location_id') > 0) {
-                # we need to return data for the entire location div (excepting the rack details)
-                if ($this->data['field_data'] == '0') {
-                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>-</span></span></p>\n";
-                    echo "<p><label for='location_full_address'>".__('Full Location').": </label><span id='location_full_address'></span></p>\n";
-                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'></span></p>\n";
-                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'></span></p>\n";
-                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'></span></p>\n";
-                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'></span></p>\n";
-                    #echo "<p><label for='location_room'>" . __('Room') . ": </label><span id='location_room'></span></p>\n";
-                } else {
-                    $this->load->model("m_oa_location");
-                    $data = $this->m_oa_location->get_location($this->data['field_data']);
-                    foreach ($data as $key) {
-                        $full_location = '';
-                        if ($key->location_room > '') {
-                            $full_location = __('Room').$key->location_room.', ';
-                        }
-                        if ($key->location_suite > '') {
-                            $full_location .= __('Suite').$key->location_suite.', ';
-                        }
-                        if ($key->location_level > '') {
-                            $full_location .= __('Level').$key->location_level.', ';
-                        }
-                        $full_location .= $key->location_address;
-                        echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->location_name)."</span></span></p>\n";
-                        echo "<p><label for='location_full_address'>".__('Full Location').": </label><span id='location_full_address'>".htmlentities($full_location)."</span></p>\n";
-                        echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlentities($key->location_address)."</span></p>\n";
-                        echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlentities($key->location_city)."</span></p>\n";
-                        echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlentities($key->location_state)."</span></p>\n";
-                        echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlentities($key->location_country)."</span></p>\n";
-                        #echo "<p><label for='location_room'>" . __('Room') . ": </label><span id='location_room'>" . htmlentities($key->location_room) . "</span></p>\n";
+                $this->load->model("m_oa_location");
+                $data = $this->m_oa_location->get_location($this->data['field_data']);
+                foreach ($data as $key) {
+                    if ($key->location_address == '') {
+                        $key->location_address = '-';
                     }
+                    if ($key->location_city == '') {
+                        $key->location_city = '-';
+                    }
+                    if ($key->location_state == '') {
+                        $key->location_state = '-';
+                    }
+                    if ($key->location_country == '') {
+                        $key->location_country = '-';
+                    }
+                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->location_name)."</span></span></p>\n";
+                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlentities($key->location_address)."</span></p>\n";
+                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlentities($key->location_city)."</span></p>\n";
+                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlentities($key->location_state)."</span></p>\n";
+                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlentities($key->location_country)."</span></p>\n";
                 }
             }
             if (mb_substr_count($this->data['field_name'], 'man_org_id') > 0) {
-                # we need to return data for the entire org div
-                if ($this->data['field_data'] == '0') {
-                    echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>-</span></span></p>\n";
-                } else {
-                    $this->load->model("m_oa_org");
-                    $key = $this->m_oa_org->get_org_details($this->data['field_data']);
-                    echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->org_name."</span></span></p>\n";
-                    if ($key->contact_id == '') {
-                        $key->contact_id = '-';
-                    }
-                    echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'> ".htmlentities($key->contact_id)."</span></p>\n";
-                    echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlentities($key->org_parent_name)."</span></p>\n";
-                    echo "<p><label for='org_comments'>".__('Comments').": </label><span id='org_comments'>".htmlentities($key->org_comments)."</span></p>\n";
-                    ##echo "<p><label for='org_picture'>" . __('Picture') . ": </label><span id='org_picture'>" . $key->org_picture . "</span></p>\n";
+                $this->load->model("m_oa_org");
+                $key = $this->m_oa_org->get_org_details($this->data['field_data']);
+                if (empty($key->org_name)) {
+                    $key->org_name = '-';
                 }
+                echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->org_name."</span></span></p>\n";
+                echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlentities($key->org_parent_name)."</span></p>\n";
+                #echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'> ".htmlentities($key->contact_id)."</span></p>\n";
+                #echo "<p><label for='org_comments'>".__('Comments').": </label><span id='org_comments'>".htmlentities($key->org_comments)."</span></p>\n";
+                ##echo "<p><label for='org_picture'>" . __('Picture') . ": </label><span id='org_picture'>" . $key->org_picture . "</span></p>\n";
             }
-            #if (mb_substr_count($this->data['field_name'], 'man_status') > 0) {
+
+            # finally update any groups that this change has caused
             $details = new stdClass();
             $details->system_id = $this->data['system_id'];
             $this->load->model('m_system');
             $details->type = $this->m_system->get_system_type($this->data['system_id']);
             $this->load->model("m_oa_group");
             $this->m_oa_group->update_system_groups($details);
-            #}
         }
     }
 

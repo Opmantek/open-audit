@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -42,19 +42,19 @@ class M_oa_report_column extends MY_Model
     public function get_report_column($report_id = 0)
     {
         $sql = "SELECT * FROM oa_report_column WHERE report_id = ? ORDER BY column_order";
+        $sql = $this->clean_sql($sql);
         $data = array($report_id );
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-
         return ($result);
     }
 
     public function delete_report($report_id)
     {
         $sql = "DELETE FROM oa_report_column WHERE report_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array($report_id);
         $query = $this->db->query($sql, $data);
-
         return(true);
     }
 
@@ -85,7 +85,6 @@ class M_oa_report_column extends MY_Model
                             "$detail->column_align", );
             $query = $this->db->query($sql, $data);
         }
-
         return(true);
     }
 }

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -126,13 +126,14 @@ class cli extends CI_Controller
         $log_details->severity = 6;
         $log_details->message = 'NMIS import, importing nodes from '.$nodes_file;
         stdlog($log_details);
+
+        $this->load->helper('network');
         $this->load->helper('snmp_oid');
         $this->load->helper('snmp');
         $this->load->library('encrypt');
         $this->load->model('m_system');
         $this->load->model('m_oa_group');
         $this->load->model('m_devices_components');
-        $this->load->model('m_ip_address');
         $file_handle = fopen($nodes_file, 'r');
         $string = fread($file_handle, filesize($nodes_file));
         $string = str_replace(PHP_EOL, ' ', $string);
@@ -188,48 +189,60 @@ class cli extends CI_Controller
             $device->man_ip_address = '';
             $device->hostname = '';
             $device->fqdn = '';
+            $device->domain = '';
 
             if ((string) $device->collect == 'true') {
                 // only import where collect == true
-                if ((string) $device->host !== '127.0.0.1') {
-                    if (filter_var($device->host, FILTER_VALIDATE_IP)) {
-                        // we have an ip address as opposed to a name or fqdn
-                        $device->man_ip_address = $device->host;
-                    } else {
-                        // we have a name or fqdn
-                        if (strpos($device->host, '.')) {
-                            // fqdn - explode it
-                            $device->fqdn = $device->host;
-                            $t_array = explode('.', $device->host);
-                            $device->hostname = $t_array[0];
-                            unset($t_array);
-                        } else {
-                            // its just a name
-                            $device->hostname = $device->host;
-                        }
-                    }
-                    if ((string) $device->man_ip_address !== '') {
-                        // lookup the name
-                        $device->hostname = gethostbyaddr($device->man_ip_address);
-                        if (filter_var($device->host, FILTER_VALIDATE_IP)) {
-                            // we have an ip address returned, use the field 'name' from Nodes.nmis
-                            $device->hostname = $device->name;
-                        } else {
-                            if (strpos($device->hostname, '.')) {
-                                $device->fqdn = $device->hostname;
-                                $t_array = explode('.', $device->hostname);
-                                $device->hostname = $t_array[0];
-                                unset($t_array);
-                            }
-                        }
-                    } else {
-                        // lookup the ip
-                        if ((string) $device->fqdn !== '') {
-                            $device->man_ip_address = gethostbyname($device->fqdn);
-                        } else {
-                            $device->man_ip_address = gethostbyname($device->host);
-                        }
-                    }
+
+                $device->hostname = $device->host;
+                $device->man_ip_address = $device->host;
+                $device->fqdn = $device->host;
+                $device = dns_validate($device);
+
+
+                // if ((string) $device->host !== '127.0.0.1') {
+                //     if (filter_var($device->host, FILTER_VALIDATE_IP)) {
+                //         // we have an ip address as opposed to a name or fqdn
+                //         $device->man_ip_address = $device->host;
+                //     } else {
+                //         // we have a name or fqdn
+                //         if (strpos($device->host, '.')) {
+                //             // fqdn - explode it
+                //             $device->fqdn = $device->host;
+                //             $t_array = explode('.', $device->host);
+                //             $device->hostname = $t_array[0];
+                //             $details->domain = implode(".", $t_array);
+                //             unset($t_array);
+                //         } else {
+                //             // its just a name
+                //             $device->hostname = $device->host;
+                //         }
+                //     }
+                //     if ((string) $device->man_ip_address !== '') {
+                //         if ($device->hostname == '') {
+                //             // lookup the name
+                //             $device->hostname = gethostbyaddr($device->man_ip_address);
+                //             if (filter_var($device->host, FILTER_VALIDATE_IP)) {
+                //                 // we have an ip address returned, use the field 'name' from Nodes.nmis
+                //                 $device->hostname = $device->name;
+                //             } else {
+                //                 if (strpos($device->hostname, '.')) {
+                //                     $device->fqdn = $device->hostname;
+                //                     $t_array = explode('.', $device->hostname);
+                //                     $device->hostname = $t_array[0];
+                //                     unset($t_array);
+                //                 }
+                //             }
+                //         }
+                //     } else {
+                //         // lookup the ip
+                //         if ((string) $device->fqdn !== '') {
+                //             $device->man_ip_address = gethostbyname($device->fqdn);
+                //         } else {
+                //             $device->man_ip_address = gethostbyname($device->host);
+                //         }
+                //     }
+
                     if ((string) $device->version === 'snmpv2c') {
                         $device->version = '2c';
                     }
@@ -263,6 +276,7 @@ class cli extends CI_Controller
 
                         $network_interfaces = $temp_array['interfaces'];
                         $modules = $temp_array['modules'];
+                        $ip = $temp_array['ip'];
 
                         $device->access_details = $encoded;
                         $device->nmis_group = $device->group;
@@ -300,14 +314,9 @@ class cli extends CI_Controller
                         $device->first_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'first_timestamp');
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                             $this->m_devices_components->process_component('network', $details, $xml->network);
-                            foreach ($network_interfaces as $input) {
-                                if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                                    foreach ($input->ip_addresses as $ip_input) {
-                                        $ip_input = (object) $ip_input;
-                                        $this->m_ip_address->process_addresses($ip_input, $device);
-                                    }
-                                }
-                            }
+                        }
+                        if (isset($ip->item) and count($ip->item) > 0) {
+                            $this->m_devices_components->process_component('ip', $details, $ip);
                         }
                         // and update all groups
                         $this->m_oa_group->update_system_groups($device);

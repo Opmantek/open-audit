@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -50,9 +50,9 @@
 		<option value='general'><?php echo __('General'); ?></option>
 		<option value='location'><?php echo __('Location'); ?></option>
 		<option value='network'><?php echo __('Network'); ?></option>
-		<option value='org' <?php if ($group_data->group_category == 'org') { echo "selected";} ?>><?php echo __('Organisation')?></option>
+		<option value='org' <?php if (isset($group_data->group_category) and $group_data->group_category == 'org') { echo "selected";} ?>><?php echo __('Organisation')?></option>
 		<option value='os'><?php echo __('Operating System'); ?></option>
-		<option value='owner' <?php if ($group_data->group_category == 'owner') { echo "selected";} ?>><?php echo __('Owner')?></option>
+		<option value='owner' <?php if (isset($group_data->group_category) and $group_data->group_category == 'owner') { echo "selected";} ?>><?php echo __('Owner')?></option>
 	</select>
 </fieldset>
 <p><br /></p>
@@ -69,19 +69,9 @@
 			<select id='dynamic_other_table' name='dynamic_other_table' onchange='retrieve_fields();' style='width:250px;'>
 				<option value='' selected='selected'>Choose a table from the DB</option>
 				<?php
-                $table_name = '';
+                $tables = array ('bios', 'disk', 'dns', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
                 foreach ($tables as $table) {
-                    #$table_name = $table->table_name;
-                    if (mb_strpos($table, "sys") === 0) {
-                        $table_name = str_replace('sys_', '', $table_name);
-                        $table_name = str_replace('hw_', '', $table_name);
-                        $table_name = str_replace('sw_', '', $table_name);
-                        $table_name = str_replace('_', ' ', $table_name);
-                        $table_name = ucwords($table_name);
-                        echo "	<option value='".$table."'>".$table."</option>\n";
-                    } else {
-                        // Not a usable table name - skip it
-                    }
+                	echo "	<option value='".$table."'>".$table."</option>\n";
                 } ?>
 			</select>
 			<br />

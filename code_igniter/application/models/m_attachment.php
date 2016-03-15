@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -42,6 +42,7 @@ class M_attachment extends MY_Model
     public function create_system_attachment($system_id, $attachment_title, $attachment_name)
     {
         $sql = "INSERT INTO sys_man_attachment (att_id, system_id, user_id, att_title, att_filename, timestamp) VALUES (NULL, ?, ?, ?, ?, ?)";
+        $sql = $this->clean_sql($sql);
         $data = array("$system_id", $this->session->userdata['user_id'], "$attachment_title", "$attachment_name", date('Y-m-d H:i:s'));
         $query = $this->db->query($sql, $data);
         echo $this->db->last_query();
@@ -52,6 +53,7 @@ class M_attachment extends MY_Model
     public function get_system_attachment($system_id)
     {
         $sql = "SELECT * FROM sys_man_attachment WHERE system_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -62,6 +64,7 @@ class M_attachment extends MY_Model
     public function get_attachment($attachment_id)
     {
         $sql = "SELECT * FROM sys_man_attachment WHERE att_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$attachment_id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -72,6 +75,7 @@ class M_attachment extends MY_Model
     public function delete_attachment($attachment_id)
     {
         $sql = "DELETE FROM sys_man_attachment WHERE att_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$attachment_id");
         $query = $this->db->query($sql, $data);
         #$result = $query->result();

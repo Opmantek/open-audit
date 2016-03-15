@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -352,16 +352,21 @@ class login extends CI_Controller
                 $data = $this->m_userlogin->get_user_details($username);
                 if (isset($data['user_active']) and $data['user_active'] == 'y') {
                     $this->session->set_userdata($data);
+                    // if (isset($data['user_admin']) and $data['user_admin'] == 'y') {
+                    //     $is_admin = 'true';
+                    // } else {
+                    //     $is_admin = 'false';
+                    // }
+                    // header('Content-Type: application/json');
+                    // header('HTTP/1.1 200 OK');
+                    // echo '{"valid": true, "admin": ' . $is_admin . '}';
+                    // exit();
                     if (isset($data['user_admin']) and $data['user_admin'] == 'y') {
-                        $is_admin = 'true';
-                    } else {
-                        $is_admin = 'false';
+                        header('Content-Type: application/json');
+                        header('HTTP/1.1 200 OK');
+                        echo '{"valid": true, "admin": ' . $is_admin . '}';
+                        exit();
                     }
-                    header('Content-Type: application/json');
-                    header('HTTP/1.1 200 OK');
-                    echo '{"valid": true, "admin": ' . $is_admin . '}';
-                    exit();
-
                 } else {
                     // the user does not have their 'user_active' flag set to 'y'.
                     // don't log them in, redirect the to the login page.
@@ -381,7 +386,8 @@ class login extends CI_Controller
             } else {
                 $is_admin = 'false';
             }
-            if (isset($data) and $data != 'fail') {
+            #if (isset($data) and $data != 'fail') {
+            if (isset($data) and $data != 'fail' and $is_admin == 'true') {
                 $this->session->set_userdata($data);
                 header('Content-Type: application/json');
                 header('HTTP/1.1 200 OK');

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -51,6 +51,7 @@ class M_oa_connection extends MY_Model
     public function get_connection($id)
     {
         $sql = "SELECT * FROM oa_connection WHERE connection_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -70,6 +71,7 @@ class M_oa_connection extends MY_Model
     public function get_connection_id($name)
     {
         $sql = "SELECT connection_id FROM oa_connection WHERE name = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array("$name");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -94,6 +96,7 @@ class M_oa_connection extends MY_Model
     public function get_connection_name($id)
     {
         $sql = "SELECT name FROM oa_connection WHERE connection_id = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -111,6 +114,7 @@ class M_oa_connection extends MY_Model
     public function get_connection_names()
     {
         $sql = "SELECT name, connection_id FROM oa_connection ORDER BY connection_name";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -127,6 +131,7 @@ class M_oa_connection extends MY_Model
     public function get_all_connections()
     {
         $sql = "SELECT oa_connection.*, oa_org.org_name, a.location_name AS location_a, b.location_name AS location_b FROM oa_connection LEFT JOIN oa_org ON oa_connection.org_id = oa_org.org_id LEFT JOIN oa_location AS a ON oa_connection.location_id_a = a.location_id LEFT JOIN oa_location AS b ON oa_connection.location_id_b = b.location_id ORDER BY name";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
 
@@ -146,6 +151,7 @@ class M_oa_connection extends MY_Model
     public function check_connection_name($connection_name, $connection_id)
     {
         $sql = "SELECT connection_id FROM oa_connection WHERE name = ? AND connection_id <> ?";
+        $sql = $this->clean_sql($sql);
         $data = array($connection_name, $connection_id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
@@ -223,6 +229,7 @@ class M_oa_connection extends MY_Model
     public function delete_connection($connection_id)
     {
         $sql = "DELETE FROM oa_connection WHERE connection_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array("$connection_id");
         $query = $this->db->query($sql, $data);
     }

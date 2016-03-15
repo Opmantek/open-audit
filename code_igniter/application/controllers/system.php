@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -175,7 +175,7 @@ class System extends CI_Controller
         $this->benchmark->mark('code_start');
         if (isset($this->session->userdata['user_id'])) {
             $temp_user_id = $this->session->userdata['user_id'];
-            $sql = "SELECT user_full_name FROM oa_user WHERE user_id = ?";
+            $sql = "/* system::add_system */ SELECT user_full_name FROM oa_user WHERE user_id = ?";
             $data = array($this->session->userdata['user_id']);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
@@ -198,11 +198,26 @@ class System extends CI_Controller
         echo "<a href='" . base_url() . "index.php/system'>Back to input page</a><br />\n";
         echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
         $this->load->model('m_change_log');
-        $this->load->model('m_ip_address');
         $this->load->model('m_printer');
         $this->load->model('m_audit_log');
 
         $this->load->model('m_devices_components');
+
+        if (!empty($_POST['display'])) {
+            $display = $_POST['display'];
+        }
+        $current_url = current_url();
+        if (stripos($current_url, '/display') !== false) {
+            $display = 'y';
+        }
+        unset($current_url);
+        if (!empty($display)) {
+            if ($display == 'on' or $display == 'y') {
+                $display = 'y';
+            }
+        } else {
+            $display = 'n';
+        }
 
         // date_default_timezone_set("Australia/Queensland");
         $timestamp = date('Y-m-d H:i:s');
@@ -261,6 +276,7 @@ class System extends CI_Controller
         $log_details = new stdClass();
         $log_details->severity = 7;
         $log_details->file = 'system';
+        $log_details->display = $display;
         if ($j > '') {
             $log_details->message = 'Processing audit result for ' . $i . ' (Supplied System ID ' . $j . ')';
         } else {
@@ -305,7 +321,7 @@ class System extends CI_Controller
         }
         $details->system_key = $this->m_system->create_system_key($details);
 
-        $i = $this->m_system->find_system($details);
+        $i = $this->m_system->find_system($details, $display);
         if ($i == '' and $received_system_id > '') {
             $i = $received_system_id;
         }
@@ -314,7 +330,7 @@ class System extends CI_Controller
             // nmap and/or snmp) we couldn't match an existing system
             // Now we have an actual audit result with plenty of data
             // we have found a match and it's not the original
-            $sql = "DELETE FROM system WHERE system_id = ?";
+            $sql = "/* system::add_system */ DELETE FROM system WHERE system_id = ?";
             $data = array($received_system_id);
             $query = $this->db->query($sql, $data);
 
@@ -337,7 +353,7 @@ class System extends CI_Controller
         $details->last_audit_date = "";
         if ((string) $i === '') {
             // insert a new system
-            $details->system_id = $this->m_system->insert_system($details);
+            $details->system_id = $this->m_system->insert_system($details, $display);
 
             $log_details = new stdClass();
             $log_details->severity = 7;
@@ -360,7 +376,7 @@ class System extends CI_Controller
 
             $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
             $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
-            $this->m_system->update_system($details);
+            $this->m_system->update_system($details, $display);
             echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
         }
         $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
@@ -368,45 +384,39 @@ class System extends CI_Controller
 
         $this->m_audit_log->create($details->system_id, $user_full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
 
-        $this->m_devices_components->process_component('bios', $details, $xml->bios);
-        $this->m_devices_components->process_component('disk', $details, $xml->disk);
-        $this->m_devices_components->process_component('log', $details, $xml->log);
-        $this->m_devices_components->process_component('memory', $details, $xml->memory);
-        $this->m_devices_components->process_component('module', $details, $xml->module);
-        $this->m_devices_components->process_component('monitor', $details, $xml->monitor);
-        $this->m_devices_components->process_component('motherboard', $details, $xml->motherboard);
-        $this->m_devices_components->process_component('netstat', $details, $xml->netstat);
-        $this->m_devices_components->process_component('network', $details, $xml->network);
-        $this->m_devices_components->process_component('optical', $details, $xml->optical);
-        $this->m_devices_components->process_component('pagefile', $details, $xml->pagefile);
-        $this->m_devices_components->process_component('partition', $details, $xml->partition);
-        $this->m_devices_components->process_component('print_queue', $details, $xml->printer);
-        $this->m_devices_components->process_component('processor', $details, $xml->processor);
-        $this->m_devices_components->process_component('route', $details, $xml->route);
-        $this->m_devices_components->process_component('scsi', $details, $xml->scsi);
-        $this->m_devices_components->process_component('server', $details, $xml->server);
-        $this->m_devices_components->process_component('server_item', $details, $xml->server_item);
-        $this->m_devices_components->process_component('service', $details, $xml->service);
-        $this->m_devices_components->process_component('share', $details, $xml->share);
-        $this->m_devices_components->process_component('software', $details, $xml->software);
-        $this->m_devices_components->process_component('software_key', $details, $xml->software_key);
-        $this->m_devices_components->process_component('sound', $details, $xml->sound);
-        $this->m_devices_components->process_component('task', $details, $xml->task);
-        $this->m_devices_components->process_component('user', $details, $xml->user);
-        $this->m_devices_components->process_component('user_group', $details, $xml->user_group);
-        $this->m_devices_components->process_component('variable', $details, $xml->variable);
-        $this->m_devices_components->process_component('video', $details, $xml->video);
-        $this->m_devices_components->process_component('vm', $details, $xml->vm);
-        $this->m_devices_components->process_component('windows', $details, $xml->windows);
+        $this->m_devices_components->process_component('bios', $details, $xml->bios, $display);
+        $this->m_devices_components->process_component('disk', $details, $xml->disk, $display);
+        $this->m_devices_components->process_component('ip', $details, $xml->ip, $display);
+        $this->m_devices_components->process_component('log', $details, $xml->log, $display);
+        $this->m_devices_components->process_component('memory', $details, $xml->memory, $display);
+        $this->m_devices_components->process_component('module', $details, $xml->module, $display);
+        $this->m_devices_components->process_component('monitor', $details, $xml->monitor, $display);
+        $this->m_devices_components->process_component('motherboard', $details, $xml->motherboard, $display);
+        $this->m_devices_components->process_component('netstat', $details, $xml->netstat, $display);
+        $this->m_devices_components->process_component('network', $details, $xml->network, $display);
+        $this->m_devices_components->process_component('optical', $details, $xml->optical, $display);
+        $this->m_devices_components->process_component('pagefile', $details, $xml->pagefile, $display);
+        $this->m_devices_components->process_component('partition', $details, $xml->partition, $display);
+        $this->m_devices_components->process_component('print_queue', $details, $xml->printer, $display);
+        $this->m_devices_components->process_component('processor', $details, $xml->processor, $display);
+        $this->m_devices_components->process_component('route', $details, $xml->route, $display);
+        $this->m_devices_components->process_component('scsi', $details, $xml->scsi, $display);
+        $this->m_devices_components->process_component('server', $details, $xml->server, $display);
+        $this->m_devices_components->process_component('server_item', $details, $xml->server_item, $display);
+        $this->m_devices_components->process_component('service', $details, $xml->service, $display);
+        $this->m_devices_components->process_component('share', $details, $xml->share, $display);
+        $this->m_devices_components->process_component('software', $details, $xml->software, $display);
+        $this->m_devices_components->process_component('software_key', $details, $xml->software_key, $display);
+        $this->m_devices_components->process_component('sound', $details, $xml->sound, $display);
+        $this->m_devices_components->process_component('task', $details, $xml->task, $display);
+        $this->m_devices_components->process_component('user', $details, $xml->user, $display);
+        $this->m_devices_components->process_component('user_group', $details, $xml->user_group, $display);
+        $this->m_devices_components->process_component('variable', $details, $xml->variable, $display);
+        $this->m_devices_components->process_component('video', $details, $xml->video, $display);
+        $this->m_devices_components->process_component('vm', $details, $xml->vm, $display);
+        $this->m_devices_components->process_component('windows', $details, $xml->windows, $display);
 
         foreach ($xml->children() as $child) {
-
-            if ($child->getName() === 'addresses') {
-                $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
-                foreach ($xml->addresses->ip_address as $input) {
-                    $this->m_ip_address->process_addresses($input, $details);
-                }
-            }
             if ($child->getName() === 'audit_wmi_fail') {
                 $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
                 $this->m_audit_log->update('wmi_fails', $xml->audit_wmi_fail, $details->system_id, $details->last_seen);
@@ -445,25 +455,7 @@ class System extends CI_Controller
 
         // set the man_ip_address (if not already set)
         $this->m_audit_log->update('debug', 'check and set initial man_ip_address', $details->system_id, $details->last_seen);
-        $this->m_ip_address->set_initial_address($details->system_id);
-        $dhcp = false;
-        $network_details = $this->m_devices_components->read($details->system_id, 'y', 'network');
-        foreach ($network_details as $card) {
-            if (stripos($card->dhcp_enabled, 'true') !== false) {
-                $dhcp = true;
-            }
-        }
-
-        $discovery_create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
-
-        if ($details->original_timestamp !== '' and $discovery_create_alerts == 'y') {
-            $this->m_audit_log->update('debug', 'alerts', $details->system_id, $details->last_seen);
-            // We have to go through all tables, checking for
-            // entries with current_timestamp = first_timestamp
-            if ($dhcp !== true) {
-                $this->m_ip_address->alert_ip_address($details);
-            }
-        }
+        $this->m_devices_components->set_initial_address($details->system_id);
 
         $this->load->model('m_oa_group');
         // update any tags for new printers
@@ -507,7 +499,7 @@ class System extends CI_Controller
             $log_details->file = 'system';
             $log_details->message = 'Start processing nmap submitted data';
             stdlog($log_details);
-            $log_details->message = 'ATTENTION - audit_subnet script being used. This is depreciated. Please use discovery scripts instead.';
+            $log_details->message = 'ATTENTION - audit_subnet script being used. This is deprecated. Please use discovery scripts instead.';
             $log_details->severity = 5;
             stdlog($log_details);
             unset($log_details);
@@ -516,6 +508,7 @@ class System extends CI_Controller
 
             $this->load->helper('url');
             $this->load->helper('xml');
+            $this->load->helper('network');
             $this->load->library('encrypt');
             if (extension_loaded('snmp')) {
                 $this->load->helper('snmp');
@@ -523,7 +516,6 @@ class System extends CI_Controller
             }
             $this->load->model('m_system');
             $this->load->model('m_oa_group');
-            $this->load->model('m_ip_address');
             $this->load->model('m_audit_log');
             $timestamp = date('Y-m-d H:i:s');
             $xml_input = $_POST['form_nmap'];
@@ -555,9 +547,23 @@ class System extends CI_Controller
                 $details->timestamp = $timestamp;
 
                 $details->hostname = '';
-                $details->hostname = gethostbyaddr($details->man_ip_address);
-                $details->hostname = strtolower($details->hostname);
-                $details->domain = '';
+                // $details->hostname = gethostbyaddr($details->man_ip_address);
+                // $details->hostname = strtolower($details->hostname);
+                // $details->domain = '';
+                // if (! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+                //     if (strpos($details->hostname, '.') !== false) {
+                //         // we have a domain returned
+                //         $details->fqdn = strtolower($details->hostname);
+                //         $t_array = explode('.', $details->hostname);
+                //         $details->hostname = $t_array[0];
+                //         unset($t_array[0]);
+                //         $details->domain = implode('.', $t_array);
+                //     }
+                // }
+                $details = dns_validate($details);
+
+
+
                 $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
                 $log_details = new stdClass();
@@ -567,16 +573,7 @@ class System extends CI_Controller
                 stdlog($log_details);
                 unset($log_details);
 
-                if (! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-                    if (strpos($details->hostname, '.') !== false) {
-                        // we have a domain returned
-                        $details->fqdn = strtolower($details->hostname);
-                        $t_array = explode('.', $details->hostname);
-                        $details->hostname = $t_array[0];
-                        unset($t_array[0]);
-                        $details->domain = implode('.', $t_array);
-                    }
-                }
+
 
                 if (! isset($details->type) or $details->type === '') {
                     $details->type = 'unknown';
@@ -595,6 +592,7 @@ class System extends CI_Controller
                     $temp_array = get_snmp($details);
                     $details = $temp_array['details'];
                     $network_interfaces = $temp_array['interfaces'];
+                    $ip = $temp_array['ip'];
                 }
 
                 $details->system_key = '';
@@ -606,6 +604,7 @@ class System extends CI_Controller
                     // we received a result from SNMP, use this data to update OR insert
                     $details->last_seen_by = 'snmp';
                     $details->audits_ip = '127.0.0.1';
+                    $details = dns_validate($details);
 
                     if (isset($details->system_id) and !empty($details->system_id)) {
                         // we have a system_id and snmp details to update
@@ -632,15 +631,9 @@ class System extends CI_Controller
                         $input->item = array();
                         $input->item = $network_interfaces;
                         $this->m_devices_components->process_component('network', $details, $input);
-
-                        foreach ($network_interfaces as $input) {
-                            if (isset($input->ip_addresses) and is_array($input->ip_addresses)) {
-                                foreach ($input->ip_addresses as $ip_input) {
-                                    $ip_input = (object) $ip_input;
-                                    $this->m_ip_address->process_addresses($ip_input, $details);
-                                }
-                            }
-                        }
+                    }
+                    if (isset($ip->item) and count($ip->item) > 0) {
+                        $this->m_devices_components->process_component('ip', $details, $ip);
                     }
                 } else {
                     // we received a result from nmap only, use this data to update OR insert

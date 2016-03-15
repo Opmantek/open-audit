@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -123,6 +123,7 @@ class M_additional_fields extends MY_Model
     public function add_additional_field($details)
     {
         $sql = "INSERT INTO sys_man_additional_fields (field_name, field_type, field_placement, group_id, field_values) VALUES (?, ?, ?, ?, ?)";
+        $sql = $this->clean_sql($sql);
         $data = array("$details->field_name", "$details->field_type", "$details->field_placement", "$details->group_id", "$details->field_values");
         $query = $this->db->query($sql, $data);
 
@@ -284,16 +285,19 @@ class M_additional_fields extends MY_Model
         }
 
         $sql = "SELECT field_id FROM sys_man_additional_fields WHERE field_name = ? LIMIT 1";
+        $sql = $this->clean_sql($sql);
         $data = array($field_name);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         $field_id = $result[0]->field_id;
 
         $sql = "DELETE FROM sys_man_additional_fields_data WHERE system_id = ? AND field_id = ?";
+        $sql = $this->clean_sql($sql);
         $data = array($system_id, $field_id);
         $query = $this->db->query($sql, $data);
 
         $sql = "INSERT INTO sys_man_additional_fields_data VALUES(NULL, ?, ?, '', ?, '', '')";
+        $sql = $this->clean_sql($sql);
         $data = array ($system_id, $field_id, $field_data);
         $query = $this->db->query($sql, $data);
 
@@ -304,6 +308,7 @@ class M_additional_fields extends MY_Model
     {
         if ($system_id == '') { return; }
         $sql = "SELECT f.field_id, f.field_name, f.field_type, f.field_values, f.field_placement, IFNULL(d.field_varchar,\"\") AS data_value, IFNULL(d.field_details_id, \"\") as data_id FROM sys_man_additional_fields f  LEFT JOIN sys_man_additional_fields_data d ON (f.field_id = d.field_id AND d.system_id = ?) WHERE f.group_id IN (SELECT group_id FROM oa_group_sys WHERE system_id = ?)";
+        $sql = $this->clean_sql($sql);
         $data = array($system_id, $system_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();

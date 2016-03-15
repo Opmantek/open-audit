@@ -27,7 +27,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.12
+# @version 1.12.2
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -36,7 +36,7 @@ IFS='
 '
 
 echo "-------ATTENTION------"
-echo "This script has been depreciated. Please use the discover_subnet.sh script instead."
+echo "This script has been deprecated. Please use the discover_subnet.sh script instead."
 echo "----------------------"
 echo ""
 
@@ -100,7 +100,7 @@ if [ "$help" == "y" ]; then
 	echo "---------------------------------"
 	echo ""
 	echo "-------ATTENTION------"
-	echo "This script has been depreciated. Please use the duscover_subnet.sh script instead."
+	echo "This script has been deprecated. Please use the duscover_subnet.sh script instead."
 	echo "----------------------"
 	echo ""
 	echo "This script should be used on a Linux based computer to discover hosts in a subnet."

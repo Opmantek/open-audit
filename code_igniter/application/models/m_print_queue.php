@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12
+ * @version 1.12.2
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -42,16 +42,16 @@ class M_print_queue extends MY_Model
     public function get_print_queue($system_id)
     {
         $sql = "SELECT
-				sys_sw_print_queue.*
-			FROM
-				sys_sw_print_queue,
-				system
-			WHERE
-				sys_sw_print_queue.system_id = system.system_id AND
-				sys_sw_print_queue.timestamp = system.timestamp AND
-				system.system_id = ?
-			GROUP BY
-				sys_sw_print_queue.queue_id";
+    				sys_sw_print_queue.*
+    			FROM
+    				sys_sw_print_queue,
+    				system
+    			WHERE
+    				sys_sw_print_queue.system_id = system.system_id AND
+    				sys_sw_print_queue.timestamp = system.timestamp AND
+    				system.system_id = ?
+    			GROUP BY
+    				sys_sw_print_queue.queue_id";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
@@ -100,6 +100,7 @@ class M_print_queue extends MY_Model
                 $row = $query->row();
                 // the print queue exists - need to update its timestamp
                 $sql = "UPDATE sys_sw_print_queue SET timestamp = ? WHERE queue_id = ?";
+                $sql = $this->clean_sql($sql);
                 $data = array("$details->timestamp", "$row->queue_id");
                 $query = $this->db->query($sql, $data);
             } else {
@@ -141,8 +142,8 @@ class M_print_queue extends MY_Model
     {
         // print queue no longer detected
         $sql = "SELECT queue_id, queue_system_key, model FROM sys_sw_print_queue WHERE system_id = ? and timestamp = ?";
-        $data = array("$details->system_id", "$details->original_timestamp");
         $sql = $this->clean_sql($sql);
+        $data = array("$details->system_id", "$details->original_timestamp");
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $myrow) {
             $alert_details = 'print queue removed - '.$myrow->queue_system_key.' ('.$myrow->model.')';
@@ -158,8 +159,8 @@ class M_print_queue extends MY_Model
 				sys_sw_print_queue.first_timestamp = ? AND
 				sys_sw_print_queue.first_timestamp = sys_sw_print_queue.timestamp AND
 				sys_sw_print_queue.first_timestamp != system.first_timestamp";
-        $data = array("$details->system_id", "$details->timestamp");
         $sql = $this->clean_sql($sql);
+        $data = array("$details->system_id", "$details->timestamp");
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $myrow) {
             $alert_details = 'print queue installed - '.$myrow->queue_system_key.' ('.$myrow->model.')';
