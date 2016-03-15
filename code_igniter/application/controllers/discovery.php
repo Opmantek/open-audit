@@ -2289,10 +2289,11 @@ class discovery extends CI_Controller
             }
         }
 
+        $command_string = str_replace($password, '******', $command_string);
+        $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
+        $command_string = str_replace(escapeshellarg($password), '******', $command_string);
+
         if ($display == 'y') {
-            $command_string = str_replace($password, '******', $command_string);
-            $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
-            $command_string = str_replace(escapeshellarg($password), '******', $command_string);
             echo "\n";
             echo 'DEBUG - Command Executed: '.$command_string."\n";
             echo 'DEBUG - Return Value: '.$return['status']."\n";
