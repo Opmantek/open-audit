@@ -69,7 +69,8 @@ if (! function_exists('input')) {
         if (isset($temp) and is_numeric($temp) and $temp != '') {
             $CI->response->id = intval($temp);
         } else {
-            if ($temp != '') {
+            $reserved_words = ' create edit update delete execute ';
+            if ($temp != '' and stripos($reserved_words, ' '.$temp.' ') === false) {
                 // TODO - SEPARATE THIS OUT
                 IF ($CI->response->resource == 'devices') {
                     $sql = "SELECT system_id AS id FROM system WHERE hostname = ? ORDER BY system_id DESC LIMIT 1";

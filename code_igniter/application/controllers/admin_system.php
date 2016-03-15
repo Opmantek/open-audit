@@ -362,11 +362,11 @@ class Admin_system extends MY_Controller
                 $input = new stdClass();
                 $input->item = array();
                 $input->item = $network_interfaces;
-                $this->m_devices_components->process_component('network', $details, $input);
+                $this->m_devices_components->process_component('network', $details, $input, 'y');
             }
 
             if (isset($ip->item) and count($ip->item) > 0) {
-                $this->m_devices_components->process_component('ip', $details, $ip);
+                $this->m_devices_components->process_component('ip', $details, $ip, 'y');
             }
 
             # insert any found virtual machines
@@ -374,7 +374,7 @@ class Admin_system extends MY_Controller
                 $vm = new stdClass();
                 $vm->item = array();
                 $vm->item = $guests;
-                $this->m_devices_components->process_component('vm', $details, $vm);
+                $this->m_devices_components->process_component('vm', $details, $vm, 'y');
             }
 
             # insert any modules
@@ -382,7 +382,7 @@ class Admin_system extends MY_Controller
                 $input = new stdClass();
                 $input->item = array();
                 $input->item = $modules;
-                $this->m_devices_components->process_component('module', $details, $input);
+                $this->m_devices_components->process_component('module', $details, $input, 'y');
             }
 
             // Generate any DNS entries required
@@ -390,7 +390,7 @@ class Admin_system extends MY_Controller
             $dns->item = array();
             $dns->item = $this->m_devices_components->create_dns_entries((int)$details->system_id);
             if (count($dns->item) > 0) {
-                $this->m_devices_components->process_component('dns', $details, $dns);
+                $this->m_devices_components->process_component('dns', $details, $dns, 'y');
             }
             unset($dns);
 

@@ -53,7 +53,7 @@ dim syslog : syslog = "y"
 dim url : url = "http://localhost/open-audit/index.php/discovery/process_subnet"
 dim objHTTP
 dim sequential : sequential = "y"
-dim os_scan : os_san = "n"
+dim os_scan : os_scan = "n"
 dim hosts
 dim hosts_in_subnet
 dim host
@@ -300,7 +300,7 @@ for each host in hosts_in_subnet
     wmi_status = "false"
     exit_status = "y"
     host_is_up = "false"
-    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 -Pn " & host
+    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 " & host
     execute_command()
 
     Do Until objExecObject.Status = 0
@@ -368,7 +368,7 @@ for each host in hosts_in_subnet
         result_file = result_file & result
 
         if submit_online = "y" then
-            log_entry = "IP " & $host & " responding, submitting."
+            log_entry = "IP " & host & " responding, submitting."
             write_log()
             result = "<devices>" & vbcrlf & result & "</devices>"
             Err.clear
@@ -398,11 +398,11 @@ for each host in hosts_in_subnet
                 wscript.echo objHTTP.ResponseText
             end if
         else
-            log_entry = "IP " & $host & " responding."
+            log_entry = "IP " & host & " responding."
             write_log()
         end if ' submit_online
     else
-        log_entry = "IP " & $host & " not responding, ignoring."
+        log_entry = "IP " & host & " not responding, ignoring."
         write_log()
     end if ' host_is_up'
 next

@@ -306,7 +306,7 @@ class M_devices_components extends MY_Model
         // make sure we have an entry for each match column, even if it's empty
         foreach ($match_columns as $match_column) {
             for ($i=0; $i<count($input->item); $i++) {
-                if (!isset($input->item[$i]->$match_column)) {
+                if (isset($input->item[$i]) and !isset($input->item[$i]->$match_column)) {
                     $input->item[$i]->$match_column = '';
                 }
             }
@@ -1227,6 +1227,7 @@ class M_devices_components extends MY_Model
                 unset($dns_entries[$key]);
             }
         }
+        $dns_entries = array_values($dns_entries);
         return $dns_entries;
     }
 

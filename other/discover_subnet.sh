@@ -261,7 +261,7 @@ if [[ "$hosts" != "" ]]; then
 		# -O attempt to determine operating system ($os_scan)
 		# --host-timeout so we don't hang indefinitley
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
-		nmap_scan=$(nmap -vv -n $os_scan --host-timeout 90 -Pn $timing "$host" 2>&1)
+		nmap_scan=$(nmap -vv -n $os_scan --host-timeout 90 $timing "$host" 2>&1)
 		for line in $nmap_scan; do
 
 			NEEDLE="Host is up"
@@ -365,7 +365,7 @@ if [[ "$hosts" != "" ]]; then
 					# -b   = background the wget command
 					# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 					# -q   = quiet (no output)
-					wget "$sequential" -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
+					wget $sequential -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
 				fi
 				if [[ $(uname) == "Darwin" ]]; then
 					curl --data "form_details=$result" "$url"
