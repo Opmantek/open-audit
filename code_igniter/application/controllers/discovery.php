@@ -533,7 +533,7 @@ class discovery extends CI_Controller
             if (strpos($subnet_range, "/")) {
                 // we have a subnet_range - if it's not a /32, then test for a group
                 $subnet_split = explode("/", $subnet_range);
-                $subnet_details = network_details($subnet_split[0] . ' ' . $subnet_split[1]);
+                $subnet_details = network_details($subnet_split[0] . '/' . $subnet_split[1]);
                 if (! isset($this->config->config['network_group_subnet']) or $this->config->config['network_group_subnet'] == '') {
                     $net_group_subnet = '30';
                 } else {
