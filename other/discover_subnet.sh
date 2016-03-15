@@ -116,7 +116,7 @@ if [ "$help" == "y" ]; then
 	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
 	echo "     n - Do not submit the audit result"
 	echo ""
-	echo "  subnet"
+	echo "  subnet_range"
 	echo "       - Any given subnet as per the Nmap command line options. http://nmap.org/book/man-target-specification.html EG - 192.168.1-3.1-20, 192.168.1.0/24, etc."
 	echo ""
 	echo "  subnet_timestamp"
@@ -261,18 +261,24 @@ if [[ "$hosts" != "" ]]; then
 		# -O attempt to determine operating system ($os_scan)
 		# --host-timeout so we don't hang indefinitley
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
-		nmap_scan=$(nmap -vv -n "$os_scan" --host-timeout 90 -Pn "$timing" "$host" 2>/dev/null)
+		nmap_scan=$(nmap -vv -n $os_scan --host-timeout 90 -Pn $timing "$host" 2>&1)
 		for line in $nmap_scan; do
 
 			NEEDLE="Host is up"
 			if [[ "$line" == *"$NEEDLE"* ]]; then
 				host_is_up="true"
+				if [ "$debugging" -gt 1 ]; then
+					echo "Host $host is up."
+				fi
 			fi
 
 			NEEDLE="MAC Address:"
 			if [[ "$line" == *"$NEEDLE"* ]]; then
 				mac_address=$(echo "$line" | cut -d" " -f3)
 				manufacturer=$(echo "$line" | cut -d"(" -f2 | cut -d")" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+				if [ "$debugging" -gt 1 ]; then
+					echo "Host $host mac: $mac_address."
+				fi
 			fi
 
 			NEEDLE="Device type:"
@@ -281,6 +287,9 @@ if [[ "$hosts" != "" ]]; then
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					# could be one of multiple
 					description=$(echo "$line" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+					if [ "$debugging" -gt 1 ]; then
+						echo "Host $host description: $description."
+					fi
 				else
 					description=""
 				fi
@@ -293,6 +302,9 @@ if [[ "$hosts" != "" ]]; then
 				NEEDLE="open"
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					ssh_status="true"
+					if [ "$debugging" -gt 1 ]; then
+						echo "Host $host SSH status os true."
+					fi
 				fi
 			fi
 
@@ -301,6 +313,9 @@ if [[ "$hosts" != "" ]]; then
 				NEEDLE="open"
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					wmi_status="true"
+					if [ "$debugging" -gt 1 ]; then
+						echo "Host $host WMI status os true."
+					fi
 				fi
 			fi
 
@@ -310,8 +325,14 @@ if [[ "$hosts" != "" ]]; then
 		snmp_status="false"
 		command=$(nmap -n -sU -p161 "$timing" --host-timeout 90 "$host" 2>/dev/null | grep "161/udp open")
 		if [[ "$command" == *"161/udp open"* ]]; then
-				snmp_status="true"
-				host_is_up="true"
+			snmp_status="true"
+			if [ "$host_is_up" == "false" ] && [ "$debugging" -gt 1 ]; then
+				echo "SNMP only detected host $host is up."
+			fi
+			if [ "$debugging" -gt 1 ]; then
+				echo "Host $host SNMP status os true."
+			fi
+			host_is_up="true"
 		fi
 
 		result=""
@@ -345,7 +366,7 @@ if [[ "$hosts" != "" ]]; then
 					# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 					# -q   = quiet (no output)
 					wget "$sequential" -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
-								fi
+				fi
 				if [[ $(uname) == "Darwin" ]]; then
 					curl --data "form_details=$result" "$url"
 				fi
