@@ -1615,7 +1615,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 echo "	<disk>" >> "$xml_file"
 partition_result=""
-for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null:759); do
+for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 
 	hard_drive_caption="/dev/$disk"
 	hard_drive_index="$disk"
