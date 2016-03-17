@@ -1535,6 +1535,7 @@ class discovery extends CI_Controller
 
                             // Auditing a Windows target device from a Linux Open-AudIT Server
                             if (php_uname('s') == 'Linux') {
+                                $details->windows_password = str_replace('$', '\$', $details->windows_password);
                                 $error = "";
                                 $command_string = 'smbclient \\\\\\\\'.$details->man_ip_address.'\\\\admin$ -U "'.str_replace("'", "", escapeshellarg($details->windows_domain)).'\\\\'.str_replace("'", "", escapeshellarg($details->windows_username)).'%'.str_replace("'", "", escapeshellarg($details->windows_password)).'" -c "put '.$filepath.'/audit_windows.vbs audit_windows.vbs" 2>&1';
                                 exec($command_string, $output, $return_var);
@@ -1581,6 +1582,7 @@ class discovery extends CI_Controller
                                     $output = null;
                                     $return_var = null;
                                 }
+                                $details->windows_password = str_replace('$', '\$', $details->windows_password);
                             }
 
                             // Auditing a Windows target device from a Windows Open-AudIT Server
@@ -2327,6 +2329,8 @@ class discovery extends CI_Controller
         $log_details->display = $display;
         $return = array('output' => '', 'status' => '');
 
+        $password = str_replace('$', '\$', $password);
+
         if (php_uname('s') == 'Linux') {
             $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
             $command_string = $filepath . "/winexe-static -U ".str_replace("'", "", escapeshellarg($domain))."/".str_replace("'", "", escapeshellarg($user))."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($host))." \"wmic $command\" ";
@@ -2353,6 +2357,8 @@ class discovery extends CI_Controller
             print_r($formatted_output);
             echo "\nDEBUG ---------------\n";
         }
+
+        $password = str_replace('\$', '$', $password);
 
         if ($return['status'] != '0') {
             $log_details->message = 'WMIC command \'' . $command_string . '\' on ' . $host . ' failed';
