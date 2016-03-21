@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report>
+	<details>
+		<report_name>Installed - OS</report_name>
+		<report_display_in_menu>y</report_display_in_menu>
+		<report_sql><![CDATA[SELECT count(*) AS count, IF((man_os_group != ""), man_os_group, "unknown") AS man_os_group, IF((man_os_family != ""), man_os_family, "unknown") AS man_os_family, IF((man_os_name != ""), man_os_name, "unknown") AS man_os_name, system.system_id FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.os_name ORDER BY os_group, os_family, os_name]]></report_sql>
+		<report_view_file>v_report</report_view_file>
+		<report_view_contents></report_view_contents>
+		<report_processing></report_processing>
+		<report_sort_column>0</report_sort_column>
+		<report_description>Count, OS Group, OS Family, OS Name (including unknown's).</report_description>
+	</details>
+	<columns>
+		<column>
+			<column_order>1</column_order>
+			<column_name>Count</column_name>
+			<column_variable>count</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>OS Group</column_name>
+			<column_variable>man_os_group</column_variable>
+			<column_type>link</column_type>
+			<column_link>/report/Specific OS Group/$group_id/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>3</column_order>
+			<column_name>OS Family</column_name>
+			<column_variable>man_os_family</column_variable>
+			<column_link>/report/Specific OS Family/$group_id/</column_link>
+			<column_type>link</column_type>
+			<column_link></column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>4</column_order>
+			<column_name>OS Name</column_name>
+			<column_variable>man_os_name</column_variable>
+			<column_type>link</column_type>
+			<column_link>/report/Specific OS Name/$group_id/</column_link>
+			<column_secondary>system_id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+	</columns>
+</report>
