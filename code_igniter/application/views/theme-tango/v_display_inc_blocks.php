@@ -1016,7 +1016,7 @@ function show_software($type, $software) {
                             <th><?php echo __('Password Expires')?></th>
                             <th><?php echo __('Password Changeable')?></th>
                             <th><?php echo __('Password Required')?></th>
-                            <th><?php echo __('SID')?></th>
+                            <th><?php echo __('SID / ID')?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1051,7 +1051,8 @@ function show_software($type, $software) {
                 <table cellspacing="1" class="tablesorter" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __('Group Name')?></th>
+                            <th><?php echo __('SID / ID')?></th>
+                            <th><?php echo __('Name')?></th>
                             <th><?php echo __('Description')?></th>
                             <th style='width:320px;'><?php echo __('Members')?></th>
                         </tr>
@@ -1061,6 +1062,7 @@ function show_software($type, $software) {
                     <?php #$group_members = str_replace(", ", " <br />", $key->members); ?>
                     <?php #$group_members = mb_substr($group_members, 0, mb_strlen($group_members)-1); ?>
                     <tr>
+                        <td><?php echo print_something($key->sid)?></td>
                         <td><?php echo print_something($key->name)?></td>
                         <td><?php echo print_something($key->description)?></td>
                         <td><?php echo $key->members?></td>
