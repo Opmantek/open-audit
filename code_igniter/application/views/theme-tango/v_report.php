@@ -105,7 +105,7 @@ foreach ($query as $row) {
                     if ($row->$column_variable_name == '') {
                         $row->$column_variable_name = '-';
                     }
-                    if ($column_variable_name_sec == 'system_id' or $column_variable_name_sec == 'linked_sys') {
+                    if (($column_variable_name_sec == 'system_id' or $column_variable_name_sec == 'linked_sys') and ($column_variable_name == 'hostname')) {
                         $column_link = str_replace('$group_id', $group_id, $column_link);
                         echo "\t\t\t<td align=\"$column_align\"><a class=\"SystemPopupTrigger\" rel=\"".htmlentities($row->$column_variable_name_sec)."\" href=\"".site_url().htmlentities($column_link).htmlentities($row->$column_variable_name_sec)."\">".htmlentities($row->$column_variable_name)."</a></td>\n";
                     } else {
