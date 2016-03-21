@@ -1913,6 +1913,38 @@ done
 echo "	</user>" >> "$xml_file"
 
 
+##################################
+# GROUP SECTION                  #
+##################################
+IFS=$ORIGIFS
+if [ "$debugging" -gt "0" ]; then
+	echo "Group Info"
+fi
+echo "	<user_group>" >> "$xml_file"
+for line in $(getent group); do
+	name=$(echo "$line" | cut -d: -f1)
+	sid=$(echo "$line" | cut -d: -f3)
+	members=$(echo "$line" | cut -d: -f4)
+	
+	for user in $(cat /etc/passwd); do
+		gid=$(echo "$user" | cut -d: -f4)
+		if [ "$gid" = "$sid" ]; then
+			extra_user=$(echo "$user" | cut -d: -f1)
+			members=$(echo "$extra_user","$members")
+		fi
+	done
+	members=$(echo "$members" | sed 's/,$//')
+
+	echo "		<item>" >> $xml_file
+	echo "			<sid>$(escape_xml "$sid")</sid>" >> $xml_file
+	echo "			<name>$(escape_xml "$name")</name>" >> $xml_file
+	echo "			<members>$(escape_xml "$members")</members>" >> $xml_file
+	echo "		</item>" >> $xml_file
+done
+echo "	</user_group>" >> "$xml_file"
+
+
+
 ########################################################
 # SOFTWARE SECTION                                     #
 ########################################################

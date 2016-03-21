@@ -3349,6 +3349,7 @@ if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <>
 					member_domain = group_domain(ubound(group_domain)-1)
 					group_members = group_members & member.name & "@" & member_domain & ", "
 				Next
+				group_members = LEFT(group_members, (LEN(group_members)-2))
 				result.WriteText "			<members>" & escape_xml(group_members) & "</members>" & vbcrlf
 				result.WriteText "		</item>" & vbcrlf
 			End If

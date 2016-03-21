@@ -1058,12 +1058,12 @@ function show_software($type, $software) {
                     </thead>
                     <tbody>
                     <?php foreach ($user_group as $key): ?>
-                    <?php $group_members = str_replace(", ", " <br />", $key->members); ?>
-                    <?php $group_members = mb_substr($group_members, 0, mb_strlen($group_members)-1); ?>
+                    <?php #$group_members = str_replace(", ", " <br />", $key->members); ?>
+                    <?php #$group_members = mb_substr($group_members, 0, mb_strlen($group_members)-1); ?>
                     <tr>
                         <td><?php echo print_something($key->name)?></td>
                         <td><?php echo print_something($key->description)?></td>
-                        <td><?php echo $group_members?></td>
+                        <td><?php echo $key->members?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>
