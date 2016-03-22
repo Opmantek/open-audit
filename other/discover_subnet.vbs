@@ -310,7 +310,7 @@ for each host in hosts_in_subnet
     Do Until objExecObject.StdOut.AtEndOfStream
         line = objExecObject.StdOut.ReadLine
 
-        if instr(lcase(line), "Host is up") then
+        if instr(lcase(line), "host is up") then
             host_is_up = "true"
         end if
 
@@ -334,16 +334,30 @@ for each host in hosts_in_subnet
             end if
         end if
 
-        if instr(lcase(line), "161/udp open") then
-            snmp_status = "true"
+        if instr(lcase(line), "22/tcp") then
+            if instr(lcase(line), "open") then
+                ssh_status = "true"
+            end if
         end if
 
-        if instr(lcase(line), "22/tcp open") then
-            ssh_status = "true"
+        if instr(lcase(line), "135/tcp") then
+            if instr(lcase(line), "open") then
+                wmi_status = "true"
+            end if
         end if
+    Loop
 
-        if instr(lcase(line), "135/tcp open") then
-            wmi_status = "true"
+    command = nmap_path & " -n -sU -p161 --host-timeout 90 " & host
+    execute_command()
+    Do Until objExecObject.Status = 0
+        WScript.Sleep 100
+    Loop
+    Do Until objExecObject.StdOut.AtEndOfStream
+        line = objExecObject.StdOut.ReadLine
+        if instr(lcase(line), "161/udp") then
+            if instr(lcase(line), "open") then
+                snmp_status = "true"
+            end if
         end if
     Loop
 

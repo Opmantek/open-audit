@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <report>
 	<details>
-		<report_name>Changes - Netstat Ports</report_name>
-		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT change_log.system_id, system.hostname, change_log.id, change_log.timestamp, change_log.db_table, change_log.db_action, change_log.details, system.man_ip_address, system.icon, system.type FROM change_log LEFT JOIN system ON (change_log.system_id = system.system_id) LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) WHERE oa_group_sys.group_id = @group AND change_log.ack_time = '0000-00-00 00:00:00' AND db_table = 'netstat']]></report_sql>
-		<report_view_file>v_report_alerts</report_view_file>
+		<report_name>Specific Network</report_name>
+		<report_display_in_menu>n</report_display_in_menu>
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_icon, system.man_type, system.description, system.os_family, ip.ip AS man_ip_address, ip.network FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE oa_group_sys.group_id = @group AND ip.network = (SELECT network FROM ip WHERE id = ? LIMIT 1)]]></report_sql>
+		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
-		<report_sort_column>0</report_sort_column>
-		<report_description>Any changes created by newly found, no longer present or changed netstat ports.</report_description>
+		<report_sort_column>5</report_sort_column>
+		<report_description>A specific networks devices.</report_description>
 	</details>
 	<columns>
 		<column>
 			<column_order>0</column_order>
-			<column_name>Timestamp</column_name>
-			<column_variable>timestamp</column_variable>
-			<column_type>text</column_type>
+			<column_name>Icon</column_name>
+			<column_variable>man_icon</column_variable>
+			<column_type>image</column_type>
 			<column_link></column_link>
-			<column_secondary></column_secondary>
+			<column_secondary>man_type</column_secondary>
 			<column_ternary></column_ternary>
-			<column_align></column_align>
+			<column_align>center</column_align>
 		</column>
 		<column>
 			<column_order>1</column_order>
-			<column_name>IP Address</column_name>
-			<column_variable>man_ip_address</column_variable>
-			<column_type>ip_address</column_type>
+			<column_name>Type</column_name>
+			<column_variable>man_type</column_variable>
+			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
@@ -43,7 +43,7 @@
 		</column>
 		<column>
 			<column_order>3</column_order>
-			<column_name>System Description</column_name>
+			<column_name>Description</column_name>
 			<column_variable>man_description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
@@ -53,8 +53,8 @@
 		</column>
 		<column>
 			<column_order>4</column_order>
-			<column_name>Details</column_name>
-			<column_variable>details</column_variable>
+			<column_name>OS Family</column_name>
+			<column_variable>os_family</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -63,13 +63,23 @@
 		</column>
 		<column>
 			<column_order>5</column_order>
+			<column_name>IP</column_name>
+			<column_variable>man_ip_address</column_variable>
+			<column_type>ip_address</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>6</column_order>
 			<column_name>Tags</column_name>
 			<column_variable>tag</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
-			<column_align></column_align>
+			<column_align>center</column_align>
 		</column>
 	</columns>
 </report>

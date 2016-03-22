@@ -1615,7 +1615,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 echo "	<disk>" >> "$xml_file"
 partition_result=""
-for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null:759); do
+for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 
 	hard_drive_caption="/dev/$disk"
 	hard_drive_index="$disk"
@@ -1911,6 +1911,38 @@ grep -v '^ *#' < /etc/passwd | while IFS= read -r line; do
 	echo "$line" | awk -F: ' { print "\t\t<item>\n" "\t\t\t<name>"$1"</name>\n" "\t\t\t<full_name><![CDATA["$5"]]></full_name>\n" "\t\t\t<sid>"$3"</sid>\n" "\t\t</item>" } ' >> "$xml_file"
 done
 echo "	</user>" >> "$xml_file"
+
+
+##################################
+# GROUP SECTION                  #
+##################################
+IFS=$ORIGIFS
+if [ "$debugging" -gt "0" ]; then
+	echo "Group Info"
+fi
+echo "	<user_group>" >> "$xml_file"
+for line in $(getent group); do
+	name=$(echo "$line" | cut -d: -f1)
+	sid=$(echo "$line" | cut -d: -f3)
+	members=$(echo "$line" | cut -d: -f4)
+	
+	for user in $(cat /etc/passwd); do
+		gid=$(echo "$user" | cut -d: -f4)
+		if [ "$gid" = "$sid" ]; then
+			extra_user=$(echo "$user" | cut -d: -f1)
+			members=$(echo "$extra_user","$members")
+		fi
+	done
+	members=$(echo "$members" | sed 's/,$//')
+
+	echo "		<item>" >> $xml_file
+	echo "			<sid>$(escape_xml "$sid")</sid>" >> $xml_file
+	echo "			<name>$(escape_xml "$name")</name>" >> $xml_file
+	echo "			<members>$(escape_xml "$members")</members>" >> $xml_file
+	echo "		</item>" >> $xml_file
+done
+echo "	</user_group>" >> "$xml_file"
+
 
 
 ########################################################

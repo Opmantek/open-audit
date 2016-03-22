@@ -1,40 +1,30 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <report>
 	<details>
-		<report_name>Installed - Flash</report_name>
+		<report_name>Standard Users</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, software.name, software.version, software.publisher, software.url, software.email, software.id, software.type, system.icon, system.man_os_family FROM software LEFT JOIN system ON (software.system_id = system.system_id AND software.current = 'y' AND software.name LIKE '%Flash Player%') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, user_group.members, user_group.name FROM user_group LEFT JOIN system ON (user_group.system_id = system.system_id AND user_group.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.system_id) WHERE oa_group_sys.group_id = @group AND (user_group.name = "Users" OR user_group.name = "Guests") AND user_group.members > '']]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
 		<report_sort_column>0</report_sort_column>
-		<report_description>Name, software name, software version where software_name like flash player.</report_description>
+		<report_description>Name, group name, group members.</report_description>
 	</details>
 	<columns>
 		<column>
 			<column_order>0</column_order>
 			<column_name>System Name</column_name>
 			<column_variable>hostname</column_variable>
-			<column_table>system</column_table>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
 			<column_secondary>system_id</column_secondary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>1</column_order>
-			<column_name>Software Name</column_name>
-			<column_variable>name</column_variable>
-			<column_type>link</column_type>
-			<column_link>/report/specific_software/$group_id/</column_link>
-			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>1</column_order>
-			<column_name>Version</column_name>
-			<column_variable>version</column_variable>
+			<column_name>Name</column_name>
+			<column_variable>name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -43,8 +33,8 @@
 		</column>
 		<column>
 			<column_order>2</column_order>
-			<column_name>Installs</column_name>
-			<column_variable>count</column_variable>
+			<column_name>Members</column_name>
+			<column_variable>members</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
