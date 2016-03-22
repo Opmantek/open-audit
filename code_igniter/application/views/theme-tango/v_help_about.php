@@ -48,7 +48,9 @@ if (php_uname('s') == "Windows NT") {
 $upgrade_message = "";
 if ($this->config->item('display_version') != $this->config->item('web_display_version') and ($this->user->user_admin == 'y')) {
     $upgrade_message = "<span style='font-size:20px;'>Please <a style='color:red; text-decoration:underline;' href='".site_url()."/admin/upgrade'>click here</a> to upgrade your database.</span>";
-    $upgrade_message .= "<p style='font-size:18px; font-style:italic;'><span style='font-wieght:bold;'>NOTE</span>- If you have a large dataset, the upgrade to 1.10 may take a while. Please do not refresh the page. Watch your browser page indicator to determine when the upgrade has completed. Do not press the 'stop' button on your browser.<br />It may take a while, but it will complete.</p>";
+    if ($this->config->item('internal_version') < 20160104) {
+        $upgrade_message .= "<p style='font-size:18px; font-style:italic;'><span style='font-wieght:bold;'>NOTE</span>- If you have a large dataset, the upgrade to 1.10 may take a while. Please do not refresh the page. Watch your browser page indicator to determine when the upgrade has completed. Do not press the 'stop' button on your browser.<br />It may take a while, but it will complete.</p>";
+    }
 }
 if (($this->config->item('display_version') != $this->config->item('web_display_version')) and ($this->user->user_admin != 'y')) {
     $upgrade_message = "<br /><span style='color: blue;'>The database version and web version are inconsistent. <br />Please have an Open-AudIT administrator logon and upgrade the database.</span>";
