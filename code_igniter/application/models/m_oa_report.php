@@ -41,7 +41,7 @@ class M_oa_report extends MY_Model
 
     public function list_reports_in_menu()
     {
-        $sql = "SELECT report_id, report_name, '' as report_url FROM oa_report WHERE report_display_in_menu = 'y' and report_view_file != 'v_help_oae' ORDER BY report_name";
+        $sql = "SELECT report_id, report_name, '' as report_url, report_description FROM oa_report WHERE report_display_in_menu = 'y' and report_view_file != 'v_help_oae' ORDER BY report_name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         return($query->result());
@@ -60,7 +60,8 @@ class M_oa_report extends MY_Model
         $sql = "INSERT INTO
 					oa_report
 				SET
-					report_name = ?,
+                    report_name = ?,
+                    report_description = ?,
 					report_sql = ?,
 					report_display_sql = ?,
 					report_view_file = ?,
@@ -70,6 +71,7 @@ class M_oa_report extends MY_Model
 					report_display_in_menu = ?";
         $sql = $this->clean_sql($sql);
         $data = array(    "$input->report_name",
+                        "$input->report_description",
                         "$input->report_sql",
                         "$input->report_display_sql",
                         "$input->report_view_file",
@@ -272,11 +274,13 @@ class M_oa_report extends MY_Model
             # TODO - log something here
             return;
         }
-        $sql = "INSERT INTO oa_report SET report_name = ?, report_sql = ?, report_display_sql = ?, report_view_file = ?, report_view_contents = ?, report_processing = ?, report_sort_column = ?, report_display_in_menu = ?";
+        $sql = "INSERT INTO oa_report SET report_name = ?, report_description = ?, report_sql = ?, report_display_sql = ?, report_view_file = ?, report_view_contents = ?, report_processing = ?, report_sort_column = ?, report_display_in_menu = ?";
         $sql = $this->clean_sql($sql);
-        $data = array((string)$report_definition->details->report_name, (string)$report_definition->details->report_sql, (string)$report_definition->details->report_display_sql,
-                        (string)$report_definition->details->report_view_file, (string)$report_definition->details->report_view_contents, (string)$report_definition->details->report_processing,
-                        (string)$report_definition->details->report_sort_column, (string)$report_definition->details->report_display_in_menu, );
+        $data = array((string)$report_definition->details->report_name, (string)$report_definition->details->report_description, 
+                (string)$report_definition->details->report_sql, (string)$report_definition->details->report_display_sql,
+                (string)$report_definition->details->report_view_file, (string)$report_definition->details->report_view_contents,
+                (string)$report_definition->details->report_processing, (string)$report_definition->details->report_sort_column,
+                (string)$report_definition->details->report_display_in_menu, );
         $query = $this->db->query($sql, $data);
          #echo "<pre>\n"; print_r($this->db->last_query()); echo "</pre>\n";
 
