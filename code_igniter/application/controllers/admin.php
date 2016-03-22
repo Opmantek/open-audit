@@ -4829,7 +4829,32 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
+        if (($db_internal_version < '20160401') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.12.4
 
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.12.4 commenced';
+            stdlog($log_details);
+
+            $this->load->helper('report_helper');
+            refresh_report_definitions();
+
+            $sql = array();
+            $sql[] = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
+            $sql[] = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
+            $sql[] = "UPDATE oa_config SET config_value = '20160401' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12.4' WHERE config_name = 'display_version'";
+
+            foreach ($sql as $this_query) {
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
+
+            $log_details->message = 'Upgrade database to 1.12.4 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
 
 
         $this->m_oa_config->load_config();
