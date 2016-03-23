@@ -844,7 +844,6 @@ class main extends MY_Controller
         $this->load->model("m_attachment");
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
-        $this->load->model("m_printer");
 
         $this->load->model("m_devices_components");
         // $this->data['additional_fields_data'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);

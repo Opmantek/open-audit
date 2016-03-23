@@ -198,7 +198,6 @@ class System extends CI_Controller
         echo "<a href='" . base_url() . "index.php/system'>Back to input page</a><br />\n";
         echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
         $this->load->model('m_change_log');
-        $this->load->model('m_printer');
         $this->load->model('m_audit_log');
 
         $this->load->model('m_devices_components');
