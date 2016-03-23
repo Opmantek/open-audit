@@ -39,7 +39,7 @@
 if (count($processor) > 0 or count($memory) > 0 or count($bios) > 0 or
     count($motherboard) > 0 or count($network) > 0 or count($scsi) > 0 or
     count($hard_drive) > 0 or count($optical) > 0 or count($video) > 0 or
-    count($monitor) > 0 or count($sound) > 0 or count($printer) > 0) {
+    count($monitor) > 0 or count($sound) > 0) {
     ?>
 
 <li class="parent"><a href="#">&nbsp;&nbsp;&nbsp;<?php echo __('Hardware')?></a>
@@ -55,7 +55,6 @@ if (count($processor) > 0 or count($memory) > 0 or count($bios) > 0 or
 	 	<?php if (count($video) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_background.png" /><a href="#" id="toggle_hardware_video"><?php echo __('Video')?></a></li> <?php } ?>
 	 	<?php if (count($monitor) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_monitor.png" /><a href="#" id="toggle_hardware_monitor"><?php echo __('Monitor')?></a></li> <?php } ?>
 	 	<?php if (count($sound) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_sound.png" /><a href="#" id="toggle_hardware_sound"><?php echo __('Sound')?></a></li> <?php } ?>
-	 	<?php if (count($printer) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_printer.png" /><a href="#" id="toggle_hardware_printer"><?php echo __('Printers')?></a></li> <?php } ?>
 	</ul>
 </li>
 <?php }
