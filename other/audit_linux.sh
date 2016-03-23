@@ -542,18 +542,23 @@ fi
 
 # Get the hostname & DNS domain
 system_hostname=""
-if [ -f /etc/hostname ]; then
-	system_hostname=$(cat /etc/hostname 2>/dev/null)
-else
-	system_hostname=$(hostname -s 2>/dev/null)
-fi
+system_hostname=$(hostname -s 2>/dev/null)
+system_domain=$(hostname -d 2>/dev/null)
 
-if [ -z "$system_hostname" ]; then
-	system_hostname=$(hostname 2>/dev/null)
-	system_domain=""
-else
-	system_domain=$(hostname -d 2>/dev/null)
-fi
+# if [ -f /etc/hostname ]; then
+# 	system_hostname=$(cat /etc/hostname 2>/dev/null)
+# else
+# 	system_hostname=$(hostname -s 2>/dev/null)
+# fi
+
+# if [ -z "$system_hostname" ]; then
+# 	system_hostname=$(hostname 2>/dev/null)
+# 	system_domain=""
+# else
+# 	system_domain=$(hostname -d 2>/dev/null)
+# fi
+
+
 
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
@@ -1871,11 +1876,13 @@ echo "	<variable>" >> "$xml_file"
 for variable in $(env); do
 	name=$( echo "$variable" | cut -d= -f1 )
 	value=${variable#*=}
+	if [ "$name" != "XDG_SESSION_ID" ] && [ "$name" != "SSH_CLIENT" ] && [ "$name" != "SSH_CONNECTION" ] && [ "$name" != "SSH_TTY" ]; then
 		echo "		<item>" >> "$xml_file"
 		echo "			<program>environment</program>" >> "$xml_file"
 		echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
 		echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
 		echo "		</item>" >> "$xml_file"
+	fi
 done
 echo "	</variable>" >> "$xml_file"
 
