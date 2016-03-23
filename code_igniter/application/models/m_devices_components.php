@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * @version 1.12.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -185,7 +185,7 @@ class M_devices_components extends MY_Model
                 $match_columns = array('name', 'hard_drive_index', 'mount_point', 'size');
         }
         if ($table == 'print_queue') {
-                $match_columns = array('system_key');
+                $match_columns = array('device');
         }
         if ($table == 'processor') {
                 $match_columns = array('description');

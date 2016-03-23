@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * @version 1.12.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -899,7 +899,6 @@ class main extends MY_Controller
         $this->data['ip'] = $this->m_devices_components->read($this->data['id'], 'y', 'ip');
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['orgs'] = $this->m_oa_org->get_all_orgs();
-        $this->data['printer'] = $this->m_printer->get_system_printer($this->data['id']);
         $this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
         $this->data['system_id'] = $this->data['id'];
         $this->data['system_location'] = $this->m_oa_location->get_system_location($this->data['id']);

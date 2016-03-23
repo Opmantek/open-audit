@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * @version 1.12.4
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -4843,6 +4843,15 @@ class admin extends MY_Controller
             $sql = array();
             $sql[] = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
             $sql[] = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
+            $sql[] = "ALTER TABLE print_queue CHANGE system_key device varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE print_queue DROP ip";
+            $sql[] = "ALTER TABLE print_queue DROP type";
+            $sql[] = "ALTER TABLE print_queue ADD type varchar(100) NOT NULL DEFAULT '' AFTER duplex";
+            $sql[] = "ALTER TABLE print_queue CHANGE connection_status status varchar(100) NOT NULL DEFAULT '' AFTER type";
+            $sql[] = "ALTER TABLE print_queue ADD capabilities varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE print_queue ADD driver varchar(200) NOT NULL DEFAULT ''";
+
+
             $sql[] = "UPDATE oa_config SET config_value = '20160401' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.4' WHERE config_name = 'display_version'";
 

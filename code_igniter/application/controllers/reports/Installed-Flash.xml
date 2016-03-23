@@ -41,15 +41,5 @@
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
-		<column>
-			<column_order>2</column_order>
-			<column_name>Installs</column_name>
-			<column_variable>count</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
 	</columns>
 </report>
