@@ -397,7 +397,7 @@ class System extends CI_Controller
         $this->m_devices_components->process_component('optical', $details, $xml->optical, $display);
         $this->m_devices_components->process_component('pagefile', $details, $xml->pagefile, $display);
         $this->m_devices_components->process_component('partition', $details, $xml->partition, $display);
-        $this->m_devices_components->process_component('print_queue', $details, $xml->printer, $display);
+        $this->m_devices_components->process_component('print_queue', $details, $xml->print_queue, $display);
         $this->m_devices_components->process_component('processor', $details, $xml->processor, $display);
         $this->m_devices_components->process_component('route', $details, $xml->route, $display);
         $this->m_devices_components->process_component('scsi', $details, $xml->scsi, $display);
@@ -420,12 +420,6 @@ class System extends CI_Controller
             if ($child->getName() === 'audit_wmi_fail') {
                 $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
                 $this->m_audit_log->update('wmi_fails', $xml->audit_wmi_fail, $details->system_id, $details->last_seen);
-            }
-            if ($child->getName() === 'printers') {
-                $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
-                foreach ($xml->printers->printer as $input) {
-                    $this->m_printer->process_printer($input, $details);
-                }
             }
         }
 
@@ -458,15 +452,8 @@ class System extends CI_Controller
         $this->m_devices_components->set_initial_address($details->system_id);
 
         $this->load->model('m_oa_group');
-        // update any tags for new printers
-        $this->m_audit_log->update('debug', 'network printers', $details->system_id, $details->last_seen);
-        $network_printers = $this->m_printer->get_new_network_printer($details);
-        if (count($network_printers) > 0) {
-            foreach ($network_printers as $printer) {
-                $this->m_oa_group->update_system_groups($printer);
-            }
-        }
-        // Finally, update any groups for this system if config item is set
+
+        // Update any groups for this system if config item is set
         $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
         if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
             # don't run the update group routine

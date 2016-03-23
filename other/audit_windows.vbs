@@ -2752,403 +2752,206 @@ if (skip_printer = "n") then
 	' do nothing with printers - some error occured trying to query win32_printer
 	else
 	For Each objItem In colItems
-	connection_status = ""
-	printer_port = objItem.PortName
-	printer_ip_address = ""
-	printer_hostname = ""
-	printer_system_key = ""
-	printer_manufacturer = ""
-	printer_share_name = ""
-	printer_uuid = ""
-	if debugging > "1" then wscript.echo "Driver Name: " & objItem.DriverName end if
-	if (   (Instr(1, objItem.DriverName, "ActiveFax", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "AdobePS Acrobat Distiller", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Amyuni Document Converter", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Autodesk DWFWriter", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Black Ice", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Canon DM Driver", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Canon iW Image Driver", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Citrix Universal Printer", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Document Publisher Plus Printer Driver", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "DocuWorks Printer Driver", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "e-BRIDGE Viewer", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Fax", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "FRx Document Image Writer Driver", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Generic / Text Only", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "HP Universal Printing", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Journal Note Writer Driver", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "MacromediaFlashPaper", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Microsoft", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "mimio Print Capture Driver", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Nitro Reader", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Nuance Image Printer Driver", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "PaperPort", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "PCL6 Driver for Universal Print", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "PS Driver for Universal Print", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "PDF", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "SnagIt", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Snapshot 70 Driver", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "OneNote", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "Therefore", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "TIFF Image Printer", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "TP Output Gateway", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "WINPRINT-Kyocera", vbTextCompare)) _
-	or (Instr(1, objItem.DriverName, "WebEx", vbTextCompare)) _
-	or (Instr(1, objItem.Caption, "PDF", vbTextCompare)) _
-	or (InStr(lcase(objItem.PortName), "ts0") = 1) _
-	or (InStr(lcase(objItem.PortName), "webex") = 1) _
-	or (InStr(lcase(objItem.PortName), "file") = 1) _
-	or (InStr(objItem.PortName, "\\") = 1) _
-	or (InStr(lcase(objItem.PortName), "oletoadi") = 1) _
-	or (InStr(lcase(objItem.PortName), "client/") = 1) _
-	or (InStr(lcase(objItem.PortName), "client:") = 1) _
-	or (InStr(lcase(objItem.PortName), "lpt1:") = 1) _
-	or (InStr(1, lcase(objItem.DeviceID), "(copy " , vbTextCompare)) _
-	) then
-	' software printer or some other non-local or non-network printer - do nothing for now
-	' LPT1: is being excluded because this appears when a USB multi-function printer is used.
-	' Most new PCs don't even have a printer port anymore.
-	' Yes, it may not be 100% exact, but it's good enough for me :-)
-	else
-	if debugging > "2" then
-	wscript.echo
-	wscript.echo "Port: " & objItem.PortName
-	wscript.echo "IP: " & printer_ip_address
-	end if
-	valid = ""
 
-	' first attempt - regular IP?
-	if ((printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then
-	if debugging > "1" then wscript.echo "First attempt to detect if PortName matches an IP address" end if
-	aTmp = split(objItem.PortName, ".")
-	' There must be 4 fields in a valid IP
-	if UBound(aTmp) = 3 then
-	valid = True
-	for each field in aTmp
-	if (isnumeric(field)) then
-	if (cint(field) > 255) then valid = False end if
-	else
-	valid = False
-	end if
-	next
-	else
-	valid = False
-	end if
-	if valid = True then printer_ip_address = objItem.PortName end if
-	if debugging > "2" then wscript.echo "0 Resulting IP is " & printer_ip_address end if
-	end if
+		if (   (Instr(1, objItem.DriverName, "ActiveFax", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "AdobePS Acrobat Distiller", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Amyuni Document Converter", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Autodesk DWFWriter", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Black Ice", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Canon DM Driver", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Canon iW Image Driver", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Citrix Universal Printer", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Document Publisher Plus Printer Driver", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "DocuWorks Printer Driver", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "e-BRIDGE Viewer", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Fax", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "FRx Document Image Writer Driver", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Generic / Text Only", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "HP Universal Printing", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Journal Note Writer Driver", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "MacromediaFlashPaper", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Microsoft", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "mimio Print Capture Driver", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Nitro Reader", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Nuance Image Printer Driver", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "PaperPort", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "PCL6 Driver for Universal Print", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "PS Driver for Universal Print", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "PDF", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "SnagIt", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Snapshot 70 Driver", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "OneNote", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "Therefore", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "TIFF Image Printer", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "TP Output Gateway", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "WINPRINT-Kyocera", vbTextCompare)) _
+		or (Instr(1, objItem.DriverName, "WebEx", vbTextCompare)) _
+		or (Instr(1, objItem.Caption, "PDF", vbTextCompare)) _
+		or (InStr(lcase(objItem.PortName), "ts0") = 1) _
+		or (InStr(lcase(objItem.PortName), "webex") = 1) _
+		or (InStr(lcase(objItem.PortName), "file") = 1) _
+		or (InStr(objItem.PortName, "\\") = 1) _
+		or (InStr(lcase(objItem.PortName), "oletoadi") = 1) _
+		or (InStr(lcase(objItem.PortName), "client/") = 1) _
+		or (InStr(lcase(objItem.PortName), "client:") = 1) _
+		or (InStr(lcase(objItem.PortName), "lpt1:") = 1) _
+		or (InStr(lcase(objItem.PortName), "tpvm:") = 1) _
+		or (InStr(1, lcase(objItem.DeviceID), "(copy " , vbTextCompare)) _
+		) then
+		' software printer or some other non-local or non-network printer - do nothing for now
+		' LPT1: is being excluded because this appears when a USB multi-function printer is used.
+		' Most new PCs don't even have a printer port anymore.
+		' Yes, it may not be 100% exact, but it's good enough for me :-)
+		else
+			if debugging > "2" then
+				wscript.echo "Printer Driver Name: " & objItem.DriverName
+				wscript.echo "Printer Port: " & objItem.PortName
+			end if
 
-	' second attempt - checking for
-	' 123.123.123.123:something_else and also
-	' IP_123.123.123.123
-	valid = ""
-	if ((printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then
-	if debugging > "1" then wscript.echo "Not a valid IP address so far. Using PortName." end if
-	aTmp = split(objItem.PortName, ".")
-	if ubound(aTmp) = 3 then
-	first_octet = aTmp(0)
-	if (instr(aTmp(0), "IP_") = 1) then
-	cTmp = split(aTmp(0), "_")
-	if ((isnumeric(cTmp(1))) and (cint(cTmp(1)) < 256) and (cint(cTmp(1) >= 0))) then first_octet = cTmp(1) end if
-	end if
-	if (not(isnumeric(first_octet))) then valid = False end if
+			capabilities = join(objItem.CapabilityDescriptions, ", ")
+			printer_color = "False"
+			if (instr(1, capabilities, "Color", vbTextCompare) > 0) then
+				printer_color = "True"
+			end if
+			printer_duplex = "False"
+			if (instr(1, capabilities, "Duplex", vbTextCompare) > 0) then
+				printer_duplex = "True"
+			end if
 
-	second_octet = aTmp(1)
-	if (not(isnumeric(second_octet))) then valid = False end if
+			printer_model = replace(objItem.DriverName, " PCL 5e", "")
+			printer_model = replace(printer_model, " PCL 5", "")
+			printer_model = replace(printer_model, " PCL5", "")
+			printer_model = replace(printer_model, " PCL 6e", "")
+			printer_model = replace(printer_model, " PCL 6", "")
+			printer_model = replace(printer_model, " PCL6", "")
+			printer_model = replace(printer_model, " PCL", "")
+			printer_model = replace(printer_model, " PS", "")
+			printer_manufacturer = ""
+			if (instr(1, printer_model, "Aficio", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
+			if (instr(1, printer_model, "AGFA", vbTextCompare) = 1) then printer_manufacturer = "Agfa" end if
+			if (instr(1, printer_model, "Apple Laser", vbTextCompare) = 1) then printer_manufacturer = "Apple" end if
+			if (instr(1, printer_model, "Brother", vbTextCompare) = 1) then printer_manufacturer = "Brother" end if
+			if (instr(1, printer_model, "Canon", vbTextCompare) = 1) then printer_manufacturer = "Canon" end if
+			if (instr(1, printer_model, "Color-MFPe", vbTextCompare) = 1) then printer_manufacturer = "Toshiba" end if
+			if (instr(1, printer_model, "Datamax", vbTextCompare) = 1) then printer_manufacturer = "Datamax" end if
+			if (instr(1, printer_model, "Dell", vbTextCompare) = 1) then printer_manufacturer = "Dell" end if
+			if (instr(1, printer_model, "DYMO", vbTextCompare) = 1) then printer_manufacturer = "Dymo" end if
+			if (instr(1, printer_model, "EasyCoder", vbTextCompare) = 1) then printer_manufacturer = "Intermec" end if
+			if (instr(1, printer_model, "Epson", vbTextCompare) = 1) then printer_manufacturer = "Epson" end if
+			if (instr(1, printer_model, "Fiery", vbTextCompare) = 1) then printer_manufacturer = "Konica Minolta" end if
+			if (instr(1, printer_model, "Fuji", vbTextCompare) = 1) then printer_manufacturer = "Fuji" end if
+			if (instr(1, printer_model, "FX ApeosPort", vbTextCompare) = 1) then printer_manufacturer = "Fuji" end if
+			if (instr(1, printer_model, "FX DocuCentre", vbTextCompare) = 1)then printer_manufacturer = "Fuji" end if
+			if (instr(1, printer_model, "FX DocuPrint", vbTextCompare) = 1) then printer_manufacturer = "Fuji" end if
+			if (instr(1, printer_model, "FX DocuWide", vbTextCompare) = 1)  then printer_manufacturer = "Fuji" end if
+			if (instr(1, printer_model, "FX Document", vbTextCompare) = 1) then printer_manufacturer = "Xerox" end if
+			if (instr(1, printer_model, "GelSprinter", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
+			if (instr(1, printer_model, "HP ", vbTextCompare) = 1) then printer_manufacturer = "Hewlett Packard" end if
+			if (instr(1, printer_model, "Konica", vbTextCompare) = 1) then printer_manufacturer = "Konica Minolta" end if
+			if (instr(1, printer_model, "Kyocera", vbTextCompare) = 1) then printer_manufacturer = "Kyocera Mita" end if
+			if (instr(1, printer_model, "LAN-Fax", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
+			if (instr(1, printer_model, "Lexmark", vbTextCompare) = 1) then printer_manufacturer = "Lexmark" end if
+			if (instr(1, printer_model, "Mita", vbTextCompare) = 1) then printer_manufacturer = "Kyocera-Mita" end if
+			if (instr(1, printer_model, "Muratec", vbTextCompare) = 1) then printer_manufacturer = "Muratec" end if
+			if (instr(1, printer_model, "Oce", vbTextCompare) = 1) then printer_manufacturer = "Oce" end if
+			if (instr(1, printer_model, "Oki", vbTextCompare) = 1) then printer_manufacturer = "Oki" end if
+			if (instr(1, printer_model, "Panaboard", vbTextCompare) = 1) then printer_manufacturer = "Panasonic" end if
+			if (instr(1, printer_model, "Ricoh", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
+			if (instr(1, printer_model, "Samsung", vbTextCompare) = 1) then printer_manufacturer = "Samsung" end if
+			if (instr(1, printer_model, "Sharp", vbTextCompare) = 1) then printer_manufacturer = "Sharp" end if
+			if (instr(1, printer_model, "SP 3", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
+			if (instr(1, printer_model, "Tektronix", vbTextCompare) = 1) then printer_manufacturer = "Tektronix" end if
+			if (instr(1, printer_model, "Toshiba", vbTextCompare) = 1) then printer_manufacturer = "Toshiba" end if
+			if (instr(1, printer_model, "Xerox", vbTextCompare) = 1) then printer_manufacturer = "Xerox" end if
+			if (instr(1, printer_model, "ZDesigner", vbTextCompare) = 1) then printer_manufacturer = "Zebra" end if
+			if (instr(1, printer_model, "Zebra", vbTextCompare) = 1) then printer_manufacturer = "Zebra" end if
 
-	third_octet = aTmp(2)
-	if (not(isnumeric(third_octet))) then valid = False end if
+			description = ""
+			on error resume next
+				description = objItem.Comment
+			On Error Goto 0
 
-	last_octet = aTmp(3)
-	if (not(isnumeric(last_octet))) then
-	bTmp = split(aTmp(3), ":")
-	if (isnumeric(bTmp(0))) then
-	if ((cint(bTmp(0)) < 256) and (cint(bTmp(0) >= 0))) then last_octet = bTmp(0) end if
-	for i = 0 to 2
-	if (isnumeric(aTmp(i))) then
-	if (cint(aTmp(i)) > 255) then vTmp = False end if
-	else
-	vTmp = False
-	end if
-	next
-	if vTmp <> False then
-	printer_ip_address = aTmp(0) & "." & aTmp(1) & "." & aTmp(2) & "." & bTmp(0)
-	end if
-	end if
-	end if
-	if (not(isnumeric(last_octet))) then valid = False end if
-
-	if valid <> False then printer_ip_address = first_octet & "." & second_octet & "." & third_octet & "." & last_octet
-	end if 'ubound(aTmp)
-	if debugging > "1" then wscript.echo "1 Resulting IP is " & printer_ip_address end if
-	end if ' printer_ip_address > ""
-
-	if ((printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then
-	' going to assume the printer is attached via IP to a name, not an IP address
-	if debugging > "1" then wscript.echo "Assuming printer is attached by network to a hostname, not an IP" end if
-	printer_hostname = objItem.PortName
-	end if
-
-	if ((printer_hostname > "") and (printer_ip_address = "") and ((instr(objItem.PortName, "USB")) = 0) and ((instr(objItem.PortName, "DOT")) = 0) and ((instr(objItem.PortName, "COM")) = 0)) then
-	' this is a hostname
-	if debugging > "1" then wscript.echo "Printer has a hostname but no IP. Running NSLookup" end if
-	Set objExec = objShell.Exec( "nslookup " & printer_hostname )
-	Dim objStream
-	k = ""
-	For Each objStream In Array( objExec.StdOut, objExec.StdErr )
-	Do Until objStream.AtEndOfStream
-	line = objStream.ReadLine()
-	if (InStr(line, "Address") = 1) then
-	i = split(line, ":")
-	k = ltrim(i(1))
-	end if
-	if (InStr(line, "can't find") > 1) then
-	k = ""
-	end if
-	Loop
-	Next
-	if (k <> "") then
-	printer_ip_address = k
-	end if
-	if debugging > "1" then wscript.echo "2 Resulting IP is " & printer_ip_address end if
-	end if
+			MarkingTechnology = 2
+			printer_type = "Unknown"
+			on error resume next
+				MarkingTechnology = int(objItem.MarkingTechnology)
+			On Error Goto 0
+			if MarkingTechnology = 1 then printer_type = "Other" end if
+			if MarkingTechnology = 2 then printer_type = "Unknown" end if
+			if MarkingTechnology = 3 then printer_type = "Electrophotographic LED" end if
+			if MarkingTechnology = 4 then printer_type = "Electrophotographic Laser" end if
+			if MarkingTechnology = 5 then printer_type = "Electrophotographic Other" end if
+			if MarkingTechnology = 6 then printer_type = "Impact Moving Head Dot Matrix 9pin" end if
+			if MarkingTechnology = 7 then printer_type = "Impact Moving Head Dot Matrix 24pin" end if
+			if MarkingTechnology = 8 then printer_type = "Impact Moving Head Dot Matrix Other" end if
+			if MarkingTechnology = 9 then printer_type = "Impact Moving Head Fully Formed" end if
+			if MarkingTechnology = 10 then printer_type = "Impact Band" end if
+			if MarkingTechnology = 11 then printer_type = "Impact Other" end if
+			if MarkingTechnology = 12 then printer_type = "Inkjet Aqueous" end if
+			if MarkingTechnology = 13 then printer_type = "Inkjet Solid" end if
+			if MarkingTechnology = 14 then printer_type = "Inkjet Other" end if
+			if MarkingTechnology = 15 then printer_type = "Pen" end if
+			if MarkingTechnology = 16 then printer_type = "Thermal Transfer" end if
+			if MarkingTechnology = 17 then printer_type = "Thermal Sensitive" end if
+			if MarkingTechnology = 18 then printer_type = "Thermal Diffusion" end if
+			if MarkingTechnology = 19 then printer_type = "Thermal Other" end if
+			if MarkingTechnology = 20 then printer_type = "Electroerosion" end if
+			if MarkingTechnology = 21 then printer_type = "Electrostatic" end if
+			if MarkingTechnology = 22 then printer_type = "Photographic Microfiche" end if
+			if MarkingTechnology = 23 then printer_type = "Photographic Imagesetter" end if
+			if MarkingTechnology = 24 then printer_type = "Photographic Other" end if
+			if MarkingTechnology = 25 then printer_type = "Ion Deposition" end if
+			if MarkingTechnology = 26 then printer_type = "eBeam" end if
+			if MarkingTechnology = 27 then printer_type = "Typesetter" end if
 
 
-
-	if  (debugging > "2" and printer_ip_address > "") then
-	wscript.echo "IP: " & printer_ip_address
-	end if
-
-
-	if (printer_ip_address > "") then
-	' this is an IP Address
-	Set objExec = objShell.Exec( "nslookup " & printer_ip_address )
-	k = ""
-	For Each objStream In Array( objExec.StdOut, objExec.StdErr )
-	Do Until objStream.AtEndOfStream
-	line = objStream.ReadLine()
-	if (InStr(line, "Name") = 1) then
-	i = split(line, ".")
-	k = mid(i(0), 6)
-	k = ltrim(k)
-	end if
-	Loop
-	Next
-	if (k <> "") then
-	printer_hostname = k
-	else
-	printer_hostname = printer_ip_address
-	end if
-	end if
-
-	if (InStr(objItem.PortName, "IP_") = 1) then
-	printer_ip_address = mid(objItem.PortName, 4)
-	Set objExec = objShell.Exec( "nslookup " & printer_ip_address )
-	k = ""
-	For Each objStream In Array( objExec.StdOut, objExec.StdErr )
-	Do Until objStream.AtEndOfStream
-	line = objStream.ReadLine()
-	if (InStr(line, "Name") = 1) then
-	i = split(line, ".")
-	k = mid(i(0), 6)
-	k = ltrim(k)
-	end if
-	Loop
-	Next
-	if (k <> "") then
-	printer_hostname = k
-	else
-	printer_hostname = printer_ip_address
-	end if
-	end if
-
-	if (printer_ip_address > "") then
-	' connected via network
-	' check win32_pingstatus to see if device is online
-	if (CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) then
-	on error resume next
-	Set colPingResults = objWMIService.ExecQuery("SELECT * FROM Win32_PingStatus WHERE Address = '" & printer_ip_address & "'",,32)
-	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_PingStatus)" : audit_wmi_fails = audit_wmi_fails & "Win32_PingStatus " : end if
-	For Each objPingResult In colPingResults
-	If Not IsObject( objPingResult ) Then
-	connection_status = "offline"
-	ElseIf objPingResult.StatusCode = 0 Then
-	connection_status = "OK"
-	Else
-	connection_status = "offline"
-	End If
-	Next
-	Set colPingResults = Nothing
-	on error goto 0
-	end if
-	end if
-
-	if (InStr(objItem.PortName, "USB") = 1) then
-	' connected via USB
-	' check WIN32_USBDevice to see if actually connected
-	connection_status = "offline"
-	on error resume next
-	Set colItems2 = objWMIService.ExecQuery("Select * FROM Win32_USBDevice where Caption = '" & objItem.DriverName & "'",,32)
-	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_USBDevice)" : audit_wmi_fails = audit_wmi_fails & "Win32_USBDevice " : end if
-	on error goto 0
-	if (error_returned = 0) then
-	For Each objitem2 In colItems2
-	connection_status = objitem2.status
-	next
-	else
-	connection_status = "OK"
-	end if
-	end if
-
-	if (InStr(objItem.PortName, "DOT") = 1) then
-	connection_status = "OK"
-	end if
-
-	if (InStr(objItem.PortName, "LPT1") = 1) then
-	connection_status = "OK"
-	end if
-
-	if debugging > "2" then wscript.echo "Status: " & connection_status end if
-
-	if (printer_ip_address > "") then
-	printer_system_key = printer_ip_address
-	else
-	printer_system_key = system_hostname & "_" & replace(objItem.DeviceID, " ", "_")
-	end if
-
-	' using Device ID for the name because the WMI docs state this is unique
-	' this will only be used in the print_queue table
-	printer_name = objItem.DeviceID
-
-	printer_model = replace(objItem.DriverName, " PCL 5e", "")
-	printer_model = replace(printer_model, " PCL 5", "")
-	printer_model = replace(printer_model, " PCL5", "")
-	printer_model = replace(printer_model, " PCL 6e", "")
-	printer_model = replace(printer_model, " PCL 6", "")
-	printer_model = replace(printer_model, " PCL6", "")
-	printer_model = replace(printer_model, " PCL", "")
-	printer_model = replace(printer_model, " PS", "")
-
-	printer_reg_driver = "Software\Microsoft\Windows NT\CurrentVersion\Print\Printers\" & objItem.DeviceID & "\DsDriver\"
-	if debugging > "2" then wscript.echo "RegKey: " & printer_reg_driver end if
-	oReg.GetBinaryValue HKEY_LOCAL_MACHINE, printer_reg_driver, "printColor", print_color
-	oReg.GetBinaryValue HKEY_LOCAL_MACHINE, printer_reg_driver, "printDuplexSupported", print_duplex
-
-	printer_color = False
-	if (isnull(print_color)) then
-	' do nothing
-	if debugging > "2" then wscript.echo "Color null returned" end if
-	else
-	for i = lbound(print_color) to ubound(print_color)
-	if debugging > "2" then wscript.echo "Colour: " & print_color(i) end if
-	if (print_color(i) = "1") then printer_color = True
-	next
-	end if
-
-	printer_duplex = False
-	if (isnull(print_duplex)) then
-	' do nothing
-	if debugging > "2" then wscript.echo "Duplex null returned" end if
-	else
-	for i = lbound(print_duplex) to ubound(print_duplex)
-	if debugging > "2" then wscript.echo "Duplex: " & print_duplex(i) end if
-	if (print_duplex(i) = "1") then printer_duplex = True
-	next
-	end if
+			status = int(objItem.ExtendedPrinterStatus)
+			if status = 1 then printer_status = "Other" end if
+			if status = 2 then printer_status = "Unknown" end if
+			if status = 3 then printer_status = "Idle" end if
+			if status = 4 then printer_status = "Printing" end if
+			if status = 5 then printer_status = "Warming Up" end if
+			if status = 6 then printer_status = "Stopped Printing" end if
+			if status = 7 then printer_status = "Offline" end if
+			if status = 8 then printer_status = "Paused" end if
+			if status = 9 then printer_status = "Error" end if
+			if status = 10 then printer_status = "Busy" end if
+			if status = 11 then printer_status = "Not Available" end if
+			if status = 12 then printer_status = "Waiting" end if
+			if status = 13 then printer_status = "Processing" end if
+			if status = 14 then printer_status = "Initialization" end if
+			if status = 15 then printer_status = "Power Save" end if
+			if status = 16 then printer_status = "Pending Deletion" end if
+			if status = 17 then printer_status = "I/O Active" end if
+			if status = 18 then printer_status = "Manual Feed" end if
 
 
+			item = item & "		<item>" & vbcrlf
+			on error resume next
+			item = item & "			<manufacturer>" & escape_xml(printer_manufacturer) & "</manufacturer>" & vbcrlf
+			item = item & "			<model>" & escape_xml(printer_model) & "</model>" & vbcrlf
+			item = item & "			<description>" & escape_xml(description) & "</description>" & vbcrlf
+			item = item & "			<device>" & escape_xml(objItem.DeviceID) & "</device>" & vbcrlf
+			item = item & "			<driver>" & escape_xml(objItem.DriverName) & "</driver>" & vbcrlf
+			item = item & "			<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+			item = item & "			<port_name>" & escape_xml(objItem.PortName) & "</port_name>" & vbcrlf
+			item = item & "			<shared>" & escape_xml(objItem.Shared) & "</shared>" & vbcrlf
+			item = item & "			<shared_name>" & escape_xml(objItem.ShareName) & "</shared_name>" & vbcrlf
+			item = item & "			<location>" & escape_xml(objItem.Location) & "</location>" & vbcrlf
+			item = item & "			<color>" & escape_xml(printer_color) & "</color>" & vbcrlf
+			item = item & "			<duplex>" & escape_xml(printer_duplex) & "</duplex>" & vbcrlf
+			item = item & "			<type>" & escape_xml(printer_type) & "</type>" & vbcrlf
+			item = item & "			<status>" & escape_xml(printer_status) & "</status>" & vbcrlf
+			item = item & "			<capabilities>" & escape_xml(capabilities) & "</capabilities>" & vbcrlf
+			On Error Goto 0
+			item = item & "		</item>" & vbcrlf
 
-	if (instr(1, printer_model, "Aficio", vbTextCompare) = 1) 	then printer_manufacturer = "Ricoh" end if
-	if (instr(1, printer_model, "AGFA", vbTextCompare) = 1) 	then printer_manufacturer = "Agfa" end if
-	if (instr(1, printer_model, "Apple Laser", vbTextCompare) = 1) 	then printer_manufacturer = "Apple" end if
-	if (instr(1, printer_model, "Brother", vbTextCompare) = 1) 	then printer_manufacturer = "Brother" end if
-	if (instr(1, printer_model, "Canon", vbTextCompare) = 1) 	then printer_manufacturer = "Canon" end if
-	if (instr(1, printer_model, "Color-MFPe", vbTextCompare) = 1) 	then printer_manufacturer = "Toshiba" end if
-	if (instr(1, printer_model, "Datamax", vbTextCompare) = 1) 	then printer_manufacturer = "Datamax" end if
-	if (instr(1, printer_model, "Dell", vbTextCompare) = 1) 	then printer_manufacturer = "Dell" end if
-	if (instr(1, printer_model, "DYMO", vbTextCompare) = 1) 	then printer_manufacturer = "Dymo" end if
-	if (instr(1, printer_model, "EasyCoder", vbTextCompare) = 1) 	then printer_manufacturer = "Intermec" end if
-	if (instr(1, printer_model, "Epson", vbTextCompare) = 1) 	then printer_manufacturer = "Epson" end if
-	if (instr(1, printer_model, "Fiery", vbTextCompare) = 1) 	then printer_manufacturer = "Konica Minolta" end if
-	if (instr(1, printer_model, "Fuji", vbTextCompare) = 1) 	then printer_manufacturer = "Fuji" end if
-	if (instr(1, printer_model, "FX ApeosPort", vbTextCompare) = 1) then printer_manufacturer = "Fuji" end if
-	if (instr(1, printer_model, "FX DocuCentre", vbTextCompare) = 1)then printer_manufacturer = "Fuji" end if
-	if (instr(1, printer_model, "FX DocuPrint", vbTextCompare) = 1) then printer_manufacturer = "Fuji" end if
-	if (instr(1, printer_model, "FX DocuWide", vbTextCompare) = 1)  then printer_manufacturer = "Fuji" end if
-	if (instr(1, printer_model, "FX Document", vbTextCompare) = 1) 	then printer_manufacturer = "Xerox" end if
-	if (instr(1, printer_model, "GelSprinter", vbTextCompare) = 1) 	then printer_manufacturer = "Ricoh" end if
-	if (instr(1, printer_model, "HP ", vbTextCompare) = 1) 	then printer_manufacturer = "Hewlett Packard" end if
-	if (instr(1, printer_model, "Konica", vbTextCompare) = 1) 	then printer_manufacturer = "Konica Minolta" end if
-	if (instr(1, printer_model, "Kyocera", vbTextCompare) = 1) 	then printer_manufacturer = "Kyocera Mita" end if
-	if (instr(1, printer_model, "LAN-Fax", vbTextCompare) = 1) 	then printer_manufacturer = "Ricoh" end if
-	if (instr(1, printer_model, "Lexmark", vbTextCompare) = 1) 	then printer_manufacturer = "Lexmark" end if
-	if (instr(1, printer_model, "Mita", vbTextCompare) = 1) 	then printer_manufacturer = "Kyocera-Mita" end if
-	if (instr(1, printer_model, "Muratec", vbTextCompare) = 1) 	then printer_manufacturer = "Muratec" end if
-	if (instr(1, printer_model, "Oce", vbTextCompare) = 1) 	then printer_manufacturer = "Oce" end if
-	if (instr(1, printer_model, "Oki", vbTextCompare) = 1) 	then printer_manufacturer = "Oki" end if
-	if (instr(1, printer_model, "Panaboard", vbTextCompare) = 1) 	then printer_manufacturer = "Panasonic" end if
-	if (instr(1, printer_model, "Ricoh", vbTextCompare) = 1) 	then printer_manufacturer = "Ricoh" end if
-	if (instr(1, printer_model, "Samsung", vbTextCompare) = 1) 	then printer_manufacturer = "Samsung" end if
-	if (instr(1, printer_model, "Sharp", vbTextCompare) = 1) 	then printer_manufacturer = "Sharp" end if
-	if (instr(1, printer_model, "SP 3", vbTextCompare) = 1) 	then printer_manufacturer = "Ricoh" end if
-	if (instr(1, printer_model, "Tektronix", vbTextCompare) = 1) 	then printer_manufacturer = "Tektronix" end if
-	if (instr(1, printer_model, "Toshiba", vbTextCompare) = 1) 	then printer_manufacturer = "Toshiba" end if
-	if (instr(1, printer_model, "Xerox", vbTextCompare) = 1) 	then printer_manufacturer = "Xerox" end if
-	if (instr(1, printer_model, "ZDesigner", vbTextCompare) = 1) 	then printer_manufacturer = "Zebra" end if
-	if (instr(1, printer_model, "Zebra", vbTextCompare) = 1) 	then printer_manufacturer = "Zebra" end if
-
-	printer_comment = ""
-	if (CInt(windows_build_number) > 2222 and not CInt(windows_build_number) = 3000) then
-	printer_comment = objItem.Comment
-	if (objItem.ShareName > "") then
-	printer_shared = True
-	printer_share_name = objItem.ShareName & " on " & system_hostname
-	else
-	printer_shared = False
-	printer_share_name = ""
-	end if
-	end if
-
-	if printer_comment = "" then
-	printer_comment = printer_share_name
-	end if
-
-	if debugging > "1" then
-	wscript.echo "Printer: " & printer_model & " -- " & objItem.PortName & " -- " & printer_ip_address & " -- " & connection_status
-	end if
-
-	printer_uuid = replace(objItem.DeviceID, " ", "_")
-	printer_location = objItem.Location
-
-	'if (connection_status = "OK") then
-	item = item & "	<printer>" & vbcrlf
-	on error resume next
-	item = item & "		<man_ip_address>" & escape_xml(printer_ip_address) & "</man_ip_address>" & vbcrlf
-	item = item & "		<hostname>" & escape_xml(printer_hostname) & "</hostname>" & vbcrlf
-	item = item & "		<system_key>" & escape_xml(printer_system_key) & "</system_key>" & vbcrlf
-	item = item & "		<uuid>" & escape_xml(printer_uuid) & "</uuid>" & vbcrlf
-	item = item & "		<description>" & escape_xml(printer_comment) & "</description>" & vbcrlf
-	item = item & "		<icon>printer</icon>" & vbcrlf
-	item = item & "		<model>" & escape_xml(printer_model) & "</model>" & vbcrlf
-	item = item & "		<manufacturer>" & escape_xml(printer_manufacturer) & "</manufacturer>" & vbcrlf
-	item = item & "		<port_name>" & escape_xml(objItem.PortName) & "</port_name>" & vbcrlf
-	item = item & "		<shared>" & escape_xml(printer_shared) & "</shared>" & vbcrlf
-	item = item & "		<shared_name>" & escape_xml(printer_share_name) & "</shared_name>" & vbcrlf
-	item = item & "		<location>" & escape_xml(printer_location) & "</location>" & vbcrlf
-	item = item & "		<color>" & escape_xml(printer_color) & "</color>" & vbcrlf
-	item = item & "		<duplex>" & escape_xml(printer_duplex) & "</duplex>" & vbcrlf
-	item = item & "		<type>physical</type>" & vbcrlf
-	item = item & "		<name>" & escape_xml(printer_name) & "</name>" & vbcrlf
-	item = item & "		<status>" & escape_xml(connection_status) & "</status>" & vbcrlf
-	On Error Goto 0
-	item = item & "	</printer>" & vbcrlf
-	'end if
-	end if
+		end if
 	next
 	if item > "" then
-	result.WriteText "	<printers>" & vbcrlf
+	result.WriteText "	<print_queue>" & vbcrlf
 	result.WriteText item
-	result.WriteText "	</printers>" & vbcrlf
+	result.WriteText "	</print_queue>" & vbcrlf
 	end if
 	end if
 end if
@@ -3349,7 +3152,7 @@ if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <>
 					member_domain = group_domain(ubound(group_domain)-1)
 					group_members = group_members & member.name & "@" & member_domain & ", "
 				Next
-				group_members = LEFT(group_members, (LEN(group_members)-2))
+				'group_members = left(group_members, (len(group_members)-2))
 				result.WriteText "			<members>" & escape_xml(group_members) & "</members>" & vbcrlf
 				result.WriteText "		</item>" & vbcrlf
 			End If

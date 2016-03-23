@@ -1086,35 +1086,37 @@ function show_software($type, $software) {
                 <table cellspacing="1" class="tablesorter" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __('Name')?></th>
-                            <th><?php echo __('Model')?></th>
                             <th><?php echo __('Manufacturer')?></th>
-                            <th><?php echo __('Port Name')?></th>
-                            <th><?php echo __('IP Address')?></th>
-                            <th><?php echo __('Shared')?></th>
-                            <th><?php echo __('Shared Name')?></th>
+                            <th><?php echo __('Model')?></th>
+                            <th><?php echo __('Description')?></th>
+                            <th><?php echo __('Driver')?></th>
+                            <th><?php echo __('Type')?></th>
+                            <th><?php echo __('Status')?></th>
                             <th><?php echo __('Color')?></th>
                             <th><?php echo __('Duplex')?></th>
-                            <th><?php echo __('Type')?></th>
+                            <th><?php echo __('Capabilities')?></th>
                             <th><?php echo __('Location')?></th>
-                            <th><?php echo __('Status')?></th>
+                            <th><?php echo __('Port Name')?></th>
+                            <th><?php echo __('Shared')?></th>
+                            <th><?php echo __('Shared Name')?></th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php foreach ($print_queue as $key): ?>
                     <tr>
-                        <td><?php echo print_something($key->name)?></td>
-                        <td><?php echo print_something($key->model)?></td>
                         <td><?php echo print_something($key->manufacturer)?></td>
-                        <td><?php echo print_something($key->port_name)?></td>
-                        <td><?php echo print_something($key->ip)?></td>
-                        <td><?php echo print_something($key->shared)?></td>
-                        <td><?php echo print_something($key->shared_name)?></td>
+                        <td><?php echo print_something($key->model)?></td>
+                        <td><?php echo print_something($key->description)?></td>
+                        <td><?php echo print_something($key->driver)?></td>
+                        <td><?php echo print_something($key->type)?></td>
+                        <td><?php echo print_something($key->status)?></td>
                         <td><?php echo print_something($key->color)?></td>
                         <td><?php echo print_something($key->duplex)?></td>
-                        <td><?php echo print_something($key->type)?></td>
+                        <td><?php echo print_something($key->capabilities)?></td>
                         <td><?php echo print_something($key->location)?></td>
-                        <td><?php echo print_something($key->connection_status)?></td>
+                        <td><?php echo print_something($key->port_name)?></td>
+                        <td><?php echo print_something($key->shared)?></td>
+                        <td><?php echo print_something($key->shared_name)?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>

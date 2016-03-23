@@ -185,7 +185,7 @@ class M_devices_components extends MY_Model
                 $match_columns = array('name', 'hard_drive_index', 'mount_point', 'size');
         }
         if ($table == 'print_queue') {
-                $match_columns = array('system_key');
+                $match_columns = array('device');
         }
         if ($table == 'processor') {
                 $match_columns = array('description');
