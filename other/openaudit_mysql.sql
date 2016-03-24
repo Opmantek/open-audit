@@ -840,7 +840,7 @@ CREATE TABLE `oa_location` (
 
 LOCK TABLES `oa_location` WRITE;
 /*!40000 ALTER TABLE `oa_location` DISABLE KEYS */;
-INSERT INTO `oa_location` VALUES (0,'Default Location','Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','',-28.017260,153.425705,'','Default location','office',9);
+INSERT INTO `oa_location` VALUES (0,'Default Location','Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','',-28.017260,153.425705,'','Default location','office',0);
 /*!40000 ALTER TABLE `oa_location` ENABLE KEYS */;
 UNLOCK TABLES;
 

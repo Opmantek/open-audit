@@ -199,7 +199,13 @@ if (! function_exists('check_default_groups')) {
         if (intval($result[0]->count) == 0) {
             $CI->m_oa_group->activate_file('All Devices');
             $CI->m_oa_group->activate_file('Items in Default Location');
+            $id = $CI->m_oa_group->get_group_id('Items in Default Location');
+            $sql = "UPDATE oa_location SET location_group_id = '$id' WHERE location_name = 'Default Location'";
+            $query = $CI->db->query($sql);
             $CI->m_oa_group->activate_file('Default Organisation owned items');
+            $id = $CI->m_oa_group->get_group_id('Default Organisation owned items');
+            $sql = "UPDATE oa_org SET org_group_id = '$id' WHERE org_name = 'Default Organisation'";
+            $query = $CI->db->query($sql);
             $CI->m_oa_group->activate_file('All Printers');
             $CI->m_oa_group->activate_file('Routers');
             $CI->m_oa_group->activate_file('Switches');
