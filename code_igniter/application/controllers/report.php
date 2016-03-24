@@ -236,8 +236,12 @@ class report extends MY_Controller
 
             return;
         } else {
-            // we must check to see if the user has at least VIEW permission on the group
-            $this->user->user_access_level = $this->m_oa_group->get_group_access($this->data['group_id'], $this->user->user_id);
+            // we must check to see if the user has at least VIEW permission on the group (or is an admin)
+            if ($this->user->user_admin != 'y') {
+                $this->user->user_access_level = $this->m_oa_group->get_group_access($this->data['group_id'], $this->user->user_id);
+            } else {
+                $this->user->user_access_level ='10';
+            }
             if ($this->user->user_access_level < '3') {
                 # insufficient permissions - show error page
                 $this->data['error'] = "You attempted to run a Report on a Group you don't have permission to view.";
@@ -310,9 +314,11 @@ class report extends MY_Controller
         $this->load->model("m_oa_group");
         if ($this->data['id'] > '0') {
             // we must check to see if the user has at least VIEW permission on the group
-            if ($this->m_oa_group->get_group_access($this->data['id'], $this->user->user_id) < '3') {
-                // not even VIEW permission - redirect
-                redirect('main/list_devices/0');
+            if ($this->user->user_admin != 'y') {
+                if ($this->m_oa_group->get_group_access($this->data['id'], $this->user->user_id) < '3') {
+                    // not even VIEW permission - redirect
+                    redirect('main/list_devices/0');
+                }
             }
         }
         if ($this->uri->segment(4) == '') {
