@@ -33,7 +33,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-class devices extends MY_Controller
+class api extends MY_Controller
 {
     public function __construct()
     {
@@ -50,11 +50,11 @@ class devices extends MY_Controller
             redirect(uri_string());
         }
 
-        $this->load->helper('network');
-        $this->load->helper('output');
+        #$this->load->helper('network');
+        #$this->load->helper('output');
         $this->load->helper('error');
         $this->load->helper('input');
-        $this->load->model('m_devices');
+        #$this->load->model('m_devices');
 
         $this->error = new stdClass();
         $this->error->controller = '';
@@ -62,31 +62,40 @@ class devices extends MY_Controller
         $this->response = new stdClass();
         inputRead();
 
-        $this->response->total = 0;
-        $this->response->filtered = 0;
-        if ($this->response->format == 'screen') {
-            $this->response->heading = 'Devices';
-            $this->response->include = 'v_devices';
-        }
+        // $this->response->total = 0;
+        // $this->response->filtered = 0;
+        // if ($this->response->format == 'screen') {
+        //     $this->response->heading = 'Devices';
+        //     $this->response->include = 'v_devices';
+        // }
 
-        $this->output->url = $this->config->item('oa_web_index');
+        // our initial response codes
+        // these will change if an error occurs
+        // $this->response->header = 'HTTP/1.1 200 OK';
+        // if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        //     $this->response->header = 'HTTP/1.1 201 Created';
+        // }
 
-        if ($this->response->id != '') {
-            $access_level = $this->m_devices->getUserDeviceAccess($this->response->id, $this->user->user_id);
-            if ($access_level == 0) {
-                // TODO - output JSON or SCREEN with appropriate header
-                echo "Insufficient device access.";
-                exit();
-            }
-        }
+        // $this->output->url = $this->config->item('oa_web_index');
+
+        // if ($this->response->id != '') {
+        //     $access_level = $this->m_devices->getUserDeviceAccess($this->response->id, $this->user->user_id);
+        //     if ($access_level == 0) {
+        //         echo "Insufficient device access.";
+        //         exit();
+        //     }
+        // }
     }
 
     public function index()
     {
+        echo "<pre>\n";
+        print_r($this->response);
     }
 
     public function _remap($method)
     {
+        echo "<pre>\n"; print_r($this->response);
         $action = $this->response->action;
         if ($action != '') {
             $this->$action();
@@ -96,32 +105,14 @@ class devices extends MY_Controller
         exit();
     }
 
-    private function collection()
-    {
-        if (empty($_GET['properties']) and empty($_POST['properties'])) {
-            $this->response->properties = 'icon, man_type, system_id, hostname, man_domain, man_ip_address, ip, ip_padded, man_description, os_family';
-        }
-        if ($this->response->subresource != '') {
-            $this->response->data = $this->m_devices->readDevicesSubresource();
-        } else {
-            $this->response->data = $this->m_devices->readDevices($this->response->id);
-        }
-        $this->response->filtered = count($this->response->data);
-        $this->response->query = $this->response->data;
-        $this->response->include = 'v_devices';
-        output($this->response);
-    }
-
     private function read()
     {
-        if ($this->response->subresource != '') {
-            $this->response->data = $this->m_devices->readDeviceSubresource($this->response->id, $this->response->subresource);
-            $this->response->filtered = count($this->response->data);
-        } else {
-            $this->response->data = $this->m_devices->readDevice($this->response->id);
-            $this->response->include = 'v_display_device';
-        }
-        output($this->response);
+        echo "Reading!";
+    }
+
+    private function collection()
+    {
+        echo "Collection!";
     }
 
     // because we're using JSON API style URLs and not CodeIgniter style
@@ -152,39 +143,39 @@ class devices extends MY_Controller
     //     }
     // }
 
-    // private function readDevices()
-    // {
-    //     $this->response->data = $this->m_devices->readDevices($this->response->id);
-    //     $this->response->filtered = count($this->response->data);
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
+    private function readDevices()
+    {
+        $this->response->data = $this->m_devices->readDevices($this->response->id);
+        $this->response->filtered = count($this->response->data);
+        $this->response->header = 'HTTP/1.1 200 OK';
+        output($this->response);
+    }
 
-    // private function readDevice()
-    // {
-    //     $this->response->data = $this->m_devices->readDevice($this->response->id);
-    //     $this->response->total = count($this->response->data);
-    //     unset($this->response->filtered);
-    //     unset($this->response->limit);
-    //     unset($this->response->offset);
-    //     $this->response->include = 'v_display_device';
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
+    private function readDevice()
+    {
+        $this->response->data = $this->m_devices->readDevice($this->response->id);
+        $this->response->total = count($this->response->data);
+        unset($this->response->filtered);
+        unset($this->response->limit);
+        unset($this->response->offset);
+        $this->response->include = 'v_display_device';
+        $this->response->header = 'HTTP/1.1 200 OK';
+        output($this->response);
+    }
 
-    // private function readDeviceSubresource()
-    // {
-    //     $this->response->data = $this->m_devices->readDeviceSubresource($this->response->id, $this->response->subresource);
-    //     $this->response->filtered = count($this->response->data);
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
+    private function readDeviceSubresource()
+    {
+        $this->response->data = $this->m_devices->readDeviceSubresource($this->response->id, $this->response->subresource);
+        $this->response->filtered = count($this->response->data);
+        $this->response->header = 'HTTP/1.1 200 OK';
+        output($this->response);
+    }
 
-    // private function readDevicesSubresource()
-    // {
-    //     $this->response->data = $this->m_devices->readDevicesSubresource();
-    //     $this->response->filtered = count($this->response->data);
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
+    private function readDevicesSubresource()
+    {
+        $this->response->data = $this->m_devices->readDevicesSubresource();
+        $this->response->filtered = count($this->response->data);
+        $this->response->header = 'HTTP/1.1 200 OK';
+        output($this->response);
+    }
 }

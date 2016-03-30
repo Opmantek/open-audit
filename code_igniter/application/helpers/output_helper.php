@@ -143,9 +143,9 @@ if (! function_exists('output')) {
         // }
         header($CI->response->header);
         $CI->response->user = $CI->user;
-        echo "<pre>\n";
-        print_r($CI->response);
-        #$CI->load->view('v_template', $CI->response);
+        #echo "<pre>\n";
+        #print_r($CI->response);
+        $CI->load->view('v_template', $CI->response);
     }
 
     function output_xml()
@@ -180,10 +180,12 @@ if (! function_exists('output')) {
                         if ($row->$temp_name == $row->$key) {
                             unset($row->$temp_name);
                         }
-                    }
-                    elseif (isset($key) and $key == 'man_ip_address') {
+                    } elseif (isset($key) and $key == 'man_ip_address') {
+                        $row->ip_padded = $value;
                         $row->ip = ip_address_from_db($value);
                         #unset($row->man_ip_address);
+                        if (empty($row->ip_padded)) { $row->ip_padded = ''; }
+                        if (empty($row->ip)) { $row->ip = ''; }
                     }
                 }
             }
