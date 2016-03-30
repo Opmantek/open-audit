@@ -403,6 +403,11 @@ class discovery extends CI_Controller
                 $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
                 $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address'));
             }
+            $this->load->model('m_oa_org');
+            $this->data['orgs'] = $this->m_oa_org->get_org_names();
+            $this->load->model('m_oa_location');
+            $this->data['locations'] = $this->m_oa_location->get_location_names();
+
             $this->data['warning'] = '';
             $this->data['include'] = "v_discover_subnet";
             $this->data['sortcolumn'] = '1';
@@ -499,6 +504,24 @@ class discovery extends CI_Controller
                 $encode['network_address'] = $_POST['network_address'];
             } else {
                 $encode['network_address'] = '';
+            }
+
+            if (isset($_POST['use_https']) and $_POST['use_https'] > '') {
+                $encode['use_https'] = $_POST['use_https'];
+            } else {
+                $encode['use_https'] = '';
+            }
+
+            if (isset($_POST['org']) and $_POST['org'] > '') {
+                $encode['org'] = $_POST['org'];
+            } else {
+                $encode['org'] = '';
+            }
+
+            if (isset($_POST['location']) and $_POST['location'] > '') {
+                $encode['location'] = $_POST['location'];
+            } else {
+                $encode['location'] = '';
             }
 
             if (isset($_POST['type']) and $_POST['type'] == 'device' and
@@ -604,6 +627,10 @@ class discovery extends CI_Controller
                 $url = base_url();
             }
             unset($temp_network_address);
+
+            if (!empty($_POST['use_https'])) {
+                $url = str_ireplace('http://', 'https://', $url);
+            }
 
              if (!empty($this->config->config['discovery_nmap_os'])) {
                 $nmap_os = $this->config->config['discovery_nmap_os'];
@@ -810,27 +837,6 @@ class discovery extends CI_Controller
                         $details->hostname = '';
 
                         $details = dns_validate($details, $display);
-                        // if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
-                        //     $details->hostname = $details->man_ip_address;
-                        //     $details->man_ip_address = gethostbyname($details->man_ip_address);
-                        //     if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
-                        //         $details->man_ip_address = '0.0.0.0';
-                        //     }
-                        // } else {
-                        //     # TODO - check if we're lower casing hostnames in the config
-                        //     $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
-                        // }
-
-                        // if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-                        //     if (strpos($details->hostname, ".") != false) {
-                        //         // we have a domain returned
-                        //         $details->fqdn = strtolower($details->hostname);
-                        //         $i = explode(".", $details->hostname);
-                        //         $details->hostname = $i[0];
-                        //         unset($i[0]);
-                        //         $details->domain = implode(".", $i);
-                        //     }
-                        // }
 
                         // process what little data we have and try to make a system_key
                         $details->system_key = '';
@@ -876,6 +882,11 @@ class discovery extends CI_Controller
                             $details->network_address =   @$supplied_credentials->network_address;
                             $details->limit = (int)@$supplied_credentials->limit;
                             $details->count = (int)@$supplied_credentials->count;
+                            $details->org_id = (int)@$supplied_credentials->org;
+                            $details->location_id = (int)@$supplied_credentials->location;
+                            $details->man_org_id = (int)@$supplied_credentials->org;
+                            $details->man_location_id = (int)@$supplied_credentials->location;
+                            $details->use_https = (string)@$supplied_credentials->use_https;
                         } else {
                             $supplied->snmp_community = '';
                             $supplied->snmp_version = '';
@@ -889,6 +900,7 @@ class discovery extends CI_Controller
                             $details->network_address = '';
                             $details->limit = 1000000;
                             $details->count = 0;
+                            $details->use_https = '';
                         }
 
                         if (intval($details->count) >= intval($details->limit)) {
@@ -926,6 +938,10 @@ class discovery extends CI_Controller
                             $url = base_url();
                         }
                         unset($details->network_address);
+
+                        if ($details->use_https == 'on') {
+                            $url = str_ireplace('http://', 'https://', $url);
+                        }
 
                         if (isset($supplied->snmp_community) and $supplied->snmp_community != '') {
                             $details->snmp_community = $supplied->snmp_community;
