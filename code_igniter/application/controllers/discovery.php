@@ -1426,6 +1426,14 @@ class discovery extends CI_Controller
                             }
                         }
 
+                        # in the case where 5060 is detected and we have no other information, assign type 'voip phone'
+                        if (empty($details->type) and 
+                            empty($details->snmp_oid) and 
+                            empty($details->uuid) and 
+                            stripos($details->nmap_result, 'Discovered open port 5060') !== false) {
+                            $details->type = 'voip phone';
+                        }
+
                         # We have new details - create a new system key
                         $details->system_key = $this->m_system->create_system_key($details, $display);
                         $details = dns_validate($details, $display);
