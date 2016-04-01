@@ -692,7 +692,9 @@ class M_system extends MY_Model
         }
         $myip = explode(".", $search_ip);
         foreach ($myip as $index => $data) {
-            $myip[$index] = mb_substr("000".$myip[$index], -3);
+            #$myip[$index] = mb_substr("000".$myip[$index], -3);
+            #$myip[$index] = mb_substr("%%%".$myip[$index], -3);
+            $myip[$index] = '%' . $myip[$index] . '%';
         }
         $search_ip = "%".implode(".", $myip)."%";
         $search = "%".$search."%";
@@ -720,17 +722,11 @@ class M_system extends MY_Model
         $result = $query->result();
         for ($i = 0; $i<count($result); $i++) {
             if (strrpos($result[$i]->ip, $search_ip) !== false) {
-                $result[$i]->ip  = $this->ip_address_from_db($result[$i]->ip);
+                $result[$i]->ip = $this->ip_address_from_db($result[$i]->ip);
             } else {
                 $result[$i]->ip = $this->ip_address_from_db($result[$i]->man_ip_address);
             }
         }
-        // echo "<pre>\n";
-        // echo $this->db->last_query();
-        // print_r($this->data);
-        // print_r($result);
-        // echo "</pre>\n";
-        // exit();
         return ($result);
     }
 
@@ -760,7 +756,7 @@ class M_system extends MY_Model
         $i = new stdclass();
         $i->column_order = '1';
         $i->column_name = 'IP Address';
-        $i->column_variable = 'ip_address';
+        $i->column_variable = 'ip';
         $i->column_type = "text";
         $i->column_align = "left";
         $i->column_secondary = "";
