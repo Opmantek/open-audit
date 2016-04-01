@@ -74,8 +74,19 @@ class devices extends MY_Controller
         if ($this->response->id != '') {
             $access_level = $this->m_devices->getUserDeviceAccess($this->response->id, $this->user->user_id);
             if ($access_level == 0) {
-                // TODO - output JSON or SCREEN with appropriate header
-                echo "Insufficient device access.";
+                // we should determine if the device does actually exist or not
+                // then we can throw the correct status code of 404 or 403
+                $sql = "SELECT system_id FROM system WHERE system_id = ?";
+                $data = array($this->response->id);
+                $query = $this->db->query($sql, $data);
+                $result = $query->result();
+                if (count($result) == 0) {
+                    $this->response->errors[] = getError('ERR-0007');
+                } else {
+                    $this->response->errors[] = getError('ERR-0008');
+                }
+                $this->response->header = $this->response->errors[0]->status;
+                output($this->response);
                 exit();
             }
         }

@@ -120,7 +120,10 @@ if (! function_exists('output')) {
     function output_json()
     {
         $CI = & get_instance();
-        header('Content-Type: application/x-resource+json');
+        header('Content-Type: application/json');
+        header("Cache-Control: no-cache, no-store, must-revalidate");
+        header("Pragma: no-cache");
+        header("Expires: 0");
         header($CI->response->header);
         echo json_encode($CI->response);
     }
@@ -128,7 +131,10 @@ if (! function_exists('output')) {
     function output_json_data()
     {
         $CI = & get_instance();
-        header('Content-Type: application/x-resource+json');
+        header('Content-Type: application/json');
+        header("Cache-Control: no-cache, no-store, must-revalidate");
+        header("Pragma: no-cache");
+        header("Expires: 0");
         header($CI->response->header);
         echo json_encode($CI->response->data);
     }

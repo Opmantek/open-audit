@@ -62,7 +62,7 @@ if (! function_exists('inputRead')) {
         // format = json
         // properties = *
         // filter = blank
-        // version = 1
+        // version = 1 if JSON requested (the original), 0 if not JSON requested (the latest available)
 
         // Can set individual items using parameters /devices/1 == /devices?system_id=1 ???
 
@@ -263,7 +263,7 @@ if (! function_exists('inputRead')) {
 
         # get the output format
         $CI->response->format = '';
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
+        if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
             $CI->response->format = 'json';
         }
         if (strpos($_SERVER['HTTP_ACCEPT'], 'html') !== false) {
@@ -313,8 +313,18 @@ if (! function_exists('inputRead')) {
             $CI->response->filter = str_ireplace(' eq ', ' = ', $CI->response->filter);
             $CI->response->filter = str_ireplace(' ne ', ' != ', $CI->response->filter);
         }
+
         # get the version
-        $CI->response->version = 1;
+        if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json;version=') !== false) {
+            $CI->response->version = intval(str_replace('application/json;version=', '', $_SERVER['HTTP_ACCEPT']));
+        }
+        if (empty($CI->response->version)) {
+            if ($CI->response->format == 'json') {
+                $CI->response->version = 1;
+            } else {
+                $CI->response->version = 0;
+            }
+        }
 
         return;
     }
