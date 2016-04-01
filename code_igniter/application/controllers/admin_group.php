@@ -50,6 +50,7 @@ class Admin_group extends MY_Controller
 
     public function activate_group()
     {
+        $log_details = new stdClass();
         if ($handle = opendir(BASEPATH.'../application/controllers/groups')) {
             $i = 0;
             $this->load->model("m_oa_group");
@@ -59,9 +60,14 @@ class Admin_group extends MY_Controller
                     $file_handle = fopen(BASEPATH.'../application/controllers/groups/'.$file, "rb");
                     $contents = fread($file_handle, filesize(BASEPATH.'../application/controllers/groups/'.$file));
                     try {
-                        $xml = new SimpleXMLElement($contents);
-                    } catch (Exception $e) {
-                        echo $e;
+                        $xml = @new SimpleXMLElement($contents);
+                    } catch (Exception $error) {
+                        // $errors = libxml_get_errors();
+                        // print_r($errors);
+                        $log_details->message = "Invalid XML for group in file " . BASEPATH.'../application/controllers/groups/'.$file;
+                        $log_details->file = 'system';
+                        stdlog($log_details);
+                        continue;
                     }
                     $group_name = $xml->details->group_name;
                     $group_icon = $xml->details->group_icon;
