@@ -190,7 +190,7 @@ foreach ($query as $row) {
                 }
                 $href = str_replace(" ", "%20", $href);
                 if ($href > '') {
-                    echo "\t\t\t<td style=\"text-align: $column_align;\"><a href=\"".$href."\"><img src=\"".$image."\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
+                    echo "\t\t\t<td style=\"text-align: $column_align;\"><a target=\"_blank\" href=\"".$href."\"><img src=\"".$image."\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
                 } else {
                     echo "\t\t\t<td style=\"text-align: $column_align;\"></td>\n";
                 }
