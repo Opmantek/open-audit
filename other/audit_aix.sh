@@ -246,7 +246,6 @@ cat >"$xml_file" <<EndOfFile
 		<pc_date_os_installation>$(escape_xml "$system_pc_date_os_installation")</pc_date_os_installation>
 		<man_org_id>$(escape_xml "$org_id")</man_org_id>
 		<man_class>server</man_class>
-		<man_icon>aix</man_icon>
 		<system_id>$(escape_xml "$system_id")</system_id>
 	</sys>
 EndOfFile

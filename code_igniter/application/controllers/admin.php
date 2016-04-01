@@ -808,7 +808,6 @@ class admin extends MY_Controller
                     }
                     $details->windows_active_directory_ou = substr($details->windows_active_directory_ou, 1);
                     $details->icon = strtolower(str_replace(" ", "_", $details->os_family));
-                    $details->man_icon = $details->icon;
                     $full_name = $details->dns_hostname;
 
                     $details->man_ip_address = gethostbyname($full_name);
@@ -4864,6 +4863,69 @@ class admin extends MY_Controller
             stdlog($log_details);
             unset($log_details);
         }
+
+
+
+        if (($db_internal_version < '20160409') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.12.6
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.12.6 commenced';
+            stdlog($log_details);
+
+            $this->load->helper('report_helper');
+            refresh_report_definitions();
+            refresh_group_definitions();
+
+            $this->load->model('m_system');
+            $this->m_system->reset_icons();
+
+            // update any leftover group display definitions
+            $sql = "SELECT group_id, group_display_sql FROM oa_group WHERE group_display_sql LIKE '%man_icon%'";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $row) {
+                $display_sql = str_ireplace('man_icon', 'icon', $row->group_display_sql);
+                $sql = "UPDATE oa_group SET group_display_sql = ? WHERE group_id = ?";
+                $data = array($display_sql, $row->group_id);
+                $update_result = $query->result();
+            }
+
+            // update any group display columns
+            $sql = "UPDATE oa_group_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+            $query = $this->db->query($sql);
+
+            // update any leftover report display definitions
+            $sql = "SELECT report_id, report_sql FROM oa_report WHERE report_sql LIKE '%man_icon%'";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $row) {
+                $report_sql = str_ireplace('man_icon', 'icon', $row->report_sql);
+                $sql = "UPDATE oa_report SET report_sql = ? WHERE report_id = ?";
+                $data = array($report_sql, $row->report_id);
+                $update_result = $query->result();
+            }
+
+            // update any report display columns
+            $sql = "UPDATE oa_report_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+            $query = $this->db->query($sql);
+
+            $sql[] = "ALTER TABLE system DROP man_icon";
+
+            $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";
+
+            foreach ($sql as $this_query) {
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
+
+            $log_details->message = 'Upgrade database to 1.12.6 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
+
 
 
         $this->m_oa_config->load_config();

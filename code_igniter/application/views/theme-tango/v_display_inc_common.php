@@ -75,7 +75,7 @@ foreach ($system as $key) {
     $link_serial = $key->serial;
     $link_model = $key->model;
     $last_seen = $key->last_seen_by;
-    $icon = $key->man_icon;
+    $icon = $key->icon;
     $type = $key->man_type;
 }
 

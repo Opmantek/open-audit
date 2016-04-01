@@ -161,11 +161,10 @@ class M_systems extends MY_Model
 					system.man_type,
 					system.man_os_family,
 					system.man_os_name,
-					system.man_icon,
+					system.icon,
 					system.man_manufacturer,
 					system.man_model,
 					system.man_serial,
-					system.man_icon,
 					system.type
 				FROM
 					system,

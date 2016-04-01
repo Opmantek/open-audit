@@ -251,7 +251,7 @@ if (strpos($system[0]->man_type, 'printer') !== false) {
 
                 if ((string)$value == 'icon') {
                     $icon = htmlentities($system[0]->icon);
-                    echo "<p><label for='man_icon'>" . __('Icon') . ": </label><span id='man_icon'><img src='" . base_url() . "theme-tango/tango-images/16_" . $icon . ".png' alt='' /></span></p>";
+                    echo "<p><label for='icon'>" . __('Icon') . ": </label><span id='icon'><img src='" . base_url() . "theme-tango/tango-images/16_" . $icon . ".png' alt='' /></span></p>";
                 }
             }
             echo "</div>\n";

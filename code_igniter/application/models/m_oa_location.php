@@ -380,7 +380,7 @@ class M_oa_location extends MY_Model
     				system.hostname,
     				system.man_description,
     				system.man_ip_address,
-    				system.man_icon,
+    				system.icon,
     				system.man_os_name,
     				system.man_os_family
     			FROM

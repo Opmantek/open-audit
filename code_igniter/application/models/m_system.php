@@ -1718,9 +1718,9 @@ class M_system extends MY_Model
     public function reset_icons($system_id = '')
     {
         if ($system_id != '') {
-            $sql = "SELECT system_id, man_type, man_os_name, man_os_family, man_os_group, man_manufacturer, icon, man_icon FROM system WHERE system_id = ".$system_id;
+            $sql = "SELECT system_id, man_type, man_os_name, man_os_family, man_os_group, man_manufacturer, icon FROM system WHERE system_id = ".$system_id;
         } else {
-            $sql = "SELECT system_id, man_type, man_os_name, man_os_family, man_os_group, man_manufacturer, icon, man_icon FROM system";
+            $sql = "SELECT system_id, man_type, man_os_name, man_os_family, man_os_group, man_manufacturer, icon FROM system";
         }
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -1840,9 +1840,9 @@ class M_system extends MY_Model
                 }
             }
 
-            $sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
+            $sql = "UPDATE system SET icon = ? WHERE system_id = ?";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->icon", "$details->icon", "$details->system_id");
+            $data = array("$details->icon", "$details->system_id");
             $query = $this->db->query($sql, $data);
         }
 
