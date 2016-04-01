@@ -128,13 +128,11 @@
                 <p><label for='man_org_id_select'><?php echo __('Org Name'); ?>: </label>
                     <?php foreach ($system_org as $key):
                         if ($access_level > 7) {
-                            echo "<span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".print_something($key->org_name)."</span></span>$edit_icon</p>\n";
+                            echo "<span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".print_something($key->name)."</span></span>$edit_icon</p>\n";
                         } else {
-                            echo "<span id='org_name'>".print_something($key->org_name)."</span></p>\n";
+                            echo "<span id='org_name'>".print_something($key->name)."</span></p>\n";
                         }
-                        #echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'>".print_something($key->contact_id)."</span></p>\n";
-                        echo "<p><label for='parent_org'>".__('Parent Org').": </label><span id='parent_org'>".print_something($key->org_parent_name)."</span></p>\n";
-                        #echo "<p><label for='org_comments'>".__('Org Comments').": </label><span id='org_comments'>".print_something($key->org_comments)."</span></p>\n";
+                        echo "<p><label for='parent_org'>".__('Parent Org').": </label><span id='parent_org'>".print_something($key->parent_name)."</span></p>\n";
                     endforeach; ?>
 				</div>
 			</div>

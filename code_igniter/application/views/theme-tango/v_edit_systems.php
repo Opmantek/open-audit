@@ -81,7 +81,7 @@ echo form_open('main/process_edit_systems')."\n";
     <label for="man_org_id"><?php echo __('Organisation Name'); ?>: </label><select name="man_org_id" style="width: 200px"><option value="">&nbsp;</option>
     <?php
     foreach ($orgs as $org) {
-        echo "<option value=\"".intval($org->org_id)."\">".htmlentities($org->org_name)."</option>\n";
+        echo "<option value=\"".intval($org->id)."\">".htmlentities($org->name)."</option>\n";
     } ?>
     </select><br /><br />
     <label for="nmis_group"><?php echo __('NMIS Group'); ?>: </label><input type="text" name="nmis_group" style="width: 200px" /><br /><br />

@@ -938,7 +938,7 @@ class M_system extends MY_Model
 
     public function get_non_production_systems()
     {
-        $sql = "SELECT system_id, hostname, timestamp, oa_org.org_name FROM system LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id WHERE man_status = 'deleted'";
+        $sql = "SELECT system_id, hostname, timestamp, oa_org.name as org_name FROM system LEFT JOIN oa_org ON system.man_org_id = oa_org.id WHERE man_status = 'deleted'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();

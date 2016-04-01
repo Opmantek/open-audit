@@ -34,17 +34,17 @@
  */
 ?>
 <form action="#" method="post" class='niceforms'>
-	<fieldset id="org_details" class='niceforms'>
+	<fieldset class='niceforms'>
 		<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Organisation Details')?></span></legend>
 		<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
-		<?php if ($org->org_parent_id == '0') { $org->org_parent_name = 'Default Organisation'; } ?>
+		<?php if ($org->parent_id == '0') { $org->parent_name = 'Default Organisation'; } ?>
 		<table cellpadding = "0" cellspacing="0">
 			<tr>
 				<td>
-					<p><label for='org_name'><?php echo __("Name")?>: </label><span id='org_name' name='org_name'><?php echo htmlentities($org->org_name)?></span></p>
-					<p><label for='org_devices'># <?php echo __("Devices")?>: </label><span id='org_devices' name='org_devices'><?php echo intval($org->total)?></span></p>
-					<p><label for='org_parent'><?php echo __("Parent Org")?>: </label><span id='org_parent' name='org_parent'><a href='<?php echo intval($org->org_parent_id)?>'><?php echo htmlentities($org->org_parent_name)?></a></span></p>
-					<p><label for='org_comments'><?php echo __("Comments")?>: </label><span id='org_comments' name='org_comments'><?php echo htmlentities($org->org_comments)?></span></p>
+					<p><label for='name'><?php echo __("Name")?>: </label><span id='name' name='name'><?php echo htmlentities($org->name)?></span></p>
+					<p><label for='devices'># <?php echo __("Devices")?>: </label><span id='devices' name='devices'><?php echo intval($org->total)?></span></p>
+					<p><label for='parent'><?php echo __("Parent Org")?>: </label><span id='parent' name='parent'><a href='<?php echo intval($org->parent_id)?>'><?php echo htmlentities($org->parent_name)?></a></span></p>
+					<p><label for='comments'><?php echo __("Comments")?>: </label><span id='comments' name='comments'><?php echo htmlentities($org->comments)?></span></p>
 				</td>
 			</tr>
 		</table>

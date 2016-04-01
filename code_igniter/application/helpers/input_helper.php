@@ -99,7 +99,7 @@ if (! function_exists('inputRead')) {
                     $sql = "SELECT group_id AS id FROM oa_group WHERE group_name LIKE ? LIMIT 1";
                     break;
                 case'orgs':
-                    $sql = "SELECT org_id AS id FROM oa_org WHERE org_name LIKE ? LIMIT 1";
+                    $sql = "SELECT id FROM oa_org WHERE name LIKE ? LIMIT 1";
                     break;
                 case'users':
                     $sql = "SELECT user_id AS id FROM oa_user WHERE user_name LIKE ? LIMIT 1";

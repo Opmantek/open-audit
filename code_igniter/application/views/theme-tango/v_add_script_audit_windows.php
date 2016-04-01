@@ -87,7 +87,7 @@ echo form_open('admin/add_script_audit_windows')."\n";
                 <p><label for='strpass'><?php echo __('Remote User Password'); ?>: </label><input type='text' id='strpass' name='strpass' tabindex='7' title=''  value=""/></p>
                 <p><label for='org_id'><?php echo __('Organisation'); ?>: </label><select id='org_id' name='org_id' tabindex='8' title=''>
                 <?php foreach ($org_names as $value) {
-                    echo "<option value='".intval($value->org_id)."'>".htmlentities($value->org_name)."&nbsp;</option>\n";
+                    echo "<option value='".intval($value->id)."'>".htmlentities($value->name)."&nbsp;</option>\n";
                 } ?>
                 </select>
                 </p>

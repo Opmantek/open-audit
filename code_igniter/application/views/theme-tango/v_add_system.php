@@ -66,7 +66,7 @@ $location_form = "<label for='man_location_id'>Location<\/label><select id='man_
 
 $org_form = "";
 foreach ($orgs as $org) {
-    $org_form .= "<option value='".$org->org_id."'>".$org->org_name."<\/option>";
+    $org_form .= "<option value='".$org->id."'>".$org->name."<\/option>";
 }
 $org_form = "<label for='man_org_id'>Organisation<\/label><select id='man_org_id' name='man_org_id' style='width: 250px'>".$org_form."<\/select><br />";
 

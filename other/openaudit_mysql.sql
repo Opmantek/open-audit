@@ -689,7 +689,7 @@ CREATE TABLE `oa_group` (
   `group_dynamic_select` text NOT NULL,
   `group_parent` int(10) NOT NULL DEFAULT '1',
   `group_description` varchar(255) NOT NULL DEFAULT '',
-  `group_category` enum('application','device','general','location','network','org','os','owner') NOT NULL DEFAULT 'general',
+  `group_category` enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general',
   `group_display_sql` text NOT NULL,
   `group_icon` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`group_id`),
@@ -852,14 +852,12 @@ DROP TABLE IF EXISTS `oa_org`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_org` (
-  `org_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_name` varchar(100) NOT NULL DEFAULT '',
-  `org_parent_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `org_group_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `contact_id` varchar(100) NOT NULL DEFAULT '',
-  `org_picture` varchar(100) NOT NULL DEFAULT '',
-  `org_comments` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`org_id`)
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `parent_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `comments` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -869,7 +867,7 @@ CREATE TABLE `oa_org` (
 
 LOCK TABLES `oa_org` WRITE;
 /*!40000 ALTER TABLE `oa_org` DISABLE KEYS */;
-INSERT INTO `oa_org` VALUES (0,'Default Organisation',0,0,'','','');
+INSERT INTO `oa_org` VALUES (0,'Default Organisation',0,0,'');
 /*!40000 ALTER TABLE `oa_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1017,7 +1015,7 @@ CREATE TABLE `oa_user_org` (
   KEY `user_id` (`user_id`),
   KEY `org_id` (`org_id`),
   CONSTRAINT `oa_user_org_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_user_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `oa_org` (`org_id`) ON DELETE CASCADE
+  CONSTRAINT `oa_user_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `oa_org` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

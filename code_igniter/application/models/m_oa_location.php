@@ -88,11 +88,11 @@ class M_oa_location extends MY_Model
      *
      * @return string
      */
-    public function set_group_id($location_id, $group_id)
+    public function set_group_id($id, $group_id)
     {
         $sql = "UPDATE oa_location SET location_group_id = ? WHERE location_id = ? ";
         $sql = $this->clean_sql($sql);
-        $data = array("$group_id", "$location_id");
+        $data = array("$group_id", "$id");
         $query = $this->db->query($sql, $data);
     }
 
@@ -105,11 +105,11 @@ class M_oa_location extends MY_Model
      *
      * @return string
      */
-    public function get_location_details($org_id)
+    public function get_location_details($id)
     {
         $sql = "SELECT oa_location.*, count(oa_group_sys.system_id) as total FROM oa_location LEFT JOIN oa_group_sys ON oa_group_sys.group_id = oa_location.location_group_id where oa_location.location_id = ? GROUP BY oa_location.location_id LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array("$org_id");
+        $data = array("$id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
 

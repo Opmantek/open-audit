@@ -434,7 +434,7 @@ function display_org() {
 	<?php
     $org_form = "<option value=' '>".__("Choose an Org")."<\/option>";
     foreach ($orgs as $org) {
-        $org_form .= "<option value='".intval($org->org_id)."'>".htmlentities($org->org_name)."<\/option>";
+        $org_form .= "<option value='".intval($org->id)."'>".htmlentities($org->name)."<\/option>";
     }
     if ($org_id != "") {
         $org_form = "<select id='man_org_id' onchange='send_org();'>".$org_form."<\/select>";

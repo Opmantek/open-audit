@@ -4697,22 +4697,10 @@ class admin extends MY_Controller
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_nmap_os'";
             $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00',0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).')";
 
-
             $sql[] = "ALTER TABLE oa_user ADD permissions text NOT NULL default ''";
 
             $sql[] = "UPDATE oa_org SET org_name = 'Default Organisation' WHERE org_name = '' AND org_id = 0";
             $sql[] = "UPDATE oa_org SET org_comments = '' WHERE org_comments = 'Default Organisation.' AND org_id = 0";
-
-            # change the oa_org to the new SQL schema style
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_name name varchar(100) NOT NULL DEFAULT ''";
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_parent_id parent_id int(10) unsigned DEFAULT NULL";
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_group_id group_id int(10) unsigned DEFAULT NULL";
-            // $sql[] = "ALTER TABLE oa_org DROP contact_id";
-            // $sql[] = "ALTER TABLE oa_org DROP org_picture";
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_comments comments text NOT NULL DEFAULT ''";
-            // $sql[] = "UPDATE oa_org SET name = 'Default Organisation' WHERE id = 0";
-            // $sql[] = "ALTER TABLE oa_org ADD CONSTRAINT oa_org_parent FOREIGN KEY (parent_id) REFERENCES oa_org (id)";
 
             $sql[] = "DROP TABLE IF EXISTS `oa_user_org`";
             $sql[] = "CREATE TABLE `oa_user_org` (
@@ -4912,6 +4900,25 @@ class admin extends MY_Controller
             $query = $this->db->query($sql);
 
             $sql[] = "ALTER TABLE system DROP man_icon";
+            # gave to re-run this as we left it in the origin SQL script.
+            $sql[] = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
+            $sql[] = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
+
+            $sql[] = "ALTER TABLE oa_user_org DROP FOREIGN KEY oa_user_org_org_id";
+
+            # change the oa_org to the new SQL schema style
+            $sql[] = "ALTER TABLE oa_org CHANGE org_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_name name varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_parent_id parent_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_group_id group_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE oa_org DROP contact_id";
+            $sql[] = "ALTER TABLE oa_org DROP org_picture";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_comments comments text NOT NULL DEFAULT ''";
+            $sql[] = "UPDATE oa_org SET name = 'Default Organisation' WHERE id = 0";
+
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_org_id FOREIGN KEY (org) REFERENCES oa_org (id)";
+
+            $sql[] = "ALTER TABLE sys_hw_sound ADD CONSTRAINT sys_hw_sound_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
 
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";

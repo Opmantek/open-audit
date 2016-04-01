@@ -331,14 +331,11 @@ class ajax extends MY_Controller
             if (mb_substr_count($this->data['field_name'], 'man_org_id') > 0) {
                 $this->load->model("m_oa_org");
                 $key = $this->m_oa_org->get_org_details($this->data['field_data']);
-                if (empty($key->org_name)) {
-                    $key->org_name = '-';
+                if (empty($key->name)) {
+                    $key->name = '-';
                 }
-                echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->org_name."</span></span></p>\n";
-                echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlentities($key->org_parent_name)."</span></p>\n";
-                #echo "<p><label for='org_contact'>".__('Org Contact').": </label><span id='org_contact'> ".htmlentities($key->contact_id)."</span></p>\n";
-                #echo "<p><label for='org_comments'>".__('Comments').": </label><span id='org_comments'>".htmlentities($key->org_comments)."</span></p>\n";
-                ##echo "<p><label for='org_picture'>" . __('Picture') . ": </label><span id='org_picture'>" . $key->org_picture . "</span></p>\n";
+                echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->name."</span></span></p>\n";
+                echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlentities($key->parent_name)."</span></p>\n";
             }
 
             # finally update any groups that this change has caused

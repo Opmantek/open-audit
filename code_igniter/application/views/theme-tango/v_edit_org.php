@@ -44,36 +44,34 @@ echo form_open('admin_org/edit_org')."\n";
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Organisation Details')?></span></legend>
 	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 	<?php
-    if ($org->org_parent_id == '0') { $org->org_parent_id = ''; } ?>
+    if ($org->parent_id == '0') { $org->parent_id = ''; } ?>
 	<table width="90%" cellpadding = "0" cellspacing="0">
 		<tr>
 			<td style='width:50%'>
-				<p><label for='org_name'><?php echo __("Name")?>: </label><input type='text' id='org_name' name='org_name' tabindex='1' title='<?php echo __('Organisation Name'); ?>' value="<?php echo htmlentities($org->org_name); ?>"/><?php echo htmlentities($error_message); ?></p>
-				<p><label for='org_parent_id'><?php echo __("Parent")?>: </label>
-					<select id='org_parent_id' name='org_parent_id' tabindex='2' title='Parent'/>
+				<p><label for='org_name'><?php echo __("Name")?>: </label><input type='text' id='name' name='name' tabindex='1' title='<?php echo __('Organisation Name'); ?>' value="<?php echo htmlentities($org->name); ?>"/><?php echo htmlentities($error_message); ?></p>
+				<p><label for='parent_id'><?php echo __("Parent")?>: </label>
+					<select id='parent_id' name='parent_id' tabindex='2' title='Parent'/>
 					<?php
                     if (count($org_names) > 0) {
                         foreach ($org_names as $value) {
-                            if ($value->org_id == $org->org_parent_id) {
-                                echo "\n\t\t\t\t\t\t<option value='".intval($value->org_id)."' selected>".htmlentities($value->org_name)."</option>";
-                            } elseif ($value->org_id == $org->org_id) {
+                            if ($value->id == $org->parent_id) {
+                                echo "\n\t\t\t\t\t\t<option value='".intval($value->id)."' selected>".htmlentities($value->name)."</option>";
+                            } elseif ($value->id == $org->id) {
                                 # do not output itself to be a potential parent.
                             } else {
-                                echo "\n\t\t\t\t\t\t<option value='".intval($value->org_id)."'>".htmlentities($value->org_name)."</option>";
+                                echo "\n\t\t\t\t\t\t<option value='".intval($value->id)."'>".htmlentities($value->name)."</option>";
                             }
                         }
                         echo "\n";
                     } ?>
 					</select>
 				</p>
-				<p><label for='org_picture'><?php echo __('Picture')?>: </label><input type='text' id='org_picture' name='org_picture' tabindex='3' title='<?php echo __('Picture'); ?>'  value="<?php echo htmlentities($org->org_picture); ?>"/></p>
-				<p><label for='org_comments'><?php echo __('Comments')?>: </label><input type='text' id='org_comments' name='org_comments' tabindex='4' title='<?php echo __('Comments'); ?>'  value="<?php echo htmlentities($org->org_comments); ?>"/></p>
+				<p><label for='comments'><?php echo __('Comments')?>: </label><input type='text' id='comments' name='comments' tabindex='4' title='<?php echo __('Comments'); ?>'  value="<?php echo htmlentities($org->comments); ?>"/></p>
 				<p><label for='submit'></label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
 	</table>
-<input type="hidden" value="<?php echo intval($org->org_id); ?>" name="org_id" id="org_id" />
-<input type="hidden" value="" name="contact_id" id="contact_id" />
+<input type="hidden" value="<?php echo intval($org->id); ?>" name="id" id="id" />
 </fieldset>
 <?php echo form_close(); ?>
 </div>

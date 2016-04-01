@@ -196,7 +196,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                         <option value=''></option>
                 <?php
                     foreach ($orgs as $org) {
-                        echo "<option value='" . $org->org_id . "'>" . $org->org_name . "</option>\n";
+                        echo "<option value='" . $org->id . "'>" . $org->name . "</option>\n";
                     }
                 ?>
                     </select>
