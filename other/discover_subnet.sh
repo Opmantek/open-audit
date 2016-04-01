@@ -51,6 +51,7 @@ system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
 sequential="n"
 os_scan="n"
+force_ping="n"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -96,6 +97,10 @@ if [ "$help" == "y" ]; then
 	echo "     0 - No output."
 	echo "     1 - Minimal Output."
 	echo "    *2 - Verbose output."
+	echo ""
+	echo "  force_ping"
+	echo "    *n - When discovering devices, do not check for ping response."
+	echo "     y - Check for a ping response and only discover those devices that do respond."
 	echo ""
 	echo "  os_scan"
 	echo "    *n - Do not use the -O Nmap flag when scanning devices."
@@ -199,33 +204,35 @@ fi
 
 i=0
 j=0
-# removed the below for 1.12.2 - scan every IP now as we're checking for devices not responding to a ping
-# for line in $(nmap -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
-# 	if [ "$debugging" -gt 0 ]; then
-# 		echo "$line"
-# 	fi
-# 	host=$(echo "$line" | cut -d" " -f5)
-# 	let "i = i + 1"
-# 	if [[ "$line" == *"[host down]"* ]]; then
-# 		if [[ "$log_no_response" == "y" ]]; then
-# 			log_entry="Non responsive ip address $host"
-# 			write_log "$log_entry"
-# 		fi
-# 	else
-# 		let "j = j + 1"
-# 		hosts="$hosts"$'\n'"$host"
-# 	fi
-# done
-
 hosts=""
-for line in $(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
-	let "i = i + 1"
-	hosts="$hosts"$'\n'"$line"
-done
+# removed the below for 1.12.2 - scan every IP now as we're checking for devices not responding to a ping
+if [ "$force_ping" == "y" ]; then
+	for line in $(nmap -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
+		if [ "$debugging" -gt 0 ]; then
+			echo "$line"
+		fi
+		host=$(echo "$line" | cut -d" " -f5)
+		let "i = i + 1"
+		if [[ "$line" == *"[host down]"* ]]; then
+			if [[ "$log_no_response" == "y" ]]; then
+				log_entry="Non responsive ip address $host"
+				write_log "$log_entry"
+			fi
+		else
+			let "j = j + 1"
+			hosts="$hosts"$'\n'"$host"
+		fi
+	done
+else
+	for line in $(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
+		let "i = i + 1"
+		hosts="$hosts"$'\n'"$line"
+	done
 
-if [ "$debugging" -gt 0 ]; then
-	echo "Total ip addresses: $i"
-	#echo "Total responding ip addresses: $j"
+	if [ "$debugging" -gt 0 ]; then
+		echo "Total ip addresses: $i"
+		#echo "Total responding ip addresses: $j"
+	fi
 fi
 
 result_file=""
