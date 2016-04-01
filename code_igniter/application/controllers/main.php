@@ -594,11 +594,13 @@ class main extends MY_Controller
     {
         # search for a match on PRODUCTION devices only.
         # search for name, ip
+        $this->data['search'] = '';
         if (isset($_POST['search'])) {
             $this->data['search'] = urldecode($_POST['search']);
         }
         $this->data['search'] = html_entity_decode($this->data['search']);
         if ($this->data['search'] == '') {
+            //exit();
             redirect('main/list_groups/');
         }
 

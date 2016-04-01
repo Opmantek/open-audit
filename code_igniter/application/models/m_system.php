@@ -706,7 +706,8 @@ class M_system extends MY_Model
 			WHERE ( system.hostname LIKE ? OR
 				system.fqdn LIKE ? OR
 				system.domain LIKE ? OR
-				system.man_ip_address LIKE ? OR
+                system.man_ip_address LIKE ? OR
+                system.man_ip_address LIKE ? OR
 				ip.ip LIKE ? ) AND
 				system.man_status = 'production' AND
 				oa_group_user.user_id = ? AND
@@ -714,8 +715,7 @@ class M_system extends MY_Model
 			GROUP BY system.system_id
 			ORDER BY system.hostname";
         $sql = $this->clean_sql($sql);
-        #$data = array("$search", "$search", "$search", "$search_ip", "$search_ip", "$search", $this->user->user_id);
-        $data = array("$search", "$search", "$search", "$search", "$search_ip", $this->user->user_id);
+        $data = array("$search", "$search", "$search", "$search", "$search_ip", "$search_ip", $this->user->user_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         for ($i = 0; $i<count($result); $i++) {
