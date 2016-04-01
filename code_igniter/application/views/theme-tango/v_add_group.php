@@ -68,7 +68,7 @@
 			<select id='dynamic_other_table' name='dynamic_other_table' onchange='retrieve_fields();' style='width:250px;'>
 				<option value='' selected='selected'>Choose a table from the DB</option>
 				<?php
-                $tables = array ('bios', 'disk', 'dns', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+                $tables = array ('bios', 'disk', 'dns', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
                 foreach ($tables as $table) {
                 	echo "	<option value='".$table."'>".$table."</option>\n";
                 } ?>
@@ -113,7 +113,7 @@
 </fieldset>
 <p><br /></p>
 <p><br /></p>
-<?php $display_sql = "SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? AND system.man_status = 'production' GROUP BY system.system_id"; ?>
+<?php $display_sql = "SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.icon FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? AND system.man_status = 'production' GROUP BY system.system_id"; ?>
 <fieldset id="group_display_sql_fieldset" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Group Display SQL'); ?></span></legend>
 	<p><label for='group_display_sql'><?php echo __('Display SQL'); ?>: </label><textarea name='group_display_sql' id='group_display_sql' rows='12' cols='120'><?php echo $display_sql; ?></textarea></p>
@@ -139,7 +139,7 @@
 		<tr>
 			<td><input type='text' id='column_order_1' name='column_order_1' 		value='1' size='5' /></td>
 			<td><input type='text' id='column_name_1' name='column_name_1' 			value='Icon' size='10' /></td>
-			<td><input type='text' id='column_variable_1' name='column_variable_1' 	value='man_icon' size='10' /></td>
+			<td><input type='text' id='column_variable_1' name='column_variable_1' 	value='icon' size='10' /></td>
 			<td><select id='column_type_1' name='column_type_1' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __('Link'); ?></option>
