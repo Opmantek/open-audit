@@ -37,8 +37,18 @@
 #echo "<pre>\n";
 #print_r($this->response);
 #exit();
-echo "<h2>Devices</h2>\n";
-echo "<div style=\"float:left; width:100%;\">\n";
+#echo "<h2>Devices</h2>\n";
+#echo "<div style=\"float:left; width:100%;\">\n";
+?>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+        <span class="text-left">Devices</span>
+        <span class="pull-right">Count: <?php echo count($this->response->data); ?></span>
+    </h3>
+  </div>
+  <div class="panel-body">
+<?php
 if (!empty($this->response->data)) {
 ?>
 <form action="devices?action=edit" method="post" id="bulk_edit" name="bulk_edit">
@@ -116,6 +126,7 @@ if (!empty($this->response->error)) {
     echo "</pre>\n";
 }
 ?>
+</div>
 </div>
 <?php
 exit();
