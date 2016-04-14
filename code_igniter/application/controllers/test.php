@@ -41,7 +41,7 @@ class test extends CI_Controller
         // must be an admin to access this page
         $this->load->model('m_oa_user');
         $this->m_oa_user->validate_user();
-        if ($this->user->user_admin != 'y') {
+        if ($this->user->admin != 'y') {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
@@ -217,6 +217,75 @@ class test extends CI_Controller
 
         $instring = implode(',', $org_id_list) . "\n";
         echo $instring . "\n";
+    }
+
+    public function ddd()
+    {
+        $fields = $this->db->field_data('edit_log');
+        echo "<pre>\n";
+        print_r($fields);
+    }
+
+    public function eee()
+    {
+        echo "<pre>\n";
+        print_r($this->session);
+    }
+
+    public function org_user_3()
+    {
+        $this->output->enable_profiler(true);
+        echo "<pre>\n";
+        $end = array();
+
+
+        $sql = "SELECT * FROM oa_user_org WHERE user_id = ? ORDER BY access_level desc";
+        $data = array(1);
+        $query = $this->db->query($sql, $data);
+        $user_orgs = $query->result();
+        print_r($user_orgs);
+
+        $sql = "SELECT * FROM oa_org";
+        $query = $this->db->query($sql);
+        $this->orgs = $query->result();
+        print_r($this->orgs);
+
+        foreach ($this->orgs as $org) {
+            foreach ($user_orgs as $user_org) {
+                if ($user_org->org_id == $org->id) {
+                    $end[$org->id] = $user_org->access_level;
+                }
+            }
+        }
+
+        print_r($end);
+
+        # TODO - get a list of user_org.org_id's with perms like '%r%' and
+        # feed it into the array below
+        $org_id_list = array();
+        foreach ($end as $key => $value) {
+            $org_id_list[$key] = $value;
+            foreach ($this->get_org_id_3($key, $value) as $key2 => $value2) {
+                $org_id_list[$key2] = $value2;
+            }
+        }
+        print_r($org_id_list);
+    }
+
+
+    private function get_org_id_3($org_id, $access_level)
+    {
+        $org_id_list = array();
+        foreach ($this->orgs as $org) {
+            if ($org->parent_id == $org_id and $org->id != 0) {
+                $org_id_list[$org->id] = $access_level;
+                echo "Set OrgId: " . $org->id . " AccessLevel: $access_level\n-----\n";
+                foreach ($this->get_org_id_3($org->id, $access_level) as $key2 => $value2) {
+                    $org_id_list[$key2] = $value2;
+                }
+            }
+        }
+        return($org_id_list);
     }
 
     public function org_user()
