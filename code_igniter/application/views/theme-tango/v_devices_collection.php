@@ -108,7 +108,7 @@ if (!empty($this->response->data)) {
 }
 if (!empty($this->response->error)) {
     echo "<pre>\n";
-    print_r($this->response->error);
+    print_r($error);
     echo "</pre>\n";
 }
 ?>
