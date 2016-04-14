@@ -361,7 +361,7 @@ if (! function_exists('inputRead')) {
         $CI->response->filter = array();
         $CI->response->query_string = urldecode($_SERVER['QUERY_STRING']);
         if ($CI->response->query_string != '') {
-            $reserved_words = ' properties limit sub_resource action sort current offset format debug groupby ';
+            $reserved_words = ' properties limit sub_resource sub_resource_id action sort current offset format debug groupby ';
             foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
                 $query = new stdClass();
                 $query->name = substr($item, 0, strpos($item, '='));

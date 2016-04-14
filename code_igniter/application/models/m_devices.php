@@ -273,4 +273,90 @@ class M_devices extends MY_Model
             return ($result);
         }
     }
+
+    public function report()
+    {
+        $CI = & get_instance();
+        $filter = $this->build_filter();
+        $join = $this->build_join();
+
+        // use the below for new style Org permissions
+        $sql = "SELECT system.system_id FROM system " . $join . " WHERE system.man_org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->groupby;
+        $sql = $this->clean_sql($sql);
+        $data = array($CI->user->id);
+        $temp_debug = $this->db->db_debug;
+        $this->db->db_debug = FALSE;
+        $query = $this->db->query($sql, $data);
+        if ($CI->response->debug) {
+            $CI->response->sql = $this->db->last_query();
+        }
+        $this->db->db_debug = $temp_debug;
+        if ($this->db->_error_message()) {
+            if (empty($CI->error)) {
+                $CI->error = new stdClass();
+            }
+            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
+            $CI->error->function = 'm_devices::read_devices';
+            $CI->error->code = 'ERR-0009';
+            log_error($CI->error);
+            $CI->response->error->detail_specific = $this->db->_error_message();
+            return false;
+        }
+        $result = $query->result();
+        if (count($result) == 0) {
+            if (empty($CI->error)) {
+                $CI->error = new stdClass();
+            }
+            $CI->error->function = 'm_devices::readDevices';
+            $CI->error->code = 'ERR-0005';
+            log_error($CI->error);
+            return false;
+        }
+        foreach ($result as $temp) {
+            $temp_ids[] = $temp->system_id;
+        }
+        $system_id_list = implode(',', $temp_ids);
+        unset($temp, $temp_ids);
+
+
+        $sql = "SELECT oa_report.* FROM oa_report WHERE report_id = ?";
+        $sql = $this->clean_sql($sql);
+        $data = array(intval($CI->response->sub_resource_id));
+        $query = $this->db->query($sql, $data);
+        if ($CI->response->debug) {
+            $CI->response->sql = $this->db->last_query();
+        }
+        $this->db->db_debug = $temp_debug;
+        if ($this->db->_error_message()) {
+            if (empty($CI->error)) {
+                $CI->error = new stdClass();
+            }
+            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
+            $CI->error->function = 'm_devices::read_devices';
+            $CI->error->code = 'ERR-XXXX';
+            log_error($CI->error);
+            $CI->response->error->detail_specific = $this->db->_error_message();
+            return false;
+        }
+        $result = $query->result();
+        if (count($result) > 0) {
+            $report = $result[0];
+        } else {
+            echo "FAIL\n";
+            exit();
+        }
+        $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id', '', $report->report_sql);
+        $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id)', '', $report->report_sql);
+        $report->report_sql = str_ireplace('oa_group_sys.group_id = @group', 'system.system_id IN (' . $system_id_list . ')', $report->report_sql);
+        $report->report_sql = str_ireplace('system.system_id = oa_group_sys.system_id', 'system.system_id IN (' . $system_id_list . ')', $report->report_sql);
+
+        $query = $this->db->query($report->report_sql);
+        $result = $query->result();
+        return($result);
+
+
+
+
+    }
+
 }

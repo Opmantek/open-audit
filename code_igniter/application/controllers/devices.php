@@ -98,10 +98,10 @@ class devices extends MY_Controller
             }
         }
 
-        // $this->response->format = 'json';
-        // $this->response->debug = true;
-        // echo "<pre>\n"; print_r($this->response); echo "</pre>\n";
-        // exit();
+        #$this->response->format = 'json';
+        #$this->response->debug = true;
+        #output($this->response);
+        #exit();
 
     }
 
@@ -122,8 +122,10 @@ class devices extends MY_Controller
 
     private function collection()
     {
-        if ($this->response->sub_resource != '') {
+        if ($this->response->sub_resource != '' and $this->response->sub_resource != 'report') {
             $this->response->data = $this->m_devices->read_devices_sub_resource();
+        } else if ($this->response->sub_resource != '' and $this->response->sub_resource == 'report') {
+            $this->response->data = $this->m_devices->report();
         } else {
             $this->response->data = $this->m_devices->read_devices();
         }
