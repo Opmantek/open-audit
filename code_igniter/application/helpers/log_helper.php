@@ -34,9 +34,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('log_error')) {
+    // the $error is an object which MUST^ contina ->code
     function log_error($error)
     {
-        if (!isset($error)) {
+        if (!isset($error) or is_null($error)) {
             $error = new stdClass();
         }
         if (!isset($error->controller) or $error->controller == '') {
@@ -50,22 +51,23 @@ if (! function_exists('log_error')) {
             $error->code = '';
         }
         // get the details of the error from the error helper
-        $log_details = getError($error);
-        $log_details->file = 'system';
+        $error_details = new stdClass();
+        $error_details = getError($error->code);
+        $error_details->file = 'system';
 
         // log the details of the error to the log file
-        stdlog($log_details);
+        stdlog($error_details);
         // if the error is severe enough, set the error in the response object
-        if ($log_details->severity <= 3) {
+        if ($error_details->severity <= 3) {
             error_reporting(E_ALL);
             $CI = & get_instance();
-            unset($log_details->extended_message);
-            unset($log_details->file);
-            unset($log_details->controller);
-            unset($log_details->model);
-            $log_details->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $log_details->code;
-            $CI->response->header = $log_details->type;
-            $CI->response->error = $log_details;
+            unset($error_details->extended_message);
+            unset($error_details->file);
+            unset($error_details->controller);
+            unset($error_details->model);
+            $error_details->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error_details->code;
+            $CI->response->header = $error_details->status;
+            $CI->response->error = $error_details;
         }
     }
 }
@@ -271,8 +273,8 @@ if (! function_exists('stdlog')) {
         }
 
         if (!isset($log_details->user) or $log_details->user == '') {
-            if (isset($CI->user->user_full_name)) {
-                $log->user = @$CI->user->user_full_name;
+            if (isset($CI->user->full_name)) {
+                $log->user = @$CI->user->full_name;
             } else {
                 $log->user = '-';
             }

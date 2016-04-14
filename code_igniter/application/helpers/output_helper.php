@@ -52,6 +52,10 @@ if (! function_exists('output')) {
         error_reporting(E_ALL);
         $CI = & get_instance();
         $CI->response = output_convert($CI->response);
+        // if we have an error set, make sure we remove the data object / array
+        if (!empty($CI->response->error) and !$CI->response->data) {
+            unset($CI->response->data);
+        }
         switch ($CI->response->format) {
             case 'screen':
                 output_screen($CI->response);
@@ -125,6 +129,9 @@ if (! function_exists('output')) {
         header("Pragma: no-cache");
         header("Expires: 0");
         header($CI->response->header);
+        if ($CI->response->debug) {
+            $CI->response->user = $CI->user;
+        }
         echo json_encode($CI->response);
     }
 
@@ -136,21 +143,23 @@ if (! function_exists('output')) {
         header("Pragma: no-cache");
         header("Expires: 0");
         header($CI->response->header);
-        echo json_encode($CI->response->data);
+        if (isset($CI->response->data)) {
+            echo json_encode($CI->response->data);
+        } else if (isset($CI->response->error)) {
+            echo json_encode($CI->response->error);
+        }
     }
 
     function output_screen()
     {
         $CI = & get_instance();
-        // if (isset($CI->response->data)) {
-        //     output_table();
-        // } else {
-        //     $CI->response->data = '';
-        // }
         header($CI->response->header);
         $CI->response->user = $CI->user;
-        #echo "<pre>\n";
-        #print_r($CI->response);
+        if (!empty($CI->response->errors)) {
+            $CI->response->include = 'v_error';
+        } else {
+            $CI->response->include = 'v_' . $CI->response->collection . '_' . $CI->response->action;
+        }
         $CI->load->view('v_template', $CI->response);
     }
 

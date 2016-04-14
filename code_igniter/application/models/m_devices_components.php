@@ -49,14 +49,14 @@ class M_devices_components extends MY_Model
             // we require a system id
             return;
         }
+        $filter = '';
+        // if (stripos($filter, 'current = \'full') !== false or stripos($filter, 'current = "full') !== false) {
+        //     $current = 'full';
+        // }
 
-        if (stripos($filter, 'current = \'full') !== false or stripos($filter, 'current = "full') !== false) {
-            $current = 'full';
-        }
-
-        if (stripos($filter, 'current = \'delta') !== false or stripos($filter, 'current = "delta') !== false) {
-            $current = 'delta';
-        }
+        // if (stripos($filter, 'current = \'delta') !== false or stripos($filter, 'current = "delta') !== false) {
+        //     $current = 'delta';
+        // }
 
         if ($current == 'delta' or $current == 'full') {
             $sql = "SELECT first_seen FROM `$table` WHERE system_id = ? ORDER BY first_seen LIMIT 1";
@@ -86,9 +86,9 @@ class M_devices_components extends MY_Model
             }
         }
         $sql = '';
-        if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
-            $filter = 'AND ' . $filter;
-        }
+        // if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
+        //     $filter = 'AND ' . $filter;
+        // }
         if ($found_id) {
             if ($found_current) {
                 if ($current == 'y') {
@@ -1010,7 +1010,8 @@ class M_devices_components extends MY_Model
             $result = $query->result();
 
             if (isset($result[0]->ip) and $result[0]->ip != '') {
-                $sql = "UPDATE system SET ip = ? WHERE id = ?";
+                #$sql = "UPDATE system SET ip = ? WHERE id = ?";
+                $sql = "UPDATE system SET man_ip_address = ? WHERE system_id = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($result[0]->ip, "$id");
                 $query = $this->db->query($sql, $data);

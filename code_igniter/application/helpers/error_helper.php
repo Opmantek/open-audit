@@ -65,8 +65,19 @@ if (! function_exists('getError')) {
         $error = new stdClass();
         $trace = debug_backtrace();
         $caller = $trace[1];
-        $error->controller = @$caller['class'];
-        $error->function = @$caller['function'];
+
+        $CI = & get_instance();
+
+        if (empty($CI->error->controller)) {
+            $error->controller = @$caller['class'];
+        } else {
+            $error->controller = $CI->error->controller;
+        }
+        if (empty($CI->error->function)) {
+            $error->function = @$caller['function'];
+        } else {
+            $error->function = $CI->error->function;
+        }
         $error->code = $error_id;
 
         $error_array = array();
@@ -74,14 +85,14 @@ if (! function_exists('getError')) {
 
         $error_array['ERR-0001'] = new stdClass();
         $error_array['ERR-0001']->code = 'ERR-0001';
-        $error_array['ERR-0001']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0001']->status = 'HTTP/1.1 404 Not Found';
         $error_array['ERR-0001']->severity = 3;
         $error_array['ERR-0001']->title = "No groups returned for user when " . $error->controller . " called " . $error->function . ".";
         $error_array['ERR-0001']->detail = 'When requesting the list of groups the user is assigned access to, no groups were returned. This usually indicates either (rightly) that the user has no permissions on any groups (which will result in this user not being able to access any device data in Open-AudIT) or that something has gone wrong inside Open-AudIT. You might go to menu -> Admin -> Users -> List Users, click on edit for this user and make sure they have an access level on at least one group.';
 
         $error_array['ERR-0002'] = new stdClass();
         $error_array['ERR-0002']->code = 'ERR-0002';
-        $error_array['ERR-0002']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0002']->status = 'HTTP/1.1 404 Not Found';
         $error_array['ERR-0002']->severity = 3;
         $error_array['ERR-0002']->title = "No object could be retrieved when " . $error->controller . " called " . $error->function . ".";
         $error_array['ERR-0002']->detail = "When calling this function an identifier (usually but not always an integer based id) should be supplied. The supplied item was either blank, not an integer based id or we could not determine the corresponding object based on the details provided. Please check the log file for the controller and model this occurred on and report the issue to Opmantek.";
@@ -102,9 +113,9 @@ if (! function_exists('getError')) {
 
         $error_array['ERR-0005'] = new stdClass();
         $error_array['ERR-0005']->code = 'ERR-0005';
-        $error_array['ERR-0005']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0005']->status = 'HTTP/1.1 404 Not Found';
         $error_array['ERR-0005']->severity = 3;
-        $error_array['ERR-0005']->title = "No data returned for user when " . $error->controller . " called " . $error->function . ".";
+        $error_array['ERR-0005']->title = "No data returned for the request when " . $error->controller . " called " . $error->function . ".";
         $error_array['ERR-0005']->detail = 'A request was made to a model, but no data was retrieved from the database.';
 
         $error_array['ERR-0006'] = new stdClass();
@@ -128,6 +139,13 @@ if (! function_exists('getError')) {
         $error_array['ERR-0008']->title = "User insufficient access.";
         $error_array['ERR-0008']->detail = 'A user attempted to view a resource for which they do not have sufficient authorisation.';
 
+        $error_array['ERR-0009'] = new stdClass();
+        $error_array['ERR-0009']->code = 'ERR-0009';
+        $error_array['ERR-0009']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0009']->severity = 3;
+        $error_array['ERR-0009']->title = "Bad Request.";
+        $error_array['ERR-0009']->detail = 'Parameters you have provided failed use.';
+
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
                 $error_each->severity_text = 'error';
@@ -137,7 +155,7 @@ if (! function_exists('getError')) {
             }
         }
 
-        if (!isset($error->code)) {
+        if (!isset($error->code) or is_null($error->code)) {
             return $error_array;
         } elseif (isset($error->code) and isset($error_array[$error->code])) {
             if (isset($error->function)) {
@@ -152,9 +170,6 @@ if (! function_exists('getError')) {
             }
             return $error_array[$error->code];
         }
-
-
-
 }
 
 /* End of file error_helper.php */

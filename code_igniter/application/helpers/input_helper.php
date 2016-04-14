@@ -52,11 +52,12 @@ if (! function_exists('inputRead')) {
         // Our default values are below
         // resource is the controller name (devices, groups, et al)
         // id is the integer value (if any) following the controller name in the URL
-        // subresource = blank
-        // subresource_id = blank
+        // sub_resource = blank
+        // sub_resource_id = blank
         // action = read if id is set or list if id is not set (create, read, update, delete, list, execute)
         // sort = blank
         // current = y
+        // groupby = blank
         // limit = 10000
         // offset = 0
         // format = json
@@ -74,38 +75,58 @@ if (! function_exists('inputRead')) {
         # enable the $_GET global
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
 
-        # get our resource - usually devices, groups, reports, etc
+        # get our collection - usually devices, groups, reports, etc
         $temp = $CI->uri->segment(1);
-        $CI->response->resource = '';
+        $CI->response->collection = '';
         if (isset($temp) and $temp != '') {
-            $CI->response->resource = (string)$temp;
+            $CI->response->collection = (string)$temp;
         }
         unset($temp);
 
-        # get the id of the resource in question
+        # get debug
+        $CI->response->debug = false;
+        if (isset($_GET['debug'])) {
+            $CI->response->debug = $_GET['debug'];
+        }
+        if (isset($_POST['debug'])) {
+            $CI->response->debug = $_POST['debug'];
+        }
+        if (strtolower($CI->response->debug) == 'true') {
+            $CI->response->debug = true;
+        } else {
+            $CI->response->debug = false;
+        }
+
+        # get the id of the collection item in question
         $temp = $CI->uri->segment(2);
         $CI->response->id = '';
         if (isset($temp) and is_numeric($temp) and $temp != '') {
-            $CI->response->id = intval($temp);
+            #$CI->response->id = intval($temp);
+            $CI->response->id = $temp;
         } else {
-            $reserved_words = ' create edit update delete list execute ';
+            $reserved_words = ' create edit update delete list execute debug ';
             if ($temp != '' and stripos($reserved_words, ' '.$temp.' ') === false) {
                 // TODO - SEPARATE THIS OUT
-                switch ($CI->response->resource) {
+                switch ($CI->response->collection) {
                 case 'devices':
                     $sql = "SELECT system_id AS id FROM system WHERE hostname LIKE ? ORDER BY system_id DESC LIMIT 1";
+                    $table = 'system';
                     break;
                 case'groups':
                     $sql = "SELECT group_id AS id FROM oa_group WHERE group_name LIKE ? LIMIT 1";
+                    $table = 'oa_group';
                     break;
                 case'orgs':
                     $sql = "SELECT id FROM oa_org WHERE name LIKE ? LIMIT 1";
+                    $table = 'oa_org';
                     break;
                 case'users':
                     $sql = "SELECT user_id AS id FROM oa_user WHERE user_name LIKE ? LIMIT 1";
+                    $table = 'oa_user';
                     break;
                 case'reports':
                     $sql = "SELECT report_id AS id FROM oa_report WHERE report_name LIKE ? LIMIT 1";
+                    $table = 'oa_report';
                     break;
                 }
                 $data = array("$temp");
@@ -122,106 +143,114 @@ if (! function_exists('inputRead')) {
         unset($temp);
         unset($reserved_words);
 
-        # get the subresource
-        $CI->response->subresource = '';
+        # get the sub_resource
+        $CI->response->sub_resource = '';
         $temp = @$CI->uri->segment(3);
         if (!empty($temp)) {
-            $CI->response->subresource = (string)$CI->uri->segment(3);
+            $CI->response->sub_resource = (string)$CI->uri->segment(3);
         }
-        if (!empty($_GET['subresource'])) {
-            $CI->response->subresource = $_GET['subresource'];
+        if (!empty($_GET['sub_resource'])) {
+            $CI->response->sub_resource = $_GET['sub_resource'];
         }
-        if (!empty($_POST['subresource'])) {
-            $CI->response->subresource = $_POST['subresource'];
+        if (!empty($_POST['sub_resource'])) {
+            $CI->response->sub_resource = $_POST['sub_resource'];
         }
+        $CI->response->sub_resource = str_replace(array(',', '.', '\'', '"', '(', ')'), '', $CI->response->sub_resource);
 
 
-        # get the subresource id
-        $CI->response->subresource_id = '';
+        # get the sub_resource id
+        $CI->response->sub_resource_id = '';
         $temp = @$CI->uri->segment(4);
-        if (!empty($temp)) {
-            $CI->response->subresource_id = (int)$CI->uri->segment(4);
+        if (isset($temp) and $temp != '') {
+            $CI->response->sub_resource_id = $CI->uri->segment(4);
         }
-        if (!empty($_GET['subresource_id'])) {
-            $CI->response->subresource_id = $_GET['subresource_id'];
+        if (!empty($_GET['sub_resource_id'])) {
+            $CI->response->sub_resource_id = $_GET['sub_resource_id'];
         }
-        if (!empty($_POST['subresource_id'])) {
-            $CI->response->subresource_id = $_POST['subresource_id'];
+        if (!empty($_POST['sub_resource_id'])) {
+            $CI->response->sub_resource_id = $_POST['sub_resource_id'];
         }
+        $CI->response->sub_resource_id = intval($CI->response->sub_resource_id);
 
 
         # get the action
         # valid values are typically - create, read, update, delete, list, execute
         # TODO - request_method == post and body contains system_id, then update, not create
         $CI->response->action = '';
-        $temp = '';
+        $action = '';
         if (isset($_GET['action'])) {
-            $temp = $_GET['action'];
+            $action = $_GET['action'];
         }
         if (isset($_POST['action'])) {
-            $temp = $_POST['action'];
+            $action = $_POST['action'];
         }
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id == '') {
+
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
+            $CI->response->post_data = json_decode($_POST['data']);
+        }
+        if (isset($CI->response->post_data->id)) {
+            $CI->response->id = $CI->response->post_data->id;
+        }
+
+        $CI->response->header = 'HTTP/1.1 200 OK';
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id == '' and ($action == '' or $action == 'list')) {
             // return a list of items
             $CI->response->action = 'collection';
-            $CI->response->header = 'HTTP/1.1 200 OK';
         }
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id != '') {
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id == '' and $action == 'create') {
+            // show a HTML form for entering a new item
+            $CI->response->action = 'create_form';
+        }
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id == '' and $action == 'import') {
+            // show a HTML form for entering a new item
+            $CI->response->action = 'import_form';
+        }
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id != '' and $action == '') {
             // return a single item
             $CI->response->action = 'read';
-            $CI->response->header = 'HTTP/1.1 200 OK';
+            $CI->response->id = intval($CI->response->id);
         }
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id == '' and $temp == 'create') {
-            // show a HTML form for entering a new item
-            $CI->response->action = 'new';
-            $CI->response->header = 'HTTP/1.1 200 OK';
-        }
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id != '' and $temp == 'edit') {
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id != '' and $action == 'edit') {
             // show a HTML form for editing an existing item
-            $CI->response->action = 'edit';
-            $CI->response->header = 'HTTP/1.1 200 OK';
+            $CI->response->action = 'update_form';
         }
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id != '' and $temp == 'execute') {
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'get' and $CI->response->id != '' and $action == 'execute') {
             // mainly used for running a report and displaying the output
             $CI->response->action = 'execute';
-            $CI->response->header = 'HTTP/1.1 200 OK';
         }
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' and $CI->response->id == '') {
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' and $CI->response->id == '' and $action == '') {
             // insert an item
             $CI->response->action = 'create';
             $CI->response->header = 'HTTP/1.1 201 Created';
         }
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' and $CI->response->id != '') {
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' and $CI->response->id == '' and $action == 'import') {
+            // insert an item
+            $CI->response->action = 'import';
+            $CI->response->header = 'HTTP/1.1 201 Created';
+        }
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'post' and $CI->response->id == '' and $action == 'edit') {
+            // show a HTML form for bulk editing items
+            $CI->response->action = 'bulk_update_form';
+        }
+        if ((strtolower($_SERVER['REQUEST_METHOD']) == 'post' or
+            strtolower($_SERVER['REQUEST_METHOD']) == 'put' or
+            strtolower($_SERVER['REQUEST_METHOD']) == 'patch') and $CI->response->id != '' and $action == '') {
             // update an item
             $CI->response->action = 'update';
             $CI->response->header = 'HTTP/1.1 200 OK';
+            $CI->response->id = intval($CI->response->id);
         }
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'delete') {
+        if (strtolower($_SERVER['REQUEST_METHOD']) == 'delete' and $CI->response->id != '') {
             // delete an item
             $CI->response->action = 'delete';
-            $CI->response->header = 'HTTP/1.1 200 OK';
+            $CI->response->id = intval($CI->response->id);
         }
-        if (strtolower($_SERVER['REQUEST_METHOD']) == 'put' or strtolower($_SERVER['REQUEST_METHOD']) == 'patch') {
-            // update an item
-            $CI->response->action = 'update';
-            $CI->response->header = 'HTTP/1.1 200 OK';
-        }
-        // if ($CI->response->action == '') {
-        //     if (isset($_GET['action'])) {
-        //         $CI->response->action = $_GET['action'];
-        //     }
-        //     if (isset($_POST['action'])) {
-        //         $CI->response->action = $_POST['action'];
-        //     }
-        // }
         if ($CI->response->action == '' or $CI->response->action == 'list') {
             $CI->response->action = 'collection';
-            $CI->response->header = 'HTTP/1.1 200 OK';
         }
-        $reserved_words = ' collection read new edit execute create update delete ';
+        $reserved_words = ' collection read new edit execute create update delete debug create_form update_form bulk_update_form import import_form';
         if (stripos($reserved_words, ' '.$CI->response->action.' ') === false) {
             $CI->response->action = 'collection';
-            $CI->response->header = 'HTTP/1.1 200 OK';
         }
 
 
@@ -233,6 +262,16 @@ if (! function_exists('inputRead')) {
         if (isset($_POST['sort'])) {
             $CI->response->sort = $_POST['sort'];
         }
+        $CI->response->sort = str_replace('+', '', $CI->response->sort);
+        if ($CI->response->sort != '') {
+            $temp = explode(',', $CI->response->sort);
+            foreach ($temp as &$item) {
+                if (substr($item, 0, 1) == '-') {
+                    $item = substr($item, 1) . ' DESC';
+                }
+            }
+            $CI->response->sort = 'ORDER BY ' . implode(',', $temp);
+        }
 
         # get current
         $CI->response->current = 'y';
@@ -241,6 +280,19 @@ if (! function_exists('inputRead')) {
         }
         if (isset($_POST['current'])) {
             $CI->response->current = $_POST['current'];
+        }
+        $reserved_words = ' y n all delta ';
+        if (stripos($reserved_words, ' '.$CI->response->current.' ') === false) {
+            $CI->response->current = 'y';
+        }
+
+        # get the group by
+        $CI->response->groupby = '';
+        if (!empty($_GET['groupby'])) {
+            $CI->response->groupby = 'GROUP BY ' . $_GET['groupby'];
+        }
+        if (!empty($_POST['groupby'])) {
+            $CI->response->groupby = 'GROUP BY ' . $_POST['groupby'];
         }
 
         # get the limit
@@ -278,6 +330,10 @@ if (! function_exists('inputRead')) {
         if ($CI->response->format == '') {
             $CI->response->format = 'json';
         }
+        $reserved_words = ' json json_data screen xml ';
+        if (stripos($reserved_words, ' '.$CI->response->format.' ') === false) {
+            $CI->response->format = 'json';
+        }
 
         # get the list of requested properties
         $CI->response->properties = '';
@@ -288,30 +344,60 @@ if (! function_exists('inputRead')) {
             $CI->response->properties = $_POST['properties'];
         }
         if ($CI->response->properties == '') {
-            $CI->response->properties = '*';
+            if ($CI->response->action == 'collection' and  $CI->response->collection == 'devices') { 
+                if ($CI->response->sub_resource == '' or strtolower($CI->response->sub_resource) == 'system') {
+                    $CI->response->properties = 'system.icon, system.man_type, system.system_id, system.hostname, system.man_domain, system.man_ip_address, system.man_description, system.os_family, system.man_status';
+                } else {
+                    $CI->response->properties = $CI->response->sub_resource . '.*';
+                }
+            } else {
+                $CI->response->properties = '*';
+            }
         }
+        $CI->response->properties = str_replace(array('\'', '"', '(', ')'), '', $CI->response->properties);
 
         # get the filter
-        $CI->response->filter = '';
-        if (isset($_GET['filter'])) {
-            $CI->response->filter = $_GET['filter'];
+        $filter = array();
+        $CI->response->filter = array();
+        $CI->response->query_string = urldecode($_SERVER['QUERY_STRING']);
+        if ($CI->response->query_string != '') {
+            $reserved_words = ' properties limit sub_resource action sort current offset format debug groupby ';
+            foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
+                $query = new stdClass();
+                $query->name = substr($item, 0, strpos($item, '='));
+                $query->operator = '=';
+                $query->value = str_replace($query->name.'=', '', $item);
+                $operator = substr($query->value, 0, 1);
+                if ($operator == '=' or $operator == '>' or $operator == '<') {
+                    $query->value = substr($query->value, 1);
+                    $query->operator = $operator;
+                }
+                $operator = substr($query->value, 0, 2);
+                if ($operator == '!=' or $operator == '>=' or $operator == '<=') {
+                    $query->value = substr($query->value, 2);
+                    $query->operator = $operator;
+                }
+                $operator = substr($query->value, 0, 4);
+                if (strtolower($operator) == 'like') {
+                    $query->value = '%' . substr($query->value, 4) . '%';
+                    $query->operator = $operator;
+                }
+                $operator = substr($query->value, 0, 5);
+                if (strtolower($operator) == '!like') {
+                    $query->value = '%' . substr($query->value, 5) . '%';
+                    $query->operator = 'not like';
+                }
+                $query->name = str_replace(array(',', '\'', '"', '(', ')'), '', $query->name);
+
+                if (strpos($reserved_words, ' '.$query->name.' ') === false and $query->name != '') {
+                    $CI->response->filter [] = $query;
+                }
+                unset($query);
+            }
         }
-        if (isset($_POST['filter'])) {
-            $CI->response->filter = $_POST['filter'];
-        }
-        $reserved_words = '=><!()';
-        echo strpbrk($CI->response->filter, $reserved_words) . "\n";
-        if ($CI->response->filter != '' and strpbrk($CI->response->filter, $reserved_words) !== false) {
-            // TODO - throw an error - not using correct syntax
-            $CI->response->filter = '';
-        }
-        if ($CI->response->filter != '') {
-            $CI->response->filter = str_ireplace(' gt ', ' > ', $CI->response->filter);
-            $CI->response->filter = str_ireplace(' ge ', ' >= ', $CI->response->filter);
-            $CI->response->filter = str_ireplace(' lt ', ' < ', $CI->response->filter);
-            $CI->response->filter = str_ireplace(' le ', ' <= ', $CI->response->filter);
-            $CI->response->filter = str_ireplace(' eq ', ' = ', $CI->response->filter);
-            $CI->response->filter = str_ireplace(' ne ', ' != ', $CI->response->filter);
+
+        if (!$CI->response->debug) {
+            unset($CI->response->query_string);
         }
 
         # get the version
@@ -325,9 +411,9 @@ if (! function_exists('inputRead')) {
                 $CI->response->version = 0;
             }
         }
-
         return;
     }
 }
+
 /* End of file input_helper.php */
 /* Location: ./system/application/helpers/input_helper.php */

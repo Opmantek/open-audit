@@ -55,9 +55,10 @@ class devices extends MY_Controller
         $this->load->helper('error');
         $this->load->helper('input');
         $this->load->model('m_devices');
+        $this->load->model('m_orgs');
 
         $this->error = new stdClass();
-        $this->error->controller = '';
+        $this->error->controller = 'devices';
 
         $this->response = new stdClass();
         inputRead();
@@ -121,93 +122,92 @@ class devices extends MY_Controller
 
     private function collection()
     {
-        if (empty($_GET['properties']) and empty($_POST['properties'])) {
-            $this->response->properties = 'icon, man_type, system_id, hostname, man_domain, man_ip_address, ip, ip_padded, man_description, os_family';
-        }
-        if ($this->response->subresource != '') {
-            $this->response->data = $this->m_devices->readDevicesSubresource();
+        if ($this->response->sub_resource != '') {
+            $this->response->data = $this->m_devices->read_devices_sub_resource();
         } else {
-            $this->response->data = $this->m_devices->readDevices($this->response->id);
+            $this->response->data = $this->m_devices->read_devices();
         }
         $this->response->filtered = count($this->response->data);
-        $this->response->query = $this->response->data;
-        $this->response->include = 'v_devices';
         output($this->response);
     }
 
     private function read()
     {
-        if ($this->response->subresource != '') {
-            $this->response->data = $this->m_devices->readDeviceSubresource($this->response->id, $this->response->subresource);
-            $this->response->filtered = count($this->response->data);
+        if ($this->response->sub_resource != '') {
+            $this->response->data = $this->m_devices->read_device_sub_resource();
         } else {
-            $this->response->data = $this->m_devices->readDevice($this->response->id);
-            $this->response->include = 'v_display_device';
+            $this->response->data = $this->m_devices->read_device();
         }
+        $this->response->filtered = count($this->response->data);
         output($this->response);
     }
 
-    // because we're using JSON API style URLs and not CodeIgniter style
-    // JSON style: index.php/{resource}/{id}/{sub_resource}/{sub_resource_id}?{options}
-    // CI style: index.php/controller/function/{option name #1}/{option value #1}
-    // and because we also need to take the request method (GET/POST/etc) into account (which CodeIgniter does not do)
-    // we need to make our own routing table
-    // public function _remap($method)
-    // {
-    //     // the details of this specific device
-    //     if ($this->response->id != '' and $this->response->subresource != '') {
-    //         $this->readDeviceSubresource();
-    //         exit();
-    //     }
-    //     if ($this->response->subresource != '') {
-    //         $this->readDevicesSubresource();
-    //         exit();
-    //     }
-    //     // the details of this specific device
-    //     if ($this->response->id != '') {
-    //         $this->readDevice($this->response->id);
-    //         exit();
-    //     }
-    //     // the details of this specific group
-    //     if ($this->response->action == 'read') {
-    //         $this->readDevices();
-    //         exit();
-    //     }
-    // }
 
-    // private function readDevices()
-    // {
-    //     $this->response->data = $this->m_devices->readDevices($this->response->id);
-    //     $this->response->filtered = count($this->response->data);
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
 
-    // private function readDevice()
-    // {
-    //     $this->response->data = $this->m_devices->readDevice($this->response->id);
-    //     $this->response->total = count($this->response->data);
-    //     unset($this->response->filtered);
-    //     unset($this->response->limit);
-    //     unset($this->response->offset);
-    //     $this->response->include = 'v_display_device';
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
 
-    // private function readDeviceSubresource()
-    // {
-    //     $this->response->data = $this->m_devices->readDeviceSubresource($this->response->id, $this->response->subresource);
-    //     $this->response->filtered = count($this->response->data);
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
 
-    // private function readDevicesSubresource()
-    // {
-    //     $this->response->data = $this->m_devices->readDevicesSubresource();
-    //     $this->response->filtered = count($this->response->data);
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
+
+
+    private function create_form()
+    {
+        $this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        output($this->response);
+    }
+
+    private function execute()
+    {
+        $this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        output($this->response);
+    }
+
+    private function create()
+    {
+        $this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        output($this->response);
+    }
+
+    private function update()
+    {
+        $this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        $this->response->data = null;
+        output($this->response);
+    }
+
+    private function update_form()
+    {
+        $this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        output($this->response);
+    }
+
+    private function bulk_update_form()
+    {
+        $this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        $this->response->id = '';
+        $temp_ids = array();
+        foreach ($_POST['ids'] as $temp) {
+            $temp_ids[] = $temp;
+        }
+        $this->response->id = implode(',', $temp_ids);
+        output($this->response);
+    }
+
+    private function delete()
+    {
+        $this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        output($this->response);
+    }
 }
