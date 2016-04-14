@@ -369,7 +369,7 @@ class discovery extends CI_Controller
             // must be an admin to access this page
             $this->load->model('m_oa_user');
             $this->m_oa_user->validate_user();
-            if ($this->user->user_admin != 'y') {
+            if ($this->user->admin != 'y') {
                 if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                     redirect($_SERVER['HTTP_REFERER']);
                 } else {
@@ -378,7 +378,7 @@ class discovery extends CI_Controller
             }
 
             $this->data['apppath'] = APPPATH;
-            $this->data['image_path'] = base_url().'theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images/';
+            $this->data['image_path'] = base_url().'theme-'.$this->user->theme.'/'.$this->user->theme.'-images/';
             $this->load->model("m_oa_report");
             $this->load->model('m_devices_components');
             $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
@@ -530,8 +530,8 @@ class discovery extends CI_Controller
                 // update the device access credentials
                 $this->m_system->update_credentials($credentials, $_POST['system_id']);
             }
-            if (isset($this->user->user_full_name)) {
-                $encode['last_user'] = $this->user->user_full_name;
+            if (isset($this->user->full_name)) {
+                $encode['last_user'] = $this->user->full_name;
             } else {
                 $encode['last_user'] = '';
             }
@@ -583,7 +583,7 @@ class discovery extends CI_Controller
                         $query = $this->db->query($sql, $data);
                         $insert_id = $this->db->insert_id();
                         // We need to insert an entry into oa_group_user for any Admin level user
-                        $sql = "/* discovery::discover_subnet */ INSERT INTO oa_group_user (SELECT null, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+                        $sql = "/* discovery::discover_subnet */ INSERT INTO oa_group_user (SELECT null, user_id, ?, '10' FROM oa_user WHERE admin = 'y')";
                         $data = array( $insert_id );
                         $result = $this->db->query($sql, $data);
                         // now we update this specific group
@@ -1465,8 +1465,8 @@ class discovery extends CI_Controller
                         $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
 
                         // Insert an audit log
-                        if (isset($this->user->user_full_name)) {
-                            $temp_user = $this->user->user_full_name;
+                        if (isset($this->user->full_name)) {
+                            $temp_user = $this->user->full_name;
                         } else {
                             $temp_user = '';
                         }
@@ -1836,8 +1836,8 @@ class discovery extends CI_Controller
                                                                     $esx_details->audits_ip = $details->audits_ip;
                                                                 }
 
-                                                                if (isset($this->user->user_full_name)) {
-                                                                    $temp_user = $this->user->user_full_name;
+                                                                if (isset($this->user->full_name)) {
+                                                                    $temp_user = $this->user->full_name;
                                                                 } else {
                                                                     $temp_user = '';
                                                                 }
@@ -2168,8 +2168,8 @@ class discovery extends CI_Controller
                                                         if (!isset($esx_details->audits_ip)) {
                                                             $esx_details->audits_ip = $details->audits_ip;
                                                         }
-                                                        if (isset($this->user->user_full_name)) {
-                                                            $temp_user = $this->user->user_full_name;
+                                                        if (isset($this->user->full_name)) {
+                                                            $temp_user = $this->user->full_name;
                                                         } else {
                                                             $temp_user = '';
                                                         }

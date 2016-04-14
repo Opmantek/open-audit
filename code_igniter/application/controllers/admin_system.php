@@ -279,7 +279,7 @@ class Admin_system extends MY_Controller
         $details->last_seen_by = 'snmp';
         $details->timestamp = date('Y-m-d G:i:s');
         $details->last_seen = $details->timestamp;
-        $details->last_user = $this->user->user_full_name;
+        $details->last_user = $this->user->full_name;
         $details->audits_ip = '127.0.0.1';
         $details = dns_validate($details, 'y');
 
@@ -290,8 +290,8 @@ class Admin_system extends MY_Controller
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
             $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
             $this->m_system->update_system($details);
-            if (isset($this->user->user_full_name)) {
-                $temp_user = $this->user->user_full_name;
+            if (isset($this->user->full_name)) {
+                $temp_user = $this->user->full_name;
             } else {
                 $temp_user = '';
             }
@@ -394,7 +394,7 @@ class Admin_system extends MY_Controller
             }
             $details->last_seen_by = 'web form';
             $details->last_seen = date('Y-m-d G:i:s');
-            $details->last_user = $this->user->user_full_name;
+            $details->last_user = $this->user->full_name;
 
             if (($details->man_type == 'access token' or
                 $details->man_type == 'cell phone' or
@@ -460,8 +460,8 @@ class Admin_system extends MY_Controller
                 $details->system_id = $this->m_system->insert_system($details);
                 $this->m_system->reset_icons($details->system_id);
                 $this->m_oa_group->update_system_groups($details);
-                if (isset($this->user->user_full_name)) {
-                    $temp_user = $this->user->user_full_name;
+                if (isset($this->user->full_name)) {
+                    $temp_user = $this->user->full_name;
                 } else {
                     $temp_user = '';
                 }
@@ -584,7 +584,7 @@ class Admin_system extends MY_Controller
                     $details = (object) $details;
                     $details->last_seen_by = "spreadsheet";
                     $details->last_seen = $timestamp;
-                    $details->last_user = $this->user->user_full_name;
+                    $details->last_user = $this->user->full_name;
                     $details->timestamp = $timestamp;
                     $error = '';
 
@@ -690,8 +690,8 @@ class Admin_system extends MY_Controller
                             $details->type = $this->m_system->get_system_type($details->system_id);
                         }
 
-                        if (isset($this->user->user_full_name)) {
-                            $temp_user = $this->user->user_full_name;
+                        if (isset($this->user->full_name)) {
+                            $temp_user = $this->user->full_name;
                         } else {
                             $temp_user = '';
                         }

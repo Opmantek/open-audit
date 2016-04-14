@@ -264,7 +264,7 @@ class admin extends MY_Controller
                 $this->load->model('m_oa_config');
                 foreach ($config as $name => $value) {
                     $value = urldecode($value);
-                    $this->m_oa_config->update_config($name, $value, $this->user->user_id, date('Y-m-d H:i:s'));
+                    $this->m_oa_config->update_config($name, $value, $this->user->id, date('Y-m-d H:i:s'));
                 }
                 header(' ', true, 200);
             } else {
@@ -799,8 +799,7 @@ class admin extends MY_Controller
                     $details->last_seen = date("Y-m-d H:i:s", $m);
                     $details->last_seen_by = 'active directory';
                     $details->audits_ip = '127.0.0.1';
-                    $details->last_user = $this->user->user_full_name;
-                    #$details->location = @$info[$i]['location'][0];
+                    $details->last_user = $this->user->full_name;
                     $details->windows_active_directory_ou = '';
                     $j = explode(",", @strtolower($info[$i]['distinguishedname'][0]));
                     for ($k = 1; $k<count($j); $k++) {
@@ -827,8 +826,8 @@ class admin extends MY_Controller
                         # insert a new system
                         $details->system_id = $this->m_system->insert_system($details);
                     }
-                    if (isset($this->user->user_full_name)) {
-                        $temp_user = $this->user->user_full_name;
+                    if (isset($this->user->full_name)) {
+                        $temp_user = $this->user->full_name;
                     } else {
                         $temp_user = '';
                     }
@@ -967,17 +966,17 @@ class admin extends MY_Controller
     {
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_group_column");
-        $this->data['query'] = $this->m_oa_location->list_devices_in_location($this->data['id'], $this->user->user_id);
+        $this->data['query'] = $this->m_oa_location->list_devices_in_location($this->data['id'], $this->user->id);
         $this->data['column'] = $this->m_oa_group_column->get_group_column();
         $location_name = $this->m_oa_location->get_location_name($this->data['id']);
         $this->data['heading'] = 'Systems in Location - '.$location_name;
         $this->data['include'] = 'v_report';
         $this->data['export_report'] = 'y';
         $this->data['group_id'] = '0';
-        if ($this->user->user_admin == 'y') {
-            $this->user->user_access_level = '10';
+        if ($this->user->admin == 'y') {
+            $this->user->access_level = '10';
         } else {
-            $this->user->user_access_level = '3';
+            $this->user->access_level = '3';
         }
         $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
     }
@@ -986,18 +985,18 @@ class admin extends MY_Controller
     {
         $this->load->model("m_oa_org");
         $this->load->model("m_oa_group_column");
-        $this->user->user_access_level = '7';
-        $this->data['query'] = $this->m_oa_org->list_devices_in_org($this->data['id'], $this->user->user_id);
+        $this->user->access_level = '7';
+        $this->data['query'] = $this->m_oa_org->list_devices_in_org($this->data['id'], $this->user->id);
         $this->data['column'] = $this->m_oa_group_column->get_group_column();
         $org_name = $this->m_oa_org->get_org_name($this->data['id']);
         $this->data['heading'] = 'Systems in Org - '.$org_name;
         $this->data['include'] = 'v_report';
         $this->data['export_report'] = 'y';
         $this->data['group_id'] = '0';
-        if ($this->user->user_admin == 'y') {
-            $this->user->user_access_level = '10';
+        if ($this->user->admin == 'y') {
+            $this->user->access_level = '10';
         } else {
-            $this->user->user_access_level = '3';
+            $this->user->access_level = '3';
         }
         $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
     }
@@ -2298,7 +2297,7 @@ class admin extends MY_Controller
             foreach ($user_array as $user) {
                 $sql = "INSERT INTO oa_group_user (group_user_id, user_id, group_id,
                     group_user_access_level) VALUES (NULL, ?, '1', ?)";
-                $data = array($user->user_id, $user->group_user_access_level);
+                $data = array($user->id, $user->group_user_access_level);
                 $query = $this->db->query($sql, $data);
                 $this->data['output'] .= $this->db->last_query()."<br /><br />\n";
             }
@@ -3353,7 +3352,7 @@ class admin extends MY_Controller
             $this->load->model('m_oa_group');
 
             $configs = array('default_ipmi_password', 'default_ssh_password', 'default_snmp_community', 'default_windows_password');
-            $user_id = $this->user->user_id;
+            $user_id = $this->user->id;
             $timestamp = date('Y-m-d H:i:s');
             foreach ($configs as $config_name) {
                 $config_value = $this->m_oa_config->get_config_item($config_name);
@@ -4919,6 +4918,34 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_org_id FOREIGN KEY (org) REFERENCES oa_org (id)";
 
             $sql[] = "ALTER TABLE sys_hw_sound ADD CONSTRAINT sys_hw_sound_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+
+            # change the user table to the new SQL schema format
+            $sql[] = "ALTER TABLE edit_log DROP FOREIGN KEY edit_log_user_id";
+            $sql[] = "IF EXISTS( SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE INDEX_SCHEMA = DATABASE() AND TABLE_NAME='edit_log' AND INDEX_NAME = 'edit_log_user_id') THEN ALTER TABLE `edit_log` DROP FOREIGN KEY `edit_log_user_id`; ALTER TABLE `edit_log` DROP INDEX `edit_log_user_id`; END IF;";
+            $sql[] = "ALTER TABLE oa_change DROP FOREIGN KEY oa_change_user_id";
+            $sql[] = "ALTER TABLE oa_group_user DROP FOREIGN KEY oa_group_user_user_id";
+            $sql[] = "ALTER TABLE oa_user_org DROP FOREIGN KEY oa_user_org_user_id";
+            $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_user_id";
+            $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_user_id";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE edit_log ADD CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_change ADD CONSTRAINT oa_change_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_group_user ADD CONSTRAINT oa_group_user_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT att_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT sys_man_notes_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_name name varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_password password varchar(250) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_full_name full_name varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_email email varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_lang lang varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_display_number display_count smallint(6) NOT NULL DEFAULT '10'";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_theme theme varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_admin admin varchar(1) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_active active varchar(1) NOT NULL DEFAULT 'y'";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_sam sam int(10) NOT NULL DEFAULT '1'";
+            $sql[] = "ALTER TABLE oa_user DROP user_change";
+
 
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";

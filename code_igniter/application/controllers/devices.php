@@ -68,12 +68,18 @@ class devices extends MY_Controller
             $this->response->heading = 'Devices';
             $this->response->include = 'v_devices';
         }
-
         $this->output->url = $this->config->item('oa_web_index');
+        $this->user->orgs = $this->m_oa_user->get_orgs($this->user->id);
+        $temp = array();
+        foreach ($this->user->orgs as $key => $value) {
+            $temp[] = $key;
+        }
+        $this->user->org_list = implode(',', $temp);
+        unset($temp);
 
         if ($this->response->id != '') {
-            $access_level = $this->m_devices->getUserDeviceAccess($this->response->id, $this->user->user_id);
-            if ($access_level == 0) {
+            $access_level = $this->m_devices->get_user_device_org_access();
+            if ($access_level < 1) {
                 // we should determine if the device does actually exist or not
                 // then we can throw the correct status code of 404 or 403
                 $sql = "SELECT system_id FROM system WHERE system_id = ?";
@@ -90,6 +96,12 @@ class devices extends MY_Controller
                 exit();
             }
         }
+
+        // $this->response->format = 'json';
+        // $this->response->debug = true;
+        // echo "<pre>\n"; print_r($this->response); echo "</pre>\n";
+        // exit();
+
     }
 
     public function index()

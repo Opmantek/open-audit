@@ -98,10 +98,10 @@ class MY_Controller extends CI_Controller
         $this->load->helper('log');
         $this->load->helper('network');
         $this->data['apppath'] = APPPATH;
-        if (!isset($this->user->user_theme)) {
-            $this->user->user_theme = 'tango';
+        if (!isset($this->user->theme)) {
+            $this->user->theme = 'tango';
         }
-        $this->data['image_path'] = base_url().'theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images/';
+        $this->data['image_path'] = base_url().'theme-'.$this->user->theme.'/'.$this->user->theme.'-images/';
         if (strpos($_SERVER['HTTP_ACCEPT'], 'json') === false) {
             $this->load->model('m_oa_report');
             $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
@@ -691,7 +691,7 @@ class MY_Controller extends CI_Controller
         echo "\t\t<title>Open-AudIT</title>\n";
         echo "\t\t<link>".current_url()."</link>\n";
         echo "\t\t<description>".$this->data['heading']."</description>\n";
-        echo "\t\t<language>".$this->user->user_lang."</language>\n";
+        echo "\t\t<language>".$this->user->lang."</language>\n";
 
         foreach ($query as $details) {
             $title = '';

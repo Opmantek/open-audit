@@ -35,7 +35,7 @@
 $sortcolumn = 3;
 # check to see if user_access_level for this group is > 7
 $manual_edit = 'n';
-if (isset($this->user->user_access_level) and $this->user->user_access_level > '9') {
+if (isset($this->user->access_level) and $this->user->access_level > '9') {
     # check to see if "system_id" is present in report
         if (isset($query[0]->system_id)) {
             # enable group manual editing column

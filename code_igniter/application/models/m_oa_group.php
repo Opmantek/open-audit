@@ -290,7 +290,7 @@ class M_oa_group extends MY_Model
         $return = $this->db->insert_id();
         // We need to insert an entry into oa_group_user for any Admin level user
         // TODO: maybe we should insert '0' for all non-admin users ?
-        $sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+        $sql = "INSERT INTO oa_group_user (SELECT NULL, id, ?, '10' FROM oa_user WHERE admin = 'y')";
         $data = array( $this->db->insert_id() );
         $result = $this->db->query($sql, $data);
         if (!is_numeric($return)) {
@@ -570,7 +570,7 @@ class M_oa_group extends MY_Model
         $query = $this->db->query($sql, $data);
         $group_id = $this->db->insert_id();
         // We need to insert an entry into oa_group_user for any Admin level user
-        $sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+        $sql = "INSERT INTO oa_group_user (SELECT NULL, id, ?, '10' FROM oa_user WHERE admin = 'y')";
         $data = array("$group_id");
         $result = $this->db->query($sql, $data);
 
@@ -656,14 +656,13 @@ class M_oa_group extends MY_Model
         $group_id = $this->db->insert_id();
 
         // insert an entry into oa_group_user for any Admin level user
-        $sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+        $sql = "INSERT INTO oa_group_user (SELECT NULL, id, ?, '10' FROM oa_user WHERE admin = 'y')";
         $data = array("$group_id");
         $result = $this->db->query($sql, $data);
 
         // insert the group columns
         foreach ($group_definition->columns->column as $column) {
-            $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?,
-            column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
+            $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
             $sql = $this->clean_sql($sql);
             $data = array( $group_id,
                 (string)$column->column_order,

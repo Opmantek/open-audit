@@ -51,10 +51,10 @@ class ajax extends MY_Controller
 
         $this->data['title'] = 'Open-AudIT';
 
-        if (!isset($this->user->user_lang) or $this->user->user_lang == "") {
+        if (!isset($this->user->lang) or $this->user->lang == "") {
             $user_lang = "en";
         } else {
-            $user_lang = $this->user->user_lang;
+            $user_lang = $this->user->lang;
         }
 
         $language_file = APPPATH."/views/lang/".$user_lang.".inc";
@@ -118,7 +118,7 @@ class ajax extends MY_Controller
 
 
         // must be an admin to access this function
-        if ($this->user->user_admin != 'y') {
+        if ($this->user->admin != 'y') {
             $log_details->message = "A non-admin user attempted to use ajax/update_config.";
             stdlog($log_details);
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
@@ -176,7 +176,7 @@ class ajax extends MY_Controller
             $config_value = '';
         }
 
-       $this->m_oa_config->update_config($config_name, $config_value, $this->user->user_id, date('Y-m-d H:i:s'));
+       $this->m_oa_config->update_config($config_name, $config_value, $this->user->id, date('Y-m-d H:i:s'));
 
         $masked = str_pad('', strlen($config_value), '*');
         if ($config_name == 'default_windows_password' and $this->config->config['show_passwords'] == 'n') {
@@ -213,7 +213,7 @@ class ajax extends MY_Controller
         $this->load->model("m_system");
         $this->load->model("m_oa_group");
         $this->load->model("m_devices_components");
-        $access_level = $this->m_system->get_system_access_level($this->data['system_id'], $this->user->user_id);
+        $access_level = $this->m_system->get_system_access_level($this->data['system_id'], $this->user->id);
         if ($access_level > 7) {
             $field_ok = 0;
             $this->load->model("m_edit_log");
@@ -235,7 +235,7 @@ class ajax extends MY_Controller
                 $query = $this->db->query($sql, $data_array);
                 $row = $query->row();
                 $group_id = $row->group_id;
-                $group_result = $this->m_system->get_system_groups($this->data['system_id'], $this->user->user_id);
+                $group_result = $this->m_system->get_system_groups($this->data['system_id'], $this->user->id);
                 $group_allowed = 'n';
                 foreach ($group_result as $row) {
                     if ($row->group_id == $group_id) {
@@ -356,7 +356,7 @@ class ajax extends MY_Controller
         stdlog($log_details);
         unset($log_details);
 
-        if ($this->user->user_admin == 'y') {
+        if ($this->user->admin == 'y') {
             $this->load->model("m_oa_group");
             $fields = $this->m_oa_group->get_fields($this->uri->segment(3, ''));
             echo "<select id='dynamic_other_field' name='dynamic_other_field' onchange='retrieve_field_values();' style='width:250px;'>\n";
@@ -378,7 +378,7 @@ class ajax extends MY_Controller
         stdlog($log_details);
         unset($log_details);
 
-        if ($this->user->user_admin == 'y') {
+        if ($this->user->admin == 'y') {
             $this->load->model("m_oa_group");
             $table = $this->uri->segment(3, '');
             $field = $this->uri->segment(4, '');
@@ -400,7 +400,7 @@ class ajax extends MY_Controller
         unset($log_details);
 
         $this->load->model("m_system");
-        if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->user_id) > 0) {
+        if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->id) > 0) {
             $result = $this->m_system->get_system_popup($this->data['system_id']);
             foreach ($result as $system) {
                 $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
@@ -466,7 +466,7 @@ class ajax extends MY_Controller
         unset($log_details);
 
         $this->load->model("m_system");
-        if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->user_id) < '1') {
+        if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->id) < '1') {
             // not even VIEW permission - output "Not Authorised"
             echo "<div class=\"TagPopupResult\">\n";
             echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
@@ -477,7 +477,7 @@ class ajax extends MY_Controller
             echo "</div>";
         } else {
             // authorised - now get the data
-            $query = $this->m_system->get_system_groups($this->data['system_id'], $this->user->user_id);
+            $query = $this->m_system->get_system_groups($this->data['system_id'], $this->user->id);
             echo "<div class=\"TagPopupResult\">\n";
             echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
             foreach ($query as $group) {

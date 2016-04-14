@@ -53,7 +53,7 @@ class Licenses extends MY_Controller
         $group_id = $this->uri->segment(3, 0);
         $licenses = $this->uri->segment(4, 0);
         $software_name = urldecode($this->uri->segment(5, 0));
-        if ($this->user->user_sam < 2) {
+        if ($this->user->sam < 2) {
             redirect('report/software_licensing/'.$group_id);
             exit();
         }

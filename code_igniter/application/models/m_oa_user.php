@@ -39,27 +39,81 @@ class M_oa_user extends MY_Model
         parent::__construct();
     }
 
+    public function get_orgs($user_id)
+    {
+        $this->output->enable_profiler(true);
+        #echo "<pre>\n";
+        $end = array();
+
+
+        $sql = "SELECT * FROM oa_user_org WHERE user_id = ? ORDER BY access_level desc";
+        $data = array(intval($user_id));
+        $query = $this->db->query($sql, $data);
+        $user_orgs = $query->result();
+        #print_r($user_orgs);
+
+        $sql = "SELECT * FROM oa_org";
+        $query = $this->db->query($sql);
+        $this->orgs = $query->result();
+        #print_r($this->orgs);
+
+        foreach ($this->orgs as $org) {
+            foreach ($user_orgs as $user_org) {
+                if ($user_org->org_id == $org->id) {
+                    $end[$org->id] = $user_org->access_level;
+                }
+            }
+        }
+        # TODO - get a list of user_org.org_id's with perms like '%r%' and
+        # feed it into the array below
+        $org_id_list = array();
+        foreach ($end as $key => $value) {
+            $org_id_list[$key] = $value;
+            foreach ($this->get_org($key, $value) as $key2 => $value2) {
+                $org_id_list[$key2] = $value2;
+            }
+        }
+        #print_r($org_id_list);
+        return($org_id_list);
+    }
+
+
+    private function get_org($org_id, $access_level)
+    {
+        $org_id_list = array();
+        foreach ($this->orgs as $org) {
+            if ($org->parent_id == $org_id and $org->id != 0) {
+                $org_id_list[$org->id] = $access_level;
+                #echo "Set OrgId: " . $org->id . " AccessLevel: $access_level\n-----\n";
+                foreach ($this->get_org($org->id, $access_level) as $key2 => $value2) {
+                    $org_id_list[$key2] = $value2;
+                }
+            }
+        }
+        return($org_id_list);
+    }
+
+
     public function select_user($name)
     {
-        $sql = "SELECT user_id FROM oa_user WHERE user_name = ? LIMIT 1";
+        $sql = "SELECT id FROM oa_user WHERE name = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($name);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
         if ($query->num_rows() > 0) {
             $row = $query->row();
-
-            return ($row->user_id);
+            return (intval($row->id));
         } else {
-            return;
+            return false;
         }
     }
 
-    public function check_user_name($user_name, $user_id)
+    public function check_user_name($name, $id)
     {
-        $sql = "SELECT user_id FROM oa_user WHERE user_name = ? AND user_id <> ?";
+        $sql = "SELECT id FROM oa_user WHERE name = ? AND id <> ?";
         $sql = $this->clean_sql($sql);
-        $data = array($user_name, $user_id);
+        $data = array($name, $id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
         if ($query->num_rows() > 0) {
@@ -75,7 +129,7 @@ class M_oa_user extends MY_Model
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
-        $sql = "UPDATE oa_user SET user_active = 'n' WHERE user_id = ? LIMIT 1";
+        $sql = "UPDATE oa_user SET active = 'n' WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -83,7 +137,7 @@ class M_oa_user extends MY_Model
 
     public function activate_user($id)
     {
-        $sql = "UPDATE oa_user SET user_active = 'y' WHERE user_id = ? LIMIT 1";
+        $sql = "UPDATE oa_user SET active = 'y' WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -91,7 +145,7 @@ class M_oa_user extends MY_Model
 
     public function get_user_details($id)
     {
-        $sql = "SELECT * FROM oa_user WHERE user_id = ? LIMIT 1";
+        $sql = "SELECT * FROM oa_user WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -101,80 +155,67 @@ class M_oa_user extends MY_Model
 
     public function get_all_users()
     {
-        $sql = "SELECT user_id, user_name, user_full_name, user_email, user_admin, user_active FROM oa_user ORDER BY user_name";
+        $sql = "SELECT id, name, full_name, email, admin, active FROM oa_user ORDER BY name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         return ($result);
     }
 
-    public function add_user($details)
+    public function add_user($user)
     {
-        if (isset($details->user_admin)) {
-            if ($details->user_admin == 'on') {
-                $details->user_admin = 'y';
+        if (isset($user->admin)) {
+            if ($user->admin == 'on') {
+                $user->admin = 'y';
             } else {
-                $details->user_admin = 'n';
+                $user->admin = 'n';
             }
         } else {
-            $details->user_admin = 'n';
+            $user->admin = 'n';
         }
         # create the password
         $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
-        $hash = hash("sha256", $salt.$details->user_password); # prepend the salt, then hash
+        $hash = hash("sha256", $salt.$user->password); # prepend the salt, then hash
         # store the salt and hash in the same string, so only 1 DB column is needed
         $encrypted_password = $salt.$hash;
-        $sql = "INSERT INTO oa_user (user_name, user_full_name, user_email, user_password, user_theme, user_lang, user_admin, user_sam) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO oa_user (name, full_name, email, password, theme, lang, admin, sam) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
-        $data = array("$details->user_name", "$details->user_full_name", "$details->user_email",
-            "$encrypted_password", "$details->user_theme", "$details->user_lang",
-            "$details->user_admin", "$details->user_sam", );
+        $data = array("$user->name", "$user->full_name", "$user->email", "$encrypted_password", "$user->theme", "$user->lang", "$user->admin", "$user->sam", );
         $query = $this->db->query($sql, $data);
         return($this->db->insert_id());
     }
 
-    public function edit_user($details)
+    public function edit_user($user)
     {
         // format the user_admin to 'y' or 'n'
-        if (isset($details->user_admin)) {
-            if ($details->user_admin == 'on') {
-                $details->user_admin = 'y';
+        if (isset($user->admin)) {
+            if ($user->admin == 'on') {
+                $user->admin = 'y';
             } else {
-                $details->user_admin = 'n';
+                $user->admin = 'n';
             }
         } else {
-            $details->user_admin = 'n';
+            $user->admin = 'n';
         }
 
-        if (isset($details->user_password) and isset($details->user_password_confirm) and
-            $details->user_password == $details->user_password_confirm and $details->user_password != '') {
+        if (isset($user->password) and isset($user->password_confirm) and $user->password == $user->password_confirm and $user->password != '') {
             # password has a value so salt + sha256 it, then insert it into the db.
             # create the password
             $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
-            $hash = hash("sha256", $salt.$details->user_password); # prepend the salt, then hash
+            $hash = hash("sha256", $salt.$user->password); # prepend the salt, then hash
             # store the salt and hash in the same string, so only 1 DB column is needed
             $encrypted_password = $salt.$hash;
 
-            $sql = "UPDATE oa_user SET user_name = ?, user_full_name = ?,
-					user_email = ?, user_password = ?, user_theme = ?,
-					user_lang = ?, user_admin = ?,  user_sam = ?
-					WHERE user_id = ?";
+            $sql = "UPDATE oa_user SET name = ?, full_name = ?, email = ?, password = ?, theme = ?, lang = ?, admin = ?,  sam = ? WHERE id = ?";
             $sql = $this->clean_sql($sql);
-            $data = array(    "$details->user_name", "$details->user_full_name", "$details->user_email",
-                        "$encrypted_password", "$details->user_theme", "$details->user_lang",
-                        "$details->user_admin", "$details->user_sam", "$details->user_id", );
+            $data = array("$user->name", "$user->full_name", "$user->email", "$encrypted_password", "$user->theme", "$user->lang", "$user->admin", "$user->sam", "$user->id");
         } else {
             // do not update the password
-            $sql = "UPDATE oa_user SET user_name = ?, user_full_name = ?,
-					user_email = ?, user_theme = ?, user_lang = ?,
-					user_admin = ?, user_sam = ? WHERE user_id = ?";
+            $sql = "UPDATE oa_user SET name = ?, full_name = ?, email = ?, theme = ?, lang = ?, admin = ?, sam = ? WHERE id = ?";
             $sql = $this->clean_sql($sql);
-            $data = array(    "$details->user_name", "$details->user_full_name", "$details->user_email",
-                        "$details->user_theme", "$details->user_lang", "$details->user_admin",
-                        "$details->user_sam", "$details->user_id", );
+            $data = array("$user->name", "$user->full_name", "$user->email", "$user->theme", "$user->lang", "$user->admin", "$user->sam", "$user->id");
         }
         $query = $this->db->query($sql, $data);
-
         return(true);
     }
 
@@ -206,7 +247,7 @@ class M_oa_user extends MY_Model
 
         if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
             // user is logged in, return the $this->user object
-            $sql = "SELECT * FROM oa_user WHERE oa_user.user_id = ? LIMIT 1";
+            $sql = "SELECT * FROM oa_user WHERE id = ? LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array($this->session->userdata['user_id']);
             $query = $this->db->query($sql, $data);
@@ -214,19 +255,19 @@ class M_oa_user extends MY_Model
                 // set the user object
                 $CI->user = $query->row();
 
-                if ($CI->user->user_admin == 'y') {
-                    $CI->user->user_debug = $temp_debug;
+                if ($CI->user->admin == 'y') {
+                    $CI->user->debug = $temp_debug;
                 } else {
-                    $CI->user->user_debug = 'n';
+                    $CI->user->debug = 'n';
                 }
 
                 if ($admin == 'y') {
-                    if ($CI->user->user_admin == 'y') {
+                    if ($CI->user->admin == 'y') {
                         $log_details->severity = 7;
                         $log_details->message = 'User validated as an admin';
                         stdlog($log_details);
                         unset($log_details);
-                        $userdata = array('user_id' => $CI->user->user_id, 'user_debug' => $CI->user->user_debug);
+                        $userdata = array('user_id' => $CI->user->id, 'user_debug' => $CI->user->debug);
                         $this->session->set_userdata($userdata);
 
                         return;
@@ -257,9 +298,8 @@ class M_oa_user extends MY_Model
                         }
                     }
                 } else {
-                    $userdata = array('user_id' => $CI->user->user_id, 'user_debug' => $CI->user->user_debug);
+                    $userdata = array('user_id' => $CI->user->id, 'user_debug' => $CI->user->debug);
                     $this->session->set_userdata($userdata);
-
                     return;
                 }
             } else {
@@ -328,7 +368,7 @@ class M_oa_user extends MY_Model
         }
 
         // make sure we have a supplied username and password
-        if (@$username == '' or @$password == '') {
+        if (empty($username) or empty($password)) {
             // incomplete credentials supplied
             $status = 'fail';
             if (@$username == '') {
@@ -366,9 +406,9 @@ class M_oa_user extends MY_Model
 
         // get the user object from the supplied user name
         if (isset($CI->config->config['internal_version']) and $CI->config->config['internal_version'] < '20130512') {
-            $sql = "SELECT * FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
+            $sql = "SELECT * FROM oa_user WHERE name = ? LIMIT 1";
         } else {
-            $sql = "SELECT * FROM oa_user WHERE oa_user.user_name = ? AND user_active = 'y' LIMIT 1";
+            $sql = "SELECT * FROM oa_user WHERE name = ? AND active = 'y' LIMIT 1";
         }
         $sql = $this->clean_sql($sql);
         $data = array("$username");
@@ -376,7 +416,7 @@ class M_oa_user extends MY_Model
         if ($query->num_rows() > 0) {
             $CI->user = $query->row();
             if (!isset($CI->config->config['internal_version']) or $CI->config->config['internal_version'] < '20130512') {
-                $CI->user->user_active = 'y';
+                $CI->user->active = 'y';
             }
         } else {
             $status = 'fail';
@@ -413,9 +453,7 @@ class M_oa_user extends MY_Model
         // order of check is against AD (if set), the against an md5 (with update to sha256), then against sha256.
 
         // check against AD if configured
-        if (isset($CI->config->config['ad_domain']) and $CI->config->config['ad_domain'] != '' and
-            isset($CI->config->config['ad_server']) and $CI->config->config['ad_server'] != '' and
-            extension_loaded('ldap')) {
+        if (!empty($CI->config->config['ad_domain']) and !empty($CI->config->config['ad_server']) and extension_loaded('ldap')) {
             $ad_ldap_connect = 'ldap://'.$CI->config->item('ad_server');
             $ad_user = $username.'@'.$CI->config->item('ad_domain');
             $ad_secret = $password;
@@ -436,7 +474,7 @@ class M_oa_user extends MY_Model
                 $bind = @ldap_bind($ad, $ad_user, $ad_secret);
                 if ($bind) {
                     // successful connect and bind, now check if user is active in Open-AudIT
-                    if ($CI->user->user_active == 'y') {
+                    if ($CI->user->active == 'y') {
                         // successful connect, bind and user is active - success
                         $status = 'success';
                         $log_details->severity = 7;
@@ -498,18 +536,18 @@ class M_oa_user extends MY_Model
             $hash = hash("sha256", $salt.$password);
             # store the salt and hash in the same string, so only 1 DB column is needed
             $encrypted_password = $salt.$hash;
-            $sql = "UPDATE oa_user SET user_password = ? WHERE user_id = ?";
+            $sql = "UPDATE oa_user SET password = ? WHERE id = ?";
             $sql = $this->clean_sql($sql);
-            $data = array("$encrypted_password", (string) $CI->user->user_id);
+            $data = array("$encrypted_password", (string) $CI->user->id);
             $query = $this->db->query($sql, $data);
         }
 
         # check against salted sha256 passwords
         if ($status != 'success') {
             # get the salt from the front of the hash
-            $salt = substr($CI->user->user_password, 0, 64);
+            $salt = substr($CI->user->password, 0, 64);
             # the SHA256 form the end of the hash
-            $valid_hash = substr($CI->user->user_password, 64, 64);
+            $valid_hash = substr($CI->user->password, 64, 64);
             # hash the password being tested
             $test_hash = hash("sha256", $salt.$password);
             # if the hashes are exactly the same, the password is valid
@@ -552,10 +590,9 @@ class M_oa_user extends MY_Model
             // correct credentials supplied
             // check if we need an admin user
             if ($admin == 'y') {
-                if ($CI->user->user_admin == 'y') {
-                    $userdata = array('user_id' => $CI->user->user_id);
+                if ($CI->user->admin == 'y') {
+                    $userdata = array('user_id' => $CI->user->id);
                     $this->session->set_userdata($userdata);
-
                     return;
                 } else {
                     // admin requested but user is not
@@ -588,7 +625,7 @@ class M_oa_user extends MY_Model
                 # $log_details->severity = 7;
                 # $log_details->message = 'User logged on';
                 # stdlog($log_details);
-                $userdata = array('user_id' => $CI->user->user_id);
+                $userdata = array('user_id' => $CI->user->id);
                 $this->session->set_userdata($userdata);
                 $requested_url = @$this->session->userdata('url');
                 if ($requested_url != '') {
@@ -596,7 +633,6 @@ class M_oa_user extends MY_Model
                     $this->session->set_userdata($requested_url);
                     redirect($requested_url);
                 }
-
                 return;
             }
         }

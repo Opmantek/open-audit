@@ -621,8 +621,8 @@ class M_system extends MY_Model
 				oa_group_sys,
 				system
 			WHERE
-				oa_user.user_id = ? AND
-				oa_user.user_id = oa_group_user.user_id AND
+				oa_user.id = ? AND
+				oa_user.id = oa_group_user.user_id AND
 				oa_group_user.group_id = oa_group.group_id AND
 				oa_group.group_id = oa_group_sys.group_id AND
 				oa_group_sys.system_id = ?
@@ -717,7 +717,7 @@ class M_system extends MY_Model
 			GROUP BY system.system_id
 			ORDER BY system.hostname";
         $sql = $this->clean_sql($sql);
-        $data = array("$search", "$search", "$search", "$search", "$search_ip", "$search_ip", $this->user->user_id);
+        $data = array("$search", "$search", "$search", "$search", "$search_ip", "$search_ip", $this->user->id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         for ($i = 0; $i<count($result); $i++) {

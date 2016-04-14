@@ -115,7 +115,7 @@ if (! function_exists('refresh_group_definitions')) {
                     $query = $CI->db->query($sql, $data);
                     $group_id = $CI->db->insert_id();
                     // We need to insert an entry into oa_group_user for any Admin level user
-                    #$sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+                    #$sql = "INSERT INTO oa_group_user (SELECT NULL, id, ?, '10' FROM oa_user WHERE admin = 'y')";
                     #$data = array("$group_id");
                     #$result = $CI->db->query($sql, $data);
                     foreach ($xml->columns->column as $column) {

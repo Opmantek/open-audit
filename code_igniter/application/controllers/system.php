@@ -142,8 +142,8 @@ class System extends CI_Controller
                 exit;
             }
             $count = 0;
-            if (isset($this->user->user_full_name)) {
-                $temp_user = $this->user->user_full_name;
+            if (isset($this->user->full_name)) {
+                $temp_user = $this->user->full_name;
             } else {
                 $temp_user = '';
             }
@@ -643,8 +643,8 @@ class System extends CI_Controller
                         unset($log_details);
                     }
                 }
-                if (isset($this->user->user_full_name)) {
-                    $temp_user = $this->user->user_full_name;
+                if (isset($this->user->full_name)) {
+                    $temp_user = $this->user->full_name;
                 } else {
                     $temp_user = '';
                 }

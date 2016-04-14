@@ -256,7 +256,7 @@ function print_something($string)
 	}
 </style>
 
-<?php if ($this->user->user_admin == 'y') {
+<?php if ($this->user->admin == 'y') {
     echo "<script type=\"text/javascript\">\n";
     echo "function createRequestObject() \n";
     echo "{\n";
@@ -298,8 +298,8 @@ function print_something($string)
     } else {
         echo "<h2>".htmlentities(__($heading))."</h2>\n";
     }
-    #$this->load->view("theme-" . $this->user->user_theme . "/" . $include);
-    include($include.'.php')
+    #$this->load->view("theme-" . $this->user->theme . "/" . $include);
+    include($include.'.php');
     ?>
 	</div><!-- end of content_container -->
 </div>

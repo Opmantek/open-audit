@@ -42,7 +42,7 @@
 			<th><?php echo __('Publisher')?></th>
 			<th align='center'><?php echo __('Installs')?></th>
 			<th align='center'><?php echo __('Licenses')?></th>
-			<?php if ($this->user->user_sam > '1') { ?>
+			<?php if ($this->user->sam > '1') { ?>
 			<th align='center'><?php echo __('Edit')?></th>
 			<?php } ?>
 		</tr>
@@ -72,9 +72,9 @@
 			<td align='center'><?php echo intval($key->software_count); ?></td>
 			<td align='center'><?php echo $key->software_licenses ?></td>
 			<?php
-            if ($this->user->user_sam > '1') {
+            if ($this->user->sam > '1') {
                 echo "\t\t\t<td align=\"center\"><a class='AssetPopupTrigger' rel='".htmlentities($key->name)."' href='#' ><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16' /></a></td>\n";
-            //} else if ($this->user->user_sam > '1') {
+            //} else if ($this->user->sam > '1') {
                 //if ($key->software_licenses == '') {
                     //echo "\t\t\t<td align=\"center\"></td>\n";
                 //} else {
