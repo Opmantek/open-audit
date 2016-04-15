@@ -107,7 +107,7 @@ echo form_open('admin_location/add_location')."\n";
 			<td valign="top">
 				<p><label for='postcode'><?php echo __('Postcode'); ?>: </label><input type='text' id='postcode' name='postcode' tabindex='9' title='<?php echo __('Postcode'); ?>' /></p>
 				<p><label for='state'><?php echo __('State'); ?>: </label><input type='text' id='state' name='state' tabindex='10' title='<?php echo __('State'); ?>' /></p>
-				<p><label for='country'><?php echo __('Country'); ?>: </label><input type='text' id='country' name='country' tabindex='11' title='C<?php echo __('ountry'); ?>' /></p>
+				<p><label for='country'><?php echo __('Country'); ?>: </label><input type='text' id='country' name='country' tabindex='11' title='<?php echo __('Country'); ?>' /></p>
 				<p><label for='phone'><?php echo __('Phone'); ?>: </label><input type='text' id='phone' name='phone' tabindex='11' title='<?php echo __('Phone'); ?>' /></p>
 				<p><label for='geo'><?php echo __('GeoCode'); ?>: </label><input type='text' id='geo' name='geo' tabindex='12' title='<?php echo __('GeoCode'); ?>' /></p>
 				<p><label for='latitude'><?php echo __('Latitude'); ?>: </label><input type='text' id='latitude' name='latitude' tabindex='13' title='<?php echo __('Latitude'); ?>' /></p>

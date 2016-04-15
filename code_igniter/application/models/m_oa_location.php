@@ -247,7 +247,7 @@ class M_oa_location extends MY_Model
     public function add_location($details)
     {
         # need to insert suburb, district, region, area, tags, picture
-        $sql = "INSERT INTO oa_location (name, type, room, suite, level, address, postcode, city, state, _country, geo, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO oa_location (name, type, room, suite, level, address, postcode, city, state, country, geo, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
         $data = array("$details->name", "$details->type", "$details->room", "$details->suite",
             "$details->level", "$details->address", "$details->postcode", "$details->city",

@@ -4972,6 +4972,9 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_location CHANGE location_geo geo varchar(200) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE oa_location CHANGE location_comments comments varchar(100) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE oa_location CHANGE location_icon icon varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_group_id group_id int(10) unsigned NOT NULL DEFAULT '0'";
+
+            $sql[] = "DELETE FROM oa_group WHERE group_dynamic_select LIKE '%sys_hw_network_card_ip%'";
 
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";

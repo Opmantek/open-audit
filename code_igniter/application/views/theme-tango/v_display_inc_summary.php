@@ -98,15 +98,15 @@
 				<?php
                 foreach ($system_location as $key) {
                     if ($access_level > 7) {
-                        echo "<p><label for='man_location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".print_something($key->location_name)."</span></span>$edit_icon</p>\n";
+                        echo "<p><label for='man_location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".print_something($key->name)."</span></span>$edit_icon</p>\n";
                     } else {
-                        echo "<p><label for='location_name'>".__('Location Name').": </label><span id='location_name'>".print_something($key->location_name)."</span></p>\n";
+                        echo "<p><label for='location_name'>".__('Location Name').": </label><span id='location_name'>".print_something($key->name)."</span></p>\n";
                     }
                     ?>
-        			<p><label for="location_address"><?php echo __('Building Address')?>: </label><span id="location_address"><?php echo print_something($key->location_address)?></span></p>
-        			<p><label for="location_city"><?php echo __('City')?>: </label><span id="location_city"><?php echo print_something($key->location_city)?></span></p>
-        			<p><label for="location_state"><?php echo __('State')?>: </label><span id="location_state"><?php echo print_something($key->location_state)?></span></p>
-        			<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something($key->location_country)?></span></p>
+        			<p><label for="location_address"><?php echo __('Building Address')?>: </label><span id="location_address"><?php echo print_something($key->address)?></span></p>
+        			<p><label for="location_city"><?php echo __('City')?>: </label><span id="location_city"><?php echo print_something($key->city)?></span></p>
+        			<p><label for="location_state"><?php echo __('State')?>: </label><span id="location_state"><?php echo print_something($key->state)?></span></p>
+        			<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something($key->country)?></span></p>
             	<?php } ?>
                 </div>
     			<p><label for="man_location_level"><?php echo __('Device specific Level')?>: </label><span id="man_location_level" <?php echo $edit?>><?php echo print_something($location_level)?></span><?php echo $edit_icon; ?></p>
