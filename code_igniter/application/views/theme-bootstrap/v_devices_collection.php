@@ -32,102 +32,136 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-#echo "HERE"; exit();
-#echo "<pre>"; print_r($this->response); #exit();
-#echo "<pre>\n";
-#print_r($this->response);
-#exit();
-#echo "<h2>Devices</h2>\n";
-#echo "<div style=\"float:left; width:100%;\">\n";
+$refine_link = $_SERVER["REQUEST_URI"];
+if (strpos($refine_link, '?') === false) {
+  $refine_link .= '?';
+} else if (strrpos($refine_link, '&') !== strlen($refine_link)-1){
+  $refine_link .= '&';
+}
 ?>
+
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-        <span class="text-left">Devices</span>
-        <span class="pull-right">Count: <?php echo count($this->response->data); ?></span>
+      <span class="text-left">Devices</span>
+      <span class="pull-right">Count: <?php echo @count($this->response->data); ?></span>
     </h3>
   </div>
   <div class="panel-body">
 <?php
+if (count($this->response->filter) > 0) {
+  echo '<div class="well well-sm pull-right">';
+  foreach ($this->response->filter as $item) {
+    if ($item->operator == '=') {
+      $label = 'label-success';
+    } else if ($item->operator == '!=') {
+      $label = 'label-danger';
+    } else {
+      $label = 'label-info';
+    }
+    if ($item->operator == '=') {
+      $operator = '';
+    } else {
+      $operator = $item->operator;
+    }
+    $link = str_replace($item->name . '=' . $operator . $item->value, '', $_SERVER["REQUEST_URI"]);
+    $link = str_replace($item->name . '=' . $operator . urlencode($item->value), '', $_SERVER["REQUEST_URI"]);
+    if ($item->name == 'status' and $item->operator == '=' and $item->value == 'production') {
+      $link = $refine_link . 'man_status=!=production';
+    }
+    $label = 'label-info';
+    echo '<big><span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span></big>&nbsp;';
+  }
+  echo '</div>';
+}
+
 if (!empty($this->response->data)) {
 ?>
-<form action="devices?action=edit" method="post" id="bulk_edit" name="bulk_edit">
-<table class="table">
-    <thead>
-        <tr>
-            <?php
-
-            $properties = get_object_vars($this->response->data[0]);
-            #echo "<pre>\n"; print_r($properties); echo "</pre>\n";
-            foreach ($properties as $key => $value) {
-                if ($key == 'man_ip_address' or $key == 'ip_padded') {
-                    continue;
-                }
-                $key = str_replace('man_', '', $key);
-                $key = str_replace('_', ' ', $key);
-                $key = str_replace('os ', 'OS ', $key);
-                $key = str_replace(' id', ' ID', $key);
-                $key = ucwords($key);
-                if ($key == 'Ip') { $key = 'IP'; }
-                if (stripos($key, 'icon') !== false) {
-                    echo "\t\t\t<th style=\"text-align: center;\">" . __($key) . "</th>\n";
-                } else {
-                    echo "\t\t\t<th>" . __($key) . "</th>\n";
-                }
-            }
-            ?>
-            <th width="150" class="text-center">
-                <button type="button" class="btn btn-primary" onclick="document.bulk_edit.submit();"><?php echo __('Edit') ?></button>&nbsp;
-                <input type="checkbox"/>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-    <?php
-    foreach ($this->response->data as $item) {
-        echo "\t\t\t<tr>\n";
-        foreach ($properties as $property => $value) {
-            $property = trim($property);
-            if (strpos($property, '.') !== false) {
-                $property = substr($property, 0, strpos($property, '.'));
-            }
-            if ($property == 'man_ip_address' or $property == 'ip_padded') {
-                continue;
-            }
-            if (!empty($item->$property)) {
-                if (strlen($item->$property) > 50) {
-                    $item->$property = substr($item->$property, 0, 50) . '....';
-                }
-                if ($property == 'ip' and !empty($item->ip_padded)) {
-                    echo "\t\t\t\t<td><span style='display:none;'>" . str_replace('.', '', $item->ip_padded) . "</span>" . $item->ip . "</td>\n";
-                } elseif ($property == 'system_id') {
-                    echo "\t\t\t\t<td><a href='devices/" . $item->$property . "'>" . $item->$property . "</td>\n";
-                } elseif ($property == 'icon') {
-                    echo "\t\t\t\t<td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->$property)."\" alt=\"".htmlentities($item->$property)."\"/></td>\n";
-                } else {
-                    echo "\t\t\t\t<td>" . $item->$property . "</td>\n";
-                }
-            } else {
-                echo "\t\t\t\t<td></td>\n";
-            }
+    <form action="devices?action=edit" method="post" id="bulk_edit" name="bulk_edit">
+      <table class="table">
+        <thead>
+          <tr>
+<?php
+      $properties = get_object_vars($this->response->data[0]);
+      foreach ($properties as $key => $value) {
+        if ($key == 'man_ip_address' or $key == 'ip_padded') {
+          continue;
         }
-        echo "\t\t\t\t<td align='center'><input type='checkbox' id='ids[]' value='" . intval($item->system_id) . "' name='ids[]' /></td>\n";
-        echo "\t\t\t</tr>\n";
+        $key = str_replace('man_', '', $key);
+        $key = str_replace('_', ' ', $key);
+        $key = str_replace('os ', 'OS ', $key);
+        $key = str_replace(' id', ' ID', $key);
+        $key = ucwords($key);
+        if ($key == 'Ip') { $key = 'IP'; }
+        if (stripos($key, 'icon') !== false) {
+          echo "            <th style=\"text-align: center;\">" . __($key) . "</th>\n";
+        } else {
+          echo "            <th>" . __($key) . "</th>\n";
+        }
+      }
+      ?>
+            <th width="150" class="text-center">
+              <button type="button" class="btn btn-primary" onclick="document.bulk_edit.submit();"><?php echo __('Edit') ?></button>&nbsp;
+              <input type="checkbox"/>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+<?php
+  foreach ($this->response->data as $item) {
+    echo "          <tr>\n";
+    foreach ($properties as $property => $value) {
+      $property = trim($property);
+      if (strpos($property, '.') !== false) {
+        $property = substr($property, 0, strpos($property, '.'));
+      }
+      if ($property == 'man_ip_address' or $property == 'ip_padded') {
+        continue;
+      }
+      if (!empty($item->$property)) {
+        if ($property == 'ip' and !empty($item->ip_padded)) {
+          echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->ip_padded) . "</span>" . $item->ip . "</td>\n";
+        } elseif ($property == 'system_id') {
+          echo "            <td><a href='devices/" . $item->$property . "'>" . $item->$property . "</td>\n";
+        } elseif ($property == 'icon') {
+          echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->$property)."\" alt=\"".htmlentities($item->$property)."\"/></td>\n";
+        } else {
+          if (strlen($item->$property) > 50) {
+            $display = substr($item->$property, 0, 50) . '....';
+          } else {
+            $display = $item->$property;
+          }
+          echo "            <td><span class=\" small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
+        }
+      } else {
+        echo "            <td></td>\n";
+      }
     }
-    ?>
-    </tbody>
-</table>
-</form>
+    echo "            <td align='center'><input type='checkbox' id='ids[]' value='" . intval($item->system_id) . "' name='ids[]' /></td>\n";
+    echo "          </tr>\n";
+  }
+  ?>
+        </tbody>
+      </table>
+    </form>
 <?php
 }
 if (!empty($this->response->error)) {
-    echo "<pre>\n";
-    print_r($error);
-    echo "</pre>\n";
+  echo '</div></div><div class="alert alert-danger" role="alert">' . $this->response->error->title . '</div>';
+  echo "<pre>\n";
+  print_r($error);
+  echo "</pre>\n";
 }
 ?>
+  </div>
 </div>
-</div>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $(function () {
+      $('[data-toggle="popover"]').popover()
+    })
+  });
+</script>
 <?php
 exit();
 ?>
