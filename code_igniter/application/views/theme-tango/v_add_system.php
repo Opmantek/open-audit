@@ -60,7 +60,7 @@ echo form_open('admin_system/add_system')."\n";
 <?php
 $location_form = "";
 foreach ($locations as $location) {
-    $location_form .= "<option value='".$location->location_id."'>".$location->location_name."<\/option>";
+    $location_form .= "<option value='".$location->id."'>".$location->name."<\/option>";
 }
 $location_form = "<label for='man_location_id'>Location<\/label><select id='man_location_id' name='man_location_id' style='width: 250px'>".$location_form."<\/select><br />";
 

@@ -968,8 +968,8 @@ class admin extends MY_Controller
         $this->load->model("m_oa_group_column");
         $this->data['query'] = $this->m_oa_location->list_devices_in_location($this->data['id'], $this->user->id);
         $this->data['column'] = $this->m_oa_group_column->get_group_column();
-        $location_name = $this->m_oa_location->get_location_name($this->data['id']);
-        $this->data['heading'] = 'Systems in Location - '.$location_name;
+        $name = $this->m_oa_location->get_location_name($this->data['id']);
+        $this->data['heading'] = 'Systems in Location - '.$name;
         $this->data['include'] = 'v_report';
         $this->data['export_report'] = 'y';
         $this->data['group_id'] = '0';
@@ -4863,6 +4863,7 @@ class admin extends MY_Controller
 
             $this->load->helper('report_helper');
             refresh_report_definitions();
+            $this->load->helper('group_helper');
             refresh_group_definitions();
 
             $this->load->model('m_system');
@@ -4898,6 +4899,8 @@ class admin extends MY_Controller
             $sql = "UPDATE oa_report_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
             $query = $this->db->query($sql);
 
+            unset($sql);
+            $sql = array();
             $sql[] = "ALTER TABLE system DROP man_icon";
             # gave to re-run this as we left it in the origin SQL script.
             $sql[] = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
@@ -4946,6 +4949,29 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_user CHANGE user_sam sam int(10) NOT NULL DEFAULT '1'";
             $sql[] = "ALTER TABLE oa_user DROP user_change";
 
+            $sql[] = "ALTER TABLE oa_location CHANGE location_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_name name varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_type type varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_room room varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_suite suite varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_level level varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_address address varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_suburb suburb varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_city city varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_district district varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_region region varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_area area varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_state state varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_postcode postcode varchar(10) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_country country varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_tags tags varchar(250) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_phone phone varchar(20) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_picture picture varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_latitude latitude float(10,6) NOT NULL";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_longitude longitude float(10,6) NOT NULL";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_geo geo varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_comments comments varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_icon icon varchar(100) NOT NULL DEFAULT ''";
 
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";

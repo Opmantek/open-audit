@@ -130,7 +130,7 @@ class M_oa_connection extends MY_Model
      */
     public function get_all_connections()
     {
-        $sql = "SELECT oa_connection.*, oa_org.name as org_name, a.location_name AS location_a, b.location_name AS location_b FROM oa_connection LEFT JOIN oa_org ON oa_connection.org_id = oa_org.id LEFT JOIN oa_location AS a ON oa_connection.location_id_a = a.location_id LEFT JOIN oa_location AS b ON oa_connection.location_id_b = b.location_id ORDER BY name";
+        $sql = "SELECT oa_connection.*, oa_org.name as org_name, a.name AS location_a, b.name AS location_b FROM oa_connection LEFT JOIN oa_org ON oa_connection.org_id = oa_org.id LEFT JOIN oa_location AS a ON oa_connection.location_id_a = a.id LEFT JOIN oa_location AS b ON oa_connection.location_id_b = b.id ORDER BY oa_org.name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();

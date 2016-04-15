@@ -291,6 +291,9 @@ class test extends CI_Controller
     public function org_user()
     {
         $this->output->enable_profiler(true);
+
+        $this->load->model('m_oa_config');
+        $this->m_oa_config->load_config();
         echo "<pre>\n";
         $user_org_id = array();
         $sql = "SELECT org_id FROM oa_user_org WHERE user_id = ?";
@@ -349,11 +352,11 @@ class test extends CI_Controller
         $dashboard->total['org'] = count($result);
 
         $dashboard->location = array();
-        $sql = "SELECT count(system.system_id) AS count, system.man_location_id, oa_location.location_name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system.man_org_id IN (" . $instring . ") GROUP BY system.man_location_id";
+        $sql = "SELECT count(system.system_id) AS count, system.man_location_id, oa_location.name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.id WHERE system.man_org_id IN (" . $instring . ") GROUP BY system.man_location_id";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
-            $dashboard->location[$row->location_name] = $row->count;
+            $dashboard->location[$row->name] = $row->count;
         }
         $dashboard->total['location'] = count($result);
 
@@ -417,7 +420,7 @@ class test extends CI_Controller
 
 
         $dashboard->network = array();
-        $sql = "SELECT count(system.system_id) AS count, ip.network FROM system LEFT JOIN ip ON (system.system_id = ip.system_id) WHERE ip.current = 'y' AND ip.network != '' and ip.network != '0.0.0.0 / 0' AND system.man_org_id IN (" . $instring . ") GROUP BY ip.network";
+        $sql = "SELECT count(system.system_id) AS count, ip.network FROM system LEFT JOIN ip ON (system.system_id = ip.system_id) WHERE ip.current = 'y' AND ip.network != '' and ip.network != '0.0.0.0 / 0' AND ip.cidr < " . $this->config->item('network_group_subnet') . " AND system.man_org_id IN (" . $instring . ") GROUP BY ip.network";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -496,7 +499,7 @@ class test extends CI_Controller
         $test = array();
         $test[] = "system.type = 'bridge'";
         $test[] = "oa_org.name = 'OpenDealerExchange'";
-        $test[] = "oa_location.location_name = 'Pune - India'";
+        $test[] = "oa_location.name = 'Pune - India'";
         $test[] = "system.os_family = 'Ubuntu'";
         $test[] = "server.type = 'web'";
         $test[] = "system.man_status = 'deleted'";
@@ -516,7 +519,7 @@ class test extends CI_Controller
             $column = trim($temp[0]);
             echo $item . "\n";
             if ($table == 'oa_location') {
-                $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE $item AND system.man_status = 'production' AND system.man_org_id IN (" . $instring . ") ";
+                $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.id WHERE $item AND system.man_status = 'production' AND system.man_org_id IN (" . $instring . ") ";
             } elseif ($table == 'oa_org') {
                 $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system LEFT JOIN oa_org ON system.man_org_id = oa_org.id WHERE $item AND system.man_status = 'production'  AND system.man_org_id IN (" . $instring . ") ";
             } elseif ($table != 'system') {

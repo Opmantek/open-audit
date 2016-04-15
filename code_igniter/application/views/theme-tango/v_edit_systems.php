@@ -69,7 +69,7 @@ echo form_open('main/process_edit_systems')."\n";
     <label for="man_location_id"><?php echo __('Location Name'); ?>: </label><select name="man_location_id" style="width: 200px"><option value="">&nbsp;</option>
     <?php
     foreach ($locations as $location) {
-        echo "<option value=\"".intval($location->location_id)."\">".htmlentities($location->location_name)."</option>\n";
+        echo "<option value=\"".intval($location->id)."\">".htmlentities($location->name)."</option>\n";
     } ?>
     </select><br /><br />
     <label for="man_location_rack"><?php echo __('Location Rack'); ?>: </label><input type="text" name="man_location_rack" style="width: 200px" /><br /><br />

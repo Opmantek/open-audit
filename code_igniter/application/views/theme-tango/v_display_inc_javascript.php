@@ -392,7 +392,7 @@ function display_location() {
 	<?php
     $location_form = "<option value=' '>".__("Choose a Location")."<\/option>";
     foreach ($locations as $location) {
-        $location_form .= "<option value='".intval($location->location_id)."'>".htmlentities($location->location_name)."<\/option>";
+        $location_form .= "<option value='".intval($location->id)."'>".htmlentities($location->name)."<\/option>";
     }
     if ($location_id != "") {
         $location_form = "<select id='man_location_id' onchange='send_location();'>".$location_form."<\/select>";

@@ -806,31 +806,31 @@ DROP TABLE IF EXISTS `oa_location`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_location` (
-  `location_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `location_name` varchar(100) NOT NULL DEFAULT '',
-  `location_type` varchar(100) NOT NULL DEFAULT '',
-  `location_room` varchar(100) NOT NULL DEFAULT '',
-  `location_suite` varchar(100) NOT NULL DEFAULT '',
-  `location_level` varchar(100) NOT NULL DEFAULT '',
-  `location_address` varchar(100) NOT NULL DEFAULT '',
-  `location_suburb` varchar(100) NOT NULL DEFAULT '',
-  `location_city` varchar(100) NOT NULL DEFAULT '',
-  `location_district` varchar(100) NOT NULL DEFAULT '',
-  `location_region` varchar(100) NOT NULL DEFAULT '',
-  `location_area` varchar(100) NOT NULL DEFAULT '',
-  `location_state` varchar(100) NOT NULL DEFAULT '',
-  `location_postcode` varchar(10) NOT NULL DEFAULT '',
-  `location_country` varchar(100) NOT NULL DEFAULT '',
-  `location_tags` varchar(250) NOT NULL DEFAULT '',
-  `location_phone` varchar(20) NOT NULL DEFAULT '',
-  `location_picture` varchar(100) NOT NULL DEFAULT '',
-  `location_latitude` float(10,6) NOT NULL,
-  `location_longitude` float(10,6) NOT NULL,
-  `location_geo` varchar(200) NOT NULL DEFAULT '',
-  `location_comments` varchar(100) NOT NULL DEFAULT '',
-  `location_icon` varchar(100) NOT NULL DEFAULT '',
-  `location_group_id` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`location_id`)
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `room` varchar(100) NOT NULL DEFAULT '',
+  `suite` varchar(100) NOT NULL DEFAULT '',
+  `level` varchar(100) NOT NULL DEFAULT '',
+  `address` varchar(100) NOT NULL DEFAULT '',
+  `suburb` varchar(100) NOT NULL DEFAULT '',
+  `city` varchar(100) NOT NULL DEFAULT '',
+  `district` varchar(100) NOT NULL DEFAULT '',
+  `region` varchar(100) NOT NULL DEFAULT '',
+  `area` varchar(100) NOT NULL DEFAULT '',
+  `state` varchar(100) NOT NULL DEFAULT '',
+  `postcode` varchar(10) NOT NULL DEFAULT '',
+  `country` varchar(100) NOT NULL DEFAULT '',
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `phone` varchar(20) NOT NULL DEFAULT '',
+  `picture` varchar(100) NOT NULL DEFAULT '',
+  `latitude` float(10,6) NOT NULL,
+  `longitude` float(10,6) NOT NULL,
+  `geo` varchar(200) NOT NULL DEFAULT '',
+  `comments` varchar(100) NOT NULL DEFAULT '',
+  `icon` varchar(100) NOT NULL DEFAULT '',
+  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -982,7 +982,7 @@ CREATE TABLE `oa_user` (
   `permissions` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

@@ -85,7 +85,7 @@ echo "      setVarsForm(\"$system_id\");\n";
 echo "  </script>\n";
 
 foreach ($system_location as $key) {
-    $location_name = $key->location_name;
+    $location_name = $key->name;
 }
 
 # set the edit options

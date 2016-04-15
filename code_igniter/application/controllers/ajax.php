@@ -309,23 +309,23 @@ class ajax extends MY_Controller
                 $this->load->model("m_oa_location");
                 $data = $this->m_oa_location->get_location($this->data['field_data']);
                 foreach ($data as $key) {
-                    if ($key->location_address == '') {
-                        $key->location_address = '-';
+                    if ($key->address == '') {
+                        $key->address = '-';
                     }
-                    if ($key->location_city == '') {
-                        $key->location_city = '-';
+                    if ($key->city == '') {
+                        $key->city = '-';
                     }
-                    if ($key->location_state == '') {
-                        $key->location_state = '-';
+                    if ($key->state == '') {
+                        $key->state = '-';
                     }
-                    if ($key->location_country == '') {
-                        $key->location_country = '-';
+                    if ($key->country == '') {
+                        $key->country = '-';
                     }
-                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->location_name)."</span></span></p>\n";
-                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlentities($key->location_address)."</span></p>\n";
-                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlentities($key->location_city)."</span></p>\n";
-                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlentities($key->location_state)."</span></p>\n";
-                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlentities($key->location_country)."</span></p>\n";
+                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->name)."</span></span></p>\n";
+                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlentities($key->address)."</span></p>\n";
+                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlentities($key->city)."</span></p>\n";
+                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlentities($key->state)."</span></p>\n";
+                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlentities($key->country)."</span></p>\n";
                 }
             }
             if (mb_substr_count($this->data['field_name'], 'man_org_id') > 0) {

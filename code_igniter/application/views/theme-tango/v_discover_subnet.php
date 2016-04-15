@@ -207,7 +207,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                         <option value=''></option>
                 <?php
                     foreach ($locations as $location) {
-                        echo "<option value='" . $location->location_id . "'>" . $location->location_name . "</option>\n";
+                        echo "<option value='" . $location->id . "'>" . $location->name . "</option>\n";
                     }
                 ?>
                     </select>

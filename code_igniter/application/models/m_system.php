@@ -837,7 +837,7 @@ class M_system extends MY_Model
     public function system_summary($system_id)
     {
         // Improved SQL to show the linked system for the case of devices like local attached, non-networked printers
-        $sql = "SELECT a.system_id, a.hostname, a.man_ip_address, a.man_environment, a.man_status, a.man_description, a.man_type, a.man_class, a.man_os_group, a.man_os_family, a.man_os_name, a.man_manufacturer, a.man_model, a.man_serial, a.man_form_factor, location_name, a.last_seen, a.last_seen_by, a.linked_sys as linked_system_id, b.hostname as linked_hostname FROM system a LEFT JOIN system b on a.linked_sys = b.system_id LEFT JOIN oa_location on a.man_location_id = oa_location.location_id WHERE a.system_id = ?";
+        $sql = "SELECT a.system_id, a.hostname, a.man_ip_address, a.man_environment, a.man_status, a.man_description, a.man_type, a.man_class, a.man_os_group, a.man_os_family, a.man_os_name, a.man_manufacturer, a.man_model, a.man_serial, a.man_form_factor, oa_location.name, a.last_seen, a.last_seen_by, a.linked_sys as linked_system_id, b.hostname as linked_hostname FROM system a LEFT JOIN system b on a.linked_sys = b.system_id LEFT JOIN oa_location on a.man_location_id = oa_location.id WHERE a.system_id = ?";
 
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
@@ -917,7 +917,7 @@ class M_system extends MY_Model
 
     public function get_system_summary($system_id)
     {
-        $sql = "SELECT system.*, location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE system.system_id = ? LIMIT 1";
+        $sql = "SELECT system.*, oa_location.name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.id) WHERE system.system_id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
@@ -1157,7 +1157,7 @@ class M_system extends MY_Model
             $details->man_type = strtolower($details->man_type);
         }
 
-        # we now set a default location - 0 the location_id
+        # we now set a default location - 0 the location id
         if (!isset($details->man_location_id)) {
             $details->man_location_id = '0';
         }

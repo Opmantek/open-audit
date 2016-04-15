@@ -62,12 +62,12 @@ class Admin_location extends MY_Controller
     {
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_group");
-        $location_id = $this->data['id'];
+        $id = $this->data['id'];
         // Delete the group.
-        $group_id = $this->m_oa_location->get_group_id($location_id);
+        $group_id = $this->m_oa_location->get_group_id($id);
         $this->m_oa_group->delete_group($group_id);
         // Delete the location.
-        $this->m_oa_location->delete_location($location_id);
+        $this->m_oa_location->delete_location($id);
         redirect('admin_location/list_locations');
     }
 
@@ -75,13 +75,13 @@ class Admin_location extends MY_Controller
     {
         $this->load->model("m_oa_group");
         $this->load->model("m_oa_location");
-        // We have the location_id, need to get the correct group_id
-        $location_id = $this->data['id'];
-        $group_id = $this->m_oa_location->get_group_id($location_id);
+        // We have the location id, need to get the correct group id
+        $id = $this->data['id'];
+        $group_id = $this->m_oa_location->get_group_id($id);
         // Delete the group
         $this->m_oa_group->delete_group($group_id);
         // Update the oa_org by removing the group_id
-        $this->m_oa_location->set_group_id($location_id, '0');
+        $this->m_oa_location->set_group_id($id, '0');
         redirect('admin_location/list_locations');
     }
 
@@ -94,24 +94,24 @@ class Admin_location extends MY_Controller
             $this->load->view('v_template', $this->data);
         } else {
             # process the form
-            $details = new stdClass();
+            $location = new stdClass();
             foreach ($_POST as $key => $value) {
-                $details->$key = $value;
+                $location->$key = $value;
             }
-            $details->picture = '';
+            $location->picture = '';
             $this->load->model("m_oa_location");
-            if (is_null($this->m_oa_location->get_location_id($details->location_name))) {
+            if (is_null($this->m_oa_location->get_location_id($location->name))) {
                 #location does not exist - good
-                $details->location_id = $this->m_oa_location->add_location($details);
+                $location->id = $this->m_oa_location->add_location($location);
             } else {
                 $this->data['error_message'] = "Location Name already exists.";
                 $this->data['heading'] = 'Add Location';
                 $this->data['include'] = 'v_add_location';
                 $this->load->view('v_template', $this->data);
             }
-            if ($details->location_group == 'on') {
+            if ($location->group == 'on') {
                 # activate the group
-                redirect('admin_location/activate_group/'.$details->location_id);
+                redirect('admin_location/activate_group/'.$location->id);
             } else {
                 redirect('admin_location/list_locations');
             }
@@ -123,28 +123,28 @@ class Admin_location extends MY_Controller
         # insert a matching Group
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_group");
-        $location_id = $this->data['id'];
-        $location_name = $this->m_oa_location->get_location_name($location_id);
-        $location_group_id = $this->m_oa_location->get_group_id($location_id);
+        $id = $this->data['id'];
+        $name = $this->m_oa_location->get_location_name($id);
+        $group_id = $this->m_oa_location->get_group_id($id);
         $group = new stdClass();
         $group->group_id = '';
-        $group->group_name = "Items in ".$location_name;
+        $group->group_name = "Items in ".$name;
         $group->group_padded_name = '';
-        $group->group_description = "Items in ".$location_name;
+        $group->group_description = "Items in ".$name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '".$this->data['id']."' OR LOWER(system.sysLocation) LIKE LOWER('%".str_replace("'", "\'", $location_name)."%')) AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '".$id."' OR LOWER(system.sysLocation) LIKE LOWER('%".str_replace("'", "\'", $name)."%')) AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
-        if (isset($location_group_id) and $location_group_id != '' and $location_group_id != '0') {
+        if (!empty($group_id)) {
             # update an existing group
-            $group->group_id = $location_group_id;
+            $group->group_id = $group_id;
             $this->m_oa_group->update_group($group);
         } else {
             # insert a new group
             $group->group_id = $this->m_oa_group->insert_group($group);
             # update the oa_org with the correct group_id
-            $this->m_oa_location->set_group_id($location_id, $group->group_id);
+            $this->m_oa_location->set_group_id($id, $group->group_id);
         }
 
         # and now update the group contents
@@ -195,15 +195,15 @@ class Admin_location extends MY_Controller
                         $details[$attributes[$cell_number]] = $cell->getValue();
                         $cell_number++;
                     }
-                    if ($details['location_name'] != '') {
-                        if ($location_id = $this->m_oa_location->get_location_id($details['location_name'])) {
+                    if ($details['name'] != '') {
+                        if ($location_id = $this->m_oa_location->get_location_id($details['name'])) {
                             // we need to update an existing location
                             $sql = "UPDATE oa_location SET ";
                             foreach ($details as $detail => $value) {
                                 $sql .= $detail." = '".mysql_real_escape_string($value)."', ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-                            $sql .= " WHERE location_name = '".mysql_real_escape_string($details['location_name'])."'";
+                            $sql .= " WHERE name = '".mysql_real_escape_string($details['name'])."'";
                         } else {
                             // this is a new location (we don't have a name match)
                             $sql = "INSERT INTO oa_location ( ";
@@ -236,14 +236,14 @@ class Admin_location extends MY_Controller
             $this->load->model("m_oa_location");
             $xml = new SimpleXMLElement(utf8_encode(str_replace('&', '&amp;', $_POST['form_systemXML'])));
             foreach ($xml->children() as $child) {
-                if ($location_id = $this->m_oa_location->get_location_id($child->location_name)) {
+                if ($location_id = $this->m_oa_location->get_location_id($child->name)) {
                     # we need to update an existing location
                     $sql = "UPDATE oa_location SET ";
                     foreach ($child->children() as $detail) {
                         $sql .= $detail->getName()." = '".$detail."', ";
                     }
                     $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-                    $sql .= " WHERE location_name = '".$child->location_name."'";
+                    $sql .= " WHERE name = '".$child->name."'";
                 } else {
                     # this is a new location (we don't have a name match)
                     $sql = "INSERT INTO oa_location ( ";
@@ -258,7 +258,7 @@ class Admin_location extends MY_Controller
                     $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                     $sql .= ")";
                 }
-                if ($child->location_name != '') {
+                if ($child->name != '') {
                     # run the query !!!
                     $sql = '/* admin_location::add_locations */ ' . $sql;
                     $query = $this->db->query($sql);
@@ -285,22 +285,22 @@ class Admin_location extends MY_Controller
             # process the form
             $error = '0';
             foreach ($_POST as $key => $value) {
-                $details->$key = $value;
+                $location->$key = $value;
             }
-            $details->picture = '';
-            if ($this->m_oa_location->check_location_name($details->location_name, $details->location_id) == false) {
+            $location->picture = '';
+            if ($this->m_oa_location->check_location_name($location->name, $location->id) == false) {
                 $error = '1';
                 $this->data['error_message'] = "Location name already exists.";
-                $this->data['location'] = $this->m_oa_location->get_location($details->location_id);
+                $this->data['location'] = $this->m_oa_location->get_location($location->id);
                 $this->data['heading'] = 'Edit Location';
                 $this->data['include'] = 'v_edit_location';
                 $this->load->view('v_template', $this->data);
             }
 
             if ($error == '0') {
-                $this->m_oa_location->edit_location($details);
-                if ($_POST['location_group'] == 'on') {
-                    redirect('admin_location/activate_group/'.$_POST['location_id']);
+                $this->m_oa_location->edit_location($location);
+                if ($_POST['group'] == 'on') {
+                    redirect('admin_location/activate_group/'.$_POST['id']);
                 } else {
                     redirect('admin_location/list_locations');
                 }
