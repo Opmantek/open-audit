@@ -8,7 +8,8 @@
 		<group_category>os</group_category>
 		<group_icon>windows</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their os_family attribute set to 'Windows XP'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, windows.user_name, oa_location.name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_location ON (system.man_id = oa_location.id) WHERE oa_group_sys.group_id = ?]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.icon, system.man_os_family, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, windows.user_name, oa_location.name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_location ON (system.man_location_id
+ = oa_location.id) WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
