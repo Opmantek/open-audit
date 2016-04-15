@@ -96,7 +96,12 @@ class M_oa_config extends MY_Model
             $edited_by = 'config_edited_by';
         #}
 
-        $sql = "SELECT oa_config.*, oa_user.full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.id";
+        $user_prefix = '';
+        if (!empty($internal_version) and intval($internal_version) < 20160409) {
+            $user_prefix = 'user_';
+        }
+
+        $sql = "SELECT oa_config.*, oa_user." . $user_prefix . "full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user." . $user_prefix . "id";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
