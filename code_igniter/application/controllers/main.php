@@ -1043,22 +1043,22 @@ class main extends MY_Controller
                 $details->$key = $value;
             }
 
-            if ($details->user_password != $details->user_password_confirm) {
+            if ($details->password != $details->password_confirm) {
                 $error = '1';
                 $this->data['error_message'] = "Passwords must match.";
-                $this->data['user'] = $this->m_oa_user->get_user_details($details->user_id);
-                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->user_id);
+                $this->data['user'] = $this->m_oa_user->get_user_details($details->id);
+                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->id);
                 $this->data['heading'] = 'Edit User';
                 $this->data['include'] = 'v_edit_user';
                 $this->data['url'] = current_url();
                 $this->load->view('v_template', $this->data);
             }
 
-            if ($this->m_oa_user->check_user_name($details->user_name, $details->user_id) == false) {
+            if ($this->m_oa_user->check_user_name($details->name, $details->id) == false) {
                 $error = '1';
                 $this->data['error_message'] = "Username already exists.";
-                $this->data['user'] = $this->m_oa_user->get_user_details($details->user_id);
-                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->user_id);
+                $this->data['user'] = $this->m_oa_user->get_user_details($details->id);
+                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->id);
                 $this->data['heading'] = 'Edit User';
                 $this->data['include'] = 'v_edit_user';
                 $this->data['url'] = current_url();

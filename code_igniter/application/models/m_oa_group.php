@@ -582,7 +582,7 @@ class M_oa_group extends MY_Model
         # remove the existing user->group permissions
         $sql = "DELETE FROM oa_group_user WHERE user_id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array("$details->user_id");
+        $data = array("$details->id");
         $query = $this->db->query($sql, $data);
         # assign new user-> group permissions
         foreach ($details as $detail => $key) {
@@ -590,7 +590,7 @@ class M_oa_group extends MY_Model
             if (($pos !== false) and ($detail != "group_id_0")) {
                 $group_id_split = explode("_", $detail);
                 $sql = "INSERT INTO oa_group_user (group_user_id, user_id, group_id, group_user_access_level) VALUES (NULL, ?, ?, ?)";
-                $data = array("$details->user_id", $group_id_split[2], "$key");
+                $data = array("$details->id", $group_id_split[2], "$key");
                 $query = $this->db->query($sql, $data);
             }
         }
