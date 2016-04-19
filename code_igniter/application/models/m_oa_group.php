@@ -226,7 +226,7 @@ class M_oa_group extends MY_Model
 
     public function get_field_values($table, $field)
     {
-        $sql = "SELECT DISTINCT($field) AS value FROM $table ORDER BY value";
+        $sql = "SELECT DISTINCT($field) AS value FROM `$table` ORDER BY value";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
