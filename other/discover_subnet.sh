@@ -192,6 +192,14 @@ if [ "$debugging" -gt 0 ]; then
 	echo "URL: $url"
 fi
 
+if [ -z $(ls -lh "$i" | grep "rws") ]; then
+	if [ "$os_scan" = "-O" ]; then
+		log_entry="Discovery with os scan requested but suid not set on nmap binary. Removing os detection (still scanning)"
+		write_log "$log_entry"
+	fi
+	os_scan=""
+fi
+
 # Nmap command line switches explained
 # -PE == icmp echo
 # -PP == timestamp
