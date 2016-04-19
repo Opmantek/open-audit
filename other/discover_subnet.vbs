@@ -372,7 +372,8 @@ for each host in hosts_in_subnet
         result = result & "     <man_ip_address><![CDATA[" & host & "]]></man_ip_address>" & vbcrlf
         result = result & "     <mac_address><![CDATA[" & mac_address & "]]></mac_address>" & vbcrlf
         result = result & "     <manufacturer><![CDATA[" & manufacturer & "]]></manufacturer>" & vbcrlf
-        result = result & "     <description><![CDATA[" & description & "]]></description>" & vbcrlf
+        'result = result & "     <description><![CDATA[" & description & "]]></description>" & vbcrlf
+        result = result & "     <description></description>" & vbcrlf
         result = result & "     <org_id><![CDATA[" & org_id & "]]></org_id>" & vbcrlf
         result = result & "     <snmp_status><![CDATA[" & snmp_status & "]]></snmp_status>" & vbcrlf
         result = result & "     <ssh_status><![CDATA[" & ssh_status & "]]></ssh_status>" & vbcrlf
