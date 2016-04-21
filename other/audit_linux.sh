@@ -1884,6 +1884,26 @@ for variable in $(env); do
 		echo "		</item>" >> "$xml_file"
 	fi
 done
+
+# Puppet facts
+if [ -n "$(which facter)" ]; then
+    echo "  <variable>"
+    exclusions=" system_uptime memoryfree memoryfree_mb sshdsakey sshfp_dsa sshfp_rsa sshrsakey swapfree swapfree_mb system_uptime "
+    for variable in $(facter -p); do
+        name=$( echo "$variable" | cut -d" " -f1 )
+        if [ -z "$(echo "$exclusions" | grep " $name ")" ]; then
+            value=$(echo "$variable" | cut -d" " -f3-)
+            echo "      <item>"
+            echo "          <program>facter</program>"
+            echo "          <name>$(escape_xml "$name")</name>"
+            echo "          <value>$(escape_xml "$value")</value>"
+            echo "      </item>"
+        fi
+    done
+    echo "  </variable>"
+fi
+
+
 echo "	</variable>" >> "$xml_file"
 
 
