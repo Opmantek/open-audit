@@ -1257,9 +1257,22 @@ class M_system extends MY_Model
 
         # check if we have a matching entry in the vm table and update it if required
         if (isset($details->uuid) and $details->uuid != '') {
-            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) and vm.current = 'y' and vm.system_id = system.system_id";
+            if (!empty($details->serial)) {
+                # becauseWindows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
+                # which is taken from Win32_ComputerSystemProduct.IdentifyingNumber
+                # Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
+                # audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1
+                $windows_vm_uuid = str_ireplace('VMware-', '', $details->serial);
+                $windows_vm_uuid = str_ireplace('-', ' ', $windows_vm_uuid);
+                $windows_vm_uuid = strtolower($windows_vm_uuid);
+                $windows_vm_uuid = str_ireplace(' ', '', $windows_vm_uuid);
+                $windows_vm_uuid = substr($windows_vm_uuid, 0, 8) . '-'. substr($windows_vm_uuid, 8, 4) . '-' . substr($windows_vm_uuid, 12, 4) . '-' . substr($windows_vm_uuid, 16, 4) . '-' . substr($windows_vm_uuid, 20, 12);
+            } else {
+                $windows_vm_uuid = '';
+            }
+            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?) AND vm.current = 'y' and vm.system_id = system.system_id and vm.uuid != ''";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->uuid");
+            $data = array("$details->uuid", "$windows_vm_uuid");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();
@@ -1683,9 +1696,22 @@ class M_system extends MY_Model
 
         # check if we have a matching entry in the vm table and update it if required
         if (isset($details->uuid) and $details->uuid != '') {
-            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) and vm.current = 'y' and vm.system_id = system.system_id";
+            if (!empty($details->serial)) {
+                # becauseWindows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
+                # which is taken from Win32_ComputerSystemProduct.IdentifyingNumber
+                # Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
+                # audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1
+                $windows_vm_uuid = str_ireplace('VMware-', '', $details->serial);
+                $windows_vm_uuid = str_ireplace('-', ' ', $windows_vm_uuid);
+                $windows_vm_uuid = strtolower($windows_vm_uuid);
+                $windows_vm_uuid = str_ireplace(' ', '', $windows_vm_uuid);
+                $windows_vm_uuid = substr($windows_vm_uuid, 0, 8) . '-'. substr($windows_vm_uuid, 8, 4) . '-' . substr($windows_vm_uuid, 12, 4) . '-' . substr($windows_vm_uuid, 16, 4) . '-' . substr($windows_vm_uuid, 20, 12);
+            } else {
+                $windows_vm_uuid = '';
+            }
+            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?) AND vm.current = 'y' and vm.system_id = system.system_id and vm.uuid != ''";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->uuid");
+            $data = array("$details->uuid", "$windows_vm_uuid");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();

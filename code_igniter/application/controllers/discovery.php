@@ -1351,24 +1351,35 @@ class discovery extends CI_Controller
                             if ($details->windows_username !='') {
                                 $details->type = 'computer';
                                 $details->os_group = 'Windows';
+
                                 # get the UUID
                                 $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'csproduct get uuid', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->uuid = $wmi_result['output'][1];
                                 }
+
+                                # get the serial
+                                $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'csproduct get IdentifyingNumber', $details->windows_password, $details->windows_domain, $display);
+                                if ($wmi_result['status'] == 0) {
+                                    # the command ran successfully, insert the correct line into the appropriate attribute
+                                    $details->serial = $wmi_result['output'][1];
+                                }
+
                                 # get the hostname
                                 $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'computersystem get name', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->hostname = strtolower($wmi_result['output'][1]);
                                 }
+
                                 # get the domain
                                 $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'computersystem get domain', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->domain = strtolower($wmi_result['output'][1]);
                                 }
+
                                 # get the os name
                                 $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'os get name', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
@@ -1412,12 +1423,14 @@ class discovery extends CI_Controller
                                         $details->os_family = "Windows 10";
                                     }
                                 }
+
                                 # get the manufacturer
                                 $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'csproduct get vendor', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->manufacturer = $wmi_result['output'][1];
                                 }
+
                                 # get the description
                                 $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'os get description', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
