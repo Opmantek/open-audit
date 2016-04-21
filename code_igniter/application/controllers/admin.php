@@ -4861,51 +4861,18 @@ class admin extends MY_Controller
             $log_details->message = 'Upgrade database to 1.12.6 commenced';
             stdlog($log_details);
 
-            $this->load->helper('report_helper');
-            refresh_report_definitions();
-            $this->load->helper('group_helper');
-            refresh_group_definitions();
-
             $this->load->model('m_system');
             $this->m_system->reset_icons();
 
-            // update any leftover group display definitions
-            $sql = "SELECT group_id, group_display_sql FROM oa_group WHERE group_display_sql LIKE '%man_icon%'";
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            foreach ($result as $row) {
-                $display_sql = str_ireplace('man_icon', 'icon', $row->group_display_sql);
-                $sql = "UPDATE oa_group SET group_display_sql = ? WHERE group_id = ?";
-                $data = array($display_sql, $row->group_id);
-                $update_result = $query->result();
-            }
-
-            // update any group display columns
-            $sql = "UPDATE oa_group_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
-            $query = $this->db->query($sql);
-
-            // update any leftover report display definitions
-            $sql = "SELECT report_id, report_sql FROM oa_report WHERE report_sql LIKE '%man_icon%'";
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            foreach ($result as $row) {
-                $report_sql = str_ireplace('man_icon', 'icon', $row->report_sql);
-                $sql = "UPDATE oa_report SET report_sql = ? WHERE report_id = ?";
-                $data = array($report_sql, $row->report_id);
-                $update_result = $query->result();
-            }
-
-            // update any report display columns
-            $sql = "UPDATE oa_report_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
-            $query = $this->db->query($sql);
-
             unset($sql);
             $sql = array();
-            $sql[] = "ALTER TABLE system DROP man_icon";
-            # gave to re-run this as we left it in the origin SQL script.
-            $sql[] = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
-            $sql[] = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
+            # we're removving the foreign key between additional fields and groups
+            $sql[] = "ALTER TABLE sys_man_additional_fields DROP FOREIGN KEY sys_man_additional_fields_group_id";
 
+            # this should be unused now - groups and reports refreshed further down
+            $sql[] = "ALTER TABLE system DROP man_icon";
+
+            # drop this key so we can change org_id to id
             $sql[] = "ALTER TABLE oa_user_org DROP FOREIGN KEY oa_user_org_org_id";
 
             # change the oa_org to the new SQL schema style
@@ -4918,25 +4885,19 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_org CHANGE org_comments comments text NOT NULL DEFAULT ''";
             $sql[] = "UPDATE oa_org SET name = 'Default Organisation' WHERE id = 0";
 
-            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_org_id FOREIGN KEY (org) REFERENCES oa_org (id)";
+            # now add the key back
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_org_id FOREIGN KEY (org_id) REFERENCES oa_org (id)";
 
-            $sql[] = "ALTER TABLE sys_hw_sound ADD CONSTRAINT sys_hw_sound_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
-
-            # change the user table to the new SQL schema format
+            # drop these foreign keys so we can change user_id to id
             $sql[] = "ALTER TABLE edit_log DROP FOREIGN KEY edit_log_user_id";
-            $sql[] = "IF EXISTS( SELECT * FROM INFORMATION_SCHEMA.STATISTICS WHERE INDEX_SCHEMA = DATABASE() AND TABLE_NAME='edit_log' AND INDEX_NAME = 'edit_log_user_id') THEN ALTER TABLE `edit_log` DROP FOREIGN KEY `edit_log_user_id`; ALTER TABLE `edit_log` DROP INDEX `edit_log_user_id`; END IF;";
             $sql[] = "ALTER TABLE oa_change DROP FOREIGN KEY oa_change_user_id";
             $sql[] = "ALTER TABLE oa_group_user DROP FOREIGN KEY oa_group_user_user_id";
             $sql[] = "ALTER TABLE oa_user_org DROP FOREIGN KEY oa_user_org_user_id";
             $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_user_id";
             $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_user_id";
+
+            # change the user table to the new SQL schema format
             $sql[] = "ALTER TABLE oa_user CHANGE user_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
-            $sql[] = "ALTER TABLE edit_log ADD CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE oa_change ADD CONSTRAINT oa_change_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE oa_group_user ADD CONSTRAINT oa_group_user_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT att_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT sys_man_notes_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
             $sql[] = "ALTER TABLE oa_user CHANGE user_name name varchar(100) NOT NULL";
             $sql[] = "ALTER TABLE oa_user CHANGE user_password password varchar(250) NOT NULL";
             $sql[] = "ALTER TABLE oa_user CHANGE user_full_name full_name varchar(100) NOT NULL";
@@ -4949,6 +4910,15 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_user CHANGE user_sam sam int(10) NOT NULL DEFAULT '1'";
             $sql[] = "ALTER TABLE oa_user DROP user_change";
 
+            # now add the foreign keys back
+            $sql[] = "ALTER TABLE edit_log ADD CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_change ADD CONSTRAINT oa_change_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_group_user ADD CONSTRAINT oa_group_user_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT att_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT sys_man_notes_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+
+            # change the location table to use the new SQL schema format
             $sql[] = "ALTER TABLE oa_location CHANGE location_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE oa_location CHANGE location_name name varchar(100) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE oa_location CHANGE location_type type varchar(100) NOT NULL DEFAULT ''";
@@ -4974,8 +4944,10 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_location CHANGE location_icon icon varchar(100) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE oa_location CHANGE location_group_id group_id int(10) unsigned NOT NULL DEFAULT '0'";
 
-            $sql[] = "DELETE FROM oa_group WHERE group_dynamic_select LIKE '%sys_hw_network_card_ip%'";
+            # this is unused and having 'count' as a column name is not ideal because it's a SQL reserved word
+            $sql[] = "ALTER TABLE service DROP count";
 
+            # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";
 
@@ -4983,6 +4955,32 @@ class admin extends MY_Controller
                 $this->data['output'] .= $this_query."<br /><br />\n";
                 $query = $this->db->query($this_query);
             }
+
+            # refresh the reports
+            $this->load->helper('report_helper');
+            refresh_report_definitions();
+
+            # refresh the groups
+            $this->load->helper('group_helper');
+            refresh_group_definitions();
+
+            // update any leftover group definitions by changing man_icon to icon
+            $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_icon', 'icon')";
+            $query = $this->db->query($sql);
+            $sql = "UPDATE oa_group_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+            $query = $this->db->query($sql);
+
+            // update any leftover report definitions by changing man_icon to icon
+            $sql = "UPDATE oa_report SET report_sql = REPLACE(report_sql, 'man_icon', 'icon')";
+            $query = $this->db->query($sql);
+            $sql = "UPDATE oa_report_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+            $query = $this->db->query($sql);
+
+            # have to re-run this as we left it in the original SQL script.
+            $sql = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
+            $query = $this->db->query($sql);
+            $sql = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
+            $query = $this->db->query($sql);
 
             $log_details->message = 'Upgrade database to 1.12.6 completed';
             stdlog($log_details);

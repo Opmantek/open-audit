@@ -1337,7 +1337,6 @@ CREATE TABLE `service` (
   `user` varchar(100) NOT NULL DEFAULT '',
   `start_mode` varchar(200) NOT NULL DEFAULT '',
   `state` varchar(200) NOT NULL DEFAULT '',
-  `count` varchar(5) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `first_seen` (`first_seen`),
@@ -1549,8 +1548,7 @@ CREATE TABLE `sys_man_additional_fields` (
   `field_derived_sql` varchar(100) NOT NULL DEFAULT '',
   `field_placement` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`field_id`),
-  KEY `sys_man_additional_fields_group` (`group_id`),
-  CONSTRAINT `sys_man_additional_fields_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE
+  KEY `sys_man_additional_fields_group` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
