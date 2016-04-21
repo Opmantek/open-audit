@@ -84,6 +84,7 @@ class discovery extends CI_Controller
 
         // accept a list passed into the function from PHP
         if ($ids != '') {
+            $ids = str_replace(' ', '', $ids);
             $system_ids = explode(',', $ids);
         }
 
@@ -331,7 +332,7 @@ class discovery extends CI_Controller
 
                 // start the domain audit
                 if ($error == '') {
-                    $command_string = "screen -D -m /usr/local/open-audit/other/winexe-static -U ".$_POST['windows_domain']."/".$_POST['windows_username']."%".$_POST['windows_password']." --uninstall //".$_POST['server']." \"cscript //nologo c:\windows\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=c:\windows\audit_windows.vbs url=".$url." limit=".$limit." debugging=0 struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." \" ";
+                    $command_string = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$_POST['windows_domain']."/".$_POST['windows_username']."%".$_POST['windows_password']." --uninstall //".$_POST['server']." \"cscript //nologo c:\windows\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=c:\windows\audit_windows.vbs url=".$url." limit=".$limit." debugging=0 struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." \" ";
                     exec($command_string, $output, $return_var);
                     if ($display == 'y') {
                         $command_string = str_replace($_POST['windows_password'], '******', $command_string);
@@ -1583,7 +1584,7 @@ class discovery extends CI_Controller
                                 $return_var = null;
 
                                 if ($error == '') {
-                                    $command_string = "screen -D -m /usr/local/open-audit/other/winexe-static -U ".str_replace("'", "", escapeshellarg($details->windows_domain))."/".str_replace("'", "", escapeshellarg($details->windows_username))."%".str_replace("'", "", escapeshellarg($details->windows_password))." --uninstall //".str_replace("'", "", escapeshellarg($details->man_ip_address))." \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=".str_replace("'", "", escapeshellarg($details->man_ip_address))." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->system_id."\" ";
+                                    $command_string = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".str_replace("'", "", escapeshellarg($details->windows_domain))."/".str_replace("'", "", escapeshellarg($details->windows_username))."%".str_replace("'", "", escapeshellarg($details->windows_password))." --uninstall //".str_replace("'", "", escapeshellarg($details->man_ip_address))." \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=".str_replace("'", "", escapeshellarg($details->man_ip_address))." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->system_id."\" ";
 
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
@@ -1660,7 +1661,7 @@ class discovery extends CI_Controller
                                         #echo "DEBUG - struser: ".$details->ssh_username."\n";
                                         #echo "DEBUG - strpass: ".$details->ssh_password."\n";
                                     }
-                                    $ssh_command = "sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." uname ";
+                                    $ssh_command = "timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." uname ";
                                     $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                     if ($ssh_result['status'] != '0') {
                                         $error = 'Audit routine for SSH audit on '.$details->man_ip_address.' failed to run uname on target';
@@ -1668,7 +1669,7 @@ class discovery extends CI_Controller
                                         stdlog($log_details);
                                         if ($display == 'y') {
                                             echo "DEBUG - Running with 'ssh -v' for your inspection. Possible credential failure.\n";
-                                            $ssh_command = "sshpass ssh -v -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." uname 2>&1";
+                                            $ssh_command = "timeout 5m sshpass ssh -v -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." uname 2>&1";
                                             $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                         }
                                     } else {
@@ -1706,7 +1707,7 @@ class discovery extends CI_Controller
                                             stdlog($log_details);
 
                                             // Attempt to copy the audit script
-                                            $ssh_command = 'sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.$filepath.'/'.$audit_script.' '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).':'.$this->config->item('discovery_linux_script_directory');
+                                            $ssh_command = 'timeout 5m sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.$filepath.'/'.$audit_script.' '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).':'.$this->config->item('discovery_linux_script_directory');
                                             $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                             if ($ssh_result['status'] != '0') {
                                                 $error = 'SSH copy of '.$audit_script.' to '.$details->man_ip_address.' has failed';
@@ -1719,7 +1720,7 @@ class discovery extends CI_Controller
 
                                             // Attempt to chmod the script so it's executable
                                             if ($error == '') {
-                                                $ssh_command = "sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." chmod " . $this->config->item('discovery_linux_script_permissions') . " " . $this->config->item('discovery_linux_script_directory') . $audit_script.' ';
+                                                $ssh_command = "timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." chmod " . $this->config->item('discovery_linux_script_permissions') . " " . $this->config->item('discovery_linux_script_directory') . $audit_script.' ';
                                                 $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                 if ($ssh_result['status'] != '0') {
                                                     $error = 'SSH chmod command for '.$remote_os.'audit script on '.$details->man_ip_address.' failed';
@@ -1733,7 +1734,7 @@ class discovery extends CI_Controller
 
                                             // Attempt to determine if SUDO is present on target system
                                             if ($error == '' and strtolower($details->ssh_username) != 'root') {
-                                                $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' which sudo ';
+                                                $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' which sudo ';
                                                 $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                 if ($ssh_result['status'] != '0') {
                                                     $log_details->message = 'SSH which sudo command for '.$remote_os.' audit script on '.$details->man_ip_address.' failed';
@@ -1755,13 +1756,13 @@ class discovery extends CI_Controller
                                                 if (strtolower($remote_os) != 'vmkernel') {
                                                     // Exclude VMware ESX as it does not have a usable wget to send post-data back to Open-AudIT
                                                     if ($sudo != '' and $details->ssh_username != 'root') {
-                                                        $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "echo '.escapeshellarg($details->ssh_password).' | '.$sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" ';
+                                                        $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "echo '.escapeshellarg($details->ssh_password).' | '.$sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" ';
                                                         $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                         if ($ssh_result['status'] != '0') {
                                                             $error = 'SSH audit command for '.$remote_os.' audit using sudo on '.$details->man_ip_address.' failed. Attempting to run without sudo.';
                                                             $log_details->message = $error;
                                                             stdlog($log_details);
-                                                            $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).'  "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=3 system_id='.$details->system_id.' display=' . $display . '" ';
+                                                            $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).'  "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=3 system_id='.$details->system_id.' display=' . $display . '" ';
                                                             $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                             if ($ssh_result['status'] != '0') {
                                                                 $error = 'SSH audit command for '.$remote_os.' audit not using sudo on '.$details->man_ip_address.' failed';
@@ -1775,7 +1776,7 @@ class discovery extends CI_Controller
                                                         unset($ssh_command);
                                                         unset($ssh_result);
                                                     } else {
-                                                        $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" 2>/dev/null';
+                                                        $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" 2>/dev/null';
                                                         $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                         if ($ssh_result['status'] != '0') {
                                                             $error = 'SSH audit command for '.$remote_os.' audit script on '.$details->man_ip_address.' failed';
@@ -1785,7 +1786,7 @@ class discovery extends CI_Controller
                                                     }
                                                 } else {
                                                     # ESXi
-                                                    $ssh_command = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n debugging=0 echo_output=y system_id='.$details->system_id.'" 2>/dev/null';
+                                                    $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n debugging=0 echo_output=y system_id='.$details->system_id.'" 2>/dev/null';
                                                     $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                     if ($ssh_result['status'] != '0') {
                                                         $error = 'SSH audit command for ESXi audit script on '.$details->man_ip_address.' failed';
@@ -2100,7 +2101,7 @@ class discovery extends CI_Controller
                                     if ($error == '' and $audit_script == 'audit_esxi.sh') {
                                         // Audit ESXi
                                         $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=n create_file=n debugging=0 echo_output=y url=".$url."index.php/system/add_system system_id=".$details->system_id."\"";
-                                        # this is the linux command # $command_string = 'sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "' . $this->config->item('discovery_linux_script_directory') . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
+                                        # this is the linux command # $command_string = 'timeout 5m sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "' . $this->config->item('discovery_linux_script_directory') . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
                                         @exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
                                             $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -2214,7 +2215,7 @@ class discovery extends CI_Controller
     public function run_ssh($ssh_command = '', $ssh_password = '', $ssh_display = 'n')
     {
         // $ssh_command should be your SSHPASS command string, sans password
-        // ex: 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null user@target sleep 15'
+        // ex: 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null user@target sleep 15'
         // $ssh_password should be what you wish to pass to that command - the SSH password
         // $ssh_display is usually whatever is set in the discovery function $display variable
         $descriptorspec = array(
@@ -2286,7 +2287,7 @@ class discovery extends CI_Controller
             $cwd = '/tmp';
             $env = array();
             if ($command != '') {
-                $command_string = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $user . '@' . $host . ' "' . $command . '"';
+                $command_string = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $user . '@' . $host . ' "' . $command . '"';
                 $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
                 if (is_resource($process)) {
                     fwrite($pipes[0], $password);
@@ -2357,7 +2358,7 @@ class discovery extends CI_Controller
 
         if (php_uname('s') == 'Linux') {
             $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
-            $command_string = $filepath . "/winexe-static -U ".str_replace("'", "", escapeshellarg($domain))."/".str_replace("'", "", escapeshellarg($user))."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($host))." \"wmic $command\" ";
+            $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".str_replace("'", "", escapeshellarg($domain))."/".str_replace("'", "", escapeshellarg($user))."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($host))." \"wmic $command\" ";
             exec($command_string, $return['output'], $return['status']);
         }
 
@@ -2412,7 +2413,7 @@ class discovery extends CI_Controller
             $cwd = '/tmp';
             $env = array();
             if ($command != '') {
-                $command_string = 'sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($user) . '@' . escapeshellarg($host) . ':' . $destination;
+                $command_string = 'timeout 5m sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($user) . '@' . escapeshellarg($host) . ':' . $destination;
                 $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
                 if (is_resource($process)) {
                     fwrite($pipes[0], $password);
