@@ -4947,6 +4947,10 @@ class admin extends MY_Controller
             # this is unused and having 'count' as a column name is not ideal because it's a SQL reserved word
             $sql[] = "ALTER TABLE service DROP count";
 
+            # allow for some silly long serial numbers
+            $sql[] = "ALTER TABLE system CHANGE `serial` `serial` varchar(250) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE `man_serial` `man_serial` varchar(250) NOT NULL DEFAULT ''";
+
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";
