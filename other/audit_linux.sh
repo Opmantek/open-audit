@@ -660,7 +660,7 @@ system_os_icon=$(lcase $system_os_family)
 
 # Get the System Serial Number
 system_serial=""
-system_serial=$(dmidecode -s system-serial-number 2>/dev/null)
+system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
 if [ -z "$system_serial" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		system_serial=$(lshal | grep "system.hardware.serial" | cut -d\' -f2)
