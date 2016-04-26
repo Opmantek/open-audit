@@ -57,9 +57,6 @@ class devices extends MY_Controller
         $this->load->model('m_devices');
         $this->load->model('m_orgs');
 
-        $this->error = new stdClass();
-        $this->error->controller = 'devices';
-
         $this->response = new stdClass();
         inputRead();
 
@@ -98,10 +95,10 @@ class devices extends MY_Controller
             }
         }
 
-        #$this->response->format = 'json';
-        #$this->response->debug = true;
-        #output($this->response);
-        #exit();
+        // $this->response->format = 'json';
+        // $this->response->debug = true;
+        // output($this->response);
+        // exit();
 
     }
 
@@ -130,6 +127,7 @@ class devices extends MY_Controller
             $this->response->data = $this->m_devices->read_devices();
         }
         $this->response->filtered = count($this->response->data);
+
         output($this->response);
     }
 
@@ -152,7 +150,7 @@ class devices extends MY_Controller
 
     private function create_form()
     {
-        $this->error->controller .= '::'.__FUNCTION__;
+        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);
@@ -160,7 +158,7 @@ class devices extends MY_Controller
 
     private function execute()
     {
-        $this->error->controller .= '::'.__FUNCTION__;
+        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);
@@ -168,7 +166,7 @@ class devices extends MY_Controller
 
     private function create()
     {
-        $this->error->controller .= '::'.__FUNCTION__;
+        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);
@@ -176,16 +174,19 @@ class devices extends MY_Controller
 
     private function update()
     {
-        $this->error->controller .= '::'.__FUNCTION__;
+        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
-        $this->response->data = null;
+        $this->m_devices->update();
+        #$this->response->data = null;
+        #$this->response->error = getError('ERR-0009');
+        #$this->response->header = $this->response->error->status;
         output($this->response);
     }
 
     private function update_form()
     {
-        $this->error->controller .= '::'.__FUNCTION__;
+        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);
@@ -193,7 +194,7 @@ class devices extends MY_Controller
 
     private function bulk_update_form()
     {
-        $this->error->controller .= '::'.__FUNCTION__;
+        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         $this->response->id = '';
@@ -207,7 +208,7 @@ class devices extends MY_Controller
 
     private function delete()
     {
-        $this->error->controller .= '::'.__FUNCTION__;
+        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);

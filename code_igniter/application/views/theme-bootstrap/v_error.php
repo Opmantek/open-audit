@@ -39,6 +39,13 @@ if (!empty($this->response->errors)) {
     print_r($this->response->errors);
     echo "</pre>\n";
 }
+
+if (!empty($this->response->error)) {
+    echo "<pre>\n";
+    print_r($this->response->error);
+    echo "</pre>\n";
+}
+
 ?>
 </div>
 <?php

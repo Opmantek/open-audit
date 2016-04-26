@@ -84,8 +84,14 @@ if (!empty($this->response->data)) {
 <?php
       $properties = get_object_vars($this->response->data[0]);
       foreach ($properties as $key => $value) {
-        if ($key == 'man_ip_address' or $key == 'ip_padded') {
+        if (strpos($key, '.') !== false) {
+          $key = substr($key, strpos($key, '.')+1);
+        }
+        if ($key == 'man_ip_address' or $key == 'system.man_ip_address' or $key == 'ip_padded') {
           continue;
+        }
+        if ($key == 'system_id') {
+          $key = 'ID';
         }
         $key = str_replace('man_', '', $key);
         $key = str_replace('_', ' ', $key);
@@ -94,7 +100,7 @@ if (!empty($this->response->data)) {
         $key = ucwords($key);
         if ($key == 'Ip') { $key = 'IP'; }
         if (stripos($key, 'icon') !== false) {
-          echo "            <th style=\"text-align: center;\">" . __($key) . "</th>\n";
+          echo "            <th style=\"text-align: center;\" nowrap>" . __($key) . "</th>\n";
         } else {
           echo "            <th>" . __($key) . "</th>\n";
         }
@@ -108,22 +114,40 @@ if (!empty($this->response->data)) {
         </thead>
         <tbody>
 <?php
+# for every returned row
   foreach ($this->response->data as $item) {
+
+    # grab the system_id if it exists
+    $system_id = '';
+    if (!empty($item->system_id)) {
+      $system_id = $item->system_id;
+    }
+    if (!empty($item->{'system.system_id'})) {
+      $system_id = $item->{'system.system_id'};
+    }
     echo "          <tr>\n";
+
+    # for every attribute in our retrned row
     foreach ($properties as $property => $value) {
+
+      # remove any extra spacing
       $property = trim($property);
-      if (strpos($property, '.') !== false) {
-        $property = substr($property, 0, strpos($property, '.'));
-      }
-      if ($property == 'man_ip_address' or $property == 'ip_padded') {
+      # do we have a .?
+      # if so, set the property name as the first character after the . onwards
+      // if (strpos($property, '.') !== false) {
+      //   $property = substr($property, strpos($property, '.'));
+      // }
+      # never output these - we shoudl have an attribute called ip instead
+      if ($property == 'man_ip_address' or $property == 'system.man_ip_address' or $property == 'ip_padded') {
         continue;
       }
+
       if (!empty($item->$property)) {
         if ($property == 'ip' and !empty($item->ip_padded)) {
           echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->ip_padded) . "</span>" . $item->ip . "</td>\n";
-        } elseif ($property == 'system_id') {
+        } elseif ($property == 'system_id' or $property == 'system.system_id') {
           echo "            <td><a href='devices/" . $item->$property . "'>" . $item->$property . "</td>\n";
-        } elseif ($property == 'icon') {
+        } elseif ($property == 'icon' or $property == 'system.icon') {
           echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->$property)."\" alt=\"".htmlentities($item->$property)."\"/></td>\n";
         } else {
           if (strlen($item->$property) > 50) {
@@ -131,13 +155,16 @@ if (!empty($this->response->data)) {
           } else {
             $display = $item->$property;
           }
-          echo "            <td><span class=\" small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
+          echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
         }
       } else {
         echo "            <td></td>\n";
       }
     }
-    echo "            <td align='center'><input type='checkbox' id='ids[]' value='" . intval($item->system_id) . "' name='ids[]' /></td>\n";
+
+    if (!empty($system_id)) {
+      echo "            <td align='center'><input type='checkbox' id='ids[]' value='" . intval($system_id) . "' name='ids[]' /></td>\n";
+    }
     echo "          </tr>\n";
   }
   ?>
@@ -149,7 +176,7 @@ if (!empty($this->response->data)) {
 if (!empty($this->response->error)) {
   echo '</div></div><div class="alert alert-danger" role="alert">' . $this->response->error->title . '</div>';
   echo "<pre>\n";
-  print_r($error);
+  print_r($this->response->error);
   echo "</pre>\n";
 }
 ?>
@@ -162,6 +189,12 @@ if (!empty($this->response->error)) {
     })
   });
 </script>
+
+<style>
+.glyphicon:hover { 
+    color: green;
+}
+</style>
 <?php
 exit();
 ?>

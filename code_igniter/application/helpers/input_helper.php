@@ -58,7 +58,7 @@ if (! function_exists('inputRead')) {
         // sort = blank
         // current = y
         // groupby = blank
-        // limit = 10000
+        // limit = 1000
         // offset = 0
         // format = json
         // properties = *
@@ -71,6 +71,7 @@ if (! function_exists('inputRead')) {
 
         error_reporting(E_ALL);
         $CI = & get_instance();
+        $CI->response->internal = new stdClass();
 
         # enable the $_GET global
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
@@ -270,7 +271,12 @@ if (! function_exists('inputRead')) {
                     $item = substr($item, 1) . ' DESC';
                 }
             }
-            $CI->response->sort = 'ORDER BY ' . implode(',', $temp);
+            $CI->response->sort = implode(',', $temp);
+        }
+        if ($CI->response->sort != '') {
+            $CI->response->internal->sort = 'ORDER BY ' . implode(',', $temp);
+        } else {
+            $CI->response->internal->sort = '';
         }
 
         # get current
@@ -289,28 +295,15 @@ if (! function_exists('inputRead')) {
         # get the group by
         $CI->response->groupby = '';
         if (!empty($_GET['groupby'])) {
-            $CI->response->groupby = 'GROUP BY ' . $_GET['groupby'];
+            $CI->response->groupby = $_GET['groupby'];
         }
         if (!empty($_POST['groupby'])) {
-            $CI->response->groupby = 'GROUP BY ' . $_POST['groupby'];
+            $CI->response->groupby = $_POST['groupby'];
         }
-
-        # get the limit
-        $CI->response->limit = 10000;
-        if (isset($_GET['limit'])) {
-            $CI->response->limit = intval($_GET['limit']);
-        }
-        if (isset($_POST['limit'])) {
-            $CI->response->limit = intval($_POST['limit']);
-        }
-
-        # get the offset
-        $CI->response->offset = 0;
-        if (isset($_GET['offset'])) {
-            $CI->response->offset = intval($_GET['offset']);
-        }
-        if (isset($_POST['offset'])) {
-            $CI->response->offset = intval($_POST['offset']);
+        if (!empty($CI->response->groupby)) {
+            $CI->response->internal->groupby = 'GROUP BY ' . $CI->response->groupby;
+        } else {
+            $CI->response->internal->groupby = '';
         }
 
         # get the output format
@@ -335,6 +328,34 @@ if (! function_exists('inputRead')) {
             $CI->response->format = 'json';
         }
 
+        # get the limit
+        if ($CI->response->format == 'json') {
+            $CI->response->limit = '';
+        } else {
+            $CI->response->limit = 1000;
+        }
+        if (isset($_GET['limit'])) {
+            $CI->response->limit = intval($_GET['limit']);
+        }
+        if (isset($_POST['limit'])) {
+            $CI->response->limit = intval($_POST['limit']);
+        }
+
+        # get the offset
+        $CI->response->offset = 0;
+        if (isset($_GET['offset'])) {
+            $CI->response->offset = intval($_GET['offset']);
+        }
+        if (isset($_POST['offset'])) {
+            $CI->response->offset = intval($_POST['offset']);
+        }
+
+        if ($CI->response->limit != '') {
+            $CI->response->internal->limit = 'LIMIT ' . $CI->response->offset . ',' . $CI->response->limit;
+        } else {
+            $CI->response->internal->limit = '';
+        }
+
         # get the list of requested properties
         $CI->response->properties = '';
         if (isset($_GET['properties'])) {
@@ -344,17 +365,40 @@ if (! function_exists('inputRead')) {
             $CI->response->properties = $_POST['properties'];
         }
         if ($CI->response->properties == '') {
-            if ($CI->response->action == 'collection' and  $CI->response->collection == 'devices') { 
+            # set some defaults
+            if ($CI->response->action == 'collection' and $CI->response->collection == 'devices') { 
+                # we're requesting a list of devices without properties - set the below as defaults
                 if ($CI->response->sub_resource == '' or strtolower($CI->response->sub_resource) == 'system') {
                     $CI->response->properties = 'system.icon, system.man_type, system.system_id, system.hostname, system.man_domain, system.man_ip_address, system.man_description, system.os_family, system.man_status';
                 } else {
+                    # we're requesting a subresource - return all the subresource's properties
                     $CI->response->properties = $CI->response->sub_resource . '.*';
                 }
             } else {
+                # we're requesting something that isn't a device (or a list of devices) - return everything
                 $CI->response->properties = '*';
             }
         }
+        # perform some simple data cleansing
         $CI->response->properties = str_replace(array('\'', '"', '(', ')'), '', $CI->response->properties);
+
+
+        // create our internal properties list - this is what gets executed in SQL
+        if ($CI->response->properties != '*' and $CI->response->properties != $CI->response->sub_resource . '.*') {
+            $temp = explode(',', $CI->response->properties);
+            foreach ($temp as $property) {
+                if ($property == 'count') {
+                    $CI->response->internal->properties .= 'count(*) as `count`,';
+                } elseif ($property == 'system_id') {
+                    $CI->response->internal->properties .= 'system.system_id as `system_id`,';
+                } else {
+                    $CI->response->internal->properties .= $property . ' AS `' . trim($property) . '`,';
+                }
+            }
+            $CI->response->internal->properties = substr($CI->response->internal->properties, 0, -1);
+        } else {
+            $CI->response->internal->properties = $CI->response->properties;
+        }
 
         # get the filter
         $filter = array();

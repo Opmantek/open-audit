@@ -97,25 +97,19 @@ $(document).ready(function(){
             var item = document.getElementById(attribute);
             var value = $(item).val();
             var edit_button = document.getElementById('edit_'+attribute);
-            //alert("Submit the data. Attribute:" + attribute + " Value:" + value);
-
-
-var myObj = {};
-//myObj["id"] = <?php echo $data['system'][0]->system_id; ?>;
-myObj["id"] = 999;
-myObj[attribute] = value;
-var json = JSON.stringify(myObj);
-//alert(json);
-
-
-
-            //$.post( "<?php echo $data['system'][0]->system_id;?>", { item: value })
-            $.post( "<?php echo $data['system'][0]->system_id;?>", { "data": json })
-                .done(function( data ) {
-                    alert( JSON.stringify(data) );
-                }, 'json');
-
-
+            var myObj = {};
+            myObj["id"] = <?php echo $data['system'][0]->system_id; ?>;
+            myObj[attribute] = value;
+            var json = JSON.stringify(myObj);
+            $.post( "<?php echo $data['system'][0]->system_id;?>", { "data": json }, 'json')
+                .done(function( xhr ) {
+                    //alert( JSON.stringify(xhr) );
+                })
+               .fail(function(xhr) {
+                    returnData = xhr;
+                    responseText = JSON.parse(xhr.responseText);
+                    alert( responseText.error.code + "\n" + responseText.error.title + "\n" + responseText.error.detail );
+                });
             $(item).attr("disabled", true);
             $(edit_button).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
             $(edit_button).attr("action", "edit");
@@ -493,11 +487,11 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                         </div>
                         -->
                         <div class="form-group">
-                            <label for="description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
+                            <label for="man_description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="description" name="description" value="<?php echo $data['system'][0]->man_description; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="man_description" name="man_description" value="<?php echo $data['system'][0]->man_description; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_description" action="edit" class="btn btn-default edit_button" type="button" value="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_man_description" action="edit" class="btn btn-default edit_button" type="button" value="man_description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>

@@ -92,7 +92,7 @@ class M_devices extends MY_Model
                 if (strpos($item->name, '.') !== false) {
                     $table = substr($item->name, 0, strpos($item->name, '.'));
                     if ($table != 'system') {
-                        $join .= ' LEFT JOIN ' . $table . ' ON (system.system_id = ' . $table . '.system_id AND ' . $table . '.current = "' . $CI->response->current . '") ';
+                        $join .= ' LEFT JOIN `' . $table . '` ON (system.system_id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->current . '") ';
                     }
                 }
             }
@@ -143,6 +143,14 @@ class M_devices extends MY_Model
         $data = array($CI->response->id);
         $query = $this->db->query($sql, $data);
         $document['system'] = $query->result();
+
+        // the location object
+        $sql = "SELECT oa_location.id, oa_location.name, oa_location.type, IF(system.man_location_room != '', system.man_location_room, oa_location.room) as room, IF(system.man_location_suite != '', system.man_location_suite, oa_location.suite) as suite, IF(system.man_location_level != '', system.man_location_level, oa_location.level) as level, oa_location.address, oa_location.suburb, oa_location.city, oa_location.postcode, oa_location.state, oa_location.country, oa_location.phone, system.man_location_rack as rack, system.man_location_rack_position as rack_position, system.man_location_rack_size as rack_size FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.id) WHERE system.system_id = ?";
+        $sql = $this->clean_sql($sql);
+        $data = array($CI->response->id);
+        $query = $this->db->query($sql, $data);
+        $document['location'] = $query->result();
+
         $tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
             $result = $this->m_devices_components->read($CI->response->id, $CI->response->current, $table, $CI->response->filter, '*');
@@ -158,13 +166,14 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $filter = $this->build_filter();
 
-        // use the below for old style Group permissions
-        // $sql = "SELECT " . $CI->response->properties . " FROM " . $CI->response->sub_resource . " WHERE system_id IN (SELECT DISTINCT system_id FROM oa_group_sys LEFT JOIN oa_group_user ON (oa_group_sys.group_id = oa_group_user.group_id AND oa_group_user.group_user_access_level > 0) WHERE oa_group_user.user_id = " . intval($CI->user->id) . ") AND system_id = " . intval($CI->response->id) . " " . $filter . " " . $CI->response->sort . " " . $CI->response->limit;
-        
-        // use the below for new style Org permissions
-        $sql = "SELECT " . $CI->response->properties . " FROM " . $CI->response->sub_resource . " LEFT JOIN system ON (system.system_id = " . $CI->response->sub_resource . ".system_id) WHERE system.man_org_id IN (" . $CI->user->org_list . ") AND system.system_id = " . intval($CI->response->id) . " " . $filter . " " . $CI->response->sort . " LIMIT " . $CI->response->offset . "," . $CI->response->limit;
+        if ($CI->response->sub_resource == 'location') {
+            $sql = "SELECT oa_location.id, oa_location.name, oa_location.type, IF(system.man_location_room != '', system.man_location_room, oa_location.room) as room, IF(system.man_location_suite != '', system.man_location_suite, oa_location.suite) as suite, IF(system.man_location_level != '', system.man_location_level, oa_location.level) as level, oa_location.address, oa_location.suburb, oa_location.city, oa_location.postcode, oa_location.state, oa_location.country, oa_location.phone, system.man_location_rack as rack, system.man_location_rack_position as rack_position, system.man_location_rack_size as rack_size FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.id) WHERE system.system_id = ?";
+            $data = array($CI->response->id);
+        } else {
+            $sql = "SELECT " . $CI->response->properties . " FROM `" . $CI->response->sub_resource . "` LEFT JOIN system ON (system.system_id = `" . $CI->response->sub_resource . "`.system_id) WHERE system.man_org_id IN (" . $CI->user->org_list . ") AND system.system_id = " . intval($CI->response->id) . " " . $filter . " " . $CI->response->internal->sort . " " . $CI->response->internal->limit;
+            $data = array($CI->user->id);
+        }
         $sql = $this->clean_sql($sql);
-        $data = array($CI->user->id);
         $temp_debug = $this->db->db_debug;
         $this->db->db_debug = FALSE;
         $query = $this->db->query($sql, $data);
@@ -190,6 +199,60 @@ class M_devices extends MY_Model
         }
     }
 
+    private function run_sql($sql, $data = array())
+    {
+        $CI = & get_instance();
+        if ($sql == '') {
+            return;
+        }
+        $trace = debug_backtrace();
+        $caller = $trace[1];
+        // clean our SQL (usually adding the running model, etc)
+        $sql = $this->clean_sql($sql);
+        // store the current setting of db_debug
+        $temp_debug = $this->db->db_debug;
+        // set the db_debug setting to FALSE - this prevents the default CI error page and allows us
+        // to output a nice formatted page with the $error object
+        $this->db->db_debug = FALSE;
+        // run the query
+        $query = $this->db->query($sql, $data);
+        // if we have debug set to TRUE, store the last run query
+        if ($CI->response->debug) {
+            $CI->response->sql = $this->db->last_query();
+        }
+        // restore the origin setting to db_debug
+        $this->db->db_debug = $temp_debug;
+        // do we have an error?
+        if ($this->db->_error_message()) {
+            if (empty($CI->error)) {
+                $CI->error = new stdClass();
+            }
+            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
+            $CI->error->function = @$caller['class'] . '::' . @$caller['function'];
+            $CI->error->code = 'ERR-0009';
+            // when we log this, if error->severity is high enough,
+            // we will set the $response->error object end trigger the error display
+            log_error($CI->error);
+            $CI->response->error->detail_specific = $this->db->_error_message();
+            return false;
+        }
+        // no error, so get the result
+        $result = $query->result();
+        // do we have any retrieved rows?
+        if (count($result) == 0) {
+            if (empty($CI->error)) {
+                $CI->error = new stdClass();
+            }
+            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
+            $CI->error->function = @$caller['class'] . '::' . @$caller['function'];
+            $CI->error->code = 'ERR-0005';
+            log_error($CI->error);
+            return false;
+        }
+        // return what we have
+        return ($result);
+    }
+
     public function read_devices()
     {
         $CI = & get_instance();
@@ -197,81 +260,29 @@ class M_devices extends MY_Model
         $join = $this->build_join();
         $properties = $this->build_properties();
 
-        // use the below for old style Group permissions
-        // $sql = "SELECT " . $properties . " FROM system " . $join . " WHERE system.system_id IN (SELECT DISTINCT system_id FROM oa_group_sys LEFT JOIN oa_group_user ON (oa_group_sys.group_id = oa_group_user.group_id AND oa_group_user.group_user_access_level > 0) WHERE oa_group_user.user_id = " . intval($this->user->id) . ") " . $filter . " " . $CI->response->sort . " " . $CI->response->limit;
-
-        // use the below for new style Org permissions
-        $sql = "SELECT " . $properties . " FROM system " . $join . " WHERE system.man_org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->groupby . " " . $CI->response->sort . " LIMIT " . $CI->response->offset . "," . $CI->response->limit;
+        if ($CI->response->sort == '') {
+            if (stripos($properties, 'system.system_id') !== false) {
+                $CI->response->internal->sort = 'ORDER BY system.system_id';
+            }
+        }
+        $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.man_org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->internal->groupby;
         $sql = $this->clean_sql($sql);
-        $data = array($CI->user->id);
-        $temp_debug = $this->db->db_debug;
-        $this->db->db_debug = FALSE;
-        $query = $this->db->query($sql, $data);
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
-        }
-        $this->db->db_debug = $temp_debug;
-        if ($this->db->_error_message()) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
-            $CI->error->function = 'm_devices::read_devices';
-            $CI->error->code = 'ERR-0009';
-            log_error($CI->error);
-            $CI->response->error->detail_specific = $this->db->_error_message();
-            return false;
-        }
+        $query = $this->db->query($sql);
         $result = $query->result();
-        if (count($result) == 0) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->function = 'm_devices::readDevices';
-            $CI->error->code = 'ERR-0005';
-            log_error($CI->error);
-            return false;
-        } else {
-            return ($result);
-        }
+        $CI->response->total = intval($result[0]->total);
+
+        $sql = "SELECT " . $CI->response->internal->properties . " FROM system " . $join . " WHERE system.man_org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->internal->groupby . " " . $CI->response->internal->sort . " " . $CI->response->internal->limit;
+        $result = $this->run_sql($sql, array());
+        return $result;
     }
 
     public function read_devices_sub_resource()
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
-
-        // use the below for old style Group permissions
-        // $sql = "SELECT " . $CI->response->properties . " FROM " . $CI->response->sub_resource . " WHERE system_id IN (SELECT DISTINCT system_id FROM oa_group_sys LEFT JOIN oa_group_user ON (oa_group_sys.group_id = oa_group_user.group_id AND oa_group_user.group_user_access_level > 0) WHERE oa_group_user.id = ?) " . $filter . " " . $CI->response->groupby . " " . $CI->response->sort . " " . $CI->response->limit;
-
-        // use the below for new style Org permissions
-        $sql = "SELECT " . $CI->response->properties . " FROM " . $CI->response->sub_resource . " LEFT JOIN system ON (system.system_id = " . $CI->response->sub_resource . ".system_id) WHERE system.man_org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->groupby . " " . $CI->response->sort . " LIMIT " . $CI->response->offset . "," . $CI->response->limit;
-
-        $sql = $this->clean_sql($sql);
-        $data = array($CI->user->id);
-        $temp_debug = $this->db->db_debug;
-        $this->db->db_debug = FALSE;
-        $query = $this->db->query($sql, $data);
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
-        }
-        $this->db->db_debug = $temp_debug;
-        if ($this->db->_error_message()) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->function = 'm_devices::read_devices_sub_resource';
-            $CI->error->code = 'ERR-0009';
-            log_error($CI->error);
-            $CI->response->error->detail_specific = $this->db->_error_message();
-            return false;
-        }
-        $result = $query->result();
-        if (count($result) == 0) {
-            return false;
-        } else {
-            return ($result);
-        }
+        $sql = "SELECT " . $CI->response->internal->properties . " FROM `" . $CI->response->sub_resource . "` LEFT JOIN system ON (system.system_id = `" . $CI->response->sub_resource . "`.system_id) WHERE system.man_org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->internal->groupby . " " . $CI->response->internal->sort . " " . $CI->response->internal->limit;
+        $result = $this->run_sql($sql, array());
+        return $result;
     }
 
     public function report()
@@ -280,83 +291,170 @@ class M_devices extends MY_Model
         $filter = $this->build_filter();
         $join = $this->build_join();
 
-        // use the below for new style Org permissions
-        $sql = "SELECT system.system_id FROM system " . $join . " WHERE system.man_org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->groupby;
-        $sql = $this->clean_sql($sql);
-        $data = array($CI->user->id);
-        $temp_debug = $this->db->db_debug;
-        $this->db->db_debug = FALSE;
-        $query = $this->db->query($sql, $data);
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
-        }
-        $this->db->db_debug = $temp_debug;
-        if ($this->db->_error_message()) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
-            $CI->error->function = 'm_devices::read_devices';
-            $CI->error->code = 'ERR-0009';
-            log_error($CI->error);
-            $CI->response->error->detail_specific = $this->db->_error_message();
-            return false;
-        }
-        $result = $query->result();
-        if (count($result) == 0) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->function = 'm_devices::readDevices';
-            $CI->error->code = 'ERR-0005';
-            log_error($CI->error);
-            return false;
-        }
+        $sql = "SELECT system.system_id FROM system " . $join . " WHERE system.man_org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->internal->groupby;
+        $result = $this->run_sql($sql, array());
         foreach ($result as $temp) {
             $temp_ids[] = $temp->system_id;
         }
         $system_id_list = implode(',', $temp_ids);
         unset($temp, $temp_ids);
 
+        // $sql = $this->clean_sql($sql);
+        // $data = array($CI->user->id);
+        // $temp_debug = $this->db->db_debug;
+        // $this->db->db_debug = FALSE;
+        // $query = $this->db->query($sql, $data);
+        // if ($CI->response->debug) {
+        //     $CI->response->sql = $this->db->last_query();
+        // }
+        // $this->db->db_debug = $temp_debug;
+        // if ($this->db->_error_message()) {
+        //     if (empty($CI->error)) {
+        //         $CI->error = new stdClass();
+        //     }
+        //     $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
+        //     $CI->error->function = 'm_devices::report';
+        //     $CI->error->code = 'ERR-0009';
+        //     log_error($CI->error);
+        //     $CI->response->error->detail_specific = $this->db->_error_message();
+        //     return false;
+        // }
+        // $result = $query->result();
+        // if (count($result) == 0) {
+        //     if (empty($CI->error)) {
+        //         $CI->error = new stdClass();
+        //     }
+        //     $CI->error->function = 'm_devices::report';
+        //     $CI->error->code = 'ERR-0005';
+        //     log_error($CI->error);
+        //     return false;
+        // }
+        // foreach ($result as $temp) {
+        //     $temp_ids[] = $temp->system_id;
+        // }
+        // $system_id_list = implode(',', $temp_ids);
+        // unset($temp, $temp_ids);
 
-        $sql = "SELECT oa_report.* FROM oa_report WHERE report_id = ?";
-        $sql = $this->clean_sql($sql);
-        $data = array(intval($CI->response->sub_resource_id));
-        $query = $this->db->query($sql, $data);
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
-        }
-        $this->db->db_debug = $temp_debug;
-        if ($this->db->_error_message()) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
-            $CI->error->function = 'm_devices::read_devices';
-            $CI->error->code = 'ERR-XXXX';
-            log_error($CI->error);
-            $CI->response->error->detail_specific = $this->db->_error_message();
-            return false;
-        }
-        $result = $query->result();
-        if (count($result) > 0) {
-            $report = $result[0];
-        } else {
-            echo "FAIL\n";
-            exit();
-        }
+
+        $sql = "SELECT * FROM oa_report WHERE report_id = " . intval($CI->response->sub_resource_id);
+        $result = $this->run_sql($sql, array());
+        $report = $result[0];
+#echo "<pre>\n"; print_r($result); exit();
+
+        // $sql = $this->clean_sql($sql);
+        // $query = $this->db->query($sql, $data);
+        // if ($CI->response->debug) {
+        //     $CI->response->sql = $this->db->last_query();
+        // }
+        // $this->db->db_debug = $temp_debug;
+        // if ($this->db->_error_message()) {
+        //     if (empty($CI->error)) {
+        //         $CI->error = new stdClass();
+        //     }
+        //     $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
+        //     $CI->error->function = 'm_devices::report';
+        //     $CI->error->code = 'ERR-XXXX';
+        //     log_error($CI->error);
+        //     $CI->response->error->detail_specific = $this->db->_error_message();
+        //     return false;
+        // }
+        // $result = $query->result();
+        // if (count($result) > 0) {
+        //     $report = $result[0];
+        // } else {
+        //     // TODO THROW AN ERROR HERE - no result returned
+        // }
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id', '', $report->report_sql);
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id)', '', $report->report_sql);
         $report->report_sql = str_ireplace('oa_group_sys.group_id = @group', 'system.system_id IN (' . $system_id_list . ')', $report->report_sql);
         $report->report_sql = str_ireplace('system.system_id = oa_group_sys.system_id', 'system.system_id IN (' . $system_id_list . ')', $report->report_sql);
 
-        $query = $this->db->query($report->report_sql);
-        $result = $query->result();
+        $result = $this->run_sql($report->report_sql, array());
+        $CI->response->total = count($result);
+        if (!empty($CI->response->limit)) {
+            $result = array_splice($result, $CI->response->offset, $CI->response->limit);
+        }
         return($result);
 
-
-
-
+        // $query = $this->db->query($report->report_sql);
+        // if ($CI->response->debug) {
+        //     $CI->response->sql = $this->db->last_query();
+        // }
+        // $this->db->db_debug = $temp_debug;
+        // if ($this->db->_error_message()) {
+        //     if (empty($CI->error)) {
+        //         $CI->error = new stdClass();
+        //     }
+        //     $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
+        //     $CI->error->function = 'm_devices::report';
+        //     $CI->error->code = 'ERR-XXXX';
+        //     log_error($CI->error);
+        //     $CI->response->error->detail_specific = $this->db->_error_message();
+        //     return false;
+        // }
+        // $result = $query->result();
+        // $CI->response->total = count($result);
+        // if (count($result) > 0) {
+        //     $result = array_splice($result, $CI->response->offset, $CI->response->limit);
+        //     return($result);
+        // } else {
+        //     // TODO THROW AN ERROR HERE - no result returned
+        //     if (empty($CI->error)) {
+        //         $CI->error = new stdClass();
+        //     }
+        //     $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
+        //     $CI->error->function = 'm_devices::report';
+        //     $CI->error->code = 'ERR-0005';
+        //     log_error($CI->error);
+        //     $CI->response->error->detail_specific = $this->db->_error_message();
+        //     return false;
+        // }
     }
+
+
+    public function update()
+    {
+        $CI = & get_instance();
+        #$temp_debug = $this->db->db_debug;
+        #$this->db->db_debug = $temp_debug;
+        $fields = implode(' ', $this->db->list_fields('system'));
+        // $temp = $this->db->list_fields('system');
+        // $fields = implode(' ', $temp);
+        // unset($temp);
+        foreach ($CI->response->post_data as $key => $value) {
+            if ($key != 'system_id' and stripos($fields, ' '.$key.' ') !== false) {
+                $sql = "UPDATE system SET `" . $key . "` = ? WHERE system_id = ?";
+                $sql = $this->clean_sql($sql);
+                $data = array("$value", $CI->response->id);
+                $query = $this->db->query($sql, $data);
+                if ($CI->response->debug) {
+                    $CI->response->sql = $this->db->last_query();
+                }
+                #$this->db->db_debug = $temp_debug;
+                if ($this->db->_error_message()) {
+                    if (empty($CI->error)) {
+                        $CI->error = new stdClass();
+                    }
+                    $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
+                    $CI->error->function = 'm_devices::update';
+                    $CI->error->code = 'ERR-XXXX';
+                    log_error($CI->error);
+                    $CI->response->error->detail_specific = $this->db->_error_message();
+                    return false;
+                }
+                // $result = $query->result();
+                // if (count($result) > 0) {
+                //     $report = $result[0];
+                // } else {
+                //     // TODO THROW AN ERROR HERE - no result returned
+                // }
+
+            }
+        }
+        
+    }
+
+
+
 
 }

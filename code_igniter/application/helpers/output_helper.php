@@ -131,6 +131,8 @@ if (! function_exists('output')) {
         header($CI->response->header);
         if ($CI->response->debug) {
             $CI->response->user = $CI->user;
+        } else {
+            unset($CI->response->internal);
         }
         echo json_encode($CI->response);
     }
@@ -155,7 +157,7 @@ if (! function_exists('output')) {
         $CI = & get_instance();
         header($CI->response->header);
         $CI->response->user = $CI->user;
-        if (!empty($CI->response->errors)) {
+        if (!empty($CI->response->error)) {
             $CI->response->include = 'v_error';
         } else {
             $CI->response->include = 'v_' . $CI->response->collection . '_' . $CI->response->action;
@@ -180,7 +182,7 @@ if (! function_exists('output')) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
                 foreach ($row as $key => $value) {
-                    if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level')) {
+                    if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
                         $row->$key = intval($value);
                     } elseif ((strrpos($key, '_id') === strlen($key)-3) or
                               (strrpos($key, '_count') === strlen($key)-6) or
@@ -195,7 +197,7 @@ if (! function_exists('output')) {
                         if ($row->$temp_name == $row->$key) {
                             unset($row->$temp_name);
                         }
-                    } elseif (isset($key) and $key == 'man_ip_address') {
+                    } elseif (isset($key) and ($key == 'man_ip_address' or $key == 'system.man_ip_address')) {
                         $row->ip_padded = $value;
                         $row->ip = ip_address_from_db($value);
                         #unset($row->man_ip_address);
