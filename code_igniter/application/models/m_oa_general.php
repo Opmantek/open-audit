@@ -83,7 +83,7 @@ class M_oa_general extends MY_Model
         foreach ($tables as $table) {
             $object->table = '';
             $object->count = '';
-            $sql = "SELECT COUNT(*) as count FROM `$table` WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
+            $sql = "SELECT COUNT(*) as count FROM `$table` WHERE current = 'n' AND DATE(`$table`.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $row = $query->row();
@@ -139,7 +139,7 @@ class M_oa_general extends MY_Model
         $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         $count = 0;
         foreach ($tables as $table) {
-            $sql = "DELETE $table FROM `$table` WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
+            $sql = "DELETE `$table` FROM `$table` WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $count = $count + $this->db->affected_rows();
