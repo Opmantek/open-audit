@@ -211,7 +211,7 @@ if (! function_exists('check_default_groups')) {
             $query = $CI->db->query($sql);
             $CI->m_oa_group->activate_file('Default Organisation owned items');
             $id = $CI->m_oa_group->get_group_id('Default Organisation owned items');
-            $sql = "UPDATE oa_org SET group_id = '$id' WHERE org_name = 'Default Organisation'";
+            $sql = "UPDATE oa_org SET group_id = '$id' WHERE name = 'Default Organisation'";
             $query = $CI->db->query($sql);
             $CI->m_oa_group->activate_file('All Printers');
             $CI->m_oa_group->activate_file('Routers');
