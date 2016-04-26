@@ -41,7 +41,7 @@ if (! function_exists('log_error')) {
             $error = new stdClass();
         }
         if (!isset($error->controller) or $error->controller == '') {
-            $router = & load_class('Router', 'core');
+            $router = &load_class('Router', 'core');
             $error->controller = $router->fetch_class() . ' ::' . $router->fetch_method();
         }
         if (!isset($error->model)) {
@@ -61,10 +61,10 @@ if (! function_exists('log_error')) {
         if ($error_details->severity <= 3) {
             error_reporting(E_ALL);
             $CI = & get_instance();
-            unset($error_details->extended_message);
-            unset($error_details->file);
-            unset($error_details->controller);
-            unset($error_details->model);
+            unset($error_details->file); # we don't care about where this was logged (into which file)
+            #unset($error_details->extended_message);
+            #unset($error_details->controller);
+            #unset($error_details->model);
             $error_details->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error_details->code;
             $CI->response->header = $error_details->status;
             $CI->response->error = $error_details;
