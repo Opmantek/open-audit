@@ -329,7 +329,8 @@ class M_devices_components extends MY_Model
                     $temp_subnet = 32-log(($temp_long ^ $temp_base)+1,2);
                     $net = network_details($input->item[$i]->ip.'/'.$temp_subnet);
                     if (isset($net->network) and $net->network != '') {
-                        $input->item[$i]->network = $net->network.' / '.$temp_subnet;
+                        #$input->item[$i]->network = $net->network.' / '.$temp_subnet;
+                        $input->item[$i]->network = $net->network.'/'.$temp_subnet;
                     } else {
                         $input->item[$i]->network = '';
                     }
@@ -445,7 +446,6 @@ class M_devices_components extends MY_Model
                 if (isset($input->item[$i]->version) and $input->item[$i]->version != '') {
                     $pieces = array();
                     $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $input->item[$i]->version);
-                    #$input->item[$key]->version_padded = (string)'';
                     $input->item[$i]->version_padded = (string)'';
                     foreach ($pieces as $piece) {
                         if (strlen($piece) > 10 ) {
@@ -714,6 +714,8 @@ class M_devices_components extends MY_Model
 
     public function get_sql_server_version_string($version)
     {
+        // todo - http://sqlserverbuilds.blogspot.com.au/
+        
         // find the version string, based on the version integer.
         $version_string = '';
 
@@ -1021,7 +1023,7 @@ class M_devices_components extends MY_Model
 
     public function update_missing_interfaces($system_id)
     {
-        $sql = "SELECT ip.id, network.net_index FROM network LEFT JOIN ip ON (network.system_id = ip.system_id AND network.mac = ip.mac) WHERE network.system_id = ? AND ip.net_index = ''";
+        $sql = "SELECT ip.id, network.net_index FROM network LEFT JOIN ip ON (network.system_id = ip.system_id AND network.mac = ip.mac) WHERE network.system_id = ? AND ip.net_index = '' AND network.net_index != ''";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
