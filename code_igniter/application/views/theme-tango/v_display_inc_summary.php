@@ -227,7 +227,7 @@
 					<tbody>
 						<?php foreach ($edit_log as $key): ?>
 						<tr>
-							<td><?php echo print_something($key->user_full_name)?>&nbsp;</td>
+							<td><?php echo print_something($key->full_name)?>&nbsp;</td>
 							<td><?php echo print_something($key->timestamp)?>&nbsp;</td>
                             <td><?php echo print_something($key->db_column)?>&nbsp;</td>
                             <td><?php echo print_something($key->value)?>&nbsp;</td>
