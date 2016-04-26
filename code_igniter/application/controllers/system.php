@@ -172,14 +172,20 @@ class System extends CI_Controller
 
     public function add_system()
     {
+
+        // check if the submitting IP is in the list of allowable subnets
+        if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+            exit;
+        }
+
         $this->benchmark->mark('code_start');
         if (isset($this->session->userdata['user_id'])) {
             $temp_user_id = $this->session->userdata['user_id'];
-            $sql = "/* system::add_system */ SELECT user_full_name FROM oa_user WHERE user_id = ?";
+            $sql = "/* system::add_system */ SELECT full_name FROM oa_user WHERE id = ?";
             $data = array($this->session->userdata['user_id']);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
-            $user_full_name = $result[0]->user_full_name;
+            $user_full_name = $result[0]->full_name;
         } else {
             $user_full_name = '';
         }

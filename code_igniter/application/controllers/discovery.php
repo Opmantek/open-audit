@@ -244,6 +244,44 @@ class discovery extends CI_Controller
                 $limit = 1000000;
             }
 
+            # get the list of subnets from AD
+            $ad_ldap_connect = 'ldap://' . $_POST['server'];
+            $ad_user = $_POST['windows_username'] . '@' . $_POST['windows_domain'];
+            $error_reporting = error_reporting();
+            error_reporting(0);
+            $ad = @ldap_connect($ad_ldap_connect);
+            error_reporting($error_reporting);
+            unset($error_reporting);
+            if (!$ad) {
+                // log the failed attempt to connect to AD 
+                $log_details->severity = 5;
+                $log_details->message = 'Could not connect to AD ' . $_POST['windows_domain'] . ' at ' . $_POST['server'];
+                stdlog($log_details);
+                $log_details->severity = 7;
+            } else {
+                // successful connect to AD, now try to bind using the credentials
+                ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
+                ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
+                $bind = @ldap_bind( $ad, $ad_user, $_POST['windows_password']);
+                if ($bind) {
+                    $log_details->message = 'Retrieving subnets from AD ' . $_POST['windows_domain'] . ' at ' . $_POST['server'];
+                    stdlog($log_details);
+                    $dn = "CN=Subnets,CN=Sites,CN=Configuration,dc=".implode(", dc=", explode(".", $_POST['windows_domain']));
+                    $filter = "(&(objectclass=*))";
+                    $justthese = array("distinguishedName", "name");
+                    $sr = ldap_search($ad, $dn, $filter, $justthese);
+                    $info = ldap_get_entries($ad, $sr);
+                    for ($i = 0; $i < count($info)-1; $i++) {
+                        if ( $info[$i]['name'][0] != 'Subnets') {
+                            $this->m_oa_config->update_blessed($info[$i]['name'][0]);
+                        }
+                    }
+                } else {
+                    $log_details->message = 'Could not bind to AD ' . $_POST['windows_domain'] . ' at ' . $_POST['server'];
+                    stdlog($log_details);
+                }
+            }
+
             if ((php_uname('s') == 'Windows NT') and ($error == '')) {
                 // Windows host - start the script locally
                 $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\\open-audit\\other";
@@ -454,6 +492,8 @@ class discovery extends CI_Controller
             $log_details->message = 'Discovery submitted for '.$subnet_range;
             stdlog($log_details);
 
+            // add to the list of blessed subnets
+            $this->m_oa_config->update_blessed($subnet_range);
 
             // we encode the supplied credentials and store them in the database
             // the script will simply pass back the timestamp and the credentials will be retrieved and used
@@ -737,6 +777,7 @@ class discovery extends CI_Controller
         if (! isset($_POST['form_details'])) {
             $this->load->view('v_process_subnet', $this->data);
         } else {
+
             $display = '';
             if ($this->input->post('debug') and strpos($_SERVER['HTTP_ACCEPT'], 'html')) {
                 $display = 'y';
@@ -761,9 +802,14 @@ class discovery extends CI_Controller
             $log_details->file = 'system';
             $log_details->display = $display;
 
+            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+                exit;
+            }
+
             $this->load->helper('url');
-            $this->load->model('m_oa_config');
-            $this->m_oa_config->load_config();
+            // below should be loaded in the constructor
+            // $this->load->model('m_oa_config');
+            // $this->m_oa_config->load_config();
 
             if ($display == 'y') {
                 echo 'DEBUG - <a href=\''.base_url()."index.php/discovery/discover_subnet'>Back to input page</a>\n";

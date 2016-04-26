@@ -90,6 +90,7 @@ class M_oa_config extends MY_Model
         $query = $this->db->query($sql);
         $row = $query->row();
         $internal_version = $row->config_value;
+
         #if (isset($internal_version) and $internal_version > '20151230') {
         #    $edited_by = 'config_edited_by_user_id';
         #} else {
@@ -97,7 +98,7 @@ class M_oa_config extends MY_Model
         #}
 
         $user_prefix = '';
-        if (!empty($internal_version) and intval($internal_version) < 20160409) {
+        if (intval($internal_version) < 20160409) {
             $user_prefix = 'user_';
         }
 
@@ -399,4 +400,73 @@ class M_oa_config extends MY_Model
         }
         return($result);
     }
+
+
+
+    # supply a standard ip address - 192.168.1.1
+    # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16
+    # returns true or false
+    function check_blessed ($ip = '', $subnets = '')
+    {
+        if ($ip == '') {
+            return false;
+        }
+        if ($subnets == '') {
+            $sql = "SELECT config_value FROM oa_config WHERE config_name = 'blessed_subnets'";
+            $query = $this->db->query($sql);
+            $row = $query->row();
+            $subnets = $row->config_value;
+        }
+        $this->load->helper('network_helper');
+        $subnets = str_replace(' ', '', $subnets);
+        foreach (explode(',', $subnets) as $subnet) {
+            $subnet = network_details($subnet);
+            if (ip2long($ip) >= ip2long($subnet->host_min) and ip2long($ip) <= ip2long($subnet->host_max)) {
+                return true;
+                break;
+            }
+        }
+
+        # if we were in the list, we should have already returned.
+        # generate a log line and reeturn false
+        $this->load->helper('log_helper');
+        $log_details = new stdClass();
+        $log_details->severity = 5;
+        $log_details->file = 'system';
+        $log_details->message = 'Audit submission from an IP not in the list of blessed subnets (' . $_SERVER['REMOTE_ADDR'] . ')';
+        stdlog($log_details);
+        unset($log_details);
+        return false;
+    }
+
+
+
+    function update_blessed($network = '') {
+        if (empty($network)) {
+            return false;
+        }
+        $this->load->helper('network_helper');
+        $this->load->helper('log_helper');
+        $test = network_details($network);
+        if (!empty($test->error)) {
+            return false;
+        }
+        $sql = "/* m_oa_config::update_blessed */ SELECT `config_value` FROM `oa_config` WHERE `config_name` = 'blessed_subnets' AND `config_value` LIKE '%" . $network . "%'";
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        if (count($row) == 0) {
+            $log_details = new stdClass();
+            $log_details->severity = 7;
+            $log_details->file = 'system';
+            $log_details->message = "Inserting " . $network . ' into blessed subnet list.';
+            stdlog($log_details);
+            unset($log);
+            $sql = "/* m_oa_config::update_blessed */ UPDATE oa_config SET `config_value` = CONCAT(`config_value`, '," . $network . "') WHERE `config_name` = 'blessed_subnets'";
+            $query = $this->db->query($sql);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

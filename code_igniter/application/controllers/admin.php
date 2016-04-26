@@ -724,6 +724,19 @@ class admin extends MY_Controller
             ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
             $bind = @ldap_bind($ad, $ad_user, $ad_secret);
             if ($bind) {
+                # get the list of subnets from AD
+                $dn = "CN=Subnets,CN=Sites,CN=Configuration,dc=".implode(", dc=", explode(".", $ad_domain));
+                $filter = "(&(objectclass=*))";
+                $justthese = array("distinguishedName", "name");
+                $sr = ldap_search($ad, $dn, $filter, $justthese);
+                $info = ldap_get_entries($ad, $sr);
+                for ($i = 0; $i < count($info)-1; $i++) {
+                    if ( $info[$i]['name'][0] != 'Subnets') {
+                        //echo "Subnet: " . $info[$i]['name'][0] . "\n";
+                        $this->m_oa_config->update_blessed($info[$i]['name'][0]);
+                    }
+                }
+
                 # extract the list of computers from AD
                 $filter = "(&(objectclass=computer))";
                 $justthese = array("dnshostname", "name", "location", "operatingSystem", "lastLogon", "pwdLastSet", "lastlogon", "distinguishedName");
@@ -4952,6 +4965,9 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE system CHANGE `man_serial` `man_serial` varchar(250) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system ADD `dbus_identifier` varchar(250) NOT NULL DEFAULT '' AFTER uuid";
             $sql[] = "UPDATE `ip` SET `network` = REPLACE(`network`, ' ', '')";
+            $sql[] = "ALTER TABLE oa_config CHANGE `config_value` `config_value` LONGTEXT NOT NULL DEFAULT ''";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('blessed_subnets','','y','0000-00-00 00:00:00',0,'The list of subnets Open-AudIT will accept audit data from.')";
+            $sql[] = "UPDATE oa_config set config_value = (SELECT GROUP_CONCAT(DISTINCT ip.network) FROM ip WHERE network != '') WHERE config_name = 'blessed_subnets'";
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
