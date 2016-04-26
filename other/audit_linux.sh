@@ -532,9 +532,9 @@ fi
 
 # Set the UUID
 system_uuid=""
-system_uuid=$(dmidecode -s system-uuid 2>/dev/null)
+system_uuid=$(dmidecode -s system-uuid 2>/dev/null | grep -v "^#")
 if [ -z "$system_uuid" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
-	system_uuid=$(lshal | grep "system.hardware.uuid" | cut -d\' -f2)
+	system_uuid=$(lshal 2>/dev/null | grep "system.hardware.uuid" | cut -d\' -f2)
 fi
 if [ -z "$system_uuid" ]; then
 	system_uuid=$(cat /sys/class/dmi/id/product_uuid 2>/dev/null)
@@ -672,7 +672,7 @@ fi
 
 # Get the System Model
 if [ -z "$system_model" ]; then
-	system_model=$(dmidecode -s system-product-name 2>/dev/null)
+	system_model=$(dmidecode -s system-product-name 2>/dev/null | grep -v "^#")
 	if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 		system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
 	fi
@@ -681,9 +681,12 @@ if [ -z "$system_model" ]; then
 	fi
 fi
 
+# get the systemd identifier
+dbus_identifier=$(cat /var/lib/dbus/machine-id 2>/dev/null)
+
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
-	system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null)
+	system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null | grep -v "^#")
 	if [ -z "$system_manufacturer" ]; then
 		if [ -n "$(which lshal 2>/dev/null)" ]; then
 			system_manufacturer=$(lshal | grep "system.hardware.vendor" | cut -d\' -f2)
@@ -716,7 +719,7 @@ system_form_factor=""
 if [ "$system_model" = "Bochs" -o "$system_model" = "KVM" -o "$system_model" = "Virtual Machine" -o "$system_model" = "VMware Virtual Platform" -o "$system_model" = "OpenVZ" -o "$system_model" = "VirtualBox" ]; then
 	system_form_factor="Virtual"
 else
-	system_form_factor=$(dmidecode -s chassis-type 2>/dev/null)
+	system_form_factor=$(dmidecode -s chassis-type 2>/dev/null | grep -v "^#")
 	if [ "$system_form_factor" = "<OUT OF SPEC>" ]; then
 		system_form_factor="Unknown"
 	fi
@@ -832,6 +835,7 @@ echo "		<pc_memory>$(escape_xml "$system_pc_memory")</pc_memory>"
 echo "		<pc_num_processor>$(escape_xml "$system_pc_total_threads")</pc_num_processor>"
 echo "		<pc_date_os_installation>$(escape_xml "$system_pc_date_os_installation")</pc_date_os_installation>"
 echo "		<man_org_id>$(escape_xml "$org_id")</man_org_id>"
+echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
 echo "		<system_id>$(escape_xml "$system_id")</system_id>"
 echo "	</sys>"
 } > "$xml_file"

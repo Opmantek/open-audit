@@ -1269,6 +1269,17 @@ class discovery extends CI_Controller
                                         }
                                     }
                                 }
+
+                                # get the dbus machine id
+                                if ($details->os_group == 'Linux') {
+                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'cat /var/lib/dbus/machine-id', $details->ssh_password, $display);
+                                    if ($ssh_result['status'] == 0) {
+                                        $details->dbus_identifier = $ssh_result['output'][0];
+                                    } else {
+                                        $details->dbus_identifier = '';
+                                    }
+                                }
+
                                 if ($details->os_group == 'VMkernel') {
                                     $command = "vim-cmd hostsvc/hostsummary | sed -n '/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p' | grep uuid | cut -d= -f2 | sed 's/,//g' | sed 's/\\\"//g'";
                                     $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, $command, $details->ssh_password, $display);

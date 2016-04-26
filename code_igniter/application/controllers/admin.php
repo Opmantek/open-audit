@@ -4950,6 +4950,7 @@ class admin extends MY_Controller
             # allow for some silly long serial numbers
             $sql[] = "ALTER TABLE system CHANGE `serial` `serial` varchar(250) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system CHANGE `man_serial` `man_serial` varchar(250) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system ADD `dbus_identifier` varchar(250) NOT NULL DEFAULT '' AFTER uuid";
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";

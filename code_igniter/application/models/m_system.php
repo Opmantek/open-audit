@@ -173,6 +173,19 @@ class M_system extends MY_Model
             }
         }
 
+        if (!empty($details->dbus_identifier)) {
+            $sql = "SELECT system.system_id FROM system WHERE system.dbus_identifier = ? AND system.man_status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->dbus_identifier");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->system_id = $row->system_id;
+                $log_details->message = 'HIT on dbus_identifier short for '.ip_address_from_db($details->man_ip_address).' (System ID '.$details->system_id.')';
+                stdlog($log_details);
+            }
+        }
+
         if (!empty($details->uuid) and !empty($details->hostname) and strlen($details->hostname) > 15) {
             $temp_hostname = substr($details->hostname, 0, 15);
             $sql = "SELECT system.system_id FROM system WHERE system.uuid = ? AND system.hostname = ? AND system.man_status = 'production' LIMIT 1";

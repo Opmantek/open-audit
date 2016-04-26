@@ -2001,6 +2001,7 @@ CREATE TABLE `system` (
   `system_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_key` varchar(200) NOT NULL DEFAULT '',
   `uuid` varchar(100) NOT NULL DEFAULT '',
+  `dbus_identifier` varchar(255) NOT NULL DEFAULT '',
   `hostname` varchar(100) NOT NULL DEFAULT '',
   `domain` varchar(100) NOT NULL DEFAULT '',
   `fqdn` text NOT NULL,
