@@ -85,7 +85,7 @@
                     <?php } ?>
                     </td>
                     <td><br /><?php echo htmlentities($item->config_description); ?></td>
-                    <td><br /><?php echo htmlentities($item->user_full_name); ?></td>
+                    <td><br /><?php echo htmlentities($item->full_name); ?></td>
                     <td><br /><?php echo htmlentities($item->config_edited_date); ?></td>
                     </tr>
                 <?php } ?>
@@ -96,3 +96,12 @@
 </div>
 </div>
 </div>
+
+<style type="text/css">
+/* this is for the blessed_subnets td as it can get very large */
+td {
+overflow: hidden;
+max-width: 400px;
+word-wrap: break-word;
+}
+</style>
