@@ -4964,10 +4964,16 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE system CHANGE `serial` `serial` varchar(250) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system CHANGE `man_serial` `man_serial` varchar(250) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system ADD `dbus_identifier` varchar(250) NOT NULL DEFAULT '' AFTER uuid";
+
+            # our nwe blessed subnets config item
             $sql[] = "UPDATE `ip` SET `network` = REPLACE(`network`, ' ', '')";
-            $sql[] = "ALTER TABLE oa_config CHANGE `config_value` `config_value` LONGTEXT NOT NULL DEFAULT ''";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('blessed_subnets','','y','0000-00-00 00:00:00',0,'The list of subnets Open-AudIT will accept audit data from.')";
-            $sql[] = "UPDATE oa_config set config_value = (SELECT GROUP_CONCAT(DISTINCT ip.network) FROM ip WHERE network != '') WHERE config_name = 'blessed_subnets'";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y','0000-00-00 00:00:00',0,'Should we only accept data from the blessed subnets list.')";
+
+            # new table for network descriptions and blessed subnets
+            $sql[] = "DROP TABLE IF EXISTS `networks`";
+            $sql[] = "CREATE TABLE `networks` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "INSERT INTO `networks` SELECT NULL, REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', '')  AS name, TRIM(both '\t' from group_description) as description, 'system upgrade' as edited_by, NOW() as edited_date FROM oa_group WHERE group_category = 'network' AND SUBSTR(REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''),1,LOCATE('/',REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''))-1) != `group_description`";
+            $sql[] = "INSERT INTO `networks` (SELECT NULL, ip.network as name, '' as description, 'system upgrade' as edited_by, NOW() as edited_date FROM ip WHERE network NOT IN (SELECT networks.name FROM networks) AND ip.network != '' GROUP BY ip.network)";
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";

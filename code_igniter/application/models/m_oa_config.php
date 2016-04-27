@@ -404,28 +404,62 @@ class M_oa_config extends MY_Model
 
 
     # supply a standard ip address - 192.168.1.1
-    # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16
-    # returns true or false
-    function check_blessed ($ip = '', $subnets = '')
+    # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
+    # returns true if ip is contained in a subnet, false otherwise
+    function check_blessed($ip = '', $subnets = '')
     {
-        if ($ip == '') {
+        if (trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
+            return true;
+        }
+        if (empty($ip)) {
             return false;
         }
+        if ($ip == '127.0.0.1' or $ip == '127.0.1.1') {
+            return true;
+        }
+        $temp = explode('.', $ip);
+        $first_octet = $temp[0];
+        unset($temp);
         if ($subnets == '') {
-            $sql = "SELECT config_value FROM oa_config WHERE config_name = 'blessed_subnets'";
+            $subfromdb = true;
+            $sql = "/* m_oa_config::check_blessed */ SELECT name FROM networks WHERE name like '" . $first_octet . ".%' ORDER BY ABS(substr(name, locate('/', name)+1))";
             $query = $this->db->query($sql);
-            $row = $query->row();
-            $subnets = $row->config_value;
+            $result = $query->result();
+            foreach($result as $subnet) {
+                $subnets[] = $subnet->name;
+            }
+        } else {
+            $subfromdb = false;
+            $subnets = str_replace(' ', '', $subnets);
+            $subnets = explode(',', $subnets);
         }
         $this->load->helper('network_helper');
-        $subnets = str_replace(' ', '', $subnets);
-        foreach (explode(',', $subnets) as $subnet) {
-            $subnet = network_details($subnet);
-            if (ip2long($ip) >= ip2long($subnet->host_min) and ip2long($ip) <= ip2long($subnet->host_max)) {
-                return true;
-                break;
+        foreach ($subnets as $subnet) {
+            if ($subnet = network_details($subnet)) {
+                if (ip2long($ip) >= ip2long($subnet->host_min) and ip2long($ip) <= ip2long($subnet->host_max)) {
+                    return true;
+                    break;
+                }
             }
         }
+        # if we got to here we retrieved subnets from the DB but didn't get a match
+        # try retrieving ALL the subnets just in case - first time we only retrieved subnets with a matching first octet
+        // if ($subfromdb) {
+        //     $sql = "/* m_oa_config::check_blessed */ SELECT name FROM networks";
+        //     $query = $this->db->query($sql);
+        //     $result = $query->result();
+        //     foreach($result as $subnet) {
+        //         $subnets[] = $subnet->name;
+        //     }
+        //     foreach ($subnets as $subnet) {
+        //         if ($subnet = network_details($subnet)) {
+        //             if (ip2long($ip) >= ip2long($subnet->host_min) and ip2long($ip) <= ip2long($subnet->host_max)) {
+        //                 return true;
+        //                 break;
+        //             }   
+        //         }
+        //     }
+        // }
 
         # if we were in the list, we should have already returned.
         # generate a log line and reeturn false
@@ -440,29 +474,40 @@ class M_oa_config extends MY_Model
     }
 
 
-
+    # return true if subnet added to networks table, false otherwise
     function update_blessed($network = '') {
+        if (trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
+            return true;
+        }
         if (empty($network)) {
             return false;
         }
+        # ensure we remove and spaces - '192.168.1.0 / 24' becomes '192.168.1.0/24'
+        $network = str_replace(' ', '', $network);
+        # test that we have a valid subnet
         $this->load->helper('network_helper');
         $this->load->helper('log_helper');
         $test = network_details($network);
         if (!empty($test->error)) {
             return false;
         }
-        $sql = "/* m_oa_config::update_blessed */ SELECT `config_value` FROM `oa_config` WHERE `config_name` = 'blessed_subnets' AND `config_value` LIKE '%" . $network . "%'";
-        $query = $this->db->query($sql);
-        $row = $query->row();
-        if (count($row) == 0) {
+        # test to see if this subnet exists already in the netwokrs table
+        $sql = "/* m_oa_config::update_blessed */ SELECT name FROM networks WHERE name = ?";
+        $data = array("$network");
+        $query = $this->db->query($sql, $data);
+        if ($query->num_rows() == 0) {
+            # the subnet does not exist. Log it and insert it
+            $trace = debug_backtrace();
+            $caller = $trace[1];
             $log_details = new stdClass();
             $log_details->severity = 7;
             $log_details->file = 'system';
             $log_details->message = "Inserting " . $network . ' into blessed subnet list.';
             stdlog($log_details);
             unset($log);
-            $sql = "/* m_oa_config::update_blessed */ UPDATE oa_config SET `config_value` = CONCAT(`config_value`, '," . $network . "') WHERE `config_name` = 'blessed_subnets'";
-            $query = $this->db->query($sql);
+            $sql = "/* m_oa_config::update_blessed */ INSERT INTO `networks` VALUES(NULL, ?, '', ?, NOW())";
+            $data = array("$network", 'auto-generated by '.@$caller['function']);
+            $query = $this->db->query($sql, $data);
             return true;
         } else {
             return false;

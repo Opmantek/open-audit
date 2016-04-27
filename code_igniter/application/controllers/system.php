@@ -119,6 +119,12 @@ class System extends CI_Controller
     public function add_system_ad()
     {
         if (isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
+
+            // check if the submitting IP is in the list of allowable subnets
+            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+                exit;
+            }
+
             $this->load->helper('html');
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
             echo meta('Content-type', 'text/html; charset=utf-8', 'equiv');
@@ -486,6 +492,10 @@ class System extends CI_Controller
         if (! isset($_POST['form_nmap'])) {
             $this->load->view('v_system_add_nmap', $this->data);
         } else {
+            // check if the submitting IP is in the list of allowable subnets
+            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+                exit;
+            }
             $log_details = new stdClass();
             $log_details->severity = 7;
             $log_details->file = 'system';

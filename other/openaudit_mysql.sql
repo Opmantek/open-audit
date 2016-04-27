@@ -567,6 +567,32 @@ INSERT INTO `oa_change` VALUES (1,'Default Change.','','0000-00-00 00:00:00','00
 UNLOCK TABLES;
 
 --
+-- Table structure for table `networks`
+--
+
+DROP TABLE IF EXISTS `networks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `networks` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `networks`
+--
+
+LOCK TABLES `networks` WRITE;
+/*!40000 ALTER TABLE `networks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `networks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `oa_config`
 --
 
@@ -575,7 +601,7 @@ DROP TABLE IF EXISTS `oa_config`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_config` (
   `config_name` varchar(45) NOT NULL DEFAULT '',
-  `config_value` longtext NOT NULL DEFAULT '',
+  `config_value` varchar(250) NOT NULL DEFAULT '',
   `config_editable` varchar(1) NOT NULL DEFAULT 'n',
   `config_edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `config_edited_by` int(10) unsigned NOT NULL DEFAULT '0',
@@ -592,7 +618,7 @@ LOCK TABLES `oa_config` WRITE;
 /*!40000 ALTER TABLE `oa_config` DISABLE KEYS */;
 INSERT INTO `oa_config` VALUES ('ad_domain','','y','0000-00-00 00:00:00',0,'The domain name against which your users will validate to log on to Open-AudIT. EG - open-audit.org');
 INSERT INTO `oa_config` VALUES ('ad_server','','y','0000-00-00 00:00:00',0,'The IP Address of the domain controller your users will validate to log to Open-AudIT. EG - 192.168.0.1');
-INSERT INTO `oa_config` VALUES ('blessed_subnets','','y','0000-00-00 00:00:00',0,'The list of subnets Open-AudIT will accept audit data from.');
+INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y','0000-00-00 00:00:00',0,'Should we only accept data from the blessed subnets list.');
 INSERT INTO `oa_config` VALUES ('default_ipmi_password','','y','0000-00-00 00:00:00',0,'The default password used by Open-AudIT to audit devices via IPMI.');
 INSERT INTO `oa_config` VALUES ('default_ipmi_username','','y','0000-00-00 00:00:00',0,'The default username used by Open-AudIT to audit devices via IPMI.');
 INSERT INTO `oa_config` VALUES ('default_network_address','','y','0000-00-00 00:00:00',0,'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
