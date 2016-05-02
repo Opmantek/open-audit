@@ -36,13 +36,12 @@
 
     <div class="col-md-1" style="text-align:center;">
         <?php if ($this->user->admin == 'y') {
-            if (isset($this->user->debug) and $this->user->debug == 'y') {
-                $image = '<a href="'.current_url().'/user_debug/n"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>';
-            } else {
-                $image = '<a href="'.current_url().'/user_debug/y"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></a>';
-            } ?>
-            Debug<br /><?php echo $image; ?><br />
-        <?php } ?>
+            // if (strpos(current_url(), '?') !== false) {
+                echo '<a href="' . current_url() . '?' . $this->response->query_string . '&format=json&debug=true&limit=100">Debug</a>';
+            // } else {
+            //     echo '<a href="'.current_url().'?format=json&debug=true&limit=100">Debug</a>';
+            // }
+        } ?>
     </div>
 
     <div class="col-md-1" style="text-align:center;">
@@ -50,7 +49,6 @@
         <a class="btn btn-default btn-sm" href="/login/logout" role="button">Logout</a>
     </div>
 </div>
-
 
 <nav class="navbar navbar-default">
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
