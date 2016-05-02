@@ -44,13 +44,27 @@ if (strpos($refine_link, '?') === false) {
   <div class="panel-heading">
     <h3 class="panel-title">
       <span class="text-left">Devices</span>
-      <span class="pull-right">Count: <?php echo @count($this->response->data); ?></span>
+      <span class="pull-right"><?php echo $this->response->filtered . ' of ' . $this->response->total . ' results'; ?></span>
     </h3>
   </div>
   <div class="panel-body">
+
+<!-- <div class="well well-sm pull-left"> -->
+<div class="panel panel-default pull-right">
+  <div class="panel-body">
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a></button>
+      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->prev; ?>"><?php echo __('prev'); ?></a></button>
+      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->next; ?>"><?php echo __('next'); ?></a></button>
+      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->last; ?>"><?php echo __('last'); ?></a></button>
+    </div>
+  </div>
+</div>
 <?php
 if (count($this->response->filter) > 0) {
-  echo '<div class="well well-sm pull-right">';
+  echo '<div class="panel panel-default pull-left">';
+  echo '<div class="panel-body">';
+  #echo '<div class="well well-sm pull-left">';
   foreach ($this->response->filter as $item) {
     if ($item->operator == '=') {
       $label = 'label-success';
@@ -73,10 +87,10 @@ if (count($this->response->filter) > 0) {
     echo '<big><span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span></big>&nbsp;';
   }
   echo '</div>';
+  echo '</div>';
 }
 
-if (!empty($this->response->data)) {
-?>
+if (!empty($this->response->data)) { ?>
     <form action="devices?action=edit" method="post" id="bulk_edit" name="bulk_edit">
       <table class="table">
         <thead>
