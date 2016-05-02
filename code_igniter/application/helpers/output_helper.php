@@ -52,6 +52,7 @@ if (! function_exists('output')) {
         error_reporting(E_ALL);
         $CI = & get_instance();
         $CI->response = output_convert($CI->response);
+        create_links();
         // if we have an error set, make sure we remove the data object / array
         if (!empty($CI->response->error) and !$CI->response->data) {
             unset($CI->response->data);
@@ -162,6 +163,10 @@ if (! function_exists('output')) {
         } else {
             $CI->response->include = 'v_' . $CI->response->collection . '_' . $CI->response->action;
         }
+        // if (!$CI->response->debug) {
+        //     unset($CI->response->internal);
+        // }
+
         $CI->load->view('v_template', $CI->response);
     }
 
@@ -208,6 +213,61 @@ if (! function_exists('output')) {
             }
         }
         return($data);
+    }
+
+    function create_links()
+    {
+        $CI = & get_instance();
+        $offset = '';
+        if ($CI->response->total > 0) {
+            # next link
+            if ($CI->response->total > $CI->response->filtered and ($CI->response->offset + $CI->response->limit) < ($CI->response->total + $CI->response->limit)) {
+                $offset = intval($CI->response->offset + $CI->response->limit);
+                if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
+                    $CI->response->links->next = str_replace('offset='.$CI->response->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
+                } else {
+                    if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
+                        $CI->response->links->next = $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
+                    } else {
+                        $CI->response->links->next = $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                    }
+                }
+            }
+
+            #prev link
+            if ($CI->response->offset > 0) {
+                $offset = intval($CI->response->offset - $CI->response->limit);
+                if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
+                    $CI->response->links->prev = str_replace('offset='.$CI->response->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
+                } else {
+                    if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
+                        $CI->response->links->prev = $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
+                    } else {
+                        $CI->response->links->prev = $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                    }
+                }
+            }
+
+            # first link
+            $offset = 0;
+            if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
+                $CI->response->links->first = str_replace('offset='.$CI->response->offset, '', $_SERVER["REQUEST_URI"]);
+            } else {
+                $CI->response->links->first = $_SERVER["REQUEST_URI"];
+            }
+
+            # last link
+            $offset = intval($CI->response->total) - intval($CI->response->limit);
+            if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
+                $CI->response->links->last = str_replace('offset='.$CI->response->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
+            } else {
+                if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
+                    $CI->response->links->last = $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
+                } else {
+                    $CI->response->links->last = $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                }
+            }
+        }
     }
 
     function output_table()

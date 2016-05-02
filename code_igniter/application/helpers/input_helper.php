@@ -122,7 +122,7 @@ if (! function_exists('inputRead')) {
                     $table = 'oa_org';
                     break;
                 case'users':
-                    $sql = "SELECT user_id AS id FROM oa_user WHERE user_name LIKE ? LIMIT 1";
+                    $sql = "SELECT id AS id FROM oa_user WHERE name LIKE ? LIMIT 1";
                     $table = 'oa_user';
                     break;
                 case'reports':
@@ -187,7 +187,11 @@ if (! function_exists('inputRead')) {
         }
 
         if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
-            $CI->response->post_data = json_decode($_POST['data']);
+            if (is_array($_POST['data'])) {
+                $CI->response->post_data = $_POST['data'];
+            } else {
+                $CI->response->post_data = json_decode($_POST['data']);
+            }
         }
         if (isset($CI->response->post_data->id)) {
             $CI->response->id = $CI->response->post_data->id;
@@ -244,12 +248,13 @@ if (! function_exists('inputRead')) {
         if (strtolower($_SERVER['REQUEST_METHOD']) == 'delete' and $CI->response->id != '') {
             // delete an item
             $CI->response->action = 'delete';
+            $CI->response->header = 'HTTP/1.1 200 OK';
             $CI->response->id = intval($CI->response->id);
         }
         if ($CI->response->action == '' or $CI->response->action == 'list') {
             $CI->response->action = 'collection';
         }
-        $reserved_words = ' collection read new edit execute create update delete debug create_form update_form bulk_update_form import import_form';
+        $reserved_words = ' collection read new edit execute create update delete debug create_form update_form bulk_update_form import import_form ';
         if (stripos($reserved_words, ' '.$CI->response->action.' ') === false) {
             $CI->response->action = 'collection';
         }
@@ -369,7 +374,7 @@ if (! function_exists('inputRead')) {
             if ($CI->response->action == 'collection' and $CI->response->collection == 'devices') { 
                 # we're requesting a list of devices without properties - set the below as defaults
                 if ($CI->response->sub_resource == '' or strtolower($CI->response->sub_resource) == 'system') {
-                    $CI->response->properties = 'system.icon, system.man_type, system.system_id, system.hostname, system.man_domain, system.man_ip_address, system.man_description, system.os_family, system.man_status';
+                    $CI->response->properties = 'system.system_id, system.icon, system.man_type, system.hostname, system.man_domain, system.man_ip_address, system.man_description, system.os_family, system.man_status';
                 } else {
                     # we're requesting a subresource - return all the subresource's properties
                     $CI->response->properties = $CI->response->sub_resource . '.*';
@@ -440,9 +445,15 @@ if (! function_exists('inputRead')) {
             }
         }
 
-        if (!$CI->response->debug) {
-            unset($CI->response->query_string);
-        }
+        $CI->response->links = new stdClass();
+        $CI->response->links->first = NULL;
+        $CI->response->links->last = NULL;
+        $CI->response->links->next = NULL;
+        $CI->response->links->prev = NULL;
+
+        // if (!$CI->response->debug) {
+        //     unset($CI->response->query_string);
+        // }
 
         # get the version
         if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json;version=') !== false) {

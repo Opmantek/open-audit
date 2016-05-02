@@ -406,7 +406,7 @@ class M_oa_config extends MY_Model
     # supply a standard ip address - 192.168.1.1
     # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
     # returns true if ip is contained in a subnet, false otherwise
-    function check_blessed($ip = '', $subnets = '')
+    function check_blessed($ip = '')
     {
         if (trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
             return true;
@@ -417,60 +417,23 @@ class M_oa_config extends MY_Model
         if ($ip == '127.0.0.1' or $ip == '127.0.1.1') {
             return true;
         }
-        $temp = explode('.', $ip);
-        $first_octet = $temp[0];
-        unset($temp);
-        if ($subnets == '') {
-            $subfromdb = true;
-            $sql = "/* m_oa_config::check_blessed */ SELECT name FROM networks WHERE name like '" . $first_octet . ".%' ORDER BY ABS(substr(name, locate('/', name)+1))";
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            foreach($result as $subnet) {
-                $subnets[] = $subnet->name;
-            }
+        $sql = "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(name, LOCATE('/', name)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(name, 1, LOCATE('/', name)-1))";
+        $sql = $this->clean_sql($sql);
+        $data = array("$ip");
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        if (intval($result[0]->count) > 0) {
+            return true;
         } else {
-            $subfromdb = false;
-            $subnets = str_replace(' ', '', $subnets);
-            $subnets = explode(',', $subnets);
+            $this->load->helper('log_helper');
+            $log_details = new stdClass();
+            $log_details->severity = 5;
+            $log_details->file = 'system';
+            $log_details->message = 'Audit submission from an IP not in the list of blessed subnets (' . $_SERVER['REMOTE_ADDR'] . ')';
+            stdlog($log_details);
+            unset($log_details);
+            return false;
         }
-        $this->load->helper('network_helper');
-        foreach ($subnets as $subnet) {
-            if ($subnet = network_details($subnet)) {
-                if (ip2long($ip) >= ip2long($subnet->host_min) and ip2long($ip) <= ip2long($subnet->host_max)) {
-                    return true;
-                    break;
-                }
-            }
-        }
-        # if we got to here we retrieved subnets from the DB but didn't get a match
-        # try retrieving ALL the subnets just in case - first time we only retrieved subnets with a matching first octet
-        // if ($subfromdb) {
-        //     $sql = "/* m_oa_config::check_blessed */ SELECT name FROM networks";
-        //     $query = $this->db->query($sql);
-        //     $result = $query->result();
-        //     foreach($result as $subnet) {
-        //         $subnets[] = $subnet->name;
-        //     }
-        //     foreach ($subnets as $subnet) {
-        //         if ($subnet = network_details($subnet)) {
-        //             if (ip2long($ip) >= ip2long($subnet->host_min) and ip2long($ip) <= ip2long($subnet->host_max)) {
-        //                 return true;
-        //                 break;
-        //             }   
-        //         }
-        //     }
-        // }
-
-        # if we were in the list, we should have already returned.
-        # generate a log line and reeturn false
-        $this->load->helper('log_helper');
-        $log_details = new stdClass();
-        $log_details->severity = 5;
-        $log_details->file = 'system';
-        $log_details->message = 'Audit submission from an IP not in the list of blessed subnets (' . $_SERVER['REMOTE_ADDR'] . ')';
-        stdlog($log_details);
-        unset($log_details);
-        return false;
     }
 
 

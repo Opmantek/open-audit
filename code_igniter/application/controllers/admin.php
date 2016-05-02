@@ -4965,7 +4965,11 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE system CHANGE `man_serial` `man_serial` varchar(250) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system ADD `dbus_identifier` varchar(250) NOT NULL DEFAULT '' AFTER uuid";
 
-            # our nwe blessed subnets config item
+            # a new function we'll use for checking if an IP is in a blessed subnet
+            $sql[] = "DROP FUNCTION IF EXISTS cidr_to_mask";
+            $sql[] = "CREATE FUNCTION cidr_to_mask (cidr INT(2)) RETURNS CHAR(15) DETERMINISTIC RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10))";
+
+            # our new blessed subnets config item
             $sql[] = "UPDATE `ip` SET `network` = REPLACE(`network`, ' ', '')";
             $sql[] = "INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y','0000-00-00 00:00:00',0,'Should we only accept data from the blessed subnets list.')";
 
