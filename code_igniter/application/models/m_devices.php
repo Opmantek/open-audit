@@ -63,7 +63,7 @@ class M_devices extends MY_Model
                 if ($item->name == 'system_id') {
                     $item->name = 'system.system_id';
                 }
-                if (!empty($item->name) and !empty($item->value)) {
+                if (!empty($item->name)) {
                     $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
                 }
             }
