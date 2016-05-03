@@ -74,7 +74,7 @@ class M_networks extends MY_Model
         $CI = & get_instance();
         $return_data = array();
         $sql = "SELECT * FROM networks WHERE id = ?";
-        $data = array($CI->response->id);
+        $data = array(intval($CI->response->id));
         $result = $this->run_sql($sql, $data);
         $this->count_data($result);
         $return_data['network'] = $result;
@@ -92,12 +92,20 @@ class M_networks extends MY_Model
     public function create_network()
     {
         $CI = & get_instance();
-        # first check to see if we already have a network with the same name
+        # ensure we have a valid subnet
+        $this->load->helper('network');
+        $test = network_details($CI->response->post_data['name']);
+        if (!empty($test->error)) {
+            # TODO - log an error
+            return false;
+        }
+        # check to see if we already have a network with the same name
         $name = str_replace(' ', '', $CI->response->post_data['name']);
         $sql = "SELECT COUNT(id) AS count FROM `networks` WHERE `name` = ?";
         $data = array($name);
         $result = $this->run_sql($sql, $data);
         if (intval($result[0]->count) != 0) {
+            # TODO log an error
             return false;
         }
         $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, NOW())";

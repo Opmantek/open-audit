@@ -67,39 +67,6 @@ class networks extends MY_Controller
             $this->response->include = 'v_networks';
         }
         $this->output->url = $this->config->item('oa_web_index');
-        $this->user->orgs = $this->m_oa_user->get_orgs($this->user->id);
-        $temp = array();
-        foreach ($this->user->orgs as $key => $value) {
-            $temp[] = $key;
-        }
-        $this->user->org_list = implode(',', $temp);
-        unset($temp);
-
-        // if ($this->response->id != '') {
-        //     $access_level = $this->m_devices->get_user_device_org_access();
-        //     if ($access_level < 1) {
-        //         // we should determine if the device does actually exist or not
-        //         // then we can throw the correct status code of 404 or 403
-        //         $sql = "SELECT system_id FROM system WHERE system_id = ?";
-        //         $data = array($this->response->id);
-        //         $query = $this->db->query($sql, $data);
-        //         $result = $query->result();
-        //         if (count($result) == 0) {
-        //             $this->response->errors[] = getError('ERR-0007');
-        //         } else {
-        //             $this->response->errors[] = getError('ERR-0008');
-        //         }
-        //         $this->response->header = $this->response->errors[0]->status;
-        //         output($this->response);
-        //         exit();
-        //     }
-        // }
-
-        // $this->response->format = 'json';
-        // $this->response->debug = true;
-        // output($this->response);
-        // exit();
-
     }
 
     public function index()
@@ -117,28 +84,10 @@ class networks extends MY_Controller
         exit();
     }
 
-    private function create_form()
-    {
-        output($this->response);
-    }
-
-    private function create()
-    {
-        if ($this->response->id = $this->m_networks->create_network()) {
-            redirect('/networks/'.$this->response->id);
-        } else {
-            $this->response->format = 'json';
-            $this->response->debug = true;
-            output($this->response);
-        }
-    }
-
     private function collection()
     {
-        
         $this->response->data = $this->m_networks->read_networks();
         $this->response->filtered = count($this->response->data);
-        #$this->create_links();
         output($this->response);
     }
 
@@ -149,14 +98,46 @@ class networks extends MY_Controller
         output($this->response);
     }
 
+    private function create_form()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            redirect('networks');
+        }
+        output($this->response);
+    }
+
+    private function create()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            redirect('networks');
+        }
+        if ($this->response->id = $this->m_networks->create_network()) {
+            redirect('/networks/'.intval($this->response->id));
+        } else {
+            $this->response->format = 'json';
+            $this->response->debug = true;
+            output($this->response);
+        }
+    }
+
     private function update_form()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            redirect('networks');
+        }
         $this->response->data = $this->m_networks->read_network();
         output($this->response);
     }
 
     private function update()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            redirect('networks');
+        }
         $this->m_networks->update();
         if ($this->response->format == 'json') {
             output($this->response);
@@ -167,6 +148,10 @@ class networks extends MY_Controller
 
     private function delete()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            redirect('networks');
+        }
         $this->m_networks->delete();
         if ($this->response->format == 'json') {
             output($this->response);
@@ -175,18 +160,17 @@ class networks extends MY_Controller
         }
     }
 
-
+    # not implemented
     private function execute()
     {
-        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);
     }
 
+    # not implemented
     private function bulk_update_form()
     {
-        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         $this->response->id = '';

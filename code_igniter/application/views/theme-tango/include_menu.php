@@ -211,6 +211,12 @@ var modal_content_image = "";
                     <li><a href='<?php echo $oa_web_index?>/admin/purge_log/system'><?php echo __('Purge System Log')?></a></li>
                 </ul>
             </li>
+            <li><a href='javascript:void(0)'><?php echo __('Networks')?></a>
+                <ul>
+                    <li><a href='<?php echo $oa_web_index?>/networks'><?php echo __('View Networks')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/networks?action=create'><?php echo __('Add Network')?></a></li>
+                </ul>
+            </li>
             <li><a href='javascript:void(0)'><?php echo __('Organisations')?></a>
                 <ul>
                     <li><a href='<?php echo $oa_web_index?>/admin_org/list_orgs'><?php echo __('List Organisations')?></a></li>
