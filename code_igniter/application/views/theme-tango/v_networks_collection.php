@@ -32,8 +32,10 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-#echo "<a href=\"" . $this->response->links->prev . "\">PREV</a><br />\n";
-#echo "<a href=\"" . $this->response->links->next . "\">NEXT</a><br />\n";
+if (!empty($this->response->error)) {
+	echo "<h3>" . $this->response->error->title . "</h3><br />";
+	echo "<p>" . $this->response->error->message . "</p>\n";
+}
 ?>
 <div style="text-align:right;">
 <button><a href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a></button>&nbsp;

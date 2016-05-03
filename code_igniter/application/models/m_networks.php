@@ -96,7 +96,7 @@ class M_networks extends MY_Model
         $this->load->helper('network');
         $test = network_details($CI->response->post_data['name']);
         if (!empty($test->error)) {
-            # TODO - log an error
+            log_error('ERR-0009', 'm_networks::create_network');
             return false;
         }
         # check to see if we already have a network with the same name
@@ -105,7 +105,7 @@ class M_networks extends MY_Model
         $data = array($name);
         $result = $this->run_sql($sql, $data);
         if (intval($result[0]->count) != 0) {
-            # TODO log an error
+            log_error('ERR-0010', 'm_networks::create_network');
             return false;
         }
         $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, NOW())";
@@ -135,11 +135,14 @@ class M_networks extends MY_Model
     {
         $CI = & get_instance();
         $sql = '';
+        $fields = ' name description ';
         foreach ($CI->response->post_data as $key => $value) {
-            if ($sql == '') {
-                $sql = "SET `" . $key . "` = '" . $value . "'";
-            } else {
-                $sql .= ", `" . $key . "` = '" . $value . "'";
+            if (strpos($fields, ' '.$key.' ') !== false) {
+                if ($sql == '') {
+                    $sql = "SET `" . $key . "` = '" . $value . "'";
+                } else {
+                    $sql .= ", `" . $key . "` = '" . $value . "'";
+                }
             }
         }
         $sql = "UPDATE `networks` " . $sql . ", `edited_by` = '" . $CI->user->full_name . "', `edited_date` = NOW() WHERE id = " . intval($CI->response->id);
@@ -181,16 +184,8 @@ class M_networks extends MY_Model
         $this->db->db_debug = $temp_debug;
         // do we have an error?
         if ($this->db->_error_message()) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
-            $CI->error->function = @$caller['class'] . '::' . @$caller['function'];
-            $CI->error->code = 'ERR-0009';
-            // when we log this, if error->severity is high enough,
-            // we will set the $response->error object end trigger the error display
-            log_error($CI->error);
-            $CI->response->error->detail_specific = $this->db->_error_message();
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
+            $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
             return false;
         }
         // no error, so get the result
@@ -203,14 +198,10 @@ class M_networks extends MY_Model
     {
         // do we have any retrieved rows?
         $CI = & get_instance();
+        $trace = debug_backtrace();
+        $caller = $trace[1];
         if (count($result) == 0) {
-            if (empty($CI->response->error)) {
-                $CI->response->error = new stdClass();
-            }
-            $CI->response->error->controller = $CI->response->collection . '::' . $CI->response->action;
-            $CI->response->error->function = @$caller['class'] . '::' . @$caller['function'];
-            $CI->response->error->code = 'ERR-0005';
-            log_error($CI->response->error);
+            log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
         }
     }
 

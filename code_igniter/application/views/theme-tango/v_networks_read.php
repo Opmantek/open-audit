@@ -38,11 +38,11 @@
 	<legend><span style="font-size: 12pt;">&nbsp;<?php echo __('Network Details')?></span></legend>
 	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_network.png' alt='' title='' />
 	<?php $item = $this->response->data['network'][0]; ?>
-	<p><label for='data[id]'><?php echo __("ID")?>: </label><span id='data[id]' name='data[id]' tabindex='1' title='ID'><?php echo $item->id; ?></span></p>
-	<p><label for='data[name]'><?php echo __("Name")?>: </label><span id='data[name]' name='data[name]' tabindex='2' title='Name'><?php echo $item->name; ?></span></p>
-	<p><label for='data[description]'><?php echo __("Description")?>: </label><span id='data[description]' name='data[description]' tabindex='3' title='Level'><?php echo $item->description; ?></span></p>
-	<p><label for='data[edited_by]'><?php echo __("Edited By")?>: </label><span id='data[edited_by]' name='data[edited_by]' tabindex='4' title='Edited By'><?php echo $item->edited_by; ?></span></p>
-	<p><label for='data[edited_date]'><?php echo __("Edited Date")?>: </label><span id='data[edited_date]' name='data[edited_date]' tabindex='5' title='Edited Date'><?php echo $item->edited_date; ?></span></p>
+	<p><label for='data[id]'><?php echo __("ID")?>: </label><span id='data[id]' name='data[id]' tabindex='1' title='ID'><?php echo print_something($item->id); ?></span></p>
+	<p><label for='data[name]'><?php echo __("Name")?>: </label><span id='data[name]' name='data[name]' tabindex='2' title='Name'><?php echo print_something($item->name); ?></span></p>
+	<p><label for='data[description]'><?php echo __("Description")?>: </label><span id='data[description]' name='data[description]' tabindex='3' title='Level'><?php echo print_something($item->description); ?></span></p>
+	<p><label for='data[edited_by]'><?php echo __("Edited By")?>: </label><span id='data[edited_by]' name='data[edited_by]' tabindex='4' title='Edited By'><?php echo print_something($item->edited_by); ?></span></p>
+	<p><label for='data[edited_date]'><?php echo __("Edited Date")?>: </label><span id='data[edited_date]' name='data[edited_date]' tabindex='5' title='Edited Date'><?php echo print_something($item->edited_date); ?></span></p>
 	<?php if (empty($this->response->data['devices'])) { ?>
 	<p><label></label><button><a href="<?php echo current_url() . '?sub_resource=devices&' . $this->response->query_string; ?>">Show Devices</a></button>
 	<?php } else { ?>

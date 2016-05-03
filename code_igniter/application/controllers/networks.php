@@ -102,7 +102,9 @@ class networks extends MY_Controller
     {
         # Only admin's
         if ($this->user->admin != 'y') {
-            redirect('networks');
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
         }
         output($this->response);
     }
@@ -111,14 +113,17 @@ class networks extends MY_Controller
     {
         # Only admin's
         if ($this->user->admin != 'y') {
-            redirect('networks');
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
         }
-        if ($this->response->id = $this->m_networks->create_network()) {
+        $this->response->id = $this->m_networks->create_network();
+        if (!empty($this->response->id)) {
             redirect('/networks/'.intval($this->response->id));
         } else {
-            $this->response->format = 'json';
-            $this->response->debug = true;
+            log_error('ERR-0009');
             output($this->response);
+            exit();
         }
     }
 
@@ -126,7 +131,9 @@ class networks extends MY_Controller
     {
         # Only admin's
         if ($this->user->admin != 'y') {
-            redirect('networks');
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
         }
         $this->response->data = $this->m_networks->read_network();
         output($this->response);
@@ -136,7 +143,9 @@ class networks extends MY_Controller
     {
         # Only admin's
         if ($this->user->admin != 'y') {
-            redirect('networks');
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
         }
         $this->m_networks->update();
         if ($this->response->format == 'json') {
@@ -150,7 +159,9 @@ class networks extends MY_Controller
     {
         # Only admin's
         if ($this->user->admin != 'y') {
-            redirect('networks');
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
         }
         $this->m_networks->delete();
         if ($this->response->format == 'json') {
