@@ -139,6 +139,9 @@ if (! function_exists('inputRead')) {
                     // should thro an error as we were given a name, but nothing matched
                     $CI->response->id = '';
                 }
+            } else {
+                $CI->response->id = '';
+                $CI->response->action = $temp;
             }
         }
         unset($temp);
@@ -173,19 +176,7 @@ if (! function_exists('inputRead')) {
         }
         $CI->response->sub_resource_id = intval($CI->response->sub_resource_id);
 
-
-        # get the action
-        # valid values are typically - create, read, update, delete, list, execute
-        # TODO - request_method == post and body contains system_id, then update, not create
-        $CI->response->action = '';
-        $action = '';
-        if (isset($_GET['action'])) {
-            $action = $_GET['action'];
-        }
-        if (isset($_POST['action'])) {
-            $action = $_POST['action'];
-        }
-
+        # put any POST data into the object
         if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
             if (is_array($_POST['data'])) {
                 $CI->response->post_data = $_POST['data'];
@@ -194,7 +185,28 @@ if (! function_exists('inputRead')) {
             }
         }
         if (isset($CI->response->post_data->id)) {
-            $CI->response->id = $CI->response->post_data->id;
+            $CI->response->id = intval($CI->response->post_data->id);
+        }
+
+        # get the action
+        # valid values are typically - create, read, update, delete, list, execute
+        # TODO - request_method == post and body contains system_id, then update, not create
+        $reserved_words = ' collection read new edit execute create update delete debug create_form update_form bulk_update_form import import_form ';
+        $action = '';
+        
+        if (empty($CI->response->action)) {
+            $CI->response->action = '';
+        }
+
+        if (stripos($reserved_words, ' '.$CI->response->action. ' ') !== false) {
+            $action = $CI->response->action;
+        }
+
+        if (isset($_GET['action'])) {
+            $action = $_GET['action'];
+        }
+        if (isset($_POST['action'])) {
+            $action = $_POST['action'];
         }
 
         $CI->response->header = 'HTTP/1.1 200 OK';
@@ -254,11 +266,9 @@ if (! function_exists('inputRead')) {
         if ($CI->response->action == '' or $CI->response->action == 'list') {
             $CI->response->action = 'collection';
         }
-        $reserved_words = ' collection read new edit execute create update delete debug create_form update_form bulk_update_form import import_form ';
         if (stripos($reserved_words, ' '.$CI->response->action.' ') === false) {
             $CI->response->action = 'collection';
         }
-
 
         # get the sort
         $CI->response->sort = '';
