@@ -178,9 +178,6 @@ class devices extends MY_Controller
         $this->response->format = 'json';
         $this->response->debug = true;
         $this->m_devices->update();
-        #$this->response->data = null;
-        #$this->response->error = getError('ERR-0009');
-        #$this->response->header = $this->response->error->status;
         output($this->response);
     }
 

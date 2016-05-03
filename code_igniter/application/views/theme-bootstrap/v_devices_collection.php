@@ -81,7 +81,7 @@ if (count($this->response->filter) > 0) {
     $link = str_replace($item->name . '=' . $operator . $item->value, '', $_SERVER["REQUEST_URI"]);
     $link = str_replace($item->name . '=' . $operator . urlencode($item->value), '', $_SERVER["REQUEST_URI"]);
     if ($item->name == 'status' and $item->operator == '=' and $item->value == 'production') {
-      $link = $refine_link . 'man_status=!=production';
+      $link = $refine_link . 'man_status=!=""';
     }
     $label = 'label-info';
     echo '<big><span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span></big>&nbsp;';

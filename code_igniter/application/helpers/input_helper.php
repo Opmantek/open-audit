@@ -193,7 +193,7 @@ if (! function_exists('inputRead')) {
         # TODO - request_method == post and body contains system_id, then update, not create
         $reserved_words = ' collection read new edit execute create update delete debug create_form update_form bulk_update_form import import_form ';
         $action = '';
-        
+
         if (empty($CI->response->action)) {
             $CI->response->action = '';
         }
@@ -447,6 +447,9 @@ if (! function_exists('inputRead')) {
                     $query->operator = 'not like';
                 }
                 $query->name = str_replace(array(',', '\'', '"', '(', ')'), '', $query->name);
+                if ($query->value == false) {
+                    $query->value = '';
+                }
 
                 if (strpos($reserved_words, ' '.$query->name.' ') === false and $query->name != '') {
                     $CI->response->filter [] = $query;
@@ -461,9 +464,7 @@ if (! function_exists('inputRead')) {
         $CI->response->links->next = NULL;
         $CI->response->links->prev = NULL;
 
-        // if (!$CI->response->debug) {
-        //     unset($CI->response->query_string);
-        // }
+        $CI->response->errors = array();
 
         # get the version
         if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json;version=') !== false) {

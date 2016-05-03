@@ -53,9 +53,11 @@ if (! function_exists('output')) {
         $CI = & get_instance();
         $CI->response = output_convert($CI->response);
         create_links();
-        // if we have an error set, make sure we remove the data object / array
-        if (!empty($CI->response->error) and !$CI->response->data) {
+        // if we have errors set, make sure we remove the data object / array
+        if (count($CI->response->errors) > 0) {
             unset($CI->response->data);
+        } else {
+            unset($CI->response->errors);
         }
         switch ($CI->response->format) {
             case 'screen':
@@ -158,7 +160,7 @@ if (! function_exists('output')) {
         $CI = & get_instance();
         header($CI->response->header);
         $CI->response->user = $CI->user;
-        if (!empty($CI->response->error)) {
+        if (!empty($CI->response->errors)) {
             $CI->response->include = 'v_error';
         } else {
             $CI->response->include = 'v_' . $CI->response->collection . '_' . $CI->response->action;

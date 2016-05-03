@@ -49,35 +49,10 @@ if (! function_exists('getError')) {
      */
     function getError ($error_id = '') {
 
-        // if (isset($error) and $error != '') {
-        //     if (!isset($error->function)) {
-        //         $error->function = 'unknown model';
-        //     }
-        //     if (!isset($error->controller)) {
-        //         $error->controller = 'unknown controller';
-        //     }
-        // } else {
-        //     $error = new stdClass();
-        //     $error->controller = 'unknown controller';
-        //     $error->function = 'unknown model';
-        // }
-
         $error = new stdClass();
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-
         $CI = & get_instance();
-
-        if (empty($CI->error->controller)) {
-            $error->controller = @$caller['class'];
-        } else {
-            $error->controller = $CI->error->controller;
-        }
-        if (empty($CI->error->function)) {
-            $error->function = @$caller['function'];
-        } else {
-            $error->function = $CI->error->function;
-        }
+        $error->controller = $CI->response->collection;
+        $error->function = $CI->response->action;
         $error->code = $error_id;
 
         $error_array = array();
@@ -137,7 +112,7 @@ if (! function_exists('getError')) {
         $error_array['ERR-0008']->status = 'HTTP/1.1 403 Forbidden';
         $error_array['ERR-0008']->severity = 3;
         $error_array['ERR-0008']->title = "User insufficient access.";
-        $error_array['ERR-0008']->detail = 'A user attempted to view a resource for which they do not have sufficient authorisation.';
+        $error_array['ERR-0008']->detail = 'A user attempted to access a resource for which they do not have sufficient authorisation.';
 
         $error_array['ERR-0009'] = new stdClass();
         $error_array['ERR-0009']->code = 'ERR-0009';
@@ -145,6 +120,13 @@ if (! function_exists('getError')) {
         $error_array['ERR-0009']->severity = 3;
         $error_array['ERR-0009']->title = "Bad Request.";
         $error_array['ERR-0009']->detail = 'Parameters you have provided failed use.';
+
+        $error_array['ERR-0010'] = new stdClass();
+        $error_array['ERR-0010']->code = 'ERR-0010';
+        $error_array['ERR-0010']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0010']->severity = 3;
+        $error_array['ERR-0010']->title = "Bad Request.";
+        $error_array['ERR-0010']->detail = 'Cannot create resource with supplied data. Likely a unique field is already used by another item in the collection.';
 
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
@@ -155,9 +137,9 @@ if (! function_exists('getError')) {
             }
         }
 
-        if (!isset($error->code) or is_null($error->code)) {
+        if (!isset($error->code) or is_null($error->code) or (!isset($error_array[$error->code]))) {
             return $error_array;
-        } elseif (isset($error->code) and isset($error_array[$error->code])) {
+        } else {
             if (isset($error->function)) {
                 $error_array[$error->code]->function = $error->function;
             } else {

@@ -37,8 +37,19 @@
 	<fieldset id="org_details" class='niceforms'>
 		<legend><span style='font-size: 12pt;'>&nbsp;Error</span></legend>
 		<br /><a href="javascript:history.back();" style="color:blue;">Go back</a> and try again.<br />
-        <pre><?php if (isset($query)) { print_r($query); } ?></pre>
-        <pre><?php if (isset($error)) { print_r($error); } ?></pre>
+        <pre>
+        <?php if (isset($query)) { print_r($query); } ?>
+        <?php if (isset($error)) { print_r($error); } ?>
+        </pre>
+        <?php
+        # this is API generated error(s)
+        if (isset($this->response->errors)) {
+            echo "There has been an error with your request.\n";
+            echo "<pre>\n";
+            print_r($this->response->errors);
+            echo "</pre>\n";
+        }
+        ?>
 	</fieldset>
 </form>
 </div>
