@@ -365,6 +365,8 @@ class M_devices_components extends MY_Model
                 if (!isset($input->item[$i]->ip) or $input->item[$i]->ip == '') {
                     unset($input->item[$i]);
                 }
+                # ensure we add the network to the networks list
+                $this->m_oa_config->update_blessed($input->item[$i]->network);
             }
             if ($details->type == 'computer' and $details->os_group == 'VMware') {
                 # TODO - fix the below somewhow ?!??
