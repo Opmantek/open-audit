@@ -517,6 +517,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
         <br />
         <form action="#" method="post" class='niceforms'>
             <fieldset id="optical_details">
+                <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Optical Details')?></span></legend>
                 <div style="min-width: 50px; float: right;">
                     <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_optical_drive.png' alt='' title='' />
                 </div>
