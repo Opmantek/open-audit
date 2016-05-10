@@ -221,7 +221,7 @@ if (! function_exists('output')) {
     {
         $CI = & get_instance();
         $offset = '';
-        if ($CI->response->total > 0) {
+        if ($CI->response->total > 0 and $CI->response->collection != 'charts') {
             # next link
             if ($CI->response->total > $CI->response->filtered and ($CI->response->offset + $CI->response->limit) < ($CI->response->total + $CI->response->limit)) {
                 $offset = intval($CI->response->offset + $CI->response->limit);
