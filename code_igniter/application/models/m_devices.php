@@ -138,11 +138,16 @@ class M_devices extends MY_Model
     {
         $CI = & get_instance();
         $this->load->model('m_devices_components');
+        $this->load->model('m_system');
         $sql = "SELECT * FROM system WHERE system_id = ?";
         $sql = $this->clean_sql($sql);
         $data = array($CI->response->id);
         $query = $this->db->query($sql, $data);
         $document['system'] = $query->result();
+
+        // the credentials object
+        $document['credentials'] = array();
+        $document['credentials'][0] = $this->m_system->get_credentials($CI->response->id);
 
         // the location object
         $sql = "SELECT oa_location.id, oa_location.name, oa_location.type, IF(system.man_location_room != '', system.man_location_room, oa_location.room) as room, IF(system.man_location_suite != '', system.man_location_suite, oa_location.suite) as suite, IF(system.man_location_level != '', system.man_location_level, oa_location.level) as level, oa_location.address, oa_location.suburb, oa_location.city, oa_location.postcode, oa_location.state, oa_location.country, oa_location.phone, system.man_location_rack as rack, system.man_location_rack_position as rack_position, system.man_location_rack_size as rack_size FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.id) WHERE system.system_id = ?";
