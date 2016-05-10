@@ -624,7 +624,7 @@ class discovery extends CI_Controller
                         $query = $this->db->query($sql, $data);
                         $insert_id = $this->db->insert_id();
                         // We need to insert an entry into oa_group_user for any Admin level user
-                        $sql = "/* discovery::discover_subnet */ INSERT INTO oa_group_user (SELECT null, user_id, ?, '10' FROM oa_user WHERE admin = 'y')";
+                        $sql = "/* discovery::discover_subnet */ INSERT INTO oa_group_user (SELECT null, user.id, ?, '10' FROM oa_user WHERE admin = 'y')";
                         $data = array( $insert_id );
                         $result = $this->db->query($sql, $data);
                         // now we update this specific group
@@ -803,6 +803,9 @@ class discovery extends CI_Controller
             $log_details->display = $display;
 
             if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+                if ($display == 'y') {
+                    echo "\nAudit submission from an IP (" . $_SERVER['REMOTE_ADDR'] . ") not in the list of blessed subnets, exiting.\n";
+                }
                 exit;
             }
 
@@ -1371,6 +1374,8 @@ class discovery extends CI_Controller
                         }
 
                         if ($details->wmi_status == 'true') {
+                            $log_details->message = 'Testing Windows credentials for '.$details->man_ip_address;
+                            stdlog($log_details);
                             $credentials = array();
                             $credentials['supplied']['user'] = $supplied->windows_username;
                             $credentials['supplied']['pass'] = $supplied->windows_password;
@@ -1408,6 +1413,8 @@ class discovery extends CI_Controller
                             if ($details->windows_username !='') {
                                 $details->type = 'computer';
                                 $details->os_group = 'Windows';
+                                # we have working WMI credentials - remove SSH status as it's not supported right now anyway
+                                $details->ssh_status = 'false';
 
                                 # get the UUID
                                 $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'csproduct get uuid', $details->windows_password, $details->windows_domain, $display);
@@ -2440,6 +2447,7 @@ class discovery extends CI_Controller
         if ($display == 'y') {
             $command_string = str_replace($password, '******', $command_string);
             $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
+            $command_string = str_replace(escapeshellarg($password), '******', $command_string);
             echo 'DEBUG - Command Executed: '.$command_string."\n";
             echo 'DEBUG - Return Value: '.$return['status']."\n";
             echo "DEBUG - Command Output:\n";
