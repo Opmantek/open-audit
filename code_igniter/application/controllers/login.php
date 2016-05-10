@@ -93,7 +93,10 @@ class login extends CI_Controller
         $data['oae_message'] = '';
         $license = '';
 
-        $this->load->model('m_oa_config');
+        foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
+            $this->m_oa_config->update_blessed($subnet, 0);
+        }
+
         $oae_url = $this->m_oa_config->get_config_item('oae_url');
 
         if ($oae_url > '') {
