@@ -1891,20 +1891,18 @@ done
 
 # Puppet facts
 if [ -n "$(which facter)" ]; then
-    echo "  <variable>"
     exclusions=" system_uptime memoryfree memoryfree_mb sshdsakey sshfp_dsa sshfp_rsa sshrsakey swapfree swapfree_mb system_uptime "
     for variable in $(facter -p); do
         name=$( echo "$variable" | cut -d" " -f1 )
         if [ -z "$(echo "$exclusions" | grep " $name ")" ]; then
             value=$(echo "$variable" | cut -d" " -f3-)
-            echo "      <item>"
-            echo "          <program>facter</program>"
-            echo "          <name>$(escape_xml "$name")</name>"
-            echo "          <value>$(escape_xml "$value")</value>"
-            echo "      </item>"
+            echo "      <item>" >> "$xml_file"
+            echo "          <program>facter</program>" >> "$xml_file"
+            echo "          <name>$(escape_xml "$name")</name>" >> "$xml_file"
+            echo "          <value>$(escape_xml "$value")</value>" >> "$xml_file"
+            echo "      </item>" >> "$xml_file"
         fi
     done
-    echo "  </variable>"
 fi
 
 
