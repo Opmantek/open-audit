@@ -494,6 +494,16 @@ class M_devices_components extends MY_Model
             }
         }
 
+        # make sure we have a populated org_id for adding items to the charts table
+        if (empty($details->man_org_id)) {
+            $sql = "SELECT man_org_id FROM system WHERE system_id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($details->system_id);
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            $details->man_org_id = $row->man_org_id;
+        }
+
         // get any existing current rows from the database
         $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND system_id = ?";
         $sql = $this->clean_sql($sql);
@@ -647,6 +657,10 @@ class M_devices_components extends MY_Model
                     $sql = $this->clean_sql($sql);
                     $data = array("$details->system_id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
                     $query = $this->db->query($sql, $data);
+                    # add a count to our chart table
+                    $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_create', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+                    $sql = $this->clean_sql($sql);
+                    $query = $this->db->query($sql);
                 }
             }
             if ((string)$table == 'partition') {
@@ -700,6 +714,10 @@ class M_devices_components extends MY_Model
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
                 $query = $this->db->query($sql, $data);
+                # add a count to our chart table
+                $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_delete', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+                $sql = $this->clean_sql($sql);
+                $query = $this->db->query($sql);
             }
         }
         // update the audit log
