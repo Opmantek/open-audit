@@ -67,13 +67,6 @@ class devices extends MY_Controller
             $this->response->include = 'v_devices';
         }
         $this->output->url = $this->config->item('oa_web_index');
-        $this->user->orgs = $this->m_oa_user->get_orgs($this->user->id);
-        $temp = array();
-        foreach ($this->user->orgs as $key => $value) {
-            $temp[] = $key;
-        }
-        $this->user->org_list = implode(',', $temp);
-        unset($temp);
 
         if ($this->response->id != '') {
             $access_level = $this->m_devices->get_user_device_org_access();

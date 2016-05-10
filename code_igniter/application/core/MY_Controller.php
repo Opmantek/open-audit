@@ -107,6 +107,14 @@ class MY_Controller extends CI_Controller
             $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
         }
         set_time_limit(600);
+        $this->user->orgs = $this->m_oa_user->get_orgs($this->user->id);
+        $temp = array();
+        foreach ($this->user->orgs as $key => $value) {
+            $temp[] = $key;
+        }
+        $this->user->org_list = implode(',', $temp);
+        unset($temp);
+
     }
 
     /**
@@ -259,6 +267,9 @@ class MY_Controller extends CI_Controller
         // $query = $this->data['query'];
         $query = $data['query'];
         $json_items = 'items';
+        if (empty($this->data['heading'])) {
+            $this->data['heading'] = '';
+        }
         if ((string) $this->data['heading'] === 'Software Discovered 30') {
             $json_items = 'Daily Discovered Software';
         }
