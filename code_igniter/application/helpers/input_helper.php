@@ -101,6 +101,7 @@ if (! function_exists('inputRead')) {
         # get the id of the collection item in question
         $temp = $CI->uri->segment(2);
         $CI->response->id = '';
+        $CI->response->sub_resource = '';
         if (isset($temp) and is_numeric($temp) and $temp != '') {
             #$CI->response->id = intval($temp);
             $CI->response->id = $temp;
@@ -113,31 +114,38 @@ if (! function_exists('inputRead')) {
                     $sql = "SELECT system_id AS id FROM system WHERE hostname LIKE ? ORDER BY system_id DESC LIMIT 1";
                     $table = 'system';
                     break;
-                case'groups':
+                case 'groups':
                     $sql = "SELECT group_id AS id FROM oa_group WHERE group_name LIKE ? LIMIT 1";
                     $table = 'oa_group';
                     break;
-                case'orgs':
+                case 'orgs':
                     $sql = "SELECT id FROM oa_org WHERE name LIKE ? LIMIT 1";
                     $table = 'oa_org';
                     break;
-                case'users':
+                case 'users':
                     $sql = "SELECT id AS id FROM oa_user WHERE name LIKE ? LIMIT 1";
                     $table = 'oa_user';
                     break;
-                case'reports':
+                case 'reports':
                     $sql = "SELECT report_id AS id FROM oa_report WHERE report_name LIKE ? LIMIT 1";
                     $table = 'oa_report';
                     break;
+                case 'charts':
+                    $sql = '';
+                    $CI->response->id = 1;
+                    $CI->response->sub_resource = $temp;
+                    break;
                 }
-                $data = array("$temp");
-                $query = $CI->db->query($sql, $data);
-                $result = $query->result();
-                if (count($result) > 0) {
-                    $CI->response->id = intval($result[0]->id);
-                } else {
-                    // should thro an error as we were given a name, but nothing matched
-                    $CI->response->id = '';
+                if ($sql != '') {
+                    $data = array("$temp");
+                    $query = $CI->db->query($sql, $data);
+                    $result = $query->result();
+                    if (count($result) > 0) {
+                        $CI->response->id = intval($result[0]->id);
+                    } else {
+                        // should thro an error as we were given a name, but nothing matched
+                        $CI->response->id = '';
+                    }
                 }
             } else {
                 $CI->response->id = '';
@@ -148,7 +156,6 @@ if (! function_exists('inputRead')) {
         unset($reserved_words);
 
         # get the sub_resource
-        $CI->response->sub_resource = '';
         $temp = @$CI->uri->segment(3);
         if (!empty($temp)) {
             $CI->response->sub_resource = (string)$CI->uri->segment(3);
