@@ -50,6 +50,28 @@ LOCK TABLES `bios` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `chart`
+--
+
+CREATE TABLE `chart` (
+  `when` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `what` varchar(50) NOT NULL DEFAULT '',
+  `org_id` int unsigned NOT NULL DEFAULT 0,
+  `count` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`when`,`what`,`org_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `chart`
+--
+
+LOCK TABLES `chart` WRITE;
+/*!40000 ALTER TABLE `chart` DISABLE KEYS */;
+/*!40000 ALTER TABLE `chart` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `disk`
 --
 
@@ -1051,6 +1073,9 @@ CREATE TABLE `oa_user_org` (
 
 LOCK TABLES `oa_user_org` WRITE;
 /*!40000 ALTER TABLE `oa_user_org` DISABLE KEYS */;
+INSERT INTO `oa_user_org` VALUES (NULL, 1, 0, 10, '');
+INSERT INTO `oa_user_org` VALUES (NULL, 2, 0, 10, '');
+INSERT INTO `oa_user_org` VALUES (NULL, 3, 0, 10, '');
 /*!40000 ALTER TABLE `oa_user_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
