@@ -4977,7 +4977,22 @@ class admin extends MY_Controller
             $sql[] = "DROP TABLE IF EXISTS `networks`";
             $sql[] = "CREATE TABLE `networks` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $sql[] = "INSERT INTO `networks` SELECT NULL, REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', '')  AS name, TRIM(both '\t' from group_description) as description, 'system upgrade' as edited_by, NOW() as edited_date FROM oa_group WHERE group_category = 'network' AND SUBSTR(REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''),1,LOCATE('/',REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''))-1) != `group_description`";
+
             $sql[] = "INSERT INTO `networks` (SELECT NULL, ip.network as name, '' as description, 'system upgrade' as edited_by, NOW() as edited_date FROM ip WHERE network NOT IN (SELECT networks.name FROM networks) AND ip.network != '' GROUP BY ip.network)";
+
+            $sql[] = "DROP TABLE IF EXISTS `chart`";
+
+            $sql[] = "CREATE TABLE `chart` ( `when` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `what` varchar(50) NOT NULL DEFAULT '', `org_id` int unsigned NOT NULL DEFAULT 0, `count` int unsigned NOT NULL DEFAULT 0, PRIMARY KEY (`when`, `what`, `org_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'audit' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'audit' GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'snmp' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'snmp' GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'nmap' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'nmap' GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(change_log.timestamp) as `when`, CONCAT(change_log.db_table, '_', change_log.db_action) as `what`, system.man_org_id as `org_id`, count(change_log.id) AS `count` FROM change_log LEFT JOIN system ON (change_log.system_id = system.system_id) WHERE DATE(change_log.timestamp) >= '2015-01-01' AND change_log.db_table != 'system' GROUP BY system.man_org_id, CONCAT(change_log.db_table, '_', change_log.db_action), DATE(change_log.timestamp) ORDER BY DATE(change_log.timestamp))";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(`first_timestamp`) as `when`, 'system_create' as `what`, system.man_org_id as `org_id`, count(system_id) AS `count` FROM system WHERE DATE(`first_timestamp`) >= '2015-01-01' GROUP BY DATE(`first_timestamp`), man_org_id ORDER BY DATE(`first_timestamp`))";
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
