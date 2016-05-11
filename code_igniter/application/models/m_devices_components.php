@@ -366,7 +366,9 @@ class M_devices_components extends MY_Model
                     unset($input->item[$i]);
                 }
                 # ensure we add the network to the networks list
-                $this->m_oa_config->update_blessed($input->item[$i]->network);
+                if (!empty($input->item[$i]->network)) {
+                    $this->m_oa_config->update_blessed($input->item[$i]->network);
+                }
             }
             if ($details->type == 'computer' and $details->os_group == 'VMware') {
                 # TODO - fix the below somewhow ?!??
