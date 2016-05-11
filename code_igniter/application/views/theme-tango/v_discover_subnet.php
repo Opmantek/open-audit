@@ -202,7 +202,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                         <option value=''></option>
                 <?php
                     foreach ($orgs as $org) {
-                        if ($org_id = $org->id) {
+                        if ($org_id == $org->id) {
                             $selected = ' selected';
                         } else {
                             $selected = '';
@@ -218,7 +218,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                         <option value=''></option>
                 <?php
                     foreach ($locations as $location) {
-                        if ($location_id = $location->id) {
+                        if ($location_id == $location->id) {
                             $selected = ' selected';
                         } else {
                             $selected = '';
