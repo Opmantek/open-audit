@@ -442,6 +442,13 @@ class discovery extends CI_Controller
                 $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
                 $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address'));
             }
+            if ($this->data['system_id'] != '') {
+                $temp_system = $this->m_system->get_system_summary($this->data['system_id']);
+                #echo "<pre>\n"; print_r($temp_system); exit();
+                $this->data['org_id'] = $temp_system[0]->man_org_id;
+                $this->data['location_id'] = $temp_system[0]->man_location_id;
+                unset($temp_system);
+            }
             $this->load->model('m_oa_org');
             $this->data['orgs'] = $this->m_oa_org->get_org_names();
             $this->load->model('m_oa_location');
