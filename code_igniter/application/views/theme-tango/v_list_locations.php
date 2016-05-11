@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -55,34 +55,34 @@ if (count($query) > 0) {
         if (count($query) > 0) {
             foreach ($query as $key):
 
-                $edit_pic = "<a href=\"edit_location/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
-            $delete_pic = "<a href=\"delete_location/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
+                $edit_pic = "<a href=\"edit_location/".intval($key->id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
+            $delete_pic = "<a href=\"delete_location/".intval($key->id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
 
-            if ($key->location_name == '') {
-                $key->location_name = '(none)';
+            if ($key->name == '') {
+                $key->name = '(none)';
             }
 
-            if ($key->location_group_id > '0') {
-                $show_pic = "<a href=\"../main/list_devices/".intval($key->location_group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' style='width:16'/></a>";
-                $deactivate_pic = "<a href=\"delete_group/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
+            if ($key->group_id > '0') {
+                $show_pic = "<a href=\"../main/list_devices/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' style='width:16'/></a>";
+                $deactivate_pic = "<a href=\"delete_group/".intval($key->id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                 $activate_pic = '';
             } else {
                 $show_pic = '';
                 $deactivate_pic = '';
-                $activate_pic = "<a href=\"activate_group/".intval($key->location_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>";
+                $activate_pic = "<a href=\"activate_group/".intval($key->id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>";
             }
 
-            if ($key->location_id == '0') {
+            if ($key->id == '0') {
                 $delete_pic = '';
             }
 
             ?>
 			<tr>
 				<td align='center'><?php echo $key->total?></td>
-				<td><a href="../main/view_location/<?php echo $key->location_id?>"><?php echo htmlentities($key->location_name)?></a></td>
-				<td><?php echo htmlentities($key->location_comments)?></td>
-				<td><?php echo htmlentities($key->location_address)?></td>
-				<td><?php echo htmlentities($key->location_type)?></td>
+				<td><a href="../main/view_location/<?php echo $key->id?>"><?php echo htmlentities($key->name)?></a></td>
+				<td><?php echo htmlentities($key->comments)?></td>
+				<td><?php echo htmlentities($key->address)?></td>
+				<td><?php echo htmlentities($key->type)?></td>
 				<td align='center'><?php echo $activate_pic?></td>
 				<td align='center'><?php echo $deactivate_pic?></td>
 				<td align='center'><?php echo $show_pic?></td>

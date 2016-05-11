@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * @version 1.12.6
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('output')) {
@@ -52,6 +52,13 @@ if (! function_exists('output')) {
         error_reporting(E_ALL);
         $CI = & get_instance();
         $CI->response = output_convert($CI->response);
+        create_links();
+        // if we have errors set, make sure we remove the data object / array
+        if (count($CI->response->errors) > 0) {
+            unset($CI->response->data);
+        } else {
+            unset($CI->response->errors);
+        }
         switch ($CI->response->format) {
             case 'screen':
                 output_screen($CI->response);
@@ -120,32 +127,49 @@ if (! function_exists('output')) {
     function output_json()
     {
         $CI = & get_instance();
-        header('Content-Type: application/x-resource+json');
+        header('Content-Type: application/json');
+        header("Cache-Control: no-cache, no-store, must-revalidate");
+        header("Pragma: no-cache");
+        header("Expires: 0");
         header($CI->response->header);
+        if ($CI->response->debug) {
+            $CI->response->user = $CI->user;
+        } else {
+            unset($CI->response->internal);
+        }
         echo json_encode($CI->response);
     }
 
     function output_json_data()
     {
         $CI = & get_instance();
-        header('Content-Type: application/x-resource+json');
+        header('Content-Type: application/json');
+        header("Cache-Control: no-cache, no-store, must-revalidate");
+        header("Pragma: no-cache");
+        header("Expires: 0");
         header($CI->response->header);
-        echo json_encode($CI->response->data);
+        if (isset($CI->response->data)) {
+            echo json_encode($CI->response->data);
+        } else if (isset($CI->response->error)) {
+            echo json_encode($CI->response->error);
+        }
     }
 
     function output_screen()
     {
         $CI = & get_instance();
-        // if (isset($CI->response->data)) {
-        //     output_table();
-        // } else {
-        //     $CI->response->data = '';
-        // }
         header($CI->response->header);
         $CI->response->user = $CI->user;
-        echo "<pre>\n";
-        print_r($CI->response);
-        #$CI->load->view('v_template', $CI->response);
+        if (!empty($CI->response->errors)) {
+            $CI->response->include = 'v_error';
+        } else {
+            $CI->response->include = 'v_' . $CI->response->collection . '_' . $CI->response->action;
+        }
+        // if (!$CI->response->debug) {
+        //     unset($CI->response->internal);
+        // }
+
+        $CI->load->view('v_template', $CI->response);
     }
 
     function output_xml()
@@ -165,7 +189,7 @@ if (! function_exists('output')) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
                 foreach ($row as $key => $value) {
-                    if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level')) {
+                    if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
                         $row->$key = intval($value);
                     } elseif ((strrpos($key, '_id') === strlen($key)-3) or
                               (strrpos($key, '_count') === strlen($key)-6) or
@@ -180,15 +204,72 @@ if (! function_exists('output')) {
                         if ($row->$temp_name == $row->$key) {
                             unset($row->$temp_name);
                         }
-                    }
-                    elseif (isset($key) and $key == 'man_ip_address') {
+                    } elseif (isset($key) and ($key == 'man_ip_address' or $key == 'system.man_ip_address')) {
+                        $row->ip_padded = $value;
                         $row->ip = ip_address_from_db($value);
                         #unset($row->man_ip_address);
+                        if (empty($row->ip_padded)) { $row->ip_padded = ''; }
+                        if (empty($row->ip)) { $row->ip = ''; }
                     }
                 }
             }
         }
         return($data);
+    }
+
+    function create_links()
+    {
+        $CI = & get_instance();
+        $offset = '';
+        if ($CI->response->total > 0 and $CI->response->collection != 'charts') {
+            # next link
+            if ($CI->response->total > $CI->response->filtered and ($CI->response->offset + $CI->response->limit) < ($CI->response->total + $CI->response->limit)) {
+                $offset = intval($CI->response->offset + $CI->response->limit);
+                if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
+                    $CI->response->links->next = str_replace('offset='.$CI->response->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
+                } else {
+                    if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
+                        $CI->response->links->next = $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
+                    } else {
+                        $CI->response->links->next = $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                    }
+                }
+            }
+
+            #prev link
+            if ($CI->response->offset > 0) {
+                $offset = intval($CI->response->offset - $CI->response->limit);
+                if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
+                    $CI->response->links->prev = str_replace('offset='.$CI->response->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
+                } else {
+                    if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
+                        $CI->response->links->prev = $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
+                    } else {
+                        $CI->response->links->prev = $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                    }
+                }
+            }
+
+            # first link
+            $offset = 0;
+            if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
+                $CI->response->links->first = str_replace('offset='.$CI->response->offset, '', $_SERVER["REQUEST_URI"]);
+            } else {
+                $CI->response->links->first = $_SERVER["REQUEST_URI"];
+            }
+
+            # last link
+            $offset = intval($CI->response->total) - intval($CI->response->limit);
+            if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
+                $CI->response->links->last = str_replace('offset='.$CI->response->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
+            } else {
+                if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
+                    $CI->response->links->last = $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
+                } else {
+                    $CI->response->links->last = $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                }
+            }
+        }
     }
 
     function output_table()

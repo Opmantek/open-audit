@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -43,18 +43,18 @@ class M_userlogin extends CI_Model
     {
         $this->load->library('session');
 
-        $sql = "SELECT user_id, user_name, user_email, user_full_name, user_lang, user_theme, user_admin, user_password, user_sam FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
+        $sql = "SELECT * FROM oa_user WHERE oa_user.name = ? LIMIT 1";
         $sql = '/* M_userlogin::validate_user */ ' . $sql;
         $data = array("$username");
         $query = $this->db->query($sql, $data);
         if ($query->num_rows() > 0) {
             $row = $query->row();
-            $user_id = $row->user_id;
-            $hash_password = $row->user_password;
-            $user_data = array(    'username' => $row->user_name, 'logged_in' => true, 'user_id' => $row->user_id,
-                            'user_full_name' => $row->user_full_name, 'user_lang' => $row->user_lang,
-                            'user_theme' => $row->user_theme, 'user_admin' => $row->user_admin,
-                            'user_debug' => 'n', 'user_sam' => $row->user_sam, );
+            $user_id = $row->id;
+            $hash_password = $row->password;
+            $user_data = array(    'username' => $row->name, 'logged_in' => true, 'user_id' => $row->id,
+                            'user_full_name' => $row->full_name, 'user_lang' => $row->lang,
+                            'user_theme' => $row->theme, 'user_admin' => $row->admin,
+                            'user_debug' => 'n', 'user_sam' => $row->sam, );
 
             # make sure to validate if we have any older style MD5 passwords
             if ($hash_password == md5($password)) {
@@ -65,7 +65,7 @@ class M_userlogin extends CI_Model
                 $hash = hash("sha256", $salt.$password);
                 # store the salt and hash in the same string, so only 1 DB column is needed
                 $encrypted_password = $salt.$hash;
-                $sql = "/* m_userlogin::validate_user */ UPDATE oa_user SET user_password = ? WHERE user_id = ?";
+                $sql = "/* m_userlogin::validate_user */ UPDATE oa_user SET password = ? WHERE id = ?";
                 $data = array("$encrypted_password", "$user_id");
                 $query = $this->db->query($sql, $data);
 
@@ -93,11 +93,11 @@ class M_userlogin extends CI_Model
                 } else {
                     # this is a 1.0 (or above) version of the database
                     # only log user on to system if user is 'active'
-                    $sql = "/* m_userlogin::validate_user */ SELECT user_active FROM oa_user WHERE user_id = ?";
+                    $sql = "/* m_userlogin::validate_user */ SELECT active FROM oa_user WHERE id = ?";
                     $data = array($user_id);
                     $query = $this->db->query($sql, $data);
                     $row = $query->row();
-                    if ($row->user_active == 'y') {
+                    if ($row->active == 'y') {
                         # we have an active user
                     } else {
                         # remove the $data array
@@ -119,21 +119,21 @@ class M_userlogin extends CI_Model
 
     public function get_user_details($username)
     {
-        $sql = "SELECT user_id, user_name, user_email, user_full_name, user_lang, user_theme, user_admin, user_password, user_sam, user_active FROM oa_user WHERE oa_user.user_name = ? LIMIT 1";
+        $sql = "SELECT * FROM oa_user WHERE oa_user.name = ? LIMIT 1";
         $sql = '/* M_userlogin::get_user_details */ ' . $sql;
         $data = array($username);
         $query = $this->db->query($sql, $data);
         if ($query->num_rows() > 0) {
             $row = $query->row();
-            $data = array('username' => $row->user_name,
+            $data = array('username' => $row->name,
                 'logged_in' => true,
-                'user_id' => $row->user_id,
-                'user_full_name' => $row->user_full_name,
-                'user_lang' => $row->user_lang,
-                'user_theme' => $row->user_theme,
-                'user_admin' => $row->user_admin,
+                'user_id' => $row->id,
+                'user_full_name' => $row->full_name,
+                'user_lang' => $row->lang,
+                'user_theme' => $row->theme,
+                'user_admin' => $row->admin,
                 'user_debug' => 'n',
-                'user_active' => $row->user_active, );
+                'user_active' => $row->active, );
         }
 
         return $data;

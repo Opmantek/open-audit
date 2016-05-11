@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -256,7 +256,7 @@ function print_something($string)
 	}
 </style>
 
-<?php if ($this->user->user_admin == 'y') {
+<?php if ($this->user->admin == 'y') {
     echo "<script type=\"text/javascript\">\n";
     echo "function createRequestObject() \n";
     echo "{\n";
@@ -293,13 +293,20 @@ function print_something($string)
 	</div> <!-- end of topsection -->
 	<div id="content_container" style="float: left; width: 100%">
 	<?php
+    if (isset($this->response)) {
+        $total = $this->response->filtered . ' of ' . $this->response->total . ' results';
+        $query = '';
+    }
     if (isset($query) and $include != 'v_add_user') {
-        echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>".__($heading)."</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>".count($query)." ".__("results")."</h2></div>\n\t\t</div>\n";
+        if (empty($total)) {
+            $total = count($query) . ' ' . __("results");
+        }
+        echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>".__($heading)."</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>".$total."</h2></div>\n\t\t</div>\n";
     } else {
         echo "<h2>".htmlentities(__($heading))."</h2>\n";
     }
-    #$this->load->view("theme-" . $this->user->user_theme . "/" . $include);
-    include($include.'.php')
+    #$this->load->view("theme-" . $this->user->theme . "/" . $include);
+    include($include.'.php');
     ?>
 	</div><!-- end of content_container -->
 </div>

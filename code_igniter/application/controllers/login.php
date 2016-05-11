@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -93,7 +93,10 @@ class login extends CI_Controller
         $data['oae_message'] = '';
         $license = '';
 
-        $this->load->model('m_oa_config');
+        foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
+            $this->m_oa_config->update_blessed($subnet, 0);
+        }
+
         $oae_url = $this->m_oa_config->get_config_item('oae_url');
 
         if ($oae_url > '') {
@@ -350,54 +353,50 @@ class login extends CI_Controller
             $bind = ldap_bind($ad, $ad_user, $ad_secret);
             if ($bind) {
                 $data = $this->m_userlogin->get_user_details($username);
-                if (isset($data['user_active']) and $data['user_active'] == 'y') {
+                if (!empty($data['user_active']) and $data['user_active'] == 'y') {
+                    // SUCCESS
+                    // valid user, authenticated by AD and authorised by OA
                     $this->session->set_userdata($data);
-                    // if (isset($data['user_admin']) and $data['user_admin'] == 'y') {
-                    //     $is_admin = 'true';
-                    // } else {
-                    //     $is_admin = 'false';
-                    // }
-                    // header('Content-Type: application/json');
-                    // header('HTTP/1.1 200 OK');
-                    // echo '{"valid": true, "admin": ' . $is_admin . '}';
-                    // exit();
-                    if (isset($data['user_admin']) and $data['user_admin'] == 'y') {
+                    if ($data['user_admin'] == 'y') {
                         header('Content-Type: application/json');
                         header('HTTP/1.1 200 OK');
-                        echo '{"valid": true, "admin": ' . $is_admin . '}';
+                        echo '{"valid": true, "admin": true}';
+                        exit();
+                    } else {
+                        header('Content-Type: application/json');
+                        header('HTTP/1.1 403 Not Authorised');
+                        echo '{"valid": false, "admin": false}';
                         exit();
                     }
                 } else {
-                    // the user does not have their 'user_active' flag set to 'y'.
-                    // don't log them in, redirect the to the login page.
-                    #header('Content-Type: application/json');
-                    #header('HTTP/1.1 401 Not Authorised');
-                    #echo '{"valid": false, "role": ""}';
+                    // FAIL
+                    // the user was authenticated by AD but 
+                    // does not have their OA 'user_active' flag set to 'y'.
+                    header('Content-Type: application/json');
+                    header('HTTP/1.1 403 Not Authorised');
+                    echo '{"valid": false, "admin": false}';
                 }
             } else {
-                // failed Active Dirctory validation
+                // not authorised by Active Dirctory
                 // fall through this function and attempt to validate using local credentials
             }
         }
         // attempt use the internal database to validate user
         if ($data = $this->m_userlogin->validate_user($username, $password)) {
-            if (isset($data['user_admin']) and $data['user_admin'] == 'y') {
-                $is_admin = 'true';
-            } else {
-                $is_admin = 'false';
-            }
-            #if (isset($data) and $data != 'fail') {
-            if (isset($data) and $data != 'fail' and $is_admin == 'true') {
+            if (isset($data) and $data != 'fail' and $data['user_admin'] == 'y') {
+                // SUCCESS
                 $this->session->set_userdata($data);
                 header('Content-Type: application/json');
                 header('HTTP/1.1 200 OK');
-                echo '{"valid": true, "admin": ' . $is_admin . '}';
+                echo '{"valid": true, "admin": true}';
             } else {
+                // FAIL
                 header('Content-Type: application/json');
                 header('HTTP/1.1 403 Not Authorised');
                 echo '{"valid": false, "admin": false}';
             }
         } else {
+            // FAIL
             header('Content-Type: application/json');
             header('HTTP/1.1 403 Not Authorised');
             echo '{"valid": false, "admin": false}';

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -726,8 +726,8 @@ class San extends CI_Controller
         }
         $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
         $temp_user = '';
-        if (isset($this->user->user_full_name)) {
-            $temp_user = $this->user->user_full_name;
+        if (isset($this->user->full_name)) {
+            $temp_user = $this->user->full_name;
         }
         $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
         unset($temp_user);

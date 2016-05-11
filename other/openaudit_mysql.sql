@@ -50,6 +50,28 @@ LOCK TABLES `bios` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `chart`
+--
+
+CREATE TABLE `chart` (
+  `when` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `what` varchar(50) NOT NULL DEFAULT '',
+  `org_id` int unsigned NOT NULL DEFAULT 0,
+  `count` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`when`,`what`,`org_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `chart`
+--
+
+LOCK TABLES `chart` WRITE;
+/*!40000 ALTER TABLE `chart` DISABLE KEYS */;
+/*!40000 ALTER TABLE `chart` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `disk`
 --
 
@@ -515,7 +537,7 @@ CREATE TABLE `edit_log` (
   KEY `user_id` (`user_id`),
   KEY `edit_log_system_id` (`system_id`),
   CONSTRAINT `edit_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `edit_log_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`)
+  CONSTRAINT `edit_log_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -552,7 +574,7 @@ CREATE TABLE `oa_change` (
   `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`change_id`),
   KEY `oa_change_user_id` (`user_id`),
-  CONSTRAINT `oa_change_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE
+  CONSTRAINT `oa_change_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -564,6 +586,32 @@ LOCK TABLES `oa_change` WRITE;
 /*!40000 ALTER TABLE `oa_change` DISABLE KEYS */;
 INSERT INTO `oa_change` VALUES (1,'Default Change.','','0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','',1,'0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `oa_change` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `networks`
+--
+
+DROP TABLE IF EXISTS `networks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `networks` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `networks`
+--
+
+LOCK TABLES `networks` WRITE;
+/*!40000 ALTER TABLE `networks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `networks` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -592,6 +640,7 @@ LOCK TABLES `oa_config` WRITE;
 /*!40000 ALTER TABLE `oa_config` DISABLE KEYS */;
 INSERT INTO `oa_config` VALUES ('ad_domain','','y','0000-00-00 00:00:00',0,'The domain name against which your users will validate to log on to Open-AudIT. EG - open-audit.org');
 INSERT INTO `oa_config` VALUES ('ad_server','','y','0000-00-00 00:00:00',0,'The IP Address of the domain controller your users will validate to log to Open-AudIT. EG - 192.168.0.1');
+INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y','0000-00-00 00:00:00',0,'Should we only accept data from the blessed subnets list.');
 INSERT INTO `oa_config` VALUES ('default_ipmi_password','','y','0000-00-00 00:00:00',0,'The default password used by Open-AudIT to audit devices via IPMI.');
 INSERT INTO `oa_config` VALUES ('default_ipmi_username','','y','0000-00-00 00:00:00',0,'The default username used by Open-AudIT to audit devices via IPMI.');
 INSERT INTO `oa_config` VALUES ('default_network_address','','y','0000-00-00 00:00:00',0,'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
@@ -611,10 +660,10 @@ INSERT INTO `oa_config` VALUES ('discovery_name_match','y','y','0000-00-00 00:00
 INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00',0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
 INSERT INTO `oa_config` VALUES ('discovery_update_groups','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT update the device groups after discovering a device.');
 INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `oa_config` VALUES ('display_version','1.12.4','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
+INSERT INTO `oa_config` VALUES ('display_version','1.12.6','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
 INSERT INTO `oa_config` VALUES ('distinct_groups','y','y','0000-00-00 00:00:00',0,'Display Groups on the homepage, separated into the type of each Group.');
 INSERT INTO `oa_config` VALUES ('download_reports','download','y','0000-00-00 00:00:00',0,'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
-INSERT INTO `oa_config` VALUES ('internal_version','20160401','n','0000-00-00 00:00:00',0,'The internal numerical version.');
+INSERT INTO `oa_config` VALUES ('internal_version','20160409','n','0000-00-00 00:00:00',0,'The internal numerical version.');
 INSERT INTO `oa_config` VALUES ('logo','logo-banner-oac-oae','y','0000-00-00 00:00:00',0,'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `oa_config` VALUES ('log_level','5','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `oa_config` VALUES ('log_style','syslog','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
@@ -689,7 +738,7 @@ CREATE TABLE `oa_group` (
   `group_dynamic_select` text NOT NULL,
   `group_parent` int(10) NOT NULL DEFAULT '1',
   `group_description` varchar(255) NOT NULL DEFAULT '',
-  `group_category` enum('application','device','general','location','network','org','os','owner') NOT NULL DEFAULT 'general',
+  `group_category` enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general',
   `group_display_sql` text NOT NULL,
   `group_icon` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`group_id`),
@@ -785,7 +834,7 @@ CREATE TABLE `oa_group_user` (
   KEY `group_id` (`group_id`),
   KEY `user_id_index` (`user_id`),
   CONSTRAINT `oa_group_user_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_group_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE
+  CONSTRAINT `oa_group_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -806,31 +855,31 @@ DROP TABLE IF EXISTS `oa_location`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_location` (
-  `location_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `location_name` varchar(100) NOT NULL DEFAULT '',
-  `location_type` varchar(100) NOT NULL DEFAULT '',
-  `location_room` varchar(100) NOT NULL DEFAULT '',
-  `location_suite` varchar(100) NOT NULL DEFAULT '',
-  `location_level` varchar(100) NOT NULL DEFAULT '',
-  `location_address` varchar(100) NOT NULL DEFAULT '',
-  `location_suburb` varchar(100) NOT NULL DEFAULT '',
-  `location_city` varchar(100) NOT NULL DEFAULT '',
-  `location_district` varchar(100) NOT NULL DEFAULT '',
-  `location_region` varchar(100) NOT NULL DEFAULT '',
-  `location_area` varchar(100) NOT NULL DEFAULT '',
-  `location_state` varchar(100) NOT NULL DEFAULT '',
-  `location_postcode` varchar(10) NOT NULL DEFAULT '',
-  `location_country` varchar(100) NOT NULL DEFAULT '',
-  `location_tags` varchar(250) NOT NULL DEFAULT '',
-  `location_phone` varchar(20) NOT NULL DEFAULT '',
-  `location_picture` varchar(100) NOT NULL DEFAULT '',
-  `location_latitude` float(10,6) NOT NULL,
-  `location_longitude` float(10,6) NOT NULL,
-  `location_geo` varchar(200) NOT NULL DEFAULT '',
-  `location_comments` varchar(100) NOT NULL DEFAULT '',
-  `location_icon` varchar(100) NOT NULL DEFAULT '',
-  `location_group_id` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`location_id`)
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `room` varchar(100) NOT NULL DEFAULT '',
+  `suite` varchar(100) NOT NULL DEFAULT '',
+  `level` varchar(100) NOT NULL DEFAULT '',
+  `address` varchar(100) NOT NULL DEFAULT '',
+  `suburb` varchar(100) NOT NULL DEFAULT '',
+  `city` varchar(100) NOT NULL DEFAULT '',
+  `district` varchar(100) NOT NULL DEFAULT '',
+  `region` varchar(100) NOT NULL DEFAULT '',
+  `area` varchar(100) NOT NULL DEFAULT '',
+  `state` varchar(100) NOT NULL DEFAULT '',
+  `postcode` varchar(10) NOT NULL DEFAULT '',
+  `country` varchar(100) NOT NULL DEFAULT '',
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `phone` varchar(20) NOT NULL DEFAULT '',
+  `picture` varchar(100) NOT NULL DEFAULT '',
+  `latitude` float(10,6) NOT NULL,
+  `longitude` float(10,6) NOT NULL,
+  `geo` varchar(200) NOT NULL DEFAULT '',
+  `comments` varchar(100) NOT NULL DEFAULT '',
+  `icon` varchar(100) NOT NULL DEFAULT '',
+  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -852,14 +901,12 @@ DROP TABLE IF EXISTS `oa_org`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_org` (
-  `org_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_name` varchar(100) NOT NULL DEFAULT '',
-  `org_parent_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `org_group_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `contact_id` varchar(100) NOT NULL DEFAULT '',
-  `org_picture` varchar(100) NOT NULL DEFAULT '',
-  `org_comments` varchar(100) NOT NULL DEFAULT '',
-  PRIMARY KEY (`org_id`)
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `parent_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `comments` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -869,7 +916,7 @@ CREATE TABLE `oa_org` (
 
 LOCK TABLES `oa_org` WRITE;
 /*!40000 ALTER TABLE `oa_org` DISABLE KEYS */;
-INSERT INTO `oa_org` VALUES (0,'Default Organisation',0,0,'','','');
+INSERT INTO `oa_org` VALUES (0,'Default Organisation',0,0,'');
 /*!40000 ALTER TABLE `oa_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -970,21 +1017,20 @@ DROP TABLE IF EXISTS `oa_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_user` (
-  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(100) NOT NULL,
-  `user_password` varchar(250) NOT NULL,
-  `user_full_name` varchar(100) NOT NULL,
-  `user_email` varchar(100) NOT NULL,
-  `user_lang` varchar(100) NOT NULL,
-  `user_display_number` smallint(6) NOT NULL DEFAULT '10',
-  `user_theme` varchar(100) NOT NULL,
-  `user_admin` varchar(1) NOT NULL,
-  `user_active` varchar(1) NOT NULL DEFAULT 'y',
-  `user_change` int(10) NOT NULL DEFAULT '1',
-  `user_sam` int(10) NOT NULL DEFAULT '1',
-  `permissions` text NOT NULL default '',
-  PRIMARY KEY (`user_id`),
-  KEY `user_id_index` (`user_id`)
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `password` varchar(250) NOT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `lang` varchar(100) NOT NULL,
+  `display_count` smallint(6) NOT NULL DEFAULT '10',
+  `theme` varchar(100) NOT NULL,
+  `admin` varchar(1) NOT NULL,
+  `active` varchar(1) NOT NULL DEFAULT 'y',
+  `sam` int(10) NOT NULL DEFAULT '1',
+  `permissions` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -994,9 +1040,9 @@ CREATE TABLE `oa_user` (
 
 LOCK TABLES `oa_user` WRITE;
 /*!40000 ALTER TABLE `oa_user` DISABLE KEYS */;
-INSERT INTO `oa_user` VALUES (1,'admin','0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','en',10,'tango','y','y',10,3,'');
-INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise','43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','en',10,'tango','y','y',1,1,'');
-INSERT INTO `oa_user` VALUES (3,'nmis','5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','en',10,'tango','y','y',10,3,'');
+INSERT INTO `oa_user` VALUES (1,'admin','0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','en',10,'tango','y','y',3,'');
+INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise','43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','en',10,'tango','y','y',1,'');
+INSERT INTO `oa_user` VALUES (3,'nmis','5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','en',10,'tango','y','y',3,'');
 /*!40000 ALTER TABLE `oa_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1016,8 +1062,8 @@ CREATE TABLE `oa_user_org` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `org_id` (`org_id`),
-  CONSTRAINT `oa_user_org_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_user_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `oa_org` (`org_id`) ON DELETE CASCADE
+  CONSTRAINT `oa_user_org_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `oa_user_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `oa_org` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1027,6 +1073,9 @@ CREATE TABLE `oa_user_org` (
 
 LOCK TABLES `oa_user_org` WRITE;
 /*!40000 ALTER TABLE `oa_user_org` DISABLE KEYS */;
+INSERT INTO `oa_user_org` VALUES (NULL, 1, 0, 10, '');
+INSERT INTO `oa_user_org` VALUES (NULL, 2, 0, 10, '');
+INSERT INTO `oa_user_org` VALUES (NULL, 3, 0, 10, '');
 /*!40000 ALTER TABLE `oa_user_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1340,7 +1389,6 @@ CREATE TABLE `service` (
   `user` varchar(100) NOT NULL DEFAULT '',
   `start_mode` varchar(200) NOT NULL DEFAULT '',
   `state` varchar(200) NOT NULL DEFAULT '',
-  `count` varchar(5) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `first_seen` (`first_seen`),
@@ -1552,8 +1600,7 @@ CREATE TABLE `sys_man_additional_fields` (
   `field_derived_sql` varchar(100) NOT NULL DEFAULT '',
   `field_placement` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`field_id`),
-  KEY `sys_man_additional_fields_group` (`group_id`),
-  CONSTRAINT `sys_man_additional_fields_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE
+  KEY `sys_man_additional_fields_group` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1616,7 +1663,7 @@ CREATE TABLE `sys_man_attachment` (
   KEY `system_id` (`system_id`),
   KEY `att_user_id` (`user_id`),
   CONSTRAINT `att_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `att_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`)
+  CONSTRAINT `att_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1735,7 +1782,7 @@ CREATE TABLE `sys_man_notes` (
   KEY `system_id` (`system_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `sys_man_notes_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE,
-  CONSTRAINT `sys_man_notes_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`user_id`)
+  CONSTRAINT `sys_man_notes_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2006,6 +2053,7 @@ CREATE TABLE `system` (
   `system_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_key` varchar(200) NOT NULL DEFAULT '',
   `uuid` varchar(100) NOT NULL DEFAULT '',
+  `dbus_identifier` varchar(255) NOT NULL DEFAULT '',
   `hostname` varchar(100) NOT NULL DEFAULT '',
   `domain` varchar(100) NOT NULL DEFAULT '',
   `fqdn` text NOT NULL,
@@ -2018,7 +2066,7 @@ CREATE TABLE `system` (
   `os_name` varchar(100) NOT NULL DEFAULT '',
   `os_version` varchar(50) NOT NULL DEFAULT '',
   `linked_sys` int(10) NOT NULL DEFAULT '0',
-  `serial` varchar(200) NOT NULL DEFAULT '',
+  `serial` varchar(250) NOT NULL DEFAULT '',
   `model` varchar(200) NOT NULL DEFAULT '',
   `manufacturer` varchar(50) NOT NULL DEFAULT '',
   `uptime` varchar(50) NOT NULL DEFAULT '',
@@ -2055,12 +2103,11 @@ CREATE TABLE `system` (
   `man_location_rack_size` int(10) unsigned NOT NULL DEFAULT '0',
   `man_location_latitude` float(10,6) NOT NULL,
   `man_location_longitude` float(10,6) NOT NULL,
-  `man_serial` varchar(200) NOT NULL DEFAULT '',
+  `man_serial` varchar(250) NOT NULL DEFAULT '',
   `man_asset_number` varchar(50) NOT NULL DEFAULT '',
   `man_model` varchar(50) NOT NULL DEFAULT '',
   `man_manufacturer` varchar(50) NOT NULL DEFAULT '',
   `man_form_factor` varchar(50) NOT NULL DEFAULT '',
-  `man_icon` varchar(50) NOT NULL DEFAULT '',
   `man_vm_server_name` varchar(150) NOT NULL DEFAULT '',
   `man_vm_system_id` varchar(150) NOT NULL DEFAULT '',
   `man_vm_group` varchar(150) NOT NULL DEFAULT '',
@@ -2287,6 +2334,8 @@ LOCK TABLES `windows` WRITE;
 /*!40000 ALTER TABLE `windows` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+CREATE FUNCTION cidr_to_mask (cidr INT(2)) RETURNS CHAR(15) DETERMINISTIC RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10));
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

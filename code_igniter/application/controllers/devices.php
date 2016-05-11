@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -55,9 +55,7 @@ class devices extends MY_Controller
         $this->load->helper('error');
         $this->load->helper('input');
         $this->load->model('m_devices');
-
-        $this->error = new stdClass();
-        $this->error->controller = '';
+        $this->load->model('m_orgs');
 
         $this->response = new stdClass();
         inputRead();
@@ -68,90 +66,141 @@ class devices extends MY_Controller
             $this->response->heading = 'Devices';
             $this->response->include = 'v_devices';
         }
-
-        // our initial response codes
-        // these will change if an error occurs
-        $this->response->header = 'HTTP/1.1 200 OK';
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->response->header = 'HTTP/1.1 201 Created';
-        }
-
         $this->output->url = $this->config->item('oa_web_index');
 
         if ($this->response->id != '') {
-            $access_level = $this->m_devices->getUserDeviceAccess($this->response->id, $this->user->user_id);
-            if ($access_level == 0) {
-                echo "Insufficient device access.";
+            $access_level = $this->m_devices->get_user_device_org_access();
+            if ($access_level < 1) {
+                // we should determine if the device does actually exist or not
+                // then we can throw the correct status code of 404 or 403
+                $sql = "SELECT system_id FROM system WHERE system_id = ?";
+                $data = array($this->response->id);
+                $query = $this->db->query($sql, $data);
+                $result = $query->result();
+                if (count($result) == 0) {
+                    $this->response->errors[] = getError('ERR-0007');
+                } else {
+                    $this->response->errors[] = getError('ERR-0008');
+                }
+                $this->response->header = $this->response->errors[0]->status;
+                output($this->response);
                 exit();
             }
         }
+
+        // $this->response->format = 'json';
+        // $this->response->debug = true;
+        // output($this->response);
+        // exit();
+
     }
 
     public function index()
     {
     }
 
-    // because we're using JSON API style URLs and not CodeIgniter style
-    // JSON style: index.php/{resource}/{id}/{sub_resource}/{sub_resource_id}?{options}
-    // CI style: index.php/controller/function/{option name #1}/{option value #1}
-    // and because we also need to take the request method (GET/POST/etc) into account (which CodeIgniter does not do)
-    // we need to make our own routing table
     public function _remap($method)
     {
-        // the details of this specific device
-        if ($this->response->id != '' and $this->response->subresource != '') {
-            $this->readDeviceSubresource();
-            exit();
+        $action = $this->response->action;
+        if ($action != '') {
+            $this->$action();
+        } else {
+            $this->collection();
         }
-        if ($this->response->subresource != '') {
-            $this->readDevicesSubresource();
-            exit();
-        }
-        // the details of this specific device
-        if ($this->response->id != '') {
-            $this->readDevice($this->response->id);
-            exit();
-        }
-        // the details of this specific group
-        if ($this->response->action == 'read') {
-            $this->readDevices();
-            exit();
-        }
+        exit();
     }
 
-    private function readDevices()
+    private function collection()
     {
-        $this->response->data = $this->m_devices->readDevices($this->response->id);
+        if ($this->response->sub_resource != '' and $this->response->sub_resource != 'report') {
+            $this->response->data = $this->m_devices->read_devices_sub_resource();
+        } else if ($this->response->sub_resource != '' and $this->response->sub_resource == 'report') {
+            $this->response->data = $this->m_devices->report();
+        } else {
+            $this->response->data = $this->m_devices->read_devices();
+        }
         $this->response->filtered = count($this->response->data);
-        $this->response->header = 'HTTP/1.1 200 OK';
+
         output($this->response);
     }
 
-    private function readDevice()
+    private function read()
     {
-        $this->response->data = $this->m_devices->readDevice($this->response->id);
-        $this->response->total = count($this->response->data);
-        unset($this->response->filtered);
-        unset($this->response->limit);
-        unset($this->response->offset);
-        $this->response->include = 'v_display_device';
-        $this->response->header = 'HTTP/1.1 200 OK';
+        if ($this->response->sub_resource != '') {
+            $this->response->data = $this->m_devices->read_device_sub_resource();
+        } else {
+            $this->response->data = $this->m_devices->read_device();
+        }
+        $this->response->filtered = count($this->response->data);
         output($this->response);
     }
 
-    private function readDeviceSubresource()
+
+
+
+
+
+
+    private function create_form()
     {
-        $this->response->data = $this->m_devices->readDeviceSubresource($this->response->id, $this->response->subresource);
-        $this->response->filtered = count($this->response->data);
-        $this->response->header = 'HTTP/1.1 200 OK';
+        #$this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
         output($this->response);
     }
 
-    private function readDevicesSubresource()
+    private function execute()
     {
-        $this->response->data = $this->m_devices->readDevicesSubresource();
-        $this->response->filtered = count($this->response->data);
-        $this->response->header = 'HTTP/1.1 200 OK';
+        #$this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        output($this->response);
+    }
+
+    private function create()
+    {
+        #$this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        output($this->response);
+    }
+
+    private function update()
+    {
+        #$this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        $this->m_devices->update();
+        output($this->response);
+    }
+
+    private function update_form()
+    {
+        #$this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        output($this->response);
+    }
+
+    private function bulk_update_form()
+    {
+        #$this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
+        $this->response->id = '';
+        $temp_ids = array();
+        foreach ($_POST['ids'] as $temp) {
+            $temp_ids[] = $temp;
+        }
+        $this->response->id = implode(',', $temp_ids);
+        output($this->response);
+    }
+
+    private function delete()
+    {
+        #$this->error->controller .= '::'.__FUNCTION__;
+        $this->response->format = 'json';
+        $this->response->debug = true;
         output($this->response);
     }
 }

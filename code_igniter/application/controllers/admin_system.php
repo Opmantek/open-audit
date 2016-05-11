@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -46,61 +46,6 @@ class Admin_system extends MY_Controller
     public function index()
     {
         redirect('/');
-    }
-
-    public function add_system_def()
-    {
-        if (!isset($_POST['submit'])) {
-            $this->load->model("m_oa_admin_database");
-            $this->data['fields'] = $this->m_oa_admin_database->get_fields('system');
-            $this->data['custom_fields'] = $this->m_oa_admin_database->export_table('sys_man_additional_fields');
-            $result = array();
-            foreach ($this->data['fields'] as $field) {
-                if ((mb_strpos($field, 'man_') !== false) and
-                    (mb_strpos($field, 'man_type') === false)) {
-                    $result[] = $field;
-                }
-            }
-            sort($result);
-            $this->data['fields'] = $result;
-            $this->data['heading'] = 'Add System Definition';
-            $this->data['include'] = 'v_add_system_def';
-            $this->load->view('v_template', $this->data);
-        } else {
-            # process the form
-            $this->data['error_message'] = '';
-            echo "<pre>\n";
-            print_r($_POST);
-            echo "</pre>\n";
-            $select_string = '';
-            foreach ($_POST as $key => $value) {
-                if (($value == 'on') and (strpos($key, "man_") !== false)) {
-                    $select_string .= 'system.'.$key.', ';
-                }
-            }
-            $select_string = substr($select_string, 0, strlen($select_string)-2);
-
-            echo "NAME: ".$_POST['name']."<br />\n";
-            echo "TYPE: ".$_POST['man_type']."<br />\n";
-            echo "SELECT: ".$select_string."<br />\n";
-
-            $select_custom = '';
-            foreach ($_POST as $key => $value) {
-                if (strpos($key, "custom_new_") !== false) {
-                    echo "CUSTOM: ".$key." - ".$value."<br />\n";
-                    $select_custom .= 'sys_man_additional_fields.'.$value.', ';
-                }
-            }
-            foreach ($_POST as $key => $value) {
-                if (($value == 'on') and (strpos($key, "custom_exist_") !== false)) {
-                    echo "Custom Existing: ".$key." - ".$value."<br />\n";
-                    $new_key = str_replace("custom_exist_", "", $key);
-                    $select_custom .= 'sys_man_additional_fields.'.$new_key.', ';
-                }
-            }
-            $select_custom = substr($select_custom, 0, strlen($select_custom)-2);
-            echo "SELECT CUSTOM: ".$select_custom."<br />\n";
-        }
     }
 
     public function system_add_new_credentials()
@@ -224,7 +169,7 @@ class Admin_system extends MY_Controller
 		var http = createRequestObject();
 
 		function update(name) {
-			http.open('get', '".$base_url."index.php/ajax/update_system_man/".$system_id."/man_icon/'+name);
+			http.open('get', '".$base_url."index.php/ajax/update_system_man/".$system_id."/icon/'+name);
 			http.onreadystatechange = receive_update;
 			http.send(null);
 		}
@@ -334,7 +279,7 @@ class Admin_system extends MY_Controller
         $details->last_seen_by = 'snmp';
         $details->timestamp = date('Y-m-d G:i:s');
         $details->last_seen = $details->timestamp;
-        $details->last_user = $this->user->user_full_name;
+        $details->last_user = $this->user->full_name;
         $details->audits_ip = '127.0.0.1';
         $details = dns_validate($details, 'y');
 
@@ -345,8 +290,8 @@ class Admin_system extends MY_Controller
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
             $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
             $this->m_system->update_system($details);
-            if (isset($this->user->user_full_name)) {
-                $temp_user = $this->user->user_full_name;
+            if (isset($this->user->full_name)) {
+                $temp_user = $this->user->full_name;
             } else {
                 $temp_user = '';
             }
@@ -449,7 +394,7 @@ class Admin_system extends MY_Controller
             }
             $details->last_seen_by = 'web form';
             $details->last_seen = date('Y-m-d G:i:s');
-            $details->last_user = $this->user->user_full_name;
+            $details->last_user = $this->user->full_name;
 
             if (($details->man_type == 'access token' or
                 $details->man_type == 'cell phone' or
@@ -506,20 +451,17 @@ class Admin_system extends MY_Controller
             }
             $details->timestamp = date('Y-m-d H:i:s');
             $details->first_timestamp = $details->timestamp;
-            $details->icon = $details->man_icon;
             $details->last_seen_by = 'web form';
-            if ($details->icon == '') {
-                $details->icon = $details->man_type;
-            }
 
             unset($details->AddSystem);
 
             if ($this->data['error'] == '') {
                 # add the system
                 $details->system_id = $this->m_system->insert_system($details);
+                $this->m_system->reset_icons($details->system_id);
                 $this->m_oa_group->update_system_groups($details);
-                if (isset($this->user->user_full_name)) {
-                    $temp_user = $this->user->user_full_name;
+                if (isset($this->user->full_name)) {
+                    $temp_user = $this->user->full_name;
                 } else {
                     $temp_user = '';
                 }
@@ -642,7 +584,7 @@ class Admin_system extends MY_Controller
                     $details = (object) $details;
                     $details->last_seen_by = "spreadsheet";
                     $details->last_seen = $timestamp;
-                    $details->last_user = $this->user->user_full_name;
+                    $details->last_user = $this->user->full_name;
                     $details->timestamp = $timestamp;
                     $error = '';
 
@@ -748,8 +690,8 @@ class Admin_system extends MY_Controller
                             $details->type = $this->m_system->get_system_type($details->system_id);
                         }
 
-                        if (isset($this->user->user_full_name)) {
-                            $temp_user = $this->user->user_full_name;
+                        if (isset($this->user->full_name)) {
+                            $temp_user = $this->user->full_name;
                         } else {
                             $temp_user = '';
                         }

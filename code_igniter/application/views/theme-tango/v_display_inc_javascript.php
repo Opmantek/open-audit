@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -392,7 +392,7 @@ function display_location() {
 	<?php
     $location_form = "<option value=' '>".__("Choose a Location")."<\/option>";
     foreach ($locations as $location) {
-        $location_form .= "<option value='".intval($location->location_id)."'>".htmlentities($location->location_name)."<\/option>";
+        $location_form .= "<option value='".intval($location->id)."'>".htmlentities($location->name)."<\/option>";
     }
     if ($location_id != "") {
         $location_form = "<select id='man_location_id' onchange='send_location();'>".$location_form."<\/select>";
@@ -434,7 +434,7 @@ function display_org() {
 	<?php
     $org_form = "<option value=' '>".__("Choose an Org")."<\/option>";
     foreach ($orgs as $org) {
-        $org_form .= "<option value='".intval($org->org_id)."'>".htmlentities($org->org_name)."<\/option>";
+        $org_form .= "<option value='".intval($org->id)."'>".htmlentities($org->name)."<\/option>";
     }
     if ($org_id != "") {
         $org_form = "<select id='man_org_id' onchange='send_org();'>".$org_form."<\/select>";

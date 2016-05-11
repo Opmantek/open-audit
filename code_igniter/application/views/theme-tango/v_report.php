@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -35,7 +35,7 @@
 $sortcolumn = 3;
 # check to see if user_access_level for this group is > 7
 $manual_edit = 'n';
-if (isset($this->user->user_access_level) and $this->user->user_access_level > '9') {
+if (isset($this->user->access_level) and $this->user->access_level > '9') {
     # check to see if "system_id" is present in report
         if (isset($query[0]->system_id)) {
             # enable group manual editing column
@@ -160,7 +160,7 @@ foreach ($query as $row) {
                 break;
 
             case "ip_address":
-                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities($row->man_ip_address)."&nbsp;</span>".htmlentities(ip_address_from_db($row->man_ip_address))."</td>\n";
+                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', $row->man_ip_address))."&nbsp;</span>".htmlentities(ip_address_from_db($row->man_ip_address))."</td>\n";
                 break;
 
             case "multi":
@@ -190,7 +190,7 @@ foreach ($query as $row) {
                 }
                 $href = str_replace(" ", "%20", $href);
                 if ($href > '') {
-                    echo "\t\t\t<td style=\"text-align: $column_align;\"><a href=\"".$href."\"><img src=\"".$image."\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
+                    echo "\t\t\t<td style=\"text-align: $column_align;\"><a target=\"_blank\" href=\"".$href."\"><img src=\"".$image."\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
                 } else {
                     echo "\t\t\t<td style=\"text-align: $column_align;\"></td>\n";
                 }

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -98,15 +98,23 @@ class MY_Controller extends CI_Controller
         $this->load->helper('log');
         $this->load->helper('network');
         $this->data['apppath'] = APPPATH;
-        if (!isset($this->user->user_theme)) {
-            $this->user->user_theme = 'tango';
+        if (!isset($this->user->theme)) {
+            $this->user->theme = 'tango';
         }
-        $this->data['image_path'] = base_url().'theme-'.$this->user->user_theme.'/'.$this->user->user_theme.'-images/';
+        $this->data['image_path'] = base_url().'theme-'.$this->user->theme.'/'.$this->user->theme.'-images/';
         if (strpos($_SERVER['HTTP_ACCEPT'], 'json') === false) {
             $this->load->model('m_oa_report');
             $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
         }
         set_time_limit(600);
+        $this->user->orgs = $this->m_oa_user->get_orgs($this->user->id);
+        $temp = array();
+        foreach ($this->user->orgs as $key => $value) {
+            $temp[] = $key;
+        }
+        $this->user->org_list = implode(',', $temp);
+        unset($temp);
+
     }
 
     /**
@@ -259,6 +267,9 @@ class MY_Controller extends CI_Controller
         // $query = $this->data['query'];
         $query = $data['query'];
         $json_items = 'items';
+        if (empty($this->data['heading'])) {
+            $this->data['heading'] = '';
+        }
         if ((string) $this->data['heading'] === 'Software Discovered 30') {
             $json_items = 'Daily Discovered Software';
         }
@@ -691,7 +702,7 @@ class MY_Controller extends CI_Controller
         echo "\t\t<title>Open-AudIT</title>\n";
         echo "\t\t<link>".current_url()."</link>\n";
         echo "\t\t<description>".$this->data['heading']."</description>\n";
-        echo "\t\t<language>".$this->user->user_lang."</language>\n";
+        echo "\t\t<language>".$this->user->lang."</language>\n";
 
         foreach ($query as $details) {
             $title = '';

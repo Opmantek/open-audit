@@ -8,13 +8,13 @@
 		<group_category>general</group_category>
 		<group_icon>contact</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their serial or man_serial attribute set to ''.</group_description>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_os_family, system.man_os_name, system.man_type, system.man_icon, system.man_manufacturer FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_os_family, system.man_os_name, system.man_type, system.icon, system.man_manufacturer FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
 			<column_order>0</column_order>
 			<column_name>Icon</column_name>
-			<column_variable>man_icon</column_variable>
+			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
 			<column_secondary>man_os_family</column_secondary>
@@ -54,7 +54,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Type</column_name>
-			<column_variable>man_icon</column_variable>
+			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
 			<column_secondary>man_os_family</column_secondary>

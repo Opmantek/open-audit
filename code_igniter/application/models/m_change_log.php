@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -127,7 +127,7 @@ class M_change_log extends MY_Model
     {
         $id = intval($id);
         if ($id > 0) {
-            $sql = "SELECT change_log.*, oa_user.user_full_name FROM change_log LEFT JOIN oa_user ON change_log.user_id = oa_user.user_id WHERE change_log.system_id = ? ORDER BY timestamp";
+            $sql = "SELECT change_log.*, oa_user.full_name FROM change_log LEFT JOIN oa_user ON change_log.user_id = oa_user.id WHERE change_log.system_id = ? ORDER BY timestamp";
             $sql = $this->clean_sql($sql);
             $data = array($id);
             $query = $this->db->query($sql, $data);

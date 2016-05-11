@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -237,12 +237,12 @@ class report extends MY_Controller
             return;
         } else {
             // we must check to see if the user has at least VIEW permission on the group (or is an admin)
-            if ($this->user->user_admin != 'y') {
-                $this->user->user_access_level = $this->m_oa_group->get_group_access($this->data['group_id'], $this->user->user_id);
+            if ($this->user->admin != 'y') {
+                $this->user->access_level = $this->m_oa_group->get_group_access($this->data['group_id'], $this->user->id);
             } else {
-                $this->user->user_access_level ='10';
+                $this->user->access_level ='10';
             }
-            if ($this->user->user_access_level < '3') {
+            if ($this->user->access_level < '3') {
                 # insufficient permissions - show error page
                 $this->data['error'] = "You attempted to run a Report on a Group you don't have permission to view.";
                 $this->data['query'] = '';
@@ -314,8 +314,8 @@ class report extends MY_Controller
         $this->load->model("m_oa_group");
         if ($this->data['id'] > '0') {
             // we must check to see if the user has at least VIEW permission on the group
-            if ($this->user->user_admin != 'y') {
-                if ($this->m_oa_group->get_group_access($this->data['id'], $this->user->user_id) < '3') {
+            if ($this->user->admin != 'y') {
+                if ($this->m_oa_group->get_group_access($this->data['id'], $this->user->id) < '3') {
                     // not even VIEW permission - redirect
                     redirect('main/list_devices/0');
                 }
@@ -333,7 +333,7 @@ class report extends MY_Controller
             $this->data['heading'] = 'Partition '.number_format($days).' Days Alert for All Devices';
         }
         $this->load->model("m_devices_components");
-        $this->data['query'] = $this->m_devices_components->partition_use_report($this->data['id'], $this->user->user_id, $days);
+        $this->data['query'] = $this->m_devices_components->partition_use_report($this->data['id'], $this->user->id, $days);
         $this->data['count'] = count($this->data['query']);
         $this->data['include'] = 'v_report_partition_alert';
         $this->data['sortcolumn'] = '0';

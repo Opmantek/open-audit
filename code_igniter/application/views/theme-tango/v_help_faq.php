@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -215,7 +215,7 @@ The default oa_group_columns are as below:<br />
 		<tr><td>1</td><td>0</td><td>1</td><td>Hostname</td><td>hostname</td><td>link</td><td>main/system_display/</td><td>system_id</td><td></td></tr>
 		<tr><td>2</td><td>0</td><td>2</td><td>Description</td><td>man_description</td><td>text</td><td></td><td></td><td></td></tr>
 		<tr><td>3</td><td>0</td><td>3</td><td>IP Address</td><td>man_ip_address</td><td>ip_address</td><td></td><td></td><td></td></tr>
-		<tr><td>4</td><td>0</td><td>4</td><td>Type</td><td>man_icon</td><td>image</td><td></td><td>man_os_family</td><td></td></tr>
+		<tr><td>4</td><td>0</td><td>4</td><td>Type</td><td>icon</td><td>image</td><td></td><td>man_os_family</td><td></td></tr>
 		<tr><td>5</td><td>0</td><td>5</td><td>OS / Device</td><td>man_os_name</td><td>text</td><td></td><td></td><td></td></tr>
 		<tr><td>6</td><td>0</td><td>6</td><td>Tags</td><td>tag</td><td>text</td><td></td><td></td><td></td></tr>
 	</tbody>

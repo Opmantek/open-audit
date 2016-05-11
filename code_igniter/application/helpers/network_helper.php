@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * @version 1.12.6
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -50,7 +50,7 @@ if (! function_exists('network_details')) {
 
         if (preg_match('/\//', $my_net_info)) {
             //if cidr type mask
-        $dq_host = strtok("$my_net_info", "/");
+            $dq_host = strtok("$my_net_info", "/");
             $cdr_nmask = strtok("/");
             if (!($cdr_nmask >= 0 && $cdr_nmask <= 32)) {
                 $details->error = "Invalid CIDR value. Try an integer 0 - 32.";
@@ -61,7 +61,7 @@ if (! function_exists('network_details')) {
             $bin_wmask = binnmtowm($bin_nmask);
         } else {
             //Dotted quad mask?
-        $dqs = explode(" ", $my_net_info);
+            $dqs = explode(" ", $my_net_info);
             $dq_host = $dqs[0];
             $bin_nmask = dqtobin($dqs[1]);
             $bin_wmask = binnmtowm($bin_nmask);

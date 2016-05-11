@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -53,7 +53,7 @@ class Licenses extends MY_Controller
         $group_id = $this->uri->segment(3, 0);
         $licenses = $this->uri->segment(4, 0);
         $software_name = urldecode($this->uri->segment(5, 0));
-        if ($this->user->user_sam < 2) {
+        if ($this->user->sam < 2) {
             redirect('report/software_licensing/'.$group_id);
             exit();
         }

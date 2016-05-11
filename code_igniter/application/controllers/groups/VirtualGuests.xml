@@ -8,13 +8,14 @@
 		<group_category>device</group_category>
 		<group_icon>vmware</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and their manufacturer attribute contains 'VMware', 'Parallels' or 'KVM' and their OS Name does not contain ESX.</group_description>
-		<group_display_sql><![CDATA[SELECT system.man_icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, man_os_family, oa_location.location_name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, man_os_family, oa_location.name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id
+ = oa_location.id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
 			<column_order>0</column_order>
 			<column_name>Icon</column_name>
-			<column_variable>man_icon</column_variable>
+			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
 			<column_secondary>man_os_family</column_secondary>
@@ -104,7 +105,7 @@
 		<column>
 			<column_order>9</column_order>
 			<column_name>Location</column_name>
-			<column_variable>location_name</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

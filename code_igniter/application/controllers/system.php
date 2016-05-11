@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -119,6 +119,12 @@ class System extends CI_Controller
     public function add_system_ad()
     {
         if (isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
+
+            // check if the submitting IP is in the list of allowable subnets
+            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+                exit;
+            }
+
             $this->load->helper('html');
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
             echo meta('Content-type', 'text/html; charset=utf-8', 'equiv');
@@ -142,8 +148,8 @@ class System extends CI_Controller
                 exit;
             }
             $count = 0;
-            if (isset($this->user->user_full_name)) {
-                $temp_user = $this->user->user_full_name;
+            if (isset($this->user->full_name)) {
+                $temp_user = $this->user->full_name;
             } else {
                 $temp_user = '';
             }
@@ -172,14 +178,20 @@ class System extends CI_Controller
 
     public function add_system()
     {
+
+        // check if the submitting IP is in the list of allowable subnets
+        if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+            exit;
+        }
+
         $this->benchmark->mark('code_start');
         if (isset($this->session->userdata['user_id'])) {
             $temp_user_id = $this->session->userdata['user_id'];
-            $sql = "/* system::add_system */ SELECT user_full_name FROM oa_user WHERE user_id = ?";
+            $sql = "/* system::add_system */ SELECT full_name FROM oa_user WHERE id = ?";
             $data = array($this->session->userdata['user_id']);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
-            $user_full_name = $result[0]->user_full_name;
+            $user_full_name = $result[0]->full_name;
         } else {
             $user_full_name = '';
         }
@@ -480,6 +492,10 @@ class System extends CI_Controller
         if (! isset($_POST['form_nmap'])) {
             $this->load->view('v_system_add_nmap', $this->data);
         } else {
+            // check if the submitting IP is in the list of allowable subnets
+            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+                exit;
+            }
             $log_details = new stdClass();
             $log_details->severity = 7;
             $log_details->file = 'system';
@@ -643,8 +659,8 @@ class System extends CI_Controller
                         unset($log_details);
                     }
                 }
-                if (isset($this->user->user_full_name)) {
-                    $temp_user = $this->user->user_full_name;
+                if (isset($this->user->full_name)) {
+                    $temp_user = $this->user->full_name;
                 } else {
                     $temp_user = '';
                 }

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -120,6 +120,12 @@ if (!isset($system_id)) {
 if (!isset($type)) {
     $type = '';
 }
+if (!isset($org_id)) {
+    $org_id = '';
+}
+if (!isset($location_id)) {
+    $location_id = '';
+}
 if (isset($this->config->config['show_snmp_community']) and $this->config->config['show_snmp_community'] == 'n') {
     $snmp_community_field = 'password';
 } else {
@@ -190,9 +196,47 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 				<p><label for='windows_password'><?php echo __("Windows Password"); ?>: </label> <input type='<?php echo $password_field; ?>' id='windows_password' name='windows_password' tabindex='7' title='Windows Password' value='<?php echo $windows_password; ?>' /></p>
 				<p><label for='windows_domain'><?php echo __("Windows Domain"); ?>: </label> <input type='text' id='windows_domain' name='windows_domain' tabindex='8' title='Windows Domain' value='<?php echo $windows_domain; ?>' /></p>
 				<?php } ?>
-				<?php #if ($type > "") { ?>
-				<p><label for='debug'><?php echo __("Debug"); ?>: </label> <input type='checkbox' id='debug' name='debug' tabindex='9' title='Debug' />**</p>
-				<?php #} ?>
+
+                <p><label for='org'><?php echo __('Org'); ?>: </label>
+                    <select id='org' name='org' width='20'>
+                        <option value=''></option>
+                <?php
+                    foreach ($orgs as $org) {
+                        if ($org_id == $org->id) {
+                            $selected = ' selected';
+                        } else {
+                            $selected = '';
+                        }
+                        echo "<option value='" . $org->id . "'" . $selected . ">" . $org->name . "</option>\n";
+                    }
+                ?>
+                    </select>
+                </p>
+
+                <p><label for='location'><?php echo __('Location'); ?>: </label>
+                    <select id='location' name='location' width='20'>
+                        <option value=''></option>
+                <?php
+                    foreach ($locations as $location) {
+                        if ($location_id == $location->id) {
+                            $selected = ' selected';
+                        } else {
+                            $selected = '';
+                        }
+                        echo "<option value='" . $location->id . "'" . $selected . ">" . $location->name . "</option>\n";
+                    }
+                ?>
+                    </select>
+                </p>
+                <?php
+                    if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+                        $checked = 'checked';
+                    } else {
+                        $checked = '';
+                    }
+                ?>
+                <p><label for='use_https'><?php echo __("Use HTTPS"); ?>: </label> <input type='checkbox' id='use_https' name='use_https' tabindex='9' title='Use HTTPS' <?php echo $checked; ?> /></p>
+                <p><label for='debug'><?php echo __("Debug"); ?>: </label> <input type='checkbox' id='debug' name='debug' tabindex='9' title='Debug' />**</p>
 				<input type="hidden" id="type" name="type" value="<?php echo $type; ?>" />
 				<input type="hidden" id="system_id" name="system_id" value="<?php echo $system_id; ?>" />
 
@@ -211,6 +255,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 				<?php if ($warning > '') {
                     echo "<p><br /><br />$warning</p>\n";
                 } ?>
+                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
 			</td>
 			<td style='width:70%' style="vertical-align: top;">
 				<?php if ($type != '') { ?>
@@ -229,6 +274,21 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 				<h3><?php echo __('Note'); ?> - <?php echo __('Audit Credentials'); ?></h3><?php echo __('The credentials used for auditing are device specific (if they exist) then form supplied (the credentials on this form). Device specific credentials can be modified on the Device Summary pages by clicking the menu item for Credentials.'); ?><br />
 
 				<h3><?php echo __('Note'); ?> - <?php echo __('Credentials Storage'); ?></h3><?php echo __('Any credentials that are used and are valid will be stored against the specific device. These can be modified per device on the Device Summary pages by clicking the menu item for Credentials.'); ?></br />
+
+                <h3><?php echo __('Organisation Assignment'); ?></h3><?php echo __('If an Org is selected, any devices found in this discovery will be assigned to this Organisation. If no organisation is selected, existing devices found will not be assigned to any organisation but new devices created will be assigned to the Default Organisation.'); ?><br />
+
+                <h3><?php echo __('Location Assignment'); ?></h3><?php echo __('If an Location is selected, any devices found in this discovery will be assigned to this Location. If no location is selected, existing devices found will not be assigned to any location but new devices created will be assigned to the Default Location.'); ?><br />
+
+                <h3><?php echo __('Use HTTPS'); ?></h3><?php echo __('If Use HTTPS is checked, the audit scripts will use the HTTPS address of the server to submit their results.'); ?><br />
+
+                <h3><?php echo __('Network Group Creation'); ?></h3><?php echo __('At present Network Groups will be created if a subnet is supplied using a slash (ie - 192.168.1.0/24) and you have the config option to auto create network groups set to "y". Network Groups will NOT be created if a range of ip addresses, a /32 subnet or a single ip address is supplied.'); ?><br />
+
+                <h3><?php echo __('Subnet Examples'); ?></h3>
+                    <?php echo __('The format of the subnet is specified in standard Nmap syntax. The following are valid examples:'); ?><br />
+                    <?php echo __('192.168.0.1 (a single address)'); ?><br />
+                    <?php echo __('192.168.1.2/32 (a single address with mask)'); ?><br />
+                    <?php echo __('192.168.3.0/24 (a 24 bit mask - 192.168.3.0 to 192.168.3.255)'); ?><br />
+                    <?php echo __('198.168.0-255.1-127 (a range of ip addresses)'); ?><br />                
 			</td>
 		</tr>
 	</table>
@@ -248,15 +308,9 @@ if ($type == '') {
         ?>/admin/edit_config" style="color: red";><?php echo __('here'); ?></a>.<br />
 	<?php }
     ?>
-	<h3><?php echo __('Subnet Examples'); ?></h3>
-        <?php echo __('The format of the subnet is specified in standard Nmap syntax. The following are valid examples:'); ?><br />
-		<?php echo __('192.168.0.1 (a single address)'); ?><br />
-		<?php echo __('192.168.1.2/32 (a single address with mask)'); ?><br />
-		<?php echo __('192.168.3.0/24 (a 24 bit mask - 192.168.3.0 to 192.168.3.255)'); ?><br />
-		<?php echo __('198.168.0-255.1-127 (a range of ip addresses)'); ?><br />
+
 	<br />
-	<h3><?php echo __('Network Group Creation'); ?></h3>
-        <?php echo __('At present Network Groups will be created if a subnet is supplied using a slash (ie - 192.168.1.0/24) and you have the config option to auto create network groups set to "y". Network Groups will NOT be created if a range of ip addresses, a /32 subnet or a single ip address is supplied.'); ?></p>
+	</p>
 	<br />
     <?php } else { ?>
     <?php } ?>

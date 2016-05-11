@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -98,9 +98,6 @@ class MY_Model extends CI_Model
         $caller = $trace[1];
         $function = @$caller['function'];
         $model = @$caller['class'];
-        #$sql = str_replace("\t", " ", $sql);
-        #$sql = str_replace("\n", " ", $sql);
-        #$sql = preg_replace('!\s+!', ' ', $sql);
         $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
         $sql = preg_replace('!\s+!', ' ', $sql);
         $sql = '/* ' . $model . '::' . $function .' */ ' . $sql;

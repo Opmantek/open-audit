@@ -35,7 +35,7 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.12.4
+# @version 1.12.6
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -246,7 +246,6 @@ cat >"$xml_file" <<EndOfFile
 		<pc_date_os_installation>$(escape_xml "$system_pc_date_os_installation")</pc_date_os_installation>
 		<man_org_id>$(escape_xml "$org_id")</man_org_id>
 		<man_class>server</man_class>
-		<man_icon>aix</man_icon>
 		<system_id>$(escape_xml "$system_id")</system_id>
 	</sys>
 EndOfFile

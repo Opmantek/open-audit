@@ -8,7 +8,7 @@
 		<group_category>device</group_category>
 		<group_icon>router</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'router'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.icon, system.man_manufacturer, system.man_model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
