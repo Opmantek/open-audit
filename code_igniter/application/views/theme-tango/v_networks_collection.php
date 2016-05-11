@@ -52,7 +52,7 @@ if (!empty($this->response->error)) {
 			<th><?php echo __('Edited By')?></th>
 			<th><?php echo __('Edited Date')?></th>
 			<th align='center'><?php echo __('Edit')?></th>
-			<th align='center'><?php echo __('Delete')?></th>
+			<!-- <th align='center'><?php echo __('Delete')?></th> -->
 		</tr>
 	</thead>
 	<tbody>
@@ -72,7 +72,7 @@ if (!empty($this->response->error)) {
 			<td><?php echo htmlentities($item->edited_by)?></td>
 			<td><?php echo htmlentities($item->edited_date)?></td>
 			<td align='center'><?php echo $edit_pic?></td>
-			<td align='center'><?php echo $delete_pic?></td>
+			<!-- <td align='center'><?php echo $delete_pic?></td> -->
 		</tr>
 		<?php endforeach; ?>
 	</tbody>
