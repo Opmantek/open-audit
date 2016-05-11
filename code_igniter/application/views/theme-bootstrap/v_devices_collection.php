@@ -49,7 +49,6 @@ if (strpos($refine_link, '?') === false) {
   </div>
   <div class="panel-body">
 
-<!-- <div class="well well-sm pull-left"> -->
 <div class="panel panel-default pull-right">
   <div class="panel-body">
     <div class="btn-group" role="group" aria-label="...">
