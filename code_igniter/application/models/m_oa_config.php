@@ -341,7 +341,7 @@ class M_oa_config extends MY_Model
         // }
         # linux
         if (php_uname('s') == 'Linux') {
-            $command = "ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}'";
+            $command = "ip addr | grep 'state ' -A2 | grep inet | awk '{print $2}'";
             exec($command, $output, $return_var);
             if ($return_var == 0) {
                 foreach ($output as $line) {
@@ -386,8 +386,13 @@ class M_oa_config extends MY_Model
                 }
             }
         }
-
-        return ($ip_address_array);
+        $this->load->helper('network_helper');
+        $networks = array();
+        foreach ($ip_address_array as $network) {
+            $test = network_details($network);
+            $networks[] = $test->network . '/' . $test->network_slash;
+        }
+        return ($networks);
     }
 
     public function get_server_domain()
@@ -408,7 +413,10 @@ class M_oa_config extends MY_Model
     # returns true if ip is contained in a subnet, false otherwise
     function check_blessed($ip = '')
     {
-        if (trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
+        if (empty($this->config)) {
+            $this->load_config();
+        }
+        if (empty($this->config->config['blessed_subnets_use']) or trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
             return true;
         }
         if (empty($ip)) {
