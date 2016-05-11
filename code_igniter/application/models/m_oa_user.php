@@ -41,22 +41,16 @@ class M_oa_user extends MY_Model
 
     public function get_orgs($user_id)
     {
-        $this->output->enable_profiler(true);
-        #echo "<pre>\n";
         $end = array();
-
-
         $sql = "SELECT * FROM oa_user_org WHERE user_id = ? ORDER BY access_level desc";
+        $sql = $this->clean_sql($sql);
         $data = array(intval($user_id));
         $query = $this->db->query($sql, $data);
         $user_orgs = $query->result();
-        #print_r($user_orgs);
-
         $sql = "SELECT * FROM oa_org";
+        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $this->orgs = $query->result();
-        #print_r($this->orgs);
-
         foreach ($this->orgs as $org) {
             foreach ($user_orgs as $user_org) {
                 if ($user_org->org_id == $org->id) {
@@ -73,7 +67,6 @@ class M_oa_user extends MY_Model
                 $org_id_list[$key2] = $value2;
             }
         }
-        #print_r($org_id_list);
         return($org_id_list);
     }
 
@@ -254,7 +247,7 @@ class M_oa_user extends MY_Model
             // user is logged in, return the $this->user object
             $sql = "SELECT * FROM oa_user WHERE oa_user." . $user_prefix . "id = ? LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array($this->session->userdata['user_id']);
+            $data = array(intval($this->session->userdata['user_id']));
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 // set the user object
