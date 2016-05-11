@@ -81,8 +81,10 @@ class M_system extends MY_Model
             $details->system_key_type = '';
         }
 
-        if (!empty($details->hostname) and !empty($details->domain) and empty($details->fqdn)) {
+        if (!empty($details->hostname) and !empty($details->domain) and $details->domain != '' and $details->domain != '.' and empty($details->fqdn)) {
             $details->fqdn = $details->hostname.".".$details->domain;
+        } else {
+            $details->fqdn = '';
         }
 
         # this is a computer from an audit script
@@ -201,8 +203,10 @@ class M_system extends MY_Model
             unset($temp_hostname);
         }
 
-        if (empty($details->fqdn) and !empty($details->hostname) and !empty($details->domain)) {
-            $details->fqdn = $details->hostname . '.' . $details->domain;
+        if (!empty($details->hostname) and !empty($details->domain) and $details->domain != '' and $details->domain != '.' and empty($details->fqdn)) {
+            $details->fqdn = $details->hostname.".".$details->domain;
+        } else {
+            $details->fqdn = '';
         }
 
         if (empty($details->system_id) and !empty($details->fqdn)) {
@@ -1206,7 +1210,7 @@ class M_system extends MY_Model
 
         $details->man_ip_address = ip_address_to_db($details->man_ip_address);
 
-        if ($details->hostname != '' and $details->domain != '' and $details->fqdn == '') {
+        if ($details->hostname != '' and $details->domain != '' and $details->domain != '.'  and $details->domain != ' ' and $details->fqdn == '') {
             $details->fqdn = $details->hostname.".".$details->domain;
         }
 
@@ -1316,6 +1320,25 @@ class M_system extends MY_Model
         $log_details->message = 'System insert end for '.ip_address_from_db($details->man_ip_address).' ('.$details->hostname.') (System ID '.$details->system_id.')';
         stdlog($log_details);
         unset($log_details);
+
+        if (empty($details->man_org_id)) {
+            $sql = "SELECT man_org_id FROM system WHERE system_id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($details->system_id);
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            $details->man_org_id = $row->man_org_id;
+        }
+
+        # add a count to our chart table
+        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), 'device_create', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+
+        # add a count to our chart table
+        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
 
         return $details->system_id;
     }
@@ -1747,6 +1770,20 @@ class M_system extends MY_Model
                 $query = $this->db->query($sql, $data);
             }
         }
+
+        if (empty($details->man_org_id)) {
+            $sql = "SELECT man_org_id FROM system WHERE system_id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($details->system_id);
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            $details->man_org_id = $row->man_org_id;
+        }
+
+        # add a count to our chart table
+        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . $details->man_org_id . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
 
         $log_details->message = 'System update end for '.ip_address_from_db($temp_ip).'('.$details->hostname.') (System ID '.$details->system_id.')';
         stdlog($log_details);
