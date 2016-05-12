@@ -447,11 +447,14 @@ class M_oa_config extends MY_Model
 
     # return true if subnet added to networks table, false otherwise
     function update_blessed($network = '') {
-        if (trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
+        if (isset($this->config->config['blessed_subnets_use']) and trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
             return true;
         }
         if (empty($network)) {
             return false;
+        }
+        if (!$this->db->table_exists('networks')) {
+            return true;
         }
         # ensure we remove and spaces - '192.168.1.0 / 24' becomes '192.168.1.0/24'
         $network = str_replace(' ', '', $network);

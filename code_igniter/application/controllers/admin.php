@@ -5029,6 +5029,10 @@ class admin extends MY_Controller
             $sql = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
             $query = $this->db->query($sql);
 
+            foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
+                $this->m_oa_config->update_blessed($subnet, 0);
+            }
+
             $log_details->message = 'Upgrade database to 1.12.6 completed';
             stdlog($log_details);
             unset($log_details);
