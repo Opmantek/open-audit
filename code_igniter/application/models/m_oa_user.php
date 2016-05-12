@@ -42,19 +42,36 @@ class M_oa_user extends MY_Model
     public function get_orgs($user_id)
     {
         $end = array();
-        $sql = "SELECT * FROM oa_user_org WHERE user_id = ? ORDER BY access_level desc";
-        $sql = $this->clean_sql($sql);
-        $data = array(intval($user_id));
-        $query = $this->db->query($sql, $data);
-        $user_orgs = $query->result();
+
+        # only run if post 1.12.6
+        if ($this->db->table_exists('oa_user_org')) {
+            $sql = "SELECT * FROM oa_user_org WHERE user_id = ? ORDER BY access_level desc";
+            $sql = $this->clean_sql($sql);
+            $data = array(intval($user_id));
+            $query = $this->db->query($sql, $data);
+            $user_orgs = $query->result();
+        }
+
         $sql = "SELECT * FROM oa_org";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $this->orgs = $query->result();
-        foreach ($this->orgs as $org) {
-            foreach ($user_orgs as $user_org) {
-                if ($user_org->org_id == $org->id) {
-                    $end[$org->id] = $user_org->access_level;
+
+        # only run if post 1.12.6
+        if ($this->db->table_exists('oa_user_org')) {
+            foreach ($this->orgs as $org) {
+                # need to allow for pre 1.12.6 DB structure
+                if (!isset($org->id) and isset($org->org_id)) {
+                    $org->id = $org->org_id;
+                }
+                # need to allow for pre 1.12.6 DB structure
+                if (!isset($org->parent_id) and isset($org->org_parent_id)) {
+                    $org->parent_id = $org->org_parent_id;
+                }
+                foreach ($user_orgs as $user_org) {
+                    if ($user_org->org_id == $org->id) {
+                        $end[$org->id] = $user_org->access_level;
+                    }
                 }
             }
         }
