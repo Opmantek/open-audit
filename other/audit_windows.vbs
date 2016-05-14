@@ -3007,8 +3007,8 @@ error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then 
 for each objItem in colItems
 	item = item & "		<item>" & vbcrlf
 	item = item & "			<program>environment</program>" & vbcrlf
-	item = item & "			<name><![CDATA[" & escape_xml(objItem.Name) & "]]></name>" & vbcrlf
-	item = item & "			<value><![CDATA[" & escape_xml(objItem.VariableValue) & "]]></value>" & vbcrlf
+	item = item & "			<name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+	item = item & "			<value>" & escape_xml(objItem.VariableValue) & "</value>" & vbcrlf
 	item = item & "		</item>" & vbcrlf
 next
 if item > "" then
@@ -3029,11 +3029,11 @@ for each objItem in colItems
 	case "WhenNeeded"  OverWritePolicy = "As Needed"
 	end select
 	item = item & "		<item>" & vbcrlf
-	item = item & "			<name>"	& escape_xml(objItem.LogFileName) 	& "</name>" & vbcrlf
-	item = item & "			<file_name>" 	& escape_xml(objItem.Name) 	& "</file_name>" & vbcrlf
-	item = item & "			<file_size>" 	& escape_xml(objItem.FileSize/1024) 	& "</file_size>" & vbcrlf
-	item = item & "			<max_file_size>"	& escape_xml(objItem.MaxFileSize/1024)  & "</max_file_size>" & vbcrlf
-	item = item & "			<overwrite>" 	& escape_xml(OverWritePolicy)	& "</overwrite>" & vbcrlf
+	item = item & "			<name>"	& escape_xml(objItem.LogFileName) & "</name>" & vbcrlf
+	item = item & "			<file_name>" & escape_xml(objItem.Name) & "</file_name>" & vbcrlf
+	item = item & "			<file_size>" & escape_xml(objItem.FileSize/1024) & "</file_size>" & vbcrlf
+	item = item & "			<max_file_size>" & escape_xml(objItem.MaxFileSize/1024) & "</max_file_size>" & vbcrlf
+	item = item & "			<overwrite>" & escape_xml(OverWritePolicy) & "</overwrite>" & vbcrlf
 	item = item & "		</item>" & vbcrlf
 next
 if item > "" then
