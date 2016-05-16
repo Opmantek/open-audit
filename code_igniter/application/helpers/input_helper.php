@@ -404,7 +404,7 @@ if (! function_exists('inputRead')) {
         # perform some simple data cleansing
         $CI->response->properties = str_replace(array('\'', '"', '(', ')'), '', $CI->response->properties);
 
-
+        $CI->response->internal->properties = '';
         // create our internal properties list - this is what gets executed in SQL
         if ($CI->response->properties != '*' and $CI->response->properties != $CI->response->sub_resource . '.*') {
             $temp = explode(',', $CI->response->properties);
