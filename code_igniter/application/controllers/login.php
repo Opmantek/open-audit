@@ -335,6 +335,10 @@ class login extends CI_Controller
         $this->load->model('m_oa_config');
         $this->m_oa_config->load_config();
 
+        foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
+            $this->m_oa_config->update_blessed($subnet, 0);
+        }
+
         if (isset($_POST['username']) and isset($_POST['password']) and $_POST['username'] != '' and $_POST['password'] != '') {
             $username = $_POST['username'];
             $password = $_POST['password'];
