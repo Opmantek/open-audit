@@ -1331,7 +1331,7 @@ class M_system extends MY_Model
         }
 
         # add a count to our chart table
-        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), 'device_create', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), 'system_create', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
