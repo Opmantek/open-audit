@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -56,7 +56,7 @@ class Admin_config extends MY_Controller
     {
 
         // must be an admin to access this function
-        if ($this->user->user_admin != 'y') {
+        if ($this->user->admin != 'y') {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
@@ -83,7 +83,7 @@ class Admin_config extends MY_Controller
             $config_value = '';
         }
 
-        $this->m_oa_config->update_config($config_name, $config_value, $this->user->user_id, date('Y-m-d H:i:s'));
+        $this->m_oa_config->update_config($config_name, $config_value, $this->user->id, date('Y-m-d H:i:s'));
 
         if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
             redirect($_SERVER['HTTP_REFERER']);

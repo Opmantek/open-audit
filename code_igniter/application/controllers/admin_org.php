@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -141,9 +141,7 @@ class Admin_org extends MY_Controller
                             $group->group_padded_name = '';
                             $group->group_icon = 'contact-new';
                             $group->group_category = 'owner';
-                            $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM
-                               system WHERE system.man_org_id = '".$group->org_id."'
-                               AND system.man_status = 'production'";
+                            $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$group->org_id."' AND system.man_status = 'production'";
                             $group->group_parent = '';
                             $group->group_display_sql = '';
                             $this->m_oa_group->insert_group($group);
@@ -260,7 +258,7 @@ class Admin_org extends MY_Controller
         $group->group_padded_name = '';
         $group->group_description = $org_name." owned items";
         $group->group_icon = 'contact';
-        $group->group_category = 'owner';
+        $group->group_category = 'org';
         $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$this->data['id']."' AND system.man_status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
@@ -294,9 +292,9 @@ class Admin_org extends MY_Controller
             foreach ($_POST as $key => $value) {
                 $details->$key = $value;
             }
-            if (is_null($this->m_oa_org->select_org($details->org_name))) {
+            if (is_null($this->m_oa_org->select_org($details->name))) {
                 #org does not exist - good
-                $details->org_id = $this->m_oa_org->add_org($details);
+                $details->id = $this->m_oa_org->add_org($details);
             } else {
                 $this->data['error_message'] = "Organisation name already exists.";
                 $this->data['heading'] = 'Add Organisation';
@@ -330,10 +328,10 @@ class Admin_org extends MY_Controller
             foreach ($_POST as $key => $value) {
                 $details->$key = $value;
             }
-            if ($this->m_oa_org->check_org_name($details->org_name, $details->org_id) == false) {
+            if ($this->m_oa_org->check_org_name($details->name, $details->id) == false) {
                 $error = '1';
                 $this->data['error_message'] = "Organisation name already exists.";
-                $this->data['org'] = $this->m_oa_org->get_org_details($details->org_id);
+                $this->data['org'] = $this->m_oa_org->get_org_details($details->id);
                 $this->data['heading'] = 'Edit Organisation';
                 $this->data['include'] = 'v_edit_org';
                 $this->load->view('v_template', $this->data);

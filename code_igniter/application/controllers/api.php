@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -79,7 +79,7 @@ class api extends MY_Controller
         // $this->output->url = $this->config->item('oa_web_index');
 
         // if ($this->response->id != '') {
-        //     $access_level = $this->m_devices->getUserDeviceAccess($this->response->id, $this->user->user_id);
+        //     $access_level = $this->m_devices->getUserDeviceAccess($this->response->id, $this->user->id);
         //     if ($access_level == 0) {
         //         echo "Insufficient device access.";
         //         exit();

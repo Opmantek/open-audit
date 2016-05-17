@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -49,14 +49,14 @@ class M_devices_components extends MY_Model
             // we require a system id
             return;
         }
+        $filter = '';
+        // if (stripos($filter, 'current = \'full') !== false or stripos($filter, 'current = "full') !== false) {
+        //     $current = 'full';
+        // }
 
-        if (stripos($filter, 'current = \'full') !== false or stripos($filter, 'current = "full') !== false) {
-            $current = 'full';
-        }
-
-        if (stripos($filter, 'current = \'delta') !== false or stripos($filter, 'current = "delta') !== false) {
-            $current = 'delta';
-        }
+        // if (stripos($filter, 'current = \'delta') !== false or stripos($filter, 'current = "delta') !== false) {
+        //     $current = 'delta';
+        // }
 
         if ($current == 'delta' or $current == 'full') {
             $sql = "SELECT first_seen FROM `$table` WHERE system_id = ? ORDER BY first_seen LIMIT 1";
@@ -86,9 +86,9 @@ class M_devices_components extends MY_Model
             }
         }
         $sql = '';
-        if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
-            $filter = 'AND ' . $filter;
-        }
+        // if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
+        //     $filter = 'AND ' . $filter;
+        // }
         if ($found_id) {
             if ($found_current) {
                 if ($current == 'y') {
@@ -329,7 +329,8 @@ class M_devices_components extends MY_Model
                     $temp_subnet = 32-log(($temp_long ^ $temp_base)+1,2);
                     $net = network_details($input->item[$i]->ip.'/'.$temp_subnet);
                     if (isset($net->network) and $net->network != '') {
-                        $input->item[$i]->network = $net->network.' / '.$temp_subnet;
+                        #$input->item[$i]->network = $net->network.' / '.$temp_subnet;
+                        $input->item[$i]->network = $net->network.'/'.$temp_subnet;
                     } else {
                         $input->item[$i]->network = '';
                     }
@@ -363,6 +364,10 @@ class M_devices_components extends MY_Model
                 }
                 if (!isset($input->item[$i]->ip) or $input->item[$i]->ip == '') {
                     unset($input->item[$i]);
+                }
+                # ensure we add the network to the networks list
+                if (!empty($input->item[$i]->network)) {
+                    $this->m_oa_config->update_blessed($input->item[$i]->network);
                 }
             }
             if ($details->type == 'computer' and $details->os_group == 'VMware') {
@@ -445,7 +450,6 @@ class M_devices_components extends MY_Model
                 if (isset($input->item[$i]->version) and $input->item[$i]->version != '') {
                     $pieces = array();
                     $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $input->item[$i]->version);
-                    #$input->item[$key]->version_padded = (string)'';
                     $input->item[$i]->version_padded = (string)'';
                     foreach ($pieces as $piece) {
                         if (strlen($piece) > 10 ) {
@@ -490,6 +494,16 @@ class M_devices_components extends MY_Model
                     }
                 }
             }
+        }
+
+        # make sure we have a populated org_id for adding items to the charts table
+        if (empty($details->man_org_id)) {
+            $sql = "SELECT man_org_id FROM system WHERE system_id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($details->system_id);
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            $details->man_org_id = $row->man_org_id;
         }
 
         // get any existing current rows from the database
@@ -645,6 +659,10 @@ class M_devices_components extends MY_Model
                     $sql = $this->clean_sql($sql);
                     $data = array("$details->system_id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
                     $query = $this->db->query($sql, $data);
+                    # add a count to our chart table
+                    $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_create', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+                    $sql = $this->clean_sql($sql);
+                    $query = $this->db->query($sql);
                 }
             }
             if ((string)$table == 'partition') {
@@ -698,6 +716,10 @@ class M_devices_components extends MY_Model
                 $sql = $this->clean_sql($sql);
                 $data = array("$details->system_id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
                 $query = $this->db->query($sql, $data);
+                # add a count to our chart table
+                $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_delete', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+                $sql = $this->clean_sql($sql);
+                $query = $this->db->query($sql);
             }
         }
         // update the audit log
@@ -714,6 +736,8 @@ class M_devices_components extends MY_Model
 
     public function get_sql_server_version_string($version)
     {
+        // todo - http://sqlserverbuilds.blogspot.com.au/
+        
         // find the version string, based on the version integer.
         $version_string = '';
 
@@ -1010,7 +1034,8 @@ class M_devices_components extends MY_Model
             $result = $query->result();
 
             if (isset($result[0]->ip) and $result[0]->ip != '') {
-                $sql = "UPDATE system SET ip = ? WHERE id = ?";
+                #$sql = "UPDATE system SET ip = ? WHERE id = ?";
+                $sql = "UPDATE system SET man_ip_address = ? WHERE system_id = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($result[0]->ip, "$id");
                 $query = $this->db->query($sql, $data);
@@ -1020,7 +1045,7 @@ class M_devices_components extends MY_Model
 
     public function update_missing_interfaces($system_id)
     {
-        $sql = "SELECT ip.id, network.net_index FROM network LEFT JOIN ip ON (network.system_id = ip.system_id AND network.mac = ip.mac) WHERE network.system_id = ? AND ip.net_index = ''";
+        $sql = "SELECT ip.id, network.net_index FROM network LEFT JOIN ip ON (network.system_id = ip.system_id AND network.mac = ip.mac) WHERE network.system_id = ? AND ip.net_index = '' AND network.net_index != ''";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);

@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -93,7 +93,10 @@ class login extends CI_Controller
         $data['oae_message'] = '';
         $license = '';
 
-        $this->load->model('m_oa_config');
+        foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
+            $this->m_oa_config->update_blessed($subnet, 0);
+        }
+
         $oae_url = $this->m_oa_config->get_config_item('oae_url');
 
         if ($oae_url > '') {
@@ -331,6 +334,10 @@ class login extends CI_Controller
         $this->load->model('m_userlogin');
         $this->load->model('m_oa_config');
         $this->m_oa_config->load_config();
+
+        foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
+            $this->m_oa_config->update_blessed($subnet, 0);
+        }
 
         if (isset($_POST['username']) and isset($_POST['password']) and $_POST['username'] != '' and $_POST['password'] != '') {
             $username = $_POST['username'];

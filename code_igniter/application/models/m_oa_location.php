@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -44,13 +44,13 @@ class M_oa_location extends MY_Model
      *
      * @access	public
      *
-     * @param	location_id
+     * @param   id the location id
      *
      * @return string
      */
     public function get_location($id)
     {
-        $sql = "SELECT * FROM oa_location WHERE location_id = ? LIMIT 1";
+        $sql = "SELECT * FROM oa_location WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -64,19 +64,19 @@ class M_oa_location extends MY_Model
      *
      * @access	public
      *
-     * @param	location_id
+     * @param	id the location id
      *
      * @return string
      */
-    public function get_group_id($location_id)
+    public function get_group_id($id)
     {
-        $sql = "SELECT location_group_id FROM oa_location WHERE location_id = ? LIMIT 1";
+        $sql = "SELECT group_id FROM oa_location WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array("$location_id");
+        $data = array("$id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
 
-        return ($row->location_group_id);
+        return ($row->group_id);
     }
 
     /**
@@ -84,15 +84,16 @@ class M_oa_location extends MY_Model
      *
      * @access	public
      *
-     * @param	location_id
+     * @param	id id of the location
+     * @param   group_id the id of the group
      *
      * @return string
      */
-    public function set_group_id($location_id, $group_id)
+    public function set_group_id($id, $group_id)
     {
-        $sql = "UPDATE oa_location SET location_group_id = ? WHERE location_id = ? ";
+        $sql = "UPDATE oa_location SET group_id = ? WHERE id = ? ";
         $sql = $this->clean_sql($sql);
-        $data = array("$group_id", "$location_id");
+        $data = array("$group_id", "$id");
         $query = $this->db->query($sql, $data);
     }
 
@@ -101,18 +102,17 @@ class M_oa_location extends MY_Model
      *
      * @access	public
      *
-     * @param	location_id
+     * @param	id id of the location
      *
      * @return string
      */
-    public function get_location_details($org_id)
+    public function get_location_details($id)
     {
-        $sql = "SELECT oa_location.*, count(oa_group_sys.system_id) as total FROM oa_location LEFT JOIN oa_group_sys ON oa_group_sys.group_id = oa_location.location_group_id where oa_location.location_id = ? GROUP BY oa_location.location_id LIMIT 1";
+        $sql = "SELECT oa_location.*, count(oa_group_sys.system_id) as total FROM oa_location LEFT JOIN oa_group_sys ON oa_group_sys.group_id = oa_location.group_id where oa_location.id = ? GROUP BY oa_location.id LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array("$org_id");
+        $data = array("$id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
-
         return ($row);
     }
 
@@ -127,15 +127,14 @@ class M_oa_location extends MY_Model
      */
     public function get_location_id($name)
     {
-        $sql = "SELECT location_id FROM oa_location WHERE location_name = ? LIMIT 1";
+        $sql = "SELECT id FROM oa_location WHERE name = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array("$name");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
         if ($query->num_rows() > 0) {
             $row = $query->row();
-
-            return ($row->location_id);
+            return ($row->id);
         } else {
             return;
         }
@@ -152,13 +151,12 @@ class M_oa_location extends MY_Model
      */
     public function get_location_name($id)
     {
-        $sql = "SELECT location_name FROM oa_location WHERE location_id = ? LIMIT 1";
+        $sql = "SELECT name FROM oa_location WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
-
-        return ($row->location_name);
+        return ($row->name);
     }
 
     /**
@@ -170,11 +168,10 @@ class M_oa_location extends MY_Model
      */
     public function get_location_names()
     {
-        $sql = "SELECT location_name, location_id FROM oa_location ORDER BY location_name";
+        $sql = "SELECT name, id FROM oa_location ORDER BY name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-
         return ($result);
     }
 
@@ -187,11 +184,10 @@ class M_oa_location extends MY_Model
      */
     public function get_all_locations()
     {
-        $sql = "SELECT oa_location.*, count(oa_group_sys.system_id) as total FROM oa_location LEFT JOIN oa_group_sys ON oa_group_sys.group_id = oa_location.location_group_id GROUP BY oa_location.location_id ORDER BY oa_location.location_name";
+        $sql = "SELECT oa_location.*, count(oa_group_sys.system_id) as total FROM oa_location LEFT JOIN oa_group_sys ON oa_group_sys.group_id = oa_location.group_id GROUP BY oa_location.id ORDER BY oa_location.name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-
         return ($result);
     }
 
@@ -200,16 +196,16 @@ class M_oa_location extends MY_Model
      *
      * @access	public
      *
-     * @param	location_name the name of the location
-     * @param	location_id the ID of the location
+     * @param	name the name of the location
+     * @param   id the location id
      *
      * @return boolean
      */
-    public function check_location_name($location_name, $location_id)
+    public function check_location_name($name, $id)
     {
-        $sql = "SELECT location_id FROM oa_location WHERE location_name = ? AND location_id <> ?";
+        $sql = "SELECT id FROM oa_location WHERE name = ? AND id <> ?";
         $sql = $this->clean_sql($sql);
-        $data = array($location_name, $location_id);
+        $data = array($name, $id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
         if ($query->num_rows() > 0) {
@@ -224,21 +220,13 @@ class M_oa_location extends MY_Model
      *
      * @access	public
      *
-     * @param	system_id the ID of the system
+     * @param	id the ID of the system
      *
      * @return string
      */
     public function get_system_location($id)
     {
-        $sql = "SELECT
-				oa_location.*
-			FROM
-				oa_location,
-				system
-			WHERE
-				oa_location.location_id = system.man_location_id AND
-				system.system_id = ?
-			LIMIT 1";
+        $sql = "SELECT oa_location.* FROM oa_location, system WHERE oa_location.id = system.man_location_id AND system.system_id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -259,37 +247,12 @@ class M_oa_location extends MY_Model
     public function add_location($details)
     {
         # need to insert suburb, district, region, area, tags, picture
-        $sql = "INSERT INTO oa_location
-					(location_name,
-					location_type,
-					location_room,
-					location_suite,
-					location_level,
-					location_address,
-					location_postcode,
-					location_city,
-					location_state,
-					location_country,
-					location_geo,
-					location_latitude,
-					location_longitude)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO oa_location (name, type, room, suite, level, address, postcode, city, state, country, geo, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
-        $data = array("$details->location_name",
-            "$details->location_type",
-            "$details->location_room",
-            "$details->location_suite",
-            "$details->location_level",
-            "$details->location_address",
-            "$details->location_postcode",
-            "$details->location_city",
-            "$details->location_state",
-            "$details->location_country",
-            "$details->location_geo",
-            "$details->location_latitude",
-            "$details->location_longitude", );
+        $data = array("$details->name", "$details->type", "$details->room", "$details->suite",
+            "$details->level", "$details->address", "$details->postcode", "$details->city",
+            "$details->state", "$details->country", "$details->geo", "$details->latitude", "$details->longitude", );
         $query = $this->db->query($sql, $data);
-
         return($this->db->insert_id());
     }
 
@@ -298,19 +261,19 @@ class M_oa_location extends MY_Model
      *
      * @access	public
      *
-     * @param	detail id - the id of the location to delete
+     * @param	id - the id of the location to delete
      *
      * @return nothing
      */
-    public function delete_location($location_id)
+    public function delete_location($id)
     {
-        $sql = "DELETE FROM oa_location WHERE location_id = ?";
+        $sql = "DELETE FROM oa_location WHERE id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array("$location_id");
+        $data = array("$id");
         $query = $this->db->query($sql, $data);
         $sql = "UPDATE system SET man_location_id = '' WHERE man_location_id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array("$location_id");
+        $data = array("$id");
         $query = $this->db->query($sql, $data);
     }
 
@@ -326,39 +289,13 @@ class M_oa_location extends MY_Model
     public function edit_location($details)
     {
         # need to insert suburb, district, region, area, tags, picture
-        $sql = "UPDATE oa_location SET
-					location_name = ?,
-					location_type = ?,
-					location_room = ?,
-					location_suite = ?,
-					location_level = ?,
-					location_address = ?,
-					location_city = ?,
-					location_postcode = ?,
-					location_state = ?,
-					location_country = ?,
-					location_geo = ?,
-					location_latitude = ?,
-					location_longitude = ?
-				WHERE
-					location_id = ?";
+        $sql = "UPDATE oa_location SET name = ?, type = ?, room = ?, suite = ?, level = ?, address = ?, city = ?, postcode = ?, state = ?, country = ?, geo = ?, latitude = ?, longitude = ? WHERE id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array("$details->location_name",
-            "$details->location_type",
-            "$details->location_room",
-            "$details->location_suite",
-            "$details->location_level",
-            "$details->location_address",
-            "$details->location_city",
-            "$details->location_postcode",
-            "$details->location_state",
-            "$details->location_country",
-            "$details->location_geo",
-            "$details->location_latitude",
-            "$details->location_longitude",
-            "$details->location_id", );
+        $data = array("$details->name", "$details->type", "$details->room", "$details->suite",
+            "$details->level", "$details->address", "$details->city", "$details->postcode",
+            "$details->state", "$details->country", "$details->geo", "$details->latitude",
+            "$details->longitude", "$details->id", );
         $query = $this->db->query($sql, $data);
-
         return(true);
     }
 
@@ -371,7 +308,7 @@ class M_oa_location extends MY_Model
      *
      * @return array
      */
-    public function list_devices_in_location($location_id = 0, $user_id = 0)
+    public function list_devices_in_location($id = 0, $user_id = 0)
     {
         // we have not requested a specific group.
         // display all items the current user has at least 'level 3' - view list rights on.
@@ -380,7 +317,7 @@ class M_oa_location extends MY_Model
     				system.hostname,
     				system.man_description,
     				system.man_ip_address,
-    				system.man_icon,
+    				system.icon,
     				system.man_os_name,
     				system.man_os_family
     			FROM
@@ -412,7 +349,7 @@ class M_oa_location extends MY_Model
     				system.man_location_id = ?
     			GROUP BY system.system_id ";
         $sql = $this->clean_sql($sql);
-        $data = array("$user_id", "$user_id", "$location_id");
+        $data = array("$user_id", "$user_id", "$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
 
@@ -520,7 +457,7 @@ class M_oa_location extends MY_Model
         $query = $this->db->query($sql);
         $types = $query->result();
         # get all the locations
-        $sql = "SELECT location_id as id, location_name as name, location_type as type, location_group_id as `group`, '' as address, location_latitude, location_longitude, location_address, location_city, location_postcode, location_country, CONCAT('{\"latitude\":\"', location_latitude, '\",\"longitude\":\"', location_longitude, '\"}') as geo, '' as icon FROM oa_location";
+        $sql = "SELECT id, name, type, group_id as `group`, '' as address, latitude, longitude, address, city, postcode, country, CONCAT('{\"latitude\":\"', latitude, '\",\"longitude\":\"', longitude, '\"}') as geo, '' as icon FROM oa_location";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $locations = $query->result();
@@ -530,30 +467,29 @@ class M_oa_location extends MY_Model
             $location->infoDisplay = new stdClass();
             # create the geo object
             $location->geo = new stdClass();
-            if ($location->location_latitude == "") {
-                $location->location_latitude = "0.000000";
+            if ($location->latitude == "") {
+                $location->latitude = "0.000000";
             }
-            if ($location->location_longitude == "") {
-                $location->location_longitude = "0.000000";
+            if ($location->longitude == "") {
+                $location->longitude = "0.000000";
             }
-            $location->geo->latitude = $location->location_latitude;
-            $location->geo->longitude = $location->location_longitude;
+            $location->geo->latitude = $location->latitude;
+            $location->geo->longitude = $location->longitude;
             # create the full location string
-            $location->address = $location->location_address;
-            if ($location->location_city != '' and $location->address != '') {
-                $location->address .= ', ' . $location->location_city;
+            if ($location->city != '' and $location->address != '') {
+                $location->address .= ', ' . $location->city;
             } else {
-                $location->address = $location->location_city;
+                $location->address = $location->city;
             }
-            if ($location->location_postcode != '' and $location->address != '') {
-                $location->address .= ', ' . $location->location_postcode;
+            if ($location->postcode != '' and $location->address != '') {
+                $location->address .= ', ' . $location->postcode;
             } else {
-                $location->address .= $location->location_postcode;
+                $location->address .= $location->postcode;
             }
-            if ($location->location_country != '' and $location->address != '') {
-                $location->address .= ', ' . $location->location_country;
+            if ($location->country != '' and $location->address != '') {
+                $location->address .= ', ' . $location->country;
             } else {
-                $location->address .= $location->location_country;
+                $location->address .= $location->country;
             }
             # build the path to the icon
             $location->icon = base_url().'theme-tango/tango-images/32_'.str_replace(" ", "_", strtolower($location->type)).'.png';
@@ -563,21 +499,14 @@ class M_oa_location extends MY_Model
             $location->id = intval($location->id);
             # make sure the group is an integer
             $location->group = intval($location->group);
-            # we don't need the following, remove them
-            unset($location->location_latitude);
-            unset($location->location_longitude);
-            unset($location->location_address);
-            unset($location->location_city);
-            unset($location->location_postcode);
-            unset($location->location_country);
             # add the location object to the new_locations array using the id for the index
             $new_locations[$location->id] = $location;
         }
         # add a count to the type in a location
         foreach ($types as $type) {
             $device_type = $type->man_type;
-            $location_id = $type->man_location_id;
-            $new_locations[$location_id]->infoDisplay->$device_type++;
+            $id = $type->man_location_id;
+            $new_locations[$id]->infoDisplay->$device_type++;
         }
         # remove any locations without devices
         foreach ($new_locations as $location) {

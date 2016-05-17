@@ -30,7 +30,7 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * @version 1.12.6
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('refresh_group_definitions')) {
@@ -93,17 +93,18 @@ if (! function_exists('refresh_group_definitions')) {
                     $data = array($group->group_id);
                     $query = $CI->db->query($sql, $data);
                     $users = $query->result();
-                    $sql = "DELETE FROM oa_group WHERE group_id = '" . $group->group_id . "'";
-                    $CI->db->query($sql);
+                    #$sql = "DELETE FROM oa_group WHERE group_id = '" . $group->group_id . "'";
+                    #$CI->db->query($sql);
                     $file_report = BASEPATH.'../application/controllers/groups/'.$file['group_file'];
                     $file_handle = fopen($file_report, "rb");
                     $contents = fread($file_handle, filesize($file_report));
                     $xml = new SimpleXMLElement(utf8_encode($contents));
                     // if ($group->group_id != '1') {
-                    $sql = "INSERT INTO oa_group SET group_name = ?, group_padded_name = ?, group_dynamic_select = ?, group_parent = ?, group_description = ?, group_category = ?, group_display_sql = ?, group_icon = ?";
-                    if ($group->group_name == 'All Devices') {
-                        $sql .= ", group_id = 1";
-                    }
+                    #$sql = "INSERT INTO oa_group SET group_name = ?, group_padded_name = ?, group_dynamic_select = ?, group_parent = ?, group_description = ?, group_category = ?, group_display_sql = ?, group_icon = ?";
+                    $sql = "UPDATE oa_group SET group_name = ?, group_padded_name = ?, group_dynamic_select = ?, group_parent = ?, group_description = ?, group_category = ?, group_display_sql = ?, group_icon = ? WHERE group_id = ?";
+                    // if ($group->group_name == 'All Devices') {
+                    //     $sql .= ", group_id = 1";
+                    // }
                     $data = array((string)$xml->details->group_name,
                         (string)$xml->details->group_padded_name,
                         (string)$xml->details->group_dynamic_select,
@@ -111,13 +112,19 @@ if (! function_exists('refresh_group_definitions')) {
                         (string)$xml->details->group_description,
                         (string)$xml->details->group_category,
                         (string)$xml->details->group_display_sql,
-                        (string)$xml->details->group_icon);
+                        (string)$xml->details->group_icon,
+                        $group->group_id);
                     $query = $CI->db->query($sql, $data);
-                    $group_id = $CI->db->insert_id();
+                    #$group_id = $CI->db->insert_id();
+                    $group_id = $group->group_id;
                     // We need to insert an entry into oa_group_user for any Admin level user
-                    #$sql = "INSERT INTO oa_group_user (SELECT NULL, user_id, ?, '10' FROM oa_user WHERE user_admin = 'y')";
+                    #$sql = "INSERT INTO oa_group_user (SELECT NULL, id, ?, '10' FROM oa_user WHERE admin = 'y')";
                     #$data = array("$group_id");
                     #$result = $CI->db->query($sql, $data);
+                    $sql = "DELETE FROM oa_group_column WHERE group_id = ?";
+                    $data = array($group->group_id);
+                    $query = $CI->db->query($sql, $data);
+
                     foreach ($xml->columns->column as $column) {
                         $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
                         $data = array($group_id,
@@ -136,16 +143,16 @@ if (! function_exists('refresh_group_definitions')) {
                     $query = $CI->db->query($sql, $data);
                     // ensure we remove all rows for this group id
                     // this should have already occurred when we deleted the group above
-                    $sql = "DELETE FROM oa_group_user WHERE group_id = ?";
-                    $data = array($group->group_id);
-                    $query = $CI->db->query($sql, $data);
+                    // $sql = "DELETE FROM oa_group_user WHERE group_id = ?";
+                    // $data = array($group->group_id);
+                    // $query = $CI->db->query($sql, $data);
                     // update any user permissions to the new group id
                     // insert a new row per user for the new group id with the old group access level
-                    foreach ($users as $user) {
-                        $sql = "INSERT INTO oa_group_user VALUES (NULL, ?, ?, ?)";
-                        $data = array($user->user_id, $group_id, $user->group_user_access_level);
-                        $query = $CI->db->query($sql, $data);
-                    }
+                    // foreach ($users as $user) {
+                    //     $sql = "INSERT INTO oa_group_user VALUES (NULL, ?, ?, ?)";
+                    //     $data = array($user->user_id, $group_id, $user->group_user_access_level);
+                    //     $query = $CI->db->query($sql, $data);
+                    // }
                 }
             }
         }
@@ -200,11 +207,11 @@ if (! function_exists('check_default_groups')) {
             $CI->m_oa_group->activate_file('All Devices');
             $CI->m_oa_group->activate_file('Items in Default Location');
             $id = $CI->m_oa_group->get_group_id('Items in Default Location');
-            $sql = "UPDATE oa_location SET location_group_id = '$id' WHERE location_name = 'Default Location'";
+            $sql = "UPDATE oa_location SET group_id = '$id' WHERE name = 'Default Location'";
             $query = $CI->db->query($sql);
             $CI->m_oa_group->activate_file('Default Organisation owned items');
             $id = $CI->m_oa_group->get_group_id('Default Organisation owned items');
-            $sql = "UPDATE oa_org SET org_group_id = '$id' WHERE org_name = 'Default Organisation'";
+            $sql = "UPDATE oa_org SET group_id = '$id' WHERE name = 'Default Organisation'";
             $query = $CI->db->query($sql);
             $CI->m_oa_group->activate_file('All Printers');
             $CI->m_oa_group->activate_file('Routers');

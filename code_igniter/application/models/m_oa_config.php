@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -55,7 +55,7 @@ class M_oa_config extends MY_Model
             $edited_by = 'config_edited_by';
         #}
 
-        $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.user_id";
+        $sql = "SELECT oa_config.*, oa_user.full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.id";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -90,13 +90,19 @@ class M_oa_config extends MY_Model
         $query = $this->db->query($sql);
         $row = $query->row();
         $internal_version = $row->config_value;
+
         #if (isset($internal_version) and $internal_version > '20151230') {
         #    $edited_by = 'config_edited_by_user_id';
         #} else {
             $edited_by = 'config_edited_by';
         #}
 
-        $sql = "SELECT oa_config.*, oa_user.user_full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.user_id";
+        $user_prefix = '';
+        if (intval($internal_version) < 20160409) {
+            $user_prefix = 'user_';
+        }
+
+        $sql = "SELECT oa_config.*, oa_user." . $user_prefix . "full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user." . $user_prefix . "id";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -335,7 +341,7 @@ class M_oa_config extends MY_Model
         // }
         # linux
         if (php_uname('s') == 'Linux') {
-            $command = "ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}'";
+            $command = "ip addr | grep 'state ' -A2 | grep inet | awk '{print $2}'";
             exec($command, $output, $return_var);
             if ($return_var == 0) {
                 foreach ($output as $line) {
@@ -380,8 +386,13 @@ class M_oa_config extends MY_Model
                 }
             }
         }
-
-        return ($ip_address_array);
+        $this->load->helper('network_helper');
+        $networks = array();
+        foreach ($ip_address_array as $network) {
+            $test = network_details($network);
+            $networks[] = $test->network . '/' . $test->network_slash;
+        }
+        return ($networks);
     }
 
     public function get_server_domain()
@@ -394,4 +405,87 @@ class M_oa_config extends MY_Model
         }
         return($result);
     }
+
+
+
+    # supply a standard ip address - 192.168.1.1
+    # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
+    # returns true if ip is contained in a subnet, false otherwise
+    function check_blessed($ip = '')
+    {
+        if (empty($this->config)) {
+            $this->load_config();
+        }
+        if (empty($this->config->config['blessed_subnets_use']) or trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
+            return true;
+        }
+        if (empty($ip)) {
+            return false;
+        }
+        if ($ip == '127.0.0.1' or $ip == '127.0.1.1') {
+            return true;
+        }
+        $sql = "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(name, LOCATE('/', name)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(name, 1, LOCATE('/', name)-1))";
+        $sql = $this->clean_sql($sql);
+        $data = array("$ip");
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        if (intval($result[0]->count) > 0) {
+            return true;
+        } else {
+            $this->load->helper('log_helper');
+            $log_details = new stdClass();
+            $log_details->severity = 5;
+            $log_details->file = 'system';
+            $log_details->message = 'Audit submission from an IP not in the list of blessed subnets (' . $_SERVER['REMOTE_ADDR'] . ')';
+            stdlog($log_details);
+            unset($log_details);
+            return false;
+        }
+    }
+
+
+    # return true if subnet added to networks table, false otherwise
+    function update_blessed($network = '') {
+        if (isset($this->config->config['blessed_subnets_use']) and trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
+            return true;
+        }
+        if (empty($network)) {
+            return false;
+        }
+        if (!$this->db->table_exists('networks')) {
+            return true;
+        }
+        # ensure we remove and spaces - '192.168.1.0 / 24' becomes '192.168.1.0/24'
+        $network = str_replace(' ', '', $network);
+        # test that we have a valid subnet
+        $this->load->helper('network_helper');
+        $this->load->helper('log_helper');
+        $test = network_details($network);
+        if (!empty($test->error)) {
+            return false;
+        }
+        # test to see if this subnet exists already in the netwokrs table
+        $sql = "/* m_oa_config::update_blessed */ SELECT name FROM networks WHERE name = ?";
+        $data = array("$network");
+        $query = $this->db->query($sql, $data);
+        if ($query->num_rows() == 0) {
+            # the subnet does not exist. Log it and insert it
+            $trace = debug_backtrace();
+            $caller = $trace[1];
+            $log_details = new stdClass();
+            $log_details->severity = 7;
+            $log_details->file = 'system';
+            $log_details->message = "Inserting " . $network . ' into blessed subnet list.';
+            stdlog($log_details);
+            unset($log);
+            $sql = "/* m_oa_config::update_blessed */ INSERT INTO `networks` VALUES(NULL, ?, '', ?, NOW())";
+            $data = array("$network", 'auto-generated by '.@$caller['function']);
+            $query = $this->db->query($sql, $data);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

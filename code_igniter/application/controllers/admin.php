@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -264,7 +264,7 @@ class admin extends MY_Controller
                 $this->load->model('m_oa_config');
                 foreach ($config as $name => $value) {
                     $value = urldecode($value);
-                    $this->m_oa_config->update_config($name, $value, $this->user->user_id, date('Y-m-d H:i:s'));
+                    $this->m_oa_config->update_config($name, $value, $this->user->id, date('Y-m-d H:i:s'));
                 }
                 header(' ', true, 200);
             } else {
@@ -724,6 +724,19 @@ class admin extends MY_Controller
             ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
             $bind = @ldap_bind($ad, $ad_user, $ad_secret);
             if ($bind) {
+                # get the list of subnets from AD
+                $dn = "CN=Subnets,CN=Sites,CN=Configuration,dc=".implode(", dc=", explode(".", $ad_domain));
+                $filter = "(&(objectclass=*))";
+                $justthese = array("distinguishedName", "name");
+                $sr = ldap_search($ad, $dn, $filter, $justthese);
+                $info = ldap_get_entries($ad, $sr);
+                for ($i = 0; $i < count($info)-1; $i++) {
+                    if ( $info[$i]['name'][0] != 'Subnets') {
+                        //echo "Subnet: " . $info[$i]['name'][0] . "\n";
+                        $this->m_oa_config->update_blessed($info[$i]['name'][0]);
+                    }
+                }
+
                 # extract the list of computers from AD
                 $filter = "(&(objectclass=computer))";
                 $justthese = array("dnshostname", "name", "location", "operatingSystem", "lastLogon", "pwdLastSet", "lastlogon", "distinguishedName");
@@ -799,8 +812,7 @@ class admin extends MY_Controller
                     $details->last_seen = date("Y-m-d H:i:s", $m);
                     $details->last_seen_by = 'active directory';
                     $details->audits_ip = '127.0.0.1';
-                    $details->last_user = $this->user->user_full_name;
-                    #$details->location = @$info[$i]['location'][0];
+                    $details->last_user = $this->user->full_name;
                     $details->windows_active_directory_ou = '';
                     $j = explode(",", @strtolower($info[$i]['distinguishedname'][0]));
                     for ($k = 1; $k<count($j); $k++) {
@@ -808,7 +820,6 @@ class admin extends MY_Controller
                     }
                     $details->windows_active_directory_ou = substr($details->windows_active_directory_ou, 1);
                     $details->icon = strtolower(str_replace(" ", "_", $details->os_family));
-                    $details->man_icon = $details->icon;
                     $full_name = $details->dns_hostname;
 
                     $details->man_ip_address = gethostbyname($full_name);
@@ -828,8 +839,8 @@ class admin extends MY_Controller
                         # insert a new system
                         $details->system_id = $this->m_system->insert_system($details);
                     }
-                    if (isset($this->user->user_full_name)) {
-                        $temp_user = $this->user->user_full_name;
+                    if (isset($this->user->full_name)) {
+                        $temp_user = $this->user->full_name;
                     } else {
                         $temp_user = '';
                     }
@@ -968,17 +979,17 @@ class admin extends MY_Controller
     {
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_group_column");
-        $this->data['query'] = $this->m_oa_location->list_devices_in_location($this->data['id'], $this->user->user_id);
+        $this->data['query'] = $this->m_oa_location->list_devices_in_location($this->data['id'], $this->user->id);
         $this->data['column'] = $this->m_oa_group_column->get_group_column();
-        $location_name = $this->m_oa_location->get_location_name($this->data['id']);
-        $this->data['heading'] = 'Systems in Location - '.$location_name;
+        $name = $this->m_oa_location->get_location_name($this->data['id']);
+        $this->data['heading'] = 'Systems in Location - '.$name;
         $this->data['include'] = 'v_report';
         $this->data['export_report'] = 'y';
         $this->data['group_id'] = '0';
-        if ($this->user->user_admin == 'y') {
-            $this->user->user_access_level = '10';
+        if ($this->user->admin == 'y') {
+            $this->user->access_level = '10';
         } else {
-            $this->user->user_access_level = '3';
+            $this->user->access_level = '3';
         }
         $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
     }
@@ -987,18 +998,18 @@ class admin extends MY_Controller
     {
         $this->load->model("m_oa_org");
         $this->load->model("m_oa_group_column");
-        $this->user->user_access_level = '7';
-        $this->data['query'] = $this->m_oa_org->list_devices_in_org($this->data['id'], $this->user->user_id);
+        $this->user->access_level = '7';
+        $this->data['query'] = $this->m_oa_org->list_devices_in_org($this->data['id'], $this->user->id);
         $this->data['column'] = $this->m_oa_group_column->get_group_column();
         $org_name = $this->m_oa_org->get_org_name($this->data['id']);
         $this->data['heading'] = 'Systems in Org - '.$org_name;
         $this->data['include'] = 'v_report';
         $this->data['export_report'] = 'y';
         $this->data['group_id'] = '0';
-        if ($this->user->user_admin == 'y') {
-            $this->user->user_access_level = '10';
+        if ($this->user->admin == 'y') {
+            $this->user->access_level = '10';
         } else {
-            $this->user->user_access_level = '3';
+            $this->user->access_level = '3';
         }
         $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
     }
@@ -2299,7 +2310,7 @@ class admin extends MY_Controller
             foreach ($user_array as $user) {
                 $sql = "INSERT INTO oa_group_user (group_user_id, user_id, group_id,
                     group_user_access_level) VALUES (NULL, ?, '1', ?)";
-                $data = array($user->user_id, $user->group_user_access_level);
+                $data = array($user->id, $user->group_user_access_level);
                 $query = $this->db->query($sql, $data);
                 $this->data['output'] .= $this->db->last_query()."<br /><br />\n";
             }
@@ -3354,7 +3365,7 @@ class admin extends MY_Controller
             $this->load->model('m_oa_group');
 
             $configs = array('default_ipmi_password', 'default_ssh_password', 'default_snmp_community', 'default_windows_password');
-            $user_id = $this->user->user_id;
+            $user_id = $this->user->id;
             $timestamp = date('Y-m-d H:i:s');
             foreach ($configs as $config_name) {
                 $config_value = $this->m_oa_config->get_config_item($config_name);
@@ -4698,22 +4709,10 @@ class admin extends MY_Controller
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_nmap_os'";
             $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00',0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).')";
 
-
             $sql[] = "ALTER TABLE oa_user ADD permissions text NOT NULL default ''";
 
             $sql[] = "UPDATE oa_org SET org_name = 'Default Organisation' WHERE org_name = '' AND org_id = 0";
             $sql[] = "UPDATE oa_org SET org_comments = '' WHERE org_comments = 'Default Organisation.' AND org_id = 0";
-
-            # change the oa_org to the new SQL schema style
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_name name varchar(100) NOT NULL DEFAULT ''";
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_parent_id parent_id int(10) unsigned DEFAULT NULL";
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_group_id group_id int(10) unsigned DEFAULT NULL";
-            // $sql[] = "ALTER TABLE oa_org DROP contact_id";
-            // $sql[] = "ALTER TABLE oa_org DROP org_picture";
-            // $sql[] = "ALTER TABLE oa_org CHANGE org_comments comments text NOT NULL DEFAULT ''";
-            // $sql[] = "UPDATE oa_org SET name = 'Default Organisation' WHERE id = 0";
-            // $sql[] = "ALTER TABLE oa_org ADD CONSTRAINT oa_org_parent FOREIGN KEY (parent_id) REFERENCES oa_org (id)";
 
             $sql[] = "DROP TABLE IF EXISTS `oa_user_org`";
             $sql[] = "CREATE TABLE `oa_user_org` (
@@ -4864,6 +4863,181 @@ class admin extends MY_Controller
             stdlog($log_details);
             unset($log_details);
         }
+
+
+
+        if (($db_internal_version < '20160409') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.12.6
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.12.6 commenced';
+            stdlog($log_details);
+
+            $this->load->model('m_system');
+            $this->m_system->reset_icons();
+
+            unset($sql);
+            $sql = array();
+            # we're removving the foreign key between additional fields and groups
+            $sql[] = "ALTER TABLE sys_man_additional_fields DROP FOREIGN KEY sys_man_additional_fields_group_id";
+
+            # this should be unused now - groups and reports refreshed further down
+            $sql[] = "ALTER TABLE system DROP man_icon";
+
+            # drop this key so we can change org_id to id
+            $sql[] = "ALTER TABLE oa_user_org DROP FOREIGN KEY oa_user_org_org_id";
+
+            # change the oa_org to the new SQL schema style
+            $sql[] = "ALTER TABLE oa_org CHANGE org_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_name name varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_parent_id parent_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_group_id group_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE oa_org DROP contact_id";
+            $sql[] = "ALTER TABLE oa_org DROP org_picture";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_comments comments text NOT NULL DEFAULT ''";
+            $sql[] = "UPDATE oa_org SET name = 'Default Organisation' WHERE id = 0";
+
+            # now add the key back
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_org_id FOREIGN KEY (org_id) REFERENCES oa_org (id)";
+
+            # drop these foreign keys so we can change user_id to id
+            $sql[] = "ALTER TABLE edit_log DROP FOREIGN KEY edit_log_user_id";
+            $sql[] = "ALTER TABLE oa_change DROP FOREIGN KEY oa_change_user_id";
+            $sql[] = "ALTER TABLE oa_group_user DROP FOREIGN KEY oa_group_user_user_id";
+            $sql[] = "ALTER TABLE oa_user_org DROP FOREIGN KEY oa_user_org_user_id";
+            $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_user_id";
+            $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_user_id";
+
+            # change the user table to the new SQL schema format
+            $sql[] = "ALTER TABLE oa_user CHANGE user_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_name name varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_password password varchar(250) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_full_name full_name varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_email email varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_lang lang varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_display_number display_count smallint(6) NOT NULL DEFAULT '10'";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_theme theme varchar(100) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_admin admin varchar(1) NOT NULL";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_active active varchar(1) NOT NULL DEFAULT 'y'";
+            $sql[] = "ALTER TABLE oa_user CHANGE user_sam sam int(10) NOT NULL DEFAULT '1'";
+            $sql[] = "ALTER TABLE oa_user DROP user_change";
+
+            # now add the foreign keys back
+            $sql[] = "ALTER TABLE edit_log ADD CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_change ADD CONSTRAINT oa_change_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_group_user ADD CONSTRAINT oa_group_user_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT att_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT sys_man_notes_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+
+            # change the location table to use the new SQL schema format
+            $sql[] = "ALTER TABLE oa_location CHANGE location_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_name name varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_type type varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_room room varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_suite suite varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_level level varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_address address varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_suburb suburb varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_city city varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_district district varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_region region varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_area area varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_state state varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_postcode postcode varchar(10) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_country country varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_tags tags varchar(250) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_phone phone varchar(20) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_picture picture varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_latitude latitude float(10,6) NOT NULL";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_longitude longitude float(10,6) NOT NULL";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_geo geo varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_comments comments varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_icon icon varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE oa_location CHANGE location_group_id group_id int(10) unsigned NOT NULL DEFAULT '0'";
+
+            # this is unused and having 'count' as a column name is not ideal because it's a SQL reserved word
+            $sql[] = "ALTER TABLE service DROP count";
+
+            # allow for some silly long serial numbers
+            $sql[] = "ALTER TABLE system CHANGE `serial` `serial` varchar(250) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE `man_serial` `man_serial` varchar(250) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system ADD `dbus_identifier` varchar(250) NOT NULL DEFAULT '' AFTER uuid";
+
+            # a new function we'll use for checking if an IP is in a blessed subnet
+            $sql[] = "DROP FUNCTION IF EXISTS cidr_to_mask";
+            $sql[] = "CREATE FUNCTION cidr_to_mask (cidr INT(2)) RETURNS CHAR(15) DETERMINISTIC RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10))";
+
+            # our new blessed subnets config item
+            $sql[] = "UPDATE `ip` SET `network` = REPLACE(`network`, ' ', '')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y','0000-00-00 00:00:00',0,'Should we only accept data from the blessed subnets list.')";
+
+            # new table for network descriptions and blessed subnets
+            $sql[] = "DROP TABLE IF EXISTS `networks`";
+            $sql[] = "CREATE TABLE `networks` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "INSERT INTO `networks` SELECT NULL, REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', '')  AS name, TRIM(both '\t' from group_description) as description, 'system upgrade' as edited_by, NOW() as edited_date FROM oa_group WHERE group_category = 'network' AND SUBSTR(REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''),1,LOCATE('/',REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''))-1) != `group_description`";
+
+            $sql[] = "INSERT INTO `networks` (SELECT NULL, ip.network as name, '' as description, 'system upgrade' as edited_by, NOW() as edited_date FROM ip WHERE network NOT IN (SELECT networks.name FROM networks) AND ip.network != '' GROUP BY ip.network)";
+
+            $sql[] = "DROP TABLE IF EXISTS `chart`";
+
+            $sql[] = "CREATE TABLE `chart` ( `when` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `what` varchar(50) NOT NULL DEFAULT '', `org_id` int unsigned NOT NULL DEFAULT 0, `count` int unsigned NOT NULL DEFAULT 0, PRIMARY KEY (`when`, `what`, `org_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'audit' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `new_count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'audit' AND system.man_org_id IS NOT NULL GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'snmp' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'snmp' AND system.man_org_id IS NOT NULL GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'nmap' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'nmap' AND system.man_org_id IS NOT NULL GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(change_log.timestamp) as `when`, CONCAT(change_log.db_table, '_', change_log.db_action) as `what`, system.man_org_id as `org_id`, count(change_log.id) AS `count` FROM change_log LEFT JOIN system ON (change_log.system_id = system.system_id) WHERE DATE(change_log.timestamp) >= '2015-01-01' AND change_log.db_table != 'system' GROUP BY system.man_org_id, CONCAT(change_log.db_table, '_', change_log.db_action), DATE(change_log.timestamp) ORDER BY DATE(change_log.timestamp))";
+
+            $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(`first_timestamp`) as `when`, 'system_create' as `what`, system.man_org_id as `org_id`, count(system_id) AS `count` FROM system WHERE DATE(`first_timestamp`) >= '2015-01-01' GROUP BY DATE(`first_timestamp`), man_org_id ORDER BY DATE(`first_timestamp`))";
+
+            # set our versions
+            $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";
+
+            foreach ($sql as $this_query) {
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
+
+            # refresh the reports
+            $this->load->helper('report_helper');
+            refresh_report_definitions();
+
+            # refresh the groups
+            $this->load->helper('group_helper');
+            refresh_group_definitions();
+
+            // update any leftover group definitions by changing man_icon to icon
+            $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_icon', 'icon')";
+            $query = $this->db->query($sql);
+            $sql = "UPDATE oa_group_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+            $query = $this->db->query($sql);
+
+            // update any leftover report definitions by changing man_icon to icon
+            $sql = "UPDATE oa_report SET report_sql = REPLACE(report_sql, 'man_icon', 'icon')";
+            $query = $this->db->query($sql);
+            $sql = "UPDATE oa_report_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+            $query = $this->db->query($sql);
+
+            # have to re-run this as we left it in the original SQL script.
+            $sql = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
+            $query = $this->db->query($sql);
+            $sql = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
+            $query = $this->db->query($sql);
+
+            foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
+                $this->m_oa_config->update_blessed($subnet, 0);
+            }
+
+            $log_details->message = 'Upgrade database to 1.12.6 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
+
 
 
         $this->m_oa_config->load_config();

@@ -27,39 +27,44 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 #echo "HERE"; exit();
-#echo "<pre>"; print_r($this->response->properties); #exit();
-#print_r($this->response->data[1]);
+#echo "<pre>"; print_r($this->response); #exit();
+#echo "<pre>\n";
+#print_r($this->response);
+#exit();
+echo "<div style=\"float:left; width:100%;\">\n";
+if (!empty($this->response->data)) {
 ?>
 <table cellspacing="1" class="tablesorter">
     <thead>
         <tr>
             <?php
-            $properties = explode(',', $this->response->properties);
-            foreach ($properties as $property) {
-                $property = trim($property);
-                if ($property == 'man_ip_address' or $property == 'ip_padded') {
+
+            $properties = get_object_vars($this->response->data[0]);
+            #echo "<pre>\n"; print_r($properties); echo "</pre>\n";
+            foreach ($properties as $key => $value) {
+                if ($key == 'man_ip_address' or $key == 'ip_padded') {
                     continue;
                 }
-                $property = str_replace('man_', '', $property);
-                $property = str_replace('_', ' ', $property);
-                $property = str_replace('os ', 'OS ', $property);
-                $property = str_replace(' id', ' ID', $property);
-                $property = ucwords($property);
-                if (stripos($property, 'icon') !== false) {
-                    echo "\t\t\t<th style=\"text-align: center;\">" . __($property) . "</th>\n";
+                $key = str_replace('man_', '', $key);
+                $key = str_replace('_', ' ', $key);
+                $key = str_replace('os ', 'OS ', $key);
+                $key = str_replace(' id', ' ID', $key);
+                $key = ucwords($key);
+                if (stripos($key, 'icon') !== false) {
+                    echo "\t\t\t<th style=\"text-align: center;\">" . __($key) . "</th>\n";
                 } else {
-                    echo "\t\t\t<th>" . __($property) . "</th>\n";
+                    echo "\t\t\t<th>" . __($key) . "</th>\n";
                 }
             }
             ?>
             <th  width="150" align="middle" class='{sorter: false}'>
-                <button><?php #echo __('Acknowledge') ?></button>
+                <button><?php echo __('Edit') ?></button>
                 <input type="checkbox" valign="absmiddle" id="alert_id_0" name="alert_id_0"/>
             </th>
         </tr>
@@ -68,8 +73,11 @@
     <?php
     foreach ($this->response->data as $item) {
         echo "\t\t\t<tr>\n";
-        foreach ($properties as $property) {
+        foreach ($properties as $property => $value) {
             $property = trim($property);
+            if (strpos($property, '.') !== false) {
+                $property = substr($property, 0, strpos($property, '.'));
+            }
             if ($property == 'man_ip_address' or $property == 'ip_padded') {
                 continue;
             }
@@ -96,6 +104,14 @@
     ?>
     </tbody>
 </table>
+<?php
+}
+if (!empty($this->response->error)) {
+    echo "<pre>\n";
+    print_r($this->response->error);
+    echo "</pre>\n";
+}
+?>
 </div>
 <?php
 exit();

@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -120,6 +120,12 @@ if (!isset($system_id)) {
 if (!isset($type)) {
     $type = '';
 }
+if (!isset($org_id)) {
+    $org_id = '';
+}
+if (!isset($location_id)) {
+    $location_id = '';
+}
 if (isset($this->config->config['show_snmp_community']) and $this->config->config['show_snmp_community'] == 'n') {
     $snmp_community_field = 'password';
 } else {
@@ -196,7 +202,12 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                         <option value=''></option>
                 <?php
                     foreach ($orgs as $org) {
-                        echo "<option value='" . $org->org_id . "'>" . $org->org_name . "</option>\n";
+                        if ($org_id == $org->id) {
+                            $selected = ' selected';
+                        } else {
+                            $selected = '';
+                        }
+                        echo "<option value='" . $org->id . "'" . $selected . ">" . $org->name . "</option>\n";
                     }
                 ?>
                     </select>
@@ -207,7 +218,12 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                         <option value=''></option>
                 <?php
                     foreach ($locations as $location) {
-                        echo "<option value='" . $location->location_id . "'>" . $location->location_name . "</option>\n";
+                        if ($location_id == $location->id) {
+                            $selected = ' selected';
+                        } else {
+                            $selected = '';
+                        }
+                        echo "<option value='" . $location->id . "'" . $selected . ">" . $location->name . "</option>\n";
                     }
                 ?>
                     </select>

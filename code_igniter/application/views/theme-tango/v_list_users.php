@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -50,26 +50,26 @@ if ($query) {
 	<tbody>
 		<?php
         foreach ($query as $key):
-            $edit_pic = "<a href=\"edit_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
-            $delete_pic = "<a href=\"delete_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
-            if ($key->user_admin == 'y') {
+            $edit_pic = "<a href=\"edit_user/".intval($key->id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
+            $delete_pic = "<a href=\"delete_user/".intval($key->id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
+            if ($key->admin == 'y') {
                 $admin_pic = "<img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/>";
             } else {
                 $admin_pic = "<img src='".$oa_theme_images."/16_false.png' alt='' title='' style='width:16'/>";
                 $admin_pic = "";
             }
-            if ($key->user_active == 'y') {
-                $deactivate_pic = "<a href=\"deactivate_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
+            if ($key->active == 'y') {
+                $deactivate_pic = "<a href=\"deactivate_user/".intval($key->id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                 $activate_pic = "";
             } else {
                 $deactivate_pic = "";
-                $activate_pic = "<a href=\"activate_user/".intval($key->user_id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>";
+                $activate_pic = "<a href=\"activate_user/".intval($key->id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>";
             }
             ?>
 			<tr>
-				<td><?php echo htmlentities($key->user_name)?></td>
-				<td><?php echo htmlentities($key->user_full_name)?></td>
-				<td><?php echo htmlentities($key->user_email)?></td>
+				<td><?php echo htmlentities($key->name)?></td>
+				<td><?php echo htmlentities($key->full_name)?></td>
+				<td><?php echo htmlentities($key->email)?></td>
 				<td align='center'><?php echo $admin_pic?></td>
 				<td align='center'><?php echo $edit_pic?></td>
 				<td align='center'><?php echo $deactivate_pic?></td>

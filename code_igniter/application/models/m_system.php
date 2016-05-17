@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -81,8 +81,10 @@ class M_system extends MY_Model
             $details->system_key_type = '';
         }
 
-        if (!empty($details->hostname) and !empty($details->domain) and empty($details->fqdn)) {
+        if (!empty($details->hostname) and !empty($details->domain) and $details->domain != '' and $details->domain != '.' and empty($details->fqdn)) {
             $details->fqdn = $details->hostname.".".$details->domain;
+        } else {
+            $details->fqdn = '';
         }
 
         # this is a computer from an audit script
@@ -173,6 +175,19 @@ class M_system extends MY_Model
             }
         }
 
+        if (!empty($details->dbus_identifier)) {
+            $sql = "SELECT system.system_id FROM system WHERE system.dbus_identifier = ? AND system.man_status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->dbus_identifier");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->system_id = $row->system_id;
+                $log_details->message = 'HIT on dbus_identifier short for '.ip_address_from_db($details->man_ip_address).' (System ID '.$details->system_id.')';
+                stdlog($log_details);
+            }
+        }
+
         if (!empty($details->uuid) and !empty($details->hostname) and strlen($details->hostname) > 15) {
             $temp_hostname = substr($details->hostname, 0, 15);
             $sql = "SELECT system.system_id FROM system WHERE system.uuid = ? AND system.hostname = ? AND system.man_status = 'production' LIMIT 1";
@@ -188,8 +203,10 @@ class M_system extends MY_Model
             unset($temp_hostname);
         }
 
-        if (empty($details->fqdn) and !empty($details->hostname) and !empty($details->domain)) {
-            $details->fqdn = $details->hostname . '.' . $details->domain;
+        if (!empty($details->hostname) and !empty($details->domain) and $details->domain != '' and $details->domain != '.' and empty($details->fqdn)) {
+            $details->fqdn = $details->hostname.".".$details->domain;
+        } else {
+            $details->fqdn = '';
         }
 
         if (empty($details->system_id) and !empty($details->fqdn)) {
@@ -621,8 +638,8 @@ class M_system extends MY_Model
 				oa_group_sys,
 				system
 			WHERE
-				oa_user.user_id = ? AND
-				oa_user.user_id = oa_group_user.user_id AND
+				oa_user.id = ? AND
+				oa_user.id = oa_group_user.user_id AND
 				oa_group_user.group_id = oa_group.group_id AND
 				oa_group.group_id = oa_group_sys.group_id AND
 				oa_group_sys.system_id = ?
@@ -692,7 +709,9 @@ class M_system extends MY_Model
         }
         $myip = explode(".", $search_ip);
         foreach ($myip as $index => $data) {
-            $myip[$index] = mb_substr("000".$myip[$index], -3);
+            #$myip[$index] = mb_substr("000".$myip[$index], -3);
+            #$myip[$index] = mb_substr("%%%".$myip[$index], -3);
+            $myip[$index] = '%' . $myip[$index] . '%';
         }
         $search_ip = "%".implode(".", $myip)."%";
         $search = "%".$search."%";
@@ -706,7 +725,8 @@ class M_system extends MY_Model
 			WHERE ( system.hostname LIKE ? OR
 				system.fqdn LIKE ? OR
 				system.domain LIKE ? OR
-				system.man_ip_address LIKE ? OR
+                system.man_ip_address LIKE ? OR
+                system.man_ip_address LIKE ? OR
 				ip.ip LIKE ? ) AND
 				system.man_status = 'production' AND
 				oa_group_user.user_id = ? AND
@@ -714,23 +734,16 @@ class M_system extends MY_Model
 			GROUP BY system.system_id
 			ORDER BY system.hostname";
         $sql = $this->clean_sql($sql);
-        #$data = array("$search", "$search", "$search", "$search_ip", "$search_ip", "$search", $this->user->user_id);
-        $data = array("$search", "$search", "$search", "$search", "$search_ip", $this->user->user_id);
+        $data = array("$search", "$search", "$search", "$search", "$search_ip", "$search_ip", $this->user->id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         for ($i = 0; $i<count($result); $i++) {
             if (strrpos($result[$i]->ip, $search_ip) !== false) {
-                $result[$i]->ip  = $this->ip_address_from_db($result[$i]->ip);
+                $result[$i]->ip = $this->ip_address_from_db($result[$i]->ip);
             } else {
                 $result[$i]->ip = $this->ip_address_from_db($result[$i]->man_ip_address);
             }
         }
-        // echo "<pre>\n";
-        // echo $this->db->last_query();
-        // print_r($this->data);
-        // print_r($result);
-        // echo "</pre>\n";
-        // exit();
         return ($result);
     }
 
@@ -760,7 +773,7 @@ class M_system extends MY_Model
         $i = new stdclass();
         $i->column_order = '1';
         $i->column_name = 'IP Address';
-        $i->column_variable = 'ip_address';
+        $i->column_variable = 'ip';
         $i->column_type = "text";
         $i->column_align = "left";
         $i->column_secondary = "";
@@ -841,7 +854,7 @@ class M_system extends MY_Model
     public function system_summary($system_id)
     {
         // Improved SQL to show the linked system for the case of devices like local attached, non-networked printers
-        $sql = "SELECT a.system_id, a.hostname, a.man_ip_address, a.man_environment, a.man_status, a.man_description, a.man_type, a.man_class, a.man_os_group, a.man_os_family, a.man_os_name, a.man_manufacturer, a.man_model, a.man_serial, a.man_form_factor, location_name, a.last_seen, a.last_seen_by, a.linked_sys as linked_system_id, b.hostname as linked_hostname FROM system a LEFT JOIN system b on a.linked_sys = b.system_id LEFT JOIN oa_location on a.man_location_id = oa_location.location_id WHERE a.system_id = ?";
+        $sql = "SELECT a.system_id, a.hostname, a.man_ip_address, a.man_environment, a.man_status, a.man_description, a.man_type, a.man_class, a.man_os_group, a.man_os_family, a.man_os_name, a.man_manufacturer, a.man_model, a.man_serial, a.man_form_factor, oa_location.name, a.last_seen, a.last_seen_by, a.linked_sys as linked_system_id, b.hostname as linked_hostname FROM system a LEFT JOIN system b on a.linked_sys = b.system_id LEFT JOIN oa_location on a.man_location_id = oa_location.id WHERE a.system_id = ?";
 
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
@@ -921,7 +934,7 @@ class M_system extends MY_Model
 
     public function get_system_summary($system_id)
     {
-        $sql = "SELECT system.*, location_name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.location_id) WHERE system.system_id = ? LIMIT 1";
+        $sql = "SELECT system.*, oa_location.name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.id) WHERE system.system_id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
@@ -942,7 +955,7 @@ class M_system extends MY_Model
 
     public function get_non_production_systems()
     {
-        $sql = "SELECT system_id, hostname, timestamp, oa_org.org_name FROM system LEFT JOIN oa_org ON system.man_org_id = oa_org.org_id WHERE man_status = 'deleted'";
+        $sql = "SELECT system_id, hostname, timestamp, oa_org.name as org_name FROM system LEFT JOIN oa_org ON system.man_org_id = oa_org.id WHERE man_status = 'deleted'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -1161,7 +1174,7 @@ class M_system extends MY_Model
             $details->man_type = strtolower($details->man_type);
         }
 
-        # we now set a default location - 0 the location_id
+        # we now set a default location - 0 the location id
         if (!isset($details->man_location_id)) {
             $details->man_location_id = '0';
         }
@@ -1197,7 +1210,7 @@ class M_system extends MY_Model
 
         $details->man_ip_address = ip_address_to_db($details->man_ip_address);
 
-        if ($details->hostname != '' and $details->domain != '' and $details->fqdn == '') {
+        if ($details->hostname != '' and $details->domain != '' and $details->domain != '.'  and $details->domain != ' ' and $details->fqdn == '') {
             $details->fqdn = $details->hostname.".".$details->domain;
         }
 
@@ -1261,9 +1274,22 @@ class M_system extends MY_Model
 
         # check if we have a matching entry in the vm table and update it if required
         if (isset($details->uuid) and $details->uuid != '') {
-            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) and vm.current = 'y' and vm.system_id = system.system_id";
+            if (!empty($details->serial)) {
+                # becauseWindows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
+                # which is taken from Win32_ComputerSystemProduct.IdentifyingNumber
+                # Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
+                # audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1
+                $windows_vm_uuid = str_ireplace('VMware-', '', $details->serial);
+                $windows_vm_uuid = str_ireplace('-', ' ', $windows_vm_uuid);
+                $windows_vm_uuid = strtolower($windows_vm_uuid);
+                $windows_vm_uuid = str_ireplace(' ', '', $windows_vm_uuid);
+                $windows_vm_uuid = substr($windows_vm_uuid, 0, 8) . '-'. substr($windows_vm_uuid, 8, 4) . '-' . substr($windows_vm_uuid, 12, 4) . '-' . substr($windows_vm_uuid, 16, 4) . '-' . substr($windows_vm_uuid, 20, 12);
+            } else {
+                $windows_vm_uuid = '';
+            }
+            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?) AND vm.current = 'y' and vm.system_id = system.system_id and vm.uuid != ''";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->uuid");
+            $data = array("$details->uuid", "$windows_vm_uuid");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();
@@ -1294,6 +1320,25 @@ class M_system extends MY_Model
         $log_details->message = 'System insert end for '.ip_address_from_db($details->man_ip_address).' ('.$details->hostname.') (System ID '.$details->system_id.')';
         stdlog($log_details);
         unset($log_details);
+
+        if (empty($details->man_org_id)) {
+            $sql = "SELECT man_org_id FROM system WHERE system_id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($details->system_id);
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            $details->man_org_id = $row->man_org_id;
+        }
+
+        # add a count to our chart table
+        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), 'system_create', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+
+        # add a count to our chart table
+        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
 
         return $details->system_id;
     }
@@ -1687,9 +1732,22 @@ class M_system extends MY_Model
 
         # check if we have a matching entry in the vm table and update it if required
         if (isset($details->uuid) and $details->uuid != '') {
-            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) and vm.current = 'y' and vm.system_id = system.system_id";
+            if (!empty($details->serial)) {
+                # becauseWindows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
+                # which is taken from Win32_ComputerSystemProduct.IdentifyingNumber
+                # Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
+                # audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1
+                $windows_vm_uuid = str_ireplace('VMware-', '', $details->serial);
+                $windows_vm_uuid = str_ireplace('-', ' ', $windows_vm_uuid);
+                $windows_vm_uuid = strtolower($windows_vm_uuid);
+                $windows_vm_uuid = str_ireplace(' ', '', $windows_vm_uuid);
+                $windows_vm_uuid = substr($windows_vm_uuid, 0, 8) . '-'. substr($windows_vm_uuid, 8, 4) . '-' . substr($windows_vm_uuid, 12, 4) . '-' . substr($windows_vm_uuid, 16, 4) . '-' . substr($windows_vm_uuid, 20, 12);
+            } else {
+                $windows_vm_uuid = '';
+            }
+            $sql = "SELECT vm.id, vm.system_id AS 'man_vm_system_id', system.hostname AS 'man_vm_server_name' FROM vm, system WHERE LOWER(vm.uuid) = LOWER(?) OR LOWER(vm.uuid) = LOWER(?) AND vm.current = 'y' and vm.system_id = system.system_id and vm.uuid != ''";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->uuid");
+            $data = array("$details->uuid", "$windows_vm_uuid");
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 $row = $query->row();
@@ -1713,6 +1771,20 @@ class M_system extends MY_Model
             }
         }
 
+        if (empty($details->man_org_id)) {
+            $sql = "SELECT man_org_id FROM system WHERE system_id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($details->system_id);
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            $details->man_org_id = $row->man_org_id;
+        }
+
+        # add a count to our chart table
+        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . $details->man_org_id . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+
         $log_details->message = 'System update end for '.ip_address_from_db($temp_ip).'('.$details->hostname.') (System ID '.$details->system_id.')';
         stdlog($log_details);
         unset($log_details);
@@ -1722,9 +1794,9 @@ class M_system extends MY_Model
     public function reset_icons($system_id = '')
     {
         if ($system_id != '') {
-            $sql = "SELECT system_id, man_type, man_os_name, man_os_family, man_os_group, man_manufacturer, icon, man_icon FROM system WHERE system_id = ".$system_id;
+            $sql = "SELECT system_id, man_type, man_os_name, man_os_family, man_os_group, man_manufacturer, icon FROM system WHERE system_id = ".$system_id;
         } else {
-            $sql = "SELECT system_id, man_type, man_os_name, man_os_family, man_os_group, man_manufacturer, icon, man_icon FROM system";
+            $sql = "SELECT system_id, man_type, man_os_name, man_os_family, man_os_group, man_manufacturer, icon FROM system";
         }
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -1844,9 +1916,9 @@ class M_system extends MY_Model
                 }
             }
 
-            $sql = "UPDATE system SET icon = ?, man_icon = ? WHERE system_id = ?";
+            $sql = "UPDATE system SET icon = ? WHERE system_id = ?";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->icon", "$details->icon", "$details->system_id");
+            $data = array("$details->icon", "$details->system_id");
             $query = $this->db->query($sql, $data);
         }
 

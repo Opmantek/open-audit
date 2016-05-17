@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * @version 1.12.6
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -41,7 +41,7 @@ class test extends CI_Controller
         // must be an admin to access this page
         $this->load->model('m_oa_user');
         $this->m_oa_user->validate_user();
-        if ($this->user->user_admin != 'y') {
+        if ($this->user->admin != 'y') {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
@@ -219,9 +219,81 @@ class test extends CI_Controller
         echo $instring . "\n";
     }
 
+    public function ddd()
+    {
+        $fields = $this->db->field_data('edit_log');
+        echo "<pre>\n";
+        print_r($fields);
+    }
+
+    public function eee()
+    {
+        echo "<pre>\n";
+        print_r($this->session);
+    }
+
+    public function org_user_3()
+    {
+        $this->output->enable_profiler(true);
+        echo "<pre>\n";
+        $end = array();
+
+
+        $sql = "SELECT * FROM oa_user_org WHERE user_id = ? ORDER BY access_level desc";
+        $data = array(1);
+        $query = $this->db->query($sql, $data);
+        $user_orgs = $query->result();
+        print_r($user_orgs);
+
+        $sql = "SELECT * FROM oa_org";
+        $query = $this->db->query($sql);
+        $this->orgs = $query->result();
+        print_r($this->orgs);
+
+        foreach ($this->orgs as $org) {
+            foreach ($user_orgs as $user_org) {
+                if ($user_org->org_id == $org->id) {
+                    $end[$org->id] = $user_org->access_level;
+                }
+            }
+        }
+
+        print_r($end);
+
+        # TODO - get a list of user_org.org_id's with perms like '%r%' and
+        # feed it into the array below
+        $org_id_list = array();
+        foreach ($end as $key => $value) {
+            $org_id_list[$key] = $value;
+            foreach ($this->get_org_id_3($key, $value) as $key2 => $value2) {
+                $org_id_list[$key2] = $value2;
+            }
+        }
+        print_r($org_id_list);
+    }
+
+
+    private function get_org_id_3($org_id, $access_level)
+    {
+        $org_id_list = array();
+        foreach ($this->orgs as $org) {
+            if ($org->parent_id == $org_id and $org->id != 0) {
+                $org_id_list[$org->id] = $access_level;
+                echo "Set OrgId: " . $org->id . " AccessLevel: $access_level\n-----\n";
+                foreach ($this->get_org_id_3($org->id, $access_level) as $key2 => $value2) {
+                    $org_id_list[$key2] = $value2;
+                }
+            }
+        }
+        return($org_id_list);
+    }
+
     public function org_user()
     {
         $this->output->enable_profiler(true);
+
+        $this->load->model('m_oa_config');
+        $this->m_oa_config->load_config();
         echo "<pre>\n";
         $user_org_id = array();
         $sql = "SELECT org_id FROM oa_user_org WHERE user_id = ?";
@@ -280,11 +352,11 @@ class test extends CI_Controller
         $dashboard->total['org'] = count($result);
 
         $dashboard->location = array();
-        $sql = "SELECT count(system.system_id) AS count, system.man_location_id, oa_location.location_name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system.man_org_id IN (" . $instring . ") GROUP BY system.man_location_id";
+        $sql = "SELECT count(system.system_id) AS count, system.man_location_id, oa_location.name FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.id WHERE system.man_org_id IN (" . $instring . ") GROUP BY system.man_location_id";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
-            $dashboard->location[$row->location_name] = $row->count;
+            $dashboard->location[$row->name] = $row->count;
         }
         $dashboard->total['location'] = count($result);
 
@@ -348,7 +420,7 @@ class test extends CI_Controller
 
 
         $dashboard->network = array();
-        $sql = "SELECT count(system.system_id) AS count, ip.network FROM system LEFT JOIN ip ON (system.system_id = ip.system_id) WHERE ip.current = 'y' AND ip.network != '' and ip.network != '0.0.0.0 / 0' AND system.man_org_id IN (" . $instring . ") GROUP BY ip.network";
+        $sql = "SELECT count(system.system_id) AS count, ip.network FROM system LEFT JOIN ip ON (system.system_id = ip.system_id) WHERE ip.current = 'y' AND ip.network != '' and ip.network != '0.0.0.0 / 0' AND ip.cidr < " . $this->config->item('network_group_subnet') . " AND system.man_org_id IN (" . $instring . ") GROUP BY ip.network";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -427,7 +499,7 @@ class test extends CI_Controller
         $test = array();
         $test[] = "system.type = 'bridge'";
         $test[] = "oa_org.name = 'OpenDealerExchange'";
-        $test[] = "oa_location.location_name = 'Pune - India'";
+        $test[] = "oa_location.name = 'Pune - India'";
         $test[] = "system.os_family = 'Ubuntu'";
         $test[] = "server.type = 'web'";
         $test[] = "system.man_status = 'deleted'";
@@ -447,7 +519,7 @@ class test extends CI_Controller
             $column = trim($temp[0]);
             echo $item . "\n";
             if ($table == 'oa_location') {
-                $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE $item AND system.man_status = 'production' AND system.man_org_id IN (" . $instring . ") ";
+                $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.id WHERE $item AND system.man_status = 'production' AND system.man_org_id IN (" . $instring . ") ";
             } elseif ($table == 'oa_org') {
                 $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system LEFT JOIN oa_org ON system.man_org_id = oa_org.id WHERE $item AND system.man_status = 'production'  AND system.man_org_id IN (" . $instring . ") ";
             } elseif ($table != 'system') {

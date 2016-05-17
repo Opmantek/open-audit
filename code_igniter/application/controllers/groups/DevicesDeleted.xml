@@ -8,13 +8,13 @@
 		<group_category>device</group_category>
 		<group_icon>devices</group_icon>
 		<group_description>Any items that have their status attribute set to 'deleted'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.man_icon, system.man_os_family, system.man_type, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, system.man_description, system.man_owner FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.icon, system.man_os_family, system.man_type, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, system.man_description, system.man_owner FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
 			<column_order>1</column_order>
 			<column_name>Icon</column_name>
-			<column_variable>man_icon</column_variable>
+			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
 			<column_secondary>man_os_family</column_secondary>
