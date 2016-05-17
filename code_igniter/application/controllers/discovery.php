@@ -631,7 +631,7 @@ class discovery extends CI_Controller
                         $query = $this->db->query($sql, $data);
                         $insert_id = $this->db->insert_id();
                         // We need to insert an entry into oa_group_user for any Admin level user
-                        $sql = "/* discovery::discover_subnet */ INSERT INTO oa_group_user (SELECT null, user.id, ?, '10' FROM oa_user WHERE admin = 'y')";
+                        $sql = "/* discovery::discover_subnet */ INSERT INTO oa_group_user (SELECT null, oa_user.id, ?, '10' FROM oa_user WHERE admin = 'y')";
                         $data = array( $insert_id );
                         $result = $this->db->query($sql, $data);
                         // now we update this specific group

@@ -1198,10 +1198,16 @@ class main extends MY_Controller
 
         if (php_uname('s') == 'Linux') {
             $data['os_platform'] = 'linux';
-            if (file_exists('/etc/issue.net')) {
+            if (file_exists('/etc/os-release')) {
+                $command_string = 'grep NAME= /etc/os-release';
+                exec($command_string, $return['output'], $return['status']);
+                $data['os_version'] = str_replace('NAME="', '', $return['output'][0]);
+                $data['os_version'] = str_replace('"', '', $data['os_version']);
+            } elseif (file_exists('/etc/issue.net')) {
                 $i = file('/etc/issue.net');
                 $data['os_version'] = trim($i[0]);
             }
+
             $opCommon = '';
             if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
                 $opCommon = '/usr/local/omk/conf/opCommon.nmis';
@@ -1301,12 +1307,18 @@ class main extends MY_Controller
                 $command_string = 'cat /etc/sysconfig/clock | grep ZONE | cut -d"\"" -f2';
                 exec($command_string, $output, $return_var);
                 $data['os_timezone'] = @$output[0];
+                if ($data['os_timezone'] == '') {
+                    $command_string = 'timedatectl 2>/dev/null | grep zone | cut -d: -f2 | cut -d"(" -f1';
+                    exec($command_string, $output, $return_var);
+                    $data['os_timezone'] = @$output[0];
+                }
             }
             if ($data['os_platform'] == 'Linux (Debian)') {
                 $command_string = 'cat /etc/timezone';
                 exec($command_string, $output, $return_var);
                 $data['os_timezone'] = @$output[0];
             }
+            $data['os_timezone'] = trim($data['os_timezone']);
             unset($output);
             unset($command_string);
 
