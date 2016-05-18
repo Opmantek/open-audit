@@ -5039,7 +5039,41 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
+        if (($db_internal_version < '20160620') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.14
 
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.14 commenced';
+            stdlog($log_details);
+
+            # refresh the reports
+            $this->load->helper('report_helper');
+            refresh_report_definitions();
+
+            # refresh the groups
+            $this->load->helper('group_helper');
+            refresh_group_definitions();
+
+            // update any leftover group definitions by changing man_icon to icon
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.man_', 'system.')";
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_', 'system.')";
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'system.man_', 'system.')";
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'man_', 'system.')";
+
+            # set our versions
+            $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";
+
+            foreach ($sql as $this_query) {
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
+
+            $log_details->message = 'Upgrade database to 1.14 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
 
         $this->m_oa_config->load_config();
         $this->data['message'] .= "New (now current) database version: ".$this->config->item('display_version')." (".$this->config->item('internal_version').")<br />Don't forget to use the new audit scripts!<br/>\n";
