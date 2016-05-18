@@ -79,7 +79,7 @@ var modal_content_image = "";
     $new_object->report_name = 'Partition Alerts';
     $menu[] = $new_object;
 
-    if ($this->user->sam > '0') {
+    if (isset($this->user->sam) and $this->user->sam > '0') {
         $new_object = new stdClass();
         $new_object->report_id = '';
         $new_object->report_name = 'Software Licensing';

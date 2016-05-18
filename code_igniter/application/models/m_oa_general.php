@@ -96,7 +96,7 @@ class M_oa_general extends MY_Model
 
     public function count_all_hw_attributes()
     {
-        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'processor', 'san', 'scsi', 'sound', 'video', 'vm');
+        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'partition', 'processor', 'san', 'scsi', 'sound', 'video', 'vm');
         $string = '';
         $return = array();
         $object = new stdclass();
