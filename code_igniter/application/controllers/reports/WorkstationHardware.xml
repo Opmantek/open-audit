@@ -3,8 +3,8 @@
 	<details>
 		<report_name>Workstation Hardware</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.icon, system.man_os_family, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, floor(system.pc_memory / 1024) AS pc_memory, system.man_form_factor, processor.description FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN processor ON (processor.system_id = system.system_id AND processor.current = 'y') LEFT JOIN oa_location ON (system.man_location_id
- = oa_location.id) WHERE oa_group_sys.group_id = @group AND man_type = 'computer' AND man_class != 'server']]></report_sql>
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.icon, system.os_family, system.ip_address, system.manufacturer, system.model, system.serial, floor(system.pc_memory / 1024) AS pc_memory, system.form_factor, processor.description FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN processor ON (processor.system_id = system.system_id AND processor.current = 'y') LEFT JOIN oa_location ON (system.location_id
+ = oa_location.id) WHERE oa_group_sys.group_id = @group AND type = 'computer' AND class != 'server']]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -18,7 +18,7 @@
 			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
-			<column_secondary>man_os_family</column_secondary>
+			<column_secondary>os_family</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>center</column_align>
 		</column>
@@ -35,7 +35,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>IP Address</column_name>
-			<column_variable>man_ip_address</column_variable>
+			<column_variable>ip_address</column_variable>
 			<column_type>ip_address</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -45,7 +45,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Manufacturer</column_name>
-			<column_variable>man_manufacturer</column_variable>
+			<column_variable>manufacturer</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -55,7 +55,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Model</column_name>
-			<column_variable>man_model</column_variable>
+			<column_variable>model</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -65,7 +65,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>Serial</column_name>
-			<column_variable>man_serial</column_variable>
+			<column_variable>serial</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -75,7 +75,7 @@
 		<column>
 			<column_order>7</column_order>
 			<column_name>Form Factor</column_name>
-			<column_variable>man_form_factor</column_variable>
+			<column_variable>form_factor</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Specific OU</report_name>
 		<report_display_in_menu>n</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.icon, system.man_model, system.man_owner, system.man_type, oa_org.name as org_name, oa_location.name FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_org ON (system.man_org_id = oa_org.id) LEFT JOIN oa_location ON (system.man_location_id
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.icon, system.model, system.owner, system.type, oa_org.name as org_name, oa_location.name FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_org ON (system.org_id = oa_org.id) LEFT JOIN oa_location ON (system.location_id
  = oa_location.id) WHERE oa_group_sys.group_id = @group AND windows.active_directory_ou = (SELECT active_directory_ou FROM windows WHERE windows.id = ?)]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
@@ -18,7 +18,7 @@
 			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
-			<column_secondary>man_type</column_secondary>
+			<column_secondary>type</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>center</column_align>
 		</column>
@@ -35,7 +35,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Model</column_name>
-			<column_variable>man_model</column_variable>
+			<column_variable>model</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -45,7 +45,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Assigned To</column_name>
-			<column_variable>man_owner</column_variable>
+			<column_variable>owner</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

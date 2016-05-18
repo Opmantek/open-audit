@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Virtual Guests</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.man_manufacturer LIKE 'VMware%' or system.man_manufacturer LIKE 'Parallels%') AND system.man_status = 'production' and man_os_name NOT LIKE '%ESX%']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE (system.manufacturer LIKE 'VMware%' or system.manufacturer LIKE 'Parallels%') AND system.status = 'production' and os_name NOT LIKE '%ESX%']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>vmware</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and their manufacturer attribute contains 'VMware', 'Parallels' or 'KVM' and their OS Name does not contain ESX.</group_description>
-		<group_display_sql><![CDATA[SELECT system.icon, system.system_id, system.hostname, system.man_ip_address, system.man_function, system.man_environment, system.man_description, system.man_os_name, system.man_manufacturer, system.man_vm_group, man_os_family, oa_location.name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.man_location_id
+		<group_display_sql><![CDATA[SELECT system.icon, system.system_id, system.hostname, system.ip_address, system.function, system.environment, system.description, system.os_name, system.manufacturer, system.vm_group, os_family, oa_location.name FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_location ON system.location_id
  = oa_location.id WHERE oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
 	</details>
 	<columns>
@@ -18,7 +18,7 @@
 			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
-			<column_secondary>man_os_family</column_secondary>
+			<column_secondary>os_family</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
@@ -35,7 +35,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>IP Address</column_name>
-			<column_variable>man_ip_address</column_variable>
+			<column_variable>ip_address</column_variable>
 			<column_type>ip_address</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -45,7 +45,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Function</column_name>
-			<column_variable>man_function</column_variable>
+			<column_variable>function</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -55,7 +55,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Environment</column_name>
-			<column_variable>man_environment</column_variable>
+			<column_variable>environment</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -65,7 +65,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Description</column_name>
-			<column_variable>man_description</column_variable>
+			<column_variable>description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -75,7 +75,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>OS</column_name>
-			<column_variable>man_os_name</column_variable>
+			<column_variable>os_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -85,7 +85,7 @@
 		<column>
 			<column_order>7</column_order>
 			<column_name>VM Group</column_name>
-			<column_variable>man_vm_group</column_variable>
+			<column_variable>vm_group</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -95,7 +95,7 @@
 		<column>
 			<column_order>8</column_order>
 			<column_name>Manufacturer</column_name>
-			<column_variable>man_manufacturer</column_variable>
+			<column_variable>manufacturer</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

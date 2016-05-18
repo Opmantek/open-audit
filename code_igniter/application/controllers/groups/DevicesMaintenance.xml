@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Devices with Maintenance Status</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_status = 'maintenance']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.status = 'maintenance']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>devices</group_icon>
 		<group_description>Any items that have their status attribute set to 'maintenance'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.icon, system.man_os_family, system.man_type, system.hostname, system.system_id, system.man_ip_address, system.man_manufacturer, system.man_model, system.man_serial, system.man_description, system.man_owner FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.type, system.hostname, system.system_id, system.ip_address, system.manufacturer, system.model, system.serial, system.description, system.owner FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -17,14 +17,14 @@
 			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
-			<column_secondary>man_os_family</column_secondary>
+			<column_secondary>os_family</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>2</column_order>
 			<column_name>Type</column_name>
-			<column_variable>man_type</column_variable>
+			<column_variable>type</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>IP Address</column_name>
-			<column_variable>man_ip_address</column_variable>
+			<column_variable>ip_address</column_variable>
 			<column_type>ip_address</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -54,7 +54,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Manufacturer</column_name>
-			<column_variable>man_manufacturer</column_variable>
+			<column_variable>manufacturer</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -64,7 +64,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Model</column_name>
-			<column_variable>man_model</column_variable>
+			<column_variable>model</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -74,7 +74,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Serial</column_name>
-			<column_variable>man_serial</column_variable>
+			<column_variable>serial</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -84,7 +84,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Description</column_name>
-			<column_variable>man_description</column_variable>
+			<column_variable>description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -94,7 +94,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Assigned</column_name>
-			<column_variable>man_owner</column_variable>
+			<column_variable>owner</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

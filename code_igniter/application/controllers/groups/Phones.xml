@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Phones</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_status = 'production' and man_type LIKE '%phone']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.status = 'production' and type LIKE '%phone']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>cell_phone</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'phone', 'smart phone' or 'ip phone'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.man_description, system.man_manufacturer, system.man_model, system.man_serial, system.man_service_number, system.man_service_provider, system.man_owner, system.icon, system.man_os_family, system.man_type FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.system_id, system.description, system.manufacturer, system.model, system.serial, system.service_number, system.service_provider, system.owner, system.icon, system.os_family, system.type FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -17,14 +17,14 @@
 			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
-			<column_secondary>man_os_family</column_secondary>
+			<column_secondary>os_family</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>1</column_order>
 			<column_name>Phone Type</column_name>
-			<column_variable>man_type</column_variable>
+			<column_variable>type</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -34,7 +34,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Description</column_name>
-			<column_variable>man_description</column_variable>
+			<column_variable>description</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
 			<column_secondary>system_id</column_secondary>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Manufacturer</column_name>
-			<column_variable>man_manufacturer</column_variable>
+			<column_variable>manufacturer</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -54,7 +54,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Model</column_name>
-			<column_variable>man_model</column_variable>
+			<column_variable>model</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -64,7 +64,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Serial</column_name>
-			<column_variable>man_serial</column_variable>
+			<column_variable>serial</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -74,7 +74,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>Network Provider</column_name>
-			<column_variable>man_service_provider</column_variable>
+			<column_variable>service_provider</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -84,7 +84,7 @@
 		<column>
 			<column_order>7</column_order>
 			<column_name>Number</column_name>
-			<column_variable>man_service_number</column_variable>
+			<column_variable>service_number</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -94,7 +94,7 @@
 		<column>
 			<column_order>8</column_order>
 			<column_name>Assigned To</column_name>
-			<column_variable>man_owner</column_variable>
+			<column_variable>owner</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Installed - Visio</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, oa_org.name as org_name, windows.user_name, software.name, software.installed_by, software.version, software.installed_on FROM software LEFT JOIN system ON (system.system_id = software.system_id AND software.current = 'y' AND software.name LIKE 'Microsoft%Visio%') LEFT JOIN oa_org ON system.man_org_id = oa_org.id LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, oa_org.name as org_name, windows.user_name, software.name, software.installed_by, software.version, software.installed_on FROM software LEFT JOIN system ON (system.system_id = software.system_id AND software.current = 'y' AND software.name LIKE 'Microsoft%Visio%') LEFT JOIN oa_org ON system.org_id = oa_org.id LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>

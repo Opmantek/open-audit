@@ -3,8 +3,8 @@
 	<details>
 		<report_name>System Manual Export</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_vm_group, system.man_owner, system.man_description, system.man_function, system.man_environment, system.man_org_id, system.man_location_id
-, oa_location.name FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN oa_location ON (system.man_location_id
+		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.vm_group, system.owner, system.description, system.function, system.environment, system.org_id, system.location_id
+, oa_location.name FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN oa_location ON (system.location_id
  = oa_location.id) WHERE oa_group_sys.group_id = @group GROUP BY system.hostname ORDER BY system.hostname]]></report_sql>
 		<report_display_sql></report_display_sql>
 		<report_view_file>v_report</report_view_file>
@@ -27,7 +27,7 @@
 		<column>
 			<column_order>1</column_order>
 			<column_name>VM Group</column_name>
-			<column_variable>man_vm_group</column_variable>
+			<column_variable>vm_group</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -37,7 +37,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Owner</column_name>
-			<column_variable>man_owner</column_variable>
+			<column_variable>owner</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -47,7 +47,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Description</column_name>
-			<column_variable>man_description</column_variable>
+			<column_variable>description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -57,7 +57,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Function</column_name>
-			<column_variable>man_function</column_variable>
+			<column_variable>function</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -67,7 +67,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>Environment</column_name>
-			<column_variable>man_environment</column_variable>
+			<column_variable>environment</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -87,7 +87,7 @@
 		<column>
 			<column_order>8</column_order>
 			<column_name>OrgID</column_name>
-			<column_variable>man_org_id</column_variable>
+			<column_variable>org_id</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -97,7 +97,7 @@
 		<column>
 			<column_order>9</column_order>
 			<column_name>LocationID</column_name>
-			<column_variable>man_location_id
+			<column_variable>location_id
 </column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
