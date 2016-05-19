@@ -49,11 +49,10 @@ class M_additional_fields extends MY_Model
      */
     public function get_additional_fields_names()
     {
-        $sql = "SELECT lower(field_name), field_name, field_id FROM sys_man_additional_fields ORDER BY field_name";
+        $sql = "SELECT lower(`name`), `name`, `id` FROM additional_field ORDER BY `name`";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-
         return ($result);
     }
 
@@ -65,11 +64,11 @@ class M_additional_fields extends MY_Model
      *
      * @return array
      */
-    public function delete_field($field_id)
+    public function delete_field($id)
     {
-        $sql = "DELETE FROM sys_man_additional_fields WHERE field_id = ? ";
+        $sql = "DELETE FROM `additional_field` WHERE `id` = ? ";
         $sql = $this->clean_sql($sql);
-        $data = array("$field_id");
+        $data = array("$id");
         $query = $this->db->query($sql, $data);
 
         return;
@@ -82,14 +81,13 @@ class M_additional_fields extends MY_Model
      *
      * @return array
      */
-    public function check_additional_fields_name($field_name, $field_id)
+    public function check_additional_fields_name($name, $id)
     {
-        $sql = "SELECT field_id FROM sys_man_additional_fields WHERE field_name = ? AND field_id <> ? ";
+        $sql = "SELECT `id` FROM `additional_field` WHERE `name` = ? AND `id` <> ? ";
         $sql = $this->clean_sql($sql);
-        $data = array("$field_name", "$field_id");
+        $data = array("$name", "$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-
         return ($result);
     }
 
@@ -102,13 +100,12 @@ class M_additional_fields extends MY_Model
      *
      * @return array
      */
-    public function edit_additional_field($details)
+    public function edit_additional_field($field)
     {
-        $sql = "UPDATE sys_man_additional_fields SET field_name = ?, field_type = ?, field_placement = ?, field_values = ?, group_id = ? WHERE field_id = ?";
-        $data = array("$details->field_name", "$details->field_type", "$details->field_placement", "$details->field_values", "$details->group_id", "$details->field_id");
+        $sql = "UPDATE `additional_field` SET `name` = ?, `type` = ?, `placement` = ?, `values` = ?, group_id = ? WHERE `id` = ?";
+        $data = array("$field->name", "$field->type", "$field->placement", "$field->values", "$field->group_id", "$field->id");
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
-
         return;
     }
 
@@ -121,13 +118,12 @@ class M_additional_fields extends MY_Model
      *
      * @return array
      */
-    public function add_additional_field($details)
+    public function add_additional_field($field)
     {
-        $sql = "INSERT INTO sys_man_additional_fields (field_name, field_type, field_placement, group_id, field_values) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `additional_field` (`name`, `type`, `placement`, `group_id`, `values`) VALUES (?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
-        $data = array("$details->field_name", "$details->field_type", "$details->field_placement", "$details->group_id", "$details->field_values");
+        $data = array("$field->name", "$field->type", "$field->placement", "$field->group_id", "$field->values");
         $query = $this->db->query($sql, $data);
-
         return;
     }
 
@@ -140,14 +136,13 @@ class M_additional_fields extends MY_Model
      *
      * @return array
      */
-    public function get_additional_field_id($field_name)
+    public function get_additional_field_id($name)
     {
-        $sql = "SELECT field_id FROM sys_man_additional_fields WHERE field_name = ?";
+        $sql = "SELECT `id` FROM `additional_field` WHERE `name` = ?";
         $sql = $this->clean_sql($sql);
-        $data = array("$field_name");
+        $data = array("$name");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-
         return ($result);
     }
 
@@ -160,11 +155,10 @@ class M_additional_fields extends MY_Model
      */
     public function get_all_additional_fields()
     {
-        $sql = "SELECT sys_man_additional_fields.*, group_name FROM sys_man_additional_fields LEFT JOIN oa_group on sys_man_additional_fields.group_id = oa_group.group_id ORDER BY field_name";
+        $sql = "SELECT `additional_field`.*, `oa_group`.`group_name` FROM `additional_field` LEFT JOIN oa_group on `additional_field`.`group_id` = `oa_group`.`group_id` ORDER BY `additional_field`.`name`";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-
         return ($result);
     }
 
@@ -175,14 +169,13 @@ class M_additional_fields extends MY_Model
      *
      * @return array
      */
-    public function get_additional_field($field_id)
+    public function get_additional_field($id)
     {
-        $sql = "SELECT * FROM sys_man_additional_fields WHERE field_id = ?";
+        $sql = "SELECT * FROM `additional_field` WHERE `id` = ?";
         $sql = $this->clean_sql($sql);
-        $data = array("$field_id");
+        $data = array("$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-
         return ($result);
     }
 
@@ -198,21 +191,15 @@ class M_additional_fields extends MY_Model
     public function get_additional_fields($system_id)
     {
         $sql = "SELECT
-				lower(sys_man_additional_fields.field_name) as field_lower_name,
-				sys_man_additional_fields.field_id,
-				sys_man_additional_fields.field_name,
-				sys_man_additional_fields.field_type,
-				sys_man_additional_fields.field_placement,
-				sys_man_additional_fields_data.field_datetime,
-				sys_man_additional_fields_data.field_varchar,
-				sys_man_additional_fields_data.field_int,
-				sys_man_additional_fields_data.field_memo
+				lower(`additional_field`.`name`) as field_lower_name,
+				additional_field.*,
+				additional_field_item.*
 			FROM
-				sys_man_additional_fields,
-				sys_man_additional_fields_data
+				additional_field,
+				additional_field_item
 			WHERE
-				sys_man_additional_fields.field_id = sys_man_additional_fields_data.field_id AND
-				sys_man_additional_fields_data.system_id = ? ";
+				additional_field.id = additional_field_item.id AND
+				additional_field_item.system_id = ? ";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
@@ -233,25 +220,10 @@ class M_additional_fields extends MY_Model
     public function get_additional_fields_data($system_id)
     {
         # TODO - return an result set containing only fields where system is in group that field is allowed for
-        $sql = "SELECT sys_man_additional_fields.field_id, 
-                sys_man_additional_fields.field_name, 
-                sys_man_additional_fields.field_type, 
-                sys_man_additional_fields.field_placement, 
-                sys_man_additional_fields_data.field_details_id, 
-                sys_man_additional_fields_data.system_id, 
-                sys_man_additional_fields_data.field_datetime, 
-                sys_man_additional_fields_data.field_varchar, 
-                sys_man_additional_fields_data.field_int, 
-                sys_man_additional_fields_data.field_memo 
-                FROM sys_man_additional_fields LEFT JOIN sys_man_additional_fields_data ON 
-                    (sys_man_additional_fields_data.field_id = sys_man_additional_fields.field_id AND 
-                        (sys_man_additional_fields_data.system_id = ? OR sys_man_additional_fields_data.system_id IS NULL))";
-
-        #$sql = "SELECT sys_man_additional_fields.*, sys_man_additional_fields_data.* 
-        #        FROM sys_man_additional_fields 
-        #        LEFT JOIN oa_group_sys on sys_man_additional_fields.group_id = oa_group_sys.group_id 
-        #        LEFT JOIN sys_man_additional_fields_data ON sys_man_additional_fields.field_id = sys_man_additional_fields_data.field_id 
-        #        WHERE oa_group_sys.system_id = ? AND sys_man_additional_fields_data.system_id = ?";
+        $sql = "SELECT additional_field.*, additional_field_item.* 
+                FROM additional_field LEFT JOIN additional_field_item ON 
+                    (additional_field_item.id = additional_field.id AND 
+                    (additional_fields_item.system_id = ? OR additional_fields_item.system_id IS NULL))";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);
@@ -270,7 +242,7 @@ class M_additional_fields extends MY_Model
      */
     public function get_additional_fields_for_group($group_id)
     {
-        $sql = "SELECT * FROM sys_man_additional_fields WHERE group_id = ? OR group_id = 1";
+        $sql = "SELECT * FROM additional_field WHERE group_id = ? OR group_id = 1";
         $sql = $this->clean_sql($sql);
         $data = array("$group_id");
         $query = $this->db->query($sql, $data);
@@ -279,36 +251,37 @@ class M_additional_fields extends MY_Model
         return ($result);
     }
 
-    public function set_system_field ($system_id = '', $field_name = '', $field_data = '')
+    public function set_system_field ($system_id = '', $name = '', $data = '')
     {
         if ($system_id == '' or $field_name == '') {
             return;
         }
 
-        $sql = "SELECT field_id FROM sys_man_additional_fields WHERE field_name = ? LIMIT 1";
+        $sql = "SELECT `id` FROM `additional_field` WHERE `name` = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array($field_name);
+        $data = array($name);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-        $field_id = $result[0]->field_id;
+        $field_id = $result[0]->id;
 
-        $sql = "DELETE FROM sys_man_additional_fields_data WHERE system_id = ? AND field_id = ?";
+        $sql = "DELETE FROM `additional_field_item` WHERE `system_id` = ? AND `additional_field_id` = ?";
         $sql = $this->clean_sql($sql);
         $data = array($system_id, $field_id);
         $query = $this->db->query($sql, $data);
 
-        $sql = "INSERT INTO sys_man_additional_fields_data VALUES(NULL, ?, ?, '', ?, '', '')";
+        $sql = "INSERT INTO additional_field_item VALUES(NULL, ?, ?, '', ?, '', '')";
         $sql = $this->clean_sql($sql);
-        $data = array ($system_id, $field_id, $field_data);
+        $data = array ($system_id, $field_id, $data);
         $query = $this->db->query($sql, $data);
-
         return;
     }
 
     function get_system_fields ($system_id = '')
     {
-        if ($system_id == '') { return; }
-        $sql = "SELECT f.field_id, f.field_name, f.field_type, f.field_values, f.field_placement, IFNULL(d.field_varchar,\"\") AS data_value, IFNULL(d.field_details_id, \"\") as data_id FROM sys_man_additional_fields f  LEFT JOIN sys_man_additional_fields_data d ON (f.field_id = d.field_id AND d.system_id = ?) WHERE f.group_id IN (SELECT group_id FROM oa_group_sys WHERE system_id = ?)";
+        if ($system_id == '') {
+            return;
+        }
+        $sql = "SELECT f.id, f.name, f.type, f.values, f.placement, IFNULL(d.value,\"\") AS data_value, IFNULL(d.id, \"\") as data_id FROM additional_field f  LEFT JOIN additional_field_item d ON (f.id = d.additional_field_id AND d.system_id = ?) WHERE f.group_id IN (SELECT group_id FROM oa_group_sys WHERE system_id = ?)";
         $sql = $this->clean_sql($sql);
         $data = array($system_id, $system_id);
         $query = $this->db->query($sql, $data);
