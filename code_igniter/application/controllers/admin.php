@@ -5047,6 +5047,224 @@ class admin extends MY_Controller
             $log_details->message = 'Upgrade database to 1.14 commenced';
             stdlog($log_details);
 
+            # initialise our $sql array
+            unset($sql);
+            $sql = array();
+
+            # DROP all the table indexes / foreign keys that link to system.system_id
+            $sql[] = "ALTER TABLE bios DROP FOREIGN KEY sys_hw_bios_system_id";
+            $sql[] = "ALTER TABLE change_log DROP FOREIGN KEY change_log_system_id";
+            $sql[] = "ALTER TABLE disk DROP FOREIGN KEY sys_hw_hard_drive_system_id";
+            $sql[] = "ALTER TABLE dns DROP FOREIGN KEY sys_sw_dns_system_id";
+            $sql[] = "ALTER TABLE edit_log DROP FOREIGN KEY edit_log_system_id";
+            $sql[] = "ALTER TABLE graph DROP FOREIGN KEY sys_hw_graph_system_id";
+            $sql[] = "ALTER TABLE ip DROP FOREIGN KEY ip_system_id";
+            $sql[] = "ALTER TABLE log DROP FOREIGN KEY sys_sw_log_system_id";
+            $sql[] = "ALTER TABLE memory DROP FOREIGN KEY sys_hw_memory_system_id";
+            $sql[] = "ALTER TABLE module DROP FOREIGN KEY sys_hw_module_system_id";
+            $sql[] = "ALTER TABLE monitor DROP FOREIGN KEY sys_hw_monitor_system_id";
+            $sql[] = "ALTER TABLE motherboard DROP FOREIGN KEY sys_hw_motherboard_system_id";
+            $sql[] = "ALTER TABLE netstat DROP FOREIGN KEY sys_sw_netstat_system_id";
+            $sql[] = "ALTER TABLE network DROP FOREIGN KEY sys_hw_network_card_system_id";
+            $sql[] = "ALTER TABLE oa_group_sys DROP FOREIGN KEY oa_group_sys_system_id";
+            $sql[] = "ALTER TABLE optical DROP FOREIGN KEY sys_hw_optical_drive_system_id";
+            $sql[] = "ALTER TABLE pagefile DROP FOREIGN KEY sys_sw_pagefile_system_id";
+            $sql[] = "ALTER TABLE partition DROP FOREIGN KEY sys_hw_partition_system_id";
+            $sql[] = "ALTER TABLE print_queue DROP FOREIGN KEY sys_sw_print_queue_system_id";
+            $sql[] = "ALTER TABLE processor DROP FOREIGN KEY sys_hw_processor_system_id";
+            $sql[] = "ALTER TABLE route DROP FOREIGN KEY sys_sw_ip_route_system_id";
+            $sql[] = "ALTER TABLE san DROP FOREIGN KEY san_system_id";
+            $sql[] = "ALTER TABLE scsi DROP FOREIGN KEY sys_hw_scsi_controller_system_id";
+            $sql[] = "ALTER TABLE server DROP FOREIGN KEY server_system_id";
+            $sql[] = "ALTER TABLE server_item DROP FOREIGN KEY server_item_system_id";
+            $sql[] = "ALTER TABLE service DROP FOREIGN KEY sys_sw_service_system_id";
+            $sql[] = "ALTER TABLE share DROP FOREIGN KEY sys_sw_share_system_id";
+            $sql[] = "ALTER TABLE software DROP FOREIGN KEY sys_sw_software_system_id";
+            $sql[] = "ALTER TABLE software_key DROP FOREIGN KEY sys_sw_software_key_system_id";
+            $sql[] = "ALTER TABLE sound DROP FOREIGN KEY sys_hw_sound_system_id";
+            $sql[] = "ALTER TABLE sys_man_additional_fields_data DROP FOREIGN KEY sys_man_additional_fields_data_system_id";
+            $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_system_id";
+            $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_system_id";
+            $sql[] = "ALTER TABLE task DROP FOREIGN KEY task_system_id";
+            $sql[] = "ALTER TABLE user DROP FOREIGN KEY sys_sw_user_system_id";
+            $sql[] = "ALTER TABLE user_group DROP FOREIGN KEY sys_sw_groups_system_id";
+            $sql[] = "ALTER TABLE variable DROP FOREIGN KEY sys_sw_variable_system_id";
+            $sql[] = "ALTER TABLE video DROP FOREIGN KEY sys_hw_video_system_id";
+            $sql[] = "ALTER TABLE vm DROP FOREIGN KEY sys_sw_virtual_machine_system_id";
+            $sql[] = "ALTER TABLE warranty DROP FOREIGN KEY sys_hw_warranty_system_id";
+            $sql[] = "ALTER TABLE windows DROP FOREIGN KEY sys_sw_windows_system_id";
+
+            $sql[] = "ALTER TABLE system DROP KEY id";
+            $sql[] = "ALTER TABLE system DROP KEY id2";
+            $sql[] = "ALTER TABLE system DROP KEY id3";
+            $sql[] = "ALTER TABLE system DROP KEY hostname";
+            $sql[] = "ALTER TABLE system DROP KEY linked_sys";
+            $sql[] = "ALTER TABLE system DROP KEY system_key";
+            $sql[] = "ALTER TABLE system CHANGE system_id system_id int(10) unsigned NOT NULL";
+            $sql[] = "ALTER TABLE system DROP PRIMARY KEY";
+            $sql[] = "ALTER TABLE system DROP KEY system_id";
+            $sql[] = "ALTER TABLE system CHANGE system_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
+            $sql[] = "ALTER TABLE system DROP system_key";
+            $sql[] = "ALTER TABLE system DROP system_key_type";
+            $sql[] = "ALTER TABLE system CHANGE uuid uuid varchar(100) NOT NULL DEFAULT '' AFTER id";
+            $sql[] = "ALTER TABLE system CHANGE hostname name varchar(100) NOT NULL DEFAULT '' AFTER uuid";
+            $sql[] = "ALTER TABLE system CHANGE man_ip_address ip varchar(45) NOT NULL DEFAULT '' AFTER name";
+            $sql[] = "ALTER TABLE system ADD hostname varchar(100) NOT NULL default '' AFTER ip";
+            $sql[] = "ALTER TABLE system ADD dns_hostname varchar(100) NOT NULL default '' AFTER hostname";
+            $sql[] = "ALTER TABLE system DROP domain";
+            $sql[] = "ALTER TABLE system CHANGE man_domain domain varchar(100) NOT NULL DEFAULT '' AFTER dns_hostname";
+            $sql[] = "ALTER TABLE system ADD dns_domain varchar(100) NOT NULL default '' AFTER domain";
+            $sql[] = "ALTER TABLE system DROP description";
+            $sql[] = "ALTER TABLE system CHANGE man_description description text NOT NULL AFTER fqdn";
+            $sql[] = "ALTER TABLE system DROP type";
+            $sql[] = "ALTER TABLE system CHANGE man_type type varchar(50) NOT NULL DEFAULT '' AFTER description";
+            $sql[] = "ALTER TABLE system DROP os_group";
+            $sql[] = "ALTER TABLE system CHANGE man_os_group os_group varchar(50) NOT NULL DEFAULT '' AFTER icon";
+            $sql[] = "ALTER TABLE system DROP os_family";
+            $sql[] = "ALTER TABLE system CHANGE man_os_family os_family varchar(50) NOT NULL DEFAULT '' AFTER os_group";
+            $sql[] = "ALTER TABLE system DROP os_name";
+            $sql[] = "ALTER TABLE system CHANGE man_os_name os_name varchar(100) NOT NULL DEFAULT '' AFTER os_family";
+            $sql[] = "ALTER TABLE system CHANGE linked_sys attached_system_id int(10) DEFAULT NULL";
+            $sql[] = "ALTER TABLE system DROP manufacturer";
+            $sql[] = "ALTER TABLE system CHANGE man_manufacturer manufacturer varchar(100) NOT NULL DEFAULT '' AFTER attached_system_id";
+            $sql[] = "ALTER TABLE system DROP model";
+            $sql[] = "ALTER TABLE system CHANGE man_model model varchar(200) NOT NULL DEFAULT '' AFTER manufacturer";
+            $sql[] = "ALTER TABLE system DROP `serial`";
+            $sql[] = "ALTER TABLE system CHANGE man_serial `serial` varchar(200) NOT NULL DEFAULT '' AFTER model";
+            $sql[] = "ALTER TABLE system DROP form_factor";
+            $sql[] = "ALTER TABLE system CHANGE man_form_factor form_factor varchar(50) NOT NULL DEFAULT '' AFTER uptime";
+            $sql[] = "ALTER TABLE system CHANGE pc_os_bit os_bit tinyint unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE pc_memory memory_count int unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE pc_num_processor processor_count tinyint unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE pc_date_os_installation os_installation_date date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "UPDATE system SET printer_color = 'y' WHERE LOWER(printer_color) ='true' OR LOWER(printer_color) = 't'";
+            $sql[] = "UPDATE system SET printer_color = 'n' WHERE LOWER(printer_color) ='false' OR LOWER(printer_color) = 'f'";
+            $sql[] = "ALTER TABLE system CHANGE printer_color printer_color enum('y','n','') NOT NULL DEFAULT ''";
+            $sql[] = "UPDATE system SET printer_duplex = 'y' WHERE LOWER(printer_duplex) ='true' OR LOWER(printer_duplex) = 't'";
+            $sql[] = "UPDATE system SET printer_duplex = 'n' WHERE LOWER(printer_duplex) ='false' OR LOWER(printer_duplex) = 'f'";
+            $sql[] = "ALTER TABLE system CHANGE printer_duplex printer_duplex enum('y','n','') NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_status status enum('production','deleted','lost','maintenance','retired','unallocated') NOT NULL DEFAULT 'production'";
+            $sql[] = "ALTER TABLE system CHANGE man_environment environment enum('production','dev','dr','eval','pre-prod','test','train','uat') NOT NULL DEFAULT 'production'";
+            $sql[] = "ALTER TABLE system CHANGE man_class class enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','hypervisor','') NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_function function varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_owner owner varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_org_id org_id int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system DROP man_criticality";
+            $sql[] = "ALTER TABLE system CHANGE man_location_id location_id int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_location_level location_level varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_suite location_suite varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_room location_room varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_rack location_rack varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_rack_position location_rack_position varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_rack_size location_rack_size int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_location_latitude location_latitude float(10,6) NOT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_location_longitude location_longitude float(10,6) NOT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_asset_number asset_number varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_vm_server_name vm_server_name varchar(150) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_vm_system_id vm_system_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_vm_group vm_group varchar(150) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_cluster_name cluster_name varchar(150) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system ADD cluster_type varchar(150) NOT NULL DEFAULT '' AFTER cluster_name";
+            $sql[] = "ALTER TABLE system CHANGE invoice_id invoice_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_invoice purchase_invoice varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_order_number purchase_order_number varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_cost_center purchase_cost_center varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_vendor purchase_vendor varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_date purchase_date date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_service_contract_number purchase_service_contract_number varchar(255) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_lease_expiry_date lease_expiry_date date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_amount purchase_amount varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_warranty_duration warranty_duration int(5) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_warranty_expires warranty_expires date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE man_warranty_type warranty_type enum('','24x7x365','9x5x5','Next Business Day') NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system DROP man_terminal_number";
+            $sql[] = "ALTER TABLE system DROP nmap_type";
+            $sql[] = "ALTER TABLE system DROP contact_id";
+            $sql[] = "ALTER TABLE system CHANGE man_switch_id switch_system_id int(10) DEFAULT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_switch_port switch_port int unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_patch_panel patch_panel varchar(45) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_patch_panel_port patch_panel_port_new int unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE patch_panel_port_new patch_panel_port int unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_wall_port wall_port varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system DROP man_picture";
+            $sql[] = "ALTER TABLE system CHANGE man_service_number service_number varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_service_provider service_provider varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_service_type service_type varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_service_plan service_plan varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_service_network service_network varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_unlock_pin unlock_pin varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_serial_imei serial_imei varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_serial_sim serial_sim varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE nmis_export nmis_export enum('true','false','y','n') NOT NULL DEFAULT 'false'";
+            $sql[] = "UPDATE system SET nmis_export = 'n' WHERE LOWER(nmis_export) ='false'";
+            $sql[] = "UPDATE system SET nmis_export = 'y' WHERE LOWER(nmis_export) ='true'";
+            $sql[] = "ALTER TABLE system CHANGE nmis_export nmis_export enum('y','n') NOT NULL DEFAULT 'n'";
+            $sql[] = "ALTER TABLE system CHANGE man_oae_manage oae_manage enum('y','n') NOT NULL DEFAULT 'y' AFTER nmis_export";
+            $sql[] = "ALTER TABLE system CHANGE snmp_oid snmp_oid text NOT NULL AFTER oae_manage";
+            $sql[] = "ALTER TABLE system DROP last_seen";
+            $sql[] = "ALTER TABLE system CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER sysLocation";
+            $sql[] = "ALTER TABLE system CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE system CHANGE last_seen_by last_seen_by varchar(150) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE system CHANGE last_user last_user varchar(150) NOT NULL DEFAULT '' AFTER last_seen_by";
+            $sql[] = "ALTER TABLE system ADD KEY ip (`ip`)";
+            $sql[] = "ALTER TABLE system ADD KEY name (`name`)";
+
+            # recreate the indexes
+            $sql[] = "ALTER TABLE bios ADD CONSTRAINT bios_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE change_log ADD CONSTRAINT change_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE disk ADD CONSTRAINT disk_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE dns ADD CONSTRAINT dns_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE edit_log ADD CONSTRAINT edit_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE graph ADD CONSTRAINT graph_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE ip ADD CONSTRAINT ip_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE log ADD CONSTRAINT log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE memory ADD CONSTRAINT memory_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE module ADD CONSTRAINT module_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE monitor ADD CONSTRAINT monitor_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE motherboard ADD CONSTRAINT motherboard_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE netstat ADD CONSTRAINT netstat_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE network ADD CONSTRAINT network_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE oa_group_sys ADD CONSTRAINT oa_group_sys_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE optical ADD CONSTRAINT optical_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE pagefile ADD CONSTRAINT pagefile_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE partition ADD CONSTRAINT partition_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE print_queue ADD CONSTRAINT print_queue_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE processor ADD CONSTRAINT processor_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE route ADD CONSTRAINT route_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE san ADD CONSTRAINT san_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE scsi ADD CONSTRAINT scsi_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE server ADD CONSTRAINT server_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE server_item ADD CONSTRAINT server_item_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE service ADD CONSTRAINT service_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE share ADD CONSTRAINT share_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE software ADD CONSTRAINT software_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE software_key ADD CONSTRAINT software_key_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sound ADD CONSTRAINT sound_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT additional_fields_data_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT attachment_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT notes_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE task ADD CONSTRAINT task_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE user ADD CONSTRAINT user_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE user_group ADD CONSTRAINT user_group_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE variable ADD CONSTRAINT variable_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE video ADD CONSTRAINT video_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE vm ADD CONSTRAINT vm_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE warranty ADD CONSTRAINT warranty_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE windows ADD CONSTRAINT windows_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+
+            # set our versions
+            $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.14' WHERE config_name = 'display_version'";
+
+            foreach ($sql as $this_query) {
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
+
+            # reinitialise our $sql array
+            unset($sql);
+            $sql = array();
+
             # refresh the reports
             $this->load->helper('report_helper');
             refresh_report_definitions();
@@ -5060,15 +5278,6 @@ class admin extends MY_Controller
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_', 'system.')";
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'system.man_', 'system.')";
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'man_', 'system.')";
-
-            # set our versions
-            $sql[] = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
-            $sql[] = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";
-
-            foreach ($sql as $this_query) {
-                $this->data['output'] .= $this_query."<br /><br />\n";
-                $query = $this->db->query($this_query);
-            }
 
             $log_details->message = 'Upgrade database to 1.14 completed';
             stdlog($log_details);
