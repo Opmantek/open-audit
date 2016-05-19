@@ -3,11 +3,11 @@
 	<details>
 		<group_name>Public IP Devices</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.id = system.id AND ip.current = 'y') WHERE ((( ip.ip > '000.000.000.000' AND ip.ip < '010.000.000.000' ) OR ( ip.ip > '010.255.255.255' AND ip.ip < '169.254.0.0' ) OR ( ip.ip > '169.254.255.255' AND ip.ip < '172.016.000.000' ) OR ( ip.ip > '172.31.255.255' AND ip.ip < '192.168.000.000' ) OR ip.ip > '192.168.255.255' ) OR ( ( system.ip_address > '000.000.000.000' AND system.ip_address < '010.000.000.000' ) OR ( system.ip_address > '010.255.255.255' AND system.ip_address < '169.254.0.0' ) OR ( system.ip_address > '169.254.255.255' AND system.ip_address < '172.016.000.000' ) OR ( system.ip_address > '172.31.255.255' AND system.ip_address < '192.168.000.000' ) OR system.ip_address > '192.168.255.255' )) AND system.status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.id = system.id AND ip.current = 'y') WHERE ((( ip.ip > '000.000.000.000' AND ip.ip < '010.000.000.000' ) OR ( ip.ip > '010.255.255.255' AND ip.ip < '169.254.0.0' ) OR ( ip.ip > '169.254.255.255' AND ip.ip < '172.016.000.000' ) OR ( ip.ip > '172.31.255.255' AND ip.ip < '192.168.000.000' ) OR ip.ip > '192.168.255.255' ) OR ( ( system.ip > '000.000.000.000' AND system.ip < '010.000.000.000' ) OR ( system.ip > '010.255.255.255' AND system.ip < '169.254.0.0' ) OR ( system.ip > '169.254.255.255' AND system.ip < '172.016.000.000' ) OR ( system.ip > '172.31.255.255' AND system.ip < '192.168.000.000' ) OR system.ip > '192.168.255.255' )) AND system.status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_description>Any items that have a public ip address and their status attribute set to production.</group_description>
 		<group_category>device</group_category>
-		<group_display_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.ip_address, system.type, system.os_family, system.os_name, system.icon FROM system, oa_group_sys WHERE system.id = oa_group_sys.id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.ip, system.type, system.os_family, system.os_name, system.icon FROM system, oa_group_sys WHERE system.id = oa_group_sys.id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
 		<group_icon>devices</group_icon>
 	</details>
 	<columns>
@@ -34,8 +34,8 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>IP Address</column_name>
-			<column_variable>ip_address</column_variable>
-			<column_type>ip_address</column_type>
+			<column_variable>ip</column_variable>
+			<column_type>ip</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>

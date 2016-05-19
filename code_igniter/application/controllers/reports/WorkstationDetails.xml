@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Workstation Details</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.serial, system.timestamp, system.manufacturer, system.model, windows.user_name, system.ip_address, system.description, oa_location.name, oa_org.name as org_name, system.owner FROM system LEFT JOIN oa_location ON (system.location_id
+		<report_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.serial, system.timestamp, system.manufacturer, system.model, windows.user_name, system.ip, system.description, oa_location.name, oa_org.name as org_name, system.owner FROM system LEFT JOIN oa_location ON (system.location_id
  = oa_location.id) LEFT JOIN oa_org ON (system.org_id = oa_org.id) LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.id) LEFT JOIN windows ON (system.id = windows.id AND windows.current = 'y') WHERE oa_group_sys.group_id = @group]]></report_sql>
 		<report_display_sql></report_display_sql>
 		<report_view_file>v_report</report_view_file>

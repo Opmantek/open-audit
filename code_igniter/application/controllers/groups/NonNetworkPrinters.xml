@@ -3,7 +3,7 @@
 	<details>
 		<group_name>Non Network Printers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.type = 'printer' AND system.status = 'production' AND (system.ip_address = '000.000.000.000' OR system.ip_address = '0.0.0.0' OR system.ip_address = '')]]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.type = 'printer' AND system.status = 'production' AND (system.ip = '000.000.000.000' OR system.ip = '0.0.0.0' OR system.ip = '')]]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>printer</group_icon>

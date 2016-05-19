@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Network Printers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE ((system.type = 'printer' AND (system.ip_address != '000.000.000.000' AND system.ip_address != '' and system.ip_address != '0.0.0.0')) or system.type = 'network printer' ) AND system.status = 'production' ]]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE ((system.type = 'printer' AND (system.ip != '000.000.000.000' AND system.ip != '' and system.ip != '0.0.0.0')) or system.type = 'network printer' ) AND system.status = 'production' ]]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>printer</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'printer' and have a valid ip address.</group_description>
-		<group_display_sql><![CDATA[SELECT system.id, hostname, description, manufacturer, model, serial, ip_address, printer_color, printer_duplex FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, hostname, description, manufacturer, model, serial, ip, printer_color, printer_duplex FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -64,8 +64,8 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>IP Address</column_name>
-			<column_variable>ip_address</column_variable>
-			<column_type>ip_address</column_type>
+			<column_variable>ip</column_variable>
+			<column_type>ip</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>

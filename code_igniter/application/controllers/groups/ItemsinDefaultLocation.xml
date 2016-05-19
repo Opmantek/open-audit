@@ -35,8 +35,8 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>IP Address</column_name>
-			<column_variable>ip_address</column_variable>
-			<column_type>ip_address</column_type>
+			<column_variable>ip</column_variable>
+			<column_type>ip</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>

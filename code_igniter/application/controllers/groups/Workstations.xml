@@ -8,7 +8,7 @@
 		<group_category>os</group_category>
 		<group_icon>windows</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their os_family attribute set to 'Windows XP', 'Windows Vista', Windows 7' or 'Windows 8'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.hostname, system.id, system.ip_address, system.manufacturer, system.model, system.serial, windows.user_name, oa_location.name FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.id LEFT JOIN windows ON (system.id = windows.id AND windows.current = 'y') LEFT JOIN oa_location ON (system.location_id
+		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.hostname, system.id, system.ip, system.manufacturer, system.model, system.serial, windows.user_name, oa_location.name FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.id LEFT JOIN windows ON (system.id = windows.id AND windows.current = 'y') LEFT JOIN oa_location ON (system.location_id
  = oa_location.id) WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
@@ -35,8 +35,8 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>IP Address</column_name>
-			<column_variable>ip_address</column_variable>
-			<column_type>ip_address</column_type>
+			<column_variable>ip</column_variable>
+			<column_type>ip</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
