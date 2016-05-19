@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Cisco Linux Systems</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.os_group LIKE LOWER('linux%') AND system.manufacturer LIKE LOWER('cisco%') AND system.status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.os_group LIKE LOWER('linux%') AND system.manufacturer LIKE LOWER('cisco%') AND system.status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>os</group_category>
 		<group_icon>cisco</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their os_family attribute set to 'Linux' and their manufacturer set to 'Cisco'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.description, system.ip_address, system.type, system.os_family, system.os_name, system.icon, system.manufacturer, system.model FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.ip_address, system.type, system.os_family, system.os_name, system.icon, system.manufacturer, system.model FROM system, oa_group_sys WHERE system.id = oa_group_sys.id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -27,7 +27,7 @@
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>

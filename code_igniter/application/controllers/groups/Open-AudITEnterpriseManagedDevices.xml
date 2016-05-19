@@ -3,11 +3,11 @@
 	<details>
 		<group_name>Open-AudIT Enterprise Managed Devices</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.status = 'production' and oae_manage = 'y']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.status = 'production' and oae_manage = 'y']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_description>Any items that have their status attribute set to 'production' and their oae_manage attribute set to 'y'.</group_description>
 		<group_category>device</group_category>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.description, system.ip_address, system.type, system.os_family, system.os_name, system.icon FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.ip_address, system.type, system.os_family, system.os_name, system.icon FROM system, oa_group_sys WHERE system.id = oa_group_sys.id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
 		<group_icon>devices</group_icon>
 	</details>
 	<columns>
@@ -27,7 +27,7 @@
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>

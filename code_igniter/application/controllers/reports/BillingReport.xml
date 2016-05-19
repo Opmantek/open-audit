@@ -3,8 +3,8 @@
 	<details>
 		<report_name>Billing Report</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, oa_org.name as org_name, date_format(system.last_seen, '%Y-%m-%d') as last_seen, system.last_seen_by, system.manufacturer, system.model, system.serial, system.type, system.class, CASE WHEN windows.user_name > '' THEN windows.user_name ELSE system.owner END as 'user', oa_location.name FROM system LEFT JOIN oa_location ON system.location_id
- = oa_location.id LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id LEFT JOIN oa_org on system.org_id = oa_org.id WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id, system.hostname, oa_org.name as org_name, date_format(system.last_seen, '%Y-%m-%d') as last_seen, system.last_seen_by, system.manufacturer, system.model, system.serial, system.type, system.class, CASE WHEN windows.user_name > '' THEN windows.user_name ELSE system.owner END as 'user', oa_location.name FROM system LEFT JOIN oa_location ON system.location_id
+ = oa_location.id LEFT JOIN windows ON (system.id = windows.id AND windows.current = 'y') LEFT JOIN oa_group_sys ON system.id = oa_group_sys.id LEFT JOIN oa_org on system.org_id = oa_org.id WHERE oa_group_sys.group_id = @group]]></report_sql>
 		<report_display_sql></report_display_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
@@ -19,7 +19,7 @@
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align></column_align>
 		</column>

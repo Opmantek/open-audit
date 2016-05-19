@@ -3,12 +3,12 @@
 	<details>
 		<group_name>SAN devices</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.type LIKE 'san' AND system.status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.type LIKE 'san' AND system.status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>nas</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'san'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.description, system.type, system.manufacturer, system.serial, system.model, system.ip_address FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id ]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.type, system.manufacturer, system.serial, system.model, system.ip_address FROM system, oa_group_sys WHERE system.id = oa_group_sys.id AND oa_group_sys.group_id = ? GROUP BY system.id ]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -17,7 +17,7 @@
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
@@ -27,7 +27,7 @@
 			<column_variable>description</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
@@ -84,7 +84,7 @@
 		<column>
 			<column_order>8</column_order>
 			<column_name></column_name>
-			<column_variable>system_id</column_variable>
+			<column_variable>id</column_variable>
 			<column_type></column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

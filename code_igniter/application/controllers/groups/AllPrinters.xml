@@ -3,10 +3,10 @@
 	<details>
 		<group_name>All Printers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.status = 'production' and (type = 'printer' or type = 'network printer')]]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.status = 'production' and (type = 'printer' or type = 'network printer')]]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.description, system.manufacturer, system.model, system.serial, system.ip_address, system.type, system.icon FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.manufacturer, system.model, system.serial, system.ip_address, system.type, system.icon FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.id) WHERE oa_group_sys.group_id = ? group by id]]></group_display_sql>
 		<group_icon>printer</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'printer'.</group_description>
 	</details>
@@ -17,7 +17,7 @@
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>

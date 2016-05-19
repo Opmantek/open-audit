@@ -3,12 +3,12 @@
 	<details>
 		<group_name>Laptops</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE class = 'laptop' AND system.status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE class = 'laptop' AND system.status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>computer</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their class attribute set to 'laptop'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.hostname, system.system_id, system.ip_address, system.manufacturer, system.model, system.serial, system.owner FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.hostname, system.id, system.ip_address, system.manufacturer, system.model, system.serial, system.owner FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -27,7 +27,7 @@
 			<column_variable>hostname</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
