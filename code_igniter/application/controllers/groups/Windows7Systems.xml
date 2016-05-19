@@ -8,7 +8,7 @@
 		<group_category>os</group_category>
 		<group_icon>windows_7</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their os_family attribute set to 'Windows 7'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.hostname, system.id, system.ip, system.manufacturer, system.model, system.serial, windows.user_name, oa_location.name FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.id LEFT JOIN windows ON (system.id = windows.id AND windows.current = 'y') LEFT JOIN oa_location ON (system.location_id
+		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.name, system.id, system.ip, system.manufacturer, system.model, system.serial, windows.user_name, oa_location.name FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id LEFT JOIN windows ON (system.id = windows.id AND windows.current = 'y') LEFT JOIN oa_location ON (system.location_id
  = oa_location.id) WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
@@ -25,7 +25,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Hostname</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
 			<column_secondary>id</column_secondary>

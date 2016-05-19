@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Specific Key Name</report_name>
 		<report_display_in_menu>n</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, system.hostname, software_key.name, software_key.string FROM system LEFT JOIN software_key ON (system.id = software_key.id AND software_key.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.id = system.id) WHERE oa_group_sys.group_id = @group AND software_key.name = (SELECT name FROM software_key WHERE id = ? LIMIT 1)]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id, system.name, software_key.name, software_key.string FROM system LEFT JOIN software_key ON (system.id = software_key.id AND software_key.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group AND software_key.name = (SELECT name FROM software_key WHERE id = ? LIMIT 1)]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -14,7 +14,7 @@
 		<column>
 			<column_order>0</column_order>
 			<column_name>System Name</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
 			<column_secondary>id</column_secondary>

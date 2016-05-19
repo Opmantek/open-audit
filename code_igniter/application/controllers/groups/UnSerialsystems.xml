@@ -8,7 +8,7 @@
 		<group_category>general</group_category>
 		<group_icon>contact</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their serial or serial attribute set to ''.</group_description>
-		<group_display_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.ip, system.os_family, system.os_name, system.type, system.icon, system.manufacturer FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, system.name, system.description, system.ip, system.os_family, system.os_name, system.type, system.icon, system.manufacturer FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -24,7 +24,7 @@
 		<column>
 			<column_order>1</column_order>
 			<column_name>Name</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
 			<column_secondary>id</column_secondary>

@@ -7,7 +7,7 @@
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>access_token</group_icon>
-		<group_display_sql><![CDATA[SELECT system.id, system.description, system.type, system.manufacturer, system.serial, system.model, system.status, system.asset_number FROM system, oa_group_sys WHERE system.id = oa_group_sys.id AND oa_group_sys.group_id = ? AND system.status = 'production' GROUP BY system.id ]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, system.description, system.type, system.manufacturer, system.serial, system.model, system.status, system.asset_number FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? AND system.status = 'production' GROUP BY system.id ]]></group_display_sql>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'token'.</group_description>
 	</details>
 	<columns>

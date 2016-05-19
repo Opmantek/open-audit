@@ -8,7 +8,7 @@
 		<group_category>device</group_category>
 		<group_icon>cell_phone</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'phone', 'smart phone' or 'ip phone'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.id, system.description, system.manufacturer, system.model, system.serial, system.service_number, system.service_provider, system.owner, system.icon, system.os_family, system.type FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.id) WHERE oa_group_sys.group_id = ? group by id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, system.description, system.manufacturer, system.model, system.serial, system.service_number, system.service_provider, system.owner, system.icon, system.os_family, system.type FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? group by id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>

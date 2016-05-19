@@ -6,7 +6,7 @@
 		<group_dynamic_select><![CDATA[SELECT DISTINCT(system.id) FROM system LEFT JOIN server ON (system.id = server.id AND server.current = 'y') WHERE server.type = 'web' AND system.status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>application</group_category>
-		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.hostname, system.id, system.ip, system.description, system.os_name, server.name, server.version FROM system LEFT JOIN server ON (system.id = server.id AND server.current = 'y' AND server.type = 'web') LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.id) WHERE oa_group_sys.group_id = ?]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.name, system.id, system.ip, system.description, system.os_name, server.name, server.version FROM system LEFT JOIN server ON (system.id = server.id AND server.current = 'y' AND server.type = 'web') LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 		<group_icon>web</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their os_name attribute containing 'server' and have rows in the server table that is of type 'web'.</group_description>
 	</details>
@@ -24,7 +24,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Hostname</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
 			<column_secondary>id</column_secondary>

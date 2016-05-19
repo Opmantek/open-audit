@@ -8,13 +8,13 @@
 		<group_category>device</group_category>
 		<group_icon>modem</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'modem'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.id, system.hostname, system.description, system.type, system.manufacturer, system.serial, system.model, system.ip, system.asset_number FROM system, oa_group_sys WHERE system.id = oa_group_sys.id AND oa_group_sys.group_id = ? GROUP BY system.id ]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id, system.name, system.description, system.type, system.manufacturer, system.serial, system.model, system.ip, system.asset_number FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.id ]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
 			<column_order>0</column_order>
 			<column_name>Name</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
 			<column_secondary>id</column_secondary>

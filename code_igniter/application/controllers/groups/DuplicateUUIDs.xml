@@ -6,7 +6,7 @@
 		<group_parent>1</group_parent>
 		<group_description>Any items in the system table that have an identical UUID entry regardless of status.</group_description>
 		<group_category>general</group_category>
-		<group_display_sql><![CDATA[SELECT system.icon, system.id, system.hostname, system.uuid, system.status, system.type, system.os_family, system.os_name, system.timestamp FROM system, oa_group_sys WHERE system.id = oa_group_sys.id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.icon, system.id, system.name, system.uuid, system.status, system.type, system.os_family, system.os_name, system.timestamp FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
 		<group_icon>general</group_icon>
 	</details>
 	<columns>
@@ -23,7 +23,7 @@
 		<column>
 			<column_order>1</column_order>
 			<column_name>Hostname</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
 			<column_secondary>id</column_secondary>

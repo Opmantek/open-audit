@@ -8,7 +8,7 @@
 		<group_category>application</group_category>
 		<group_icon>application</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have a service installed called 'DHCP Server'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.hostname, system.id, system.ip, system.manufacturer, system.model, system.description, system.os_name FROM system, oa_group_sys WHERE system.id = oa_group_sys.id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.icon, system.os_family, system.name, system.id, system.ip, system.manufacturer, system.model, system.description, system.os_name FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
@@ -24,7 +24,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Hostname</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/main/system_display/</column_link>
 			<column_secondary>id</column_secondary>
