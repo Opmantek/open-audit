@@ -183,7 +183,8 @@ if (! function_exists('refresh_group_definitions')) {
             $sql = $myrow->group_dynamic_select;
             # update the group with all systems that match
             $sql = substr_replace($sql, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
-            $sql = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$myrow->group_id."' ", $sql);
+            #$sql = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$myrow->group_id."' ", $sql);
+            $sql = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$myrow->group_id."' ", $sql);
             $CI->db->query($sql);
         }
 
