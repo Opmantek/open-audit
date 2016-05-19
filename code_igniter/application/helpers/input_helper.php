@@ -112,7 +112,7 @@ if (! function_exists('inputRead')) {
                 // TODO - SEPARATE THIS OUT
                 switch ($CI->response->collection) {
                 case 'devices':
-                    $sql = "SELECT system_id AS id FROM system WHERE hostname LIKE ? ORDER BY system_id DESC LIMIT 1";
+                    $sql = "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
                     $table = 'system';
                     break;
                 case 'groups':
@@ -392,7 +392,7 @@ if (! function_exists('inputRead')) {
             if ($CI->response->action == 'collection' and $CI->response->collection == 'devices') { 
                 # we're requesting a list of devices without properties - set the below as defaults
                 if ($CI->response->sub_resource == '' or strtolower($CI->response->sub_resource) == 'system') {
-                    $CI->response->properties = 'system.system_id, system.icon, system.man_type, system.hostname, system.man_domain, system.man_ip_address, system.man_description, system.os_family, system.man_status';
+                    $CI->response->properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.os_family, system.status';
                 } else {
                     # we're requesting a subresource - return all the subresource's properties
                     $CI->response->properties = $CI->response->sub_resource . '.*';
