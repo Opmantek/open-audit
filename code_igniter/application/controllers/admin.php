@@ -5240,7 +5240,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE software ADD CONSTRAINT software_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE software_key ADD CONSTRAINT software_key_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sound ADD CONSTRAINT sound_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
-            $sql[] = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT additional_fields_data_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT additional_field_item_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT attachment_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT notes_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE task ADD CONSTRAINT task_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
@@ -5251,6 +5251,50 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE vm ADD CONSTRAINT vm_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE warranty ADD CONSTRAINT warranty_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE windows ADD CONSTRAINT windows_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+
+            $sql[] = "RENAME TABLE sys_man_attachment TO `attachment`";
+            $sql[] = "ALTER TABLE `attachment` CHANGE att_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `attachment` CHANGE `att_title` `title` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `attachment` CHANGE `att_filename` `filename` text NOT NULL";
+            $sql[] = "ALTER TABLE `attachment` DROP FOREIGN KEY att_user_id";
+
+            $sql[] = "RENAME TABLE sys_man_invoice TO `invoice`";
+            $sql[] = "ALTER TABLE `invoice` CHANGE invoice_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+
+            $sql[] = "RENAME TABLE sys_man_invoice_line TO `invoice_item`";
+            $sql[] = "ALTER TABLE `invoice_item` CHANGE line_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `invoice_item` CHANGE `system_id` `system_id` int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE `invoice_item` CHANGE `man_serial` `serial` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `invoice_item` CHANGE `man_asset_number` `asset_number` varchar(200) NOT NULL DEFAULT ''";
+
+            $sql[] = "RENAME TABLE sys_man_notes TO `notes`";
+            $sql[] = "ALTER TABLE `notes` CHANGE notes_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `notes` CHANGE `notes_title` `title` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `notes` CHANGE `notes_text` `comment` text NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `notes` DROP FOREIGN KEY sys_man_notes_user_id";
+
+            $sql[] = "RENAME TABLE sys_man_additional_fields_data TO `additional_field_item`";
+            $sql[] = "ALTER TABLE `additional_field_item` CHANGE field_details_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_id` `additional_field_id` int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_datetime` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_varchar` `value` text NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP field_int";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP field_memo";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY sys_man_additional_fields_data_field_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY sys_man_additional_fields_data_field_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY additional_fields_data_system_id";
+
+            $sql[] = "RENAME TABLE sys_man_additional_fields TO `additional_field`";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE field_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `additional_field` DROP field_sys_type";
+            $sql[] = "ALTER TABLE `additional_field` DROP field_derived_type";
+            $sql[] = "ALTER TABLE `additional_field` DROP field_derived_sql";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE `field_name` `name` varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE `field_type` `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar'";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE `field_values` `values` varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE `field_placement` `placement` varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `additional_field` DROP KEY sys_man_additional_fields_group";
+
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";
