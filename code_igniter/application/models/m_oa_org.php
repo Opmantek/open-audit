@@ -125,11 +125,11 @@ class M_oa_org extends MY_Model
         return ($result);
     }
 
-    public function get_system_org($system_id)
+    public function get_system_org($id)
     {
-        $sql = "SELECT a.*, b.name as parent_name FROM oa_org a LEFT JOIN system ON a.id = system.man_org_id LEFT JOIN oa_org b ON b.id = a.parent_id WHERE system.system_id = ?";
+        $sql = "SELECT a.*, b.name as parent_name FROM oa_org a LEFT JOIN system ON a.id = system.org_id LEFT JOIN oa_org b ON b.id = a.parent_id WHERE system.id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array($system_id);
+        $data = array($id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         return ($result);
@@ -147,7 +147,7 @@ class M_oa_org extends MY_Model
     public function delete_org($id)
     {
         $data = array("$id");
-        $sql = "UPDATE system SET man_org_id = '0' WHERE man_org_id = ?";
+        $sql = "UPDATE system SET org_id = '0' WHERE org_id = ?";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
         $sql = "DELETE FROM oa_org WHERE id = ?";
@@ -171,31 +171,31 @@ class M_oa_org extends MY_Model
     {
         // we have not requested a specific group.
         // display all items the current user has at least 'level 3' - view list rights on.
-        $sql = " SELECT system.system_id, system.hostname, system.man_description,
-    				system.man_ip_address, system.icon, system.man_os_name, system.man_os_family
+        $sql = " SELECT system.id, system.name, system.description,
+    				system.ip, system.icon, system.os_name, system.os_family
     			FROM
     				system, oa_group, oa_group_sys, oa_group_user
     			WHERE
-    				system.system_id IN (
+    				system.id IN (
     					SELECT
-    						system.system_id
+    						system.id
     					FROM
     						system, oa_group_sys, oa_group, oa_group_user
     					WHERE
-    						system.man_status = 'production' AND
-    						system.system_id = oa_group_sys.system_id AND
+    						system.status = 'production' AND
+    						system.id = oa_group_sys.system_id AND
     						oa_group_sys.group_id = oa_group.group_id AND
     						oa_group.group_id = oa_group_user.group_id AND
     						oa_group_user.user_id = ?
     						) AND
-    				system.system_id = oa_group_sys.system_id AND
+    				system.id = oa_group_sys.system_id AND
     				oa_group_sys.group_id = oa_group.group_id AND
     				oa_group.group_id = oa_group_user.group_id AND
     				oa_group_user.group_user_access_level > '2' AND
     				oa_group_user.user_id = ? AND
-    				system.man_org_id = ?
+    				system.org_id = ?
     			GROUP BY
-    				system.system_id";
+    				system.id";
         $sql = $this->clean_sql($sql);
         $data = array("$user_id", "$user_id", "$id");
         $query = $this->db->query($sql, $data);
