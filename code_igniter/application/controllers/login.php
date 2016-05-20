@@ -53,8 +53,11 @@ class login extends CI_Controller
 
         $this->load->helper('report_helper');
         check_default_reports();
+
         $this->load->helper('group_helper');
-        check_default_groups();
+        if ($this->config->config['internal_version'] >= '20160620') {
+            check_default_groups();
+        }
 
         // log the attempt
         $log_details = new stdClass();
