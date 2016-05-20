@@ -98,10 +98,10 @@ $(document).ready(function(){
             var value = $(item).val();
             var edit_button = document.getElementById('edit_'+attribute);
             var myObj = {};
-            myObj["id"] = <?php echo $data['system'][0]->system_id; ?>;
+            myObj["id"] = <?php echo $data['system'][0]->id; ?>;
             myObj[attribute] = value;
             var json = JSON.stringify(myObj);
-            $.post( "<?php echo $data['system'][0]->system_id;?>", { "data": json }, 'json')
+            $.post( "<?php echo $data['system'][0]->id;?>", { "data": json }, 'json')
                 .done(function( xhr ) {
                     //alert( JSON.stringify(xhr) );
                 })
@@ -298,32 +298,25 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
             <fieldset>
                 <div class="row">
                     <div class="col-md-5">
-                        <!--
-                        <div class="form-group">
-                            <label for="name" class="col-sm-4 control-label"><?php echo __('Name')?></label>
-                            <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="name" placeholder="" value="<?php echo $data['system'][0]->hostname; ?>" >
-                            </div>
-                        </div>
-                        -->
                         <div class="form-group">
                             <label for="name" class="col-sm-4 control-label"><?php echo __('Name')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="name" name="name" value="<?php echo $data['system'][0]->hostname; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="name" name="name" value="<?php echo $data['system'][0]->name; ?>">
                               <span class="input-group-btn">
                                 <button id="edit_name" action="edit" class="btn btn-default edit_button" type="button" value="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
 
-                        <!--
                         <div class="form-group">
-                            <label for="domain" class="col-sm-4 control-label"><?php echo __('Domain')?></label>
-                            <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="domain" placeholder="" value="<?php echo $data['system'][0]->domain; ?>" >
+                            <label for="hostname" class="col-sm-4 control-label"><?php echo __('Hostame')?></label>
+                            <div class="input-group">
+                              <input disabled type="text" class="form-control" placeholder="" id="hostname" name="hostname" value="<?php echo $data['system'][0]->hostname; ?>">
+                              <span class="input-group-btn">
+                                <button id="edit_hostname" action="edit" class="btn btn-default edit_button" type="button" value="hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                              </span>
                             </div>
                         </div>
-                        -->
                         <div class="form-group">
                             <label for="domain" class="col-sm-4 control-label"><?php echo __('Domain')?></label>
                             <div class="input-group">
@@ -334,14 +327,25 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                             </div>
                         </div>
 
-                        <!--
                         <div class="form-group">
-                            <label for="name" class="col-sm-4 control-label"><?php echo __('IP')?></label>
-                            <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="ip" placeholder="" value="<?php echo $data['system'][0]->ip; ?>" >
+                            <label for="dns_hostname" class="col-sm-4 control-label"><?php echo __('DNS Hostame')?></label>
+                            <div class="input-group">
+                              <input disabled type="text" class="form-control" placeholder="" id="dns_hostname" name="dns_hostname" value="<?php echo $data['system'][0]->dns_hostname; ?>">
+                              <span class="input-group-btn">
+                                <button id="edit_dns_hostname" action="edit" class="btn btn-default edit_button" type="button" value="dns_hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                              </span>
                             </div>
                         </div>
-                        -->
+                        <div class="form-group">
+                            <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('DNS Domain')?></label>
+                            <div class="input-group">
+                              <input disabled type="text" class="form-control" placeholder="" id="dns_domain" name="dns_domain" value="<?php echo $data['system'][0]->dns_domain; ?>">
+                              <span class="input-group-btn">
+                                <button id="edit_dns_domain" action="edit" class="btn btn-default edit_button" type="button" value="dns_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                              </span>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label for="ip" class="col-sm-4 control-label"><?php echo __('IP')?></label>
                             <div class="input-group">
@@ -352,27 +356,6 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                             </div>
                         </div>
 
-                        <!--
-                        <div class="form-group">
-                            <label for="type" class="col-sm-4 control-label"><?php echo __('Type')?></label>
-                            <div class="col-sm-8 input-group">
-                                <select id="type" class="form-control">
-                                <?php
-                                foreach ($device_types as $key => $value) {
-                                    if ($key == $data['system'][0]->type) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = "";
-                                    }
-                                    if ($key != '') {
-                                        echo "<option value='$key'$selected>".__("$value")."</option>";
-                                    }
-                                }
-                                ?>
-                                </select>
-                            </div>
-                        </div>
-                        -->
                         <div class="form-group">
                             <label for="type" class="col-sm-4 control-label"><?php echo __('Type')?></label>
                             <div class="col-sm-8 input-group">
@@ -404,7 +387,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                                 <select id="class" class="form-control" disabled>
                                 <?php
                                 foreach ($device_class as $key => $value) {
-                                    if ($key == $data['system'][0]->man_class) {
+                                    if ($key == $data['system'][0]->class) {
                                         $selected = " selected";
                                     } else {
                                         $selected = "";
@@ -422,16 +405,16 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
 
                         <!--
                         <div class="form-group">
-                            <label for="man_function" class="col-sm-4 control-label"><?php echo __('Function')?></label>
+                            <label for="function" class="col-sm-4 control-label"><?php echo __('Function')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="function" placeholder="" value="<?php echo $data['system'][0]->man_function; ?>" >
+                                <input type="text" class="form-control" id="function" placeholder="" value="<?php echo $data['system'][0]->function; ?>" >
                             </div>
                         </div>
                         -->
                         <div class="form-group">
                             <label for="function" class="col-sm-4 control-label"><?php echo __('Function')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="function" name="function" value="<?php echo $data['system'][0]->man_function; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="function" name="function" value="<?php echo $data['system'][0]->function; ?>">
                               <span class="input-group-btn">
                                 <button id="edit_function" action="edit" class="btn btn-default edit_button" type="button" value="function"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
@@ -445,7 +428,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                                 <select id="environment" class="form-control" disabled>
                                 <?php
                                 foreach ($device_environment as $key => $value) {
-                                    if ($key == $data['system'][0]->man_environment) {
+                                    if ($key == $data['system'][0]->environment) {
                                         $selected = " selected";
                                     } else {
                                         $selected = "";
@@ -464,7 +447,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                                 <select id="status" class="form-control" disabled>
                                 <?php
                                 foreach ($device_status as $key => $value) {
-                                    if ($key == $data['system'][0]->man_status) {
+                                    if ($key == $data['system'][0]->status) {
                                         $selected = " selected";
                                     } else {
                                         $selected = "";
@@ -487,11 +470,11 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                         </div>
                         -->
                         <div class="form-group">
-                            <label for="man_description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
+                            <label for="description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="man_description" name="man_description" value="<?php echo $data['system'][0]->man_description; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="description" name="description" value="<?php echo $data['system'][0]->description; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_man_description" action="edit" class="btn btn-default edit_button" type="button" value="man_description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_description" action="edit" class="btn btn-default edit_button" type="button" value="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -632,7 +615,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                         <div class="form-group">
                             <label for="cluster_name" class="col-sm-4 control-label"><?php echo __('Cluster Name')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="cluster_name" placeholder="" value="<?php echo $data['system'][0]->man_cluster_name; ?>" disabled>
+                                <input type="text" class="form-control" id="cluster_name" placeholder="" value="<?php echo $data['system'][0]->cluster_name; ?>" disabled>
                               <span class="input-group-btn">
                                 <button id="edit_cluster_name" action="edit" class="btn btn-default edit_button" type="button" value="cluster_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
@@ -656,7 +639,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                         <div class="form-group">
                             <label for="vm_group" class="col-sm-4 control-label"><?php echo __('VM Group')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="vm_group" placeholder="" value="<?php echo $data['system'][0]->man_vm_group; ?>" disabled>
+                                <input type="text" class="form-control" id="vm_group" placeholder="" value="<?php echo $data['system'][0]->vm_group; ?>" disabled>
                               <span class="input-group-btn">
                                 <button id="edit_vm_group" action="edit" class="btn btn-default edit_button" type="button" value="vm_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
@@ -705,7 +688,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                         </div>
                     </div>
                     <div class="col-md-2 col-centered">
-                        <img class="center-block img-responsive" style="width: 100% \9;" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $data['system'][0]->icon; ?>.svg" />
+                        <img class="center-block img-responsive" style="width: 100%;" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $data['system'][0]->icon; ?>.svg" />
                         <br /><br />
                         <!-- <input class="btn btn-success btn-block" type="button" value="Submit" id="submit_button" style="display:none;" onClick="submit();" > -->
                         <!-- <a class="btn btn-primary btn-block" href="#" role="button" id="toggle_link"><?php echo __('Edit'); ?></a> -->

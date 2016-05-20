@@ -80,8 +80,8 @@ if (count($this->response->filter) > 0) {
     }
     $link = str_replace($item->name . '=' . $operator . $item->value, '', $_SERVER["REQUEST_URI"]);
     $link = str_replace($item->name . '=' . $operator . urlencode($item->value), '', $_SERVER["REQUEST_URI"]);
-    if ($item->name == 'status' and $item->operator == '=' and $item->value == 'production') {
-      $link = $refine_link . 'man_status=!=""';
+    if (($item->name == 'status' or $item->name == 'system.status') and $item->operator == '=' and $item->value == 'production') {
+      $link = $refine_link . 'system.status=!=""';
     }
     $label = 'label-info';
     echo '<big><span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span></big>&nbsp;';
@@ -101,13 +101,12 @@ if (!empty($this->response->data)) { ?>
         if (strpos($key, '.') !== false) {
           $key = substr($key, strpos($key, '.')+1);
         }
-        if ($key == 'man_ip_address' or $key == 'system.man_ip_address' or $key == 'ip_padded') {
+        if ($key == 'ip' or $key == 'system.ip' or $key == 'ip_padded') {
           continue;
         }
-        if ($key == 'system_id') {
+        if ($key == 'system.id' or $key == 'id') {
           $key = 'ID';
         }
-        $key = str_replace('man_', '', $key);
         $key = str_replace('_', ' ', $key);
         $key = str_replace('os ', 'OS ', $key);
         $key = str_replace(' id', ' ID', $key);
@@ -152,14 +151,14 @@ if (!empty($this->response->data)) { ?>
       //   $property = substr($property, strpos($property, '.'));
       // }
       # never output these - we shoudl have an attribute called ip instead
-      if ($property == 'man_ip_address' or $property == 'system.man_ip_address' or $property == 'ip_padded') {
+      if ($property == 'ip' or $property == 'system.ip' or $property == 'ip_padded') {
         continue;
       }
 
       if (!empty($item->$property)) {
         if ($property == 'ip' and !empty($item->ip_padded)) {
           echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->ip_padded) . "</span>" . $item->ip . "</td>\n";
-        } elseif ($property == 'system_id' or $property == 'system.system_id') {
+        } elseif ($property == 'system.id' or $property == 'id') {
           echo "            <td><a href='devices/" . $item->$property . "'>" . $item->$property . "</td>\n";
         } elseif ($property == 'icon' or $property == 'system.icon') {
           echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->$property)."\" alt=\"".htmlentities($item->$property)."\"/></td>\n";
