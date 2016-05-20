@@ -161,7 +161,7 @@ foreach ($query as $row) {
                 break;
 
             case "ip_address":
-                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', $row->man_ip_address))."&nbsp;</span>".htmlentities(ip_address_from_db($row->man_ip_address))."</td>\n";
+                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', ip_address_to_db($row->ip)))."&nbsp;</span>".htmlentities(ip_address_from_db($row->ip))."</td>\n";
                 break;
 
             case "multi":
