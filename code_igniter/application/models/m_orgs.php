@@ -113,7 +113,7 @@ class M_orgs extends MY_Model
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
-        $sql = "SELECT type, count(system_id) as device_count FROM system WHERE man_org_id = " . intval($CI->response->id) . " GROUP BY type " . $CI->response->sort . " " . $CI->response->limit;
+        $sql = "SELECT type, count(system.id) as device_count FROM system WHERE system.org_id = " . intval($CI->response->id) . " GROUP BY type " . $CI->response->sort . " " . $CI->response->limit;
         $sql = $this->clean_sql($sql);
         $data = array($CI->user->id);
         $query = $this->db->query($sql, $data);
@@ -146,9 +146,7 @@ class M_orgs extends MY_Model
         $result = $query->result();
         $CI->response->total = intval($result[0]->count);
 
-
-        #$sql = "SELECT " . $properties . ", count(system.system_id) as device_count FROM oa_org LEFT JOIN system ON (oa_org.id = system.man_org_id) " . $filter . " GROUP BY oa_org.id " . $CI->response->sort . " " . $limit;
-        $sql = "SELECT o1.*, o2.name as parent_name, count(system.system_id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.man_org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id " . $limit;
+        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id " . $limit;
 
         $sql = $this->clean_sql($sql);
         $temp_debug = $this->db->db_debug;
