@@ -331,7 +331,6 @@ class System extends CI_Controller
             $details->type = 'computer';
             $details->man_type = 'computer';
         }
-        $details->system_key = $this->m_system->create_system_key($details);
 
         $i = $this->m_system->find_system($details, $display);
         if ($i == '' and $received_system_id > '') {
