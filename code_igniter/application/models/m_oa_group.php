@@ -368,13 +368,6 @@ class M_oa_group extends MY_Model
         $sql = "SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
-        // echo $this->db->last_query();
-        // echo "<br /><br />\n";
-        // echo "Rows: " . $query->num_rows();
-        // $result = $query->result();
-        // echo "Rows: " . $query->num_rows();
-        // echo "Count: " . count($result);
-        // exit();
         return ($query->num_rows());
     }
 
