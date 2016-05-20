@@ -227,7 +227,7 @@ class M_oa_location extends MY_Model
      */
     public function get_system_location($id)
     {
-        $sql = "SELECT oa_location.* FROM oa_location, system WHERE oa_location.id = system.man_location_id AND system.system_id = ? LIMIT 1";
+        $sql = "SELECT oa_location.* FROM oa_location, system WHERE oa_location.id = system.location_id AND system.id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -272,7 +272,7 @@ class M_oa_location extends MY_Model
         $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
-        $sql = "UPDATE system SET man_location_id = '' WHERE man_location_id = ?";
+        $sql = "UPDATE system SET location_id = '' WHERE location_id = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
@@ -314,8 +314,8 @@ class M_oa_location extends MY_Model
         // we have not requested a specific group.
         // display all items the current user has at least 'level 3' - view list rights on.
         $sql = "SELECT
-    				system.system_id,
-    				system.hostname,
+    				system.id,
+    				system.name,
     				system.man_description,
     				system.man_ip_address,
     				system.icon,
@@ -327,9 +327,9 @@ class M_oa_location extends MY_Model
     				oa_group_sys,
     				oa_group_user
     			WHERE
-    				system.system_id IN (
+    				system.id IN (
     					SELECT
-    						system.system_id
+    						system.id
     					FROM
     						system,
     						oa_group_sys,
@@ -337,18 +337,18 @@ class M_oa_location extends MY_Model
     						oa_group_user
     					WHERE
     						system.man_status = 'production' AND
-    						system.system_id = oa_group_sys.system_id AND
+    						system.id = oa_group_sys.system_id AND
     						oa_group_sys.group_id = oa_group.group_id AND
     						oa_group.group_id = oa_group_user.group_id AND
     						oa_group_user.user_id = ?
     						) AND
-    				system.system_id = oa_group_sys.system_id AND
+    				system.id = oa_group_sys.system_id AND
     				oa_group_sys.group_id = oa_group.group_id AND
     				oa_group.group_id = oa_group_user.group_id AND
     				oa_group_user.group_user_access_level > '2' AND
     				oa_group_user.user_id = ? AND
-    				system.man_location_id = ?
-    			GROUP BY system.system_id ";
+    				system.location_id = ?
+    			GROUP BY system.id ";
         $sql = $this->clean_sql($sql);
         $data = array("$user_id", "$user_id", "$id");
         $query = $this->db->query($sql, $data);
@@ -453,7 +453,7 @@ class M_oa_location extends MY_Model
         $group_id = intval($group_id);
         $limit = intval($limit);
         # get the devices in the group, apply limit if requested
-        $sql = "SELECT man_type, man_location_id FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = $group_id LIMIT $limit";
+        $sql = "SELECT type, location_id FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = $group_id LIMIT $limit";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $types = $query->result();
@@ -506,7 +506,7 @@ class M_oa_location extends MY_Model
         # add a count to the type in a location
         foreach ($types as $type) {
             $device_type = $type->man_type;
-            $id = $type->man_location_id;
+            $id = $type->location_id;
             $new_locations[$id]->infoDisplay->$device_type++;
         }
         # remove any locations without devices
