@@ -60,97 +60,9 @@ class M_system extends MY_Model
         }
     }
 
-    public function create_system_key($details, $display = 'n')
-    {
-        $log_details = new stdClass();
-        $log_details->message = 'System Key being generated for '.$details->hostname.' at '.$details->man_ip_address;
-        $log_details->severity = 7;
-        $log_details->file = 'system';
-        if ($display != 'y') {
-            $display = 'n';
-        }
-        $log_details->display = $display;
-        unset($display);
-        stdlog($log_details);
-
-        $details = (object) $details;
-        if (!isset($details->system_key)) {
-            $details->system_key = '';
-        }
-
-        if (!isset($details->system_key_type)) {
-            $details->system_key_type = '';
-        }
-
-        if (!empty($details->hostname) and !empty($details->domain) and $details->domain != '' and $details->domain != '.' and empty($details->fqdn)) {
-            $details->fqdn = $details->hostname.".".$details->domain;
-        } else {
-            $details->fqdn = '';
-        }
-
-        # this is a computer from an audit script
-        # this is the 'best' type of key
-        if (isset($details->uuid) and $details->uuid != '' and
-            isset($details->hostname) and $details->hostname != '') {
-            $details->system_key = $details->uuid."-".$details->hostname;
-            $details->system_key_type = 'uuho';
-            $log_details->message = "System Key is $details->system_key for $details->hostname type uuho at $details->man_ip_address";
-            stdlog($log_details);
-        }
-
-        # this is anything that has a FQDN
-        if ((isset($details->fqdn) and $details->fqdn != '') and ($details->system_key_type != 'uuho')) {
-            $details->system_key = $details->fqdn;
-            $details->system_key_type = 'fqdn';
-            $log_details->message = "System Key is $details->system_key for $details->hostname type fqdn at $details->man_ip_address";
-            stdlog($log_details);
-        }
-
-        # We might have only a serial number
-        # if this is all we have, we also require a type.
-        # first check to make sure we have a type or man_type
-        if ((!isset($details->type) or $details->type == '') and isset($details->man_type) and $details->man_type != '') {
-            $details->type = $details->man_type;
-        }
-
-        # next check if we also have a serial and set the system_key if so
-        if (isset($details->serial) and $details->serial != '') {
-            if (isset($details->type) and $details->type != '') {
-                if ($details->system_key_type  != 'uuho' and $details->system_key_type != 'fqdn') {
-                    $details->system_key = $details->type."_".$details->serial;
-                    $details->system_key_type = 'tyse';
-                    $log_details->message = "System Key is $details->system_key for $details->hostname type tyse at $details->man_ip_address";
-                    stdlog($log_details);
-                }
-            }
-        }
-
-        # lastly, just an IP Address
-        if (isset($details->man_ip_address) and $details->man_ip_address != '' and
-            $details->man_ip_address != '0.0.0.0' and $details->man_ip_address != '000.000.000.000' and
-            $details->system_key_type != 'uuho' and $details->system_key_type  != 'fqdn' and $details->system_key_type != 'tyse') {
-            $details->system_key = $details->man_ip_address;
-            $details->system_key_type = 'ipad';
-            $log_details->message = "System Key is $details->system_key for $details->hostname type ipad at $details->man_ip_address";
-            stdlog($log_details);
-        }
-
-        if ($details->system_key == '') {
-            $log_details->message = "System Key is blank for $details->hostname ERROR at $details->man_ip_address";
-            $log_details->severity = 5;
-            stdlog($log_details);
-        }
-
-        unset($log_details);
-
-        return $details->system_key;
-    }
-
     public function find_system($details, $display = 'n')
     {
-        # we are searching for a system_id.
-        # search order is:
-        # system_key, mac_address, man_ip_address, serial, man_serial, hostname
+        # we are searching for a system.id.
         $details = (object) $details;
         $details->system_id = '';
 
@@ -235,79 +147,6 @@ class M_system extends MY_Model
                 stdlog($log_details);
             }
         }
-
-        // # check system_key
-        // if (isset($details->system_key) and $details->system_id == '') {
-        //     $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
-        //     $sql = $this->clean_sql($sql);
-        //     $data = array("$details->system_key");
-        //     $query = $this->db->query($sql, $data);
-        //     $row = $query->row();
-        //     if (count($row) > 0) {
-        //         $details->system_id = $row->system_id;
-        //         $log_details->message = 'HIT on system_key for '.ip_address_from_db($details->man_ip_address).' (System ID '.$details->system_id.')';
-        //         stdlog($log_details);
-        //     }
-        // }
-
-        // # check if the previous hostname had 15 characters and the submittied hostname has > 15
-        // if (isset($details->hostname) and strlen($details->hostname) > 15 and isset($details->uuid) and $details->system_id == '') {
-        //     $temp_uuid = $details->uuid."-".substr($details->hostname, 0, 15);
-        //     $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
-        //     $sql = $this->clean_sql($sql);
-        //     $data = array("$temp_uuid");
-        //     $query = $this->db->query($sql, $data);
-        //     $row = $query->row();
-        //     if (count($row) > 0) {
-        //         $details->system_id = $row->system_id;
-        //         $log_details->message = 'HIT on truncated system_key for '.ip_address_from_db($details->man_ip_address).' (System ID '.$details->system_id.')';
-        //         stdlog($log_details);
-        //     }
-        // }
-
-        // # use the full hostname as provided
-        // if (isset($details->hostname) and isset($details->uuid) and $details->system_id == '') {
-        //     $temp_uuid = $details->uuid."-".$details->hostname;
-        //     $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
-        //     $sql = $this->clean_sql($sql);
-        //     $data = array("$temp_uuid");
-        //     $query = $this->db->query($sql, $data);
-        //     $row = $query->row();
-        //     if (count($row) > 0) {
-        //         $details->system_id = $row->system_id;
-        //         $log_details->message = 'HIT on hostname + uuid system_key for '.ip_address_from_db($details->man_ip_address).' (System ID '.$details->system_id.')';
-        //         stdlog($log_details);
-        //     }
-        // }
-
-        // # check for a FQDN
-        // if (isset($details->fqdn) and $details->fqdn != '' and $details->system_id == '') {
-        //     $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
-        //     $sql = $this->clean_sql($sql);
-        //     $data = array("$details->fqdn");
-        //     $query = $this->db->query($sql, $data);
-        //     $row = $query->row();
-        //     if (count($row) > 0) {
-        //         $details->system_id = $row->system_id;
-        //         $log_details->message = 'HIT on fqdn for '.ip_address_from_db($details->man_ip_address).' (System ID '.$details->system_id.')';
-        //         stdlog($log_details);
-        //     }
-        // }
-
-        // # check for a hostname + domain, making a FQDN
-        // if (isset($details->hostname) and $details->hostname != '' and isset($details->domain) and $details->domain != '' and $details->system_id == '') {
-        //     $details->fqdn = $details->hostname.".".$details->domain;
-        //     $sql = "SELECT system.system_id FROM system WHERE system_key = ? AND system.man_status = 'production' LIMIT 1";
-        //     $sql = $this->clean_sql($sql);
-        //     $data = array("$details->fqdn");
-        //     $query = $this->db->query($sql, $data);
-        //     $row = $query->row();
-        //     if (count($row) > 0) {
-        //         $details->system_id = $row->system_id;
-        //         $log_details->message = 'HIT on host + domain for '.ip_address_from_db($details->man_ip_address).' (System ID '.$details->system_id.')';
-        //         stdlog($log_details);
-        //     }
-        // }
 
         # TODO: fix this by making sure (snmp in particular) calls with the proper variable name
         if (!isset($details->mac_address) and (isset($details->mac))) {
@@ -411,20 +250,6 @@ class M_system extends MY_Model
                         stdlog($log_details);
                     }
                 }
-
-                # finally one last try - check for a minimal matching system_key
-                if ($details->system_id == '') {
-                    $sql = "SELECT system.system_id FROM system WHERE system_key = ? and system.man_status = 'production'";
-                    $sql = $this->clean_sql($sql);
-                    $data = array(ip_address_to_db($details->man_ip_address));
-                    $query = $this->db->query($sql, $data);
-                    $row = $query->row();
-                    if (count($row) > 0) {
-                        $details->system_id = $row->system_id;
-                        $log_details->message = 'HIT on man_ip_address == system_key for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
-                        stdlog($log_details);
-                    }
-                }
             }
         }
 
@@ -435,27 +260,16 @@ class M_system extends MY_Model
                 isset($details->man_type) and $details->man_type != '') {
                 $details->type = $details->man_type;
             }
-            if ($details->type != '' or $details->man_type != '') {
-                $sql = "SELECT system.system_id FROM system WHERE system.system_key = ? AND system.man_status = 'production'";
+            if ($details->type != '') {
+                $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status = 'production'";
                 $sql = $this->clean_sql($sql);
-                $data = array("$details->type"."_"."$details->serial");
+                $data = array("$details->serial", "$details->man_type", "$details->type");
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
                 if (count($row) > 0) {
                     $details->system_id = $row->system_id;
-                }
-
-                if ($details->system_key == '') {
-                    $sql = "SELECT system.system_id FROM system WHERE system.serial = ? AND (system.man_type = ? OR system.type = ?) AND system.man_status = 'production'";
-                    $sql = $this->clean_sql($sql);
-                    $data = array("$details->serial", "$details->man_type", "$details->type");
-                    $query = $this->db->query($sql, $data);
-                    $row = $query->row();
-                    if (count($row) > 0) {
-                        $details->system_id = $row->system_id;
-                        $log_details->message = 'HIT on serial for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
-                        stdlog($log_details);
-                    }
+                    $log_details->message = 'HIT on serial for '.$details->man_ip_address.' (System ID '.$row->system_id.')';
+                    stdlog($log_details);
                 }
             }
         }
@@ -912,13 +726,12 @@ class M_system extends MY_Model
 				system.system_id
 			FROM system
 			WHERE
-				(system.system_id = ? OR
-				system.system_key = ? OR
-				system.hostname = ? )
+				(system.id = ? OR
+				system.name = ? )
 			ORDER BY
-				system.man_status,
-				system.timestamp,
-				system.system_id
+				system.status,
+				system.lasy_seen,
+				system.id
 			LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($system_id, $system_id, $system_id);
@@ -1413,92 +1226,16 @@ class M_system extends MY_Model
         $result = $query->row();
         $db_hostname = $result->hostname;
 
-        // if (strpos($db_hostname, ".") !== false) {
-        //     # our DB hostname field contains a .
-        //     # If we don't have an actual ip address, replace it the audit hostname with the db hostname
-        //     if (!filter_var($db_hostname, FILTER_VALIDATE_IP)) {
-        //         # we have a FQDN - split it
-        //         $details->fqdn = strtolower($db_hostname);
-        //         $i = explode(".", $db_hostname);
-        //         $details->hostname = $i[0];
-        //         unset($i[0]);
-        //         $details->domain = implode(".", $i);
-        //         unset($i);
-        //     } else {
-        //         # we have an ip address in the DB, replace it with the audit data (ie, don't change the audit data)
-        //     }
-        // } else {
-        //     # we have a real hostname in the database, replace our audit data with that
-        //     $details->hostname = $db_hostname;
-        // }
-
         if (!isset($details->system_key_type)) {
             $details->system_key_type = '';
-        }
-
-        # we have to try to get the 'best' system key
-        # the key in the db may be better than what we have
-        if (isset($details->system_key)) {
-            $sql = "SELECT system_key, system_key_type FROM system WHERE system_id = ?";
-            $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id");
-            $query = $this->db->query($sql, $data);
-            $result = $query->row();
-            $result = (object) $result;
-
-            // echo "DB Query: " . $this->db->last_query() . "\n";
-            // echo "Result Rows: " . count($result) . "\n";
-            // echo "Result:\n";
-            // print_r($result);
-            // echo "\nDB System Key: " . $result->system_key . "\n";
-            // echo "DB System Key Type: " . $result->system_key_type . "\n";
-
-            if (isset($result->system_key) and $result->system_key != '') {
-                $db_system_key = $result->system_key;
-            } else {
-                $db_system_key = '';
-            }
-
-            if (isset($result->system_key_type) and $result->system_key_type != '') {
-                $db_system_key_type = $result->system_key_type;
-            } else {
-                $db_system_key_type = '';
-            }
-
-            if ($details->system_key_type == 'uuho') {
-                # we already have a system key based on UUID . "_" . hostname
-            } else {
-                # we need to check the existing key
-                if ($db_system_key_type == 'uuho') {
-                    # the system key in the database is based on UUID . "_" . hostname
-                    $details->system_key = $db_system_key;
-                    $details->system_key_type = 'uuho';
-                } elseif ($db_system_key_type == 'fqdn') {
-                    # the system key in the database is based on the fqdn
-                    $details->system_key = $db_system_key;
-                    $details->system_key_type = 'fqdn';
-                } elseif (($db_system_key_type == 'tyse') and ($details->system_key_type == 'ipad')) {
-                    # the system key in the database is based on the type and serial
-                    $details->system_key = $db_system_key;
-                    $details->system_key_type = 'tyse';
-                } elseif (($db_system_key_type == 'ipad') and ($details->system_key_type == '')) {
-                    # the system key in the database is based on the ip address
-                    $details->system_key = $db_system_key;
-                    $details->system_key_type = 'ipad';
-                }
-            }
         }
 
         # if submitting an nmap scan, do not update the type or man_type
         if (isset($details->last_seen_by) and $details->last_seen_by == 'nmap') {
             unset($details->type);
-            unset($details->man_type);
         } else {
-            if (isset($details->type)) {
+            if (!empty($details->type)) {
                 $details->type = strtolower($details->type);
-            }
-            if (isset($details->man_type)) {
-                $details->man_type = strtolower($details->man_type);
             }
         }
 
@@ -2075,7 +1812,7 @@ class M_system extends MY_Model
         if ($system_id == '') {
             return;
         }
-        $sql = "SELECT access_details FROM system WHERE system_id = ? LIMIT 1";
+        $sql = "SELECT access_details FROM system WHERE system.id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
