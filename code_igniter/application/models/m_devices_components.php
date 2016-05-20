@@ -117,7 +117,7 @@ class M_devices_components extends MY_Model
                     }
                 }
             } else {
-                $sql = "SELECT $properties FROM `$table` WHERE `table`.system_id = ? $filter";
+                $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? $filter";
                 $data = array($id);
             }
         }
@@ -1080,7 +1080,7 @@ class M_devices_components extends MY_Model
     public function partition_use_report($group_id, $user_id, $days = '120')
     {
         $resultset = array();
-        $sql = "SELECT DISTINCT(`system`.`id`), `name`, `status`, `function`, `environment`, `description`, 
+        $sql = "SELECT DISTINCT(`system`.`id`), `system`.`name`, `status`, `function`, `environment`, `system`.`description`, 
                 `partition`.`id` as partition_id, `partition`.`mount_point`, `partition`.`name` as partition_name
             FROM `system`, `oa_group_sys`, `partition`
             WHERE
@@ -1102,7 +1102,7 @@ class M_devices_components extends MY_Model
         foreach ($query->result() as $system) {
             $partition_sql = "SELECT id, round(AVG(used),0) AS used, size as total, used_percent as percent_used, free_percent as percent_free, DATE(`timestamp`) AS `timestamp` FROM `graph` WHERE system_id = ? AND linked_row = ? AND linked_table = 'partition' GROUP BY DATE(`timestamp`) ORDER BY `timestamp`";
             $partition_sql = $this->clean_sql($partition_sql);
-            $data = array($system->system_id, $system->partition_id);
+            $data = array($system->id, $system->partition_id);
             $partition_query = $this->db->query($partition_sql, $data);
             $count = 0;
             $current_date = '';
