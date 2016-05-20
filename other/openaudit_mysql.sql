@@ -819,23 +819,21 @@ DROP TABLE IF EXISTS `oa_change`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_change` (
-  `change_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `change_short_desc` varchar(200) NOT NULL DEFAULT '',
-  `change_reason` text NOT NULL,
-  `change_planned_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `change_implemented_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `change_external_id` varchar(200) NOT NULL DEFAULT '',
-  `change_external_link` varchar(200) NOT NULL DEFAULT '',
-  `change_authorising_person` varchar(100) NOT NULL DEFAULT '',
-  `change_performing_person` varchar(100) NOT NULL DEFAULT '',
-  `change_detailed_desc` text NOT NULL,
-  `change_potential_issues` text NOT NULL,
-  `change_backout_plan` text NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) NOT NULL DEFAULT '',
+  `reason` text NOT NULL,
+  `planned_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `implemented_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `external_id` varchar(200) NOT NULL DEFAULT '',
+  `external_link` varchar(200) NOT NULL DEFAULT '',
+  `authorized_by` varchar(100) NOT NULL DEFAULT '',
+  `performed_by` varchar(100) NOT NULL DEFAULT '',
+  `details` text NOT NULL,
+  `potential_issues` text NOT NULL,
+  `backout_plan` text NOT NULL,
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`change_id`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `oa_change_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`id`) ON DELETE CASCADE
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -998,7 +996,7 @@ DROP TABLE IF EXISTS `oa_group_column`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_group_column` (
-  `column_id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `group_id` int(10) unsigned NOT NULL,
   `column_order` int(10) unsigned NOT NULL,
   `column_name` varchar(100) NOT NULL,
@@ -1031,7 +1029,7 @@ DROP TABLE IF EXISTS `oa_group_sys`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_group_sys` (
-  `group_sys_id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
   `group_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`group_sys_id`),
@@ -1060,7 +1058,7 @@ DROP TABLE IF EXISTS `oa_group_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_group_user` (
-  `group_user_id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `group_user_access_level` int(10) NOT NULL,
@@ -1194,7 +1192,7 @@ DROP TABLE IF EXISTS `oa_report_column`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_report_column` (
-  `column_id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int(10) NOT NULL AUTO_INCREMENT,
   `report_id` int(10) unsigned NOT NULL,
   `column_order` int(10) unsigned NOT NULL,
   `column_name` varchar(100) NOT NULL,

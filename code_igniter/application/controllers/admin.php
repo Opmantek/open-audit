@@ -5274,15 +5274,15 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `notes` DROP FOREIGN KEY sys_man_notes_user_id";
 
             $sql[] = "RENAME TABLE sys_man_additional_fields_data TO `additional_field_item`";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY sys_man_additional_fields_data_field_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY sys_man_additional_fields_data_field_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY att_user_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP field_int";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP field_memo";
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE field_details_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_id` `additional_field_id` int(10) unsigned NOT NULL DEFAULT '0'";
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_datetime` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_varchar` `value` text NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP field_int";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP field_memo";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY sys_man_additional_fields_data_field_id";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY sys_man_additional_fields_data_field_id";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY additional_fields_data_system_id";
 
             $sql[] = "RENAME TABLE sys_man_additional_fields TO `additional_field`";
             $sql[] = "ALTER TABLE `additional_field` CHANGE field_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -5295,6 +5295,31 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_placement` `placement` varchar(100) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `additional_field` DROP KEY sys_man_additional_fields_group";
 
+            $sql[] = "ALTER TABLE `network` DROP KEY timestamp";
+            $sql[] = "ALTER TABLE `edit_log` DROP KEY edit_log_system_id";
+            $sql[] = "ALTER TABLE `edit_log` ADD KEY system_id (system_id)";
+            $sql[] = "ALTER TABLE `notes` DROP KEY user_id";
+            $sql[] = "ALTER TABLE `oa_connection` CHANGE connection_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
+            $sql[] = "ALTER TABLE `oa_group_column` CHANGE column_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
+            $sql[] = "ALTER TABLE `oa_group_sys` CHANGE group_sys_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
+            $sql[] = "ALTER TABLE `oa_group_user` CHANGE group_user_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
+            $sql[] = "ALTER TABLE `oa_report_column` CHANGE column_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
+            $sql[] = "ALTER TABLE `service` DROP KEY description";
+
+            $sql[] = "ALTER TABLE `oa_change` DROP KEY oa_change_user_id";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE change_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_short_desc` `title` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_reason` `reason` text NOT NULL";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_planned_date` `planned_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_implemented_date` `implemented_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_external_id` `external_id` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_external_link` `external_link` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_authorising_person` `authorized_by` varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_performing_person` `performed_by` varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_detailed_desc` `details` text NOT NULL";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_potential_issues` `potential_issues` text NOT NULL";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_backout_plan` `backout_plan` text NOT NULL";
+ 
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";
