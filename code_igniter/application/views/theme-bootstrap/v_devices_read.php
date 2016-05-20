@@ -76,7 +76,6 @@ $(document).ready(function(){
     $(document).on('click', '.edit_button', function(e){
         var action = $(this).attr("action");
         var attribute = $(this).attr("value");
-        // alert(attribute); alert(action);
         if (action == "edit") {
             var item = document.getElementById(attribute);
             $(item).attr("disabled", false);
@@ -403,14 +402,6 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                         }
                         ?>
 
-                        <!--
-                        <div class="form-group">
-                            <label for="function" class="col-sm-4 control-label"><?php echo __('Function')?></label>
-                            <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="function" placeholder="" value="<?php echo $data['system'][0]->function; ?>" >
-                            </div>
-                        </div>
-                        -->
                         <div class="form-group">
                             <label for="function" class="col-sm-4 control-label"><?php echo __('Function')?></label>
                             <div class="input-group">
@@ -461,14 +452,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                                 <span class="input-group-btn"><button id="edit_status" action="edit" class="btn btn-default edit_button" type="button" value="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
-                        <!--
-                        <div class="form-group">
-                            <label for="description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
-                            <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="description" placeholder="" value="<?php echo $data['system'][0]->description; ?>" >
-                            </div>
-                        </div>
-                        -->
+
                         <div class="form-group">
                             <label for="description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
                             <div class="input-group">
@@ -479,14 +463,6 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                             </div>
                         </div>
 
-                        <!--
-                        <div class="form-group">
-                            <label for="os_group" class="col-sm-4 control-label"><?php echo __('OS Group')?></label>
-                            <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="os_group" placeholder="" value="<?php echo $data['system'][0]->os_group; ?>" >
-                            </div>
-                        </div>
-                        -->
                         <div class="form-group">
                             <label for="os_group" class="col-sm-4 control-label"><?php echo __('OS Group')?></label>
                             <div class="input-group">
@@ -497,14 +473,6 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                             </div>
                         </div>
 
-                        <!--
-                        <div class="form-group">
-                            <label for="os_family" class="col-sm-4 control-label"><?php echo __('OS Family')?></label>
-                            <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="os_family" placeholder="" value="<?php echo $data['system'][0]->os_family; ?>" >
-                            </div>
-                        </div>
-                        -->
                         <div class="form-group">
                             <label for="os_family" class="col-sm-4 control-label"><?php echo __('OS Family')?></label>
                             <div class="input-group">
@@ -515,14 +483,6 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                             </div>
                         </div>
 
-                        <!--
-                        <div class="form-group">
-                            <label for="os_name" class="col-sm-4 control-label"><?php echo __('OS Name')?></label>
-                            <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="os_name" placeholder="" value="<?php echo $data['system'][0]->os_name; ?>" >
-                            </div>
-                        </div>
-                        -->
                         <div class="form-group">
                             <label for="os_name" class="col-sm-4 control-label"><?php echo __('OS Name')?></label>
                             <div class="input-group">
@@ -559,6 +519,15 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                                 <input type="text" class="form-control" id="serial" placeholder="" value="<?php echo $data['system'][0]->serial; ?>" disabled>
                               <span class="input-group-btn">
                                 <button id="edit_serial" action="edit" class="btn btn-default edit_button" type="button" value="serial"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                              </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="asset_number" class="col-sm-4 control-label"><?php echo __('Asset Number')?></label>
+                            <div class="col-sm-8 input-group">
+                                <input type="text" class="form-control" id="asset_number" placeholder="" value="<?php echo $data['system'][0]->asset_number; ?>" disabled>
+                              <span class="input-group-btn">
+                                <button id="edit_asset_number" action="edit" class="btn btn-default edit_button" type="button" value="asset_number"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -688,7 +657,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                         </div>
                     </div>
                     <div class="col-md-2 col-centered">
-                        <img class="center-block img-responsive" style="width: 100%;" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $data['system'][0]->icon; ?>.svg" />
+                        <img class="center-block img-responsive" style="width: 50%;" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $data['system'][0]->icon; ?>.svg" />
                         <br /><br />
                         <!-- <input class="btn btn-success btn-block" type="button" value="Submit" id="submit_button" style="display:none;" onClick="submit();" > -->
                         <!-- <a class="btn btn-primary btn-block" href="#" role="button" id="toggle_link"><?php echo __('Edit'); ?></a> -->
@@ -723,14 +692,28 @@ foreach ($list as $item) {
         if (isset($data[$item])) {
             foreach ($data[$item][0] as $key => $value) {
                 if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen') {
-                    $show_key = ucfirst(str_replace('_', ' ', $key));
-                    ?>
-                    <div class="form-group">
-                        <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($show_key)?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="<?php echo $item . '_' . $key; ?>" placeholder="" value="<?php echo $value; ?>" readonly>
+                    $label = ucfirst(str_replace('_', ' ', $key));
+                    if ($item == 'purchase' or $item == 'credentials') {
+                        if ($item == 'credentials') {
+                            $key = 'credentials_' . $key;
+                        } ?>
+                        <div class="form-group">
+                            <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
+                            <div class="col-sm-8 input-group">
+                                <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
+                              <span class="input-group-btn">
+                                <button id="edit_<?php echo $key; ?>" action="edit" class="btn btn-default edit_button" type="button" value="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                              </span>
+                            </div>
                         </div>
-                    </div>
+                    <?php } else { ?>
+                        <div class="form-group">
+                            <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
+                            <div class="col-sm-8 input-group">
+                                <input type="text" class="form-control" id="<?php echo $item . '_' . $key; ?>" placeholder="" value="<?php echo $value; ?>" readonly>
+                            </div>
+                        </div>
+                    <?php } ?>
                 <?php
                 }
             }
@@ -887,6 +870,7 @@ if ($data['system'][0]->type == 'computer') {
                         }
                         echo '</div>'; # end of class = md-col-6
                         echo '</div>'; # end of class = row
+                        if (!empty($data[$sub_item]) and count($data[$sub_item]) > 0) {
                         ?>
                             <table class="table">
                                 <thead>
@@ -926,8 +910,10 @@ if ($data['system'][0]->type == 'computer') {
                                     ?>
                                 </tbody>
                             </table>
-                            </div>
-                            </div>
+                            <?php }
+                            ?>
+                        </div>
+                    </div>
                     <?php
                     }
                     ?>
