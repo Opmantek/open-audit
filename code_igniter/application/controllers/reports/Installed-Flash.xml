@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Installed - Flash</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, system.name, software.name, software.version, software.publisher, software.url, software.email, software.id, software.type, system.icon, system.os_family FROM software LEFT JOIN system ON (software.id = system.id AND software.current = 'y' AND software.name LIKE '%Flash Player%') LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id, system.name, software.name AS software_name, software.version, software.publisher, software.url, software.email, software.id AS software_id, software.type, system.icon, system.os_family FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = 'y' AND software.name LIKE '%Flash Player%') LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -13,7 +13,7 @@
 	<columns>
 		<column>
 			<column_order>0</column_order>
-			<column_name>System Name</column_name>
+			<column_name>Device Name</column_name>
 			<column_variable>name</column_variable>
 			<column_table>system</column_table>
 			<column_type>link</column_type>
@@ -24,10 +24,10 @@
 		<column>
 			<column_order>1</column_order>
 			<column_name>Software Name</column_name>
-			<column_variable>name</column_variable>
+			<column_variable>software_name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/report/specific_software/$group_id/</column_link>
-			<column_secondary>id</column_secondary>
+			<column_secondary>software_id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>

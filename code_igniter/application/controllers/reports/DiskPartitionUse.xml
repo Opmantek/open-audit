@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Disk Partition Use</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, system.name, partition.id, partition.hard_drive_index AS disk, partition.mount_point, partition.mount_type as type, partition.size, partition.used, partition.free, ROUND(((partition.free / partition.size) * 100), 0) AS percent_free FROM partition LEFT JOIN system ON (partition.id = system.id AND partition.current = 'y') LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE partition.used > 0 AND partition.free > 0 AND oa_group_sys.group_id = @group AND LOWER(partition.type) != 'volume' AND LOWER(partition.type) != 'network drive' AND LOWER(partition.mount_point) != '[swap]' ORDER BY partition.id, partition.id ]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id, system.name, partition.id AS partition_id, partition.hard_drive_index AS disk, partition.mount_point, partition.mount_type as type, partition.size, partition.used, partition.free, ROUND(((partition.free / partition.size) * 100), 0) AS percent_free, partition.name AS partition_name FROM partition LEFT JOIN system ON (partition.system_id = system.id AND partition.current = 'y') LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE partition.used > 0 AND partition.free > 0 AND oa_group_sys.group_id = @group AND LOWER(partition.type) != 'volume' AND LOWER(partition.type) != 'network drive' AND LOWER(partition.mount_point) != '[swap]' ORDER BY partition.id ]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -13,7 +13,7 @@
 	<columns>
 		<column>
 			<column_order>0</column_order>
-			<column_name>System Name</column_name>
+			<column_name>Device Name</column_name>
 			<column_variable>name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/devices/</column_link>
@@ -53,6 +53,16 @@
 		</column>
 		<column>
 			<column_order>4</column_order>
+			<column_name>Partition Name</column_name>
+			<column_variable>partition_name</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>5</column_order>
 			<column_name>Size MB</column_name>
 			<column_variable>size</column_variable>
 			<column_type>text</column_type>
@@ -62,7 +72,7 @@
 			<column_align>left</column_align>
 		</column>
 		<column>
-			<column_order>5</column_order>
+			<column_order>6</column_order>
 			<column_name>Used MB</column_name>
 			<column_variable>used</column_variable>
 			<column_type>text</column_type>
@@ -72,7 +82,7 @@
 			<column_align>left</column_align>
 		</column>
 		<column>
-			<column_order>6</column_order>
+			<column_order>7</column_order>
 			<column_name>Free MB</column_name>
 			<column_variable>free</column_variable>
 			<column_type>text</column_type>
@@ -82,7 +92,7 @@
 			<column_align>left</column_align>
 		</column>
 		<column>
-			<column_order>7</column_order>
+			<column_order>8</column_order>
 			<column_name>Free %</column_name>
 			<column_variable>percent_free</column_variable>
 			<column_type>text</column_type>
