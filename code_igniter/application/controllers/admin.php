@@ -5214,7 +5214,6 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE change_log ADD CONSTRAINT change_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE disk ADD CONSTRAINT disk_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE dns ADD CONSTRAINT dns_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
-            $sql[] = "ALTER TABLE edit_log ADD CONSTRAINT edit_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE graph ADD CONSTRAINT graph_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE ip ADD CONSTRAINT ip_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE log ADD CONSTRAINT log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
@@ -5275,8 +5274,7 @@ class admin extends MY_Controller
 
             $sql[] = "RENAME TABLE sys_man_additional_fields_data TO `additional_field_item`";
             $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY sys_man_additional_fields_data_field_id";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY sys_man_additional_fields_data_field_id";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY att_user_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY         sys_man_additional_fields_data_field_id";
             $sql[] = "ALTER TABLE `additional_field_item` DROP field_int";
             $sql[] = "ALTER TABLE `additional_field_item` DROP field_memo";
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE field_details_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -5296,16 +5294,20 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `additional_field` DROP KEY sys_man_additional_fields_group";
 
             $sql[] = "ALTER TABLE `network` DROP KEY timestamp";
-            $sql[] = "ALTER TABLE `edit_log` DROP KEY edit_log_system_id";
+            $sql[] = "ALTER TABLE `edit_log` DROP FOREIGN KEY edit_log_user_id";
+            $sql[] = "ALTER TABLE `edit_log` DROP KEY user_id";
             $sql[] = "ALTER TABLE `edit_log` ADD KEY system_id (system_id)";
+            $sql[] = "ALTER TABLE `edit_log` ADD CONSTRAINT edit_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE `edit_log` DROP KEY edit_log_system_id";
             $sql[] = "ALTER TABLE `notes` DROP KEY user_id";
-            $sql[] = "ALTER TABLE `oa_connection` CHANGE connection_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
-            $sql[] = "ALTER TABLE `oa_group_column` CHANGE column_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
-            $sql[] = "ALTER TABLE `oa_group_sys` CHANGE group_sys_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
-            $sql[] = "ALTER TABLE `oa_group_user` CHANGE group_user_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
-            $sql[] = "ALTER TABLE `oa_report_column` CHANGE column_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
+            $sql[] = "ALTER TABLE `oa_connection` CHANGE connection_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_group_column` CHANGE column_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_group_sys` CHANGE group_sys_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_group_user` CHANGE group_user_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_report_column` CHANGE column_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE `service` DROP KEY description";
 
+            $sql[] = "ALTER TABLE `oa_change` DROP FOREIGN KEY oa_change_user_id";
             $sql[] = "ALTER TABLE `oa_change` DROP KEY oa_change_user_id";
             $sql[] = "ALTER TABLE `oa_change` CHANGE change_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_short_desc` `title` varchar(200) NOT NULL DEFAULT ''";
@@ -5319,7 +5321,16 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_detailed_desc` `details` text NOT NULL";
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_potential_issues` `potential_issues` text NOT NULL";
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_backout_plan` `backout_plan` text NOT NULL";
+
+            $sql[] = "DROP TABLE IF EXISTS cluster";
+            $sql[] = "CREATE TABLE `cluster` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `type` enum('high availability', 'load balancing', 'perforance', 'storage', 'other'), `purpose` enum('application', 'database', 'file', 'virtualisation', 'web', 'other'), `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+            $sql[] = "UPDATE system SET hostname = name";
+            $sql[] = "UPDATE system SET dns_hostname = name";
+            $sql[] = "UPDATE system SET dns_domain = domain";
  
+            $sql[] = "DROP FUNCTION IF EXISTS cidr_to_mask";
+            $sql[] = "CREATE FUNCTION cidr_to_mask (cidr INT(2)) RETURNS CHAR(15) DETERMINISTIC RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10))";
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";
