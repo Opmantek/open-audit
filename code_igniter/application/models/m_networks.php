@@ -81,7 +81,7 @@ class M_networks extends MY_Model
         $return_data['network'] = $result;
         $network = $result[0]->name;
         if ($CI->response->sub_resource == 'devices') {
-            $sql = "SELECT system.system_id, icon, type, hostname, domain, ip.ip, description, os_family, man_status FROM system LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
+            $sql = "SELECT system.id, icon, type, name, domain, ip.ip, description, os_family, status FROM system LEFT JOIN ip ON (system.system_id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
             $data = array($network);
             $result = $this->run_sql($sql, $data);
             $return_data['devices'] = $result;
