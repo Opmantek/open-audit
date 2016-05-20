@@ -140,27 +140,26 @@ class M_systems extends MY_Model
             // Use a standard SQL Select.
             $sql = "SELECT
 					system.system_id,
-					system.hostname,
+					system.name,
 					system.domain,
-					system.man_description,
-					system.man_ip_address,
-					system.man_type,
-					system.man_os_family,
-					system.man_os_name,
+					system.description,
+					system.ip,
+					system.type,
+					system.os_family,
+					system.os_name,
 					system.icon,
-					system.man_manufacturer,
-					system.man_model,
-					system.man_serial,
+					system.manufacturer,
+					system.model,
+					system.serial,
 					system.type
 				FROM
 					system,
 					oa_group_sys
 				WHERE
-					system.system_id = oa_group_sys.system_id AND
-					oa_group_sys.group_id = ? AND
-					system.man_status = 'production'
+					system.id = oa_group_sys.system_id AND
+					oa_group_sys.group_id = ? 
 				GROUP BY
-					system.system_id";
+					system.id";
             $data = array("$group_id");
         } else {
             $sql = $display_sql->group_display_sql;
