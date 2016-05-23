@@ -293,7 +293,7 @@ class M_devices extends MY_Model
         $sql = "SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->internal->groupby;
         $result = $this->run_sql($sql, array());
         foreach ($result as $temp) {
-            $temp_ids[] = $temp->system_id;
+            $temp_ids[] = $temp->id;
         }
         $system_id_list = implode(',', $temp_ids);
         unset($temp, $temp_ids);
@@ -301,9 +301,16 @@ class M_devices extends MY_Model
         $sql = "SELECT * FROM oa_report WHERE report_id = " . intval($CI->response->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $report = $result[0];
-
+        $CI->response->sub_resource_name = $report->report_name;
+                         
+        # not how reports should be used                  
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id', '', $report->report_sql);
+        # not how reports should be used   
+        $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.id', '', $report->report_sql);
+        # not how reports should be used   
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id)', '', $report->report_sql);
+        # THIS is how reports _should_ be used
+        $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id)', '', $report->report_sql);
         $report->report_sql = str_ireplace('oa_group_sys.group_id = @group', 'system.id IN (' . $system_id_list . ')', $report->report_sql);
         $report->report_sql = str_ireplace('system.id = oa_group_sys.system_id', 'system.id IN (' . $system_id_list . ')', $report->report_sql);
 
