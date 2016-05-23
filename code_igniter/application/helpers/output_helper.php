@@ -192,12 +192,14 @@ if (! function_exists('output')) {
                 foreach ($row as $key => $value) {
                     if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
                         $row->$key = intval($value);
-                    } elseif ((strrpos($key, '_id') === strlen($key)-3) or
-                              (strrpos($key, '_count') === strlen($key)-6) or
-                              (strrpos($key, '_percent') === strlen($key)-8) or
-                              (strrpos($key, '_size') === strlen($key)-5)) {
+                    
+                    } elseif ((strrpos($key, 'id') === strlen($key)-2) or
+                              (strrpos($key, 'count') === strlen($key)-5) or
+                              (strrpos($key, 'percent') === strlen($key)-7) or
+                              (strrpos($key, 'size') === strlen($key)-4)) {
                         $row->$key = intval($value);
-                    } elseif (isset($key) and ($key == 'ip' or $key == 'next_hop' or $key == 'destination') and isset($value)) {
+                    
+                    } elseif (isset($key) and ($key == 'ip' or $key == 'next_hop' or $key == 'destination' or strrpos($key, 'ip') === strlen($key)-2) and isset($value)) {
                         $temp_name = $key . '_padded';
                         $row->$temp_name = ip_address_from_db($value);
                         $row->$temp_name = ip_address_to_db($row->$temp_name);
@@ -205,13 +207,14 @@ if (! function_exists('output')) {
                         if ($row->$temp_name == $row->$key) {
                             unset($row->$temp_name);
                         }
-                    } elseif (isset($key) and ($key == 'man_ip_address' or $key == 'system.man_ip_address')) {
-                        $row->ip_padded = $value;
-                        $row->ip = ip_address_from_db($value);
-                        #unset($row->man_ip_address);
-                        if (empty($row->ip_padded)) { $row->ip_padded = ''; }
-                        if (empty($row->ip)) { $row->ip = ''; }
-                    }
+                    } 
+                    // elseif (isset($key) and ($key == 'man_ip_address' or $key == 'system.man_ip_address')) {
+                    //     $row->ip_padded = $value;
+                    //     $row->ip = ip_address_from_db($value);
+                    //     #unset($row->man_ip_address);
+                    //     if (empty($row->ip_padded)) { $row->ip_padded = ''; }
+                    //     if (empty($row->ip)) { $row->ip = ''; }
+                    // }
                 }
             }
         }
