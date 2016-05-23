@@ -39,12 +39,17 @@ if (strpos($refine_link, '?') === false) {
 } else if (strrpos($refine_link, '&') !== strlen($refine_link)-1){
   $refine_link .= '&';
 }
+if (!empty($this->response->sub_resource_name)) {
+  $title = ' - ' . $this->response->sub_resource_name;
+} else {
+  $title = '';
+}
 ?>
 
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-      <span class="text-left">Devices</span>
+      <span class="text-left">Devices <?php echo $title ?></span>
       <span class="pull-right"><?php echo $this->response->filtered . ' of ' . $this->response->total . ' results'; ?></span>
     </h3>
   </div>
@@ -64,7 +69,6 @@ if (strpos($refine_link, '?') === false) {
 if (count($this->response->filter) > 0) {
   echo '<div class="panel panel-default pull-left">';
   echo '<div class="panel-body">';
-  #echo '<div class="well well-sm pull-left">';
   foreach ($this->response->filter as $item) {
     if ($item->operator == '=') {
       $label = 'label-success';
@@ -101,7 +105,7 @@ if (!empty($this->response->data)) { ?>
         if (strpos($key, '.') !== false) {
           $key = substr($key, strpos($key, '.')+1);
         }
-        if ($key == 'ip' or $key == 'system.ip' or $key == 'ip_padded') {
+        if (strrpos($key, 'ip_padded') === strlen($key)-9) {
           continue;
         }
         if ($key == 'system.id' or $key == 'id') {
@@ -132,11 +136,11 @@ if (!empty($this->response->data)) { ?>
 
     # grab the system_id if it exists
     $system_id = '';
-    if (!empty($item->system_id)) {
-      $system_id = $item->system_id;
+    if (!empty($item->{'system.id'})) {
+      $system_id = $item->{'system.id'};
     }
-    if (!empty($item->{'system.system_id'})) {
-      $system_id = $item->{'system.system_id'};
+    if ($system_id == '' and !empty($item->id)) {
+      $system_id = $item->id;
     }
     echo "          <tr>\n";
 
@@ -150,18 +154,24 @@ if (!empty($this->response->data)) { ?>
       // if (strpos($property, '.') !== false) {
       //   $property = substr($property, strpos($property, '.'));
       // }
-      # never output these - we shoudl have an attribute called ip instead
-      if ($property == 'ip' or $property == 'system.ip' or $property == 'ip_padded') {
+
+      # never output these - we should have an attribute called ip instead
+      if (strrpos($property, 'ip_padded') === strlen($property)-9) {
         continue;
       }
 
       if (!empty($item->$property)) {
-        if ($property == 'ip' and !empty($item->ip_padded)) {
-          echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->ip_padded) . "</span>" . $item->ip . "</td>\n";
-        } elseif ($property == 'system.id' or $property == 'id') {
+
+        if ((strrpos($property, 'ip') === strlen($property)-2) and (!empty($item->{$property . '_padded'}))) {
+          echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->{$property . '_padded'}) . "</span>" . $item->$property . "</td>\n";
+        
+        
+        } elseif ($property == 'id' or $property == 'system.id') {
           echo "            <td><a href='devices/" . $item->$property . "'>" . $item->$property . "</td>\n";
-        } elseif ($property == 'icon' or $property == 'system.icon') {
+        
+        } elseif (strrpos($property, 'icon') === strlen($property)-4) {
           echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->$property)."\" alt=\"".htmlentities($item->$property)."\"/></td>\n";
+        
         } else {
           if (strlen($item->$property) > 50) {
             $display = substr($item->$property, 0, 50) . '....';
