@@ -773,9 +773,9 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 	result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 	result.WriteText "<system>" & vbcrlf
 	result.WriteText "	<sys>" & vbcrlf
-	result.WriteText "		<timestamp>" & escape_xml(system_timestamp) & "</timestamp>" & vbcrlf
+	result.WriteText "		<id>" & system_id & "</id>" & vbcrlf
 	result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
-	result.WriteText "		<man_ip_address>" & escape_xml(man_ip_address) & "</man_ip_address>" & vbcrlf
+	result.WriteText "		<ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
 	result.WriteText "		<domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
 	result.WriteText "		<type>computer</type>" & vbcrlf
 	result.WriteText "		<icon>" & escape_xml(icon) & "</icon>" & vbcrlf
@@ -785,7 +785,6 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 	result.WriteText "		<active_directory_ou>" & escape_xml(computer_ou) & "</active_directory_ou>" & vbcrlf
 	result.WriteText "		<last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
 	result.WriteText "		<last_seen_by>active directory</last_seen_by>" & vbcrlf
-	result.WriteText "		<system_id>" & system_id & "</system_id>" & vbcrlf
 	result.WriteText "	</sys>" & vbcrlf
 	end if
 	objRecordSet.MoveNext
@@ -1240,11 +1239,11 @@ end if
 result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 result.WriteText "<system>" & vbcrlf
 result.WriteText "	<sys>" & vbcrlf
-result.WriteText "		<timestamp>" & escape_xml(system_timestamp) & "</timestamp>" & vbcrlf
+result.WriteText "		<id>" & escape_xml(system_id) & "</id>" & vbcrlf
 result.WriteText "		<uuid>" & escape_xml(system_uuid) & "</uuid>" & vbcrlf
 result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
 result.WriteText "		<domain>" & escape_xml(system_domain) & "</domain>" & vbcrlf
-result.WriteText "		<man_ip_address>" & escape_xml(man_ip_address) & "</man_ip_address>" & vbcrlf
+result.WriteText "		<ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
 result.WriteText "		<description>" & escape_xml(system_description) & "</description>" & vbcrlf
 result.WriteText "		<type>computer</type>" & vbcrlf
 result.WriteText "		<icon>" & system_os_icon & "</icon>" & vbcrlf
@@ -1257,13 +1256,12 @@ result.WriteText "		<model>" & escape_xml(system_model) & "</model>" & vbcrlf
 result.WriteText "		<manufacturer>" & escape_xml(system_manufacturer) & "</manufacturer>" & vbcrlf
 result.WriteText "		<uptime>" & escape_xml(system_uptime) & "</uptime>" & vbcrlf
 result.WriteText "		<form_factor>" & escape_xml(system_form_factor) & "</form_factor>" & vbcrlf
-result.WriteText "		<pc_os_bit>" & escape_xml(address_width) & "</pc_os_bit>" & vbcrlf
-result.WriteText "		<pc_memory>" & escape_xml(system_pc_memory) & "</pc_memory>" & vbcrlf
-result.WriteText "		<pc_num_processor>" & escape_xml(system_pc_num_processor) & "</pc_num_processor>" & vbcrlf
-result.WriteText "		<pc_date_os_installation>" & escape_xml(system_pc_date_os_installation) & "</pc_date_os_installation>" & vbcrlf
-result.WriteText "		<man_org_id>" & escape_xml(org_id) & "</man_org_id>" & vbcrlf
-result.WriteText "		<system_id>" & escape_xml(system_id) & "</system_id>" & vbcrlf
-result.WriteText "		<man_cluster_name>" & escape_xml(man_cluster_name) & "</man_cluster_name>" & vbcrlf
+result.WriteText "		<os_bit>" & escape_xml(address_width) & "</os_bit>" & vbcrlf
+result.WriteText "		<memory_count>" & escape_xml(system_pc_memory) & "</memory_count>" & vbcrlf
+result.WriteText "		<processor_count>" & escape_xml(system_pc_num_processor) & "</processor_count>" & vbcrlf
+result.WriteText "		<os_installation_date>" & escape_xml(system_pc_date_os_installation) & "</os_installation_date>" & vbcrlf
+result.WriteText "		<org_id>" & escape_xml(org_id) & "</org_id>" & vbcrlf
+result.WriteText "		<cluster_name>" & escape_xml(man_cluster_name) & "</cluster_name>" & vbcrlf
 result.WriteText "	</sys>" & vbcrlf
 
 

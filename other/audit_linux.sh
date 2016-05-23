@@ -543,8 +543,13 @@ fi
 
 # Get the hostname & DNS domain
 system_hostname=""
-system_hostname=$(hostname -s 2>/dev/null)
-system_domain=$(hostname -d 2>/dev/null)
+system_hostname=$(cat /etc/hostname | grep -v "^$" | cut -d. -f1)
+system_domain=$(cat /etc/hosts | grep -o " $system_hostname.*")
+system_fqdn="$system_hostname.$system_domain"
+
+dns_hostname=$(hostname)
+dns_domain=$(hostname -d)
+dns_fqdn=$(hostname -f)
 
 # if [ -f /etc/hostname ]; then
 # 	system_hostname=$(cat /etc/hostname 2>/dev/null)
@@ -814,11 +819,14 @@ xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 echo "form_systemXML=<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 echo "<system>"
 echo "	<sys>"
-echo "		<timestamp>$(escape_xml "$system_timestamp")</timestamp>"
 echo "		<uuid>$(escape_xml "$system_uuid")</uuid>"
 echo "		<hostname>$(escape_xml "$system_hostname")</hostname>"
-echo "		<man_ip_address>$(escape_xml "$system_ip_address")</man_ip_address>"
 echo "		<domain>$(escape_xml "$system_domain")</domain>"
+echo "		<fqdn>$(escape_xml "$system_fqdn")</fqdn>"
+echo "		<dns_hostname>$(escape_xml "$dns_hostname")</dns_hostname>"
+echo "		<dns_domain>$(escape_xml "$dns_domain")</dns_domain>"
+echo "		<dns_fqdn>$(escape_xml "$dns_fqdn")</dns_fqdn>"
+echo "		<ip>$(escape_xml "$system_ip_address")</ip>"
 echo "		<description></description>"
 echo "		<type>$(escape_xml "$system_type")</type>"
 echo "		<os_icon>$(escape_xml "$system_os_icon")</os_icon>"
@@ -831,13 +839,13 @@ echo "		<model>$(escape_xml "$system_model")</model>"
 echo "		<manufacturer>$(escape_xml "$system_manufacturer")</manufacturer>"
 echo "		<uptime>$(escape_xml "$system_uptime")</uptime>"
 echo "		<form_factor>$(escape_xml "$system_form_factor")</form_factor>"
-echo "		<pc_os_bit>$(escape_xml "$system_pc_os_bit")</pc_os_bit>"
-echo "		<pc_memory>$(escape_xml "$system_pc_memory")</pc_memory>"
-echo "		<pc_num_processor>$(escape_xml "$system_pc_total_threads")</pc_num_processor>"
-echo "		<pc_date_os_installation>$(escape_xml "$system_pc_date_os_installation")</pc_date_os_installation>"
-echo "		<man_org_id>$(escape_xml "$org_id")</man_org_id>"
+echo "		<os_bit>$(escape_xml "$system_pc_os_bit")</os_bit>"
+echo "		<memory_count>$(escape_xml "$system_pc_memory")</memory_count>"
+echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_count>"
+echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
+echo "		<org_id>$(escape_xml "$org_id")</org_id>"
 echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
-echo "		<system_id>$(escape_xml "$system_id")</system_id>"
+echo "		<id>$(escape_xml "$system_id")</id>"
 echo "	</sys>"
 } > "$xml_file"
 

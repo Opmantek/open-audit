@@ -225,7 +225,6 @@ cat >"$xml_file" <<EndOfFile
 <?xml version="1.0" encoding="UTF-8"?> 
 <system>
 	<sys>
-		<timestamp>$(escape_xml "$system_timestamp")</timestamp>
 		<uuid>$(escape_xml "$system_uuid")></uuid>
 		<hostname>$(escape_xml "$system_hostname")</hostname>
 		<domain>$(escape_xml "$system_domain")</domain>
@@ -241,13 +240,13 @@ cat >"$xml_file" <<EndOfFile
 		<manufacturer>IBM</manufacturer>
 		<uptime>$(escape_xml "$system_uptime")</uptime>
 		<form_factor></form_factor>
-		<pc_os_bit>$(escape_xml "$system_pc_os_bit")</pc_os_bit>
-		<pc_memory>$(escape_xml "$system_pc_memory")</pc_memory>
-		<pc_num_processor>$(escape_xml "$system_pc_num_processor")</pc_num_processor>
-		<pc_date_os_installation>$(escape_xml "$system_pc_date_os_installation")</pc_date_os_installation>
-		<man_org_id>$(escape_xml "$org_id")</man_org_id>
-		<man_class>server</man_class>
-		<system_id>$(escape_xml "$system_id")</system_id>
+		<os_bit>$(escape_xml "$system_pc_os_bit")</os_bit>
+		<memory_count>$(escape_xml "$system_pc_memory")</memory_count>
+		<processor_count>$(escape_xml "$system_pc_num_processor")</processor_count>
+		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>
+		<org_id>$(escape_xml "$org_id")</org_id>
+		<class>server</class>
+		<id>$(escape_xml "$system_id")</id>
 	</sys>
 EndOfFile
 FINISH=$((SECONDS-START))

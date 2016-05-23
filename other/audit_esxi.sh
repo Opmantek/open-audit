@@ -532,13 +532,12 @@ xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 echo "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo "<system>" >> $xml_file
 echo "	<sys>" >> $xml_file
-echo "		<timestamp>"$(escape_xml "$system_timestamp")"</timestamp>" >> $xml_file
 echo "		<uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
 echo "		<hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
 echo "		<domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file
 echo "		<description></description>" >> $xml_file
 echo "		<type>computer</type>" >> $xml_file
-echo "		<man_type>computer</man_type>" >> $xml_file
+echo "		<type>computer</type>" >> $xml_file
 echo "		<os_icon>"$(escape_xml "$system_os_icon")"</os_icon>" >> $xml_file
 echo "		<os_group>"$(escape_xml "$system_os_group")"</os_group>" >> $xml_file
 echo "		<os_family>"$(escape_xml "$system_os_family")"</os_family>" >> $xml_file
@@ -549,14 +548,14 @@ echo "		<model>"$(escape_xml "$system_model")"</model>" >> $xml_file
 echo "		<manufacturer>"$(escape_xml "$system_manufacturer")"</manufacturer>" >> $xml_file
 echo "		<uptime>"$(escape_xml "$system_uptime")"</uptime>" >> $xml_file
 echo "		<form_factor>"$(escape_xml "$system_form_factor")"</form_factor>" >> $xml_file
-echo "		<pc_os_bit>"$(escape_xml "$system_pc_os_bit")"</pc_os_bit>" >> $xml_file
-echo "		<pc_memory>"$(escape_xml "$system_pc_memory")"</pc_memory>" >> $xml_file
-echo "		<pc_num_processor>"$(escape_xml "$system_pc_processors")"</pc_num_processor>" >> $xml_file
-echo "		<pc_date_os_installation>"$(escape_xml "$system_pc_date_os_installation")"</pc_date_os_installation>" >> $xml_file
-echo "		<man_org_id>"$(escape_xml "$org_id")"</man_org_id>" >> $xml_file
-echo "		<system_id>"$(escape_xml "$system_id")"</system_id>" >> $xml_file
+echo "		<os_bit>"$(escape_xml "$system_pc_os_bit")"</os_bit>" >> $xml_file
+echo "		<memory_count>"$(escape_xml "$system_pc_memory")"</memory_count>" >> $xml_file
+echo "		<processor_count>"$(escape_xml "$system_pc_processors")"</processor_count>" >> $xml_file
+echo "		<os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file
+echo "		<org_id>"$(escape_xml "$org_id")"</org_id>" >> $xml_file
+echo "		<id>"$(escape_xml "$system_id")"</id>" >> $xml_file
 echo "		<last_seen_by>audit</last_seen_by>" >> $xml_file
-echo "		<man_class>hypervisor</man_class>" >> $xml_file
+echo "		<class>hypervisor</class>" >> $xml_file
 echo "	</sys>" >> $xml_file
 
 
