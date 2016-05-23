@@ -160,8 +160,12 @@ foreach ($query as $row) {
                 }
                 break;
 
+            // case "ip_address":
+            //     echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', ip_address_to_db($row->ip)))."&nbsp;</span>".htmlentities(ip_address_from_db($row->ip))."</td>\n";
+            //     break;
+
             case "ip_address":
-                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', ip_address_to_db($row->ip)))."&nbsp;</span>".htmlentities(ip_address_from_db($row->ip))."</td>\n";
+                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', ip_address_to_db($row->$column_variable_name)))."&nbsp;</span>".htmlentities(ip_address_from_db($row->$column_variable_name))."</td>\n";
                 break;
 
             case "multi":
