@@ -5257,6 +5257,8 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `attachment` CHANGE `att_filename` `filename` text NOT NULL";
             $sql[] = "ALTER TABLE `attachment` DROP FOREIGN KEY att_user_id";
 
+            $sql[] = "ALTER TABLE `change_log` CHANGE `details` `details` text NOT NULL";
+
             $sql[] = "RENAME TABLE sys_man_invoice TO `invoice`";
             $sql[] = "ALTER TABLE `invoice` CHANGE invoice_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
 

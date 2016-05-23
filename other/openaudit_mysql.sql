@@ -176,7 +176,7 @@ CREATE TABLE `change_log` (
   `db_table` varchar(50) NOT NULL DEFAULT '',
   `db_row` int(10) unsigned NOT NULL DEFAULT '0',
   `db_action` enum('','create','update','delete') NOT NULL DEFAULT '',
-  `details` varchar(200) NOT NULL DEFAULT '',
+  `details` TEXT NOT NULL,
   `user_id` int(10) unsigned DEFAULT NULL,
   `ack_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `external_link` varchar(200) NOT NULL DEFAULT '',
