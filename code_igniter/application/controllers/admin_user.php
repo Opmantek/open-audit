@@ -180,7 +180,7 @@ class Admin_user extends MY_Controller
             $this->load->model("m_oa_user");
             if (is_null($this->m_oa_user->select_user($details->user_name))) {
                 #user does not exist - good
-                $details->user_id = $this->m_oa_user->add_user($details);
+                $details->id = $this->m_oa_user->add_user($details);
                 $this->m_oa_group->edit_user_groups($details);
             } else {
                 $this->data['error_message'] = "Username already exists.";
