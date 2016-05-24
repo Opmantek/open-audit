@@ -114,6 +114,7 @@ if (!empty($this->response->data)) { ?>
         $key = str_replace('_', ' ', $key);
         $key = str_replace('os ', 'OS ', $key);
         $key = str_replace(' id', ' ID', $key);
+        $key = str_replace(' ip', ' IP', $key);
         $key = ucwords($key);
         if ($key == 'Ip') { $key = 'IP'; }
         if (stripos($key, 'icon') !== false) {
