@@ -3,7 +3,7 @@
 	<details>
 		<report_name>System Details</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, system.name, system.os_name, system.class, system.owner, system.ip, system.model, DATE(system.first_seen) as first_seen, DATE(system.last_seen) as last_seen, system.last_seen_by, system.os_installation_date, system.manufacturer, system.serial, system.form_factor, windows.client_site_name,  windows.user_name, oa_location.name, windows.active_directory_ou FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id, system.icon, system.type, system.name, system.domain, system.ip, system.os_name, system.class, system.owner, system.model, DATE(system.first_seen) as first_seen, DATE(system.last_seen) as last_seen, system.last_seen_by, system.os_installation_date, system.manufacturer, system.serial, system.form_factor, windows.client_site_name AS `windows.client_site_name`,  windows.user_name AS `windows.user_name`, oa_location.name AS `oa_location.name`, windows.active_directory_ou AS `windows.active_directory_ou` FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @groupORDER BY system.name]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -114,7 +114,7 @@
 		<column>
 			<column_order>10</column_order>
 			<column_name>User</column_name>
-			<column_variable>user_name</column_variable>
+			<column_variable>windows.user_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -124,7 +124,7 @@
 		<column>
 			<column_order>11</column_order>
 			<column_name>Windows Site</column_name>
-			<column_variable>client_site_name</column_variable>
+			<column_variable>windows.client_site_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -144,7 +144,7 @@
 		<column>
 			<column_order>13</column_order>
 			<column_name>Location</column_name>
-			<column_variable>name</column_variable>
+			<column_variable>oa_location.name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -164,7 +164,7 @@
 		<column>
 			<column_order>16</column_order>
 			<column_name>OU</column_name>
-			<column_variable>active_directory_ou</column_variable>
+			<column_variable>windows.active_directory_ou</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

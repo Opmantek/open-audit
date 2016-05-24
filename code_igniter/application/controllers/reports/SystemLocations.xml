@@ -3,8 +3,7 @@
 	<details>
 		<report_name>System Locations</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, system.name, system.ip, system.icon, system.function, system.manufacturer, oa_location.name FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) LEFT JOIN oa_location ON (system.location_id
- = oa_location.id) WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id, system.icon, system.type, system.name, system.domain, system.ip, system.function, system.manufacturer, oa_location.name AS `oa_location.name` FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE oa_group_sys.group_id = @group ORDER BY system.name]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -55,7 +54,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Location</column_name>
-			<column_variable>name</column_variable>
+			<column_variable>oa_location.name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

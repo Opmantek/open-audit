@@ -3,7 +3,7 @@
 	<details>
 		<report_name>SQL Server Databases</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, system.name, system.os_family, system.environment, server_item.instance, server_item.name AS server_item_name, server_item.size, date(server_item.first_seen) as first_seen FROM server_item LEFT JOIN system ON (system.id = server_item.system_id AND server_item.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group AND server_item.type = 'database' ]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id, system.icon, system.type, system.name, system.domain, system.ip, system.os_family, system.environment, server_item.instance AS `server_item.instance`, server_item.name AS `server_item.name`, server_item.size AS `server_item.size`, date(server_item.first_seen) as `server_item.first_seen` FROM server_item LEFT JOIN system ON (system.id = server_item.system_id AND server_item.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group AND server_item.type = 'database' ORDER BY system.name]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>DB Instance</column_name>
-			<column_variable>instance</column_variable>
+			<column_variable>server_item.instance</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -54,7 +54,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>DB Name</column_name>
-			<column_variable>server_item_name</column_variable>
+			<column_variable>server_item.name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -64,7 +64,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>Size</column_name>
-			<column_variable>size</column_variable>
+			<column_variable>server_item.size</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -74,7 +74,7 @@
 		<column>
 			<column_order>8</column_order>
 			<column_name>First Seen</column_name>
-			<column_variable>first_seen</column_variable>
+			<column_variable>server_item.first_seen</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

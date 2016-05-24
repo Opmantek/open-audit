@@ -3,7 +3,7 @@
 	<details>
 		<report_name>System Processors</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, system.name, system.ip, CAST(system.pc_memory/1024 AS UNSIGNED) AS memory, processor.physical_count, processor.core_count, processor.logical_count, processor.speed, processor.description FROM system LEFT JOIN processor ON (system.id = processor.id AND processor.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group AND (processor.description IS NOT NULL AND processor.description != '')]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id, system.icon, system.type, system.name, system.domain, system.ip, CAST(system.memory_count/1024 AS UNSIGNED) AS memory_count, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, processor.speed AS `processor.speed`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (system.id = processor.system_id AND processor.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group AND processor.description IS NOT NULL AND processor.description != '' ORDER BY system.name]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -34,7 +34,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Memory</column_name>
-			<column_variable>memory</column_variable>
+			<column_variable>memory_count</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Physical Count</column_name>
-			<column_variable>physical_count</column_variable>
+			<column_variable>processor.physical_count</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -54,7 +54,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Core Count</column_name>
-			<column_variable>core_count</column_variable>
+			<column_variable>processor.core_count</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -64,7 +64,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Logical Count</column_name>
-			<column_variable>logical_count</column_variable>
+			<column_variable>processor.logical_count</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -74,7 +74,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>Speed</column_name>
-			<column_variable>speed</column_variable>
+			<column_variable>processor.speed</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -84,7 +84,7 @@
 		<column>
 			<column_order>7</column_order>
 			<column_name>Processor</column_name>
-			<column_variable>description</column_variable>
+			<column_variable>processor.description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
