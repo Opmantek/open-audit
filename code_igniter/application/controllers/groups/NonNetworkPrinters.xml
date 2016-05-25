@@ -3,28 +3,28 @@
 	<details>
 		<group_name>Non Network Printers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_type = 'printer' AND system.man_status = 'production' AND (system.man_ip_address = '000.000.000.000' OR system.man_ip_address = '0.0.0.0' OR system.man_ip_address = '')]]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.type = 'printer' AND system.status = 'production' AND (system.ip = '000.000.000.000' OR system.ip = '0.0.0.0' OR system.ip = '')]]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>device</group_category>
 		<group_icon>printer</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'printer' and have no valid ip address.</group_description>
-		<group_display_sql><![CDATA[SELECT b.hostname, a.linked_sys, a.system_id, a.man_manufacturer, a.man_model, a.man_serial, a.man_description, a.printer_port_name, a.printer_color, a.printer_duplex, windows.user_name FROM system b LEFT JOIN windows ON (b.system_id = windows.system_id AND windows.current = 'y'), system a LEFT JOIN oa_group_sys ON a.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ? AND a.linked_sys = b.system_id GROUP BY a.system_id ORDER BY a.man_manufacturer, a.man_model]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT b.hostname, a.linked_sys, a.id, a.manufacturer, a.model, a.serial, a.description, a.printer_port_name, a.printer_color, a.printer_duplex, windows.user_name FROM system b LEFT JOIN windows ON (b.id = windows.id AND windows.current = 'y'), system a LEFT JOIN oa_group_sys ON a.id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ? AND a.linked_sys = b.id GROUP BY a.id ORDER BY a.manufacturer, a.model]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
 			<column_order>1</column_order>
 			<column_name>Manufacturer</column_name>
-			<column_variable>man_manufacturer</column_variable>
+			<column_variable>manufacturer</column_variable>
 			<column_type>link</column_type>
-			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_link>/devices/</column_link>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>2</column_order>
 			<column_name>Model</column_name>
-			<column_variable>man_model</column_variable>
+			<column_variable>model</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -34,7 +34,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Serial</column_name>
-			<column_variable>man_serial</column_variable>
+			<column_variable>serial</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Description</column_name>
-			<column_variable>man_description</column_variable>
+			<column_variable>description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -84,7 +84,7 @@
 		<column>
 			<column_order>8</column_order>
 			<column_name>Attached PC Hostname</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
 			<column_link>main/system_display/</column_link>
 			<column_secondary>linked_sys</column_secondary>

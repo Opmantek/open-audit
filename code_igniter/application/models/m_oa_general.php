@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -45,7 +46,7 @@ class M_oa_general extends MY_Model
             return;
         }
         if ($table == 'system') {
-            $sql = 'SELECT system_id, hostname, fqdn, man_ip_address, man_type, man_class, os_version, man_function, man_environment, man_status, man_description, man_os_group, man_os_family, man_os_name, man_manufacturer, man_model, man_serial, man_form_factor, man_vm_group, uptime, location_name, last_seen, last_seen_by, icon, snmp_oid, sysDescr, sysObjectID, sysUpTime, sysContact, sysName, sysLocation FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?';
+            $sql = 'SELECT system_id, hostname, fqdn, man_ip_address, man_type, man_class, os_version, man_function, man_environment, man_status, man_description, man_os_group, man_os_family, man_os_name, man_manufacturer, man_model, man_serial, man_form_factor, man_vm_group, uptime, oa_location.name, last_seen, last_seen_by, system.icon, snmp_oid, sysDescr, sysObjectID, sysUpTime, sysContact, sysName, sysLocation FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.id WHERE system_id = ?';
             $sql = $this->clean_sql($sql);
 
         }
@@ -63,7 +64,7 @@ class M_oa_general extends MY_Model
         }
         $sql = '';
         if ($table == 'system') {
-            $sql = 'SELECT system.* FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.location_id WHERE system_id = ?';
+            $sql = 'SELECT system.* FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.id WHERE system_id = ?';
             $sql = $this->clean_sql($sql);
         }
         if ($sql != '') {
@@ -83,7 +84,7 @@ class M_oa_general extends MY_Model
         foreach ($tables as $table) {
             $object->table = '';
             $object->count = '';
-            $sql = "SELECT COUNT(*) as count FROM $table WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
+            $sql = "SELECT COUNT(*) as count FROM `$table` WHERE current = 'n' AND DATE(`$table`.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $row = $query->row();
@@ -96,14 +97,14 @@ class M_oa_general extends MY_Model
 
     public function count_all_hw_attributes()
     {
-        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'processor', 'san', 'scsi', 'sound', 'video', 'vm');
+        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'partition', 'processor', 'san', 'scsi', 'sound', 'video', 'vm');
         $string = '';
         $return = array();
         $object = new stdclass();
         foreach ($tables as $table) {
             $object->table = '';
             $object->count = '';
-            $sql = "SELECT COUNT(*) as count FROM $table";
+            $sql = "SELECT COUNT(*) as count FROM `$table`";
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $row = $query->row();
@@ -123,7 +124,7 @@ class M_oa_general extends MY_Model
         foreach ($tables as $table) {
             $object->table = '';
             $object->count = '';
-            $sql = "SELECT COUNT(*) as count FROM $table";
+            $sql = "SELECT COUNT(*) as count FROM `$table`";
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $row = $query->row();
@@ -139,7 +140,7 @@ class M_oa_general extends MY_Model
         $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         $count = 0;
         foreach ($tables as $table) {
-            $sql = "DELETE $table FROM $table WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
+            $sql = "DELETE `$table` FROM `$table` WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $count = $count + $this->db->affected_rows();
@@ -150,7 +151,7 @@ class M_oa_general extends MY_Model
 
     public function delete_table_non_current_attributes($table, $days = 365)
     {
-        $sql = "DELETE $table FROM $table WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
+        $sql = "DELETE `$table` FROM `$table` WHERE current = 'n' AND DATE($table.last_seen) < DATE_SUB(curdate(), INTERVAL $days day)";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $count = $this->db->affected_rows();

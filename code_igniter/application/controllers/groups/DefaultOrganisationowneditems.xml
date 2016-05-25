@@ -3,10 +3,10 @@
 	<details>
 		<group_name>Default Organisation owned items</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '0' AND system.man_status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.org_id = '0' AND system.status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_description>Items in Default Organisation</group_description>
-		<group_category>location</group_category>
+		<group_category>org</group_category>
 		<group_icon>location</group_icon>
 		<total>31</total>
 	</details>
@@ -14,28 +14,28 @@
 		<column>
 			<column_order>1</column_order>
 			<column_name>Icon</column_name>
-			<column_variable>man_icon</column_variable>
+			<column_variable>icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
-			<column_secondary>man_os_family</column_secondary>
+			<column_secondary>os_family</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>2</column_order>
 			<column_name>Hostname</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
-			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_link>/devices/</column_link>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>3</column_order>
 			<column_name>IP Address</column_name>
-			<column_variable>man_ip_address</column_variable>
-			<column_type>ip_address</column_type>
+			<column_variable>ip</column_variable>
+			<column_type>ip</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Type</column_name>
-			<column_variable>man_type</column_variable>
+			<column_variable>type</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -54,7 +54,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Description</column_name>
-			<column_variable>man_description</column_variable>
+			<column_variable>description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -64,7 +64,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>OS Name</column_name>
-			<column_variable>man_os_name</column_variable>
+			<column_variable>os_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -36,10 +37,22 @@
 <form action="#" method="post" class='niceforms'>
 	<fieldset id="org_details" class='niceforms'>
 		<legend><span style='font-size: 12pt;'>&nbsp;Error</span></legend>
-		<?php if (isset($error)) { echo $error."<br />\n"; } ?>
 		<br /><a href="javascript:history.back();" style="color:blue;">Go back</a> and try again.<br />
-		<pre><?php if (isset($query)) { print_r($query); } ?></pre>
+        <pre>
+        <?php if (isset($query)) { print_r($query); } ?>
+        <?php if (isset($error)) { print_r($error); } ?>
+        </pre>
+        <?php
+        # this is API generated error(s)
+        if (isset($this->response->errors)) {
+            echo "There has been an error with your request.\n";
+            echo "<pre>\n";
+            print_r($this->response->errors);
+            echo "</pre>\n";
+        }
+        ?>
 	</fieldset>
 </form>
 </div>
 </div>
+<?php exit(); ?>

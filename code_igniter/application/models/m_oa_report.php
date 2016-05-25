@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -41,7 +42,7 @@ class M_oa_report extends MY_Model
 
     public function list_reports_in_menu()
     {
-        $sql = "SELECT report_id, report_name, '' as report_url FROM oa_report WHERE report_display_in_menu = 'y' and report_view_file != 'v_help_oae' ORDER BY report_name";
+        $sql = "SELECT report_id, report_name, '' as report_url, report_description FROM oa_report WHERE report_display_in_menu = 'y' and report_view_file != 'v_help_oae' ORDER BY report_name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         return($query->result());
@@ -60,7 +61,8 @@ class M_oa_report extends MY_Model
         $sql = "INSERT INTO
 					oa_report
 				SET
-					report_name = ?,
+                    report_name = ?,
+                    report_description = ?,
 					report_sql = ?,
 					report_display_sql = ?,
 					report_view_file = ?,
@@ -70,6 +72,7 @@ class M_oa_report extends MY_Model
 					report_display_in_menu = ?";
         $sql = $this->clean_sql($sql);
         $data = array(    "$input->report_name",
+                        "$input->report_description",
                         "$input->report_sql",
                         "$input->report_display_sql",
                         "$input->report_view_file",
@@ -81,29 +84,29 @@ class M_oa_report extends MY_Model
         return($this->db->insert_id());
     }
 
-    public function delete_report($report_id)
+    public function delete_report($id)
     {
         $sql = "DELETE FROM oa_report WHERE report_id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array($report_id);
+        $data = array($id);
         $query = $this->db->query($sql, $data);
         return(true);
     }
 
-    public function get_report_details($report_id)
+    public function get_report_details($id)
     {
         $sql = "SELECT * FROM oa_report WHERE report_id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array($report_id);
+        $data = array($id);
         $query = $this->db->query($sql, $data);
         return($query->result());
     }
 
-    public function get_report_name($report_id)
+    public function get_report_name($id)
     {
         $sql = "SELECT report_name FROM oa_report WHERE report_id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array($report_id);
+        $data = array($id);
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $key) {
             $report_name = $key->report_name;
@@ -111,11 +114,11 @@ class M_oa_report extends MY_Model
         return($report_name);
     }
 
-    public function get_report_id($report_name)
+    public function get_report_id($name)
     {
         $sql = "SELECT report_id FROM oa_report WHERE report_name = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array("$report_name");
+        $data = array("$name");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         foreach ($result as $key) {
@@ -128,11 +131,11 @@ class M_oa_report extends MY_Model
         }
     }
 
-    public function get_report_view($report_id)
+    public function get_report_view($id)
     {
         $sql = "SELECT report_view_file FROM oa_report WHERE report_id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array($report_id);
+        $data = array($id);
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $key) {
             $report_view_file = $key->report_view_file;
@@ -140,11 +143,11 @@ class M_oa_report extends MY_Model
         return($report_view_file);
     }
 
-    public function get_report_sort_column($report_id)
+    public function get_report_sort_column($id)
     {
         $sql = "SELECT report_sort_column FROM oa_report WHERE report_id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array($report_id);
+        $data = array($id);
         $query = $this->db->query($sql, $data);
         foreach ($query->result() as $key) {
             $report_sort_column = $key->report_sort_column;
@@ -272,14 +275,14 @@ class M_oa_report extends MY_Model
             # TODO - log something here
             return;
         }
-        $sql = "INSERT INTO oa_report SET report_name = ?, report_sql = ?, report_display_sql = ?, report_view_file = ?, report_view_contents = ?, report_processing = ?, report_sort_column = ?, report_display_in_menu = ?";
+        $sql = "INSERT INTO oa_report SET report_name = ?, report_description = ?, report_sql = ?, report_display_sql = ?, report_view_file = ?, report_view_contents = ?, report_processing = ?, report_sort_column = ?, report_display_in_menu = ?";
         $sql = $this->clean_sql($sql);
-        $data = array((string)$report_definition->details->report_name, (string)$report_definition->details->report_sql, (string)$report_definition->details->report_display_sql,
-                        (string)$report_definition->details->report_view_file, (string)$report_definition->details->report_view_contents, (string)$report_definition->details->report_processing,
-                        (string)$report_definition->details->report_sort_column, (string)$report_definition->details->report_display_in_menu, );
+        $data = array((string)$report_definition->details->report_name, (string)$report_definition->details->report_description, 
+                (string)$report_definition->details->report_sql, (string)$report_definition->details->report_display_sql,
+                (string)$report_definition->details->report_view_file, (string)$report_definition->details->report_view_contents,
+                (string)$report_definition->details->report_processing, (string)$report_definition->details->report_sort_column,
+                (string)$report_definition->details->report_display_in_menu, );
         $query = $this->db->query($sql, $data);
-         #echo "<pre>\n"; print_r($this->db->last_query()); echo "</pre>\n";
-
         $report_id = $this->db->insert_id();
         foreach ($report_definition->columns->column as $column) {
             $sql = "INSERT INTO oa_report_column SET report_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?,  column_ternary = ?, column_align = ?";
@@ -291,13 +294,4 @@ class M_oa_report extends MY_Model
         }
         return;
     }
-
-
-
-
-
-
-
-
-
 }

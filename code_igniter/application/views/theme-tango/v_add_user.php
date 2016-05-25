@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -45,26 +46,25 @@ echo form_open('admin_user/add_user')."\n";
 	<table style='width:780' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td style='width:50%'>
-				<p><label for='user_name'><?php echo __("User Name")?>: </label><input type='text' id='user_name' name='user_name' tabindex='1' title='User Name' value="<?php echo set_value('user_name'); ?>"/><?php echo $error_message; ?></p>
-				<p><label for='user_full_name'><?php echo __("Full Name")?>: </label><input type='text' id='user_full_name' name='user_full_name' tabindex='2' title='Full Name'  value="<?php echo set_value('user_full_name'); ?>"/></p>
-				<p><label for='user_password'><?php echo __("Password")?>: </label><input type='password' id='user_password' name='user_password' tabindex='3' title='Password'  value="<?php echo set_value('user_password'); ?>"/></p>
-				<p><label for='user_email'><?php echo __("Email Address")?>: </label><input type='text' id='user_email' name='user_email' tabindex='4' title='Email Address'  value="<?php echo set_value('user_email'); ?>"/></p>
+				<p><label for='name'><?php echo __("User Name")?>: </label><input type='text' id='name' name='name' tabindex='1' title='User Name' value="<?php echo set_value('name'); ?>"/><?php echo $error_message; ?></p>
+				<p><label for='full_name'><?php echo __("Full Name")?>: </label><input type='text' id='full_name' name='full_name' tabindex='2' title='Full Name'  value="<?php echo set_value('full_name'); ?>"/></p>
+				<p><label for='password'><?php echo __("Password")?>: </label><input type='password' id='password' name='password' tabindex='3' title='Password'  value="<?php echo set_value('password'); ?>"/></p>
+				<p><label for='email'><?php echo __("Email Address")?>: </label><input type='text' id='email' name='email' tabindex='4' title='Email Address'  value="<?php echo set_value('email'); ?>"/></p>
 			</td>
 			<td style='width:50%'>
-				<p><label for='user_lang'><?php echo __("Language")?>: </label>
-					<select id='user_lang' name='user_lang' tabindex='5' title='Is Admin' />
+				<p><label for='lang'><?php echo __("Language")?>: </label>
+					<select id='lang' name='lang' tabindex='5' title='Is Admin' />
 						<option value="en" selected>English</option>
 						<option value="pt-br">Brazilian Portuguese</option>
 						<option value="fr">French</option>
 						<option value="de">German</option>
 						<option value="es">Spanish</option>
-					</select></p>
-
-		<!--	<p><label for='user_display_number'><?php echo __("Display Systems")?>: </label><input type='text' id='user_display_number' name='user_display_number' tabindex='6' title='Display Systems' value='10'  value="<?php echo set_value('user_display_number'); ?>"/></p> -->
-				<p><label for='user_theme'><?php echo __("Theme")?>: </label><input type='text' id='user_theme' name='user_theme' tabindex='7' title='Theme' value="<?php echo set_value('user_theme', 'tango'); ?>"/></p>
-				<p><label for='user_admin'><?php echo __("User is Admin")?>: </label><input type='checkbox' id='user_admin' name='user_admin' tabindex='8' title='Is Admin' /></p>
-				<p><label for='user_sam'><?php echo __("User SAM Access Level")?>: </label>
-					<select id='user_sam' name='user_sam' tabindex='8' title='<?php echo __('Is Admin'); ?>' />
+					</select>
+                </p>
+				<p><label for='theme'><?php echo __("Theme")?>: </label><input type='text' id='theme' name='theme' tabindex='7' title='Theme' value="<?php echo set_value('theme', 'tango'); ?>"/></p>
+				<p><label for='admin'><?php echo __("User is Admin")?>: </label><input type='checkbox' id='admin' name='admin' tabindex='8' title='Is Admin' /></p>
+				<p><label for='sam'><?php echo __("User SAM Access Level")?>: </label>
+					<select id='sam' name='sam' tabindex='8' title='<?php echo __('Is Admin'); ?>' />
 						<option value="0"><?php echo __('No Access'); ?></option>
 						<option value="1" selected><?php echo __('View Reports Only'); ?></option>
 						<option value="2"><?php echo __('Update Counts'); ?></option>

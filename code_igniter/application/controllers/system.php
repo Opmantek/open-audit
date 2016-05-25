@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -119,6 +120,12 @@ class System extends CI_Controller
     public function add_system_ad()
     {
         if (isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
+
+            // check if the submitting IP is in the list of allowable subnets
+            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+                exit;
+            }
+
             $this->load->helper('html');
             echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"en\" xml:lang=\"en\">";
             echo meta('Content-type', 'text/html; charset=utf-8', 'equiv');
@@ -142,8 +149,8 @@ class System extends CI_Controller
                 exit;
             }
             $count = 0;
-            if (isset($this->user->user_full_name)) {
-                $temp_user = $this->user->user_full_name;
+            if (isset($this->user->full_name)) {
+                $temp_user = $this->user->full_name;
             } else {
                 $temp_user = '';
             }
@@ -172,14 +179,20 @@ class System extends CI_Controller
 
     public function add_system()
     {
+
+        // check if the submitting IP is in the list of allowable subnets
+        if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+            exit;
+        }
+
         $this->benchmark->mark('code_start');
         if (isset($this->session->userdata['user_id'])) {
             $temp_user_id = $this->session->userdata['user_id'];
-            $sql = "/* system::add_system */ SELECT user_full_name FROM oa_user WHERE user_id = ?";
+            $sql = "/* system::add_system */ SELECT full_name FROM oa_user WHERE id = ?";
             $data = array($this->session->userdata['user_id']);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
-            $user_full_name = $result[0]->user_full_name;
+            $user_full_name = $result[0]->full_name;
         } else {
             $user_full_name = '';
         }
@@ -198,7 +211,6 @@ class System extends CI_Controller
         echo "<a href='" . base_url() . "index.php/system'>Back to input page</a><br />\n";
         echo "<a href='" . base_url() . "index.php'>Front Page</a><br />\n";
         $this->load->model('m_change_log');
-        $this->load->model('m_printer');
         $this->load->model('m_audit_log');
 
         $this->load->model('m_devices_components');
@@ -319,7 +331,6 @@ class System extends CI_Controller
             $details->type = 'computer';
             $details->man_type = 'computer';
         }
-        $details->system_key = $this->m_system->create_system_key($details);
 
         $i = $this->m_system->find_system($details, $display);
         if ($i == '' and $received_system_id > '') {
@@ -397,7 +408,7 @@ class System extends CI_Controller
         $this->m_devices_components->process_component('optical', $details, $xml->optical, $display);
         $this->m_devices_components->process_component('pagefile', $details, $xml->pagefile, $display);
         $this->m_devices_components->process_component('partition', $details, $xml->partition, $display);
-        $this->m_devices_components->process_component('print_queue', $details, $xml->printer, $display);
+        $this->m_devices_components->process_component('print_queue', $details, $xml->print_queue, $display);
         $this->m_devices_components->process_component('processor', $details, $xml->processor, $display);
         $this->m_devices_components->process_component('route', $details, $xml->route, $display);
         $this->m_devices_components->process_component('scsi', $details, $xml->scsi, $display);
@@ -420,12 +431,6 @@ class System extends CI_Controller
             if ($child->getName() === 'audit_wmi_fail') {
                 $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
                 $this->m_audit_log->update('wmi_fails', $xml->audit_wmi_fail, $details->system_id, $details->last_seen);
-            }
-            if ($child->getName() === 'printers') {
-                $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
-                foreach ($xml->printers->printer as $input) {
-                    $this->m_printer->process_printer($input, $details);
-                }
             }
         }
 
@@ -458,15 +463,8 @@ class System extends CI_Controller
         $this->m_devices_components->set_initial_address($details->system_id);
 
         $this->load->model('m_oa_group');
-        // update any tags for new printers
-        $this->m_audit_log->update('debug', 'network printers', $details->system_id, $details->last_seen);
-        $network_printers = $this->m_printer->get_new_network_printer($details);
-        if (count($network_printers) > 0) {
-            foreach ($network_printers as $printer) {
-                $this->m_oa_group->update_system_groups($printer);
-            }
-        }
-        // Finally, update any groups for this system if config item is set
+
+        // Update any groups for this system if config item is set
         $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
         if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
             # don't run the update group routine
@@ -494,6 +492,10 @@ class System extends CI_Controller
         if (! isset($_POST['form_nmap'])) {
             $this->load->view('v_system_add_nmap', $this->data);
         } else {
+            // check if the submitting IP is in the list of allowable subnets
+            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+                exit;
+            }
             $log_details = new stdClass();
             $log_details->severity = 7;
             $log_details->file = 'system';
@@ -657,8 +659,8 @@ class System extends CI_Controller
                         unset($log_details);
                     }
                 }
-                if (isset($this->user->user_full_name)) {
-                    $temp_user = $this->user->user_full_name;
+                if (isset($this->user->full_name)) {
+                    $temp_user = $this->user->full_name;
                 } else {
                     $temp_user = '';
                 }

@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -75,7 +76,7 @@ foreach ($system as $key) {
     $link_serial = $key->serial;
     $link_model = $key->model;
     $last_seen = $key->last_seen_by;
-    $icon = $key->man_icon;
+    $icon = $key->icon;
     $type = $key->man_type;
 }
 
@@ -85,7 +86,7 @@ echo "      setVarsForm(\"$system_id\");\n";
 echo "  </script>\n";
 
 foreach ($system_location as $key) {
-    $location_name = $key->location_name;
+    $location_name = $key->name;
 }
 
 # set the edit options

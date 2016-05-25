@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -517,6 +518,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
         <br />
         <form action="#" method="post" class='niceforms'>
             <fieldset id="optical_details">
+                <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Optical Details')?></span></legend>
                 <div style="min-width: 50px; float: right;">
                     <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_optical_drive.png' alt='' title='' />
                 </div>
@@ -1016,7 +1018,7 @@ function show_software($type, $software) {
                             <th><?php echo __('Password Expires')?></th>
                             <th><?php echo __('Password Changeable')?></th>
                             <th><?php echo __('Password Required')?></th>
-                            <th><?php echo __('SID')?></th>
+                            <th><?php echo __('SID / ID')?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1051,19 +1053,21 @@ function show_software($type, $software) {
                 <table cellspacing="1" class="tablesorter" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __('Group Name')?></th>
+                            <th><?php echo __('SID / ID')?></th>
+                            <th><?php echo __('Name')?></th>
                             <th><?php echo __('Description')?></th>
                             <th style='width:320px;'><?php echo __('Members')?></th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php foreach ($user_group as $key): ?>
-                    <?php $group_members = str_replace(", ", " <br />", $key->members); ?>
-                    <?php $group_members = mb_substr($group_members, 0, mb_strlen($group_members)-1); ?>
+                    <?php #$group_members = str_replace(", ", " <br />", $key->members); ?>
+                    <?php #$group_members = mb_substr($group_members, 0, mb_strlen($group_members)-1); ?>
                     <tr>
+                        <td><?php echo print_something($key->sid)?></td>
                         <td><?php echo print_something($key->name)?></td>
                         <td><?php echo print_something($key->description)?></td>
-                        <td><?php echo $group_members?></td>
+                        <td><?php echo $key->members?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -1084,35 +1088,37 @@ function show_software($type, $software) {
                 <table cellspacing="1" class="tablesorter" style="width:100%;">
                     <thead>
                         <tr>
-                            <th><?php echo __('Name')?></th>
-                            <th><?php echo __('Model')?></th>
                             <th><?php echo __('Manufacturer')?></th>
-                            <th><?php echo __('Port Name')?></th>
-                            <th><?php echo __('IP Address')?></th>
-                            <th><?php echo __('Shared')?></th>
-                            <th><?php echo __('Shared Name')?></th>
+                            <th><?php echo __('Model')?></th>
+                            <th><?php echo __('Description')?></th>
+                            <th><?php echo __('Driver')?></th>
+                            <th><?php echo __('Type')?></th>
+                            <th><?php echo __('Status')?></th>
                             <th><?php echo __('Color')?></th>
                             <th><?php echo __('Duplex')?></th>
-                            <th><?php echo __('Type')?></th>
+                            <th><?php echo __('Capabilities')?></th>
                             <th><?php echo __('Location')?></th>
-                            <th><?php echo __('Status')?></th>
+                            <th><?php echo __('Port Name')?></th>
+                            <th><?php echo __('Shared')?></th>
+                            <th><?php echo __('Shared Name')?></th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php foreach ($print_queue as $key): ?>
                     <tr>
-                        <td><?php echo print_something($key->name)?></td>
-                        <td><?php echo print_something($key->model)?></td>
                         <td><?php echo print_something($key->manufacturer)?></td>
-                        <td><?php echo print_something($key->port_name)?></td>
-                        <td><?php echo print_something($key->ip)?></td>
-                        <td><?php echo print_something($key->shared)?></td>
-                        <td><?php echo print_something($key->shared_name)?></td>
+                        <td><?php echo print_something($key->model)?></td>
+                        <td><?php echo print_something($key->description)?></td>
+                        <td><?php echo print_something($key->driver)?></td>
+                        <td><?php echo print_something($key->type)?></td>
+                        <td><?php echo print_something($key->status)?></td>
                         <td><?php echo print_something($key->color)?></td>
                         <td><?php echo print_something($key->duplex)?></td>
-                        <td><?php echo print_something($key->type)?></td>
+                        <td><?php echo print_something($key->capabilities)?></td>
                         <td><?php echo print_something($key->location)?></td>
-                        <td><?php echo print_something($key->connection_status)?></td>
+                        <td><?php echo print_something($key->port_name)?></td>
+                        <td><?php echo print_something($key->shared)?></td>
+                        <td><?php echo print_something($key->shared_name)?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>

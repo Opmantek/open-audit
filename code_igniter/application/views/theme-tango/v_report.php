@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -35,7 +36,7 @@
 $sortcolumn = 3;
 # check to see if user_access_level for this group is > 7
 $manual_edit = 'n';
-if (isset($this->user->user_access_level) and $this->user->user_access_level > '9') {
+if (isset($this->user->access_level) and $this->user->access_level > '9') {
     # check to see if "system_id" is present in report
         if (isset($query[0]->system_id)) {
             # enable group manual editing column
@@ -105,7 +106,7 @@ foreach ($query as $row) {
                     if ($row->$column_variable_name == '') {
                         $row->$column_variable_name = '-';
                     }
-                    if ($column_variable_name_sec == 'system_id' or $column_variable_name_sec == 'linked_sys') {
+                    if (($column_variable_name_sec == 'system_id' or $column_variable_name_sec == 'linked_sys') and ($column_variable_name == 'hostname')) {
                         $column_link = str_replace('$group_id', $group_id, $column_link);
                         echo "\t\t\t<td align=\"$column_align\"><a class=\"SystemPopupTrigger\" rel=\"".htmlentities($row->$column_variable_name_sec)."\" href=\"".site_url().htmlentities($column_link).htmlentities($row->$column_variable_name_sec)."\">".htmlentities($row->$column_variable_name)."</a></td>\n";
                     } else {
@@ -159,8 +160,12 @@ foreach ($query as $row) {
                 }
                 break;
 
+            // case "ip_address":
+            //     echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', ip_address_to_db($row->ip)))."&nbsp;</span>".htmlentities(ip_address_from_db($row->ip))."</td>\n";
+            //     break;
+
             case "ip_address":
-                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities($row->man_ip_address)."&nbsp;</span>".htmlentities(ip_address_from_db($row->man_ip_address))."</td>\n";
+                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', ip_address_to_db($row->$column_variable_name)))."&nbsp;</span>".htmlentities(ip_address_from_db($row->$column_variable_name))."</td>\n";
                 break;
 
             case "multi":
@@ -190,7 +195,7 @@ foreach ($query as $row) {
                 }
                 $href = str_replace(" ", "%20", $href);
                 if ($href > '') {
-                    echo "\t\t\t<td style=\"text-align: $column_align;\"><a href=\"".$href."\"><img src=\"".$image."\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
+                    echo "\t\t\t<td style=\"text-align: $column_align;\"><a target=\"_blank\" href=\"".$href."\"><img src=\"".$image."\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
                 } else {
                     echo "\t\t\t<td style=\"text-align: $column_align;\"></td>\n";
                 }

@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -50,7 +51,7 @@ class M_oa_connection extends MY_Model
      */
     public function get_connection($id)
     {
-        $sql = "SELECT * FROM oa_connection WHERE connection_id = ? LIMIT 1";
+        $sql = "SELECT * FROM oa_connection WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -70,15 +71,14 @@ class M_oa_connection extends MY_Model
      */
     public function get_connection_id($name)
     {
-        $sql = "SELECT connection_id FROM oa_connection WHERE name = ? LIMIT 1";
+        $sql = "SELECT id FROM oa_connection WHERE name = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array("$name");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
         if ($query->num_rows() > 0) {
             $row = $query->row();
-
-            return ($row->connection_id);
+            return ($row->id);
         } else {
             return;
         }
@@ -95,7 +95,7 @@ class M_oa_connection extends MY_Model
      */
     public function get_connection_name($id)
     {
-        $sql = "SELECT name FROM oa_connection WHERE connection_id = ? LIMIT 1";
+        $sql = "SELECT name FROM oa_connection WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -113,7 +113,7 @@ class M_oa_connection extends MY_Model
      */
     public function get_connection_names()
     {
-        $sql = "SELECT name, connection_id FROM oa_connection ORDER BY connection_name";
+        $sql = "SELECT name, id FROM oa_connection ORDER BY name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -130,7 +130,7 @@ class M_oa_connection extends MY_Model
      */
     public function get_all_connections()
     {
-        $sql = "SELECT oa_connection.*, oa_org.org_name, a.location_name AS location_a, b.location_name AS location_b FROM oa_connection LEFT JOIN oa_org ON oa_connection.org_id = oa_org.org_id LEFT JOIN oa_location AS a ON oa_connection.location_id_a = a.location_id LEFT JOIN oa_location AS b ON oa_connection.location_id_b = b.location_id ORDER BY name";
+        $sql = "SELECT oa_connection.*, oa_org.name as org_name, a.name AS location_a, b.name AS location_b FROM oa_connection LEFT JOIN oa_org ON oa_connection.org_id = oa_org.id LEFT JOIN oa_location AS a ON oa_connection.location_id_a = a.id LEFT JOIN oa_location AS b ON oa_connection.location_id_b = b.id ORDER BY oa_org.name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -148,11 +148,11 @@ class M_oa_connection extends MY_Model
      *
      * @return boolean
      */
-    public function check_connection_name($connection_name, $connection_id)
+    public function check_connection_name($name, $id)
     {
-        $sql = "SELECT connection_id FROM oa_connection WHERE name = ? AND connection_id <> ?";
+        $sql = "SELECT id FROM oa_connection WHERE name = ? AND id <> ?";
         $sql = $this->clean_sql($sql);
-        $data = array($connection_name, $connection_id);
+        $data = array($name, $id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
         if ($query->num_rows() > 0) {
@@ -226,11 +226,11 @@ class M_oa_connection extends MY_Model
      *
      * @return nothing
      */
-    public function delete_connection($connection_id)
+    public function delete_connection($id)
     {
-        $sql = "DELETE FROM oa_connection WHERE connection_id = ?";
+        $sql = "DELETE FROM oa_connection WHERE id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array("$connection_id");
+        $data = array("$id");
         $query = $this->db->query($sql, $data);
     }
 
@@ -266,7 +266,7 @@ class M_oa_connection extends MY_Model
                 ip_address_internal_a = ?,
                 ip_address_internal_b = ?
             WHERE
-                connection_id = ?";
+                id = ?";
         $sql = $this->clean_sql($sql);
         $data = array(    "$details->connection_org_id",
                         "$details->connection_name",

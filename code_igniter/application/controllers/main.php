@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -293,8 +294,8 @@ class main extends MY_Controller
             $group_id = '1';
         }
         // we must check to see if the user has at least VIEW permission on the group
-        $this->user->user_access_level = $this->m_oa_group->get_group_access($group_id, $this->user->user_id);
-        if ($this->user->user_access_level < '1') {
+        $this->user->access_level = $this->m_oa_group->get_group_access($group_id, $this->user->id);
+        if ($this->user->access_level < '1') {
             // not enough permission - exit
             exit();
         }
@@ -317,8 +318,8 @@ class main extends MY_Controller
         $this->load->model("m_oa_group");
         if (is_numeric($_POST['group_id'])) {
             // we must check to see if the user has at least VIEW permission on the group
-            $this->user->user_access_level = $this->m_oa_group->get_group_access($_POST['group_id'], $this->user->user_id);
-            if ($this->user->user_access_level < '10') {
+            $this->user->access_level = $this->m_oa_group->get_group_access($_POST['group_id'], $this->user->id);
+            if ($this->user->access_level < '10') {
                 // not enough permission - redirect
                 redirect('main/list_groups/');
             }
@@ -364,8 +365,8 @@ class main extends MY_Controller
         $this->load->model("m_additional_fields");
         if (is_numeric($_POST['group_id'])) {
             // we must check to see if the user has at least VIEW permission on the group
-            $this->user->user_access_level = $this->m_oa_group->get_group_access($_POST['group_id'], $this->user->user_id);
-            if ($this->user->user_access_level < '10') {
+            $this->user->access_level = $this->m_oa_group->get_group_access($_POST['group_id'], $this->user->id);
+            if ($this->user->access_level < '10') {
                 // not enough permission - redirect
                 redirect('main/list_groups/');
             }
@@ -480,7 +481,7 @@ class main extends MY_Controller
     public function list_groups()
     {
         $this->load->model("m_oa_group");
-        $this->data['query'] = $this->m_oa_group->get_user_groups($this->user->user_id);
+        $this->data['query'] = $this->m_oa_group->get_user_groups($this->user->id);
         $this->data['heading'] = 'Groups';
         $this->data['include'] = 'v_main';
         $this->data['sortcolumn'] = '2';
@@ -493,8 +494,8 @@ class main extends MY_Controller
         $this->load->model("m_oa_group");
         if (is_numeric($this->data['id'])) {
             // we must check to see if the user has at least VIEW permission on the group
-            $this->user->user_access_level = $this->m_oa_group->get_group_access($this->data['id'], $this->user->user_id);
-            if ($this->user->user_access_level < '3') {
+            $this->user->access_level = $this->m_oa_group->get_group_access($this->data['id'], $this->user->id);
+            if ($this->user->access_level < '3') {
                 // not even VIEW permission - redirect
                 redirect('main/list_groups/');
             }
@@ -569,7 +570,7 @@ class main extends MY_Controller
         }
         if (($this->data['id'] > '0') && (is_int($this->data['id']))) {
             // we must check to see if the user has at least VIEW permission on the group
-            if ($this->m_oa_group->get_group_access($this->data['id'], $this->user->user_id) < '3') {
+            if ($this->m_oa_group->get_group_access($this->data['id'], $this->user->id) < '3') {
                 // not even VIEW permission - redirect
                 redirect('main/list_groups/');
             }
@@ -594,11 +595,13 @@ class main extends MY_Controller
     {
         # search for a match on PRODUCTION devices only.
         # search for name, ip
+        $this->data['search'] = '';
         if (isset($_POST['search'])) {
             $this->data['search'] = urldecode($_POST['search']);
         }
         $this->data['search'] = html_entity_decode($this->data['search']);
         if ($this->data['search'] == '') {
+            //exit();
             redirect('main/list_groups/');
         }
 
@@ -611,7 +614,7 @@ class main extends MY_Controller
         $this->load->model("m_system");
         $this->data['query'] = $this->m_system->search_device($this->data['search']);
         $this->data['heading'] = 'Search Result ('.$this->data['search'].")";
-        if ($this->user->user_name == 'open-audit_enterprise') {
+        if ($this->user->name == 'open-audit_enterprise') {
             $this->data['heading'] = "Enterprise - " . $this->data['heading'];
         }
         $this->data['column'] = $this->m_system->search_device_columns();
@@ -694,7 +697,7 @@ class main extends MY_Controller
         $system_id = $this->m_system->get_system_id($this->data['id']);
         if ($system_id > '0') {
             // we must check to see if the user has at least VIEW permission on the system
-            $this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->user_id);
+            $this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->id);
             if ($this->data['access_level'] < '10') {
                 // no 'edit details' permission - redirect
                 redirect('main');
@@ -729,7 +732,7 @@ class main extends MY_Controller
         $this->load->model("m_system");
         if ($system_id > '0') {
             // we must check to see if the user has at least VIEW permission on the system
-            $this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->user_id);
+            $this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->id);
             if ($this->data['access_level'] < '10') {
                 // no 'edit details' permission - redirect
                 redirect('main');
@@ -751,7 +754,7 @@ class main extends MY_Controller
         $this->load->model("m_system");
         if ($system_id > '0') {
             // we must check to see if the user has at least VIEW permission on the system
-            $this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->user_id);
+            $this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->id);
             if ($this->data['access_level'] < '5') {
                 // not even view permission - redirect
                 redirect('main');
@@ -778,7 +781,7 @@ class main extends MY_Controller
         $this->load->model("m_system");
         if ($system_id > '0') {
             // we must check to see if the user has at least VIEW permission on the system
-            $this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->user_id);
+            $this->data['access_level'] = $this->m_system->get_system_access_level($system_id, $this->user->id);
             if ($this->data['access_level'] < '5') {
                 // not even view permission - redirect
                 redirect('main');
@@ -805,7 +808,7 @@ class main extends MY_Controller
         $this->data['id'] = $this->m_system->get_system_id($this->data['id']);
         if ($this->data['id'] > '0') {
             // we must check to see if the user has at least VIEW permission on the system
-            $this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->user->user_id);
+            $this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->user->id);
             if ($this->data['access_level'] < '1') {
                 // not even VIEW BASIC permission - redirect
                 redirect('main');
@@ -827,7 +830,7 @@ class main extends MY_Controller
         $this->data['id'] = $this->m_system->get_system_id($this->data['id']);
         if ($this->data['id'] > '0') {
             // we must check to see if the user has at least VIEW permission on the system
-            $this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->user->user_id);
+            $this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->user->id);
             if ($this->data['access_level'] < '5') {
                 // not even VIEW BASIC permission - redirect
                 redirect('main');
@@ -844,7 +847,6 @@ class main extends MY_Controller
         $this->load->model("m_attachment");
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
-        $this->load->model("m_printer");
 
         $this->load->model("m_devices_components");
         // $this->data['additional_fields_data'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
@@ -899,7 +901,6 @@ class main extends MY_Controller
         $this->data['ip'] = $this->m_devices_components->read($this->data['id'], 'y', 'ip');
         $this->data['locations'] = $this->m_oa_location->get_location_names();
         $this->data['orgs'] = $this->m_oa_org->get_all_orgs();
-        $this->data['printer'] = $this->m_printer->get_system_printer($this->data['id']);
         $this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
         $this->data['system_id'] = $this->data['id'];
         $this->data['system_location'] = $this->m_oa_location->get_system_location($this->data['id']);
@@ -1027,8 +1028,8 @@ class main extends MY_Controller
         if (!isset($_POST['submit'])) {
             # load the initial form
             $this->data['user'][0] = $this->user;
-            if ($this->user->user_admin == 'y') {
-                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($this->user->user_id);
+            if ($this->user->admin == 'y') {
+                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($this->user->id);
             }
             $this->data['heading'] = 'Edit User';
             $this->data['include'] = 'v_edit_user';
@@ -1043,22 +1044,22 @@ class main extends MY_Controller
                 $details->$key = $value;
             }
 
-            if ($details->user_password != $details->user_password_confirm) {
+            if ($details->password != $details->password_confirm) {
                 $error = '1';
                 $this->data['error_message'] = "Passwords must match.";
-                $this->data['user'] = $this->m_oa_user->get_user_details($details->user_id);
-                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->user_id);
+                $this->data['user'] = $this->m_oa_user->get_user_details($details->id);
+                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->id);
                 $this->data['heading'] = 'Edit User';
                 $this->data['include'] = 'v_edit_user';
                 $this->data['url'] = current_url();
                 $this->load->view('v_template', $this->data);
             }
 
-            if ($this->m_oa_user->check_user_name($details->user_name, $details->user_id) == false) {
+            if ($this->m_oa_user->check_user_name($details->name, $details->id) == false) {
                 $error = '1';
                 $this->data['error_message'] = "Username already exists.";
-                $this->data['user'] = $this->m_oa_user->get_user_details($details->user_id);
-                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->user_id);
+                $this->data['user'] = $this->m_oa_user->get_user_details($details->id);
+                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->id);
                 $this->data['heading'] = 'Edit User';
                 $this->data['include'] = 'v_edit_user';
                 $this->data['url'] = current_url();
@@ -1067,7 +1068,7 @@ class main extends MY_Controller
 
             if ($error == '0') {
                 $this->m_oa_user->edit_user($details);
-                if ($this->user->user_admin == 'y') {
+                if ($this->user->admin == 'y') {
                     $this->m_oa_group->edit_user_groups($details);
                 }
                 if ($details->user_name == 'admin' and
@@ -1103,7 +1104,7 @@ class main extends MY_Controller
                     $output = null;
                     $return_var = null;
                 }
-                redirect('main/edit_user/'.$this->user->user_id);
+                redirect('main/edit_user/'.$this->user->id);
             } else {
                 $log_details->severity = 5;
                 $log_details->message = 'Error on edit user details submission for '.$details->user_name;
@@ -1198,10 +1199,16 @@ class main extends MY_Controller
 
         if (php_uname('s') == 'Linux') {
             $data['os_platform'] = 'linux';
-            if (file_exists('/etc/issue.net')) {
+            if (file_exists('/etc/os-release')) {
+                $command_string = 'grep NAME= /etc/os-release';
+                exec($command_string, $return['output'], $return['status']);
+                $data['os_version'] = str_replace('NAME="', '', $return['output'][0]);
+                $data['os_version'] = str_replace('"', '', $data['os_version']);
+            } elseif (file_exists('/etc/issue.net')) {
                 $i = file('/etc/issue.net');
                 $data['os_version'] = trim($i[0]);
             }
+
             $opCommon = '';
             if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
                 $opCommon = '/usr/local/omk/conf/opCommon.nmis';
@@ -1301,12 +1308,18 @@ class main extends MY_Controller
                 $command_string = 'cat /etc/sysconfig/clock | grep ZONE | cut -d"\"" -f2';
                 exec($command_string, $output, $return_var);
                 $data['os_timezone'] = @$output[0];
+                if ($data['os_timezone'] == '') {
+                    $command_string = 'timedatectl 2>/dev/null | grep zone | cut -d: -f2 | cut -d"(" -f1';
+                    exec($command_string, $output, $return_var);
+                    $data['os_timezone'] = @$output[0];
+                }
             }
             if ($data['os_platform'] == 'Linux (Debian)') {
                 $command_string = 'cat /etc/timezone';
                 exec($command_string, $output, $return_var);
                 $data['os_timezone'] = @$output[0];
             }
+            $data['os_timezone'] = trim($data['os_timezone']);
             unset($output);
             unset($command_string);
 

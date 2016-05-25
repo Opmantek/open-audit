@@ -27,7 +27,8 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.12.2
+# 
+@version 1.14
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -51,6 +52,7 @@ system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
 sequential="n"
 os_scan="n"
+force_ping="n"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -96,6 +98,10 @@ if [ "$help" == "y" ]; then
 	echo "     0 - No output."
 	echo "     1 - Minimal Output."
 	echo "    *2 - Verbose output."
+	echo ""
+	echo "  force_ping"
+	echo "    *n - When discovering devices, do not check for ping response."
+	echo "     y - Check for a ping response and only discover those devices that do respond."
 	echo ""
 	echo "  os_scan"
 	echo "    *n - Do not use the -O Nmap flag when scanning devices."
@@ -187,6 +193,14 @@ if [ "$debugging" -gt 0 ]; then
 	echo "URL: $url"
 fi
 
+if [ -z $(ls -lh "$i" | grep "rws") ]; then
+	if [ "$os_scan" = "-O" ]; then
+		log_entry="Discovery with os scan requested but suid not set on nmap binary. Removing os detection (still scanning)"
+		write_log "$log_entry"
+	fi
+	os_scan=""
+fi
+
 # Nmap command line switches explained
 # -PE == icmp echo
 # -PP == timestamp
@@ -199,33 +213,35 @@ fi
 
 i=0
 j=0
-# removed the below for 1.12.2 - scan every IP now as we're checking for devices not responding to a ping
-# for line in $(nmap -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
-# 	if [ "$debugging" -gt 0 ]; then
-# 		echo "$line"
-# 	fi
-# 	host=$(echo "$line" | cut -d" " -f5)
-# 	let "i = i + 1"
-# 	if [[ "$line" == *"[host down]"* ]]; then
-# 		if [[ "$log_no_response" == "y" ]]; then
-# 			log_entry="Non responsive ip address $host"
-# 			write_log "$log_entry"
-# 		fi
-# 	else
-# 		let "j = j + 1"
-# 		hosts="$hosts"$'\n'"$host"
-# 	fi
-# done
-
 hosts=""
-for line in $(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
-	let "i = i + 1"
-	hosts="$hosts"$'\n'"$line"
-done
+# removed the below for 1.12.2 - scan every IP now as we're checking for devices not responding to a ping
+if [ "$force_ping" == "y" ]; then
+	for line in $(nmap -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
+		if [ "$debugging" -gt 0 ]; then
+			echo "$line"
+		fi
+		host=$(echo "$line" | cut -d" " -f5)
+		let "i = i + 1"
+		if [[ "$line" == *"[host down]"* ]]; then
+			if [[ "$log_no_response" == "y" ]]; then
+				log_entry="Non responsive ip address $host"
+				write_log "$log_entry"
+			fi
+		else
+			let "j = j + 1"
+			hosts="$hosts"$'\n'"$host"
+		fi
+	done
+else
+	for line in $(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
+		let "i = i + 1"
+		hosts="$hosts"$'\n'"$line"
+	done
 
-if [ "$debugging" -gt 0 ]; then
-	echo "Total ip addresses: $i"
-	#echo "Total responding ip addresses: $j"
+	if [ "$debugging" -gt 0 ]; then
+		echo "Total ip addresses: $i"
+		#echo "Total responding ip addresses: $j"
+	fi
 fi
 
 result_file=""
@@ -261,14 +277,17 @@ if [[ "$hosts" != "" ]]; then
 		# -O attempt to determine operating system ($os_scan)
 		# --host-timeout so we don't hang indefinitley
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
-		nmap_scan=$(nmap -vv -n $os_scan --host-timeout 90 -Pn $timing "$host" 2>&1)
+		nmap_scan=$(nmap -vv -n $os_scan -Pn --host-timeout 90 $timing "$host" 2>&1)
 		for line in $nmap_scan; do
 
-			NEEDLE="Host is up"
+			NEEDLE="/tcp"
 			if [[ "$line" == *"$NEEDLE"* ]]; then
-				host_is_up="true"
-				if [ "$debugging" -gt 1 ]; then
-					echo "Host $host is up."
+				NEEDLE="open"
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					host_is_up="true"
+					if [ "$debugging" -gt 1 ]; then
+						echo "Host $host is up."
+					fi
 				fi
 			fi
 
@@ -342,7 +361,8 @@ if [[ "$hosts" != "" ]]; then
 			result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
 			result="$result		<mac_address>$mac_address</mac_address>"$'\n'
 			result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
-			result="$result		<description><![CDATA[$description]]></description>"$'\n'
+			#result="$result		<description><![CDATA[$description]]></description>"$'\n'
+			result="$result		<description></description>"$'\n'
 			result="$result		<org_id>$org_id</org_id>"$'\n'
 			result="$result		<snmp_status>$snmp_status</snmp_status>"$'\n'
 			result="$result		<ssh_status>$ssh_status</ssh_status>"$'\n'
@@ -365,7 +385,7 @@ if [[ "$hosts" != "" ]]; then
 					# -b   = background the wget command
 					# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 					# -q   = quiet (no output)
-					wget "$sequential" -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
+					wget $sequential -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
 				fi
 				if [[ $(uname) == "Darwin" ]]; then
 					curl --data "form_details=$result" "$url"

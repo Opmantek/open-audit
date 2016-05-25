@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -35,7 +36,7 @@
 $sortcolumn = 3;
 # check to see if user_access_level for this group is > 7
 $manual_edit = 'n';
-if (isset($this->user->user_access_level) and $this->user->user_access_level > '9') {
+if (isset($this->user->access_level) and $this->user->access_level > '9') {
     # check to see if "system_id" is present in report
     #echo "<pre>SET</pre>\n";
         if (isset($data[0]->id)) {

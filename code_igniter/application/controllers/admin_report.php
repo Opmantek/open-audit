@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -50,6 +51,7 @@ class Admin_report extends MY_Controller
 
     public function activate_report()
     {
+        $log_details = new stdClass();
         if ($handle = opendir(BASEPATH.'../application/controllers/reports')) {
             $i = 0;
             $this->load->model("m_oa_report");
@@ -60,16 +62,14 @@ class Admin_report extends MY_Controller
                     $file_handle = fopen(BASEPATH.'../application/controllers/reports/'.$file, "rb");
                     $contents = fread($file_handle, filesize(BASEPATH.'../application/controllers/reports/'.$file));
                     try {
-                        $xml = new SimpleXMLElement($contents);
+                        $xml = @new SimpleXMLElement($contents);
                     } catch (Exception $error) {
-                        $errors = libxml_get_errors();
-                        echo "Invalid XML.<br />\n<pre>\n";
-                        print_r($errors);
-                        // not a valid XML string
-                        echo'Invalid XML input for: '.$file;
-                        echo "<pre>\n";
-                        print_r($xml);
-                        exit;
+                        // $errors = libxml_get_errors();
+                        // print_r($errors);
+                        $log_details->message = "Invalid XML for report in file " . BASEPATH.'../application/controllers/reports/'.$file;
+                        $log_details->file = 'system';
+                        stdlog($log_details);
+                        continue;
                     }
                     $report_name = $xml->details->report_name;
                     $report_description = $xml->details->report_description;

@@ -25,7 +25,8 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.12.2
+' 
+@version 1.14
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -53,7 +54,7 @@ dim syslog : syslog = "y"
 dim url : url = "http://localhost/open-audit/index.php/discovery/process_subnet"
 dim objHTTP
 dim sequential : sequential = "y"
-dim os_scan : os_san = "n"
+dim os_scan : os_scan = "n"
 dim hosts
 dim hosts_in_subnet
 dim host
@@ -300,7 +301,7 @@ for each host in hosts_in_subnet
     wmi_status = "false"
     exit_status = "y"
     host_is_up = "false"
-    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 -Pn " & host
+    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 " & host
     execute_command()
 
     Do Until objExecObject.Status = 0
@@ -310,7 +311,7 @@ for each host in hosts_in_subnet
     Do Until objExecObject.StdOut.AtEndOfStream
         line = objExecObject.StdOut.ReadLine
 
-        if instr(lcase(line), "Host is up") then
+        if instr(lcase(line), "host is up") then
             host_is_up = "true"
         end if
 
@@ -334,16 +335,30 @@ for each host in hosts_in_subnet
             end if
         end if
 
-        if instr(lcase(line), "161/udp open") then
-            snmp_status = "true"
+        if instr(lcase(line), "22/tcp") then
+            if instr(lcase(line), "open") then
+                ssh_status = "true"
+            end if
         end if
 
-        if instr(lcase(line), "22/tcp open") then
-            ssh_status = "true"
+        if instr(lcase(line), "135/tcp") then
+            if instr(lcase(line), "open") then
+                wmi_status = "true"
+            end if
         end if
+    Loop
 
-        if instr(lcase(line), "135/tcp open") then
-            wmi_status = "true"
+    command = nmap_path & " -n -sU -p161 --host-timeout 90 " & host
+    execute_command()
+    Do Until objExecObject.Status = 0
+        WScript.Sleep 100
+    Loop
+    Do Until objExecObject.StdOut.AtEndOfStream
+        line = objExecObject.StdOut.ReadLine
+        if instr(lcase(line), "161/udp") then
+            if instr(lcase(line), "open") then
+                snmp_status = "true"
+            end if
         end if
     Loop
 
@@ -358,7 +373,8 @@ for each host in hosts_in_subnet
         result = result & "     <man_ip_address><![CDATA[" & host & "]]></man_ip_address>" & vbcrlf
         result = result & "     <mac_address><![CDATA[" & mac_address & "]]></mac_address>" & vbcrlf
         result = result & "     <manufacturer><![CDATA[" & manufacturer & "]]></manufacturer>" & vbcrlf
-        result = result & "     <description><![CDATA[" & description & "]]></description>" & vbcrlf
+        'result = result & "     <description><![CDATA[" & description & "]]></description>" & vbcrlf
+        result = result & "     <description></description>" & vbcrlf
         result = result & "     <org_id><![CDATA[" & org_id & "]]></org_id>" & vbcrlf
         result = result & "     <snmp_status><![CDATA[" & snmp_status & "]]></snmp_status>" & vbcrlf
         result = result & "     <ssh_status><![CDATA[" & ssh_status & "]]></ssh_status>" & vbcrlf
@@ -368,7 +384,7 @@ for each host in hosts_in_subnet
         result_file = result_file & result
 
         if submit_online = "y" then
-            log_entry = "IP " & $host & " responding, submitting."
+            log_entry = "IP " & host & " responding, submitting."
             write_log()
             result = "<devices>" & vbcrlf & result & "</devices>"
             Err.clear
@@ -398,11 +414,11 @@ for each host in hosts_in_subnet
                 wscript.echo objHTTP.ResponseText
             end if
         else
-            log_entry = "IP " & $host & " responding."
+            log_entry = "IP " & host & " responding."
             write_log()
         end if ' submit_online
     else
-        log_entry = "IP " & $host & " not responding, ignoring."
+        log_entry = "IP " & host & " not responding, ignoring."
         write_log()
     end if ' host_is_up'
 next

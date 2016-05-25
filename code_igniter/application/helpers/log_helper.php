@@ -30,44 +30,43 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.2
+ * 
+@version 1.14
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('log_error')) {
-    function log_error($error)
+
+    function log_error($error_code, $model = '')
     {
-        if (!isset($error)) {
-            $error = new stdClass();
+        $CI = & get_instance();
+        # ensure we have an array in the $response object to hold our error
+        if (!isset($CI->response->errors) or is_null($CI->response->errors)) {
+            $CI->response->errors = array();
         }
-        if (!isset($error->controller) or $error->controller == '') {
-            $router = & load_class('Router', 'core');
-            $error->controller = $router->fetch_class() . ' ::' . $router->fetch_method();
-        }
-        if (!isset($error->model)) {
-            $error->model = '';
-        }
-        if (!isset($error->code)) {
-            $error->code = '';
-        }
-        // get the details of the error from the error helper
-        $log_details = getError($error);
-        $log_details->file = 'system';
+
+        # this object will hold this specific error data and be added to the above array at the end
+        $error = new stdClass();
+        $error->code = $error_code;
+        $error = getError($error->code);
+        $error->file = 'system';
+        $error->message = $error->title;
+        $error->model = $model;
 
         // log the details of the error to the log file
-        stdlog($log_details);
+        stdlog($error);
+        $error->controller = $error->controller . '::' . $error->function;
+        unset($error->function);
         // if the error is severe enough, set the error in the response object
-        if ($log_details->severity <= 3) {
+        if ($error->severity <= 3) {
             error_reporting(E_ALL);
-            $CI = & get_instance();
-            unset($log_details->extended_message);
-            unset($log_details->file);
-            unset($log_details->controller);
-            unset($log_details->model);
-            $log_details->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $log_details->code;
-            $CI->response->header = $log_details->type;
-            $CI->response->error = $log_details;
+            unset($error->file); # we don't care about where this was logged (into which file)
+            unset($error->message); # this is for logging only and is already contained in the $error->title
+            $error->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error->code;
+            $CI->response->errors[] = $error;
+            $CI->response->header = $error->status;
         }
     }
+
 }
 
 if (! function_exists('stdlog')) {
@@ -255,6 +254,8 @@ if (! function_exists('stdlog')) {
             $router = & load_class('Router', 'core');
             $log->controller = $router->fetch_class();
             unset($router);
+        } else {
+            $log->controller = $log_details->controller;
         }
         if (!isset($log->controller) or $log->controller == '') {
             $log->controller = '-';
@@ -264,6 +265,8 @@ if (! function_exists('stdlog')) {
             $router = & load_class('Router', 'core');
             $log->function = $router->fetch_method();
             unset($router);
+        } else {
+            $log->function = $log_details->function;
         }
 
         if (!isset($log->function) or $log->function == '') {
@@ -271,8 +274,8 @@ if (! function_exists('stdlog')) {
         }
 
         if (!isset($log_details->user) or $log_details->user == '') {
-            if (isset($CI->user->user_full_name)) {
-                $log->user = @$CI->user->user_full_name;
+            if (isset($CI->user->full_name)) {
+                $log->user = @$CI->user->full_name;
             } else {
                 $log->user = '-';
             }

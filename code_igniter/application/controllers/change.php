@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -118,7 +119,7 @@ class change extends MY_Controller
         }
 
         $details['alerts'] = $data['alerts'];
-        $details['user_id'] = $this->user->user_id;
+        $details['user_id'] = $this->user->id;
         $details['alert_ack_time'] = date('Y-m-d H:i:s');
         $this->load->model("m_change_log");
         $result = $this->m_change_log->updateChange($details);

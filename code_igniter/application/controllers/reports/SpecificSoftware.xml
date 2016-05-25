@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Specific Software</report_name>
 		<report_display_in_menu>n</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, software.name, software.installed_by, software.installed_on, software.version, windows.user_name, oa_org.org_name, software.first_seen FROM system LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.system_id LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN software ON (system.system_id = software.system_id AND software.current = 'y') LEFT JOIN oa_org ON (system.man_org_id = oa_org.org_id) INNER JOIN (SELECT software.name, software.version FROM software WHERE software.id = ?) software_version_temp ON software.name = software_version_temp.name AND software.version = software_version_temp.version WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id, system.name, software.name AS software_name, software.installed_by, software.installed_on, software.version, windows.user_name, oa_org.name as org_name, software.first_seen FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') LEFT JOIN oa_org ON (system.org_id = oa_org.id) INNER JOIN (SELECT software.name, software.version FROM software WHERE software.id = ?) software_version_temp ON software.name = software_version_temp.name AND software.version = software_version_temp.version WHERE oa_group_sys.group_id = @group]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -13,11 +13,11 @@
 	<columns>
 		<column>
 			<column_order>0</column_order>
-			<column_name>System Name</column_name>
-			<column_variable>hostname</column_variable>
+			<column_name>Device Name</column_name>
+			<column_variable>name</column_variable>
 			<column_type>link</column_type>
-			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_link>/devices/</column_link>
+			<column_secondary>id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Software Name</column_name>
-			<column_variable>name</column_variable>
+			<column_variable>software_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

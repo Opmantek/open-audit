@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.2
+ * 
+@version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -64,13 +65,12 @@ echo form_open('main/process_edit_systems')."\n";
     <label for="man_environment"><?php echo __('Environment'); ?>: </label><select name="man_environment" style="width: 200px"><option value="">&nbsp;</option><option value="dev"><?php echo __('Development'); ?></option><option value="dr"><?php echo __('Disaster Recovery'); ?></option><option value="eval"><?php echo __('Evaluation'); ?></option><option value="pre-prod"><?php echo __('PreProduction'); ?></option><option value="production"><?php echo __('Production'); ?></option><option value="test"><?php echo __('Testing'); ?></option><option value="train"><?php echo __('Training'); ?></option><option value="uat"><?php echo __('User Acceptance testing'); ?></option></select><br /><br />
     <label for="man_form_factor"><?php echo __('Form Factor'); ?>: </label><input type="text" name="man_form_factor" style="width: 200px" /><br /><br />
     <label for="man_function"><?php echo __('Function'); ?>: </label><input type="text" name="man_function" style="width: 200px" /><br /><br />
-    <!-- <label for="man_icon"><?php echo __('Icon'); ?>: </label><input type="text" name="man_icon" style="width: 200px" /><br /><br /> -->
     <label for="man_ip_address"><?php echo __('IP Address'); ?>: </label><input type="text" name="man_ip_address" style="width: 200px" /><br /><br />
     <label for="man_location_level"><?php echo __('Location Level'); ?>: </label><input type="text" name="man_location_level" style="width: 200px" /><br /><br />
     <label for="man_location_id"><?php echo __('Location Name'); ?>: </label><select name="man_location_id" style="width: 200px"><option value="">&nbsp;</option>
     <?php
     foreach ($locations as $location) {
-        echo "<option value=\"".intval($location->location_id)."\">".htmlentities($location->location_name)."</option>\n";
+        echo "<option value=\"".intval($location->id)."\">".htmlentities($location->name)."</option>\n";
     } ?>
     </select><br /><br />
     <label for="man_location_rack"><?php echo __('Location Rack'); ?>: </label><input type="text" name="man_location_rack" style="width: 200px" /><br /><br />
@@ -82,7 +82,7 @@ echo form_open('main/process_edit_systems')."\n";
     <label for="man_org_id"><?php echo __('Organisation Name'); ?>: </label><select name="man_org_id" style="width: 200px"><option value="">&nbsp;</option>
     <?php
     foreach ($orgs as $org) {
-        echo "<option value=\"".intval($org->org_id)."\">".htmlentities($org->org_name)."</option>\n";
+        echo "<option value=\"".intval($org->id)."\">".htmlentities($org->name)."</option>\n";
     } ?>
     </select><br /><br />
     <label for="nmis_group"><?php echo __('NMIS Group'); ?>: </label><input type="text" name="nmis_group" style="width: 200px" /><br /><br />

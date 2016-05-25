@@ -27,7 +27,8 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
-# @version 1.12.2
+# 
+@version 1.14
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -377,16 +378,16 @@ if [ "$help" = "y" ]; then
 fi
 
 # test pinging the server hosting the URL
-if [ "$submit_online" = "y" ]; then
-	server=$(echo "$url" | cut -d"/" -f3 | cut -d: -f1)
-	test=$(ping "$server" -n -c 3 | grep "100% packet loss")
-	if [ -n "$test" ]; then
-		if [  "$debugging" -gt 0 ]; then
-			echo "Server $server is not responding to a ping. Cannot submit audit result. Exiting."
-		fi
-		exit
-	fi
-fi
+# if [ "$submit_online" = "y" ]; then
+# 	server=$(echo "$url" | cut -d"/" -f3 | cut -d: -f1)
+# 	test=$(ping "$server" -n -c 3 | grep "100% packet loss")
+# 	if [ -n "$test" ]; then
+# 		if [  "$debugging" -gt 0 ]; then
+# 			echo "Server $server is not responding to a ping. Cannot submit audit result. Exiting."
+# 		fi
+# 		exit
+# 	fi
+# fi
 
 ########################################################
 # CREATE THE AUDIT FILE                                #
@@ -532,9 +533,9 @@ fi
 
 # Set the UUID
 system_uuid=""
-system_uuid=$(dmidecode -s system-uuid 2>/dev/null)
+system_uuid=$(dmidecode -s system-uuid 2>/dev/null | grep -v "^#")
 if [ -z "$system_uuid" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
-	system_uuid=$(lshal | grep "system.hardware.uuid" | cut -d\' -f2)
+	system_uuid=$(lshal 2>/dev/null | grep "system.hardware.uuid" | cut -d\' -f2)
 fi
 if [ -z "$system_uuid" ]; then
 	system_uuid=$(cat /sys/class/dmi/id/product_uuid 2>/dev/null)
@@ -542,18 +543,28 @@ fi
 
 # Get the hostname & DNS domain
 system_hostname=""
-if [ -f /etc/hostname ]; then
-	system_hostname=$(cat /etc/hostname 2>/dev/null)
-else
-	system_hostname=$(hostname -s 2>/dev/null)
-fi
+system_hostname=$(cat /etc/hostname | grep -v "^$" | cut -d. -f1)
+system_domain=$(cat /etc/hosts | grep -o " $system_hostname.*")
+system_fqdn="$system_hostname.$system_domain"
 
-if [ -z "$system_hostname" ]; then
-	system_hostname=$(hostname 2>/dev/null)
-	system_domain=""
-else
-	system_domain=$(hostname -d 2>/dev/null)
-fi
+dns_hostname=$(hostname)
+dns_domain=$(hostname -d)
+dns_fqdn=$(hostname -f)
+
+# if [ -f /etc/hostname ]; then
+# 	system_hostname=$(cat /etc/hostname 2>/dev/null)
+# else
+# 	system_hostname=$(hostname -s 2>/dev/null)
+# fi
+
+# if [ -z "$system_hostname" ]; then
+# 	system_hostname=$(hostname 2>/dev/null)
+# 	system_domain=""
+# else
+# 	system_domain=$(hostname -d 2>/dev/null)
+# fi
+
+
 
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
@@ -655,7 +666,7 @@ system_os_icon=$(lcase $system_os_family)
 
 # Get the System Serial Number
 system_serial=""
-system_serial=$(dmidecode -s system-serial-number 2>/dev/null)
+system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
 if [ -z "$system_serial" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
 		system_serial=$(lshal | grep "system.hardware.serial" | cut -d\' -f2)
@@ -667,7 +678,7 @@ fi
 
 # Get the System Model
 if [ -z "$system_model" ]; then
-	system_model=$(dmidecode -s system-product-name 2>/dev/null)
+	system_model=$(dmidecode -s system-product-name 2>/dev/null | grep -v "^#")
 	if [ -z "$system_model" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 		system_model=$(lshal | grep "system.hardware.product" | cut -d\' -f2)
 	fi
@@ -676,9 +687,12 @@ if [ -z "$system_model" ]; then
 	fi
 fi
 
+# get the systemd identifier
+dbus_identifier=$(cat /var/lib/dbus/machine-id 2>/dev/null)
+
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
-	system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null)
+	system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null | grep -v "^#")
 	if [ -z "$system_manufacturer" ]; then
 		if [ -n "$(which lshal 2>/dev/null)" ]; then
 			system_manufacturer=$(lshal | grep "system.hardware.vendor" | cut -d\' -f2)
@@ -711,7 +725,7 @@ system_form_factor=""
 if [ "$system_model" = "Bochs" -o "$system_model" = "KVM" -o "$system_model" = "Virtual Machine" -o "$system_model" = "VMware Virtual Platform" -o "$system_model" = "OpenVZ" -o "$system_model" = "VirtualBox" ]; then
 	system_form_factor="Virtual"
 else
-	system_form_factor=$(dmidecode -s chassis-type 2>/dev/null)
+	system_form_factor=$(dmidecode -s chassis-type 2>/dev/null | grep -v "^#")
 	if [ "$system_form_factor" = "<OUT OF SPEC>" ]; then
 		system_form_factor="Unknown"
 	fi
@@ -805,11 +819,14 @@ xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 echo "form_systemXML=<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 echo "<system>"
 echo "	<sys>"
-echo "		<timestamp>$(escape_xml "$system_timestamp")</timestamp>"
 echo "		<uuid>$(escape_xml "$system_uuid")</uuid>"
 echo "		<hostname>$(escape_xml "$system_hostname")</hostname>"
-echo "		<man_ip_address>$(escape_xml "$system_ip_address")</man_ip_address>"
 echo "		<domain>$(escape_xml "$system_domain")</domain>"
+echo "		<fqdn>$(escape_xml "$system_fqdn")</fqdn>"
+echo "		<dns_hostname>$(escape_xml "$dns_hostname")</dns_hostname>"
+echo "		<dns_domain>$(escape_xml "$dns_domain")</dns_domain>"
+echo "		<dns_fqdn>$(escape_xml "$dns_fqdn")</dns_fqdn>"
+echo "		<ip>$(escape_xml "$system_ip_address")</ip>"
 echo "		<description></description>"
 echo "		<type>$(escape_xml "$system_type")</type>"
 echo "		<os_icon>$(escape_xml "$system_os_icon")</os_icon>"
@@ -822,12 +839,13 @@ echo "		<model>$(escape_xml "$system_model")</model>"
 echo "		<manufacturer>$(escape_xml "$system_manufacturer")</manufacturer>"
 echo "		<uptime>$(escape_xml "$system_uptime")</uptime>"
 echo "		<form_factor>$(escape_xml "$system_form_factor")</form_factor>"
-echo "		<pc_os_bit>$(escape_xml "$system_pc_os_bit")</pc_os_bit>"
-echo "		<pc_memory>$(escape_xml "$system_pc_memory")</pc_memory>"
-echo "		<pc_num_processor>$(escape_xml "$system_pc_total_threads")</pc_num_processor>"
-echo "		<pc_date_os_installation>$(escape_xml "$system_pc_date_os_installation")</pc_date_os_installation>"
-echo "		<man_org_id>$(escape_xml "$org_id")</man_org_id>"
-echo "		<system_id>$(escape_xml "$system_id")</system_id>"
+echo "		<os_bit>$(escape_xml "$system_pc_os_bit")</os_bit>"
+echo "		<memory_count>$(escape_xml "$system_pc_memory")</memory_count>"
+echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_count>"
+echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
+echo "		<org_id>$(escape_xml "$org_id")</org_id>"
+echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
+echo "		<id>$(escape_xml "$system_id")</id>"
 echo "	</sys>"
 } > "$xml_file"
 
@@ -1615,7 +1633,7 @@ if [ "$debugging" -gt "0" ]; then
 fi
 echo "	<disk>" >> "$xml_file"
 partition_result=""
-for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null:759); do
+for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 
 	hard_drive_caption="/dev/$disk"
 	hard_drive_index="$disk"
@@ -1871,12 +1889,32 @@ echo "	<variable>" >> "$xml_file"
 for variable in $(env); do
 	name=$( echo "$variable" | cut -d= -f1 )
 	value=${variable#*=}
+	if [ "$name" != "XDG_SESSION_ID" ] && [ "$name" != "SSH_CLIENT" ] && [ "$name" != "SSH_CONNECTION" ] && [ "$name" != "SSH_TTY" ]; then
 		echo "		<item>" >> "$xml_file"
 		echo "			<program>environment</program>" >> "$xml_file"
 		echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
 		echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
 		echo "		</item>" >> "$xml_file"
+	fi
 done
+
+# Puppet facts
+if [ -n "$(which facter)" ]; then
+    exclusions=" system_uptime memoryfree memoryfree_mb sshdsakey sshfp_dsa sshfp_rsa sshrsakey swapfree swapfree_mb system_uptime "
+    for variable in $(facter -p); do
+        name=$( echo "$variable" | cut -d" " -f1 )
+        if [ -z "$(echo "$exclusions" | grep " $name ")" ]; then
+            value=$(echo "$variable" | cut -d" " -f3-)
+            echo "      <item>" >> "$xml_file"
+            echo "          <program>facter</program>" >> "$xml_file"
+            echo "          <name>$(escape_xml "$name")</name>" >> "$xml_file"
+            echo "          <value>$(escape_xml "$value")</value>" >> "$xml_file"
+            echo "      </item>" >> "$xml_file"
+        fi
+    done
+fi
+
+
 echo "	</variable>" >> "$xml_file"
 
 
@@ -1911,6 +1949,38 @@ grep -v '^ *#' < /etc/passwd | while IFS= read -r line; do
 	echo "$line" | awk -F: ' { print "\t\t<item>\n" "\t\t\t<name>"$1"</name>\n" "\t\t\t<full_name><![CDATA["$5"]]></full_name>\n" "\t\t\t<sid>"$3"</sid>\n" "\t\t</item>" } ' >> "$xml_file"
 done
 echo "	</user>" >> "$xml_file"
+
+
+##################################
+# GROUP SECTION                  #
+##################################
+IFS=$ORIGIFS
+if [ "$debugging" -gt "0" ]; then
+	echo "Group Info"
+fi
+echo "	<user_group>" >> "$xml_file"
+for line in $(getent group); do
+	name=$(echo "$line" | cut -d: -f1)
+	sid=$(echo "$line" | cut -d: -f3)
+	members=$(echo "$line" | cut -d: -f4)
+	
+	for user in $(cat /etc/passwd); do
+		gid=$(echo "$user" | cut -d: -f4)
+		if [ "$gid" = "$sid" ]; then
+			extra_user=$(echo "$user" | cut -d: -f1)
+			members=$(echo "$extra_user","$members")
+		fi
+	done
+	members=$(echo "$members" | sed 's/,$//')
+
+	echo "		<item>" >> $xml_file
+	echo "			<sid>$(escape_xml "$sid")</sid>" >> $xml_file
+	echo "			<name>$(escape_xml "$name")</name>" >> $xml_file
+	echo "			<members>$(escape_xml "$members")</members>" >> $xml_file
+	echo "		</item>" >> $xml_file
+done
+echo "	</user_group>" >> "$xml_file"
+
 
 
 ########################################################

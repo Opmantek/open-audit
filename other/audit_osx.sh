@@ -27,7 +27,8 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.12.2
+# 
+@version 1.14
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -108,8 +109,8 @@ if [ "$debugging" -gt "0" ]; then
 fi
 system_timestamp=`date +'%F %T'`
 system_uuid=`system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g'`
-system_hostname=`networksetup -getcomputername | cut -f1 -d.`
-system_domain=`more /etc/resolv.conf | grep domain | cut -d" " -f2`
+system_hostname=`hostname | cut -d. -f1`
+system_domain=`hostname | cut -d. -f2-`
 system_os_version=`sw_vers | grep "ProductVersion:" | cut -f2`
 system_os_name="OSX $system_os_version"
 system_serial=`system_profiler SPHardwareDataType | grep "Serial Number (system):" | cut -d":" -f2 | sed 's/^ *//g'`
@@ -134,14 +135,13 @@ echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
 echo  " <sys>" >> $xml_file
 echo  "     <timestamp>$system_timestamp</timestamp>" >> $xml_file
-echo  "     <system_id>$system_id</system_id>" >> $xml_file
+echo  "     <id>$system_id</id>" >> $xml_file
 echo  "     <uuid>$system_uuid</uuid>" >> $xml_file
 echo  "     <hostname>$system_hostname</hostname>" >> $xml_file
 echo  "     <domain>$system_domain</domain>" >> $xml_file
 echo  "     <description></description>" >> $xml_file
-echo  "     <man_class>$man_class</man_class>" >> $xml_file
+echo  "     <class>$man_class</class>" >> $xml_file
 echo  "     <type>computer</type>" >> $xml_file
-echo  "     <os_icon>apple</os_icon>" >> $xml_file
 echo  "     <os_group>Apple</os_group>" >> $xml_file
 echo  "     <os_family>Apple OSX</os_family>" >> $xml_file
 echo  "     <os_name>$system_os_name</os_name>" >> $xml_file
@@ -151,11 +151,11 @@ echo  "     <model>$system_model</model>" >> $xml_file
 echo  "     <manufacturer>Apple Inc</manufacturer>" >> $xml_file
 echo  "     <uptime>$system_uptime</uptime>" >> $xml_file
 echo  "     <form_factor>$system_form_factor</form_factor>" >> $xml_file
-echo  "     <pc_os_bit>$system_pc_os_bit</pc_os_bit>" >> $xml_file
-echo  "     <pc_memory>$system_pc_memory</pc_memory>" >> $xml_file
-echo  "     <pc_num_processor>$processor_count</pc_num_processor>" >> $xml_file
-echo  "     <pc_date_os_installation>$system_pc_date_os_installation</pc_date_os_installation>" >> $xml_file
-echo  "     <man_org_id>$org_id</man_org_id>" >> $xml_file
+echo  "     <os_bit>$system_pc_os_bit</os_bit>" >> $xml_file
+echo  "     <memory_count>$system_pc_memory</memory_count>" >> $xml_file
+echo  "     <processor_count>$processor_count</processor_count>" >> $xml_file
+echo  "     <os_installation_date>$system_pc_date_os_installation</os_installation_date>" >> $xml_file
+echo  "     <org_id>$org_id</org_id>" >> $xml_file
 echo  " </sys>" >> $xml_file
 
 

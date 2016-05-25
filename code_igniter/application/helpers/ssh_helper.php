@@ -31,7 +31,8 @@ if (!defined('BASEPATH')) {
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.2
+ * 
+@version 1.14
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('ssh_connect')) {
@@ -173,7 +174,7 @@ if (! function_exists('ssh_connect_action')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $ssh_command = "sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ".escapeshellarg($username)."@".escapeshellarg($ip)." hostname ";
+            $ssh_command = "timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ".escapeshellarg($username)."@".escapeshellarg($ip)." hostname ";
             $ssh_result = run_ssh($ssh_command, $password, $display);
             if ($ssh_result['status'] == '0') {
                 return true;
@@ -200,7 +201,7 @@ if (! function_exists('run_ssh')) {
     function run_ssh($ssh_command = '', $ssh_password = '', $ssh_display = 'n')
     {
         // $ssh_command should be your SSHPASS command string, sans password
-        // ex: 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null user@target sleep 15'
+        // ex: 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null user@target sleep 15'
         // $ssh_password should be what you wish to pass to that command
         // ex: the SSH password
         // $ssh_display is usually whatever is set in the discovery function $display variable
@@ -302,9 +303,9 @@ if (! function_exists('exec_ssh_command')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $command_string = "sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($username) . "@" . escapeshellarg($ip) . " " . $command . " ";
+            $command_string = "timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null " . escapeshellarg($username) . "@" . escapeshellarg($ip) . " " . $command . " ";
             // $ssh_command should be your SSHPASS command string, sans password
-            // ex: 'sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null user@target sleep 15'
+            // ex: 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null user@target sleep 15'
             // $ssh_password should be what you wish to pass to that command
             // ex: the SSH password
             // $ssh_display is usually whatever is set in the discovery function $display variable
