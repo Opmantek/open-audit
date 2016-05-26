@@ -300,10 +300,10 @@ class System extends CI_Controller
         # and inserts all the (or any) retrieved mac addresses into the sys XML section
         # which are then compared against in the m_system->find_system function to match a device
         foreach ($xml->children() as $child) {
-            if ($child->getName() === 'network_cards') {
+            if ($child->getName() === 'network') {
                 foreach ($child->children() as $card) {
                     $mac = '';
-                    $mac = strtolower((string)$card->net_mac_address);
+                    $mac = trim(strtolower((string)$card->mac));
                     if ($mac != '') {
                         $xml->sys->mac_addresses->$mac = $card->net_mac_address;
                     }
