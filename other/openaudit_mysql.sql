@@ -1033,7 +1033,7 @@ CREATE TABLE `oa_group_column` (
   `column_secondary` varchar(100) NOT NULL,
   `column_ternary` varchar(100) NOT NULL,
   `column_align` varchar(6) NOT NULL,
-  PRIMARY KEY (`column_id`),
+  PRIMARY KEY (`id`),
   KEY `group_id` (`group_id`),
   CONSTRAINT `oa_group_column_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1059,7 +1059,7 @@ CREATE TABLE `oa_group_sys` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
   `group_id` int(10) unsigned DEFAULT NULL,
-  PRIMARY KEY (`group_sys_id`),
+  PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `group_id` (`group_id`),
   KEY `system_id_index` (`system_id`),
@@ -1089,7 +1089,7 @@ CREATE TABLE `oa_group_user` (
   `user_id` int(10) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `group_user_access_level` int(10) NOT NULL,
-  PRIMARY KEY (`group_user_id`),
+  PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `group_id` (`group_id`),
   KEY `user_id_index` (`user_id`),
@@ -1229,7 +1229,7 @@ CREATE TABLE `oa_report_column` (
   `column_secondary` varchar(100) NOT NULL,
   `column_ternary` varchar(100) NOT NULL,
   `column_align` varchar(6) NOT NULL,
-  PRIMARY KEY (`column_id`),
+  PRIMARY KEY (`id`),
   KEY `report_id` (`report_id`),
   CONSTRAINT `oa_report_column_group_id` FOREIGN KEY (`report_id`) REFERENCES `oa_report` (`report_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
