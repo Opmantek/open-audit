@@ -51,18 +51,18 @@ class networks extends MY_Controller
             redirect(uri_string());
         }
 
-        $this->load->helper('network');
+        //$this->load->helper('network');
         $this->load->helper('output');
         $this->load->helper('error');
         $this->load->helper('input');
         $this->load->model('m_networks');
-        $this->load->model('m_orgs');
+        //$this->load->model('m_orgs');
 
-        $this->response = new stdClass();
+        //$this->response = new stdClass();
         inputRead();
 
-        $this->response->total = 0;
-        $this->response->filtered = 0;
+        //$this->response->total = 0;
+        //$this->response->filtered = 0;
         if ($this->response->format == 'screen') {
             $this->response->heading = 'Networks';
             $this->response->include = 'v_networks';
@@ -74,7 +74,7 @@ class networks extends MY_Controller
     {
     }
 
-    public function _remap($method)
+    public function _remap()
     {
         $action = $this->response->action;
         if ($action != '') {
