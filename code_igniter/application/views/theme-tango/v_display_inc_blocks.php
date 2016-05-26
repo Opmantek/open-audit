@@ -669,7 +669,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
     </div>
 
     <div id="view_hardware_printer" style="float: left; width: 100%;">
-    <?php if (count($printer) > 0) { ?>
+    <?php if (isset($printer) and count($printer) > 0) { ?>
         <br />
         <br />
         <form action="#" method="post" class='niceforms'>

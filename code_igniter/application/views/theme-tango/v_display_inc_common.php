@@ -55,29 +55,29 @@ $location_name = '';
 $link_warranty = '';
 $link_downloads = '';
 foreach ($system as $key) {
-    $system_id = $key->system_id;
-    if (mb_strtolower($key->man_os_group) == 'windows') {
+    $system_id = $key->id;
+    if (mb_strtolower($key->os_group) == 'windows') {
         $os = 'windows';
     } else {
         $os = 'other';
     }
-    $org_id = $key->man_org_id;
-    $location_id = $key->man_location_id;
-    $location_rack = $key->man_location_rack;
-    $location_rack_position = $key->man_location_rack_position;
-    $location_level = $key->man_location_level;
-    $location_suite = $key->man_location_suite;
-    $location_room = $key->man_location_room;
-    $man_location_latitude = $key->man_location_latitude;
-    $man_location_longitude = $key->man_location_longitude;
-    $os_name = $key->man_os_name;
+    $org_id = $key->org_id;
+    $location_id = $key->location_id;
+    $location_rack = $key->location_rack;
+    $location_rack_position = $key->location_rack_position;
+    $location_level = $key->location_level;
+    $location_suite = $key->location_suite;
+    $location_room = $key->location_room;
+    $location_latitude = $key->location_latitude;
+    $location_longitude = $key->location_longitude;
+    $os_name = $key->os_name;
     $serial = $key->serial;
     $link_manufacturer = $key->manufacturer;
     $link_serial = $key->serial;
     $link_model = $key->model;
     $last_seen = $key->last_seen_by;
     $icon = $key->icon;
-    $type = $key->man_type;
+    $type = $key->type;
 }
 
 # this also occurs in v_template, but $system_id is not set at that stage
@@ -141,13 +141,13 @@ $system[0]->downloads_link = '';
 $system[0]->dell_express_code_link = '';
 
 # Dell
-if (mb_strpos($system[0]->man_manufacturer, "Dell") !== false) {
-    if ($system[0]->man_serial != "") {
-        $system[0]->warranty_link = "<a href='http://www.dell.com/support/my-support/us/en/04/product-support/servicetag/".$system[0]->man_serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
+if (mb_strpos($system[0]->manufacturer, "Dell") !== false) {
+    if ($system[0]->serial != "") {
+        $system[0]->warranty_link = "<a href='http://www.dell.com/support/my-support/us/en/04/product-support/servicetag/".$system[0]->serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
 
-        $system[0]->downloads_link = "<a href='http://www.dell.com/support/drivers/us/en/04/ServiceTag/".$system[0]->man_serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
+        $system[0]->downloads_link = "<a href='http://www.dell.com/support/drivers/us/en/04/ServiceTag/".$system[0]->serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
 
-        $system[0]->dell_express_code_link = base_convert($system[0]->man_serial, 36, 10);
+        $system[0]->dell_express_code_link = base_convert($system[0]->serial, 36, 10);
         $system[0]->dell_express_code_link = mb_substr($system[0]->dell_express_code_link, 0, 3)."-".
                                     mb_substr($system[0]->dell_express_code_link, 3, 3)."-".
                                     mb_substr($system[0]->dell_express_code_link, 6, 3)."-".
@@ -156,34 +156,34 @@ if (mb_strpos($system[0]->man_manufacturer, "Dell") !== false) {
 }
 
 # HP / Compaq
-if ((mb_strpos($system[0]->man_manufacturer, "Compaq") !== false) or
+if ((mb_strpos($system[0]->manufacturer, "Compaq") !== false) or
     (mb_strpos($link_manufacturer, "HP") !== false) or
     (mb_strpos($link_manufacturer, "Hewlett Packard") !== false) or
     (mb_strpos($link_manufacturer, "Hewlett-Packard") !== false)) {
-    if ($system[0]->man_serial != "") {
-        $system[0]->warranty_link = "<a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=".$system[0]->man_serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
+    if ($system[0]->serial != "") {
+        $system[0]->warranty_link = "<a href='http://www4.itrc.hp.com/service/ewarranty/warrantyResults.do?BODServiceID=NA&amp;RegisteredPurchaseDate=&amp;country=GB&amp;productNumber=&amp;serialNumber1=".$system[0]->serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
     }
-    if ($system[0]->man_model != "") {
-        $system[0]->downloads_link = "<a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=".$system[0]->man_model."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
+    if ($system[0]->model != "") {
+        $system[0]->downloads_link = "<a href='http://h20180.www2.hp.com/apps/Lookup?h_lang=en&amp;h_cc=uk&amp;cc=uk&amp;h_page=hpcom&amp;lang=en&amp;h_client=S-A-R135-1&amp;h_pagetype=s-002&amp;h_query=".$system[0]->model."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
     }
 }
 
 # Lenovo / IBM
-if ((mb_strpos($system[0]->man_manufacturer, "IBM") !== false) or
-    (mb_strpos($system[0]->man_manufacturer, "Lenovo") !== false)) {
-    if ($system[0]->man_model != "") {
-        $system[0]->downloads_link = "<a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=".$system[0]->man_model."' onclick=\"this.target='_blank';\">".__("Product Page")."</a>";
+if ((mb_strpos($system[0]->manufacturer, "IBM") !== false) or
+    (mb_strpos($system[0]->manufacturer, "Lenovo") !== false)) {
+    if ($system[0]->model != "") {
+        $system[0]->downloads_link = "<a href='http://www-307.ibm.com/pc/support/site.wss/quickPath.do?quickPathEntry=".$system[0]->model."' onclick=\"this.target='_blank';\">".__("Product Page")."</a>";
     }
-    if (($system[0]->man_model != '') and ($system[0]->man_serial != '')) {
-        $system[0]->warranty_link = "<a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".mb_substr($system[0]->man_model, 0, 4)."&amp;serial=".$system[0]->man_serial."&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
-        $system[0]->warranty_link .= " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".mb_substr($system[0]->man_model, -9, -5)."&amp;serial=".$system[0]->man_serial."&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
+    if (($system[0]->model != '') and ($system[0]->serial != '')) {
+        $system[0]->warranty_link = "<a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".mb_substr($system[0]->model, 0, 4)."&amp;serial=".$system[0]->serial."&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
+        $system[0]->warranty_link .= " <a href='http://www-307.ibm.com/pc/support/site.wss/warrantyLookup.do?type=".mb_substr($system[0]->model, -9, -5)."&amp;serial=".$system[0]->serial."&amp;country=897&amp;iws=off&amp;sitestyle=lenovo' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
     }
 }
 
 # Gateway
-if (mb_strpos($system[0]->man_manufacturer, "Gateway") !== false) {
-    if ($system[0]->man_serial != '') {
-        $system[0]->warranty_link = "<a href='http://support.gateway.com/support/allsysteminfo.asp?sn=".$system[0]->man_serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
+if (mb_strpos($system[0]->manufacturer, "Gateway") !== false) {
+    if ($system[0]->serial != '') {
+        $system[0]->warranty_link = "<a href='http://support.gateway.com/support/allsysteminfo.asp?sn=".$system[0]->serial."' onclick=\"this.target='_blank';\"><img src='".$oa_theme_images."/16_browser.png' alt='' title='' style='width:16'/></a>";
     }
 }
 ?>
