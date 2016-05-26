@@ -4624,12 +4624,6 @@ class admin extends MY_Controller
             }
             $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Alerts - Software Updates'";
 
-            $this->load->helper('report_helper');
-            refresh_report_definitions();
-
-            $this->load->helper('group_helper');
-            refresh_group_definitions();
-
             $log_details->message = 'Upgrade database to 1.10 completed';
             stdlog($log_details);
             unset($log_details);
@@ -4837,9 +4831,6 @@ class admin extends MY_Controller
             $log_details->message = 'Upgrade database to 1.12.4 commenced';
             stdlog($log_details);
 
-            $this->load->helper('report_helper');
-            refresh_report_definitions();
-
             $sql = array();
             $sql[] = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
             $sql[] = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
@@ -5003,14 +4994,6 @@ class admin extends MY_Controller
                 $this->data['output'] .= $this_query."<br /><br />\n";
                 $query = $this->db->query($this_query);
             }
-
-            # refresh the reports
-            $this->load->helper('report_helper');
-            refresh_report_definitions();
-
-            # refresh the groups
-            $this->load->helper('group_helper');
-            refresh_group_definitions();
 
             // update any leftover group definitions by changing man_icon to icon
             $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_icon', 'icon')";
@@ -5365,6 +5348,15 @@ class admin extends MY_Controller
             stdlog($log_details);
             unset($log_details);
         }
+
+            # refresh the reports
+            $this->load->helper('report_helper');
+            refresh_report_definitions();
+
+            # refresh the groups
+            $this->load->helper('group_helper');
+            refresh_group_definitions();
+
 
         $this->m_oa_config->load_config();
         $this->data['message'] .= "New (now current) database version: ".$this->config->item('display_version')." (".$this->config->item('internal_version').")<br />Don't forget to use the new audit scripts!<br/>\n";
