@@ -1198,7 +1198,7 @@ class M_devices_components extends MY_Model
         $log_details = new stdClass();
         $log_details->file = 'system';
         $log_details->severity = 7;
-        $sql = "SELECT DISTINCT ip FROM `ip` LEFT JOIN `system` ON (ip.system_id = system.id AND ip.current = 'y') WHERE system.id = ? AND ip.version = '4'";
+        $sql = "SELECT DISTINCT `ip`.`ip` FROM `ip` LEFT JOIN `system` ON (ip.system_id = system.id AND ip.current = 'y') WHERE system.id = ? AND ip.version = '4'";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);

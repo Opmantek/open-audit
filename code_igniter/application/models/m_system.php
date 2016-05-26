@@ -470,12 +470,12 @@ class M_system extends MY_Model
         return ($row->man_type);
     }
 
-    public function get_system_hostname($system_id)
+    public function get_system_hostname($id)
     {
-        $sql = "SELECT system.hostname FROM system WHERE system.id = ? ORDER BY system.timestamp LIMIT 1";
+        $sql = "SELECT system.hostname FROM system WHERE system.id = ? ORDER BY system.last_seen LIMIT 1";
         $sql = $this->clean_sql($sql);
         //$data = array($system_id, $system_id, $system_id);
-        $data = array($system_id);
+        $data = array($id);
         $query = $this->db->query($sql, $data);
         $row = $query->row();
 
@@ -698,7 +698,7 @@ class M_system extends MY_Model
 				system.name = ? )
 			ORDER BY
 				system.status,
-				system.lasy_seen,
+				system.last_seen,
 				system.id
 			LIMIT 1";
         $sql = $this->clean_sql($sql);
@@ -716,7 +716,7 @@ class M_system extends MY_Model
 
     public function get_system_summary($system_id)
     {
-        $sql = "SELECT system.*, oa_location.name FROM system LEFT JOIN oa_location ON (system.man_location_id = oa_location.id) WHERE system.id = ? LIMIT 1";
+        $sql = "SELECT system.*, oa_location.name FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
@@ -1224,102 +1224,6 @@ class M_system extends MY_Model
             $row = $query->row();
 
             if (count($row) > 0) {
-
-                # if the database entry for man_manufacturer is empty but we have something from an audit, set it.
-                if ($row->man_manufacturer == '' and isset($details->manufacturer)) {
-                    $details->man_manufacturer = $details->manufacturer;
-                } else {
-                    unset($details->man_manufacturer);
-                }
-                # account for a manufacturer attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
-                if (($row->man_manufacturer == $row->manufacturer) and isset($details->manufacturer) and ($details->manufacturer != $row->manufacturer)) {
-                    $details->man_manufacturer = $details->manufacturer;
-                }
-
-                # if the database entry for man_model is empty but we have something from an audit, set it.
-                if ($row->man_model == '' and isset($details->model)) {
-                    $details->man_model = $details->model;
-                } else {
-                    unset($details->man_model);
-                }
-                # account for a model attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
-                if (($row->man_model == $row->model) and isset($details->model) and ($details->model != $row->model)) {
-                    $details->man_model = $details->model;
-                }
-
-                # if the database entry for man_serial is empty but we have something from an audit, set it.
-                if ($row->man_serial == '' and isset($details->serial)) {
-                    $details->man_serial = $details->serial;
-                } else {
-                    unset($details->man_serial);
-                }
-                # account for a serial attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
-                if (($row->man_serial == $row->serial) and isset($details->serial) and ($details->serial != $row->serial)) {
-                    $details->man_serial = $details->serial;
-                }
-
-                # if the database entry for man_description is empty but we have something from an audit, set it.
-                if ($row->man_description == '' and isset($details->description)) {
-                    $details->man_description = $details->description;
-                } else {
-                    unset($details->man_description);
-                }
-                # account for a description attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
-                if (($row->man_description == $row->description) and isset($details->description) and ($details->description != $row->description)) {
-                    $details->man_description = $details->description;
-                }
-
-                # if the database entry for man_form_factor is empty but we have something from an audit, set it.
-                if ($row->man_form_factor == '' and isset($details->form_factor)) {
-                    $details->man_form_factor = $details->form_factor;
-                } else {
-                    unset($details->man_form_factor);
-                }
-                # account for a form_factor attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
-                if (($row->man_form_factor == $row->form_factor) and isset($details->form_factor) and ($details->form_factor != $row->form_factor)) {
-                    $details->man_form_factor = $details->form_factor;
-                }
-
-                # if the database entry for man_os_group is empty but we have something from an audit, set it.
-                if ($row->man_os_group == '' and isset($details->os_group)) {
-                    $details->man_os_group = $details->os_group;
-                } else {
-                    unset($details->man_os_group);
-                }
-                # account for a os_group attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
-                if (($row->man_os_group == $row->os_group) and isset($details->os_group) and ($details->os_group != $row->os_group)) {
-                    $details->man_os_group = $details->os_group;
-                }
-
-                # if the database entry for man_os_family is empty but we have something from an audit, set it.
-                if ($row->man_os_family == '' and isset($details->os_family)) {
-                    $details->man_os_family = $details->os_family;
-                } else {
-                    unset($details->man_os_family);
-                }
-                # account for a os_family attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
-                if (($row->man_os_family == $row->os_family) and isset($details->os_family) and ($details->os_family != $row->os_family)) {
-                    $details->man_os_family = $details->os_family;
-                }
-
-                # if the database entry for man_type is not set or 'unknown', update it
-                if ($row->man_type == '' or $row->man_type == 'unknown') {
-                    if (isset($details->type) and $details->type > '' and $details->type != 'unknown') {
-                        $details->man_type = strtolower($details->type);
-                    }
-                }
-
-                # if the database entry for man_os_name is empty but we have something from an audit, set it.
-                if ($row->man_os_name == '' and isset($details->os_name)) {
-                    $details->man_os_name = $details->os_name;
-                } else {
-                    unset($details->man_os_name);
-                }
-                # account for a os_name attribute that has not been changed by the user, but is being reported differently via an audit or snmp scan.
-                if (($row->man_os_name == $row->os_name) and isset($details->os_name) and ($details->os_name != $row->os_name)) {
-                    $details->man_os_name = $details->os_name;
-                }
-
                 if (strlen($row->hostname) > 15 and isset($details->hostname) and strlen($details->hostname) == 15) {
                     unset($details->hostname);
                 }
@@ -1329,7 +1233,6 @@ class M_system extends MY_Model
                     (strripos($details->manufacturer, "parallels") !== false) or
                     (strripos($details->manufacturer, "virtual") !== false))) {
                     $details->form_factor = 'Virtual';
-                    $details->man_form_factor = 'Virtual';
                 }
 
                 if ($row->icon != '') {
@@ -1349,12 +1252,12 @@ class M_system extends MY_Model
         }
 
         if (!isset($details->original_timestamp) or $details->original_timestamp == '') {
-            $sql = "SELECT timestamp FROM system WHERE system_id = ?";
+            $sql = "SELECT last_seen FROM system WHERE id = ?";
             $sql = $this->clean_sql($sql);
             $data = array("$details->id");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            $details->original_timestamp = $row->timestamp;
+            $details->original_timestamp = $row->last_seen;
         }
 
         // # only update system.timestamp if we have an audit result - not for nmap, snmp, etc
@@ -1393,7 +1296,7 @@ class M_system extends MY_Model
             }
         }
         $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-        $sql .= " WHERE system_id = '".$details->id."'";
+        $sql .= " WHERE id = '".$details->id."'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
@@ -1477,17 +1380,17 @@ class M_system extends MY_Model
             }
         }
 
-        if (empty($details->man_org_id)) {
-            $sql = "SELECT man_org_id FROM system WHERE system_id = ?";
+        if (empty($details->org_id)) {
+            $sql = "SELECT org_id FROM system WHERE id = ?";
             $sql = $this->clean_sql($sql);
             $data = array($details->id);
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            $details->man_org_id = $row->man_org_id;
+            $details->org_id = $row->org_id;
         }
 
         # add a count to our chart table
-        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . $details->man_org_id . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+        $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . $details->org_id . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
@@ -1499,7 +1402,7 @@ class M_system extends MY_Model
 
     public function reset_icons($id = '')
     {
-        if ($system_id != '') {
+        if ($id != '') {
             $sql = "SELECT id, type, os_name, os_family, os_group, manufacturer, icon FROM system WHERE id = ".intval($id);
         } else {
             $sql = "SELECT id, type, os_name, os_family, os_group, manufacturer, icon FROM system";

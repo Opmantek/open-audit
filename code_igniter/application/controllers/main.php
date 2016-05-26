@@ -978,42 +978,42 @@ class main extends MY_Controller
         $this->data['include'] = "v_display_device";
 
         foreach ($this->data['system'] as $system) {
-            $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
-            $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
-            $default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->man_picture.'.jpg';
+            $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->model)))));
+            $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->type)));
+            #$default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->picture.'.jpg';
             $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$model_formatted.'.jpg';
             $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$type_formatted.'.png';
-            $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->system_id.'.jpg';
+            $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->id.'.jpg';
 
             # check if the man_picture field from the database is populated and a matching image exists
-            if (($system->man_picture > '') and (file_exists($default_file_exists))) {
-                $system->man_picture = $system->man_picture.'.jpg';
-            }
+            // if (($system->man_picture > '') and (file_exists($default_file_exists))) {
+            //     $system->man_picture = $system->man_picture.'.jpg';
+            // }
 
             # check if a custom images exists and overwrite
-            if (file_exists($custom_file_exists)) {
-                $system->man_picture = 'custom/'.$system->system_id.'.jpg';
-            }
+            // if (file_exists($custom_file_exists)) {
+            //     $system->man_picture = 'custom/'.$system->system_id.'.jpg';
+            // }
 
             # check if an image matching the model exists
-            if (($system->man_picture == '') and (file_exists($model_file_exists))) {
-                $system->man_picture = ''.$model_formatted.'.jpg';
-            }
+            // if (($system->man_picture == '') and (file_exists($model_file_exists))) {
+            //     $system->man_picture = ''.$model_formatted.'.jpg';
+            // }
 
             # test for a generic ibm aix device
-            if (($system->man_picture == '') and (strtolower($system->man_os_family) == "ibm aix")) {
-                $system->man_picture = "ibm_aix.jpg";
-            }
+            // if (($system->man_picture == '') and (strtolower($system->man_os_family) == "ibm aix")) {
+            //     $system->man_picture = "ibm_aix.jpg";
+            // }
 
             # check if an image matching the type exists
-            if (($system->man_picture == '') and (file_exists($type_file_exists))) {
-                $system->man_picture = ''.$type_formatted.'.png';
-            }
+            // if (($system->man_picture == '') and (file_exists($type_file_exists))) {
+            //     $system->man_picture = ''.$type_formatted.'.png';
+            // }
 
             # no matching images, assign the unknown image
-            if ($system->man_picture == '') {
-                $system->man_picture = 'unknown.png';
-            }
+            // if ($system->man_picture == '') {
+            //     $system->man_picture = 'unknown.png';
+            // }
         }
 
         $this->data['heading'] = 'Summary - '.$this->m_system->get_system_hostname($this->data['id']);

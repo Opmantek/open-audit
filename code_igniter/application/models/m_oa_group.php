@@ -146,7 +146,7 @@ class M_oa_group extends MY_Model
             $query = $this->db->query($sql);
         }
         foreach ($query->result() as $myrow) {
-            $sql_select = "SELECT system_id FROM system WHERE system_id = ? AND system_id in ( ".$myrow->group_dynamic_select." )";
+            $sql_select = "SELECT system.id FROM system WHERE system.id = ? AND system.id in ( ".$myrow->group_dynamic_select." )";
             $data_select = array("$details->system_id");
             $sql_select = $this->clean_sql($sql_select);
             $query_select = $this->db->query($sql_select, $data_select);
@@ -678,7 +678,7 @@ class M_oa_group extends MY_Model
         $query = $this->db->query($sql, $data);
         # update the group with all systems that match
         $sql = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
-        $sql = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$group_id."' ", $sql);
+        $sql = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$group_id."' ", $sql);
         $query = $this->db->query($sql);
         return;
     }
