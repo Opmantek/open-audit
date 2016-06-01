@@ -393,9 +393,15 @@ class M_oa_config extends MY_Model
         }
         $this->load->helper('network_helper');
         $networks = array();
-        foreach ($ip_address_array as $network) {
-            $test = network_details($network);
-            $networks[] = $test->network . '/' . $test->network_slash;
+        if (is_array($ip_address_array) and count($ip_address_array) > 0) {
+            foreach ($ip_address_array as $network) {
+                if (!empty($network)) {
+                    $test = network_details($network);
+                }
+                if (!empty($test->network) and !empty($test->network_slash)) {
+                    $networks[] = $test->network . '/' . $test->network_slash;
+                }
+            }
         }
         return ($networks);
     }
