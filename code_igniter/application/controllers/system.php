@@ -574,8 +574,6 @@ class System extends CI_Controller
                     $ip = $temp_array['ip'];
                 }
 
-                $details->system_key = '';
-                $details->system_key = $this->m_system->create_system_key($details);
                 $details->id = '';
                 $details->id = $this->m_system->find_system($details);
 

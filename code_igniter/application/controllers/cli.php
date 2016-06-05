@@ -284,8 +284,7 @@ class cli extends CI_Controller
                         $device->nmis_name = $device->name;
                         $device->nmis_role = $device->roleType;
                     }
-                    $device->system_key = '';
-                    $device->system_key = $this->m_system->create_system_key($device);
+
                     $device->system_id = '';
                     $device->system_id = $this->m_system->find_system($device);
 

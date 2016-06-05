@@ -1142,10 +1142,6 @@ class M_system extends MY_Model
         $result = $query->row();
         $db_hostname = $result->hostname;
 
-        if (!isset($details->system_key_type)) {
-            $details->system_key_type = '';
-        }
-
         # if submitting an nmap scan, do not update the type or type
         if (isset($details->last_seen_by) and $details->last_seen_by == 'nmap') {
             unset($details->type);

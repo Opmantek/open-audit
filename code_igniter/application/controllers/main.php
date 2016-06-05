@@ -701,7 +701,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id or hostname)
             redirect('main');
         }
 
@@ -736,7 +736,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id or hostname)
             redirect('main');
         }
         $this->m_attachment->delete_attachment($attachment_id);
@@ -758,7 +758,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id, hostname)
             redirect('main');
         }
         $this->load->helper('file');
@@ -785,7 +785,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id, hostname)
             redirect('main');
         }
         $this->load->helper('file');
@@ -812,7 +812,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id, hostname)
             redirect('main');
         }
         $this->load->model("m_oa_location");
@@ -834,7 +834,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id, hostname)
             redirect('main');
         }
         $this->load->model("m_oa_general");

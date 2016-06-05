@@ -772,7 +772,6 @@ class admin extends MY_Controller
                         unset($details->man_ip_address);
                     }
 
-                    $details->system_key = $this->m_system->create_system_key($details);
                     $details->id = $this->m_system->find_system($details);
                     if (!empty($details->id)) {
                         # update an existing system

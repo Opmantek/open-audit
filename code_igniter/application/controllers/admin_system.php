@@ -442,7 +442,6 @@ class Admin_system extends MY_Controller
                 unset($details->os_name_2);
             }
 
-            $details->system_key = $this->m_system->create_system_key($details);
             $details->hostname = preg_replace("/[^a-z0-9-.]+/i", "", $details->hostname);
             $details->hostname = mb_strtolower($details->hostname);
 
@@ -636,15 +635,6 @@ class Admin_system extends MY_Controller
                     # if not, make a system key and find (or not) the device
                     if (!isset($details->id) or $details->id == '') {
 
-                        # make a system key
-                        if (!isset($details->system_key) or $details->system_key == '') {
-                            $details->system_key = $this->m_system->create_system_key($details);
-                        }
-                        # setting the system_key - we don't have the required info to create a unique key
-                        if (!isset($details->system_key) or $details->system_key == '') {
-                            $error = "Error on row #".$count.". Insufficient details to create system key. Please supply (in order of preference) fqdn, hostname and domain, type and (unique) serial, ip address.<br />";
-                            $this->data['error'] .= $error;
-                        }
                         # make sure we have a hostname variable
                         if (!isset($details->hostname)) {
                             $details->hostname = '';
@@ -663,7 +653,7 @@ class Admin_system extends MY_Controller
                             # we need to update an existing system
                             $this->m_system->update_system($details);
                         } else {
-                            # this is a new system (we don't have a system_key match)
+                            # this is a new system
                             $details->first_seen = $details->last_seen;
                             $details->id = $this->m_system->insert_system($details);
                         }

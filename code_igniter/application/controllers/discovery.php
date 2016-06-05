@@ -892,14 +892,7 @@ class discovery extends CI_Controller
                         $details->domain = '';
                         $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
                         $details->hostname = '';
-
                         $details = dns_validate($details, $display);
-
-                        // process what little data we have and try to make a system_key
-                        $details->system_key = '';
-                        $details->system_key = $this->m_system->create_system_key($details, $display);
-
-                        // we have a system_key (best we can) - see if we can find an existing device
                         $details->_id = '';
                         $details->id = $this->m_system->find_system($details);
 
@@ -1519,8 +1512,6 @@ class discovery extends CI_Controller
                             $details->type = 'voip phone';
                         }
 
-                        # We have new details - create a new system key
-                        $details->system_key = $this->m_system->create_system_key($details, $display);
                         $details = dns_validate($details, $display);
                         $details->id = $this->m_system->find_system($details, $display);
 
@@ -1900,7 +1891,6 @@ class discovery extends CI_Controller
                                                                 if (!isset($esx_details->ip) or $esx_details->ip == '') {
                                                                     $esx_details->ip = $details->ip;
                                                                 }
-                                                                $esx_details->system_key = $this->m_system->create_system_key($esx_details, $display);
                                                                 $esx_details->system_id = $this->m_system->find_system($esx_details, $display);
                                                                 $esx_details->last_seen = $details->last_seen;
 
@@ -2230,7 +2220,6 @@ class discovery extends CI_Controller
                                                 foreach ($esx_xml->children() as $child) {
                                                     if ($child->getName() === 'sys') {
                                                         $esx_details = (object) $esx_xml->sys;
-                                                        $esx_details->system_key = $this->m_system->create_system_key($esx_details, $display);
                                                         $esx_details->system_id = $this->m_system->find_system($esx_details);
                                                         $esx_details->last_seen = $details->last_seen;
                                                         if ((!isset($esx_details->ip) or $esx_details->ip == '') and
