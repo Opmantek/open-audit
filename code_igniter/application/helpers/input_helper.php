@@ -104,6 +104,7 @@ if (! function_exists('inputRead')) {
         $temp = $CI->uri->segment(1);
         if (isset($temp) and $temp != '') {
             $CI->response->collection = (string)$temp;
+            $CI->response->heading = ucfirst($CI->response->collection);
         }
         unset($temp);
 
@@ -134,7 +135,7 @@ if (! function_exists('inputRead')) {
         }
         
         # if we have an item name (ie, not it's ID)
-        if ($CI->uri->segment(2) != '' and stripos($collection_words, ' '.$CI->uri->segment(2).' ') === false) {
+        if (empty($CI->response->id) and $CI->uri->segment(2) != '' and stripos($collection_words, ' '.$CI->uri->segment(2).' ') === false) {
             // TODO - SEPARATE THIS OUT
             switch ($CI->response->collection) {
             case 'devices':
@@ -156,6 +157,10 @@ if (! function_exists('inputRead')) {
             case 'reports':
                 $sql = "SELECT report_id AS id FROM oa_report WHERE report_name LIKE ? LIMIT 1";
                 $table = 'oa_report';
+                break;
+            case 'scripts':
+                $sql = "SELECT id AS id FROM scripts WHERE name LIKE ? LIMIT 1";
+                $table = 'scripts';
                 break;
             case 'charts':
                 $sql = '';
