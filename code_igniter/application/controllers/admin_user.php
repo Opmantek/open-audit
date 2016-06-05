@@ -131,11 +131,17 @@ class Admin_user extends MY_Controller
                 if ($details->user_name == 'admin') {
                     $server_os = php_uname('s');
                     if ($server_os == 'Windows NT') {
-                        $command_string = 'c:\xampplite\apache\bin\htpasswd.exe -mb c:\omk\conf\users.dat admin '.$details->user_password.' 2>&1';
+                        if (file_exists('c:\xampplite\apache\bin\htpasswd.exe')) {
+                            $command_string = 'c:\xampplite\apache\bin\htpasswd.exe -mb c:\omk\conf\users.dat admin '.$details->user_password.' 2>&1';
+                        }
                     }
                     if (php_uname('s') == 'Linux' or php_uname('s') == "Darwin") {
-                        $command_string = 'htpasswd -mb /usr/local/opmojo/conf/users.dat admin '.$details->user_password.' 2>&1';
-                        $command_string = 'htpasswd -mb /usr/local/omk/conf/users.dat admin '.$details->user_password.' 2>&1';
+                        if (file_exists('/usr/local/opmojo/conf/users.dat')) {
+                            $command_string = 'htpasswd -mb /usr/local/opmojo/conf/users.dat admin '.$details->user_password.' 2>&1';
+                        }
+                        if (file_exists('/usr/local/omk/conf/users.dat')) {
+                            $command_string = 'htpasswd -mb /usr/local/omk/conf/users.dat admin '.$details->user_password.' 2>&1';
+                        }
                     }
                     exec($command_string, $output, $return_var);
                     if ($return_var != '0') {
