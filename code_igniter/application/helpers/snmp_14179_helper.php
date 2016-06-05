@@ -42,15 +42,12 @@ $get_oid_details = function ($details) {
     if ($details->snmp_oid == '1.3.6.1.4.1.14179.1.1.4.3') {
         $details->model = '4402 WLAN Controller ';
         $details->os_group = 'Cisco';
-        $details->man_os_group = 'Cisco';
         $details->manufacturer = 'Cisco Systems';
-        $details->man_manufacturer = 'Cisco Systems';
         $details->type = 'wap';
         $details->os_family = 'Cisco IOS';
-        $details->man_os_family = 'Cisco IOS';
     }
 
-    $test = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.9.9.23.1.2.1.1.5.29.2"));
+    $test = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.9.9.23.1.2.1.1.5.29.2"));
     if ($test != '') {
         if (stripos($test, 'Cisco IOS Software') !== false) {
             $temp2 = explode(',', $test);
@@ -62,27 +59,25 @@ $get_oid_details = function ($details) {
             }
             if ($version != '') {
                 $details->os_name = 'Cisco IOS '.$version;
-                $details->man_os_name = 'Cisco IOS '.$version;
             } else {
                 $details->os_name = 'Cisco IOS (unknown verison)';
-                $details->man_os_name = 'Cisco IOS (unknown verison)';
             }
         }
     }
 
     # Cisco specific model OID
     if ($details->model == '') {
-        $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1"));
+        $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1"));
     }
 
     # Generic Cisco serial
     if ($details->serial == '') {
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1"));
     }
 
     # Generic Cisco serial
     if ($details->serial == '') {
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1.0"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1.0"));
     }
 
 };

@@ -249,10 +249,10 @@ $get_oid_details = function ($details) {
     }
 
     if ($details->snmp_version == '2') {
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12356.1.2.0"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.12356.1.2.0"));
 
         if ($details->serial == '') {
-            $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12356.100.1.1.1.0"));
+            $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.12356.100.1.1.1.0"));
         }
     }
 };

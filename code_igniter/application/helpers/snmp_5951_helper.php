@@ -47,9 +47,9 @@ $get_oid_details = function ($details) {
 
     if ($details->snmp_version == '2') {
         # model
-        $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.5951.4.1.1.11.0"));
+        $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.5951.4.1.1.11.0"));
         # serial
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.5951.4.1.1.14.0"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.5951.4.1.1.14.0"));
     }
 
 

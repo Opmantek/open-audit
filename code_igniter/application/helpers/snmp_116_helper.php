@@ -45,12 +45,12 @@ $get_oid_details = function ($details) {
     }
 
     if ($details->snmp_version == '2') {
-        $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.116.5.11.1.2.1.1.0"));
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.116.5.11.1.2.1.3.0"));
+        $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.116.5.11.1.2.1.1.0"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.116.5.11.1.2.1.3.0"));
     }
 
     if ($details->snmp_version == '1') {
-        $details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.116.5.11.1.2.1.1.0"));
-        $details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.116.5.11.1.2.1.3.0"));
+        $details->model = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.3.6.1.4.1.116.5.11.1.2.1.1.0"));
+        $details->serial = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.3.6.1.4.1.116.5.11.1.2.1.3.0"));
     }
 };

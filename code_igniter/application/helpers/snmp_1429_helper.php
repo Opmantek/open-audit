@@ -42,16 +42,16 @@ $get_oid_details = function ($details) {
     if ($details->snmp_oid == '1.3.6.1.4.1.1429.2.2.6.2') {
         $details->model = 'D98xx Program Receiver';
         $details->type = 'satellite receiver';
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1429.2.2.4.1.7.0"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.1429.2.2.4.1.7.0"));
     }
 
     # attempt to refine the model number
     $temp_model = '';
     if ($details->snmp_version == '1') {
-        $temp_model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1429.2.2.4.1.6.0"));
+        $temp_model = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.3.6.1.4.1.1429.2.2.4.1.6.0"));
     }
     if ($details->snmp_version == '2') {
-        $temp_model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1429.2.2.4.1.6.0"));
+        $temp_model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.1429.2.2.4.1.6.0"));
     }
     if ($temp_model != '') {
         $temp_array = explode('_', $temp_model);

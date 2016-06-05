@@ -208,10 +208,10 @@ if (! function_exists('output')) {
                             unset($row->$temp_name);
                         }
                     } 
-                    // elseif (isset($key) and ($key == 'man_ip_address' or $key == 'system.man_ip_address')) {
+                    // elseif (isset($key) and ($key == 'ip' or $key == 'system.ip')) {
                     //     $row->ip_padded = $value;
                     //     $row->ip = ip_address_from_db($value);
-                    //     #unset($row->man_ip_address);
+                    //     #unset($row->ip);
                     //     if (empty($row->ip_padded)) { $row->ip_padded = ''; }
                     //     if (empty($row->ip)) { $row->ip = ''; }
                     // }

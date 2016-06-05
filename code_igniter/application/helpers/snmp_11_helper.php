@@ -257,13 +257,13 @@ $get_oid_details = function ($details) {
 
     if ($details->snmp_version == '2') {
         # serial
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, ".1.3.6.1.4.1.11.2.36.1.1.2.9.0"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, ".1.3.6.1.4.1.11.2.36.1.1.2.9.0"));
     }
 
     if ($details->snmp_version == '1') {
         # model is a hex encoded string in HP Laserjets using snmp v1
         if (!isset($details->model) or $details->model = '') {
-            $model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.2.0"));
+            $model = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.2.0"));
             $model = str_replace(" ", "", $model);
             $model = str_replace("\n", "", $model);
             if (function_exists('hex2bin')) {
@@ -275,7 +275,7 @@ $get_oid_details = function ($details) {
         }
 
         # serial is a hex encoded string in HP Laserjets using snmp v1
-        $serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.3.0"));
+        $serial = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.3.0"));
         $serial = str_replace(" ", "", $serial);
         $serial = str_replace("\n", "", $serial);
         if (function_exists('hex2bin')) {

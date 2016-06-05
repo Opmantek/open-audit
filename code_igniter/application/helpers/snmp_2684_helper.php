@@ -41,7 +41,7 @@
 $get_oid_details = function ($details) {
     if ($details->snmp_oid == '1.3.6.1.4.1.2684.1.1') {
         $details->type = 'ip phone';
-        $details->model = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0"));
+        $details->model = str_replace("STRING: ", "", @snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.2.1.1.1.0"));
         $details->model = str_replace("\"\\", "", $details->model);
         $details->model = str_replace("\\\"", "", $details->model);
         $details->model = str_replace("\"", "", $details->model);
@@ -52,6 +52,6 @@ $get_oid_details = function ($details) {
 
     if ($details->snmp_version == '2') {
         # serial
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.43.47.1.1.3.1.10.1"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.43.47.1.1.3.1.10.1"));
     }
 };

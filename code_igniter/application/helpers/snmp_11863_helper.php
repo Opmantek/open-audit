@@ -101,7 +101,7 @@ $get_oid_details = function ($details) {
     }
 
     if (!isset($details->model) or $details->model == '') {
-        $details->model = @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.16.19.3.0");
+        $details->model = @snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.2.1.16.19.3.0");
     }
 
 };

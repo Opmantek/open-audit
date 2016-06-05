@@ -64,9 +64,9 @@ $get_oid_details = function ($details) {
     if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.4.5') { $details->model = 'Wireless Hotzone ZF2741'; }
 
     if ($details->snmp_version == '2') {
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25053.1.1.2.1.1.1.2.0"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.25053.1.1.2.1.1.1.2.0"));
         if (empty($details->model)) {
-            $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25053.1.1.2.1.1.1.1.0"));
+            $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.25053.1.1.2.1.1.1.1.0"));
         }
     }
 };

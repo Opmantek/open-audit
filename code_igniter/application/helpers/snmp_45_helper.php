@@ -446,11 +446,11 @@ $get_oid_details = function ($details) {
 
     if ($details->snmp_version == '2') {
         # serial
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.45.1.6.3.1.6.0"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.45.1.6.3.1.6.0"));
 
         #model
         if (!isset($details->model) or $details->model == '') {
-            $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.45.1.6.3.1.2.0"));
+            $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.45.1.6.3.1.2.0"));
         }
     }
 };

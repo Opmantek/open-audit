@@ -45,29 +45,29 @@ $get_oid_details = function ($details) {
     $temp_os_name = 'unknown';
     if ($details->snmp_version == '2') {
         # manufacturer
-        $temp_manufacturer = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.2.5"));
-        $temp_os_name = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.4.5"));
+        $temp_manufacturer = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.2.840.10036.3.1.2.1.2.5"));
+        $temp_os_name = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.2.840.10036.3.1.2.1.4.5"));
         # serial
         if (!isset($details->serial) or $details->serial == '') {
-            $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.2.840.10036.1.1.1.1.5"));
+            $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.2.840.10036.1.1.1.1.5"));
         }
         # model
         if (!isset($details->model) or $details->model == '') {
-            $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.3.5"));
+            $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.2.840.10036.3.1.2.1.3.5"));
         }
     }
 
     if ($details->snmp_version == '1') {
         # manufacturer
-        $temp_manufacturer = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.2.5"));
-        $temp_os_name = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.4.5"));
+        $temp_manufacturer = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.2.840.10036.3.1.2.1.2.5"));
+        $temp_os_name = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.2.840.10036.3.1.2.1.4.5"));
         # serial
         if (!isset($details->serial) or $details->serial == '') {
-            $details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.2.840.10036.1.1.1.1.5"));
+            $details->serial = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.2.840.10036.1.1.1.1.5"));
         }
         # model
         if (!isset($details->model) or $details->model == '') {
-            $details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.3.5"));
+            $details->model = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.2.840.10036.3.1.2.1.3.5"));
         }
     }
 

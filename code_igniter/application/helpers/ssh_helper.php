@@ -74,12 +74,12 @@ if (! function_exists('ssh_connect')) {
         }
 
         # must provide an ip address or a system id
-        if (!isset($details->man_ip_address ) and !isset($details->ip) and !isset($details->system_id) and !isset($details->id)) {
+        if (!isset($details->ip ) and !isset($details->ip) and !isset($details->system_id) and !isset($details->id)) {
             return false;
         }
 
-        if (isset($details->man_ip_address) and $details->man_ip_address != '' and filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
-            $ip = $details->man_ip_address;
+        if (isset($details->ip) and $details->ip != '' and filter_var($details->ip, FILTER_VALIDATE_IP)) {
+            $ip = $details->ip;
         }
         if (isset($details->ip) and $details->ip != '' and filter_var($details->ip, FILTER_VALIDATE_IP)) {
             $ip = $details->ip;
@@ -101,16 +101,16 @@ if (! function_exists('ssh_connect')) {
             $password = @$specific->ssh_password;
             if ($ip == '') {
                 $ip = @$specific->ip_address;
-                $details->man_ip_address = $ip;
+                $details->ip = $ip;
             }
             unset($device_specific_credentials);
             unset($specific);
         }
 
-        # use the ip address from system.man_ip_address
+        # use the ip address from system.ip
         if ($ip == '' and $id != 0) {
             $ip = $CI->m_system->check_ip($id);
-            $details->man_ip_address = $ip;
+            $details->ip = $ip;
         }
 
         # we don't have a system_id or an ip address
@@ -255,11 +255,11 @@ if (! function_exists('exec_ssh_command')) {
         }
 
         // $details should have an ip, a username and a password
-        if (!isset($details->man_ip_address) and !isset($details->ip)) {
+        if (!isset($details->ip) and !isset($details->ip)) {
             return false;
         } else {
-            if (isset($details->man_ip_address) and $details->man_ip_address != '') {
-                $ip = $details->man_ip_address;
+            if (isset($details->ip) and $details->ip != '') {
+                $ip = $details->ip;
             }
             if (isset($details->ip) and $details->ip != '') {
                 $ip = $details->ip;

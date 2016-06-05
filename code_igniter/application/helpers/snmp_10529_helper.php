@@ -40,6 +40,6 @@
 
 $get_oid_details = function ($details) {
     $details->type = 'unknown';
-    $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.10529.300.1.3.1.0"));
-    $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.10529.300.1.3.5.0"));
+    $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.10529.300.1.3.1.0"));
+    $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.10529.300.1.3.5.0"));
 };

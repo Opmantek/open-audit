@@ -41,7 +41,7 @@
 # http://www.zhone.com/support/manuals/docs/AZ/SNMP-A2-GB20-00.pdf
 $get_oid_details = function ($details) {
     $details->manufacturer = 'Alcatel';
-    $i = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.8059.1.1.2.1.1.1.1"));
+    $i = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.8059.1.1.2.1.1.1.1"));
     if ($i == '1') {
         $details->model = '12000';
         $details->type = 'dslam';

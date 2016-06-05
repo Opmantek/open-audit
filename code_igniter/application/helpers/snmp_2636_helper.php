@@ -374,6 +374,6 @@ $get_oid_details = function ($details) {
 
     if ($details->snmp_version == '2') {
         # serial
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.2636.3.1.3.0"));
+        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.2636.3.1.3.0"));
     }
 };

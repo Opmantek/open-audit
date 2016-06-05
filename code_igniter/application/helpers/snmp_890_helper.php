@@ -795,7 +795,7 @@ $get_oid_details = function ($details) {
     if ($details->snmp_version == '2') {
         if ($details->type = '' or $details->type == 'unknown') {
             $details->type == 'unknown';
-            $details->type = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.890.1.2.11.1.1.1.0"));
+            $details->type = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.890.1.2.11.1.1.1.0"));
         }
     }
 };

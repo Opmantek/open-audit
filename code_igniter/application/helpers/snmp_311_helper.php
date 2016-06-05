@@ -49,7 +49,7 @@ $get_oid_details = function ($details) {
     if ($details->snmp_version == '2') {
 
         # try to determine if this is a VMware virtual machine
-        $i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.6.3.1.2");
+        $i = @snmp2_walk($details->ip, $details->snmp_community, "1.3.6.1.2.1.25.6.3.1.2");
         if (count($i) > 0) {
             for ($k = 0; $k < count($i); $k++) {
                 if (mb_strpos($i[$k], "VMware Tools") !== false) {
@@ -59,7 +59,7 @@ $get_oid_details = function ($details) {
             }
         }
 
-        $details->description = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.77.1.2.1.0"));
+        $details->description = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.77.1.2.1.0"));
     }
 
 };
