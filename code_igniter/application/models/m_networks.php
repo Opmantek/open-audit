@@ -70,7 +70,7 @@ class M_networks extends MY_Model
     }
 
 
-    public function read_network()
+    public function read()
     {
         $CI = & get_instance();
         $return_data = array();
@@ -90,7 +90,7 @@ class M_networks extends MY_Model
         return($return_data);
     }
 
-    public function create_network()
+    public function create()
     {
         $CI = & get_instance();
         # ensure we have a valid subnet
@@ -115,7 +115,7 @@ class M_networks extends MY_Model
         return $this->db->insert_id();
     }
 
-    public function read_networks()
+    public function collection()
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
@@ -128,7 +128,6 @@ class M_networks extends MY_Model
 
         $sql = "SELECT " . $CI->response->internal->properties . " FROM networks" . $filter . " " . $CI->response->internal->groupby . " " . $CI->response->internal->sort . " " . $CI->response->internal->limit;
         $result = $this->run_sql($sql, array());
-        $this->count_data($result);
         return $result;
     }
 

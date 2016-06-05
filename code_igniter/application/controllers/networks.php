@@ -40,10 +40,7 @@ class networks extends MY_Controller
     {
         parent::__construct();
         // log the attempt
-        $log_details = new stdClass();
-        $log_details->severity = 6;
-        stdlog($log_details);
-        unset($log_details);
+        stdlog();
 
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
@@ -51,22 +48,11 @@ class networks extends MY_Controller
             redirect(uri_string());
         }
 
-        //$this->load->helper('network');
+        $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
-        $this->load->helper('input');
         $this->load->model('m_networks');
-        //$this->load->model('m_orgs');
-
-        //$this->response = new stdClass();
         inputRead();
-
-        //$this->response->total = 0;
-        //$this->response->filtered = 0;
-        if ($this->response->format == 'screen') {
-            $this->response->heading = 'Networks';
-            $this->response->include = 'v_networks';
-        }
         $this->output->url = $this->config->item('oa_web_index');
     }
 
@@ -76,9 +62,8 @@ class networks extends MY_Controller
 
     public function _remap()
     {
-        $action = $this->response->action;
-        if ($action != '') {
-            $this->$action();
+        if (!empty($this->response->action)) {
+            $this->{$this->response->action}();
         } else {
             $this->collection();
         }
@@ -87,14 +72,14 @@ class networks extends MY_Controller
 
     private function collection()
     {
-        $this->response->data = $this->m_networks->read_networks();
+        $this->response->data = $this->m_networks->collection();
         $this->response->filtered = count($this->response->data);
         output($this->response);
     }
 
     private function read()
     {
-        $this->response->data = $this->m_networks->read_network();
+        $this->response->data = $this->m_networks->read();
         $this->response->filtered = count($this->response->data);
         output($this->response);
     }
@@ -118,9 +103,9 @@ class networks extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->response->id = $this->m_networks->create_network();
+        $this->response->id = $this->m_networks->create();
         if (!empty($this->response->id)) {
-            redirect('/networks/'.intval($this->response->id));
+            redirect('/networks');
         } else {
             log_error('ERR-0009');
             output($this->response);
@@ -136,7 +121,7 @@ class networks extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->response->data = $this->m_networks->read_network();
+        $this->response->data = $this->m_networks->read();
         output($this->response);
     }
 
@@ -175,23 +160,23 @@ class networks extends MY_Controller
     # not implemented
     private function execute()
     {
-        $this->response->format = 'json';
-        $this->response->debug = true;
-        output($this->response);
+        // $this->response->format = 'json';
+        // $this->response->debug = true;
+        // output($this->response);
     }
 
     # not implemented
     private function bulk_update_form()
     {
-        $this->response->format = 'json';
-        $this->response->debug = true;
-        $this->response->id = '';
-        $temp_ids = array();
-        foreach ($_POST['ids'] as $temp) {
-            $temp_ids[] = $temp;
-        }
-        $this->response->id = implode(',', $temp_ids);
-        output($this->response);
+        // $this->response->format = 'json';
+        // $this->response->debug = true;
+        // $this->response->id = '';
+        // $temp_ids = array();
+        // foreach ($_POST['ids'] as $temp) {
+        //     $temp_ids[] = $temp;
+        // }
+        // $this->response->id = implode(',', $temp_ids);
+        // output($this->response);
     }
 
 
