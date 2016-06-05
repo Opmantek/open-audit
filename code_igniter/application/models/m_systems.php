@@ -174,7 +174,7 @@ class M_systems extends MY_Model
 
     public function get_distinct_os_group()
     {
-        $sql = "SELECT distinct(man_os_group) FROM system ORDER BY man_os_group";
+        $sql = "SELECT distinct(os_group) FROM system ORDER BY os_group";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -184,7 +184,7 @@ class M_systems extends MY_Model
 
     public function get_distinct_os_family()
     {
-        $sql = "SELECT distinct(man_os_family) FROM system ORDER BY man_os_family";
+        $sql = "SELECT distinct(os_family) FROM system ORDER BY os_family";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -194,7 +194,7 @@ class M_systems extends MY_Model
 
     public function get_distinct_os_name()
     {
-        $sql = "SELECT distinct(man_os_name) FROM system ORDER BY man_os_name";
+        $sql = "SELECT distinct(os_name) FROM system ORDER BY os_name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -204,7 +204,7 @@ class M_systems extends MY_Model
 
     public function get_count()
     {
-        $sql = "SELECT count(*) AS count FROM system WHERE man_status = 'production'";
+        $sql = "SELECT count(*) AS count FROM system WHERE status = 'production'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -215,7 +215,7 @@ class M_systems extends MY_Model
 
     public function get_non_prod_count()
     {
-        $sql = "SELECT count(*) AS count FROM system WHERE man_status <> 'production'";
+        $sql = "SELECT count(*) AS count FROM system WHERE status <> 'production'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
