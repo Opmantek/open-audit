@@ -122,9 +122,6 @@ class M_oa_group extends MY_Model
         if (!isset($details->type)) {
             $details->type = '';
         }
-        if (!isset($details->man_type) or $details->man_type == '') {
-            $details->man_type = $details->type;
-        }
         if ($exclude_type != '') {
             $sql = "DELETE FROM oa_group_sys WHERE oa_group_sys.system_id = ? AND oa_group_sys.group_id IN (SELECT oa_group.group_id FROM oa_group WHERE oa_group.group_category != ?)";
             $sql = $this->clean_sql($sql);

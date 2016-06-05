@@ -316,11 +316,11 @@ class M_oa_location extends MY_Model
         $sql = "SELECT
     				system.id,
     				system.name,
-    				system.man_description,
-    				system.man_ip_address,
+    				system.description,
+    				system.ip,
     				system.icon,
-    				system.man_os_name,
-    				system.man_os_family
+    				system.os_name,
+    				system.os_family
     			FROM
     				system,
     				oa_group,
@@ -336,7 +336,7 @@ class M_oa_location extends MY_Model
     						oa_group,
     						oa_group_user
     					WHERE
-    						system.man_status = 'production' AND
+    						system.status = 'production' AND
     						system.id = oa_group_sys.system_id AND
     						oa_group_sys.group_id = oa_group.group_id AND
     						oa_group.group_id = oa_group_user.group_id AND
@@ -423,19 +423,19 @@ class M_oa_location extends MY_Model
         $i = new stdclass();
 
         $count = 5;
-        $sql = "SELECT DISTINCT(man_type) FROM system";
+        $sql = "SELECT DISTINCT(type) FROM system";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $types = $query->result();
         foreach ($types as $type) {
             $i = new stdclass();
             $count++;
-            if ($type->man_type == '') {
-                $type->man_type = 'unknown';
+            if ($type->type == '') {
+                $type->type = 'unknown';
             }
             $i->column_order = $count;
-            $i->column_name = $type->man_type;
-            $i->column_variable = $type->man_type;
+            $i->column_name = $type->type;
+            $i->column_variable = $type->type;
             $i->column_type = "text";
             $i->column_align = "left";
             $i->column_secondary = "";
@@ -505,7 +505,7 @@ class M_oa_location extends MY_Model
         }
         # add a count to the type in a location
         foreach ($types as $type) {
-            $device_type = $type->man_type;
+            $device_type = $type->type;
             $id = $type->location_id;
             $new_locations[$id]->infoDisplay->$device_type++;
         }

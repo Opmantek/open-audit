@@ -43,16 +43,16 @@ class M_systems extends MY_Model
     public function api_index($level = 'min')
     {
         if ($level === 'list') {
-            $sql = 'SELECT system_id AS id, concat("/omk/oae/node_config_documents/", system_id) as show_resource FROM system WHERE man_status = "production"';
+            $sql = 'SELECT id, concat("/omk/oae/node_config_documents/", id) as show_resource FROM system WHERE status = "production"';
         }
         if ($level === 'min') {
-            $sql = 'SELECT system_id, hostname, man_ip_address, man_os_name, man_type FROM system WHERE man_status = "production"';
+            $sql = 'SELECT id AS `system_id`, hostname, ip, os_name AS `man_os_name`, type AS `man_type` FROM system WHERE status = "production"';
         }
         if ($level === 'select') {
-            $sql = 'SELECT system_id, hostname, domain, man_ip_address, man_os_group, man_os_family, man_os_name, man_type, man_serial, man_model, man_manufacturer, pc_memory, pc_num_processor, man_environment, man_class FROM system WHERE man_status = "production"';
+            $sql = 'SELECT id AS `system_id`, hostname, domain, ip, os_group AS `man_os_group`, os_family AS `man_os_family`, os_name AS `man_os_name`, type AS `man_type`, serial AS `man_serial`, model AS `man_model`, manufacturer AS `man_manufacturer`, memory_count AS `pc_memory`, processor_count AS `pc_num_processor`, environment AS `man_environment`, clss AS `man_class` FROM system WHERE status = "production"';
         }
         if ($level === 'max') {
-            $sql = 'SELECT * FROM system WHERE man_status = "production"';
+            $sql = 'SELECT * FROM system WHERE status = "production"';
         }
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -82,11 +82,11 @@ class M_systems extends MY_Model
             $select_string = mb_substr($select_string, 1);
             // now create the search statement
             if ($table != 'system') {
-                $sql = "SELECT DISTINCT(a.system_id), a.icon, a.hostname, a.domain, a.man_ip_address, a.man_type, $select_string
+                $sql = "SELECT DISTINCT(a.system_id), a.icon, a.hostname, a.domain, a.ip, a.type AS `man_type`, $select_string
 			            FROM system a, oa_group_sys, $table
 			            WHERE a.system_id = $table.system_id AND a.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND $table.current = 'y' AND ( $search_string ) ";
             } else {
-                $sql = "SELECT DISTINCT(a.system_id), a.icon, a.hostname, a.domain, a.man_ip_address, a.man_type, $select_string
+                $sql = "SELECT DISTINCT(a.system_id), a.icon, a.hostname, a.domain, a.ip, a.type AS `man_type`, $select_string
                         FROM system a, oa_group_sys, $table
                         WHERE a.system_id = $table.system_id AND a.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND ( $search_string ) ";
             }
@@ -104,8 +104,8 @@ class M_systems extends MY_Model
                         $i->icon = $row->icon;
                         $i->hostname = $row->hostname;
                         $i->domain = $row->domain;
-                        $i->man_ip_address = $row->man_ip_address;
-                        $i->man_type = $row->man_type;
+                        $i->ip = $row->ip;
+                        $i->type = $row->type;
                         $i->table = $table;
                         $i->field = '';
                         $i->result = '';

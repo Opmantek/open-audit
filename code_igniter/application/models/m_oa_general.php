@@ -46,7 +46,7 @@ class M_oa_general extends MY_Model
             return;
         }
         if ($table == 'system') {
-            $sql = 'SELECT system_id, hostname, fqdn, man_ip_address, man_type, man_class, os_version, man_function, man_environment, man_status, man_description, man_os_group, man_os_family, man_os_name, man_manufacturer, man_model, man_serial, man_form_factor, man_vm_group, uptime, oa_location.name, last_seen, last_seen_by, system.icon, snmp_oid, sysDescr, sysObjectID, sysUpTime, sysContact, sysName, sysLocation FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.id WHERE system_id = ?';
+            $sql = 'SELECT id AS `system_id`, hostname, fqdn, ip, type AS `man_type`, class AS `man_class`, os_version, function AS `man_function`, environment AS `man_environment`, status AS `man_status`, description AS `man_description`, os_group AS `man_os_group`, os_family AS `man_os_family`, os_name AS `man_os_name`, manufacturer AS `man_manufacturer`, model AS `man_model`, `serial` AS `nan_serial`, man_form_factor AS `man_form_factor`, vm_group AS `vm_group`, uptime, oa_location.name, last_seen, last_seen_by, system.icon, snmp_oid, sysDescr, sysObjectID, sysUpTime, sysContact, sysName, sysLocation FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE id = ?';
             $sql = $this->clean_sql($sql);
 
         }
@@ -64,7 +64,7 @@ class M_oa_general extends MY_Model
         }
         $sql = '';
         if ($table == 'system') {
-            $sql = 'SELECT system.* FROM system LEFT JOIN oa_location ON system.man_location_id = oa_location.id WHERE system_id = ?';
+            $sql = 'SELECT system.* FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE system_id = ?';
             $sql = $this->clean_sql($sql);
         }
         if ($sql != '') {
