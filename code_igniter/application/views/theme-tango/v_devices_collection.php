@@ -33,11 +33,6 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-#echo "HERE"; exit();
-#echo "<pre>"; print_r($this->response); #exit();
-#echo "<pre>\n";
-#print_r($this->response);
-#exit();
 echo "<div style=\"float:left; width:100%;\">\n";
 if (!empty($this->response->data)) {
 ?>
@@ -47,9 +42,8 @@ if (!empty($this->response->data)) {
             <?php
 
             $properties = get_object_vars($this->response->data[0]);
-            #echo "<pre>\n"; print_r($properties); echo "</pre>\n";
             foreach ($properties as $key => $value) {
-                if ($key == 'ip' or $key == 'system.ip' or $key == 'ip_padded') {
+                if ($key == 'system.ip_padded') {
                     continue;
                 }
                 $key = str_replace('system.', '', $key);
@@ -57,6 +51,7 @@ if (!empty($this->response->data)) {
                 $key = str_replace('_', ' ', $key);
                 $key = str_replace('os ', 'OS ', $key);
                 $key = str_replace(' id', ' ID', $key);
+                if ($key == 'Ip') { $key = 'IP'; }
                 $key = ucwords($key);
                 if (stripos($key, 'icon') !== false) {
                     echo "\t\t\t<th style=\"text-align: center;\">" . __($key) . "</th>\n";
@@ -80,18 +75,18 @@ if (!empty($this->response->data)) {
             // if (strpos($property, '.') !== false) {
             //     $property = substr($property, 0, strpos($property, '.'));
             // }
-            if ($property == 'ip_padded') {
+            if ($property == 'system.ip_padded') {
                 continue;
             }
             if (!empty($item->{$property})) {
                 if (strlen($item->{$property}) > 50) {
                     $item->{$property} = substr($item->{$property}, 0, 50) . '....';
                 }
-                if ($property == 'ip' and !empty($item->ip_padded)) {
-                    echo "\t\t\t\t<td><span style='display:none;'>" . str_replace('.', '', $item->ip_padded) . "</span>" . $item->ip . "</td>\n";
+                if ($property == 'system.ip' and !empty($item->{'system.ip_padded'})) {
+                    echo "\t\t\t\t<td><span style='display:none;'>" . str_replace('.', '', $item->{'system.ip_padded'}) . "</span>" . $item->{'system.ip'} . "</td>\n";
                 } elseif ($property == 'system.id') {
                     echo "\t\t\t\t<td><a href='devices/" . $item->{$property} . "'>" . $item->{$property} . "</td>\n";
-                } elseif ($property == 'icon') {
+                } elseif ($property == 'system.icon') {
                     echo "\t\t\t\t<td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."theme-tango/tango-images/16_".strtolower(str_replace(" ", "_", htmlentities($item->{$property}))).".png\" style='border-width:0px;' title=\"".htmlentities($item->{$property})."\" alt=\"".htmlentities($item->{$property})."\" /></td>\n";
                 } else {
                     echo "\t\t\t\t<td>" . $item->{$property} . "</td>\n";
