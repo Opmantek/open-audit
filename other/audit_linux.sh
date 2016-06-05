@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-@version 1.14
+# @version 1.14
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -53,10 +53,7 @@
 
 # Below are the default settings
 
-# default to localhost
-strComputer="."
-
-# submit the audit to the OAv2 server
+# submit the audit to the Open-AudIT server
 submit_online="n"
 
 # create an XML text file of the result in the current directory
@@ -65,7 +62,7 @@ create_file="y"
 # the address of the Open-AudIT server "submit" page
 url="http://localhost/open-audit/index.php/system/add_system"
 
-# optional - assign any PCs audited to this Org - take the OrgId from OAv2 interface
+# optional - assign any PCs audited to this Org - take the org_id from Open-AudIT interface
 org_id=""
 
 # if set then delete the audit script upon completion
@@ -79,9 +76,6 @@ debugging=2
 
 # Display help
 help="n"
-
-# attempt to ping a target computer before audit?
-ping_target="y"
 
 # set by the Discovery function - do not normally set this manually
 system_id=""
@@ -200,24 +194,6 @@ escape_xml ()
 	echo "$result"
 }
 
-# cidr2mask ()
-# {
-#   local i mask=""
-#   local full_octets=$(($1/8))
-#   local partial_octet=$(($1%8))
-#   for ((i=0;i<4;i+=1)); do
-#     if [ $i -lt $full_octets ]; then
-#       mask+=255
-#     elif [ $i -eq $full_octets ]; then
-#       mask+=$((256 - 2**(8-partial_octet)))
-#     else
-#       mask+=0
-#     fi
-#     test $i -lt 3 && mask+=.
-#   done
-#   echo "$mask"
-# }
-
 cidr2mask ()
 {
    # Number of args to shift, 255..255, first non-255 byte, zeroes
@@ -300,10 +276,6 @@ for arg in "$@"; do
 			help="y" ;;
 		"org_id" )
 			org_id="$parameter_value" ;;
-		"ping_target" )
-			ping_target="$parameter_value" ;;
-		"strcomputer" )
-			strComputer="$parameter_value" ;;
 		"submit_online" )
 			submit_online="$parameter_value" ;;
 		"system_id" )
@@ -314,8 +286,6 @@ for arg in "$@"; do
 			san_discover="$parameter_value" ;;
 		"url" )
 			url="$parameter_value" ;;
-		"$parameter_value" )
-			strComputer="$parameter_value" ;;
 	esac
 done
 
@@ -326,13 +296,9 @@ if [ "$help" = "y" ]; then
 	echo "-----------------------------"
 	echo "This script should be run on a Linux based computer using root or sudo access rights."
 	echo ""
-	echo "Prerequisites for this script to function correctly can be tested by running audit_linux.sh check_commands=y."
 	echo ""
 	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
 	echo ""
-	echo "  check_commands"
-	echo "     y - Run a test to determine if the required commands to run this script are present on the target system."
-	echo "    *n - Do not run the test."
 	echo ""
 	echo "  create_file"
 	echo "     y - Create an XML file containing the audit result."
@@ -380,18 +346,6 @@ if [ "$help" = "y" ]; then
 	exit
 fi
 
-# test pinging the server hosting the URL
-# if [ "$submit_online" = "y" ]; then
-# 	server=$(echo "$url" | cut -d"/" -f3 | cut -d: -f1)
-# 	test=$(ping "$server" -n -c 3 | grep "100% packet loss")
-# 	if [ -n "$test" ]; then
-# 		if [  "$debugging" -gt 0 ]; then
-# 			echo "Server $server is not responding to a ping. Cannot submit audit result. Exiting."
-# 		fi
-# 		exit
-# 	fi
-# fi
-
 ########################################################
 # CREATE THE AUDIT FILE                                #
 ########################################################
@@ -399,31 +353,7 @@ fi
 start_time=$(timer)
 
 if [ "$debugging" -gt 0 ]; then
-	echo "Starting audit - $strComputer"
-fi
-
-pc_alive=0
-if [ "$ping_target" = "y" ]; then
-	if [ "$strComputer" = "." ]; then
-		pc_alive=1
-	else
-		ping_result=$(ping -c1 "$strComputer" 2>/dev/null | grep "time")
-		if [ "$ping_result" != "" ]; then
-			pc_alive=1
-		fi
-	fi
-fi
-
-if [ "$debugging" -gt 0 ]; then
-	if [ "$ping_target" = "n" ]; then
-		echo "Not pinging target, attempting to audit."
-	else
-		if [ "$pc_alive" = "1" ]; then
-			echo "PC $strComputer responding to ping"
-		else
-			echo "PC $strComputer not responding to ping"
-		fi
-	fi
+	echo "Starting audit"
 fi
 
 local_hostname=""
@@ -435,14 +365,6 @@ fi
 
 if [ -z "$local_hostname" ]; then
 	local_hostname=$(hostname 2>/dev/null)
-fi
-
-if [ "$strComputer" = "." ] || \
-   [ "$strComputer" = "127.0.0.1" ] || \
-   [ "$(lcase "$strComputer")" = "$(lcase "$local_hostname")" ]; then
-	audit_location="local"
-else
-	audit_location="remote"
 fi
 
 # Set the TimeSamp

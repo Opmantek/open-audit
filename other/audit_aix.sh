@@ -36,7 +36,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-@version 1.14
+# @version 1.14
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -57,12 +57,11 @@ url="http://localhost/open-audit/index.php/system/add_system"
 # 1 = basic debug
 # 2 = verbose debug
 # 3 = verbose debug and no safety
-debugging=3
-
-man_org_id=""
+debugging=1
+org_id=""
 system_id=""
 help=""
-version="1.2"
+version="1.14"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
@@ -119,7 +118,7 @@ if [[ $help = "y" ]]; then
 	echo "    *y - Create an XML file containing the audit result."
 	echo "     n - Do not create an XML result file."
 	echo ""
-	echo "  man_org_id"
+	echo "  org_id"
 	echo "     * - The Open-AudIT id of the orgganisation you would like this machine assigned to. This is not populated by default."
 	echo ""
 	echo ""
@@ -135,7 +134,7 @@ if [[ $version = "y" ]]; then
 	echo "Open-AudIT AIX audit script"
 	echo "(c) Opmantek, 2014."
 	echo "----------------------------"
-	echo "Version: 1.2"
+	echo "Version: 1.14"
 fi
 
 pwd=$(pwd)
