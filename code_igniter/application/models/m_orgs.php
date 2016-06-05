@@ -71,7 +71,7 @@ class M_orgs extends MY_Model
         return($filter);
     }
 
-    public function read_org()
+    public function read()
     {
         $CI = & get_instance();
         $sql = "SELECT * FROM oa_org WHERE id = ?";
@@ -109,7 +109,7 @@ class M_orgs extends MY_Model
         }
     }
 
-    public function read_org_sub_resource()
+    public function read_sub_resource()
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
@@ -128,7 +128,7 @@ class M_orgs extends MY_Model
         }
     }
 
-    public function read_orgs()
+    public function collection()
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
