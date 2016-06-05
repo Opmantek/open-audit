@@ -80,7 +80,7 @@ if (!empty($this->response->data)) {
             // if (strpos($property, '.') !== false) {
             //     $property = substr($property, 0, strpos($property, '.'));
             // }
-            if ($property == 'man_ip_address' or $property == 'system.man_ip_address' or $property == 'ip_padded') {
+            if ($property == 'ip_padded') {
                 continue;
             }
             if (!empty($item->{$property})) {
