@@ -69,6 +69,50 @@ class test extends CI_Controller
         redirect('/');
     }
 
+    function options()
+    {
+
+        $sql[] = "DROP TABLE IF EXISTS `scripts`";
+        $sql[] = "CREATE TABLE `scripts` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(250) NOT NULL DEFAULT '', `options` text NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `based_on` varchar(200) NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+        $output = '';
+        $options = array();
+        $options['audit_san'] = 'y';
+        $options['create_file'] = 'n';
+        $options['debugging'] = '1';
+        $options['details_to_lower'] = 'y';
+        $options['hide_audit_window'] = 'n';
+        $options['ldap'] = '';
+        $options['ldap_seen_date'] = '2012-06-30';
+        $options['ldap_seen_days'] = 0;
+        $options['org_id'] = '';
+        $options['ping_target'] = 'n';
+        $options['run_netstat'] = 's';
+        $options['run_san_discover'] = 'n';
+        $options['self_delete'] = 'n';
+        $options['skip_dns'] = 'n';
+        $options['skip_mount_point'] = 'n';
+        $options['skip_software'] = 'n';
+        $options['strcomputer'] = '.';
+        $options['strpass'] = '';
+        $options['struser'] = '';
+        $options['submit_online'] = 'y';
+        $options['system_id'] = '';
+        $options['url'] = 'http://localhost/open-audit/index.php/system/add_system';
+        $options['use_proxy'] = 'n';
+        $options['win32_product'] = 'n';
+        $options['windows_user_work_1'] = 'physicalDeliveryOfficeName';
+        $options['windows_user_work_2'] = 'company';
+        $options = json_encode($options);
+        $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_windows.vbs', '" . $options . "', 'The default audit windows with default options.', 'audit_windows.vbs', '', 'system', NOW())";
+        foreach ($sql as $this_query) {
+            $output .= $this_query."<br /><br />\n";
+            $query = $this->db->query($this_query);
+        }
+        echo "<pre>\n";
+        print_r($output);
+    }
+
     function nif()
     {
         error_reporting(E_ALL);
