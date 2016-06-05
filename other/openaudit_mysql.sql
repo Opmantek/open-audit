@@ -364,6 +364,67 @@ LOCK TABLES `edit_log` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `file`
+--
+
+CREATE TABLE `file` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `files_id` int(10) unsigned DEFAULT NULL,
+  `name` varchar(250) NOT NULL DEFAULT '',
+  `full_name` text NOT NULL DEFAULT '',
+  `size` int(10) unsigned NOT NULL DEFAULT '0',
+  `directory` text NOT NULL DEFAULT '',
+  `hash` varchar(250) NOT NULL DEFAULT '',
+  `last_changed` varchar(100) NOT NULL DEFAULT '',
+  `meta_last_changed` varchar(100) NOT NULL DEFAULT '',
+  `permission` varchar(250) NOT NULL DEFAULT '',
+  `owner` varchar(100) NOT NULL DEFAULT '',
+  `group` varchar(100) NOT NULL DEFAULT '',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `version` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `file_files_id` FOREIGN KEY (`files_id`) REFERENCES `files` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `file`
+--
+
+LOCK TABLES `file` WRITE;
+/*!40000 ALTER TABLE `file` DISABLE KEYS */;
+/*!40000 ALTER TABLE `file` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `files`
+--
+
+CREATE TABLE `files` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `path` varchar(45) NOT NULL DEFAULT '',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `files`
+--
+
+LOCK TABLES `files` WRITE;
+/*!40000 ALTER TABLE `files` DISABLE KEYS */;
+/*!40000 ALTER TABLE `files` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `graph`
 --
 
@@ -1619,6 +1680,31 @@ CREATE TABLE `san` (
 LOCK TABLES `san` WRITE;
 /*!40000 ALTER TABLE `san` DISABLE KEYS */;
 /*!40000 ALTER TABLE `san` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `scripts`
+--
+
+CREATE TABLE `scripts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(250) NOT NULL DEFAULT '',
+  `options` text NOT NULL DEFAULT '',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  `based_on` varchar(200) NOT NULL DEFAULT '',
+  `hash` varchar(250) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `scripts`
+--
+
+LOCK TABLES `scripts` WRITE;
+/*!40000 ALTER TABLE `scripts` DISABLE KEYS */;
+/*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
