@@ -83,7 +83,7 @@ if (! function_exists('stdlog')) {
      *
      * @return NULL [logs the provided string to the log file]
      */
-    function stdlog($log_details)
+    function stdlog($log_details = NULL)
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
@@ -305,7 +305,7 @@ if (! function_exists('stdlog')) {
 
         if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
             $file = "/usr/local/open-audit/other/log_".$log->file.".log";
-            $file = '../../other/log_'.$log->file.'.log';
+            #$file = '../../other/log_'.$log->file.'.log';
         } else {
             $file = 'c:\xampplite\open-audit\other\log_'.$log->file.'.log';
         }
