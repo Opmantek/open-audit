@@ -583,7 +583,7 @@ class M_oa_group extends MY_Model
             $pos = mb_strpos($detail, "group_id_");
             if (($pos !== false) and ($detail != "group_id_0")) {
                 $group_id_split = explode("_", $detail);
-                $sql = "INSERT INTO oa_group_user (group_user_id, user_id, group_id, group_user_access_level) VALUES (NULL, ?, ?, ?)";
+                $sql = "INSERT INTO oa_group_user (id, user_id, group_id, group_user_access_level) VALUES (NULL, ?, ?, ?)";
                 $data = array("$details->id", $group_id_split[2], "$key");
                 $query = $this->db->query($sql, $data);
             }
