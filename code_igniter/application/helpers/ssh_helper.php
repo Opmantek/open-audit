@@ -109,7 +109,7 @@ if (! function_exists('ssh_connect')) {
 
         # use the ip address from system.man_ip_address
         if ($ip == '' and $id != 0) {
-            $ip = $CI->m_system->check_man_ip_address($id);
+            $ip = $CI->m_system->check_ip($id);
             $details->man_ip_address = $ip;
         }
 

@@ -223,15 +223,15 @@ class ajax extends MY_Controller
                 $data = explode("_", $this->data['field_name']);
                 # index.php/ajax/update_system_man/[system_id]/custom_[field_type]_[data_id]_[field_id]/[value]
                 # 0 - custom
-                # 1 - sys_man_additional_fields.field_type
-                # 2 - sys_man_additional_fields_data.field_details_id
-                # 3 - sys_man_additional_fields.field_id
+                # 1 - additional_field.field_type
+                # 2 - additional_field_item.field_details_id
+                # 3 - additional_field.field_id
 
-                # TODO - should test if system_id is part of sys_man_additional_fields.group_id
+                # TODO - should test if system_id is part of additional_field.group_id
                 # The code below assumes the view has done this (and it has), but it doesn't verify it.
                 # Could call this directly using a URL and set a custom field on a device that is not supposed to have it
 
-                $sql = "/* ajax::update_system_man */ SELECT group_id FROM sys_man_additional_fields WHERE field_id = ?";
+                $sql = "/* ajax::update_system_man */ SELECT group_id FROM additional_field WHERE field_id = ?";
                 $data_array = array($data[3]);
                 $query = $this->db->query($sql, $data_array);
                 $row = $query->row();
@@ -245,21 +245,21 @@ class ajax extends MY_Controller
                 }
 
                 if ($group_allowed == 'y') {
-                    $sql = "/* ajax::update_system_man */ SELECT * FROM sys_man_additional_fields_data WHERE field_id = ? AND system_id = ?";
+                    $sql = "/* ajax::update_system_man */ SELECT * FROM additional_field_item WHERE field_id = ? AND system_id = ?";
                     $data_array = array($data[3], $this->data['system_id']);
                     $query = $this->db->query($sql, $data_array);
                     if ($query->num_rows() > 0) {
                         # we are updating an existing value
                         $row = $query->row();
-                        $sql = "/* ajax::update_system_man */ UPDATE sys_man_additional_fields_data SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
+                        $sql = "/* ajax::update_system_man */ UPDATE additional_field_item SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
                         $query = $this->db->query($sql);
-                        $this->m_edit_log->create($this->data['system_id'], "", "sys_man_additional_fields_data", "", "", $this->oa_urldecode($this->data['field_data']), "");
+                        $this->m_edit_log->create($this->data['system_id'], "", "additional_field_item", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));
                     } else {
                         # we have to insert a new record for a custom data value for this system
-                        $sql = "/* ajax::update_system_man */ INSERT INTO sys_man_additional_fields_data ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
+                        $sql = "/* ajax::update_system_man */ INSERT INTO additional_field_item ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
                         $query = $this->db->query($sql);
-                        $this->m_edit_log->create($this->data['system_id'], "", "sys_man_additional_fields_data", "", "", $this->oa_urldecode($this->data['field_data']), "");
+                        $this->m_edit_log->create($this->data['system_id'], "", "additional_field_item", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));
                     }
                 } else {
@@ -279,24 +279,24 @@ class ajax extends MY_Controller
                         $this->m_system->update_system_man($this->data['system_id'], $this->data['field_name'], $this->oa_urldecode($this->data['field_data']));
                         $this->m_edit_log->create($this->data['system_id'], '', 'system', $this->data['field_name'], '', $this->oa_urldecode($this->data['field_data']), $original_value);
 
-                        if (($this->data['field_name'] == 'man_status') or ($this->data['field_name'] == 'man_org_id')) {
+                        if (($this->data['field_name'] == 'status') or ($this->data['field_name'] == 'org_id')) {
                             $details = new stdClass();
                             $details->system_id = $this->data['system_id'];
                             $details->type = $this->m_system->get_system_type($this->data['system_id']);
                             $this->m_oa_group->update_system_groups($details);
                         }
 
-                        if ($this->data['field_name'] == 'man_type') {
+                        if ($this->data['field_name'] == 'type') {
                             $this->m_system->reset_icons($this->data['system_id']);
                         }
 
-                        if (($this->data['field_name'] == 'man_status') and ($this->oa_urldecode($this->data['field_data']) == 'deleted')) {
+                        if (($this->data['field_name'] == 'status') and ($this->oa_urldecode($this->data['field_data']) == 'deleted')) {
                             # delete any "attached" devices (local printers for example)
                             $this->m_system->delete_linked_system($this->data['system_id']);
                         }
 
                         # NOTE - don't output for a couple of special cases as below
-                        if ((mb_substr_count($this->data['field_name'], 'man_location_id') > 0) || (mb_substr_count($this->data['field_name'], 'man_org_id') > 0)) {
+                        if ((mb_substr_count($this->data['field_name'], 'location_id') > 0) || (mb_substr_count($this->data['field_name'], 'org_id') > 0)) {
                             # do nothing
                         } else {
                             echo htmlentities($this->oa_urldecode($this->data['field_data']));
@@ -306,7 +306,7 @@ class ajax extends MY_Controller
                     }
                 }
             }
-            if (mb_substr_count($this->data['field_name'], 'man_location_id') > 0) {
+            if (mb_substr_count($this->data['field_name'], 'location_id') > 0) {
                 $this->load->model("m_oa_location");
                 $data = $this->m_oa_location->get_location($this->data['field_data']);
                 foreach ($data as $key) {
@@ -322,20 +322,20 @@ class ajax extends MY_Controller
                     if ($key->country == '') {
                         $key->country = '-';
                     }
-                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->name)."</span></span></p>\n";
+                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->name)."</span></span></p>\n";
                     echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlentities($key->address)."</span></p>\n";
                     echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlentities($key->city)."</span></p>\n";
                     echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlentities($key->state)."</span></p>\n";
                     echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlentities($key->country)."</span></p>\n";
                 }
             }
-            if (mb_substr_count($this->data['field_name'], 'man_org_id') > 0) {
+            if (mb_substr_count($this->data['field_name'], 'org_id') > 0) {
                 $this->load->model("m_oa_org");
                 $key = $this->m_oa_org->get_org_details($this->data['field_data']);
                 if (empty($key->name)) {
                     $key->name = '-';
                 }
-                echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->name."</span></span></p>\n";
+                echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->name."</span></span></p>\n";
                 echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlentities($key->parent_name)."</span></p>\n";
             }
 
@@ -404,44 +404,44 @@ class ajax extends MY_Controller
         if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->id) > 0) {
             $result = $this->m_system->get_system_popup($this->data['system_id']);
             foreach ($result as $system) {
-                $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
-                $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
-                $default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->man_picture.'.jpg';
+                $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->model)))));
+                $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->type)));
+                $default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->picture.'.jpg';
                 $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$model_formatted.'.jpg';
                 $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$type_formatted.'.png';
                 $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->system_id.'.jpg';
 
-                # check if the man_picture field from the database is populated and a matching image exists
-                if (($system->man_picture > '') and (file_exists($default_file_exists))) {
-                    $system->man_picture = $system->man_picture.'.jpg';
+                # check if the picture field from the database is populated and a matching image exists
+                if (($system->picture > '') and (file_exists($default_file_exists))) {
+                    $system->picture = $system->picture.'.jpg';
                 }
 
                 # check if a custom images exists and overwrite
                 if (file_exists($custom_file_exists)) {
-                    $system->man_picture = 'custom/'.$system->system_id.'.jpg';
+                    $system->picture = 'custom/'.$system->system_id.'.jpg';
                 }
 
                 # check if an image matching the model exists
-                if (($system->man_picture == '') and (file_exists($model_file_exists))) {
-                    $system->man_picture = ''.$model_formatted.'.jpg';
+                if (($system->picture == '') and (file_exists($model_file_exists))) {
+                    $system->picture = ''.$model_formatted.'.jpg';
                 }
 
                 # check if an image matching the type exists
-                if (($system->man_picture == '') and (file_exists($type_file_exists))) {
-                    $system->man_picture = ''.$type_formatted.'.png';
+                if (($system->picture == '') and (file_exists($type_file_exists))) {
+                    $system->picture = ''.$type_formatted.'.png';
                 }
 
                 # no matching images, assign the unknown image
-                if ($system->man_picture == '') {
-                    $system->man_picture = 'unknown.png';
+                if ($system->picture == '') {
+                    $system->picture = 'unknown.png';
                 }
 
                 echo "<div class=\"SystemPopupResult\">\n";
                 echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
                 echo "<tr>\n";
-                echo "  <td width=\"100\"><img src=\"".base_url()."device_images/".$system->man_picture."\" width=\"100\"/></td>\n";
+                echo "  <td width=\"100\"><img src=\"".base_url()."device_images/".$system->picture."\" width=\"100\"/></td>\n";
                 echo "  <td valign=\"top\" align=\"right\"><b>Status</b> <br /><b>Manufacturer</b> <br /><b>Model</b> <br /><b>Serial</b> <br /><b>Form Factor</b> </td>\n";
-                echo "  <td valign=\"top\" >".htmlentities($system->man_status)."<br />".htmlentities($system->man_manufacturer)."<br />".htmlentities($system->man_model)."<br />".htmlentities($system->man_serial)."<br />".htmlentities($system->man_form_factor)."</td>\n";
+                echo "  <td valign=\"top\" >".htmlentities($system->status)."<br />".htmlentities($system->manufacturer)."<br />".htmlentities($system->model)."<br />".htmlentities($system->serial)."<br />".htmlentities($system->form_factor)."</td>\n";
                 echo "</tr>\n";
                 echo "</table>\n";
                 echo "</div>";

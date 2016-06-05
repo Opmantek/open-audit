@@ -119,7 +119,7 @@ class discovery extends CI_Controller
         foreach ($system_ids as $key => $value) {
             $timestamp = date('Y-m-d H:i:s');
             $system_id = $value;
-            $ip_address = ip_address_from_db($this->m_devices_components->read($system_id, 'y', 'system', '', 'man_ip_address'));
+            $ip_address = ip_address_from_db($this->m_devices_components->read($system_id, 'y', 'system', '', 'ip'));
             $credentials = $this->m_system->get_credentials($system_id);
             if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
                 unset($temp);
@@ -430,7 +430,7 @@ class discovery extends CI_Controller
                 if (is_numeric($this->uri->segment(3))) {
                     $this->data['system_id'] = $this->uri->segment(3);
                     $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
-                    $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address'));
+                    $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'ip'));
                     $this->data['type'] = 'device';
                 } else {
                     $this->data['system_id'] = "";
@@ -441,13 +441,13 @@ class discovery extends CI_Controller
             if ($this->uri->segment(4) and is_numeric($this->uri->segment(4))) {
                 $this->data['system_id'] = $this->uri->segment(4);
                 $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
-                $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'man_ip_address'));
+                $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'ip'));
             }
             if (!empty($this->data['system_id'])) {
                 $temp_system = $this->m_system->get_system_summary($this->data['system_id']);
                 #echo "<pre>\n"; print_r($temp_system); exit();
-                $this->data['org_id'] = $temp_system[0]->man_org_id;
-                $this->data['location_id'] = $temp_system[0]->man_location_id;
+                $this->data['org_id'] = $temp_system[0]->org_id;
+                $this->data['location_id'] = $temp_system[0]->location_id;
                 unset($temp_system);
             }
             $this->load->model('m_oa_org');
@@ -484,7 +484,7 @@ class discovery extends CI_Controller
 
             if (isset($_POST['subnet_range']) and $_POST['subnet_range'] > '') {
                 $subnet_range = $_POST['subnet_range'];
-                $credentials->man_ip_address = $_POST['subnet_range'];
+                $credentials->ip = $_POST['subnet_range'];
             } else {
                 $subnet_range = "";
             }
@@ -614,7 +614,7 @@ class discovery extends CI_Controller
                 if (isset($this->config->config['network_group_auto_create']) and $this->config->config['network_group_auto_create'] != 'n' and $subnet_split[1] < $net_group_subnet) {
                     // we want to auto create network groups
                     // test if a network group exists with the matching definition
-                    $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, ip WHERE ( ip.version = '4' AND ip.ip >= '".ip_address_to_db($subnet_details->host_min)."' and ip.ip <= '".ip_address_to_db($subnet_details->host_max)."' and ip.netmask = '".$subnet_details->netmask."' and ip.system_id = system.system_id and ip.current = 'y' and system.man_status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.man_ip_address >= '".ip_address_to_db($subnet_details->host_min)."' and system.man_ip_address <= '".ip_address_to_db($subnet_details->host_max)."' and system.man_status = 'production')";
+                    $group_dynamic_select = "SELECT distinct(system.system_id) FROM system, ip WHERE ( ip.version = '4' AND ip.ip >= '".ip_address_to_db($subnet_details->host_min)."' and ip.ip <= '".ip_address_to_db($subnet_details->host_max)."' and ip.netmask = '".$subnet_details->netmask."' and ip.system_id = system.system_id and ip.current = 'y' and system.status = 'production') UNION SELECT distinct(system.system_id) FROM system WHERE (system.ip >= '".ip_address_to_db($subnet_details->host_min)."' and system.ip <= '".ip_address_to_db($subnet_details->host_max)."' and system.status = 'production')";
                     $start = explode(' ', microtime());
                     $sql = "/* discovery::discover_subnet */ SELECT * FROM oa_group WHERE group_dynamic_select = ? ";
                     $data = array($group_dynamic_select);
@@ -876,14 +876,14 @@ class discovery extends CI_Controller
                     $query = $this->db->query($sql);
                 } else {
                     $skip = false;
-                    if (stripos(' ' . $this->config->config['discovery_ip_exclude'] . ' ', ' ' . $details->man_ip_address . ' ') !== false ) {
+                    if (stripos(' ' . $this->config->config['discovery_ip_exclude'] . ' ', ' ' . $details->ip . ' ') !== false ) {
                         # Our ip address matched an ip in the discovery_ip_exclude list - exit
-                        $log_details->message = $details->man_ip_address . ' is in the list of excluded ip addresses - skipping.';
+                        $log_details->message = $details->ip . ' is in the list of excluded ip addresses - skipping.';
                         stdlog($log_details);
                         $skip = true;
                     }
                     if (!$skip) {
-                        $log_details->message = 'Start processing '.$details->man_ip_address;
+                        $log_details->message = 'Start processing '.$details->ip;
                         stdlog($log_details);
                         $count++;
                         $details->timestamp = $timestamp;
@@ -942,8 +942,8 @@ class discovery extends CI_Controller
                             $details->count = (int)@$supplied_credentials->count;
                             $details->org_id = (int)@$supplied_credentials->org;
                             $details->location_id = (int)@$supplied_credentials->location;
-                            $details->man_org_id = (int)@$supplied_credentials->org;
-                            $details->man_location_id = (int)@$supplied_credentials->location;
+                            $details->org_id = (int)@$supplied_credentials->org;
+                            $details->location_id = (int)@$supplied_credentials->location;
                             $details->use_https = (string)@$supplied_credentials->use_https;
                         } else {
                             $supplied->snmp_community = '';
@@ -1006,13 +1006,13 @@ class discovery extends CI_Controller
                         }
 
                         // output to log file and DEBUG the status of the three main services
-                        $log_details->message = 'WMI Status is '.$details->wmi_status.' on '.$details->man_ip_address;
+                        $log_details->message = 'WMI Status is '.$details->wmi_status.' on '.$details->ip;
                         stdlog($log_details);
 
-                        $log_details->message = 'SNMP Status is '.$details->snmp_status.' on '.$details->man_ip_address;
+                        $log_details->message = 'SNMP Status is '.$details->snmp_status.' on '.$details->ip;
                         stdlog($log_details);
 
-                        $log_details->message = 'SSH Status is '.$details->ssh_status.' on '.$details->man_ip_address;
+                        $log_details->message = 'SSH Status is '.$details->ssh_status.' on '.$details->ip;
                         stdlog($log_details);
 
                         // get rid of os_* as nmap only guesses
@@ -1022,12 +1022,12 @@ class discovery extends CI_Controller
 
                         // try to get more information using SNMP (if ext loaded in PHP)
                         if (extension_loaded('snmp') and $details->snmp_status == 'true') {
-                            $log_details->message = 'Attempting SNMP discovery on '.$details->man_ip_address;
+                            $log_details->message = 'Attempting SNMP discovery on '.$details->ip;
                             stdlog($log_details);
                             try {
                                 $temp_array = get_snmp($details);
                             } catch (Exception $error) {
-                                $log_details->message = 'Something went awry when trying to run the SNMP function for ' . $details->man_ip_address;
+                                $log_details->message = 'Something went awry when trying to run the SNMP function for ' . $details->ip;
                                 stdlog($log_details);
                                 $log_details->message = $error;
                                 stdlog($log_details);
@@ -1073,7 +1073,7 @@ class discovery extends CI_Controller
                             }
                             if ($return_var != '0') {
                                 $impi_installed = 'n';
-                                $log_details->message = 'Ipmitools not detected when discovering '.$details->man_ip_address;
+                                $log_details->message = 'Ipmitools not detected when discovering '.$details->ip;
                                 stdlog($log_details);
                             } else {
                                 $impi_installed = 'y';
@@ -1090,16 +1090,16 @@ class discovery extends CI_Controller
                             }
 
                             if ($impi_installed == 'y' and $ipmi_use == 'n') {
-                                $log_details->message = 'Ipmitools detected but not used (as per config) when discovering '.$details->man_ip_address;
+                                $log_details->message = 'Ipmitools detected but not used (as per config) when discovering '.$details->ip;
                                 stdlog($log_details);
                             }
 
                             if ($impi_installed == 'y' and $ipmi_use == 'y') {
                                 // ipmitools are installed
-                                $log_details->message = 'Ipmitools detected and used (as per config) when discovering '.$details->man_ip_address;
+                                $log_details->message = 'Ipmitools detected and used (as per config) when discovering '.$details->ip;
                                 stdlog($log_details);
                                 // Attempt to get MAC Address
-                                $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2';
+                                $command_string = 'ipmitool -H '.$details->ip.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' lan print 2>/dev/null | grep "^MAC Address" | cut -d":" -f2- | cut -d" " -f2';
                                 exec($command_string, $output, $return_var);
                                 if ($display == 'y') {
                                     $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
@@ -1109,7 +1109,7 @@ class discovery extends CI_Controller
                                     print_r($output);
                                 }
                                 if ($return_var != '0') {
-                                    $error = 'Ipmitools could not retrieve MAC Address for '.$details->man_ip_address;
+                                    $error = 'Ipmitools could not retrieve MAC Address for '.$details->ip;
                                     $log_details->message = $error;
                                     stdlog($log_details);
                                 }
@@ -1117,7 +1117,7 @@ class discovery extends CI_Controller
                                 $return_var = null;
 
                                 if ($error == '' and isset($output[0]) and $output[0] != '') {
-                                    $log_details->message = 'Ipmitools successfully retrieved MAC Address from '.$details->man_ip_address;
+                                    $log_details->message = 'Ipmitools successfully retrieved MAC Address from '.$details->ip;
                                     stdlog($log_details);
                                     // We have a response (containing a MAC Address) from the target
                                     $details->type = 'remote access controller';
@@ -1129,7 +1129,7 @@ class discovery extends CI_Controller
                                     $output = null;
 
                                     // attempt to retrieve the Subnet Mask
-                                    $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' lan print 2>/dev/null | grep "Subnet Mask" | cut -d":" -f2 ';
+                                    $command_string = 'ipmitool -H '.$details->ip.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' lan print 2>/dev/null | grep "Subnet Mask" | cut -d":" -f2 ';
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
                                         $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
@@ -1146,7 +1146,7 @@ class discovery extends CI_Controller
                                     $return_var = null;
 
                                     // attempt to retrieve the Manufacturer
-                                    $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Manufacturer" | cut -d":" -f2 ';
+                                    $command_string = 'ipmitool -H '.$details->ip.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Manufacturer" | cut -d":" -f2 ';
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
                                         $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
@@ -1163,7 +1163,7 @@ class discovery extends CI_Controller
                                     $return_var = null;
 
                                     // attempt to retrieve the Model
-                                    $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Name" | cut -d":" -f2 ';
+                                    $command_string = 'ipmitool -H '.$details->ip.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Name" | cut -d":" -f2 ';
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
                                         $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
@@ -1180,7 +1180,7 @@ class discovery extends CI_Controller
                                     $return_var = null;
 
                                     // attempt to retrieve the Serial
-                                    $command_string = 'ipmitool -H '.$details->man_ip_address.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Serial" | cut -d":" -f2 ';
+                                    $command_string = 'ipmitool -H '.$details->ip.' -U '.$default->default_ipmi_username.' -P '.escapeshellarg($default->default_ipmi_password).' fru list 2>/dev/null | grep "Product Serial" | cut -d":" -f2 ';
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
                                         $command_string = str_replace(escapeshellarg($default->default_ipmi_password), '******', $command_string);
@@ -1205,19 +1205,19 @@ class discovery extends CI_Controller
 
                         // new for 1.8.4 - if we have a non-computer, do not attempt to connect using SSH
                         if ($details->type != 'computer' and $details->type != '' and $details->type != 'unknown' and $details->os_family != 'DD-WRT' and stripos($details->sysDescr, 'dd-wrt') === false ) {
-                            $log_details->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for '.$details->man_ip_address.' (System ID '.$details->system_id.')';
+                            $log_details->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for '.$details->ip.' (System ID '.$details->system_id.')';
                             stdlog($log_details);
                             $details->ssh_status = 'false';
                         }
 
                         if ($details->ssh_status == 'true') {
-                            $log_details->message = 'Testing SSH credentials for '.$details->man_ip_address;
+                            $log_details->message = 'Testing SSH credentials for '.$details->ip;
                             stdlog($log_details);
 
                             # attempt to connect using various credentials
                             if (php_uname('s') == 'Windows NT') {
                                 # attempt to store the targets host key, regardless of credentials
-                                $command_string = 'echo y | c:\xampplite\open-audit\other\plink.exe -ssh ' . $details->ssh_username . "@" . $details->man_ip_address . ' -pw ' . str_replace('"', '\"', $details->ssh_password) . ' exit';
+                                $command_string = 'echo y | c:\xampplite\open-audit\other\plink.exe -ssh ' . $details->ssh_username . "@" . $details->ip . ' -pw ' . str_replace('"', '\"', $details->ssh_password) . ' exit';
                                 exec($command_string, $output, $status);
                             }
                             $credentials = array();
@@ -1236,25 +1236,25 @@ class discovery extends CI_Controller
 
                             foreach ($credentials as $cred_set) {
                                 if ( $cred_set['user'] != '' and $cred_set['pass'] != '') {
-                                    $ssh_result = $this->ssh($cred_set['user'], $details->man_ip_address, 'exit', $cred_set['pass'], $display);
+                                    $ssh_result = $this->ssh($cred_set['user'], $details->ip, 'exit', $cred_set['pass'], $display);
                                     if ($ssh_result['status'] == 0) {
                                         $details->ssh_username = $cred_set['user'];
                                         $details->ssh_password = $cred_set['pass'];
-                                        $log_details->message = 'SSH ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' succeeded';
+                                        $log_details->message = 'SSH ' . $cred_set['type'] . ' credentials for '.$details->ip . ' succeeded';
                                         stdlog($log_details);
                                         if ((!isset($details->snmp_oid)) or ($details->snmp_oid == '')) {
                                             $details->description = '';
                                         }
                                         break;
                                     } else {
-                                        $log_details->message = 'SSH ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' failed';
+                                        $log_details->message = 'SSH ' . $cred_set['type'] . ' credentials for '.$details->ip . ' failed';
                                         stdlog($log_details);
                                     }
                                 }
                             }
                             if ($details->ssh_username != '') {
                                 # we have a working credential set
-                                $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'uname', $details->ssh_password, $display);
+                                $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'uname', $details->ssh_password, $display);
                                 if ($ssh_result['status'] == 0) {
                                     $details->os_group = $ssh_result['output'][0];
                                     if ($details->os_group == 'WindowsNT') {
@@ -1262,7 +1262,7 @@ class discovery extends CI_Controller
                                     }
                                 } else {
                                     # check to see if we have a Windows box
-                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'wmic os get name', $details->ssh_password, $display);
+                                    $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'wmic os get name', $details->ssh_password, $display);
                                     if ($ssh_result['status'] == 0) {
                                         # the command ran successfully, but we need to see if we got a result
                                         foreach ($ssh_result['output'] as $line) {
@@ -1280,13 +1280,13 @@ class discovery extends CI_Controller
 
                                 # Start with hostname
                                 if ($details->os_group != 'Windows') {
-                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'hostname -s', $details->ssh_password, $display);
+                                    $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'hostname -s', $details->ssh_password, $display);
                                     if ($ssh_result['status'] == 0) {
                                         $details->hostname = $ssh_result['output'][0];
                                     }
                                 } else {
                                     // Windows SSH not supported yet
-                                    // $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'wmic computersystem get name', $details->ssh_password, $display);
+                                    // $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'wmic computersystem get name', $details->ssh_password, $display);
                                     // if ($ssh_result['status'] == 0) {
                                     //     $details->hostname = $ssh_result['output'][1];
                                     // }
@@ -1294,13 +1294,13 @@ class discovery extends CI_Controller
 
                                 # Get the FQDN
                                 if ($details->os_group != 'Windows') {
-                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'hostname -f | grep -F .', $details->ssh_password, $display);
+                                    $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'hostname -f | grep -F .', $details->ssh_password, $display);
                                     if ($ssh_result['status'] == 0) {
                                         $details->fqdn = $ssh_result['output'][0];
                                     }
                                 } else {
                                     // Windows SSH not supported yet
-                                    // $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'wmic computersystem get domain', $details->ssh_password, $display);
+                                    // $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'wmic computersystem get domain', $details->ssh_password, $display);
                                     // if ($ssh_result['status'] == 0) {
                                     //     $details->fqdn = $details->hostname . '.' . $ssh_result['output'][1];
                                     // }
@@ -1309,17 +1309,17 @@ class discovery extends CI_Controller
                                 # Get the UUID
                                 if ($details->os_group == 'Linux') {
                                     if ($details->ssh_username == 'root') {
-                                        $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'dmidecode -s system-uuid', $details->ssh_password, $display);
+                                        $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'dmidecode -s system-uuid', $details->ssh_password, $display);
                                     } else {
-                                        $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'echo ' . escapeshellarg($details->ssh_password) . ' | sudo -S dmidecode -s system-uuid', $details->ssh_password, $display);
+                                        $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'echo ' . escapeshellarg($details->ssh_password) . ' | sudo -S dmidecode -s system-uuid', $details->ssh_password, $display);
                                     }
                                     if ($ssh_result['status'] == 0) {
                                         $details->uuid = $ssh_result['output'][0];
                                     } else {
                                         if ($details->ssh_username == 'root') {
-                                            $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'cat /sys/class/dmi/id/product_uuid', $details->ssh_password, $display);
+                                            $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'cat /sys/class/dmi/id/product_uuid', $details->ssh_password, $display);
                                         } else {
-                                            $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'echo ' . escapeshellarg($details->ssh_password) . ' | sudo -S cat /sys/class/dmi/id/product_uuid', $details->ssh_password, $display);
+                                            $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'echo ' . escapeshellarg($details->ssh_password) . ' | sudo -S cat /sys/class/dmi/id/product_uuid', $details->ssh_password, $display);
                                         }
                                         if ($ssh_result['status'] == 0) {
                                             $details->uuid = $ssh_result['output'][0];
@@ -1329,7 +1329,7 @@ class discovery extends CI_Controller
 
                                 # get the dbus machine id
                                 if ($details->os_group == 'Linux') {
-                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'cat /var/lib/dbus/machine-id', $details->ssh_password, $display);
+                                    $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'cat /var/lib/dbus/machine-id', $details->ssh_password, $display);
                                     if ($ssh_result['status'] == 0) {
                                         $details->dbus_identifier = $ssh_result['output'][0];
                                     } else {
@@ -1339,27 +1339,27 @@ class discovery extends CI_Controller
 
                                 if ($details->os_group == 'VMkernel') {
                                     $command = "vim-cmd hostsvc/hostsummary | sed -n '/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p' | grep uuid | cut -d= -f2 | sed 's/,//g' | sed 's/\\\"//g'";
-                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, $command, $details->ssh_password, $display);
+                                    $ssh_result = $this->ssh($details->ssh_username, $details->ip, $command, $details->ssh_password, $display);
                                     if ($ssh_result['status'] == 0) {
                                         $details->uuid = trim($ssh_result['output'][0]);
                                     }
                                 }
                                 if ($details->os_group == 'Windows') {
                                     // Windows SSH not supported yet
-                                    // $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'wmic csproduct get uuid', $details->ssh_password, $display);
+                                    // $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'wmic csproduct get uuid', $details->ssh_password, $display);
                                     // if ($ssh_result['status'] == 0) {
                                     //     $details->uuid = $ssh_result['output'][1];
                                     // }
                                 }
                                 if ($details->os_group == 'Darwin') {
-                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'system_profiler SPHardwareDataType | grep UUID | cut -d: -f2', $details->ssh_password, $display);
+                                    $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'system_profiler SPHardwareDataType | grep UUID | cut -d: -f2', $details->ssh_password, $display);
                                     if ($ssh_result['status'] == 0) {
                                         $details->uuid = $ssh_result['output'][0];
                                     }
                                 }
                                 # DD-WRT related items
                                 if ($details->os_group != 'Windows') {
-                                    $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'cat /etc/motd | grep -i DD-WRT', $details->ssh_password, $display);
+                                    $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'cat /etc/motd | grep -i DD-WRT', $details->ssh_password, $display);
                                     if ($ssh_result['status'] == 0) {
                                         if (stripos($ssh_result['output'][0], 'dd-wrt') !== false) {
                                             $details->os_family = 'DD-WRT';
@@ -1369,7 +1369,7 @@ class discovery extends CI_Controller
                                         }
                                     }
                                     if ($details->os_family == 'DD-WRT') {
-                                        $ssh_result = $this->ssh($details->ssh_username, $details->man_ip_address, 'nvram get DD_BOARD', $details->ssh_password, $display);
+                                        $ssh_result = $this->ssh($details->ssh_username, $details->ip, 'nvram get DD_BOARD', $details->ssh_password, $display);
                                         if ($ssh_result['status'] == 0) {
                                             $details->model = $ssh_result['output'][0];
                                         }
@@ -1382,7 +1382,7 @@ class discovery extends CI_Controller
                         }
 
                         if ($details->wmi_status == 'true') {
-                            $log_details->message = 'Testing Windows credentials for '.$details->man_ip_address;
+                            $log_details->message = 'Testing Windows credentials for '.$details->ip;
                             stdlog($log_details);
                             $credentials = array();
                             $credentials['supplied']['user'] = $supplied->windows_username;
@@ -1402,19 +1402,19 @@ class discovery extends CI_Controller
                             $details->windows_password = '';
                             $details->windows_domain = '';
                             foreach ($credentials as $cred_set) {
-                                $wmi_result = $this->wmic($cred_set['user'], $details->man_ip_address, 'csproduct get uuid', $cred_set['pass'], $cred_set['domain'], $display);
+                                $wmi_result = $this->wmic($cred_set['user'], $details->ip, 'csproduct get uuid', $cred_set['pass'], $cred_set['domain'], $display);
                                 if ($wmi_result['status'] == 0) {
                                     $details->windows_username = $cred_set['user'];
                                     $details->windows_password = $cred_set['pass'];
                                     $details->windows_domain = $cred_set['domain'];
-                                    $log_details->message = 'WMIC ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' succeeded';
+                                    $log_details->message = 'WMIC ' . $cred_set['type'] . ' credentials for '.$details->ip . ' succeeded';
                                     stdlog($log_details);
                                     if ((!isset($details->snmp_oid)) or ($details->snmp_oid == '')) {
                                         $details->description = '';
                                     }
                                     break;
                                 } else {
-                                    $log_details->message = 'WMIC ' . $cred_set['type'] . ' credentials for '.$details->man_ip_address . ' failed';
+                                    $log_details->message = 'WMIC ' . $cred_set['type'] . ' credentials for '.$details->ip . ' failed';
                                     stdlog($log_details);
                                 }
                             }
@@ -1425,35 +1425,35 @@ class discovery extends CI_Controller
                                 $details->ssh_status = 'false';
 
                                 # get the UUID
-                                $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'csproduct get uuid', $details->windows_password, $details->windows_domain, $display);
+                                $wmi_result = $this->wmic($details->windows_username, $details->ip, 'csproduct get uuid', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->uuid = $wmi_result['output'][1];
                                 }
 
                                 # get the serial
-                                $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'csproduct get IdentifyingNumber', $details->windows_password, $details->windows_domain, $display);
+                                $wmi_result = $this->wmic($details->windows_username, $details->ip, 'csproduct get IdentifyingNumber', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->serial = $wmi_result['output'][1];
                                 }
 
                                 # get the hostname
-                                $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'computersystem get name', $details->windows_password, $details->windows_domain, $display);
+                                $wmi_result = $this->wmic($details->windows_username, $details->ip, 'computersystem get name', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->hostname = strtolower($wmi_result['output'][1]);
                                 }
 
                                 # get the domain
-                                $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'computersystem get domain', $details->windows_password, $details->windows_domain, $display);
+                                $wmi_result = $this->wmic($details->windows_username, $details->ip, 'computersystem get domain', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->domain = strtolower($wmi_result['output'][1]);
                                 }
 
                                 # get the os name
-                                $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'os get name', $details->windows_password, $details->windows_domain, $display);
+                                $wmi_result = $this->wmic($details->windows_username, $details->ip, 'os get name', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->os_name = $wmi_result['output'][1];
@@ -1497,14 +1497,14 @@ class discovery extends CI_Controller
                                 }
 
                                 # get the manufacturer
-                                $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'csproduct get vendor', $details->windows_password, $details->windows_domain, $display);
+                                $wmi_result = $this->wmic($details->windows_username, $details->ip, 'csproduct get vendor', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->manufacturer = $wmi_result['output'][1];
                                 }
 
                                 # get the description
-                                $wmi_result = $this->wmic($details->windows_username, $details->man_ip_address, 'os get description', $details->windows_password, $details->windows_domain, $display);
+                                $wmi_result = $this->wmic($details->windows_username, $details->ip, 'os get description', $details->windows_password, $details->windows_domain, $display);
                                 if ($wmi_result['status'] == 0) {
                                     # the command ran successfully, insert the correct line into the appropriate attribute
                                     $details->description = $wmi_result['output'][1];
@@ -1535,14 +1535,14 @@ class discovery extends CI_Controller
                         // insert or update the device
                         if (isset($details->system_id) and $details->system_id != '') {
                             // we have a system id - UPDATE
-                            $log_details->message = strtoupper($details->last_seen_by) . " update for $details->man_ip_address (System ID $details->system_id)";
+                            $log_details->message = strtoupper($details->last_seen_by) . " update for $details->ip (System ID $details->system_id)";
                             stdlog($log_details);
                             $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
                             $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
                             $this->m_system->update_system($details, $display);
                         } else {
                             // we have a new system - INSERT
-                            $log_details->message = strtoupper($details->last_seen_by) . " insert for $details->man_ip_address";
+                            $log_details->message = strtoupper($details->last_seen_by) . " insert for $details->ip";
                             stdlog($log_details);
                             $details->system_id = $this->m_system->insert_system($details, $display);
                         }
@@ -1595,36 +1595,36 @@ class discovery extends CI_Controller
 
                         if (isset($details->snmp_oid) and $details->snmp_oid != '' and $details->snmp_status == 'true') {
                             $credentials = new stdClass();
-                            $credentials->ip_address = $details->man_ip_address;
+                            $credentials->ip_address = $details->ip;
                             $credentials->snmp_community = $details->snmp_community;
                             $credentials->snmp_version = $details->snmp_version;
                             $this->m_system->update_credentials($credentials, $details->system_id);
                             unset($credentials);
-                            $log_details->message = 'SNMP credential update for '.$details->man_ip_address.' (System ID '.$details->system_id.')';
+                            $log_details->message = 'SNMP credential update for '.$details->ip.' (System ID '.$details->system_id.')';
                             stdlog($log_details);
                             unset($credentials);
                         }
 
                         if (isset($details->ssh_username) and $details->ssh_username != '' and $details->ssh_status == 'true') {
                             $credentials = new stdClass();
-                            $credentials->ip_address = $details->man_ip_address;
+                            $credentials->ip_address = $details->ip;
                             $credentials->ssh_username = $details->ssh_username;
                             $credentials->ssh_password = $details->ssh_password;
                             $this->m_system->update_credentials($credentials, $details->system_id);
                             unset($credentials);
-                            $log_details->message = 'SSH credential update for '.$details->man_ip_address.' (System ID '.$details->system_id.')';
+                            $log_details->message = 'SSH credential update for '.$details->ip.' (System ID '.$details->system_id.')';
                             stdlog($log_details);
                         }
 
                         if (isset($details->windows_username) and $details->windows_username != '' and $details->wmi_status == 'true') {
                             $credentials = new stdClass();
-                            $credentials->ip_address = $details->man_ip_address;
+                            $credentials->ip_address = $details->ip;
                             $credentials->windows_username = $details->windows_username;
                             $credentials->windows_password = $details->windows_password;
                             $credentials->windows_domain = $details->windows_domain;
                             $this->m_system->update_credentials($credentials, $details->system_id);
                             unset($credentials);
-                            $log_details->message = "Windows credential update for $details->man_ip_address (System ID $details->system_id)";
+                            $log_details->message = "Windows credential update for $details->ip (System ID $details->system_id)";
                             stdlog($log_details);
                         }
 
@@ -1640,14 +1640,14 @@ class discovery extends CI_Controller
 
                         // Windows WMI audit - audit_windows.vbs
                         if ($details->wmi_status == "true" and $details->windows_username > '' and $details->windows_domain > '' and $details->windows_password > '') {
-                            $log_details->message = 'Attempt Windows audit for '.$details->man_ip_address;
+                            $log_details->message = 'Attempt Windows audit for '.$details->ip;
                             stdlog($log_details);
 
                             // Auditing a Windows target device from a Linux Open-AudIT Server
                             if (php_uname('s') == 'Linux') {
                                 $details->windows_password = str_replace('$', '\$', $details->windows_password);
                                 $error = "";
-                                $command_string = 'smbclient \\\\\\\\'.$details->man_ip_address.'\\\\admin$ -U "'.str_replace("'", "", escapeshellarg($details->windows_domain)).'\\\\'.str_replace("'", "", escapeshellarg($details->windows_username)).'%'.str_replace("'", "", escapeshellarg($details->windows_password)).'" -c "put '.$filepath.'/audit_windows.vbs audit_windows.vbs" 2>&1';
+                                $command_string = 'smbclient \\\\\\\\'.$details->ip.'\\\\admin$ -U "'.str_replace("'", "", escapeshellarg($details->windows_domain)).'\\\\'.str_replace("'", "", escapeshellarg($details->windows_username)).'%'.str_replace("'", "", escapeshellarg($details->windows_password)).'" -c "put '.$filepath.'/audit_windows.vbs audit_windows.vbs" 2>&1';
                                 exec($command_string, $output, $return_var);
                                 if ($display == 'y') {
                                     $command_string = str_replace(str_replace("'", "", escapeshellarg($details->windows_password)), '******', $command_string);
@@ -1657,11 +1657,11 @@ class discovery extends CI_Controller
                                     print_r($output);
                                 }
                                 if ($return_var != '0') {
-                                    $error = "SMBClient copy of audit_windows.vbs to $details->man_ip_address has failed";
+                                    $error = "SMBClient copy of audit_windows.vbs to $details->ip has failed";
                                     $log_details->message = $error;
                                     stdlog($log_details);
                                 } else {
-                                    $log_details->message = "SMBClient copy of audit_windows.vbs to $details->man_ip_address has succeeded";
+                                    $log_details->message = "SMBClient copy of audit_windows.vbs to $details->ip has succeeded";
                                     stdlog($log_details);
                                 }
                                 $command_string = null;
@@ -1669,7 +1669,7 @@ class discovery extends CI_Controller
                                 $return_var = null;
 
                                 if ($error == '') {
-                                    $command_string = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".str_replace("'", "", escapeshellarg($details->windows_domain))."/".str_replace("'", "", escapeshellarg($details->windows_username))."%".str_replace("'", "", escapeshellarg($details->windows_password))." --uninstall //".str_replace("'", "", escapeshellarg($details->man_ip_address))." \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=".str_replace("'", "", escapeshellarg($details->man_ip_address))." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->system_id."\" ";
+                                    $command_string = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".str_replace("'", "", escapeshellarg($details->windows_domain))."/".str_replace("'", "", escapeshellarg($details->windows_username))."%".str_replace("'", "", escapeshellarg($details->windows_password))." --uninstall //".str_replace("'", "", escapeshellarg($details->ip))." \"cscript c:\windows\audit_windows.vbs submit_online=y create_file=n strcomputer=".str_replace("'", "", escapeshellarg($details->ip))." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->system_id."\" ";
 
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
@@ -1681,11 +1681,11 @@ class discovery extends CI_Controller
                                     }
 
                                     if ($return_var != '0') {
-                                        $error = "Attempting to run audit_windows.vbs on $details->man_ip_address has failed";
+                                        $error = "Attempting to run audit_windows.vbs on $details->ip has failed";
                                         $log_details->message = $error;
                                         stdlog($log_details);
                                     } else {
-                                        $log_details->message = "Attempt to run audit_windows.vbs on $details->man_ip_address has succeeded";
+                                        $log_details->message = "Attempt to run audit_windows.vbs on $details->ip has succeeded";
                                         stdlog($log_details);
                                     }
                                     $command_string = null;
@@ -1697,11 +1697,11 @@ class discovery extends CI_Controller
 
                             // Auditing a Windows target device from a Windows Open-AudIT Server
                             if (php_uname('s') == 'Windows NT') {
-                                $log_details->message = "Windows audit for $details->man_ip_address (System ID $details->system_id)";
+                                $log_details->message = "Windows audit for $details->ip (System ID $details->system_id)";
                                 stdlog($log_details);
 
                                 if ($display == 'y') {
-                                    $script_string = "$filepath\\audit_windows.vbs strcomputer=".$details->man_ip_address." submit_online=y create_file=n struser=".$details->windows_domain."\\".$details->windows_username." strpass=".$details->windows_password." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->system_id;
+                                    $script_string = "$filepath\\audit_windows.vbs strcomputer=".$details->ip." submit_online=y create_file=n struser=".$details->windows_domain."\\".$details->windows_username." strpass=".$details->windows_password." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->system_id;
                                     $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
                                     exec($command_string, $output, $return_var);
                                     $command_string = str_replace($details->windows_password, '******', $command_string);
@@ -1711,17 +1711,17 @@ class discovery extends CI_Controller
                                     print_r($output);
 
                                     if ($return_var != '0') {
-                                        $error = "Attempt to run audit_windows.vbs on $details->man_ip_address has failed";
+                                        $error = "Attempt to run audit_windows.vbs on $details->ip has failed";
                                         $log_details->message = $error;
                                         stdlog($log_details);
                                     } else {
-                                        $log_details->message = "Attempt to run audit_windows.vbs on $details->man_ip_address has succeeded";
+                                        $log_details->message = "Attempt to run audit_windows.vbs on $details->ip has succeeded";
                                         stdlog($log_details);
                                     }
                                     $output = null;
                                     $return_var = null;
                                 } else {
-                                    $script_string = "$filepath\\audit_windows.vbs strcomputer=".$details->man_ip_address." submit_online=y create_file=n struser=".$details->windows_domain."\\".$details->windows_username." strpass=".$details->windows_password." url=".$url."index.php/system/add_system debugging=0  system_id=".$details->system_id;
+                                    $script_string = "$filepath\\audit_windows.vbs strcomputer=".$details->ip." submit_online=y create_file=n struser=".$details->windows_domain."\\".$details->windows_username." strpass=".$details->windows_password." url=".$url."index.php/system/add_system debugging=0  system_id=".$details->system_id;
                                     $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
                                     pclose(popen($command_string, "r"));
                                 }
@@ -1731,12 +1731,12 @@ class discovery extends CI_Controller
 
                         // SSH based audit (usually Linux, Unix, OSX, AIX or ESX)
                         if ($details->ssh_status == "true" and $details->os_family != 'DD-WRT') {
-                            $log_details->message = "Starting ssh audit for $details->man_ip_address (System ID $details->system_id)";
+                            $log_details->message = "Starting ssh audit for $details->ip (System ID $details->system_id)";
                             stdlog($log_details);
                             $error = '';
                             if ($details->ssh_username == '' or $details->ssh_password == '') {
-                                $script_string = "audit_linux.sh strcomputer=".$details->man_ip_address." submit_online=y create_file=n struser=".escapeshellarg($details->ssh_username)." strpass=".escapeshellarg($details->ssh_password)." debugging=0";
-                                $log_details->message = "No credentials supplied for SSH audit for $details->man_ip_address (System ID $details->system_id)";
+                                $script_string = "audit_linux.sh strcomputer=".$details->ip." submit_online=y create_file=n struser=".escapeshellarg($details->ssh_username)." strpass=".escapeshellarg($details->ssh_password)." debugging=0";
+                                $log_details->message = "No credentials supplied for SSH audit for $details->ip (System ID $details->system_id)";
                                 stdlog($log_details);
                             } else {
                                 if (php_uname('s') == 'Linux') {
@@ -1746,15 +1746,15 @@ class discovery extends CI_Controller
                                         #echo "DEBUG - struser: ".$details->ssh_username."\n";
                                         #echo "DEBUG - strpass: ".$details->ssh_password."\n";
                                     }
-                                    $ssh_command = "timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." uname ";
+                                    $ssh_command = "timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->ip)." uname ";
                                     $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                     if ($ssh_result['status'] != '0') {
-                                        $error = 'Audit routine for SSH audit on '.$details->man_ip_address.' failed to run uname on target';
+                                        $error = 'Audit routine for SSH audit on '.$details->ip.' failed to run uname on target';
                                         $log_details->message = $error;
                                         stdlog($log_details);
                                         if ($display == 'y') {
                                             echo "DEBUG - Running with 'ssh -v' for your inspection. Possible credential failure.\n";
-                                            $ssh_command = "timeout 5m sshpass ssh -v -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." uname 2>&1";
+                                            $ssh_command = "timeout 5m sshpass ssh -v -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->ip)." uname 2>&1";
                                             $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                         }
                                     } else {
@@ -1788,14 +1788,14 @@ class discovery extends CI_Controller
                                         }
 
                                         if ($error == '' and $audit_script != '') {
-                                            $log_details->message = 'Attempting SSH audit for discovery on '.$details->man_ip_address.' ('.$remote_os.')';
+                                            $log_details->message = 'Attempting SSH audit for discovery on '.$details->ip.' ('.$remote_os.')';
                                             stdlog($log_details);
 
                                             // Attempt to copy the audit script
-                                            $ssh_command = 'timeout 5m sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.$filepath.'/'.$audit_script.' '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).':'.$this->config->item('discovery_linux_script_directory');
+                                            $ssh_command = 'timeout 5m sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.$filepath.'/'.$audit_script.' '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->ip).':'.$this->config->item('discovery_linux_script_directory');
                                             $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                             if ($ssh_result['status'] != '0') {
-                                                $error = 'SSH copy of '.$audit_script.' to '.$details->man_ip_address.' has failed';
+                                                $error = 'SSH copy of '.$audit_script.' to '.$details->ip.' has failed';
                                                 $log_details->message = $error;
                                                 stdlog($log_details);
                                                 exit();
@@ -1805,10 +1805,10 @@ class discovery extends CI_Controller
 
                                             // Attempt to chmod the script so it's executable
                                             if ($error == '') {
-                                                $ssh_command = "timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->man_ip_address)." chmod " . $this->config->item('discovery_linux_script_permissions') . " " . $this->config->item('discovery_linux_script_directory') . $audit_script.' ';
+                                                $ssh_command = "timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ".escapeshellarg($details->ssh_username)."@".escapeshellarg($details->ip)." chmod " . $this->config->item('discovery_linux_script_permissions') . " " . $this->config->item('discovery_linux_script_directory') . $audit_script.' ';
                                                 $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                 if ($ssh_result['status'] != '0') {
-                                                    $error = 'SSH chmod command for '.$remote_os.'audit script on '.$details->man_ip_address.' failed';
+                                                    $error = 'SSH chmod command for '.$remote_os.'audit script on '.$details->ip.' failed';
                                                     $log_details->message = $error;
                                                     stdlog($log_details);
                                                     exit();
@@ -1819,10 +1819,10 @@ class discovery extends CI_Controller
 
                                             // Attempt to determine if SUDO is present on target system
                                             if ($error == '' and strtolower($details->ssh_username) != 'root') {
-                                                $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' which sudo ';
+                                                $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->ip).' which sudo ';
                                                 $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                 if ($ssh_result['status'] != '0') {
-                                                    $log_details->message = 'SSH which sudo command for '.$remote_os.' audit script on '.$details->man_ip_address.' failed';
+                                                    $log_details->message = 'SSH which sudo command for '.$remote_os.' audit script on '.$details->ip.' failed';
                                                     stdlog($log_details);
                                                 }
                                                 if (isset($ssh_result['output'][0]) and $ssh_result['output'][0] != '') {
@@ -1841,16 +1841,16 @@ class discovery extends CI_Controller
                                                 if (strtolower($remote_os) != 'vmkernel') {
                                                     // Exclude VMware ESX as it does not have a usable wget to send post-data back to Open-AudIT
                                                     if ($sudo != '' and $details->ssh_username != 'root') {
-                                                        $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "echo '.escapeshellarg($details->ssh_password).' | '.$sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" ';
+                                                        $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->ip).' "echo '.escapeshellarg($details->ssh_password).' | '.$sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" ';
                                                         $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                         if ($ssh_result['status'] != '0') {
-                                                            $error = 'SSH audit command for '.$remote_os.' audit using sudo on '.$details->man_ip_address.' failed. Attempting to run without sudo.';
+                                                            $error = 'SSH audit command for '.$remote_os.' audit using sudo on '.$details->ip.' failed. Attempting to run without sudo.';
                                                             $log_details->message = $error;
                                                             stdlog($log_details);
-                                                            $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).'  "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=3 system_id='.$details->system_id.' display=' . $display . '" ';
+                                                            $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->ip).'  "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=3 system_id='.$details->system_id.' display=' . $display . '" ';
                                                             $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                             if ($ssh_result['status'] != '0') {
-                                                                $error = 'SSH audit command for '.$remote_os.' audit not using sudo on '.$details->man_ip_address.' failed';
+                                                                $error = 'SSH audit command for '.$remote_os.' audit not using sudo on '.$details->ip.' failed';
                                                                 $log_details->message = $error;
                                                                 stdlog($log_details);
                                                                 exit();
@@ -1861,20 +1861,20 @@ class discovery extends CI_Controller
                                                         unset($ssh_command);
                                                         unset($ssh_result);
                                                     } else {
-                                                        $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" 2>/dev/null';
+                                                        $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->ip).' "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging=1 system_id='.$details->system_id.' display=' . $display . '" 2>/dev/null';
                                                         $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                         if ($ssh_result['status'] != '0') {
-                                                            $error = 'SSH audit command for '.$remote_os.' audit script on '.$details->man_ip_address.' failed';
+                                                            $error = 'SSH audit command for '.$remote_os.' audit script on '.$details->ip.' failed';
                                                             $log_details->message = $error;
                                                             stdlog($log_details);
                                                         }
                                                     }
                                                 } else {
                                                     # ESXi
-                                                    $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->man_ip_address).' "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n debugging=0 echo_output=y system_id='.$details->system_id.'" 2>/dev/null';
+                                                    $ssh_command = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null '.escapeshellarg($details->ssh_username).'@'.escapeshellarg($details->ip).' "'.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n debugging=0 echo_output=y system_id='.$details->system_id.'" 2>/dev/null';
                                                     $ssh_result = $this->run_ssh($ssh_command, $details->ssh_password, $display);
                                                     if ($ssh_result['status'] != '0') {
-                                                        $error = 'SSH audit command for ESXi audit script on '.$details->man_ip_address.' failed';
+                                                        $error = 'SSH audit command for ESXi audit script on '.$details->ip.' failed';
                                                         $log_details->message = $error;
                                                         stdlog($log_details);
                                                     } else {
@@ -1898,8 +1898,8 @@ class discovery extends CI_Controller
                                                         foreach ($esx_xml->children() as $child) {
                                                             if ($child->getName() === 'sys') {
                                                                 $esx_details = (object) $esx_xml->sys;
-                                                                if (!isset($esx_details->man_ip_address) or $esx_details->man_ip_address == '') {
-                                                                    $esx_details->man_ip_address = $details->man_ip_address;
+                                                                if (!isset($esx_details->ip) or $esx_details->ip == '') {
+                                                                    $esx_details->ip = $details->ip;
                                                                 }
                                                                 $esx_details->system_key = $this->m_system->create_system_key($esx_details, $display);
                                                                 $esx_details->system_id = $this->m_system->find_system($esx_details, $display);
@@ -1910,12 +1910,12 @@ class discovery extends CI_Controller
                                                                     $esx_details->original_last_seen_by = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen_by');
                                                                     $esx_details->original_timestamp = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'timestamp');
                                                                     $this->m_system->update_system($esx_details);
-                                                                    $log_details->message = "ESX update for $esx_details->man_ip_address (System ID $esx_details->system_id)";
+                                                                    $log_details->message = "ESX update for $esx_details->ip (System ID $esx_details->system_id)";
                                                                     stdlog($log_details);
                                                                 } else {
                                                                     // we have a new system
                                                                     $esx_details->system_id = $this->m_system->insert_system($esx_details);
-                                                                    $log_details->message = "ESX insert for $esx_details->man_ip_address (System ID $esx_details->system_id)";
+                                                                    $log_details->message = "ESX insert for $esx_details->ip (System ID $esx_details->system_id)";
                                                                     stdlog($log_details);
                                                                 }
                                                                 if (!isset($esx_details->audits_ip)) {
@@ -1946,7 +1946,7 @@ class discovery extends CI_Controller
                                             } // end of run audit script
 
                                             if ($error == '') {
-                                                $log_details->message = 'Successful SSH audit for discovery on '.$details->man_ip_address.' ('.$remote_os.')';
+                                                $log_details->message = 'Successful SSH audit for discovery on '.$details->ip.' ('.$remote_os.')';
                                                 stdlog($log_details);
                                             }
                                         } // End of if error
@@ -1962,7 +1962,7 @@ class discovery extends CI_Controller
                                     }
                                     $error = '';
                                     $audit_script = '';
-                                    $command_string = "echo y | $filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->man_ip_address." -pw ".$this->escape_plink_command($details->ssh_password)." exit";
+                                    $command_string = "echo y | $filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->ip." -pw ".$this->escape_plink_command($details->ssh_password)." exit";
                                     exec($command_string, $output, $return_var);
                                     if ($display == 'y') {
                                         $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -1974,11 +1974,11 @@ class discovery extends CI_Controller
                                         }
                                     }
                                     if ($return_var != '0') {
-                                        $error = 'Audit routine for SSH audit failed to store SSH sig for '.$details->man_ip_address . ' failed';
+                                        $error = 'Audit routine for SSH audit failed to store SSH sig for '.$details->ip . ' failed';
                                         $log_details->message = $error;
                                         stdlog($log_details);
                                     } else {
-                                        $log_details->message = 'Audit routine for SSH audit stored SSH sig for '.$details->man_ip_address . ' succeeded';
+                                        $log_details->message = 'Audit routine for SSH audit stored SSH sig for '.$details->ip . ' succeeded';
                                         stdlog($log_details);
                                     }
                                     $command_string = null;
@@ -1987,7 +1987,7 @@ class discovery extends CI_Controller
                                     $remote_os = "";
 
                                     if ($error == '') {
-                                        $command_string = "$filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->man_ip_address." -pw ".$this->escape_plink_command($details->ssh_password)." uname";
+                                        $command_string = "$filepath\\plink.exe -ssh ".$details->ssh_username."@".$details->ip." -pw ".$this->escape_plink_command($details->ssh_password)." uname";
                                         exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
                                             $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -2003,11 +2003,11 @@ class discovery extends CI_Controller
                                             $remote_os = "";
                                         }
                                         if ($return_var != '0') {
-                                            $error = 'Audit routine for SSH audit ran uname (' . $remote_os . ') on '.$details->man_ip_address . ' and failed';
+                                            $error = 'Audit routine for SSH audit ran uname (' . $remote_os . ') on '.$details->ip . ' and failed';
                                             $log_details->message = $error;
                                             stdlog($log_details);
                                         } else {
-                                            $log_details->message = 'Audit routine for SSH audit ran uname (' . $remote_os . ') on '.$details->man_ip_address . ' and succeeded';
+                                            $log_details->message = 'Audit routine for SSH audit ran uname (' . $remote_os . ') on '.$details->ip . ' and succeeded';
                                             stdlog($log_details);
                                         }
                                         $command_string = null;
@@ -2030,10 +2030,10 @@ class discovery extends CI_Controller
                                     }
 
                                     if ($error == '' and $audit_script != '') {
-                                        $log_details->message = "Attempting SSH audit for discovery on $details->man_ip_address ($remote_os)";
+                                        $log_details->message = "Attempting SSH audit for discovery on $details->ip ($remote_os)";
                                         stdlog($log_details);
                                         // Attempt to copy the audit script
-                                        $command_string = "$filepath\\pscp.exe -pw ".$this->escape_plink_command($details->ssh_password)." $filepath\\$audit_script ".$details->ssh_username."@".$details->man_ip_address.":".$this->config->item('discovery_linux_script_directory');
+                                        $command_string = "$filepath\\pscp.exe -pw ".$this->escape_plink_command($details->ssh_password)." $filepath\\$audit_script ".$details->ssh_username."@".$details->ip.":".$this->config->item('discovery_linux_script_directory');
                                         exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
                                             $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -2043,11 +2043,11 @@ class discovery extends CI_Controller
                                             print_r($output);
                                         }
                                         if ($return_var != '0') {
-                                            $error = 'SSH copy of '.$audit_script.' to '.$details->man_ip_address.' has failed';
+                                            $error = 'SSH copy of '.$audit_script.' to '.$details->ip.' has failed';
                                             $log_details->message = $error;
                                             stdlog($log_details);
                                         } else {
-                                            $log_details->message = 'SSH copy of '.$audit_script.' to '.$details->man_ip_address.' has succeeded';
+                                            $log_details->message = 'SSH copy of '.$audit_script.' to '.$details->ip.' has succeeded';
                                             stdlog($log_details);
                                         }
                                         $command_string = null;
@@ -2057,7 +2057,7 @@ class discovery extends CI_Controller
 
                                     // Attempt to chmod the script so it's executable
                                     if ($error == '' and $audit_script != '') {
-                                        $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." chmod " . $this->config->item('discovery_linux_script_permissions') . " " . $this->config->item('discovery_linux_script_directory') . $audit_script;
+                                        $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->ip." chmod " . $this->config->item('discovery_linux_script_permissions') . " " . $this->config->item('discovery_linux_script_directory') . $audit_script;
                                         exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
                                             $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -2067,7 +2067,7 @@ class discovery extends CI_Controller
                                             print_r($output);
                                         }
                                         if ($return_var != '0') {
-                                            $error = 'SSH chmod command for '.$this->config->item('discovery_linux_script_directory').$audit_script.' audit script on '.$details->man_ip_address.' failed';
+                                            $error = 'SSH chmod command for '.$this->config->item('discovery_linux_script_directory').$audit_script.' audit script on '.$details->ip.' failed';
                                             $log_details->message = $error;
                                             stdlog($log_details);
                                             # as at 1.8.4 DO NOT fail on this as an existing script may already be +x
@@ -2075,7 +2075,7 @@ class discovery extends CI_Controller
                                             # TODO - fix this with a text for +x and make a decision to proceed based on that
                                             $error = '';
                                         } else {
-                                            $log_details->message = 'SSH chmod command for '.$this->config->item('discovery_linux_script_directory').$audit_script.' audit script on '.$details->man_ip_address.' succeeded';
+                                            $log_details->message = 'SSH chmod command for '.$this->config->item('discovery_linux_script_directory').$audit_script.' audit script on '.$details->ip.' succeeded';
                                             stdlog($log_details);
                                         }
                                         $command_string = null;
@@ -2087,7 +2087,7 @@ class discovery extends CI_Controller
                                         $sudo = '';
                                         // Attempt to determine if SUDO is present on target system
                                         if ($error == '' and $audit_script != '' and $details->ssh_username != 'root') {
-                                            $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." which sudo";
+                                            $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->ip." which sudo";
                                             exec($command_string, $output, $return_var);
                                             if ($display == 'y') {
                                                 $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -2097,10 +2097,10 @@ class discovery extends CI_Controller
                                                 print_r($output);
                                             }
                                             if ($return_var != '0') {
-                                                $log_details->message = 'SSH which sudo command for ' . $remote_os . ' audit script on ' . $details->man_ip_address . ' failed';
+                                                $log_details->message = 'SSH which sudo command for ' . $remote_os . ' audit script on ' . $details->ip . ' failed';
                                                 stdlog($log_details);
                                             } else {
-                                                $log_details->message = 'SSH which sudo command for ' . $remote_os . ' audit script on ' . $details->man_ip_address . ' succeeded';
+                                                $log_details->message = 'SSH which sudo command for ' . $remote_os . ' audit script on ' . $details->ip . ' succeeded';
                                                 stdlog($log_details);
                                             }
                                             if (isset($output[0]) and $output[0] > '') {
@@ -2116,7 +2116,7 @@ class discovery extends CI_Controller
                                         // Attempt to run the audit script
                                         if ($error == '' and $audit_script != '') {
                                             if ($sudo > "" and $details->ssh_username != 'root') {
-                                                $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." \"echo ".$this->escape_plink_command($details->ssh_password)." | $sudo -S ".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
+                                                $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->ip." \"echo ".$this->escape_plink_command($details->ssh_password)." | $sudo -S ".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
                                                 @exec($command_string, $output, $return_var);
                                                 if ($display == 'y') {
                                                     $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -2126,10 +2126,10 @@ class discovery extends CI_Controller
                                                     print_r($output);
                                                 }
                                                 if ($return_var != '0') {
-                                                    $error = 'SSH run audit command for '.$audit_script.' audit script on '.$details->man_ip_address.' failed';
+                                                    $error = 'SSH run audit command for '.$audit_script.' audit script on '.$details->ip.' failed';
                                                     $log_details->message = $error;
                                                     stdlog($log_details);
-                                                    $command_string = $filepath.'\\plink.exe -pw '.$this->escape_plink_command($details->ssh_password).' '.$details->ssh_username.'@'.$details->man_ip_address." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
+                                                    $command_string = $filepath.'\\plink.exe -pw '.$this->escape_plink_command($details->ssh_password).' '.$details->ssh_username.'@'.$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
                                                     @exec($command_string, $output, $return_var);
                                                     if ($display == 'y') {
                                                         $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -2139,22 +2139,22 @@ class discovery extends CI_Controller
                                                         print_r($output);
                                                     }
                                                     if ($return_var != '0') {
-                                                        $error = 'SSH run audit command for '.$audit_script.' script on '.$details->man_ip_address.' running without sudo has failed';
+                                                        $error = 'SSH run audit command for '.$audit_script.' script on '.$details->ip.' running without sudo has failed';
                                                         $log_details->message = $error;
                                                         stdlog($log_details);
                                                     } else {
-                                                        $log_details->message = 'SSH run audit command for '.$audit_script.' script on '.$details->man_ip_address.' running without sudo has succeeded';
+                                                        $log_details->message = 'SSH run audit command for '.$audit_script.' script on '.$details->ip.' running without sudo has succeeded';
                                                         stdlog($log_details);
                                                     }
                                                 } else {
-                                                    $log_details->message = 'SSH run audit command for '.$audit_script.' audit script on '.$details->man_ip_address.' succeeded';
+                                                    $log_details->message = 'SSH run audit command for '.$audit_script.' audit script on '.$details->ip.' succeeded';
                                                     stdlog($log_details);
                                                 }
                                                 $command_string = null;
                                                 $output = null;
                                                 $return_var = null;
                                             } else {
-                                                $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
+                                                $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->system_id." self_delete=y\"";
                                                 @exec($command_string, $output, $return_var);
                                                 if ($display == 'y') {
                                                     $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -2165,18 +2165,18 @@ class discovery extends CI_Controller
                                                 }
                                                 if ($return_var != '0') {
                                                     if ($details->ssh_username == 'root') {
-                                                        $error = 'SSH audit command for '.$remote_os.' '.$audit_script.' as root on '.$details->man_ip_address.' failed';
+                                                        $error = 'SSH audit command for '.$remote_os.' '.$audit_script.' as root on '.$details->ip.' failed';
                                                     } else {
-                                                        $error = 'SSH audit command for '.$remote_os.' '.$audit_script.' not as root and not using sudo on '.$details->man_ip_address.' failed';
+                                                        $error = 'SSH audit command for '.$remote_os.' '.$audit_script.' not as root and not using sudo on '.$details->ip.' failed';
                                                     }
                                                     $log_details->message = $error;
                                                     stdlog($log_details);
                                                     #exit();
                                                 } else {
                                                     if ($details->ssh_username == 'root') {
-                                                        $log_details->message = 'SSH audit command for '.$remote_os.' '.$audit_script.' as root on '.$details->man_ip_address.' succeeded';
+                                                        $log_details->message = 'SSH audit command for '.$remote_os.' '.$audit_script.' as root on '.$details->ip.' succeeded';
                                                     } else {
-                                                        $log_details->message = 'SSH audit command for '.$remote_os.' '.$audit_script.' not as root and not using sudo on '.$details->man_ip_address.' succeeded';
+                                                        $log_details->message = 'SSH audit command for '.$remote_os.' '.$audit_script.' not as root and not using sudo on '.$details->ip.' succeeded';
                                                     }
                                                     stdlog($log_details);
                                                 }
@@ -2185,8 +2185,8 @@ class discovery extends CI_Controller
                                     }
                                     if ($error == '' and $audit_script == 'audit_esxi.sh') {
                                         // Audit ESXi
-                                        $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->man_ip_address." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=n create_file=n debugging=0 echo_output=y url=".$url."index.php/system/add_system system_id=".$details->system_id."\"";
-                                        # this is the linux command # $command_string = 'timeout 5m sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->man_ip_address) . ' "' . $this->config->item('discovery_linux_script_directory') . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
+                                        $command_string = "$filepath\\plink.exe -pw ".$this->escape_plink_command($details->ssh_password)." ".$details->ssh_username."@".$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=n create_file=n debugging=0 echo_output=y url=".$url."index.php/system/add_system system_id=".$details->system_id."\"";
+                                        # this is the linux command # $command_string = 'timeout 5m sshpass -p ' . escapeshellarg($details->ssh_password) . ' ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null ' . escapeshellarg($details->ssh_username) . '@' . escapeshellarg($details->ip) . ' "' . $this->config->item('discovery_linux_script_directory') . $audit_script . ' submit_online=y create_file=n debugging=0 echo_output=y system_id=' . $details->system_id . '" 2>/dev/null';
                                         @exec($command_string, $output, $return_var);
                                         if ($display == 'y') {
                                             $command_string = str_replace($this->escape_plink_command($details->ssh_password), '******', $command_string);
@@ -2199,11 +2199,11 @@ class discovery extends CI_Controller
                                             }
                                         }
                                         if ($return_var != '0') {
-                                            $error = 'SSH audit command for ESXi audit script on '.$details->man_ip_address.' failed';
+                                            $error = 'SSH audit command for ESXi audit script on '.$details->ip.' failed';
                                             $log_details->message = $error;
                                             stdlog($log_details);
                                         } else {
-                                            $log_details->message = 'SSH audit command for ESXi audit script on '.$details->man_ip_address.' succeeded';
+                                            $log_details->message = 'SSH audit command for ESXi audit script on '.$details->ip.' succeeded';
                                             stdlog($log_details);
                                             $script_result = '';
                                             foreach ($output as $line) {
@@ -2234,21 +2234,21 @@ class discovery extends CI_Controller
                                                         $esx_details->system_key = $this->m_system->create_system_key($esx_details, $display);
                                                         $esx_details->system_id = $this->m_system->find_system($esx_details);
                                                         $esx_details->timestamp = $details->timestamp;
-                                                        if ((!isset($esx_details->man_ip_address) or $esx_details->man_ip_address == '') and
-                                                            isset($details->man_ip_address) and $details->man_ip_address != '') {
-                                                            $esx_details->man_ip_address = $details->man_ip_address;
+                                                        if ((!isset($esx_details->ip) or $esx_details->ip == '') and
+                                                            isset($details->ip) and $details->ip != '') {
+                                                            $esx_details->ip = $details->ip;
                                                         }
                                                         if (isset($esx_details->system_id) and $esx_details->system_id != '') {
                                                             // we have an existing device
                                                             $esx_details->original_last_seen_by = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen_by');
                                                             $esx_details->original_timestamp = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'timestamp');
                                                             $this->m_system->update_system($esx_details);
-                                                            $log_details->message = "ESX update for $esx_details->man_ip_address (System ID $esx_details->system_id)";
+                                                            $log_details->message = "ESX update for $esx_details->ip (System ID $esx_details->system_id)";
                                                             stdlog($log_details);
                                                         } else {
                                                             // we have a new system
                                                             $esx_details->system_id = $this->m_system->insert_system($esx_details);
-                                                            $log_details->message = "ESX insert for $esx_details->man_ip_address (System ID $esx_details->system_id)";
+                                                            $log_details->message = "ESX insert for $esx_details->ip (System ID $esx_details->system_id)";
                                                             stdlog($log_details);
                                                         }
                                                         if (!isset($esx_details->audits_ip)) {
@@ -2275,14 +2275,14 @@ class discovery extends CI_Controller
                                             }
                                         } // end of ESXi script
                                         if ($error == '') {
-                                            $log_details->message = "Successful SSH audit for discovery on $details->man_ip_address ($remote_os)";
+                                            $log_details->message = "Successful SSH audit for discovery on $details->ip ($remote_os)";
                                             stdlog($log_details);
                                         }
                                     } // End of remote OS == Linux, OSX or ESX
                                 } // close Windows server
                             } // close SSH user and password
                         } // close ssh_status
-                        $log_details->message = "Completed processing $details->man_ip_address (System ID $details->system_id)";
+                        $log_details->message = "Completed processing $details->ip (System ID $details->system_id)";
                         stdlog($log_details);
                     } // close the 'skip'
                 } // close the device / complete switch

@@ -91,23 +91,23 @@ class System extends CI_Controller
     {
 
         if ((!isset($details->hostname) or $details->hostname == '') and
-            (isset($details->man_ip_address) and $details->man_ip_addres != '' and
-             $details->man_ip_address != '0.0.0.0' and $details->man_ip_address != '000.000.000.000')) {
+            (isset($details->ip) and $details->ip != '' and
+             $details->ip != '0.0.0.0' and $details->ip != '000.000.000.000')) {
             # no hostname, get using ip address
-            $details->hostname = gethostbyaddr(ip_address_from_db($details->man_ip_address));
+            $details->hostname = gethostbyaddr(ip_address_from_db($details->ip));
         }
 
-        if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or
-            $details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000') and
+        if ((!isset($details->ip) or $details->ip == '' or
+            $details->ip == '0.0.0.0' or $details->ip == '000.000.000.000') and
             (isset($details->hostname) and $details->hostname != '')) {
             # no ip address, get using hostname
-            $details->man_ip_address = gethostbyname($details->hostname);
+            $details->ip = gethostbyname($details->hostname);
         }
 
-        if (isset($details->man_ip_address) and !filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
+        if (isset($details->ip) and !filter_var($details->ip, FILTER_VALIDATE_IP)) {
             # not a valid ip address - assume it's a hostname
-            $details->hostname = $details->man_ip_address;
-            $details->man_ip_address = gethostbyname($details->hostname);
+            $details->hostname = $details->ip;
+            $details->ip = gethostbyname($details->hostname);
         }
 
         if (isset($details->hostname) and filter_var($details->hostname, FILTER_VALIDATE_IP)) {
@@ -322,14 +322,13 @@ class System extends CI_Controller
             $received_system_id = (string) $details->system_id;
         }
         $received_status = "";
-        $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'man_status');
+        $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'status');
         if ($received_status !== 'production') {
             $received_system_id = '';
         }
         $details->fqdn = $details->hostname . "." . $details->domain;
         if (!isset($details->type)) {
             $details->type = 'computer';
-            $details->man_type = 'computer';
         }
 
         $i = $this->m_system->find_system($details, $display);
@@ -458,8 +457,8 @@ class System extends CI_Controller
 
         $this->m_audit_log->update('debug', 'finished processing', $details->system_id, $details->last_seen);
 
-        // set the man_ip_address (if not already set)
-        $this->m_audit_log->update('debug', 'check and set initial man_ip_address', $details->system_id, $details->last_seen);
+        // set the ip (if not already set)
+        $this->m_audit_log->update('debug', 'check and set initial ip', $details->system_id, $details->last_seen);
         $this->m_devices_components->set_initial_address($details->system_id);
 
         $this->load->model('m_oa_group');
@@ -540,7 +539,7 @@ class System extends CI_Controller
                 $details = (object) $details;
 
                 if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
-                    echo 'Device IP: ' . $details->man_ip_address . "\n";
+                    echo 'Device IP: ' . $details->ip . "\n";
                 }
 
                 $count++;
@@ -549,7 +548,7 @@ class System extends CI_Controller
                 $details->timestamp = $timestamp;
 
                 $details->hostname = '';
-                // $details->hostname = gethostbyaddr($details->man_ip_address);
+                // $details->hostname = gethostbyaddr($details->ip);
                 // $details->hostname = strtolower($details->hostname);
                 // $details->domain = '';
                 // if (! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
@@ -571,7 +570,7 @@ class System extends CI_Controller
                 $log_details = new stdClass();
                 $log_details->severity = 7;
                 $log_details->file = 'system';
-                $log_details->message = 'Processing nmap audit result for ' . $details->man_ip_address . ' (' . $details->hostname . ')';
+                $log_details->message = 'Processing nmap audit result for ' . $details->ip . ' (' . $details->hostname . ')';
                 stdlog($log_details);
                 unset($log_details);
 
@@ -613,7 +612,7 @@ class System extends CI_Controller
                         $log_details = new stdClass();
                         $log_details->severity = 7;
                         $log_details->file = 'system';
-                        $log_details->message = 'SNMP update for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        $log_details->message = 'SNMP update for ' . $details->ip . ' (system id ' . $details->system_id . ')';
                         stdlog($log_details);
                         unset($log_details);
                         $this->m_system->update_system($details);
@@ -622,7 +621,7 @@ class System extends CI_Controller
                         $details->system_id = $this->m_system->insert_system($details);
                         $log_details = new stdClass();
                         $log_details->severity = 7;
-                        $log_details->message = 'SNMP insert for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        $log_details->message = 'SNMP insert for ' . $details->ip . ' (system id ' . $details->system_id . ')';
                         stdlog($log_details);
                         unset($log_details);
                     }
@@ -645,7 +644,7 @@ class System extends CI_Controller
                         // we have a system id and nmap details to update
                         $log_details = new stdClass();
                         $log_details->severity = 7;
-                        $log_details->message = 'Nmap update for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        $log_details->message = 'Nmap update for ' . $details->ip . ' (system id ' . $details->system_id . ')';
                         stdlog($log_details);
                         unset($log_details);
                         $this->m_system->update_system($details);
@@ -654,7 +653,7 @@ class System extends CI_Controller
                         $details->system_id = $this->m_system->insert_system($details);
                         $log_details = new stdClass();
                         $log_details->severity = 7;
-                        $log_details->message = 'Nmap insert for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        $log_details->message = 'Nmap insert for ' . $details->ip . ' (system id ' . $details->system_id . ')';
                         stdlog($log_details);
                         unset($log_details);
                     }

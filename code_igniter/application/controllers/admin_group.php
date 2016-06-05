@@ -317,12 +317,12 @@ class Admin_group extends MY_Controller
                 if (($details->dynamic_other_text == '') and ($details->dynamic_field_value != '')) {
                     $selection = $details->dynamic_field_value;
                 }
-                if ($details->dynamic_other_table == 'sys_man_additional_fields' or $details->dynamic_other_table == 'sys_man_additional_fields_data') {
-                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table.$system_table." WHERE ".$details->dynamic_other_table.".system_id = system.system_id AND ".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.man_status = 'production'";
+                if ($details->dynamic_other_table == 'additional_fields' or $details->dynamic_other_table == 'additional_fields_data') {
+                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table.$system_table." WHERE ".$details->dynamic_other_table.".system_id = system.system_id AND ".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.status = 'production'";
                 } elseif ($details->dynamic_other_table == 'system') {
-                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.man_status = 'production'";
+                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.status = 'production'";
                 } else {
-                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table." LEFT JOIN system ON ".$details->dynamic_other_table.".system_id = system.system_id WHERE ".$details->dynamic_other_table.'.'.$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.man_status = 'production' AND ".$details->dynamic_other_table.".current = 'y'";
+                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table." LEFT JOIN system ON ".$details->dynamic_other_table.".system_id = system.system_id WHERE ".$details->dynamic_other_table.'.'.$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.status = 'production' AND ".$details->dynamic_other_table.".current = 'y'";
                 }
             }
         }

@@ -134,7 +134,7 @@ class Admin_location extends MY_Controller
         $group->group_description = "Items in ".$name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '".$id."' OR LOWER(system.sysLocation) LIKE LOWER('%".str_replace("'", "\'", $name)."%')) AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.location_id = '".$id."' OR LOWER(system.sysLocation) LIKE LOWER('%".str_replace("'", "\'", $name)."%')) AND system.status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         if (!empty($group_id)) {

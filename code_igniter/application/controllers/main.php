@@ -79,7 +79,7 @@ class main extends MY_Controller
         $this->load->model('m_systems');
         $result = $this->m_systems->api_index($level);
         for ($count = 0; $count<count($result); $count++) {
-            $result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
+            $result[$count]->ip = ip_address_from_db($result[$count]->ip);
         }
         echo json_encode($result);
         header('Content-Type: application/json');
@@ -108,7 +108,7 @@ class main extends MY_Controller
                 $result[$count]->system_id = $system_id;
                 foreach ($result[$count] as $key => $value) {
                     // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
-                    if ($key == 'man_ip_address' or
+                    if ($key == 'ip' or
                         $key == 'destination'    or
                         $key == 'ip_address_v4'  or
                         $key == 'next_hop') {
@@ -146,7 +146,7 @@ class main extends MY_Controller
                         #$result[$count]->system_id = $system_id;
                         foreach ($result[$count] as $key => $value) {
                             // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
-                            if ($key == 'man_ip_address' or
+                            if ($key == 'ip' or
                                 $key == 'destination'    or
                                 $key == 'ip_address_v4'  or
                                 $key == 'ip'  or
@@ -213,7 +213,7 @@ class main extends MY_Controller
                         #$result[$count]->system_id = $system_id;
                         foreach ($result[$count] as $key => $value) {
                             // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
-                            if ($key == 'man_ip_address' or
+                            if ($key == 'ip' or
                                 $key == 'destination'    or
                                 $key == 'ip_address_v4'  or
                                 $key == 'next_hop') {
@@ -378,7 +378,7 @@ class main extends MY_Controller
         $group_id = $_POST['group_id'];
         $data['items'] = array();
         foreach ($_POST as $key => $value) {
-            if ((mb_strpos($key, 'man_') !== false) and ($value != '')) {
+            if (value != '') {
                 $item = array($key, $value);
                 array_push($data['items'], ($item));
                 $item = null;
@@ -410,7 +410,7 @@ class main extends MY_Controller
                     $field_name = $field[0];
                     $field_data = $field[1];
                     $this->m_additional_fields->set_system_field($system[1], $field_name, $field_data);
-                    $this->m_edit_log->create($system[1] , '', 'sys_man_additional_fields_data', $field_name, '', $field_data, '');
+                    $this->m_edit_log->create($system[1] , '', 'additional_field_item', $field_name, '', $field_data, '');
                 }
             }
         }
@@ -433,16 +433,14 @@ class main extends MY_Controller
             (isset($credentials->snmp_version) and $credentials->snmp_version != '') or
             (isset($credentials->snmp_community) and $credentials->snmp_community != '')) {
             foreach ($data['systems'] as $system) {
-                $credentials->ip_address = ip_address_from_db($this->m_system->check_man_ip_address($system[1]));
+                $credentials->ip_address = ip_address_from_db($this->m_system->check_ip($system[1]));
                 $system_id = $system[1];
                 $this->m_system->update_credentials($credentials, $system_id);
             }
         }
 
         foreach ($_POST as $field_name => $field_data) {
-            # input all the manual fields
-            if (((mb_strpos($field_name, 'man_') !== false) or
-                (mb_strpos($field_name, 'nmis_') !== false)) && ($field_data != '')) {
+            if ($field_data != '') {
                 foreach ($data['systems'] as $system) {
                     if ($field_data == '-') {
                         $field_data = '';
@@ -820,7 +818,7 @@ class main extends MY_Controller
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
         $this->data['query'] = $this->m_system->system_summary($this->data['id']);
-        $this->data['query'][0]->man_ip_address = ip_address_from_db($this->data['query'][0]->man_ip_address);
+        $this->data['query'][0]->ip = ip_address_from_db($this->data['query'][0]->ip);
         print_r(json_encode($this->data['query']));
     }
 
@@ -984,36 +982,6 @@ class main extends MY_Controller
             $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$model_formatted.'.jpg';
             $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$type_formatted.'.png';
             $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->id.'.jpg';
-
-            # check if the man_picture field from the database is populated and a matching image exists
-            // if (($system->man_picture > '') and (file_exists($default_file_exists))) {
-            //     $system->man_picture = $system->man_picture.'.jpg';
-            // }
-
-            # check if a custom images exists and overwrite
-            // if (file_exists($custom_file_exists)) {
-            //     $system->man_picture = 'custom/'.$system->system_id.'.jpg';
-            // }
-
-            # check if an image matching the model exists
-            // if (($system->man_picture == '') and (file_exists($model_file_exists))) {
-            //     $system->man_picture = ''.$model_formatted.'.jpg';
-            // }
-
-            # test for a generic ibm aix device
-            // if (($system->man_picture == '') and (strtolower($system->man_os_family) == "ibm aix")) {
-            //     $system->man_picture = "ibm_aix.jpg";
-            // }
-
-            # check if an image matching the type exists
-            // if (($system->man_picture == '') and (file_exists($type_file_exists))) {
-            //     $system->man_picture = ''.$type_formatted.'.png';
-            // }
-
-            # no matching images, assign the unknown image
-            // if ($system->man_picture == '') {
-            //     $system->man_picture = 'unknown.png';
-            // }
         }
 
         $this->data['heading'] = 'Summary - '.$this->m_system->get_system_hostname($this->data['id']);

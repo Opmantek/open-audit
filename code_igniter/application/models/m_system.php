@@ -448,15 +448,15 @@ class M_system extends MY_Model
         $query = $this->db->query($sql, $data);
     }
 
-    public function check_man_ip_address($system_id)
+    public function check_ip($id)
     {
         $sql = "SELECT system.man_ip_address FROM system WHERE system.id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array("$system_id");
+        $data = array("$id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
 
-        return ($row->man_ip_address);
+        return ($row->ip);
     }
 
     public function get_system_type($system_id)

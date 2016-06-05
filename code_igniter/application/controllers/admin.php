@@ -1494,27 +1494,27 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields DROP FOREIGN KEY sys_man_additional_fields_group_id";
+            $sql = "ALTER TABLE additional_field DROP FOREIGN KEY additional_field_group_id";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields ADD CONSTRAINT sys_man_additional_fields_group_id FOREIGN KEY (group_id) REFERENCES oa_group (group_id) ON DELETE CASCADE";
+            $sql = "ALTER TABLE additional_field ADD CONSTRAINT additional_field_group_id FOREIGN KEY (group_id) REFERENCES oa_group (group_id) ON DELETE CASCADE";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields_data DROP FOREIGN KEY sys_man_additional_fields_data_system_id";
+            $sql = "ALTER TABLE additional_field_item DROP FOREIGN KEY additional_field_item_system_id";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT sys_man_additional_fields_data_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE";
+            $sql = "ALTER TABLE additional_field_item ADD CONSTRAINT additional_field_item_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields_data DROP FOREIGN KEY sys_man_additional_fields_data_field_id";
+            $sql = "ALTER TABLE additional_field_item DROP FOREIGN KEY additional_field_item_field_id";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT sys_man_additional_fields_data_field_id FOREIGN KEY (field_id) REFERENCES sys_man_additional_fields (field_id) ON DELETE CASCADE";
+            $sql = "ALTER TABLE additional_field_item ADD CONSTRAINT additional_field_item_field_id FOREIGN KEY (field_id) REFERENCES additional_field (field_id) ON DELETE CASCADE";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
@@ -4481,7 +4481,7 @@ class admin extends MY_Controller
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the ', SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5), ' attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5) as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'man_%'";
             $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the name attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, 'name' as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'hostname - %'";
-            $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited a custom attribute.') as details, 'user' as source, '1000' as weight, 'sys_additional_fields_data' as db_table, '' db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'sys_man_additional_fields_data%'";
+            $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited a custom attribute.') as details, 'user' as source, '1000' as weight, 'sys_additional_fields_data' as db_table, '' db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'additional_field_item%'";
             $sql[] = "DROP TABLE IF EXISTS oa_audit_log";
 
             # tasks (scheduled tasks / cron)
@@ -4872,7 +4872,7 @@ class admin extends MY_Controller
             unset($sql);
             $sql = array();
             # we're removving the foreign key between additional fields and groups
-            $sql[] = "ALTER TABLE sys_man_additional_fields DROP FOREIGN KEY sys_man_additional_fields_group_id";
+            $sql[] = "ALTER TABLE additional_field DROP FOREIGN KEY additional_field_group_id";
 
             # this should be unused now - groups and reports refreshed further down
             $sql[] = "ALTER TABLE system DROP man_icon";
@@ -5065,7 +5065,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE software DROP FOREIGN KEY sys_sw_software_system_id";
             $sql[] = "ALTER TABLE software_key DROP FOREIGN KEY sys_sw_software_key_system_id";
             $sql[] = "ALTER TABLE sound DROP FOREIGN KEY sys_hw_sound_system_id";
-            $sql[] = "ALTER TABLE sys_man_additional_fields_data DROP FOREIGN KEY sys_man_additional_fields_data_system_id";
+            $sql[] = "ALTER TABLE additional_field_item DROP FOREIGN KEY additional_field_item_system_id";
             $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_system_id";
             $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_system_id";
             $sql[] = "ALTER TABLE task DROP FOREIGN KEY task_system_id";
@@ -5222,7 +5222,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE software ADD CONSTRAINT software_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE software_key ADD CONSTRAINT software_key_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sound ADD CONSTRAINT sound_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
-            $sql[] = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT additional_field_item_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE additional_field_item ADD CONSTRAINT additional_field_item_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT attachment_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT notes_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE task ADD CONSTRAINT task_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
@@ -5257,9 +5257,9 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `notes` CHANGE `notes_text` `comment` text NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `notes` DROP FOREIGN KEY sys_man_notes_user_id";
 
-            $sql[] = "RENAME TABLE sys_man_additional_fields_data TO `additional_field_item`";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY sys_man_additional_fields_data_field_id";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY         sys_man_additional_fields_data_field_id";
+            $sql[] = "RENAME TABLE additional_field_item TO `additional_field_item`";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY additional_field_item_field_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY         additional_field_item_field_id";
             $sql[] = "ALTER TABLE `additional_field_item` DROP field_int";
             $sql[] = "ALTER TABLE `additional_field_item` DROP field_memo";
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE field_details_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -5267,7 +5267,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_datetime` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_varchar` `value` text NOT NULL DEFAULT ''";
 
-            $sql[] = "RENAME TABLE sys_man_additional_fields TO `additional_field`";
+            $sql[] = "RENAME TABLE additional_field TO `additional_field`";
             $sql[] = "ALTER TABLE `additional_field` CHANGE field_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE `additional_field` DROP field_sys_type";
             $sql[] = "ALTER TABLE `additional_field` DROP field_derived_type";
@@ -5276,7 +5276,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_type` `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar'";
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_values` `values` varchar(100) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_placement` `placement` varchar(100) NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE `additional_field` DROP KEY sys_man_additional_fields_group";
+            $sql[] = "ALTER TABLE `additional_field` DROP KEY additional_field_group";
 
             $sql[] = "ALTER TABLE `network` DROP KEY timestamp";
             $sql[] = "ALTER TABLE `edit_log` DROP FOREIGN KEY edit_log_user_id";

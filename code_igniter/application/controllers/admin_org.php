@@ -142,7 +142,7 @@ class Admin_org extends MY_Controller
                             $group->group_padded_name = '';
                             $group->group_icon = 'contact-new';
                             $group->group_category = 'owner';
-                            $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$group->org_id."' AND system.man_status = 'production'";
+                            $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.org_id = '".$group->org_id."' AND system.status = 'production'";
                             $group->group_parent = '';
                             $group->group_display_sql = '';
                             $this->m_oa_group->insert_group($group);
@@ -204,7 +204,7 @@ class Admin_org extends MY_Controller
                         $group->group_icon = 'contact-new';
                         $group->group_category = 'owner';
                         $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system
-                            WHERE system.man_org_id = '".$details->org_id."' AND system.man_status = 'production'";
+                            WHERE system.org_id = '".$details->org_id."' AND system.status = 'production'";
                         $group->group_parent = '';
                         $group->group_display_sql = '';
                         $this->m_oa_group->insert_group($group);
@@ -260,7 +260,7 @@ class Admin_org extends MY_Controller
         $group->group_description = $org_name." owned items";
         $group->group_icon = 'contact';
         $group->group_category = 'org';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_org_id = '".$this->data['id']."' AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.org_id = '".$this->data['id']."' AND system.status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         if (isset($org_group_id) and $org_group_id != '' and $org_group_id != '0') {

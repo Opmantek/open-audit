@@ -157,7 +157,7 @@ class Admin_device extends MY_Controller
     //     $group->group_description = "Items that are ".$device_name."s";
     //     $group->group_icon = 'device';
     //     $group->group_category = 'device';
-    //     $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.man_type = '".$device_name."' AND system.man_status = 'production'";
+    //     $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE system.type = '".$device_name."' AND system.status = 'production'";
     //     $group->group_parent = '';
     //     $group->group_display_sql = '';
     //     $group_id = $this->m_oa_group->insert_group($group);
