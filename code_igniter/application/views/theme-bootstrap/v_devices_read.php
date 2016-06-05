@@ -124,7 +124,7 @@ $(document).ready(function(){
 </script>
 
 <?php
-include('/usr/local/open-audit/code_igniter/application/controllers/include_device_types.php');
+include(str_replace('views/theme-bootstrap/v_devices_read.php', 'controllers/include_device_types.php', __FILE__));
 
 if (strtolower($data['system'][0]->os_group) == 'windows') {
     $attributes['software'] = array('name' => 'Name', 'version' => 'Version', 'installed_on' => 'Installed On', 'installed_by' => 'Installed By', 'first_seen' => 'First Seen', 'location' => 'Location', 'type' => 'Type');
