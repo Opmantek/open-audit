@@ -74,7 +74,7 @@ if (! function_exists('ssh_connect')) {
         }
 
         # must provide an ip address or a system id
-        if (!isset($details->ip ) and !isset($details->ip) and !isset($details->system_id) and !isset($details->id)) {
+        if (!isset($details->ip ) and !isset($details->ip) and !isset($details->id) and !isset($details->id)) {
             return false;
         }
 
@@ -85,8 +85,8 @@ if (! function_exists('ssh_connect')) {
             $ip = $details->ip;
         }
 
-        if (isset($details->system_id) and $details->system_id != '') {
-            $id = intval($details->system_id);
+        if (isset($details->id) and $details->id != '') {
+            $id = intval($details->id);
         }
         if (isset($details->id) and $details->id != '') {
             $id = intval($details->id);

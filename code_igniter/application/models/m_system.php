@@ -1207,14 +1207,6 @@ class M_system extends MY_Model
             $details->original_timestamp = $row->last_seen;
         }
 
-        // # only update system.timestamp if we have an audit result - not for nmap, snmp, etc
-        // if (isset($details->last_seen_by) and $details->last_seen_by == 'audit') {
-        // 	# leave it alone
-        // } else {
-        // 	unset ($details->timestamp);
-        // 	unset ($details->first_timestamp);
-        // }
-
         if (isset($details->ip)) {
             $details->ip = ip_address_to_db($details->ip);
         }

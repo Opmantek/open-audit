@@ -421,7 +421,7 @@ if (! function_exists('inputRead')) {
                 if ($property == 'count') {
                     $CI->response->internal->properties .= 'count(*) as `count`,';
                 } elseif ($property == 'system_id') {
-                    $CI->response->internal->properties .= 'system.system_id as `system_id`,';
+                    $CI->response->internal->properties .= 'system.id as `system_id`,';
                 } else {
                     $CI->response->internal->properties .= $property . ' AS `' . trim($property) . '`,';
                 }

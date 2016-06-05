@@ -281,7 +281,7 @@ class ajax extends MY_Controller
 
                         if (($this->data['field_name'] == 'status') or ($this->data['field_name'] == 'org_id')) {
                             $details = new stdClass();
-                            $details->system_id = $this->data['system_id'];
+                            $details->id = $this->data['id'];
                             $details->type = $this->m_system->get_system_type($this->data['system_id']);
                             $this->m_oa_group->update_system_groups($details);
                         }
@@ -341,7 +341,7 @@ class ajax extends MY_Controller
 
             # finally update any groups that this change has caused
             $details = new stdClass();
-            $details->system_id = $this->data['system_id'];
+            $details->id = $this->data['id'];
             $this->load->model('m_system');
             $details->type = $this->m_system->get_system_type($this->data['system_id']);
             $this->load->model("m_oa_group");

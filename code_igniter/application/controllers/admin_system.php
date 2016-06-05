@@ -278,8 +278,7 @@ class Admin_system extends MY_Controller
         $modules = $temp_array['modules'];
 
         $details->last_seen_by = 'snmp';
-        $details->timestamp = date('Y-m-d G:i:s');
-        $details->last_seen = $details->timestamp;
+        $details->last_seen = date('Y-m-d G:i:s');
         $details->last_user = $this->user->full_name;
         $details->audits_ip = '127.0.0.1';
         $details = dns_validate($details, 'y');
@@ -289,19 +288,19 @@ class Admin_system extends MY_Controller
         unset($details->ip);
         echo "<pre>\n";
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
-            $details->original_timestamp = $this->m_devices_components->read($details->id, 'y', 'system', '', 'timestamp');
+            $details->original_timestamp = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
             $this->m_system->update_system($details);
             if (isset($this->user->full_name)) {
                 $temp_user = $this->user->full_name;
             } else {
                 $temp_user = '';
             }
-            $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+            $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
             unset($temp_user);
 
             # update any network interfaces and ip addresses retrieved by SNMP
-            $details->timestamp = $this->m_devices_components->read($details->id, 'y', 'system', '', 'timestamp');
-            $details->first_timestamp = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_timestamp');
+            $details->last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
+            $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
             $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
 
             if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
@@ -450,8 +449,8 @@ class Admin_system extends MY_Controller
             if (isset($details->ip)) {
                 $details->ip = ip_address_to_db($details->ip);
             }
-            $details->timestamp = date('Y-m-d H:i:s');
-            $details->first_timestamp = $details->timestamp;
+            $details->last_seen = date('Y-m-d H:i:s');
+            $details->first_seen = $details->last_seen;
             $details->last_seen_by = 'web form';
 
             unset($details->AddSystem);
@@ -466,7 +465,7 @@ class Admin_system extends MY_Controller
                 } else {
                     $temp_user = '';
                 }
-                $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                 unset($temp_user);
                 redirect('main/index');
             } else {
@@ -509,7 +508,7 @@ class Admin_system extends MY_Controller
         }
         if (isset($_POST['submit'])) {
             # we have an uploaded file - store and process
-            $timestamp = date("Y-m-d H:i:s");
+            $last_seen = date("Y-m-d H:i:s");
             $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);
 
             if (!move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path)) {
@@ -583,10 +582,9 @@ class Admin_system extends MY_Controller
 
                     // convert the $details array to an object
                     $details = (object) $details;
+                    $details->last_seen = $last_seen;
                     $details->last_seen_by = "spreadsheet";
-                    $details->last_seen = $timestamp;
                     $details->last_user = $this->user->full_name;
-                    $details->timestamp = $timestamp;
                     $error = '';
 
                     if (isset($details->org_name)) {
@@ -666,7 +664,7 @@ class Admin_system extends MY_Controller
                             $this->m_system->update_system($details);
                         } else {
                             # this is a new system (we don't have a system_key match)
-                            $details->first_timestamp = $details->timestamp;
+                            $details->first_seen = $details->last_seen;
                             $details->id = $this->m_system->insert_system($details);
                         }
                         // Insert an entry in to the audit log
@@ -680,12 +678,12 @@ class Admin_system extends MY_Controller
                         } else {
                             $temp_user = '';
                         }
-                        $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                        $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                         unset($temp_user);
 
                          # update any network interfaces and ip addresses retrieved by SNMP
-                        $details->timestamp = $this->m_devices_components->read($details->id, 'y', 'system', '', 'timestamp');
-                        $details->first_timestamp = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_timestamp');
+                        $details->last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
+                        $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                             $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {

@@ -453,7 +453,7 @@ class main extends MY_Controller
 
         $details = new stdClass();
         foreach ($data['systems'] as $system) {
-            $details->system_id = $system[1];
+            $details->id = $system[1];
             $details->type = 'computer';
             $discover_ids .= $system[1].',';
             $this->m_oa_group->update_system_groups($details, 'network');

@@ -146,39 +146,6 @@ class test extends CI_Controller
         echo "<pre>\n"; print_r(network_details('192.168.0.1 / 30'));
     }
 
-    function upgrade_ip()
-    {
-        $sql = array();
-        #$sql[] = "DELETE sys_hw_network_card_ip FROM sys_hw_network_card_ip LEFT JOIN system ON system.system_id = sys_hw_network_card_ip.system_id WHERE sys_hw_network_card_ip.timestamp <> system.timestamp";
-        $sql[] = "CREATE TABLE `ip` (
-          `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-          `system_id` int(10) unsigned DEFAULT NULL,
-          `current` enum('y','n') NOT NULL DEFAULT 'y',
-          `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-          `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-          `mac` varchar(200) NOT NULL DEFAULT '',
-          `net_index` varchar(10) NOT NULL DEFAULT '',
-          `ip` varchar(45) NOT NULL DEFAULT '',
-          `subnet` varchar(30) NOT NULL DEFAULT '',
-          `version` tinyint(3) unsigned NOT NULL DEFAULT '4',
-          `network` varchar(40) NOT NULL DEFAULT '',
-          `set_by` enum('','dhcp','static','auto','local') NOT NULL DEFAULT '',
-          PRIMARY KEY (`id`),
-          KEY `system_id` (`system_id`),
-          KEY `mac` (`mac`),
-          CONSTRAINT `ip_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-
-        $sql[] = "INSERT INTO ip (SELECT NULL, system_id, 'y', first_timestamp, `timestamp`, net_mac_address, net_index, ip_address_v4, ip_subnet, '4', '', '' FROM sys_hw_network_card_ip WHERE ip_address_version = '4')";
-
-        $sql[] = "INSERT INTO ip (SELECT NULL, system_id, 'y', first_timestamp, `timestamp`, net_mac_address, net_index, ip_address_v6, ip_subnet, '6', '', '' FROM sys_hw_network_card_ip WHERE ip_address_version = '6')";
-
-        foreach ($sql as $this_query) {
-            $this->data['output'] .= $this_query."<br /><br />\n";
-            $query = $this->db->query($this_query);
-        }
-    }
-
     public function initial_network()
     {
         echo "<pre>\n";
@@ -189,9 +156,9 @@ class test extends CI_Controller
         foreach ($result as $row) {
             $network = str_replace('Network - ', '', $row->group_name);
             $sql = "";
-            $sql = str_replace('SELECT distinct(system.system_id) FROM system, ip WHERE (', 'UPDATE ip SET network = "' . $network . '" WHERE (', $row->group_dynamic_select);
+            $sql = str_replace('SELECT distinct(system.id) FROM system, ip WHERE (', 'UPDATE ip SET network = "' . $network . '" WHERE (', $row->group_dynamic_select);
             $sql = substr($sql, 0, strpos($sql, ')')+1);
-            $sql = str_replace("AND ip.system_id = system.system_id AND ip.current = 'y' AND system.status = 'production'", "", $sql);
+            $sql = str_replace("AND ip.system_id = system.id AND ip.current = 'y' AND system.status = 'production'", "", $sql);
             echo $sql . "\n\n";
             $query_update = $this->db->query($sql);
         }
@@ -364,7 +331,7 @@ class test extends CI_Controller
         $dashboard->total['org'] = count($result);
 
         $dashboard->location = array();
-        $sql = "SELECT count(system.system_id) AS count, system.location_id, oa_location.name FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE system.org_id IN (" . $instring . ") GROUP BY system.location_id";
+        $sql = "SELECT count(system.id) AS count, system.location_id, oa_location.name FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE system.org_id IN (" . $instring . ") GROUP BY system.location_id";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -373,7 +340,7 @@ class test extends CI_Controller
         $dashboard->total['location'] = count($result);
 
         $dashboard->os_family = array();
-        $sql = "SELECT count(system.system_id) AS count, system.os_family FROM system WHERE system.org_id IN (" . $instring . ") AND os_family != '' GROUP BY system.os_family";
+        $sql = "SELECT count(system.id) AS count, system.os_family FROM system WHERE system.org_id IN (" . $instring . ") AND os_family != '' GROUP BY system.os_family";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -383,7 +350,7 @@ class test extends CI_Controller
 
 
         $dashboard->server = array();
-        $sql = "SELECT count(system.system_id) AS count, server.type FROM system LEFT JOIN server ON (system.system_id = server.system_id) WHERE system.org_id IN (" . $instring . ") AND server.current = 'y' GROUP BY server.type";
+        $sql = "SELECT count(system.id) AS count, server.type FROM system LEFT JOIN server ON (system.id = server.system_id) WHERE system.org_id IN (" . $instring . ") AND server.current = 'y' GROUP BY server.type";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -393,7 +360,7 @@ class test extends CI_Controller
 
 
         $dashboard->status = array();
-        $sql = "SELECT count(system.system_id) AS count, system.status FROM system WHERE system.org_id IN (" . $instring . ") GROUP BY system.status";
+        $sql = "SELECT count(system.id) AS count, system.status FROM system WHERE system.org_id IN (" . $instring . ") GROUP BY system.status";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -403,7 +370,7 @@ class test extends CI_Controller
 
 
         $dashboard->manufacturer = array();
-        $sql = "SELECT count(system.system_id) AS count, system.manufacturer FROM system WHERE manufacturer != '' AND system.org_id IN (" . $instring . ") GROUP BY system.manufacturer";
+        $sql = "SELECT count(system.id) AS count, system.manufacturer FROM system WHERE manufacturer != '' AND system.org_id IN (" . $instring . ") GROUP BY system.manufacturer";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -413,7 +380,7 @@ class test extends CI_Controller
 
 
         $dashboard->device = array();
-        $sql = "SELECT count(system.system_id) AS count FROM system WHERE system.org_id IN (" . $instring . ")";
+        $sql = "SELECT count(system.id) AS count FROM system WHERE system.org_id IN (" . $instring . ")";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -422,7 +389,7 @@ class test extends CI_Controller
 
 
         $dashboard->domain = array();
-        $sql = "SELECT count(system.system_id) AS count, system.domain FROM system WHERE domain != '' AND system.org_id IN (" . $instring . ") GROUP BY system.domain ORDER BY REVERSE(domain)";
+        $sql = "SELECT count(system.id) AS count, system.domain FROM system WHERE domain != '' AND system.org_id IN (" . $instring . ") GROUP BY system.domain ORDER BY REVERSE(domain)";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -432,7 +399,7 @@ class test extends CI_Controller
 
 
         $dashboard->network = array();
-        $sql = "SELECT count(system.system_id) AS count, ip.network FROM system LEFT JOIN ip ON (system.system_id = ip.system_id) WHERE ip.current = 'y' AND ip.network != '' and ip.network != '0.0.0.0 / 0' AND ip.cidr < " . $this->config->item('network_group_subnet') . " AND system.org_id IN (" . $instring . ") GROUP BY ip.network";
+        $sql = "SELECT count(system.id) AS count, ip.network FROM system LEFT JOIN ip ON (system.id = ip.system_id) WHERE ip.current = 'y' AND ip.network != '' and ip.network != '0.0.0.0 / 0' AND ip.cidr < " . $this->config->item('network_group_subnet') . " AND system.org_id IN (" . $instring . ") GROUP BY ip.network";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -531,13 +498,13 @@ class test extends CI_Controller
             $column = trim($temp[0]);
             echo $item . "\n";
             if ($table == 'oa_location') {
-                $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE $item AND system.status = 'production' AND system.org_id IN (" . $instring . ") ";
+                $sql = "SELECT system.id, system.hostname, system.type, $column FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE $item AND system.status = 'production' AND system.org_id IN (" . $instring . ") ";
             } elseif ($table == 'oa_org') {
-                $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system LEFT JOIN oa_org ON system.org_id = oa_org.id WHERE $item AND system.status = 'production'  AND system.org_id IN (" . $instring . ") ";
+                $sql = "SELECT system.id, system.hostname, system.type, $column FROM system LEFT JOIN oa_org ON system.org_id = oa_org.id WHERE $item AND system.status = 'production'  AND system.org_id IN (" . $instring . ") ";
             } elseif ($table != 'system') {
-                $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system LEFT JOIN $table ON system.system_id = $table.system_id WHERE $table.current = 'y' AND $item AND system.status = 'production'  AND system.org_id IN (" . $instring . ") GROUP BY system.system_id, $column";
+                $sql = "SELECT system.id, system.hostname, system.type, $column FROM system LEFT JOIN $table ON system.id = $table.system_id WHERE $table.current = 'y' AND $item AND system.status = 'production'  AND system.org_id IN (" . $instring . ") GROUP BY system.id, $column";
             } else {
-                $sql = "SELECT system.system_id, system.hostname, system.type, $column FROM system WHERE $item AND system.status = 'production'  AND system.org_id IN (" . $instring . ") ";
+                $sql = "SELECT system.id, system.hostname, system.type, $column FROM system WHERE $item AND system.status = 'production'  AND system.org_id IN (" . $instring . ") ";
             }
             echo $sql . "\n";
             $query = $this->db->query($sql);

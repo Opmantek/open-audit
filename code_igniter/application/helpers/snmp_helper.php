@@ -77,8 +77,8 @@ if (!function_exists('get_snmp')) {
         }
 
         $log_machine = '';
-        if (isset($details->system_id) and $details->system_id > '') {
-            $log_machine = $details->ip.' (System ID '.$details->system_id.')';
+        if (isset($details->id) and $details->id > '') {
+            $log_machine = $details->ip.' (System ID '.$details->id.')';
         } else {
             $log_machine = $details->ip;
         }
@@ -93,8 +93,8 @@ if (!function_exists('get_snmp')) {
         unset($default);
 
         # device specific credentials
-        if (isset($details->system_id) and $details->system_id != '') {
-            $device_specific_credentials = $CI->m_system->get_access_details($details->system_id);
+        if (isset($details->id) and $details->id != '') {
+            $device_specific_credentials = $CI->m_system->get_access_details($details->id);
             $device_specific_credentials = $CI->encrypt->decode($device_specific_credentials);
             $specific = json_decode($device_specific_credentials);
         } else {
@@ -147,7 +147,7 @@ if (!function_exists('get_snmp')) {
             $details->ip = gethostbyname($details->hostname);
         }
 
-        if ((!isset($details->hostname) or $details->hostname == '' or $details->hostname == $details->ip) and (!isset($details->system_id) or $details->system_id == '')) {
+        if ((!isset($details->hostname) or $details->hostname == '' or $details->hostname == $details->ip) and (!isset($details->id) or $details->id == '')) {
             $details->hostname = gethostbyaddr(ip_address_from_db($details->ip));
         }
 

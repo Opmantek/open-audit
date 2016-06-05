@@ -93,12 +93,12 @@ echo form_open('admin_device/add_device', $attributes)."\n";
 		</thead>
 		<tbody>
 			<!-- <tr style='display: none;'><td>1</td><td>2</td><td>3</td></tr> -->
-			<tr id="row-1" name="row-1"><td>system</td><td>system_id</td><td><span style='float: left; padding-left: 10px;'>1</span></td></tr>
+			<tr id="row-1" name="row-1"><td>system</td><td>system.id</td><td><span style='float: left; padding-left: 10px;'>1</span></td></tr>
 		</tbody>
 	</table>
 </fieldset>
 <span id='data' name='data'></span>
-<input type='hidden' value='system.system_id.1' name='field-1' id='field-1' />
+<input type='hidden' value='system.id.1' name='field-1' id='field-1' />
 <?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?>
 <?php echo form_close(); ?>
 

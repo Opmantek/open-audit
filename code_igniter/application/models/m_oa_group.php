@@ -125,11 +125,11 @@ class M_oa_group extends MY_Model
         if ($exclude_type != '') {
             $sql = "DELETE FROM oa_group_sys WHERE oa_group_sys.system_id = ? AND oa_group_sys.group_id IN (SELECT oa_group.group_id FROM oa_group WHERE oa_group.group_category != ?)";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id", "$exclude_type");
+            $data = array("$details->id", "$exclude_type");
         } else {
             $sql = "DELETE FROM oa_group_sys WHERE oa_group_sys.system_id = ?";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id");
+            $data = array("$details->id");
         }
         $query = $this->db->query($sql, $data);
         if ($exclude_type != '') {
@@ -144,14 +144,14 @@ class M_oa_group extends MY_Model
         }
         foreach ($query->result() as $myrow) {
             $sql_select = "SELECT system.id FROM system WHERE system.id = ? AND system.id in ( ".$myrow->group_dynamic_select." )";
-            $data_select = array("$details->system_id");
+            $data_select = array("$details->id");
             $sql_select = $this->clean_sql($sql_select);
             $query_select = $this->db->query($sql_select, $data_select);
             if ($query_select->num_rows() > 0) {
                 // insert a row because the system matches the select criteria
                 $sql_insert = "INSERT INTO oa_group_sys (system_id, group_id) VALUES (?, ?)";
                 $sql_insert = $this->clean_sql($sql_insert);
-                $data_insert = array("$details->system_id", "$myrow->group_id");
+                $data_insert = array("$details->id", "$myrow->group_id");
                 $query_insert = $this->db->query($sql_insert, $data_insert);
             }
         }
@@ -172,7 +172,7 @@ class M_oa_group extends MY_Model
             $sql_select = $myrow->group_dynamic_select;
             # update the group with all systems that match
             $sql_insert = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
-            $sql_insert = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$myrow->group_id."' ", $sql_insert);
+            $sql_insert = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$myrow->group_id."' ", $sql_insert);
             $sql_insert = $this->clean_sql($sql_insert);
             $insert = $this->db->query($sql_insert);
         }
@@ -195,8 +195,7 @@ class M_oa_group extends MY_Model
         $delete = $this->db->query($sql_delete, $data) or die("Error with delete from oa_group_sys");
         # update the group with all systems that match
         $sql_insert = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
-        #$sql_insert = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$group_id."', 'system'", $sql_insert);
-        $sql_insert = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$group_id."' ", $sql_insert);
+        $sql_insert = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$group_id."' ", $sql_insert);
         $sql_insert = $this->clean_sql($sql_insert);
         $insert = $this->db->query($sql_insert);
     }
@@ -311,8 +310,6 @@ class M_oa_group extends MY_Model
 					oa_group_sys
 				ON
 					oa_group.group_id = oa_group_sys.group_id
-				WHERE
-					oa_group_sys.group_id < '999'
 				GROUP BY
 					oa_group.group_id";
         $sql = $this->clean_sql($sql);

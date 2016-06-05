@@ -114,7 +114,7 @@
 </fieldset>
 <p><br /></p>
 <p><br /></p>
-<?php $display_sql = "SELECT system.id, system.hostname, system.description, system.ip, system.type, system.os_family, system.os_name, system.icon FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? AND system.status = 'production' GROUP BY system.system_id"; ?>
+<?php $display_sql = "SELECT system.id, system.hostname, system.description, system.ip, system.type, system.os_family, system.os_name, system.icon FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? AND system.status = 'production' GROUP BY system.id"; ?>
 <fieldset id="group_display_sql_fieldset" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Group Display SQL'); ?></span></legend>
 	<p><label for='group_display_sql'><?php echo __('Display SQL'); ?>: </label><textarea name='group_display_sql' id='group_display_sql' rows='12' cols='120'><?php echo $display_sql; ?></textarea></p>

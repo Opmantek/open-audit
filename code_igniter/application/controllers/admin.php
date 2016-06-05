@@ -93,65 +93,6 @@ class admin extends MY_Controller
     }
 
     /**
-     * Just a simple echo of the page name for a test.
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-     *
-     * @link      http://www.open-audit.org
-     *
-     * @return string
-     */
-    public function test()
-    {
-        $system_id = 1;
-        $table_name = 'system';
-        $extended = 'y';
-        echo "<pre>\n";
-
-        $sql = "SELECT * FROM $table_name WHERE system_id = 29 or system_id = 26";
-        $data = array($system_id);
-        $query = $this->db->query($sql, $data);
-        $devices = $query->result();
-        $result = array();
-
-        if ($extended == 'y') {
-            $sql= "SELECT COLUMN_NAME as name, DATA_TYPE as type, COLUMN_TYPE as extended_type, CHARACTER_MAXIMUM_LENGTH as length, COLUMN_DEFAULT as `default` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? and table_name = ?";
-            $data = array($this->db->database, $table_name);
-            $query = $this->db->query($sql, $data);
-            $table = $query->result();
-
-            $count = 0;
-            foreach ($devices as $device) {
-                foreach ($device as $key => $value) {
-                    foreach ($table as $column) {
-                        if ($column->name == $key) {
-                            $result[$count][$key]['name'] = $key;
-                            $result[$count][$key]['value'] = $value;
-                            $result[$count][$key]['type'] = $column->type;
-                            $result[$count][$key]['extended_type'] = $column->extended_type;
-                            $result[$count][$key]['length'] = $column->length;
-                            $result[$count][$key]['default'] = $column->default;
-                        }
-                    }
-                }
-                $count++;
-            }
-        } else {
-            foreach ($devices as $device) {
-                $result[] = (array)$device;
-            }
-        }
-        print_r($result);
-        exit();
-    }
-
-
-    /**
      * Reset the device icons in the database.
      *
      * @access    public
@@ -503,7 +444,7 @@ class admin extends MY_Controller
             $this->load->model("m_systems");
             $data = array($this->data['id']);
             $query = $this->db->query('SET @group = ?', $data);
-            $sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id";
+            $sql = "SELECT system.id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.ip as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.id ORDER BY system.id";
             $query = $this->db->query($sql);
             $this->data['query'] = $query->result();
             $this->load->library('encrypt');
@@ -745,7 +686,7 @@ class admin extends MY_Controller
                 $info = ldap_get_entries($ad, $sr);
                 for ($i = 0; $i < count($info)-1; $i++) {
                     $details = new stdClass();
-                    $details->timestamp = $timestamp;
+                    $details->last_seen = $timestamp;
                     $details->dns_hostname = @strtolower($info[$i]['dnshostname'][0]);
                     $details->fqdn = $details->dns_hostname;
                     $j = explode(".", $details->dns_hostname);
@@ -832,20 +773,20 @@ class admin extends MY_Controller
                     }
 
                     $details->system_key = $this->m_system->create_system_key($details);
-                    $details->system_id = $this->m_system->find_system($details);
-                    if (isset($details->system_id) and $details->system_id != '') {
+                    $details->id = $this->m_system->find_system($details);
+                    if (!empty($details->id)) {
                         # update an existing system
                         $this->m_system->update_system($details);
                     } else {
                         # insert a new system
-                        $details->system_id = $this->m_system->insert_system($details);
+                        $details->id = $this->m_system->insert_system($details);
                     }
                     if (isset($this->user->full_name)) {
                         $temp_user = $this->user->full_name;
                     } else {
                         $temp_user = '';
                     }
-                    $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                    $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                     unset($temp_user);
                     $this->m_oa_group->update_system_groups($details);
                 }

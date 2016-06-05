@@ -82,13 +82,13 @@ class M_systems extends MY_Model
             $select_string = mb_substr($select_string, 1);
             // now create the search statement
             if ($table != 'system') {
-                $sql = "SELECT DISTINCT(a.system_id), a.icon, a.hostname, a.domain, a.ip, a.type AS `man_type`, $select_string
-			            FROM system a, oa_group_sys, $table
-			            WHERE a.system_id = $table.system_id AND a.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND $table.current = 'y' AND ( $search_string ) ";
+                $sql = "SELECT DISTINCT(system.id), system.icon, system.hostname, system.domain, system.ip, system.type AS `man_type`, $select_string
+			            FROM system, oa_group_sys, $table
+			            WHERE system.id = $table.system_id AND system.id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND $table.current = 'y' AND ( $search_string ) ";
             } else {
-                $sql = "SELECT DISTINCT(a.system_id), a.icon, a.hostname, a.domain, a.ip, a.type AS `man_type`, $select_string
-                        FROM system a, oa_group_sys, $table
-                        WHERE a.system_id = $table.system_id AND a.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND ( $search_string ) ";
+                $sql = "SELECT DISTINCT(system.id), system.icon, system.hostname, system.domain, system.ip, system.type AS `man_type`, $select_string
+                        FROM system, oa_group_sys, $table
+                        WHERE system.id = $table.system_id AND system.id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND ( $search_string ) ";
             }
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
@@ -139,7 +139,7 @@ class M_systems extends MY_Model
             // the group has no specific SQL Select (group_display_sql).
             // Use a standard SQL Select.
             $sql = "SELECT
-					system.system_id,
+					system.id,
 					system.name,
 					system.domain,
 					system.description,

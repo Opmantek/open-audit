@@ -693,9 +693,8 @@ class San extends CI_Controller
         $log_details->message = 'Processing audit result for san at ' . $details->ip;
         stdlog($log_details);
 
-        $details->timestamp = date('Y-m-d H:i:s');
+        $details->last_seen = date('Y-m-d H:i:s');
         $details->id = intval($this->m_system->find_system($details));
-        $details->last_seen = $details->timestamp;
         $details->last_seen_by = 'audit';
         $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
@@ -708,7 +707,7 @@ class San extends CI_Controller
             $log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
             stdlog($log_details);
             unset($log_details);
-            $details->original_timestamp = "";
+            $details->original_last_seen = "";
             echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
         } else {
             // update an existing system
@@ -719,16 +718,16 @@ class San extends CI_Controller
             stdlog($log_details);
             unset($log_details);
             $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
-            $details->original_timestamp = $this->m_devices_components->read($details->id, 'y', 'system', '', 'timestamp');
+            $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
             $this->m_system->update_system($details);
             echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
         }
-        $details->first_timestamp = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_timestamp');
+        $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
         $temp_user = '';
         if (isset($this->user->full_name)) {
             $temp_user = $this->user->full_name;
         }
-        $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+        $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
         unset($temp_user);
 
         $this->m_audit_log->update('debug', 'san', $details->id, $details->last_seen);
