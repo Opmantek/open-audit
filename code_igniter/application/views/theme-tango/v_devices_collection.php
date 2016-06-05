@@ -89,7 +89,7 @@ if (!empty($this->response->data)) {
                 }
                 if ($property == 'ip' and !empty($item->ip_padded)) {
                     echo "\t\t\t\t<td><span style='display:none;'>" . str_replace('.', '', $item->ip_padded) . "</span>" . $item->ip . "</td>\n";
-                } elseif ($property == 'system_id') {
+                } elseif ($property == 'system.id') {
                     echo "\t\t\t\t<td><a href='devices/" . $item->{$property} . "'>" . $item->{$property} . "</td>\n";
                 } elseif ($property == 'icon') {
                     echo "\t\t\t\t<td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."theme-tango/tango-images/16_".strtolower(str_replace(" ", "_", htmlentities($item->{$property}))).".png\" style='border-width:0px;' title=\"".htmlentities($item->{$property})."\" alt=\"".htmlentities($item->{$property})."\" /></td>\n";
@@ -100,7 +100,7 @@ if (!empty($this->response->data)) {
                 echo "\t\t\t\t<td></td>\n";
             }
         }
-        echo "\t\t\t\t<td align='center'><input type='checkbox' id='alert_id_" . intval($item->{'system.system_id'}) . "' name='alert_id_" . intval($item->{'system.system_id'}) . "' /></td>\n";
+        echo "\t\t\t\t<td align='center'><input type='checkbox' id='alert_id_" . intval($item->{'system.id'}) . "' name='alert_id_" . intval($item->{'system.id'}) . "' /></td>\n";
         echo "\t\t\t</tr>\n";
     }
     ?>
