@@ -45,6 +45,9 @@ terminal_print="n"
 debugging="3"
 system_id=""
 
+# DO NOT REMOVE THE LINE BELOW
+# Configuration from web UI here
+
 # import the command line arguements
 for arg in "$@"; do
     parameter=${arg%%=*}

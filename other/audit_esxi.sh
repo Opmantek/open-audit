@@ -132,6 +132,9 @@ system_id=""
 PATH="$PATH:/sbin:/usr/sbin"
 export PATH
 
+# DO NOT REMOVE THE LINE BELOW
+# Configuration from web UI here
+
 
 ########################################################
 # DEFINE COMAMND LOCATIONS                             #

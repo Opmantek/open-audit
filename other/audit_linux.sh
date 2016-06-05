@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -87,10 +87,10 @@ ping_target="y"
 system_id=""
 
 # Should we attempt to audit any connected SAN's
-audit_san="y"
+san_audit="y"
 
 # If we detect the san management software, should we run an auto-discover before the query
-run_san_discover="n"
+san_discover="n"
 
 PATH="$PATH:/sbin:/usr/sbin"
 export PATH
@@ -104,6 +104,9 @@ busybox="n"
 
 display=""
 # This should only be set by Discovery when using the debug option
+
+# DO NOT REMOVE THE LINE BELOW
+# Configuration from web UI here
 
 ########################################################
 # DEFINE SCRIPT FUNCTIONS                              #
@@ -305,10 +308,10 @@ for arg in "$@"; do
 			submit_online="$parameter_value" ;;
 		"system_id" )
 			system_id="$parameter_value" ;;
-		"audit_san" )
-			audit_san="$parameter_value" ;;
-		"run_san_discover" )
-			run_san_discover="$parameter_value" ;;
+		"san_audit" )
+			san_audit="$parameter_value" ;;
+		"san_discover" )
+			san_discover="$parameter_value" ;;
 		"url" )
 			url="$parameter_value" ;;
 		"$parameter_value" )
@@ -355,11 +358,11 @@ if [ "$help" = "y" ]; then
 	echo "  org_id"
 	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
 	echo ""
-	echo "  audit_san"
+	echo "  san_audit"
 	echo "     *y - Should we audit a SAN if it is detected"
 	echo "      n - Do not attempt to audit any attached SANs"
 	echo ""
-	echo "  run_san_discover"
+	echo "  san_discover"
 	echo "     *n - Do not run smcli -A if we detect the SAN management software"
 	echo "      Y - Run the command and update the list of any connected SANs"
 	echo ""
@@ -470,13 +473,13 @@ IFS="$NEWLINEIFS"
 #========================
 #  SAN INFO             #
 #========================
-if [ "$audit_san" = "y" ]; then
+if [ "$san_audit" = "y" ]; then
 	if [ -f "/opt/IBM_DS/client/SMcli" ]; then
 		san_url=$(echo "$san_url" | sed 's/system\/add_system/san\/add_san/g')
 		if [ "$debugging" -gt 0 ]; then
 			echo "SAN info"
 		fi
-		if [ "$run_san_discover" = "y" ]; then
+		if [ "$san_discover" = "y" ]; then
 			if [ "$debugging" -gt 1 ]; then
 				echo "Running SAN refresh / discover."
 			fi
@@ -2218,8 +2221,41 @@ echo "	</netstat>"
 } >> "$xml_file"
 
 
-
-
+########################################################
+# CUSTOM FILES                                         #
+########################################################
+if [ "$debugging" -gt "0" ]; then
+	echo "Custom File Info"
+fi
+echo "	<files>" >> "$xml_file"
+for dir in ${files[@]}; do
+    for file in $(find "$dir"  -maxdepth 1 -type f 2>/dev/null); do
+        file_size=$(stat --printf="%s" "$file")
+        file_directory=$(dirname "${file}")
+        file_hash=$(sha1sum "$file" | cut -d" " -f1)
+        file_last_changed=$(stat -c %y "$file" | cut -d. -f1)
+        file_meta_last_changed=$(stat -c %z "$file" | cut -d. -f1)
+        file_permissions=$(stat -c "%a" "$file")
+        file_owner=$(ls -ld "$file" | awk '{print $3}')
+        file_group=$(ls -ld "$file" | awk '{print $4}')
+        file_name=($basename "$file")
+        {
+    	echo "		<item>"
+    	echo "			<name>$(escape_xml "$file_name")</name>"
+    	echo "			<full_name>$(escape_xml "$file")</full_name>"
+        echo "			<size>$(escape_xml "$file_size")</size>"
+        echo "			<directory>$(escape_xml " $file_directory")</directory>"
+        echo "			<hash>$(escape_xml "$file_hash")</hash>"
+        echo "			<last_changed>$(escape_xml "$file_last_changed")</last_changed>"
+        echo "			<meta_last_changed>$(escape_xml "$file_meta_last_changed")</meta_last_changed>"
+        echo "			<permissions>$(escape_xml "$file_permissions")</permissions>"
+        echo "			<owner>$(escape_xml "$file_owner")</owner>"
+        echo "			<group>$(escape_xml "$file_group")</group>"
+        echo "		</item>"
+    	} >> "$xml_file"
+    done
+done
+echo "	</files>" >> "$xml_file"
 
 
 

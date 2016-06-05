@@ -64,6 +64,9 @@ system_id=""
 help=""
 version="1.2"
 
+# DO NOT REMOVE THE LINE BELOW
+# Configuration from web UI here
+
 for arg; do
 	VAR=$(echo $arg | cut -d'=' -f1)
 	VAL=$(echo $arg | cut -d'=' -f2)

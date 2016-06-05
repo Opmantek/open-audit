@@ -46,7 +46,7 @@ submit_online = "y"
 ' create an XML text file of the result in the current directory
 create_file = "n"
 
-' the address of the OAv2 server "submit" page
+' the address of the Open-AudIT server "submit" page
 url = "http://localhost/open-audit/index.php/system/add_system"
 
 ' submit via a proxy (using the settings of the user running the script)
@@ -66,28 +66,25 @@ org_id = ""
 windows_user_work_1 = "physicalDeliveryOfficeName"
 windows_user_work_2 = "company"
 
-' do not attempt to query mount points
-skip_mount_point = "n"
+' should we attempt to query mount points
+audit_mount_point = "y"
 
-' do not enumerate printers
-skip_printer = "n"
-
-' audit installed software
-skip_software = "n"
+' should we audit the installed software
+audit_software = "y"
 
 ' use the win32_product WMI class (not recommended by Microsoft).
 ' https://support.microsoft.com/kb/974524
 ' added and set to disabled by default in 1.5.2
-win32_product = "n"
+audit_win32_product = "n"
 
 ' retrieve all DNS names
-skip_dns = "n"
+audit_dns = "y"
 
 ' run netstat on the target
 ' n = no
 ' y = yes
 ' s = servers only
-run_netstat = "s"
+audit_netstat = "s"
 
 ' if set then delete the audit script upon completion
 ' useful when starting the script on a remote machine and leaving no trace
@@ -123,10 +120,13 @@ help = "n"
 hide_audit_window = "n"
 
 ' Should we attempt to audit any connected SAN's
-audit_san="y"
+san_audit="y"
 
 ' If we detect the san management software, should we run an auto-discover before the query
-run_san_discover = "n"
+san_discover = "n"
+
+' DO NOT REMOVE THE LINE BELOW
+' Configuration from web UI here
 
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
@@ -156,23 +156,20 @@ For Each strArg in objArgs
 	case "ping_target"
 	ping_target = argValue
 
-	case "run_netstat"
-	run_netstat = argValue
+	case "audit_netstat"
+	audit_netstat = argValue
 
 	case "self_delete"
 	self_delete = argvalue
 
-	case "skip_printer"
-	skip_printer = argvalue
+	case "audit_software"
+	audit_software = argvalue
 
-	case "skip_software"
-	skip_software = argvalue
+	case "audit_dns"
+	audit_dns = argvalue
 
-	case "skip_dns"
-	skip_dns = argvalue
-
-	case "skip_mount_point"
-	skip_mount_point = argvalue
+	case "audit_mount_point"
+	audit_mount_point = argvalue
 
 	case "strcomputer"
 	strcomputer = argvalue
@@ -201,8 +198,8 @@ For Each strArg in objArgs
 	case "windows_user_work_2"
 	windows_user_work_2 = argvalue
 
-	case "win32_product"
-	win32_product = argvalue
+	case "audit_win32_product"
+	audit_win32_product = argvalue
 
 	case "details_to_lower"
 	details_to_lower = argvalue
@@ -210,11 +207,11 @@ For Each strArg in objArgs
 	case "hide_audit_window"
 	hide_audit_window = argvalue
 
-	case "audit_san"
-	audit_san = argvalue
+	case "san_audit"
+	san_audit = argvalue
 
-	case "run_san_discover"
-	run_san_discover = argvalue
+	case "san_discover"
+	san_discover = argvalue
 
 	end select
 	else
@@ -261,7 +258,7 @@ if (help = "y") then
 	wscript.echo "  ping_target"
 	wscript.echo "      *n - Attempt to ping the target computer to determine if it is online."
 	wscript.echo ""
-	wscript.echo "  run_netstat"
+	wscript.echo "  audit_netstat"
 	wscript.echo "     *s - Run Netstat against 'server' class systems."
 	wscript.echo "      n - Do not run against any computers."
 	wscript.echo "      y - Run against all computers."
@@ -295,7 +292,7 @@ if (help = "y") then
 	wscript.echo "  windows_user_work_2"
 	wscript.echo "      company - The Active Directory field to assign the computer to (second preference)."
 	wscript.echo ""
-	wscript.echo "  win32_product"
+	wscript.echo "  audit_win32_product"
 	wscript.echo "      *n - Tells the audit script to NOT query the win32_product class. It is recommended by Microsoft not to use this class as is causes Windows to check the integrity of all installed packages (resulting in 1035 events in the log) and can cause performance issues."
 	wscript.echo "       y - Do query win32_product anyway and use the result to add to the list of installed software."
 	wscript.echo ""
@@ -303,15 +300,15 @@ if (help = "y") then
 	wscript.echo "      *y - Convert the hostname to lower."
 	wscript.echo "       n - Keep the hostname as per retrieved."
 	wscript.echo ""
-	wscript.echo "  hide_window"
+	wscript.echo "  hide_audit_window"
 	wscript.echo "      *n - Do not hide the audit script window when executing."
 	wscript.echo "       y - Hide the audit script window when executing."
 	wscript.echo ""
-	wscript.echo "  audit_san"
+	wscript.echo "  san_audit"
 	wscript.echo "     *y - Should we audit a SAN if it is detected"
 	wscript.echo "      n - Do not attempt to audit any attached SANs"
 	wscript.echo ""
-	wscript.echo "  run_san_discover"
+	wscript.echo "  san_discover"
 	wscript.echo "     *n - Do not run smcli -A if we detect the SAN management software"
 	wscript.echo "      Y - Run the command and update the list of any connected SANs"
 	wscript.echo ""
@@ -348,12 +345,11 @@ if debugging > "2" then
 	wscript.echo "ldap: " & ldap
 	wscript.echo "org_id: " & org_id
 	wscript.echo "ping_target: " & ping_target
-	wscript.echo "run_netstat: " & run_netstat
+	wscript.echo "audit_netstat: " & audit_netstat
 	wscript.echo "self_delete: " & self_delete
-	wscript.echo "skip_printer: " & skip_printer
-	wscript.echo "skip_software: " & skip_software
-	wscript.echo "skip_dns: " & skip_dns
-	wscript.echo "skip_mount_point: " & skip_mount_point
+	wscript.echo "audit_software: " & audit_software
+	wscript.echo "audit_dns: " & audit_dns
+	wscript.echo "audit_mount_point: " & audit_mount_point
 	wscript.echo "strcomputer: " & strcomputer
 	wscript.echo "struser: " & struser
 	wscript.echo "strpass: " & strpass
@@ -1144,12 +1140,12 @@ end if
 
 
 ' New for 1.10 - get SAN details if management software installed
-if audit_san = "y" and audit_location = "local" then
+if san_audit = "y" and audit_location = "local" then
 	smcli = "C:\Program Files\IBM_DS\client\smcli.exe"
 	If (objFSO.FileExists(smcli)) Then
 		if debugging > "0" then wscript.echo "SAN info" end if
 		Dim smcli_output
-		if run_san_discover = "y" then
+		if san_discover = "y" then
 			Set objWshScriptExec = objShell.Exec(smcli & " -A")
 			Set objStdOut = objWshScriptExec.StdOut
 			While Not objStdOut.AtEndOfStream
@@ -1283,6 +1279,7 @@ if ( windows_part_of_domain = True Or windows_part_of_domain = "True" ) then
 	oTranslate.set 1, domain_dn
 	full_ad_domain = oTranslate.Get(1)
 	on error goto 0
+
 	if not isempty(full_ad_domain) then
 	full_domain = oTranslate.Get(2)
 	domain_nb = oTranslate.Get(3)
@@ -2341,7 +2338,7 @@ for each objPartition In colPartitions
 next
 
 ' only Win2003 and above have Win32_MappedLogicalDisk
-if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
+if (audit_mount_point = "y" and cint(windows_build_number) > 3000) then
 	if debugging > "0" then wscript.echo "mapped disks info" end if
 	on error resume next
 	set colPartitions = objWMIService.ExecQuery("Select * FROM Win32_MappedLogicalDisk",,32)
@@ -2391,7 +2388,7 @@ end if
 
 
 ' only Win2003 and above have win32_volume
-if (skip_mount_point = "n" and cint(windows_build_number) > 3000) then
+if (audit_mount_point = "y" and cint(windows_build_number) > 3000) then
 	if debugging > "0" then wscript.echo "mount point info" end if
 	on error resume next
 	set colMounts = objWMIService.ExecQuery("Select * from Win32_Volume WHERE DriveLetter = NULL",,32)
@@ -2675,7 +2672,7 @@ if item > "" then
 	result.WriteText "	</ip>" & vbcrlf
 end if
 
-if skip_dns = "n" then
+if audit_dns = "n" then
     if debugging > "0" then wscript.echo "DNS info" end if
     item = ""
     on error resume next
@@ -2735,23 +2732,21 @@ if skip_dns = "n" then
 end if
 
 Set StdOut = WScript.StdOut
-if (skip_printer = "n") then
-	' NOTE - we do not record devices we cannot detect (local USB) or ping (network)
-	' LPT1 connected printers will be recorded regardless of status
-	if debugging > "0" then wscript.echo "printer info" end if
-	item = ""
-	colItems = Empty
-	Dim objExec
-	on error resume next
-	Set colItems = objWMIService.ExecQuery("Select * FROM Win32_Printer",,32)
-	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Printer)" : audit_wmi_fails = audit_wmi_fails & "Win32_Printer " : end if
-	on error goto 0
+' NOTE - we do not record devices we cannot detect (local USB) or ping (network)
+' LPT1 connected printers will be recorded regardless of status
+if debugging > "0" then wscript.echo "print queue info" end if
+item = ""
+colItems = Empty
+Dim objExec
+on error resume next
+Set colItems = objWMIService.ExecQuery("Select * FROM Win32_Printer",,32)
+error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Printer)" : audit_wmi_fails = audit_wmi_fails & "Win32_Printer " : end if
+on error goto 0
 
-	if IsEmpty(colItems) then
-	' do nothing with printers - some error occured trying to query win32_printer
-	else
-	For Each objItem In colItems
-
+if IsEmpty(colItems) then
+' do nothing with printers - some error occured trying to query win32_printer
+else
+	for each objItem In colItems
 		if (   (Instr(1, objItem.DriverName, "ActiveFax", vbTextCompare)) _
 		or (Instr(1, objItem.DriverName, "AdobePS Acrobat Distiller", vbTextCompare)) _
 		or (Instr(1, objItem.DriverName, "Amyuni Document Converter", vbTextCompare)) _
@@ -2795,12 +2790,11 @@ if (skip_printer = "n") then
 		or (InStr(lcase(objItem.PortName), "client:") = 1) _
 		or (InStr(lcase(objItem.PortName), "lpt1:") = 1) _
 		or (InStr(lcase(objItem.PortName), "tpvm:") = 1) _
-		or (InStr(1, lcase(objItem.DeviceID), "(copy " , vbTextCompare)) _
-		) then
-		' software printer or some other non-local or non-network printer - do nothing for now
-		' LPT1: is being excluded because this appears when a USB multi-function printer is used.
-		' Most new PCs don't even have a printer port anymore.
-		' Yes, it may not be 100% exact, but it's good enough for me :-)
+		or (InStr(1, lcase(objItem.DeviceID), "(copy " , vbTextCompare)) ) then
+			' software printer or some other non-local or non-network printer - do nothing for now
+			' LPT1: is being excluded because this appears when a USB multi-function printer is used.
+			' Most new PCs don't even have a printer port anymore.
+			' Yes, it may not be 100% exact, but it's good enough for me :-)
 		else
 			if debugging > "2" then
 				wscript.echo "Printer Driver Name: " & objItem.DriverName
@@ -2812,6 +2806,7 @@ if (skip_printer = "n") then
 			if (instr(1, capabilities, "Color", vbTextCompare) > 0) then
 				printer_color = "True"
 			end if
+
 			printer_duplex = "False"
 			if (instr(1, capabilities, "Duplex", vbTextCompare) > 0) then
 				printer_duplex = "True"
@@ -2825,6 +2820,7 @@ if (skip_printer = "n") then
 			printer_model = replace(printer_model, " PCL6", "")
 			printer_model = replace(printer_model, " PCL", "")
 			printer_model = replace(printer_model, " PS", "")
+
 			printer_manufacturer = ""
 			if (instr(1, printer_model, "Aficio", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
 			if (instr(1, printer_model, "AGFA", vbTextCompare) = 1) then printer_manufacturer = "Agfa" end if
@@ -2868,13 +2864,14 @@ if (skip_printer = "n") then
 			description = ""
 			on error resume next
 				description = objItem.Comment
-			On Error Goto 0
+			on error goto 0
 
 			MarkingTechnology = 2
 			printer_type = "Unknown"
 			on error resume next
 				MarkingTechnology = int(objItem.MarkingTechnology)
-			On Error Goto 0
+			on error goto 0
+
 			if MarkingTechnology = 1 then printer_type = "Other" end if
 			if MarkingTechnology = 2 then printer_type = "Unknown" end if
 			if MarkingTechnology = 3 then printer_type = "Electrophotographic LED" end if
@@ -2903,7 +2900,6 @@ if (skip_printer = "n") then
 			if MarkingTechnology = 26 then printer_type = "eBeam" end if
 			if MarkingTechnology = 27 then printer_type = "Typesetter" end if
 
-
 			status = int(objItem.ExtendedPrinterStatus)
 			if status = 1 then printer_status = "Other" end if
 			if status = 2 then printer_status = "Unknown" end if
@@ -2924,7 +2920,6 @@ if (skip_printer = "n") then
 			if status = 17 then printer_status = "I/O Active" end if
 			if status = 18 then printer_status = "Manual Feed" end if
 
-
 			item = item & "		<item>" & vbcrlf
 			on error resume next
 			item = item & "			<manufacturer>" & escape_xml(printer_manufacturer) & "</manufacturer>" & vbcrlf
@@ -2942,17 +2937,15 @@ if (skip_printer = "n") then
 			item = item & "			<type>" & escape_xml(printer_type) & "</type>" & vbcrlf
 			item = item & "			<status>" & escape_xml(printer_status) & "</status>" & vbcrlf
 			item = item & "			<capabilities>" & escape_xml(capabilities) & "</capabilities>" & vbcrlf
-			On Error Goto 0
+			on error goto 0
 			item = item & "		</item>" & vbcrlf
-
 		end if
 	next
-	if item > "" then
+end if
+if item > "" then
 	result.WriteText "	<print_queue>" & vbcrlf
 	result.WriteText item
 	result.WriteText "	</print_queue>" & vbcrlf
-	end if
-	end if
 end if
 
 
@@ -3189,7 +3182,7 @@ if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <>
 end if
 
 
-if (skip_software = "n") then
+if (audit_software = "y") then
 	result.WriteText "	<software>" & vbcrlf
 
 	if debugging > "0" then wscript.echo "Codec info" end if
@@ -3508,7 +3501,7 @@ if (skip_software = "n") then
 	end if
 
 
-	if (win32_product = "y") then
+	if (audit_win32_product = "y") then
 	if (address_width = "64" and reg_node = "y") then
 	if debugging > "0" then wscript.echo "Software for 64bit" end if
 	result.WriteText "		<!-- start of 64 #1 -->" & vbcrlf
@@ -6171,7 +6164,7 @@ end if
 
 result.WriteText "	</software_key>" & vbcrlf
 
-if ((run_netstat = "y") or (run_netstat = "s" and instr(lcase(system_os_name), "server"))) then
+if ((audit_netstat = "y") or (audit_netstat = "s" and instr(lcase(system_os_name), "server"))) then
 	if debugging > "0" then wscript.echo "netstat info" end if
 	cmd = "netstat -abn"
 	on error resume next
