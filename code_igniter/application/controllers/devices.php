@@ -40,10 +40,7 @@ class devices extends MY_Controller
     {
         parent::__construct();
         // log the attempt
-        $log_details = new stdClass();
-        $log_details->severity = 6;
-        stdlog($log_details);
-        unset($log_details);
+        stdlog();
 
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
@@ -60,13 +57,6 @@ class devices extends MY_Controller
 
         $this->response = new stdClass();
         inputRead();
-
-        $this->response->total = 0;
-        $this->response->filtered = 0;
-        if ($this->response->format == 'screen') {
-            $this->response->heading = 'Devices';
-            $this->response->include = 'v_devices';
-        }
         $this->output->url = $this->config->item('oa_web_index');
 
         if ($this->response->id != '') {
@@ -88,23 +78,16 @@ class devices extends MY_Controller
                 exit();
             }
         }
-
-        // $this->response->format = 'json';
-        // $this->response->debug = true;
-        // output($this->response);
-        // exit();
-
     }
 
     public function index()
     {
     }
 
-    public function _remap($method)
+    public function _remap()
     {
-        $action = $this->response->action;
-        if ($action != '') {
-            $this->$action();
+        if (!empty($this->response->action)) {
+            $this->{$this->response->action}();
         } else {
             $this->collection();
         }
@@ -114,23 +97,25 @@ class devices extends MY_Controller
     private function collection()
     {
         if ($this->response->sub_resource != '' and $this->response->sub_resource != 'report') {
-            $this->response->data = $this->m_devices->read_devices_sub_resource();
+            $this->response->data = $this->m_devices->collection_sub_resource();
+
         } else if ($this->response->sub_resource != '' and $this->response->sub_resource == 'report') {
             $this->response->data = $this->m_devices->report();
-        } else {
-            $this->response->data = $this->m_devices->read_devices();
-        }
-        $this->response->filtered = count($this->response->data);
 
+        } else {
+            $this->response->data = $this->m_devices->collection();
+        }
+
+        $this->response->filtered = count($this->response->data);
         output($this->response);
     }
 
     private function read()
     {
         if ($this->response->sub_resource != '') {
-            $this->response->data = $this->m_devices->read_device_sub_resource();
+            $this->response->data = $this->m_devices->read_sub_resource();
         } else {
-            $this->response->data = $this->m_devices->read_device();
+            $this->response->data = $this->m_devices->read();
         }
         $this->response->filtered = count($this->response->data);
         output($this->response);
@@ -144,7 +129,6 @@ class devices extends MY_Controller
 
     private function create_form()
     {
-        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);
@@ -152,7 +136,6 @@ class devices extends MY_Controller
 
     private function execute()
     {
-        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);
@@ -160,7 +143,6 @@ class devices extends MY_Controller
 
     private function create()
     {
-        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);
@@ -168,7 +150,6 @@ class devices extends MY_Controller
 
     private function update()
     {
-        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         $this->m_devices->update();
@@ -177,7 +158,6 @@ class devices extends MY_Controller
 
     private function update_form()
     {
-        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);
@@ -185,7 +165,6 @@ class devices extends MY_Controller
 
     private function bulk_update_form()
     {
-        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         $this->response->id = '';
@@ -199,7 +178,6 @@ class devices extends MY_Controller
 
     private function delete()
     {
-        #$this->error->controller .= '::'.__FUNCTION__;
         $this->response->format = 'json';
         $this->response->debug = true;
         output($this->response);

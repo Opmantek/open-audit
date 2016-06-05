@@ -132,7 +132,7 @@ class M_devices extends MY_Model
         }
     }
 
-    public function read_device()
+    public function read()
     {
         $CI = & get_instance();
         $this->load->model('m_devices_components');
@@ -171,7 +171,7 @@ class M_devices extends MY_Model
         return($document);
     }
 
-    public function read_device_sub_resource()
+    public function read_sub_resource()
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
@@ -244,7 +244,7 @@ class M_devices extends MY_Model
         return ($result);
     }
 
-    public function read_devices()
+    public function collection()
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
@@ -275,7 +275,7 @@ class M_devices extends MY_Model
         return $result;
     }
 
-    public function read_devices_sub_resource()
+    public function collection_sub_resource()
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
