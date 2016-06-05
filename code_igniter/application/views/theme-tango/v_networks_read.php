@@ -81,7 +81,7 @@
 			<td><span style="display:none;"><?php echo str_replace('.', '', $item->ip_padded); ?></span><?php echo $item->ip; ?></td>
 			<td><?php echo $item->description; ?></td>
 			<td><?php echo $item->os_family; ?></td>
-			<td><?php echo $item->man_status; ?></td>
+			<td><?php echo $item->status; ?></td>
 		</tr>
 	<?php } ?>
 	</table>

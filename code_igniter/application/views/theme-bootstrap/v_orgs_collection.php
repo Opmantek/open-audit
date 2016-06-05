@@ -76,7 +76,7 @@ if (!empty($this->response->data)) {
         $link = str_replace($item->name . '=' . $operator . $item->value, '', $_SERVER["REQUEST_URI"]);
         $link = str_replace($item->name . '=' . $operator . urlencode($item->value), '', $_SERVER["REQUEST_URI"]);
         if ($item->name == 'status' and $item->operator == '=' and $item->value == 'production') {
-          $link = $refine_link . 'man_status=!=""';
+          $link = $refine_link . 'status=!=""';
         }
         $label = 'label-info';
         echo '<big><span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span></big>&nbsp;';
@@ -118,7 +118,7 @@ if (!empty($this->response->data)) {
                         $key->name = '-';
                     }
                     if ($key->group_id != '0') {
-                        $show_pic = '<a href="devices?man_org_id='.intval($key->id).'"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a>';
+                        $show_pic = '<a href="devices?org_id='.intval($key->id).'"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a>';
                         $deactivate_pic = '<a href="groups/'.intval($key->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-warning" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
                         $activate_pic = '';
                     } else {

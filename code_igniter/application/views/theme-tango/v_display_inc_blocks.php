@@ -688,9 +688,9 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <tbody>
                     <?php foreach ($printer as $key): ?>
                     <tr>
-                        <td><a href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>" ><?php echo print_something($key->man_model)?></a></td>
-                        <td><?php echo $key->man_manufacturer?></td>
-                        <td><?php echo $key->man_serial?></td>
+                        <td><a href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>" ><?php echo print_something($key->model)?></a></td>
+                        <td><?php echo $key->manufacturer?></td>
+                        <td><?php echo $key->serial?></td>
                         <td><?php echo $key->printer_shared?></td>
                         <td><?php echo $key->printer_shared_name?></td>
                     </tr>

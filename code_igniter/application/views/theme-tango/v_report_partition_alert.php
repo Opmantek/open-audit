@@ -64,8 +64,8 @@ $sortcolumn = 0;
 			<td><a href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key["system_id"])?>"><?php echo htmlentities($key["hostname"])?></a></td>
 			<td align="left"><?php echo htmlentities($key["partition_name"])?></td>
 			<td align='center'><a href="<?php echo base_url()?>index.php/main/disk_graph/<?php echo intval($key["system_id"])."/".intval($key["partition_id"])?>"><?php echo htmlentities($key["partition_mount_point"]) ?></a></td>
-			<td align='center'><?php echo htmlentities($key["man_environment"])?></td>
-			<td align='center'><?php echo htmlentities($key["man_function"])?></td>
+			<td align='center'><?php echo htmlentities($key["environment"])?></td>
+			<td align='center'><?php echo htmlentities($key["function"])?></td>
 			<td align='center'><span style="display: none;"><?php echo htmlentities($key["partition_size"])?></span><?php echo number_format($key["partition_size"])?></td>
 			<td align='center'><span style="display: none;"><?php echo htmlentities($key["partition_used_space"])?></span><?php echo number_format($key["partition_used_space"])?></td>
 			<td align='center'><span style="display: none;"><?php echo htmlentities($key["partition_free_space"])?></span><?php echo number_format($key["partition_free_space"])?></td>

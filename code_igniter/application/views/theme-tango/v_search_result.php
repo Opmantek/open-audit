@@ -68,8 +68,8 @@ if ($query) { ?>
 			<td align='center'><img src="<?php echo str_replace("index.php", "", site_url()); ?>theme-tango/tango-images/16_<?php echo $key->icon; ?>.png" style='border-width:0px;' title="" alt="" /></td>
             <td align='center'><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>"><?php echo htmlentities($key->hostname); ?></a></td>
 			<td align='center'><?php echo htmlentities($key->domain)?></td>
-            <td><span style="display:none;"><?php echo htmlentities($key->man_ip_address)?></span><?php echo htmlentities(ip_address_from_db($key->man_ip_address))?></td>
-            <td align='center'><?php echo htmlentities($key->man_type)?></td>
+            <td><span style="display:none;"><?php echo htmlentities($key->ip)?></span><?php echo htmlentities(ip_address_from_db($key->ip))?></td>
+            <td align='center'><?php echo htmlentities($key->type)?></td>
             <td align='center'><?php echo htmlentities($key->table)?></td>
 			<td align='center'><?php echo htmlentities($key->field)?></td>
 			<td align='center'><?php echo htmlentities($key->result)?></td>

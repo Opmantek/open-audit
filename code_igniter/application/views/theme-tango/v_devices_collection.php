@@ -49,11 +49,11 @@ if (!empty($this->response->data)) {
             $properties = get_object_vars($this->response->data[0]);
             #echo "<pre>\n"; print_r($properties); echo "</pre>\n";
             foreach ($properties as $key => $value) {
-                if ($key == 'man_ip_address' or $key == 'system.man_ip_address' or $key == 'ip_padded') {
+                if ($key == 'ip' or $key == 'system.ip' or $key == 'ip_padded') {
                     continue;
                 }
                 $key = str_replace('system.', '', $key);
-                $key = str_replace('man_', '', $key);
+                $key = str_replace('', '', $key);
                 $key = str_replace('_', ' ', $key);
                 $key = str_replace('os ', 'OS ', $key);
                 $key = str_replace(' id', ' ID', $key);

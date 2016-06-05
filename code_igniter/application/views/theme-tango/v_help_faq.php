@@ -118,7 +118,7 @@ If we don't have the system_id, in the model m_system.php is a function called f
 	<li>Check if the MAC Address exists in the sys_hw_network_card_ip table and match</li>
 	<li>Check if the IP Address exists in the sys_hw_network_card_ip table and match</li>
 	<li>Check if the serial and type exist in the system table and match</li>
-	<li>Check if the serial and type exists in the man_serial field in the system table and match</li>
+	<li>Check if the serial and type exists in the serial field in the system table and match</li>
 	<li>Check if the hostname is in the system table and match</li>
 </ol>
 
@@ -214,10 +214,10 @@ The default oa_group_columns are as below:<br />
 	</thead>
 	<tbody>
 		<tr><td>1</td><td>0</td><td>1</td><td>Hostname</td><td>hostname</td><td>link</td><td>main/system_display/</td><td>system_id</td><td></td></tr>
-		<tr><td>2</td><td>0</td><td>2</td><td>Description</td><td>man_description</td><td>text</td><td></td><td></td><td></td></tr>
-		<tr><td>3</td><td>0</td><td>3</td><td>IP Address</td><td>man_ip_address</td><td>ip_address</td><td></td><td></td><td></td></tr>
-		<tr><td>4</td><td>0</td><td>4</td><td>Type</td><td>icon</td><td>image</td><td></td><td>man_os_family</td><td></td></tr>
-		<tr><td>5</td><td>0</td><td>5</td><td>OS / Device</td><td>man_os_name</td><td>text</td><td></td><td></td><td></td></tr>
+		<tr><td>2</td><td>0</td><td>2</td><td>Description</td><td>description</td><td>text</td><td></td><td></td><td></td></tr>
+		<tr><td>3</td><td>0</td><td>3</td><td>IP Address</td><td>ip</td><td>ip_address</td><td></td><td></td><td></td></tr>
+		<tr><td>4</td><td>0</td><td>4</td><td>Type</td><td>icon</td><td>image</td><td></td><td>os_family</td><td></td></tr>
+		<tr><td>5</td><td>0</td><td>5</td><td>OS / Device</td><td>os_name</td><td>text</td><td></td><td></td><td></td></tr>
 		<tr><td>6</td><td>0</td><td>6</td><td>Tags</td><td>tag</td><td>text</td><td></td><td></td><td></td></tr>
 	</tbody>
 </table>
@@ -280,28 +280,28 @@ manufacturer - the printer manufacturer, edited in the audit script (assuming pr
 printer_port_name - assuming printer is submitted via an audited computer.<br />
 printer_shared - assuming printer is submitted via an audited computer.<br />
 printer_shared_name - assuming printer is submitted via an audited computer.<br />
-man_status - if it's a new printer, this is initially set to the normal (non "man_") value.<br />
-man_environment - set to production by default.<br />
-man_description - if it's a new printer, this is initially set to the normal (non "man_") value.<br />
-man_type - if it's a new printer, this is initially set to the normal (non "man_") value.<br />
-man_ip_address - if it's a new printer, this is initially set to the normal (non "man_") value.<br />
-man_model - if it's a new printer, this is initially set to the normal (non "man_") value.<br />
-man_manufacturer - if it's a new printer, this is initially set to the normal (non "man_") value.<br />
-man_owner - not automatically populated. Can be set via web interface or bulk upload.<br />
-man_org_id - not automatically populated. Can be set via web interface or bulk upload.<br />
-man_location_id - not automatically populated. Can be set via web interface or bulk upload.<br />
-man_location_level - not automatically populated. Can be set via web interface or bulk upload.
+status - if it's a new printer, this is initially set to the normal (non "") value.<br />
+environment - set to production by default.<br />
+description - if it's a new printer, this is initially set to the normal (non "") value.<br />
+type - if it's a new printer, this is initially set to the normal (non "") value.<br />
+ip - if it's a new printer, this is initially set to the normal (non "") value.<br />
+model - if it's a new printer, this is initially set to the normal (non "") value.<br />
+manufacturer - if it's a new printer, this is initially set to the normal (non "") value.<br />
+owner - not automatically populated. Can be set via web interface or bulk upload.<br />
+org_id - not automatically populated. Can be set via web interface or bulk upload.<br />
+location_id - not automatically populated. Can be set via web interface or bulk upload.<br />
+location_level - not automatically populated. Can be set via web interface or bulk upload.
 <br />
-man_location_suite - not automatically populated. Can be set via web interface or bulk upload.
+location_suite - not automatically populated. Can be set via web interface or bulk upload.
 <br />
-man_location_room - not automatically populated. Can be set via web interface or bulk upload.<br />
-man_serial - if it's a new printer, this is initially set to the normal (non "man_") value.<br />
-man_asset_number - not automatically populated. Can be set via web interface or bulk upload.<br />
-man_switch_id - not automatically populated. Can be set via web interface or bulk upload.<br />
-man_switch_port - not automatically populated. Can be set via web interface or bulk upload.<br />
-man_ethernet_socket - not automatically populated. Can be set via web interface or bulk upload.<br />
-man_wall_port - not automatically populated. Can be set via web interface or bulk upload.<br />
-man_picture - not automatically populated. Can be set via web interface or bulk upload.<br />
+location_room - not automatically populated. Can be set via web interface or bulk upload.<br />
+serial - if it's a new printer, this is initially set to the normal (non "") value.<br />
+asset_number - not automatically populated. Can be set via web interface or bulk upload.<br />
+switch_id - not automatically populated. Can be set via web interface or bulk upload.<br />
+switch_port - not automatically populated. Can be set via web interface or bulk upload.<br />
+ethernet_socket - not automatically populated. Can be set via web interface or bulk upload.<br />
+wall_port - not automatically populated. Can be set via web interface or bulk upload.<br />
+picture - not automatically populated. Can be set via web interface or bulk upload.<br />
 </fieldset>
 
 
