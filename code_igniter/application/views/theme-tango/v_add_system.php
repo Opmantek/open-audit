@@ -73,19 +73,19 @@ $org_form = "<label for='man_org_id'>Organisation<\/label><select id='man_org_id
 
 $os_group_form = "";
 foreach ($os_group as $item) {
-    $os_group_form .= "<option value='".$item->man_os_group."'>".$item->man_os_group."<\/option>";
+    $os_group_form .= "<option value='".$item->os_group."'>".$item->os_group."<\/option>";
 }
 $os_group_form = "<label for='man_os_group_2'> <\/label><select id='man_os_group_2' name='man_os_group_2' style='width: 250px'>".$os_group_form."<\/select><br />";
 
 $os_family_form = "";
 foreach ($os_family as $item) {
-    $os_family_form .= "<option value='".$item->man_os_family."'>".$item->man_os_family."<\/option>";
+    $os_family_form .= "<option value='".$item->os_family."'>".$item->os_family."<\/option>";
 }
 $os_family_form = "<label for='man_os_family'> <\/label><select id='man_os_family' name='man_os_family' style='width: 250px'>".$os_family_form."<\/select><br />";
 
 $os_name_form = "";
 foreach ($os_name as $item) {
-    $os_name_form .= "<option value='".$item->man_os_name."'>".$item->man_os_name."<\/option>";
+    $os_name_form .= "<option value='".$item->os_name."'>".$item->os_name."<\/option>";
 }
 $os_name_form = "<label for='man_os_name_2'> <\/label><select id='man_os_name_2' name='man_os_name_2' style='width: 250px'>".$os_name_form."<\/select><br />";
 
