@@ -1207,6 +1207,9 @@ class main extends MY_Controller
             } elseif (file_exists('/etc/issue.net')) {
                 $i = file('/etc/issue.net');
                 $data['os_version'] = trim($i[0]);
+            } elseif (file_exists('/etc/redhat-release')) {
+                # RedHat 6 doesn't have /etc/os-release
+                $data['os_version'] = 'RedHat';
             }
 
             $opCommon = '';
