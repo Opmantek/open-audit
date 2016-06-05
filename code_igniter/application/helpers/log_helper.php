@@ -303,11 +303,10 @@ if (! function_exists('stdlog')) {
             $log->file = $log_details->file;
         }
 
-        if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
-            $file = "/usr/local/open-audit/other/log_".$log->file.".log";
-            #$file = '../../other/log_'.$log->file.'.log';
+        if (php_uname('s') == 'Windows NT') {
+            $file = $CI->config->item('base_path') . '\other\log_' . $log->file . '.log';
         } else {
-            $file = 'c:\xampplite\open-audit\other\log_'.$log->file.'.log';
+            $file = $CI->config->item('base_path') . '/other/log_' . $log->file . '.log';
         }
 
         // log the page view
@@ -332,11 +331,7 @@ if (! function_exists('stdlog')) {
             if ($log->style == 'syslog') {
                 $extra_log_line = $log->timestamp.' '.$log->hostname.' '.$log->severity.' '.$log->user.' '.$log->controller.' '.$log->function.' '.$message;
             }
-            if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
-                $file = '/usr/local/open-audit/other/open-audit.log';
-            } else {
-                $file = 'c:\xampplite\open-audit\other\open-audit.log';
-            }
+            $file = $this->config->item('base_path') . '/other/open-audit.log';
             $handle = @fopen($file, 'a');
         }
         if (!$handle) {

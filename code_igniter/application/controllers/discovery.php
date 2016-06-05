@@ -1209,7 +1209,8 @@ class discovery extends CI_Controller
                             # attempt to connect using various credentials
                             if (php_uname('s') == 'Windows NT') {
                                 # attempt to store the targets host key, regardless of credentials
-                                $command_string = 'echo y | c:\xampplite\open-audit\other\plink.exe -ssh ' . $details->ssh_username . "@" . $details->ip . ' -pw ' . str_replace('"', '\"', $details->ssh_password) . ' exit';
+                                $file = $this->config->item('base_path') . '\other\plink.exe';
+                                $command_string = 'echo y | ' . $file . ' -ssh ' . $details->ssh_username . "@" . $details->ip . ' -pw ' . str_replace('"', '\"', $details->ssh_password) . ' exit';
                                 exec($command_string, $output, $status);
                             }
                             $credentials = array();

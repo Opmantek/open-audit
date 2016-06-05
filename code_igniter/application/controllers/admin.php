@@ -241,12 +241,12 @@ class admin extends MY_Controller
         }
         unset($temp);
         // full path to text file
-        if (php_uname('s') === 'Linux') {
-            $file = '/usr/local/open-audit/other/log_'.$logfile.'.log';
+        if (php_uname('s') == 'Windows NT') {
+            $file = $this->config->item('base_path') . '\other\log_' . $logfile . '.log';
         } else {
-            $file = 'c:\\xampplite\\open-audit\\other\\log_'.$logfile.'.log';
+            $file = $this->config->item('base_path') . '/other/log_' . $logfile . '.log';
         }
-        $handle = fopen($file, 'w');
+        $handle = fopen($file, 'w') or die ("Cannot open log file");
         fwrite($handle, '');
         fclose($handle);
         redirect('admin/view_log/'.$logfile);
@@ -274,7 +274,7 @@ class admin extends MY_Controller
         if (php_uname('s') === 'Linux') {
             switch ($file) {
                 case '1':
-                    $complete_filename = '/usr/local/open-audit/other/log_system.log';
+                    $complete_filename = $this->config->item('base_path') . '/other/log_system.log';
                     break;
 
                 case '2':
@@ -305,7 +305,7 @@ class admin extends MY_Controller
         if (php_uname('s') == 'Windows NT') {
             switch ($file) {
                 case '1':
-                    $complete_filename = 'c:\xampplite\open-audit\other\log_system.log';
+                    $complete_filename = $this->config->item('base_path') . '\other\log_system.log';
                     break;
 
                 case '2':
@@ -373,11 +373,10 @@ class admin extends MY_Controller
         }
 
         //full path to text file
-        if (php_uname('s') == 'Linux') {
-            $file = "/usr/local/open-audit/other/log_".$logfile.".log";
-            //$file = '../../other/log_'.$logfile.'.log';
+        if (php_uname('s') == 'Windows NT') {
+            $file = $this->config->item('base_path') . '\other\log_' . $logfile . '.log';
         } else {
-            $file = "c:\\xampplite\\open-audit\\other\\log_".$logfile.".log";
+            $file = $this->config->item('base_path') . '/other/log_' . $logfile . '.log';
         }
 
         $fsize = round(filesize($file)/1024/1024, 2);

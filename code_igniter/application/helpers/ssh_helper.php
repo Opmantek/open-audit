@@ -182,7 +182,7 @@ if (! function_exists('ssh_connect_action')) {
         }
         if (php_uname('s') == 'Windows NT') {
             # TODO - use a universal config item here
-            $filepath = "c:\\xampplite\\open-audit\\other";
+            $filepath = $this->config->item('base_path') . '\other';
             $command_string = "echo y | $filepath\\plink.exe -ssh ".$username."@".$ip." -pw ".$password." exit";
             exec($command_string, $output, $return_var);
             if ($return_var == '0') {

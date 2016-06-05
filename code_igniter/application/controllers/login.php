@@ -421,13 +421,13 @@ class login extends CI_Controller
     {
         $file = @json_decode(file_get_contents('/usr/local/opmojo/conf/modal_oae.json'));
         if (!$file) {
-            $file = @json_decode(file_get_contents('/usr/local/open-audit/other/modal_oae.json'));
+            $file = @json_decode(file_get_contents($this->config->item('base_path') . '/other/modal_oae.json'));
         }
         if (!$file) {
             $file = @json_decode(file_get_contents('c:\\omk\\conf\\modal_oae.json'));
         }
         if (!$file) {
-            $file = @json_decode(file_get_contents('c:\\xampplite\\open-audit\\other\\modal_oae.json'));
+            $file = @json_decode(file_get_contents($this->config->item('base_path') . '\\other\\modal_oae.json'));
         }
         if (!$file) {
             $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');

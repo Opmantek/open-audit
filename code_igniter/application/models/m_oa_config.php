@@ -166,6 +166,13 @@ class M_oa_config extends MY_Model
         $query = $this->db->query($sql);
         $result = $query->result();
         $this->config->config['device_count'] = intval($result[0]->device_count);
+
+        if ((string) php_uname('s') === 'Windows NT') {
+            $this->config->config['base_path'] = str_replace('\code_igniter\application\models\m_oa_config.php', '', __FILE__);
+        } else {
+            $this->config->config['base_path'] = str_replace('/code_igniter/application/models/m_oa_config.php', '', __FILE__);
+        }
+
     }
 
     public function get_credentials()
