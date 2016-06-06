@@ -33,6 +33,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+$orgs = $this->data['orgs'];
 $options = $this->data['options'];
 $options_scripts = $this->data['options_scripts'];
 $files = '';
@@ -43,10 +44,10 @@ foreach ($this->response->data['files'] as $file) {
 }
 
 foreach ($options_scripts as $key => $value) {
-    $script_options[$key] = generate_options($value, $options, $files);
+    $script_options[$key] = generate_options($value, $options, $files, $orgs);
 }
 
-function generate_options($option_list, $options, $files) {
+function generate_options($option_list, $options, $files, $orgs) {
     $return = '<table width="100%">';
     foreach ($options as $option) {
         foreach ($option_list as $list_item) {
@@ -58,7 +59,15 @@ function generate_options($option_list, $options, $files) {
                     case 'number';
                     case 'url';
                     case 'date':
-                        $return .= '<td><input size="40" type="' . $option->type . '" name="data[options][' . $option->name . ']" value="' . $option->default . '" id="data[options][' . $option->name . ']" /></td><td> ' . $option->help . '</td></tr>';
+                        if ($option->name != 'org_id') {
+                            $return .= '<td><input size="40" type="' . $option->type . '" name="data[options][' . $option->name . ']" value="' . $option->default . '" id="data[options][' . $option->name . ']" /></td><td> ' . $option->help . '</td></tr>';
+                        } else {
+                            $return .= '<td><select name="data[options][org_id]" id="data[options][org_id]">';
+                            foreach ($orgs as $org) {
+                                $return .= '<option value="' . $org->id . '">' . $org->name . '</option>';
+                            }
+                            $return .= '</select></td></tr>';
+                        }
                         break;
 
                     case 'select':

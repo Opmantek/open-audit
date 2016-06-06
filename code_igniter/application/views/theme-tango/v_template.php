@@ -55,7 +55,7 @@ if ($function == "list_devices") {
     $title .= " - ".ucwords(str_replace("_", " ", $function));
 }
 
-function print_something($string)
+function print_something($string = '')
 {
     if ((mb_strlen($string) == 0) or ($string == '0000-00-00')) {
         return '-';

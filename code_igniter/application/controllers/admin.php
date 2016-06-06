@@ -271,7 +271,7 @@ class admin extends MY_Controller
         $this->load->helper('file');
         $file = @intval($this->uri->segment(3, 0));
         $complete_filename = '';
-        if (php_uname('s') === 'Linux') {
+        if (php_uname('s') != 'Windows NT') {
             switch ($file) {
                 case '1':
                     $complete_filename = $this->config->item('base_path') . '/other/log_system.log';

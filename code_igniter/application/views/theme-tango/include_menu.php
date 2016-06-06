@@ -236,7 +236,9 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Scripts')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin/add_script_audit_windows'><?php echo __('Create Audit Windows')?></a></li>
+                    <!-- <li><a href='<?php echo $oa_web_index?>/admin/add_script_audit_windows'><?php echo __('Create Audit Windows')?></a></li> -->
+                    <li><a href='<?php echo $oa_web_index?>/scripts'><?php echo __('View Scripts')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/scripts?action=create'><?php echo __('Add Script')?></a></li>
                 </ul>
             </li>
 

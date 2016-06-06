@@ -95,6 +95,8 @@ class scripts extends MY_Controller
         include 'include_scripts_options.php';
         $this->data['options'] = $options;
         $this->data['options_scripts'] = $options_scripts;
+        $this->load->model('m_orgs');
+        $this->data['orgs'] = $this->m_orgs->get_orgs();
         $this->load->model('m_files');
         $this->response->data['files'] = $this->m_files->collection();
         output($this->response);

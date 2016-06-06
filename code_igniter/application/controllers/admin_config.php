@@ -49,7 +49,7 @@ class Admin_config extends MY_Controller
         redirect('/');
     }
 
-    # Same function aqs ahax::update_config except with a redirect to the homepage after submission.
+    # Same function as ajax::update_config except with a redirect to the homepage after submission.
     # TODO - replace this or add the redirect function to the ajax::update_config function.
     # Use the new JSON api going forward.
     # This was written specifically for the licensing modal to update the oae_prompt data

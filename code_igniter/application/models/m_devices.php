@@ -154,6 +154,13 @@ class M_devices extends MY_Model
         $query = $this->db->query($sql, $data);
         $document['location'] = $query->result();
 
+        // the additional_fields object
+        $sql = "SELECT additional_field_item.* FROM additional_field_item WHERE system_id = ?";
+        $sql = $this->clean_sql($sql);
+        $data = array($CI->response->id);
+        $query = $this->db->query($sql, $data);
+        $document['additional_fields'] = $query->result();
+
         // the purchase object
         $sql = "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
         $sql = $this->clean_sql($sql);

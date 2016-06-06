@@ -76,7 +76,7 @@ class M_orgs extends MY_Model
         $CI = & get_instance();
         $sql = "SELECT * FROM oa_org WHERE id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array($CI->response->id);
+        $data = array(intval($CI->response->id));
         $temp_debug = $this->db->db_debug;
         $this->db->db_debug = FALSE;
         $query = $this->db->query($sql, $data);
@@ -179,5 +179,18 @@ class M_orgs extends MY_Model
         } else {
             return ($result);
         }
+    }
+
+    public function get_orgs()
+    {
+        $CI = & get_instance();
+        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id ";
+        $sql = $this->clean_sql($sql);
+        $temp_debug = $this->db->db_debug;
+        $this->db->db_debug = FALSE;
+        $query = $this->db->query($sql);
+        $this->db->db_debug = $temp_debug;
+        $result = $query->result();
+        return($result);
     }
 }

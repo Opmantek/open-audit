@@ -847,7 +847,7 @@ class main extends MY_Controller
         $this->load->model("m_oa_org");
 
         $this->load->model("m_devices_components");
-        // $this->data['additional_fields_data'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
+        $this->data['additional_fields'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
         // $sorted_names = $this->m_additional_fields->get_additional_fields_names();
         // sort($sorted_names);
         // $this->data['additional_fields_names'] = $sorted_names;
@@ -891,7 +891,7 @@ class main extends MY_Controller
         $this->data['website_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'website\'');
         $this->data['windows'] = $this->m_devices_components->read($this->data['id'], 'y', 'windows');
 
-        $this->data['additional_fields_data'] = $this->m_additional_fields->get_system_fields($this->data['id']);
+        #$this->data['additional_fields_data'] = $this->m_additional_fields->get_system_fields($this->data['id']);
         $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
         $this->data['audit_log'] = $this->m_audit_log->read($this->data['id']);
         $this->data['change_log'] = $this->m_change_log->readDevice($this->data['id']);
@@ -1153,6 +1153,7 @@ class main extends MY_Controller
         $data['oae_server'] = '';
         $data['oae_username'] = '';
         $phpini = '';
+        $opCommon = '';
 
         if (php_uname('s') == 'Windows NT') {
             $data['os_platform'] = 'Windows';
@@ -1180,7 +1181,6 @@ class main extends MY_Controller
                 $data['os_version'] = 'RedHat';
             }
 
-            $opCommon = '';
             if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
                 $opCommon = '/usr/local/omk/conf/opCommon.nmis';
             } elseif (file_exists('/usr/local/opmojo/conf/opCommon.nmis')) {
@@ -1420,11 +1420,12 @@ class main extends MY_Controller
         ### oae config details ###
 
         # oae link
-        if (stripos($data['os_platform'], 'linux') !== false) {
-            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis 2>/dev/null | grep oae_link';
-        } elseif ($data['os_platform'] == 'Windows') {
+        if (php_uname('s') == 'Windows NT') {
             $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_link"';
+        } else {
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis 2>/dev/null | grep oae_link';
         }
+
         exec($command_string, $output, $return_var);
         if (isset($output[0])) {
             $data['oae_link'] = @$output[0];
@@ -1434,15 +1435,16 @@ class main extends MY_Controller
         unset($command_string);
 
         # oae server
-        if (stripos($data['os_platform'], 'linux') !== false) {
+        if (php_uname('s') == 'Windows NT') {
+            $command_string = 'type '.$opCommon.' | find "oae_server"';
+        } else {
             if ($opCommon != '') {
                 $command_string = 'cat '.$opCommon.' 2>/dev/null | grep oae_server';
             } else {
                 $command_string = '';
             }
-        } elseif ($data['os_platform'] == 'Windows') {
-            $command_string = 'type '.$opCommon.' | find "oae_server"';
         }
+
         if ($command_string != '') {
             exec($command_string, $output, $return_var);
             if (isset($output[0])) {
@@ -1456,10 +1458,10 @@ class main extends MY_Controller
         unset($command_string);
 
         # oae user
-        if (stripos($data['os_platform'], 'linux') !== false) {
-            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_user';
-        } elseif ($data['os_platform'] == 'Windows') {
+        if (php_uname('s') == 'Windows NT') {
             $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_user"';
+        } else {
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis 2>/dev/null | grep oae_user';
         }
         exec($command_string, $output, $return_var);
         if (isset($output[0])) {

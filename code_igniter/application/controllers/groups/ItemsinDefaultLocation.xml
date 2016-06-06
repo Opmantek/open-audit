@@ -3,8 +3,7 @@
 	<details>
 		<group_name>Items in Default Location</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.location_id
- = '0' AND system.status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.location_id = '0' AND system.status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_description>Items in Default Location</group_description>
 		<group_category>location</group_category>

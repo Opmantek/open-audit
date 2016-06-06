@@ -60,14 +60,14 @@ if ($query) {
 		<tbody>
 	<?php foreach ($query as $key): ?>
 			<tr>
-				<td><?php echo $key->timestamp?></td>
+				<td><?php echo $key->{'change_log.timestamp'}?></td>
 				<td><span style="display: none;"><?php echo $key->ip?></span><?php echo ip_address_from_db($key->ip)?></td>
 				<td style="text-align: center;"><img src="<?php echo $oa_theme_images ?>/16_<?php echo $key->icon; ?>.png" style='border-width:0px;' title="" alt=""/></td>
 				<td><a class="SystemPopupTrigger" rel="<?php echo intval($key->id); ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->id)?>"><?php echo htmlentities($key->name)?></a></td>
-				<td><?php echo htmlentities($key->db_table)?></td>
-				<td><?php echo htmlentities($key->db_action)?></td>
-				<td><?php echo htmlentities($key->details)?></td>
-				<td align='center'><input type="checkbox" id="alert_id_<?php echo intval($key->change_log_id)?>" name="alert_id_<?php echo intval($key->change_log_id)?>" /></td>
+				<td><?php echo htmlentities($key->{'change_log.db_table'})?></td>
+				<td><?php echo htmlentities($key->{'change_log.db_action'})?></td>
+				<td><?php echo htmlentities($key->{'change_log.details'})?></td>
+				<td align='center'><input type="checkbox" id="alert_id_<?php echo intval($key->{'change_log.id'})?>" name="alert_id_<?php echo intval($key->{'change_log.id'})?>" /></td>
 			</tr>
 	<?php endforeach;
     ?>
@@ -90,13 +90,13 @@ if (document.getElementById("alert_id_0").checked == true)
 {
 <?php
 foreach ($query as $key):
-echo "\tdocument.getElementById(\"alert_id_".$key->alert_id."\").checked = true;\n";
+echo "\tdocument.getElementById(\"alert_id_".$key->{'change_log.id'}."\").checked = true;\n";
 endforeach;
 ?>
 } else {
 <?php
 foreach ($query as $key):
-echo "\tdocument.getElementById(\"alert_id_".$key->alert_id."\").checked = false;\n";
+echo "\tdocument.getElementById(\"alert_id_".$key->{'change_log.id'}."\").checked = false;\n";
 endforeach;
 ?>
 }

@@ -256,7 +256,7 @@ if (strpos($system[0]->type, 'printer') !== false) {
             echo "</div>\n";
             ?>
         </div>
-        <?php echo display_custom_field('system_details', $additional_fields_data, $edit); ?>
+        <?php echo display_custom_field('system_details', $additional_fields, $edit); ?>
     </fieldset>
 </form>
 </div>

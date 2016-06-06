@@ -443,6 +443,9 @@ class M_oa_config extends MY_Model
         if ($ip == '127.0.0.1' or $ip == '127.0.1.1') {
             return true;
         }
+        if ($ip == '::1') {
+            return true;
+        }
         $sql = "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(name, LOCATE('/', name)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(name, 1, LOCATE('/', name)-1))";
         $sql = $this->clean_sql($sql);
         $data = array("$ip");

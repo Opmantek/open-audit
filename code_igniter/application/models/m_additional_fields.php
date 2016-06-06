@@ -220,10 +220,7 @@ class M_additional_fields extends MY_Model
     public function get_additional_fields_data($system_id)
     {
         # TODO - return an result set containing only fields where system is in group that field is allowed for
-        $sql = "SELECT additional_field.*, additional_field_item.* 
-                FROM additional_field LEFT JOIN additional_field_item ON 
-                    (additional_field_item.id = additional_field.id AND 
-                    (additional_fields_item.system_id = ? OR additional_fields_item.system_id IS NULL))";
+        $sql = "SELECT additional_field.id as `additional_field.id`, additional_field.group_id, additional_field.name, additional_field.type, additional_field.values, additional_field.placement, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);

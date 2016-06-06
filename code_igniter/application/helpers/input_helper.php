@@ -196,7 +196,7 @@ if (! function_exists('inputRead')) {
         # get the sub_resource id
         $CI->response->sub_resource_id = $CI->uri->segment(4, '');
         if (!empty($CI->input->get('sub_resource_id'))) {
-            $CI->response->sub_resource_id = $CI->input->get('sub_resource');
+            $CI->response->sub_resource_id = $CI->input->get('sub_resource_id');
         }
         if (!empty($CI->input->post('sub_resource_id'))) {
             $CI->response->sub_resource_id = $CI->input->post('sub_resource_id');

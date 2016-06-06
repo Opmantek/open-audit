@@ -203,8 +203,9 @@ function clean_url($url)
 
 function display_custom_field($field_placement, $additional_fields, $edit)
 {
+    #echo "<pre>\n"; print_r($additional_fields); echo "</pre>\n";
     foreach ($additional_fields as $field) {
-        if ($field->field_placement == $field_placement) {
+        if ($field->placement == $field_placement) {
             $width = "120";
             if ($field_placement == 'view_summary_windows') {
                 $width = '160';
@@ -212,48 +213,17 @@ function display_custom_field($field_placement, $additional_fields, $edit)
 
             # TODO: fix this string output hack with real html entities
             echo "<div style=\"float: left; width: 90%; \">\n";
-            echo "<label for=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_outer\" >".htmlentities(__($field->field_name)).": </label>";
+            echo "<label for=\"custom_".htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'})."_outer\" >".htmlentities(__($field->name)).": </label>";
 
-            if ($field->field_type == 'list') {
-                echo "<span id=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_outer\">";
-                    echo "<span id=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_inner\" onclick=\"display_additional_" . str_replace(' ', '_', $field->field_name) . "();\" >";
-                        echo print_something($field->data_value);
+            if ($field->type == 'list') {
+                echo "<span id=\"custom_".htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'})."_outer\">";
+                    echo "<span id=\"custom_".htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'})."_inner\" onclick=\"display_additional_" . str_replace(' ', '_', $field->name) . "();\" >";
+                        echo @print_something($field->value);
                     echo "</span>";
                 echo "</span>";
             } else {
-                echo "<span id=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."\" ".$edit.">".print_something($field->data_value)."</span>";
+                echo "<span id=\"custom_".htmlentities($field->type)."_".@htmlentities($field->{'additional_field.id'})."_".@htmlentities($field->id)."\" ".$edit.">".@print_something($field->value)."</span>";
             }
-            if ($edit != '') {
-                # TODO - fix this hard coded path. Should be able to use global $oa_theme_images but it seems not to work :-(
-                echo '<img src="/open-audit/theme-tango/tango-images/16_edit_out.png" onmouseover="this.src=\'/open-audit/theme-tango/tango-images/16_edit_hover.png\'" onmouseout="this.src=\'/open-audit/theme-tango/tango-images/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
-            }
-            echo "<br />&nbsp;\n";
-            echo "</div>\n";
-        }
-    }
-}
-
-function display_custom_field_old($field_placement, $additional_fields, $edit)
-{
-    foreach ($additional_fields as $field) {
-        if ($field->field_placement == $field_placement) {
-            $data_id = "";
-            $data_value = "";
-
-            $data_id = "field_".$field->field_type;
-            $data_id = $field->$data_id;
-
-            $data_value = "field_".$field->field_type;
-            $data_value = $field->$data_value;
-
-            $width = "120";
-            if ($field_placement == 'view_summary_windows') {
-                $width = '160';
-            }
-            # TODO: fix this string output hack with real html entities
-            echo "<div style=\"float: left; width: 90%; \">\n";
-            echo "<label for=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->field_details_id)."_".htmlentities($field->field_id)."\" >".htmlentities(__($field->field_name)).": </label>";
-            echo   "<span id=\"custom_".htmlentities($field->field_type)."_".htmlentities($field->field_details_id)."_".htmlentities($field->field_id)."\" ".$edit.">".print_something($data_value)."</span>";
             if ($edit != '') {
                 # TODO - fix this hard coded path. Should be able to use global $oa_theme_images but it seems not to work :-(
                 echo '<img src="/open-audit/theme-tango/tango-images/16_edit_out.png" onmouseover="this.src=\'/open-audit/theme-tango/tango-images/16_edit_hover.png\'" onmouseout="this.src=\'/open-audit/theme-tango/tango-images/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';

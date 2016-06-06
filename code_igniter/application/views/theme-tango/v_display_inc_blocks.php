@@ -84,7 +84,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                 <?php }
                 $windows_service_pack = $key->service_pack;
             endforeach;
-            echo display_custom_field('view_summary_windows',  $additional_fields_data, $edit);
+            echo display_custom_field('view_summary_windows',  $additional_fields, $edit);
             ?>
         </fieldset>
     </form>
@@ -110,7 +110,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <p><label for="processor_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="processor_manufacturer" class="form_field"><?php echo print_something($key->manufacturer)?></span></p>
                     <p><label for="processor_architecture"><?php echo __('Architecture')?>: </label><span id="processor_architecture" class="form_field"><?php echo print_something($key->architecture)?></span></p>
                 <?php endforeach; ?>
-                <?php echo display_custom_field('view_hardware_processor',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_processor',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php
@@ -156,7 +156,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <?php endforeach; ?>
                     </tbody>
                 </table>
-                <?php echo display_custom_field('view_hardware_memory',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_memory',  $additional_fields, $edit); ?>
                 </div>
             </fieldset>
         </form>
@@ -179,7 +179,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <p><label for="bios_version"><?php echo __('Version')?>: </label><span id="bios_version"><?php echo print_something($key->version); ?></span></p>
                     <p><label for="bios_asset_tag"><?php echo __('Asset Tag')?>: </label><span id="bios_asset_tag"><?php echo print_something($key->asset_tag); ?></span></p>
                 <?php endforeach; ?>
-                <?php echo display_custom_field('view_hardware_bios',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_bios',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -201,7 +201,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <p><label for="motherboard_cpu_type"><?php echo __('CPU Type')?>: </label><span id="motherboard_cpu_type"><?php echo print_something($key->processor_type)?></span></p>
                     <p><label for="motherboard_memory_slots"><?php echo __('Memory Slots')?>: </label><span id="motherboard_memory_slots"><?php echo print_something($key->memory_slot_count)?></span></p>
                 <?php endforeach; ?>
-                <?php echo display_custom_field('view_hardware_motherboard',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_motherboard',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -304,7 +304,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                 </fieldset>
                 <br /><br />
             <?php endforeach;
-            echo display_custom_field('view_hardware_network',  $additional_fields_data, $edit);
+            echo display_custom_field('view_hardware_network',  $additional_fields, $edit);
             ?></fieldset>
         </form>
     <?php } ?>
@@ -342,7 +342,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </tbody>
                 </table>
                 </div>
-                <?php echo display_custom_field('view_hardware_scsi_controller',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_scsi_controller',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -459,7 +459,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </fieldset>
                     <br /><br />
                     <?php endforeach; ?>
-                    <?php echo display_custom_field('view_hardware_hard_drive',  $additional_fields_data, $edit)?>
+                    <?php echo display_custom_field('view_hardware_hard_drive',  $additional_fields, $edit)?>
                     <!-- mounted volumes - not associated with any particular disk -->
                     <?php 
                     $volumes = 0;
@@ -544,7 +544,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </tbody>
                 </table>
                 </div>
-                <?php echo display_custom_field('view_hardware_optical',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_optical',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -582,7 +582,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </tbody>
                 </table>
                 </div>
-                <?php echo display_custom_field('view_hardware_video',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_video',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -624,7 +624,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         <?php endforeach; ?>
                         </tbody>
                     </table>
-                <?php echo display_custom_field('view_hardware_monitor',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_monitor',  $additional_fields, $edit); ?>
                 </div>
             </fieldset>
         </form>
@@ -662,7 +662,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </tbody>
                 </table>
                 </div>
-                <?php echo display_custom_field('view_hardware_sound',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_sound',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>

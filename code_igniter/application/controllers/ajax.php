@@ -209,6 +209,7 @@ class ajax extends MY_Controller
             $log_details->message = "GET request received to ajax/update_system_man. This is deprecated.";
             $log_details->severity = 5;
             stdlog($log_details);
+            return;
         }
 
         $this->load->model("m_system");
@@ -224,15 +225,15 @@ class ajax extends MY_Controller
                 # index.php/ajax/update_system_man/[system_id]/custom_[field_type]_[data_id]_[field_id]/[value]
                 # 0 - custom
                 # 1 - additional_field.field_type
-                # 2 - additional_field_item.field_details_id
+                # 2 - additional_field_item.additional_field_id
                 # 3 - additional_field.field_id
 
                 # TODO - should test if system_id is part of additional_field.group_id
                 # The code below assumes the view has done this (and it has), but it doesn't verify it.
                 # Could call this directly using a URL and set a custom field on a device that is not supposed to have it
 
-                $sql = "/* ajax::update_system_man */ SELECT group_id FROM additional_field WHERE field_id = ?";
-                $data_array = array($data[3]);
+                $sql = "/* ajax::update_system_man */ SELECT group_id FROM additional_field WHERE id = ?";
+                $data_array = array($data[2]);
                 $query = $this->db->query($sql, $data_array);
                 $row = $query->row();
                 $group_id = $row->group_id;
@@ -243,22 +244,23 @@ class ajax extends MY_Controller
                         $group_allowed = 'y';
                     }
                 }
-
                 if ($group_allowed == 'y') {
-                    $sql = "/* ajax::update_system_man */ SELECT * FROM additional_field_item WHERE field_id = ? AND system_id = ?";
-                    $data_array = array($data[3], $this->data['system_id']);
+                    $sql = "/* ajax::update_system_man */ SELECT * FROM additional_field_item WHERE additional_field_id = ? AND system_id = ?";
+                    $data_array = array($data[2], $this->data['system_id']);
                     $query = $this->db->query($sql, $data_array);
                     if ($query->num_rows() > 0) {
                         # we are updating an existing value
                         $row = $query->row();
-                        $sql = "/* ajax::update_system_man */ UPDATE additional_field_item SET field_".$data[1]." = '".$this->oa_urldecode($this->data['field_data'])."' WHERE field_details_id = '".$row->field_details_id."'";
-                        $query = $this->db->query($sql);
+                        $sql = "UPDATE additional_field_item SET value = ? WHERE id = ?";
+                        $data = array($this->oa_urldecode($this->data['field_data']), intval($row->id));
+                        $query = $this->db->query($sql, $data);
                         $this->m_edit_log->create($this->data['system_id'], "", "additional_field_item", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));
                     } else {
                         # we have to insert a new record for a custom data value for this system
-                        $sql = "/* ajax::update_system_man */ INSERT INTO additional_field_item ( field_details_id, system_id, field_id, field_".$data[1].") VALUES ( NULL, '".$this->data['system_id']."', '".$data[3]."', '".$this->oa_urldecode($this->data['field_data'])."')";
-                        $query = $this->db->query($sql);
+                        $sql = "/* ajax::update_system_man */ INSERT INTO additional_field_item ( id, system_id, additional_field_id, timestamp, value) VALUES ( NULL, ?, ?, NOW(), ?)";
+                        $data = array(intval($this->data['system_id']), $data[3], $this->oa_urldecode($this->data['field_data']));
+                        $query = $this->db->query($sql, $data);
                         $this->m_edit_log->create($this->data['system_id'], "", "additional_field_item", "", "", $this->oa_urldecode($this->data['field_data']), "");
                         echo htmlentities($this->oa_urldecode($this->data['field_data']));
                     }

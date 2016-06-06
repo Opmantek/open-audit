@@ -866,16 +866,15 @@ $(document).ready(function(){
 });
 
 <?php
-foreach ($additional_fields_data as $field) {
-    if ($field->field_type == 'list') {
-
-        $field_id = "custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id);
-        $field_contents = "<select id='" . $field_id . "' onchange='send_additional_" . str_replace(' ', '_', $field->field_name) . "();' >";
-        $values = explode(',', $field->field_values);
+foreach ($additional_fields as $field) {
+    if ($field->type == 'list') {
+        $field_id = "custom_".htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'});
+        $field_contents = "<select id='" . $field_id . "' onchange='send_additional_" . str_replace(' ', '_', $field->name) . "();' >";
+        $values = explode(',', $field->values);
         $field_contents .= "<option></option>";
         $field_contents .= "<option value='-'>Remove Value</option>";
         foreach ($values as $value) {
-            if ($field->data_value == $value) {
+            if (!empty($field->value) and $field->value == $value) {
                 $selected = ' selected ';
             } else {
                 $selected = ' ';
@@ -886,27 +885,24 @@ foreach ($additional_fields_data as $field) {
         ?>
 
 
-        function display_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
-            document.getElementById("<?php echo $field_id; ?>_outer").innerHTML = "<span id='custom_<?php echo htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id); ?>_inner'><?php echo $field_contents; ?></span>";
+        function display_additional_<?php echo str_replace(' ', '_', $field->name); ?>() {
+            document.getElementById("<?php echo $field_id; ?>_outer").innerHTML = "<span id='custom_<?php echo htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'}); ?>_inner'><?php echo $field_contents; ?></span>";
         }
 
-        function send_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
+        function send_additional_<?php echo str_replace(' ', '_', $field->name); ?>() {
             table_text=document.getElementById("<?php echo $field_id; ?>").value;
-            // http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/<?php echo "custom_varchar_" . htmlentities($field->data_id) . "_" . $field->field_id; ?>/'+submitted_value);
-            // http.onreadystatechange = receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>;
-            // http.send(null);
-            data = "name=<?php echo "custom_varchar_" . htmlentities($field->data_id) . "_" . $field->field_id; ?>&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+            data = "name=<?php echo "custom_" . @htmlentities($field->type) . "_" . @htmlentities($field->{'additional_field.id'}) . "_" . @intval($field->id) ; ?>&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
             http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
             http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             http.send(data);
-            http.onreadystatechange = receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>;
+            http.onreadystatechange = receive_additional_<?php echo str_replace(' ', '_', $field->name); ?>;
         }
 
-        function receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
+        function receive_additional_<?php echo str_replace(' ', '_', $field->name); ?>() {
           if(http.readyState == 4 && http.status == 200){
             // Text returned FROM the PHP script
             if(http.responseText) {
-              update = "<span id='custom_<?php echo htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_inner"; ?>' onclick='display_additional_<?php echo str_replace(' ', '_', $field->field_name);?>();' >"+http.responseText+"</span>";
+              update = "<span id='custom_<?php echo htmlentities($field->type)."_".@htmlentities($field->additional_field_id)."_".@htmlentities($field->id)."_inner"; ?>' onclick='display_additional_<?php echo str_replace(' ', '_', $field->name);?>();' >"+http.responseText+"</span>";
               document.getElementById("<?php echo $field_id; ?>_outer").innerHTML = update;
             }
           }
