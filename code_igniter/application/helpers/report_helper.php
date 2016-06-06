@@ -48,7 +48,7 @@ if (! function_exists('refresh_report_definitions')) {
         # get the list of report XML definitions
         $report_files = array();
         $paths = array('c:\omk\reports',
-            $this->config->item('base_path') . '/code_igniter/application/controllers/reports',
+            $CI->config->item('base_path') . '/code_igniter/application/controllers/reports',
             '/usr/local/omk/reports',
             '/usr/local/opmojo/reports');
         foreach ($paths as $path) {
