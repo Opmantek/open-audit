@@ -85,17 +85,18 @@ if (! function_exists('inputRead')) {
         $CI->response->id = 0;
         $CI->response->sub_resource = '';
         $CI->response->sub_resource_id = 0;
-        $CI->response->format = '';
+        $CI->response->current = 'y';
         $CI->response->debug = false;
-        $CI->response->query_string = '';
-        $CI->response->version = 1;
-        $CI->response->total = '';
         $CI->response->filtered = '';
+        $CI->response->format = '';
+        $CI->response->groupby = '';
         $CI->response->internal = new stdClass();
         $CI->response->links = array();
+        $CI->response->properties = '';
+        $CI->response->query_string = '';
         $CI->response->sort = '';
-        $CI->response->current = 'y';
-        $CI->response->groupby = '';
+        $CI->response->total = '';
+        $CI->response->version = 1;
         
         # Allow for URLs thus:
         # /api/{version}/
@@ -409,14 +410,25 @@ if (! function_exists('inputRead')) {
             $CI->response->internal->limit = '';
         }
 
-        # get the list of requested properties
-        $CI->response->properties = '';
+        # get the list of requested properties (usually) properties=id,name,status
         if (isset($_GET['properties'])) {
             $CI->response->properties = $_GET['properties'];
         }
         if (isset($_POST['properties'])) {
             $CI->response->properties = $_POST['properties'];
         }
+
+        # Allow for format of properties=["id", "name", "status"]
+        if (json_decode($CI->response->properties)) {
+            $temp = json_decode($CI->response->properties);
+            unset($CI->response->properties);
+            $CI->response->properties = '';
+            foreach ($temp as $property) {
+                $CI->response->properties .= $property . ',';
+            }
+            $CI->response->properties = substr($CI->response->properties, 0, -1);
+        }
+
         if ($CI->response->properties == '') {
             # set some defaults
             if ($CI->response->action == 'collection' and $CI->response->collection == 'devices') { 
