@@ -104,7 +104,8 @@ $system[0]->ip = ip_address_from_db($system[0]->ip);
 $system[0]->uptime = strTime($system[0]->uptime);
 
 # create the individual summary sections
-$summary_attributes = array('hostname' => 'text' ,
+$summary_attributes = array('name' => 'text',
+                            'hostname' => 'text' ,
                             'sysName' => 'text',
                             'ip' => 'text',
                             'domain' => 'text',
@@ -256,7 +257,7 @@ if (strpos($system[0]->type, 'printer') !== false) {
             echo "</div>\n";
             ?>
         </div>
-        <?php echo display_custom_field('system_details', $additional_fields, $edit); ?>
+        <?php echo display_custom_field('system', $additional_fields, $edit); ?>
     </fieldset>
 </form>
 </div>

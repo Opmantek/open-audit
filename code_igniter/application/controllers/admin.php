@@ -5282,6 +5282,14 @@ class admin extends MY_Controller
 
             $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_windows.vbs', '" . $options . "', 'The default audit Windows config.', 'audit_windows.vbs', '', 'system', NOW())";
 
+            $sql[] = "UPDATE additional_field_item SET placement = 'custom' WHERE placement = 'view_summary_custom'";
+            $sql[] = "UPDATE additional_field_item SET placement = 'location' WHERE placement = 'view_summary_location'";
+            $sql[] = "UPDATE additional_field_item SET placement = 'network' WHERE placement = 'view_summary_network'";
+            $sql[] = "UPDATE additional_field_item SET placement = 'purchase' WHERE placement = 'view_summary_purchase'";
+            $sql[] = "UPDATE additional_field_item SET placement = 'san' WHERE placement = 'view_hardware_san'";
+            $sql[] = "UPDATE additional_field_item SET placement = 'san_disk' WHERE placement = 'view_hardware_san_disk'";
+            $sql[] = "UPDATE additional_field_item SET placement = 'system' WHERE placement = 'system_details'";
+            $sql[] = "UPDATE additional_field_item SET placement = 'windows' WHERE placement = 'view_summary_windows'";
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";

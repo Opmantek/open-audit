@@ -48,12 +48,16 @@ echo form_open('admin_field/add_field')."\n"; ?>
 					</select></p>
 				<p><label for='placement'><?php echo __('Placement'); ?>: </label>
 					<select id='placement' name='placement' tabindex='3' title='Field Placement' >
-						<option value="system_details"><?php echo __('System Details'); ?></option>
-						<option value="view_summary_windows"><?php echo __('Windows Details'); ?></option>
-						<option value="view_summary_purchase"><?php echo __('Purchase'); ?></option>
-						<option value="view_summary_network"><?php echo __('Network Summary'); ?></option>
-						<option value="view_summary_location"><?php echo __('Location / Contact'); ?></option>
-						<option value="view_summary_custom"><?php echo __('Custom'); ?></option>
+						<option value="custom"><?php echo __('Custom'); ?></option>
+						<option value="location"><?php echo __('Location'); ?></option>
+						<option value="module"><?php echo __('Module'); ?></option>
+						<option value="network"><?php echo __('Network Summary'); ?></option>
+						<option value="san"><?php echo __('San'); ?></option>
+						<option value="san_disk"><?php echo __('San Disk'); ?></option>
+						<option value="system"><?php echo __('System Details'); ?></option>
+						<option value="phone"><?php echo __('Phone'); ?></option>
+						<option value="purchase"><?php echo __('Purchase'); ?></option>
+						<option value="windows"><?php echo __('Windows Details'); ?></option>
 					</select></p>
 				<p><label for='group_id'><?php echo __('Group'); ?>: </label>
 					<select id='group_id' name='group_id' tabindex='4' title='Group' >

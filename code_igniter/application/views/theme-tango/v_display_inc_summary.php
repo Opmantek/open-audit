@@ -83,7 +83,7 @@
 				<p><label for="lease_expiry_date"><?php echo __('Lease Expiry Date')?>: </label><span id="lease_expiry_date" <?php echo $edit?>><?php echo print_something($key->lease_expiry_date)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
 			<?php
             endforeach;
-            echo display_custom_field('view_summary_purchase',  $additional_fields, $edit); ?>
+            echo display_custom_field('purchase',  $additional_fields, $edit); ?>
 		</fieldset>
 	</form>
 	</div>
@@ -141,7 +141,7 @@
 				<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 			</div>
 			<?php
-            echo display_custom_field('view_summary_location',  $additional_fields, $edit);
+            echo display_custom_field('location',  $additional_fields, $edit);
             ?>
 		</fieldset>
 	</form>
@@ -155,7 +155,7 @@
 			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Custom Details')?></span></legend>
 			<img class='section_image' src='<?php echo $oa_theme_images;?>/48_custom.png' alt='' title='' />
 			<?php
-            echo display_custom_field('view_summary_custom', $additional_fields, $edit);
+            echo display_custom_field('custom', $additional_fields, $edit);
             ?>
 		</fieldset>
 	</form>
@@ -303,7 +303,7 @@
 				<p><label for="wall_port"><?php echo __('Wall Port')?>: </label><span id="wall_port" <?php echo $edit?>><?php echo print_something($key->wall_port)?></span><?php echo $edit_icon; ?></p>
 			<?php
             endforeach;
-            echo display_custom_field('view_summary_network',  $additional_fields, $edit); ?>
+            echo display_custom_field('network',  $additional_fields, $edit); ?>
 		</fieldset>
 	</form>
 	<?php } ?>
@@ -339,7 +339,7 @@
 				<p><label for="serial_imei"><?php echo __('IMEI Serial')?>: </label><span id="serial_imei" <?php echo $edit?>><?php echo print_something($key->serial_imei)?></span><?php echo $edit_icon; ?></p>
 				<p><label for="serial_sim"><?php echo __('SIM Serial')?>: </label><span id="serial_sim" <?php echo $edit?>><?php echo print_something($key->serial_sim)?></span><?php echo $edit_icon; ?></p>
 			<?php endforeach;
-            echo display_custom_field('view_summary_phone', $additional_fields, $edit); ?>
+            echo display_custom_field('phone', $additional_fields, $edit); ?>
 		</fieldset>
 	</form>
 	<?php } ?>
@@ -600,7 +600,7 @@
 					<?php endforeach; ?>
 					</tbody>
 					</table>
-					<?php echo display_custom_field('view_summary_module',  $additional_fields, $edit); ?>
+					<?php echo display_custom_field('module',  $additional_fields, $edit); ?>
 			</fieldset>
 		</form>
 	<?php } ?>
@@ -683,7 +683,7 @@
                         ?>
                     </tbody>
                 </table>
-                <?php echo display_custom_field('view_hardware_san',  $additional_fields, $edit); ?>
+                <?php echo display_custom_field('san',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -726,7 +726,7 @@
                         ?>
                     </tbody>
                 </table>
-                <?php echo display_custom_field('view_hardware_san_disk',  $additional_fields, $edit); ?>
+                <?php echo display_custom_field('san_disk',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
