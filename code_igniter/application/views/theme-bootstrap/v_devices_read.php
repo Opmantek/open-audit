@@ -164,6 +164,9 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                 <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
                 <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
                 <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/edit_log.svg"/><a href="#" data-menuitem="alert_log"><?php echo __('Edit Log'); ?></a></li>
+                <?php if (isset($data['windows'])) { ?>
+                   <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
+                <?php } ?>
               </ul>
           </div>
         </div>
@@ -492,6 +495,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
                               </span>
                             </div>
                         </div>
+<?php insert_additional_fields('system', $data['additional_fields']); ?>
 
                     </div>
                     <div class="col-md-5">
@@ -719,6 +723,7 @@ foreach ($list as $item) {
             }
         }
         ?>
+        <?php insert_additional_fields($item, $data['additional_fields']); ?>
       </div>
     </div>
 </div>
@@ -818,6 +823,7 @@ foreach ($list as $item) {
                     </tbody>
                 </table>
               </div>
+              <?php insert_additional_fields($item, $data['additional_fields']); ?>
             </div>
         </div>
         <?php
@@ -1017,4 +1023,49 @@ if ($data['system'][0]->type == 'computer') {
 ?>
 </div>
 </div>
+
+<?php
+function insert_additional_fields($section = '', $additional_fields = array())
+{
+    foreach ($additional_fields as $field) {
+        if ($field->{'additional_field.placement'} == $section) {
+            if ($field->{'additional_field.type'} == 'varchar') {
+                echo '                    <div class="form-group">
+                    <label for="custom_' . $field->{'additional_field.name'} . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
+                    <div class="input-group">
+                      <input disabled type="text" class="form-control" placeholder="" id="custom_' . $field->{'additional_field.name'} . '" name="custom_' . $field->{'additional_field.name'} . '" value="' . $field->{'value'} . '">
+                      <span class="input-group-btn">
+                        <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" action="edit" class="btn btn-default edit_button" type="button" value="custom_' . $field->{'additional_field.name'} . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                      </span>
+                    </div>
+                </div>' . "\n";
+            }
+            if ($field->{'additional_field.type'} == 'list') {
+                echo '                    <div class="form-group">
+                    <label for="custom_' . $field->{'additional_field.name'} . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
+                    <div class="col-sm-8 input-group">
+                        <select id="custom_' . $field->{'additional_field.name'} . '" class="form-control" disabled>' . "\n";
+
+                        foreach (explode(',', $field->{'additional_field.values'}) as $key => $value) {
+                            if ($field->{'value'} == $value) {
+                                $selected = " selected";
+                            } else {
+                                $selected = "";
+                            }
+                            echo "                          <option value='$value'$selected>".__("$value")."</option>\n";
+                        }
+
+                        echo '                        </select>
+                        <span class="input-group-btn">
+                          <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" action="edit" class="btn btn-default edit_button" type="button" value="custom_' . $field->{'additional_field.name'} . '">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                          </button>
+                        </span>
+                    </div>
+                </div>' . "\n";
+            }
+        }
+    }
+}
+?>
 <?php exit(); ?>
