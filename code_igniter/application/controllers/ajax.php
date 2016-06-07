@@ -406,42 +406,42 @@ class ajax extends MY_Controller
         if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->id) > 0) {
             $result = $this->m_system->get_system_popup($this->data['system_id']);
             foreach ($result as $system) {
-                $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->model)))));
-                $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->type)));
-                $default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->picture.'.jpg';
-                $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$model_formatted.'.jpg';
-                $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$type_formatted.'.png';
-                $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->system_id.'.jpg';
+                // $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->model)))));
+                // $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->type)));
+                // $default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->picture.'.jpg';
+                // $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$model_formatted.'.jpg';
+                // $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$type_formatted.'.png';
+                // $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->system_id.'.jpg';
 
-                # check if the picture field from the database is populated and a matching image exists
-                if (($system->picture > '') and (file_exists($default_file_exists))) {
-                    $system->picture = $system->picture.'.jpg';
-                }
+                // # check if the picture field from the database is populated and a matching image exists
+                // if (($system->picture > '') and (file_exists($default_file_exists))) {
+                //     $system->picture = $system->picture.'.jpg';
+                // }
 
-                # check if a custom images exists and overwrite
-                if (file_exists($custom_file_exists)) {
-                    $system->picture = 'custom/'.$system->system_id.'.jpg';
-                }
+                // # check if a custom images exists and overwrite
+                // if (file_exists($custom_file_exists)) {
+                //     $system->picture = 'custom/'.$system->system_id.'.jpg';
+                // }
 
-                # check if an image matching the model exists
-                if (($system->picture == '') and (file_exists($model_file_exists))) {
-                    $system->picture = ''.$model_formatted.'.jpg';
-                }
+                // # check if an image matching the model exists
+                // if (($system->picture == '') and (file_exists($model_file_exists))) {
+                //     $system->picture = ''.$model_formatted.'.jpg';
+                // }
 
-                # check if an image matching the type exists
-                if (($system->picture == '') and (file_exists($type_file_exists))) {
-                    $system->picture = ''.$type_formatted.'.png';
-                }
+                // # check if an image matching the type exists
+                // if (($system->picture == '') and (file_exists($type_file_exists))) {
+                //     $system->picture = ''.$type_formatted.'.png';
+                // }
 
-                # no matching images, assign the unknown image
-                if ($system->picture == '') {
-                    $system->picture = 'unknown.png';
-                }
+                // # no matching images, assign the unknown image
+                // if ($system->picture == '') {
+                //     $system->picture = 'unknown.png';
+                // }
 
                 echo "<div class=\"SystemPopupResult\">\n";
                 echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
                 echo "<tr>\n";
-                echo "  <td width=\"100\"><img src=\"".base_url()."device_images/".$system->picture."\" width=\"100\"/></td>\n";
+                echo "  <td width=\"100\"><img src=\"".base_url()."device_images/".$system->icon."\" width=\"100\"/></td>\n";
                 echo "  <td valign=\"top\" align=\"right\"><b>Status</b> <br /><b>Manufacturer</b> <br /><b>Model</b> <br /><b>Serial</b> <br /><b>Form Factor</b> </td>\n";
                 echo "  <td valign=\"top\" >".htmlentities($system->status)."<br />".htmlentities($system->manufacturer)."<br />".htmlentities($system->model)."<br />".htmlentities($system->serial)."<br />".htmlentities($system->form_factor)."</td>\n";
                 echo "</tr>\n";
