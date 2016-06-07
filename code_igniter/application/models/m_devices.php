@@ -155,7 +155,7 @@ class M_devices extends MY_Model
         $document['location'] = $query->result();
 
         // the additional_fields object
-        $sql = "SELECT additional_field_item.* FROM additional_field_item WHERE system_id = ?";
+        $sql = "SELECT additional_field.id as `additional_field.id`, additional_field.group_id AS `additional_field.group_id`, additional_field.name AS `additional_field.name`, additional_field.type AS `additional_field.type`, additional_field.values AS `additional_field.values`, additional_field.placement AS `additional_field.placement`, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
         $sql = $this->clean_sql($sql);
         $data = array($CI->response->id);
         $query = $this->db->query($sql, $data);
@@ -333,22 +333,66 @@ class M_devices extends MY_Model
     public function update()
     {
         $CI = & get_instance();
+        #print_r($CI->response->post_data); exit();
         $temp_debug = $this->db->db_debug;
         $this->db->db_debug = FALSE;
-        $fields = implode(' ', $this->db->list_fields('system'));
+        $custom = 'n';
+
+        # test to see if we're updating a field from additional_field_item table
+        # these fields will be prefixed with custom_
         foreach ($CI->response->post_data as $key => $value) {
-            if ($key != 'id' and stripos($fields, ' '.$key.' ') !== false) {
-                $sql = "UPDATE system SET `" . $key . "` = ? WHERE id = ?";
-                $sql = $this->clean_sql($sql);
-                $data = array("$value", intval($CI->response->id));
-                $query = $this->db->query($sql, $data);
-                if ($CI->response->debug) {
-                    $CI->response->sql = $this->db->last_query();
+            if (stripos($key, 'custom_') !== false) {
+                $custom = 'y';
+            }
+        }
+
+        # update the field in additional_field_item (or insert it)
+        if ($custom == 'y') {
+            foreach ($CI->response->post_data as $key => $value) {
+                if ($key != 'id') {
+                    $field_name = str_replace('custom_', '', $key);
+                    $field_value = $value;
+                } else {
+                    $id = $value;
                 }
-                if ($this->db->_error_message()) {
-                    log_error('ERR-0009', 'm_devices::update');
-                    $CI->response->errors[count($this->response->errors)-1]->detail_specific = $this->db->_error_message();
-                    return false;
+            }
+            $sql = "SELECT * FROM additional_field WHERE name = ?";
+            $data = array("$field_name");
+            $result = $this->run_sql($sql, $data);
+            $additional_field = $result[0];
+            $sql = "SELECT * FROM additional_field_item WHERE system_id = ? AND additional_field_id = ?";
+            $data = array(intval($id), intval($additional_field->id));
+            $result = $this->run_sql($sql, $data);
+            if (count($result) > 0) {
+                #update
+                $sql = "UPDATE additional_field_item SET value = ?, timestamp = NOW() WHERE id = ?";
+                $data = array("$field_value", intval($result[0]->id));
+                $this->run_sql($sql, $data);
+            } else {
+                #insert
+                $sql = "INSERT INTO additional_field_item (id, system_id, additional_field_id, timestamp, value) VALUES (NULL, ?, ?, NOW(), ?)";
+                $data = array(intval($id), intval($additional_field->id), "$field_value");
+                $this->run_sql($sql, $data);
+            }
+        }
+
+        # update a standard field in the system table
+        if ($custom == 'n') {
+            $fields = implode(' ', $this->db->list_fields('system'));
+            foreach ($CI->response->post_data as $key => $value) {
+                if ($key != 'id' and stripos($fields, ' '.$key.' ') !== false) {
+                    $sql = "/* m_devices::update */ " . "UPDATE system SET `" . $key . "` = ? WHERE id = ?";
+                    $sql = $this->clean_sql($sql);
+                    $data = array("$value", intval($CI->response->id));
+                    $query = $this->db->query($sql, $data);
+                    if ($CI->response->debug) {
+                        $CI->response->sql = $this->db->last_query();
+                    }
+                    if ($this->db->_error_message()) {
+                        log_error('ERR-0009', 'm_devices::update');
+                        $CI->response->errors[count($this->response->errors)-1]->detail_specific = $this->db->_error_message();
+                        return false;
+                    }
                 }
             }
         }
