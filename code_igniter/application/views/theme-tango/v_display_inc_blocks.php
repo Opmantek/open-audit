@@ -57,7 +57,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         <p><label for="windows_time_daylight"><?php echo __('Time (daylight)')?>: </label><span id="windows_time_daylight"><?php echo print_something($key->time_daylight)?></span></p>
                         <p><label for="windows_part_of_domain"><?php echo __('Part of Domain')?>: </label><span id="windows_part_of_domain"><?php echo print_something($key->part_of_domain)?></span></p>
                         <p><label for="windows_domain_role"><?php echo __('Domain Role')?>: </label><span id="windows_domain_role"><?php echo print_something($key->domain_role)?></span></p>
-                        <p><label for="os_install_date"><?php echo __('OS Install Date')?>: </label><span id="os_install_date"><?php echo print_something($system[0]->pc_date_os_installation)?></span></p>
+                        <p><label for="os_install_date"><?php echo __('OS Install Date')?>: </label><span id="os_install_date"><?php echo print_something($system[0]->os_installation_date)?></span></p>
                     </div>
                     <div style="float:left; width:40%;">
                         <p><label for="windows_workgroup"><?php echo __('Workgroup')?>: </label><span id="windows_workgroup"><?php echo print_something($key->workgroup)?></span></p>
@@ -409,7 +409,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                             <p><label for='hd_status_<?php echo str_replace('/', '-', $key->hard_drive_index)?>'><?php echo __('SMART Status')?>: </label><span id='hd_status_<?php echo str_replace('/', '-', $key->hard_drive_index)?>' class="form_field"><?php echo $key->status?>&nbsp;</span></p>
                             <p><label for='hd_interface_<?php echo str_replace('/', '-', $key->hard_drive_index)?>'><?php echo __('Interface')?>: </label><span id='hd_interface_<?php echo str_replace('/', '-', $key->hard_drive_index)?>' class="form_field"><?php echo print_something($key->interface_type)?>&nbsp;</span></p>
                             <?php if ($key->scsi_logical_unit != "") { ?>
-                            <p><label for='scsi_id_<?php echo str_replace('/', '-', $key->hard_drive_scsi_logical_unit)?>'><?php echo __('SCSI id')?>: </label><span id='scsi_id_<?php echo str_replace('/', '-', $key->hard_drive_scsi_logical_unit)?>' class="form_field"><?php echo print_something($key->scsi_logical_unit)?>&nbsp;</span></p>
+                            <p><label for='scsi_id_<?php echo str_replace('/', '-', $key->scsi_logical_unit)?>'><?php echo __('SCSI id')?>: </label><span id='scsi_id_<?php echo str_replace('/', '-', $key->scsi_logical_unit)?>' class="form_field"><?php echo print_something($key->scsi_logical_unit)?>&nbsp;</span></p>
                             <?php } ?>
                             <p><label for='hd_firmware_<?php echo str_replace('/', '-', $key->hard_drive_index)?>'><?php echo __('Firmware')?>: </label><span id='hd_firmware_<?php echo str_replace('/', '-', $key->hard_drive_index)?>' class="form_field"><?php echo print_something($key->firmware)?>&nbsp;</span></p>
                         </div>
