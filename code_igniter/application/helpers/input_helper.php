@@ -66,7 +66,7 @@ if (! function_exists('inputRead')) {
         // filter = blank
         // version = 1 if JSON requested (the original), 0 if not JSON requested (the latest available)
 
-        // Can set individual items using parameters /devices/1 == /devices?system_id=1 ???
+        // Can set individual items using parameters /devices/1 == /devices?id=1 ???
 
 
 
@@ -88,7 +88,7 @@ if (! function_exists('inputRead')) {
         $CI->response->format = '';
         $CI->response->debug = false;
         $CI->response->query_string = '';
-        $CI->response->version = '';
+        $CI->response->version = 1;
         $CI->response->total = '';
         $CI->response->filtered = '';
         $CI->response->internal = new stdClass();
@@ -97,8 +97,30 @@ if (! function_exists('inputRead')) {
         $CI->response->current = 'y';
         $CI->response->groupby = '';
         
-        
-        
+        # Allow for URLs thus:
+        # /api/{version}/
+        # /v1/
+        # /v2/
+        # as well as /devices or
+        # version={version} in the accept header
+        # get the version
+        if ($CI->uri->segments[1] == 'api' or $CI->uri->segments[1] == 'v1' or $CI->uri->segments[1] == 'v2') {
+            if ($CI->uri->segments[1] == 'api') {
+                $CI->response->version = intval($CI->uri->segment(2));
+                unset ($CI->uri->segments[1]);
+                unset ($CI->uri->segments[2]);
+            } else if ($CI->uri->segments[1] == 'v1') {
+                $CI->response->version = 1;
+                unset ($CI->uri->segments[1]);
+            } else if ($CI->uri->segments[1] == 'v2') {
+                $CI->response->version = 2;
+                unset ($CI->uri->segments[1]);
+            }
+            array_unshift($CI->uri->segments, '');
+            $CI->uri->segments = array_values($CI->uri->segments);
+        } else if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json;version=') !== false) {
+            $CI->response->version = intval(str_replace('application/json;version=', '', $_SERVER['HTTP_ACCEPT']));
+        }
         
         # get our collection - usually devices, groups, reports, etc
         $temp = $CI->uri->segment(1);
@@ -482,17 +504,6 @@ if (! function_exists('inputRead')) {
 
         $CI->response->errors = array();
 
-        # get the version
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json;version=') !== false) {
-            $CI->response->version = intval(str_replace('application/json;version=', '', $_SERVER['HTTP_ACCEPT']));
-        }
-        if (empty($CI->response->version)) {
-            if ($CI->response->format == 'json') {
-                $CI->response->version = 1;
-            } else {
-                $CI->response->version = 0;
-            }
-        }
         return;
     }
 }
