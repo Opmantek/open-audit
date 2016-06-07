@@ -331,7 +331,7 @@ if (! function_exists('stdlog')) {
             if ($log->style == 'syslog') {
                 $extra_log_line = $log->timestamp.' '.$log->hostname.' '.$log->severity.' '.$log->user.' '.$log->controller.' '.$log->function.' '.$message;
             }
-            $file = $this->config->item('base_path') . '/other/open-audit.log';
+            $file = $CI->config->item('base_path') . '/other/open-audit.log';
             $handle = @fopen($file, 'a');
         }
         if (!$handle) {
