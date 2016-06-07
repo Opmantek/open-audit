@@ -470,7 +470,7 @@ if (! function_exists('inputRead')) {
         $CI->response->filter = array();
         $CI->response->query_string = urldecode($_SERVER['QUERY_STRING']);
         if ($CI->response->query_string != '') {
-            $reserved_words = ' properties limit sub_resource sub_resource_id action sort current offset format debug groupby ';
+            $reserved_words = ' properties limit sub_resource sub_resource_id action sort current offset format debug groupby query ';
             foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
                 $query = new stdClass();
                 $query->name = substr($item, 0, strpos($item, '='));
@@ -491,9 +491,12 @@ if (! function_exists('inputRead')) {
                     $query->value = '%' . substr($query->value, 4) . '%';
                     $query->operator = $operator;
                 }
-                $operator = substr($query->value, 0, 5);
-                if (strtolower($operator) == '!like') {
+                if (strtolower(substr($query->value, 0, 5)) == '!like') {
                     $query->value = '%' . substr($query->value, 5) . '%';
+                    $query->operator = 'not like';
+                }
+                if (strtolower(substr($query->value, 0, 8)) == 'not like') {
+                    $query->value = '%' . substr($query->value, 8) . '%';
                     $query->operator = 'not like';
                 }
                 $query->name = str_replace(array(',', '\'', '"', '(', ')'), '', $query->name);
@@ -505,6 +508,29 @@ if (! function_exists('inputRead')) {
                     $CI->response->filter [] = $query;
                 }
                 unset($query);
+            }
+        }
+
+        if ($query = json_decode($CI->input->get('query'))) {
+            unset ($CI->response->filter);
+            $CI->response->filter = array();
+            while (count($query) > 0) {
+                $filter = new stdClass();
+                $filter->name = array_shift($query);
+                $operator = array_shift($query);
+                if (stripos(' = != > >= < <= not like ', ' '.$operator.' ') !== false) {
+                    $filter->operator = $operator;
+                    if (stripos($filter->operator , 'like') !== false) {
+                        $filter->value = '%'.array_shift($query).'%';
+                    } else {
+                        $filter->value = array_shift($query);
+                    }
+                } else {
+                    $filter->operator = '=';
+                    $filter->value = $operator;
+                }
+                $CI->response->filter[] = $filter;
+                unset($filter);
             }
         }
 
