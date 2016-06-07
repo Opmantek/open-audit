@@ -619,7 +619,7 @@ class M_system extends MY_Model
 
     public function get_system_popup($id = '')
     {
-        $sql = "SELECT `id`, `status`, `manufacturer`, `form_factor`, `model`, `picture`, `serial`, `form_factor`, `type` FROM system WHERE system.id = ? ORDER BY system.last_seen LIMIT 1";
+        $sql = "SELECT `id`, `status`, `manufacturer`, `form_factor`, `model`, `icon`, `serial`, `form_factor`, `type` FROM system WHERE system.id = ? ORDER BY system.last_seen LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array(intval($id));
         $query = $this->db->query($sql, $data);
@@ -700,7 +700,7 @@ class M_system extends MY_Model
 
     public function get_system_summary($id)
     {
-        $sql = "SELECT system.*, oa_location.name FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ? LIMIT 1";
+        $sql = "SELECT system.*, oa_location.name AS `location_name` FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array(intval($id));
         $query = $this->db->query($sql, $data);
@@ -833,6 +833,9 @@ class M_system extends MY_Model
         }
         $details->first_timestamp = $details->timestamp;
 
+        if (!empty($details->hostname)) {
+            $details->name = $details->hostname;
+        }
         if (!isset($details->description)) {
             $details->description = '';
         }
@@ -1119,13 +1122,17 @@ class M_system extends MY_Model
             $details->hostname = $details->sysName;
         }
 
-        $sql = "SELECT hostname FROM system WHERE id = ?";
+        $sql = "SELECT name FROM system WHERE id = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$details->id");
         $query = $this->db->query($sql, $data);
         $result = $query->row();
-        $db_hostname = $result->hostname;
-
+        $db_name = $result->name;
+        if (empty($db_name)) {
+            if (!empty($details->hostname) != '' and empty($details->name)) {
+                $details->name = $details->hostname;
+            }
+        }
         # if submitting an nmap scan, do not update the type or type
         if (isset($details->last_seen_by) and $details->last_seen_by == 'nmap') {
             unset($details->type);

@@ -64,7 +64,7 @@ class devices extends MY_Controller
             if ($access_level < 1) {
                 // we should determine if the device does actually exist or not
                 // then we can throw the correct status code of 404 or 403
-                $sql = "SELECT system_id FROM system WHERE system_id = ?";
+                $sql = "SELECT system.id FROM system WHERE system.id = ?";
                 $data = array($this->response->id);
                 $query = $this->db->query($sql, $data);
                 $result = $query->result();

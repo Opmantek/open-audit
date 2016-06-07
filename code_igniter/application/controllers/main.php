@@ -490,7 +490,7 @@ class main extends MY_Controller
     public function list_devices()
     {
         $this->load->model("m_oa_group");
-        if (is_numeric($this->data['id'])) {
+        if (!empty($this->data['id']) and is_numeric($this->data['id'])) {
             // we must check to see if the user has at least VIEW permission on the group
             $this->user->access_level = $this->m_oa_group->get_group_access($this->data['id'], $this->user->id);
             if ($this->user->access_level < '3') {

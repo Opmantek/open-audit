@@ -376,7 +376,7 @@ class Admin_system extends MY_Controller
             foreach ($_POST as $key => $value) {
                 $details->$key = $value;
             }
-            $details->type = $details->type;
+            $details->name = $details->hostname;
             if (!isset($details->os_group)) {
                 $details->os_group = '';
             }
