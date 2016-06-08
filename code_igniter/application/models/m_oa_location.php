@@ -268,6 +268,10 @@ class M_oa_location extends MY_Model
      */
     public function delete_location($id)
     {
+        if ($id == 0) {
+            # do not allow deteling the defult Location
+            return;
+        }
         $sql = "DELETE FROM oa_location WHERE id = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$id");

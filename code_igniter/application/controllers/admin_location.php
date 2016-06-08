@@ -61,6 +61,10 @@ class Admin_location extends MY_Controller
 
     public function delete_location()
     {
+        if ($this->data['id'] == 0) {
+            # Do not allow deleting the defult Location
+            redirect('admin_location/list_locations');
+        }
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_group");
         $id = $this->data['id'];
