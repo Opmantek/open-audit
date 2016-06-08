@@ -54,7 +54,8 @@ class MY_Controller extends CI_Controller
     /**
      * The custom default controller object.
      */
-    public function MY_Controller()
+    #public function MY_Controller()
+    public function __construct()
     {
         parent::__construct();
         $this->benchmark->mark('code_start');
