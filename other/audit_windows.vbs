@@ -2737,10 +2737,11 @@ Set StdOut = WScript.StdOut
 if debugging > "0" then wscript.echo "print queue info" end if
 item = ""
 colItems = Empty
-Dim objExec
+dim objExec
+
 on error resume next
-Set colItems = objWMIService.ExecQuery("Select * FROM Win32_Printer",,32)
-error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Printer)" : audit_wmi_fails = audit_wmi_fails & "Win32_Printer " : end if
+	Set colItems = objWMIService.ExecQuery("Select * FROM Win32_Printer",,32)
+	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Printer)" : audit_wmi_fails = audit_wmi_fails & "Win32_Printer " : end if
 on error goto 0
 
 if IsEmpty(colItems) then
@@ -2801,7 +2802,11 @@ else
 				wscript.echo "Printer Port: " & objItem.PortName
 			end if
 
-			capabilities = join(objItem.CapabilityDescriptions, ", ")
+			capabilities = ""
+			on error resume next
+				capabilities = join(objItem.CapabilityDescriptions, ", ")
+			on error goto 0
+
 			printer_color = "False"
 			if (instr(1, capabilities, "Color", vbTextCompare) > 0) then
 				printer_color = "True"
@@ -2812,14 +2817,17 @@ else
 				printer_duplex = "True"
 			end if
 
-			printer_model = replace(objItem.DriverName, " PCL 5e", "")
-			printer_model = replace(printer_model, " PCL 5", "")
-			printer_model = replace(printer_model, " PCL5", "")
-			printer_model = replace(printer_model, " PCL 6e", "")
-			printer_model = replace(printer_model, " PCL 6", "")
-			printer_model = replace(printer_model, " PCL6", "")
-			printer_model = replace(printer_model, " PCL", "")
-			printer_model = replace(printer_model, " PS", "")
+			printer_model = ""
+			on error resume next
+				printer_model = replace(objItem.DriverName, " PCL 5e", "")
+				printer_model = replace(printer_model, " PCL 5", "")
+				printer_model = replace(printer_model, " PCL5", "")
+				printer_model = replace(printer_model, " PCL 6e", "")
+				printer_model = replace(printer_model, " PCL 6", "")
+				printer_model = replace(printer_model, " PCL6", "")
+				printer_model = replace(printer_model, " PCL", "")
+				printer_model = replace(printer_model, " PS", "")
+			on error goto 0
 
 			printer_manufacturer = ""
 			if (instr(1, printer_model, "Aficio", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
@@ -2900,7 +2908,10 @@ else
 			if MarkingTechnology = 26 then printer_type = "eBeam" end if
 			if MarkingTechnology = 27 then printer_type = "Typesetter" end if
 
-			status = int(objItem.ExtendedPrinterStatus)
+			status = 2
+			on error resume next
+				status = int(objItem.ExtendedPrinterStatus)
+			on error goto 0
 			if status = 1 then printer_status = "Other" end if
 			if status = 2 then printer_status = "Unknown" end if
 			if status = 3 then printer_status = "Idle" end if
