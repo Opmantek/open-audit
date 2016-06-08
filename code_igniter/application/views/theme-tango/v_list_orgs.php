@@ -54,21 +54,28 @@ if (count($query) > 0) {
 		<?php
         if (count($query) > 0) {
             foreach ($query as $key):
+
                 $edit_pic = "<a href=\"edit_org/".intval($key->id)."\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
                 $delete_pic = "<a href=\"delete_org/".intval($key->id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
+
                 if ($key->name == '') {
                     $key->name = '-';
                 }
-                if ($key->id != '0') {
+
+                if ($key->group_id != '0') {
                     $show_pic = "<a href=\"../main/list_devices/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' style='width:16'/></a>";
                     $deactivate_pic = "<a href=\"delete_group/".intval($key->id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                     $activate_pic = '';
                 } else {
                     $show_pic = '';
                     $deactivate_pic = '';
-                    $delete_pic = '';
                     $activate_pic = "<a href=\"activate_group/".intval($key->id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>";
                 }
+
+                if ($key->id == '0') {
+                    $delete_pic = '';
+                }
+
                 ?>
     			<tr>
     				<td align='center'><?php echo $key->total?></td>
