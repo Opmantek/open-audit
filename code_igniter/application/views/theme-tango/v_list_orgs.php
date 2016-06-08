@@ -39,7 +39,7 @@ if (count($query) > 0) {
 <table cellspacing="1" class="tablesorter">
 	<thead>
 		<tr>
-			<th align='center' width="120"><?php echo __('Systems')?></th>
+			<th align='center' width="120"><?php echo __('Devices')?></th>
 			<th><?php echo __('Organisation Name')?></th>
 			<th><?php echo __('Comment')?></th>
 			<th><?php echo __('Parent Name')?></th>
@@ -59,13 +59,14 @@ if (count($query) > 0) {
                 if ($key->name == '') {
                     $key->name = '-';
                 }
-                if ($key->group_id != '0') {
+                if ($key->id != '0') {
                     $show_pic = "<a href=\"../main/list_devices/".intval($key->group_id)."\"><img src='".$oa_theme_images."/16_device.png' alt='' title='' style='width:16'/></a>";
                     $deactivate_pic = "<a href=\"delete_group/".intval($key->id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16'/></a>";
                     $activate_pic = '';
                 } else {
                     $show_pic = '';
                     $deactivate_pic = '';
+                    $delete_pic = '';
                     $activate_pic = "<a href=\"activate_group/".intval($key->id)."\"><img src='".$oa_theme_images."/16_true.png' alt='' title='' style='width:16'/></a>";
                 }
                 ?>
