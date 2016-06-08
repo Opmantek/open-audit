@@ -220,6 +220,10 @@ class Admin_org extends MY_Controller
 
     public function delete_org()
     {
+        if ($this->data['id'] == 0) {
+            # Do not allow deleting the defult Org
+            redirect('admin_org/list_orgs');
+        }
         $this->load->model("m_oa_org");
         $this->load->model("m_oa_group");
         $org_id = $this->data['id'];

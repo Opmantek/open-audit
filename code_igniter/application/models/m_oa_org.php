@@ -146,6 +146,10 @@ class M_oa_org extends MY_Model
 
     public function delete_org($id)
     {
+        if ($id == 0) {
+            # do not allow deteling the defult Org
+            return;
+        }
         $data = array("$id");
         $sql = "UPDATE system SET org_id = '0' WHERE org_id = ?";
         $sql = $this->clean_sql($sql);
