@@ -171,7 +171,7 @@ class CI_DB_mysql_result extends CI_DB_result {
 	 */
 	function _fetch_object()
 	{
-		return mysql_fetch_object($this->result_id);
+		#return mysql_fetch_object($this->result_id);
 		return mysqli_fetch_object($this->result_id);
 	}
 
