@@ -153,6 +153,9 @@ class M_devices_components extends MY_Model
         if ($table == 'dns') {
                 $match_columns = array('ip', 'name', 'fqdn');
         }
+        if ($table == 'file') {
+                $match_columns = array('full_name', 'hash', 'inode', 'last_changed');
+        }
         if ($table == 'log') {
                 $match_columns = array('name', 'file_name', 'overwrite');
         }
@@ -582,7 +585,7 @@ class M_devices_components extends MY_Model
                         if (isset($input_item->$field) and $input_item->$field != '') {
                             $db_item->$field = (string) $input_item->$field;
                         }
-                        $sql .= " `" . $table . "`." . $field . " = ? , ";
+                        $sql .= " `" . $table . "`.`" . $field . "` = ? , ";
                     }
                     // remove the trailing characters
                     $sql = substr($sql, 0, -2);
@@ -628,7 +631,7 @@ class M_devices_components extends MY_Model
                 foreach ($input_item as $key => $value) {
                     foreach($fields as $field) {
                         if ($key == $field) {
-                            $set_fields .= " $key, ";
+                            $set_fields .= " `$key`, ";
                             $set_values .= " ?, ";
                             $data[] = "$value";
                         }
