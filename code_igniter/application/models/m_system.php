@@ -953,7 +953,7 @@ class M_system extends MY_Model
             if ($key > '') {
                 foreach ($columns as $column) {
                     if ($key == $column->Field) {
-                        $sql .= "'".mysql_real_escape_string(str_replace('"', '', $value))."', ";
+                        $sql .= "'".mysqli_real_escape_string(str_replace('"', '', $value))."', ";
                     }
                 }
             }
