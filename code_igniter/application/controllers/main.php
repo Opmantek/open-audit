@@ -859,6 +859,7 @@ class main extends MY_Controller
         $this->data['database'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'database\'');
         $this->data['database_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'database\'');
         $this->data['dns'] = $this->m_devices_components->read($this->data['id'], 'y', 'dns');
+        $this->data['file'] = $this->m_devices_components->read($this->data['id'], 'y', 'file');
         $this->data['hard_drive'] = $this->m_devices_components->read($this->data['id'], 'y', 'disk');
         $this->data['log'] = $this->m_devices_components->read($this->data['id'], 'y', 'log');
         $this->data['memory'] = $this->m_devices_components->read($this->data['id'], 'y', 'memory');
