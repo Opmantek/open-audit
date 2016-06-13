@@ -129,14 +129,14 @@ class M_scripts extends MY_Model
         $sql = "SELECT * FROM scripts WHERE id = ?";
         $result = $this->run_sql($sql, array(intval($id)));
         $data = $result[0];
-        #$filename = dirname(dirname(dirname(dirname(__FILE__)))).'/other/'.$data->based_on;
-        $filename = '/usr/local/open-audit/other/' . $data->based_on;
+        $filename = $CI->config->item('base_path') . '/other/' . $data->based_on;
         if (! file_exists($filename)) {
             # TODO - insert an error
             return;
         }
         $file = file_get_contents($filename);
         $options = json_decode($data->options);
+
         $find = 'Configuration from web UI here';
         foreach ($options as $key => $value) {
             if ($key != 'files') {
@@ -145,7 +145,7 @@ class M_scripts extends MY_Model
             }
         }
 
-        if (is_array($options->files) and count($options->files) > 0) {
+        if (isset($options->files) and is_array($options->files) and count($options->files) > 0) {
             foreach (array_reverse($options->files) as $key => $value) {
                 if ($data->based_on != 'audit_windows.vbs') {
                     $replace = $find . "\nfiles[".intval($key+1)."]=\"" . $value . "\"";
