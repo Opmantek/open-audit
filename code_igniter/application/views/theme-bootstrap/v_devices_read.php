@@ -131,13 +131,17 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
     $attributes['service'] = array('name' => 'Name', 'description' => 'Description', 'executable' => 'Executable', 'user' => 'User', 'start_mode' => 'Start Mode', 'state' => 'State');
     $attributes['disk'] = array('manufacturer' => 'Manufacturer', 'model' => 'Model', 'serial' => 'Serial', 'hard_drive_index' => 'Index', 'interface_type' => 'Interface', 'partition_count' => 'Partitions', 'size' => 'Size', 'status' => 'Status', 'firmware' => 'Firmware');
     $attributes['partition'] = array('mount_type' => 'Type', 'mount_point' => 'Mount Point', 'device' => 'Device', 'hard_drive_index' => 'Disk Index', 'format' => 'Format', 'size' => 'Size', 'used' => 'Used', 'free' => 'Free', 'type' => 'Type');
+    $attributes['file'] = array('full_name' => 'Full Name', 'size' => 'Size', 'last_changed' => 'Last Changed', 'permission' => 'Permission', 'owner' => 'Owner');
+    $attributes['user'] = array('name' => 'Name', 'sid' => 'Sid', 'full_name' => 'Full Name', 'type' => 'Type', 'domain' => 'Domain', 'status' => 'Status', 'password_changeable' => 'Password Changeable', 'password_expires' => 'Password Expires', 'password_required' => 'Password Required');
 } else {
     $attributes['software'] = array('name' => 'Name', 'version' => 'Version', 'first_seen' => 'First Seen');
     $attributes['service'] = array('name' => 'Name', 'description' => 'Description', 'start_mode' => 'Start Mode', 'state' => 'State');
     $attributes['disk'] = array('manufacturer' => 'Manufacturer', 'model' => 'Model', 'model_family' => 'Family', 'serial' => 'Serial', 'hard_drive_index' => 'Index', 'interface_type' => 'Interface', 'partition_count' => 'Partitions', 'size' => 'Size', 'status' => 'Status', 'firmware' => 'Firmware');
     $attributes['partition'] = array('mount_type' => 'Type', 'mount_point' => 'Mount Point', 'device' => 'Device', 'hard_drive_index' => 'Disk Index', 'format' => 'Format', 'size' => 'Size', 'used' => 'Used', 'free' => 'Free', 'type' => 'Type');
+    $attributes['file'] = array('full_name' => 'Full Name', 'size' => 'Size', 'last_changed' => 'Last Changed', 'permission' => 'Permission', 'owner' => 'Owner', 'group' => 'Group');
+    $attributes['user'] = array('sid' => 'Sid', 'name' => 'Name', 'full_name' => 'Description', 'type' => 'Type');
 }
-
+$attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', 'metric' => 'Metric', 'next_hop' => 'Next Hop', 'protocol' => 'Protocol', 'type' => 'type');
 ?>
 
 
@@ -249,7 +253,7 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
 
         <?php
         // the settings categories
-        $software = array('dns', 'netstat', 'log', 'share', 'route', 'user');
+        $software = array('dns', 'file', 'netstat', 'log', 'share', 'route', 'user');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
@@ -736,7 +740,7 @@ foreach ($list as $item) {
 
 <?php
 // table style displays
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'key', 'log', 'memory', 'module', 'monitor', 'optical', 'print_queue', 'route', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
+$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
 foreach ($list as $item) {
     if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
@@ -752,7 +756,7 @@ foreach ($list as $item) {
                     <thead>
                         <tr>
                             <?php
-                            if ($item == 'software' or $item == 'service' or $item == 'disk' or $item == 'partition') {
+                            if ($item == 'software' or $item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
                                 foreach ($attributes[$item] as $key => $value) {
                                     echo "<th>$value</th>";
                                 }
@@ -780,7 +784,7 @@ foreach ($list as $item) {
                     </thead>
                     <tbody>
                         <?php
-                        if ($item == 'software' or $item == 'service' or $item == 'disk' or $item == 'partition') {
+                        if ($item == 'software' or $item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
                             foreach ($data[$item] as $row) {
                                 echo "<tr>";
                                 foreach ($attributes[$item] as $key => $value) {
