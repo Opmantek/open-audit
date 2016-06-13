@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
 ' 
-@version 1.14
+' @version 1.14
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -3459,23 +3459,23 @@ if (audit_software = "y") then
 
 	on error resume next
 	for each objItem in colItems
-	if objItem.Message <> "" then
-	colonPos = InStr(objItem.Message,":")
-	dashPos = InStr(objItem.Message,"--")
-	message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-	if (not isNull(message_retrieved)) then
-	if (InStr(message_retrieved, package_name) = 1) then
-	package_installed_by = objItem.User
-	if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-	package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-	package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-	exit for
-	else
-	package_installed_by = ""
-	package_installed_on = ""
-	end if
-	end if
-	end if
+		if objItem.Message <> "" then
+			colonPos = InStr(objItem.Message,":")
+			dashPos = InStr(objItem.Message,"--")
+			message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+			if (not isNull(message_retrieved)) then
+				if (InStr(message_retrieved, package_name) = 1) then
+					package_installed_by = objItem.User
+				if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+					package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+					package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+					exit for
+				else
+					package_installed_by = ""
+					package_installed_on = ""
+				end if
+			end if
+		end if
 	next
 	on error goto 0
 
@@ -6209,6 +6209,62 @@ if ((audit_netstat = "y") or (audit_netstat = "s" and instr(lcase(system_os_name
 	end if
 end if
 
+' Custom file auditing - only if script is running on target machine
+if (strcomputer = ".") then
+    result.WriteText "	<file>" & vbcrlf
+    redim new_files(1)
+    for each file in files
+        if ( file > "" ) then
+            if objFSO.FolderExists(file) then
+                Set objFolder = objFSO.GetFolder(file)
+                Set colFiles = objFolder.Files
+                for each objFile in colFiles
+                    redim preserve new_files(UBound(new_files) + 1)
+                    new_files(UBound(new_files)) = file & "\" & objFile.Name
+                next
+            else
+                redim preserve new_files(UBound(new_files) + 1)
+                new_files(UBound(new_files)) = file
+            end if
+        end if
+    next
+    for each file in new_files
+        if ( file > "" ) then
+            hash = ""
+            on error resume next
+            	command = "certUtil -hashfile " & file & " SHA1"
+            	Set objExecObj = objShell.exec(command)
+            	hash = objExecObj.StdOut.Readline() ' ignore this first line of output
+            	hash = objExecObj.StdOut.Readline()
+            	set objExecObj = Nothing
+            	hash = replace(hash, " ", "")
+            on error goto 0
+            Set colFiles = objWMIService.ExecQuery ("SELECT * FROM CIM_Datafile WHERE Name = '" & replace(file, "\", "\\") & "'")
+            for each objFile in colFiles
+                ' get the file owner
+                Set colItems = objWMIService.ExecQuery ("ASSOCIATORS OF {Win32_LogicalFileSecuritySetting='" & replace(file, "\", "\\") & "'}" & " WHERE AssocClass=Win32_LogicalFileOwner ResultRole=Owner")
+                For Each objItem2 in colItems
+                    owner = objItem2.AccountName & "@" & objItem2.ReferencedDomainName
+                Next
+                last_changed = WMIDateStringToDate(objFile.LastModified)
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(objFile.FileName & "." & objFile.Extension) & "</name>" & vbcrlf
+                result.WriteText "          <full_name>" & escape_xml(objFile.Name) & "</full_name>" & vbcrlf
+                result.WriteText "          <size>" & escape_xml(objFile.FileSize) & "</size>" & vbcrlf
+                result.WriteText "          <directory>" & escape_xml(objFile.Drive & objFile.Path) & "</directory>" & vbcrlf
+                result.WriteText "          <hash>" & escape_xml(hash) & "</hash>" & vbcrlf
+                result.WriteText "          <last_changed>" & escape_xml(last_changed) & "</last_changed>" & vbcrlf
+                result.WriteText "          <meta_last_changed></meta_last_changed>" & vbcrlf
+                result.WriteText "          <permissions>" & escape_xml(objFile.AccessMask) & "</permissions>" & vbcrlf
+                result.WriteText "          <owner>" & escape_xml(owner) & "</owner>" & vbcrlf
+                result.WriteText "          <version>" & escape_xml(objFile.Version) & "</version>" & vbcrlf
+                result.WriteText "          <group></group>" & vbcrlf
+                result.WriteText"      </item>" & vbcrlf
+            next
+        end if
+    next
+    result.WriteText "	</file>" & vbcrlf
+end if
 
 ' NOTE - Have moved to end of audit incase processing fails.
 '        The rest of the audit data should be processed fine.
