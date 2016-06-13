@@ -410,4 +410,416 @@ class M_devices extends MY_Model
         }
     }
 
+    /**
+    * Pass in a string detailing what has attempted to set a value and recieve a result containing the weight
+    *
+    * @param   string $set_by The source
+    * @access  public
+    * @return  int the integer containing the weighted value
+    */
+    public function weight($set_by = 'user')
+    {
+        // We assign a weight to the submitted data and compare it to what we already have for each column
+        // Valid weights and the sources are:
+        // 1000 - user or import (import should set as user as well)
+        // 2000 - audit
+        // 3000 - snmp
+        // 4000 - ad (active directory)
+        // 5000 - nmap
+        // The lower the value, the higher the priority is given
+
+        if ($set_by == 'user') {
+            $weight = 1000;
+        } elseif ($set_by == 'audit') {
+            $weight = 2000;
+        } elseif ($set_by == 'snmp') {
+            $weight = 3000;
+        } elseif ($set_by == 'ad') {
+            $weight = 4000;
+        }elseif ($set_by == 'nmap') {
+            $weight = 5000;
+        } else {
+            $weight = 2500;
+        }
+        return($weight);
+    }
+
+    /**
+    * Pass in a resultset and have the integer columns return as INT types, not strings
+    * Columns named id, free, size, speed, total or used will be converted to integer types.
+    * Columns names ending in _id, _count, _percent or _Size will be converted to integer types
+    *
+    * @param   array $result the result of a query, an array of objects
+    * @access  public
+    * @return  array an array of objects with the integer columns set as int types
+    */
+    public function from_db ($result)
+    {
+        foreach ($result as &$row) {
+            foreach ($row as $key => $value) {
+                if ($key == 'id' or $key == 'free' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'used' or
+                strrpos($key, '_id') === strlen($key)-3 or strrpos($key, '_count') === strlen($key)-6 or
+                strrpos($key, '_percent') === strlen($key)-8 or strrpos($key, '_size') === strlen($key)-5 ) {
+                    $row->$key = (int) intval($value);
+                }
+            }
+        }
+        return($result);
+    }
+
+    /**
+    * Insert a new device into the system table using whatever values we have and insert corresponding rows into the sys_edit_log table
+    *
+    * @param array $details the array of attributes from the system table
+    * @access  public
+    *
+    * @return string $id which is the id of the device in the system table
+    */
+    public function create(&$details)
+    {
+        # nasty hack because when a simplexmlobject is sent (ie, from audit_windows.vbs)
+        # the foreach iterators below don't work.
+        # if we cast it to an "object", it stays as a SimpleXMLObject and doesn't work
+        # because our XML is quite simple, we can cast it to an array and back to a 'normal'
+        # object and the foreach below works.
+        $details = (object) $details;
+        $details = (array) $details;
+        $details = (object) $details;
+        # this is an insert - we do NOT want a system.id
+        unset($details->id);
+
+        // get a name we can use
+        if (!empty($details->name)) {
+            $name = $details->name;
+        } elseif (!empty($details->hostname)) {
+            $name = $details->hostname;
+            $details->name = $details->hostname;
+        } elseif (!empty($details->dns_hostname)) {
+            $name = $details->dns_hostname;
+            $details->name = $details->dns_hostname;
+        } elseif (!empty($details->sysName)) {
+            $name = $details->sysName;
+            $details->name = $details->sysName;
+        }
+
+        if (!isset($details->ip)) {
+            $details->ip = '';
+        }
+
+        $log_details = new stdClass();
+        $log_details->message = 'System insert start for '.ip_address_from_db($details->ip).' ('.$name.')';
+        $log_details->severity = 7;
+        $log_details->file = 'system';
+        stdlog($log_details);
+
+        $details->os_name = str_ireplace("(r)", "", $details->os_name);
+        $details->os_name = str_ireplace("(tm)", "", $details->os_name);
+        if (empty($details->status)) {
+            $details->status = 'production';
+        }
+        if (empty($details->type)) {
+            $details->type = 'unknown';
+        } else {
+            $details->type = strtolower($details->type);
+        }
+        if (empty($details->environment)) {
+            $details->environment = 'production';
+        }
+
+        # we now set a default location - 0 the location_id
+        if (!isset($details->location_id)) {
+            $details->location_id = '0';
+        }
+
+        if ((strripos($details->manufacturer, "vmware") !== false) or
+            (strripos($details->manufacturer, "parallels") !== false) or
+            (strripos($details->manufacturer, "virtual") !== false)) {
+            if (!isset($details->class) or $details->class != 'hypervisor') {
+                $details->form_factor = 'Virtual';
+                $details->form_factor = 'Virtual';
+            }
+        }
+
+        $details->ip = ip_address_to_db($details->ip);
+
+        if (!empty($details->dns_hostname) and !empty($details->dns_domain) and empty($details->fqdn)) {
+            $details->fqdn = $details->dns_hostname.".".$details->dns_domain;
+        }
+
+        $sql = "SHOW COLUMNS FROM system";
+        $query = $this->db->query($sql);
+        $columns = $query->result();
+
+        $sql = "INSERT INTO system ( ";
+        foreach ($details as $key => $value) {
+            if ($key > '') {
+                # need to iterate through available columns and only insert where $key == valid column name
+                foreach ($columns as $column) {
+                    if ($key == $column->Field) {
+                        $sql .= $key.", ";
+                    }
+                }
+            }
+        }
+        $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
+        $sql .= " ) VALUES ( ";
+        foreach ($details as $key => $value) {
+            if ($key > '') {
+                foreach ($columns as $column) {
+                    if ($key == $column->Field) {
+                        $sql .= "'".mysql_real_escape_string(str_replace('"', '', $value))."', ";
+                    }
+                }
+            }
+        }
+        $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
+        $sql .= ")";
+
+        $query = $this->db->query($sql);
+        $details->id = $this->db->insert_id();
+
+        // set the weight for these $details
+        $weight = $this->weight($details->last_seen_by);
+
+        // insert entries into the edit_log table for these $details columns
+        foreach ($details as $key => $value) {
+            if (($key != '') and ($value != '')) {
+                $sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, '', ?, ?, 'system', ?, ?, ?, ?)";
+                $data = array("$details->id", "$details->last_seen_by", "$weight", "$key", "$details->last_seen", "$value", "");
+                $query = $this->db->query($sql, $data);
+            }
+        }
+
+        # update the device icon
+        $this->reset_icons($details->id);
+
+        # insert a subnet so we have a default
+        if (!isset($details->subnet) or $details->subnet == '') {
+            $details->subnet = '0.0.0.0';
+        }
+
+        $log_details->message = 'System insert end for '.ip_address_from_db($details->ip).' ('.$name.') (System ID '.$details->id.')';
+        stdlog($log_details);
+        unset($log_details);
+        return $details->id;
+    }
+
+    /**
+    * Reset the icon for a single device or all devices.
+    *
+    * @param int $id The system.id of a given system
+    * @access  public
+    *
+    * @return int returns the count of the number of icons affected
+    */
+    public function reset_icons($id = '')
+    {
+        if ($id != '') {
+            $sql = "SELECT id, type, os_name, os_family, os_group, manufacturer FROM system WHERE id = ".$id;
+        } else {
+            $sql = "SELECT id, type, os_name, os_family, os_group, manufacturer FROM system";
+        }
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $count = $query->num_rows();
+        // we set computer icons by OS, everything else by type
+        foreach ($result as $details) {
+            if ($details->type == 'computer') {
+                // determine icon for computer
+                // most generic to most specific
+
+                // manufacturer based
+                if (strripos($details->manufacturer, "apple") !== false) {
+                    $details->icon = 'apple';
+                }
+                if (strripos($details->manufacturer, "vmware") !== false) {
+                    $details->icon = 'vmware';
+                }
+
+                // os_group based
+                if (strripos($details->os_group, "linux") !== false) {
+                    $details->icon = 'linux';
+                }
+                if (strripos($details->os_group, "apple") !== false) {
+                    $details->icon = 'apple';
+                }
+                if (strripos($details->os_group, "windows") !== false) {
+                    $details->icon = 'windows';
+                }
+
+                // os name based
+                if ((strripos($details->os_name, "osx") !== false) or
+                    (strpos(strtolower($details->os_name), "ios") !== false)) {
+                    $details->icon = 'apple';
+                }
+                if (strripos($details->os_name, "bsd") !== false) {
+                    $details->icon = 'bsd';
+                }
+                if (strripos($details->os_name, "centos") !== false) {
+                    $details->icon = 'centos';
+                }
+                if (strripos($details->os_name, "debian") !== false) {
+                    $details->icon = 'debian';
+                }
+                if (strripos($details->os_name, "fedora") !== false) {
+                    $details->icon = 'fedora';
+                }
+                if ((strripos($details->os_name, "mandriva") !== false) or
+                    (strripos($details->os_name, "mandrake") !== false)) {
+                    $details->icon = 'mandriva';
+                }
+                if (strripos($details->os_name, "mint") !== false) {
+                    $details->icon = 'mint';
+                }
+                if (strripos($details->os_name, "novell") !== false) {
+                    $details->icon = 'novell';
+                }
+                if (strripos($details->os_name, "slackware") !== false) {
+                    $details->icon = 'slackware';
+                }
+                if (strripos($details->os_name, "suse") !== false) {
+                    $details->icon = 'suse';
+                }
+                if ((strripos($details->os_name, "red hat") !== false) or
+                    (strripos($details->os_name, "redhat") !== false)) {
+                    $details->icon = 'redhat';
+                }
+                if (strripos($details->os_name, "ubuntu") !== false) {
+                    $details->icon = 'ubuntu';
+                }
+                if (strripos($details->os_name, "vmware") !== false) {
+                    $details->icon = 'vmware';
+                }
+                if (strripos($details->os_name, "windows") !== false) {
+                    $details->icon = 'windows';
+                }
+                if (strripos($details->os_name, "microsoft") !== false) {
+                    $details->icon = 'windows';
+                }
+            } else {
+                // device is not type=computer
+                // base the icon on the type
+                if (strpos($details->type, "|") === false) {
+                    // if the type does not contain a |, use it.
+                    // Nmap will often return a pipe separated list when it guesses
+                    $details->icon = str_replace(" ", "_", $details->type);
+                } else {
+                    // we have a pipe (likely an nmap list) so just just unknown
+                    $details->icon = 'unknown';
+                }
+            }
+
+            $sql = "UPDATE system SET icon = ? WHERE id = ?";
+            $data = array("$details->icon", "$details->id");
+            $query = $this->db->query($sql, $data);
+        }
+
+        return ($count);
+    }
+
+    public function update_devices_icons($id = '')
+    {
+        if ($id != '') {
+            $sql = "SELECT system.id, type, os_name, os_family, os_group, manufacturer FROM system LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.id WHERE oa_group_sys.group_id = ".intval($id);
+        } else {
+            $sql = "SELECT id, type, os_name, os_family, os_group, manufacturer FROM system";
+        }
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $count = $query->num_rows();
+        // we set computer icons by OS, everything else by type
+        foreach ($result as $details) {
+            if ($details->type == 'computer') {
+                // determine icon for computer
+                // most generic to most specific
+
+                // manufacturer based
+                if (strripos($details->manufacturer, "apple") !== false) {
+                    $details->icon = 'apple';
+                }
+                if (strripos($details->manufacturer, "vmware") !== false) {
+                    $details->icon = 'vmware';
+                }
+
+                // os_group based
+                if (strripos($details->os_group, "linux") !== false) {
+                    $details->icon = 'linux';
+                }
+                if (strripos($details->os_group, "apple") !== false) {
+                    $details->icon = 'apple';
+                }
+                if (strripos($details->os_group, "windows") !== false) {
+                    $details->icon = 'windows';
+                }
+
+                // os name based
+                if ((strripos($details->os_name, "osx") !== false) or
+                    (strpos(strtolower($details->os_name), "ios") !== false)) {
+                    $details->icon = 'apple';
+                }
+                if (strripos($details->os_name, "bsd") !== false) {
+                    $details->icon = 'bsd';
+                }
+                if (strripos($details->os_name, "centos") !== false) {
+                    $details->icon = 'centos';
+                }
+                if (strripos($details->os_name, "debian") !== false) {
+                    $details->icon = 'debian';
+                }
+                if (strripos($details->os_name, "fedora") !== false) {
+                    $details->icon = 'fedora';
+                }
+                if ((strripos($details->os_name, "mandriva") !== false) or
+                    (strripos($details->os_name, "mandrake") !== false)) {
+                    $details->icon = 'mandriva';
+                }
+                if (strripos($details->os_name, "mint") !== false) {
+                    $details->icon = 'mint';
+                }
+                if (strripos($details->os_name, "novell") !== false) {
+                    $details->icon = 'novell';
+                }
+                if (strripos($details->os_name, "slackware") !== false) {
+                    $details->icon = 'slackware';
+                }
+                if (strripos($details->os_name, "suse") !== false) {
+                    $details->icon = 'suse';
+                }
+                if ((strripos($details->os_name, "red hat") !== false) or
+                    (strripos($details->os_name, "redhat") !== false)) {
+                    $details->icon = 'redhat';
+                }
+                if (strripos($details->os_name, "ubuntu") !== false) {
+                    $details->icon = 'ubuntu';
+                }
+                if (strripos($details->os_name, "vmware") !== false) {
+                    $details->icon = 'vmware';
+                }
+                if (strripos($details->os_name, "windows") !== false) {
+                    $details->icon = 'windows';
+                }
+                if (strripos($details->os_name, "microsoft") !== false) {
+                    $details->icon = 'windows';
+                }
+            } else {
+                // device is not type=computer
+                // base the icon on the type
+                if (strpos($details->type, "|") === false) {
+                    // if the type does not contain a |, use it.
+                    // Nmap will often return a pipe separated list when it guesses
+                    $details->icon = str_replace(" ", "_", $details->type);
+                } else {
+                    // we have a pipe (likely an nmap list) so just just unknown
+                    $details->icon = 'unknown';
+                }
+            }
+
+            $sql = "UPDATE system SET icon = ? WHERE id = ?";
+            $data = array("$details->icon", "$details->id");
+            $query = $this->db->query($sql, $data);
+        }
+
+        return ($count);
+    }
+
 }
