@@ -170,7 +170,14 @@ class scripts extends MY_Controller
     {
         $this->response->format = 'json';
         $script = $this->m_scripts->execute($this->response->id);
-        echo "<pre>$script";
+        $script_details = $this->m_scripts->read($this->response->id);
+        header('Cache-Control: public');
+        header('Content-Description: File Transfer');
+        header('Content-Disposition: attachment; filename=' . $script_details['scripts'][0]->name);
+        header("Content-Type: text/vbscript");
+        header('Content-Transfer-Encoding: binary');
+        echo $script;
+
     }
 
     # not implemented
