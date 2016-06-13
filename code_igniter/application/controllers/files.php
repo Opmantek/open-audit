@@ -94,7 +94,7 @@ class files extends MY_Controller
             exit();
         }
         $this->load->model('m_orgs');
-        $this->response->orgs = $this->m_orgs->read_orgs();
+        $this->response->orgs = $this->m_orgs->collection();
         output($this->response);
     }
 
