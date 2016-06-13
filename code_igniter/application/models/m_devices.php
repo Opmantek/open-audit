@@ -168,7 +168,7 @@ class M_devices extends MY_Model
         $query = $this->db->query($sql, $data);
         $document['purchase'] = $query->result();
 
-        $tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
             $result = $this->m_devices_components->read($CI->response->id, $CI->response->current, $table, $CI->response->filter, '*');
             if (count($result) > 0) {
