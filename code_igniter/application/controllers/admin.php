@@ -5004,7 +5004,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE software DROP FOREIGN KEY sys_sw_software_system_id";
             $sql[] = "ALTER TABLE software_key DROP FOREIGN KEY sys_sw_software_key_system_id";
             $sql[] = "ALTER TABLE sound DROP FOREIGN KEY sys_hw_sound_system_id";
-            $sql[] = "ALTER TABLE additional_field_item DROP FOREIGN KEY additional_field_item_system_id";
+            $sql[] = "ALTER TABLE sys_man_additional_fields_data DROP FOREIGN KEY sys_man_additional_fields_data_system_id";
             $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_system_id";
             $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_system_id";
             $sql[] = "ALTER TABLE task DROP FOREIGN KEY task_system_id";
@@ -5161,7 +5161,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE software ADD CONSTRAINT software_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE software_key ADD CONSTRAINT software_key_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sound ADD CONSTRAINT sound_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
-            $sql[] = "ALTER TABLE additional_field_item ADD CONSTRAINT additional_field_item_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT additional_field_item_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT attachment_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT notes_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE task ADD CONSTRAINT task_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
@@ -5196,9 +5196,9 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `notes` CHANGE `notes_text` `comment` text NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `notes` DROP FOREIGN KEY sys_man_notes_user_id";
 
-            $sql[] = "RENAME TABLE additional_field_item TO `additional_field_item`";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY additional_field_item_field_id";
-            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY         additional_field_item_field_id";
+            $sql[] = "RENAME TABLE `sys_man_additional_fields_data` TO `additional_field_item`";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY sys_man_additional_fields_data_field_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY         sys_man_additional_fields_data_field_id";
             $sql[] = "ALTER TABLE `additional_field_item` DROP field_int";
             $sql[] = "ALTER TABLE `additional_field_item` DROP field_memo";
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE field_details_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -5206,7 +5206,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_datetime` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
             $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_varchar` `value` text NOT NULL DEFAULT ''";
 
-            $sql[] = "RENAME TABLE additional_field TO `additional_field`";
+            $sql[] = "RENAME TABLE `sys_man_additional_fields` TO `additional_field`";
             $sql[] = "ALTER TABLE `additional_field` CHANGE field_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE `additional_field` DROP field_sys_type";
             $sql[] = "ALTER TABLE `additional_field` DROP field_derived_type";
@@ -5215,7 +5215,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_type` `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar'";
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_values` `values` varchar(100) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_placement` `placement` varchar(100) NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE `additional_field` DROP KEY additional_field_group";
+            $sql[] = "ALTER TABLE `additional_field` DROP KEY sys_man_additional_fields_group";
 
             $sql[] = "ALTER TABLE `network` DROP KEY timestamp";
             $sql[] = "ALTER TABLE `edit_log` DROP FOREIGN KEY edit_log_user_id";
@@ -5260,7 +5260,7 @@ class admin extends MY_Controller
             $sql[] = "CREATE TABLE `files` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `path` varchar(45) NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
             $sql[] = "DROP TABLE IF EXISTS `file`";
-            $sql[] = "CREATE TABLE `file` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `files_id` int(10) unsigned DEFAULT NULL, `name` varchar(250) NOT NULL DEFAULT '', `full_name` text NOT NULL DEFAULT '', `size` int(10) unsigned NOT NULL DEFAULT '0', `directory` text NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `last_changed` varchar(100) NOT NULL DEFAULT '', `meta_last_changed` varchar(100) NOT NULL DEFAULT '', `permission` varchar(250) NOT NULL DEFAULT '', `owner` varchar(100) NOT NULL DEFAULT '', `group` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `version` varchar(100) NOT NULL DEFAULT '', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE, CONSTRAINT `file_files_id` FOREIGN KEY (`files_id`) REFERENCES `files` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `file` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `files_id` int(10) unsigned DEFAULT NULL, `name` varchar(250) NOT NULL DEFAULT '', `full_name` text NOT NULL DEFAULT '', `size` int(10) unsigned NOT NULL DEFAULT '0', `directory` text NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `last_changed` varchar(100) NOT NULL DEFAULT '', `meta_last_changed` varchar(100) NOT NULL DEFAULT '', `permission` varchar(250) NOT NULL DEFAULT '', `owner` varchar(100) NOT NULL DEFAULT '', `group` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `version` varchar(100) NOT NULL DEFAULT '', `inode` bigint unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE, CONSTRAINT `file_files_id` FOREIGN KEY (`files_id`) REFERENCES `files` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             $sql[] = "DROP TABLE IF EXISTS `scripts`";
             $sql[] = "CREATE TABLE `scripts` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(250) NOT NULL DEFAULT '', `options` text NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `based_on` varchar(200) NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
@@ -5282,14 +5282,14 @@ class admin extends MY_Controller
 
             $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_windows.vbs', '" . $options . "', 'The default audit Windows config.', 'audit_windows.vbs', '', 'system', NOW())";
 
-            $sql[] = "UPDATE additional_field_item SET placement = 'custom' WHERE placement = 'view_summary_custom'";
-            $sql[] = "UPDATE additional_field_item SET placement = 'location' WHERE placement = 'view_summary_location'";
-            $sql[] = "UPDATE additional_field_item SET placement = 'network' WHERE placement = 'view_summary_network'";
-            $sql[] = "UPDATE additional_field_item SET placement = 'purchase' WHERE placement = 'view_summary_purchase'";
-            $sql[] = "UPDATE additional_field_item SET placement = 'san' WHERE placement = 'view_hardware_san'";
-            $sql[] = "UPDATE additional_field_item SET placement = 'san_disk' WHERE placement = 'view_hardware_san_disk'";
-            $sql[] = "UPDATE additional_field_item SET placement = 'system' WHERE placement = 'system_details'";
-            $sql[] = "UPDATE additional_field_item SET placement = 'windows' WHERE placement = 'view_summary_windows'";
+            $sql[] = "UPDATE additional_field SET placement = 'custom' WHERE placement = 'view_summary_custom'";
+            $sql[] = "UPDATE additional_field SET placement = 'location' WHERE placement = 'view_summary_location'";
+            $sql[] = "UPDATE additional_field SET placement = 'network' WHERE placement = 'view_summary_network'";
+            $sql[] = "UPDATE additional_field SET placement = 'purchase' WHERE placement = 'view_summary_purchase'";
+            $sql[] = "UPDATE additional_field SET placement = 'san' WHERE placement = 'view_hardware_san'";
+            $sql[] = "UPDATE additional_field SET placement = 'san_disk' WHERE placement = 'view_hardware_san_disk'";
+            $sql[] = "UPDATE additional_field SET placement = 'system' WHERE placement = 'system_details'";
+            $sql[] = "UPDATE additional_field SET placement = 'windows' WHERE placement = 'view_summary_windows'";
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";

@@ -386,6 +386,7 @@ CREATE TABLE `file` (
   `group` varchar(100) NOT NULL DEFAULT '',
   `type` varchar(100) NOT NULL DEFAULT '',
   `version` varchar(100) NOT NULL DEFAULT '',
+  `inode` bigint unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE,
