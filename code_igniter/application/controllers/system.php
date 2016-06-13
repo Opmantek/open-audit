@@ -392,6 +392,7 @@ class System extends CI_Controller
 
         $this->m_devices_components->process_component('bios', $details, $xml->bios, $display);
         $this->m_devices_components->process_component('disk', $details, $xml->disk, $display);
+        $this->m_devices_components->process_component('file', $details, $xml->file, $display);
         $this->m_devices_components->process_component('ip', $details, $xml->ip, $display);
         $this->m_devices_components->process_component('log', $details, $xml->log, $display);
         $this->m_devices_components->process_component('memory', $details, $xml->memory, $display);
