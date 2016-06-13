@@ -58,10 +58,10 @@ if (!empty($this->response->sub_resource_name)) {
 <div class="panel panel-default pull-right">
   <div class="panel-body">
     <div class="btn-group" role="group" aria-label="...">
-      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a></button>
-      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->prev; ?>"><?php echo __('prev'); ?></a></button>
-      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->next; ?>"><?php echo __('next'); ?></a></button>
-      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->last; ?>"><?php echo __('last'); ?></a></button>
+      <a class="btn btn-default" href="<?php echo $this->response->links->first; ?>" role="button"><?php echo __('first'); ?></a>
+      <a class="btn btn-default" href="<?php echo $this->response->links->prev; ?>" role="button"><?php echo __('prev'); ?></a>
+      <a class="btn btn-default" href="<?php echo $this->response->links->next; ?>" role="button"><?php echo __('next'); ?></a>
+      <a class="btn btn-default" href="<?php echo $this->response->links->last; ?>" role="button"><?php echo __('last'); ?></a>
     </div>
   </div>
 </div>
@@ -85,10 +85,10 @@ if (count($this->response->filter) > 0) {
     $link = str_replace($item->name . '=' . $operator . $item->value, '', $_SERVER["REQUEST_URI"]);
     $link = str_replace($item->name . '=' . $operator . urlencode($item->value), '', $_SERVER["REQUEST_URI"]);
     if (($item->name == 'status' or $item->name == 'system.status') and $item->operator == '=' and $item->value == 'production') {
-      $link = $refine_link . 'system.status=!=""';
+      $link = $refine_link . 'system.status=!=\'\'';
     }
     $label = 'label-info';
-    echo '<big><span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span></big>&nbsp;';
+    echo '<span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
   }
   echo '</div>';
   echo '</div>';
@@ -118,13 +118,13 @@ if (!empty($this->response->data)) { ?>
         $key = ucwords($key);
         if ($key == 'Ip') { $key = 'IP'; }
         if (stripos($key, 'icon') !== false) {
-          echo "            <th style=\"text-align: center;\" nowrap>" . __($key) . "</th>\n";
+          echo "            <th style=\"text-align: center;\" >" . __($key) . "</th>\n";
         } else {
           echo "            <th>" . __($key) . "</th>\n";
         }
       }
       ?>
-            <th width="150" class="text-center">
+            <th class="text-center">
               <button type="button" class="btn btn-primary" onclick="document.bulk_edit.submit();"><?php echo __('Edit') ?></button>&nbsp;
               <input type="checkbox"/>
             </th>
@@ -168,7 +168,7 @@ if (!empty($this->response->data)) { ?>
         
         
         } elseif ($property == 'id' or $property == 'system.id') {
-          echo "            <td><a href='devices/" . $item->$property . "'>" . $item->$property . "</td>\n";
+          echo "            <td><a href='devices/" . $item->$property . "'>" . $item->$property . "</a></td>\n";
         
         } elseif (strrpos($property, 'icon') === strlen($property)-4) {
           echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->$property)."\" alt=\"".htmlentities($item->$property)."\"/></td>\n";
@@ -187,7 +187,7 @@ if (!empty($this->response->data)) { ?>
     }
 
     if (!empty($system_id)) {
-      echo "            <td align='center'><input type='checkbox' id='ids[]' value='" . intval($system_id) . "' name='ids[]' /></td>\n";
+      echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[]' value='" . intval($system_id) . "' name='ids[" . intval($system_id) . "]' /></td>\n";
     }
     echo "          </tr>\n";
   }
@@ -205,6 +205,7 @@ if (!empty($this->response->error)) {
 }
 ?>
   </div>
+</div>
 </div>
 <script type="text/javascript">
   $(document).ready(function(){

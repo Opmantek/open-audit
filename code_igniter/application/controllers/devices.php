@@ -121,6 +121,17 @@ class devices extends MY_Controller
         output($this->response);
     }
 
+    private function create()
+    {
+        $this->m_devices->update();
+        output($this->response);
+    }
+
+    private function update()
+    {
+        $this->m_devices->update();
+        output($this->response);
+    }
 
 
 
@@ -138,21 +149,6 @@ class devices extends MY_Controller
     {
         $this->response->format = 'json';
         $this->response->debug = true;
-        output($this->response);
-    }
-
-    private function create()
-    {
-        $this->response->format = 'json';
-        $this->response->debug = true;
-        output($this->response);
-    }
-
-    private function update()
-    {
-        $this->response->format = 'json';
-        $this->response->debug = true;
-        $this->m_devices->update();
         output($this->response);
     }
 
