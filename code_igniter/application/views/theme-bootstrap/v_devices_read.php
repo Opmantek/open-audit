@@ -32,7 +32,6 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-#print_r($data);
 ?>
 
 <style>
@@ -116,10 +115,6 @@ $(document).ready(function(){
             document.getElementById('submit_'+attribute).remove();
         }
     });
-
-
-
-
 });
 </script>
 
@@ -160,16 +155,16 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
         <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
           <div class="panel-body">
               <ul class="list-group">
-                <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/credentials.svg"/><a href="#" data-menuitem="credentials"><?php echo __('Credentials'); ?></a></li>
-                <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
-                <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/location.svg"/><a href="#" data-menuitem="location"><?php echo __('Location / Contact'); ?></a></li>
-                <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="custom"><?php echo __('Custom'); ?></a></li>
-                <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
-                <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
-                <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
-                <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/edit_log.svg"/><a href="#" data-menuitem="alert_log"><?php echo __('Edit Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/credentials.svg"/><a href="#" data-menuitem="credentials"><?php echo __('Credentials'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/location.svg"/><a href="#" data-menuitem="location"><?php echo __('Location / Contact'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="custom"><?php echo __('Custom'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/edit_log.svg"/><a href="#" data-menuitem="alert_log"><?php echo __('Edit Log'); ?></a></li>
                 <?php if (isset($data['windows'])) { ?>
-                   <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
                 <?php } ?>
               </ul>
           </div>
@@ -201,11 +196,12 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                 foreach ($hardware as $item) {
                     if (isset($data[$item])) {
                 ?>
-                    <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
                 <?php
                     }
                 }
                 ?>
+                </ul>
               </div>
             </div>
           </div>
@@ -239,11 +235,12 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                 foreach ($software as $item) {
                     if (isset($data[$item])) {
                     ?>
-                    <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
                     <?php
                     }
                 }
                 ?>
+                </ul>
               </div>
             </div>
           </div>
@@ -277,11 +274,12 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                 foreach ($software as $item) {
                     if (isset($data[$item])) {
                 ?>
-                    <li class="list-group-item"><img src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
                 <?php
                     }
                 }
                 ?>
+                </ul>
               </div>
             </div>
           </div>
@@ -665,7 +663,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         </div>
                     </div>
                     <div class="col-md-2 col-centered">
-                        <img class="center-block img-responsive" style="width: 50%;" title="" alt="" src="<?php echo base_url()?>device_images/<?php echo $data['system'][0]->icon; ?>.svg" />
+                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url()?>device_images/<?php echo $data['system'][0]->icon; ?>.svg" />
                         <br /><br />
                         <!-- <input class="btn btn-success btn-block" type="button" value="Submit" id="submit_button" style="display:none;" onClick="submit();" > -->
                         <!-- <a class="btn btn-primary btn-block" href="#" role="button" id="toggle_link"><?php echo __('Edit'); ?></a> -->
@@ -706,7 +704,8 @@ foreach ($list as $item) {
                             $key = 'credentials_' . $key;
                         } ?>
                         <div class="form-group">
-                            <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
+                            <!-- <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label> -->
+                            <label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
                               <span class="input-group-btn">
@@ -716,7 +715,8 @@ foreach ($list as $item) {
                         </div>
                     <?php } else { ?>
                         <div class="form-group">
-                            <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
+                            <!-- <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label> -->
+                            <label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="<?php echo $item . '_' . $key; ?>" placeholder="" value="<?php echo $value; ?>" readonly>
                             </div>
@@ -771,7 +771,7 @@ foreach ($list as $item) {
                                         } else {
                                             # everything else
                                             if (is_int($value)) {
-                                                echo "<th class=\"text-right\">" . ucwords(str_replace('_', ' ', $key))  . "</php></td>\n";
+                                                echo "<th class=\"text-right\">" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
                                             } else {
                                                 echo "<th>" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
                                             }
@@ -789,7 +789,7 @@ foreach ($list as $item) {
                                 echo "<tr>";
                                 foreach ($attributes[$item] as $key => $value) {
                                     if (is_integer($row->$key)) {
-                                        echo "<td class=\"text-right\">" . number_format($row->$key) . "</php></td>\n";
+                                        echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
                                     } else {
                                         echo "<td>" . $row->$key . "</td>\n";
                                     }
@@ -805,15 +805,15 @@ foreach ($list as $item) {
                                         if ($item == 'module') {
                                             if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
                                                 if (is_int($value)) {
-                                                    echo "<td class=\"text-right\">" . number_format($value) . "</php></td>\n";
+                                                    echo "<td class=\"text-right\">" . number_format($value) . "</td>\n";
                                                 } else {
-                                                    echo "<td>" . $value . "</php></td>\n";
+                                                    echo "<td>" . $value . "</td>\n";
                                                 }
                                             }
                                         } else {
                                             # everything else
                                             if (is_int($value)) {
-                                                echo "<td class=\"text-right\">" . number_format($value) . "</php></td>\n";
+                                                echo "<td class=\"text-right\">" . number_format($value) . "</td>\n";
                                             } else {
                                                 echo "<td>" . $value . "</td>\n";
                                             }
@@ -906,9 +906,9 @@ if ($data['system'][0]->type == 'computer') {
                                                 foreach ($sub_row as $sub_key => $sub_value) {
                                                     if ($sub_key != 'id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
                                                         if (is_int($sub_value)) {
-                                                            echo "<td>" . number_format($sub_value) . "</php></td>\n";
+                                                            echo "<td>" . number_format($sub_value) . "</td>\n";
                                                         } else {
-                                                            echo "<td>" . $sub_value . "</php></td>\n";
+                                                            echo "<td>" . $sub_value . "</td>\n";
                                                         }
                                                     }
                                                 }
