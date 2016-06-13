@@ -67,7 +67,7 @@
         $options['audit_netstat'] = new stdClass();
         $options['audit_netstat']->name = 'audit_netstat';
         $options['audit_netstat']->default = 's';
-        $options['audit_netstat']->help = 'Should we audit netstat ports.';
+        $options['audit_netstat']->help = 'Should we audit netstat ports (yes, no, servers only).';
         $options['audit_netstat']->type = 'select';
         $options['audit_netstat']->values = 'y,n,s';
 
