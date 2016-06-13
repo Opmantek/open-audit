@@ -53,6 +53,7 @@ if (!empty($this->response->error)) {
             <th><?php echo __('Based On')?></th>
 			<th><?php echo __('Edited By')?></th>
 			<th><?php echo __('Edited Date')?></th>
+            <th align='center'><?php echo __('Download')?></th>
             <th align='center'><?php echo __('View')?></th>
             <th align='center'><?php echo __('Edit')?></th>
 			<th align='center'><?php echo __('Delete')?></th>
@@ -78,6 +79,7 @@ if (!empty($this->response->error)) {
             <td><?php echo htmlentities($item->based_on)?></td>
 			<td><?php echo htmlentities($item->edited_by)?></td>
 			<td><?php echo htmlentities($item->edited_date)?></td>
+            <td align='center'><a href="scripts/<?php echo intval($item->id)?>?action=execute"><img src="<?php echo $oa_theme_images; ?>/16_go-down.png" /></td>
             <td align='center'><a href="scripts/<?php echo intval($item->id)?>"><img src="<?php echo $oa_theme_images; ?>/16_find.png" /></td>
 			<td align='center'><?php echo $edit_pic?></td>
 			<td align='center'><?php echo $delete_pic?></td>
