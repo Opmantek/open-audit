@@ -2160,6 +2160,7 @@ for dir in ${files[@]}; do
         file_permissions=$(stat -c "%a" "$file")
         file_owner=$(ls -ld "$file" | awk '{print $3}')
         file_group=$(ls -ld "$file" | awk '{print $4}')
+        inode=$(ls -li "$file" | awk '{print $1}')
         file_name=($basename "$file")
         {
     	echo "		<item>"
@@ -2173,6 +2174,7 @@ for dir in ${files[@]}; do
         echo "			<permissions>$(escape_xml "$file_permissions")</permissions>"
         echo "			<owner>$(escape_xml "$file_owner")</owner>"
         echo "			<group>$(escape_xml "$file_group")</group>"
+        echo "			<inode>$(escape_xml "$inode")</inode>"
         echo "		</item>"
     	} >> "$xml_file"
     done
