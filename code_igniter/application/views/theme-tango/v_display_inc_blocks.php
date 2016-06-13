@@ -1261,6 +1261,44 @@ function show_software($type, $software) {
     <?php } ?>
     </div>
 
+    <div id="view_settings_file" style="float: left; width: 100%;">
+    <?php if (count($file) > 0) { ?>
+        <br />
+        <br />
+        <form action="#" method="post" class='niceforms'>
+            <fieldset id="file">
+            <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Files')?></span></legend>
+                <table cellspacing="1" class="tablesorter" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __('Name')?></th>
+                            <th><?php echo __('Directory')?></th>
+                            <th><?php echo __('Full Name')?></th>
+                            <th><?php echo __('Size')?></th>
+                            <th><?php echo __('Last Changed')?></th>
+                            <th><?php echo __('Owner')?></th>
+                            <th><?php echo __('Permission')?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($file as $key): ?>
+                    <tr>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->directory)?></td>
+                        <td style="word-wrap:break-word;"><?php echo print_something($key->full_name)?></td>
+                        <td><?php echo print_something($key->size)?></td>
+                        <td><?php echo print_something($key->last_changed)?></td>
+                        <td><?php echo print_something($key->owner)?></td>
+                        <td><?php echo print_something($key->permission)?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </fieldset>
+        </form>
+    <?php } ?>
+    </div>
+
     <?php if (count($database) > 0) { ?>
         <div id="view_server_database" style="float: left; width: 100%;">
         <br />

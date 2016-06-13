@@ -187,7 +187,12 @@ var modal_content_image = "";
                     <li><a href='<?php echo $oa_web_index?>/admin/scan_ad'><?php echo __('Import Active Directory')?></a></li>
                 </ul>
             </li>
-
+            <li><a href='javascript:void(0)'><?php echo __('Files')?></a>
+                <ul>
+                    <li><a href='<?php echo $oa_web_index?>/files'><?php echo __('List Files')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/files?action=create'><?php echo __('Add File')?></a></li>
+                </ul>
+            </li>
             <li><a href='javascript:void(0)'><?php echo __('Groups')?></a>
                 <ul>
                     <li><a href='<?php echo $oa_web_index?>/admin_group/list_groups'><?php echo __('List Groups')?></a></li>

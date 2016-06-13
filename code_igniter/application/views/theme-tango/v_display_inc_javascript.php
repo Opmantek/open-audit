@@ -792,6 +792,7 @@ $(document).ready(function(){
     $('#view_settings_tasks').hide();
     $('#view_settings_users').hide();
     $('#view_settings_variables').hide();
+    $('#view_settings_file').hide();
 
 
 	$('#toggle_settings_pagefile').click(function(){
@@ -844,10 +845,15 @@ $(document).ready(function(){
         toggleBold("toggle_settings_logs");
 	});
 
-	$('#toggle_settings_variables').click(function(){
-		$('#view_settings_variables').slideToggle("fast");
+  $('#toggle_settings_variables').click(function(){
+    $('#view_settings_variables').slideToggle("fast");
         toggleBold("toggle_settings_variables");
-	});
+  });
+
+  $('#toggle_settings_file').click(function(){
+    $('#view_settings_file').slideToggle("fast");
+        toggleBold("toggle_settings_file");
+  });
 
 	$('#view_server_database').hide();
 	$('#view_server_web').hide();
