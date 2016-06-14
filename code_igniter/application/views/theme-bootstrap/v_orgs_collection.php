@@ -27,13 +27,11 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
  * @version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-#echo "<div style=\"float:left; width:100%;\">\n";
 if (!empty($this->response->data)) {
 ?>
 <div class="panel panel-default">
@@ -59,7 +57,6 @@ if (!empty($this->response->data)) {
     if (count($this->response->filter) > 0) {
       echo '<div class="panel panel-default pull-left">';
       echo '<div class="panel-body">';
-      #echo '<div class="well well-sm pull-left">';
       foreach ($this->response->filter as $item) {
         if ($item->operator == '=') {
           $label = 'label-success';
@@ -84,15 +81,6 @@ if (!empty($this->response->data)) {
       echo '</div>';
       echo '</div>';
     } ?>
-
-
-
-
-
-
-
-
-
 
     <table class="table table-hover table-condensed">
         <thead>
@@ -153,15 +141,4 @@ if (!empty($this->response->data)) {
     </table>
 </div>
 </div>
-<?php
-}
-if (!empty($this->response->error)) {
-    echo "<pre>\n";
-    print_r($error);
-    echo "</pre>\n";
-}
-?>
-</div>
-<?php
-exit();
-?>
+<?php } ?>

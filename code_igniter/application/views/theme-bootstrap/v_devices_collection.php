@@ -187,7 +187,7 @@ if (!empty($this->response->data)) { ?>
     }
 
     if (!empty($system_id)) {
-      echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[]' value='" . intval($system_id) . "' name='ids[" . intval($system_id) . "]' /></td>\n";
+      echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[" . intval($system_id) . "]' value='" . intval($system_id) . "' name='ids[" . intval($system_id) . "]' /></td>\n";
     }
     echo "          </tr>\n";
   }
@@ -195,31 +195,7 @@ if (!empty($this->response->data)) { ?>
         </tbody>
       </table>
     </form>
-<?php
-}
-if (!empty($this->response->error)) {
-  echo '</div></div><div class="alert alert-danger" role="alert">' . $this->response->error->title . '</div>';
-  echo "<pre>\n";
-  print_r($this->response->error);
-  echo "</pre>\n";
-}
-?>
+<?php } ?>
   </div>
 </div>
 </div>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $(function () {
-      $('[data-toggle="popover"]').popover()
-    })
-  });
-</script>
-
-<style>
-.glyphicon:hover { 
-    color: green;
-}
-</style>
-<?php
-exit();
-?>

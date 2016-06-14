@@ -27,98 +27,11 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.6.4
+ * @version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-?>
-
-<style>
-.list-group-item img {
-    width: 20px;
-    margin-right: 10px;
-}
-.section {
-    display: none;
-}
-</style>
-<script>
-$(document).ready(function(){
-    // disable the form fields by default
-    // $("#form_summary :input").attr("disabled", true);
-    // toggle the menu items -> display panels
-    $('.list-group-item a').click(function(e){
-        var menuitem = e.target.dataset.menuitem;
-        if (e.target.style.fontWeight == "bold") {
-            e.target.style.fontWeight = "";
-            document.getElementById(menuitem).style.display = "none";
-        } else {
-            e.target.style.fontWeight = "bold";
-            document.getElementById(menuitem).style.display = "inline";
-        }
-        return false;
-    });
-    // close the display panel
-    $('.myCloseButton').click(function(e){
-        var menuitem = e.target.dataset.menuitem;
-        document.getElementById(menuitem).style.display = "none";
-        return false;
-    });
-    // enable the form fields if the edit button is clicked
-    $('#toggle_link').click(function(e){
-        $("#form_summary :input").attr("disabled", false);
-        document.getElementById("toggle_link").style.display = "none";
-        document.getElementById("submit_button").style.display = "inline";
-    });
-
-    $(document).on('click', '.edit_button', function(e){
-        var action = $(this).attr("action");
-        var attribute = $(this).attr("value");
-        if (action == "edit") {
-            var item = document.getElementById(attribute);
-            $(item).attr("disabled", false);
-            $(this).attr("class", "btn btn-danger edit_button");
-            $(this).attr("action", "cancel");
-            $(this).html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
-            $(this).parent().parent().append('<span id="submit_'+attribute+'" class="input-group-btn"><button class="btn btn-success edit_button" type="button" value="'+attribute+'" action="submit"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></span>');
-        }
-        if (action == "cancel") {
-            var item = document.getElementById(attribute);
-            $(item).attr("disabled", true);
-            $(this).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
-            $(this).attr("action", "edit");
-            $(this).attr("class", "btn btn-default edit_button");
-            document.getElementById('submit_'+attribute).remove();
-        }
-        if (action == "submit") {
-            var item = document.getElementById(attribute);
-            var value = $(item).val();
-            var edit_button = document.getElementById('edit_'+attribute);
-            var myObj = {};
-            myObj["id"] = <?php echo $data['system'][0]->id; ?>;
-            myObj[attribute] = value;
-            var json = JSON.stringify(myObj);
-            $.post( "<?php echo $data['system'][0]->id;?>", { "data": json }, 'json')
-                .done(function( xhr ) {
-                    //alert( JSON.stringify(xhr) );
-                })
-               .fail(function(xhr) {
-                    returnData = xhr;
-                    responseText = JSON.parse(xhr.responseText);
-                    alert( responseText.error.code + "\n" + responseText.error.title + "\n" + responseText.error.detail );
-                });
-            $(item).attr("disabled", true);
-            $(edit_button).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
-            $(edit_button).attr("action", "edit");
-            $(edit_button).attr("class", "btn btn-default edit_button");
-            document.getElementById('submit_'+attribute).remove();
-        }
-    });
-});
-</script>
-
-<?php
 include(str_replace('views/theme-bootstrap/v_devices_read.php', 'controllers/include_device_types.php', __FILE__));
 
 if (strtolower($data['system'][0]->os_group) == 'windows') {
@@ -138,8 +51,6 @@ if (strtolower($data['system'][0]->os_group) == 'windows') {
 }
 $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', 'metric' => 'Metric', 'next_hop' => 'Next Hop', 'protocol' => 'Protocol', 'type' => 'type');
 ?>
-
-
 
 <div class="row">
 <div class="col-md-3">
@@ -307,7 +218,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="name" name="name" value="<?php echo $data['system'][0]->name; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_name" action="edit" class="btn btn-default edit_button" type="button" value="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" value="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -317,7 +228,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="hostname" name="hostname" value="<?php echo $data['system'][0]->hostname; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_hostname" action="edit" class="btn btn-default edit_button" type="button" value="hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_hostname" data-action="edit" class="btn btn-default edit_button" type="button" value="hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -326,7 +237,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="domain" name="domain" value="<?php echo $data['system'][0]->domain; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_domain" action="edit" class="btn btn-default edit_button" type="button" value="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" value="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -336,7 +247,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="dns_hostname" name="dns_hostname" value="<?php echo $data['system'][0]->dns_hostname; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_dns_hostname" action="edit" class="btn btn-default edit_button" type="button" value="dns_hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_dns_hostname" data-action="edit" class="btn btn-default edit_button" type="button" value="dns_hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -345,7 +256,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="dns_domain" name="dns_domain" value="<?php echo $data['system'][0]->dns_domain; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_dns_domain" action="edit" class="btn btn-default edit_button" type="button" value="dns_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_dns_domain" data-action="edit" class="btn btn-default edit_button" type="button" value="dns_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -355,7 +266,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="ip" name="ip" value="<?php echo $data['system'][0]->ip; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_ip" action="edit" class="btn btn-default edit_button" type="button" value="ip"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_ip" data-action="edit" class="btn btn-default edit_button" type="button" value="ip"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -378,7 +289,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 ?>
                                 
                                 </select>
-                                <span class="input-group-btn"><button id="edit_type" action="edit" class="btn btn-default edit_button" type="button" value="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" value="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
 
@@ -400,7 +311,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 }
                                 ?>
                                 </select>
-                                <span class="input-group-btn"><button id="edit_class" action="edit" class="btn btn-default edit_button" type="button" value="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span class="input-group-btn"><button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" value="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
                         <?php
@@ -412,7 +323,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="function" name="function" value="<?php echo $data['system'][0]->function; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_function" action="edit" class="btn btn-default edit_button" type="button" value="function"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_function" data-action="edit" class="btn btn-default edit_button" type="button" value="function"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -433,7 +344,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 }
                                 ?>
                                 </select>
-                                <span class="input-group-btn"><button id="edit_environment" action="edit" class="btn btn-default edit_button" type="button" value="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" value="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
 
@@ -454,7 +365,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 }
                                 ?>
                                 </select>
-                                <span class="input-group-btn"><button id="edit_status" action="edit" class="btn btn-default edit_button" type="button" value="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" value="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
 
@@ -463,7 +374,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="description" name="description" value="<?php echo $data['system'][0]->description; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_description" action="edit" class="btn btn-default edit_button" type="button" value="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" value="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -473,7 +384,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="os_group" name="os_group" value="<?php echo $data['system'][0]->os_group; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_os_group" action="edit" class="btn btn-default edit_button" type="button" value="os_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_os_group" data-action="edit" class="btn btn-default edit_button" type="button" value="os_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -483,7 +394,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="os_family" name="os_family" value="<?php echo $data['system'][0]->os_family; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_os_family" action="edit" class="btn btn-default edit_button" type="button" value="os_family"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_os_family" data-action="edit" class="btn btn-default edit_button" type="button" value="os_family"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -493,7 +404,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="os_name" name="os_name" value="<?php echo $data['system'][0]->os_name; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_os_name" action="edit" class="btn btn-default edit_button" type="button" value="os_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_os_name" data-action="edit" class="btn btn-default edit_button" type="button" value="os_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -506,7 +417,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="manufacturer" placeholder="" value="<?php echo $data['system'][0]->manufacturer; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_manufacturer" action="edit" class="btn btn-default edit_button" type="button" value="manufacturer"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_manufacturer" data-action="edit" class="btn btn-default edit_button" type="button" value="manufacturer"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -515,7 +426,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="model" placeholder="" value="<?php echo $data['system'][0]->model; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_model" action="edit" class="btn btn-default edit_button" type="button" value="model"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_model" data-action="edit" class="btn btn-default edit_button" type="button" value="model"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -524,7 +435,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="serial" placeholder="" value="<?php echo $data['system'][0]->serial; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_serial" action="edit" class="btn btn-default edit_button" type="button" value="serial"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_serial" data-action="edit" class="btn btn-default edit_button" type="button" value="serial"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -533,7 +444,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="asset_number" placeholder="" value="<?php echo $data['system'][0]->asset_number; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_asset_number" action="edit" class="btn btn-default edit_button" type="button" value="asset_number"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_asset_number" data-action="edit" class="btn btn-default edit_button" type="button" value="asset_number"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -545,7 +456,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="form_factor" placeholder="" value="<?php echo $data['system'][0]->form_factor; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_form_factor" action="edit" class="btn btn-default edit_button" type="button" value="form_factor"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_form_factor" data-action="edit" class="btn btn-default edit_button" type="button" value="form_factor"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -592,7 +503,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="cluster_name" placeholder="" value="<?php echo $data['system'][0]->cluster_name; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_cluster_name" action="edit" class="btn btn-default edit_button" type="button" value="cluster_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_cluster_name" data-action="edit" class="btn btn-default edit_button" type="button" value="cluster_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -607,7 +518,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="vm_host" placeholder="" value="<?php #echo $data['system'][0]->vm_server_name; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_vm_host" action="edit" class="btn btn-default edit_button" type="button" value="vm_host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_vm_host" data-action="edit" class="btn btn-default edit_button" type="button" value="vm_host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -616,7 +527,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="vm_group" placeholder="" value="<?php echo $data['system'][0]->vm_group; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_vm_group" action="edit" class="btn btn-default edit_button" type="button" value="vm_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_vm_group" data-action="edit" class="btn btn-default edit_button" type="button" value="vm_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -658,7 +569,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 <option value='y' <?php echo $selected_y; ?>>Yes</option>
                                 <option value='n' <?php echo $selected_n; ?>>No</option>
                                 </select>
-                                <span id="edit_oae_manage" action="edit"  class="input-group-btn"><button id="edit_oae_manage" action="edit" class="btn btn-default edit_button" type="button" value="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span id="edit_oae_manage" data-action="edit"  class="input-group-btn"><button id="edit_oae_manage" data-action="edit" class="btn btn-default edit_button" type="button" value="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
                     </div>
@@ -709,7 +620,7 @@ foreach ($list as $item) {
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_<?php echo $key; ?>" action="edit" class="btn btn-default edit_button" type="button" value="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" value="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -1039,7 +950,7 @@ function insert_additional_fields($section = '', $additional_fields = array())
                     <div class="input-group">
                       <input disabled type="text" class="form-control" placeholder="" id="custom_' . $field->{'additional_field.name'} . '" name="custom_' . $field->{'additional_field.name'} . '" value="' . $field->{'value'} . '">
                       <span class="input-group-btn">
-                        <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" action="edit" class="btn btn-default edit_button" type="button" value="custom_' . $field->{'additional_field.name'} . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                        <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" data-action="edit" class="btn btn-default edit_button" type="button" value="custom_' . $field->{'additional_field.name'} . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                       </span>
                     </div>
                 </div>' . "\n";
@@ -1061,7 +972,7 @@ function insert_additional_fields($section = '', $additional_fields = array())
 
                         echo '                        </select>
                         <span class="input-group-btn">
-                          <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" action="edit" class="btn btn-default edit_button" type="button" value="custom_' . $field->{'additional_field.name'} . '">
+                          <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" data-action="edit" class="btn btn-default edit_button" type="button" value="custom_' . $field->{'additional_field.name'} . '">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                           </button>
                         </span>
