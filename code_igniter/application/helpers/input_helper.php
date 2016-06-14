@@ -206,7 +206,9 @@ if (! function_exists('inputRead')) {
         unset($collection_words);
 
         # get the sub_resource
-        $CI->response->sub_resource = (string)$CI->uri->segment(3, '');
+        if (empty($CI->response->sub_resource)) {
+            $CI->response->sub_resource = (string)$CI->uri->segment(3, '');
+        }
         if (!empty($CI->input->get('sub_resource'))) {
             $CI->response->sub_resource = $CI->input->get('sub_resource');
         }
