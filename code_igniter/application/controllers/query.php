@@ -148,14 +148,14 @@ class query extends MY_Controller
             break;
 
             case "os_types":
-            $sql = "SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE status = 'production')) * 100) AS y, IF(CHAR_LENGTH(os_group)=0,'Other', os_group) AS name, count(*) as count FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND status = 'production' GROUP BY name";
+            $sql = "SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE status = 'production')) * 100) AS y, IF(CHAR_LENGTH(os_group)=0,'Other', os_group) AS name, count(*) as count FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND status = 'production' GROUP BY system.os_group";
             $this->data['heading'] = "Device Types";
             $data = array($group_id);
             $json = 'n';
             break;
 
             case "device_types":
-            $sql = "SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE status = 'production')) * 100) AS y, type AS name, count(*) as count FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND status = 'production' GROUP BY name";
+            $sql = "SELECT ceiling((COUNT(*) / (SELECT COUNT(*) FROM system WHERE status = 'production')) * 100) AS y, type AS name, count(*) as count FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND status = 'production' GROUP BY system.type";
             $this->data['heading'] = "Device Types";
             $data = array($group_id);
             $json = 'n';
