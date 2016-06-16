@@ -260,6 +260,15 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                               </span>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('FQDN')?></label>
+                            <div class="input-group">
+                              <input disabled type="text" class="form-control" placeholder="" id="fqdn" name="fqdn" value="<?php echo $data['system'][0]->fqdn; ?>">
+                              <span class="input-group-btn">
+                                <button id="edit_fqdn" data-action="edit" class="btn btn-default edit_button" type="button" value="fqdn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                              </span>
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <label for="ip" class="col-sm-4 control-label"><?php echo __('IP')?></label>
