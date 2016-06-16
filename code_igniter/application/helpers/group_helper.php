@@ -52,7 +52,8 @@ if (! function_exists('refresh_group_definitions')) {
             $query = $CI->db->query($sql);
         }
 
-        $sql = "SELECT * FROM oa_group WHERE group_category != 'network' AND group_category != 'owner' AND group_category != 'location'";
+        //$sql = "SELECT * FROM oa_group WHERE group_category != 'network' AND group_category != 'owner' AND group_category != 'location'";
+        $sql = "SELECT * FROM oa_group WHERE group_category != 'network'";
         # get the list of activated groups
         $query = $CI->db->query($sql);
         $result = $query->result();
@@ -157,8 +158,12 @@ if (! function_exists('refresh_group_definitions')) {
                 }
             }
         }
+        // update the default location and owner groups
+        // $sql = "UPDATE oa_group SET group_dynamic_select = \"SELECT distinct(system.id) FROM system WHERE (system.location_id = '0' OR LOWER(system.sysLocation) LIKE LOWER('%Default Location%')) AND system.status = 'production'\" WHERE group_name = 'Items in Default Location'";
+        // $sql = "UPDATE oa_group SET group_dynamic_select = \"SELECT distinct(system.id) FROM system WHERE (system.location_id = '0' OR LOWER(system.sysLocation) LIKE LOWER('%Default Location%')) AND system.status = 'production'\" WHERE group_name = 'Default Organisation owned items'";
         // get the non-updated groups
-        $sql = "SELECT group_id, group_name FROM oa_group WHERE updated != 'y' and group_category NOT IN ('network', 'location', 'owner')";
+        // $sql = "SELECT group_id, group_name FROM oa_group WHERE updated != 'y' and group_category NOT IN ('network', 'location', 'owner')";
+        $sql = "SELECT group_id, group_name FROM oa_group WHERE updated != 'y' and group_category NOT IN ('network')";
         $query = $CI->db->query($sql);
         $non_updated_groups = $query->result();
         if (count($non_updated_groups) > 0) {
