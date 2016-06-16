@@ -83,7 +83,7 @@ if (count($query) > 0) {
             $nmis_community = str_replace($key->nmis_community, str_repeat("*", strlen($key->nmis_community)), $key->nmis_community);
         }
         echo "\t\t<tr>\n";
-        echo "\t\t\t<td align=\"left\"><a class=\"SystemPopupTrigger\" rel=\"".intval($key->system_id)."\" href=\"".site_url()."/main/system_display/".intval($key->system_id)."\">".$key->nmis_name."</a></td>\n";
+        echo "\t\t\t<td align=\"left\"><a class=\"SystemPopupTrigger\" rel=\"".intval($key->id)."\" href=\"".site_url()."/main/system_display/".intval($key->id)."\">".$key->nmis_name."</a></td>\n";
         echo "\t\t\t<td align=\"left\">".$key->nmis_host."</td>\n";
         echo "\t\t\t<td align=\"left\">".$key->nmis_group."</td>\n";
         echo "\t\t\t<td align=\"left\">".$key->nmis_role."</td>\n";
@@ -91,7 +91,7 @@ if (count($query) > 0) {
         echo "\t\t\t<td align=\"left\">".$key->nmis_snmp_version."</td>\n";
         if ($manual_edit == 'y') {
             echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_";
-            echo intval($key->system_id)."\" name=\"system_id_".intval($key->system_id)."\"";
+            echo intval($key->id)."\" name=\"system_id_".intval($key->id)."\"";
             if ((string)$key->nmis_export == 'true') {
                 echo "checked";
             }
@@ -116,16 +116,16 @@ function check_all_systems() {
 	if (document.getElementById("system_id_0").checked == true) {
 		<?php
         foreach ($query as $key):
-            if (isset($key->system_id)) {
-                echo "\tdocument.getElementById(\"system_id_".intval($key->system_id)."\").checked = true;\n";
+            if (isset($key->id)) {
+                echo "\tdocument.getElementById(\"system_id_".intval($key->id)."\").checked = true;\n";
             }
         endforeach;
         ?>
 	} else {
 		<?php
         foreach ($query as $key):
-            if (isset($key->system_id)) {
-                echo "\tdocument.getElementById(\"system_id_".intval($key->system_id)."\").checked = false;\n";
+            if (isset($key->id)) {
+                echo "\tdocument.getElementById(\"system_id_".intval($key->id)."\").checked = false;\n";
             }
         endforeach;
         ?>
