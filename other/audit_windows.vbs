@@ -3961,40 +3961,53 @@ server = ""
 server_item = ""
 if ((en_sql_server = "y") or (en_sql_express = "y")) then
 	if debugging > "0" then wscript.echo "SQL info" end if
-	oReg.GetStringValue HKEY_LOCAL_MACHINE,    "SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\","CSDVersion", db_version
+
+	oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\","CSDVersion", db_version
 	If (IsNull(db_version)) Then
-	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\","CurrentVersion", db_version
+		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\","CurrentVersion", db_version
 	End If
 	If (IsNull(db_version)) Then
-	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\MSSQLSERVER\CurrentVersion","CurrentVersion", db_version
+		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\MSSQLSERVER\CurrentVersion","CurrentVersion", db_version
 	End If
 	If (IsNull(db_version) and en_sql_express = "y") Then
-	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\SQLEXPRESS\MSSQLSERVER\CurrentVersion","CurrentVersion", db_version
+		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\SQLEXPRESS\MSSQLSERVER\CurrentVersion","CurrentVersion", db_version
 	End If
 
 	' attempt to determine the edition of SQL
 	db_edition = ""
-	' first try SQL 2008 r2
-	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL10_50.MSSQLSERVER\Setup","Edition", db_edition
+	' SQL 2014
 	if (isnull(db_edition) or db_edition = "") then
+		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL12.MSSQLSERVER\Setup","Edition", db_edition
+	end if
+	'
+	' SQL 2008 r2
+	if (isnull(db_edition) or db_edition = "") then
+		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL10_50.MSSQLSERVER\Setup","Edition", db_edition
+	end if
+
 	' SQL 2008
-	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL10.MSSQLSERVER\Setup","Edition", db_edition
-	end if
 	if (isnull(db_edition) or db_edition = "") then
+		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL10.MSSQLSERVER\Setup","Edition", db_edition
+	end if
+
 	' SQL 2005
-	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\Setup","Edition", db_edition
-	end if
 	if (isnull(db_edition) or db_edition = "") then
-	' SQL 2000
-	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\Setup","Edition", db_edition
+		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\Setup","Edition", db_edition
 	end if
+
+	' SQL 2000
 	if (isnull(db_edition) or db_edition = "") then
-	' SQL 2000
-	oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\MSSQLServer\Setup","Edition", db_edition
+		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\Setup","Edition", db_edition
 	end if
+
+	' SQL 2000
+	if (isnull(db_edition) or db_edition = "") then
+		oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\MSSQLServer\Setup","Edition", db_edition
+	end if
+
 	if (instr(lcase(db_edition), "express")) then
-	en_sql_express = "y"
-	en_sql_server = "n"
+		en_sql_express = "y"
+		en_sql_server = "n"
 	end if
 
 	if ((en_sql_express = "y") and (db_edition = "" or isnull(db_edition))) then
@@ -4180,7 +4193,7 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 	server_item = server_item & "			<name>" & escape_xml(database_name) & "</name>" & vbcrlf
 	server_item = server_item & "			<id_internal>" & escape_xml(objRS("dbid")) & "</id_internal>" & vbcrlf
 	server_item = server_item & "			<instance>" & escape_xml(instance) & "</instance>" & vbcrlf
-	server_item = server_item & "			<filename>" & escape_xml(objRS("FileName")) & "</filename>" & vbcrlf
+	server_item = server_item & "			<path>" & escape_xml(objRS("FileName")) & "</path>" & vbcrlf
 	server_item = server_item & "			<size>" & escape_xml(filesize) & "</size>" & vbcrlf
 	server_item = server_item & "			<details_creation_date>" & escape_xml(objRS("crdate")) & "</details_creation_date>" & vbcrlf
 	server_item = server_item & "		</item>" & vbcrlf
@@ -6211,59 +6224,61 @@ end if
 
 ' Custom file auditing - only if script is running on target machine
 if (strcomputer = ".") then
-    result.WriteText "	<file>" & vbcrlf
-    redim new_files(1)
-    for each file in files
-        if ( file > "" ) then
-            if objFSO.FolderExists(file) then
-                Set objFolder = objFSO.GetFolder(file)
-                Set colFiles = objFolder.Files
-                for each objFile in colFiles
-                    redim preserve new_files(UBound(new_files) + 1)
-                    new_files(UBound(new_files)) = file & "\" & objFile.Name
-                next
-            else
-                redim preserve new_files(UBound(new_files) + 1)
-                new_files(UBound(new_files)) = file
-            end if
-        end if
-    next
-    for each file in new_files
-        if ( file > "" ) then
-            hash = ""
-            on error resume next
-            	command = "certUtil -hashfile " & file & " SHA1"
-            	Set objExecObj = objShell.exec(command)
-            	hash = objExecObj.StdOut.Readline() ' ignore this first line of output
-            	hash = objExecObj.StdOut.Readline()
-            	set objExecObj = Nothing
-            	hash = replace(hash, " ", "")
-            on error goto 0
-            Set colFiles = objWMIService.ExecQuery ("SELECT * FROM CIM_Datafile WHERE Name = '" & replace(file, "\", "\\") & "'")
-            for each objFile in colFiles
-                ' get the file owner
-                Set colItems = objWMIService.ExecQuery ("ASSOCIATORS OF {Win32_LogicalFileSecuritySetting='" & replace(file, "\", "\\") & "'}" & " WHERE AssocClass=Win32_LogicalFileOwner ResultRole=Owner")
-                For Each objItem2 in colItems
-                    owner = objItem2.AccountName & "@" & objItem2.ReferencedDomainName
-                Next
-                last_changed = WMIDateStringToDate(objFile.LastModified)
-                result.WriteText "      <item>" & vbcrlf
-                result.WriteText "          <name>" & escape_xml(objFile.FileName & "." & objFile.Extension) & "</name>" & vbcrlf
-                result.WriteText "          <full_name>" & escape_xml(objFile.Name) & "</full_name>" & vbcrlf
-                result.WriteText "          <size>" & escape_xml(objFile.FileSize) & "</size>" & vbcrlf
-                result.WriteText "          <directory>" & escape_xml(objFile.Drive & objFile.Path) & "</directory>" & vbcrlf
-                result.WriteText "          <hash>" & escape_xml(hash) & "</hash>" & vbcrlf
-                result.WriteText "          <last_changed>" & escape_xml(last_changed) & "</last_changed>" & vbcrlf
-                result.WriteText "          <meta_last_changed></meta_last_changed>" & vbcrlf
-                result.WriteText "          <permissions>" & escape_xml(objFile.AccessMask) & "</permissions>" & vbcrlf
-                result.WriteText "          <owner>" & escape_xml(owner) & "</owner>" & vbcrlf
-                result.WriteText "          <version>" & escape_xml(objFile.Version) & "</version>" & vbcrlf
-                result.WriteText "          <group></group>" & vbcrlf
-                result.WriteText"      </item>" & vbcrlf
-            next
-        end if
-    next
-    result.WriteText "	</file>" & vbcrlf
+	if (isarray(files)) then
+	    result.WriteText "	<file>" & vbcrlf
+	    redim new_files(1)
+	    for each file in files
+	        if ( file > "" ) then
+	            if objFSO.FolderExists(file) then
+	                Set objFolder = objFSO.GetFolder(file)
+	                Set colFiles = objFolder.Files
+	                for each objFile in colFiles
+	                    redim preserve new_files(UBound(new_files) + 1)
+	                    new_files(UBound(new_files)) = file & "\" & objFile.Name
+	                next
+	            else
+	                redim preserve new_files(UBound(new_files) + 1)
+	                new_files(UBound(new_files)) = file
+	            end if
+	        end if
+	    next
+	    for each file in new_files
+	        if ( file > "" ) then
+	            hash = ""
+	            on error resume next
+	            	command = "certUtil -hashfile " & file & " SHA1"
+	            	Set objExecObj = objShell.exec(command)
+	            	hash = objExecObj.StdOut.Readline() ' ignore this first line of output
+	            	hash = objExecObj.StdOut.Readline()
+	            	set objExecObj = Nothing
+	            	hash = replace(hash, " ", "")
+	            on error goto 0
+	            Set colFiles = objWMIService.ExecQuery ("SELECT * FROM CIM_Datafile WHERE Name = '" & replace(file, "\", "\\") & "'")
+	            for each objFile in colFiles
+	                ' get the file owner
+	                Set colItems = objWMIService.ExecQuery ("ASSOCIATORS OF {Win32_LogicalFileSecuritySetting='" & replace(file, "\", "\\") & "'}" & " WHERE AssocClass=Win32_LogicalFileOwner ResultRole=Owner")
+	                For Each objItem2 in colItems
+	                    owner = objItem2.AccountName & "@" & objItem2.ReferencedDomainName
+	                Next
+	                last_changed = WMIDateStringToDate(objFile.LastModified)
+	                result.WriteText "      <item>" & vbcrlf
+	                result.WriteText "          <name>" & escape_xml(objFile.FileName & "." & objFile.Extension) & "</name>" & vbcrlf
+	                result.WriteText "          <full_name>" & escape_xml(objFile.Name) & "</full_name>" & vbcrlf
+	                result.WriteText "          <size>" & escape_xml(objFile.FileSize) & "</size>" & vbcrlf
+	                result.WriteText "          <directory>" & escape_xml(objFile.Drive & objFile.Path) & "</directory>" & vbcrlf
+	                result.WriteText "          <hash>" & escape_xml(hash) & "</hash>" & vbcrlf
+	                result.WriteText "          <last_changed>" & escape_xml(last_changed) & "</last_changed>" & vbcrlf
+	                result.WriteText "          <meta_last_changed></meta_last_changed>" & vbcrlf
+	                result.WriteText "          <permissions>" & escape_xml(objFile.AccessMask) & "</permissions>" & vbcrlf
+	                result.WriteText "          <owner>" & escape_xml(owner) & "</owner>" & vbcrlf
+	                result.WriteText "          <version>" & escape_xml(objFile.Version) & "</version>" & vbcrlf
+	                result.WriteText "          <group></group>" & vbcrlf
+	                result.WriteText"      </item>" & vbcrlf
+	            next
+	        end if
+	    next
+	    result.WriteText "	</file>" & vbcrlf
+	end if
 end if
 
 ' NOTE - Have moved to end of audit incase processing fails.
