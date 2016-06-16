@@ -793,6 +793,8 @@ $(document).ready(function(){
     $('#view_settings_users').hide();
     $('#view_settings_variables').hide();
     $('#view_settings_file').hide();
+    $('#view_server_database').hide();
+    $('#view_server_web').hide();
 
 
 	$('#toggle_settings_pagefile').click(function(){
@@ -854,10 +856,6 @@ $(document).ready(function(){
     $('#view_settings_file').slideToggle("fast");
         toggleBold("toggle_settings_file");
   });
-
-	$('#view_server_database').hide();
-	$('#view_server_web').hide();
-
 
 	$('#toggle_server_database').click(function(){
 		$('#view_server_database').slideToggle("fast");
