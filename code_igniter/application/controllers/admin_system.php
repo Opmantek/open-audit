@@ -267,8 +267,11 @@ class Admin_system extends MY_Controller
 		<pre>";
 
         # audit the device via snmp
-        $temp_array = get_snmp($details);
-        $details = $temp_array['details'];
+        if ($temp_array = get_snmp($details)) {
+            $details = $temp_array['details'];
+        } else {
+            echo "Error - nothing returned when SNMP routine executed.";
+        }
         $network_interfaces = $temp_array['interfaces'];
         $ip = $temp_array['ip'];
         unset($guests);
@@ -283,7 +286,7 @@ class Admin_system extends MY_Controller
         $details->audits_ip = '127.0.0.1';
         $details = dns_validate($details, 'y');
 
-        unset($details->type);
+        #unset($details->type);
         unset($details->show_output);
         unset($details->ip);
         echo "<pre>\n";
