@@ -89,6 +89,7 @@ class M_devices_components extends MY_Model
                 $found_current = true;
             }
         }
+
         $sql = '';
         // if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
         //     $filter = 'AND ' . $filter;
@@ -123,6 +124,11 @@ class M_devices_components extends MY_Model
                 $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? $filter";
                 $data = array($id);
             }
+        }
+
+        if ($table == 'system') {
+            $sql = "SELECT $properties FROM system WHERE id = ? $filter";
+            $data = array($id);
         }
         
         if ($sql != '') {
@@ -266,16 +272,22 @@ class M_devices_components extends MY_Model
         $log_details->display = $display;
         unset($display);
 
+        if (empty($details->name) and !empty($details->hostname)) {
+            $name = $details->hostname;
+        } else {
+            $name = $details->name;
+        }
+
         // ensure we have a valid table name
         if (!$this->db->table_exists($table)) {
-            $log_details->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$details->name.')';
+            $log_details->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log_details->severity = 5;
             stdlog($log_details);
             return;
         }
 
         if (!$input) {
-            $log_details->message = 'No input supplied (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$details->name.')';
+            $log_details->message = 'No input supplied (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log_details->severity = 5;
             stdlog($log_details);
             return;
@@ -287,16 +299,16 @@ class M_devices_components extends MY_Model
 
         if ($table == '' or count($match_columns) == 0 or !isset($details->id)) {
             if ($table == '') {
-                $log_details->message = 'No table supplied for '.@ip_address_from_db($details->ip).' ('.@$details->name.')';
+                $log_details->message = 'No table supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "No table name supplied - failed";
             }
             if (count($match_columns) == 0) {
-                $log_details->message = 'No columns to match supplied for '.@ip_address_from_db($details->ip).' ('.@$details->name.')';
+                $log_details->message = 'No columns to match supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "$table - No columns to match supplied - failed";
             }
             # if (!isset($details->id)) { # this will be changed when we convert the system table
             if (!isset($details->id)) {
-                $log_details->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.@$details->name.')';
+                $log_details->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "$table - No id supplied - failed";
             }
             $this->m_audit_log->update('debug', $message, $details->id, $details->last_seen);
@@ -306,7 +318,7 @@ class M_devices_components extends MY_Model
             return;
         } else {
             $this->m_audit_log->update('debug', "$table - start", $details->id, $details->last_seen);
-            $log_details->message = 'Processing component (' . $table . ') start for '.@ip_address_from_db($details->ip).' ('.$details->name.')';
+            $log_details->message = 'Processing component (' . $table . ') start for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log_details->severity = 7;
             stdlog($log_details);
         }
@@ -696,7 +708,7 @@ class M_devices_components extends MY_Model
         // we have also unset any items that were inserted (from the audit set above) from the db set
         // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
         if (count($db_result) > 0) {
-            $log_details->message = 'Inserting change logs (' . $table . ') for '.ip_address_from_db($details->ip).' ('.$details->name.')';
+            $log_details->message = 'Inserting change logs (' . $table . ') for '.ip_address_from_db($details->ip).' ('.$name.')';
             $log_details->severity = 7;
             stdlog($log_details);
         }
@@ -732,7 +744,7 @@ class M_devices_components extends MY_Model
         }
         // update the audit log
         $this->m_audit_log->update('debug', "$table - end", $details->id, $details->last_seen);
-        $log_details->message = 'Processing component (' . $table . ') end for '.@ip_address_from_db($details->ip).' ('.$details->name.')';
+        $log_details->message = 'Processing component (' . $table . ') end for '.@ip_address_from_db($details->ip).' ('.$name.')';
         $log_details->severity = 7;
         stdlog($log_details);
         return;
