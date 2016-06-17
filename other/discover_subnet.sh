@@ -358,7 +358,7 @@ if [[ "$hosts" != "" ]]; then
 		if [ "$host_is_up" == "true" ]; then
 			result="	<device>"$'\n'
 			result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
-			result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
+			result="$result		<ip>$host</ip>"$'\n'
 			result="$result		<mac_address>$mac_address</mac_address>"$'\n'
 			result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
 			#result="$result		<description><![CDATA[$description]]></description>"$'\n'
