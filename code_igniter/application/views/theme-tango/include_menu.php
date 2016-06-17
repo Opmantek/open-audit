@@ -162,8 +162,7 @@ var modal_content_image = "";
                     <?php
                     if (php_uname('s') == 'Linux') {
                         echo "                  <li><a href='".$oa_web_index."/admin_db/backup'>".__('Backup the Database')."</a></li>\n";
-                    }
-        ?>
+                    } ?>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/export_table'><?php echo __('Export a Database Table')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/maintenance'><?php echo __('Database Maintenance')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/reset_icons'><?php echo __('Reset Device Icons')?></a></li>
@@ -187,12 +186,7 @@ var modal_content_image = "";
                     <li><a href='<?php echo $oa_web_index?>/admin/scan_ad'><?php echo __('Import Active Directory')?></a></li>
                 </ul>
             </li>
-            <li><a href='javascript:void(0)'><?php echo __('Files')?></a>
-                <ul>
-                    <li><a href='<?php echo $oa_web_index?>/files'><?php echo __('List Files')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/files?action=create'><?php echo __('Add File')?></a></li>
-                </ul>
-            </li>
+
             <li><a href='javascript:void(0)'><?php echo __('Groups')?></a>
                 <ul>
                     <li><a href='<?php echo $oa_web_index?>/admin_group/list_groups'><?php echo __('List Groups')?></a></li>

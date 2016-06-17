@@ -85,19 +85,6 @@ class files extends MY_Controller
         output($this->response);
     }
 
-    private function create_form()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->load->model('m_orgs');
-        $this->response->orgs = $this->m_orgs->collection();
-        output($this->response);
-    }
-
     private function create()
     {
         # Only admin's
@@ -116,18 +103,6 @@ class files extends MY_Controller
         }
     }
 
-    private function update_form()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = $this->m_files->read();
-        output($this->response);
-    }
-
     private function update()
     {
         # Only admin's
@@ -140,7 +115,7 @@ class files extends MY_Controller
         if ($this->response->format == 'json') {
             output($this->response);
         } else {
-            redirect('files');
+            
         }
     }
 
@@ -161,26 +136,20 @@ class files extends MY_Controller
     }
 
     # not implemented
-    private function execute()
+    private function create_form()
     {
-        $this->response->format = 'json';
-        $this->response->debug = true;
-        output($this->response);
+        redirect('/files');
     }
 
     # not implemented
-    private function bulk_update_form()
+    private function update_form()
     {
-        $this->response->format = 'json';
-        $this->response->debug = true;
-        $this->response->id = '';
-        $temp_ids = array();
-        foreach ($_POST['ids'] as $temp) {
-            $temp_ids[] = $temp;
-        }
-        $this->response->id = implode(',', $temp_ids);
-        output($this->response);
+        redirect('/files');
     }
 
-
+    # not implemented
+    private function execute()
+    {
+        redirect('/files');
+    }
 }
