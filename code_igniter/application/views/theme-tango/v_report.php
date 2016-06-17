@@ -38,7 +38,7 @@ $sortcolumn = 3;
 $manual_edit = 'n';
 if (isset($this->user->access_level) and $this->user->access_level > '9') {
     # check to see if "system_id" is present in report
-        if (isset($query[0]->system_id)) {
+        if (isset($query[0]->{'system.id'}) or isset($query[0]->{'id'})) {
             # enable group manual editing column
             $manual_edit = 'y';
         }
