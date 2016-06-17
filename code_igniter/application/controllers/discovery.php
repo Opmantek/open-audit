@@ -1013,42 +1013,50 @@ class discovery extends CI_Controller
                         $details->os_name = '';
 
                         // try to get more information using SNMP (if ext loaded in PHP)
-                        if (extension_loaded('snmp') and $details->snmp_status == 'true') {
-                            $log_details->message = 'Attempting SNMP discovery on '.$details->ip;
+                        if (!extension_loaded('snmp')) {
+                            $log_details->message = 'PHP extension not loaded, skipping SNMP data retrieval for ' . $details->ip;
                             stdlog($log_details);
-                            try {
-                                $temp_array = get_snmp($details);
-                            } catch (Exception $error) {
-                                $log_details->message = 'Something went awry when trying to run the SNMP function for ' . $details->ip;
+                        } else {
+                            if ($details->snmp_status == 'true') {
+                                $log_details->message = 'Attempting SNMP discovery on '.$details->ip;
                                 stdlog($log_details);
-                                $log_details->message = $error;
-                                stdlog($log_details);
-                                if ($display == 'y') {
-                                    print_r($error);
-                                }
-                            }
-                            $details = $temp_array['details'];
-                            $network_interfaces = $temp_array['interfaces'];
-                            $modules = $temp_array['modules'];
-                            $ip = $temp_array['ip'];
-
-                            unset($guests);
-                            if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
-                                $guests = $temp_array['guests'];
-                            }
-                            if (isset($temp_array['interfaces']) and count($temp_array['interfaces'] > 0)) {
-                                foreach ($network_interfaces as $interface) {
-                                    if (isset($interface->mac) and (string) $interface->mac != '') {
-                                        // we have a mac address, insert it into the $details object
-                                        $mac_address = strtolower((string) $interface->mac);
-                                        $details->mac_addresses->$mac_address = $mac_address;
+                                try {
+                                    $temp_array = get_snmp($details);
+                                } catch (Exception $error) {
+                                    $log_details->message = 'Something went awry when trying to run the SNMP function for ' . $details->ip;
+                                    stdlog($log_details);
+                                    $log_details->message = $error;
+                                    stdlog($log_details);
+                                    if ($display == 'y') {
+                                        print_r($error);
                                     }
                                 }
-                            }
-                            if ((isset($details->snmp_oid)) and ($details->snmp_oid > '')) {
-                                // we received a result from SNMP, use this data to update or insert
-                                $details->last_seen_by = 'snmp';
-                                $details->audits_ip = '127.0.0.1';
+                                $details = $temp_array['details'];
+                                $network_interfaces = $temp_array['interfaces'];
+                                $modules = $temp_array['modules'];
+                                $ip = $temp_array['ip'];
+
+                                unset($guests);
+                                if (isset($temp_array['guests']) and count($temp_array['guests']) > 0) {
+                                    $guests = $temp_array['guests'];
+                                }
+                                if (isset($temp_array['interfaces']) and count($temp_array['interfaces'] > 0)) {
+                                    foreach ($network_interfaces as $interface) {
+                                        if (isset($interface->mac) and (string) $interface->mac != '') {
+                                            // we have a mac address, insert it into the $details object
+                                            $mac_address = strtolower((string) $interface->mac);
+                                            $details->mac_addresses->$mac_address = $mac_address;
+                                        }
+                                    }
+                                }
+                                if ((isset($details->snmp_oid)) and ($details->snmp_oid > '')) {
+                                    // we received a result from SNMP, use this data to update or insert
+                                    $details->last_seen_by = 'snmp';
+                                    $details->audits_ip = '127.0.0.1';
+                                }
+                            } else {
+                                $log_details->message = 'SNMP port open but PHP extension not loaded, skipping SNMP data retrieval for ' . $details->ip;
+                                stdlog($log_details);
                             }
                         }
 
@@ -2362,6 +2370,35 @@ class discovery extends CI_Controller
             $env = array();
             if ($command != '') {
                 $command_string = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $user . '@' . $host . ' "' . $command . '"';
+                $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
+                if (is_resource($process)) {
+                    fwrite($pipes[0], $password);
+                    fclose($pipes[0]);
+                    // stdOut
+                    $temp = stream_get_contents($pipes[1]);
+                    $return['output'] = explode("\n", $temp);
+                    if (end($return['output']) == '') {
+                        unset($return['output'][count($return['output'])-1]);
+                    }
+                    fclose($pipes[1]);
+                    $return['status'] = proc_close($process);
+                }
+            }
+        }
+
+        // NOTE - requires "brew install coreutils" for the gtimeout command
+        // NOTE - requires the command "brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb" for the sshpass command
+        if (php_uname('s') == 'Darwin') {
+            $descriptorspec = array(
+                0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+                1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+                2 => array("file", "/dev/null", "a"), // stderr is a file to write to
+            );
+            $cwd = '/tmp';
+            $cwd = '/usr/local/open-audit/other';
+            $env = array();
+            if ($command != '') {
+                $command_string = 'gtimeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $user . '@' . $host . ' "' . $command . '"';
                 $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
                 if (is_resource($process)) {
                     fwrite($pipes[0], $password);
