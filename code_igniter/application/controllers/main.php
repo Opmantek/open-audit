@@ -1167,6 +1167,37 @@ class main extends MY_Controller
             unset($output);
         }
 
+        if (php_uname('s') == 'Darwin') {
+            $data['os_platform'] = 'OSX';
+            $command_string = 'sw_vers | grep "ProductVersion:" | cut -f2';
+            @exec($command_string, $return['output'], $return['status']);
+            $data['os_version'] = $return['output'][0];
+            unset($output);
+            unset($command_string);
+            if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
+            } elseif (file_exists('/usr/local/opmojo/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/opmojo/conf/opCommon.nmis';
+            }
+            #nmap
+            $test_path = '/usr/local/bin/nmap';
+            if (file_exists($test_path)) {
+                $data['prereq_nmap'] = '/usr/local/bin/nmap';
+            }
+            $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['application_log_permission'] = $output[0];
+            }
+            unset($output);
+            unset($command_string);
+            
+            # system timezone
+            $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
+            exec($command_string, $output, $return_var);
+            $data['os_timezone'] = @$output[0];
+        }
+
         if (php_uname('s') == 'Linux') {
             $data['os_platform'] = 'linux';
             if (file_exists('/etc/os-release')) {
@@ -1218,10 +1249,6 @@ class main extends MY_Controller
             }
         }
 
-        if (php_uname('s') == 'Darwin') {
-            $data['os_platform'] = 'OSX';
-        }
-
         if ($data['os_platform'] == 'Windows') {
             # nmap
             $test_path = 'c:\Program Files\Nmap\Nmap.exe';
@@ -1241,14 +1268,6 @@ class main extends MY_Controller
 
             $data['application_log_permission'] = '-rw-rw-r--';
             $data['prereq_apache_mod_proxy'] = 'y';
-        }
-
-        if ($data['os_platform'] == 'OSX') {
-            #nmap
-            $test_path = '/usr/local/bin/nmap';
-            if (file_exists($test_path)) {
-                $data['prereq_nmap'] = '/usr/local/bin/nmap';
-            }
         }
 
         if (strpos($data['os_platform'], 'Linux') !== false) {
