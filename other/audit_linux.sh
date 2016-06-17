@@ -438,10 +438,17 @@ if [ "$san_audit" = "y" ]; then
 					fi
 				fi
 			fi
-			if [ "$debugging" -gt 1 ]; then
-				echo "Deleting SAN output file /tmp/$san.txt."
+			if [ "$create_file" != "y" ]; then
+				if [ "$debugging" -gt 1 ]; then
+					echo "Deleting SAN output file /tmp/$san.txt."
+				fi
+				$(rm /tmp/"$san".txt)
+			else
+				if [ "$debugging" -gt 0 ]; then
+					echo "SAN output file for uploading to Open-AudIT is $PWD/san-$san.txt"
+				fi
+				$(mv /tmp/"$san".txt $PWD/san-$san.txt)
 			fi
-			$(rm /tmp/"$san".txt)
 		done
 	fi
 fi
