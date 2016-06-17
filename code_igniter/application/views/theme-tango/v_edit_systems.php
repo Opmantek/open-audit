@@ -150,14 +150,14 @@ echo form_open('main/process_edit_systems')."\n";
         echo "<legend><span style='font-size: 12pt;'>&nbsp;" . __('Additional Fields') . "</span></legend>";
         echo "<table><tr><td>\n";
         foreach ($additional_fields as $field) {
-            echo "<label for=\"" . $field->field_name . "\">" . $field->field_name . "</label>";
-            if ($field->field_type == 'varchar') {
-                echo "<input type=\"text\" id=\"additional_" . $field->field_name . "\" name =\"additional_" . $field->field_name . "\" />";
-            } elseif ($field->field_type == 'list') {
-                echo "<select id=\"additional_" . $field->field_name . "\" name =\"additional_" . $field->field_name . "\" />";
+            echo "<label for=\"" . $field->name . "\">" . $field->name . "</label>";
+            if ($field->type == 'varchar') {
+                echo "<input type=\"text\" id=\"additional_" . $field->name . "\" name =\"additional_" . $field->name . "\" />";
+            } elseif ($field->type == 'list') {
+                echo "<select id=\"additional_" . $field->name . "\" name =\"additional_" . $field->name . "\" />";
                 echo "<option value=\"\" selected></option>\n";
                 echo "<option value=\"-\">Remove Value</option>\n";
-                $values = explode(',', $field->field_values);
+                $values = explode(',', $field->values);
                 foreach ($values as $value) {
                     echo "<option value=\"" . $value . "\">" . $value . "</option>\n";
                 }
