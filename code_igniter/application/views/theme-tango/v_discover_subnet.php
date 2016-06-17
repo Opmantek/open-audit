@@ -55,6 +55,11 @@ if (php_uname('s') == "Windows NT") {
     } else {
         $output[0] = '';
     }
+    if ($nmap_installed == 'n') {
+        if (file_exists('/usr/local/bin/nmap')) {
+            $nmap_installed = 'y';
+        }
+    }
 }
 
 if ($nmap_installed == 'n') {
