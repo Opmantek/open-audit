@@ -1226,6 +1226,13 @@ if san_audit = "y" and audit_location = "local" then
 				      end if
 				   end if
 				end if ' submit_online'
+				if create_file = "y" then
+					outFile = "san-" & san_name & ".txt"
+					Set objFile = objFSO.CreateTextFile(outFile,True)
+					objFile.Write smcli_output & vbCrLf
+					objFile.Close
+					if debugging > "0" then wscript.echo "SAN output file for uploading to Open-AudIT is " & outFile end if
+				end if ' end of create_file'
 			end if ' line contains a SAN name / ip'
 		Wend ' each line of output from the smcli -c command'
 	end if
