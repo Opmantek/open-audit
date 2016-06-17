@@ -1469,7 +1469,7 @@ class M_system extends MY_Model
             return;
         }
         $this->load->library('encrypt');
-        $sql = "SELECT access_details FROM system WHERE system_id = ? LIMIT 1";
+        $sql = "SELECT access_details FROM system WHERE system.id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
@@ -1599,7 +1599,7 @@ class M_system extends MY_Model
         # now encrypt what we have and store it
         $encoded = json_encode($new_credentials);
         $encoded = $this->encrypt->encode($encoded);
-        $sql = "UPDATE system SET access_details = ? WHERE system_id = ?";
+        $sql = "UPDATE system SET access_details = ? WHERE system.id = ?";
         $sql = $this->clean_sql($sql);
         $data = array($encoded, $system_id);
         $query = $this->db->query($sql, $data);
