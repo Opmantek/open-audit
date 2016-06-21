@@ -96,7 +96,7 @@ if ((isset($share) and count($share) > 0) or
 	 	<?php if (count($log) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_fill.png" /><a href="#" id="toggle_settings_logs"><?php echo __('Logs')?></a></li> <?php } ?>
         <?php if (count($task) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_task.png" /><a href="#" id="toggle_settings_tasks"><?php echo __('Tasks')?></a></li> <?php } ?>
         <?php if (count($variable) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_font.png" /><a href="#" id="toggle_settings_variables"><?php echo __('Variables')?></a></li> <?php } ?>
-        <?php if (count($file) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_font.png" /><a href="#" id="toggle_settings_file"><?php echo __('Files')?></a></li> <?php } ?>
+        <?php if (count($file) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_file.png" /><a href="#" id="toggle_settings_file"><?php echo __('Files')?></a></li> <?php } ?>
 	</ul>
 </li>
 <?php }
