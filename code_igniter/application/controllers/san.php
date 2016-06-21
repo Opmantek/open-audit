@@ -689,74 +689,78 @@ class San extends CI_Controller
             $ip = $xml;
             unset($xml);
 
+            if ($details->hostname == 'target') {
+                $details->hostname .= '-' . str_replace('.', '', $details->ip);
+            }
+            $details->name = $details->hostname;
 
-        $log_details->message = 'Processing audit result for san at ' . $details->ip;
-        stdlog($log_details);
-
-        $details->last_seen = date('Y-m-d H:i:s');
-        $details->id = intval($this->m_system->find_system($details));
-        $details->last_seen_by = 'audit';
-        $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
-
-        if ($details->id == '') {
-            // insert a new system
-            $details->id = $this->m_system->insert_system($details);
-            $log_details = new stdClass();
-            $log_details->severity = 7;
-            $log_details->file = 'system';
-            $log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
+            $log_details->message = 'Processing audit result for san at ' . $details->ip;
             stdlog($log_details);
+
+            $details->last_seen = date('Y-m-d H:i:s');
+            $details->id = intval($this->m_system->find_system($details, 'y'));
+            $details->last_seen_by = 'audit';
+            $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
+
+            if ($details->id == '') {
+                // insert a new system
+                $details->id = $this->m_system->insert_system($details);
+                $log_details = new stdClass();
+                $log_details->severity = 7;
+                $log_details->file = 'system';
+                $log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
+                stdlog($log_details);
+                unset($log_details);
+                $details->original_last_seen = "";
+                echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+            } else {
+                // update an existing system
+                $log_details = new stdClass();
+                $log_details->severity = 7;
+                $log_details->file = 'system';
+                $log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
+                stdlog($log_details);
+                unset($log_details);
+                $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
+                $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
+                $this->m_system->update_system($details);
+                echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+            }
+            $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
+            $temp_user = '';
+            if (isset($this->user->full_name)) {
+                $temp_user = $this->user->full_name;
+            }
+            $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
+            unset($temp_user);
+
+            $this->m_audit_log->update('debug', 'san', $details->id, $details->last_seen);
+            $this->m_devices_components->process_component('san', $details, $san);
+
+            $this->m_audit_log->update('debug', 'network', $details->id, $details->last_seen);
+            $this->m_devices_components->process_component('network', $details, $network);
+
+            $this->m_audit_log->update('debug', 'disk', $details->id, $details->last_seen);
+            $this->m_devices_components->process_component('disk', $details, $disk);
+
+            $this->m_audit_log->update('debug', 'ip address', $details->id, $details->last_seen);
+            $this->m_devices_components->process_component('ip', $details, $ip);
+
+            // Finally, update any groups for this system if config item is set
+            $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
+            if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
+                # don't run the update group routine
+            } else {
+                $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
+                $this->m_oa_group->update_system_groups($details);
+            }
+            $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
+
+            $this->benchmark->mark('code_end');
+            #$log_details->message = 'Processing completed for ' . $details->ip . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+            #stdlog($log_details);
+
             unset($log_details);
-            $details->original_last_seen = "";
-            echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
-        } else {
-            // update an existing system
-            $log_details = new stdClass();
-            $log_details->severity = 7;
-            $log_details->file = 'system';
-            $log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
-            stdlog($log_details);
-            unset($log_details);
-            $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
-            $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
-            $this->m_system->update_system($details);
-            echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
-        }
-        $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
-        $temp_user = '';
-        if (isset($this->user->full_name)) {
-            $temp_user = $this->user->full_name;
-        }
-        $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
-        unset($temp_user);
-
-        $this->m_audit_log->update('debug', 'san', $details->id, $details->last_seen);
-        $this->m_devices_components->process_component('san', $details, $san);
-
-        $this->m_audit_log->update('debug', 'network', $details->id, $details->last_seen);
-        $this->m_devices_components->process_component('network', $details, $network);
-
-        $this->m_audit_log->update('debug', 'disk', $details->id, $details->last_seen);
-        $this->m_devices_components->process_component('disk', $details, $disk);
-
-        $this->m_audit_log->update('debug', 'ip address', $details->id, $details->last_seen);
-        $this->m_devices_components->process_component('ip', $details, $ip);
-
-        // Finally, update any groups for this system if config item is set
-        $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
-        if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
-            # don't run the update group routine
-        } else {
-            $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
-            $this->m_oa_group->update_system_groups($details);
-        }
-        $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
-
-        $this->benchmark->mark('code_end');
-        #$log_details->message = 'Processing completed for ' . $details->ip . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
-        #stdlog($log_details);
-
-        unset($log_details);
         } else {
             # nothing sent, sending the form html input page
             $this->load->view('v_san_add');
