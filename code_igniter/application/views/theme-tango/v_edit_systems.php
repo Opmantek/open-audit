@@ -141,7 +141,8 @@ echo form_open('main/process_edit_systems')."\n";
 
     <?php
     foreach ($query as $key) {
-        echo "<input type=\"hidden\" name=\"system_id_".$key->system_id."\" value=\"".$key->system_id."\" />\n";
+        #echo "<input type=\"hidden\" name=\"system_id_".$key->system_id."\" value=\"".$key->system_id."\" />\n";
+        echo "<input type=\"hidden\" name=\"system_id_".$key->id."\" value=\"".$key->id."\" />\n";
     }
     ?>
 
@@ -190,7 +191,7 @@ echo form_open('main/process_edit_systems')."\n";
                 ?>
             <tr>
                 <td><span style="display: none;"><?php echo htmlentities($key->ip)?></span><?php echo htmlentities(ip_address_from_db($key->ip))?></td>
-                <td><a href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->system_id)?>"><?php echo htmlentities($key->hostname)?></a></td>
+                <td><a href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->id)?>"><?php echo htmlentities($key->name)?></a></td>
                 <td><?php echo htmlentities($key->description)?></td>
             </tr>
             <?php } ?>
