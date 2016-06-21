@@ -388,7 +388,6 @@ if pidof -x -o $$ "$script_name" >/dev/null 2>&1; then
 	fi
 	exit 0
 fi
-IFS="$NEWLINEIFS"
 
 
 
@@ -410,7 +409,7 @@ if [ "$san_audit" = "y" ]; then
 		if [ "$debugging" -gt 1 ]; then
 			echo "Running SAN list"
 		fi
-		for san in $(/opt/IBM_DS/client/SMcli -d | grep -v -e '^$' | grep -v 'SMcli' | cut -d" " -f2 ); do
+		for san in $(/opt/IBM_DS/client/SMcli -d | grep -v -e '^$' | grep -v 'SMcli' | cut -f2 ); do
 			$(echo "input=" > /tmp/"$san".txt)
 			if [ "$debugging" -gt 1 ]; then
 				echo "Running command: /opt/IBM_DS/client/SMcli \"$san\" -c \"show storagesubsystem profile;\" >> /tmp/\"$san\".txt"
@@ -458,7 +457,7 @@ fi
 #========================
 #  SYSTEM INFO          #
 #========================
-
+IFS="$NEWLINEIFS"
 if [ "$debugging" -gt "0" ]; then
 	echo "System Info"
 fi
