@@ -88,7 +88,7 @@ foreach ($query as $row) {
         if ($column_align == '') {
             $column_align = 'left';
         }
-        if (!property_exists($row, 'system_id')) {
+        if (!property_exists($row, 'system_id') and !property_exists($row, 'system.id')) {
             $row->system_id = $i;
         }
         if (!isset($row->system_id)) {
@@ -124,7 +124,7 @@ foreach ($query as $row) {
             case "text":
                 switch ($column_variable_name) {
                 case "tag":
-                    echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"".intval($row->system_id)."\" href=\"#\"><img src=\"".$oa_theme_images."/16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
+                    echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"".intval($row->{'id'})."\" href=\"#\"><img src=\"".$oa_theme_images."/16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
                 break;
 
                 default:
@@ -207,7 +207,7 @@ foreach ($query as $row) {
         }
     }
     if ($manual_edit == 'y') {
-        echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_".intval($row->system_id)."\" name=\"system_id_".intval($row->system_id)."\" /></td>\n";
+        echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_".intval($row->id)."\" name=\"system_id_".intval($row->id)."\" /></td>\n";
     }
     echo "\n\t\t</tr>\n";
 }
