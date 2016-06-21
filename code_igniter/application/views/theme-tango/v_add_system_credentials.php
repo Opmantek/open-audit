@@ -56,7 +56,7 @@ echo form_open('admin_system/system_add_credentials')."\n";
 		<input type='checkbox' id='snmp_scan' name='snmp_scan' tabindex='4' title='Scan SNMP' checked />
 	</p>
 	<hr />
-	<input type='hidden' name='system_id' id='system_id' value='<?php echo $system_id; ?>' />
+	<input type='hidden' name='system_id' id='system_id' value='<?php echo $id; ?>' />
 	<p>
 		<label for='submit'>&nbsp;</label>
 		<?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit'); ?>
