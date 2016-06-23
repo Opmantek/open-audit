@@ -76,6 +76,15 @@ if (!empty($this->response->error)) {
 ?>
 
 </div>
+
+<div id="json_response">
+<!--
+<?php unset($this->response->data); ?>
+<?php unset($this->response->user); ?>
+<?php print_r(json_encode($this->response, JSON_PRETTY_PRINT)); ?>
+<?php echo "\n"; ?>
+-->
+</div>
 </body>
 </html>
 <?php exit(); ?>
