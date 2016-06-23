@@ -83,7 +83,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
       </div>
         <?php
         // the hardware catrgories
-        $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'partition', 'processor', 'sound', 'video');
+        $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'partition', 'processor', 'san', 'sound', 'video');
         $display_hardware = false;
         foreach ($hardware as $item) {
             if (isset($data[$item])) {
@@ -599,7 +599,8 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
 </div>
 
 
-
+</div>
+</div>
 
 <?php
 // form style displays
@@ -660,7 +661,7 @@ foreach ($list as $item) {
 
 <?php
 // table style displays
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
+$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
 foreach ($list as $item) {
     if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
@@ -992,4 +993,3 @@ function insert_additional_fields($section = '', $additional_fields = array())
     }
 }
 ?>
-<?php exit(); ?>
