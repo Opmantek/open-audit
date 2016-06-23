@@ -704,6 +704,7 @@ class San extends CI_Controller
 
             if ($details->id == '') {
                 // insert a new system
+                $details->first_seen = $details->last_seen;
                 $details->id = $this->m_system->insert_system($details);
                 $log_details = new stdClass();
                 $log_details->severity = 7;
