@@ -815,6 +815,10 @@ class M_system extends MY_Model
             $details->ip = '';
         }
 
+        if (empty($details->first_seen)) {
+            $details->first_seen = date('Y-m-d H:i:s');
+        }
+
         $log_details = new stdClass();
         $log_details->message = 'System insert start for '.ip_address_from_db($details->ip).' ('.$details->hostname.')';
         $log_details->severity = 7;
