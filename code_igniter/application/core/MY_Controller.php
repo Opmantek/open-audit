@@ -547,7 +547,7 @@ class MY_Controller extends CI_Controller
 
                         /////////////////////
                         case 'ip_address':
-                            echo '			<td style="text-align: '.htmlentities($col_align).';"><span style="display: none;">'.htmlentities($query_row->ip).'&nbsp;</span>'.htmlentities(ip_address_from_db($query_row->ip))."</td>\n";
+                            echo '			<td style="text-align: '.htmlentities($col_align).';"><span style="display: none;">'.htmlentities($query_row->{$col_var_name}).'&nbsp;</span>'.htmlentities(ip_address_from_db($query_row->{$col_var_name}))."</td>\n";
                                         break;
 
                         /////////////////////
