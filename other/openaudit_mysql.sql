@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.49, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.29, for osx10.6 (i386)
 --
 -- Host: localhost    Database: openaudit
 -- ------------------------------------------------------
--- Server version	5.5.49-0+deb7u1-log
+-- Server version	5.5.29-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -116,7 +116,8 @@ CREATE TABLE `audit_log` (
   `wmi_fails` text NOT NULL,
   `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`)
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `audit_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -176,7 +177,7 @@ CREATE TABLE `change_log` (
   `db_table` varchar(50) NOT NULL DEFAULT '',
   `db_row` int(10) unsigned NOT NULL DEFAULT '0',
   `db_action` enum('','create','update','delete') NOT NULL DEFAULT '',
-  `details` TEXT NOT NULL,
+  `details` text NOT NULL,
   `user_id` int(10) unsigned DEFAULT NULL,
   `ack_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `external_link` varchar(200) NOT NULL DEFAULT '',
@@ -237,8 +238,8 @@ CREATE TABLE `cluster` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `org_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `type` enum('high availability', 'load balancing', 'perforance', 'storage', 'other'),
-  `purpose` enum('application', 'database', 'file', 'virtualisation', 'web', 'other'),
+  `type` enum('high availability','load balancing','perforance','storage','other') DEFAULT NULL,
+  `purpose` enum('application','database','file','virtualisation','web','other') DEFAULT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
@@ -367,6 +368,9 @@ UNLOCK TABLES;
 -- Table structure for table `file`
 --
 
+DROP TABLE IF EXISTS `file`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `file` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
@@ -375,9 +379,9 @@ CREATE TABLE `file` (
   `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `files_id` int(10) unsigned DEFAULT NULL,
   `name` varchar(250) NOT NULL DEFAULT '',
-  `full_name` text NOT NULL DEFAULT '',
+  `full_name` text NOT NULL,
   `size` int(10) unsigned NOT NULL DEFAULT '0',
-  `directory` text NOT NULL DEFAULT '',
+  `directory` text NOT NULL,
   `hash` varchar(250) NOT NULL DEFAULT '',
   `last_changed` varchar(100) NOT NULL DEFAULT '',
   `meta_last_changed` varchar(100) NOT NULL DEFAULT '',
@@ -386,12 +390,14 @@ CREATE TABLE `file` (
   `group` varchar(100) NOT NULL DEFAULT '',
   `type` varchar(100) NOT NULL DEFAULT '',
   `version` varchar(100) NOT NULL DEFAULT '',
-  `inode` bigint unsigned NOT NULL DEFAULT '0',
+  `inode` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
+  KEY `file_files_id` (`files_id`),
   CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE,
   CONSTRAINT `file_files_id` FOREIGN KEY (`files_id`) REFERENCES `files` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `file`
@@ -406,6 +412,9 @@ UNLOCK TABLES;
 -- Table structure for table `files`
 --
 
+DROP TABLE IF EXISTS `files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -415,6 +424,7 @@ CREATE TABLE `files` (
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `files`
@@ -1015,7 +1025,7 @@ DROP TABLE IF EXISTS `oa_connection`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_connection` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL,
   `provider` varchar(100) NOT NULL,
@@ -1085,7 +1095,7 @@ DROP TABLE IF EXISTS `oa_group_column`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_group_column` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `group_id` int(10) unsigned NOT NULL,
   `column_order` int(10) unsigned NOT NULL,
   `column_name` varchar(100) NOT NULL,
@@ -1118,15 +1128,15 @@ DROP TABLE IF EXISTS `oa_group_sys`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_group_sys` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
   `group_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `group_id` (`group_id`),
   KEY `system_id_index` (`system_id`),
-  CONSTRAINT `oa_group_sys_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_group_sys_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE
+  CONSTRAINT `oa_group_sys_group_id` FOREIGN KEY (`group_id`) REFERENCES `oa_group` (`group_id`) ON DELETE CASCADE,
+  CONSTRAINT `oa_group_sys_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1147,7 +1157,7 @@ DROP TABLE IF EXISTS `oa_group_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_group_user` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
   `group_id` int(10) unsigned NOT NULL,
   `group_user_access_level` int(10) NOT NULL,
@@ -1225,9 +1235,9 @@ DROP TABLE IF EXISTS `oa_org`;
 CREATE TABLE `oa_org` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `parent_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `comments` varchar(100) NOT NULL DEFAULT '',
+  `parent_id` int(10) unsigned DEFAULT '0',
+  `group_id` int(10) unsigned DEFAULT '0',
+  `comments` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1281,7 +1291,7 @@ DROP TABLE IF EXISTS `oa_report_column`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_report_column` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `report_id` int(10) unsigned NOT NULL,
   `column_order` int(10) unsigned NOT NULL,
   `column_name` varchar(100) NOT NULL,
@@ -1558,7 +1568,7 @@ CREATE TABLE `print_queue` (
   `color` varchar(100) NOT NULL DEFAULT '',
   `duplex` varchar(100) NOT NULL DEFAULT '',
   `type` varchar(100) NOT NULL DEFAULT '',
-  `status` varchar(100) DEFAULT NULL,
+  `status` varchar(100) NOT NULL DEFAULT '',
   `capabilities` varchar(200) NOT NULL DEFAULT '',
   `driver` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -1687,17 +1697,21 @@ UNLOCK TABLES;
 -- Table structure for table `scripts`
 --
 
+DROP TABLE IF EXISTS `scripts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scripts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(250) NOT NULL DEFAULT '',
-  `options` text NOT NULL DEFAULT '',
+  `options` text NOT NULL,
   `description` varchar(200) NOT NULL DEFAULT '',
   `based_on` varchar(200) NOT NULL DEFAULT '',
   `hash` varchar(250) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Dumping data for table `scripts`
@@ -1705,6 +1719,11 @@ CREATE TABLE `scripts` (
 
 LOCK TABLES `scripts` WRITE;
 /*!40000 ALTER TABLE `scripts` DISABLE KEYS */;
+INSERT INTO `scripts` VALUES (1,'audit_aix.sh','{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:///open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit AIX config.','audit_aix.sh','','system','2016-06-01 00:00:00');
+INSERT INTO `scripts` VALUES (2,'audit_esx.sh','{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:///open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit ESX config.','audit_esx.sh','','system','2016-06-01 00:00:00');
+INSERT INTO `scripts` VALUES (3,'audit_linux.sh','{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:///open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit Linux config.','audit_linux.sh','','system','2016-06-01 00:00:00');
+INSERT INTO `scripts` VALUES (4,'audit_osx.sh','{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:///open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit OSX config.','audit_osx.sh','','system','2016-06-01 00:00:00');
+INSERT INTO `scripts` VALUES (5,'audit_windows.vbs','{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:///open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit Windows config.','audit_windows.vbs','','system','2016-06-01 00:00:00');
 /*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2415,9 +2434,29 @@ LOCK TABLES `windows` WRITE;
 /*!40000 ALTER TABLE `windows` DISABLE KEYS */;
 /*!40000 ALTER TABLE `windows` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-CREATE FUNCTION cidr_to_mask (cidr INT(2)) RETURNS CHAR(15) DETERMINISTIC RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10));
+--
+-- Dumping routines for database 'openaudit'
+--
+/*!50003 DROP FUNCTION IF EXISTS `cidr_to_mask` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = '' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50020 DEFINER=`openaudit`@`localhost`*/ /*!50003 FUNCTION `cidr_to_mask`(cidr INT(2)) RETURNS char(15) CHARSET latin1
+    DETERMINISTIC
+RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10)) */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

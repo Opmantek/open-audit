@@ -4032,7 +4032,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_used_space used int unsigned NOT NULL DEFAULT '1' AFTER free";
             $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_format format varchar(20) NOT NULL DEFAULT '' AFTER used";
             $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_bootable bootable varchar(10) NOT NULL DEFAULT '' AFTER format";
-            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_type type varchar(50) NOT NULL DEFAULT '' AFTER bootable";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_type `type` varchar(100) NOT NULL DEFAULT 'local' AFTER bootable";
             $sql[] = "ALTER TABLE sys_hw_partition DROP partition_quotas_supported";
             $sql[] = "ALTER TABLE sys_hw_partition DROP partition_quotas_enabled";
             $sql[] = "RENAME TABLE sys_hw_partition TO `partition`";
@@ -4805,13 +4805,11 @@ class admin extends MY_Controller
             $log_details->message = 'Upgrade database to 1.12.6 commenced';
             stdlog($log_details);
 
-            $this->load->model('m_system');
-            $this->m_system->reset_icons();
-
             unset($sql);
             $sql = array();
             # we're removving the foreign key between additional fields and groups
-            $sql[] = "ALTER TABLE additional_field DROP FOREIGN KEY additional_field_group_id";
+            $sql[] = "ALTER TABLE sys_man_additional_fields DROP FOREIGN KEY `sys_man_additional_fields_group_id`";
+            $sql[] = "ALTER TABLE sys_man_additional_fields DROP KEY `sys_man_additional_fields_group`";
 
             # this should be unused now - groups and reports refreshed further down
             $sql[] = "ALTER TABLE system DROP man_icon";
@@ -4822,15 +4820,15 @@ class admin extends MY_Controller
             # change the oa_org to the new SQL schema style
             $sql[] = "ALTER TABLE oa_org CHANGE org_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE oa_org CHANGE org_name name varchar(100) NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE oa_org CHANGE org_parent_id parent_id int(10) unsigned DEFAULT NULL";
-            $sql[] = "ALTER TABLE oa_org CHANGE org_group_id group_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_parent_id parent_id int(10) unsigned DEFAULT '0'";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_group_id group_id int(10) unsigned DEFAULT '0'";
             $sql[] = "ALTER TABLE oa_org DROP contact_id";
             $sql[] = "ALTER TABLE oa_org DROP org_picture";
             $sql[] = "ALTER TABLE oa_org CHANGE org_comments comments text NOT NULL DEFAULT ''";
             $sql[] = "UPDATE oa_org SET name = 'Default Organisation' WHERE id = 0";
 
             # now add the key back
-            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_org_id FOREIGN KEY (org_id) REFERENCES oa_org (id)";
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_org_id FOREIGN KEY (org_id) REFERENCES oa_org (id) ON DELETE CASCADE";
 
             # drop these foreign keys so we can change user_id to id
             $sql[] = "ALTER TABLE edit_log DROP FOREIGN KEY edit_log_user_id";
@@ -4838,6 +4836,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_group_user DROP FOREIGN KEY oa_group_user_user_id";
             $sql[] = "ALTER TABLE oa_user_org DROP FOREIGN KEY oa_user_org_user_id";
             $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_user_id";
+            $sql[] = "ALTER TABLE sys_man_attachment DROP KEY att_user_id";
             $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_user_id";
 
             # change the user table to the new SQL schema format
@@ -4857,9 +4856,8 @@ class admin extends MY_Controller
             # now add the foreign keys back
             $sql[] = "ALTER TABLE edit_log ADD CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
             $sql[] = "ALTER TABLE oa_change ADD CONSTRAINT oa_change_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE oa_group_user ADD CONSTRAINT oa_group_user_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT att_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_group_user ADD CONSTRAINT oa_group_user_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT sys_man_notes_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
 
             # change the location table to use the new SQL schema format
@@ -4894,7 +4892,7 @@ class admin extends MY_Controller
             # allow for some silly long serial numbers
             $sql[] = "ALTER TABLE system CHANGE `serial` `serial` varchar(250) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system CHANGE `man_serial` `man_serial` varchar(250) NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE system ADD `dbus_identifier` varchar(250) NOT NULL DEFAULT '' AFTER uuid";
+            $sql[] = "ALTER TABLE system ADD `dbus_identifier` varchar(255) NOT NULL DEFAULT '' AFTER uuid";
 
             # a new function we'll use for checking if an IP is in a blessed subnet
             $sql[] = "DROP FUNCTION IF EXISTS cidr_to_mask";
@@ -4974,6 +4972,7 @@ class admin extends MY_Controller
             $sql = array();
 
             # DROP all the table indexes / foreign keys that link to system.system_id
+            $sql[] = "ALTER TABLE audit_log DROP FOREIGN KEY audit_log_system_id";
             $sql[] = "ALTER TABLE bios DROP FOREIGN KEY sys_hw_bios_system_id";
             $sql[] = "ALTER TABLE change_log DROP FOREIGN KEY change_log_system_id";
             $sql[] = "ALTER TABLE disk DROP FOREIGN KEY sys_hw_hard_drive_system_id";
@@ -5132,6 +5131,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE system ADD KEY name (`name`)";
 
             # recreate the indexes
+            $sql[] = "ALTER TABLE audit_log ADD CONSTRAINT audit_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE bios ADD CONSTRAINT bios_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE change_log ADD CONSTRAINT change_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE disk ADD CONSTRAINT disk_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
@@ -5177,7 +5177,6 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `attachment` CHANGE att_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE `attachment` CHANGE `att_title` `title` varchar(200) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `attachment` CHANGE `att_filename` `filename` text NOT NULL";
-            $sql[] = "ALTER TABLE `attachment` DROP FOREIGN KEY att_user_id";
 
             $sql[] = "ALTER TABLE `change_log` CHANGE `details` `details` text NOT NULL";
 
@@ -5215,7 +5214,6 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_type` `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar'";
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_values` `values` varchar(100) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `additional_field` CHANGE `field_placement` `placement` varchar(100) NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE `additional_field` DROP KEY sys_man_additional_fields_group";
 
             $sql[] = "ALTER TABLE `network` DROP KEY timestamp";
             $sql[] = "ALTER TABLE `edit_log` DROP FOREIGN KEY edit_log_user_id";
@@ -5262,6 +5260,9 @@ class admin extends MY_Controller
             $sql[] = "DROP TABLE IF EXISTS `file`";
             $sql[] = "CREATE TABLE `file` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `files_id` int(10) unsigned DEFAULT NULL, `name` varchar(250) NOT NULL DEFAULT '', `full_name` text NOT NULL DEFAULT '', `size` int(10) unsigned NOT NULL DEFAULT '0', `directory` text NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `last_changed` varchar(100) NOT NULL DEFAULT '', `meta_last_changed` varchar(100) NOT NULL DEFAULT '', `permission` varchar(250) NOT NULL DEFAULT '', `owner` varchar(100) NOT NULL DEFAULT '', `group` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `version` varchar(100) NOT NULL DEFAULT '', `inode` bigint unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE, CONSTRAINT `file_files_id` FOREIGN KEY (`files_id`) REFERENCES `files` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
+            # fix a previous missed item
+            $sql[] = "ALTER TABLE partition CHANGE `type` `type` varchar(100) NOT NULL DEFAULT 'local' AFTER bootable";
+
             $sql[] = "DROP TABLE IF EXISTS `scripts`";
             $sql[] = "CREATE TABLE `scripts` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(250) NOT NULL DEFAULT '', `options` text NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `based_on` varchar(200) NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
@@ -5272,15 +5273,15 @@ class admin extends MY_Controller
             $options['debugging'] = 1;
             $options = json_encode($options);
 
-            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_aix.sh', '" . $options . "', 'The default audit AIX config.', 'audit_aix.sh', '', 'system', NOW())";
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_aix.sh', '" . $options . "', 'The default audit AIX config.', 'audit_aix.sh', '', 'system', '2016-06-01 00:00:00')";
 
-            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_esx.sh', '" . $options . "', 'The default audit ESX config.', 'audit_esx.sh', '', 'system', NOW())";
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_esx.sh', '" . $options . "', 'The default audit ESX config.', 'audit_esx.sh', '', 'system', '2016-06-01 00:00:00')";
 
-            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_linux.sh', '" . $options . "', 'The default audit Linux config.', 'audit_linux.sh', '', 'system', NOW())";
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_linux.sh', '" . $options . "', 'The default audit Linux config.', 'audit_linux.sh', '', 'system', '2016-06-01 00:00:00')";
 
-            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_osx.sh', '" . $options . "', 'The default audit OSX config.', 'audit_osx.sh', '', 'system', NOW())";
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_osx.sh', '" . $options . "', 'The default audit OSX config.', 'audit_osx.sh', '', 'system', '2016-06-01 00:00:00')";
 
-            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_windows.vbs', '" . $options . "', 'The default audit Windows config.', 'audit_windows.vbs', '', 'system', NOW())";
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_windows.vbs', '" . $options . "', 'The default audit Windows config.', 'audit_windows.vbs', '', 'system', '2016-06-01 00:00:00')";
 
             $sql[] = "UPDATE additional_field SET placement = 'custom' WHERE placement = 'view_summary_custom'";
             $sql[] = "UPDATE additional_field SET placement = 'location' WHERE placement = 'view_summary_location'";
@@ -5304,14 +5305,6 @@ class admin extends MY_Controller
             unset($sql);
             $sql = array();
 
-            # refresh the reports
-            $this->load->helper('report_helper');
-            refresh_report_definitions();
-
-            # refresh the groups
-            $this->load->helper('group_helper');
-            refresh_group_definitions();
-
             // update any leftover group definitions by changing man_icon to icon
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.man_', 'system.')";
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_', 'system.')";
@@ -5323,14 +5316,21 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
-            # refresh the reports
-            $this->load->helper('report_helper');
-            refresh_report_definitions();
+        # refresh the icons
+        $this->load->model('m_system');
+        $this->m_system->reset_icons();
 
-            # refresh the groups
-            $this->load->helper('group_helper');
-            refresh_group_definitions();
+        # refresh the reports
+        $this->load->helper('report_helper');
+        refresh_report_definitions();
 
+        # refresh the groups
+        $this->load->helper('group_helper');
+        refresh_group_definitions();
+
+        #refresh the scripts
+        // $this->load->helper('script_helper');
+        // refresh_script_definitions();
 
         $this->m_oa_config->load_config();
         $this->data['message'] .= "New (now current) database version: ".$this->config->item('display_version')." (".$this->config->item('internal_version').")<br />Don't forget to use the new audit scripts!<br/>\n";
