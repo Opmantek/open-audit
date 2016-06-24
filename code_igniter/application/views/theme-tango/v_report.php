@@ -38,7 +38,7 @@ $sortcolumn = 3;
 $manual_edit = 'n';
 if (isset($this->user->access_level) and $this->user->access_level > '9') {
     # check to see if "system_id" is present in report
-        if (isset($query[0]->{'system.id'}) or isset($query[0]->{'id'})) {
+        if (isset($query[0]->{'system.id'})) {
             # enable group manual editing column
             $manual_edit = 'y';
         }
@@ -58,7 +58,7 @@ echo "<table cellspacing=\"1\" class=\"tablesorter\">\n";
 echo "\t<thead>\n";
 echo "\t\t<tr>\n";
 foreach ($columns as $column) {
-    if ($column->column_type > '') {
+    if ($column->column_type != '') {
         if ($column->column_align == 'right') {
             $style = 'padding-right: 20px;';
         } else {
@@ -124,7 +124,7 @@ foreach ($query as $row) {
             case "text":
                 switch ($column_variable_name) {
                 case "tag":
-                    echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"".intval($row->{'id'})."\" href=\"#\"><img src=\"".$oa_theme_images."/16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
+                    echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"".intval($row->{'system.id'})."\" href=\"#\"><img src=\"".$oa_theme_images."/16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
                 break;
 
                 default:
@@ -159,10 +159,6 @@ foreach ($query as $row) {
                     echo "\t\t\t<td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".htmlentities($row->$column_variable_name).".jpg\" style='border-width:0px; height:100px' title=\"".htmlentities($row->$column_variable_name_sec)."\" alt=\"".htmlentities($row->$column_variable_name_sec)."\" /></td>\n";
                 }
                 break;
-
-            // case "ip_address":
-            //     echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', ip_address_to_db($row->ip)))."&nbsp;</span>".htmlentities(ip_address_from_db($row->ip))."</td>\n";
-            //     break;
 
             case "ip_address":
                 echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', ip_address_to_db($row->$column_variable_name)))."&nbsp;</span>".htmlentities(ip_address_from_db($row->$column_variable_name))."</td>\n";
@@ -207,7 +203,7 @@ foreach ($query as $row) {
         }
     }
     if ($manual_edit == 'y') {
-        echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_".intval($row->id)."\" name=\"system_id_".intval($row->id)."\" /></td>\n";
+        echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_".intval($row->{'system.id'})."\" name=\"system_id_".intval($row->{'system.id'})."\" /></td>\n";
     }
     echo "\n\t\t</tr>\n";
 }
