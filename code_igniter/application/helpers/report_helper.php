@@ -34,6 +34,72 @@
  * @version 1.14
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+
+if (! function_exists('activate_all_report_definitions')) {
+    function activate_all_report_definitions()
+    {
+        $CI = & get_instance();
+        # delete all the existing reports
+        $sql = "DELETE FROM oa_report";
+        $query = $CI->db->query($sql);
+
+        # get the list of report XML definitions
+        $report_files = array();
+        $paths = array('c:\omk\reports',
+        $CI->config->item('base_path') . '/code_igniter/application/controllers/reports', '/usr/local/omk/reports', '/usr/local/opmojo/reports');
+        foreach ($paths as $path) {
+            if (is_dir($path) and $handle = opendir($path)) {
+                $i = 0;
+                while (false !== ($file = readdir($handle))) {
+                    if (mb_strpos($file, ".xml") !== false) {
+                        $file_handle = fopen($path . '/'.$file, "rb");
+                        $contents = fread($file_handle, filesize($path . '/'.$file));
+                        $error = 0;
+                        try {
+                            $xml = new SimpleXMLElement($contents);
+                        } catch (Exception $error) {
+                            $error = 1;
+                        }
+                        if ($error == 0) {
+                            $sql = "INSERT INTO oa_report SET report_name = ?, report_sql = ?, report_view_file = ?, report_view_contents = ?, report_processing = ?, report_sort_column = ?, report_display_in_menu = ?, report_description = ?";
+                            $data = array(
+                                (string)$xml->details->report_name,
+                                (string)$xml->details->report_sql,
+                                (string)$xml->details->report_view_file,
+                                (string)$xml->details->report_view_contents,
+                                (string)$xml->details->report_processing,
+                                (string)$xml->details->report_sort_column,
+                                (string)$xml->details->report_display_in_menu,
+                                (string)$xml->details->report_description
+                            );
+                            $query = $CI->db->query($sql, $data);
+                            $report_id = $CI->db->insert_id();
+                            foreach ($xml->columns->column as $detail) {
+                                $sql = "INSERT INTO oa_report_column SET report_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
+                                $data = array(
+                                    $report_id,
+                                    (string)$detail->column_order,
+                                    (string)$detail->column_name,
+                                    (string)$detail->column_variable,
+                                    (string)$detail->column_type,
+                                    (string)$detail->column_link,
+                                    (string)$detail->column_secondary,
+                                    (string)$detail->column_ternary,
+                                    (string)$detail->column_align);
+                                $query = $CI->db->query($sql, $data);
+                            }
+                        }
+                        unset($xml);
+                        fclose($file_handle);
+                    }
+                }
+                closedir($handle);
+            }
+        }
+    }
+}
+
+
 if (! function_exists('refresh_report_definitions')) {
     function refresh_report_definitions()
     {
