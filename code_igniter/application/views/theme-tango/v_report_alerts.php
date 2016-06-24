@@ -61,9 +61,9 @@ if ($query) {
 	<?php foreach ($query as $key): ?>
 			<tr>
 				<td><?php echo $key->{'change_log.timestamp'}?></td>
-				<td><span style="display: none;"><?php echo $key->ip?></span><?php echo ip_address_from_db($key->ip)?></td>
-				<td style="text-align: center;"><img src="<?php echo $oa_theme_images ?>/16_<?php echo $key->icon; ?>.png" style='border-width:0px;' title="" alt=""/></td>
-				<td><a class="SystemPopupTrigger" rel="<?php echo intval($key->id); ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->id)?>"><?php echo htmlentities($key->name)?></a></td>
+				<td><span style="display: none;"><?php echo $key->ip?></span><?php echo ip_address_from_db($key->{'system.ip'})?></td>
+				<td style="text-align: center;"><img src="<?php echo $oa_theme_images ?>/16_<?php echo $key->{'system.icon'}; ?>.png" style='border-width:0px;' title="" alt=""/></td>
+				<td><a class="SystemPopupTrigger" rel="<?php echo intval($key->{'system.id'}); ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->{'system.id'})?>"><?php echo htmlentities($key->{'system.name'})?></a></td>
 				<td><?php echo htmlentities($key->{'change_log.db_table'})?></td>
 				<td><?php echo htmlentities($key->{'change_log.db_action'})?></td>
 				<td><?php echo htmlentities($key->{'change_log.details'})?></td>
