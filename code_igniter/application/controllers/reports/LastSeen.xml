@@ -25,7 +25,7 @@
 			<column_order>1</column_order>
 			<column_name>IP Address</column_name>
 			<column_variable>system.ip</column_variable>
-			<column_type>ip</column_type>
+			<column_type>ip_address</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>

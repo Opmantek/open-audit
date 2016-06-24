@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Specific Network</report_name>
 		<report_display_in_menu>n</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.description AS `system.description`, ip.ip AS `ip.ip`, ip.network AS `ip.network` FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE oa_group_sys.group_id = @group AND ip.network = (SELECT network FROM ip WHERE id = ? LIMIT 1)]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.description AS `system.description`, system.os_family AS `system.os_family`, ip.ip AS `ip.ip`, ip.network AS `ip.network` FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE oa_group_sys.group_id = @group AND ip.network = (SELECT network FROM ip WHERE id = ? LIMIT 1)]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -65,7 +65,7 @@
 			<column_order>5</column_order>
 			<column_name>IP</column_name>
 			<column_variable>ip.ip</column_variable>
-			<column_type>ip</column_type>
+			<column_type>ip_address</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
