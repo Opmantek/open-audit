@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Hardware Form Factors</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, COUNT(system.id) as count, system.form_factor, system.class FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group AND (form_factor != '' or class != '') GROUP BY system.form_factor, system.class ORDER BY system.form_factor, system.class]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id AS `system.id`, COUNT(system.id) as count, system.form_factor AS `system.form_factor`, system.class AS `system.class` FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group AND (system.form_factor != '' or system.class != '') GROUP BY system.form_factor, system.class ORDER BY system.form_factor, system.class]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -24,21 +24,21 @@
 		<column>
 			<column_order>1</column_order>
 			<column_name>Form Factor</column_name>
-			<column_variable>form_factor</column_variable>
+			<column_variable>system.form_factor</column_variable>
 			<column_type>link</column_type>
 			<column_link>/report/Specific Form Factor/$group_id/</column_link>
-			<column_secondary>id</column_secondary>
+			<column_secondary>system.id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>3</column_order>
 			<column_name>Class</column_name>
-			<column_variable>class</column_variable>
+			<column_variable>system.class</column_variable>
 			<column_link>/report/Specific Class/$group_id/</column_link>
 			<column_type>link</column_type>
 			<column_link></column_link>
-			<column_secondary>id</column_secondary>
+			<column_secondary>system.id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>

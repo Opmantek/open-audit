@@ -3,7 +3,7 @@
 	<details>
 		<report_name>Specific Service</report_name>
 		<report_display_in_menu>n</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.id, system.name, service.name AS service_name, service.description, service.state, service.start_mode FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) LEFT JOIN service ON (system.id = service.system_id AND service.current = 'y') WHERE oa_group_sys.group_id = @group AND service.name = (SELECT name FROM service WHERE id = ? LIMIT 1)]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id AS `system.id`, system.name AS `system.name`, service.name AS `service.name`, service.description AS `service.description`, service.state AS `service.state`, service.start_mode AS `service.start_mode` FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) LEFT JOIN service ON (system.id = service.system_id AND service.current = 'y') WHERE oa_group_sys.group_id = @group AND service.name = (SELECT name FROM service WHERE id = ? LIMIT 1)]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -14,17 +14,17 @@
 		<column>
 			<column_order>0</column_order>
 			<column_name>Device Name</column_name>
-			<column_variable>name</column_variable>
+			<column_variable>system.name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/devices/</column_link>
-			<column_secondary>id</column_secondary>
+			<column_secondary>system.id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>1</column_order>
 			<column_name>Service Name</column_name>
-			<column_variable>service_name</column_variable>
+			<column_variable>service.name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -34,7 +34,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Service Description</column_name>
-			<column_variable>description</column_variable>
+			<column_variable>service.description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Service State</column_name>
-			<column_variable>state</column_variable>
+			<column_variable>service.state</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -54,7 +54,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Service Start Mode</column_name>
-			<column_variable>start_mode</column_variable>
+			<column_variable>service.start_mode</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
