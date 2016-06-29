@@ -193,4 +193,48 @@ class M_orgs extends MY_Model
         $result = $query->result();
         return($result);
     }
+
+    public function delete()
+    {
+        $CI = & get_instance();
+        $sql = "DELETE FROM `oa_org` WHERE id = ?";
+        $data = array(intval($CI->response->id));
+        $this->run_sql($sql, $data);
+        return;
+    }
+
+    private function run_sql($sql, $data = array())
+    {
+        $CI = & get_instance();
+        if ($sql == '') {
+            return;
+        }
+        $trace = debug_backtrace();
+        $caller = $trace[1];
+        // clean our SQL (usually adding the running model, etc)
+        $sql = $this->clean_sql($sql);
+        // store the current setting of db_debug
+        $temp_debug = $this->db->db_debug;
+        // set the db_debug setting to FALSE - this prevents the default CI error page and allows us
+        // to output a nice formatted page with the $error object
+        $this->db->db_debug = FALSE;
+        // run the query
+        $query = $this->db->query($sql, $data);
+        // if we have debug set to TRUE, store the last run query
+        if ($CI->response->debug) {
+            $CI->response->sql = $this->db->last_query();
+        }
+        // restore the origin setting to db_debug
+        $this->db->db_debug = $temp_debug;
+        // do we have an error?
+        if ($this->db->_error_message()) {
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
+            $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+            return false;
+        }
+        // no error, so get the result
+        $result = $query->result();
+        // return what we have
+        return ($result);
+    }
 }

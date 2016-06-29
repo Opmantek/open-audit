@@ -88,4 +88,20 @@ class orgs extends MY_Controller
         $this->response->filtered = count($this->response->data);
         output($this->response);
     }
+
+    private function delete()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->m_orgs->delete();
+        if ($this->response->format == 'json') {
+            output($this->response);
+        } else {
+            redirect('orgs');
+        }
+    }
 }

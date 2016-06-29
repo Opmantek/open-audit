@@ -99,27 +99,28 @@ if (!empty($this->response->data)) {
         <tbody>
             <?php
             if (count($data) > 0) {
-                foreach ($data as $key):
-                    $edit_pic = '<a href="orgs/'.intval($key->group_id).'?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a>';
-                    $delete_pic = '<a href="orgs/'.intval($key->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>';
-                    if ($key->name == '') {
-                        $key->name = '-';
+                foreach ($data as $item):
+                    $edit_pic = '<a href="orgs/'.intval($item->group_id).'?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a>';
+                    #$delete_pic = '<a href="orgs/'.intval($item->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>';
+                    $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->name) . '" aria-hidden="true"></span></button>';
+                    if ($item->name == '') {
+                        $item->name = '-';
                     }
-                    if ($key->group_id != '0') {
-                        $show_pic = '<a href="devices?org_id='.intval($key->id).'"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a>';
-                        $deactivate_pic = '<a href="groups/'.intval($key->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-warning" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
+                    if ($item->group_id != '0') {
+                        $show_pic = '<a href="devices?org_id='.intval($item->id).'"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a>';
+                        $deactivate_pic = '<a href="groups/'.intval($item->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-warning" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
                         $activate_pic = '';
                     } else {
                         $show_pic = '';
                         $deactivate_pic = '';
-                        $activate_pic = '<a href="groups?action=create&org_id='.intval($key->id).'"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
+                        $activate_pic = '<a href="groups?action=create&org_id='.intval($item->id).'"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
                     }
                     ?>
                     <tr>
-                        <td align='center'><?php echo $key->device_count?></td>
-                        <td><a href="../main/view_org/<?php echo $key->id?>"><?php echo htmlentities($key->name)?></a></td>
-                        <td><?php echo htmlentities($key->comments)?></td>
-                        <td><?php echo htmlentities($key->parent_name)?></td>
+                        <td align='center'><?php echo $item->device_count?></td>
+                        <td><a href="../main/view_org/<?php echo $item->id?>"><?php echo htmlentities($item->name)?></a></td>
+                        <td><?php echo htmlentities($item->comments)?></td>
+                        <td><?php echo htmlentities($item->parent_name)?></td>
                         <td align='center'><?php echo $activate_pic?></td>
                         <td align='center'><?php echo $deactivate_pic?></td>
                         <td align='center'><?php echo $show_pic?></td>
