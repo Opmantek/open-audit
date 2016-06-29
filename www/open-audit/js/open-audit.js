@@ -14,6 +14,30 @@ $(document).ready(function(){
     })
 });
 
+/* any Delete links */
+$(document).ready(function(){
+    $('.delete_link').click(function() {
+        if (confirm('Are you sure?') != true) {
+            return;
+        }
+        var $id = $(this).attr('data-id');
+        var $name = $(this).attr('data-name');
+        var $url = '/open-audit/index.php/' + collection + '/' + $id;
+        $.ajax({
+            type: 'DELETE',
+            url: $url,
+            dataType: 'json',
+            success: function(data) {
+                // alert($name + " has been deleted.");
+                window.location = web_folder + "/index.php/" + collection;
+            },
+            error: function() {
+                alert("An error occurred when deleting item:" + $name);
+            }
+       });
+    });
+});
+
 /* v_devices_read */
 $(document).ready(function(){
     // disable the form fields by default
