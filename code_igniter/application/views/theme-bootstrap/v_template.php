@@ -50,20 +50,23 @@ include "v_lang.php";
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap.min.js"></script>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap-table.min.js"></script>
     <!-- Open-AudIT specific items -->
-    <?php
+    <script>
+<?php
         if (!empty($data['system'][0]->id)) {
-            echo "<script>\nvar system_id = " . $data['system'][0]->id . ";\n</script>\n";
+            echo "        var system_id = '" . $data['system'][0]->id . "';\n";
         }
-    ?>
+        if (!empty($this->response->collection)) {
+            echo "        var collection = '" . $this->response->collection . "';\n";
+        }
+?>
+        var web_folder = '<?php echo $this->config->config['oa_web_folder']; ?>';
+    </script>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/open-audit.js"></script>
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/open-audit.css">
 </head>
 <body>
 <div class="container-fluid">
-<?php 
-include "include_header.php";
-include($include.'.php');
-?>
+<?php include "include_header.php"; ?>
 </div>
 
 <?php
@@ -72,19 +75,22 @@ if (!empty($this->response->error)) {
   echo "<pre>\n";
   print_r($this->response->error);
   echo "</pre>\n";
+} else {
+    include($include.'.php');
 }
 ?>
 
 </div>
 
 <div id="json_response">
-<!--
-<?php unset($this->response->data); ?>
-<?php unset($this->response->user); ?>
-<?php print_r(json_encode($this->response, JSON_PRETTY_PRINT)); ?>
-<?php echo "\n"; ?>
--->
+    <!--
+    <?php unset($this->response->data); ?>
+    <?php unset($this->response->user); ?>
+    <?php print_r(json_encode($this->response, JSON_PRETTY_PRINT)); ?>
+    <?php echo "\n"; ?>
+    -->
 </div>
+
 </body>
 </html>
 <?php exit(); ?>
