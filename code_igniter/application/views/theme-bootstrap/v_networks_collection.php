@@ -57,7 +57,7 @@
 			<?php
 	        foreach ($this->response->data as $item):
                 $edit_pic = '<a href="networks/'.intval($item->id).'?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a>';
-                $delete_pic = '<a href="networks/'.intval($item->id).'?action=delete"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>';
+                $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->name) . '" aria-hidden="true"></span></button>';
 	            ?>
 			<tr>
 				<td><?php echo htmlentities($item->id)?></td>
