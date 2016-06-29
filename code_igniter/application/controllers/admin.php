@@ -4960,11 +4960,11 @@ class admin extends MY_Controller
         }
 
         if (($db_internal_version < '20160620') and ($this->db->platform() == 'mysql')) {
-            # upgrade for 1.14
+            # upgrade for 1.12.8
 
             $log_details = new stdClass();
             $log_details->file = 'system';
-            $log_details->message = 'Upgrade database to 1.14 commenced';
+            $log_details->message = 'Upgrade database to 1.12.8 commenced';
             stdlog($log_details);
 
             # initialise our $sql array
@@ -5294,7 +5294,7 @@ class admin extends MY_Controller
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";
-            $sql[] = "UPDATE oa_config SET config_value = '1.14' WHERE config_name = 'display_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12.8' WHERE config_name = 'display_version'";
 
             foreach ($sql as $this_query) {
                 $this->data['output'] .= $this_query."<br /><br />\n";
@@ -5311,7 +5311,7 @@ class admin extends MY_Controller
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'system.man_', 'system.')";
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'man_', 'system.')";
 
-            $log_details->message = 'Upgrade database to 1.14 completed';
+            $log_details->message = 'Upgrade database to 1.12.8 completed';
             stdlog($log_details);
             unset($log_details);
         }
