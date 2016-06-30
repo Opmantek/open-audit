@@ -267,7 +267,8 @@ CREATE TABLE `credentials` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `type` enum('aws','basic_auth','cim','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_cert','vmware','web','windows') NOT NULL DEFAULT 'other',
-  `credntials` text NOT NULL,
+  `credentials` text NOT NULL,
+  `org_id` int(10) unsigned DEFAULT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
