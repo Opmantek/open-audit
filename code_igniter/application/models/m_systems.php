@@ -138,28 +138,7 @@ class M_systems extends MY_Model
         if (($display_sql->group_display_sql === '') or ($display_sql->group_display_sql === ' ')) {
             // the group has no specific SQL Select (group_display_sql).
             // Use a standard SQL Select.
-            $sql = "SELECT
-					system.id,
-					system.name,
-					system.domain,
-					system.description,
-					system.ip,
-					system.type,
-					system.os_family,
-					system.os_name,
-					system.icon,
-					system.manufacturer,
-					system.model,
-					system.serial,
-					system.type
-				FROM
-					system,
-					oa_group_sys
-				WHERE
-					system.id = oa_group_sys.system_id AND
-					oa_group_sys.group_id = ? 
-				GROUP BY
-					system.id";
+            $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.dns_domain AS `system.dns_domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.os_name AS `system.os_name`, system.status AS `system.status`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial` FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.id";
             $data = array("$group_id");
         } else {
             $sql = $display_sql->group_display_sql;
