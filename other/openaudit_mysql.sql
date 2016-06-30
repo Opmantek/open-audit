@@ -268,7 +268,7 @@ CREATE TABLE `credentials` (
   `description` text NOT NULL,
   `type` enum('aws','basic_auth','cim','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_cert','vmware','web','windows') NOT NULL DEFAULT 'other',
   `credentials` text NOT NULL,
-  `org_id` int(10) unsigned DEFAULT NULL,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
@@ -507,7 +507,7 @@ DROP TABLE IF EXISTS `invoice`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `invoice` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned DEFAULT NULL,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `purchase_order` varchar(100) NOT NULL DEFAULT '',
   `cost_center` varchar(100) NOT NULL DEFAULT '',
   `date_received` varchar(100) NOT NULL DEFAULT '',
@@ -1417,7 +1417,7 @@ DROP TABLE IF EXISTS `oa_user_org`;
 CREATE TABLE `oa_user_org` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
-  `org_id` int(10) unsigned NOT NULL,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `access_level` int(10) unsigned NOT NULL,
   `permissions` text NOT NULL,
   PRIMARY KEY (`id`),

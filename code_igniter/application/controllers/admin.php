@@ -5293,7 +5293,10 @@ class admin extends MY_Controller
             $sql[] = "UPDATE additional_field SET placement = 'windows' WHERE placement = 'view_summary_windows'";
 
             $sql[] = "DROP TABLE IF EXISTS `credentials`";
-            $sql[] = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_cert','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned DEFAULT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_cert','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            $sql[] = "UPDATE invoice CHANGE org_id `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "UPDATE oa_user_org CHANGE org_id `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
 
             # set our versions
             $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";
