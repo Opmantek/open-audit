@@ -79,6 +79,9 @@ class networks extends MY_Controller
 
     private function read()
     {
+        if ($this->response->format == 'screen') {
+            $this->response->sub_resource = 'devices';
+        }
         $this->response->data = $this->m_networks->read();
         $this->response->filtered = count($this->response->data);
         output($this->response);

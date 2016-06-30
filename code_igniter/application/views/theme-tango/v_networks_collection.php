@@ -68,12 +68,12 @@ if (!empty($this->response->error)) {
             $delete_pic = "<a href='#' class='delete_link' value='".intval($item->id)."' id='delete_link_".intval($item->id)."' name='delete_link_".intval($item->id)."'><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16' /></a>";
             ?>
 		<tr>
-			<td><a href="networks/<?php echo intval($item->id)?>"><?php echo intval($item->id)?></td>
+			<td><a style="font-weight:bold;" href="networks/<?php echo intval($item->id)?>"><?php echo intval($item->id)?></td>
 			<td><span style="display: none"><?php echo $sortable_name; ?></span><?php echo htmlentities($item->name)?></td>
 			<td><?php echo htmlentities($item->description)?></td>
 			<td><?php echo htmlentities($item->edited_by)?></td>
 			<td><?php echo htmlentities($item->edited_date)?></td>
-            <td align='center'><a href="scripts/<?php echo intval($item->id)?>"><img src="<?php echo $oa_theme_images; ?>/16_find.png" /></td>
+            <td align='center'><a href="networks/<?php echo intval($item->id)?>"><img src="<?php echo $oa_theme_images; ?>/16_find.png" /></td>
 			<td align='center'><?php echo $edit_pic?></td>
 			<!-- <td align='center'><?php echo $delete_pic?></td> -->
 		</tr>

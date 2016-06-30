@@ -60,7 +60,7 @@
                 $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->name) . '" aria-hidden="true"></span></button>';
 	            ?>
 			<tr>
-				<td><?php echo htmlentities($item->id)?></td>
+                <td><a href="networks/<?php echo htmlentities($item->id); ?>"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align"><?php echo htmlentities($item->id); ?></button></a></td>
 				<td><?php echo htmlentities($item->name)?></td>
 				<td><?php echo htmlentities($item->description)?></td>
 				<td><?php echo htmlentities($item->edited_by)?></td>
