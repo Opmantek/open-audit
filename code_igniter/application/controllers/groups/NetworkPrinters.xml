@@ -8,23 +8,23 @@
 		<group_category>device</group_category>
 		<group_icon>printer</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'printer' and have a valid ip address.</group_description>
-		<group_display_sql><![CDATA[SELECT system.id, hostname, description, manufacturer, model, serial, ip, printer_color, printer_duplex FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id AS `system.id`, system.name AS `system.name`, system.description AS `system.description`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.ip AS `system.ip`, system.printer_color AS `system.printer_color`, system.printer_duplex AS `system.printer_duplex` FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
 	</details>
 	<columns>
 		<column>
 			<column_order>1</column_order>
 			<column_name>Hostname</column_name>
-			<column_variable>name</column_variable>
+			<column_variable>system.name</column_variable>
 			<column_type>link</column_type>
 			<column_link>/devices/</column_link>
-			<column_secondary>id</column_secondary>
+			<column_secondary>system.id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>2</column_order>
 			<column_name>Description</column_name>
-			<column_variable>description</column_variable>
+			<column_variable>system.description</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -34,7 +34,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Manufacturer</column_name>
-			<column_variable>manufacturer</column_variable>
+			<column_variable>system.manufacturer</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -44,7 +44,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Model</column_name>
-			<column_variable>model</column_variable>
+			<column_variable>system.model</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -54,7 +54,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Serial</column_name>
-			<column_variable>serial</column_variable>
+			<column_variable>system.serial</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -64,7 +64,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>IP Address</column_name>
-			<column_variable>ip</column_variable>
+			<column_variable>system.ip</column_variable>
 			<column_type>ip</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -74,7 +74,7 @@
 		<column>
 			<column_order>7</column_order>
 			<column_name>Color</column_name>
-			<column_variable>printer_color</column_variable>
+			<column_variable>system.printer_color</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -84,7 +84,7 @@
 		<column>
 			<column_order>8</column_order>
 			<column_name>Duplex</column_name>
-			<column_variable>printer_duplex</column_variable>
+			<column_variable>system.printer_duplex</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

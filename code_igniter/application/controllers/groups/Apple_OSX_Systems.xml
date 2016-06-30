@@ -3,93 +3,10 @@
 	<details>
 		<group_name>Apple OSX Systems</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.os_family LIKE LOWER('%osx') AND system.status = 'production']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.os_family LIKE '%osx' AND system.status = 'production']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>os</group_category>
 		<group_icon>apple</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their os_family attribute containing 'osx'.</group_description>
-		<group_display_sql><![CDATA[SELECT system.id, system.name, system.description, system.ip, system.type, system.os_family, system.os_name, system.icon, system.manufacturer, system.model FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
 	</details>
-	<columns>
-		<column>
-			<column_order>1</column_order>
-			<column_name>Icon</column_name>
-			<column_variable>icon</column_variable>
-			<column_type>image</column_type>
-			<column_link></column_link>
-			<column_secondary>os_family</column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>2</column_order>
-			<column_name>Hostname</column_name>
-			<column_variable>name</column_variable>
-			<column_type>link</column_type>
-			<column_link>/devices/</column_link>
-			<column_secondary>id</column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>3</column_order>
-			<column_name>IP Address</column_name>
-			<column_variable>ip</column_variable>
-			<column_type>ip</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>4</column_order>
-			<column_name>Manufacturer</column_name>
-			<column_variable>manufacturer</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>4</column_order>
-			<column_name>Model</column_name>
-			<column_variable>model</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>5</column_order>
-			<column_name>Description</column_name>
-			<column_variable>description</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>6</column_order>
-			<column_name>OS / Device</column_name>
-			<column_variable>os_name</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>7</column_order>
-			<column_name>Tags</column_name>
-			<column_variable>tag</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-	</columns>
 </group>
