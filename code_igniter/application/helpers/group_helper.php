@@ -127,22 +127,24 @@ if (! function_exists('refresh_group_definitions')) {
                     $data = array($group->group_id);
                     $query = $CI->db->query($sql, $data);
 
-                    foreach ($xml->columns->column as $column) {
-                        $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
-                        $data = array($group_id,
-                            (string)$column->column_order,
-                            (string)$column->column_name,
-                            (string)$column->column_variable,
-                            (string)$column->column_type,
-                            (string)$column->column_link,
-                            (string)$column->column_secondary,
-                            (string)$column->column_ternary,
-                            (string)$column->column_align);
+                    if (!empty($xml->columns)) {
+                        foreach ($xml->columns->column as $column) {
+                            $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
+                            $data = array($group_id,
+                                (string)$column->column_order,
+                                (string)$column->column_name,
+                                (string)$column->column_variable,
+                                (string)$column->column_type,
+                                (string)$column->column_link,
+                                (string)$column->column_secondary,
+                                (string)$column->column_ternary,
+                                (string)$column->column_align);
+                            $query = $CI->db->query($sql, $data);
+                        }
+                        $sql = "UPDATE oa_group SET updated = 'y' WHERE group_id = ?";
+                        $data = array($group_id);
                         $query = $CI->db->query($sql, $data);
                     }
-                    $sql = "UPDATE oa_group SET updated = 'y' WHERE group_id = ?";
-                    $data = array($group_id);
-                    $query = $CI->db->query($sql, $data);
                     // ensure we remove all rows for this group id
                     // this should have already occurred when we deleted the group above
                     // $sql = "DELETE FROM oa_group_user WHERE group_id = ?";
