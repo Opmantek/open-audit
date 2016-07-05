@@ -137,7 +137,4 @@ $item = $this->response->data[0];
         </tbody>
     </table>
   </div>
-
-
-  </div>
 </div>
