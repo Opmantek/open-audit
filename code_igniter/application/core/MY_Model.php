@@ -43,6 +43,33 @@ class MY_Model extends CI_Model
         parent::__construct();
     }
 
+    public function format_data($result, $type)
+    {
+        if (empty($result)) {
+            # TODO - thorw an error here
+            return false;
+        }
+        $return = array();
+        foreach ($result as $entry) {
+            $item = new stdClass();
+            $item->id = '';
+            if (!empty($entry->id)) {
+                $item->id = intval($entry->id);
+            } else if (!empty($entry->{'system.id'})) {
+                $item->id = intval($entry->{'system.id'});
+            } else if (!empty($entry->{$type.".id"})) {
+                $item->id = intval($entry->{$type.".id"});
+            }
+            $item->type = $type;
+            $item->links = new stdClass();
+            $item->links->self = $this->config->config['base_url'] . 'index.php/' . $type . '/' . $item->id;
+            $item->attributes = $entry;
+            $return[] = $item;
+            unset($item);
+        }
+        return $return;
+    }
+
     public function ip_address_to_db($ip)
     {
         if (($ip != "") and (!(is_null($ip))) and (substr_count($ip, '.') == 3)) {
