@@ -74,7 +74,7 @@
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
                     <select class="data_type form-control" id='data[attributes][type]' name='data[attributes][type]' tabindex='4' title='Type'>
-                        <option value=""></option>
+                        <option value='' label=' '></option>
                         <option value='snmp'>SNMP (v1 / v2)</option>
                         <option value='snmp_v3'>SNMP v3</option>
                         <option value='ssh'>SSH</option>

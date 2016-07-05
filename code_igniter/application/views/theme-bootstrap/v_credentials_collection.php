@@ -44,27 +44,27 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th><?php echo __('ID')?></th>
+				<th style='text-align:center;'><?php echo __('ID')?></th>
 				<th><?php echo __('Name')?></th>
                 <th><?php echo __('Description')?></th>
                 <th><?php echo __('Type')?></th>
 				<th><?php echo __('Edited By')?></th>
 				<th><?php echo __('Edited Date')?></th>
-				<th align='center'><?php echo __('Edit')?></th>
-				<th align='center'><?php echo __('Delete')?></th>
+				<th style='text-align:center;'><?php echo __('Edit')?></th>
+				<th style='text-align:center;'><?php echo __('Delete')?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach ($this->response->data as $item): ?>
 			<tr>
-                <td><a href="credentials/<?php echo htmlentities($item->id); ?>"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align"><?php echo htmlentities($item->id); ?></button></a></td>
+                <td style='text-align:center;'><a class="btn btn-sm btn-success" href="credentials/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
 				<td><?php echo htmlentities($item->attributes->name)?></td>
                 <td><?php echo htmlentities($item->attributes->description)?></td>
                 <td><?php echo htmlentities($item->attributes->type)?></td>
 				<td><?php echo htmlentities($item->attributes->edited_by)?></td>
 				<td><?php echo htmlentities($item->attributes->edited_date)?></td>
-				<td align='center'><a href="credentials/<?php echo intval($item->id); ?>?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a></td>
-				<td align='center'><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-hidden="true"></span></button></td>
+				<td style='text-align:center;'><a class="btn btn-sm btn-info" href="credentials/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+				<td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-hidden="true"></span></button></td>
 			</tr>
 			<?php endforeach; ?>
 		</tbody>
