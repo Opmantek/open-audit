@@ -52,7 +52,13 @@ if (! function_exists('output')) {
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
-        $CI->response = output_convert($CI->response);
+        #$CI->response = output_convert($CI->response);
+        if (!empty($CI->response->data)) {
+            $CI->response->data = output_convert($CI->response->data);
+        }
+        if (!empty($CI->response->included)) {
+            $CI->response->included = output_convert($CI->response->included);
+        }
         create_links();
         // if we have errors set, make sure we remove the data object / array
         if (count($CI->response->errors) > 0) {
@@ -60,7 +66,7 @@ if (! function_exists('output')) {
         } else {
             unset($CI->response->errors);
         }
-        switch ($CI->response->format) {
+        switch ($CI->response->meta->format) {
             case 'screen':
                 output_screen($CI->response);
                 break;
@@ -132,11 +138,11 @@ if (! function_exists('output')) {
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
         header("Expires: 0");
-        header($CI->response->header);
-        if ($CI->response->debug) {
-            $CI->response->user = $CI->user;
+        header($CI->response->meta->header);
+        if ($CI->response->meta->debug) {
+            $CI->response->meta->user = $CI->user;
         } else {
-            unset($CI->response->internal);
+            unset($CI->response->meta->internal);
         }
         echo json_encode($CI->response);
     }
@@ -148,7 +154,7 @@ if (! function_exists('output')) {
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
         header("Expires: 0");
-        header($CI->response->header);
+        header($CI->response->meta->header);
         if (isset($CI->response->data)) {
             echo json_encode($CI->response->data);
         } else if (isset($CI->response->error)) {
@@ -159,15 +165,19 @@ if (! function_exists('output')) {
     function output_screen()
     {
         $CI = & get_instance();
-        header($CI->response->header);
-        $CI->response->user = $CI->user;
+        header($CI->response->meta->header);
+        $CI->response->meta->user = $CI->user;
         if (!empty($CI->response->errors)) {
+            unset($CI->response->data);
             $CI->response->include = 'v_error';
+            $include = 'v_error';
         } else {
-            $CI->response->include = 'v_' . $CI->response->collection . '_' . $CI->response->action;
+            $CI->response->meta->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
+            $CI->response->include = $CI->response->meta->include;
+            $CI->response->heading = $CI->response->meta->heading;
         }
-        // if (!$CI->response->debug) {
-        //     unset($CI->response->internal);
+        // if (!$CI->response->meta->debug) {
+        //     unset($CI->response->meta->internal);
         // }
 
         $CI->load->view('v_template', $CI->response);
@@ -180,7 +190,7 @@ if (! function_exists('output')) {
         $xml_generater = new XMLSerializer;
         $xml = $xml_generater->generateValidXmlFromObj($CI->response);
         header('Content-Type: text/xml');
-        header($CI->response->header);
+        header($CI->response->meta->header);
         print_r($xml);
     }
 
@@ -189,33 +199,30 @@ if (! function_exists('output')) {
             if (is_array($row)) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
-                foreach ($row as $key => $value) {
-                    if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
-                        $row->$key = intval($value);
-                    
-                    } elseif ((strrpos($key, 'id') === strlen($key)-2) or
-                              (strrpos($key, 'count') === strlen($key)-5) or
-                              (strrpos($key, 'percent') === strlen($key)-7) or
-                              (strrpos($key, 'size') === strlen($key)-4)) {
-                        $row->$key = intval($value);
-                    
-                    } elseif (isset($key) and ($key == 'ip' or $key == 'next_hop' or $key == 'destination' or strrpos($key, 'ip') === strlen($key)-2) and isset($value)) {
-                        $temp_name = $key . '_padded';
-                        $row->$temp_name = ip_address_from_db($value);
-                        $row->$temp_name = ip_address_to_db($row->$temp_name);
-                        $row->$key = ip_address_from_db($value);
-                        if ($row->$temp_name == $row->$key) {
-                            unset($row->$temp_name);
+                #if (!empty($row->attributes)) {
+                    foreach ($row->attributes as $key => $value) {
+                        if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
+                            $row->attributes->$key = intval($value);
+                        
+                        } elseif ((strrpos($key, 'id') === strlen($key)-2) or
+                                  (strrpos($key, 'count') === strlen($key)-5) or
+                                  (strrpos($key, 'percent') === strlen($key)-7) or
+                                  (strrpos($key, 'size') === strlen($key)-4)) {
+                            $row->attributes->$key = intval($value);
+                        
+                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
+                                (strrpos($key, 'next_hop') === strlen($key)-8) or
+                                (strrpos($key, 'destination') === strlen($key)-11)) {
+                            $temp_name = $key . '_padded';
+                            $row->attributes->$temp_name = ip_address_from_db($value);
+                            $row->attributes->$temp_name = ip_address_to_db($row->attributes->$temp_name);
+                            $row->attributes->$key = ip_address_from_db($value);
+                            if ($row->attributes->$temp_name == $row->attributes->$key) {
+                                unset($row->attributes->$temp_name);
+                            }
                         }
-                    } 
-                    // elseif (isset($key) and ($key == 'ip' or $key == 'system.ip')) {
-                    //     $row->ip_padded = $value;
-                    //     $row->ip = ip_address_from_db($value);
-                    //     #unset($row->ip);
-                    //     if (empty($row->ip_padded)) { $row->ip_padded = ''; }
-                    //     if (empty($row->ip)) { $row->ip = ''; }
-                    // }
-                }
+                    }
+                #}
             }
         }
         return($data);
@@ -225,12 +232,12 @@ if (! function_exists('output')) {
     {
         $CI = & get_instance();
         $offset = '';
-        if ($CI->response->total > 0 and $CI->response->collection != 'charts') {
+        if ($CI->response->meta->total > 0 and $CI->response->meta->collection != 'charts') {
             # next link
-            if ($CI->response->total > $CI->response->filtered and ($CI->response->offset + $CI->response->limit) < ($CI->response->total + $CI->response->limit)) {
-                $offset = intval($CI->response->offset + $CI->response->limit);
+            if ($CI->response->meta->total > $CI->response->meta->filtered and ($CI->response->meta->offset + $CI->response->meta->limit) < ($CI->response->meta->total + $CI->response->meta->limit)) {
+                $offset = intval($CI->response->meta->offset + $CI->response->meta->limit);
                 if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
-                    $CI->response->links->next = str_replace('offset='.$CI->response->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
+                    $CI->response->links->next = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
                 } else {
                     if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
                         $CI->response->links->next = $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
@@ -241,10 +248,10 @@ if (! function_exists('output')) {
             }
 
             #prev link
-            if ($CI->response->offset > 0) {
-                $offset = intval($CI->response->offset - $CI->response->limit);
+            if ($CI->response->meta->offset > 0) {
+                $offset = intval($CI->response->meta->offset - $CI->response->meta->limit);
                 if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
-                    $CI->response->links->prev = str_replace('offset='.$CI->response->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
+                    $CI->response->links->prev = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
                 } else {
                     if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
                         $CI->response->links->prev = $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
@@ -257,15 +264,15 @@ if (! function_exists('output')) {
             # first link
             $offset = 0;
             if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
-                $CI->response->links->first = str_replace('offset='.$CI->response->offset, '', $_SERVER["REQUEST_URI"]);
+                $CI->response->links->first = str_replace('offset='.$CI->response->meta->offset, '', $_SERVER["REQUEST_URI"]);
             } else {
                 $CI->response->links->first = $_SERVER["REQUEST_URI"];
             }
 
             # last link
-            $offset = intval($CI->response->total) - intval($CI->response->limit);
+            $offset = intval($CI->response->meta->total) - intval($CI->response->meta->limit);
             if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
-                $CI->response->links->last = str_replace('offset='.$CI->response->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
+                $CI->response->links->last = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
             } else {
                 if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
                     $CI->response->links->last = $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
@@ -282,7 +289,7 @@ if (! function_exists('output')) {
         $CI->response->table = '';
         $table = '';
         if (isset($CI->response->columns)) {
-            if ($CI->response->format == 'screen' and $CI->user->theme == 'bootstrap') {
+            if ($CI->response->meta->format == 'screen' and $CI->user->theme == 'bootstrap') {
                 $table = '<table id="table" data-toggle="table" data-sort-name="name" data-sort-order="asc" data-pagination="true" data-search="true" data-show-columns="true" data-pagination="true" data-pagination-first-text="First" data-pagination-pre-text="Previous" data-pagination-next-text="Next" data-pagination-last-text="Last" data-page-size="' . $CI->config->config['display_limit'] . '" data-striped="true">';
                 } else {
                 $table = "<table>\n";
@@ -291,10 +298,10 @@ if (! function_exists('output')) {
             $table .= "<tr>\n";
             $temp_edit = 'n';
             foreach ($CI->response->columns as $column) {
-                if (isset($CI->response->access_level) and $CI->response->access_level > 9 and $column->secondary == 'id' and $column->type == 'link') {
+                if (isset($CI->response->meta->access_level) and $CI->response->meta->access_level > 9 and $column->secondary == 'id' and $column->type == 'link') {
                     $temp_edit = 'y';
                 }
-                if ($CI->response->format == 'screen' and $CI->user->theme == 'bootstrap') {
+                if ($CI->response->meta->format == 'screen' and $CI->user->theme == 'bootstrap') {
                     if ($column->variable == 'icon' or $column->type == 'url') {
                         $table .= '<th data-sortable="true" data-field="' . $column->name . '" data-align="center" data-halign="center">' . $column->name . '</th>';
                     } else {
@@ -304,7 +311,7 @@ if (! function_exists('output')) {
                     $table .= '<th>' . $column->name . '</th>';
                 }
             }
-            if ($temp_edit == 'y' and $CI->response->format == 'screen' and $CI->user->theme == 'bootstrap') {
+            if ($temp_edit == 'y' and $CI->response->meta->format == 'screen' and $CI->user->theme == 'bootstrap') {
                 $table .= '<th data-field="edit" data-align="center" data-halign="center" data-checkbox="true" data-click-to-select="true"></th>';
             }
             $table .= "</tr>\n";
@@ -326,10 +333,10 @@ if (! function_exists('output')) {
                                 break;
 
                             case 'link':
-                                if ($CI->response->format == 'screen' and $CI->user->theme == 'bootstrap' and $column->link == '/main/system_display/') {
-                                    $column->link = '../' . $CI->response->group_id . '/devices/';
+                                if ($CI->response->meta->format == 'screen' and $CI->user->theme == 'bootstrap' and $column->link == '/main/system_display/') {
+                                    $column->link = '../' . $CI->response->meta->group_id . '/devices/';
                                 }
-                                $column->link = str_replace('$group_id', $CI->response->group_id, $column->link);
+                                $column->link = str_replace('$group_id', $CI->response->meta->group_id, $column->link);
                                 if (strrpos($column->link, '/')+1 != strlen($column->link)) {
                                     $column->link = $column->link . '/';
                                 }

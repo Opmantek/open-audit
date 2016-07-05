@@ -82,23 +82,29 @@ if (! function_exists('inputRead')) {
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
 
         # initialise our properties
-        $CI->response->collection = '';
-        $CI->response->action = '';
-        $CI->response->id = 0;
-        $CI->response->sub_resource = '';
-        $CI->response->sub_resource_id = 0;
-        $CI->response->current = 'y';
-        $CI->response->debug = false;
-        $CI->response->filtered = '';
-        $CI->response->format = '';
-        $CI->response->groupby = '';
-        $CI->response->internal = new stdClass();
+        $CI->response->meta = new stdClass();
+        $CI->response->meta->action = '';
+        $CI->response->meta->collection = '';
+        $CI->response->meta->current = 'y';
+        $CI->response->meta->debug = false;
+        $CI->response->meta->filtered = '';
+        $CI->response->meta->format = '';
+        $CI->response->meta->groupby = '';
+        $CI->response->meta->header = 'HTTP/1.1 200 OK';
+        $CI->response->meta->id = 0;
+        $CI->response->meta->limit = '';
+        $CI->response->meta->offset = 0;
+        $CI->response->meta->properties = '';
+        $CI->response->meta->query_string = '';
+        $CI->response->meta->sort = '';
+        $CI->response->meta->sub_resource = '';
+        $CI->response->meta->sub_resource_id = 0;
+        $CI->response->meta->total = '';
+        $CI->response->meta->version = 1;
+        $CI->response->meta->filter = array();
+        $CI->response->meta->internal = new stdClass();
+        $CI->response->meta->received_data = array();
         $CI->response->links = array();
-        $CI->response->properties = '';
-        $CI->response->query_string = '';
-        $CI->response->sort = '';
-        $CI->response->total = '';
-        $CI->response->version = 1;
         
         # Allow for URLs thus:
         # /api/{version}/
@@ -109,18 +115,18 @@ if (! function_exists('inputRead')) {
         # get the version
         if ($CI->uri->segments[1] == 'api' or $CI->uri->segments[1] == 'v1' or $CI->uri->segments[1] == 'v2') {
             if ($CI->uri->segments[1] == 'api') {
-                $CI->response->version = intval($CI->uri->segment(2));
+                $CI->response->meta->version = intval($CI->uri->segment(2));
                 unset ($CI->uri->segments[1]);
                 unset ($CI->uri->segments[2]);
                 $log->message = 'Set version to ' . intval($CI->uri->segment(2)) . ', according to URI segment.';
                 stdlog($log);
             } else if ($CI->uri->segments[1] == 'v1') {
-                $CI->response->version = 1;
+                $CI->response->meta->version = 1;
                 $log->message = 'Set version to v1, according to URI segment.';
                 stdlog($log);
                 unset ($CI->uri->segments[1]);
             } else if ($CI->uri->segments[1] == 'v2') {
-                $CI->response->version = 2;
+                $CI->response->meta->version = 2;
                 $log->message = 'Set version to v2, according to URI segment.';
                 stdlog($log);
                 unset ($CI->uri->segments[1]);
@@ -128,36 +134,36 @@ if (! function_exists('inputRead')) {
             array_unshift($CI->uri->segments, '');
             $CI->uri->segments = array_values($CI->uri->segments);
         } else if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json;version=') !== false) {
-            $CI->response->version = intval(str_replace('application/json;version=', '', $_SERVER['HTTP_ACCEPT']));
-            $log->message = 'Set version to ' . $CI->response->version . ', according to headers.';
+            $CI->response->meta->version = intval(str_replace('application/json;version=', '', $_SERVER['HTTP_ACCEPT']));
+            $log->message = 'Set version to ' . $CI->response->meta->version . ', according to headers.';
             stdlog($log);
         }
         
         # get our collection - usually devices, groups, reports, etc
         $temp = $CI->uri->segment(1);
         if (isset($temp) and $temp != '') {
-            $CI->response->collection = (string)$temp;
-            $CI->response->heading = ucfirst($CI->response->collection);
-            $log->message = 'Set collection to ' . $CI->response->collection . ', according to URI.';
+            $CI->response->meta->collection = (string)$temp;
+            $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
+            $log->message = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
             stdlog($log);
         }
         unset($temp);
 
         # get debug
         if (!empty($CI->input->get('debug'))) {
-            $CI->response->debug = $CI->input->get('debug');
-            $log->message = 'Set debug to ' . $CI->response->debug . ', according to URI.';
+            $CI->response->meta->debug = $CI->input->get('debug');
+            $log->message = 'Set debug to ' . $CI->response->meta->debug . ', according to URI.';
             stdlog($log);
         }
         if (!empty($CI->input->post('debug'))) {
-            $CI->response->debug = $CI->input->post('debug');
-            $log->message = 'Set debug to ' . $CI->response->debug . ', according to POST.';
+            $CI->response->meta->debug = $CI->input->post('debug');
+            $log->message = 'Set debug to ' . $CI->response->meta->debug . ', according to POST.';
             stdlog($log);
         }
-        if (strtolower($CI->response->debug) == 'true') {
-            $CI->response->debug = true;
+        if (strtolower($CI->response->meta->debug) == 'true') {
+            $CI->response->meta->debug = true;
         } else {
-            $CI->response->debug = false;
+            $CI->response->meta->debug = false;
         }
 
         # get the id of the collection item in question
@@ -165,24 +171,24 @@ if (! function_exists('inputRead')) {
 
         # if we have an integer
         if (!empty($CI->uri->segment(2)) and is_numeric($CI->uri->segment(2))) {
-            $CI->response->id = intval($CI->uri->segment(2));
-            $log->message = 'Set ID to ' . $CI->response->id . ', according to URI.';
+            $CI->response->meta->id = intval($CI->uri->segment(2));
+            $log->message = 'Set ID to ' . $CI->response->meta->id . ', according to URI.';
             stdlog($log);
         }
 
         # if we have a reserved word
         if (!empty($CI->uri->segment(2)) and !is_numeric($CI->uri->segment(2)) and stripos($collection_words, ' '.$CI->uri->segment(2).' ') !== false) {
-            $CI->response->action = $CI->uri->segment(2);
-            $log->message = 'Set action to ' . $CI->response->action . ', according to URI.';
+            $CI->response->meta->action = $CI->uri->segment(2);
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
             stdlog($log);
         }
         
         # if we have an item name (ie, not it's ID)
-        if (empty($CI->response->id) and $CI->uri->segment(2) != '' and stripos($collection_words, ' '.$CI->uri->segment(2).' ') === false) {
+        if (empty($CI->response->meta->id) and $CI->uri->segment(2) != '' and stripos($collection_words, ' '.$CI->uri->segment(2).' ') === false) {
             // TODO - SEPARATE THIS OUT
-            $log->message = 'Searching for ID, using ' . $CI->uri->segment(2) . ' on the ' . $CI->response->collection . ' collection.';
+            $log->message = 'Searching for ID, using ' . $CI->uri->segment(2) . ' on the ' . $CI->response->meta->collection . ' collection.';
             stdlog($log);
-            switch ($CI->response->collection) {
+            switch ($CI->response->meta->collection) {
             case 'devices':
                 $sql = "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
                 $table = 'system';
@@ -209,8 +215,8 @@ if (! function_exists('inputRead')) {
                 break;
             case 'charts':
                 $sql = '';
-                $CI->response->id = 1;
-                $CI->response->sub_resource = $CI->uri->segment(2);
+                $CI->response->meta->id = 1;
+                $CI->response->meta->sub_resource = $CI->uri->segment(2);
                 break;
             }
             if ($sql != '') {
@@ -218,13 +224,13 @@ if (! function_exists('inputRead')) {
                 $query = $CI->db->query($sql, $data);
                 $result = $query->result();
                 if (count($result) > 0) {
-                    $CI->response->id = intval($result[0]->id);
-                    $log->message = 'Set id to ' . $CI->response->id . ', after searching.';
+                    $CI->response->meta->id = intval($result[0]->id);
+                    $log->message = 'Set id to ' . $CI->response->meta->id . ', after searching.';
                     stdlog($log);
                 } else {
                     // should throw an error as we were given a name, but nothing matched
-                    $CI->response->id = 0;
-                    $log->message = 'Set id to ' . $CI->response->id . ', after searching - no match found.';
+                    $CI->response->meta->id = 0;
+                    $log->message = 'Set id to ' . $CI->response->meta->id . ', after searching - no match found.';
                     stdlog($log);
                 }
             }
@@ -232,48 +238,55 @@ if (! function_exists('inputRead')) {
         unset($collection_words);
 
         # get the sub_resource
-        if (empty($CI->response->sub_resource)) {
-            $CI->response->sub_resource = (string)$CI->uri->segment(3, '');
-            $log->message = 'Set sub_resource to ' . $CI->response->sub_resource . ', according to URI.';
+        if (empty($CI->response->meta->sub_resource)) {
+            $CI->response->meta->sub_resource = (string)$CI->uri->segment(3, '');
+            $log->message = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to URI.';
             stdlog($log);
         }
         if (!empty($CI->input->get('sub_resource'))) {
-            $CI->response->sub_resource = $CI->input->get('sub_resource');
-            $log->message = 'Set sub_resource to ' . $CI->response->sub_resource . ', according to GET.';
+            $CI->response->meta->sub_resource = $CI->input->get('sub_resource');
+            $log->message = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to GET.';
             stdlog($log);
         }
         if (!empty($CI->input->post('sub_resource'))) {
-            $CI->response->sub_resource = $CI->input->post('sub_resource');
-            $log->message = 'Set sub_resource to ' . $CI->response->sub_resource . ', according to POST.';
+            $CI->response->meta->sub_resource = $CI->input->post('sub_resource');
+            $log->message = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to POST.';
             stdlog($log);
         }
-        $CI->response->sub_resource = str_replace(array(',', '.', '\'', '"', '(', ')'), '', $CI->response->sub_resource);
+        $CI->response->meta->sub_resource = str_replace(array(',', '.', '\'', '"', '(', ')'), '', $CI->response->meta->sub_resource);
 
 
         # get the sub_resource id
-        $CI->response->sub_resource_id = $CI->uri->segment(4, '');
+        $CI->response->meta->sub_resource_id = $CI->uri->segment(4, '');
         if (!empty($CI->input->get('sub_resource_id'))) {
-            $CI->response->sub_resource_id = $CI->input->get('sub_resource_id');
-            $log->message = 'Set sub_resource_id to ' . $CI->response->sub_resource_id . ', according to GET.';
+            $CI->response->meta->sub_resource_id = $CI->input->get('sub_resource_id');
+            $log->message = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to GET.';
             stdlog($log);
         }
         if (!empty($CI->input->post('sub_resource_id'))) {
-            $CI->response->sub_resource_id = $CI->input->post('sub_resource_id');
-            $log->message = 'Set sub_resource_id to ' . $CI->response->sub_resource_id . ', according to POST.';
+            $CI->response->meta->sub_resource_id = $CI->input->post('sub_resource_id');
+            $log->message = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to POST.';
             stdlog($log);
         }
-        $CI->response->sub_resource_id = intval($CI->response->sub_resource_id);
+        $CI->response->meta->sub_resource_id = intval($CI->response->meta->sub_resource_id);
 
         # put any POST data into the object
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post') {
+        if ($CI->input->server('REQUEST_METHOD') == 'POST') {
             if (is_array($CI->input->post('data'))) {
-                $CI->response->post_data = $CI->input->post('data');
+                $CI->response->meta->received_data = $CI->input->post('data');
+                $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
+                $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
             } else {
-                $CI->response->post_data = json_decode($CI->input->post('data'));
+                $CI->response->meta->received_data = json_decode($CI->input->post('data'));
             }
         }
-        if (isset($CI->response->post_data->id)) {
-            $CI->response->id = intval($CI->response->post_data->id);
+        if ($CI->input->server('REQUEST_METHOD') == 'PATCH') {
+            $data = json_decode(urldecode(str_replace('data=', '', file_get_contents('php://input'))));
+            $CI->response->meta->received_data = $data->data;
+            unset($data);
+        }
+        if (isset($CI->response->meta->received_data->id)) {
+            $CI->response->meta->id = intval($CI->response->meta->received_data->id);
         }
 
         # get the action
@@ -281,9 +294,9 @@ if (! function_exists('inputRead')) {
         # TODO - request_method == post and body contains system_id, then update, not create
         $action_words = ' collection read new edit execute create update delete debug create_form update_form bulk_update_form import import_form ';
         $action = '';
-        if (stripos($action_words, ' '.$CI->response->action. ' ') !== false) {
-            $action = $CI->response->action;
-            $log->message = 'Set action to ' . $CI->response->action . ', because approved word.';
+        if (stripos($action_words, ' '.$CI->response->meta->action. ' ') !== false) {
+            $action = $CI->response->meta->action;
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because approved word.';
             stdlog($log);
         }
 
@@ -298,292 +311,291 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
 
-        $CI->response->header = 'HTTP/1.1 200 OK';
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->id == '' and ($action == '' or $action == 'list')) {
+
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id == '' and ($action == '' or $action == 'list')) {
             // return a list of items
-            $CI->response->action = 'collection';
-            $log->message = 'Set action to ' . $CI->response->action . ', because GET, no id, no action or action = list.';
+            $CI->response->meta->action = 'collection';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, no id, no action or action = list.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->id == '' and $action == 'create') {
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id == '' and $action == 'create') {
             // show a HTML form for entering a new item
-            $CI->response->action = 'create_form';
-            $log->message = 'Set action to ' . $CI->response->action . ', because GET, no id and action = create.';
+            $CI->response->meta->action = 'create_form';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = create.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->id == '' and $action == 'import') {
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id == '' and $action == 'import') {
             // show a HTML form for entering a new item
-            $CI->response->action = 'import_form';
-            $log->message = 'Set action to ' . $CI->response->action . ', because GET, no id and action = import.';
+            $CI->response->meta->action = 'import_form';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = import.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->id != '' and $action == '') {
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id != '' and $action == '') {
             // return a single item
-            $CI->response->action = 'read';
-            $CI->response->id = intval($CI->response->id);
-            $log->message = 'Set action to ' . $CI->response->action . ', because GET, id and no action.';
+            $CI->response->meta->action = 'read';
+            $CI->response->meta->id = intval($CI->response->meta->id);
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and no action.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->id != '' and ($action == 'edit' or $action = 'update')) {
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id != '' and ($action == 'edit' or $action == 'update')) {
             // show a HTML form for editing an existing item
-            $CI->response->action = 'update_form';
-            $log->message = 'Set action to ' . $CI->response->action . ', because GET, id and action = ' . $action . '.';
+            $CI->response->meta->action = 'update_form';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->id != '' and $action == 'execute') {
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id != '' and $action == 'execute') {
             // mainly used for running a report and displaying the output
-            $CI->response->action = 'execute';
-            $log->message = 'Set action to ' . $CI->response->action . ', because GET, id and action = execute.';
+            $CI->response->meta->action = 'execute';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = execute.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->id == '' and $action == '') {
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->meta->id == '' and $action == '') {
             // insert an item
-            $CI->response->action = 'create';
-            $CI->response->header = 'HTTP/1.1 201 Created';
-            $log->message = 'Set action to ' . $CI->response->action . ', because POST, no id and no action.';
+            $CI->response->meta->action = 'create';
+            $CI->response->meta->limit = 'HTTP/1.1 201 Created';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, no id and no action.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->id == '' and $action == 'import') {
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->meta->id == '' and $action == 'import') {
             // insert an item
-            $CI->response->action = 'import';
-            $CI->response->header = 'HTTP/1.1 201 Created';
-            $log->message = 'Set action to ' . $CI->response->action . ', because POST, no id and action = import.';
+            $CI->response->meta->action = 'import';
+            $CI->response->meta->limit = 'HTTP/1.1 201 Created';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, no id and action = import.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->id == '' and $action == 'edit') {
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->meta->id == '' and $action == 'edit') {
             // show a HTML form for bulk editing items
-            $CI->response->action = 'bulk_update_form';
-            $log->message = 'Set action to ' . $CI->response->action . ', because POST, no id and action = edit.';
+            $CI->response->meta->action = 'bulk_update_form';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, no id and action = edit.';
             stdlog($log);
         }
         if ((strtolower($CI->input->server('REQUEST_METHOD')) == 'post' or 
             strtolower($CI->input->server('REQUEST_METHOD')) == 'put' or
-            strtolower($CI->input->server('REQUEST_METHOD')) == 'patch') and $CI->response->id != '' and $action == '') {
+            strtolower($CI->input->server('REQUEST_METHOD')) == 'patch') and $CI->response->meta->id != '' and $action == '') {
             // update an item
-            $CI->response->action = 'update';
-            $CI->response->header = 'HTTP/1.1 200 OK';
-            $CI->response->id = intval($CI->response->id);
-            $log->message = 'Set action to ' . $CI->response->action . ', because POST/PATCH/PUT, id and no action.';
+            $CI->response->meta->action = 'update';
+            $CI->response->meta->limit = 'HTTP/1.1 200 OK';
+            $CI->response->meta->id = intval($CI->response->meta->id);
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST/PATCH/PUT, id and no action.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'delete' and $CI->response->id != '') {
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'delete' and $CI->response->meta->id != '') {
             // delete an item
-            $CI->response->action = 'delete';
-            $CI->response->header = 'HTTP/1.1 200 OK';
-            $CI->response->id = intval($CI->response->id);
-            $log->message = 'Set action to ' . $CI->response->action . ', because DELETE, id.';
+            $CI->response->meta->action = 'delete';
+            $CI->response->meta->limit = 'HTTP/1.1 200 OK';
+            $CI->response->meta->id = intval($CI->response->meta->id);
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because DELETE, id.';
             stdlog($log);
         }
-        if ($CI->response->action == '' or $CI->response->action == 'list') {
-            $CI->response->action = 'collection';
-            $log->message = 'Set action to ' . $CI->response->action . ', no action or action = list.';
+        if ($CI->response->meta->action == '' or $CI->response->meta->action == 'list') {
+            $CI->response->meta->action = 'collection';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', no action or action = list.';
             stdlog($log);
         }
-        if (stripos($action_words, ' '.$CI->response->action.' ') === false) {
-            $CI->response->action = 'collection';
-            $log->message = 'Set action to ' . $CI->response->action . ', because not in reserved words.';
+        if (stripos($action_words, ' '.$CI->response->meta->action.' ') === false) {
+            $CI->response->meta->action = 'collection';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because not in reserved words.';
             stdlog($log);
         }
 
         # get the sort
-        $CI->response->sort = $CI->input->get('sort');
+        $CI->response->meta->sort = $CI->input->get('sort');
         if (!empty($CI->input->post('sort'))) {
-            $CI->response->sort = $CI->input->post('sort');
-            $log->message = 'Set sort to ' . $CI->response->sort . ', according to POST.';
+            $CI->response->meta->sort = $CI->input->post('sort');
+            $log->message = 'Set sort to ' . $CI->response->meta->sort . ', according to POST.';
             stdlog($log);
         }
-        $CI->response->sort = str_replace('+', '', $CI->response->sort);
-        if ($CI->response->sort != '') {
-            $temp = explode(',', $CI->response->sort);
+        $CI->response->meta->sort = str_replace('+', '', $CI->response->meta->sort);
+        if ($CI->response->meta->sort != '') {
+            $temp = explode(',', $CI->response->meta->sort);
             foreach ($temp as &$item) {
                 if (substr($item, 0, 1) == '-') {
                     $item = substr($item, 1) . ' DESC';
                 }
             }
-            $CI->response->sort = implode(',', $temp);
+            $CI->response->meta->sort = implode(',', $temp);
         }
-        if ($CI->response->sort != '') {
-            $CI->response->internal->sort = 'ORDER BY ' . implode(',', $temp);
+        if ($CI->response->meta->sort != '') {
+            $CI->response->meta->internal->sort = 'ORDER BY ' . implode(',', $temp);
         } else {
-            $CI->response->internal->sort = '';
+            $CI->response->meta->internal->sort = '';
         }
 
         # get current
-        $CI->response->current = $CI->input->get('current');
+        $CI->response->meta->current = $CI->input->get('current');
         if (!empty($CI->input->post('current'))) {
-            $CI->response->current = $CI->input->post('current');
-            $log->message = 'Set current to ' . $CI->response->current . ', according to POST.';
+            $CI->response->meta->current = $CI->input->post('current');
+            $log->message = 'Set current to ' . $CI->response->meta->current . ', according to POST.';
             stdlog($log);
         }
         $current_words = ' y n all delta ';
-        if (stripos($current_words, ' '.$CI->response->current.' ') === false) {
-            $CI->response->current = 'y';
-            $log->message = 'Set current to ' . $CI->response->current . ', because in reserved words.';
+        if (stripos($current_words, ' '.$CI->response->meta->current.' ') === false) {
+            $CI->response->meta->current = 'y';
+            $log->message = 'Set current to ' . $CI->response->meta->current . ', because in reserved words.';
             stdlog($log);
         }
         unset($current_words);
 
         # get the group by
         if (!empty($_GET['groupby'])) {
-            $CI->response->groupby = $_GET['groupby'];
-            $log->message = 'Set groupby to ' . $CI->response->groupby . ', according to GET.';
+            $CI->response->meta->groupby = $_GET['groupby'];
+            $log->message = 'Set groupby to ' . $CI->response->meta->groupby . ', according to GET.';
             stdlog($log);
         }
         if (!empty($_POST['groupby'])) {
-            $CI->response->groupby = $_POST['groupby'];
-            $log->message = 'Set groupby to ' . $CI->response->groupby . ', according to POST.';
+            $CI->response->meta->groupby = $_POST['groupby'];
+            $log->message = 'Set groupby to ' . $CI->response->meta->groupby . ', according to POST.';
             stdlog($log);
         }
-        if (!empty($CI->response->groupby)) {
-            $CI->response->internal->groupby = 'GROUP BY ' . $CI->response->groupby;
+        if (!empty($CI->response->meta->groupby)) {
+            $CI->response->meta->internal->groupby = 'GROUP BY ' . $CI->response->meta->groupby;
         } else {
-            $CI->response->internal->groupby = '';
+            $CI->response->meta->internal->groupby = '';
         }
 
         # get the output format
-        $CI->response->format = '';
+        $CI->response->meta->format = '';
         if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
-            $CI->response->format = 'json';
-            $log->message = 'Set format to ' . $CI->response->format . ', according to HEADERS.';
+            $CI->response->meta->format = 'json';
+            $log->message = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
             stdlog($log);
         }
         if (strpos($_SERVER['HTTP_ACCEPT'], 'html') !== false) {
-            $CI->response->format = 'screen';
-            $log->message = 'Set format to ' . $CI->response->format . ', according to HEADERS.';
+            $CI->response->meta->format = 'screen';
+            $log->message = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
             stdlog($log);
         }
         if (isset($_GET['format'])) {
-            $CI->response->format = $_GET['format'];
-            $log->message = 'Set format to ' . $CI->response->format . ', according to GET.';
+            $CI->response->meta->format = $_GET['format'];
+            $log->message = 'Set format to ' . $CI->response->meta->format . ', according to GET.';
             stdlog($log);
         }
         if (isset($_POST['format'])) {
-            $CI->response->format = $_POST['format'];
-            $log->message = 'Set format to ' . $CI->response->format . ', according to POST.';
+            $CI->response->meta->format = $_POST['format'];
+            $log->message = 'Set format to ' . $CI->response->meta->format . ', according to POST.';
             stdlog($log);
         }
-        if ($CI->response->format == '') {
-            $CI->response->format = 'json';
-            $log->message = 'Set format to ' . $CI->response->format . ', because default.';
+        if ($CI->response->meta->format == '') {
+            $CI->response->meta->format = 'json';
+            $log->message = 'Set format to ' . $CI->response->meta->format . ', because default.';
             stdlog($log);
         }
         $reserved_words = ' json json_data screen xml ';
-        if (stripos($reserved_words, ' '.$CI->response->format.' ') === false) {
-            $CI->response->format = 'json';
+        if (stripos($reserved_words, ' '.$CI->response->meta->format.' ') === false) {
+            $CI->response->meta->format = 'json';
         }
 
         # get the limit
-        if ($CI->response->format == 'json') {
-            $CI->response->limit = '';
-            $log->message = 'Set limit to ' . $CI->response->limit . ', because json.';
+        if ($CI->response->meta->format == 'json') {
+            $CI->response->meta->limit = '';
+            $log->message = 'Set limit to ' . $CI->response->meta->limit . ', because json.';
             stdlog($log);
         } else {
-            $CI->response->limit = 1000;
-            $log->message = 'Set limit to ' . $CI->response->limit . ', because for non-json.';
+            $CI->response->meta->limit = 1000;
+            $log->message = 'Set limit to ' . $CI->response->meta->limit . ', because for non-json.';
             stdlog($log);
         }
         if (isset($_GET['limit'])) {
-            $CI->response->limit = intval($_GET['limit']);
-            $log->message = 'Set limit to ' . $CI->response->limit . ', according to GET.';
+            $CI->response->meta->limit = intval($_GET['limit']);
+            $log->message = 'Set limit to ' . $CI->response->meta->limit . ', according to GET.';
             stdlog($log);
         }
         if (isset($_POST['limit'])) {
-            $CI->response->limit = intval($_POST['limit']);
-            $log->message = 'Set limit to ' . $CI->response->limit . ', according to POST.';
+            $CI->response->meta->limit = intval($_POST['limit']);
+            $log->message = 'Set limit to ' . $CI->response->meta->limit . ', according to POST.';
             stdlog($log);
         }
 
         # get the offset
-        $CI->response->offset = 0;
         if (isset($_GET['offset'])) {
-            $CI->response->offset = intval($_GET['offset']);
-            $log->message = 'Set offset to ' . $CI->response->offset . ', according to GET.';
+            $CI->response->meta->offset = intval($_GET['offset']);
+            $log->message = 'Set offset to ' . $CI->response->meta->offset . ', according to GET.';
             stdlog($log);
         }
         if (isset($_POST['offset'])) {
-            $CI->response->offset = intval($_POST['offset']);
-            $log->message = 'Set offset to ' . $CI->response->offset . ', according to POST.';
+            $CI->response->meta->offset = intval($_POST['offset']);
+            $log->message = 'Set offset to ' . $CI->response->meta->offset . ', according to POST.';
             stdlog($log);
         }
 
-        if ($CI->response->limit != '') {
-            $CI->response->internal->limit = 'LIMIT ' . $CI->response->offset . ',' . $CI->response->limit;
+        if ($CI->response->meta->limit != '') {
+            $CI->response->meta->internal->limit = 'LIMIT ' . $CI->response->meta->offset . ',' . $CI->response->meta->limit;
         } else {
-            $CI->response->internal->limit = '';
+            $CI->response->meta->internal->limit = '';
         }
 
         # get the list of requested properties (usually) properties=id,name,status
         if (isset($_GET['properties'])) {
-            $CI->response->properties = $_GET['properties'];
-            $log->message = 'Set properties to ' . $CI->response->properties . ', according to GET.';
+            $CI->response->meta->properties = $_GET['properties'];
+            $log->message = 'Set properties to ' . $CI->response->meta->properties . ', according to GET.';
             stdlog($log);
         }
         if (isset($_POST['properties'])) {
-            $CI->response->properties = $_POST['properties'];
-            $log->message = 'Set properties to ' . $CI->response->properties . ', according to POST.';
+            $CI->response->meta->properties = $_POST['properties'];
+            $log->message = 'Set properties to ' . $CI->response->meta->properties . ', according to POST.';
             stdlog($log);
         }
 
         # Allow for format of properties=["id", "name", "status"]
-        if (json_decode($CI->response->properties)) {
-            $temp = json_decode($CI->response->properties);
-            unset($CI->response->properties);
-            $CI->response->properties = '';
+        if (json_decode($CI->response->meta->properties)) {
+            $temp = json_decode($CI->response->meta->properties);
+            unset($CI->response->meta->properties);
+            $CI->response->meta->properties = '';
             foreach ($temp as $property) {
-                $CI->response->properties .= $property . ',';
+                $CI->response->meta->properties .= $property . ',';
             }
-            $CI->response->properties = substr($CI->response->properties, 0, -1);
-            $log->message = 'Set properties to ' . $CI->response->properties . ', secondary format.';
+            $CI->response->meta->properties = substr($CI->response->meta->properties, 0, -1);
+            $log->message = 'Set properties to ' . $CI->response->meta->properties . ', secondary format.';
             stdlog($log);
         }
 
-        if ($CI->response->properties == '') {
+        if ($CI->response->meta->properties == '') {
             # set some defaults
-            if ($CI->response->action == 'collection' and $CI->response->collection == 'devices') { 
+            if ($CI->response->meta->action == 'collection' and $CI->response->meta->collection == 'devices') { 
                 # we're requesting a list of devices without properties - set the below as defaults
-                if ($CI->response->sub_resource == '' or strtolower($CI->response->sub_resource) == 'system') {
-                    $CI->response->properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.os_family, system.status';
-                    $log->message = 'Set properties to ' . $CI->response->properties . ', because devices default.';
+                if ($CI->response->meta->sub_resource == '' or strtolower($CI->response->meta->sub_resource) == 'system') {
+                    $CI->response->meta->properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.os_family, system.status';
+                    $log->message = 'Set properties to ' . $CI->response->meta->properties . ', because devices default.';
                     stdlog($log);
                 } else {
                     # we're requesting a subresource - return all the subresource's properties
-                    $CI->response->properties = $CI->response->sub_resource . '.*';
-                    $log->message = 'Set properties to ' . $CI->response->properties . ', because devices sub_resource default.';
+                    $CI->response->meta->properties = $CI->response->meta->sub_resource . '.*';
+                    $log->message = 'Set properties to ' . $CI->response->meta->properties . ', because devices sub_resource default.';
                     stdlog($log);
                 }
             } else {
                 # we're requesting something that isn't a device (or a list of devices) - return everything
-                $CI->response->properties = '*';
-                $log->message = 'Set properties to ' . $CI->response->properties . ', because non-devices default.';
+                $CI->response->meta->properties = '*';
+                $log->message = 'Set properties to ' . $CI->response->meta->properties . ', because non-devices default.';
                 stdlog($log);
             }
         }
-        # perform some simple data cleansing
-        $CI->response->properties = str_replace(array('\'', '"', '(', ')'), '', $CI->response->properties);
 
-        $CI->response->internal->properties = '';
+        # perform some simple data cleansing
+        $CI->response->meta->properties = str_replace(array('\'', '"', '(', ')'), '', $CI->response->meta->properties);
+
+        $CI->response->meta->internal->properties = '';
         // create our internal properties list - this is what gets executed in SQL
-        if ($CI->response->properties != '*' and $CI->response->properties != $CI->response->sub_resource . '.*') {
-            $temp = explode(',', $CI->response->properties);
+        if ($CI->response->meta->properties != '*' and $CI->response->meta->properties != $CI->response->meta->sub_resource . '.*') {
+            $temp = explode(',', $CI->response->meta->properties);
             foreach ($temp as $property) {
                 if ($property == 'count') {
-                    $CI->response->internal->properties .= 'count(*) as `count`,';
+                    $CI->response->meta->internal->properties .= 'count(*) as `count`,';
                 } elseif ($property == 'system_id') {
-                    $CI->response->internal->properties .= 'system.id as `system_id`,';
+                    $CI->response->meta->internal->properties .= 'system.id as `system_id`,';
                 } else {
-                    $CI->response->internal->properties .= $property . ' AS `' . trim($property) . '`,';
+                    $CI->response->meta->internal->properties .= $property . ' AS `' . trim($property) . '`,';
                 }
             }
-            $CI->response->internal->properties = substr($CI->response->internal->properties, 0, -1);
+            $CI->response->meta->internal->properties = substr($CI->response->meta->internal->properties, 0, -1);
         } else {
-            $CI->response->internal->properties = $CI->response->properties;
+            $CI->response->meta->internal->properties = $CI->response->meta->properties;
         }
 
         # get the filter
         $filter = array();
-        $CI->response->filter = array();
-        $CI->response->query_string = urldecode($_SERVER['QUERY_STRING']);
-        if ($CI->response->query_string != '') {
+        $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
+        if ($CI->response->meta->query_string != '') {
             $reserved_words = ' properties limit sub_resource sub_resource_id action sort current offset format debug groupby query ';
             foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
                 $query = new stdClass();
@@ -619,15 +631,15 @@ if (! function_exists('inputRead')) {
                 }
 
                 if (strpos($reserved_words, ' '.$query->name.' ') === false and $query->name != '') {
-                    $CI->response->filter [] = $query;
+                    $CI->response->meta->filter [] = $query;
                 }
                 unset($query);
             }
         }
 
         if ($query = json_decode($CI->input->get('query'))) {
-            unset ($CI->response->filter);
-            $CI->response->filter = array();
+            unset ($CI->response->meta->filter);
+            $CI->response->meta->filter = array();
             while (count($query) > 0) {
                 $filter = new stdClass();
                 $filter->name = array_shift($query);
@@ -643,19 +655,21 @@ if (! function_exists('inputRead')) {
                     $filter->operator = '=';
                     $filter->value = $operator;
                 }
-                $CI->response->filter[] = $filter;
+                $CI->response->meta->filter[] = $filter;
                 unset($filter);
             }
         }
 
         $CI->response->links = new stdClass();
+        $CI->response->links->self = $CI->config->config['base_url'] . 'index.php/' . $CI->response->meta->collection;
+        if ($CI->response->meta->id != '') {
+            $CI->response->links->self .= '/' . $CI->response->meta->id;
+        }
         $CI->response->links->first = NULL;
         $CI->response->links->last = NULL;
         $CI->response->links->next = NULL;
         $CI->response->links->prev = NULL;
-
         $CI->response->errors = array();
-
         return;
     }
 }
