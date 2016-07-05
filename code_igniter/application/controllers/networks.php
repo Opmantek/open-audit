@@ -62,8 +62,8 @@ class networks extends MY_Controller
 
     public function _remap()
     {
-        if (!empty($this->response->action)) {
-            $this->{$this->response->action}();
+        if (!empty($this->response->meta->action)) {
+            $this->{$this->response->meta->action}();
         } else {
             $this->collection();
         }
@@ -73,17 +73,16 @@ class networks extends MY_Controller
     private function collection()
     {
         $this->response->data = $this->m_networks->collection();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
     private function read()
     {
-        if ($this->response->format == 'screen') {
-            $this->response->sub_resource = 'devices';
-        }
-        $this->response->data = $this->m_networks->read();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->sub_resource = 'devices';
+        #$this->response->data = $this->m_networks->read();
+        $this->m_networks->read();
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
@@ -106,8 +105,8 @@ class networks extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->response->id = $this->m_networks->create();
-        if (!empty($this->response->id)) {
+        $this->response->meta->id = $this->m_networks->create();
+        if (!empty($this->response->meta->id)) {
             redirect('/networks');
         } else {
             log_error('ERR-0009');
@@ -137,7 +136,7 @@ class networks extends MY_Controller
             exit();
         }
         $this->m_networks->update();
-        if ($this->response->format == 'json') {
+        if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
             redirect('networks');
@@ -153,34 +152,10 @@ class networks extends MY_Controller
             exit();
         }
         $this->m_networks->delete();
-        if ($this->response->format == 'json') {
+        if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
             redirect('networks');
         }
     }
-
-    # not implemented
-    private function execute()
-    {
-        // $this->response->format = 'json';
-        // $this->response->debug = true;
-        // output($this->response);
-    }
-
-    # not implemented
-    private function bulk_update_form()
-    {
-        // $this->response->format = 'json';
-        // $this->response->debug = true;
-        // $this->response->id = '';
-        // $temp_ids = array();
-        // foreach ($_POST['ids'] as $temp) {
-        //     $temp_ids[] = $temp;
-        // }
-        // $this->response->id = implode(',', $temp_ids);
-        // output($this->response);
-    }
-
-
 }

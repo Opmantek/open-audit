@@ -39,8 +39,8 @@ if (strpos($refine_link, '?') === false) {
 } else if (strrpos($refine_link, '&') !== strlen($refine_link)-1){
   $refine_link .= '&';
 }
-if (!empty($this->response->sub_resource_name)) {
-  $title = ' - ' . $this->response->sub_resource_name;
+if (!empty($this->response->meta->sub_resource_name)) {
+  $title = ' - ' . $this->response->meta->sub_resource_name;
 } else {
   $title = '';
 }
@@ -50,7 +50,7 @@ if (!empty($this->response->sub_resource_name)) {
   <div class="panel-heading">
     <h3 class="panel-title">
       <span class="text-left">Devices <?php echo $title ?></span>
-      <span class="pull-right"><?php echo $this->response->filtered . ' of ' . $this->response->total . ' results'; ?></span>
+      <span class="pull-right"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
     </h3>
   </div>
   <div class="panel-body">
@@ -66,10 +66,10 @@ if (!empty($this->response->sub_resource_name)) {
   </div>
 </div>
 <?php
-if (count($this->response->filter) > 0) {
+if (count($this->response->meta->filter) > 0) {
   echo '<div class="panel panel-default pull-left">';
   echo '<div class="panel-body">';
-  foreach ($this->response->filter as $item) {
+  foreach ($this->response->meta->filter as $item) {
     if ($item->operator == '=') {
       $label = 'label-success';
     } else if ($item->operator == '!=') {
@@ -100,7 +100,7 @@ if (!empty($this->response->data)) { ?>
         <thead>
           <tr>
 <?php
-      $properties = get_object_vars($this->response->data[0]);
+      $properties = get_object_vars($this->response->data[0]->attributes);
       foreach ($properties as $key => $value) {
         if (strpos($key, '.') !== false) {
           $key = substr($key, strpos($key, '.')+1);
@@ -137,8 +137,8 @@ if (!empty($this->response->data)) { ?>
 
     # grab the system_id if it exists
     $system_id = '';
-    if (!empty($item->{'system.id'})) {
-      $system_id = $item->{'system.id'};
+    if (!empty($item->attributes->{'system.id'})) {
+      $system_id = $item->attributes->{'system.id'};
     }
     if ($system_id == '' and !empty($item->id)) {
       $system_id = $item->id;
@@ -161,25 +161,26 @@ if (!empty($this->response->data)) { ?>
         continue;
       }
 
-      if (!empty($item->$property)) {
+      if (!empty($item->attributes->$property)) {
 
-        if ((strrpos($property, 'ip') === strlen($property)-2) and (!empty($item->{$property . '_padded'}))) {
-          echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->{$property . '_padded'}) . "</span>" . $item->$property . "</td>\n";
+        if ((strrpos($property, 'ip') === strlen($property)-2) and (!empty($item->attributes->{$property . '_padded'}))) {
+          echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
         
         
         } elseif ($property == 'id' or $property == 'system.id') {
-          echo "            <td><a href='devices/" . $item->$property . "'>" . $item->$property . "</a></td>\n";
+          #echo "            <td><a href='" . $item->links->self . "'>" . $item->attributes->$property . "</a></td>\n";
+          echo "<td><a href=" . htmlentities($item->links->self) . "><button type=\"button\" class=\"btn btn-sm btn-success\" aria-label=\"Left Align\">" . htmlentities($item->id) . "</button></a></td>";
         
         } elseif (strrpos($property, 'icon') === strlen($property)-4) {
-          echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->$property)."\" alt=\"".htmlentities($item->$property)."\"/></td>\n";
+          echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->attributes->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->attributes->$property)."\" alt=\"".htmlentities($item->attributes->$property)."\"/></td>\n";
         
         } else {
-          if (strlen($item->$property) > 50) {
-            $display = substr($item->$property, 0, 50) . '....';
+          if (strlen($item->attributes->$property) > 50) {
+            $display = substr($item->attributes->$property, 0, 50) . '....';
           } else {
-            $display = $item->$property;
+            $display = $item->attributes->$property;
           }
-          echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
+          echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
         }
       } else {
         echo "            <td></td>\n";

@@ -65,17 +65,21 @@ $(document).ready(function(){
         document.getElementById("toggle_link").style.display = "none";
         document.getElementById("submit_button").style.display = "inline";
     });
+});
 
+
+/* inline edit */
+$(document).ready(function(){
     $(document).on('click', '.edit_button', function(e){
         var action = $(this).attr("data-action");
-        var attribute = $(this).attr("value");
+        var attribute = $(this).attr("data-attribute");
         if (action == "edit") {
             var item = document.getElementById(attribute);
             $(item).attr("disabled", false);
             $(this).attr("class", "btn btn-danger edit_button");
             $(this).attr("data-action", "cancel");
             $(this).html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
-            $(this).parent().parent().append('<span id="submit_'+attribute+'" class="input-group-btn"><button class="btn btn-success edit_button" type="button" value="'+attribute+'" data-action="submit"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></span>');
+            $(this).parent().parent().append('<span id="submit_'+attribute+'" class="input-group-btn"><button class="btn btn-success edit_button" type="button" data-attribute="'+attribute+'" data-action="submit"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button></span>');
         }
         if (action == "cancel") {
             var item = document.getElementById(attribute);
@@ -89,21 +93,32 @@ $(document).ready(function(){
             var item = document.getElementById(attribute);
             var value = $(item).val();
             var edit_button = document.getElementById('edit_'+attribute);
-            var myObj = {};
-            /* myObj["id"] = <?php echo $data['system'][0]->id; ?>; */
-            myObj["id"] = system_id;
-            myObj[attribute] = value;
-            var json = JSON.stringify(myObj);
-            /* $.post( "<?php echo $data['system'][0]->id;?>", { "data": json }, 'json') */
-            $.post( system_id, { "data": json }, 'json')
-                .done(function( xhr ) {
-                    //alert( JSON.stringify(xhr) );
-                })
-               .fail(function(xhr) {
-                    returnData = xhr;
-                    responseText = JSON.parse(xhr.responseText);
-                    alert( responseText.error.code + "\n" + responseText.error.title + "\n" + responseText.error.detail );
-                });
+            var data = {};
+            data["data"] = {};
+            data["data"]["id"] = id;
+            data["data"]["type"] = collection;
+            data["data"]["attributes"] = {};
+            if (attribute.indexOf(".") == -1) {
+                data["data"]["attributes"][attribute] = value;
+            } else {
+                var attributes = attribute.split(".");
+                data["data"]["attributes"][attributes[0]] = {};
+                data["data"]["attributes"][attributes[0]][attributes[1]] = value;
+            }
+            data = JSON.stringify(data);
+            $.ajax({
+                type: "PATCH",
+                url: id,
+                contentType: "application/json",
+                data: {data},
+                success: function(data) {
+                    /* alert( 'success' ); */
+                },
+                error: function(data) {
+                    data = JSON.parse(data.responseText);
+                    alert( data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail );
+                }
+            });
             $(item).attr("disabled", true);
             $(edit_button).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
             $(edit_button).attr("data-action", "edit");

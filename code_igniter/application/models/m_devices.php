@@ -43,7 +43,7 @@ class M_devices extends MY_Model
     private function build_properties() {
         $CI = & get_instance();
         $properties = '';
-        $temp = explode(',', $CI->response->properties);
+        $temp = explode(',', $CI->response->meta->properties);
         for ($i=0; $i<count($temp); $i++) {
             if (strpos($temp[$i], '.') === false) {
                 $temp[$i] = 'system.'.trim($temp[$i]);
@@ -59,7 +59,7 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $reserved = ' properties limit sub_resource action sort current offset format ';
         $filter = '';
-        foreach ($CI->response->filter as $item) {
+        foreach ($CI->response->meta->filter as $item) {
             if (strpos(' '.$item->name.' ', $reserved) === false) {
                 if ($item->name == 'id') {
                     $item->name = 'system.id';
@@ -75,7 +75,7 @@ class M_devices extends MY_Model
             $temp->name = 'system.status';
             $temp->operator = '=';
             $temp->value = 'production';
-            $CI->response->filter[] = $temp;
+            $CI->response->meta->filter[] = $temp;
             unset($temp);
         }
         return($filter);
@@ -85,12 +85,12 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $reserved = ' properties limit sub_resource action sort current offset format ';
         $join = '';
-        if (count($CI->response->filter) > 0) {
-            foreach ($CI->response->filter as $item) {
+        if (count($CI->response->meta->filter) > 0) {
+            foreach ($CI->response->meta->filter as $item) {
                 if (strpos($item->name, '.') !== false) {
                     $table = substr($item->name, 0, strpos($item->name, '.'));
                     if ($table != 'system') {
-                        $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->current . '") ';
+                        $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
                     }
                 }
             }
@@ -103,7 +103,7 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $sql = "SELECT group_user_access_level as access_level FROM oa_group_user LEFT JOIN oa_group_sys ON (oa_group_user.group_id = oa_group_sys.group_id) WHERE oa_group_sys.system_id = ? AND oa_group_user.user_id = ? ORDER BY group_user_access_level DESC LIMIT 1";
         $sql = $this->clean_sql($sql);
-        $data = array(intval($CI->response->id), intval($CI->user->id));
+        $data = array(intval($CI->response->meta->id), intval($CI->user->id));
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         if (!isset($result[0]->access_level) or $result[0]->access_level == '0') {
@@ -117,7 +117,7 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $sql = "SELECT `org_id` FROM `system` WHERE system.id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array(intval($CI->response->id));
+        $data = array(intval($CI->response->meta->id));
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         if (!isset($result[0]->org_id)) {
@@ -139,38 +139,38 @@ class M_devices extends MY_Model
         $this->load->model('m_system');
         $sql = "SELECT * FROM `system` WHERE system.id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array($CI->response->id);
+        $data = array($CI->response->meta->id);
         $query = $this->db->query($sql, $data);
         $document['system'] = $query->result();
 
         // the credentials object
         $document['credentials'] = array();
-        $document['credentials'][0] = $this->m_system->get_credentials($CI->response->id);
+        $document['credentials'][0] = $this->m_system->get_credentials($CI->response->meta->id);
 
         // the location object
         $sql = "SELECT oa_location.id, oa_location.name, oa_location.type, IF(system.location_room != '', system.location_room, oa_location.room) as room, IF(system.location_suite != '', system.location_suite, oa_location.suite) as suite, IF(system.location_level != '', system.location_level, oa_location.level) as level, oa_location.address, oa_location.suburb, oa_location.city, oa_location.postcode, oa_location.state, oa_location.country, oa_location.phone, system.location_rack as rack, system.location_rack_position as rack_position, system.location_rack_size as rack_size FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array($CI->response->id);
+        $data = array($CI->response->meta->id);
         $query = $this->db->query($sql, $data);
         $document['location'] = $query->result();
 
         // the additional_fields object
         $sql = "SELECT additional_field.id as `additional_field.id`, additional_field.group_id AS `additional_field.group_id`, additional_field.name AS `additional_field.name`, additional_field.type AS `additional_field.type`, additional_field.values AS `additional_field.values`, additional_field.placement AS `additional_field.placement`, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
         $sql = $this->clean_sql($sql);
-        $data = array($CI->response->id);
+        $data = array($CI->response->meta->id);
         $query = $this->db->query($sql, $data);
         $document['additional_fields'] = $query->result();
 
         // the purchase object
         $sql = "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array($CI->response->id);
+        $data = array($CI->response->meta->id);
         $query = $this->db->query($sql, $data);
         $document['purchase'] = $query->result();
 
         $tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         foreach ($tables as $table) {
-            $result = $this->m_devices_components->read($CI->response->id, $CI->response->current, $table, $CI->response->filter, '*');
+            $result = $this->m_devices_components->read($CI->response->meta->id, $CI->response->meta->current, $table, $CI->response->meta->filter, '*');
             if (count($result) > 0) {
                 $document[$table] = $result;
             }
@@ -183,24 +183,24 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $filter = $this->build_filter();
 
-        if ($CI->response->sub_resource == 'location') {
+        if ($CI->response->meta->sub_resource == 'location') {
             $sql = "SELECT oa_location.id, oa_location.name, oa_location.type, IF(system.location_room != '', system.location_room, oa_location.room) as room, IF(system.location_suite != '', system.location_suite, oa_location.suite) as suite, IF(system.location_level != '', system.location_level, oa_location.level) as level, oa_location.address, oa_location.suburb, oa_location.city, oa_location.postcode, oa_location.state, oa_location.country, oa_location.phone, system.location_rack as rack, system.location_rack_position as rack_position, system.location_rack_size as rack_size FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ?";
-            $data = array($CI->response->id);
+            $data = array($CI->response->meta->id);
 
-        } elseif ($CI->response->sub_resource == 'purchase') {
+        } elseif ($CI->response->meta->sub_resource == 'purchase') {
             $sql = "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
-            $data = array($CI->response->id);
+            $data = array($CI->response->meta->id);
 
         } else {
-            $sql = "SELECT " . $CI->response->properties . " FROM `" . $CI->response->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.id = " . intval($CI->response->id) . " " . $filter . " " . $CI->response->internal->sort . " " . $CI->response->internal->limit;
+            $sql = "SELECT " . $CI->response->meta->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.id = " . intval($CI->response->meta->id) . " " . $filter . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
             $data = array($CI->user->id);
         }
         $sql = $this->clean_sql($sql);
         $temp_debug = $this->db->db_debug;
         $this->db->db_debug = FALSE;
         $query = $this->db->query($sql, $data);
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
+        if ($CI->response->meta->debug) {
+            $CI->response->meta->sql = $this->db->last_query();
         }
         $this->db->db_debug = $temp_debug;
         if ($this->db->_error_message()) {
@@ -234,8 +234,8 @@ class M_devices extends MY_Model
         // run the query
         $query = $this->db->query($sql, $data);
         // if we have debug set to TRUE, store the last run query
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
+        if ($CI->response->meta->debug) {
+            $CI->response->meta->sql = $this->db->last_query();
         }
         // restore the original setting to db_debug
         $this->db->db_debug = $temp_debug;
@@ -258,27 +258,25 @@ class M_devices extends MY_Model
         $join = $this->build_join();
         $properties = $this->build_properties();
 
-        if ($CI->response->sort == '') {
+        if ($CI->response->meta->sort == '') {
             if (stripos($properties, 'system.id') !== false) {
-                $CI->response->internal->sort = 'ORDER BY system.id';
+                $CI->response->meta->internal->sort = 'ORDER BY system.id';
             }
         }
-        $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->internal->groupby;
+        $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
         $result = $this->run_sql($sql, array());
         if (!empty($result[0]->total)) {
-            $CI->response->total = intval($result[0]->total);
+            $CI->response->meta->total = intval($result[0]->total);
         } else {
             $result = array();
             $this->count_data($result);
             return false;
         }
         unset($result);
-        $sql = "SELECT " . $CI->response->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->internal->groupby . " " . $CI->response->internal->sort . " " . $CI->response->internal->limit;
+        $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $this->count_data($result);
-        if (count($result) == 0) {
-            return false;
-        }
+        $result = $this->format_data($result, 'devices');
         return $result;
     }
 
@@ -286,7 +284,7 @@ class M_devices extends MY_Model
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
-        $sql = "SELECT " . $CI->response->internal->properties . " FROM `" . $CI->response->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->internal->groupby . " " . $CI->response->internal->sort . " " . $CI->response->internal->limit;
+        $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         return $result;
     }
@@ -297,7 +295,7 @@ class M_devices extends MY_Model
         $filter = $this->build_filter();
         $join = $this->build_join();
 
-        $sql = "SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->internal->groupby;
+        $sql = "SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
         $result = $this->run_sql($sql, array());
         foreach ($result as $temp) {
             $temp_ids[] = $temp->id;
@@ -305,10 +303,10 @@ class M_devices extends MY_Model
         $system_id_list = implode(',', $temp_ids);
         unset($temp, $temp_ids);
 
-        $sql = "SELECT * FROM oa_report WHERE report_id = " . intval($CI->response->sub_resource_id);
+        $sql = "SELECT * FROM oa_report WHERE report_id = " . intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $report = $result[0];
-        $CI->response->sub_resource_name = $report->report_name;
+        $CI->response->meta->sub_resource_name = $report->report_name;
                          
         # not how reports should be used                  
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id', '', $report->report_sql);
@@ -322,9 +320,9 @@ class M_devices extends MY_Model
         $report->report_sql = str_ireplace('system.id = oa_group_sys.system_id', 'system.id IN (' . $system_id_list . ')', $report->report_sql);
 
         $result = $this->run_sql($report->report_sql, array());
-        $CI->response->total = count($result);
-        if (!empty($CI->response->limit)) {
-            $result = array_splice($result, $CI->response->offset, $CI->response->limit);
+        $CI->response->meta->total = count($result);
+        if (!empty($CI->response->meta->limit)) {
+            $result = array_splice($result, $CI->response->meta->offset, $CI->response->meta->limit);
         }
         return($result);
     }
@@ -333,14 +331,13 @@ class M_devices extends MY_Model
     public function update()
     {
         $CI = & get_instance();
-        #print_r($CI->response->post_data); exit();
         $temp_debug = $this->db->db_debug;
         $this->db->db_debug = FALSE;
         $custom = 'n';
 
         # test to see if we're updating a field from additional_field_item table
         # these fields will be prefixed with custom_
-        foreach ($CI->response->post_data as $key => $value) {
+        foreach ($CI->response->meta->received_data as $key => $value) {
             if (stripos($key, 'custom_') !== false) {
                 $custom = 'y';
             }
@@ -348,7 +345,7 @@ class M_devices extends MY_Model
 
         # update the field in additional_field_item (or insert it)
         if ($custom == 'y') {
-            foreach ($CI->response->post_data as $key => $value) {
+            foreach ($CI->response->meta->received_data as $key => $value) {
                 if ($key != 'id') {
                     $field_name = str_replace('custom_', '', $key);
                     $field_value = $value;
@@ -379,14 +376,14 @@ class M_devices extends MY_Model
         # update a standard field in the system table
         if ($custom == 'n') {
             $fields = implode(' ', $this->db->list_fields('system'));
-            foreach ($CI->response->post_data as $key => $value) {
+            foreach ($CI->response->meta->received_data as $key => $value) {
                 if ($key != 'id' and stripos($fields, ' '.$key.' ') !== false) {
                     $sql = "/* m_devices::update */ " . "UPDATE system SET `" . $key . "` = ? WHERE id = ?";
                     $sql = $this->clean_sql($sql);
-                    $data = array("$value", intval($CI->response->id));
+                    $data = array("$value", intval($CI->response->meta->id));
                     $query = $this->db->query($sql, $data);
-                    if ($CI->response->debug) {
-                        $CI->response->sql = $this->db->last_query();
+                    if ($CI->response->meta->debug) {
+                        $CI->response->meta->sql = $this->db->last_query();
                     }
                     if ($this->db->_error_message()) {
                         log_error('ERR-0009', 'm_devices::update');

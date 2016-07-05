@@ -57,14 +57,14 @@
 			<?php
 	        foreach ($this->response->data as $item):
                 $edit_pic = '<a href="networks/'.intval($item->id).'?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a>';
-                $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->name) . '" aria-hidden="true"></span></button>';
+                $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->attributes->name) . '" aria-hidden="true"></span></button>';
 	            ?>
 			<tr>
-                <td><a href="networks/<?php echo htmlentities($item->id); ?>"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align"><?php echo htmlentities($item->id); ?></button></a></td>
-				<td><?php echo htmlentities($item->name)?></td>
-				<td><?php echo htmlentities($item->description)?></td>
-				<td><?php echo htmlentities($item->edited_by)?></td>
-				<td><?php echo htmlentities($item->edited_date)?></td>
+                <td><a href="<?php echo htmlentities($item->links->self); ?>"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align"><?php echo htmlentities($item->id); ?></button></a></td>
+				<td><?php echo htmlentities($item->attributes->name)?></td>
+				<td><?php echo htmlentities($item->attributes->description)?></td>
+				<td><?php echo htmlentities($item->attributes->edited_by)?></td>
+				<td><?php echo htmlentities($item->attributes->edited_date)?></td>
 				<td align='center'><?php echo $edit_pic?></td>
 				<td align='center'><?php echo $delete_pic?></td>
 			</tr>

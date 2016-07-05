@@ -43,7 +43,7 @@ class M_files extends MY_Model
     private function build_properties() {
         $CI = & get_instance();
         $properties = '';
-        $temp = explode(',', $CI->response->properties);
+        $temp = explode(',', $CI->response->meta->properties);
         for ($i=0; $i<count($temp); $i++) {
             $temp[$i] = trim($temp[$i]);
         }
@@ -55,7 +55,7 @@ class M_files extends MY_Model
         $CI = & get_instance();
         $reserved = ' properties limit sub_resource action sort current offset format ';
         $filter = '';
-        foreach ($CI->response->filter as $item) {
+        foreach ($CI->response->meta->filter as $item) {
             if (strpos(' '.$item->name.' ', $reserved) === false) {
                 if (!empty($item->name)) {
                     if ($filter != '') {
@@ -75,7 +75,7 @@ class M_files extends MY_Model
         $CI = & get_instance();
         $return_data = array();
         $sql = "SELECT * FROM files WHERE id = ?";
-        $data = array(intval($CI->response->id));
+        $data = array(intval($CI->response->meta->id));
         $result = $this->run_sql($sql, $data);
         $return_data['files'] = $result;
         return($return_data);
@@ -86,14 +86,14 @@ class M_files extends MY_Model
         $CI = & get_instance();
         # check to see if we already have a file with the same name
         $sql = "SELECT COUNT(id) AS count FROM `files` WHERE `path` = ?";
-        $data = array($CI->response->post_data['path']);
+        $data = array($CI->response->meta->received_data['path']);
         $result = $this->run_sql($sql, $data);
         if (intval($result[0]->count) != 0) {
             log_error('ERR-0010', 'm_files::create_file');
             return false;
         }
         $sql = "INSERT INTO `files` VALUES (NULL, ?, ?, ?, ?, NOW())";
-        $data = array($CI->response->post_data['org_id'], $CI->response->post_data['path'], $CI->response->post_data['description'], $CI->user->full_name);
+        $data = array($CI->response->meta->received_data['org_id'], $CI->response->meta->received_data['path'], $CI->response->meta->received_data['description'], $CI->user->full_name);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
@@ -102,14 +102,14 @@ class M_files extends MY_Model
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
-        $CI->response->internal->filter = $filter;
+        $CI->response->meta->internal->filter = $filter;
         $properties = $this->build_properties();
         # get the total number
-        $sql = "SELECT count(*) AS count FROM `files` " . $filter . " " . $CI->response->internal->groupby;
+        $sql = "SELECT count(*) AS count FROM `files` " . $filter . " " . $CI->response->meta->internal->groupby;
         $result = $this->run_sql($sql, array());
-        $CI->response->total = intval($result[0]->count);
+        $CI->response->meta->total = intval($result[0]->count);
 
-        $sql = "SELECT " . $CI->response->internal->properties . " FROM files" . $filter . " " . $CI->response->internal->groupby . " " . $CI->response->internal->sort . " " . $CI->response->internal->limit;
+        $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM files" . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         return $result;
     }
@@ -119,7 +119,7 @@ class M_files extends MY_Model
         $CI = & get_instance();
         $sql = '';
         $fields = ' path description ';
-        foreach ($CI->response->post_data as $key => $value) {
+        foreach ($CI->response->meta->received_data as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
                     $sql = "SET `" . $key . "` = '" . $value . "'";
@@ -128,7 +128,7 @@ class M_files extends MY_Model
                 }
             }
         }
-        $sql = "UPDATE `files` " . $sql . ", `edited_by` = '" . $CI->user->full_name . "', `edited_date` = NOW() WHERE id = " . intval($CI->response->id);
+        $sql = "UPDATE `files` " . $sql . ", `edited_by` = '" . $CI->user->full_name . "', `edited_date` = NOW() WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql, array());
         return;
     }
@@ -137,7 +137,7 @@ class M_files extends MY_Model
     {
         $CI = & get_instance();
         $sql = "DELETE FROM `files` WHERE id = ?";
-        $data = array(intval($CI->response->id));
+        $data = array(intval($CI->response->meta->id));
         $this->run_sql($sql, $data);
         return;
     }
@@ -160,8 +160,8 @@ class M_files extends MY_Model
         // run the query
         $query = $this->db->query($sql, $data);
         // if we have debug set to TRUE, store the last run query
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
+        if ($CI->response->meta->debug) {
+            $CI->response->meta->sql = $this->db->last_query();
         }
         // restore the origin setting to db_debug
         $this->db->db_debug = $temp_debug;

@@ -62,8 +62,8 @@ class scripts extends MY_Controller
 
     public function _remap()
     {
-        if (!empty($this->response->action)) {
-            $this->{$this->response->action}();
+        if (!empty($this->response->meta->action)) {
+            $this->{$this->response->meta->action}();
         } else {
             $this->collection();
         }
@@ -73,14 +73,14 @@ class scripts extends MY_Controller
     private function collection()
     {
         $this->response->data = $this->m_scripts->collection();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
     private function read()
     {
         $this->response->data = $this->m_scripts->read();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 

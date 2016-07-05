@@ -52,11 +52,11 @@ include "v_lang.php";
     <!-- Open-AudIT specific items -->
     <script>
 <?php
-        if (!empty($data['system'][0]->id)) {
-            echo "        var system_id = '" . $data['system'][0]->id . "';\n";
+        if (!empty($this->response->meta->id)) {
+            echo "        var id = '" . $this->response->meta->id . "';\n";
         }
-        if (!empty($this->response->collection)) {
-            echo "        var collection = '" . $this->response->collection . "';\n";
+        if (!empty($this->response->meta->collection)) {
+            echo "        var collection = '" . $this->response->meta->collection . "';\n";
         }
 ?>
         var web_folder = '<?php echo $this->config->config['oa_web_folder']; ?>';
@@ -66,10 +66,8 @@ include "v_lang.php";
 </head>
 <body>
 <div class="container-fluid">
-<?php include "include_header.php"; ?>
-</div>
-
-<?php
+<?php 
+include "include_header.php";
 if (!empty($this->response->error)) {
   echo '</div></div><div class="alert alert-danger" role="alert">' . $this->response->error->title . '</div>';
   echo "<pre>\n";
@@ -79,14 +77,12 @@ if (!empty($this->response->error)) {
     include($include.'.php');
 }
 ?>
-
 </div>
-
 <div id="json_response">
     <!--
     <?php unset($this->response->data); ?>
-    <?php unset($this->response->user); ?>
-    <?php print_r(json_encode($this->response, JSON_PRETTY_PRINT)); ?>
+    <?php unset($this->response->meta->user); ?>
+    <?php print_r(json_encode($this->response->meta, JSON_PRETTY_PRINT)); ?>
     <?php echo "\n"; ?>
     -->
 </div>

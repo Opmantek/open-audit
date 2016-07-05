@@ -62,7 +62,7 @@ class files extends MY_Controller
 
     public function _remap()
     {
-        $action = $this->response->action;
+        $action = $this->response->meta->action;
         if ($action != '') {
             $this->$action();
         } else {
@@ -74,14 +74,14 @@ class files extends MY_Controller
     private function collection()
     {
         $this->response->data = $this->m_files->collection();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
     private function read()
     {
         $this->response->data = $this->m_files->read();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
@@ -93,8 +93,8 @@ class files extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->response->id = $this->m_files->create();
-        if (!empty($this->response->id)) {
+        $this->response->meta->id = $this->m_files->create();
+        if (!empty($this->response->meta->id)) {
             redirect('/files');
         } else {
             log_error('ERR-0009');
@@ -112,7 +112,7 @@ class files extends MY_Controller
             exit();
         }
         $this->m_files->update();
-        if ($this->response->format == 'json') {
+        if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
             
@@ -128,7 +128,7 @@ class files extends MY_Controller
             exit();
         }
         $this->m_files->delete();
-        if ($this->response->format == 'json') {
+        if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
             redirect('files');

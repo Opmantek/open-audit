@@ -153,6 +153,12 @@ var modal_content_image = "";
                 </ul>
             </li>
 
+            <li><a href='javascript:void(0)'><?php echo __('Credentials')?></a>
+                <ul>
+                    <li><a href='<?php echo $oa_web_index?>/credentials'><?php echo __('View Credentials')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/credentials?action=create'><?php echo __('Add Credential Set')?></a></li>
+                </ul>
+            </li>
             <li><a href='javascript:void(0)'><?php echo __('Database')?></a>
                 <ul>
                     <!--

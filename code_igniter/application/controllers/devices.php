@@ -55,17 +55,16 @@ class devices extends MY_Controller
         $this->load->model('m_devices');
         $this->load->model('m_orgs');
 
-        $this->response = new stdClass();
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
 
-        if ($this->response->id != '') {
+        if ($this->response->meta->id != '') {
             $access_level = $this->m_devices->get_user_device_org_access();
             if ($access_level < 1) {
                 // we should determine if the device does actually exist or not
                 // then we can throw the correct status code of 404 or 403
                 $sql = "SELECT system.id FROM system WHERE system.id = ?";
-                $data = array($this->response->id);
+                $data = array($this->response->meta->id);
                 $query = $this->db->query($sql, $data);
                 $result = $query->result();
                 if (count($result) == 0) {
@@ -73,7 +72,7 @@ class devices extends MY_Controller
                 } else {
                     $this->response->errors[] = getError('ERR-0008');
                 }
-                $this->response->header = $this->response->errors[0]->status;
+                $this->response->meta->header = $this->response->errors[0]->status;
                 output($this->response);
                 exit();
             }
@@ -86,8 +85,8 @@ class devices extends MY_Controller
 
     public function _remap()
     {
-        if (!empty($this->response->action)) {
-            $this->{$this->response->action}();
+        if (!empty($this->response->meta->action)) {
+            $this->{$this->response->meta->action}();
         } else {
             $this->collection();
         }
@@ -96,28 +95,28 @@ class devices extends MY_Controller
 
     private function collection()
     {
-        if ($this->response->sub_resource != '' and $this->response->sub_resource != 'report') {
+        if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource != 'report') {
             $this->response->data = $this->m_devices->collection_sub_resource();
 
-        } else if ($this->response->sub_resource != '' and $this->response->sub_resource == 'report') {
+        } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'report') {
             $this->response->data = $this->m_devices->report();
 
         } else {
             $this->response->data = $this->m_devices->collection();
         }
 
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
     private function read()
     {
-        if ($this->response->sub_resource != '') {
+        if ($this->response->meta->sub_resource != '') {
             $this->response->data = $this->m_devices->read_sub_resource();
         } else {
             $this->response->data = $this->m_devices->read();
         }
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
@@ -135,47 +134,44 @@ class devices extends MY_Controller
 
 
 
-
-
-
     private function create_form()
     {
-        $this->response->format = 'json';
-        $this->response->debug = true;
+        $this->response->meta->format = 'json';
+        $this->response->meta->debug = true;
         output($this->response);
     }
 
     private function execute()
     {
-        $this->response->format = 'json';
-        $this->response->debug = true;
+        $this->response->meta->format = 'json';
+        $this->response->meta->debug = true;
         output($this->response);
     }
 
     private function update_form()
     {
-        $this->response->format = 'json';
-        $this->response->debug = true;
+        $this->response->meta->format = 'json';
+        $this->response->meta->debug = true;
         output($this->response);
     }
 
     private function bulk_update_form()
     {
-        $this->response->format = 'json';
-        $this->response->debug = true;
-        $this->response->id = '';
+        $this->response->meta->format = 'json';
+        $this->response->meta->debug = true;
+        $this->response->meta->id = '';
         $temp_ids = array();
         foreach ($_POST['ids'] as $temp) {
             $temp_ids[] = $temp;
         }
-        $this->response->id = implode(',', $temp_ids);
+        $this->response->meta->id = implode(',', $temp_ids);
         output($this->response);
     }
 
     private function delete()
     {
-        $this->response->format = 'json';
-        $this->response->debug = true;
+        $this->response->meta->format = 'json';
+        $this->response->meta->debug = true;
         output($this->response);
     }
 }

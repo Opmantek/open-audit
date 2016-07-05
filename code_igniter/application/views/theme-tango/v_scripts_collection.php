@@ -62,9 +62,9 @@ if (!empty($this->response->error)) {
 	<tbody>
 		<?php
         foreach ($this->response->data as $item):
-                $edit_pic = "<a href=\"scripts/".intval($item->id)."?action=edit\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
+                $edit_pic = "<a href=\"" . $item->links->self ."?action=edit\"><img src='".$oa_theme_images."/16_edit.png' alt='' title='' style='width:16'/></a>";
 
-            if ($item->name != $item->based_on) {
+            if ($item->attributes->name != $item->attributes->based_on) {
                 $delete_pic = "<a href=\"#\" onclick=\"return confirm('Are you sure?');\" class=\"delete_link\" value=\"".intval($item->id)."\"><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16' /></a>";
                 
                 $delete_pic = "<a href='#' class='delete_link' value='".intval($item->id)."' id='delete_link_".intval($item->id)."' name='delete_link_".intval($item->id)."'><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16' /></a>";
@@ -73,14 +73,14 @@ if (!empty($this->response->error)) {
             }
             ?>
 		<tr>
-            <td><a href="scripts/<?php echo intval($item->id)?>"><?php echo intval($item->id)?></td>
-			<td><?php echo htmlentities($item->name); ?></td>
-            <td><?php echo htmlentities($item->description)?></td>
-            <td><?php echo htmlentities($item->based_on)?></td>
-			<td><?php echo htmlentities($item->edited_by)?></td>
-			<td><?php echo htmlentities($item->edited_date)?></td>
-            <td align='center'><a href="scripts/<?php echo intval($item->id)?>?action=execute"><img src="<?php echo $oa_theme_images; ?>/16_go-down.png" /></td>
-            <td align='center'><a href="scripts/<?php echo intval($item->id)?>"><img src="<?php echo $oa_theme_images; ?>/16_find.png" /></td>
+            <td><a href="<?php echo $item->links->self; ?>"><?php echo intval($item->id)?></td>
+			<td><?php echo htmlentities($item->attributes->name); ?></td>
+            <td><?php echo htmlentities($item->attributes->description)?></td>
+            <td><?php echo htmlentities($item->attributes->based_on)?></td>
+			<td><?php echo htmlentities($item->attributes->edited_by)?></td>
+			<td><?php echo htmlentities($item->attributes->edited_date)?></td>
+            <td align='center'><a href="<?php echo $item->links->self; ?>?action=execute"><img src="<?php echo $oa_theme_images; ?>/16_go-down.png" /></td>
+            <td align='center'><a href="<?php echo $item->links->self; ?>"><img src="<?php echo $oa_theme_images; ?>/16_find.png" /></td>
 			<td align='center'><?php echo $edit_pic?></td>
 			<td align='center'><?php echo $delete_pic?></td>
 		</tr>
