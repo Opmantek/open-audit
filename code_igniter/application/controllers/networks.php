@@ -80,8 +80,8 @@ class networks extends MY_Controller
     private function read()
     {
         $this->response->meta->sub_resource = 'devices';
-        #$this->response->data = $this->m_networks->read();
-        $this->m_networks->read();
+        $this->response->data = $this->m_networks->read();
+        $this->response->included = $this->response->networks->sub_resource();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
@@ -123,7 +123,10 @@ class networks extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->meta->sub_resource = 'devices';
         $this->response->data = $this->m_networks->read();
+        $this->response->included = $this->response->networks->sub_resource();
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
