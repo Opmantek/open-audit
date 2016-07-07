@@ -49,11 +49,21 @@ class MY_Model extends CI_Model
             # TODO - thorw an error here
             return false;
         }
+        if (empty($type)) {
+            return false;
+        }
         $return = array();
+        if (strpos($type, '/') !== false) {
+            $temp = explode('/', $type);
+            $link = $type;
+            $type = $temp[count($temp)-1];
+        } else {
+            $link = $type;
+        }
         foreach ($result as $entry) {
             $item = new stdClass();
             $item->id = '';
-            if (!empty($entry->id)) {
+            if (isset($entry->id) and $entry->id != '') {
                 $item->id = intval($entry->id);
             } else if (!empty($entry->{'system.id'})) {
                 $item->id = intval($entry->{'system.id'});
@@ -61,9 +71,9 @@ class MY_Model extends CI_Model
                 $item->id = intval($entry->{$type.".id"});
             }
             $item->type = $type;
-            $item->links = new stdClass();
-            $item->links->self = $this->config->config['base_url'] . 'index.php/' . $type . '/' . $item->id;
             $item->attributes = $entry;
+            $item->links = new stdClass();
+            $item->links->self = $this->config->config['base_url'] . 'index.php/' . $link . '/' . $item->id;
             $return[] = $item;
             unset($item);
         }
@@ -131,5 +141,40 @@ class MY_Model extends CI_Model
         $sql = preg_replace('!\s+!', ' ', $sql);
         $sql = '/* ' . $model . '::' . $function .' */ ' . $sql;
         return $sql;
+    }
+
+    public function run_sql($sql, $data = array())
+    {
+        $CI = & get_instance();
+        if ($sql == '') {
+            return;
+        }
+        $trace = debug_backtrace();
+        $caller = $trace[1];
+        // clean our SQL (usually adding the running model, etc)
+        $sql = $this->clean_sql($sql);
+        // store the current setting of db_debug
+        $temp_debug = $this->db->db_debug;
+        // set the db_debug setting to FALSE - this prevents the default CI error page and allows us
+        // to output a nice formatted page with the $error object
+        $this->db->db_debug = FALSE;
+        // run the query
+        $query = $this->db->query($sql, $data);
+        // if we have debug set to TRUE, store the last run query
+        if ($CI->response->meta->debug) {
+            $CI->response->meta->sql = $this->db->last_query();
+        }
+        // restore the origin setting to db_debug
+        $this->db->db_debug = $temp_debug;
+        // do we have an error?
+        if ($this->db->_error_message()) {
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
+            $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+            return false;
+        }
+        // no error, so get the result
+        $result = $query->result();
+        // return what we have
+        return ($result);
     }
 }
