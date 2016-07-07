@@ -131,6 +131,7 @@ class M_devices_components extends MY_Model
             $data = array($id);
         }
         
+        $result = false;
         if ($sql != '') {
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
@@ -143,11 +144,9 @@ class M_devices_components extends MY_Model
                 $result = (string)$temp_result;
                 unset($temp_result);
             }
-            return($result);
-        } else {
-            return;
         }
-
+        $result = $this->format_data($result, 'devices/' . $id . '/' . $table);
+        return($result);
     }
 
     public function match_columns($table)

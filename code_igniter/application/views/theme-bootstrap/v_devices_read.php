@@ -34,7 +34,21 @@
  */
 include(str_replace('views/theme-bootstrap/v_devices_read.php', 'controllers/include_device_types.php', __FILE__));
 
-if (strtolower($data['system'][0]->os_group) == 'windows') {
+# put our linked and data JSON objects into the $data array
+# ensure each JSON include is in it's own $type key in the $data array
+unset($data);
+$data = array();
+$data['system'] = $this->response->data[0]->attributes;
+foreach ($this->response->included as $item) {
+  $data[$item->type][] = $item->attributes;
+}
+if (empty($data['additional_fields'])) {
+  $data['additional_fields'] = array();
+}
+
+#echo "<pre>\n"; print_r($data); exit();
+
+if (strtolower($data['system']->os_group) == 'windows') {
     $attributes['software'] = array('name' => 'Name', 'version' => 'Version', 'installed_on' => 'Installed On', 'installed_by' => 'Installed By', 'first_seen' => 'First Seen', 'location' => 'Location', 'type' => 'Type');
     $attributes['service'] = array('name' => 'Name', 'description' => 'Description', 'executable' => 'Executable', 'user' => 'User', 'start_mode' => 'Start Mode', 'state' => 'State');
     $attributes['disk'] = array('manufacturer' => 'Manufacturer', 'model' => 'Model', 'serial' => 'Serial', 'hard_drive_index' => 'Index', 'interface_type' => 'Interface', 'partition_count' => 'Partitions', 'size' => 'Size', 'status' => 'Status', 'firmware' => 'Firmware');
@@ -86,7 +100,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
         $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'partition', 'processor', 'san', 'sound', 'video');
         $display_hardware = false;
         foreach ($hardware as $item) {
-            if (isset($data[$item])) {
+            if (!empty($data[$item])) {
                 $display_hardware = true;
             }
         }
@@ -209,16 +223,16 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
         <h3 class="panel-title">Device Details</h3>
     </div>
     <div class="panel-body">
-        <form class="form-horizontal" method="post" action="../groups" name="form_summary" id="form_summary">
+        <form class="form-horizontal" name="form_summary" id="form_summary">
             <fieldset>
                 <div class="row">
                     <div class="col-md-5">
                         <div class="form-group">
                             <label for="name" class="col-sm-4 control-label"><?php echo __('Name')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="name" name="name" value="<?php echo $data['system'][0]->name; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="name" name="name" value="<?php echo $data['system']->name; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" value="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -226,18 +240,18 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <div class="form-group">
                             <label for="hostname" class="col-sm-4 control-label"><?php echo __('Hostame')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="hostname" name="hostname" value="<?php echo $data['system'][0]->hostname; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="hostname" name="hostname" value="<?php echo $data['system']->hostname; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_hostname" data-action="edit" class="btn btn-default edit_button" type="button" value="hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="domain" class="col-sm-4 control-label"><?php echo __('Domain')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="domain" name="domain" value="<?php echo $data['system'][0]->domain; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="domain" name="domain" value="<?php echo $data['system']->domain; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" value="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -245,27 +259,27 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <div class="form-group">
                             <label for="dns_hostname" class="col-sm-4 control-label"><?php echo __('DNS Hostame')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="dns_hostname" name="dns_hostname" value="<?php echo $data['system'][0]->dns_hostname; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="dns_hostname" name="dns_hostname" value="<?php echo $data['system']->dns_hostname; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_dns_hostname" data-action="edit" class="btn btn-default edit_button" type="button" value="dns_hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_dns_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('DNS Domain')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="dns_domain" name="dns_domain" value="<?php echo $data['system'][0]->dns_domain; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="dns_domain" name="dns_domain" value="<?php echo $data['system']->dns_domain; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_dns_domain" data-action="edit" class="btn btn-default edit_button" type="button" value="dns_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_dns_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('FQDN')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="fqdn" name="fqdn" value="<?php echo $data['system'][0]->fqdn; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="fqdn" name="fqdn" value="<?php echo $data['system']->fqdn; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_fqdn" data-action="edit" class="btn btn-default edit_button" type="button" value="fqdn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_fqdn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="fqdn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -273,9 +287,9 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <div class="form-group">
                             <label for="ip" class="col-sm-4 control-label"><?php echo __('IP')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="ip" name="ip" value="<?php echo $data['system'][0]->ip; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="ip" name="ip" value="<?php echo $data['system']->ip; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_ip" data-action="edit" class="btn btn-default edit_button" type="button" value="ip"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_ip" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="ip"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -286,7 +300,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 <select id="type" class="form-control" disabled>
                                 <?php
                                 foreach ($device_types as $key => $value) {
-                                    if ($key == $data['system'][0]->type) {
+                                    if ($key == $data['system']->type) {
                                         $selected = " selected";
                                     } else {
                                         $selected = "";
@@ -298,12 +312,12 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 ?>
                                 
                                 </select>
-                                <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" value="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
 
                         <?php
-                        if ($data['system'][0]->type == 'computer') {
+                        if ($data['system']->type == 'computer') {
                         ?>
                         <div class="form-group">
                             <label for="class" class="col-sm-4 control-label"><?php echo __('Class')?></label>
@@ -311,7 +325,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 <select id="class" class="form-control" disabled>
                                 <?php
                                 foreach ($device_class as $key => $value) {
-                                    if ($key == $data['system'][0]->class) {
+                                    if ($key == $data['system']->class) {
                                         $selected = " selected";
                                     } else {
                                         $selected = "";
@@ -320,7 +334,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 }
                                 ?>
                                 </select>
-                                <span class="input-group-btn"><button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" value="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span class="input-group-btn"><button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
                         <?php
@@ -330,9 +344,9 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <div class="form-group">
                             <label for="function" class="col-sm-4 control-label"><?php echo __('Function')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="function" name="function" value="<?php echo $data['system'][0]->function; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="function" name="function" value="<?php echo $data['system']->function; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_function" data-action="edit" class="btn btn-default edit_button" type="button" value="function"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_function" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="function"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -344,7 +358,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 <select id="environment" class="form-control" disabled>
                                 <?php
                                 foreach ($device_environment as $key => $value) {
-                                    if ($key == $data['system'][0]->environment) {
+                                    if ($key == $data['system']->environment) {
                                         $selected = " selected";
                                     } else {
                                         $selected = "";
@@ -353,7 +367,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 }
                                 ?>
                                 </select>
-                                <span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" value="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
 
@@ -363,7 +377,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 <select id="status" class="form-control" disabled>
                                 <?php
                                 foreach ($device_status as $key => $value) {
-                                    if ($key == $data['system'][0]->status) {
+                                    if ($key == $data['system']->status) {
                                         $selected = " selected";
                                     } else {
                                         $selected = "";
@@ -374,16 +388,16 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 }
                                 ?>
                                 </select>
-                                <span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" value="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="description" name="description" value="<?php echo $data['system'][0]->description; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="description" name="description" value="<?php echo $data['system']->description; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" value="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -391,9 +405,9 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <div class="form-group">
                             <label for="os_group" class="col-sm-4 control-label"><?php echo __('OS Group')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="os_group" name="os_group" value="<?php echo $data['system'][0]->os_group; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="os_group" name="os_group" value="<?php echo $data['system']->os_group; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_os_group" data-action="edit" class="btn btn-default edit_button" type="button" value="os_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_os_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -401,9 +415,9 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <div class="form-group">
                             <label for="os_family" class="col-sm-4 control-label"><?php echo __('OS Family')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="os_family" name="os_family" value="<?php echo $data['system'][0]->os_family; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="os_family" name="os_family" value="<?php echo $data['system']->os_family; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_os_family" data-action="edit" class="btn btn-default edit_button" type="button" value="os_family"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_os_family" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_family"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -411,9 +425,9 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <div class="form-group">
                             <label for="os_name" class="col-sm-4 control-label"><?php echo __('OS Name')?></label>
                             <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="os_name" name="os_name" value="<?php echo $data['system'][0]->os_name; ?>">
+                              <input disabled type="text" class="form-control" placeholder="" id="os_name" name="os_name" value="<?php echo $data['system']->os_name; ?>">
                               <span class="input-group-btn">
-                                <button id="edit_os_name" data-action="edit" class="btn btn-default edit_button" type="button" value="os_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_os_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -424,48 +438,39 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <div class="form-group">
                             <label for="manufacturer" class="col-sm-4 control-label"><?php echo __('Manufacturer')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="manufacturer" placeholder="" value="<?php echo $data['system'][0]->manufacturer; ?>" disabled>
+                                <input type="text" class="form-control" id="manufacturer" placeholder="" value="<?php echo $data['system']->manufacturer; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_manufacturer" data-action="edit" class="btn btn-default edit_button" type="button" value="manufacturer"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_manufacturer" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="manufacturer"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="model" class="col-sm-4 control-label"><?php echo __('Model')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="model" placeholder="" value="<?php echo $data['system'][0]->model; ?>" disabled>
+                                <input type="text" class="form-control" id="model" placeholder="" value="<?php echo $data['system']->model; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_model" data-action="edit" class="btn btn-default edit_button" type="button" value="model"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_model" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="model"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="serial" class="col-sm-4 control-label"><?php echo __('Serial')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="serial" placeholder="" value="<?php echo $data['system'][0]->serial; ?>" disabled>
+                                <input type="text" class="form-control" id="serial" placeholder="" value="<?php echo $data['system']->serial; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_serial" data-action="edit" class="btn btn-default edit_button" type="button" value="serial"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="asset_number" class="col-sm-4 control-label"><?php echo __('Asset Number')?></label>
-                            <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="asset_number" placeholder="" value="<?php echo $data['system'][0]->asset_number; ?>" disabled>
-                              <span class="input-group-btn">
-                                <button id="edit_asset_number" data-action="edit" class="btn btn-default edit_button" type="button" value="asset_number"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_serial" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="serial"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
                         <?php
-                        if ($data['system'][0]->type == 'computer') {
+                        if ($data['system']->type == 'computer') {
                         ?>
                         <div class="form-group">
                             <label for="form_factor" class="col-sm-4 control-label"><?php echo __('Form Factor')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="form_factor" placeholder="" value="<?php echo $data['system'][0]->form_factor; ?>" disabled>
+                                <input type="text" class="form-control" id="form_factor" placeholder="" value="<?php echo $data['system']->form_factor; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_form_factor" data-action="edit" class="btn btn-default edit_button" type="button" value="form_factor"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_form_factor" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="form_factor"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -476,10 +481,10 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <label for="uptime" class="col-sm-4 control-label"><?php echo __('Uptime')?></label>
                             <div class="col-sm-8 input-group">
                                 <?php
-                                if (!isset($data['system'][0]->uptime) or $data['system'][0]->uptime == '') {
+                                if (!isset($data['system']->uptime) or $data['system']->uptime == '') {
                                     $uptime = '';
                                 } else {
-                                    $uptime = intval($data['system'][0]->uptime/ 86400) . ' days, ' . gmdate("H:i:s", $data['system'][0]->uptime);
+                                    $uptime = intval($data['system']->uptime/ 86400) . ' days, ' . gmdate("H:i:s", $data['system']->uptime);
                                 }
                                 ?>
                                 <input type="text" class="form-control" id="uptime" placeholder="" value="<?php echo $uptime; ?>" readonly>
@@ -489,30 +494,30 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <div class="form-group">
                             <label for="snmp_oid" class="col-sm-4 control-label"><?php echo __('SNMP OID')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="snmp_oid" placeholder="" value="<?php echo $data['system'][0]->snmp_oid; ?>" readonly>
+                                <input type="text" class="form-control" id="snmp_oid" placeholder="" value="<?php echo $data['system']->snmp_oid; ?>" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="last_seen" class="col-sm-4 control-label"><?php echo __('Last Seen On')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="last_seen" placeholder="" value="<?php echo $data['system'][0]->last_seen; ?>" readonly>
+                                <input type="text" class="form-control" id="last_seen" placeholder="" value="<?php echo $data['system']->last_seen; ?>" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="last_seen_by" class="col-sm-4 control-label"><?php echo __('Last Seen By')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="last_seen_by" placeholder="" value="<?php echo $data['system'][0]->last_seen_by; ?>" readonly>
+                                <input type="text" class="form-control" id="last_seen_by" placeholder="" value="<?php echo $data['system']->last_seen_by; ?>" readonly>
                             </div>
                         </div>
                         <?php
-                        if ($data['system'][0]->type == 'computer') {
+                        if ($data['system']->type == 'computer') {
                         ?>
                         <div class="form-group">
                             <label for="cluster_name" class="col-sm-4 control-label"><?php echo __('Cluster Name')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="cluster_name" placeholder="" value="<?php echo $data['system'][0]->cluster_name; ?>" disabled>
+                                <input type="text" class="form-control" id="cluster_name" placeholder="" value="<?php echo $data['system']->cluster_name; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_cluster_name" data-action="edit" class="btn btn-default edit_button" type="button" value="cluster_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_cluster_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="cluster_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -520,23 +525,23 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         }
                         ?>
                         <?php
-                        if (strtolower($data['system'][0]->form_factor) == 'virtual') {
+                        if (strtolower($data['system']->form_factor) == 'virtual') {
                         ?>
                         <div class="form-group">
                             <label for="vm_host" class="col-sm-4 control-label"><?php echo __('VM Host')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="vm_host" placeholder="" value="<?php #echo $data['system'][0]->vm_server_name; ?>" disabled>
+                                <input type="text" class="form-control" id="vm_host" placeholder="" value="<?php #echo $data['system']->vm_server_name; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_vm_host" data-action="edit" class="btn btn-default edit_button" type="button" value="vm_host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_vm_host" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="vm_group" class="col-sm-4 control-label"><?php echo __('VM Group')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="vm_group" placeholder="" value="<?php echo $data['system'][0]->vm_group; ?>" disabled>
+                                <input type="text" class="form-control" id="vm_group" placeholder="" value="<?php echo $data['system']->vm_group; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_vm_group" data-action="edit" class="btn btn-default edit_button" type="button" value="vm_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_vm_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
@@ -544,18 +549,18 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         }
                         ?>
                         <?php
-                        if (stripos($data['system'][0]->type, 'printer') !== false) {
+                        if (stripos($data['system']->type, 'printer') !== false) {
                         ?>
                         <div class="form-group">
                             <label for="printer_duplex" class="col-sm-4 control-label"><?php echo __('Printer Duplex')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="printer_duplex" placeholder="" value="<?php echo $data['system'][0]->printer_duplex; ?>" disabled>
+                                <input type="text" class="form-control" id="printer_duplex" placeholder="" value="<?php echo $data['system']->printer_duplex; ?>" disabled>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="printer_colour" class="col-sm-4 control-label"><?php echo __('Printer Colour')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="printer_colour" placeholder="" value="<?php echo $data['system'][0]->printer_color; ?>" disabled>
+                                <input type="text" class="form-control" id="printer_colour" placeholder="" value="<?php echo $data['system']->printer_color; ?>" disabled>
                             </div>
                         </div>
                         <?php
@@ -567,7 +572,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                             <div class="col-sm-8 input-group">
                                 <select id="oae_manage" class="form-control" disabled>
                                 <?php
-                                if ($data['system'][0]->oae_manage == 'y') {
+                                if ($data['system']->oae_manage == 'y') {
                                     $selected_y = ' selected';
                                     $selected_n = '';
                                 } else {
@@ -578,12 +583,12 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                                 <option value='y' <?php echo $selected_y; ?>>Yes</option>
                                 <option value='n' <?php echo $selected_n; ?>>No</option>
                                 </select>
-                                <span id="edit_oae_manage" data-action="edit"  class="input-group-btn"><button id="edit_oae_manage" data-action="edit" class="btn btn-default edit_button" type="button" value="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <span class="input-group-btn"><button id="edit_oae_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-2 col-centered">
-                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url()?>device_images/<?php echo $data['system'][0]->icon; ?>.svg" />
+                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url()?>device_images/<?php echo $data['system']->icon; ?>.svg" />
                         <br /><br />
                         <!-- <input class="btn btn-success btn-block" type="button" value="Submit" id="submit_button" style="display:none;" onClick="submit();" > -->
                         <!-- <a class="btn btn-primary btn-block" href="#" role="button" id="toggle_link"><?php echo __('Edit'); ?></a> -->
@@ -598,13 +603,12 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
     </div>
 </div>
 
-
 </div>
 </div>
 
 <?php
 // form style displays
-$list = array('bios', 'credentials', 'location', 'motherboard', 'processor', 'purchase', 'windows');
+$list = array('bios', 'credentials', 'motherboard', 'processor', 'purchase', 'windows');
 foreach ($list as $item) {
 ?>
 <div id="<?php echo $item; ?>" class="section">
@@ -625,19 +629,17 @@ foreach ($list as $item) {
                             $key = 'credentials_' . $key;
                         } ?>
                         <div class="form-group">
-                            <!-- <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label> -->
                             <label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
+                              <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
                               <span class="input-group-btn">
-                                <button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" value="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
                             </div>
                         </div>
                     <?php } else { ?>
                         <div class="form-group">
-                            <!-- <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label> -->
-                            <label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
+                            <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="<?php echo $item . '_' . $key; ?>" placeholder="" value="<?php echo $value; ?>" readonly>
                             </div>
@@ -656,12 +658,134 @@ foreach ($list as $item) {
 }
 ?>
 
+<div id="location" class="section"><!-- 0 -->
+	<div class="row"><!-- 1 -->
+		<div class="col-md-6"><!-- 2 -->
+			<div class="panel panel-default"><!-- 3 -->
+				<div class="panel-heading"><!-- 4 -->
+					<h3 class="panel-title pull-left">Location Specific Details</h3>
+					<span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="location"></span>
+					<div class="clearfix"></div>
+				</div><!-- 4 -->
+				<div class="panel-body"><!-- 4 -->
+					<?php
+						foreach ($data['locations'] as $location) {
+							if ($location->id == $data['system']->location_id) {
+                foreach ($location as $key => $value) {
+    							if ($key == 'name') {
+    								$data['location'][0]->location_name = $value;
+    							}
+    							$label = ucwords($key);
+					?><div class="form-group"><!-- 5 -->
+					<label for="included_location_<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
+					<div class="col-sm-8 input-group">
+						<input type="text" class="form-control" id="included_location_<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
+					</div>
+				</div><!-- 5 -->
+				<?php } } } ?></div><!-- 4 -->
+			</div><!-- 3 -->
+		</div><!-- 2 -->
+		<div class="col-md-6"><!-- 2 -->
+			<div class="panel panel-default"><!-- 3 -->
+				<div class="panel-heading"><!-- 4 -->
+					<h3 class="panel-title pull-left">Device Specific Details</h3>
+					<span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="location"></span>
+					<div class="clearfix"></div>
+				</div><!-- 4 -->
+				<div class="panel-body"><!-- 4 -->
+					<?php
+					if (isset($data['location'])) {
+						foreach ($data['location'][0] as $key => $value) {
+								$label = ucwords(str_replace('location_', '', $key));
+								$label = ucwords(str_replace('Rack_', 'Rack ', $label));
+								if ($key == 'location_id') {
+									$key = 'dummy_location_id';
+								}
+					?><div class="form-group"><!-- 5 -->
+					<?php if ($key != 'location_name') {
+					?><label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
+					<div class="col-sm-8 input-group"><!-- 6 -->
+						<input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
+						<?php
+						if ($key != 'dummy_location_id') {
+						?><span class="input-group-btn">
+							<button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $key; ?>">
+								<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+							</button>
+						</span>
+						<?php }
+						} else {
+						?><label for="location_id" class="col-sm-4 control-label"><?php echo __($label)?></label>
+							<div class="col-sm-8 input-group"><!-- 6 -->
+							<select id="location_id" class="form-control" disabled><?php
+							foreach ($this->response->included as $included) {
+								if ($included->type == 'locations') {
+									if ($data['location'][0]->location_id == $included->id) {
+										$selected = " selected";
+									} else {
+										$selected = "";
+									}
+									echo "								<option value='" . $included->id . "'" . $selected . ">" . __($included->attributes->name) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+						<span class="input-group-btn">
+							<button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id">
+								<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+							</button>
+						</span>
+					<?php } ?>
+					</div><!-- 6 -->
+				</div><!-- 5 -->
+				<?php } }
+				insert_additional_fields($item, $data['additional_fields']);
+				?></div><!-- 4 -->
+			</div><!-- 3 -->
+		</div><!-- 2 -->
+
+    <div class="col-md-6"><!-- 2 -->
+      <div class="panel panel-default"><!-- 3 -->
+        <div class="panel-heading"><!-- 4 -->
+          <h3 class="panel-title pull-left">Owner Details</h3>
+          <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="location"></span>
+          <div class="clearfix"></div>
+        </div><!-- 4 -->
+        <div class="panel-body"><!-- 4 -->
+          <div class="form-group"><!-- 5 -->
+          <label for="owner" class="col-sm-4 control-label">Owner</label>
+          <div class="col-sm-8 input-group"><!-- 6 -->
+            <input type="text" class="form-control" id="owner" placeholder="" value="<?php echo $data['system']->owner; ?>" disabled>
+            <span class="input-group-btn">
+              <button id="edit_owner" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="owner">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+              </button>
+            </span>
+          </div><!-- 6 -->
+        </div><!-- 5 -->
+          <div class="form-group"><!-- 5 -->
+          <label for="owner" class="col-sm-4 control-label">Comments</label>
+          <div class="col-sm-8 input-group"><!-- 6 -->
+            <input type="text" class="form-control" id="comments" placeholder="" value="<?php echo $data['system']->comments; ?>" disabled>
+            <span class="input-group-btn">
+              <button id="edit_comments" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="comments">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+              </button>
+            </span>
+          </div><!-- 6 -->
+        </div><!-- 5 -->
+        </div><!-- 4 -->
+      </div><!-- 3 -->
+    </div><!-- 2 -->
 
 
+	</div><!-- 1 -->
+</div><!-- 0 -->
 
 <?php
 // table style displays
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
+#$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
+$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video');
 foreach ($list as $item) {
     if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
@@ -761,7 +885,7 @@ foreach ($list as $item) {
 
 <?php
 // combo style displays
-if ($data['system'][0]->type == 'computer') {
+if ($data['system']->type == 'computer') {
     $list = array ('network' => 'ip', 'disk' => 'partition');
     foreach ($list as $item => $sub_item) {
         if (isset($data[$item]) and count($data[$item]) > 0) {
@@ -946,21 +1070,19 @@ if ($data['system'][0]->type == 'computer') {
     }
 }
 ?>
-</div>
-</div>
 
 <?php
-function insert_additional_fields($section = '', $additional_fields = array())
+function insert_additional_fields($section = '', $additional_fields)
 {
     foreach ($additional_fields as $field) {
         if ($field->{'additional_field.placement'} == $section) {
             if ($field->{'additional_field.type'} == 'varchar') {
                 echo '                    <div class="form-group">
-                    <label for="custom_' . $field->{'additional_field.name'} . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
+                    <label for="custom_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
                     <div class="input-group">
-                      <input disabled type="text" class="form-control" placeholder="" id="custom_' . $field->{'additional_field.name'} . '" name="custom_' . $field->{'additional_field.name'} . '" value="' . $field->{'value'} . '">
+                      <input disabled type="text" class="form-control" placeholder="" id="custom_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" name="custom_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" value="' . $field->{'value'} . '">
                       <span class="input-group-btn">
-                        <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" data-action="edit" class="btn btn-default edit_button" type="button" value="custom_' . $field->{'additional_field.name'} . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                        <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" data-action="edit" class="btn btn-default edit_button" type="button" value="custom_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                       </span>
                     </div>
                 </div>' . "\n";

@@ -111,19 +111,66 @@ class devices extends MY_Controller
 
     private function read()
     {
+        $this->load->model('m_orgs');
+        $this->load->model('m_locations');
+        $this->load->model('m_devices_components');
+        $this->response->included = array();
+        // if we're displaying a web page, get ALL the data
+        if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
+            $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            #echo "<pre>\n"; print_r($this->response->meta); exit();
+        }
+
         if ($this->response->meta->sub_resource != '') {
-            $this->response->data = $this->m_devices->read_sub_resource();
+            $this->response->data = $this->m_devices->read_sub_resource( $this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+            $this->response->meta->format = 'json';
         } else {
             $this->response->data = $this->m_devices->read();
+            # create the related links
+            $related = $this->m_devices->get_related_tables();
+            $this->response->data[0]->links->relationships = $related;
+            if (!empty($this->response->meta->include)) {
+                $temp = explode(',', $this->response->meta->include);
+                foreach ($temp as $table) {
+                    $result = false;
+                    $result = $this->m_devices->read_sub_resource( $this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+                    if ($result) {
+                        $this->response->included = array_merge($this->response->included, $result);
+                    }
+                }
+            }
         }
+
         $this->response->meta->filtered = count($this->response->data);
+        if ($this->response->meta->format == 'screen') {
+            // return a list of all orgs and locations so we can create the edit functionality on the web page
+            if (isset($this->response->data[0]->attributes->org_id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+            }
+            if (isset($this->response->data[0]->attributes->location_id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+            }
+        } else {
+            // return only the details of the linked org and location
+            if (isset($this->response->data[0]->attributes->org_id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+            }
+            if (isset($this->response->data[0]->attributes->location_id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id));
+            }
+        }
+
         output($this->response);
     }
 
     private function create()
     {
         $this->m_devices->update();
-        output($this->response);
+        if ($this->response->meta == 'json') {
+            output($this->response);
+        } else {
+            redirect(devices);
+        }
     }
 
     private function update()
@@ -132,12 +179,8 @@ class devices extends MY_Controller
         output($this->response);
     }
 
-
-
     private function create_form()
     {
-        $this->response->meta->format = 'json';
-        $this->response->meta->debug = true;
         output($this->response);
     }
 
