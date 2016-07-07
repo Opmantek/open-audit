@@ -269,8 +269,6 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
         $CI->response->meta->sub_resource = str_replace(array(',', '.', '\'', '"', '(', ')'), '', $CI->response->meta->sub_resource);
-        #$CI->response->meta->sub_resource = str_replace(array('.', '\'', '"', '(', ')'), '', $CI->response->meta->sub_resource);
-
 
         # get the sub_resource id
         #$CI->response->meta->sub_resource_id = $CI->uri->segment(4, '');
