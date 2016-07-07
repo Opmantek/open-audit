@@ -70,21 +70,43 @@ class M_networks extends MY_Model
     }
 
 
-    public function read()
+    public function read($id = '')
     {
-        $CI = & get_instance();
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
         $return_data = array();
         $sql = "SELECT networks.* FROM networks WHERE id = ?";
-        $data = array(intval($CI->response->meta->id));
+        $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
-        $this->count_data($result);
-        $CI->response->data = $this->format_data($result, 'networks');
-        $CI->response->included = array();
-        $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
-        $data = array((string)$result[0]->name);
+        $result = $this->format_data($result, 'networks');
+        return $result;
+    }
+
+    public function sub_resource($id = '')
+    {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT `name` FROM `networks` WHERE `id` = ?";
+        $data = array($id);
         $result = $this->run_sql($sql, $data);
-        $CI->response->included = $this->format_data($result, 'devices');
-        return;
+        $name = $result[0]->name;
+        if ($name != '') {
+            $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
+            $data = array((string)$name);
+            $result = $this->run_sql($sql, $data);
+            $result = $this->format_data($result, 'devices');
+            return $result;
+        } else {
+            return false;
+        }
     }
 
     public function create()
@@ -92,13 +114,13 @@ class M_networks extends MY_Model
         $CI = & get_instance();
         # ensure we have a valid subnet
         $this->load->helper('network');
-        $test = network_details($CI->response->meta->received_data['name']);
+        $test = network_details($CI->response->meta->received_data->attributes->name);
         if (!empty($test->error)) {
             log_error('ERR-0009', 'm_networks::create_network');
             return false;
         }
         # check to see if we already have a network with the same name
-        $name = str_replace(' ', '', $CI->response->meta->received_data['name']);
+        $name = str_replace(' ', '', $CI->response->meta->received_data->attributes->name);
         $sql = "SELECT COUNT(id) AS count FROM `networks` WHERE `name` = ?";
         $data = array($name);
         $result = $this->run_sql($sql, $data);
@@ -107,7 +129,7 @@ class M_networks extends MY_Model
             return false;
         }
         $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, NOW())";
-        $data = array("$name", $CI->response->meta->received_data['description'], $CI->user->full_name);
+        $data = array("$name", $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
@@ -125,7 +147,6 @@ class M_networks extends MY_Model
 
         $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM networks" . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
-
         $result = $this->format_data($result, 'networks');
         return $result;
     }
@@ -156,41 +177,6 @@ class M_networks extends MY_Model
         $data = array(intval($CI->response->meta->id));
         $this->run_sql($sql, $data);
         return;
-    }
-
-    private function run_sql($sql, $data = array())
-    {
-        $CI = & get_instance();
-        if ($sql == '') {
-            return;
-        }
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-        // clean our SQL (usually adding the running model, etc)
-        $sql = $this->clean_sql($sql);
-        // store the current setting of db_debug
-        $temp_debug = $this->db->db_debug;
-        // set the db_debug setting to FALSE - this prevents the default CI error page and allows us
-        // to output a nice formatted page with the $error object
-        $this->db->db_debug = FALSE;
-        // run the query
-        $query = $this->db->query($sql, $data);
-        // if we have debug set to TRUE, store the last run query
-        if ($CI->response->meta->debug) {
-            $CI->response->meta->sql = $this->db->last_query();
-        }
-        // restore the origin setting to db_debug
-        $this->db->db_debug = $temp_debug;
-        // do we have an error?
-        if ($this->db->_error_message()) {
-            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
-            $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
-            return false;
-        }
-        // no error, so get the result
-        $result = $query->result();
-        // return what we have
-        return ($result);
     }
 
     private function count_data($result)
