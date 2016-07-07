@@ -81,6 +81,8 @@ if (! function_exists('inputRead')) {
         # enable the $_GET global
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
 
+        # /collection/{id}/{sub_resource}
+
         # initialise our properties
         $CI->response->meta = new stdClass();
         $CI->response->meta->action = '';
@@ -92,6 +94,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->groupby = '';
         $CI->response->meta->header = 'HTTP/1.1 200 OK';
         $CI->response->meta->id = 0;
+        $CI->response->meta->include = '';
         $CI->response->meta->limit = '';
         $CI->response->meta->offset = 0;
         $CI->response->meta->properties = '';
@@ -237,6 +240,18 @@ if (! function_exists('inputRead')) {
         }
         unset($collection_words);
 
+        # get the include
+        if (!empty($CI->input->get('include'))) {
+            $CI->response->meta->include = $CI->input->get('include');
+            $log->message = 'Set include to ' . $CI->response->meta->include . ', according to GET.';
+            stdlog($log);
+        }
+        if (!empty($CI->input->post('include'))) {
+            $CI->response->meta->include = $CI->input->post('include');
+            $log->message = 'Set include to ' . $CI->response->meta->include . ', according to POST.';
+            stdlog($log);
+        }
+
         # get the sub_resource
         if (empty($CI->response->meta->sub_resource)) {
             $CI->response->meta->sub_resource = (string)$CI->uri->segment(3, '');
@@ -254,10 +269,16 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
         $CI->response->meta->sub_resource = str_replace(array(',', '.', '\'', '"', '(', ')'), '', $CI->response->meta->sub_resource);
+        #$CI->response->meta->sub_resource = str_replace(array('.', '\'', '"', '(', ')'), '', $CI->response->meta->sub_resource);
 
 
         # get the sub_resource id
-        $CI->response->meta->sub_resource_id = $CI->uri->segment(4, '');
+        #$CI->response->meta->sub_resource_id = $CI->uri->segment(4, '');
+        if (empty($CI->response->meta->sub_resource_id)) {
+            $CI->response->meta->sub_resource_id = (string)$CI->uri->segment(4, '');
+            $log->message = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to URI.';
+            stdlog($log);
+        }
         if (!empty($CI->input->get('sub_resource_id'))) {
             $CI->response->meta->sub_resource_id = $CI->input->get('sub_resource_id');
             $log->message = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to GET.';
@@ -596,7 +617,7 @@ if (! function_exists('inputRead')) {
         $filter = array();
         $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         if ($CI->response->meta->query_string != '') {
-            $reserved_words = ' properties limit sub_resource sub_resource_id action sort current offset format debug groupby query ';
+            $reserved_words = ' properties limit sub_resource sub_resource_id action sort current offset format debug groupby query include ';
             foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
                 $query = new stdClass();
                 $query->name = substr($item, 0, strpos($item, '='));
@@ -664,6 +685,12 @@ if (! function_exists('inputRead')) {
         $CI->response->links->self = $CI->config->config['base_url'] . 'index.php/' . $CI->response->meta->collection;
         if ($CI->response->meta->id != '') {
             $CI->response->links->self .= '/' . $CI->response->meta->id;
+        }
+        if ($CI->response->meta->sub_resource != '') {
+            $CI->response->links->self .= '/' . $CI->response->meta->sub_resource;
+        }
+        if ($CI->response->meta->sub_resource_id != '') {
+            $CI->response->links->self .= '/' . $CI->response->meta->sub_resource_id;
         }
         $CI->response->links->first = NULL;
         $CI->response->links->last = NULL;
