@@ -33,8 +33,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 include "v_lang.php";
-?>
-<!DOCTYPE html>
+?><!DOCTYPE html>
 <html lang="en">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
