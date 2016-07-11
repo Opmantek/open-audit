@@ -40,30 +40,40 @@ if (! function_exists('log_error')) {
     {
         $CI = & get_instance();
         # ensure we have an array in the $response object to hold our error
-        if (!isset($CI->response->errors) or is_null($CI->response->errors)) {
-            $CI->response->errors = array();
+        if (!empty($CI->response)) {
+            if (!isset($CI->response->errors) or is_null($CI->response->errors)) {
+                $CI->response->errors = array();
+            }
         }
 
         # this object will hold this specific error data and be added to the above array at the end
         $error = new stdClass();
         $error->code = $error_code;
-        $error = getError($error->code);
         $error->file = 'system';
-        $error->message = $error->title;
         $error->model = $model;
+        if (function_exists('getError')) {
+            $error = getError($error->code);
+            $error->message = $error->title;
+        }
 
         // log the details of the error to the log file
         stdlog($error);
-        $error->controller = $error->controller . '::' . $error->function;
+        if (!empty($error->controller) and !empty($eror->function)) {
+            $error->controller = $error->controller . '::' . $error->function;
+        } else {
+            $error->controller = '';
+        }
         unset($error->function);
         // if the error is severe enough, set the error in the response object
-        if ($error->severity <= 3) {
+        if (isset($error->severity) and $error->severity <= 3) {
             error_reporting(E_ALL);
             unset($error->file); # we don't care about where this was logged (into which file)
             unset($error->message); # this is for logging only and is already contained in the $error->title
             $error->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error->code;
-            $CI->response->errors[] = $error;
-            $CI->response->header = $error->status;
+            if (!empty($CI->response)) {
+                $CI->response->errors[] = $error;
+                $CI->response->header = $error->status;
+            }
         }
     }
 
