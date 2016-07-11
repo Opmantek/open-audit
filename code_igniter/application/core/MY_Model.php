@@ -43,7 +43,7 @@ class MY_Model extends CI_Model
         parent::__construct();
     }
 
-    public function format_data($result, $type)
+    public function format_data($result = array(), $type)
     {
         if (empty($result)) {
             # TODO - thorw an error here

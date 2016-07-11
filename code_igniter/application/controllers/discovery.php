@@ -145,10 +145,10 @@ class discovery extends CI_Controller
             $query = $this->db->query($sql);
             $credentials = "";
 
-            if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
+            if (php_uname('s') != 'Windows NT') {
+                $filepath = $this->config->config['base_path'] . '/other';
             } else {
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\\open-audit\\other";
+                $filepath = $this->config->config['base_path'] . '\\other';
             }
             // set the URL to submit to
             // TODO - check this on the form
@@ -286,7 +286,7 @@ class discovery extends CI_Controller
 
             if ((php_uname('s') == 'Windows NT') and ($error == '')) {
                 // Windows host - start the script locally
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\\open-audit\\other";
+                $filepath = $this->config->config['base_path'] . '\\other';
 
                 if ($display == 'y') {
                     $script_string = "$filepath\\discover_domain.vbs local_domain=LDAP://".$_POST['windows_domain']." number_of_audits=".$_POST['number_of_audits']." script_name=$filepath\\audit_windows.vbs url=".$url." struser=".$_POST['windows_domain']."\\".$_POST['windows_username']." strpass=".$_POST['windows_password']." limit=" . $limit . " debugging=1";
@@ -318,7 +318,7 @@ class discovery extends CI_Controller
 
             if (php_uname('s') == 'Linux' or php_uname('s') == "Darwin") {
                 // linux or OSX host - copy the script to the DC and start it
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
+                $filepath = $this->config->config['base_path'] . '/other';
                 $_POST['windows_username'] = str_replace('$', '\$', $_POST['windows_username']);
                 $_POST['windows_password'] = str_replace('$', '\$', $_POST['windows_password']);
 
@@ -647,9 +647,9 @@ class discovery extends CI_Controller
 
             }
             if (php_uname('s') != 'Windows NT') {
-                $filepath = $this->config->config['base_path'] . '/open-audit/other';
+                $filepath = $this->config->config['base_path'] . '/other';
             } else {
-                $filepath = $this->config->config['base_path'] . '\\open-audit\\other';
+                $filepath = $this->config->config['base_path'] . '\\other';
             }
 
             # if we are supplied a network address, use it
@@ -1097,11 +1097,11 @@ class discovery extends CI_Controller
                         $log_details->message = 'WMI Status is '.$details->wmi_status.' on '.$details->ip;
                         stdlog($log_details);
 
-                        // On OSX we cannot run Nmap and get a UDP port result for 161 as 'You requested a scan type which requires root privileges.'
-                        // So just set the snmp_status to true and attempt to snmp_audit the target device
+                        // On OSX we cannot run Nmap and get a UDP port result for 161 as 'You requested a scan type which requires root privileges.' So just set the snmp_status to true and attempt to snmp_audit the target device
                         if (php_uname('s') == 'Darwin') {
                             $details->snmp_status = 'true';
                         }
+
                         $log_details->message = 'SNMP Status is '.$details->snmp_status.' on '.$details->ip;
                         stdlog($log_details);
 
@@ -1114,13 +1114,15 @@ class discovery extends CI_Controller
                         unset($details->os_name);
 
                         // SNMP audit
-                        if (!extension_loaded('snmp')) {
+                        if (!extension_loaded('snmp') and $details->snmp_status == 'true') {
                             $log_details->message = 'PHP extension not loaded, skipping SNMP data retrieval for ' . $details->ip;
                             stdlog($log_details);
                         }
 
-                        if (extension_loaded('snmp')) {
+                        if (extension_loaded('snmp') and $details->snmp_status == 'true') {
                             $credentials_snmp = snmp_credentials($details->ip, $credentials, $display);
+                        } else {
+                            $credentials_snmp = false;
                         }
 
                         if ($credentials_snmp) {
@@ -1166,8 +1168,6 @@ class discovery extends CI_Controller
                                 }
                             }
                         }
-
-                        exit();
 
                         // new for 1.8.4 - if we have a non-computer, do not attempt to connect using SSH
                         if ($details->type != 'computer' and $details->type != '' and $details->type != 'unknown' and $details->os_family != 'DD-WRT' and stripos($details->sysDescr, 'dd-wrt') === false ) {

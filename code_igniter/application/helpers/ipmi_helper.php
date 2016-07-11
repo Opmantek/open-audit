@@ -38,7 +38,7 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 if (!function_exists('ipmi_audit')) {
-    function snmp_audit($ip, $credentials, $display)
+    function ipmi_audit($ip, $credentials, $display)
     {
         error_reporting(E_ALL);
         $CI = & get_instance();

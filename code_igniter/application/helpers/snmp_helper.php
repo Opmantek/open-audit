@@ -91,10 +91,14 @@ if (!function_exists('snmp_credentials')) {
             if ($credential->type == 'snmp') {
                 if (@snmp2_get($ip, $credential->credentials->community, "1.3.6.1.2.1.1.2.0", $timeout, $retries)) {
                     $credential->credentials->version = 2;
+                    $log->message =  "Credential set for v2 working on " . $ip;
+                    stdlog($log);
                     return $credential;
                 }
                 if (@snmpget($ip, $credential->credentials->community, "1.3.6.1.2.1.1.2.0", $timeout, $retries)) {
                     $credential->credentials->version = 1;
+                    $log->message =  "Credential set for v1 working on " . $ip;
+                    stdlog($log);
                     return $credential;
                 }
             }
@@ -110,6 +114,8 @@ if (!function_exists('snmp_credentials')) {
                 $oid = "1.3.6.1.2.1.1.2.0";
                 if (@snmp3_get( $ip, $sec_name ,$sec_level ,$auth_protocol ,$auth_passphrase ,$priv_protocol , $priv_passphrase , $oid, $timeout, $retries)) {
                     $credential->credentials->version = 3;
+                    $log->message =  "Credential set for v3 working on " . $ip;
+                    stdlog($log);
                     return $credential;
                 }
             }

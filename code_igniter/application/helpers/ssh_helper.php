@@ -78,16 +78,18 @@ if (! function_exists('ssh_credentials')) {
         }
         $connected = array();
         foreach ($credentials as $credential) {
-            $credential->sudo = false;
-            if ($credential->username == 'root') {
-                $credential->root = true;
-            } else {
-                $credential->root = false;
-            }
             if ($credential->type == 'ssh') {
+                $credential->sudo = false;
+                if ($credential->credentials->username == 'root') {
+                    $credential->root = true;
+                } else {
+                    $credential->root = false;
+                }
                 if ($result = ssh_command($ip, $credential, 'exit', $display)) {
                     if ($result['status'] == 0) {
                         if ($credential->root) {
+                            $log->message = "Credential set " . $credential->name . " working on " . $ip;
+                            stdlog($log);
                             return $credential;
                         } else {
                             if ($result = ssh_command($ip, $credential, 'which sudo', $display)) {
@@ -112,6 +114,8 @@ if (! function_exists('ssh_credentials')) {
             }
         }
         if (!empty($connected[0])) {
+            $log->message = "Credential set " . $connected[0]->name . " working on " . $ip;
+            stdlog($log);
             return $connected[0];
         } else {
             return false;
@@ -218,11 +222,11 @@ if (! function_exists('ssh_command')) {
             unset($return_var);
             $command_string = "which sshpass 2>/dev/null";
             exec($command_string, $output, $return_var);
-            if (empty($output[0])) {
-                $log->message = 'SSHPass not installed on OSX, cannot run ssh_command.';
-                stdlog($log);
-                return false;
-            }
+            // if (empty($output[0])) {
+            //     $log->message = 'SSHPass not installed on OSX, cannot run ssh_command.';
+            //     stdlog($log);
+            //     return false;
+            // }
 
             # test we have gtimeout installed - if we don't, just exclude it from the command executed
             unset($command_string);
@@ -246,21 +250,19 @@ if (! function_exists('ssh_command')) {
             );
             $cwd = '/usr/local/open-audit/other';
             $env = array();
-            if ($command != '') {
-                $command_string = $timeout_command . ' sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' "' . $command . '"';
-                $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
-                if (is_resource($process)) {
-                    fwrite($pipes[0], $password);
-                    fclose($pipes[0]);
-                    // stdOut
-                    $temp = stream_get_contents($pipes[1]);
-                    $return['output'] = explode("\n", $temp);
-                    if (end($return['output']) == '') {
-                        unset($return['output'][count($return['output'])-1]);
-                    }
-                    fclose($pipes[1]);
-                    $return['status'] = proc_close($process);
+            $command_string = $timeout_command . 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
+            $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
+            if (is_resource($process)) {
+                fwrite($pipes[0], $password);
+                fclose($pipes[0]);
+                // stdOut
+                $temp = stream_get_contents($pipes[1]);
+                $return['output'] = explode("\n", $temp);
+                if (end($return['output']) == '') {
+                    unset($return['output'][count($return['output'])-1]);
                 }
+                fclose($pipes[1]);
+                $return['status'] = proc_close($process);
             }
         }
 
