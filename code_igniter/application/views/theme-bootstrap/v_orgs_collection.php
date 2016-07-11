@@ -38,7 +38,7 @@ if (!empty($this->response->data)) {
   <div class="panel-heading">
     <h3 class="panel-title">
       <span class="text-left">Orgs</span>
-      <span class="pull-right"><?php echo $this->response->filtered . ' of ' . $this->response->total . ' results'; ?></span>
+      <span class="pull-right"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
     </h3>
   </div>
   <div class="panel-body">
@@ -54,10 +54,10 @@ if (!empty($this->response->data)) {
       </div>
     </div>
     <?php
-    if (count($this->response->filter) > 0) {
+    if (count($this->response->meta->filter) > 0) {
       echo '<div class="panel panel-default pull-left">';
       echo '<div class="panel-body">';
-      foreach ($this->response->filter as $item) {
+      foreach ($this->response->meta->filter as $item) {
         if ($item->operator == '=') {
           $label = 'label-success';
         } else if ($item->operator == '!=') {
@@ -100,15 +100,15 @@ if (!empty($this->response->data)) {
             <?php
             if (count($data) > 0) {
                 foreach ($data as $item):
-                    $edit_pic = '<a href="orgs/'.intval($item->group_id).'?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a>';
+                    $edit_pic = '<a href="orgs/'.intval($item->attributes->group_id).'?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a>';
                     #$delete_pic = '<a href="orgs/'.intval($item->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>';
-                    $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->name) . '" aria-hidden="true"></span></button>';
-                    if ($item->name == '') {
-                        $item->name = '-';
+                    $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->attributes->name) . '" aria-hidden="true"></span></button>';
+                    if ($item->attributes->name == '') {
+                        $item->attributes->name = '-';
                     }
-                    if ($item->group_id != '0') {
+                    if ($item->attributes->group_id != '0') {
                         $show_pic = '<a href="devices?org_id='.intval($item->id).'"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a>';
-                        $deactivate_pic = '<a href="groups/'.intval($item->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-warning" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
+                        $deactivate_pic = '<a href="groups/'.intval($item->attributes->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-warning" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
                         $activate_pic = '';
                     } else {
                         $show_pic = '';
@@ -117,15 +117,15 @@ if (!empty($this->response->data)) {
                     }
                     ?>
                     <tr>
-                        <td align='center'><?php echo $item->device_count?></td>
-                        <td><a href="../main/view_org/<?php echo $item->id?>"><?php echo htmlentities($item->name)?></a></td>
-                        <td><?php echo htmlentities($item->comments)?></td>
-                        <td><?php echo htmlentities($item->parent_name)?></td>
-                        <td align='center'><?php echo $activate_pic?></td>
-                        <td align='center'><?php echo $deactivate_pic?></td>
-                        <td align='center'><?php echo $show_pic?></td>
-                        <td align='center'><?php echo $edit_pic?></td>
-                        <td align='center'><?php echo $delete_pic?></td>
+                        <td class="text-center"><?php echo $item->attributes->device_count?></td>
+                        <td><a href="../main/view_org/<?php echo $item->id?>"><?php echo htmlentities($item->attributes->name)?></a></td>
+                        <td><?php echo htmlentities($item->attributes->comments)?></td>
+                        <td><?php echo htmlentities($item->attributes->parent_name)?></td>
+                        <td class="text-center"><?php echo $activate_pic?></td>
+                        <td class="text-center"><?php echo $deactivate_pic?></td>
+                        <td class="text-center"><?php echo $show_pic?></td>
+                        <td class="text-center"><?php echo $edit_pic?></td>
+                        <td class="text-center"><?php echo $delete_pic?></td>
                     </tr>
                 <?php endforeach;
                 ?>
