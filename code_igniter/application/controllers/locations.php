@@ -73,7 +73,7 @@ class locations extends MY_Controller
     private function collection()
     {
         $this->response->data = $this->m_locations->collection();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
@@ -84,7 +84,7 @@ class locations extends MY_Controller
         } else {
             $this->response->data = $this->m_locations->read();
         }
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
