@@ -96,7 +96,7 @@ class M_system extends MY_Model
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on dbus_identifier short for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
+                $log_details->message = 'HIT on dbus_identifier for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
                 stdlog($log_details);
             }
         }

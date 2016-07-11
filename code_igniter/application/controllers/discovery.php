@@ -1113,6 +1113,29 @@ class discovery extends CI_Controller
                         unset($details->os_family);
                         unset($details->os_name);
 
+
+                        # IPMI audit
+                        if (isset($this->config->config['discovery_use_ipmi']) and $this->config->config['discovery_use_ipmi'] == 'y' and $this->config->config['default_ipmi_username'] != '') {
+                            $credentials_ipmi = new stdClass();
+                            $credentials_ipmi->type = 'ipmi';
+                            $credentials_ipmi->credentials = new stdClass();
+                            $credentials_ipmi->credentials->username = $this->config->config['default_ipmi_username'];
+                            $credentials_ipmi->credentials->password = $this->config->config['default_ipmi_username'];
+                            $credentials[] = $credentials_ipmi;
+                            $ipmi_details = ipmi_audit($details->ip, $credentials_ipmi, $display);
+                            if (!empty($ipmi_details)) {
+                                foreach ($ipmi_details as $key => $value) {
+                                    if (!empty($value)) {
+                                        $details->key = $value;
+                                    }
+                                }
+                            }
+                            if ($details->serial) {
+                                $details->last_seen_by = 'ipmi';
+                                $details->audits_ip = '127.0.0.1';
+                            }
+                        }
+$details->snmp_status = '';
                         // SNMP audit
                         if (!extension_loaded('snmp') and $details->snmp_status == 'true') {
                             $log_details->message = 'PHP extension not loaded, skipping SNMP data retrieval for ' . $details->ip;
@@ -1150,25 +1173,6 @@ class discovery extends CI_Controller
                             }
                         }
 
-
-                        # IPMI audit
-                        if (isset($this->config->config['discovery_use_ipmi']) and $this->config->config['discovery_use_ipmi'] == 'y') {
-                            $credential = new stdClass();
-                            $credential_ipmi->type = 'ipmi';
-                            $credential_ipmi->credentials = new stdClass();
-                            $credential_ipmi->credentials->username = $this->config->config['default_ipmi_username'];
-                            $credential_ipmi->credentials->password = $this->config->config['default_ipmi_username'];
-                            $credentials[] = $credential_ipmi;
-                            $ipmi_details = ipmi_audit($details->ip, $credentials_ipmi, $display);
-                            if (!empty($ipmi_details)) {
-                                foreach ($ipmi_details as $key => $value) {
-                                    if (!empty($value)) {
-                                        $details->key = $value;
-                                    }
-                                }
-                            }
-                        }
-
                         // new for 1.8.4 - if we have a non-computer, do not attempt to connect using SSH
                         if ($details->type != 'computer' and $details->type != '' and $details->type != 'unknown' and $details->os_family != 'DD-WRT' and stripos($details->sysDescr, 'dd-wrt') === false ) {
                             $log_details->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for '.$details->ip.' (System ID '.$details->id.')';
@@ -1187,12 +1191,21 @@ class discovery extends CI_Controller
                         if ($details->ssh_status == 'true' and $credentials_ssh) {
                             $ssh_details = ssh_audit($details->ip, $credentials_ssh, $display);
                             if (!empty($ssh_details)) {
+                                $details->last_seen_by = 'ssh';
+                                $details->audits_ip = '127.0.0.1';
                                 foreach ($ssh_details as $key => $value) {
                                     if (!empty($value)) {
-                                        $details->key = $value;
+                                        $details->$key = $value;
                                     }
                                 }
                             }
+                        }
+
+                        if ($display == 'y') {
+                            $details->show_output = true;
+                            echo "DEBUG-1- ---------------\n";
+                            $this->echo_details($details);
+                            echo "DEBUG-1- ---------------\n";
                         }
 
                         // test for working Windows credentials
@@ -1207,6 +1220,8 @@ class discovery extends CI_Controller
                         if ($details->wmi_status == 'true' and $credentials_windows) {
                             $windows_details = wmi_audit($details->ip, $credentials_windows, $display);
                             if (!empty($windows_details)) {
+                                $details->last_seen_by = 'windows';
+                                $details->audits_ip = '127.0.0.1';
                                 foreach ($windows_details as $key => $value) {
                                     if (!empty($value)) {
                                         $details->key = $value;
@@ -1229,9 +1244,9 @@ class discovery extends CI_Controller
 
                         if ($display == 'y') {
                             $details->show_output = true;
-                            echo "DEBUG ---------------\n";
+                            echo "DEBUG-2- ---------------\n";
                             $this->echo_details($details);
-                            echo "DEBUG ---------------\n";
+                            echo "DEBUG-2- ---------------\n";
                         }
 
                         // insert or update the device
@@ -1413,8 +1428,8 @@ class discovery extends CI_Controller
                                 $destination = $this->config->item('discovery_linux_script_directory');
                                 if ($ssh_result = scp($details->ip, $credentials_ssh, $source, $destination, $display)) {
                                     # Successfully copied the audit script
-                                    $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination . '/' . $audit_script;
-                                    $temp = ssh_command($details->ip, $credentials, $command, $display);
+                                    $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination . $audit_script;
+                                    $temp = ssh_command($details->ip, $credentials_ssh, $command, $display);
                                 }
                                 if ($display = 'y') {
                                     $debugging = 3;
@@ -1428,16 +1443,16 @@ class discovery extends CI_Controller
                                 # successfully copied and chmodded the audit script
                                 if (!empty($credentials_ssh->sudo)) {
                                     # run the audit script as a normal user
-                                $command = 'echo "'.escapeshellarg($credentials->credentials->password).'" | '.$credentials->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display . '" ';
+                                $command = 'echo "'.escapeshellarg($credentials->credentials->password).'" | '.$credentials->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
                                 } else {
-                                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display . '" ';
+                                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
                                 }
-                                $result = ssh_command($details->ip, $credentials, $command, $display);
+                                $result = ssh_command($details->ip, $credentials_ssh, $command, $display);
                             }
                             # audit ESX
                             if (isset($temp['status']) and $temp['status'] == 0 and $audit_script == 'audit_esxi.sh') {
                                 $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n debugging=0 echo_output=y system_id='.$details->id.'" 2>/dev/null';
-                                if ($result = ssh_command($details->ip, $credentials, $command, $display)) {
+                                if ($result = ssh_command($details->ip, $credentials_ssh, $command, $display)) {
                                     if ($result['status'] == 0) {
                                         $script_result = '';
                                         foreach ($result['output'] as $line) {

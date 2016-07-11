@@ -127,9 +127,11 @@ class devices extends MY_Controller
         } else {
             $this->response->data = $this->m_devices->read();
             # create the related links
-            $related = $this->m_devices->get_related_tables();
-            $this->response->data[0]->links->relationships = $related;
-            if (!empty($this->response->meta->include)) {
+            if (!empty($this->response->data)) {
+                $related = $this->m_devices->get_related_tables();
+                $this->response->data[0]->links->relationships = $related;
+            }
+            if (!empty($this->response->meta->include) and !empty($this->response->data)) {
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
                     $result = false;

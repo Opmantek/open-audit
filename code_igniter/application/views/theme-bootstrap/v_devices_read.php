@@ -38,7 +38,12 @@ include(str_replace('views/theme-bootstrap/v_devices_read.php', 'controllers/inc
 # ensure each JSON include is in it's own $type key in the $data array
 unset($data);
 $data = array();
-$data['system'] = $this->response->data[0]->attributes;
+if (!empty($this->response->data[0]->attributes)) {
+  $data['system'] = $this->response->data[0]->attributes;
+} else {
+  echo "No data for this ID.";
+  exit();
+}
 foreach ($this->response->included as $item) {
   $data[$item->type][] = $item->attributes;
 }

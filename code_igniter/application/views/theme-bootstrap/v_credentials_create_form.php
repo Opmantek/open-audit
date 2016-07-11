@@ -55,7 +55,7 @@
             <label for="data[attributes][name]" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
+                    <input tabindex="1" type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
                 </div>
             </div>
         </div>
@@ -64,7 +64,7 @@
             <label for="data[attributes][description]" class="col-sm-2 control-label">Description</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" placeholder="" value="">
+                    <input tabindex="2" type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" placeholder="" value="">
                 </div>
             </div>
         </div>
@@ -73,7 +73,7 @@
             <label for="data[attributes][type]" class="col-sm-2 control-label">Type</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <select class="data_type form-control" id='data[attributes][type]' name='data[attributes][type]' tabindex='4' title='Type'>
+                    <select tabindex="3" class="data_type form-control" id="data[attributes][type]" name="data[attributes][type]" title='Type'>
                         <option value='' label=' '></option>
                         <option value='snmp'>SNMP (v1 / v2)</option>
                         <option value='snmp_v3'>SNMP v3</option>
@@ -109,7 +109,7 @@
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
                     <input type="hidden" value="credentials" id="data[type]" name="data[type]" />
-                    <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                    <button tabindex="10" id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
                 </div>
             </div>
         </div>
@@ -124,7 +124,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][community]" class="col-sm-2 control-label">Community</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input type="password" class="form-control" id="data[attributes][credentials][community]" name="data[attributes][credentials][community]" placeholder="" value="">\
+                    <input tabindex="4" type="password" class="form-control" id="data[attributes][credentials][community]" name="data[attributes][credentials][community]" placeholder="" value="">\
                 </div>\
             </div>\
         </div>';
@@ -133,7 +133,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][security_name]" class="col-sm-2 control-label">Security Name</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input type="text" class="form-control" id="data[attributes][credentials][security_name]" name="data[attributes][credentials][security_name]" placeholder="" value="">\
+                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][security_name]" name="data[attributes][credentials][security_name]" placeholder="" value="">\
                 </div>\
             </div>\
         </div>\
@@ -141,7 +141,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][security_level]" class="col-sm-2 control-label">Security Level</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <select class="form-control" id="data[attributes][credentials][security_level]" name="data[attributes][credentials][security_level]" tabindex="10" title="Security level">\
+                    <select tabindex="5" class="form-control" id="data[attributes][credentials][security_level]" name="data[attributes][credentials][security_level]" tabindex="10" title="Security level">\
                         <option value="noAuthNoPriv">noAuthNoPriv</option>\
                         <option value="authNoPriv">authNoPriv</option>\
                         <option value="authPriv">authPriv</option>\
@@ -153,7 +153,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][authentication_protocol]" class="col-sm-2 control-label">Authentication Protocol</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <select class="form-control" id="data[attributes][credentials][authentication_protocol]" name="data[attributes][credentials][authentication_protocol]" tabindex="10" title="Authentication Protocol">\
+                    <select tabindex="6" class="form-control" id="data[attributes][credentials][authentication_protocol]" name="data[attributes][credentials][authentication_protocol]" tabindex="10" title="Authentication Protocol">\
                         <option value="MD5">MD5</option>\
                         <option value="SHA">SHA</option>\
                     </select>\
@@ -164,7 +164,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][authentication_passphrase]" class="col-sm-2 control-label">Authentication Passphrase</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input type="password" class="form-control" id="data[attributes][credentials][authentication_passphrase]" name="data[attributes][credentials][authentication_passphrase]" placeholder="" value="">\
+                    <input tabindex="7" type="password" class="form-control" id="data[attributes][credentials][authentication_passphrase]" name="data[attributes][credentials][authentication_passphrase]" placeholder="" value="">\
                 </div>\
             </div>\
         </div>\
@@ -172,7 +172,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][privacy_protocol]" class="col-sm-2 control-label">Privacy Protocol</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <select class="form-control" id="data[attributes][credentials][privacy_protocol]" name="data[attributes][credentials][privacy_protocol]" tabindex="10" title="Privacy Protocol">\
+                    <select tabindex="8" class="form-control" id="data[attributes][credentials][privacy_protocol]" name="data[attributes][credentials][privacy_protocol]" tabindex="10" title="Privacy Protocol">\
                         <option value="AES">AES</option>\
                         <option value="DES">DES</option>\
                     </select>\
@@ -183,7 +183,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][privacy_passphrase]" class="col-sm-2 control-label">Privacy Passphrase</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input type="password" class="form-control" id="data[attributes][credentials][privacy_passphrase]" name="data[attributes][credentials][privacy_passphrase]" placeholder="" value="">\
+                    <input tabindex="9" type="password" class="form-control" id="data[attributes][credentials][privacy_passphrase]" name="data[attributes][credentials][privacy_passphrase]" placeholder="" value="">\
                 </div>\
             </div>\
         </div>\
@@ -193,7 +193,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][username]" class="col-sm-2 control-label">Username</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="" value="">\
+                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="" value="">\
                 </div>\
             </div>\
         </div>\
@@ -201,7 +201,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][password]" class="col-sm-2 control-label">Password</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input type="password" class="form-control" id="data[attributes][credentials][password]" name="data[attributes][credentials][password]" placeholder="" value="">\
+                    <input tabindex="5" type="password" class="form-control" id="data[attributes][credentials][password]" name="data[attributes][credentials][password]" placeholder="" value="">\
                 </div>\
             </div>\
         </div>';
@@ -210,7 +210,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][username]" class="col-sm-2 control-label">Username</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="" value="">\
+                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="" value="">\
                 </div>\
             </div>\
         </div>\
@@ -218,7 +218,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][password]" class="col-sm-2 control-label">Password</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input type="password" class="form-control" id="data[attributes][credentials][password]" name="data[attributes][credentials][password]" placeholder="" value="">\
+                    <input tabindex="5" type="password" class="form-control" id="data[attributes][credentials][password]" name="data[attributes][credentials][password]" placeholder="" value="">\
                 </div>\
             </div>\
         </div>';

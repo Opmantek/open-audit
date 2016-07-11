@@ -153,12 +153,12 @@ if (! function_exists('inputRead')) {
         unset($temp);
 
         # get debug
-        if (!empty($CI->input->get('debug'))) {
+        if ($CI->input->get('debug')) {
             $CI->response->meta->debug = $CI->input->get('debug');
             $log->message = 'Set debug to ' . $CI->response->meta->debug . ', according to URI.';
             stdlog($log);
         }
-        if (!empty($CI->input->post('debug'))) {
+        if ($CI->input->post('debug')) {
             $CI->response->meta->debug = $CI->input->post('debug');
             $log->message = 'Set debug to ' . $CI->response->meta->debug . ', according to POST.';
             stdlog($log);
@@ -173,14 +173,14 @@ if (! function_exists('inputRead')) {
         $collection_words = ' create edit update delete list execute debug ';
 
         # if we have an integer
-        if (!empty($CI->uri->segment(2)) and is_numeric($CI->uri->segment(2))) {
+        if ($CI->uri->segment(2) and is_numeric($CI->uri->segment(2))) {
             $CI->response->meta->id = intval($CI->uri->segment(2));
             $log->message = 'Set ID to ' . $CI->response->meta->id . ', according to URI.';
             stdlog($log);
         }
 
         # if we have a reserved word
-        if (!empty($CI->uri->segment(2)) and !is_numeric($CI->uri->segment(2)) and stripos($collection_words, ' '.$CI->uri->segment(2).' ') !== false) {
+        if ($CI->uri->segment(2) and !is_numeric($CI->uri->segment(2)) and stripos($collection_words, ' '.$CI->uri->segment(2).' ') !== false) {
             $CI->response->meta->action = $CI->uri->segment(2);
             $log->message = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
             stdlog($log);
@@ -241,12 +241,12 @@ if (! function_exists('inputRead')) {
         unset($collection_words);
 
         # get the include
-        if (!empty($CI->input->get('include'))) {
+        if ($CI->input->get('include')) {
             $CI->response->meta->include = $CI->input->get('include');
             $log->message = 'Set include to ' . $CI->response->meta->include . ', according to GET.';
             stdlog($log);
         }
-        if (!empty($CI->input->post('include'))) {
+        if ($CI->input->post('include')) {
             $CI->response->meta->include = $CI->input->post('include');
             $log->message = 'Set include to ' . $CI->response->meta->include . ', according to POST.';
             stdlog($log);
@@ -258,12 +258,12 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to URI.';
             stdlog($log);
         }
-        if (!empty($CI->input->get('sub_resource'))) {
+        if ($CI->input->get('sub_resource')) {
             $CI->response->meta->sub_resource = $CI->input->get('sub_resource');
             $log->message = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to GET.';
             stdlog($log);
         }
-        if (!empty($CI->input->post('sub_resource'))) {
+        if ($CI->input->post('sub_resource')) {
             $CI->response->meta->sub_resource = $CI->input->post('sub_resource');
             $log->message = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to POST.';
             stdlog($log);
@@ -277,12 +277,12 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to URI.';
             stdlog($log);
         }
-        if (!empty($CI->input->get('sub_resource_id'))) {
+        if ($CI->input->get('sub_resource_id')) {
             $CI->response->meta->sub_resource_id = $CI->input->get('sub_resource_id');
             $log->message = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to GET.';
             stdlog($log);
         }
-        if (!empty($CI->input->post('sub_resource_id'))) {
+        if ($CI->input->post('sub_resource_id')) {
             $CI->response->meta->sub_resource_id = $CI->input->post('sub_resource_id');
             $log->message = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to POST.';
             stdlog($log);
@@ -319,12 +319,12 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
 
-        if (!empty($CI->input->get('action'))) {
+        if ($CI->input->get('action')) {
             $action = $CI->input->get('action');
             $log->message = 'Action set to ' . $action . ', according to GET.';
             stdlog($log);
         }
-        if (!empty($CI->input->post('action'))) {
+        if ($CI->input->post('action')) {
             $action = $CI->input->post('action');
             $log->message = 'Action set to ' . $action . ', according to POST.';
             stdlog($log);
@@ -419,7 +419,7 @@ if (! function_exists('inputRead')) {
 
         # get the sort
         $CI->response->meta->sort = $CI->input->get('sort');
-        if (!empty($CI->input->post('sort'))) {
+        if ($CI->input->post('sort')) {
             $CI->response->meta->sort = $CI->input->post('sort');
             $log->message = 'Set sort to ' . $CI->response->meta->sort . ', according to POST.';
             stdlog($log);
@@ -442,7 +442,7 @@ if (! function_exists('inputRead')) {
 
         # get current
         $CI->response->meta->current = $CI->input->get('current');
-        if (!empty($CI->input->post('current'))) {
+        if ($CI->input->post('current')) {
             $CI->response->meta->current = $CI->input->post('current');
             $log->message = 'Set current to ' . $CI->response->meta->current . ', according to POST.';
             stdlog($log);
@@ -456,17 +456,17 @@ if (! function_exists('inputRead')) {
         unset($current_words);
 
         # get the group by
-        if (!empty($_GET['groupby'])) {
+        if ($CI->input->get('groupby')) {
             $CI->response->meta->groupby = $_GET['groupby'];
             $log->message = 'Set groupby to ' . $CI->response->meta->groupby . ', according to GET.';
             stdlog($log);
         }
-        if (!empty($_POST['groupby'])) {
+        if ($CI->input->post('groupby')) {
             $CI->response->meta->groupby = $_POST['groupby'];
             $log->message = 'Set groupby to ' . $CI->response->meta->groupby . ', according to POST.';
             stdlog($log);
         }
-        if (!empty($CI->response->meta->groupby)) {
+        if ($CI->response->meta->groupby) {
             $CI->response->meta->internal->groupby = 'GROUP BY ' . $CI->response->meta->groupby;
         } else {
             $CI->response->meta->internal->groupby = '';

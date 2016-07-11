@@ -43,10 +43,15 @@ class MY_Model extends CI_Model
         parent::__construct();
     }
 
-    public function format_data($result = array(), $type)
+    public function format_data($result, $type)
     {
         if (empty($result)) {
             # TODO - thorw an error here
+            return null;
+        }
+        if (gettype($result) == 'string') {
+            # TODO - this ws being provided through Discovery some how.
+            # Check this when we change from m_system to m_devices for processing results
             return null;
         }
         if (empty($type)) {
@@ -60,6 +65,8 @@ class MY_Model extends CI_Model
         } else {
             $link = $type;
         }
+        // echo "\$result is of type: " . gettype($result);
+        // print_r($result); echo "\n";
         foreach ($result as $entry) {
             $item = new stdClass();
             $item->id = '';

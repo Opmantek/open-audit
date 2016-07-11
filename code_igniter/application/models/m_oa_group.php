@@ -649,19 +649,21 @@ class M_oa_group extends MY_Model
         $result = $this->db->query($sql, $data);
 
         // insert the group columns
-        foreach ($group_definition->columns->column as $column) {
-            $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
-            $sql = $this->clean_sql($sql);
-            $data = array( $group_id,
-                (string)$column->column_order,
-                (string)$column->column_name,
-                (string)$column->column_variable,
-                (string)$column->column_type,
-                (string)$column->column_link,
-                (string)$column->column_secondary,
-                (string)$column->column_ternary,
-                (string)$column->column_align);
-            $query = $this->db->query($sql, $data);
+        if (!empty($group_definition->columns)) {
+            foreach ($group_definition->columns->column as $column) {
+                $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
+                $sql = $this->clean_sql($sql);
+                $data = array( $group_id,
+                    (string)$column->column_order,
+                    (string)$column->column_name,
+                    (string)$column->column_variable,
+                    (string)$column->column_type,
+                    (string)$column->column_link,
+                    (string)$column->column_secondary,
+                    (string)$column->column_ternary,
+                    (string)$column->column_align);
+                $query = $this->db->query($sql, $data);
+            }
         }
         // update the group members
         # get the group select

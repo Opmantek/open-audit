@@ -85,10 +85,10 @@ if (! function_exists('ssh_credentials')) {
                 } else {
                     $credential->root = false;
                 }
-                if ($result = ssh_command($ip, $credential, 'exit', $display)) {
+                if ($result = ssh_command($ip, $credential, 'uname', $display)) {
                     if ($result['status'] == 0) {
                         if ($credential->root) {
-                            $log->message = "Credential set " . $credential->name . " working on " . $ip;
+                            $log->message = "Credential set from " . $credential->source . " working on " . $ip;
                             stdlog($log);
                             return $credential;
                         } else {
@@ -114,7 +114,7 @@ if (! function_exists('ssh_credentials')) {
             }
         }
         if (!empty($connected[0])) {
-            $log->message = "Credential set " . $connected[0]->name . " working on " . $ip;
+            $log->message = "Credential set from " . $connected[0]->source . " working on " . $ip;
             stdlog($log);
             return $connected[0];
         } else {
@@ -171,11 +171,12 @@ if (! function_exists('ssh_command')) {
         }
 
         if (!is_object($credentials)) {
-            $log->message = 'No redentials supplied to ssh_command function.';
+            $log->message = 'No credentials supplied to ssh_command function.';
             stdlog($log);
             return false;
         } else {
-            $password = escapeshellarg($credentials->credentials->password);
+            #$password = escapeshellarg($credentials->credentials->password);
+            $password = $credentials->credentials->password;
             $username = escapeshellarg($credentials->credentials->username);
         }
 
@@ -197,7 +198,7 @@ if (! function_exists('ssh_command')) {
             );
             $cwd = '/tmp';
             $env = array();
-            $command_string = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' "' . $command . '"';
+            $command_string = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
             $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
             if (is_resource($process)) {
                 fwrite($pipes[0], $password);
@@ -346,7 +347,7 @@ if (! function_exists('ssh_audit')) {
 
         $command = 'uname';
         $ssh_result = ssh_command($ip, $credentials, $command, $display);
-        if (!empty($ssh_result['status'])) {
+        if ($ssh_result['status'] == 0) {
             if (!empty($ssh_result['output'][0])) {
                 $details->os_group = $ssh_result['output'][0];
                 if ($details->os_group == 'WindowsNT') {
@@ -395,9 +396,15 @@ if (! function_exists('ssh_audit')) {
             $details->fqdn = $ssh_result['output'][0];
         }
 
+        if (empty($details->hostname) and $details->fqdn != '') {
+            $temp = explode('.', $details->fqdn);
+            $details->hostname = $temp[0];
+            unset($temp);
+        }
+
         # UUID on Linux
         if ($details->os_group == 'Linux') {
-            if ($username == 'root') {
+            if ($credentials->credentials->username == 'root') {
                 $command = 'dmidecode -s system-uuid';
             } elseif ($credentials->sudo) {
                 $command = 'echo ' . $password . ' | sudo -S dmidecode -s system-uuid';
@@ -414,7 +421,7 @@ if (! function_exists('ssh_audit')) {
             }
 
             if ($details->uuid == '') {
-                if ($username == 'root') {
+                if ($credentials->credentials->username == 'root') {
                     $command = 'cat /sys/class/dmi/id/product_uuid';
                 } elseif ($credentials->sudo) {
                     $command = 'echo ' . escapeshellarg($details->ssh_password) . ' | sudo -S cat /sys/class/dmi/id/product_uuid';
@@ -458,7 +465,7 @@ if (! function_exists('ssh_audit')) {
         }
 
         # Model and Manufuacturer (maybe) on DD-WRT
-        if ($details->os_family == 'DD-WRT') {
+        if (isset($details->os_family) and $details->os_family == 'DD-WRT') {
             $command = 'nvram get DD_BOARD';
             $ssh_result = ssh_command($ip, $credentials, $command, $display);
             if ($ssh_result['status'] == 0) {
@@ -468,6 +475,7 @@ if (! function_exists('ssh_audit')) {
                 $details->manufacturer = "TP-Link Technology";
             }
         }
+    return $details;
     }
 }
 
@@ -588,12 +596,12 @@ if (! function_exists('scp')) {
         }
 
         if ($return['status'] != '0') {
-            $log_details->message = 'SCP copy \'' . $source . '\' to ' . $ip . ' failed';
-            stdlog($log_details);
+            $log->message = 'SCP copy \'' . $source . '\' to ' . $ip . ' failed';
+            stdlog($log);
             return false;
         } else {
-            $log_details->message = 'SCP copy \'' . $source . '\' to ' . $ip . ' succeeded';
-            stdlog($log_details);
+            $log->message = 'SCP copy \'' . $source . '\' to ' . $ip . ' succeeded';
+            stdlog($log);
             return true;
         }
     }
