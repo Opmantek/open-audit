@@ -473,29 +473,13 @@ if [ -z "$system_uuid" ]; then
 fi
 
 # Get the hostname & DNS domain
-system_hostname=""
-system_hostname=$(cat /etc/hostname | grep -v "^$" | cut -d. -f1)
-system_domain=$(cat /etc/hosts | grep -o " $system_hostname.*")
-system_fqdn="$system_hostname.$system_domain"
+system_hostname=$(hostname -s)
+system_domain=$(hostname -d)
+system_fqdn=$(hostname -f)
 
-dns_hostname=$(hostname)
-dns_domain=$(hostname -d)
-dns_fqdn=$(hostname -f)
-
-# if [ -f /etc/hostname ]; then
-# 	system_hostname=$(cat /etc/hostname 2>/dev/null)
-# else
-# 	system_hostname=$(hostname -s 2>/dev/null)
-# fi
-
-# if [ -z "$system_hostname" ]; then
-# 	system_hostname=$(hostname 2>/dev/null)
-# 	system_domain=""
-# else
-# 	system_domain=$(hostname -d 2>/dev/null)
-# fi
-
-
+dns_hostname=$(hostname -A | head -n1 | cut -d. -f1)
+dns_domain=$(hostname -A | head -n1 | cut -d. -f2-)
+dns_fqdn=$(hostname -A | head -n1)
 
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
@@ -1830,7 +1814,7 @@ for variable in $(env); do
 done
 
 # Puppet facts
-if [ -n "$(which facter)" ]; then
+if [ -n "$(which facter 2>/dev/null)" ]; then
     exclusions=" system_uptime memoryfree memoryfree_mb sshdsakey sshfp_dsa sshfp_rsa sshrsakey swapfree swapfree_mb system_uptime "
     for variable in $(facter -p); do
         name=$( echo "$variable" | cut -d" " -f1 )
