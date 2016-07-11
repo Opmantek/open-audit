@@ -110,8 +110,8 @@ class scripts extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->response->id = $this->m_scripts->create();
-        if (!empty($this->response->id)) {
+        $this->response->meta->id = $this->m_scripts->create();
+        if (!empty($this->response->meta->id)) {
             redirect('/scripts/');
         } else {
             log_error('ERR-0009');
@@ -143,7 +143,7 @@ class scripts extends MY_Controller
             exit();
         }
         $this->m_scripts->update();
-        if ($this->response->format == 'json') {
+        if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
             redirect('scripts');
@@ -159,18 +159,18 @@ class scripts extends MY_Controller
             exit();
         }
         $this->m_scripts->delete();
-        if ($this->response->format == 'json') {
+        if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('networks');
+            redirect('scripts');
         }
     }
 
     private function execute()
     {
-        $this->response->format = 'json';
-        $script = $this->m_scripts->execute($this->response->id);
-        $script_details = $this->m_scripts->read($this->response->id);
+        $this->response->meta->format = 'json';
+        $script = $this->m_scripts->execute($this->response->meta->id);
+        $script_details = $this->m_scripts->read($this->response->meta->id);
         header('Cache-Control: public');
         header('Content-Description: File Transfer');
         header('Content-Disposition: attachment; filename=' . $script_details['scripts'][0]->name);
