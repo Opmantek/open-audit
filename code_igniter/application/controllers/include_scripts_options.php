@@ -123,21 +123,21 @@
         $options['ldap_seen_date'] = new stdClass();
         $options['ldap_seen_date']->name = 'ldap_seen_date';
         $options['ldap_seen_date']->default = '2012-06-30';
-        $options['ldap_seen_date']->help = 'Set this if you wish to insert systems from AD that may not be contactable, but have been seen by AD since that date';
+        $options['ldap_seen_date']->help = 'Set this if you wish to insert systems from AD that may not be contactable, but have been seen by AD since that date.';
         $options['ldap_seen_date']->type = 'date';
         $options['ldap_seen_date']->values = '';
 
         $options['ldap_seen_days'] = new stdClass();
         $options['ldap_seen_days']->name = 'ldap_seen_days';
         $options['ldap_seen_days']->default = 0;
-        $options['ldap_seen_days']->help = 'Set this if you wish to insert systems from AD that have only been seen in the last X days';
+        $options['ldap_seen_days']->help = 'Set this if you wish to insert systems from AD that have only been seen in the last X days.';
         $options['ldap_seen_days']->type = 'number';
         $options['ldap_seen_days']->values = '';
 
         $options['org_id'] = new stdClass();
         $options['org_id']->name = 'org_id';
         $options['org_id']->default = '';
-        $options['org_id']->help = 'Assign any audited devices to this Org.';
+        $options['org_id']->help = 'Assign any audited devices to this Org. Leave blank to leave device in currently assigned Org (or to set default).';
         $options['org_id']->type = 'number';
         $options['org_id']->values = '';
 
@@ -165,14 +165,7 @@
         $options['self_delete'] = new stdClass();
         $options['self_delete']->name = 'self_delete';
         $options['self_delete']->default = 'n';
-        $options['self_delete']->help = '';
-        $options['self_delete']->type = 'select';
-        $options['self_delete']->values = 'y,n';
-
-        $options['self_delete'] = new stdClass();
-        $options['self_delete']->name = 'self_delete';
-        $options['self_delete']->default = 'n';
-        $options['self_delete']->help = '';
+        $options['self_delete']->help = 'If the script is running on a target, should the script delete itself upon completion?';
         $options['self_delete']->type = 'select';
         $options['self_delete']->values = 'y,n';
 
